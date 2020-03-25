@@ -101,12 +101,12 @@ public class ResultsController<T: ResultsControllerMutableType> {
 
     /// Convenience Initializer.
     ///
-    public convenience init(storageManager: CoreDataManager,
+    public convenience init(storageManager: StorageManagerType,
                             sectionNameKeyPath: String? = nil,
                             matching predicate: NSPredicate? = nil,
                             sortedBy descriptors: [NSSortDescriptor]) {
 
-        self.init(viewStorage: storageManager.persistentContainer.viewContext,
+        self.init(viewStorage: storageManager.viewStorage,
                   sectionNameKeyPath: sectionNameKeyPath,
                   matching: predicate,
                   sortedBy: descriptors)

@@ -86,7 +86,14 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
 
         regularPrice = product.regularPrice
         salePrice = product.salePrice
-        dateOnSaleStart = product.dateOnSaleStart
+
+        // If the product sale start date is nil and the sale end date is not in the past, defaults the sale start date to today.
+        if let saleEndDate = product.dateOnSaleEnd, product.dateOnSaleStart == nil &&
+            Date().startOfDay(timezone: timezoneForScheduleSaleDates) <= saleEndDate.startOfDay(timezone: timezoneForScheduleSaleDates) {
+            dateOnSaleStart = Date().startOfDay(timezone: timezoneForScheduleSaleDates)
+        } else {
+            dateOnSaleStart = product.dateOnSaleStart
+        }
         dateOnSaleEnd = product.dateOnSaleEnd
 
         let taxClassName = NSLocalizedString("Standard rate", comment: "The name of the default Tax Class in Product Price Settings")
@@ -143,23 +150,15 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
     }
 
     func handleSaleStartDateChange(_ date: Date) {
-        guard let dateOnSaleEnd = dateOnSaleEnd else {
-            return
-        }
-
         dateOnSaleStart = date.startOfDay(timezone: timezoneForScheduleSaleDates)
 
-        if dateOnSaleEnd < date {
+        if let dateOnSaleEnd = dateOnSaleEnd, dateOnSaleEnd < date {
             self.dateOnSaleEnd = date.endOfDay(timezone: timezoneForScheduleSaleDates)
         }
     }
 
     func handleSaleEndDateChange(_ date: Date) {
-        guard let dateOnSaleStart = dateOnSaleStart else {
-            return
-        }
-
-        if date < dateOnSaleStart {
+        if let dateOnSaleStart = dateOnSaleStart, date < dateOnSaleStart {
             return
         }
         else {

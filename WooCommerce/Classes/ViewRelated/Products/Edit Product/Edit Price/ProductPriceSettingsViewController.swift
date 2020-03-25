@@ -340,7 +340,7 @@ private extension ProductPriceSettingsViewController {
         cell.selectionStyle = .none
         cell.title = NSLocalizedString("Schedule sale", comment: "Title of the cell in Product Price Settings > Schedule sale")
         cell.subtitle = NSLocalizedString("Automatically start and end a sale", comment: "Subtitle of the cell in Product Price Settings > Schedule sale")
-        cell.isOn = (viewModel.dateOnSaleStart != nil && viewModel.dateOnSaleEnd != nil) ? true : false
+        cell.isOn = (viewModel.dateOnSaleStart != nil || viewModel.dateOnSaleEnd != nil) ? true : false
         cell.onChange = { [weak self] isOn in
             guard let self = self else {
                 return
@@ -358,11 +358,9 @@ private extension ProductPriceSettingsViewController {
     }
 
     func configureSaleFromPicker(cell: DatePickerTableViewCell) {
-        guard let dateOnSaleStart = viewModel.dateOnSaleStart else {
-            return
+        if let dateOnSaleStart = viewModel.dateOnSaleStart {
+            cell.getPicker().setDate(dateOnSaleStart, animated: false)
         }
-
-        cell.getPicker().setDate(dateOnSaleStart, animated: false)
         cell.getPicker().timeZone = timezoneForScheduleSaleDates
         cell.onDateSelected = { [weak self] date in
             guard let self = self else {
@@ -381,11 +379,9 @@ private extension ProductPriceSettingsViewController {
     }
 
     func configureSaleToPicker(cell: DatePickerTableViewCell) {
-        guard let dateOnSaleEnd = viewModel.dateOnSaleEnd else {
-            return
+        if let dateOnSaleEnd = viewModel.dateOnSaleEnd {
+            cell.getPicker().setDate(dateOnSaleEnd, animated: false)
         }
-
-        cell.getPicker().setDate(dateOnSaleEnd, animated: false)
         cell.getPicker().timeZone = timezoneForScheduleSaleDates
         cell.onDateSelected = { [weak self] date in
             guard let self = self else {
@@ -424,7 +420,7 @@ private extension ProductPriceSettingsViewController {
 
     func configureSections() {
         var saleScheduleRows: [Row] = [.scheduleSale]
-        if viewModel.dateOnSaleStart != nil && viewModel.dateOnSaleEnd != nil {
+        if viewModel.dateOnSaleStart != nil || viewModel.dateOnSaleEnd != nil {
             saleScheduleRows.append(contentsOf: [.scheduleSaleFrom])
             if datePickerSaleFromVisible {
                 saleScheduleRows.append(contentsOf: [.datePickerSaleFrom])

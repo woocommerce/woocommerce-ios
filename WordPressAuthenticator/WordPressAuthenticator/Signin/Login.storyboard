@@ -29,7 +29,7 @@
         <!--Login Prologue Signup Method View Controller-->
         <scene sceneID="8K7-Gj-yNn">
             <objects>
-                <viewController id="IwV-3R-6dB" customClass="LoginPrologueSignupMethodViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginPrologueSignupMethodViewController" id="IwV-3R-6dB" customClass="LoginPrologueSignupMethodViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="LS5-8f-iNn"/>
                         <viewControllerLayoutGuide type="bottom" id="NZ0-gC-OHl"/>
@@ -1463,7 +1463,7 @@
         <segue reference="0ao-yi-yZI"/>
         <segue reference="4SK-mG-U33"/>
         <segue reference="nCA-u7-fKm"/>
-        <segue reference="swV-lc-6gI"/>
+        <segue reference="iD4-VS-n3M"/>
         <segue reference="aSC-hU-lzE"/>
     </inferredMetricsTieBreakers>
 </document>

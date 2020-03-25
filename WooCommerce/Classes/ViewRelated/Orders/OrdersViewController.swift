@@ -8,6 +8,8 @@ import StoreKit
 // Used for protocol conformance of IndicatorInfoProvider only.
 import XLPagerTabStrip
 
+private typealias SyncReason = OrdersViewModel.SyncReason
+
 protocol OrdersViewControllerDelegate: class {
     /// Called when `OrdersViewController` is about to fetch Orders from the API.
     ///
@@ -19,6 +21,8 @@ protocol OrdersViewControllerDelegate: class {
 class OrdersViewController: UIViewController {
 
     weak var delegate: OrdersViewControllerDelegate?
+
+    private lazy var viewModel = OrdersViewModel()
 
     /// Main TableView.
     ///
@@ -137,7 +141,11 @@ class OrdersViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        syncingCoordinator.synchronizeFirstPage()
+        syncingCoordinator.resynchronize()
+
+        // Fix any _incomplete_ animation if the orders were deleted and refetched from
+        // a different location (or Orders tab).
+        tableView.reloadData()
     }
 }
 
@@ -272,7 +280,7 @@ extension OrdersViewController {
     @objc func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.ordersListPulledToRefresh)
         delegate?.ordersViewControllerWillSynchronizeOrders(self)
-        syncingCoordinator.synchronizeFirstPage {
+        syncingCoordinator.resynchronize(reason: SyncReason.pullToRefresh.rawValue) {
             sender.endRefreshing()
         }
     }
@@ -284,7 +292,7 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
 
     /// Synchronizes the Orders for the Default Store (if any).
     ///
-    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)? = nil) {
+    func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)? = nil) {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             onCompletion?(false)
             return
@@ -292,23 +300,25 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
 
         transitionToSyncingState()
 
-        let action = OrderAction.synchronizeOrders(siteID: siteID,
-                                                   statusKey: statusFilter?.slug,
-                                                   pageNumber: pageNumber,
-                                                   pageSize: pageSize) { [weak self] error in
-            guard let self = self else {
-                return
-            }
+        let action = viewModel.synchronizationAction(
+            siteID: siteID,
+            statusKey: statusFilter?.slug,
+            pageNumber: pageNumber,
+            pageSize: pageSize,
+            reason: SyncReason(rawValue: reason ?? "")) { [weak self] error in
+                guard let self = self else {
+                    return
+                }
 
-            if let error = error {
-                DDLogError("⛔️ Error synchronizing orders: \(error)")
-                self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
-            } else {
-                ServiceLocator.analytics.track(.ordersListLoaded, withProperties: ["status": self.statusFilter?.slug ?? String()])
-            }
+                if let error = error {
+                    DDLogError("⛔️ Error synchronizing orders: \(error)")
+                    self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize, reason: reason)
+                } else {
+                    ServiceLocator.analytics.track(.ordersListLoaded, withProperties: ["status": self.statusFilter?.slug ?? String()])
+                }
 
-            self.transitionToResultsUpdatedState()
-            onCompletion?(error == nil)
+                self.transitionToResultsUpdatedState()
+                onCompletion?(error == nil)
         }
 
         ServiceLocator.stores.dispatch(action)
@@ -377,7 +387,7 @@ private extension OrdersViewController {
 
     /// Displays the Error Notice.
     ///
-    func displaySyncingErrorNotice(pageNumber: Int, pageSize: Int) {
+    func displaySyncingErrorNotice(pageNumber: Int, pageSize: Int, reason: String?) {
         let message = NSLocalizedString("Unable to refresh list", comment: "Refresh Action Failed")
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
@@ -386,7 +396,7 @@ private extension OrdersViewController {
             }
 
             self.delegate?.ordersViewControllerWillSynchronizeOrders(self)
-            self.sync(pageNumber: pageNumber, pageSize: pageSize)
+            self.sync(pageNumber: pageNumber, pageSize: pageSize, reason: reason)
         }
 
         ServiceLocator.noticePresenter.enqueue(notice: notice)

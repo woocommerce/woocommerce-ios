@@ -215,6 +215,7 @@ private extension ProductsViewController {
         tableView.backgroundColor = .listBackground
         tableView.refreshControl = refreshControl
         tableView.tableFooterView = footerSpinnerView
+        tableView.separatorStyle = .none
 
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
         headerContainer.addSubview(topBannerView)
@@ -466,7 +467,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
 
     /// Synchronizes the Products for the Default Store (if any).
     ///
-    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)? = nil) {
+    func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)? = nil) {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             onCompletion?(false)
             return

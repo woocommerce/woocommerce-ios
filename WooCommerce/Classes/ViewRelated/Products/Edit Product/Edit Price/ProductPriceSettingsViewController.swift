@@ -42,9 +42,9 @@ final class ProductPriceSettingsViewController: UIViewController {
     /// Init
     ///
     init(product: Product, completion: @escaping Completion) {
-        self.siteID = product.siteID
-        self.viewModel = ProductPriceSettingsViewModel(product: product)
-        self.onCompletion = completion
+        siteID = product.siteID
+        viewModel = ProductPriceSettingsViewModel(product: product)
+        onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
 

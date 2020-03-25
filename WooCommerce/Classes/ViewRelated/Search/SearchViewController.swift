@@ -328,7 +328,7 @@ extension SearchViewController: SyncingCoordinatorDelegate {
 
     /// Synchronizes the models for the Default Store (if any).
     ///
-    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)? = nil) {
+    func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: ((Bool) -> Void)? = nil) {
         let keyword = self.keyword
         searchUICommand.synchronizeModels(siteID: storeID,
                                           keyword: keyword,

@@ -31,7 +31,7 @@ class ResultsControllerUIKitTests: XCTestCase {
             let sectionNameKeyPath = "username"
             let descriptor = NSSortDescriptor(keyPath: \StorageAccount.userID, ascending: false)
 
-            return ResultsController<StorageAccount>(viewContext: viewContext, sectionNameKeyPath: sectionNameKeyPath, sortedBy: [descriptor])
+            return ResultsController<StorageAccount>(viewStorage: viewContext, sectionNameKeyPath: sectionNameKeyPath, sortedBy: [descriptor])
         }()
 
         resultsController.startForwardingEvents(to: tableView)

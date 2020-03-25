@@ -84,12 +84,12 @@ public class ResultsController<T: ResultsControllerMutableType> {
 
     /// Designated Initializer.
     ///
-    public init(viewContext: StorageType,
+    public init(viewStorage: StorageType,
                 sectionNameKeyPath: String? = nil,
                 matching predicate: NSPredicate? = nil,
                 sortedBy descriptors: [NSSortDescriptor]) {
 
-        self.viewStorage = viewContext
+        self.viewStorage = viewStorage
         self.sectionNameKeyPath = sectionNameKeyPath
         self.predicate = predicate
         self.sortDescriptors = descriptors
@@ -106,7 +106,7 @@ public class ResultsController<T: ResultsControllerMutableType> {
                             matching predicate: NSPredicate? = nil,
                             sortedBy descriptors: [NSSortDescriptor]) {
 
-        self.init(viewContext: storageManager.persistentContainer.viewContext,
+        self.init(viewStorage: storageManager.persistentContainer.viewContext,
                   sectionNameKeyPath: sectionNameKeyPath,
                   matching: predicate,
                   sortedBy: descriptors)

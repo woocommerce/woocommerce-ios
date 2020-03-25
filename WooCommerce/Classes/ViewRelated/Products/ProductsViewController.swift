@@ -37,7 +37,7 @@ final class ProductsViewController: UIViewController {
         let subviews = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease2) ? [topBannerView, toolbar]: [topBannerView]
         let stackView = UIStackView(arrangedSubviews: subviews)
         stackView.axis = .vertical
-        stackView.spacing = Constants.topBannerViewBottomMargin
+        stackView.spacing = 0
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
@@ -266,14 +266,6 @@ private extension ProductsViewController {
         let toolbar = ToolbarView()
         toolbar.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
         toolbar.setSubviews(leftViews: [sortButton], rightViews: [filterButton])
-
-        let topBorderView = UIView.createBorderView()
-        toolbar.addSubview(topBorderView)
-        NSLayoutConstraint.activate([
-            topBorderView.constrainToSuperview(attribute: .leading),
-            topBorderView.constrainToSuperview(attribute: .trailing),
-            topBorderView.constrainToSuperview(attribute: .top)
-        ])
 
         return toolbar
     }
@@ -639,7 +631,6 @@ private extension ProductsViewController {
         static let placeholderRowsPerSection = [3]
         static let headerDefaultHeight = CGFloat(130)
         static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        static let topBannerViewBottomMargin = CGFloat(16)
         static let toolbarButtonInsets = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
     }
 }

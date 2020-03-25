@@ -7,9 +7,8 @@ final class ProductTaxClassListSelectorDataSourceTests: XCTestCase {
     private let sampleSiteID: Int64 = 521
 
     func testSelectedTaxClass() {
-        let product = MockProduct().product(taxClass: "reduced-rate")
         let taxClass = TaxClass(siteID: sampleSiteID, name: "Reduced rate", slug: "reduced-rate")
-        var dataSource = ProductTaxClassListSelectorDataSource(product: product, selected: taxClass)
+        var dataSource = ProductTaxClassListSelectorDataSource(siteID: sampleSiteID, selected: taxClass)
         XCTAssertEqual(dataSource.selected, taxClass)
 
         let newTaxClass = TaxClass(siteID: sampleSiteID, name: "Zero rate", slug: "zero-rate")
@@ -22,9 +21,8 @@ final class ProductTaxClassListSelectorDataSourceTests: XCTestCase {
     }
 
     func testCellConfiguration() {
-        let product = MockProduct().product(taxClass: "reduced-rate")
         let taxClass = TaxClass(siteID: sampleSiteID, name: "Reduced rate", slug: "reduced-rate")
-        let dataSource = ProductTaxClassListSelectorDataSource(product: product, selected: taxClass)
+        let dataSource = ProductTaxClassListSelectorDataSource(siteID: sampleSiteID, selected: taxClass)
         let nib = Bundle.main.loadNibNamed(WooBasicTableViewCell.classNameWithoutNamespaces, owner: self, options: nil)
         guard let cell = nib?.first as? WooBasicTableViewCell else {
             XCTFail()

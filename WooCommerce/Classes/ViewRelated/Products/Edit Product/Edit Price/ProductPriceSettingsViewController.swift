@@ -7,15 +7,9 @@ final class ProductPriceSettingsViewController: UIViewController {
 
     @IBOutlet weak private var tableView: UITableView!
 
-    private let product: Product
+    private let siteID: Int64
 
-    // Editable data
-    //
-    private var regularPrice: String?
-    private var salePrice: String?
-
-    private var dateOnSaleStart: Date?
-    private var dateOnSaleEnd: Date?
+    private let viewModel: ProductPriceSettingsViewModelOutput & ProductPriceSettingsActionHandler
 
     // Timezone of the website
     //
@@ -25,23 +19,6 @@ final class ProductPriceSettingsViewController: UIViewController {
     //
     private var datePickerSaleFromVisible = false
     private var datePickerSaleToVisible = false
-
-    // Today at the start of the day
-    //
-    private lazy var defaultStartDate = Date().startOfDay(timezone: timezoneForScheduleSaleDates)
-
-    // Tomorrow at the end of the day
-    //
-    private lazy var defaultEndDate = Calendar.current.date(byAdding: .day, value: 1, to: Date().endOfDay(timezone: timezoneForScheduleSaleDates))
-
-    // Internal data for rendering UI
-    //
-    private var taxStatus: ProductTaxStatus = .taxable
-    private var taxClass: TaxClass?
-
-    // The tax class configured by default, always present in a website
-    //
-    private let standardTaxClass: TaxClass
 
     /// Table Sections to be rendered
     ///
@@ -65,23 +42,9 @@ final class ProductPriceSettingsViewController: UIViewController {
     /// Init
     ///
     init(product: Product, completion: @escaping Completion) {
-        self.product = product
-        self.onCompletion = completion
-        regularPrice = product.regularPrice
-        salePrice = product.salePrice
-        dateOnSaleStart = product.dateOnSaleStart
-        dateOnSaleEnd = product.dateOnSaleEnd
-
-        let taxClassName = NSLocalizedString("Standard rate", comment: "The name of the default Tax Class in Product Price Settings")
-        standardTaxClass = TaxClass(siteID: product.siteID, name: taxClassName, slug: "standard")
-
-        if let productTaxClassSlug = product.taxClass, productTaxClassSlug.isEmpty == false {
-            taxClass = TaxClass(siteID: product.siteID, name: productTaxClassSlug, slug: productTaxClassSlug)
-        }
-        else {
-            taxClass = standardTaxClass
-        }
-        taxStatus = product.productTaxStatus
+        siteID = product.siteID
+        viewModel = ProductPriceSettingsViewModel(product: product)
+        onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -154,11 +117,9 @@ private extension ProductPriceSettingsViewController {
     }
 
     func retrieveProductTaxClass() {
-        let action = TaxClassAction.requestMissingTaxClasses(for: product) { [weak self] (taxClass, error) in
-            self?.taxClass = taxClass ?? self?.standardTaxClass
+        viewModel.retrieveProductTaxClass { [weak self] in
             self?.refreshViewContent()
         }
-        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -167,19 +128,7 @@ private extension ProductPriceSettingsViewController {
 extension ProductPriceSettingsViewController {
 
     override func shouldPopOnBackButton() -> Bool {
-        let newSalePrice = salePrice == "0" ? nil : salePrice
-
-        // Since an empty string and the standard tax class's slug both represent the standard tax class, the original and new
-        // tax classes are converted to empty string whenever the value matches the standard tax class's slug.
-        let newTaxClass = taxClass?.slug == standardTaxClass.slug ? "" : taxClass?.slug
-        let originalTaxClass = product.taxClass == standardTaxClass.slug ? "": product.taxClass
-
-        if getDecimalPrice(regularPrice) != getDecimalPrice(product.regularPrice) ||
-            getDecimalPrice(newSalePrice) != getDecimalPrice(product.salePrice) ||
-            dateOnSaleStart != product.dateOnSaleStart ||
-            dateOnSaleEnd != product.dateOnSaleEnd ||
-            taxStatus.rawValue != product.taxStatusKey ||
-            newTaxClass != originalTaxClass {
+        if viewModel.hasUnsavedChanges() {
             presentBackNavigationActionSheet()
             return false
         }
@@ -187,42 +136,22 @@ extension ProductPriceSettingsViewController {
     }
 
     @objc private func completeUpdating() {
-        let newSalePrice = salePrice == "0" ? nil : salePrice
-
-        // Check if the sale price is populated, and the regular price is not.
-        if getDecimalPrice(salePrice) != nil, getDecimalPrice(regularPrice) == nil {
-            displaySalePriceWithoutRegularPriceErrorNotice()
-            return
-        }
-
-        // Check if the sale price is less of the regular price, else show an error.
-        if let decimalSalePrice = getDecimalPrice(salePrice), let decimalRegularPrice = getDecimalPrice(regularPrice) {
-            let comparison = decimalSalePrice.compare(decimalRegularPrice)
-            guard comparison == .orderedAscending else {
-                displaySalePriceErrorNotice()
-                return
-            }
-        }
-
-        onCompletion(regularPrice, newSalePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass)
+        viewModel.completeUpdating(onCompletion: { [weak self] (regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass) in
+            self?.onCompletion(regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass)
+            }, onError: { [weak self] error in
+                switch error {
+                case .salePriceWithoutRegularPrice:
+                    self?.displaySalePriceWithoutRegularPriceErrorNotice()
+                case .salePriceHigherThanRegularPrice:
+                    self?.displaySalePriceErrorNotice()
+                }
+        })
     }
 
     private func presentBackNavigationActionSheet() {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
             self?.navigationController?.popViewController(animated: true)
         })
-    }
-}
-
-// MARK: - Input changes handling
-//
-private extension ProductPriceSettingsViewController {
-    func handleRegularPriceChange(regularPrice: String?) {
-        self.regularPrice = regularPrice
-    }
-
-    func handleSalePriceChange(salePrice: String?) {
-        self.salePrice = salePrice
     }
 }
 
@@ -291,17 +220,17 @@ extension ProductPriceSettingsViewController: UITableViewDelegate {
         case .taxStatus:
             let title = NSLocalizedString("Tax Status", comment: "Navigation bar title of the Product tax status selector screen")
             let viewProperties = ListSelectorViewProperties(navigationBarTitle: title)
-            let dataSource = ProductTaxStatusListSelectorDataSource(selected: taxStatus)
+            let dataSource = ProductTaxStatusListSelectorDataSource(selected: viewModel.taxStatus)
             let listSelectorViewController = ListSelectorViewController(viewProperties: viewProperties,
                                                                         dataSource: dataSource) { [weak self] selected in
                                                                             if let selected = selected {
-                                                                                self?.taxStatus = selected
+                                                                                self?.viewModel.handleTaxStatusChange(selected)
                                                                             }
                                                                             self?.refreshViewContent()
             }
             navigationController?.pushViewController(listSelectorViewController, animated: true)
         case .taxClass:
-            let dataSource = ProductTaxClassListSelectorDataSource(product: product, selected: taxClass)
+            let dataSource = ProductTaxClassListSelectorDataSource(siteID: siteID, selected: viewModel.taxClass)
             let navigationBarTitle = NSLocalizedString("Tax classes", comment: "Navigation bar title of the Product tax class selector screen")
             let noResultsPlaceholderText = NSLocalizedString("No tax classes yet",
             comment: "The text on the placeholder overlay when there are no tax classes on the Tax Class list picker")
@@ -316,7 +245,7 @@ extension ProductPriceSettingsViewController: UITableViewDelegate {
                                                         guard let self = self else {
                                                             return
                                                         }
-                                                        self.taxClass = selected
+                                                        self.viewModel.handleTaxClassChange(selected)
                                                         self.refreshViewContent()
             }
             navigationController?.pushViewController(selectorViewController, animated: true)
@@ -392,52 +321,44 @@ private extension ProductPriceSettingsViewController {
     }
 
     func configurePrice(cell: UnitInputTableViewCell) {
-        let viewModel = Product.createRegularPriceViewModel(regularPrice: regularPrice, using: CurrencySettings.shared) { [weak self] value in
-            self?.handleRegularPriceChange(regularPrice: value)
+        let cellViewModel = Product.createRegularPriceViewModel(regularPrice: viewModel.regularPrice, using: CurrencySettings.shared) { [weak self] value in
+            self?.viewModel.handleRegularPriceChange(value)
         }
         cell.selectionStyle = .none
-        cell.configure(viewModel: viewModel)
+        cell.configure(viewModel: cellViewModel)
     }
 
     func configureSalePrice(cell: UnitInputTableViewCell) {
-        let viewModel = Product.createSalePriceViewModel(salePrice: salePrice, using: CurrencySettings.shared) { [weak self] value in
-            self?.handleSalePriceChange(salePrice: value)
+        let cellViewModel = Product.createSalePriceViewModel(salePrice: viewModel.salePrice, using: CurrencySettings.shared) { [weak self] value in
+            self?.viewModel.handleSalePriceChange(value)
         }
         cell.selectionStyle = .none
-        cell.configure(viewModel: viewModel)
+        cell.configure(viewModel: cellViewModel)
     }
 
     func configureScheduleSale(cell: SwitchTableViewCell) {
         cell.selectionStyle = .none
         cell.title = NSLocalizedString("Schedule sale", comment: "Title of the cell in Product Price Settings > Schedule sale")
         cell.subtitle = NSLocalizedString("Automatically start and end a sale", comment: "Subtitle of the cell in Product Price Settings > Schedule sale")
-        cell.isOn = (dateOnSaleStart != nil && dateOnSaleEnd != nil) ? true : false
+        cell.isOn = (viewModel.dateOnSaleStart != nil && viewModel.dateOnSaleEnd != nil) ? true : false
         cell.onChange = { [weak self] isOn in
             guard let self = self else {
                 return
             }
 
-            if isOn {
-                self.dateOnSaleStart = self.dateOnSaleStart ?? self.product.dateOnSaleStart ?? self.defaultStartDate
-                self.dateOnSaleEnd = self.dateOnSaleEnd ?? self.product.dateOnSaleEnd ?? self.defaultEndDate
-                self.refreshViewContent()
-                return
-            }
-
-            self.dateOnSaleStart = nil
-            self.dateOnSaleEnd = nil
+            self.viewModel.handleScheduleSaleChange(isEnabled: isOn)
             self.refreshViewContent()
         }
     }
 
     func configureScheduleSaleFrom(cell: SettingTitleAndValueTableViewCell) {
         let title = NSLocalizedString("From", comment: "Title of the cell in Product Price Settings > Schedule sale From a certain date")
-        let value = dateOnSaleStart?.toString(dateStyle: .medium, timeStyle: .none, timeZone: timezoneForScheduleSaleDates)
+        let value = viewModel.dateOnSaleStart?.toString(dateStyle: .medium, timeStyle: .none, timeZone: timezoneForScheduleSaleDates)
         cell.updateUI(title: title, value: value)
     }
 
     func configureSaleFromPicker(cell: DatePickerTableViewCell) {
-        guard let dateOnSaleStart = dateOnSaleStart, let dateOnSaleEnd = dateOnSaleEnd else {
+        guard let dateOnSaleStart = viewModel.dateOnSaleStart else {
             return
         }
 
@@ -447,11 +368,7 @@ private extension ProductPriceSettingsViewController {
             guard let self = self else {
                 return
             }
-            self.dateOnSaleStart = date.startOfDay(timezone: self.timezoneForScheduleSaleDates)
-
-            if dateOnSaleEnd < date {
-                self.dateOnSaleEnd = date.endOfDay(timezone: self.timezoneForScheduleSaleDates)
-            }
+            self.viewModel.handleSaleStartDateChange(date)
 
             self.refreshViewContent()
         }
@@ -459,39 +376,35 @@ private extension ProductPriceSettingsViewController {
 
     func configureScheduleSaleTo(cell: SettingTitleAndValueTableViewCell) {
         let title = NSLocalizedString("To", comment: "Title of the cell in Product Price Settings > Schedule sale To a certain date")
-        let value = dateOnSaleEnd?.toString(dateStyle: .medium, timeStyle: .none, timeZone: timezoneForScheduleSaleDates)
+        let value = viewModel.dateOnSaleEnd?.toString(dateStyle: .medium, timeStyle: .none, timeZone: timezoneForScheduleSaleDates)
         cell.updateUI(title: title, value: value)
     }
 
     func configureSaleToPicker(cell: DatePickerTableViewCell) {
-        guard let dateOnSaleStart = dateOnSaleStart, let dateOnSaleEnd = dateOnSaleEnd else {
+        guard let dateOnSaleEnd = viewModel.dateOnSaleEnd else {
             return
         }
+
         cell.getPicker().setDate(dateOnSaleEnd, animated: false)
         cell.getPicker().timeZone = timezoneForScheduleSaleDates
         cell.onDateSelected = { [weak self] date in
             guard let self = self else {
                 return
             }
-            if date < dateOnSaleStart {
-                cell.getPicker().setDate(dateOnSaleEnd, animated: true)
-            }
-            else {
-                self.dateOnSaleEnd = date.endOfDay(timezone: self.timezoneForScheduleSaleDates)
-            }
+            self.viewModel.handleSaleEndDateChange(date)
             self.refreshViewContent()
         }
     }
 
     func configureTaxStatus(cell: SettingTitleAndValueTableViewCell) {
         let title = NSLocalizedString("Tax status", comment: "Title of the cell in Product Price Settings > Tax status")
-        cell.updateUI(title: title, value: taxStatus.description)
+        cell.updateUI(title: title, value: viewModel.taxStatus.description)
         cell.accessoryType = .disclosureIndicator
     }
 
     func configureTaxClass(cell: SettingTitleAndValueTableViewCell) {
         let title = NSLocalizedString("Tax class", comment: "Title of the cell in Product Price Settings > Tax class")
-        cell.updateUI(title: title, value: taxClass?.name)
+        cell.updateUI(title: title, value: viewModel.taxClass?.name)
         cell.accessoryType = .disclosureIndicator
     }
 }
@@ -511,7 +424,7 @@ private extension ProductPriceSettingsViewController {
 
     func configureSections() {
         var saleScheduleRows: [Row] = [.scheduleSale]
-        if dateOnSaleStart != nil && dateOnSaleEnd != nil {
+        if viewModel.dateOnSaleStart != nil && viewModel.dateOnSaleEnd != nil {
             saleScheduleRows.append(contentsOf: [.scheduleSaleFrom])
             if datePickerSaleFromVisible {
                 saleScheduleRows.append(contentsOf: [.datePickerSaleFrom])
@@ -527,14 +440,6 @@ private extension ProductPriceSettingsViewController {
         Section(title: nil, rows: saleScheduleRows),
         Section(title: NSLocalizedString("Tax Settings", comment: "Section header title for product tax settings"), rows: [.taxStatus, .taxClass])
         ]
-    }
-
-    func getDecimalPrice(_ price: String?) -> NSDecimalNumber? {
-        guard let price = price else {
-            return nil
-        }
-        let currencyFormatter = CurrencyFormatter()
-        return currencyFormatter.convertToDecimal(from: price)
     }
 }
 

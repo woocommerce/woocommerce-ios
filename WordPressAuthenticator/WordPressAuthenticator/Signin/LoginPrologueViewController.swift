@@ -123,10 +123,18 @@ class LoginPrologueViewController: LoginViewController {
     }
 
     private func signupTapped() {
-        // This stat is part of a funnel that provides critical information.  Before
-        // making ANY modification to this stat please refer to: p4qSXL-35X-p2
+        // This stat is part of a funnel that provides critical information.
+        // Before making ANY modification to this stat please refer to: p4qSXL-35X-p2
         WordPressAuthenticator.track(.signupButtonTapped)
-        performSegue(withIdentifier: .showSignupMethod, sender: self)
+
+        guard let vc = LoginPrologueSignupMethodViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate to LoginPrologueSignupMethodViewController")
+            return
+        }
+
+        vc.loginFields = self.loginFields
+        vc.dismissBlock = dismissBlock
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     private func appleTapped() {

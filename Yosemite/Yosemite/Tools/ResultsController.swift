@@ -13,9 +13,9 @@ public typealias ResultsControllerMutableType = NSManagedObject & ReadOnlyConver
 //
 public class ResultsController<T: ResultsControllerMutableType> {
 
-    /// Managed Object Context used to fetch objects.
+    /// The `StorageType` used to fetch objects.
     ///
-    private let viewContext: NSManagedObjectContext
+    private let viewStorage: StorageType
 
     /// keyPath on resulting objects that returns the section name.
     ///
@@ -45,10 +45,11 @@ public class ResultsController<T: ResultsControllerMutableType> {
     /// Internal NSFetchedResultsController Instance.
     ///
     private lazy var controller: NSFetchedResultsController<T> = {
-        return NSFetchedResultsController(fetchRequest: fetchRequest,
-                                          managedObjectContext: viewContext,
-                                          sectionNameKeyPath: sectionNameKeyPath,
-                                          cacheName: nil)
+        viewStorage.createFetchedResultsController(
+                fetchRequest: fetchRequest,
+                sectionNameKeyPath: sectionNameKeyPath,
+                cacheName: nil
+        )
     }()
 
     /// FetchedResultsController Delegate Wrapper.
@@ -83,12 +84,12 @@ public class ResultsController<T: ResultsControllerMutableType> {
 
     /// Designated Initializer.
     ///
-    public init(viewContext: NSManagedObjectContext,
+    public init(viewContext: StorageType,
                 sectionNameKeyPath: String? = nil,
                 matching predicate: NSPredicate? = nil,
                 sortedBy descriptors: [NSSortDescriptor]) {
 
-        self.viewContext = viewContext
+        self.viewStorage = viewContext
         self.sectionNameKeyPath = sectionNameKeyPath
         self.predicate = predicate
         self.sortDescriptors = descriptors

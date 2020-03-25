@@ -33,6 +33,10 @@ class ResultsControllerTests: XCTestCase {
         storage = MockupStorageManager()
     }
 
+    override func tearDown() {
+        storage = nil
+        super.tearDown()
+    }
 
     /// Verifies that the Results Controller has an Empty Section right after the Fetch OP is performed.
     ///

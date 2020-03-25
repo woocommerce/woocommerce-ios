@@ -13,10 +13,10 @@ class ResultsControllerTests: XCTestCase {
     ///
     private var storageManager: MockupStorageManager!
 
-    /// Returns the NSMOC associated to the Main Thread
+    /// Returns the `StorageType` associated with the Main Thread
     ///
-    private var viewContext: NSManagedObjectContext {
-        return storageManager.persistentContainer.viewContext
+    private var viewContext: StorageType {
+        return storageManager.viewStorage
     }
 
     /// Returns a sample NSSortDescriptor

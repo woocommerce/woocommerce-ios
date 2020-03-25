@@ -153,7 +153,8 @@ extension WPStyleGuide {
                                             width: Constants.googleIconButtonSize, height: Constants.googleIconButtonSize)
 
             let buttonString = NSMutableAttributedString(attachment: googleAttachment)
-            let googleTitle = NSLocalizedString("  Continue with Google", comment: "Button title. Tapping begins log in using Google. There are leading spaces to separate it from the Google logo.")
+            //  Add leading non-breaking spaces to separate the button text from the Google logo.
+            let googleTitle = "\u{00a0}\u{00a0}" + NSLocalizedString("Continue with Google", comment: "Button title. Tapping begins log in using Google.")
             buttonString.append(NSAttributedString(string: googleTitle))
 
             return buttonString

@@ -136,6 +136,7 @@
 		027B8BBA23FE0D0C0040944E /* ObservationToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027B8BB923FE0D0C0040944E /* ObservationToken.swift */; };
 		027B8BBD23FE0DE10040944E /* ProductImageActionHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027B8BBC23FE0DE10040944E /* ProductImageActionHandlerTests.swift */; };
 		027B8BBF23FE0F850040944E /* MockMediaStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027B8BBE23FE0F850040944E /* MockMediaStoresManager.swift */; };
+		02817B39242B34560050AD8B /* ToolbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02817B38242B34560050AD8B /* ToolbarView.swift */; };
 		02820F3422C257B700DE0D37 /* UITableView+HeaderFooterHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02820F3322C257B700DE0D37 /* UITableView+HeaderFooterHelpers.swift */; };
 		028296EC237D28B600E84012 /* TextViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028296EA237D28B600E84012 /* TextViewViewController.swift */; };
 		028296ED237D28B600E84012 /* TextViewViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 028296EB237D28B600E84012 /* TextViewViewController.xib */; };
@@ -895,6 +896,7 @@
 		027B8BB923FE0D0C0040944E /* ObservationToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservationToken.swift; sourceTree = "<group>"; };
 		027B8BBC23FE0DE10040944E /* ProductImageActionHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageActionHandlerTests.swift; sourceTree = "<group>"; };
 		027B8BBE23FE0F850040944E /* MockMediaStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockMediaStoresManager.swift; sourceTree = "<group>"; };
+		02817B38242B34560050AD8B /* ToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarView.swift; sourceTree = "<group>"; };
 		02820F3322C257B700DE0D37 /* UITableView+HeaderFooterHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+HeaderFooterHelpers.swift"; sourceTree = "<group>"; };
 		028296EA237D28B600E84012 /* TextViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewViewController.swift; sourceTree = "<group>"; };
 		028296EB237D28B600E84012 /* TextViewViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TextViewViewController.xib; sourceTree = "<group>"; };
@@ -1791,6 +1793,14 @@
 			path = Media;
 			sourceTree = "<group>";
 		};
+		02817B37242B34260050AD8B /* Toolbar */ = {
+			isa = PBXGroup;
+			children = (
+				02817B38242B34560050AD8B /* ToolbarView.swift */,
+			);
+			path = Toolbar;
+			sourceTree = "<group>";
+		};
 		028296E9237D289900E84012 /* Text View Screen */ = {
 			isa = PBXGroup;
 			children = (
@@ -2407,6 +2417,7 @@
 				022BF7FA23B9D681000A1DFB /* Progress */,
 				0282DD92233C9397006A5FDB /* Search */,
 				0202B6932387ACE000F3EBE0 /* TabBar */,
+				02817B37242B34260050AD8B /* Toolbar */,
 				02404EE52315272C00FF1170 /* Top Banner */,
 				B56DB3CD2049BFAA00D4AA8E /* Main.storyboard */,
 				CE263DE7206ACE3E0015A693 /* MainTabBarController.swift */,
@@ -4041,6 +4052,7 @@
 				576F92222423C3C0003E5FEF /* OrdersViewModel.swift in Sources */,
 				D8915DC32372C9EF00F63762 /* UIColor+ColorStudio.swift in Sources */,
 				024DF31623742BB6006658FE /* AztecStrikethroughFormatBarCommand.swift in Sources */,
+				02817B39242B34560050AD8B /* ToolbarView.swift in Sources */,
 				D817586222BB64C300289CFE /* OrderDetailsNotices.swift in Sources */,
 				0282DD94233C9465006A5FDB /* SearchUICommand.swift in Sources */,
 				028BAC4722F3B550008BB4AF /* StatsTimeRangeV4+UI.swift in Sources */,

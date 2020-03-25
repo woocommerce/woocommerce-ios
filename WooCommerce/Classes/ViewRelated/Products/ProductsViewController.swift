@@ -31,6 +31,23 @@ final class ProductsViewController: UIViewController {
         return UIView(frame: .zero)
     }()
 
+    /// Top stack view that is shown above the table view as the table header view.
+    ///
+    private lazy var topStackView: UIStackView = {
+        let subviews = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease2) ? [topBannerView, toolbar]: [topBannerView]
+        let stackView = UIStackView(arrangedSubviews: subviews)
+        stackView.axis = .vertical
+        stackView.spacing = Constants.topBannerViewBottomMargin
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+
+    /// Top toolbar that shows the sort and filter CTAs.
+    ///
+    private lazy var toolbar: UIView = {
+        return createToolbar()
+    }()
+
     /// Top banner that shows that the Products feature is still work in progress.
     ///
     private lazy var topBannerView: TopBannerView = {
@@ -218,8 +235,8 @@ private extension ProductsViewController {
         tableView.separatorStyle = .none
 
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
-        headerContainer.addSubview(topBannerView)
-        headerContainer.pinSubviewToAllEdges(topBannerView, insets: Constants.headerContainerInsets)
+        headerContainer.addSubview(topStackView)
+        headerContainer.pinSubviewToSafeArea(topStackView, insets: Constants.headerContainerInsets)
         let bottomBorderView = UIView.createBorderView()
         headerContainer.addSubview(bottomBorderView)
         NSLayoutConstraint.activate([
@@ -228,6 +245,37 @@ private extension ProductsViewController {
             bottomBorderView.constrainToSuperview(attribute: .bottom)
         ])
         tableView.tableHeaderView = headerContainer
+    }
+
+    func createToolbar() -> ToolbarView {
+        let sortTitle = NSLocalizedString("Sort by", comment: "Title of the toolbar button to sort products in different ways.")
+        let sortButton = UIButton(frame: .zero)
+        sortButton.setTitle(sortTitle, for: .normal)
+        sortButton.addTarget(self, action: #selector(sortButtonTapped), for: .touchUpInside)
+
+        let filterTitle = NSLocalizedString("Filter", comment: "Title of the toolbar button to filter products by different attributes.")
+        let filterButton = UIButton(frame: .zero)
+        filterButton.setTitle(filterTitle, for: .normal)
+        filterButton.addTarget(self, action: #selector(filterButtonTapped), for: .touchUpInside)
+
+        [sortButton, filterButton].forEach {
+            $0.applyLinkButtonStyle()
+            $0.contentEdgeInsets = Constants.toolbarButtonInsets
+        }
+
+        let toolbar = ToolbarView()
+        toolbar.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
+        toolbar.setSubviews(leftViews: [sortButton], rightViews: [filterButton])
+
+        let topBorderView = UIView.createBorderView()
+        toolbar.addSubview(topBorderView)
+        NSLayoutConstraint.activate([
+            topBorderView.constrainToSuperview(attribute: .leading),
+            topBorderView.constrainToSuperview(attribute: .trailing),
+            topBorderView.constrainToSuperview(attribute: .top)
+        ])
+
+        return toolbar
     }
 
     func createTopBannerView() -> TopBannerView {
@@ -388,6 +436,8 @@ private extension ProductsViewController {
     }
 }
 
+// MARK: - Actions
+//
 private extension ProductsViewController {
     @objc private func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.productListPulledToRefresh)
@@ -395,6 +445,14 @@ private extension ProductsViewController {
         syncingCoordinator.resynchronize {
             sender.endRefreshing()
         }
+    }
+
+    @objc func sortButtonTapped() {
+        // TODO-2036: implement sorting products
+    }
+
+    @objc func filterButtonTapped() {
+        // TODO-2037: implement filtering products
     }
 }
 
@@ -447,7 +505,7 @@ private extension ProductsViewController {
         NSLayoutConstraint.activate([
             overlayView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             overlayView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            overlayView.topAnchor.constraint(equalTo: topBannerView.bottomAnchor),
+            overlayView.topAnchor.constraint(equalTo: topStackView.bottomAnchor),
             overlayView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
@@ -580,6 +638,8 @@ private extension ProductsViewController {
         static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
         static let headerDefaultHeight = CGFloat(130)
-        static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 16, right: 0)
+        static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        static let topBannerViewBottomMargin = CGFloat(16)
+        static let toolbarButtonInsets = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
     }
 }

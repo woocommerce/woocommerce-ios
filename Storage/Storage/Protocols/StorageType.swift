@@ -1,5 +1,7 @@
 import Foundation
 
+import CoreData.NSFetchedResultsController
+import CoreData.NSFetchRequest
 
 /// Defines all of the methods made available by the Storage.
 ///
@@ -51,4 +53,8 @@ public protocol StorageType {
     /// Asynchronously performs a given block on the StorageType's queue.
     ///
     func perform(_ closure: @escaping () -> Void)
+
+    func createFetchedResultsController<ResultType>(fetchRequest: NSFetchRequest<ResultType>,
+                                                    sectionNameKeyPath: String?,
+                                                    cacheName: String?) -> NSFetchedResultsController<ResultType>
 }

@@ -178,7 +178,7 @@ extension WPStyleGuide {
                                         width: imageSize.width, height: imageSize.height)
 
         let buttonString = NSMutableAttributedString(attachment: appleAttachment)
-        let appleTitle = NSLocalizedString(" Continue with Apple", comment: "Button title. Tapping begins log in using Apple. There is a leading space to separate it from the Apple logo.")
+        let appleTitle = "\u{00a0}" + NSLocalizedString("Continue with Apple", comment: "Button title. Tapping begins log in using Apple. There is a leading space to separate it from the Apple logo.")
         buttonString.append(NSAttributedString(string: appleTitle))
 
         return buttonString

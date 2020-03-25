@@ -238,7 +238,7 @@ private extension ProductsViewController {
                                   comment: "The title of the Work In Progress top banner on the Products tab")
         infoText = NSLocalizedString("We’ve added editing functionality to simple products. Keep an eye out for more options soon!",
                                      comment: "The info of the Work In Progress top banner on the Products tab")
-    
+
         let viewModel = TopBannerViewModel(title: title,
                                            infoText: infoText,
                                            icon: .workInProgressBanner) { [weak self] in

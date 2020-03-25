@@ -88,7 +88,7 @@ final class MainTabBarController: UITabBarController {
         let rootViewController = OrdersRootViewController()
         return WooNavigationController(rootViewController: rootViewController)
     }()
-    
+
     private lazy var productsTabViewController: UIViewController = {
         let productsViewController = ProductsViewController(nibName: nil, bundle: nil)
         let navController = WooNavigationController(rootViewController: productsViewController)
@@ -119,7 +119,7 @@ final class MainTabBarController: UITabBarController {
 
             let ordersTabIndex = WooTab.orders.visibleIndex()
             controllers.insert(ordersTabViewController, at: ordersTabIndex)
-            
+
             let productsTabIndex = WooTab.products.visibleIndex()
             controllers.insert(productsTabViewController, at: productsTabIndex)
 

@@ -27,11 +27,15 @@ class ResultsControllerUIKitTests: XCTestCase {
         tableView = MockupTableView()
 
         resultsController = {
-            let viewContext = storageManager.persistentContainer.viewContext
+            let viewStorage = storageManager.viewStorage
             let sectionNameKeyPath = "username"
             let descriptor = NSSortDescriptor(keyPath: \StorageAccount.userID, ascending: false)
 
-            return ResultsController<StorageAccount>(viewStorage: viewContext, sectionNameKeyPath: sectionNameKeyPath, sortedBy: [descriptor])
+            return ResultsController<StorageAccount>(
+                    viewStorage: viewStorage,
+                    sectionNameKeyPath: sectionNameKeyPath,
+                    sortedBy: [descriptor]
+            )
         }()
 
         resultsController.startForwardingEvents(to: tableView)

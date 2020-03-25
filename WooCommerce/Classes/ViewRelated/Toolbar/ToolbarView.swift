@@ -1,6 +1,6 @@
 import UIKit
 
-/// A toolbar design that contains subview at the left and right horizontally.
+/// A toolbar design that contains subviews at the left and right horizontally.
 ///
 final class ToolbarView: UIView {
     private lazy var stackView: UIStackView = {

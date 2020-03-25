@@ -116,7 +116,6 @@
                     </view>
                     <navigationItem key="navigationItem" id="42E-2e-kOq"/>
                     <connections>
-                        <segue destination="IwV-3R-6dB" kind="presentation" identifier="showSignupMethod" id="gD5-d0-X3t"/>
                         <segue destination="T5n-nb-cOW" kind="show" identifier="showSigninV2" id="nCA-u7-fKm"/>
                         <segue destination="MEg-KS-Afs" kind="show" identifier="showGoogle" id="aSC-hU-lzE"/>
                         <segue destination="hed-vB-osh" kind="presentation" identifier="showLoginMethod" id="N3P-wt-Rn3"/>
@@ -1466,7 +1465,6 @@
         <segue reference="4SK-mG-U33"/>
         <segue reference="nCA-u7-fKm"/>
         <segue reference="swV-lc-6gI"/>
-        <segue reference="gD5-d0-X3t"/>
         <segue reference="aSC-hU-lzE"/>
     </inferredMetricsTieBreakers>
 </document>

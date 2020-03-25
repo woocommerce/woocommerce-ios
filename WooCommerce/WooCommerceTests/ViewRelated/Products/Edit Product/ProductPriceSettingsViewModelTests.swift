@@ -418,6 +418,26 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.dateOnSaleEnd, expectedEndDate)
     }
 
+    func testHandlingNilSaleEndDate() {
+        // Arrange
+        let timezone = TimeZone(secondsFromGMT: 0)!
+        let originalSaleStartDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-09-02T21:30:00")
+        let originalSaleEndDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-09-27T21:30:00")
+        let product = MockProduct().product(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
+        let viewModel = ProductPriceSettingsViewModel(product: product, timezoneForScheduleSaleDates: timezone)
+        XCTAssertEqual(viewModel.dateOnSaleStart, originalSaleStartDate)
+        XCTAssertEqual(viewModel.dateOnSaleEnd, originalSaleEndDate)
+
+        // Act
+        viewModel.handleSaleEndDateChange(nil)
+
+        // Assert
+        let expectedStartDate = originalSaleStartDate
+        let expectedEndDate: Date? = nil
+        XCTAssertEqual(viewModel.dateOnSaleStart, expectedStartDate)
+        XCTAssertEqual(viewModel.dateOnSaleEnd, expectedEndDate)
+    }
+
     // MARK: - Navigation actions
 
     // `completeUpdating`

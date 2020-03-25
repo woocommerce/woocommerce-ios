@@ -9,6 +9,12 @@ extension UILabel {
         textColor = .text
     }
 
+    func applyLinkBodyStyle() {
+        adjustsFontForContentSizeCategory = true
+        font = .body
+        textColor = .textLink
+    }
+
     func applyLinkHeadlineStyle() {
         adjustsFontForContentSizeCategory = true
         font = .headline

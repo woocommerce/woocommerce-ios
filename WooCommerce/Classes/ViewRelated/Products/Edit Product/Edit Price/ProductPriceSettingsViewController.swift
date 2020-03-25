@@ -217,6 +217,9 @@ extension ProductPriceSettingsViewController: UITableViewDelegate {
         case .scheduleSaleTo:
             datePickerSaleToVisible = !datePickerSaleToVisible
             refreshViewContent()
+        case .removeSaleTo:
+            viewModel.handleSaleEndDateChange(nil)
+            refreshViewContent()
         case .taxStatus:
             let title = NSLocalizedString("Tax Status", comment: "Navigation bar title of the Product tax status selector screen")
             let viewProperties = ListSelectorViewProperties(navigationBarTitle: title)
@@ -310,6 +313,8 @@ private extension ProductPriceSettingsViewController {
             configureScheduleSaleTo(cell: cell)
         case let cell as DatePickerTableViewCell where row == .datePickerSaleTo:
             configureSaleToPicker(cell: cell)
+        case let cell as BasicTableViewCell where row == .removeSaleTo:
+            configureRemoveSaleTo(cell: cell)
         case let cell as SettingTitleAndValueTableViewCell where row == .taxStatus:
             configureTaxStatus(cell: cell)
         case let cell as SettingTitleAndValueTableViewCell where row == .taxClass:
@@ -392,6 +397,11 @@ private extension ProductPriceSettingsViewController {
         }
     }
 
+    func configureRemoveSaleTo(cell: BasicTableViewCell) {
+        cell.textLabel?.text = NSLocalizedString("Remove end date", comment: "Label action for removing a link from the editor")
+        cell.textLabel?.applyLinkBodyStyle()
+    }
+
     func configureTaxStatus(cell: SettingTitleAndValueTableViewCell) {
         let title = NSLocalizedString("Tax status", comment: "Title of the cell in Product Price Settings > Tax status")
         cell.updateUI(title: title, value: viewModel.taxStatus.description)
@@ -429,6 +439,9 @@ private extension ProductPriceSettingsViewController {
             if datePickerSaleToVisible {
                 saleScheduleRows.append(contentsOf: [.datePickerSaleTo])
             }
+            if viewModel.dateOnSaleEnd != nil {
+                saleScheduleRows.append(.removeSaleTo)
+            }
         }
 
         sections = [
@@ -457,6 +470,7 @@ private extension ProductPriceSettingsViewController {
         case datePickerSaleFrom
         case scheduleSaleTo
         case datePickerSaleTo
+        case removeSaleTo
 
         case taxStatus
         case taxClass
@@ -473,6 +487,8 @@ private extension ProductPriceSettingsViewController {
                 return DatePickerTableViewCell.self
             case .taxStatus, .taxClass:
                 return SettingTitleAndValueTableViewCell.self
+            case .removeSaleTo:
+                return BasicTableViewCell.self
             }
         }
 

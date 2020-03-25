@@ -24,7 +24,7 @@ protocol ProductPriceSettingsActionHandler {
     func handleTaxStatusChange(_ taxStatus: ProductTaxStatus)
     func handleScheduleSaleChange(isEnabled: Bool)
     func handleSaleStartDateChange(_ date: Date)
-    func handleSaleEndDateChange(_ date: Date)
+    func handleSaleEndDateChange(_ date: Date?)
 
     // Navigation actions
     func completeUpdating(onCompletion: ProductPriceSettingsViewController.Completion, onError: (ProductPriceSetingsError) -> Void)
@@ -157,12 +157,12 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
         }
     }
 
-    func handleSaleEndDateChange(_ date: Date) {
-        if let dateOnSaleStart = dateOnSaleStart, date < dateOnSaleStart {
+    func handleSaleEndDateChange(_ date: Date?) {
+        if let date = date, let dateOnSaleStart = dateOnSaleStart, date < dateOnSaleStart {
             return
         }
         else {
-            self.dateOnSaleEnd = date.endOfDay(timezone: self.timezoneForScheduleSaleDates)
+            self.dateOnSaleEnd = date?.endOfDay(timezone: self.timezoneForScheduleSaleDates)
         }
     }
 

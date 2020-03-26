@@ -227,15 +227,15 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
       }
     )
     
-    testflight(skip_waiting_for_build_processing: true)
+    #testflight(skip_waiting_for_build_processing: true)
     sh("cd .. && rm WooCommerce.ipa")
 
-    sentry_upload_dsym(
-      auth_token: get_required_env("SENTRY_AUTH_TOKEN"),
-      org_slug: 'a8c',
-      project_slug: 'woocommerce-ios',
-      dsym_path: "./WooCommerce.app.dSYM.zip",
-    )
+    #sentry_upload_dsym(
+    #  auth_token: get_required_env("SENTRY_AUTH_TOKEN"),
+    #  org_slug: 'a8c',
+    #  project_slug: 'woocommerce-ios',
+    #  dsym_path: "./WooCommerce.app.dSYM.zip",
+    #)
     sh("cd .. && rm WooCommerce.app.dSYM.zip")
 
     if (options[:create_release])

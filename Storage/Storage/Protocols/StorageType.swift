@@ -54,6 +54,14 @@ public protocol StorageType {
     ///
     func perform(_ closure: @escaping () -> Void)
 
+    /// Create an `NSFetchedResultsController` using this `StorageType`.
+    ///
+    /// We generally do not allow direct access to `NSManagedObjectContext` as that is hidden
+    /// behind `StorageType`. However, `NSFetchedResultsController` requires an
+    /// `NSManagedObjectContext` to be instantiated. This method solves that problem. Consumers can
+    /// create an `NSFetchedResultsController` without illegally referencing an
+    /// `NSManagedObjectContext`.
+    ///
     func createFetchedResultsController<ResultType>(fetchRequest: NSFetchRequest<ResultType>,
                                                     sectionNameKeyPath: String?,
                                                     cacheName: String?) -> NSFetchedResultsController<ResultType>

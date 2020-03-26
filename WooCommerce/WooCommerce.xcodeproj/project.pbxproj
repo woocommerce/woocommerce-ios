@@ -212,6 +212,7 @@
 		02FE89C7231FAA4100E85EF8 /* MainTabBarControllerTests+ProductListFeatureFlag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE89C6231FAA4100E85EF8 /* MainTabBarControllerTests+ProductListFeatureFlag.swift */; };
 		02FE89C9231FB31400E85EF8 /* FeatureFlagService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE89C8231FB31400E85EF8 /* FeatureFlagService.swift */; };
 		02FE89CB231FB36600E85EF8 /* DefaultFeatureFlagService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE89CA231FB36600E85EF8 /* DefaultFeatureFlagService.swift */; };
+		263EB409242C58EA00F3A15F /* DefaultProductFormTableViewModel+EditProductsM3Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263EB408242C58EA00F3A15F /* DefaultProductFormTableViewModel+EditProductsM3Tests.swift */; };
 		451A04E62386CE8700E368C9 /* ProductImagesHeaderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451A04E42386CE8700E368C9 /* ProductImagesHeaderTableViewCell.swift */; };
 		451A04E72386CE8700E368C9 /* ProductImagesHeaderTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 451A04E52386CE8700E368C9 /* ProductImagesHeaderTableViewCell.xib */; };
 		451A04EA2386D28300E368C9 /* ProductImagesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451A04E92386D28300E368C9 /* ProductImagesViewModel.swift */; };
@@ -972,6 +973,7 @@
 		02FE89C8231FB31400E85EF8 /* FeatureFlagService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagService.swift; sourceTree = "<group>"; };
 		02FE89CA231FB36600E85EF8 /* DefaultFeatureFlagService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultFeatureFlagService.swift; sourceTree = "<group>"; };
 		25D00C97936D2C6589F8ECE9 /* Pods-WooCommerce.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		263EB408242C58EA00F3A15F /* DefaultProductFormTableViewModel+EditProductsM3Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DefaultProductFormTableViewModel+EditProductsM3Tests.swift"; sourceTree = "<group>"; };
 		2719B6FD1E6FE78A76B6AC74 /* Pods-WooCommerceTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		33035144757869DE5E4DC88A /* Pods-WooCommerce.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release.xcconfig"; sourceTree = "<group>"; };
 		451A04E42386CE8700E368C9 /* ProductImagesHeaderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesHeaderTableViewCell.swift; sourceTree = "<group>"; };
@@ -1560,6 +1562,7 @@
 			children = (
 				020B2F9823BDF2E000BD79AD /* DefaultProductFormTableViewModelTests.swift */,
 				02A275C723FEA102005C560F /* DefaultProductFormTableViewModel+EditProductsM2Tests.swift */,
+				263EB408242C58EA00F3A15F /* DefaultProductFormTableViewModel+EditProductsM3Tests.swift */,
 				02153210242376B5003F2BBD /* ProductPriceSettingsViewModelTests.swift */,
 			);
 			path = "Edit Product";
@@ -4378,6 +4381,7 @@
 				D8C11A6022E2479800D4A88D /* OrderPaymentDetailsViewModelTests.swift in Sources */,
 				D83F593D225B4B5000626E75 /* ManualTrackingViewControllerTests.swift in Sources */,
 				CEEC9B6621E7C5200055EEF0 /* AppRatingManagerTests.swift in Sources */,
+				263EB409242C58EA00F3A15F /* DefaultProductFormTableViewModel+EditProductsM3Tests.swift in Sources */,
 				02BA23C022EE9DAF009539E7 /* AsyncDictionaryTests.swift in Sources */,
 				B555531121B57E6F00449E71 /* MockupApplicationAdapter.swift in Sources */,
 				021E2A2023AA274700B1DE07 /* ProductBackordersSettingListSelectorDataSourceTests.swift in Sources */,

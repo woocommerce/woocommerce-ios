@@ -256,7 +256,7 @@ private extension PaginatedListSelectorViewController {
         case .noResultsPlaceholder:
             displayNoResultsOverlay()
         case .syncing(let pageNumber):
-            if pageNumber == SyncingCoordinator.Defaults.pageFirstIndex {
+            if isEmpty {
                 displayPlaceholderProducts()
             } else {
                 ensureFooterSpinnerIsStarted()

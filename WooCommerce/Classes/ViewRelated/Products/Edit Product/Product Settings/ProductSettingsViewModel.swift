@@ -2,21 +2,42 @@ import UIKit
 import Yosemite
 
 /// The Product Settings contains 2 sections: Publish Settings and More Options
-struct ProductSettingsViewModel {
+final class ProductSettingsViewModel {
 
-    let sections: [ProductSettingsSectionMediator]
+    public private(set) var sections: [ProductSettingsSectionMediator]
+
+    public private(set) var productSettings: ProductSettings
+
+    /// Closures
+    ///
+    var onReload: (() -> Void)?
 
     init(product: Product) {
-        sections = Self.configureSections(product)
+        productSettings = ProductSettings(status: product.productStatus)
+        sections = Self.configureSections(productSettings)
     }
+
+    func handleCellTap(at indexPath: IndexPath, sourceViewController: UIViewController) {
+        let section = sections[indexPath.section]
+        let row = section.rows[indexPath.row]
+        row.handleTap(sourceViewController: sourceViewController) { [weak self] (settings) in
+            self?.productSettings = settings
+            self?.sections = ProductSettingsViewModel.configureSections(self?.productSettings)
+            self?.onReload?()
+        }
+    }
+
 }
 
 // MARK: Configure sections and rows in Product Settings
 //
 private extension ProductSettingsViewModel {
-    static func configureSections(_ product: Product) -> [ProductSettingsSectionMediator] {
-        return [ProductSettingsSections.PublishSettings(product),
-                     ProductSettingsSections.MoreOptions(product)
+    static func configureSections(_ settings: ProductSettings?) -> [ProductSettingsSectionMediator] {
+        guard let settings = settings else {
+            return []
+        }
+        return [ProductSettingsSections.PublishSettings(settings),
+                     ProductSettingsSections.MoreOptions(settings)
         ]
     }
 }
@@ -43,5 +64,15 @@ extension ProductSettingsViewModel {
         for kind in headersAndFooters {
             tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
         }
+    }
+}
+
+// Editable data
+//
+final class ProductSettings {
+    var status: ProductStatus
+
+    init(status: ProductStatus) {
+        self.status = status
     }
 }

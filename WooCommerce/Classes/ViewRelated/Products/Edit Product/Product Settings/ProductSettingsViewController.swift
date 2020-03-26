@@ -7,7 +7,7 @@ final class ProductSettingsViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
 
-    private let viewModel: ProductSettingsViewModel
+    private var viewModel: ProductSettingsViewModel
 
     init(product: Product) {
         viewModel = ProductSettingsViewModel(product: product)
@@ -23,6 +23,9 @@ final class ProductSettingsViewController: UIViewController {
         configureNavigationBar()
         configureMainView()
         configureTableView()
+        viewModel.onReload = {  [weak self] in
+            self?.tableView.reloadData()
+        }
     }
 
 }
@@ -82,6 +85,8 @@ extension ProductSettingsViewController: UITableViewDataSource {
 extension ProductSettingsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+
+        viewModel.handleCellTap(at: indexPath, sourceViewController: self)
     }
 
 

@@ -1,9 +1,8 @@
 4.0
 -----
-- [internal] the signup and login Magic Link flows have code changes. See https://git.io/JvyB3 for testing details.
-
- 
 - Fix pulling to refresh on the Processing tab sometimes will not show the up-to-date orders.
+- Edit Product > Price Settings: schedule sale is now available even when either the start or end date is not set, and the sale end date can be removed now.
+- [internal] the signup and login Magic Link flows have code changes. See https://git.io/JvyB3 for testing details.
 
 3.9
 -----

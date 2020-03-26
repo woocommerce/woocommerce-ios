@@ -44,7 +44,7 @@ extension WooTab {
         return tabIndex
     }
 
-    // Note: currently all tab view controllers are set up in Main.storyboard.
+    // Note: currently only the Dashboard tab (My Store) view controller is set up in Main.storyboard.
     private static func visibleTabs() -> [WooTab] {
             return [.myStore, .orders, .products, .reviews]
     }

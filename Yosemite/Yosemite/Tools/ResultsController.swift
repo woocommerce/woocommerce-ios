@@ -31,7 +31,11 @@ public class ResultsController<T: ResultsControllerMutableType> {
 
     /// Results's Sort Descriptor.
     ///
-    private let sortDescriptors: [NSSortDescriptor]?
+    public var sortDescriptors: [NSSortDescriptor]? {
+        didSet {
+            refreshFetchedObjects(sortDescriptors: sortDescriptors)
+        }
+    }
 
     /// NSFetchRequest instance used to do the fetching.
     ///
@@ -179,6 +183,13 @@ public class ResultsController<T: ResultsControllerMutableType> {
     ///
     private func refreshFetchedObjects(predicate: NSPredicate?) {
         controller.fetchRequest.predicate = predicate
+        try? controller.performFetch()
+    }
+
+    /// Refreshes all of the Fetched Objects, so that the new sort descriptors are applied.
+    ///
+    private func refreshFetchedObjects(sortDescriptors: [NSSortDescriptor]?) {
+        controller.fetchRequest.sortDescriptors = sortDescriptors
         try? controller.performFetch()
     }
 

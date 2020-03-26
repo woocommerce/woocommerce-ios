@@ -358,8 +358,10 @@ private extension ProductPriceSettingsViewController {
     }
 
     func configureScheduleSaleFrom(cell: SettingTitleAndValueTableViewCell) {
-        let title = NSLocalizedString("From", comment: "Title of the cell in Product Price Settings > Schedule sale From a certain date")
-        let value = viewModel.dateOnSaleStart?.toString(dateStyle: .medium, timeStyle: .none, timeZone: timezoneForScheduleSaleDates)
+        let title = NSLocalizedString("From", comment: "Title of the cell in Product Price Settings > Schedule sale from a certain date")
+        let placeholder = NSLocalizedString("Select start date",
+                                            comment: "Placeholder value of the cell in Product Price Settings > Schedule sale from a certain date")
+        let value = viewModel.dateOnSaleStart?.toString(dateStyle: .medium, timeStyle: .none, timeZone: timezoneForScheduleSaleDates) ?? placeholder
         cell.updateUI(title: title, value: value)
     }
 
@@ -379,8 +381,10 @@ private extension ProductPriceSettingsViewController {
     }
 
     func configureScheduleSaleTo(cell: SettingTitleAndValueTableViewCell) {
-        let title = NSLocalizedString("To", comment: "Title of the cell in Product Price Settings > Schedule sale To a certain date")
-        let value = viewModel.dateOnSaleEnd?.toString(dateStyle: .medium, timeStyle: .none, timeZone: timezoneForScheduleSaleDates)
+        let title = NSLocalizedString("To", comment: "Title of the cell in Product Price Settings > Schedule sale to a certain date")
+        let placeholder = NSLocalizedString("Select end date",
+                                            comment: "Placeholder value of the cell in Product Price Settings > Schedule sale to a certain date")
+        let value = viewModel.dateOnSaleEnd?.toString(dateStyle: .medium, timeStyle: .none, timeZone: timezoneForScheduleSaleDates) ?? placeholder
         cell.updateUI(title: title, value: value)
     }
 

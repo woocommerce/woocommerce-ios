@@ -52,6 +52,31 @@ enum ProductSettingsRows {
 
         let cellTypes: [UITableViewCell.Type] = [BasicTableViewCell.self]
     }
+    
+    struct Status: ProductSettingsRowMediator {
+        private let product: Product
+
+        init(_ product: Product) {
+            self.product = product
+        }
+
+        func configure(cell: UITableViewCell) {
+            guard let cell = cell as? SettingTitleAndValueTableViewCell else {
+                return
+            }
+
+            cell.updateUI(title: NSLocalizedString("Status", comment: "Status label in Product Settings"), value: product.statusKey.capitalized)
+            cell.accessoryType = .disclosureIndicator
+        }
+
+        func handleTap(sourceViewController: UIViewController) {
+            // TODO: Show a VC
+        }
+
+        let reuseIdentifier: String = SettingTitleAndValueTableViewCell.reuseIdentifier
+
+        let cellTypes: [UITableViewCell.Type] = [SettingTitleAndValueTableViewCell.self]
+    }
 
     struct Slug: ProductSettingsRowMediator {
         private let product: Product

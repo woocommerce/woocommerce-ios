@@ -15,6 +15,7 @@ enum ProductFormSection {
         case price(viewModel: ViewModel)
         case shipping(viewModel: ViewModel)
         case inventory(viewModel: ViewModel)
+        case categories(viewModel: ViewModel)
         case briefDescription(viewModel: ViewModel)
 
         struct ViewModel {

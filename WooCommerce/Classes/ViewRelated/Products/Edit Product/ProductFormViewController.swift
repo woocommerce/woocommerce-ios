@@ -278,6 +278,9 @@ extension ProductFormViewController: UITableViewDelegate {
             case .inventory:
                 ServiceLocator.analytics.track(.productDetailViewInventorySettingsTapped)
                 editInventorySettings()
+            case .categories:
+                // TODO-2000
+                break
             case .briefDescription:
                 // TODO-1879: Edit Products M2 analytics
                 editBriefDescription()

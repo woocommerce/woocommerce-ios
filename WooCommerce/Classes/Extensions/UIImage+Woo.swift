@@ -47,6 +47,12 @@ extension UIImage {
             .applyTintColor(.placeholderImage)!
     }
 
+    /// Product categories Icon
+    ///
+    static var categoriesIcon: UIImage {
+        return UIImage.gridicon(.folder).imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Add Image icon
     ///
     static var addImage: UIImage {

@@ -7,14 +7,6 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--googleSignup-->
-        <scene sceneID="GBa-1v-wvb">
-            <objects>
-                <viewControllerPlaceholder storyboardIdentifier="Signup" storyboardName="Signup" referencedIdentifier="googleSignup" id="MEg-KS-Afs" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="bjg-XU-5Rh" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1384" y="-231"/>
-        </scene>
         <!--Login Prologue Page View Controller-->
         <scene sceneID="Jbm-5H-sqY">
             <objects>
@@ -118,7 +110,6 @@
                     <connections>
                         <segue destination="IwV-3R-6dB" kind="presentation" identifier="showSignupMethod" id="gD5-d0-X3t"/>
                         <segue destination="T5n-nb-cOW" kind="show" identifier="showSigninV2" id="nCA-u7-fKm"/>
-                        <segue destination="MEg-KS-Afs" kind="show" identifier="showGoogle" id="aSC-hU-lzE"/>
                         <segue destination="hed-vB-osh" kind="presentation" identifier="showLoginMethod" id="N3P-wt-Rn3"/>
                         <segue destination="anK-hg-K4j" kind="show" identifier="showSelfHostedLogin" id="Njv-lY-Lyi"/>
                         <segue destination="lmD-c6-SLs" kind="show" identifier="showWPComLogin" id="UV4-XI-c0q"/>
@@ -366,7 +357,6 @@
                         <segue destination="klu-4U-PyL" kind="show" identifier="showSignupEmail" id="dh4-9P-l8W"/>
                         <segue destination="IwV-3R-6dB" kind="presentation" identifier="showSignupMethod" id="EmH-Av-vhT"/>
                         <segue destination="T5n-nb-cOW" kind="show" identifier="showSigninV2" id="sIC-Hv-FJw"/>
-                        <segue destination="MEg-KS-Afs" kind="show" identifier="showGoogle" id="HMT-Z5-QHr"/>
                         <segue destination="SZS-o3-1P7" kind="show" identifier="showURLUsernamePassword" id="4SK-mG-U33"/>
                     </connections>
                 </viewController>
@@ -1174,7 +1164,6 @@
                         <segue destination="SZS-o3-1P7" kind="show" identifier="showURLUsernamePassword" id="TkG-0R-c3i"/>
                         <segue destination="iMi-vX-AxR" kind="show" identifier="showWPUsernamePassword" id="dtm-iK-PLb"/>
                         <segue destination="hed-vB-osh" kind="presentation" identifier="showLoginMethod" id="5hL-j3-eMs"/>
-                        <segue destination="MEg-KS-Afs" kind="show" identifier="showGoogle" id="pe1-D0-Mpg"/>
                         <segue destination="lmD-c6-SLs" kind="show" identifier="showWPComLogin" id="8p6-rS-9Ml"/>
                     </connections>
                 </viewController>
@@ -1462,11 +1451,10 @@
         <segue reference="N3P-wt-Rn3"/>
         <segue reference="Njv-lY-Lyi"/>
         <segue reference="2Of-BA-xqb"/>
-        <segue reference="0ao-yi-yZI"/>
+        <segue reference="UV4-XI-c0q"/>
         <segue reference="4SK-mG-U33"/>
         <segue reference="nCA-u7-fKm"/>
         <segue reference="swV-lc-6gI"/>
         <segue reference="gD5-d0-X3t"/>
-        <segue reference="aSC-hU-lzE"/>
     </inferredMetricsTieBreakers>
 </document>

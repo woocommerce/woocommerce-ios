@@ -8,8 +8,6 @@ final class ProductSearchUICommand: SearchUICommand {
 
     let searchBarPlaceholder = NSLocalizedString("Search all products", comment: "Products Search Placeholder")
 
-    let emptyStateText = NSLocalizedString("No products found", comment: "Search Products (Empty State)")
-
     let searchBarAccessibilityIdentifier = "product-search-screen-search-field"
 
     let cancelButtonAccessibilityIdentifier = "product-search-screen-cancel-button"
@@ -30,6 +28,11 @@ final class ProductSearchUICommand: SearchUICommand {
 
     func createStarterViewController() -> UIViewController? {
         nil
+    }
+
+    func createEmptyStateOverlayViewController() -> UIViewController {
+        let message = NSLocalizedString("No products found", comment: "Search Products (Empty State)")
+        return OverlayMessageViewController(text: message)
     }
 
     func createCellViewModel(model: Product) -> ProductsTabProductViewModel {

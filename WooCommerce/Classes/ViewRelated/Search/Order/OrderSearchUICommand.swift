@@ -10,8 +10,6 @@ final class OrderSearchUICommand: SearchUICommand {
 
     let searchBarPlaceholder = NSLocalizedString("Search all orders", comment: "Orders Search Placeholder")
 
-    let emptyStateText = NSLocalizedString("No Orders found", comment: "Search Orders (Empty State)")
-
     let searchBarAccessibilityIdentifier = "order-search-screen-search-field"
 
     let cancelButtonAccessibilityIdentifier = "order-search-screen-cancel-button"
@@ -36,6 +34,11 @@ final class OrderSearchUICommand: SearchUICommand {
 
     func createStarterViewController() -> UIViewController? {
         OrderSearchStarterViewController()
+    }
+
+    func createEmptyStateOverlayViewController() -> UIViewController {
+        let message = NSLocalizedString("No Orders found", comment: "Search Orders (Empty State)")
+        return OverlayMessageViewController(text: message)
     }
 
     func createCellViewModel(model: Order) -> OrderSearchCellViewModel {

@@ -9,9 +9,6 @@ protocol SearchUICommand {
     /// The placeholder of the search bar.
     var searchBarPlaceholder: String { get }
 
-    /// Displayed when there are no search results.
-    var emptyStateText: String { get }
-
     associatedtype ResultsControllerModel: ResultsControllerMutableType where ResultsControllerModel.ReadOnlyType == Model
     /// Creates a results controller for the search results. The result model's readonly type matches the search result model.
     func createResultsController() -> ResultsController<ResultsControllerModel>
@@ -27,6 +24,8 @@ protocol SearchUICommand {
     /// If `nil`, the search results tableView will be shown as the starter instead.
     ///
     func createStarterViewController() -> UIViewController?
+
+    func createEmptyStateOverlayViewController() -> UIViewController
 
     /// Creates a view model for the search result cell.
     ///

@@ -22,6 +22,7 @@ final class MockProduct {
                  dateOnSaleEnd: Date? = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-27T21:29:59"),
                  variations: [Int64] = [],
                  virtual: Bool = false,
+                 status: ProductStatus = .publish,
                  images: [ProductImage] = []) -> Product {
 
     return Product(siteID: testSiteID,
@@ -34,7 +35,7 @@ final class MockProduct {
                    dateOnSaleStart: dateOnSaleStart,
                    dateOnSaleEnd: dateOnSaleEnd,
                    productTypeKey: productType.rawValue,
-                   statusKey: "publish",
+                   statusKey: status.rawValue,
                    featured: false,
                    catalogVisibilityKey: "visible",
                    fullDescription: "<p>This is the party room!</p>\n",

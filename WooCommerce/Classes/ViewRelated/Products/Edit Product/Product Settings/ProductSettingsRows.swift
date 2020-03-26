@@ -52,7 +52,7 @@ enum ProductSettingsRows {
 
         let cellTypes: [UITableViewCell.Type] = [BasicTableViewCell.self]
     }
-    
+
     struct Status: ProductSettingsRowMediator {
         private let product: Product
 
@@ -65,7 +65,7 @@ enum ProductSettingsRows {
                 return
             }
 
-            cell.updateUI(title: NSLocalizedString("Status", comment: "Status label in Product Settings"), value: product.productStatus.rawValue.capitalized)
+            cell.updateUI(title: NSLocalizedString("Status", comment: "Status label in Product Settings"), value: product.productStatus.description)
             cell.accessoryType = .disclosureIndicator
         }
 

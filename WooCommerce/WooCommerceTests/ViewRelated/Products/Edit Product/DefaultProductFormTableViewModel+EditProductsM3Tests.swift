@@ -10,7 +10,7 @@ final class DefaultProductFormTableViewModel_EditProductsM3Tests: XCTestCase {
 
     private let mockFeatureFlagService = MockFeatureFlagService(isEditProductsRelease2On: true, isEditProductsRelease3On: true)
 
-    func testViewModelForSimplePhysicalProductWithoutImagesWhenM3FeatureFlagIsOff() {
+    func testViewModelForSimplePhysicalProductWithoutImages() {
         let product = MockProduct().product(downloadable: false,
                                             name: "woo",
                                             productType: .simple,

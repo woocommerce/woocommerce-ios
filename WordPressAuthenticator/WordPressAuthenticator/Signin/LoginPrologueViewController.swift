@@ -134,6 +134,8 @@ class LoginPrologueViewController: LoginViewController {
 
         vc.loginFields = self.loginFields
         vc.dismissBlock = dismissBlock
+        vc.transitioningDelegate = self
+        vc.modalPresentationStyle = .custom
         navigationController?.pushViewController(vc, animated: true)
     }
 

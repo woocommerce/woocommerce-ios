@@ -65,7 +65,7 @@ enum ProductSettingsRows {
                 return
             }
 
-            cell.updateUI(title: NSLocalizedString("Status", comment: "Status label in Product Settings"), value: product.statusKey.capitalized)
+            cell.updateUI(title: NSLocalizedString("Status", comment: "Status label in Product Settings"), value: product.productStatus.rawValue.capitalized)
             cell.accessoryType = .disclosureIndicator
         }
 

@@ -42,6 +42,12 @@ class ResultsControllerUIKitTests: XCTestCase {
         try? resultsController.performFetch()
     }
 
+    override func tearDown() {
+        resultsController = nil
+        tableView = nil
+        storageManager = nil
+        super.tearDown()
+    }
 
     /// Verifies that `beginUpdates` + `endUpdates` are called in sequence.
     ///

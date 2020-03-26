@@ -141,6 +141,8 @@ extension NSManagedObjectContext: StorageType {
         }
     }
 
+    /// Create an `NSFetchedResultsController` using this `NSManagedObjectContext`.
+    ///
     public func createFetchedResultsController<ResultType>(fetchRequest: NSFetchRequest<ResultType>,
                                                            sectionNameKeyPath: String?,
                                                            cacheName: String?) -> NSFetchedResultsController<ResultType> {

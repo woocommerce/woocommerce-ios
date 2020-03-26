@@ -275,7 +275,7 @@ public struct Product: Codable {
             salePrice = (onSale && parsedSalePriceString.isEmpty) ? "0" : parsedSalePriceString
         } else if let parsedSalePriceDecimal = container.failsafeDecodeIfPresent(decimalForKey: .salePrice) {
             let stringPrice = NSDecimalNumber(decimal: parsedSalePriceDecimal).stringValue
-            salePrice = (onSale && stringPrice.isEmpty) ? "0" : stringPrice
+            salePrice = onSale ? "0" : stringPrice
         }
 
         let purchasable = try container.decode(Bool.self, forKey: .purchasable)

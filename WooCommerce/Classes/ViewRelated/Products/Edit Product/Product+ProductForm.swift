@@ -16,4 +16,15 @@ extension Product {
         }
         return description.removedHTMLTags.trimmingCharacters(in: .whitespacesAndNewlines)
     }
+
+    /// Returns a coma separated string with each category names.
+    /// Uses `ListFormatter` if available
+    var categoriesDescription: String {
+        let categoriesNames = categories.map { $0.name }
+        if #available(iOS 13.0, *) {
+            return ListFormatter.localizedString(byJoining: categoriesNames)
+        } else {
+            return categoriesNames.joined(separator: ",")
+        }
+    }
 }

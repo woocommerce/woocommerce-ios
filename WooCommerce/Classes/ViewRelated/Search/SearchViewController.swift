@@ -43,7 +43,7 @@ where Cell.SearchModel == Command.CellViewModel {
     ///
     private var starterViewController: UIViewController?
 
-    private var emptyStateOverlayViewController: UIViewController?
+    private var emptyStateViewController: UIViewController?
 
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
@@ -407,46 +407,46 @@ private extension SearchViewController {
     /// Displays the Empty State Legend.
     ///
     func displayEmptyState() {
-        let overlayController: UIViewController = {
-            if let existing = emptyStateOverlayViewController {
+        let childController: UIViewController = {
+            if let existing = emptyStateViewController {
                 return existing
             } else {
                 let created = searchUICommand.createEmptyStateViewController()
-                emptyStateOverlayViewController = created
+                emptyStateViewController = created
                 return created
             }
         }()
-        guard let overlayView = overlayController.view else {
+        guard let childView = childController.view else {
             return
         }
 
-        overlayView.translatesAutoresizingMaskIntoConstraints = false
+        childView.translatesAutoresizingMaskIntoConstraints = false
 
-        add(overlayController)
-        view.addSubview(overlayView)
+        add(childController)
+        view.addSubview(childView)
 
         // Match the position and size to the `tableView`.
         NSLayoutConstraint.activate([
-            overlayView.leadingAnchor.constraint(equalTo: tableView.leadingAnchor),
-            overlayView.trailingAnchor.constraint(equalTo: tableView.trailingAnchor),
-            overlayView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
-            overlayView.bottomAnchor.constraint(equalTo: tableView.bottomAnchor)
+            childView.leadingAnchor.constraint(equalTo: tableView.leadingAnchor),
+            childView.trailingAnchor.constraint(equalTo: tableView.trailingAnchor),
+            childView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
+            childView.bottomAnchor.constraint(equalTo: tableView.bottomAnchor)
         ])
 
-        overlayController.didMove(toParent: self)
+        childController.didMove(toParent: self)
     }
 
     /// Removes the Empty State Legend.
     ///
     func removeEmptyState() {
-        guard let overlayController = emptyStateOverlayViewController,
-              let overlayView = overlayController.view else {
+        guard let childController = emptyStateViewController,
+              let childView = childController.view else {
             return
         }
 
-        overlayController.willMove(toParent: nil)
-        overlayView.removeFromSuperview()
-        overlayController.removeFromParent()
+        childController.willMove(toParent: nil)
+        childView.removeFromSuperview()
+        childController.removeFromParent()
     }
 }
 

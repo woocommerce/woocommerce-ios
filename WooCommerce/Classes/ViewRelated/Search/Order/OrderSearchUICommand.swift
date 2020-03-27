@@ -36,7 +36,7 @@ final class OrderSearchUICommand: SearchUICommand {
         OrderSearchStarterViewController()
     }
 
-    func createEmptyStateOverlayViewController() -> UIViewController {
+    func createEmptyStateViewController() -> UIViewController {
         let message = NSLocalizedString("No Orders found", comment: "Search Orders (Empty State)")
         return OverlayMessageViewController(text: message)
     }

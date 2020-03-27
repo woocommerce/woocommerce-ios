@@ -25,7 +25,7 @@ protocol SearchUICommand {
     ///
     func createStarterViewController() -> UIViewController?
 
-    func createEmptyStateOverlayViewController() -> UIViewController
+    func createEmptyStateViewController() -> UIViewController
 
     /// Creates a view model for the search result cell.
     ///

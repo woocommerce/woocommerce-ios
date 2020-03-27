@@ -411,7 +411,7 @@ private extension SearchViewController {
             if let existing = emptyStateOverlayViewController {
                 return existing
             } else {
-                let created = searchUICommand.createEmptyStateOverlayViewController()
+                let created = searchUICommand.createEmptyStateViewController()
                 emptyStateOverlayViewController = created
                 return created
             }

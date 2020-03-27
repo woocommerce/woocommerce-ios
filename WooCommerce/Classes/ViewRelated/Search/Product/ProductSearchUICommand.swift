@@ -30,7 +30,7 @@ final class ProductSearchUICommand: SearchUICommand {
         nil
     }
 
-    func createEmptyStateOverlayViewController() -> UIViewController {
+    func createEmptyStateViewController() -> UIViewController {
         let message = NSLocalizedString("No products found", comment: "Search Products (Empty State)")
         return OverlayMessageViewController(text: message)
     }

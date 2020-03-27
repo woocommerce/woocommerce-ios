@@ -24,9 +24,12 @@ final class ProductSettingsViewModel {
         let section = sections[indexPath.section]
         let row = section.rows[indexPath.row]
         row.handleTap(sourceViewController: sourceViewController) { [weak self] (settings) in
-            self?.productSettings = settings
-            self?.sections = ProductSettingsViewModel.configureSections(self?.productSettings)
-            self?.onReload?()
+            guard let self = self else {
+                return
+            }
+            self.productSettings = settings
+            self.sections = ProductSettingsViewModel.configureSections(settings)
+            self.onReload?()
         }
     }
 
@@ -42,10 +45,7 @@ final class ProductSettingsViewModel {
 // MARK: Configure sections and rows in Product Settings
 //
 private extension ProductSettingsViewModel {
-    static func configureSections(_ settings: ProductSettings?) -> [ProductSettingsSectionMediator] {
-        guard let settings = settings else {
-            return []
-        }
+    static func configureSections(_ settings: ProductSettings) -> [ProductSettingsSectionMediator] {
         return [ProductSettingsSections.PublishSettings(settings),
                      ProductSettingsSections.MoreOptions(settings)
         ]

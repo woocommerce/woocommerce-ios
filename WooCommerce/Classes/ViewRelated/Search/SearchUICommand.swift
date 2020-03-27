@@ -48,7 +48,7 @@ protocol SearchUICommand {
     ///
     /// - Parameter viewController: The controller created in `createEmptyStateViewController`.
     ///
-    func configureEmptyStateViewControllerBeforeDisplay(_ viewController: EmptyStateViewControllerType,
+    func configureEmptyStateViewControllerBeforeDisplay(viewController: EmptyStateViewControllerType,
                                                         searchKeyword: String)
 
     /// Creates a view model for the search result cell.
@@ -90,7 +90,7 @@ extension SearchUICommand {
 
     /// Default implementation which does not do anything.
     ///
-    func configureEmptyStateViewControllerBeforeDisplay(_ viewController: EmptySearchResultsViewController,
+    func configureEmptyStateViewControllerBeforeDisplay(viewController: EmptySearchResultsViewController,
                                                         searchKeyword: String) {
         // noop
     }

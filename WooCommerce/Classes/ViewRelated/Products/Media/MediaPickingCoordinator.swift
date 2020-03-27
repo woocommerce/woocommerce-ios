@@ -11,13 +11,19 @@ final class MediaPickingCoordinator {
         return DeviceMediaLibraryPicker(onCompletion: onDeviceMediaLibraryPickerCompletion)
     }()
 
+    private let siteID: Int64
     private let onCameraCaptureCompletion: CameraCaptureCoordinator.Completion
     private let onDeviceMediaLibraryPickerCompletion: DeviceMediaLibraryPicker.Completion
+    private let onWPMediaPickerCompletion: WordPressMediaLibraryImagePickerViewController.Completion
 
-    init(onCameraCaptureCompletion: @escaping CameraCaptureCoordinator.Completion,
-         onDeviceMediaLibraryPickerCompletion: @escaping DeviceMediaLibraryPicker.Completion) {
+    init(siteID: Int64,
+         onCameraCaptureCompletion: @escaping CameraCaptureCoordinator.Completion,
+         onDeviceMediaLibraryPickerCompletion: @escaping DeviceMediaLibraryPicker.Completion,
+         onWPMediaPickerCompletion: @escaping WordPressMediaLibraryImagePickerViewController.Completion) {
+        self.siteID = siteID
         self.onCameraCaptureCompletion = onCameraCaptureCompletion
         self.onDeviceMediaLibraryPickerCompletion = onDeviceMediaLibraryPickerCompletion
+        self.onWPMediaPickerCompletion = onWPMediaPickerCompletion
     }
 
     func present(context: MediaPickingContext) {
@@ -87,6 +93,8 @@ private extension MediaPickingCoordinator {
     }
 
     func showSiteMediaPicker(origin: UIViewController) {
-        // TODO-1713: WordPress media library picker implementation
+        let wordPressMediaPickerViewController = WordPressMediaLibraryImagePickerViewController(siteID: siteID,
+                                                                                                onCompletion: onWPMediaPickerCompletion)
+        origin.present(wordPressMediaPickerViewController, animated: true)
     }
 }

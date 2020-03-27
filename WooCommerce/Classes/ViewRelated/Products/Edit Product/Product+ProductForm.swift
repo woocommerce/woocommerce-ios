@@ -24,7 +24,7 @@ extension Product {
         if #available(iOS 13.0, *) {
             return ListFormatter.localizedString(byJoining: categoriesNames)
         } else {
-            return categoriesNames.joined(separator: ",")
+            return categoriesNames.joined(separator: ", ")
         }
     }
 }

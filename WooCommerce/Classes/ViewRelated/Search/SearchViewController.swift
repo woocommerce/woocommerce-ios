@@ -43,6 +43,8 @@ where Cell.SearchModel == Command.CellViewModel {
     ///
     private var starterViewController: UIViewController?
 
+    private var emptyStateOverlayViewController: UIViewController?
+
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
     private let syncingCoordinator = SyncingCoordinator()
@@ -405,11 +407,46 @@ private extension SearchViewController {
     /// Displays the Empty State Legend.
     ///
     func displayEmptyState() {
+        let overlayController: UIViewController = {
+            if let existing = emptyStateOverlayViewController {
+                return existing
+            } else {
+                let created = searchUICommand.createEmptyStateOverlayViewController()
+                emptyStateOverlayViewController = created
+                return created
+            }
+        }()
+        guard let overlayView = overlayController.view else {
+            return
+        }
+
+        overlayView.translatesAutoresizingMaskIntoConstraints = false
+
+        add(overlayController)
+        view.addSubview(overlayView)
+
+        // Match the position and size to the `tableView`.
+        NSLayoutConstraint.activate([
+            overlayView.leadingAnchor.constraint(equalTo: tableView.leadingAnchor),
+            overlayView.trailingAnchor.constraint(equalTo: tableView.trailingAnchor),
+            overlayView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
+            overlayView.bottomAnchor.constraint(equalTo: tableView.bottomAnchor)
+        ])
+
+        overlayController.didMove(toParent: self)
     }
 
     /// Removes the Empty State Legend.
     ///
     func removeEmptyState() {
+        guard let overlayController = emptyStateOverlayViewController,
+              let overlayView = overlayController.view else {
+            return
+        }
+
+        overlayController.willMove(toParent: nil)
+        overlayView.removeFromSuperview()
+        overlayController.removeFromParent()
     }
 }
 

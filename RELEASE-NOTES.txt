@@ -1,5 +1,6 @@
 4.0
 -----
+- Products is now available with limited editing for simple products!
 - Fix pulling to refresh on the Processing tab sometimes will not show the up-to-date orders.
 - Edit Product > Price Settings: schedule sale is now available even when either the start or end date is not set, and the sale end date can be removed now.
 - [internal] Changed the Shipping and Tax classes list loading so that any cached data is shown right away

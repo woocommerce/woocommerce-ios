@@ -48,9 +48,6 @@ class LoginPrologueViewController: LoginViewController {
         else if let vc = segue.destination as? LoginPrologueSignupMethodViewController {
             vc.transitioningDelegate = self
 
-            vc.emailTapped = { [weak self] in
-                self?.performSegue(withIdentifier: .showSigninV2, sender: self)
-            }
             vc.googleTapped = { [weak self] in
                 guard let toVC = SignupGoogleViewController.instantiate(from: .signup) else {
                     DDLogError("Failed to navigate to SignupGoogleViewController")
@@ -142,6 +139,11 @@ class LoginPrologueViewController: LoginViewController {
         vc.dismissBlock = dismissBlock
         vc.transitioningDelegate = self
         vc.modalPresentationStyle = .custom
+
+        vc.emailTapped = { [weak self] in
+            self?.performSegue(withIdentifier: .showSigninV2, sender: self)
+        }
+
         navigationController?.present(vc, animated: true, completion: nil)
     }
 

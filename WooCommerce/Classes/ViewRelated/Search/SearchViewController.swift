@@ -49,7 +49,7 @@ where Cell.SearchModel == Command.CellViewModel {
     ///
     /// - SeeAlso: State.empty
     ///
-    private var emptyStateViewController: UIViewController?
+    private var emptyStateViewController: Command.EmptyStateViewControllerType?
 
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
@@ -414,7 +414,7 @@ private extension SearchViewController {
     ///
     func displayEmptyState() {
         // Create the controller if it doesn't exist yet
-        let childController: UIViewController = {
+        let childController: Command.EmptyStateViewControllerType = {
             if let existing = emptyStateViewController {
                 return existing
             } else {

@@ -5,6 +5,7 @@ import Yosemite
 protocol SearchUICommand {
     associatedtype Model
     associatedtype CellViewModel
+    associatedtype EmptyStateViewControllerType: UIViewController = OverlayMessageViewController
 
     /// The placeholder of the search bar.
     var searchBarPlaceholder: String { get }
@@ -35,7 +36,7 @@ protocol SearchUICommand {
     ///
     /// We generally use and return an instance of `OverlayMessageViewController` for this method.
     ///
-    func createEmptyStateViewController() -> UIViewController
+    func createEmptyStateViewController() -> EmptyStateViewControllerType
 
     /// Creates a view model for the search result cell.
     ///

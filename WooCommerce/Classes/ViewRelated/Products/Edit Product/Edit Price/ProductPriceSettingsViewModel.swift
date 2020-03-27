@@ -172,7 +172,6 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
     // MARK: - Navigation actions
 
     func completeUpdating(onCompletion: ProductPriceSettingsViewController.Completion, onError: (ProductPriceSetingsError) -> Void) {
-        let newSalePrice = salePrice == "0" ? nil : salePrice
 
         // Check if the sale price is populated, and the regular price is not.
         if getDecimalPrice(salePrice) != nil, getDecimalPrice(regularPrice) == nil {
@@ -187,11 +186,10 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
             return
         }
 
-        onCompletion(regularPrice, newSalePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass)
+        onCompletion(regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass)
     }
 
     func hasUnsavedChanges() -> Bool {
-        let newSalePrice = salePrice == "0" ? nil : salePrice
 
         // Since an empty string and the standard tax class's slug both represent the standard tax class, the original and new
         // tax classes are converted to empty string whenever the value matches the standard tax class's slug.
@@ -199,7 +197,7 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
         let originalTaxClass = product.taxClass == standardTaxClass.slug ? "": product.taxClass
 
         if getDecimalPrice(regularPrice) != getDecimalPrice(product.regularPrice) ||
-            getDecimalPrice(newSalePrice) != getDecimalPrice(product.salePrice) ||
+            getDecimalPrice(salePrice) != getDecimalPrice(product.salePrice) ||
             dateOnSaleStart != originalDateOnSaleStart ||
             dateOnSaleEnd != product.dateOnSaleEnd ||
             taxStatus.rawValue != product.taxStatusKey ||

@@ -266,16 +266,16 @@ public struct Product: Codable {
 
         let regularPrice = try container.decodeIfPresent(String.self, forKey: .regularPrice)
 
+        let onSale = try container.decode(Bool.self, forKey: .onSale)
+
         // Even though a plain install of WooCommerce Core provides string values,
         // some plugins alter the field value from String to Int or Decimal.
         var salePrice = ""
         if let parsedSalePriceString = container.failsafeDecodeIfPresent(stringForKey: .salePrice) {
-            salePrice = parsedSalePriceString
+            salePrice = (onSale && parsedSalePriceString.isEmpty) ? "0" : parsedSalePriceString
         } else if let parsedSalePriceDecimal = container.failsafeDecodeIfPresent(decimalForKey: .salePrice) {
             salePrice = NSDecimalNumber(decimal: parsedSalePriceDecimal).stringValue
         }
-
-        let onSale = try container.decode(Bool.self, forKey: .onSale)
 
         let purchasable = try container.decode(Bool.self, forKey: .purchasable)
         let totalSales = container.failsafeDecodeIfPresent(Int.self, forKey: .totalSales) ?? 0

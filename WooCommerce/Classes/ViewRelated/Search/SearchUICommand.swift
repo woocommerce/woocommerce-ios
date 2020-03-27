@@ -25,6 +25,16 @@ protocol SearchUICommand {
     ///
     func createStarterViewController() -> UIViewController?
 
+    /// The controller of the view to show if the search results are empty.
+    ///
+    /// This will only be called if `SearchViewController` receives empty results. It will be
+    /// retained once it has been created.
+    ///
+    /// The `view` of this controller will be added and constrained to the same size as the
+    /// `SearchViewController`'s `tableView` but below the search bar.
+    ///
+    /// We generally use and return an instance of `OverlayMessageViewController` for this method.
+    ///
     func createEmptyStateViewController() -> UIViewController
 
     /// Creates a view model for the search result cell.

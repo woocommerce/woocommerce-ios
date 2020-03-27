@@ -43,6 +43,12 @@ where Cell.SearchModel == Command.CellViewModel {
     ///
     private var starterViewController: UIViewController?
 
+    /// The controller of the view to show if the search results are empty.
+    ///
+    /// This is created once and only on demand.
+    ///
+    /// - SeeAlso: State.empty
+    ///
     private var emptyStateViewController: UIViewController?
 
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
@@ -404,7 +410,7 @@ extension SearchViewController {
 //
 private extension SearchViewController {
 
-    /// Displays the Empty State Legend.
+    /// Displays the view for the empty state.
     ///
     func displayEmptyState() {
         // Create the controller if it doesn't exist yet
@@ -438,7 +444,7 @@ private extension SearchViewController {
         childController.didMove(toParent: self)
     }
 
-    /// Removes the Empty State Legend.
+    /// Removes the view for the empty state.
     ///
     func removeEmptyState() {
         guard let childController = emptyStateViewController,

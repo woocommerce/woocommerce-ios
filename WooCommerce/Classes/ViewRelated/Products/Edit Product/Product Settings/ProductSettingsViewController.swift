@@ -9,8 +9,16 @@ final class ProductSettingsViewController: UIViewController {
 
     private var viewModel: ProductSettingsViewModel
 
-    init(product: Product) {
+    // Completion callback
+    //
+    typealias Completion = (_ productSettings: ProductSettings) -> Void
+    private let onCompletion: Completion
+
+    /// Init
+    ///
+    init(product: Product, completion: @escaping (_ productSettings: ProductSettings) -> Void) {
         viewModel = ProductSettingsViewModel(product: product)
+        onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -53,6 +61,16 @@ private extension ProductSettingsViewController {
 
         tableView.backgroundColor = .listBackground
         tableView.removeLastCellSeparator()
+    }
+}
+
+// MARK: - Navigation actions handling
+//
+extension ProductSettingsViewController {
+
+    override func shouldPopOnBackButton() -> Bool {
+        onCompletion(viewModel.productSettings)
+        return true
     }
 }
 

@@ -215,7 +215,9 @@ private extension ProductFormViewController {
     }
 
     func displayProductSettings() {
-        let viewController = ProductSettingsViewController(product: product)
+        let viewController = ProductSettingsViewController(product: product) { (productSettings) in
+
+        }
         navigationController?.pushViewController(viewController, animated: true)
     }
 }

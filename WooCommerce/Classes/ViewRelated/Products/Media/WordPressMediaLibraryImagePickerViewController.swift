@@ -38,15 +38,24 @@ final class WordPressMediaLibraryImagePickerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        configureMediaPickerChildViewController()
+    }
+}
+
+// MARK: - Configurations
+//
+private extension WordPressMediaLibraryImagePickerViewController {
+    func configureMediaPickerChildViewController() {
         let picker = WPNavigationMediaPickerViewController()
         picker.dataSource = mediaLibraryDataSource
         picker.startOnGroupSelector = false
         picker.showGroupSelector = false
-        picker.mediaPicker.options = mediaPickerOptions
         picker.delegate = self
         picker.modalPresentationStyle = .currentContext
+
+        picker.mediaPicker.options = mediaPickerOptions
         picker.mediaPicker.collectionView?.backgroundColor = .listBackground
+        picker.mediaPicker.title = NSLocalizedString("WordPress Media Library", comment: "Navigation bar title for WordPress Media Libraryj image picker")
 
         let emptyImagesText = NSLocalizedString("No images yet",
                                                 comment: "Placeholder text shown when there are no images for the WordPress Media Library yet")

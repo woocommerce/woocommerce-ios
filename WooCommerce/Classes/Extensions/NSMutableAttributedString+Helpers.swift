@@ -13,4 +13,13 @@ extension NSMutableAttributedString {
             addAttributes(attributes, range: range)
         }
     }
+
+    func replaceFirstOccurrence(of target: String, with replacement: NSAttributedString) {
+        guard let range = string.range(of: target) else {
+            return
+        }
+        let nsRange = NSRange(range, in: string)
+
+        replaceCharacters(in: nsRange, with: replacement)
+    }
 }

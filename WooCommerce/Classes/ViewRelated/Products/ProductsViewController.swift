@@ -234,17 +234,10 @@ private extension ProductsViewController {
         let title: String
         let infoText: String
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts) {
-            title = NSLocalizedString("Limited editing available",
-                                      comment: "The title of the Work In Progress top banner on the Products tab")
-            infoText = NSLocalizedString("We’ve added editing functionality to simple products. Keep an eye out for editing on other product types soon!",
-                                         comment: "The info of the Work In Progress top banner on the Products tab")
-        } else {
-            title = NSLocalizedString("Work in progress!",
-                                      comment: "The title of the Work In Progress top banner on the Products tab")
-            infoText = NSLocalizedString("We’re hard at work on this new Products section, so you may see some changes as we get ready for launch 🚀",
-                                         comment: "The info of the Work In Progress top banner on the Products tab")
-        }
+        title = NSLocalizedString("Limited editing available",
+                                  comment: "The title of the Work In Progress top banner on the Products tab")
+        infoText = NSLocalizedString("We’ve added editing functionality to simple products. Keep an eye out for more options soon!",
+                                     comment: "The info of the Work In Progress top banner on the Products tab")
 
         let viewModel = TopBannerViewModel(title: title,
                                            infoText: infoText,

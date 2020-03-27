@@ -88,14 +88,18 @@ private extension BetaFeaturesViewController {
             }
             guard eligibleStatsVersion == .v4 else {
                 self.sections = [
-                    self.productsSection()
+                    // TODO: commenting out this code since we are enabling products for all users in the next release.
+                    // Once product M2 editing features are live, we can enable product editing switch from this screen again.
+                    //self.productsSection()
                 ]
 
                 return
             }
             self.sections = [
                 self.statsSection(),
-                self.productsSection()
+                // TODO: commenting out this code since we are enabling products for all users in the next release.
+                // Once product M2 editing features are live, we can enable product editing switch from this screen again.
+                //self.productsSection()
             ]
         }
         ServiceLocator.stores.dispatch(action)

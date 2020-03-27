@@ -107,6 +107,7 @@ extension WordPressMediaLibraryPickerDataSource: WPMediaCollectionDataSource {
     }
 
     func loadData(with options: WPMediaLoadOptions, success successBlock: WPMediaSuccessBlock?, failure failureBlock: WPMediaFailureBlock? = nil) {
+        syncingCoordinator.resetInternalState()
         retrieveMedia(pageNumber: syncingCoordinator.pageFirstIndex, pageSize: Constants.numberOfItemsPerPage) { [weak self] (mediaItems, error) in
             guard error == nil else {
                 failureBlock?(error)

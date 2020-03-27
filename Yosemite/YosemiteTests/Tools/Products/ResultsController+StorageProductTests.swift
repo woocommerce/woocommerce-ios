@@ -67,10 +67,15 @@ final class ResultsController_StorageProductTests: XCTestCase {
 
     func testProductResultsControllerInitWithAscendingDateSortOrder() {
         // Arrange
-        let product1 = MockProduct().product(siteID: sampleSiteID, productID: 1, dateModified: Date(), name: "fun house")
+        // Friday, March 27, 2020 9:47:09 AM GMT
+        let earlierDate = Date(timeIntervalSince1970: 1585302429)
+        // Saturday, June 27, 2020 9:47:09 AM GMT
+        let laterDate = Date(timeIntervalSince1970: 1593251229)
+
+        let product1 = MockProduct().product(siteID: sampleSiteID, productID: 1, dateCreated: laterDate, name: "fun house")
         storage.insertSampleProduct(readOnlyProduct: product1)
 
-        let product2 = MockProduct().product(siteID: sampleSiteID, productID: 2, dateModified: Date(), name: "zap!")
+        let product2 = MockProduct().product(siteID: sampleSiteID, productID: 2, dateCreated: earlierDate, name: "zap!")
         storage.insertSampleProduct(readOnlyProduct: product2)
 
         // Act
@@ -81,15 +86,20 @@ final class ResultsController_StorageProductTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(resultsController.fetchedObjects.count, 2)
-        XCTAssertEqual(resultsController.fetchedObjects, [product1, product2])
+        XCTAssertEqual(resultsController.fetchedObjects, [product2, product1])
     }
 
     func testProductResultsControllerInitWithDescendingDateSortOrder() {
         // Arrange
-        let product1 = MockProduct().product(siteID: sampleSiteID, productID: 1, dateModified: Date(), name: "fun house")
+        // Friday, March 27, 2020 9:47:09 AM GMT
+        let earlierDate = Date(timeIntervalSince1970: 1585302429)
+        // Saturday, June 27, 2020 9:47:09 AM GMT
+        let laterDate = Date(timeIntervalSince1970: 1593251229)
+
+        let product1 = MockProduct().product(siteID: sampleSiteID, productID: 1, dateCreated: earlierDate, name: "fun house")
         storage.insertSampleProduct(readOnlyProduct: product1)
 
-        let product2 = MockProduct().product(siteID: sampleSiteID, productID: 2, dateModified: Date(), name: "zap!")
+        let product2 = MockProduct().product(siteID: sampleSiteID, productID: 2, dateCreated: laterDate, name: "zap!")
         storage.insertSampleProduct(readOnlyProduct: product2)
 
         // Act
@@ -151,10 +161,16 @@ final class ResultsController_StorageProductTests: XCTestCase {
 
     func testProductResultsControllerUpdateWithAscendingDateSortOrder() {
         // Arrange
-        let product1 = MockProduct().product(siteID: sampleSiteID, productID: 1, dateModified: Date(), name: "fun house")
+        // Friday, March 27, 2020 9:47:09 AM GMT
+        let earlierDate = Date(timeIntervalSince1970: 1585302429)
+        // Saturday, June 27, 2020 9:47:09 AM GMT
+        let laterDate = Date(timeIntervalSince1970: 1593251229)
+
+        let product1 = MockProduct().product(siteID: sampleSiteID, productID: 1, dateCreated: laterDate, name: "fun house")
         storage.insertSampleProduct(readOnlyProduct: product1)
 
-        let product2 = MockProduct().product(siteID: sampleSiteID, productID: 2, dateModified: Date(), name: "woo")
+
+        let product2 = MockProduct().product(siteID: sampleSiteID, productID: 2, dateCreated: earlierDate, name: "woo")
         storage.insertSampleProduct(readOnlyProduct: product2)
 
         let resultsController = ResultsController<StorageProduct>(viewContext: viewContext,
@@ -168,15 +184,20 @@ final class ResultsController_StorageProductTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(resultsController.fetchedObjects.count, 2)
-        XCTAssertEqual(resultsController.fetchedObjects, [product1, product2])
+        XCTAssertEqual(resultsController.fetchedObjects, [product2, product1])
     }
 
     func testProductResultsControllerUpdateWithDescendingDateSortOrder() {
         // Arrange
-        let product1 = MockProduct().product(siteID: sampleSiteID, productID: 1, dateModified: Date(), name: "Zap")
+        // Friday, March 27, 2020 9:47:09 AM GMT
+        let earlierDate = Date(timeIntervalSince1970: 1585302429)
+        // Saturday, June 27, 2020 9:47:09 AM GMT
+        let laterDate = Date(timeIntervalSince1970: 1593251229)
+
+        let product1 = MockProduct().product(siteID: sampleSiteID, productID: 1, dateCreated: earlierDate, name: "Zap")
         storage.insertSampleProduct(readOnlyProduct: product1)
 
-        let product2 = MockProduct().product(siteID: sampleSiteID, productID: 2, dateModified: Date(), name: "fun house")
+        let product2 = MockProduct().product(siteID: sampleSiteID, productID: 2, dateCreated: laterDate, name: "fun house")
         storage.insertSampleProduct(readOnlyProduct: product2)
 
         let resultsController = ResultsController<StorageProduct>(viewContext: viewContext,

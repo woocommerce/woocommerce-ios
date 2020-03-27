@@ -22,9 +22,9 @@ private extension ProductsSortOrder {
     var sortDescriptors: [NSSortDescriptor]? {
         switch self {
         case .dateAscending:
-            return [NSSortDescriptor(keyPath: \StorageProduct.dateModified, ascending: true)]
+            return [NSSortDescriptor(keyPath: \StorageProduct.dateCreated, ascending: true)]
         case .dateDescending:
-            return [NSSortDescriptor(keyPath: \StorageProduct.dateModified, ascending: false)]
+            return [NSSortDescriptor(keyPath: \StorageProduct.dateCreated, ascending: false)]
         case .nameAscending:
             return [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.localizedCompare(_:)))]
         case .nameDescending:

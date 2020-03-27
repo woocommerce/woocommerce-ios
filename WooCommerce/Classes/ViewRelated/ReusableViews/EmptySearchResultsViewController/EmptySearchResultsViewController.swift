@@ -7,7 +7,12 @@ import UIKit
 ///
 final class EmptySearchResultsViewController: UIViewController {
     
-    @IBOutlet private var messageLabel: UILabel!
+    @IBOutlet private var messageLabel: UILabel! {
+        didSet {
+            // Remove dummy text in Interface Builder
+            messageLabel.text = nil
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -5,7 +5,7 @@ import Yosemite
 protocol SearchUICommand {
     associatedtype Model
     associatedtype CellViewModel
-    associatedtype EmptyStateViewControllerType: UIViewController = OverlayMessageViewController
+    associatedtype EmptyStateViewControllerType: UIViewController = EmptySearchResultsViewController
 
     /// The placeholder of the search bar.
     var searchBarPlaceholder: String { get }
@@ -34,7 +34,7 @@ protocol SearchUICommand {
     /// The `view` of this controller will be added and constrained to the same size as the
     /// `SearchViewController`'s `tableView` but below the search bar.
     ///
-    /// We generally use and return an instance of `OverlayMessageViewController` for this method.
+    /// If not provided, an `EmptySearchResultsViewController` will be created instead.
     ///
     func createEmptyStateViewController() -> EmptyStateViewControllerType
 
@@ -78,9 +78,20 @@ protocol SearchUICommand {
     var cancelButtonAccessibilityIdentifier: String { get }
 }
 
-extension SearchUICommand {
-    func configureEmptyStateViewControllerBeforeDisplay(_ viewController: EmptyStateViewControllerType,
-                                                        searchKeyword: String) {
+// MARK: - SearchUICommand using EmptySearchResultsViewController
 
+extension SearchUICommand {
+
+    /// Creates an instance of `EmptySearchResultsViewController`
+    ///
+    func createEmptyStateViewController() -> EmptySearchResultsViewController {
+        EmptySearchResultsViewController()
+    }
+
+    /// Default implementation which does not do anything.
+    ///
+    func configureEmptyStateViewControllerBeforeDisplay(_ viewController: EmptySearchResultsViewController,
+                                                        searchKeyword: String) {
+        // noop
     }
 }

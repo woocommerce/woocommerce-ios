@@ -7,7 +7,7 @@ import UIKit
 ///
 final class EmptySearchResultsViewController: UIViewController {
     
-    @IBOutlet var messageLabel: UILabel!
+    @IBOutlet private var messageLabel: UILabel!
 
     override func viewDidLoad() {
         super.viewDidLoad()

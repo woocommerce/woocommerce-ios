@@ -225,4 +225,13 @@ final class IconsTests: XCTestCase {
     func testWaitingForCustomersImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.waitingForCustomersImage)
     }
+
+    func testCategoriesIconIsNotNil() {
+        XCTAssertNotNil(UIImage.categoriesIcon)
+    }
+
+    func testCategoriesIconHasDefaultSize() {
+        let categoriesIcon = UIImage.categoriesIcon
+        XCTAssertEqual(categoriesIcon.size, Gridicon.defaultSize)
+    }
 }

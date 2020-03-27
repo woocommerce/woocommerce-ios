@@ -427,6 +427,8 @@ private extension SearchViewController {
               childController.parent == nil else {
             return
         }
+        
+        searchUICommand.configureEmptyStateViewControllerBeforeDisplay(childController, searchKeyword: keyword)
 
         childView.translatesAutoresizingMaskIntoConstraints = false
 

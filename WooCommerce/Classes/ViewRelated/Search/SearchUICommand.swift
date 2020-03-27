@@ -38,6 +38,19 @@ protocol SearchUICommand {
     ///
     func createEmptyStateViewController() -> EmptyStateViewControllerType
 
+    /// Called before showing the `EmptyStateViewControllerType` view.
+    ///
+    /// This allows `SearchUICommand` implementations to customize the
+    /// `EmptyStateViewControllerType` instance after a search attempt was made and the results
+    /// are empty. For example, a title label can be changed to "No results for {searchKeyword}".
+    ///
+    /// This is optional.
+    ///
+    /// - Parameter viewController: The controller created in `createEmptyStateViewController`.
+    ///
+    func configureEmptyStateViewControllerBeforeDisplay(_ viewController: EmptyStateViewControllerType,
+                                                        searchKeyword: String)
+
     /// Creates a view model for the search result cell.
     ///
     /// - Parameter model: search result model.
@@ -63,4 +76,11 @@ protocol SearchUICommand {
 
     /// The Accessibility Identifier for the cancel button
     var cancelButtonAccessibilityIdentifier: String { get }
+}
+
+extension SearchUICommand {
+    func configureEmptyStateViewControllerBeforeDisplay(_ viewController: EmptyStateViewControllerType,
+                                                        searchKeyword: String) {
+
+    }
 }

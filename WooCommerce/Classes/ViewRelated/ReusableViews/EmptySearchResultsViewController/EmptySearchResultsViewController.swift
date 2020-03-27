@@ -14,9 +14,17 @@ final class EmptySearchResultsViewController: UIViewController {
         }
     }
 
+    var messageFont: UIFont {
+        messageLabel.font
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         messageLabel.applyBodyStyle()
+    }
+
+    func configure(message: NSAttributedString?) {
+        messageLabel.attributedText = message
     }
 }

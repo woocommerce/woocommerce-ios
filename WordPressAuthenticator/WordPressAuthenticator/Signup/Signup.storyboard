@@ -137,7 +137,7 @@
         <!--Signup Google View Controller-->
         <scene sceneID="WBb-bn-nnr">
             <objects>
-                <viewController storyboardIdentifier="googleSignup" id="cgk-WR-8PR" customClass="SignupGoogleViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SignupGoogleViewController" id="cgk-WR-8PR" customClass="SignupGoogleViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="3UA-HJ-Orw">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

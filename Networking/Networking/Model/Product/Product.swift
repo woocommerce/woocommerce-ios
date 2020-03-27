@@ -450,6 +450,9 @@ public struct Product: Codable {
 
         // Brief description (short description).
         try container.encode(briefDescription, forKey: .briefDescription)
+
+        // Product Settings
+        try container.encode(statusKey, forKey: .statusKey)
     }
 }
 

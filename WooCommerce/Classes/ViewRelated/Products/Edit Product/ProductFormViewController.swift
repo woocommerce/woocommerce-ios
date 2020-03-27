@@ -215,8 +215,11 @@ private extension ProductFormViewController {
     }
 
     func displayProductSettings() {
-        let viewController = ProductSettingsViewController(product: product) { (productSettings) in
-
+        let viewController = ProductSettingsViewController(product: product) { [weak self] (productSettings) in
+            guard let self = self else {
+                return
+            }
+            self.product = self.productUpdater.productSettingsUpdated(status: productSettings.status.rawValue)
         }
         navigationController?.pushViewController(viewController, animated: true)
     }

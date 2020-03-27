@@ -142,7 +142,7 @@ class LoginPrologueViewController: LoginViewController {
         vc.dismissBlock = dismissBlock
         vc.transitioningDelegate = self
         vc.modalPresentationStyle = .custom
-        navigationController?.pushViewController(vc, animated: true)
+        navigationController?.present(vc, animated: true, completion: nil)
     }
 
     private func appleTapped() {

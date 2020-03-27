@@ -3,8 +3,64 @@ import XCTest
 @testable import Yosemite
 
 final class ProductPriceSettingsViewModelTests: XCTestCase {
+    private let numberOfSecondsPerDay: TimeInterval = 86400
 
     // MARK: - Initialization
+
+    // Sale dates initialization
+
+    func testInitSaleStartDateWithoutSaleEndDate() {
+        // Arrange
+        let timezone = TimeZone(secondsFromGMT: 0)!
+        let saleStartDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-15T21:30:00")
+        let saleEndDate: Date? = nil
+        let product = MockProduct().product(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
+
+        // Act
+        let viewModel = ProductPriceSettingsViewModel(product: product, timezoneForScheduleSaleDates: timezone)
+
+        // Assert
+        let expectedStartDate = saleStartDate
+        let expectedEndDate = saleEndDate
+        XCTAssertEqual(viewModel.dateOnSaleStart, expectedStartDate)
+        XCTAssertEqual(viewModel.dateOnSaleEnd, expectedEndDate)
+    }
+
+    func testInitSaleEndDateInThePastWithoutSaleStartDate() {
+        // Arrange
+        let timezone = TimeZone(secondsFromGMT: 0)!
+        let saleStartDate: Date? = nil
+        let saleEndDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-15T21:30:00")
+        let product = MockProduct().product(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
+
+        // Act
+        let viewModel = ProductPriceSettingsViewModel(product: product, timezoneForScheduleSaleDates: timezone)
+
+        // Assert
+        let expectedStartDate = saleStartDate
+        let expectedEndDate = saleEndDate
+        XCTAssertEqual(viewModel.dateOnSaleStart, expectedStartDate)
+        XCTAssertEqual(viewModel.dateOnSaleEnd, expectedEndDate)
+    }
+
+    func testInitSaleEndDateInTheFutureWithoutSaleStartDate() {
+        // Arrange
+        let timezone = TimeZone(secondsFromGMT: 0)!
+        let saleStartDate: Date? = nil
+        let saleEndDate = Date().addingTimeInterval(numberOfSecondsPerDay)
+        let product = MockProduct().product(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
+
+        // Act
+        let viewModel = ProductPriceSettingsViewModel(product: product, timezoneForScheduleSaleDates: timezone)
+
+        // Assert
+        let expectedStartDate = Date().startOfDay(timezone: timezone)
+        let expectedEndDate = saleEndDate
+        XCTAssertEqual(viewModel.dateOnSaleStart, expectedStartDate)
+        XCTAssertEqual(viewModel.dateOnSaleEnd, expectedEndDate)
+    }
+
+    // `retrieveProductTaxClass`
 
     func testHandlingNilRetrievedTaxClass() {
         // Arrange
@@ -217,8 +273,6 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
 
     // Sale start date
 
-    // TODO-2020: support sale dates without an end date
-    /*
     func testHandlingSaleStartDateWithoutSaleEndDate() {
         // Arrange
         let timezone = TimeZone(secondsFromGMT: 0)!
@@ -234,10 +288,11 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         viewModel.handleSaleStartDateChange(saleStartDate)
 
         // Assert
-        XCTAssertEqual(viewModel.dateOnSaleStart, saleStartDate)
-        XCTAssertEqual(viewModel.dateOnSaleEnd, originalSaleEndDate)
+        let expectedSaleStartDate = saleStartDate.startOfDay(timezone: timezone)
+        let expectedSaleEndDate = originalSaleEndDate
+        XCTAssertEqual(viewModel.dateOnSaleStart, expectedSaleStartDate)
+        XCTAssertEqual(viewModel.dateOnSaleEnd, expectedSaleEndDate)
     }
-    */
 
     func testHandlingSaleStartDateWithAnEarlierSaleEndDate() {
         // Arrange
@@ -283,17 +338,13 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
 
     // Sale end date
 
-    // TODO-2020: support sale dates without a start date
-    /*
-    func testHandlingSaleEndDateWithoutSaleStartDate() {
+    func testHandlingSaleEndDateInThePastWithoutSaleStartDate() {
         // Arrange
         let timezone = TimeZone(secondsFromGMT: 0)!
         let originalSaleStartDate: Date? = nil
         let originalSaleEndDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-15T21:30:00")
         let product = MockProduct().product(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
         let viewModel = ProductPriceSettingsViewModel(product: product, timezoneForScheduleSaleDates: timezone)
-        XCTAssertEqual(viewModel.dateOnSaleStart, originalSaleStartDate)
-        XCTAssertEqual(viewModel.dateOnSaleEnd, originalSaleEndDate)
 
         // Act
         let saleEndDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-20T21:30:00")!
@@ -301,11 +352,29 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
 
         // Assert
         let expectedStartDate: Date? = nil
-        let expectedEndDate = saleEndDate
+        let expectedEndDate = saleEndDate.endOfDay(timezone: timezone)
         XCTAssertEqual(viewModel.dateOnSaleStart, expectedStartDate)
         XCTAssertEqual(viewModel.dateOnSaleEnd, expectedEndDate)
     }
-    */
+
+    func testHandlingSaleEndDateInTheFutureWithoutSaleStartDate() {
+        // Arrange
+        let timezone = TimeZone(secondsFromGMT: 0)!
+        let originalSaleStartDate: Date? = nil
+        let originalSaleEndDate = Date().addingTimeInterval(numberOfSecondsPerDay)
+        let product = MockProduct().product(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
+        let viewModel = ProductPriceSettingsViewModel(product: product, timezoneForScheduleSaleDates: timezone)
+
+        // Act
+        let saleEndDate = originalSaleEndDate.addingTimeInterval(numberOfSecondsPerDay)
+        viewModel.handleSaleEndDateChange(saleEndDate)
+
+        // Assert
+        let expectedStartDate: Date? = Date().startOfDay(timezone: timezone)
+        let expectedEndDate = saleEndDate.endOfDay(timezone: timezone)
+        XCTAssertEqual(viewModel.dateOnSaleStart, expectedStartDate)
+        XCTAssertEqual(viewModel.dateOnSaleEnd, expectedEndDate)
+    }
 
     func testHandlingSaleEndDateWithAnEarlierSaleStartDate() {
         // Arrange
@@ -345,6 +414,26 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         // Assert
         let expectedStartDate = originalSaleStartDate
         let expectedEndDate = originalSaleEndDate
+        XCTAssertEqual(viewModel.dateOnSaleStart, expectedStartDate)
+        XCTAssertEqual(viewModel.dateOnSaleEnd, expectedEndDate)
+    }
+
+    func testHandlingNilSaleEndDate() {
+        // Arrange
+        let timezone = TimeZone(secondsFromGMT: 0)!
+        let originalSaleStartDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-09-02T21:30:00")
+        let originalSaleEndDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-09-27T21:30:00")
+        let product = MockProduct().product(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
+        let viewModel = ProductPriceSettingsViewModel(product: product, timezoneForScheduleSaleDates: timezone)
+        XCTAssertEqual(viewModel.dateOnSaleStart, originalSaleStartDate)
+        XCTAssertEqual(viewModel.dateOnSaleEnd, originalSaleEndDate)
+
+        // Act
+        viewModel.handleSaleEndDateChange(nil)
+
+        // Assert
+        let expectedStartDate = originalSaleStartDate
+        let expectedEndDate: Date? = nil
         XCTAssertEqual(viewModel.dateOnSaleStart, expectedStartDate)
         XCTAssertEqual(viewModel.dateOnSaleEnd, expectedEndDate)
     }
@@ -465,5 +554,33 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
+    }
+
+    func testUnsavedChangesWithSaleEndDateInThePastAndNilSaleStartDate() {
+        // Arrange
+        let timezone = TimeZone(secondsFromGMT: 0)!
+        let saleStartDate: Date? = nil
+        let saleEndDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-15T21:30:00")
+        let product = MockProduct().product(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
+
+        // Act
+        let viewModel = ProductPriceSettingsViewModel(product: product, timezoneForScheduleSaleDates: timezone)
+
+        // Assert
+        XCTAssertFalse(viewModel.hasUnsavedChanges())
+    }
+
+    func testUnsavedChangesWithSaleEndDateInTheFutureAndNilSaleStartDate() {
+        // Arrange
+        let timezone = TimeZone(secondsFromGMT: 0)!
+        let saleStartDate: Date? = nil
+        let saleEndDate = Date().addingTimeInterval(numberOfSecondsPerDay)
+        let product = MockProduct().product(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
+
+        // Act
+        let viewModel = ProductPriceSettingsViewModel(product: product, timezoneForScheduleSaleDates: timezone)
+
+        // Assert
+        XCTAssertFalse(viewModel.hasUnsavedChanges())
     }
 }

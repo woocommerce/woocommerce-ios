@@ -184,7 +184,7 @@ private extension DefaultProductFormTableViewModel {
     func categoriesRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.categoriesIcon
         let title = Constants.categoriesTitle
-        let details = product.categoriesDescription.isNotEmpty ? product.categoriesDescription: Constants.categoriesPlaceholder
+        let details = product.categoriesDescription() ?? Constants.categoriesPlaceholder
         return ProductFormSection.SettingsRow.ViewModel(icon: icon, title: title, details: details)
     }
 

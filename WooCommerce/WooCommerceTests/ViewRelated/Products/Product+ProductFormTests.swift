@@ -19,11 +19,16 @@ class Product_ProductFormTests: XCTestCase {
         XCTAssertEqual(product.trimmedBriefDescription, expectedDescription)
     }
 
+    func testNoCategoryDescriptionOutputsNilDescription() {
+        let product = sampleProduct(categories: [])
+        XCTAssertNil(product.categoriesDescription())
+    }
+
     func testSingleCategoryDescriptionOutputsSingleCategory() {
         let category = sampleCategory(name: "Pants")
         let product = sampleProduct(categories: [category])
         let expectedDescription = "Pants"
-        XCTAssertEqual(product.categoriesDescription, expectedDescription)
+        XCTAssertEqual(product.categoriesDescription(), expectedDescription)
     }
 
     func testMutipleCategoriesDescriptionOutputsFormattedList() {
@@ -31,12 +36,13 @@ class Product_ProductFormTests: XCTestCase {
         let product = sampleProduct(categories: categories)
         let expectedDescription: String = {
             if #available(iOS 13.0, *) {
-                return ListFormatter.localizedString(byJoining: ["Pants", "Dress", "Shoes"])
+                return "Pants, Dress, and Shoes"
             } else {
                 return "Pants, Dress, Shoes"
             }
         }()
-        XCTAssertEqual(product.categoriesDescription, expectedDescription)
+        let usLocale = Locale(identifier: "en_US")
+        XCTAssertEqual(product.categoriesDescription(using: usLocale), expectedDescription)
     }
 }
 

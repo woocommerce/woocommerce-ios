@@ -18,11 +18,18 @@ extension Product {
     }
 
     /// Returns a comma separated string with each category names.
-    /// Uses `ListFormatter` if available
-    var categoriesDescription: String {
+    /// Returns `nil` if the product doesn't have any associated category
+    /// iOS 13+ set a specific locale on to properly format the list with the `ListFormatter` class
+    func categoriesDescription(using locale: Locale = .autoupdatingCurrent) -> String? {
+        guard categories.isNotEmpty else {
+            return nil
+        }
+
         let categoriesNames = categories.map { $0.name }
         if #available(iOS 13.0, *) {
-            return ListFormatter.localizedString(byJoining: categoriesNames)
+            let formatter = ListFormatter()
+            formatter.locale = locale
+            return formatter.string(from: categoriesNames)
         } else {
             return categoriesNames.joined(separator: ", ")
         }

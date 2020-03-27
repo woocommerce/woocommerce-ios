@@ -45,6 +45,7 @@ private extension ProductSettingsViewController {
     func configureNavigationBar() {
         title = NSLocalizedString("Product Settings", comment: "Product Settings navigation title")
 
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(completeUpdating))
         removeNavigationBackBarButtonText()
     }
 
@@ -69,8 +70,22 @@ private extension ProductSettingsViewController {
 extension ProductSettingsViewController {
 
     override func shouldPopOnBackButton() -> Bool {
-        onCompletion(viewModel.productSettings)
+        if viewModel.hasUnsavedChanges() {
+            presentBackNavigationActionSheet()
+            return false
+        }
         return true
+    }
+
+    @objc private func completeUpdating() {
+        onCompletion(viewModel.productSettings)
+        navigationController?.popViewController(animated: true)
+    }
+
+    private func presentBackNavigationActionSheet() {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        })
     }
 }
 

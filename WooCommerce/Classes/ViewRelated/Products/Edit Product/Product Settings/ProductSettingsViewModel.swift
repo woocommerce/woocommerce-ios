@@ -8,11 +8,14 @@ final class ProductSettingsViewModel {
 
     public private(set) var productSettings: ProductSettings
 
+    private let product: Product
+
     /// Closures
     ///
     var onReload: (() -> Void)?
 
     init(product: Product) {
+        self.product = product
         productSettings = ProductSettings(status: product.productStatus)
         sections = Self.configureSections(productSettings)
     }
@@ -27,6 +30,13 @@ final class ProductSettingsViewModel {
         }
     }
 
+    func hasUnsavedChanges() -> Bool {
+        if product.statusKey != productSettings.status.rawValue {
+            return true
+        }
+
+        return false
+    }
 }
 
 // MARK: Configure sections and rows in Product Settings

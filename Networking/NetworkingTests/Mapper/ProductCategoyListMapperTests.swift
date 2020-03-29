@@ -5,7 +5,7 @@ final class ProductCategoryListMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductCatefory Fields are parsed correctly.
     ///
-    func testProductReviewFieldsAreProperlyParsed() throws {
+    func testProductCategoryFieldsAreProperlyParsed() throws {
         let productCategories = try mapLoadAllProductCategoriesResponse()
         XCTAssertEqual(productCategories.count, 2)
 
@@ -31,7 +31,7 @@ private extension ProductCategoryListMapperTests {
         return try ProductCategoryListMapper().map(response: response)
     }
 
-    /// Returns the ProductListMapper output upon receiving `reviews-all`
+    /// Returns the ProductListMapper output upon receiving `categories-all`
     ///
     func mapLoadAllProductCategoriesResponse() throws -> [ProductCategory] {
         return try mapProductCategories(from: "categories-all")

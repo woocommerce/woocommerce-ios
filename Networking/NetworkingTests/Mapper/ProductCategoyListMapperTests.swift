@@ -10,9 +10,9 @@ final class ProductCategoryListMapperTests: XCTestCase {
         XCTAssertEqual(productCategories.count, 2)
 
         let firstProductCategory = productCategories[0]
-        XCTAssertEqual(firstProductCategory.categoryID, 173)
-        XCTAssertEqual(firstProductCategory.name, "173")
-        XCTAssertEqual(firstProductCategory.slug, "173")
+        XCTAssertEqual(firstProductCategory.categoryID, 104)
+        XCTAssertEqual(firstProductCategory.name, "Dress")
+        XCTAssertEqual(firstProductCategory.slug, "Shirt")
     }
 }
 

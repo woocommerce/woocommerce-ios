@@ -20,7 +20,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="32" translatesAutoresizingMaskIntoConstraints="NO" id="Usx-wg-Fgl">
-                    <rect key="frame" x="58" y="348" width="298" height="177"/>
+                    <rect key="frame" x="58" y="364.5" width="298" height="177"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="We're sorry, we couldn't find results for &quot;adidas&quot;" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h54-zO-thf">
                             <rect key="frame" x="0.0" y="0.0" width="298" height="41"/>
@@ -41,7 +41,7 @@
             <constraints>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="Usx-wg-Fgl" secondAttribute="trailing" constant="58" id="ENn-Ix-Z0z"/>
                 <constraint firstItem="Usx-wg-Fgl" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="58" id="J8g-WM-XVD"/>
-                <constraint firstItem="Usx-wg-Fgl" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="304" id="Y3B-yo-bTn"/>
+                <constraint firstItem="Usx-wg-Fgl" firstAttribute="centerY" secondItem="vUN-kp-3ea" secondAttribute="centerY" id="Uhb-l9-Bbc"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <point key="canvasLocation" x="137.68115942028987" y="152.67857142857142"/>

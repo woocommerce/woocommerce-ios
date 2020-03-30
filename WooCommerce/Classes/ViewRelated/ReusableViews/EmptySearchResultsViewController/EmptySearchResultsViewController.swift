@@ -13,6 +13,11 @@ final class EmptySearchResultsViewController: UIViewController {
             messageLabel.text = nil
         }
     }
+    @IBOutlet private var stackViewCenterYConstraint: NSLayoutConstraint!
+
+    private lazy var keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: { [weak self] in
+        self?.verticallyAlignStackViewUsing(keyboardHeight: $0.height)
+    })
 
     var messageFont: UIFont {
         messageLabel.font
@@ -22,9 +27,19 @@ final class EmptySearchResultsViewController: UIViewController {
         super.viewDidLoad()
 
         messageLabel.applyBodyStyle()
+
+        keyboardFrameObserver.startObservingKeyboardFrame()
     }
 
     func configure(message: NSAttributedString?) {
         messageLabel.attributedText = message
+    }
+
+    private func verticallyAlignStackViewUsing(keyboardHeight: CGFloat) {
+        // Because this is a single Center-Y constraint, we only need to deduct half of the
+        // keyboard height. This is like deducting 50% of the height from the top and the bottom.
+        let heightToDeduct = keyboardHeight * 0.5
+
+        stackViewCenterYConstraint.constant = 0 - heightToDeduct
     }
 }

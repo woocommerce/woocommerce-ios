@@ -29,7 +29,7 @@ enum ProductSettingsRows {
 
     struct CatalogVisibility: ProductSettingsRowMediator {
 
-        private var settings: ProductSettings
+        private let settings: ProductSettings
 
         init(_ settings: ProductSettings) {
             self.settings = settings
@@ -91,7 +91,7 @@ enum ProductSettingsRows {
     }
 
     struct Slug: ProductSettingsRowMediator {
-        private var settings: ProductSettings
+        private let settings: ProductSettings
 
         init(_ settings: ProductSettings) {
             self.settings = settings

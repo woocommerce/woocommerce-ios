@@ -4,14 +4,22 @@ import Yosemite
 /// The Product Settings contains 2 sections: Publish Settings and More Options
 final class ProductSettingsViewModel {
 
-    public private(set) var sections: [ProductSettingsSectionMediator]
+    public private(set) var sections: [ProductSettingsSectionMediator] {
+        didSet {
+            self.onReload?()
+        }
+    }
 
-    public private(set) var productSettings: ProductSettings
+    var productSettings: ProductSettings {
+        didSet {
+            sections = Self.configureSections(productSettings)
+        }
+    }
 
     private let product: Product
 
     /// Closures
-    ///
+    /// - `onReload` called when sections data are reloaded/refreshed
     var onReload: (() -> Void)?
 
     init(product: Product) {
@@ -28,8 +36,6 @@ final class ProductSettingsViewModel {
                 return
             }
             self.productSettings = settings
-            self.sections = ProductSettingsViewModel.configureSections(settings)
-            self.onReload?()
         }
     }
 

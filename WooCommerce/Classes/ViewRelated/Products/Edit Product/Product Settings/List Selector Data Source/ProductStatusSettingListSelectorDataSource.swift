@@ -14,7 +14,7 @@ struct ProductStatusSettingListSelectorDataSource: ListSelectorDataSource {
         .privateStatus
     ]
 
-    var selected: ProductStatus?
+    private(set) var selected: ProductStatus?
 
     init(selected: ProductStatus?) {
         self.selected = selected

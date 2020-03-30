@@ -4,7 +4,7 @@ import Yosemite
 /// The Product Settings contains 2 sections: Publish Settings and More Options
 final class ProductSettingsViewModel {
 
-    public private(set) var sections: [ProductSettingsSectionMediator] {
+    private(set) var sections: [ProductSettingsSectionMediator] {
         didSet {
             self.onReload?()
         }

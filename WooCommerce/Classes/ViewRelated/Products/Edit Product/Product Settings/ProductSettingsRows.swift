@@ -7,19 +7,19 @@ import Yosemite
 /// Encapsulates configuration and interaction of a UITableView row.
 protocol ProductSettingsRowMediator {
 
-        /// Update the cell UI and bind to events if needed.
-        func configure(cell: UITableViewCell)
+    /// Update the cell UI and bind to events if needed.
+    func configure(cell: UITableViewCell)
 
-        /// Show a reusable ViewController like AztecEditorViewController.
-        ///
+    /// Show a reusable ViewController like AztecEditorViewController.
+    ///
     func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (_ settings: ProductSettings) -> Void)
 
-        var reuseIdentifier: String { get }
+    var reuseIdentifier: String { get }
 
-        /// A table row could be presented by different `UITableViewCell` types, depending on the state.
-        var cellTypes: [UITableViewCell.Type] { get }
+    /// A table row could be presented by different `UITableViewCell` types, depending on the state.
+    var cellTypes: [UITableViewCell.Type] { get }
 
-        init(_ settings: ProductSettings)
+    init(_ settings: ProductSettings)
 }
 
 

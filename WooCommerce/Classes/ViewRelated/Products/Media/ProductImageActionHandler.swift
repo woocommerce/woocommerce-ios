@@ -83,16 +83,16 @@ final class ProductImageActionHandler {
     }
 
     func addMediaToProduct(mediaItems: [Media]) {
-        let newProductImageStatuses = mediaItems.map({
+        let newProductImageStatuses = mediaItems.map {
             ProductImage(imageID: $0.mediaID,
                          dateCreated: Date(),
                          dateModified: nil,
                          src: $0.src,
                          name: $0.name,
                          alt: $0.alt)
-        }).map({
+        }.map {
             ProductImageStatus.remote(image: $0)
-        })
+        }
         productImageStatuses = newProductImageStatuses + productImageStatuses
     }
 

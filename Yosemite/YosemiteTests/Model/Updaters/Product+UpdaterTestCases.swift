@@ -121,7 +121,6 @@ final class Product_UpdaterTestCases: XCTestCase {
         let updatedProduct = product.productSettingsUpdated(status: .pending)
         XCTAssertEqual(updatedProduct.statusKey, newStatus)
     }
-    
 }
 
 // MARK: - Private Helpers

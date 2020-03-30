@@ -16,7 +16,7 @@ final class ProductSettingsViewController: UIViewController {
 
     /// Init
     ///
-    init(product: Product, completion: @escaping (_ productSettings: ProductSettings) -> Void) {
+    init(product: Product, completion: @escaping Completion) {
         viewModel = ProductSettingsViewModel(product: product)
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)

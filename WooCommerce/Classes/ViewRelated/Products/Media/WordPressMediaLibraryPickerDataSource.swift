@@ -13,7 +13,7 @@ final class WordPressMediaLibraryMediaGroup: NSObject, WPMediaGroup {
     }
 
     func name() -> String {
-        return NSLocalizedString("WordPress Media Library", comment: "Navigation bar title for WordPress Media Libraryj image picker")
+        return NSLocalizedString("WordPress Media Library", comment: "Navigation bar title for WordPress Media Library image picker")
     }
 
     func image(with size: CGSize, completionHandler: @escaping WPMediaImageBlock) -> WPMediaRequestID {

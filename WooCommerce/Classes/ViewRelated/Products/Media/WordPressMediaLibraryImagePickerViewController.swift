@@ -55,7 +55,7 @@ private extension WordPressMediaLibraryImagePickerViewController {
 
         picker.mediaPicker.options = mediaPickerOptions
         picker.mediaPicker.collectionView?.backgroundColor = .listBackground
-        picker.mediaPicker.title = NSLocalizedString("WordPress Media Library", comment: "Navigation bar title for WordPress Media Libraryj image picker")
+        picker.mediaPicker.title = NSLocalizedString("WordPress Media Library", comment: "Navigation bar title for WordPress Media Library image picker")
 
         let emptyImagesText = NSLocalizedString("No images yet",
                                                 comment: "Placeholder text shown when there are no images for the WordPress Media Library yet")

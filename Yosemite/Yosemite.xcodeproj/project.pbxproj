@@ -13,6 +13,8 @@
 		0202B6992387B01500F3EBE0 /* AppSettingsStoreTests+ProductsVisibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B6982387B01500F3EBE0 /* AppSettingsStoreTests+ProductsVisibility.swift */; };
 		020B2F9623BDE4DD00BD79AD /* ProductStoreTests+Validation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020B2F9523BDE4DD00BD79AD /* ProductStoreTests+Validation.swift */; };
 		02124DAC24318D6B00980D74 /* Media+MediaTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02124DAB24318D6B00980D74 /* Media+MediaTypeTests.swift */; };
+		02124DAE2431C11600980D74 /* Media+ProductImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02124DAD2431C11500980D74 /* Media+ProductImage.swift */; };
+		02124DB02431C18700980D74 /* Media+ProductImageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02124DAF2431C18700980D74 /* Media+ProductImageTests.swift */; };
 		0218B4EE242E08B20083A847 /* MediaType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0218B4ED242E08B20083A847 /* MediaType.swift */; };
 		0218B4F0242E091C0083A847 /* Media+MediaType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0218B4EF242E091C0083A847 /* Media+MediaType.swift */; };
 		0218B4F2242E09E80083A847 /* MediaTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0218B4F1242E09E80083A847 /* MediaTypeTests.swift */; };
@@ -215,6 +217,8 @@
 		0202B6982387B01500F3EBE0 /* AppSettingsStoreTests+ProductsVisibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppSettingsStoreTests+ProductsVisibility.swift"; sourceTree = "<group>"; };
 		020B2F9523BDE4DD00BD79AD /* ProductStoreTests+Validation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductStoreTests+Validation.swift"; sourceTree = "<group>"; };
 		02124DAB24318D6B00980D74 /* Media+MediaTypeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Media+MediaTypeTests.swift"; sourceTree = "<group>"; };
+		02124DAD2431C11500980D74 /* Media+ProductImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Media+ProductImage.swift"; sourceTree = "<group>"; };
+		02124DAF2431C18700980D74 /* Media+ProductImageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Media+ProductImageTests.swift"; sourceTree = "<group>"; };
 		0218B4ED242E08B20083A847 /* MediaType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaType.swift; sourceTree = "<group>"; };
 		0218B4EF242E091C0083A847 /* Media+MediaType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Media+MediaType.swift"; sourceTree = "<group>"; };
 		0218B4F1242E09E80083A847 /* MediaTypeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaTypeTests.swift; sourceTree = "<group>"; };
@@ -529,6 +533,7 @@
 				02FF056023D98FD40058E6E7 /* ImageSourceWriter.swift */,
 				0218B4ED242E08B20083A847 /* MediaType.swift */,
 				0218B4EF242E091C0083A847 /* Media+MediaType.swift */,
+				02124DAD2431C11500980D74 /* Media+ProductImage.swift */,
 			);
 			path = Media;
 			sourceTree = "<group>";
@@ -544,6 +549,7 @@
 				02F096C3240670A400C0C1D5 /* Media+Equatable.swift */,
 				0218B4F1242E09E80083A847 /* MediaTypeTests.swift */,
 				02124DAB24318D6B00980D74 /* Media+MediaTypeTests.swift */,
+				02124DAF2431C18700980D74 /* Media+ProductImageTests.swift */,
 			);
 			path = Media;
 			sourceTree = "<group>";
@@ -1106,6 +1112,7 @@
 				D8C11A5022DF2D9400D4A88D /* StatsStoreV4.swift in Sources */,
 				D87F614A22657A690031A13B /* AppSettingsAction.swift in Sources */,
 				744A321B216D57D40051439B /* SiteVisitStats+ReadOnlyType.swift in Sources */,
+				02124DAE2431C11600980D74 /* Media+ProductImage.swift in Sources */,
 				02FF055023D983F30058E6E7 /* ExportableAsset.swift in Sources */,
 				7493750E224988DE007D85D1 /* ProductImage+ReadOnlyConvertible.swift in Sources */,
 				02FF056323DE9C490058E6E7 /* MediaAction.swift in Sources */,
@@ -1223,6 +1230,7 @@
 				02FF055C23D9846A0058E6E7 /* MediaFileManagerTests.swift in Sources */,
 				B5C9DE252087FF20006B910A /* MockupProcessor.swift in Sources */,
 				D8C11A5A22DFC21600D4A88D /* StatsStoreV4Tests.swift in Sources */,
+				02124DB02431C18700980D74 /* Media+ProductImageTests.swift in Sources */,
 				B54EAF2121188C470029C35E /* EntityListenerTests.swift in Sources */,
 				021C7BF52386362A00A3BCBD /* Product+UpdaterTestCases.swift in Sources */,
 				02FF056F23E04F320058E6E7 /* MockMediaExportService.swift in Sources */,

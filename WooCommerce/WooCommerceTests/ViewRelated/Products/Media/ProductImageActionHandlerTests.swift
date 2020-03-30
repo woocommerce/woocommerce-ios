@@ -148,6 +148,48 @@ final class ProductImageActionHandlerTests: XCTestCase {
         // Then
         XCTAssertEqual(observedProductImageStatusChanges, expectedStatusUpdates)
     }
+
+    // MARK: - `addSiteMediaLibraryImagesToProduct(mediaItems:)`
+
+    func testAddingProductImagesFromSiteMediaLibrary() {
+        // Arrange
+        let mockProductImages = [
+            ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: ""),
+            ProductImage(imageID: 2, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
+        ]
+        let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
+        let mockProduct = MockProduct().product(images: mockProductImages)
+
+        let productImageActionHandler = ProductImageActionHandler(siteID: 123,
+                                                                  product: mockProduct)
+
+        // Act
+        let mockMedia1 = Media(mediaID: 134, date: Date(),
+                               fileExtension: "jpg", mimeType: "image/jpeg",
+                               src: "pic", thumbnailURL: "https://test.com/pic1",
+                               name: "pic1", alt: "the first image",
+                               height: 136, width: 120)
+        let mockMedia2 = Media(mediaID: 990, date: Date(),
+                               fileExtension: "png", mimeType: "image/png",
+                               src: "woo", thumbnailURL: "https://test.com/woo",
+                               name: "woo", alt: "the second image",
+                               height: 320, width: 776)
+        let mockMediaItems = [mockMedia1, mockMedia2]
+        productImageActionHandler.addSiteMediaLibraryImagesToProduct(mediaItems: mockMediaItems)
+
+        // Assert
+        let expectedImageStatusesFromSiteMediaLibrary = mockMediaItems.map { ProductImageStatus.remote(image: $0.toProductImage) }
+        let expectedImageStatuses = expectedImageStatusesFromSiteMediaLibrary + mockRemoteProductImageStatuses
+
+        let expectation = self.expectation(description: "Wait for image statuses")
+        expectation.expectedFulfillmentCount = 1
+
+        productImageActionHandler.addUpdateObserver(self) { (productImageStatuses, error) in
+            XCTAssertEqual(productImageStatuses, expectedImageStatuses)
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+    }
 }
 
 private extension ProductImageActionHandlerTests {

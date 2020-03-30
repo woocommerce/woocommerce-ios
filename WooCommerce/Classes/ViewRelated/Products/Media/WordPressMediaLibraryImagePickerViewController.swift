@@ -21,7 +21,7 @@ final class WordPressMediaLibraryImagePickerViewController: UIViewController {
 
     private lazy var mediaLibraryDataSource: WordPressMediaLibraryPickerDataSource = WordPressMediaLibraryPickerDataSource(siteID: siteID)
 
-    private var picker: WPNavigationMediaPickerViewController!
+    private var mediaPickerNavigationController: WPNavigationMediaPickerViewController!
 
     private let siteID: Int64
 
@@ -60,7 +60,7 @@ private extension WordPressMediaLibraryImagePickerViewController {
         let emptyImagesText = NSLocalizedString("No images yet",
                                                 comment: "Placeholder text shown when there are no images for the WordPress Media Library yet")
         picker.mediaPicker.defaultEmptyView.text = emptyImagesText
-        self.picker = picker
+        self.mediaPickerNavigationController = picker
 
         picker.view.translatesAutoresizingMaskIntoConstraints = false
 
@@ -72,10 +72,9 @@ private extension WordPressMediaLibraryImagePickerViewController {
 extension WordPressMediaLibraryImagePickerViewController: WPMediaPickerViewControllerDelegate {
     func mediaPickerController(_ picker: WPMediaPickerViewController, didFinishPicking assets: [WPMediaAsset]) {
         onCompletion(assets as? [Media] ?? [])
-        dismiss(animated: true)
     }
 
     func mediaPickerControllerDidCancel(_ picker: WPMediaPickerViewController) {
-        dismiss(animated: true)
+        onCompletion([])
     }
 }

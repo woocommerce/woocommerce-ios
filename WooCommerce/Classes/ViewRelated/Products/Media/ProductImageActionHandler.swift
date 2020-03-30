@@ -82,11 +82,11 @@ final class ProductImageActionHandler {
         }
     }
 
-    func addMediaToProduct(mediaItems: [Media]) {
+    func addSiteMediaLibraryImagesToProduct(mediaItems: [Media]) {
         let newProductImageStatuses = mediaItems.map {
             ProductImage(imageID: $0.mediaID,
-                         dateCreated: Date(),
-                         dateModified: nil,
+                         dateCreated: $0.date,
+                         dateModified: $0.date,
                          src: $0.src,
                          name: $0.name,
                          alt: $0.alt)

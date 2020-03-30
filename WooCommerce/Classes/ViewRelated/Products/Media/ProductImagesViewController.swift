@@ -225,7 +225,8 @@ private extension ProductImagesViewController {
 //
 private extension ProductImagesViewController {
     func onWPMediaPickerCompletion(mediaItems: [Media]) {
-        productImageActionHandler.addMediaToProduct(mediaItems: mediaItems)
+        dismiss(animated: true, completion: nil)
+        productImageActionHandler.addSiteMediaLibraryImagesToProduct(mediaItems: mediaItems)
     }
 }
 

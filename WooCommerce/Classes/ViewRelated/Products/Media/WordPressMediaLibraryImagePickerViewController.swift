@@ -3,6 +3,8 @@ import WPMediaPicker
 import CoreServices
 import Yosemite
 
+/// Displays a collection of images from WordPress media library for picking.
+///
 final class WordPressMediaLibraryImagePickerViewController: UIViewController {
     typealias Completion = ((_ selectedMediaItems: [Media]) -> Void)
     private let onCompletion: Completion

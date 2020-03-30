@@ -126,7 +126,7 @@ extension WordPressMediaLibraryPickerDataSource: WPMediaCollectionDataSource {
         return true
     }
 
-    func add(_ image: UIImage, metadata: [AnyHashable : Any]?, completionBlock: WPMediaAddedBlock? = nil) {}
+    func add(_ image: UIImage, metadata: [AnyHashable: Any]?, completionBlock: WPMediaAddedBlock? = nil) {}
 
     func addVideo(from url: URL, completionBlock: WPMediaAddedBlock? = nil) {}
 

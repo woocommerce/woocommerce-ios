@@ -114,6 +114,13 @@ final class Product_UpdaterTestCases: XCTestCase {
         XCTAssertEqual(updatedProduct.fullDescription, product.fullDescription)
         XCTAssertEqual(updatedProduct.name, product.name)
     }
+    
+    func testUpdatingProductSettings() {
+        let product = sampleProduct()
+        let newStatus = "pending"
+        let updatedProduct = product.productSettingsUpdated(status: .pending)
+        XCTAssertEqual(updatedProduct.statusKey, newStatus)
+    }
 }
 
 // MARK: - Private Helpers

@@ -7,7 +7,7 @@ final class ProductSettingsViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
 
-    private var viewModel: ProductSettingsViewModel
+    private let viewModel: ProductSettingsViewModel
 
     // Completion callback
     //

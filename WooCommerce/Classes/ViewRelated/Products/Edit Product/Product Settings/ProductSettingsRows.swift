@@ -78,7 +78,7 @@ enum ProductSettingsRows {
             let listSelectorViewController = ListSelectorViewController(viewProperties: viewProperties,
                                                                         dataSource: dataSource) { selected in
 
-                                                                            self.settings.status = selected ?? .publish
+                                                                            self.settings.status = selected ?? self.settings.status
                                                                             onCompletion(self.settings)
             }
             sourceViewController.navigationController?.pushViewController(listSelectorViewController, animated: true)

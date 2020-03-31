@@ -34,8 +34,28 @@ final class EmptySearchResultsViewController: UIViewController, KeyboardFrameAdj
         keyboardFrameObserver.startObservingKeyboardFrame()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        updateImageVisibilityUsing(traits: traitCollection)
+    }
+
     func configure(message: NSAttributedString?) {
         messageLabel.attributedText = message
+    }
+
+    override func willTransition(to newCollection: UITraitCollection,
+                                 with coordinator: UIViewControllerTransitionCoordinator) {
+        super.willTransition(to: newCollection, with: coordinator)
+
+        coordinator.animate(alongsideTransition: { _ in
+            self.updateImageVisibilityUsing(traits: newCollection)
+        }, completion: nil)
+    }
+
+    private func updateImageVisibilityUsing(traits: UITraitCollection) {
+        let shouldShowImageView = traits.verticalSizeClass != .compact
+        imageView.isHidden = !shouldShowImageView
     }
 
     private func verticallyAlignStackViewUsing(keyboardHeight: CGFloat) {

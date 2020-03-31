@@ -294,7 +294,11 @@ private extension AppDelegate {
         #endif
     }
 
+    /// Set up `KeyboardStateProvider`
+    ///
     func setupKeyboardStateProvider() {
+        // Simply _accessing_ it is enough. We only want the object to be initialized right away
+        // so it can start observing keyboard changes.
         _ = ServiceLocator.keyboardStateProvider
     }
 

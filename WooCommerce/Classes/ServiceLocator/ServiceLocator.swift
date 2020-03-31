@@ -120,7 +120,12 @@ final class ServiceLocator {
         return _fileLogger
     }
 
-    static var keyboardStateProvider: KeyboardStateProviding = KeyboardStateProvider()
+    /// Provides the last known `KeyboardState`.
+    ///
+    /// Because `static let` is lazy, this should be accessed when the app is started
+    /// (i.e. AppDelegate) for it to accurately provide the last known state.
+    ///
+    static let keyboardStateProvider: KeyboardStateProviding = KeyboardStateProvider()
 }
 
 

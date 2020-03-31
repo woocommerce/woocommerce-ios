@@ -3,7 +3,7 @@ import UIKit
 
 /// Keyboard information usually received from `Notifications`.
 ///
-struct KeyboardState {
+struct KeyboardState: Equatable {
     /// True if the keyboard is visible.
     let isVisible: Bool
     /// The frame of the keyboard when it is fully shown or hidden.

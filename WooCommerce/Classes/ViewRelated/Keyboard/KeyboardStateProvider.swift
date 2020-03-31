@@ -28,6 +28,9 @@ protocol KeyboardStateProviding {
 /// Initially, this assumes that the keyboard is not visible.
 ///
 final class KeyboardStateProvider: KeyboardStateProviding {
+    /// The NotificationCenter to observe
+    private let notificationCenter: NotificationCenter
+
     /// The last known state.
     ///
     /// This is kept up to date whenever we receive keyboard notifications.
@@ -37,13 +40,13 @@ final class KeyboardStateProvider: KeyboardStateProviding {
     /// NSNotification observers that will be removed on deinit
     private var observations = [Any]()
 
-    init() {
-        let nc = NotificationCenter.default
+    init(notificationCenter: NotificationCenter = NotificationCenter.default) {
+        self.notificationCenter = notificationCenter
 
         let notificationNames = [UIResponder.keyboardDidShowNotification, UIResponder.keyboardDidHideNotification]
 
         observations.append(contentsOf: notificationNames.map { notificationName in
-            nc.addObserver(forName: notificationName, object: nil, queue: nil) { [weak self] notification in
+            notificationCenter.addObserver(forName: notificationName, object: nil, queue: nil) { [weak self] notification in
                 self?.updateState(from: notification)
             }
         })
@@ -57,7 +60,7 @@ final class KeyboardStateProvider: KeyboardStateProviding {
     }
 
     deinit {
-        observations.forEach(NotificationCenter.default.removeObserver)
+        observations.forEach(notificationCenter.removeObserver)
     }
 }
 

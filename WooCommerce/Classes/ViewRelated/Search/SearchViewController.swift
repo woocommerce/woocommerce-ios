@@ -220,7 +220,7 @@ extension SearchViewController: KeyboardScrollable {
 
 private extension SearchViewController {
     func applyAdditionalKeyboardFrameHeightTo(_ viewControllers: [UIViewController]) {
-        children.compactMap {
+        viewControllers.compactMap {
             $0 as? KeyboardFrameAdjustmentProvider
         }.forEach {
             $0.additionalKeyboardFrameHeight = 0 - view.safeAreaInsets.bottom

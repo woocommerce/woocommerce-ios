@@ -6,13 +6,7 @@ import CoreData
 final class ResultsController_StorageProductTests: XCTestCase {
     /// InMemory Storage!
     ///
-    private var storage: MockupStorageManager!
-
-    /// Returns the NSMOC associated to the Main Thread
-    ///
-    private var viewContext: NSManagedObjectContext {
-        return storage.persistentContainer.viewContext
-    }
+    private var storageManager: MockupStorageManager!
 
     private let sampleSiteID: Int64 = 134
 
@@ -22,7 +16,7 @@ final class ResultsController_StorageProductTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        storage = MockupStorageManager()
+        storageManager = MockupStorageManager()
     }
 
     // MARK: tests for `init` with a `ProductsSortOrder` param
@@ -30,13 +24,13 @@ final class ResultsController_StorageProductTests: XCTestCase {
     func testProductResultsControllerInitWithAscendingNameSortOrder() {
         // Arrange
         let product1 = MockProduct().product(siteID: sampleSiteID, productID: 1, name: "Zap")
-        storage.insertSampleProduct(readOnlyProduct: product1)
+        storageManager.insertSampleProduct(readOnlyProduct: product1)
 
         let product2 = MockProduct().product(siteID: sampleSiteID, productID: 2, name: "fun house")
-        storage.insertSampleProduct(readOnlyProduct: product2)
+        storageManager.insertSampleProduct(readOnlyProduct: product2)
 
         // Act
-        let resultsController = ResultsController<StorageProduct>(viewContext: viewContext,
+        let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                   matching: sampleProductsPredicate,
                                                                   sortOrder: .nameAscending)
         try? resultsController.performFetch()
@@ -49,13 +43,13 @@ final class ResultsController_StorageProductTests: XCTestCase {
     func testProductResultsControllerInitWithDescendingNameSortOrder() {
         // Arrange
         let product1 = MockProduct().product(siteID: sampleSiteID, productID: 1, name: "fun house")
-        storage.insertSampleProduct(readOnlyProduct: product1)
+        storageManager.insertSampleProduct(readOnlyProduct: product1)
 
         let product2 = MockProduct().product(siteID: sampleSiteID, productID: 2, name: "zap!")
-        storage.insertSampleProduct(readOnlyProduct: product2)
+        storageManager.insertSampleProduct(readOnlyProduct: product2)
 
         // Act
-        let resultsController = ResultsController<StorageProduct>(viewContext: viewContext,
+        let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                   matching: sampleProductsPredicate,
                                                                   sortOrder: .nameDescending)
         try? resultsController.performFetch()
@@ -73,13 +67,13 @@ final class ResultsController_StorageProductTests: XCTestCase {
         let laterDate = Date(timeIntervalSince1970: 1593251229)
 
         let product1 = MockProduct().product(siteID: sampleSiteID, productID: 1, dateCreated: laterDate, name: "fun house")
-        storage.insertSampleProduct(readOnlyProduct: product1)
+        storageManager.insertSampleProduct(readOnlyProduct: product1)
 
         let product2 = MockProduct().product(siteID: sampleSiteID, productID: 2, dateCreated: earlierDate, name: "zap!")
-        storage.insertSampleProduct(readOnlyProduct: product2)
+        storageManager.insertSampleProduct(readOnlyProduct: product2)
 
         // Act
-        let resultsController = ResultsController<StorageProduct>(viewContext: viewContext,
+        let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                   matching: sampleProductsPredicate,
                                                                   sortOrder: .dateAscending)
         try? resultsController.performFetch()
@@ -97,13 +91,13 @@ final class ResultsController_StorageProductTests: XCTestCase {
         let laterDate = Date(timeIntervalSince1970: 1593251229)
 
         let product1 = MockProduct().product(siteID: sampleSiteID, productID: 1, dateCreated: earlierDate, name: "fun house")
-        storage.insertSampleProduct(readOnlyProduct: product1)
+        storageManager.insertSampleProduct(readOnlyProduct: product1)
 
         let product2 = MockProduct().product(siteID: sampleSiteID, productID: 2, dateCreated: laterDate, name: "zap!")
-        storage.insertSampleProduct(readOnlyProduct: product2)
+        storageManager.insertSampleProduct(readOnlyProduct: product2)
 
         // Act
-        let resultsController = ResultsController<StorageProduct>(viewContext: viewContext,
+        let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                   matching: sampleProductsPredicate,
                                                                   sortOrder: .dateDescending)
         try? resultsController.performFetch()
@@ -118,12 +112,12 @@ final class ResultsController_StorageProductTests: XCTestCase {
     func testProductResultsControllerUpdateWithAscendingNameSortOrder() {
         // Arrange
         let product1 = MockProduct().product(siteID: sampleSiteID, productID: 1, name: "fun house")
-        storage.insertSampleProduct(readOnlyProduct: product1)
+        storageManager.insertSampleProduct(readOnlyProduct: product1)
 
         let product2 = MockProduct().product(siteID: sampleSiteID, productID: 2, name: "woo")
-        storage.insertSampleProduct(readOnlyProduct: product2)
+        storageManager.insertSampleProduct(readOnlyProduct: product2)
 
-        let resultsController = ResultsController<StorageProduct>(viewContext: viewContext,
+        let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                   matching: sampleProductsPredicate,
                                                                   sortOrder: .nameDescending)
         try? resultsController.performFetch()
@@ -140,12 +134,12 @@ final class ResultsController_StorageProductTests: XCTestCase {
     func testProductResultsControllerUpdateWithDescendingNameSortOrder() {
         // Arrange
         let product1 = MockProduct().product(siteID: sampleSiteID, productID: 1, name: "Zap")
-        storage.insertSampleProduct(readOnlyProduct: product1)
+        storageManager.insertSampleProduct(readOnlyProduct: product1)
 
         let product2 = MockProduct().product(siteID: sampleSiteID, productID: 2, name: "fun house")
-        storage.insertSampleProduct(readOnlyProduct: product2)
+        storageManager.insertSampleProduct(readOnlyProduct: product2)
 
-        let resultsController = ResultsController<StorageProduct>(viewContext: viewContext,
+        let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                   matching: sampleProductsPredicate,
                                                                   sortOrder: .nameAscending)
         try? resultsController.performFetch()
@@ -167,13 +161,13 @@ final class ResultsController_StorageProductTests: XCTestCase {
         let laterDate = Date(timeIntervalSince1970: 1593251229)
 
         let product1 = MockProduct().product(siteID: sampleSiteID, productID: 1, dateCreated: laterDate, name: "fun house")
-        storage.insertSampleProduct(readOnlyProduct: product1)
+        storageManager.insertSampleProduct(readOnlyProduct: product1)
 
 
         let product2 = MockProduct().product(siteID: sampleSiteID, productID: 2, dateCreated: earlierDate, name: "woo")
-        storage.insertSampleProduct(readOnlyProduct: product2)
+        storageManager.insertSampleProduct(readOnlyProduct: product2)
 
-        let resultsController = ResultsController<StorageProduct>(viewContext: viewContext,
+        let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                   matching: sampleProductsPredicate,
                                                                   sortOrder: .nameDescending)
         try? resultsController.performFetch()
@@ -195,12 +189,12 @@ final class ResultsController_StorageProductTests: XCTestCase {
         let laterDate = Date(timeIntervalSince1970: 1593251229)
 
         let product1 = MockProduct().product(siteID: sampleSiteID, productID: 1, dateCreated: earlierDate, name: "Zap")
-        storage.insertSampleProduct(readOnlyProduct: product1)
+        storageManager.insertSampleProduct(readOnlyProduct: product1)
 
         let product2 = MockProduct().product(siteID: sampleSiteID, productID: 2, dateCreated: laterDate, name: "fun house")
-        storage.insertSampleProduct(readOnlyProduct: product2)
+        storageManager.insertSampleProduct(readOnlyProduct: product2)
 
-        let resultsController = ResultsController<StorageProduct>(viewContext: viewContext,
+        let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                   matching: sampleProductsPredicate,
                                                                   sortOrder: .nameAscending)
         try? resultsController.performFetch()

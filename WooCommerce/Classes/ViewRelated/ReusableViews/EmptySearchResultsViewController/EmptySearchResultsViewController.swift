@@ -5,8 +5,7 @@ import UIKit
 ///
 /// This is generally used with `SearchUICommand`.
 ///
-final class EmptySearchResultsViewController: UIViewController {
-    
+final class EmptySearchResultsViewController: UIViewController, KeyboardFrameAdjustmentProvider {
     @IBOutlet private var messageLabel: UILabel! {
         didSet {
             // Remove dummy text in Interface Builder
@@ -23,6 +22,9 @@ final class EmptySearchResultsViewController: UIViewController {
         messageLabel.font
     }
 
+    /// Required implementation by `KeyboardFrameAdjustmentProvider`.
+    var additionalKeyboardFrameHeight: CGFloat = 0
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -36,6 +38,10 @@ final class EmptySearchResultsViewController: UIViewController {
     }
 
     private func verticallyAlignStackViewUsing(keyboardHeight: CGFloat) {
+        // Adjust the keyboard height using any adjustment given by a parent ViewController
+        // (e.g. SearchViewController).
+        let keyboardHeight = keyboardHeight + additionalKeyboardFrameHeight
+
         // Because this is a single Center-Y constraint, we only need to deduct half of the
         // keyboard height. This is like deducting 50% of the height from the top and the bottom.
         let heightToDeduct = keyboardHeight * 0.5

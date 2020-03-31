@@ -12,6 +12,7 @@ final class EmptySearchResultsViewController: UIViewController, KeyboardFrameAdj
             messageLabel.text = nil
         }
     }
+    @IBOutlet private var imageView: UIImageView!
     @IBOutlet private var stackViewCenterYConstraint: NSLayoutConstraint!
 
     private lazy var keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: { [weak self] in

@@ -7,7 +7,7 @@ import struct Yosemite.OrderStatus
 ///
 /// This shows a list of `OrderStatus` that the user can pick to filter Orders by status.
 ///
-final class OrderSearchStarterViewController: UIViewController {
+final class OrderSearchStarterViewController: UIViewController, KeyboardFrameAdjustmentProvider {
     private lazy var analytics = ServiceLocator.analytics
 
     @IBOutlet private var tableView: UITableView!
@@ -17,6 +17,9 @@ final class OrderSearchStarterViewController: UIViewController {
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
         KeyboardFrameObserver(onKeyboardFrameUpdate: handleKeyboardFrameUpdate(keyboardFrame:))
     }()
+
+    /// Required implementation for `KeyboardFrameAdjustmentProvider`.
+    var additionalKeyboardFrameHeight: CGFloat = 0
 
     init() {
         super.init(nibName: type(of: self).nibName, bundle: nil)

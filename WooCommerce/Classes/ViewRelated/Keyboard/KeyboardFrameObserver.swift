@@ -4,6 +4,10 @@ import UIKit
 struct KeyboardFrameObserver {
     private let onKeyboardFrameUpdate: OnKeyboardFrameUpdate
 
+    /// Provides the last known keyboard state.
+    ///
+    /// This will only be used for sending an initial event.
+    ///
     private let keyboardStateProvider: KeyboardStateProviding
 
     /// Notifies the closure owner about any keyboard frame change.

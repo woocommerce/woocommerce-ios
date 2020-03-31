@@ -1,5 +1,6 @@
 import XCTest
 @testable import Yosemite
+@testable import Storage
 @testable import Networking
 
 
@@ -9,6 +10,12 @@ final class ProductCategoryStoreTests: XCTestCase {
     /// Mockup Network: Allows us to inject predefined responses!
     ///
     private var network: MockupNetwork!
+
+    /// Convenience Property: Returns the StorageType associated with the main thread.
+    ///
+    private var viewStorage: StorageType {
+        return storageManager.viewStorage
+    }
 
     /// Store
     ///
@@ -47,16 +54,14 @@ final class ProductCategoryStoreTests: XCTestCase {
         // Given a stubed product-categories network response
         let expectation = self.expectation(description: #function)
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "categories-all")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 0)
 
         // When dispatching a `synchronizeProductCategories` action
         let action = ProductCategoryAction.synchronizeProductCategories(siteID: sampleSiteID,
                                                                      pageNumber: defaultPageNumber,
-                                                                     pageSize: defaultPageSize) { categories, error in
+                                                                     pageSize: defaultPageSize) { error in
             // Then a valid set of categories should be returned
-            guard let categories = categories else {
-                return XCTFail("Categories should not be nil.")
-            }
-            XCTAssertFalse(categories.isEmpty)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCategory.self), 2)
             XCTAssertNil(error)
             expectation.fulfill()
         }
@@ -69,13 +74,14 @@ final class ProductCategoryStoreTests: XCTestCase {
         // Given a stubed generic-error network response
         let expectation = self.expectation(description: #function)
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "generic_error")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 0)
 
         // When dispatching a `synchronizeProductCategories` action
-        let action = ProductCategoryAction.synchronizeProductCategories(siteID: sampleSiteID,
+        let action = ProductCategoryAction.retrieveProductCategories(siteID: sampleSiteID,
                                                                      pageNumber: defaultPageNumber,
-                                                                     pageSize: defaultPageSize) { categories, error in
+                                                                     pageSize: defaultPageSize) { error in
             // Then no categories should be returned
-            XCTAssertNil(categories)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCategory.self), 0)
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -87,13 +93,14 @@ final class ProductCategoryStoreTests: XCTestCase {
     func testRetrieveProductCategoriesReturnsErrorUponEmptyResponse() {
         // Given a an empty network response
         let expectation = self.expectation(description: #function)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 0)
 
         // When dispatching a `synchronizeProductCategories` action
-        let action = ProductCategoryAction.synchronizeProductCategories(siteID: sampleSiteID,
+        let action = ProductCategoryAction.retrieveProductCategories(siteID: sampleSiteID,
                                                                      pageNumber: defaultPageNumber,
-                                                                     pageSize: defaultPageSize) { categories, error in
+                                                                     pageSize: defaultPageSize) { error in
             // Then no categories should be returned
-            XCTAssertNil(categories)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCategory.self), 0)
             XCTAssertNotNil(error)
             expectation.fulfill()
         }

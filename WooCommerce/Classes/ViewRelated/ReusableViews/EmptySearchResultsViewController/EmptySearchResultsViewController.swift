@@ -39,14 +39,23 @@ final class EmptySearchResultsViewController: UIViewController, KeyboardFrameAdj
     }
 
     private func verticallyAlignStackViewUsing(keyboardHeight: CGFloat) {
-        // Adjust the keyboard height using any adjustment given by a parent ViewController
-        // (e.g. SearchViewController).
-        let keyboardHeight = keyboardHeight + additionalKeyboardFrameHeight
+        let constraintConstant: CGFloat = {
+            // Reset the constraint if the keyboard is not shown.
+            guard keyboardHeight > 0 else {
+                return 0
+            }
 
-        // Because this is a single Center-Y constraint, we only need to deduct half of the
-        // keyboard height. This is like deducting 50% of the height from the top and the bottom.
-        let heightToDeduct = keyboardHeight * 0.5
+            // Adjust the keyboard height using any adjustment given by a parent ViewController
+            // (e.g. SearchViewController).
+            let keyboardHeight = keyboardHeight + additionalKeyboardFrameHeight
 
-        stackViewCenterYConstraint.constant = 0 - heightToDeduct
+            // Because this is a single Center-Y constraint, we only need to deduct half of the
+            // keyboard height. This is like deducting 50% of the height from the top and the bottom.
+            let heightToDeduct = keyboardHeight * 0.5
+
+            return 0 - heightToDeduct
+        }()
+
+        stackViewCenterYConstraint.constant = constraintConstant
     }
 }

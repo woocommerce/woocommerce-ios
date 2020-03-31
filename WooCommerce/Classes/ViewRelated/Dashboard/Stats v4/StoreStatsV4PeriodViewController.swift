@@ -628,11 +628,12 @@ private extension StoreStatsV4PeriodViewController {
         }
 
         guard firstStatsInterval.dateStart() != nil, firstStatsInterval.dateEnd() != nil else {
-            let errorInfo = "Failed to parse stats interval start date: \(firstStatsInterval.dateStart); end date: \(firstStatsInterval.dateEnd)"
+            let errorInfo = "Failed to parse stats v4 interval date(s)"
             let error = NSError(domain: "WooCommerceStatsV4ErrorDomain",
                                 code: 100,
                                 userInfo: [NSLocalizedDescriptionKey: errorInfo])
-            CrashLogging.logError(error, userInfo: ["Message": errorInfo], level: .error)
+            let errorMessage = "Failed to parse stats interval start date: \(firstStatsInterval.dateStart); end date: \(firstStatsInterval.dateEnd)"
+            CrashLogging.logError(error, userInfo: ["Message": errorMessage], level: .error)
             return
         }
 

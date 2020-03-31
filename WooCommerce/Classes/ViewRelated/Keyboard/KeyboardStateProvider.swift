@@ -18,16 +18,13 @@ final class KeyboardStateProvider: KeyboardStateProviding {
     init() {
         let nc = NotificationCenter.default
 
-        observations.append(
-            nc.addObserver(forName: UIResponder.keyboardDidShowNotification, object: nil, queue: nil) { [weak self] notification in
+        let notificationNames = [UIResponder.keyboardDidShowNotification, UIResponder.keyboardDidHideNotification]
+
+        observations.append(contentsOf: notificationNames.map { notificationName in
+            nc.addObserver(forName: notificationName, object: nil, queue: nil) { [weak self] notification in
                 self?.updateState(from: notification)
             }
-        )
-        observations.append(
-            nc.addObserver(forName: UIResponder.keyboardDidHideNotification, object: nil, queue: nil) { [weak self] notification in
-                self?.updateState(from: notification)
-            }
-        )
+        })
     }
 
     private func updateState(from notification: Notification) {

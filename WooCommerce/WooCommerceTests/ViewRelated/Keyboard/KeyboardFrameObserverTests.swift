@@ -100,7 +100,7 @@ final class KeyboardFrameObserverTests: XCTestCase {
         expectationForKeyboardFrame.isInverted = true
         waitForExpectations(timeout: 0.1)
     }
-    
+
     func testItCanSendInitialEvents() {
         // Arrange
         let expectedKeyboardState = KeyboardState(

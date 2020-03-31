@@ -75,4 +75,3 @@ private extension Notification {
         return rectAsValue.cgRectValue
     }
 }
-

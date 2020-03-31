@@ -45,15 +45,6 @@ class LoginPrologueViewController: LoginViewController {
         if let vc = segue.destination as? NUXButtonViewController {
             buttonViewController = vc
         }
-        else if let vc = segue.destination as? LoginPrologueSignupMethodViewController {
-            vc.transitioningDelegate = self
-
-            vc.appleTapped = { [weak self] in
-                self?.appleTapped()
-            }
-            vc.modalPresentationStyle = .custom
-        }
-
         else if let vc = segue.destination as? LoginPrologueLoginMethodViewController {
             vc.transitioningDelegate = self
             
@@ -143,6 +134,10 @@ class LoginPrologueViewController: LoginViewController {
             }
 
             self?.navigationController?.pushViewController(toVC, animated: true)
+        }
+
+        vc.appleTapped = { [weak self] in
+            self?.appleTapped()
         }
 
         navigationController?.present(vc, animated: true, completion: nil)

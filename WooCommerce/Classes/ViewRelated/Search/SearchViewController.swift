@@ -427,7 +427,9 @@ private extension SearchViewController {
               childController.parent == nil else {
             return
         }
-        
+
+        applyAdditionalKeyboardFrameHeightTo([childController])
+
         searchUICommand.configureEmptyStateViewControllerBeforeDisplay(viewController: childController,
                                                                        searchKeyword: keyword)
 

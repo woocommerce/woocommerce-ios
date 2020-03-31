@@ -11,7 +11,7 @@ class OrderStatsV4Interval_DateTests: XCTestCase {
                                             dateStart: dateStringInSiteTimeZone,
                                             dateEnd: dateStringInSiteTimeZone,
                                             subtotals: mockIntervalSubtotals)
-        [interval.dateStart(), interval.dateEnd()].forEach { date in
+        [interval.dateStart(), interval.dateEnd()].compactMap { $0 }.forEach { date in
             let dateComponents = Calendar.current.dateComponents(in: .current, from: date)
             XCTAssertEqual(dateComponents.year, 2019)
             XCTAssertEqual(dateComponents.month, 8)

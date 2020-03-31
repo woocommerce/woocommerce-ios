@@ -1383,7 +1383,6 @@
                         <outlet property="siteHeaderView" destination="vkO-HN-aFE" id="Eyg-MS-QDE"/>
                         <outlet property="submitButton" destination="YGE-OB-HmV" id="39T-xt-cuq"/>
                         <outlet property="usernameField" destination="ZUH-Y9-OaY" id="VLq-Va-EaD"/>
-                        <segue destination="bAd-Df-IzS" kind="show" identifier="show2FA" id="2Bq-Nv-ZkV"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mOF-Ry-81y" userLabel="First Responder" sceneMemberID="firstResponder"/>

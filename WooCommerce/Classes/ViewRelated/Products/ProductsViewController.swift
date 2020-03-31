@@ -65,6 +65,15 @@ final class ProductsViewController: UIViewController {
         return resultsController
     }()
 
+    private var sortOrder: ProductsSortOrder = .nameAscending {
+        didSet {
+            if sortOrder != oldValue {
+                resultsController.updateSortOrder(sortOrder)
+                syncingCoordinator.resynchronize {}
+            }
+        }
+    }
+
     /// Keep track of the (Autosizing Cell's) Height. This helps us prevent UI flickers, due to sizing recalculations.
     ///
     private var estimatedRowHeights = [IndexPath: CGFloat]()
@@ -315,9 +324,10 @@ private extension ProductsViewController {
     func createResultsController(siteID: Int64) -> ResultsController<StorageProduct> {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let descriptor = NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.localizedCompare(_:)))
 
-        return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+        return ResultsController<StorageProduct>(storageManager: storageManager,
+                                                 matching: predicate,
+                                                 sortOrder: sortOrder)
     }
 
     func configureResultsController(_ resultsController: ResultsController<StorageProduct>, onReload: @escaping () -> Void) {
@@ -433,7 +443,11 @@ private extension ProductsViewController {
     }
 
     @objc func sortButtonTapped() {
-        // TODO-2036: implement sorting products
+        UIAlertController.presentSortProductsActionSheet(viewController: self, onSelect: { [weak self] sortOrder in
+            self?.sortOrder = sortOrder
+        }, onCancel: { [weak self] in
+            self?.dismiss(animated: true, completion: nil)
+        })
     }
 
     @objc func filterButtonTapped() {
@@ -521,7 +535,8 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
         let action = ProductAction
             .synchronizeProducts(siteID: siteID,
                                  pageNumber: pageNumber,
-                                 pageSize: pageSize) { [weak self] error in
+                                 pageSize: pageSize,
+                                 sortOrder: sortOrder) { [weak self] error in
                                     guard let self = self else {
                                         return
                                     }

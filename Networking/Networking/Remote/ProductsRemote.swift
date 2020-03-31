@@ -155,6 +155,7 @@ public class ProductsRemote: Remote {
 //
 public extension ProductsRemote {
     enum OrderKey {
+        case date
         case name
     }
 
@@ -193,6 +194,8 @@ public extension ProductsRemote {
 private extension ProductsRemote.OrderKey {
     var value: String {
         switch self {
+        case .date:
+            return "date"
         case .name:
             return "title"
         }

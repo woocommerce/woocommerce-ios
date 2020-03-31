@@ -4,6 +4,8 @@ import UIKit
 struct KeyboardFrameObserver {
     private let onKeyboardFrameUpdate: OnKeyboardFrameUpdate
 
+    private let keyboardStateProvider: KeyboardStateProviding
+
     /// Notifies the closure owner about any keyboard frame change.
     /// Note that the frame is based on the keyboard window coordinate.
     typealias OnKeyboardFrameUpdate = (_ keyboardFrame: CGRect) -> Void
@@ -19,8 +21,10 @@ struct KeyboardFrameObserver {
     }
 
     init(notificationCenter: NotificationCenter = NotificationCenter.default,
+         keyboardStateProvider: KeyboardStateProviding = ServiceLocator.keyboardStateProvider,
          onKeyboardFrameUpdate: @escaping OnKeyboardFrameUpdate) {
         self.notificationCenter = notificationCenter
+        self.keyboardStateProvider = keyboardStateProvider
         self.onKeyboardFrameUpdate = onKeyboardFrameUpdate
     }
 

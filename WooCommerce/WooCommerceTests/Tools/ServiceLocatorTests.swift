@@ -66,6 +66,11 @@ final class ServiceLocatorTests: XCTestCase {
         XCTAssertNotNil(ServiceLocator.fileLogger)
     }
 
+    func testServiceLocatorProvidesKeyboardStateProvider() {
+        XCTAssertNotNil(ServiceLocator.keyboardStateProvider)
+        XCTAssertTrue(ServiceLocator.keyboardStateProvider is KeyboardStateProvider)
+    }
+
     func testFileLoggerDefaultsToDDFileLogger() {
         let fileLogger = ServiceLocator.fileLogger
 

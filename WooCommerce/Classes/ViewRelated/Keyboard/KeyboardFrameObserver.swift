@@ -28,6 +28,10 @@ struct KeyboardFrameObserver {
         self.onKeyboardFrameUpdate = onKeyboardFrameUpdate
     }
 
+    /// Start observing for keyboard notifications and notify subscribers when they arrive.
+    ///
+    /// - Parameter sendInitialEvent: If true, the subscriber will be immediately notified
+    ///                               using the last known keyboard frame.
     mutating func startObservingKeyboardFrame(sendInitialEvent: Bool = false) {
         var observer = self
         notificationCenter.addObserver(forName: UIResponder.keyboardWillShowNotification,

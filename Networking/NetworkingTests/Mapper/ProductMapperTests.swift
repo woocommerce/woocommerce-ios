@@ -105,6 +105,18 @@ class ProductMapperTests: XCTestCase {
         XCTAssertEqual(product.productType, ProductType(rawValue: "booking"))
     }
 
+    /// Verifies that the `salePrice` field of the Product are parsed correctly when the product is on sale, and the sale price is an empty string
+    ///
+    func testThatProductSalePriceIsProperlyParsed() {
+        guard let product = mapLoadProductOnSaleWithEmptySalePriceResponse() else {
+            XCTFail("Failed to parse product")
+            return
+        }
+
+        XCTAssertEqual(product.salePrice, "0")
+        XCTAssertTrue(product.onSale)
+    }
+
     /// Test that ProductTypeKey converts to a ProductType enum properly.
     ///
     func testThatProductTypeKeyConvertsToEnumProperly() {
@@ -235,6 +247,12 @@ private extension ProductMapperTests {
     ///
     func mapLoadProductResponse() -> Product? {
         return mapProduct(from: "product")
+    }
+
+    /// Returns the ProductMapper output upon receiving `product` on sale, with empty sale price
+    ///
+    func mapLoadProductOnSaleWithEmptySalePriceResponse() -> Product? {
+        return mapProduct(from: "product-on-sale-with-empty-sale-price")
     }
 
     /// Returns the ProductMapper output upon receiving `variation-as-product`

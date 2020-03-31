@@ -13,9 +13,9 @@ public typealias ResultsControllerMutableType = NSManagedObject & ReadOnlyConver
 //
 public class ResultsController<T: ResultsControllerMutableType> {
 
-    /// Managed Object Context used to fetch objects.
+    /// The `StorageType` used to fetch objects.
     ///
-    private let viewContext: NSManagedObjectContext
+    private let viewStorage: StorageType
 
     /// keyPath on resulting objects that returns the section name.
     ///
@@ -31,7 +31,11 @@ public class ResultsController<T: ResultsControllerMutableType> {
 
     /// Results's Sort Descriptor.
     ///
-    private let sortDescriptors: [NSSortDescriptor]?
+    public var sortDescriptors: [NSSortDescriptor]? {
+        didSet {
+            refreshFetchedObjects(sortDescriptors: sortDescriptors)
+        }
+    }
 
     /// NSFetchRequest instance used to do the fetching.
     ///
@@ -45,10 +49,11 @@ public class ResultsController<T: ResultsControllerMutableType> {
     /// Internal NSFetchedResultsController Instance.
     ///
     private lazy var controller: NSFetchedResultsController<T> = {
-        return NSFetchedResultsController(fetchRequest: fetchRequest,
-                                          managedObjectContext: viewContext,
-                                          sectionNameKeyPath: sectionNameKeyPath,
-                                          cacheName: nil)
+        viewStorage.createFetchedResultsController(
+                fetchRequest: fetchRequest,
+                sectionNameKeyPath: sectionNameKeyPath,
+                cacheName: nil
+        )
     }()
 
     /// FetchedResultsController Delegate Wrapper.
@@ -83,12 +88,12 @@ public class ResultsController<T: ResultsControllerMutableType> {
 
     /// Designated Initializer.
     ///
-    public init(viewContext: NSManagedObjectContext,
+    public init(viewStorage: StorageType,
                 sectionNameKeyPath: String? = nil,
                 matching predicate: NSPredicate? = nil,
                 sortedBy descriptors: [NSSortDescriptor]) {
 
-        self.viewContext = viewContext
+        self.viewStorage = viewStorage
         self.sectionNameKeyPath = sectionNameKeyPath
         self.predicate = predicate
         self.sortDescriptors = descriptors
@@ -100,12 +105,12 @@ public class ResultsController<T: ResultsControllerMutableType> {
 
     /// Convenience Initializer.
     ///
-    public convenience init(storageManager: CoreDataManager,
+    public convenience init(storageManager: StorageManagerType,
                             sectionNameKeyPath: String? = nil,
                             matching predicate: NSPredicate? = nil,
                             sortedBy descriptors: [NSSortDescriptor]) {
 
-        self.init(viewContext: storageManager.persistentContainer.viewContext,
+        self.init(viewStorage: storageManager.viewStorage,
                   sectionNameKeyPath: sectionNameKeyPath,
                   matching: predicate,
                   sortedBy: descriptors)
@@ -178,6 +183,13 @@ public class ResultsController<T: ResultsControllerMutableType> {
     ///
     private func refreshFetchedObjects(predicate: NSPredicate?) {
         controller.fetchRequest.predicate = predicate
+        try? controller.performFetch()
+    }
+
+    /// Refreshes all of the Fetched Objects, so that the new sort descriptors are applied.
+    ///
+    private func refreshFetchedObjects(sortDescriptors: [NSSortDescriptor]?) {
+        controller.fetchRequest.sortDescriptors = sortDescriptors
         try? controller.performFetch()
     }
 

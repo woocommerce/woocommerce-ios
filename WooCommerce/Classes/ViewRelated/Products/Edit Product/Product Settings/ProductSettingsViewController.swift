@@ -9,8 +9,16 @@ final class ProductSettingsViewController: UIViewController {
 
     private let viewModel: ProductSettingsViewModel
 
-    init(product: Product) {
+    // Completion callback
+    //
+    typealias Completion = (_ productSettings: ProductSettings) -> Void
+    private let onCompletion: Completion
+
+    /// Init
+    ///
+    init(product: Product, completion: @escaping Completion) {
         viewModel = ProductSettingsViewModel(product: product)
+        onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -23,6 +31,9 @@ final class ProductSettingsViewController: UIViewController {
         configureNavigationBar()
         configureMainView()
         configureTableView()
+        viewModel.onReload = {  [weak self] in
+            self?.tableView.reloadData()
+        }
     }
 
 }
@@ -34,6 +45,7 @@ private extension ProductSettingsViewController {
     func configureNavigationBar() {
         title = NSLocalizedString("Product Settings", comment: "Product Settings navigation title")
 
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(completeUpdating))
         removeNavigationBackBarButtonText()
     }
 
@@ -50,6 +62,30 @@ private extension ProductSettingsViewController {
 
         tableView.backgroundColor = .listBackground
         tableView.removeLastCellSeparator()
+    }
+}
+
+// MARK: - Navigation actions handling
+//
+extension ProductSettingsViewController {
+
+    override func shouldPopOnBackButton() -> Bool {
+        if viewModel.hasUnsavedChanges() {
+            presentBackNavigationActionSheet()
+            return false
+        }
+        return true
+    }
+
+    @objc private func completeUpdating() {
+        onCompletion(viewModel.productSettings)
+        navigationController?.popViewController(animated: true)
+    }
+
+    private func presentBackNavigationActionSheet() {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        })
     }
 }
 
@@ -82,6 +118,8 @@ extension ProductSettingsViewController: UITableViewDataSource {
 extension ProductSettingsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+
+        viewModel.handleCellTap(at: indexPath, sourceViewController: self)
     }
 
 

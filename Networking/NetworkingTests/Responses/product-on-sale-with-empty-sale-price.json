@@ -1,0 +1,228 @@
+{
+    "data": {
+            "dev_note": "THIS FILE IS SIMILAR TO product.json BUT THE SALE PRICE IS ZERO, AND THE PRODUCT IS ON SALE",
+            "id": 282,
+            "name": "Book the Green Room",
+            "slug": "book-the-green-room",
+            "permalink": "https://example.com/product/book-the-green-room/",
+            "date_created": "2019-02-19T17:33:31",
+            "date_created_gmt": "2019-02-19T17:33:31",
+            "date_modified": "2019-02-19T17:48:01",
+            "date_modified_gmt": "2019-02-19T17:48:01",
+            "type": "booking",
+            "status": "publish",
+            "featured": false,
+            "catalog_visibility": "visible",
+            "description": "<p>This is the party room!</p>\n",
+            "short_description": "[contact-form]\n<p>The green room&#8217;s max capacity is 30 people. Reserving the date / time of your event is free. We can also accommodate large groups, with seating for 85 board game players at a time. If you have a large group, let us know and we&#8217;ll send you our large group rate.</p>\n<p>GROUP RATES</p>\n<p>Reserve your event for up to 30 guests for $100.</p>\n",
+            "sku": "",
+            "price": "0",
+            "regular_price": "",
+            "sale_price": "",
+            "date_on_sale_from": null,
+            "date_on_sale_from_gmt": "2019-10-15T21:30:00",
+            "date_on_sale_to": null,
+            "date_on_sale_to_gmt": "2019-10-27T21:29:59",
+            "price_html": "Free",
+            "on_sale": true,
+            "purchasable": true,
+            "total_sales": 0,
+            "virtual": true,
+            "downloadable": false,
+            "downloads": [],
+            "download_limit": -1,
+            "download_expiry": -1,
+            "external_url": "http://somewhere.com",
+            "button_text": "",
+            "tax_status": "taxable",
+            "tax_class": "",
+            "manage_stock": false,
+            "stock_quantity": null,
+            "stock_status": "instock",
+            "backorders": "no",
+            "backorders_allowed": false,
+            "backordered": false,
+            "sold_individually": true,
+            "weight": "213",
+            "dimensions": {
+                "length": "12",
+                "width": "33",
+                "height": "54"
+            },
+            "shipping_required": false,
+            "shipping_taxable": false,
+            "shipping_class": "",
+            "shipping_class_id": 0,
+            "reviews_allowed": true,
+            "average_rating": "4.30",
+            "rating_count": 23,
+            "related_ids": [
+                31,
+                22,
+                369,
+                414,
+                56
+            ],
+            "upsell_ids":  [
+                99,
+                1234566
+            ],
+            "cross_sell_ids":  [
+                1234,
+                234234,
+                3
+            ],
+            "parent_id": 0,
+            "purchase_note": "Thank you!",
+            "categories": [
+                {
+                    "id": 36,
+                    "name": "Events",
+                    "slug": "events"
+                }
+            ],
+            "tags": [
+                {
+                    "id": 37,
+                    "name": "room",
+                    "slug": "room"
+                },
+                {
+                    "id": 38,
+                    "name": "party room",
+                    "slug": "party-room"
+                },
+                {
+                    "id": 39,
+                    "name": "30",
+                    "slug": "30"
+                },
+                {
+                    "id": 40,
+                    "name": "20+",
+                    "slug": "20"
+                },
+                {
+                    "id": 41,
+                    "name": "meeting room",
+                    "slug": "meeting-room"
+                },
+                {
+                    "id": 42,
+                    "name": "meetings",
+                    "slug": "meetings"
+                },
+                {
+                    "id": 43,
+                    "name": "parties",
+                    "slug": "parties"
+                },
+                {
+                    "id": 44,
+                    "name": "graduation",
+                    "slug": "graduation"
+                },
+                {
+                    "id": 45,
+                    "name": "birthday party",
+                    "slug": "birthday-party"
+                }
+            ],
+            "images": [
+                {
+                    "id": 19,
+                    "date_created": "2018-01-26T21:49:45",
+                    "date_created_gmt": "2018-01-26T21:49:45",
+                    "date_modified": "2018-01-26T21:50:11",
+                    "date_modified_gmt": "2018-01-26T21:50:11",
+                    "src": "https://somewebsite.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/01/vneck-tee.jpg.png",
+                    "name": "Vneck Tshirt",
+                    "alt": ""
+                }
+            ],
+            "attributes": [
+                {
+                    "id": 0,
+                    "name": "Color",
+                    "position": 1,
+                    "visible": true,
+                    "variation": true,
+                    "options": [
+                        "Purple",
+                        "Yellow",
+                        "Hot Pink",
+                        "Lime Green",
+                        "Teal"
+                    ]
+                },
+                {
+                    "id": 0,
+                    "name": "Size",
+                    "position": 0,
+                    "visible": true,
+                    "variation": true,
+                    "options": [
+                        "Small",
+                        "Medium",
+                        "Large"
+                    ]
+                }
+            ],
+            "default_attributes": [
+                {
+                    "id": 0,
+                    "name": "Color",
+                    "option": "Purple"
+                },
+                {
+                    "id": 0,
+                    "name": "Size",
+                    "option": "Medium"
+                }
+            ],
+            "variations": [
+                192,
+                194,
+                193
+            ],
+            "grouped_products": [],
+            "menu_order": 0,
+            "meta_data": [
+                {
+                    "id": 6779,
+                    "key": "_wpas_done_all",
+                    "value": "1"
+                },
+                {
+                    "id": 6780,
+                    "key": "_g_feedback_shortcode_5368fb4ef32094b7055b8732bb77a337bdd9331d",
+                    "value": "[contact-field label=\"Name\" type=\"name\" required=\"1\"][contact-field label=\"Email\" type=\"email\" required=\"1\"][contact-field label=\"Phone Number\" type=\"text\" required=\"1\"][contact-field label=\"Group or Organization Name (if any)\" type=\"text\"][contact-field label=\"Special Requests / Event Notes\" type=\"textarea\"]"
+                },
+                {
+                    "id": 6781,
+                    "key": "_g_feedback_shortcode_atts_5368fb4ef32094b7055b8732bb77a337bdd9331d",
+                    "value": {
+                        "to": "thuy.copeland@automattic.com",
+                        "subject": "Booking Event",
+                        "show_subject": "no",
+                        "widget": 0,
+                        "id": 282,
+                        "submit_button_text": "Submit"
+                    }
+                }
+            ],
+            "jetpack_publicize_connections": [],
+            "_links": {
+                "self": [
+                    {
+                        "href": "https://example.com/wp-json/wc/v3/products/282"
+                    }
+                ],
+                "collection": [
+                    {
+                        "href": "https://example.com/wp-json/wc/v3/products"
+                    }
+                ]
+            }
+    }
+}

@@ -215,7 +215,12 @@ private extension ProductFormViewController {
     }
 
     func displayProductSettings() {
-        let viewController = ProductSettingsViewController(product: product)
+        let viewController = ProductSettingsViewController(product: product) { [weak self] (productSettings) in
+            guard let self = self else {
+                return
+            }
+            self.product = self.productUpdater.productSettingsUpdated(status: productSettings.status)
+        }
         navigationController?.pushViewController(viewController, animated: true)
     }
 }
@@ -278,6 +283,9 @@ extension ProductFormViewController: UITableViewDelegate {
             case .inventory:
                 ServiceLocator.analytics.track(.productDetailViewInventorySettingsTapped)
                 editInventorySettings()
+            case .categories:
+                // TODO-2000
+                break
             case .briefDescription:
                 // TODO-1879: Edit Products M2 analytics
                 editBriefDescription()

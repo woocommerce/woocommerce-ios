@@ -487,8 +487,6 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
 
-    // TODO-2021: support zero price.
-    /*
     func testCompletingUpdatingWithZeroSalePrice() {
         // Arrange
         let product = MockProduct().product()
@@ -512,7 +510,6 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         })
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
-    */
 
     // `hasUnsavedChanges`
 

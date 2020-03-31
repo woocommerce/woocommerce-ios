@@ -325,7 +325,7 @@ private extension ProductsViewController {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
 
-        return ResultsController<StorageProduct>(viewContext: storageManager.persistentContainer.viewContext,
+        return ResultsController<StorageProduct>(storageManager: storageManager,
                                                  matching: predicate,
                                                  sortOrder: sortOrder)
     }

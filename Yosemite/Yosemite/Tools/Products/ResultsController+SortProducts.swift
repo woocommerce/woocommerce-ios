@@ -2,12 +2,12 @@ import CoreData
 import Storage
 
 extension ResultsController where T: StorageProduct {
-    public convenience init(viewContext: NSManagedObjectContext,
+    public convenience init(storageManager: StorageManagerType,
                             sectionNameKeyPath: String? = nil,
                             matching predicate: NSPredicate? = nil,
                             sortOrder: ProductsSortOrder) {
 
-        self.init(viewContext: viewContext,
+        self.init(storageManager: storageManager,
                   sectionNameKeyPath: sectionNameKeyPath,
                   matching: predicate,
                   sortedBy: sortOrder.sortDescriptors ?? [])

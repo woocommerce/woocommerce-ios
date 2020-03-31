@@ -379,13 +379,10 @@ private extension ProductStore {
     ///
     func handleProductCategories(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
         let siteID = readOnlyProduct.siteID
-        let productID = readOnlyProduct.productID
 
         // Upsert the categories from the read-only product
         for readOnlyCategory in readOnlyProduct.categories {
-            if let existingStorageCategory = storage.loadProductCategory(siteID: siteID,
-                                                                         productID: productID,
-                                                                         categoryID: readOnlyCategory.categoryID) {
+            if let existingStorageCategory = storage.loadProductCategory(siteID: siteID, categoryID: readOnlyCategory.categoryID) {
                 existingStorageCategory.update(with: readOnlyCategory)
             } else {
                 let newStorageCategory = storage.insertNewObject(ofType: Storage.ProductCategory.self)

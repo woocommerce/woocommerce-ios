@@ -5,6 +5,8 @@ import Yosemite
 
 class Product_ProductFormTests: XCTestCase {
 
+    let sampleSiteID: Int64 = 109
+
     func testTrimmedFullDescriptionWithLeadingNewLinesAndHTMLTags() {
         let description = "\n\n\n  <p>This is the party room!</p>\n"
         let product = sampleProduct(description: description)
@@ -50,12 +52,14 @@ private extension Product_ProductFormTests {
 
     func sampleCategory(name: String = "") -> ProductCategory {
         return ProductCategory(categoryID: Int64.random(in: 0 ..< Int64.max),
+                               siteID: sampleSiteID,
+                               parentID: 0,
                                name: name,
                                slug: "")
     }
 
     func sampleProduct(description: String? = "", briefDescription: String? = "", categories: [ProductCategory] = []) -> Product {
-        return Product(siteID: 109,
+        return Product(siteID: sampleSiteID,
                        productID: 177,
                        name: "Book the Green Room",
                        slug: "book-the-green-room",

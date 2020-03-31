@@ -28,7 +28,7 @@ struct KeyboardFrameObserver {
         self.onKeyboardFrameUpdate = onKeyboardFrameUpdate
     }
 
-    mutating func startObservingKeyboardFrame() {
+    mutating func startObservingKeyboardFrame(sendInitialEvent: Bool = false) {
         var observer = self
         notificationCenter.addObserver(forName: UIResponder.keyboardWillShowNotification,
                                        object: nil,
@@ -40,6 +40,10 @@ struct KeyboardFrameObserver {
                                        object: nil,
                                        queue: nil) { notification in
                                         observer.keyboardWillHide(notification)
+        }
+
+        if sendInitialEvent {
+            keyboardFrame = keyboardStateProvider.state.frameEnd
         }
     }
 }

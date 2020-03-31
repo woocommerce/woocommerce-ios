@@ -7,18 +7,12 @@ extension OrderStatsV4Interval {
     }
 
     /// Returns the interval start date by parsing the `dateStart` string.
-    public func dateStart() -> Date {
-        guard let date = dateFormatter.date(from: dateStart) else {
-            fatalError("Failed to parse date: \(dateStart)")
-        }
-        return date
+    public func dateStart() -> Date? {
+        return dateFormatter.date(from: dateStart)
     }
 
     /// Returns the interval end date by parsing the `dateEnd` string.
-    public func dateEnd() -> Date {
-        guard let date = dateFormatter.date(from: dateEnd) else {
-            fatalError("Failed to parse date: \(dateEnd)")
-        }
-        return date
+    public func dateEnd() -> Date? {
+        return dateFormatter.date(from: dateEnd)
     }
 }

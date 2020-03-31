@@ -1,3 +1,4 @@
+import AutomatticTracks
 import Charts
 import UIKit
 import Yosemite
@@ -34,7 +35,7 @@ class StoreStatsV4PeriodViewController: UIViewController {
     private var orderStatsIntervals: [OrderStatsV4Interval] = [] {
         didSet {
             let helper = StoreStatsV4ChartAxisHelper()
-            let intervalDates = orderStatsIntervals.map({ $0.dateStart() })
+            let intervalDates = orderStatsIntervals.compactMap { $0.dateStart() }
             orderStatsIntervalLabels = helper.generateLabelText(for: intervalDates,
                                                                 timeRange: timeRange,
                                                                 siteTimezone: siteTimezone)
@@ -504,7 +505,9 @@ private extension StoreStatsV4PeriodViewController {
             timeRangeBarView.updateUI(viewModel: timeRangeBarViewModel)
             return
         }
-        let date = orderStatsIntervals[selectedIndex].dateStart()
+        guard let date = orderStatsIntervals[selectedIndex].dateStart() else {
+            return
+        }
         let timeRangeBarViewModel = StatsTimeRangeBarViewModel(startDate: startDate,
                                                                endDate: endDate,
                                                                selectedDate: date,
@@ -614,9 +617,26 @@ private extension StoreStatsV4PeriodViewController {
 
     func updateOrderDataIfNeeded() {
         orderStatsIntervals = orderStats?.intervals.sorted(by: { (lhs, rhs) -> Bool in
-            return lhs.dateStart() < rhs.dateStart()
+            guard let lhsDateStart = lhs.dateStart(), let rhsDateStart = rhs.dateStart() else {
+                return true
+            }
+            return lhsDateStart < rhsDateStart
         }) ?? []
-        if let startDate = orderStatsIntervals.first?.dateStart(),
+
+        guard let firstStatsInterval = orderStatsIntervals.first else {
+            return
+        }
+
+        guard firstStatsInterval.dateStart() != nil, firstStatsInterval.dateEnd() != nil else {
+            let errorInfo = "Failed to parse stats interval start date: \(firstStatsInterval.dateStart); end date: \(firstStatsInterval.dateEnd)"
+            let error = NSError(domain: "WooCommerceStatsV4ErrorDomain",
+                                code: 100,
+                                userInfo: [NSLocalizedDescriptionKey: errorInfo])
+            CrashLogging.logError(error, userInfo: ["Message": errorInfo], level: .error)
+            return
+        }
+
+        if let startDate = firstStatsInterval.dateStart(),
             let endDate = orderStatsIntervals.last?.dateStart() {
             let timeRangeBarViewModel = StatsTimeRangeBarViewModel(startDate: startDate,
                                                                    endDate: endDate,
@@ -746,13 +766,19 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func formattedAxisPeriodString(for item: OrderStatsV4Interval) -> String {
+        guard let dateStart = item.dateStart() else {
+            return ""
+        }
         let chartDateFormatter = timeRange.chartDateFormatter(siteTimezone: siteTimezone)
-        return chartDateFormatter.string(from: item.dateStart())
+        return chartDateFormatter.string(from: dateStart)
     }
 
     func formattedChartMarkerPeriodString(for item: OrderStatsV4Interval) -> String {
+        guard let dateStart = item.dateStart() else {
+            return ""
+        }
         let chartDateFormatter = timeRange.chartDateFormatter(siteTimezone: siteTimezone)
-        return chartDateFormatter.string(from: item.dateStart())
+        return chartDateFormatter.string(from: dateStart)
     }
 }
 

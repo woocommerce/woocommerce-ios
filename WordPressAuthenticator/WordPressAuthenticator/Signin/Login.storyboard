@@ -748,7 +748,6 @@
                         <outlet property="instructionLabel" destination="bBi-2N-RAh" id="NDi-pM-b0p"/>
                         <outlet property="passwordField" destination="BtS-3D-CIU" id="FjI-Ba-FDh"/>
                         <outlet property="submitButton" destination="E3x-LN-sUk" id="9eE-vi-xgc"/>
-                        <segue destination="bAd-Df-IzS" kind="show" identifier="show2FA" id="qLI-qX-rkG"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Z8b-3z-D46" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1447,7 +1446,6 @@
     <inferredMetricsTieBreakers>
         <segue reference="N3P-wt-Rn3"/>
         <segue reference="Njv-lY-Lyi"/>
-        <segue reference="2Bq-Nv-ZkV"/>
         <segue reference="UV4-XI-c0q"/>
         <segue reference="4SK-mG-U33"/>
         <segue reference="nCA-u7-fKm"/>

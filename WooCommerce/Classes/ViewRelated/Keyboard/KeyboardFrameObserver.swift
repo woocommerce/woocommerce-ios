@@ -4,6 +4,12 @@ import UIKit
 struct KeyboardFrameObserver {
     private let onKeyboardFrameUpdate: OnKeyboardFrameUpdate
 
+    /// Provides the last known keyboard state.
+    ///
+    /// This will only be used for sending an initial event.
+    ///
+    private let keyboardStateProvider: KeyboardStateProviding
+
     /// Notifies the closure owner about any keyboard frame change.
     /// Note that the frame is based on the keyboard window coordinate.
     typealias OnKeyboardFrameUpdate = (_ keyboardFrame: CGRect) -> Void
@@ -19,12 +25,18 @@ struct KeyboardFrameObserver {
     }
 
     init(notificationCenter: NotificationCenter = NotificationCenter.default,
+         keyboardStateProvider: KeyboardStateProviding = ServiceLocator.keyboardStateProvider,
          onKeyboardFrameUpdate: @escaping OnKeyboardFrameUpdate) {
         self.notificationCenter = notificationCenter
+        self.keyboardStateProvider = keyboardStateProvider
         self.onKeyboardFrameUpdate = onKeyboardFrameUpdate
     }
 
-    mutating func startObservingKeyboardFrame() {
+    /// Start observing for keyboard notifications and notify subscribers when they arrive.
+    ///
+    /// - Parameter sendInitialEvent: If true, the subscriber will be immediately notified
+    ///                               using the last known keyboard frame.
+    mutating func startObservingKeyboardFrame(sendInitialEvent: Bool = false) {
         var observer = self
         notificationCenter.addObserver(forName: UIResponder.keyboardWillShowNotification,
                                        object: nil,
@@ -36,6 +48,10 @@ struct KeyboardFrameObserver {
                                        object: nil,
                                        queue: nil) { notification in
                                         observer.keyboardWillHide(notification)
+        }
+
+        if sendInitialEvent {
+            keyboardFrame = keyboardStateProvider.state.frameEnd
         }
     }
 }

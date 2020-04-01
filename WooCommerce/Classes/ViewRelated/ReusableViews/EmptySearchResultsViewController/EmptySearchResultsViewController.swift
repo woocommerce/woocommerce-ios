@@ -36,6 +36,8 @@ final class EmptySearchResultsViewController: UIViewController, KeyboardFrameAdj
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        view.backgroundColor = .basicBackground
+
         messageLabel.applyBodyStyle()
 
         keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)

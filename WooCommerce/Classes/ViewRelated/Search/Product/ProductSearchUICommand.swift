@@ -34,10 +34,10 @@ final class ProductSearchUICommand: SearchUICommand {
                                                         searchKeyword: String) {
         let boldSearchKeyword = NSAttributedString(string: searchKeyword, attributes: [.font: viewController.messageFont.bold])
 
-        let format = NSLocalizedString("We're sorry, we couldn't find results for “#{search_text}”",
-                                       comment: "Message for empty Products search results. The #{search_text} is a placeholder for the text entered by the user..")
+        let format = NSLocalizedString("We're sorry, we couldn't find results for “%@”",
+                                       comment: "Message for empty Products search results. The %@ is a placeholder for the text entered by the user..")
         let message = NSMutableAttributedString(string: format)
-        message.replaceFirstOccurrence(of: "#{search_text}", with: boldSearchKeyword)
+        message.replaceFirstOccurrence(of: "%@", with: boldSearchKeyword)
 
         viewController.configure(message: message)
     }

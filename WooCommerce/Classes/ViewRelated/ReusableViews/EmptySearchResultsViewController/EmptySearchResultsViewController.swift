@@ -16,6 +16,8 @@ final class EmptySearchResultsViewController: UIViewController, KeyboardFrameAdj
     @IBOutlet private var imageView: UIImageView!
     @IBOutlet private var scrollView: UIScrollView!
 
+    @IBOutlet private var contentViewHeightConstraint: NSLayoutConstraint!
+
     private lazy var keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: { [weak self] frame in
         self?.handleKeyboardFrameUpdate(keyboardFrame: frame)
 //        self?.verticallyAlignStackViewUsing(keyboardHeight: $0.height)

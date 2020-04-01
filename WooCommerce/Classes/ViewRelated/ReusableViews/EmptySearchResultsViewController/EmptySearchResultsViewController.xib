@@ -10,6 +10,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="EmptySearchResultsViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
+                <outlet property="contentViewHeightConstraint" destination="j6E-vd-ZVT" id="vd1-ew-yqy"/>
                 <outlet property="imageView" destination="YZ8-4Q-SGO" id="0Oa-4c-NbW"/>
                 <outlet property="messageLabel" destination="h54-zO-thf" id="DJy-GP-8Ft"/>
                 <outlet property="scrollView" destination="4Fw-pj-dQ8" id="XTp-KA-UBh"/>

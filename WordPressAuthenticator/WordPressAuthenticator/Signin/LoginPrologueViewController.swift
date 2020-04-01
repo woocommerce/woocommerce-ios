@@ -45,26 +45,6 @@ class LoginPrologueViewController: LoginViewController {
         if let vc = segue.destination as? NUXButtonViewController {
             buttonViewController = vc
         }
-        else if let vc = segue.destination as? LoginPrologueSignupMethodViewController {
-            vc.transitioningDelegate = self
-
-            vc.emailTapped = { [weak self] in
-                self?.performSegue(withIdentifier: .showSigninV2, sender: self)
-            }
-            vc.googleTapped = { [weak self] in
-                guard let toVC = SignupGoogleViewController.instantiate(from: .signup) else {
-                    DDLogError("Failed to navigate to SignupGoogleViewController")
-                    return
-                }
-
-                self?.navigationController?.pushViewController(toVC, animated: true)
-            }
-            vc.appleTapped = { [weak self] in
-                self?.appleTapped()
-            }
-            vc.modalPresentationStyle = .custom
-        }
-
         else if let vc = segue.destination as? LoginPrologueLoginMethodViewController {
             vc.transitioningDelegate = self
             
@@ -129,10 +109,38 @@ class LoginPrologueViewController: LoginViewController {
     }
 
     private func signupTapped() {
-        // This stat is part of a funnel that provides critical information.  Before
-        // making ANY modification to this stat please refer to: p4qSXL-35X-p2
+        // This stat is part of a funnel that provides critical information.
+        // Before making ANY modification to this stat please refer to: p4qSXL-35X-p2
         WordPressAuthenticator.track(.signupButtonTapped)
-        performSegue(withIdentifier: .showSignupMethod, sender: self)
+
+        guard let vc = LoginPrologueSignupMethodViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate to LoginPrologueSignupMethodViewController")
+            return
+        }
+
+        vc.loginFields = self.loginFields
+        vc.dismissBlock = dismissBlock
+        vc.transitioningDelegate = self
+        vc.modalPresentationStyle = .custom
+
+        vc.emailTapped = { [weak self] in
+            self?.performSegue(withIdentifier: .showSigninV2, sender: self)
+        }
+
+        vc.googleTapped = { [weak self] in
+            guard let toVC = SignupGoogleViewController.instantiate(from: .signup) else {
+                DDLogError("Failed to navigate to SignupGoogleViewController")
+                return
+            }
+
+            self?.navigationController?.pushViewController(toVC, animated: true)
+        }
+
+        vc.appleTapped = { [weak self] in
+            self?.appleTapped()
+        }
+
+        navigationController?.present(vc, animated: true, completion: nil)
     }
 
     private func appleTapped() {

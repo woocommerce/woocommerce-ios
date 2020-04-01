@@ -16,11 +16,16 @@ final class EmptySearchResultsViewController: UIViewController, KeyboardFrameAdj
     @IBOutlet private var imageView: UIImageView!
     @IBOutlet private var scrollView: UIScrollView!
 
+    /// The height constraint for the content view.
+    ///
+    /// This constraint has low priority to allow the content view to increase the height if the
+    /// text (message) is too big.
+    ///
     @IBOutlet private var contentViewHeightConstraint: NSLayoutConstraint!
 
     private lazy var keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: { [weak self] frame in
         self?.handleKeyboardFrameUpdate(keyboardFrame: frame)
-//        self?.verticallyAlignStackViewUsing(keyboardHeight: $0.height)
+        self?.verticallyAlignStackViewUsing(keyboardHeight: frame.height)
     })
 
     /// The font used by the message's `UILabel`.
@@ -77,11 +82,11 @@ final class EmptySearchResultsViewController: UIViewController, KeyboardFrameAdj
         imageView.isHidden = !shouldShowImageView
     }
 
-    /// Update the `stackViewCenterYConstraint` so that the StackView is kept vertically centered.
+    /// Update the `contentViewHeightConstraint` so that the StackView is kept vertically centered.
     ///
-    /// We update the constant so that the StackView, which contains the image and message, is
-    /// still vertically centered on the available space even if the keyboard is covering some
-    /// of the view.
+    /// This routine decreases the height constraint so that it will fit in the available space
+    /// that's not covered by the keyboard. Note that if the space is too small, the other
+    /// xib constraints defined in the layout will automatically increase the height instead.
     ///
     private func verticallyAlignStackViewUsing(keyboardHeight: CGFloat) {
         let constraintConstant: CGFloat = {
@@ -94,14 +99,13 @@ final class EmptySearchResultsViewController: UIViewController, KeyboardFrameAdj
             // (e.g. SearchViewController).
             let keyboardHeight = keyboardHeight + additionalKeyboardFrameHeight
 
-            // Because this is a single Center-Y constraint, we only need to deduct half of the
-            // keyboard height. This is like deducting 50% of the height from the top and the bottom.
-            let heightToDeduct = keyboardHeight * 0.5
-
-            return 0 - heightToDeduct
+            return 0 - keyboardHeight
         }()
 
-        stackViewCenterYConstraint.constant = constraintConstant
+        contentViewHeightConstraint.constant = constraintConstant
+    }
+}
+
 // MARK: - KeyboardScrollable
 
 extension EmptySearchResultsViewController: KeyboardScrollable {

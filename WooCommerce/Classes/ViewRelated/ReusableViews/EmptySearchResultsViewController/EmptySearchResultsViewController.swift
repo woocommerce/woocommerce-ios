@@ -6,6 +6,7 @@ import UIKit
 /// This is generally used with `SearchUICommand`.
 ///
 final class EmptySearchResultsViewController: UIViewController, KeyboardFrameAdjustmentProvider {
+
     @IBOutlet private var messageLabel: UILabel! {
         didSet {
             // Remove dummy text in Interface Builder
@@ -13,9 +14,8 @@ final class EmptySearchResultsViewController: UIViewController, KeyboardFrameAdj
         }
     }
     @IBOutlet private var imageView: UIImageView!
+    @IBOutlet private var scrollView: UIScrollView!
 
-    /// The vertical center-y constraint of the StackView containing the image and text
-    @IBOutlet private var stackViewCenterYConstraint: NSLayoutConstraint!
 
     private lazy var keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: { [weak self] in
         self?.verticallyAlignStackViewUsing(keyboardHeight: $0.height)

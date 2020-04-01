@@ -423,12 +423,19 @@ private extension SearchViewController {
                 return created
             }
         }()
-        guard let childView = childController.view,
-              childController.parent == nil else {
+        // Abort if we are already displaying this childController
+        guard childController.parent == nil else {
             return
         }
 
+        // Before creating the view (below), give the childController the keyboard adjustments
+        // they should use. This simplifies any keyboard observation they have in  `viewDidLoad`.
         applyAdditionalKeyboardFrameHeightTo([childController])
+
+        // Create the view by accessing `.view`. This should trigger `viewDidLoad`.
+        guard let childView = childController.view else {
+            return
+        }
 
         searchUICommand.configureEmptyStateViewControllerBeforeDisplay(viewController: childController,
                                                                        searchKeyword: keyword)

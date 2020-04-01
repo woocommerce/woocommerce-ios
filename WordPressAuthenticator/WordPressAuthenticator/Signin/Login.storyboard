@@ -353,21 +353,12 @@
                         <segue destination="bAd-Df-IzS" kind="show" identifier="show2FA" id="kRR-qz-Hu2"/>
                         <segue destination="anK-hg-K4j" kind="show" identifier="showSelfHostedLogin" id="bK1-J1-hfT"/>
                         <segue destination="klu-4U-PyL" kind="show" identifier="showSignupEmail" id="dh4-9P-l8W"/>
-                        <segue destination="T5n-nb-cOW" kind="show" identifier="showSigninV2" id="sIC-Hv-FJw"/>
                         <segue destination="SZS-o3-1P7" kind="show" identifier="showURLUsernamePassword" id="4SK-mG-U33"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wWl-qb-1Yp" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1674" y="188"/>
-        </scene>
-        <!--SignupEmailViewController-->
-        <scene sceneID="CQL-qu-sjW">
-            <objects>
-                <viewControllerPlaceholder storyboardName="Signup" referencedIdentifier="SignupEmailViewController" id="T5n-nb-cOW" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="UdV-y0-6AN" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-530" y="760"/>
         </scene>
         <!--Login Self Hosted View Controller-->
         <scene sceneID="b2O-iW-wfB">

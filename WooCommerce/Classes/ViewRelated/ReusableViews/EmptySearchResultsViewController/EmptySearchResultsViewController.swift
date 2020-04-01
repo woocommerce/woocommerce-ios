@@ -31,7 +31,7 @@ final class EmptySearchResultsViewController: UIViewController, KeyboardFrameAdj
 
         messageLabel.applyBodyStyle()
 
-        keyboardFrameObserver.startObservingKeyboardFrame()
+        keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)
     }
 
     override func viewWillAppear(_ animated: Bool) {

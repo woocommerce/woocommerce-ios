@@ -13,12 +13,19 @@ final class EmptySearchResultsViewController: UIViewController, KeyboardFrameAdj
         }
     }
     @IBOutlet private var imageView: UIImageView!
+
+    /// The vertical center-y constraint of the StackView containing the image and text
     @IBOutlet private var stackViewCenterYConstraint: NSLayoutConstraint!
 
     private lazy var keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: { [weak self] in
         self?.verticallyAlignStackViewUsing(keyboardHeight: $0.height)
     })
 
+    /// The font used by the message's `UILabel`.
+    ///
+    /// This is exposed so that consumers can build `NSAttributedString` instances using the same
+    /// font. The `NSAttributedString` instance can then be used in `configure(message:`).
+    ///
     var messageFont: UIFont {
         messageLabel.font
     }
@@ -40,10 +47,16 @@ final class EmptySearchResultsViewController: UIViewController, KeyboardFrameAdj
         updateImageVisibilityUsing(traits: traitCollection)
     }
 
+    /// Change the message being displayed.
+    ///
+    /// This is the only "configurable" point for consumers using this class.
+    ///
     func configure(message: NSAttributedString?) {
         messageLabel.attributedText = message
     }
 
+    /// Watch for device orientation changes and update the `imageView`'s visibility accordingly.
+    ///
     override func willTransition(to newCollection: UITraitCollection,
                                  with coordinator: UIViewControllerTransitionCoordinator) {
         super.willTransition(to: newCollection, with: coordinator)
@@ -53,11 +66,19 @@ final class EmptySearchResultsViewController: UIViewController, KeyboardFrameAdj
         }, completion: nil)
     }
 
+    /// Hide the `imageView` if there is not enough vertical space (e.g. iPhone landscape).
+    ///
     private func updateImageVisibilityUsing(traits: UITraitCollection) {
         let shouldShowImageView = traits.verticalSizeClass != .compact
         imageView.isHidden = !shouldShowImageView
     }
 
+    /// Update the `stackViewCenterYConstraint` so that the StackView is kept vertically centered.
+    ///
+    /// We update the constant so that the StackView, which contains the image and message, is
+    /// still vertically centered on the available space even if the keyboard is covering some
+    /// of the view.
+    ///
     private func verticallyAlignStackViewUsing(keyboardHeight: CGFloat) {
         let constraintConstant: CGFloat = {
             // Reset the constraint if the keyboard is not shown.

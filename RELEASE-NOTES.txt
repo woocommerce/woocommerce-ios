@@ -10,6 +10,7 @@
 - [internal] the login via Continue with Google flows have code changes that can cause regressions. See https://git.io/Jvyjg for testing details.
 - [internal] the signup and login Magic Link flows have code changes. See https://git.io/JvyB3 for testing details.
 - [internal] under Edit Products M2 feature flag, there are 4 ways to sort the products on the products tab.
+- [internal] Updated the "empty message" views for Products and Search results. https://git.io/Jvdap
 
 3.9
 -----

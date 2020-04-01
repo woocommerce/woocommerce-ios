@@ -124,7 +124,12 @@ class LoginPrologueViewController: LoginViewController {
         vc.modalPresentationStyle = .custom
 
         vc.emailTapped = { [weak self] in
-            self?.performSegue(withIdentifier: .showSigninV2, sender: self)
+            guard let toVC = SignupEmailViewController.instantiate(from: .signup) else {
+                DDLogError("Failed to navigate to SignupEmailViewController")
+                return
+            }
+
+            self?.navigationController?.pushViewController(toVC, animated: true)
         }
 
         vc.googleTapped = { [weak self] in

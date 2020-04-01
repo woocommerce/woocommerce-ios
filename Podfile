@@ -49,7 +49,7 @@ target 'WooCommerce' do
   pod 'Charts', '~> 3.3.0'
   pod 'ZendeskSupportSDK', '~> 5.0'
   pod 'Kingfisher', '~> 5.11.0'
-  pod 'Wormholy', '~> 1.5.1', :configurations => ['Debug']
+  pod 'Wormholy', '~> 1.5.2', :configurations => ['Debug']
 
   # Unit Tests
   # ==========

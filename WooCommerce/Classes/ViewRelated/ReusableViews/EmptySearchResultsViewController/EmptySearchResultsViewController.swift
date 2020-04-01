@@ -16,9 +16,9 @@ final class EmptySearchResultsViewController: UIViewController, KeyboardFrameAdj
     @IBOutlet private var imageView: UIImageView!
     @IBOutlet private var scrollView: UIScrollView!
 
-
-    private lazy var keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: { [weak self] in
-        self?.verticallyAlignStackViewUsing(keyboardHeight: $0.height)
+    private lazy var keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: { [weak self] frame in
+        self?.handleKeyboardFrameUpdate(keyboardFrame: frame)
+//        self?.verticallyAlignStackViewUsing(keyboardHeight: $0.height)
     })
 
     /// The font used by the message's `UILabel`.
@@ -100,5 +100,10 @@ final class EmptySearchResultsViewController: UIViewController, KeyboardFrameAdj
         }()
 
         stackViewCenterYConstraint.constant = constraintConstant
+// MARK: - KeyboardScrollable
+
+extension EmptySearchResultsViewController: KeyboardScrollable {
+    var scrollable: UIScrollView {
+        scrollView
     }
 }

@@ -158,7 +158,7 @@ private extension ProductLoaderViewController {
     ///
     func presentProductDetails(for product: Product) {
         let isEditProductsFeatureFlagOn = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts)
-        self.presentProductDetails(for: product, isEditProductsEnabled: isEditProductsFeatureFlagOn)
+        presentProductDetails(for: product, isEditProductsEnabled: isEditProductsFeatureFlagOn)
     }
 
     func presentProductDetails(for product: Product, isEditProductsEnabled: Bool) {

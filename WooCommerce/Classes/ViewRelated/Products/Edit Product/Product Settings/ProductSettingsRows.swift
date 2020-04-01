@@ -46,7 +46,13 @@ enum ProductSettingsRows {
         }
 
         func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
-            // TODO: Show a VC
+            let viewController = ProductCatalogVisibilityViewController(settings: settings) { (productSettings) in
+//                guard let self = self else {
+//                    return
+//                }
+                //self.product = self.productUpdater.productSettingsUpdated(status: productSettings.status)
+            }
+            sourceViewController.navigationController?.pushViewController(viewController, animated: true)
         }
 
         let reuseIdentifier: String = BasicTableViewCell.reuseIdentifier

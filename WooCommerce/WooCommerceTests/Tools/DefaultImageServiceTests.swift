@@ -61,10 +61,6 @@ final class DefaultImageServiceTests: XCTestCase {
 
     func testCancellingDownloadingAnImage() {
         // Arrange
-        let mockImageCache = MockImageCache(name: "Testing")
-        let mockImageDownloadable = MockImageDownloadable(imagesByKey: [url.absoluteString: testImage])
-        let imageService = DefaultImageService(imageCache: mockImageCache, imageDownloader: mockImageDownloadable)
-
         let waitForDownloadingAnImage = expectation(description: "Wait for downloading an image")
         let task = imageService.downloadImage(with: url, shouldCacheImage: true) { (image, error) in
             waitForDownloadingAnImage.fulfill()
@@ -88,6 +84,11 @@ final class DefaultImageServiceTests: XCTestCase {
     func testDownloadingAndCachingAndRetrievingAnImageForImageView() {
         let mockImageView = UIImageView()
         let mockPlaceholder = UIImage.shippingImage
+
+        let mockCache = MockImageCache(name: "Testing")
+        // `MockKingfisherImageDownloader` is used only in this test because only `downloadAndCacheImageForImageView` depends on a Kingfisher `ImageDownloader`.
+        let mockDownloader = MockKingfisherImageDownloader(imagesByKey: [url.absoluteString: testImage])
+        imageService = DefaultImageService(imageCache: mockCache, imageDownloader: mockDownloader)
 
         // Downloads the image and retrieves it again.
         let waitForDownloadingAndCachingAnImage = expectation(description: "Wait for downloading and caching an image")

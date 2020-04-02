@@ -9,7 +9,7 @@ final class MockImageDownloadTask: ImageDownloadTask {
     }
 }
 
-final class MockImageDownloadable: ImageDownloadable {
+final class MockImageDownloader: ImageDownloader {
     // Mocks in-memory cache.
     private let imagesByKey: [String: UIImage]
 

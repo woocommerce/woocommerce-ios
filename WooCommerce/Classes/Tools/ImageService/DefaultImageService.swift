@@ -10,18 +10,18 @@ private extension URL {
 /// Implements `ImageService` using `Kingfisher` library.
 ///
 struct DefaultImageService: ImageService {
-    private let imageDownloader: ImageDownloadable
+    private let imageDownloader: ImageDownloader
     private let imageCache: ImageCache
 
     private var defaultOptions: KingfisherOptionsInfo {
-        if let imageDownloader = imageDownloader as? ImageDownloader {
+        if let imageDownloader = imageDownloader as? Kingfisher.ImageDownloader {
             return [.targetCache(imageCache), .downloader(imageDownloader)]
         }
         return [.targetCache(imageCache)]
     }
 
     init(imageCache: ImageCache = ImageCache.default,
-         imageDownloader: ImageDownloadable = ImageDownloader.default) {
+         imageDownloader: ImageDownloader = Kingfisher.ImageDownloader.default) {
         self.imageCache = imageCache
         self.imageDownloader = imageDownloader
     }

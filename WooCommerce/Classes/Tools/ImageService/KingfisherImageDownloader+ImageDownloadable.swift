@@ -2,7 +2,7 @@ import Kingfisher
 
 extension Kingfisher.DownloadTask: ImageDownloadTask {}
 
-extension Kingfisher.ImageDownloader: ImageDownloadable {
+extension Kingfisher.ImageDownloader: ImageDownloader {
     func downloadImage(with url: URL, onCompletion: ((Result<UIImage, Error>) -> Void)?) -> ImageDownloadTask? {
         downloadImage(with: url, options: nil) { result in
             switch result {

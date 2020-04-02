@@ -6,15 +6,6 @@ import XCTest
 /// ProductCategoryStore Unit Tests
 ///
 final class ProductCategoryStoreTests: XCTestCase {
-
-    /// Mockup Dispatcher!
-    ///
-    private var dispatcher: Dispatcher!
-
-    /// Mockup Storage: InMemory
-    ///
-    private var storageManager: MockupStorageManager!
-
     /// Mockup Network: Allows us to inject predefined responses!
     ///
     private var network: MockupNetwork!
@@ -39,31 +30,29 @@ final class ProductCategoryStoreTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        dispatcher = Dispatcher()
-        storageManager = MockupStorageManager()
         network = MockupNetwork()
-        store = ProductCategoryStore(dispatcher: dispatcher,
-                                     storageManager: storageManager,
+        store = ProductCategoryStore(dispatcher: Dispatcher(),
+                                     storageManager: MockupStorageManager(),
                                      network: network)
     }
 
     override func tearDown() {
         store = nil
-        dispatcher = nil
-        storageManager = nil
         network = nil
 
         super.tearDown()
     }
 
     func testRetrieveProductCategoriesReturnsCategoriesUponSuccessfulResponse() throws {
+        // Given a stubed product-categories network response
         let expectation = self.expectation(description: #function)
-
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "categories-all")
 
+        // When dispatching a `retrieveProductCategories` action
         let action = ProductCategoryAction.retrieveProductCategories(siteID: sampleSiteID,
                                                                      pageNumber: defaultPageNumber,
                                                                      pageSize: defaultPageSize) { categories, error in
+            // Then a valid set of categories should be returned
             guard let categories = categories else {
                 return XCTFail("Categories should not be nil.")
             }
@@ -77,12 +66,15 @@ final class ProductCategoryStoreTests: XCTestCase {
     }
 
     func testRetrieveProductCategoriesReturnsErrorUponReponseError() {
+        // Given a stubed generic-error network response
         let expectation = self.expectation(description: #function)
-
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "generic_error")
+
+        // When dispatching a `retrieveProductCategories` action
         let action = ProductCategoryAction.retrieveProductCategories(siteID: sampleSiteID,
                                                                      pageNumber: defaultPageNumber,
                                                                      pageSize: defaultPageSize) { categories, error in
+            // Then no categories should be returned
             XCTAssertNil(categories)
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -93,11 +85,14 @@ final class ProductCategoryStoreTests: XCTestCase {
     }
 
     func testRetrieveProductCategoriesReturnsErrorUponEmptyResponse() {
+        // Given a an empty network response
         let expectation = self.expectation(description: #function)
 
+        // When dispatching a `retrieveProductCategories` action
         let action = ProductCategoryAction.retrieveProductCategories(siteID: sampleSiteID,
                                                                      pageNumber: defaultPageNumber,
                                                                      pageSize: defaultPageSize) { categories, error in
+            // Then no categories should be returned
             XCTAssertNil(categories)
             XCTAssertNotNil(error)
             expectation.fulfill()

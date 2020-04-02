@@ -19,7 +19,7 @@ extension NSMutableAttributedString {
     /// Example usage:
     ///
     /// ```
-    /// let attributedString = NSMutableAttributedString(string: Hello, #{person}")
+    /// let attributedString = NSMutableAttributedString(string: "Hello, #{person}")
     /// let replacement = NSAttributedString(string: "Slim Shady",
     ///                                      attributes: [.font: UIFont.boldSystemFont(ofSize: 32)])
     /// attributedString.replaceFirstOccurrence(of: "#{person}", with: replacement)

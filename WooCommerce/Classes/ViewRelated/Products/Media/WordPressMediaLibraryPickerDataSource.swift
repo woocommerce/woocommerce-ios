@@ -87,7 +87,7 @@ extension WordPressMediaLibraryPickerDataSource: WPMediaCollectionDataSource {
     }
 
     func media(withIdentifier identifier: String) -> WPMediaAsset? {
-        return mediaItems.first(where: { "\($0.mediaID)" == identifier })
+        mediaItems.first(where: { $0.identifier() == identifier })
     }
 
     func registerChangeObserverBlock(_ callback: @escaping WPMediaChangesBlock) -> NSObjectProtocol {

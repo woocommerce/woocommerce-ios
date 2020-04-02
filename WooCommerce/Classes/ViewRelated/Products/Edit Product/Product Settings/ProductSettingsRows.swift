@@ -47,10 +47,8 @@ enum ProductSettingsRows {
 
         func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
             let viewController = ProductCatalogVisibilityViewController(settings: settings) { (productSettings) in
-//                guard let self = self else {
-//                    return
-//                }
-                //self.product = self.productUpdater.productSettingsUpdated(status: productSettings.status)
+                self.settings.featured = productSettings.featured
+                self.settings.catalogVisibility = productSettings.catalogVisibility
             }
             sourceViewController.navigationController?.pushViewController(viewController, animated: true)
         }

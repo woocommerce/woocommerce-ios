@@ -219,7 +219,7 @@ private extension ProductFormViewController {
             guard let self = self else {
                 return
             }
-            self.product = self.productUpdater.productSettingsUpdated(status: productSettings.status)
+            self.product = self.productUpdater.productSettingsUpdated(settings: productSettings)
         }
         navigationController?.pushViewController(viewController, animated: true)
     }

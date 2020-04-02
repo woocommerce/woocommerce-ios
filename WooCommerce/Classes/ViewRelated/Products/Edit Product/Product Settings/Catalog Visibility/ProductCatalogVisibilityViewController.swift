@@ -69,22 +69,8 @@ private extension ProductCatalogVisibilityViewController {
 extension ProductCatalogVisibilityViewController {
 
     override func shouldPopOnBackButton() -> Bool {
-//        if viewModel.hasUnsavedChanges() {
-//            presentBackNavigationActionSheet()
-//            return false
-//        }
+        onCompletion(productSettings)
         return true
-    }
-
-    @objc private func completeUpdating() {
-        //onCompletion(nil)
-        navigationController?.popViewController(animated: true)
-    }
-
-    private func presentBackNavigationActionSheet() {
-        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
-            self?.navigationController?.popViewController(animated: true)
-        })
     }
 }
 

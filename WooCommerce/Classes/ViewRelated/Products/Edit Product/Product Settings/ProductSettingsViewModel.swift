@@ -86,17 +86,3 @@ extension ProductSettingsViewModel {
         }
     }
 }
-
-// Editable data
-//
-final class ProductSettings {
-    var status: ProductStatus
-    var featured: Bool
-    var catalogVisibility: ProductCatalogVisibility
-
-    init(status: ProductStatus, featured: Bool, catalogVisibility: ProductCatalogVisibility) {
-        self.status = status
-        self.featured = featured
-        self.catalogVisibility = catalogVisibility
-    }
-}

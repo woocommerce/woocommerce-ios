@@ -2,36 +2,38 @@ import WPMediaPicker
 import Yosemite
 import WordPressShared
 
-/// Implements `WPMediaGroup` protocol that represents a collection of media items from WP Media Library to be displayed.
-///
-final class WordPressMediaLibraryMediaGroup: NSObject, WPMediaGroup {
-    private let mediaItems: [Media]
+extension WordPressMediaLibraryPickerDataSource {
+    /// Implements `WPMediaGroup` protocol that represents a collection of media items from WP Media Library to be displayed.
+    ///
+    final class MediaGroup: NSObject, WPMediaGroup {
+        private let mediaItems: [Media]
 
-    init(mediaItems: [Media]) {
-        self.mediaItems = mediaItems
-        super.init()
-    }
+        init(mediaItems: [Media]) {
+            self.mediaItems = mediaItems
+            super.init()
+        }
 
-    func name() -> String {
-        return NSLocalizedString("WordPress Media Library", comment: "Navigation bar title for WordPress Media Library image picker")
-    }
+        func name() -> String {
+            return NSLocalizedString("WordPress Media Library", comment: "Navigation bar title for WordPress Media Library image picker")
+        }
 
-    func image(with size: CGSize, completionHandler: @escaping WPMediaImageBlock) -> WPMediaRequestID {
-        return 0
-    }
+        func image(with size: CGSize, completionHandler: @escaping WPMediaImageBlock) -> WPMediaRequestID {
+            return 0
+        }
 
-    func cancelImageRequest(_ requestID: WPMediaRequestID) {}
+        func cancelImageRequest(_ requestID: WPMediaRequestID) {}
 
-    func baseGroup() -> Any {
-        return ""
-    }
+        func baseGroup() -> Any {
+            return ""
+        }
 
-    func identifier() -> String {
-        return "group id"
-    }
+        func identifier() -> String {
+            return "group id"
+        }
 
-    func numberOfAssets(of mediaType: WPMediaType, completionHandler: WPMediaCountBlock? = nil) -> Int {
-        return mediaItems.count
+        func numberOfAssets(of mediaType: WPMediaType, completionHandler: WPMediaCountBlock? = nil) -> Int {
+            return mediaItems.count
+        }
     }
 }
 
@@ -46,7 +48,7 @@ final class WordPressMediaLibraryPickerDataSource: NSObject {
 
     private var mediaItems: [Media]
 
-    private lazy var mediaGroup: WPMediaGroup = WordPressMediaLibraryMediaGroup(mediaItems: mediaItems)
+    private lazy var mediaGroup: WPMediaGroup = MediaGroup(mediaItems: mediaItems)
 
     init(siteID: Int64) {
         self.siteID = siteID

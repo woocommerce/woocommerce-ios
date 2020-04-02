@@ -9,14 +9,14 @@ extension Media {
         }
 
         return mediaID == object.mediaID &&
-        date == object.date &&
-        fileExtension == object.fileExtension &&
-        mimeType == object.mimeType &&
-        src == object.src &&
-        thumbnailURL == object.thumbnailURL &&
-        name == object.name &&
-        alt == object.alt &&
-        height == object.height &&
-        width == object.width
+            date == object.date &&
+            fileExtension == object.fileExtension &&
+            mimeType == object.mimeType &&
+            src == object.src &&
+            thumbnailURL == object.thumbnailURL &&
+            name == object.name &&
+            alt == object.alt &&
+            height == object.height &&
+            width == object.width
     }
 }

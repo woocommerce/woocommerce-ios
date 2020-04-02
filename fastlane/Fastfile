@@ -132,7 +132,7 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
   #####################################################################################
   # new_hotfix_release
   # -----------------------------------------------------------------------------------
-  # This lane creates the release branch for a new hotix release. 
+  # This lane creates the release branch for a new hotfix release. 
   # -----------------------------------------------------------------------------------
   # Usage:
   # bundle exec fastlane new_hotfix_release [skip_confirm:<skip confirm>] [version:<version>]

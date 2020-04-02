@@ -11,7 +11,6 @@ final class FootnoteTableFooterView: UIView {
         setupFootnoteLabel()
     }
 
-
 }
 
 // MARK: - Public methods

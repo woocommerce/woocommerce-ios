@@ -168,19 +168,19 @@ private extension WordPressMediaLibraryPickerDataSource {
     ///
     func updateMediaItems(_ newMediaItems: [Media], pageNumber: Int, pageSize: Int) {
         let pageFirstIndex = syncingCoordinator.pageFirstIndex
-        let startIndex = (pageNumber - pageFirstIndex) * pageSize
-        let startIndexOfTheNextPage = (pageNumber + 1 - pageFirstIndex) * pageSize
+        let mediaStartIndex = (pageNumber - pageFirstIndex) * pageSize
+        let mediaStartIndexOfTheNextPage = (pageNumber + 1 - pageFirstIndex) * pageSize
         // Since the media data in the given page could be partially full, sets the end index to be the smaller value based on data count or the end of the
         // page index.
-        let endIndex = min(startIndex + newMediaItems.count - 1, startIndexOfTheNextPage - 1)
+        let mediaEndIndex = min(mediaStartIndex + newMediaItems.count - 1, mediaStartIndexOfTheNextPage - 1)
 
         // In case the data for a given page returns at unexpected timing where the existing media items have changed, returns instead.
-        guard mediaItems.count == startIndex else {
+        guard mediaItems.count == mediaStartIndex else {
             return
         }
 
         mediaItems += newMediaItems
-        onDataChange?(true, [], IndexSet(integersIn: startIndex...endIndex), [], [])
+        onDataChange?(true, [], IndexSet(integersIn: mediaStartIndex...mediaEndIndex), [], [])
     }
 }
 

@@ -53,7 +53,7 @@ private extension ProductCatalogVisibilityViewController {
 
     func configureTableView() {
         tableView.register(SwitchTableViewCell.loadNib(), forCellReuseIdentifier: SwitchTableViewCell.reuseIdentifier)
-        tableView.register(ContainerTableViewCell.loadNib(), forCellReuseIdentifier: ContainerTableViewCell.reuseIdentifier)
+        tableView.register(ContainerListSelectorTableViewCell.loadNib(), forCellReuseIdentifier: ContainerListSelectorTableViewCell.reuseIdentifier)
         tableView.register(TwoColumnSectionHeaderView.loadNib(), forHeaderFooterViewReuseIdentifier: TwoColumnSectionHeaderView.reuseIdentifier)
         
         tableView.dataSource = self
@@ -150,7 +150,7 @@ private extension ProductCatalogVisibilityViewController {
         switch cell {
         case let cell as SwitchTableViewCell:
             configureFeaturedProduct(cell: cell)
-        case let cell as ContainerTableViewCell:
+        case let cell as ContainerListSelectorTableViewCell:
             configureListSelector(cell: cell)
         default:
             fatalError("Unidentified product catalog visibility row type")
@@ -165,7 +165,7 @@ private extension ProductCatalogVisibilityViewController {
         }
     }
     
-    func configureListSelector(cell: ContainerTableViewCell) {
+    func configureListSelector(cell: ContainerListSelectorTableViewCell) {
         let viewProperties = ListSelectorViewProperties(navigationBarTitle: title)
         let dataSource = ProductStatusSettingListSelectorDataSource(selected: productSettings.status)
 
@@ -196,7 +196,7 @@ extension ProductCatalogVisibilityViewController {
             case .featuredProduct:
                 return SwitchTableViewCell.reuseIdentifier
             case .listSelector:
-                return ContainerTableViewCell.reuseIdentifier
+                return ContainerListSelectorTableViewCell.reuseIdentifier
             }
         }
     }

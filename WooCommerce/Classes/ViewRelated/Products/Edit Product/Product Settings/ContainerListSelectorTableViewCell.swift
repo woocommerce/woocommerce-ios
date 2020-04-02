@@ -1,14 +1,6 @@
-//
-//  ContainerTableViewCell.swift
-//  WooCommerce
-//
-//  Created by Paolo Musolino on 01/04/2020.
-//  Copyright © 2020 Automattic. All rights reserved.
-//
-
 import UIKit
 
-class ContainerTableViewCell: UITableViewCell {
+class ContainerListSelectorTableViewCell: UITableViewCell {
 
     @IBOutlet weak var containerView: UIView!
     
@@ -22,11 +14,12 @@ class ContainerTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
     }
     
-    func configure(presenterViewController: UIViewController, embeddedViewController: UIViewController) {
+    func configure(presenterViewController: UIViewController, embeddedViewController: ListSelectorViewController) {
         self.embeddedViewController = embeddedViewController
         
         if let childVC = self.embeddedViewController {
             presenterViewController.addChild(childVC)
+            
             containerView.addSubview(childVC.view)
             childVC.didMove(toParent: presenterViewController)
             

@@ -86,7 +86,7 @@ public struct Product: Codable {
     public var productStatus: ProductStatus {
         return ProductStatus(rawValue: statusKey)
     }
-    
+
     public var productCatalogVisibility: ProductCatalogVisibility {
         return ProductCatalogVisibility(rawValue: catalogVisibilityKey)
     }

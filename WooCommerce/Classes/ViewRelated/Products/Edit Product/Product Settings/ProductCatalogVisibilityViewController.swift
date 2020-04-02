@@ -2,18 +2,18 @@ import UIKit
 import Yosemite
 
 final class ProductCatalogVisibilityViewController: UIViewController {
-    
+
     @IBOutlet weak var tableView: UITableView!
-    
+
     // Completion callback
     //
     typealias Completion = (_ productSettings: ProductSettings) -> Void
     private let onCompletion: Completion
-    
+
     private var productSettings: ProductSettings
-    
+
     private let sections: [Section]
-    
+
     /// Init
     ///
     init(settings: ProductSettings, completion: @escaping Completion) {
@@ -22,18 +22,18 @@ final class ProductCatalogVisibilityViewController: UIViewController {
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigationBar()
         configureMainView()
         configureTableView()
     }
-    
+
 }
 
 
@@ -55,7 +55,7 @@ private extension ProductCatalogVisibilityViewController {
         tableView.register(SwitchTableViewCell.loadNib(), forCellReuseIdentifier: SwitchTableViewCell.reuseIdentifier)
         tableView.register(BasicTableViewCell.loadNib(), forCellReuseIdentifier: BasicTableViewCell.reuseIdentifier)
         tableView.register(TwoColumnSectionHeaderView.loadNib(), forHeaderFooterViewReuseIdentifier: TwoColumnSectionHeaderView.reuseIdentifier)
-        
+
         tableView.dataSource = self
         tableView.delegate = self
 
@@ -160,7 +160,7 @@ private extension ProductCatalogVisibilityViewController {
             fatalError("Unidentified product catalog visibility row type")
         }
     }
-    
+
     func configureFeaturedProduct(cell: SwitchTableViewCell) {
         cell.title = NSLocalizedString("Featured Product", comment: "Featured Product switch in Product Catalog Visibility")
         cell.isOn = productSettings.featured
@@ -168,7 +168,7 @@ private extension ProductCatalogVisibilityViewController {
             self?.productSettings.featured = value
         }
     }
-    
+
     func configureCatalogVisibilitySelector(cell: BasicTableViewCell, indexPath: IndexPath) {
         let row = sections[indexPath.section].rows[indexPath.row]
         cell.selectionStyle = .default
@@ -180,7 +180,7 @@ private extension ProductCatalogVisibilityViewController {
 // MARK: - Constants
 //
 extension ProductCatalogVisibilityViewController {
-    
+
     /// Table Rows
     ///
     enum Row {
@@ -190,7 +190,7 @@ extension ProductCatalogVisibilityViewController {
         case catalog
         case search
         case hidden
-        
+
         var reuseIdentifier: String {
             switch self {
             case .featuredProduct:
@@ -199,7 +199,7 @@ extension ProductCatalogVisibilityViewController {
                 return BasicTableViewCell.reuseIdentifier
             }
         }
-        
+
         var catalogVisibility: ProductCatalogVisibility? {
             switch self {
             case .visible:
@@ -215,20 +215,20 @@ extension ProductCatalogVisibilityViewController {
             }
         }
     }
-    
+
     /// Table Sections
     ///
     struct Section {
         let title: String?
         let footer: String?
         let rows: [Row]
-        
+
         init(title: String? = nil, footer: String? = nil, rows: [Row]) {
             self.title = title
             self.footer = footer
             self.rows = rows
         }
-        
+
         init(title: String? = nil, rightTitle: String? = nil, footer: String? = nil, row: Row) {
             self.init(title: title, footer: footer, rows: [row])
         }

@@ -8,7 +8,6 @@ final class FootnoteTableFooterView: UIView {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-
         setupFootnoteLabel()
     }
 

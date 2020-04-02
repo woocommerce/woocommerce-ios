@@ -390,15 +390,7 @@ extension ProductsViewController: UITableViewDelegate {
         let product = resultsController.object(at: indexPath)
 
         let isEditProductsFeatureFlagOn = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts)
-        guard isEditProductsFeatureFlagOn else {
-            didSelectProduct(product: product, isEditProductsEnabled: false)
-            return
-        }
-
-        let action = AppSettingsAction.loadProductsVisibility { [weak self] isEditProductsEnabled in
-            self?.didSelectProduct(product: product, isEditProductsEnabled: isEditProductsEnabled)
-        }
-        ServiceLocator.stores.dispatch(action)
+        didSelectProduct(product: product, isEditProductsEnabled: isEditProductsFeatureFlagOn)
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {

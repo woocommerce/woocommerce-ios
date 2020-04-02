@@ -11,6 +11,10 @@ final class ProductCategoryStoreTests: XCTestCase {
     ///
     private var network: MockupNetwork!
 
+    /// Mockup Storage: InMemory
+    ///
+    private var storageManager: MockupStorageManager!
+
     /// Convenience Property: Returns the StorageType associated with the main thread.
     ///
     private var viewStorage: StorageType {
@@ -38,14 +42,16 @@ final class ProductCategoryStoreTests: XCTestCase {
     override func setUp() {
         super.setUp()
         network = MockupNetwork()
+        storageManager = MockupStorageManager()
         store = ProductCategoryStore(dispatcher: Dispatcher(),
-                                     storageManager: MockupStorageManager(),
+                                     storageManager: storageManager,
                                      network: network)
     }
 
     override func tearDown() {
         store = nil
         network = nil
+        storageManager = nil
 
         super.tearDown()
     }
@@ -77,9 +83,9 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 0)
 
         // When dispatching a `synchronizeProductCategories` action
-        let action = ProductCategoryAction.retrieveProductCategories(siteID: sampleSiteID,
-                                                                     pageNumber: defaultPageNumber,
-                                                                     pageSize: defaultPageSize) { error in
+        let action = ProductCategoryAction.synchronizeProductCategories(siteID: sampleSiteID,
+                                                                        pageNumber: defaultPageNumber,
+                                                                        pageSize: defaultPageSize) { error in
             // Then no categories should be returned
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCategory.self), 0)
             XCTAssertNotNil(error)
@@ -96,9 +102,9 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 0)
 
         // When dispatching a `synchronizeProductCategories` action
-        let action = ProductCategoryAction.retrieveProductCategories(siteID: sampleSiteID,
-                                                                     pageNumber: defaultPageNumber,
-                                                                     pageSize: defaultPageSize) { error in
+        let action = ProductCategoryAction.synchronizeProductCategories(siteID: sampleSiteID,
+                                                                        pageNumber: defaultPageNumber,
+                                                                        pageSize: defaultPageSize) { error in
             // Then no categories should be returned
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCategory.self), 0)
             XCTAssertNotNil(error)

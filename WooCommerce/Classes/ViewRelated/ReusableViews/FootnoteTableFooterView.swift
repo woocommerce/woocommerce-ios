@@ -4,7 +4,7 @@ final class FootnoteTableFooterView: UIView {
 
     @IBOutlet weak var footnoteLabel: UILabel!
 
-    static let reuseIdentifier = "HeadlineTableFooterView"
+    static let reuseIdentifier = "FootnoteTableFooterView"
 
     override func awakeFromNib() {
         super.awakeFromNib()

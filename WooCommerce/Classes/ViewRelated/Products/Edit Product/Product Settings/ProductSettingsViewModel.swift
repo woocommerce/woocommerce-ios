@@ -42,7 +42,9 @@ final class ProductSettingsViewModel {
     }
 
     func hasUnsavedChanges() -> Bool {
-        if product.statusKey != productSettings.status.rawValue {
+        if product.statusKey != productSettings.status.rawValue ||
+            product.featured != productSettings.featured ||
+            product.catalogVisibilityKey != productSettings.catalogVisibility.rawValue {
             return true
         }
 

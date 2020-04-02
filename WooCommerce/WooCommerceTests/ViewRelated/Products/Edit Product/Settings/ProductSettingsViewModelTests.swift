@@ -23,12 +23,14 @@ final class ProductSettingsViewModelTests: XCTestCase {
     }
 
     func testHasUnsavedChanges() {
-        let product = MockProduct().product(status: .publish)
+        let product = MockProduct().product(status: .publish, featured: false, catalogVisibility: .visible)
         let viewModel = ProductSettingsViewModel(product: product)
 
         XCTAssertFalse(viewModel.hasUnsavedChanges())
 
         viewModel.productSettings.status = .pending
+        viewModel.productSettings.featured = false
+        viewModel.productSettings.catalogVisibility = .search
 
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }

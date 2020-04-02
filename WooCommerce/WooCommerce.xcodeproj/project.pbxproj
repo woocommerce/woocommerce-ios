@@ -2054,6 +2054,15 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
+		45739F2E2436302600480C95 /* Catalog Visibility */ = {
+			isa = PBXGroup;
+			children = (
+				45CDAFAC2434CFCA00F83C22 /* ProductCatalogVisibilityViewController.swift */,
+				45CDAFAD2434CFCA00F83C22 /* ProductCatalogVisibilityViewController.xib */,
+			);
+			path = "Catalog Visibility";
+			sourceTree = "<group>";
+		};
 		4580BA7123F192A300B5F764 /* Product Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -2062,8 +2071,7 @@
 				4580BA7623F19D4A00B5F764 /* ProductSettingsViewModel.swift */,
 				451C77722404534000413F73 /* ProductSettingsSections.swift */,
 				451C77702404518600413F73 /* ProductSettingsRows.swift */,
-				45CDAFAC2434CFCA00F83C22 /* ProductCatalogVisibilityViewController.swift */,
-				45CDAFAD2434CFCA00F83C22 /* ProductCatalogVisibilityViewController.xib */,
+				45739F2E2436302600480C95 /* Catalog Visibility */,
 				4524CD9F242D023300B2F20A /* List Selector Data Source */,
 			);
 			path = "Product Settings";

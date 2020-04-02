@@ -75,7 +75,7 @@ final class KeyboardStateProviderTests: XCTestCase {
 
 private extension NotificationCenter {
     func postKeyboardDidShowNotification(frameEnd: CGRect? = nil) {
-        let userInfo: [AnyHashable: Any?]? = {
+        let userInfo: [AnyHashable: Any]? = {
             if let frameEnd = frameEnd {
                 return [UIResponder.keyboardFrameEndUserInfoKey: frameEnd]
             } else {

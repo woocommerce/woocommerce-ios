@@ -67,7 +67,5 @@ extension TableFooterView {
             .underlineColor: UIColor.clear,
             .underlineStyle: NSUnderlineStyle.single.rawValue
         ]
-        footnote.translatesAutoresizingMaskIntoConstraints = false
-        footnote.backgroundColor = .red
     }
 }

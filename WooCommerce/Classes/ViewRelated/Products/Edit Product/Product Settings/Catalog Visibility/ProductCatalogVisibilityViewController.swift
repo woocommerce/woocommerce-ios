@@ -32,11 +32,17 @@ final class ProductCatalogVisibilityViewController: UIViewController {
         configureNavigationBar()
         configureMainView()
         configureTableView()
+        configureTableViewFooter()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         onCompletion(productSettings)
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.updateFooterHeight()
     }
 
 }
@@ -66,6 +72,16 @@ private extension ProductCatalogVisibilityViewController {
 
         tableView.backgroundColor = .listBackground
         tableView.removeLastCellSeparator()
+    }
+
+    func configureTableViewFooter() {
+        /// `tableView.tableFooterView` can't handle a footerView that uses autolayout only.
+        /// Hence the container view with a defined frame.
+        let footerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 1))
+        let footerView = FootnoteTableFooterView.instantiateFromNib() as FootnoteTableFooterView
+        footerView.footnoteLabel.text = NSLocalizedString("This setting determines which shop pages products will be listed on.", comment: "Footer text in Product Catalog Visibility")
+        tableView.tableFooterView = footerContainer
+        footerContainer.addSubview(footerView)
     }
 }
 

@@ -7,5 +7,5 @@ public enum ProductCategoryAction: Action {
 
     /// Retrieve ProductCategories matching the specified criteria.
     ///
-    case retrieveProductCategories(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: ([ProductCategory]?, Error?) -> Void)
+    case synchronizeProductCategories(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: ([ProductCategory]?, Error?) -> Void)
 }

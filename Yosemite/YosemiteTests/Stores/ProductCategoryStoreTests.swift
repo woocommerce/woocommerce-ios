@@ -48,8 +48,8 @@ final class ProductCategoryStoreTests: XCTestCase {
         let expectation = self.expectation(description: #function)
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "categories-all")
 
-        // When dispatching a `retrieveProductCategories` action
-        let action = ProductCategoryAction.retrieveProductCategories(siteID: sampleSiteID,
+        // When dispatching a `synchronizeProductCategories` action
+        let action = ProductCategoryAction.synchronizeProductCategories(siteID: sampleSiteID,
                                                                      pageNumber: defaultPageNumber,
                                                                      pageSize: defaultPageSize) { categories, error in
             // Then a valid set of categories should be returned
@@ -70,8 +70,8 @@ final class ProductCategoryStoreTests: XCTestCase {
         let expectation = self.expectation(description: #function)
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "generic_error")
 
-        // When dispatching a `retrieveProductCategories` action
-        let action = ProductCategoryAction.retrieveProductCategories(siteID: sampleSiteID,
+        // When dispatching a `synchronizeProductCategories` action
+        let action = ProductCategoryAction.synchronizeProductCategories(siteID: sampleSiteID,
                                                                      pageNumber: defaultPageNumber,
                                                                      pageSize: defaultPageSize) { categories, error in
             // Then no categories should be returned
@@ -88,8 +88,8 @@ final class ProductCategoryStoreTests: XCTestCase {
         // Given a an empty network response
         let expectation = self.expectation(description: #function)
 
-        // When dispatching a `retrieveProductCategories` action
-        let action = ProductCategoryAction.retrieveProductCategories(siteID: sampleSiteID,
+        // When dispatching a `synchronizeProductCategories` action
+        let action = ProductCategoryAction.synchronizeProductCategories(siteID: sampleSiteID,
                                                                      pageNumber: defaultPageNumber,
                                                                      pageSize: defaultPageSize) { categories, error in
             // Then no categories should be returned

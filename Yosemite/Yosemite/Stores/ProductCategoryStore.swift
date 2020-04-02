@@ -21,7 +21,7 @@ public final class ProductCategoryStore: Store {
         }
 
         switch action {
-        case .retrieveProductCategories(let siteID, let pageNumber, let pageSize, let onCompletion):
+        case .synchronizeProductCategories(let siteID, let pageNumber, let pageSize, let onCompletion):
             synchronizeProductCategories(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         }
     }

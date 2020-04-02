@@ -72,12 +72,11 @@ enum ProductSettingsRows {
         }
 
         func configure(cell: UITableViewCell) {
-            guard let cell = cell as? BasicTableViewCell else {
+            guard let cell = cell as? SettingTitleAndValueTableViewCell else {
                 return
             }
-
-            cell.textLabel?.text = NSLocalizedString("Catalog Visibility", comment: "Catalog Visibility label in Product Settings")
-            cell.detailTextLabel?.text = "TO BE IMPLEMENTED"
+            
+            cell.updateUI(title: NSLocalizedString("Catalog Visibility", comment: "Catalog Visibility label in Product Settings"), value: settings.catalogVisibility.description)
             cell.accessoryType = .disclosureIndicator
         }
 
@@ -89,9 +88,9 @@ enum ProductSettingsRows {
             sourceViewController.navigationController?.pushViewController(viewController, animated: true)
         }
 
-        let reuseIdentifier: String = BasicTableViewCell.reuseIdentifier
+        let reuseIdentifier: String = SettingTitleAndValueTableViewCell.reuseIdentifier
 
-        let cellTypes: [UITableViewCell.Type] = [BasicTableViewCell.self]
+        let cellTypes: [UITableViewCell.Type] = [SettingTitleAndValueTableViewCell.self]
     }
 
     struct Slug: ProductSettingsRowMediator {

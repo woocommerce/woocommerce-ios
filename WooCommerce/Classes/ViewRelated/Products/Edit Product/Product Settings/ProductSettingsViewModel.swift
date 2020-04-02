@@ -24,7 +24,9 @@ final class ProductSettingsViewModel {
 
     init(product: Product) {
         self.product = product
-        productSettings = ProductSettings(status: product.productStatus)
+        productSettings = ProductSettings(status: product.productStatus,
+                                          featured: product.featured,
+                                          catalogVisibility: product.productCatalogVisibility)
         sections = Self.configureSections(productSettings)
     }
 
@@ -87,8 +89,12 @@ extension ProductSettingsViewModel {
 //
 final class ProductSettings {
     var status: ProductStatus
-
-    init(status: ProductStatus) {
+    var featured: Bool
+    var catalogVisibility: ProductCatalogVisibility
+    
+    init(status: ProductStatus, featured: Bool, catalogVisibility: ProductCatalogVisibility) {
         self.status = status
+        self.featured = featured
+        self.catalogVisibility = catalogVisibility
     }
 }

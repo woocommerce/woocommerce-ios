@@ -18,7 +18,7 @@ final class ProductCatalogVisibilityViewController: UIViewController {
     ///
     init(settings: ProductSettings, completion: @escaping Completion) {
         productSettings = settings
-        sections = [Section(rows: [.featuredProduct]), Section(rows: [.listSelector])]
+        sections = [Section(rows: [.featuredProduct]), Section(rows: [.visible, .catalog, .search, .hidden])]
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
@@ -53,7 +53,7 @@ private extension ProductCatalogVisibilityViewController {
 
     func configureTableView() {
         tableView.register(SwitchTableViewCell.loadNib(), forCellReuseIdentifier: SwitchTableViewCell.reuseIdentifier)
-        tableView.register(ContainerListSelectorTableViewCell.loadNib(), forCellReuseIdentifier: ContainerListSelectorTableViewCell.reuseIdentifier)
+        tableView.register(BasicTableViewCell.loadNib(), forCellReuseIdentifier: BasicTableViewCell.reuseIdentifier)
         tableView.register(TwoColumnSectionHeaderView.loadNib(), forHeaderFooterViewReuseIdentifier: TwoColumnSectionHeaderView.reuseIdentifier)
         
         tableView.dataSource = self
@@ -115,7 +115,11 @@ extension ProductCatalogVisibilityViewController: UITableViewDataSource {
 extension ProductCatalogVisibilityViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-
+        let row = sections[indexPath.section].rows[indexPath.row]
+        if let catalogVisibility = row.catalogVisibility {
+            productSettings.catalogVisibility = catalogVisibility
+        }
+        tableView.reloadData()
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -150,8 +154,8 @@ private extension ProductCatalogVisibilityViewController {
         switch cell {
         case let cell as SwitchTableViewCell:
             configureFeaturedProduct(cell: cell)
-        case let cell as ContainerListSelectorTableViewCell:
-            configureListSelector(cell: cell)
+        case let cell as BasicTableViewCell:
+            configureCatalogVisibilitySelector(cell: cell, indexPath: indexPath)
         default:
             fatalError("Unidentified product catalog visibility row type")
         }
@@ -159,24 +163,17 @@ private extension ProductCatalogVisibilityViewController {
     
     func configureFeaturedProduct(cell: SwitchTableViewCell) {
         cell.title = NSLocalizedString("Featured Product", comment: "Featured Product switch in Product Catalog Visibility")
-        cell.isOn = true //product.featured
+        cell.isOn = productSettings.featured
         cell.onChange = { [weak self] value in
-            //TODO: handle the value
+            self?.productSettings.featured = value
         }
     }
     
-    func configureListSelector(cell: ContainerListSelectorTableViewCell) {
-        let viewProperties = ListSelectorViewProperties(navigationBarTitle: title)
-        let dataSource = ProductStatusSettingListSelectorDataSource(selected: productSettings.status)
-
-        let listSelectorViewController = ListSelectorViewController(viewProperties: viewProperties,
-                                                                    dataSource: dataSource) { selected in
-
-                                                                       // onCompletion(self.settings)
-        }
-        
-        
-        cell.configure(presenterViewController: self, embeddedViewController: listSelectorViewController)
+    func configureCatalogVisibilitySelector(cell: BasicTableViewCell, indexPath: IndexPath) {
+        let row = sections[indexPath.section].rows[indexPath.row]
+        cell.selectionStyle = .default
+        cell.textLabel?.text = row.catalogVisibility?.description
+        cell.accessoryType = productSettings.catalogVisibility == row.catalogVisibility ? .checkmark : .none
     }
 }
 
@@ -189,14 +186,32 @@ extension ProductCatalogVisibilityViewController {
     enum Row {
         /// Listed in the order they appear on screen
         case featuredProduct
-        case listSelector
+        case visible
+        case catalog
+        case search
+        case hidden
         
         var reuseIdentifier: String {
             switch self {
             case .featuredProduct:
                 return SwitchTableViewCell.reuseIdentifier
-            case .listSelector:
-                return ContainerListSelectorTableViewCell.reuseIdentifier
+            case .visible, .catalog, .search, .hidden:
+                return BasicTableViewCell.reuseIdentifier
+            }
+        }
+        
+        var catalogVisibility: ProductCatalogVisibility? {
+            switch self {
+            case .visible:
+                return .visible
+            case .catalog:
+                return .catalog
+            case .search:
+                return .search
+            case .hidden:
+                return .hidden
+            default:
+                return nil
             }
         }
     }

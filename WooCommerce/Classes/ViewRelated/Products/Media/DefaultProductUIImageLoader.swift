@@ -14,6 +14,8 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
 
     private let productImageActionHandler: ProductImageActionHandler?
 
+    private var activeImageTasks = [ImageDownloadTask]()
+
     /// - Parameters:
     ///   - productImageActionHandler: if non-nil, the asset image is used after being uploaded to a remote image to avoid an extra network call.
     ///     Set this property when images are being uploaded in the scope.
@@ -31,6 +33,11 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
         }
     }
 
+    deinit {
+        activeImageTasks.forEach { $0.cancel() }
+        activeImageTasks.removeAll()
+    }
+
     func requestImage(productImage: ProductImage, completion: @escaping (UIImage) -> Void) {
         if let image = imagesByProductImageID[productImage.imageID] {
             completion(image)
@@ -39,12 +46,15 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
         guard let url = URL(string: productImage.src) else {
             return
         }
-        imageService.downloadImage(with: url, shouldCacheImage: true) { [weak self] (image, error) in
+        let task = imageService.downloadImage(with: url, shouldCacheImage: true) { [weak self] (image, error) in
             guard let image = image else {
                 return
             }
             self?.imagesByProductImageID[productImage.imageID] = image
             completion(image)
+        }
+        if let task = task {
+            activeImageTasks.append(task)
         }
     }
 

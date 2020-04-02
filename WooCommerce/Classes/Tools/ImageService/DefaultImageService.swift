@@ -10,15 +10,18 @@ private extension URL {
 /// Implements `ImageService` using `Kingfisher` library.
 ///
 struct DefaultImageService: ImageService {
-    private let imageDownloader: ImageDownloader
+    private let imageDownloader: ImageDownloadable
     private let imageCache: ImageCache
 
     private var defaultOptions: KingfisherOptionsInfo {
-        return [.targetCache(imageCache), .downloader(imageDownloader)]
+        if let imageDownloader = imageDownloader as? ImageDownloader {
+            return [.targetCache(imageCache), .downloader(imageDownloader)]
+        }
+        return [.targetCache(imageCache)]
     }
 
     init(imageCache: ImageCache = ImageCache.default,
-         imageDownloader: ImageDownloader = ImageDownloader.default) {
+         imageDownloader: ImageDownloadable = ImageDownloader.default) {
         self.imageCache = imageCache
         self.imageDownloader = imageDownloader
     }
@@ -35,21 +38,18 @@ struct DefaultImageService: ImageService {
         }
     }
 
-    func downloadImage(with url: URL, shouldCacheImage: Bool, completion: ImageDownloadCompletion?) {
-        imageDownloader.downloadImage(with: url,
-                                      options: nil) { result in
-                                        switch result {
-                                        case .success(let imageResult):
-                                            let image = imageResult.image
+    func downloadImage(with url: URL, shouldCacheImage: Bool, completion: ImageDownloadCompletion?) -> ImageDownloadTask? {
+        return imageDownloader.downloadImage(with: url) { result in
+                                                switch result {
+                                                case .success(let image):
+                                                    if shouldCacheImage {
+                                                        self.imageCache.store(image, forKey: url.imageCacheKey)
+                                                    }
 
-                                            if shouldCacheImage {
-                                                self.imageCache.store(image, forKey: url.imageCacheKey)
-                                            }
-
-                                            completion?(image, nil)
-                                        case .failure(let kingfisherError):
-                                            completion?(nil, .other(error: kingfisherError))
-                                        }
+                                                    completion?(image, nil)
+                                                case .failure(let kingfisherError):
+                                                    completion?(nil, .other(error: kingfisherError))
+                                                }
         }
     }
 

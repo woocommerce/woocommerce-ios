@@ -203,6 +203,9 @@
 		02E8B17A23E2C4BD00A43403 /* CircleSpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E8B17923E2C4BD00A43403 /* CircleSpinnerView.swift */; };
 		02E8B17C23E2C78A00A43403 /* ProductImageStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E8B17B23E2C78A00A43403 /* ProductImageStatus.swift */; };
 		02E8B17E23E2C8D900A43403 /* ProductImageActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E8B17D23E2C8D900A43403 /* ProductImageActionHandler.swift */; };
+		02EA6BF82435E80600FFF90A /* ImageDownloadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EA6BF72435E80600FFF90A /* ImageDownloadable.swift */; };
+		02EA6BFA2435E92600FFF90A /* KingfisherImageDownloader+ImageDownloadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EA6BF92435E92600FFF90A /* KingfisherImageDownloader+ImageDownloadable.swift */; };
+		02EA6BFC2435EC3500FFF90A /* MockImageDownloadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EA6BFB2435EC3500FFF90A /* MockImageDownloadable.swift */; };
 		02EEB5C42424AFAA00B8A701 /* TextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EEB5C22424AFAA00B8A701 /* TextFieldTableViewCell.swift */; };
 		02EEB5C52424AFAA00B8A701 /* TextFieldTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02EEB5C32424AFAA00B8A701 /* TextFieldTableViewCell.xib */; };
 		02F49ADA23BF356E00FA0BFA /* TitleAndTextFieldTableViewCell.ViewModel+State.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F49AD923BF356E00FA0BFA /* TitleAndTextFieldTableViewCell.ViewModel+State.swift */; };
@@ -971,6 +974,9 @@
 		02E8B17923E2C4BD00A43403 /* CircleSpinnerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleSpinnerView.swift; sourceTree = "<group>"; };
 		02E8B17B23E2C78A00A43403 /* ProductImageStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageStatus.swift; sourceTree = "<group>"; };
 		02E8B17D23E2C8D900A43403 /* ProductImageActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageActionHandler.swift; sourceTree = "<group>"; };
+		02EA6BF72435E80600FFF90A /* ImageDownloadable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownloadable.swift; sourceTree = "<group>"; };
+		02EA6BF92435E92600FFF90A /* KingfisherImageDownloader+ImageDownloadable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KingfisherImageDownloader+ImageDownloadable.swift"; sourceTree = "<group>"; };
+		02EA6BFB2435EC3500FFF90A /* MockImageDownloadable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockImageDownloadable.swift; sourceTree = "<group>"; };
 		02EEB5C22424AFAA00B8A701 /* TextFieldTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldTableViewCell.swift; sourceTree = "<group>"; };
 		02EEB5C32424AFAA00B8A701 /* TextFieldTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TextFieldTableViewCell.xib; sourceTree = "<group>"; };
 		02F49AD923BF356E00FA0BFA /* TitleAndTextFieldTableViewCell.ViewModel+State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TitleAndTextFieldTableViewCell.ViewModel+State.swift"; sourceTree = "<group>"; };
@@ -1955,6 +1961,8 @@
 				02C0CD2923B5BB1C00F880B1 /* ImageService.swift */,
 				02C0CD2B23B5BC9600F880B1 /* DefaultImageService.swift */,
 				021AEF9D2407F55C00029D28 /* PHAssetImageLoader.swift */,
+				02EA6BF72435E80600FFF90A /* ImageDownloadable.swift */,
+				02EA6BF92435E92600FFF90A /* KingfisherImageDownloader+ImageDownloadable.swift */,
 			);
 			path = ImageService;
 			sourceTree = "<group>";
@@ -2185,6 +2193,7 @@
 				02A275C323FE5B64005C560F /* MockPHAssetImageLoader.swift */,
 				02A275C523FE9EFC005C560F /* MockFeatureFlagService.swift */,
 				02B653AB2429F7BF00A9C839 /* MockTaxClassStoresManager.swift */,
+				02EA6BFB2435EC3500FFF90A /* MockImageDownloadable.swift */,
 			);
 			path = Mockups;
 			sourceTree = "<group>";
@@ -4124,6 +4133,7 @@
 				B57B678A2107546E00AF8905 /* Address+Woo.swift in Sources */,
 				747AA0892107CEC60047A89B /* AnalyticsProvider.swift in Sources */,
 				B5DBF3CB20E149CC00B53AED /* AuthenticatedState.swift in Sources */,
+				02EA6BF82435E80600FFF90A /* ImageDownloadable.swift in Sources */,
 				CECC758623D21AC200486676 /* AggregateOrderItem.swift in Sources */,
 				02357B2A23CDB3E300147C2B /* ProductImageViewController.swift in Sources */,
 				B53B3F39219C817800DF1EB6 /* UIStoryboard+Woo.swift in Sources */,
@@ -4206,6 +4216,7 @@
 				74334F36214AB130006D6AC5 /* ProductTableViewCell.swift in Sources */,
 				024DF31B23742E1C006658FE /* FormatBarItemViewProperties.swift in Sources */,
 				02E8B17C23E2C78A00A43403 /* ProductImageStatus.swift in Sources */,
+				02EA6BFA2435E92600FFF90A /* KingfisherImageDownloader+ImageDownloadable.swift in Sources */,
 				0206483A23FA4160008441BB /* OrdersRootViewController.swift in Sources */,
 				022BF7FD23B9D708000A1DFB /* InProgressViewController.swift in Sources */,
 				D82DFB4A225F22D400EFE2CB /* UISearchBar+Appearance.swift in Sources */,
@@ -4480,6 +4491,7 @@
 				57F34AA12423D45A00E38AFB /* OrdersViewModelTests.swift in Sources */,
 				02A275C623FE9EFC005C560F /* MockFeatureFlagService.swift in Sources */,
 				B517EA1A218B2D2600730EC4 /* StringFormatterTests.swift in Sources */,
+				02EA6BFC2435EC3500FFF90A /* MockImageDownloadable.swift in Sources */,
 				45B9C64523A945C0007FC4C5 /* PriceInputFormatterTests.swift in Sources */,
 				453904F523BB8BD5007C4956 /* ProductTaxClassListSelectorDataSourceTests.swift in Sources */,
 				746FC23D2200A62B00C3096C /* DateWooTests.swift in Sources */,

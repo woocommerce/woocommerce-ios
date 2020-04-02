@@ -84,6 +84,7 @@ enum ProductSettingsRows {
             let viewController = ProductCatalogVisibilityViewController(settings: settings) { (productSettings) in
                 self.settings.featured = productSettings.featured
                 self.settings.catalogVisibility = productSettings.catalogVisibility
+                onCompletion(self.settings)
             }
             sourceViewController.navigationController?.pushViewController(viewController, animated: true)
         }

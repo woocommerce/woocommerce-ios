@@ -34,6 +34,11 @@ final class ProductCatalogVisibilityViewController: UIViewController {
         configureTableView()
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        onCompletion(productSettings)
+    }
+
 }
 
 
@@ -61,16 +66,6 @@ private extension ProductCatalogVisibilityViewController {
 
         tableView.backgroundColor = .listBackground
         tableView.removeLastCellSeparator()
-    }
-}
-
-// MARK: - Navigation actions handling
-//
-extension ProductCatalogVisibilityViewController {
-
-    override func shouldPopOnBackButton() -> Bool {
-        onCompletion(productSettings)
-        return true
     }
 }
 

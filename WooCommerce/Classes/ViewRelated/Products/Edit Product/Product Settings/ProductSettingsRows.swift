@@ -76,7 +76,8 @@ enum ProductSettingsRows {
                 return
             }
 
-            cell.updateUI(title: NSLocalizedString("Catalog Visibility", comment: "Catalog Visibility label in Product Settings"), value: settings.catalogVisibility.description)
+            let titleView = NSLocalizedString("Catalog Visibility", comment: "Catalog Visibility label in Product Settings")
+            cell.updateUI(title: titleView, value: settings.catalogVisibility.description)
             cell.accessoryType = .disclosureIndicator
         }
 

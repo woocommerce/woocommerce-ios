@@ -180,15 +180,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
         // Assert
         let expectedImageStatusesFromSiteMediaLibrary = mockMediaItems.map { ProductImageStatus.remote(image: $0.toProductImage) }
         let expectedImageStatuses = expectedImageStatusesFromSiteMediaLibrary + mockRemoteProductImageStatuses
-
-        let expectation = self.expectation(description: "Wait for image statuses")
-        expectation.expectedFulfillmentCount = 1
-
-        productImageActionHandler.addUpdateObserver(self) { (productImageStatuses, error) in
-            XCTAssertEqual(productImageStatuses, expectedImageStatuses)
-            expectation.fulfill()
-        }
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+        XCTAssertEqual(productImageActionHandler.productImageStatuses, expectedImageStatuses)
     }
 }
 

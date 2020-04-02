@@ -10,16 +10,14 @@ extension Media: WPMediaAsset {
         }
 
         let imageService = ServiceLocator.imageService
-        DispatchQueue.global().async {
-            imageService.retrieveImageFromCache(with: url) { (image) in
-                if let image = image {
-                    completionHandler(image, nil)
-                    return
-                }
+        imageService.retrieveImageFromCache(with: url) { (image) in
+            if let image = image {
+                completionHandler(image, nil)
+                return
+            }
 
-                imageService.downloadImage(with: url, shouldCacheImage: true) { (image, error) in
-                    completionHandler(image, error)
-                }
+            imageService.downloadImage(with: url, shouldCacheImage: true) { (image, error) in
+                completionHandler(image, error)
             }
         }
         return Int32(mediaID)

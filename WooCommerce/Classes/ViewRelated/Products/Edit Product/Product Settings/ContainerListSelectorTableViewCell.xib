@@ -34,6 +34,7 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
+                <outlet property="cellHeightConstraint" destination="PZk-cN-Zpy" id="HL4-Wo-XcA"/>
                 <outlet property="containerView" destination="YMi-fQ-Iva" id="2dk-4K-gJS"/>
             </connections>
             <point key="canvasLocation" x="131.8840579710145" y="105.80357142857143"/>

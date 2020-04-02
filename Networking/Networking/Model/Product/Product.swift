@@ -457,6 +457,8 @@ public struct Product: Codable {
 
         // Product Settings
         try container.encode(statusKey, forKey: .statusKey)
+        try container.encode(featured, forKey: .featured)
+        try container.encode(catalogVisibilityKey, forKey: .catalogVisibilityKey)
     }
 }
 

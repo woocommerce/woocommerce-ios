@@ -21,7 +21,10 @@ extension WordPressMediaLibraryPickerDataSource {
             return 0
         }
 
-        func cancelImageRequest(_ requestID: WPMediaRequestID) {}
+        func cancelImageRequest(_ requestID: WPMediaRequestID) {
+            // TODO-2073: implement image request cancelling once the image fetching is not tied to `Media` since it needs to keep
+            // track of the task.
+        }
 
         func baseGroup() -> Any {
             return ""
@@ -80,7 +83,8 @@ extension WordPressMediaLibraryPickerDataSource: WPMediaCollectionDataSource {
     func media(at index: Int) -> WPMediaAsset {
         let media = mediaItems[index]
 
-        // Since there is no paging API from the media picker library, this is where we detect whether the last item has been reached via sync coordinator.
+        // TODO-2073: since there is no paging API from the media picker library, this is where we detect whether the last item has been reached via sync
+        // coordinator.
         syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: index)
 
         return media

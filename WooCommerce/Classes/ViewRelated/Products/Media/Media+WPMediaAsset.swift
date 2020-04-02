@@ -9,6 +9,8 @@ extension Media: WPMediaAsset {
             return 0
         }
 
+        // TODO-2073: move image fetching to `WordPressMediaLibraryPickerDataSource` instead of having to use the `ServiceLocator` singleton on a `Media`
+        // extension.
         let imageService = ServiceLocator.imageService
         imageService.retrieveImageFromCache(with: url) { (image) in
             if let image = image {

@@ -190,7 +190,6 @@ extension ProductCatalogVisibilityViewController {
     /// Table Sections
     ///
     struct Section {
-        let title: String?
         let footer: String?
         let rows: [Row]
 

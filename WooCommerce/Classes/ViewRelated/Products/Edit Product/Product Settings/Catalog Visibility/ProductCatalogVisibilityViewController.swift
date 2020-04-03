@@ -3,14 +3,14 @@ import Yosemite
 
 final class ProductCatalogVisibilityViewController: UIViewController {
 
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak private var tableView: UITableView!
 
     // Completion callback
     //
     typealias Completion = (_ productSettings: ProductSettings) -> Void
     private let onCompletion: Completion
 
-    private var productSettings: ProductSettings
+    private let productSettings: ProductSettings
 
     private let sections: [Section]
 

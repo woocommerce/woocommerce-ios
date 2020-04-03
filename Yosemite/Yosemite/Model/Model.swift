@@ -55,7 +55,6 @@ public typealias ProductDefaultAttribute = Networking.ProductDefaultAttribute
 public typealias ProductDownload = Networking.ProductDownload
 public typealias ProductVariation = Networking.ProductVariation
 public typealias ProductVariationAttribute = Networking.ProductVariationAttribute
-public typealias ProductSettings = Networking.ProductSettings
 public typealias Refund = Networking.Refund
 public typealias StatGranularity = Networking.StatGranularity
 public typealias StatsGranularityV4 = Networking.StatsGranularityV4

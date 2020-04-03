@@ -18,7 +18,9 @@ final class ProductCatalogVisibilityViewController: UIViewController {
     ///
     init(settings: ProductSettings, completion: @escaping Completion) {
         productSettings = settings
-        sections = [Section(rows: [.featuredProduct]), Section(rows: [.visible, .catalog, .search, .hidden])]
+        let footerText = NSLocalizedString("This setting determines which shop pages products will be listed on.",
+                                           comment: "Footer text in Product Catalog Visibility")
+        sections = [Section(rows: [.featuredProduct]), Section(footer: footerText, rows: [.visible, .catalog, .search, .hidden])]
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
@@ -32,19 +34,12 @@ final class ProductCatalogVisibilityViewController: UIViewController {
         configureNavigationBar()
         configureMainView()
         configureTableView()
-        configureTableViewFooter()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         onCompletion(productSettings)
     }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        tableView.updateFooterHeight()
-    }
-
 }
 
 
@@ -65,24 +60,12 @@ private extension ProductCatalogVisibilityViewController {
     func configureTableView() {
         tableView.register(SwitchTableViewCell.loadNib(), forCellReuseIdentifier: SwitchTableViewCell.reuseIdentifier)
         tableView.register(BasicTableViewCell.loadNib(), forCellReuseIdentifier: BasicTableViewCell.reuseIdentifier)
-        tableView.register(TwoColumnSectionHeaderView.loadNib(), forHeaderFooterViewReuseIdentifier: TwoColumnSectionHeaderView.reuseIdentifier)
 
         tableView.dataSource = self
         tableView.delegate = self
 
         tableView.backgroundColor = .listBackground
         tableView.removeLastCellSeparator()
-    }
-
-    func configureTableViewFooter() {
-        /// `tableView.tableFooterView` can't handle a footerView that uses autolayout only.
-        /// Hence the container view with a defined frame.
-        let footerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 1))
-        let footerView = FootnoteTableFooterView.instantiateFromNib() as FootnoteTableFooterView
-        footerView.footnoteLabel.text = NSLocalizedString("This setting determines which shop pages products will be listed on.",
-                                                          comment: "Footer text in Product Catalog Visibility")
-        tableView.tableFooterView = footerContainer
-        footerContainer.addSubview(footerView)
     }
 }
 
@@ -124,22 +107,12 @@ extension ProductCatalogVisibilityViewController: UITableViewDelegate {
         return UITableView.automaticDimension
     }
 
-    func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        return CGFloat.leastNormalMagnitude
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return UITableView.automaticDimension
     }
 
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-
-        let headerID = TwoColumnSectionHeaderView.reuseIdentifier
-        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerID) as? TwoColumnSectionHeaderView else {
-            assertionFailure("Unregistered \(TwoColumnSectionHeaderView.self) in UITableView")
-            return nil
-        }
-
-        headerView.leftText = nil
-        headerView.rightText = nil
-
-        return headerView
+    func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        return sections[section].footer
     }
 }
 

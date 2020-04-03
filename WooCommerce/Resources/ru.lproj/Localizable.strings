@@ -1,9 +1,12 @@
-/* Translation-Revision-Date: 2020-03-19 00:54:48+0000 */
+/* Translation-Revision-Date: 2020-04-01 00:54:04+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
 
 /* No comment provided by engineer. */
+" Continue with Google" = "Продолжить с Google";
+
+/* Format for each Product attribute */
 "%1$@ (%2$ld options)" = "%1$@ (вариантов: %2$ld)";
 
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
@@ -104,6 +107,9 @@
 
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "Специальный инструмент для анализа состояния приложения";
+
+/* Option to select the Airmail app when logging in with magic links */
+"Airmail" = "Airmail";
 
 /* Title for the second page in the Orders tab. */
 "All Orders" = "Все заказы";
@@ -227,15 +233,18 @@
 "Can Not Request Link" = "Не удаётся запросить ссылку.";
 
 /* Button title Cancel in Discard Changes Action Sheet
-   Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image */
+   Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links */
 "Cancel" = "Отмена";
 
 /* The title of the alert when there is an error updating the product */
-"Cannot update Product" = "Не удается обновить продукт";
+"Cannot update product" = "Не удается обновить продукт";
 
 /* The title of the alert when there is an error uploading an image
    Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "Невозможно загрузить изображение";
+
+/* Add Custom shipping carrier. Title of cell presenting the carrier name */
+"Carrier name" = "Название компании-перевозчика";
 
 /* Catalog Visibility label in Product Settings */
 "Catalog Visibility" = "Отображение каталога";
@@ -245,6 +254,12 @@
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "Ошибка сертификата";
+
+/* Instructional text on how to open the email containing a magic link. */
+"Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder." = "Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder.";
+
+/* Alert title for check your email during logIn/signUp. */
+"Check your email!" = "Проверьте электронную почту!";
 
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "Выбрать с устройства";
@@ -285,9 +300,6 @@
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "Читать дальше";
 
-/* Button title. Tapping begins log in using Google. */
-"Continue with Google" = "Продолжить с Google";
-
 /* Button title. Tapping begins our normal log in process. */
 "Continue with WordPress.com" = "Продолжить с WordPress.com";
 
@@ -327,12 +339,12 @@
 /* Cell title: the current date. */
 "Current" = "Текущая дата";
 
-/* Name of the section for custom shipment tracking providers */
+/* Name of the section for custom shipment tracking carriers */
 "Custom" = "Дополнительно";
 
-/* Add custom shipping provider. Content of cell titled Shipping Provider
-   Placeholder name of a custom shipment tracking provider - Title of button to add a custom tracking provider if filtering the list yields no results. */
-"Custom Provider" = "Другая служба";
+/* Add custom shipping carrier. Content of cell titled Shipping Carrier
+   Placeholder name of a custom shipment tracking carrier - Title of button to add a custom tracking carrier if filtering the list yields no results. */
+"Custom Carrier" = "Другой перевозчик";
 
 /* Customer info section title */
 "Customer" = "Заказчик";
@@ -344,7 +356,7 @@
    Section title for a note from the customer */
 "Customer Provided Note" = "Примечание клиента";
 
-/* Add / Edit shipping provider. Title of cell date shipped */
+/* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "Дата отправки";
 
 /* Statistical unit - a single day */
@@ -461,8 +473,8 @@
 /* The text placeholder for the Text Editor screen */
 "Enter a title..." = "Введите название...";
 
-/* Add custom shipping provider. Placeholder of cell presenting provider name */
-"Enter provider name" = "Введите название компании-поставщика";
+/* Add custom shipping carrier. Placeholder of cell presenting carrier name */
+"Enter carrier name" = "Введите название компании-перевозчика";
 
 /* Instruction text on the login's site addresss screen.
    Label for button to log in using your site address. */
@@ -474,10 +486,10 @@
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "Введите пароль вашей учетной записи WordPress.com.";
 
-/* Add custom shipping provider. Placeholder of cell presenting tracking link */
+/* Add custom shipping carrier. Placeholder of cell presenting carrier link */
 "Enter tracking link" = "Введите ссылку на отслеживание";
 
-/* Add custom shipping provider. Placeholder of cell presenting tracking number */
+/* Add custom shipping carrier. Placeholder of cell presenting tracking number */
 "Enter tracking number" = "Введите номер отслеживания";
 
 /* Title of a button on the magic link screen.
@@ -496,6 +508,9 @@
 
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "Не удалось сериализировать запрос в API-интерфейс REST.";
+
+/* Option to select the Fastmail app when logging in with magic links */
+"Fastmail" = "Fastmail";
 
 /* Navigates to the feature request screen */
 "Feature Request" = "Запрос функции";
@@ -520,6 +535,9 @@
 
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "Получение информации об учетной записи";
+
+/* Option to select the Gmail app when logging in with magic links */
+"Gmail" = "Gmail";
 
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Регистрация в Google не удалась.";
@@ -737,6 +755,9 @@
 /* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
 "Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "Создан Automattic с любовью. <a href=\"https:\/\/automattic.com\/work-with-us\/\">Есть вакансии!<\/a>";
 
+/* Option to select the Apple Mail app when logging in with magic links */
+"Mail (Default)" = "Почта (по умолчанию)";
+
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "Управляйте заказами, следите за продажами и контролируйте работу магазина с помощью уведомлений в реальном времени.";
 
@@ -744,7 +765,7 @@
 "Manage stock" = "Управлять запасами";
 
 /* shown in promotional screens during first launch */
-"Manage your Jetpack-powered site on the go — you‘ve got WordPress in your pocket." = "Управляйте сайтом, созданным с помощью Jetpack, где угодно — WordPress можно всегда носить с собой.";
+"Manage your Jetpack-powered site on the go — you've got WordPress in your pocket." = "Управляйте сайтом, созданным с помощью Jetpack, где угодно — WordPress можно всегда носить с собой.";
 
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "Вручную";
@@ -766,6 +787,9 @@
 
 /* Message phone number button title */
 "Message" = "Сообщение";
+
+/* Option to select the Microsft Outlook app when logging in with magic links */
+"Microsoft Outlook" = "Microsoft Outlook";
 
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
 "Minimum value %1$@, maximum value %2$@" = "Минимальное значение — %1$@, максимальное значение — %2$@";
@@ -849,8 +873,8 @@
 /* Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "Нет результатов по выбранным критериям";
 
-/* Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider' */
-"No results found for (term)\nAdd a custom provider" = "No results found for (term)\nAdd a custom provider";
+/* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier' */
+"No results found for (term)\nAdd a custom carrier" = "No results found for (term)\nAdd a custom carrier";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "Нет доходов за указанный период";
@@ -991,12 +1015,6 @@
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "Выберите магазин для подключения";
 
-/* Product title error notice message, when the title is empty */
-"Please add a title" = "Добавьте название";
-
-/* Alert title for check your email during logIn/signUp. */
-"Please check your email" = "Проверьте вашу почту";
-
 /* Placeholder for editing the URL of a text link */
 "Please enter a URL" = "Введите URL-адрес";
 
@@ -1035,9 +1053,6 @@
 
 /* Error message when an image captured by camera cannot be saved to the device Photos library */
 "Please make sure the app can access Photos in device settings" = "Предоставьте приложению доступ к разделу \"Фотографии\" в настройках устройства";
-
-/* Message to ask the user to check their email and look for a WordPress.com email. */
-"Please open your email app and look for an email from WordPress.com." = "Пожалуйста, откройте ваше приложение email и найдите сообщение от WordPress.com.";
 
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "Повторите попытку.";
@@ -1097,9 +1112,6 @@
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "Позвонить или отправить сообщение плательщику.";
-
-/* Add Custom shipping provider. Title of cell presenting the provider name */
-"Provider name" = "Название компании-поставщика";
 
 /* Display label for the product's published status */
 "Publish" = "Публикация";
@@ -1268,6 +1280,9 @@
 /* Page title for the select a different store screen */
 "Select Store" = "Выбрать магазин";
 
+/* Add the shipping carrier. Placeholder of cell presenting carrier name */
+"Select carrier" = "Выберите перевозчика";
+
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "Выбрать стиль абзацев";
 
@@ -1305,11 +1320,14 @@
    Product Shipping Settings navigation title - Shipping label for payment view - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "Доставка";
 
+/* Title of view displaying all available Shipment Tracking Carriers */
+"Shipping Carriers" = "Перевозчики";
+
 /* Shipping method title for customer info cell */
 "Shipping Method" = "Способ доставки";
 
-/* Title of view displaying all available Shipment Tracking Providers */
-"Shipping Providers" = "Службы доставки";
+/* Add / Edit shipping carrier. Title of cell presenting name */
+"Shipping carrier" = "Перевозчик";
 
 /* Title of the cell in Product Shipping Settings > Shipping class */
 "Shipping class" = "Класс доставки";
@@ -1328,9 +1346,6 @@
 
 /* Display label for the product's tax status setting option */
 "Shipping only" = "Только доставка";
-
-/* Add / Edit shipping provider. Title of cell presenting name */
-"Shipping provider" = "Служба доставки";
 
 /* The navigation bar title of the edit short description screen.
    Title of the Short Description row on Product main screen */
@@ -1362,9 +1377,6 @@
 
 /* Button title. Tapping begins our normal sign up process. */
 "Sign up with Email" = "Зарегистрироваться с адресом Email";
-
-/* Button title. Tapping begins sign up using Google. */
-"Sign up with Google" = "Зарегистрироваться через Google";
 
 /* Describes a site redirect domain */
 "Site Redirect" = "Перенаправление сайта";
@@ -1433,6 +1445,9 @@
 /* Display label for the review's spam status
    Verb, spam a comment */
 "Spam" = "Спамить";
+
+/* Option to select the Spark email app when logging in with magic links */
+"Spark" = "Spark";
 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "Стандартный тариф";
@@ -1691,12 +1706,9 @@
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "Этот продукт не может быть загружен";
 
-/* Product details screen — product title descriptive label
-   The navigation bar title of the Text editor screen. - Title in the Product Title row on Product form screen when the description is non-empty. */
+/* Placeholder in the Product Title row on Product form screen.
+   Product details screen — product title descriptive label - The navigation bar title of the Text editor screen. - Title in the Product Title row on Product form screen when the description is non-empty. */
 "Title" = "Заголовок";
-
-/* Placeholder in the Product Title row on Product form screen. */
-"Title (required)" = "Название (обязательно)";
 
 /* Title of the cell in Product Price Settings > Schedule sale To a certain date */
 "To" = "до";
@@ -1741,10 +1753,10 @@
 /* Order tracking section title */
 "Tracking" = "Отслеживание";
 
-/* Add custom shipping provider. Title of cell presenting tracking link */
+/* Add custom shipping carrier. Title of cell presenting carrier link */
 "Tracking link (optional)" = "Ссылка на отслеживание (не обязательно)";
 
-/* Add / Edit shipping provider. Title of cell presenting tracking number */
+/* Add / Edit shipping carrier. Title of cell presenting tracking number */
 "Tracking number" = "Номер отслеживания";
 
 /* A unit test string. Reads as: 'Trackin number XXX_YYY_ZZZ'
@@ -1804,8 +1816,8 @@
 /* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number} */
 "Unable to fulfill order #(orderID)" = "Не удалось выполнить заказ #(orderID)";
 
-/* Content of error presented when loading the list of shipment providers failed. It reads: Unable to load Shipment Providers */
-"Unable to load Shipment Providers" = "Не удается загрузить службы доставки";
+/* Content of error presented when loading the list of shipment carriers failed. It reads: Unable to load Shipment Carriers */
+"Unable to load Shipment Carriers" = "Не удалось загрузить список компаний-перевозчиков";
 
 /* Load Action Failed */
 "Unable to load content" = "Не удалось загрузить содержимое";
@@ -1958,8 +1970,8 @@
 /* The info of the top banner on Dashboard that indicates new stats is unavailable */
 "We have reverted to the old stats. To use the beta stats, please activate the WooCommerce Admin plugin with version 0.23 or higher" = "Мы вернулись к старой статистике. Чтобы использовать бета-версию статистики, активируйте плагин администратора WooCommerce 0.23 или более поздней версии.";
 
-/* Instructional text on how to open the email containing a magic link. */
-"We sent you a magic signup link! Check your email on this device, and tap the link in the email to finish signing up." = "Мы послали вам магическую ссылку для регистрации. Проверьте вашу почту и нажмите присланную ссылку для завершения регистрации.";
+/* message to ask a user to check their email for a WordPress.com email */
+"We just emailed a link to %@. Please check your mail app and tap the link to log in." = "Ссылка отправлена на эл. адрес %@. Проверьте почту и перейдите по ссылке, чтобы войти в учетную запись.";
 
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "Мы используем другие инструменты отслеживания, включая и инструменты третьих сторон. Прочитайте о них и как их контролировать.";
@@ -2024,6 +2036,9 @@
 /* The title of the Work In Progress top banner on the Products tab */
 "Work in progress!" = "Процесс идёт!";
 
+/* Option to select the Yahoo Mail app when logging in with magic links */
+"Yahoo Mail" = "Yahoo Почта";
+
 /* Statistical unit - a single year */
 "Year" = "Год";
 
@@ -2038,9 +2053,6 @@
 
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Скорее всего, вы установили мобильный плагин DudaMobile, который не даёт приложению подключиться к вашему блогу";
-
-/* Instructional text on how to open the email containing a magic link. */
-"Your magic link is on its way! Check your email on this device, and tap the link in the email you receive from WordPress.com" = "Ваша волшебная ссылка уже в пути! Проверьте почту с этого устройства и нажмите ссылку в письме от WordPress.com";
 
 /* shown in promotional screens during first launch */
 "Your notifications travel with you — see comments and likes as they happen." = "Ваши уведомления путешествуют с вами — смотрите комментарии и отметки \"нравится\" в реальном времени.";

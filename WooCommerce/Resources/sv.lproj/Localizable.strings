@@ -1,9 +1,12 @@
-/* Translation-Revision-Date: 2020-03-19 00:54:48+0000 */
+/* Translation-Revision-Date: 2020-04-02 00:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
 
 /* No comment provided by engineer. */
+" Continue with Google" = "Fortsätt med Google";
+
+/* Format for each Product attribute */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld alternativ)";
 
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
@@ -104,6 +107,9 @@
 
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "Avancerat verktyg för att granska appens status";
+
+/* Option to select the Airmail app when logging in with magic links */
+"Airmail" = "Airmail";
 
 /* Title for the second page in the Orders tab. */
 "All Orders" = "Alla ordrar";
@@ -227,15 +233,18 @@
 "Can Not Request Link" = "Kan inte begära länk";
 
 /* Button title Cancel in Discard Changes Action Sheet
-   Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image */
+   Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links */
 "Cancel" = "Avbryt";
 
 /* The title of the alert when there is an error updating the product */
-"Cannot update Product" = "Kan inte uppdatera produkten";
+"Cannot update product" = "Kan inte uppdatera produkten";
 
 /* The title of the alert when there is an error uploading an image
    Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "Det går inte att ladda upp bilden";
+
+/* Add Custom shipping carrier. Title of cell presenting the carrier name */
+"Carrier name" = "Transportföretagsnamn";
 
 /* Catalog Visibility label in Product Settings */
 "Catalog Visibility" = "Synlighet i katalog";
@@ -245,6 +254,12 @@
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "Certifikat-fel";
+
+/* Instructional text on how to open the email containing a magic link. */
+"Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder." = "Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder.";
+
+/* Alert title for check your email during logIn/signUp. */
+"Check your email!" = "Kontrollera din e-post!";
 
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "Välj från enheten";
@@ -285,9 +300,6 @@
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "Fortsätt läsa";
 
-/* Button title. Tapping begins log in using Google. */
-"Continue with Google" = "Fortsätt med Google";
-
 /* Button title. Tapping begins our normal log in process. */
 "Continue with WordPress.com" = "Fortsätt med WordPress.com";
 
@@ -327,12 +339,12 @@
 /* Cell title: the current date. */
 "Current" = "Nuvarande";
 
-/* Name of the section for custom shipment tracking providers */
+/* Name of the section for custom shipment tracking carriers */
 "Custom" = "Anpassad";
 
-/* Add custom shipping provider. Content of cell titled Shipping Provider
-   Placeholder name of a custom shipment tracking provider - Title of button to add a custom tracking provider if filtering the list yields no results. */
-"Custom Provider" = "Anpassad leverantör";
+/* Add custom shipping carrier. Content of cell titled Shipping Carrier
+   Placeholder name of a custom shipment tracking carrier - Title of button to add a custom tracking carrier if filtering the list yields no results. */
+"Custom Carrier" = "Anpassat transportföretag";
 
 /* Customer info section title */
 "Customer" = "Kund";
@@ -344,7 +356,7 @@
    Section title for a note from the customer */
 "Customer Provided Note" = "Kundnotering";
 
-/* Add / Edit shipping provider. Title of cell date shipped */
+/* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "Datum skickat";
 
 /* Statistical unit - a single day */
@@ -461,8 +473,8 @@
 /* The text placeholder for the Text Editor screen */
 "Enter a title..." = "Ange en rubrik…";
 
-/* Add custom shipping provider. Placeholder of cell presenting provider name */
-"Enter provider name" = "Ange leverantörens namn";
+/* Add custom shipping carrier. Placeholder of cell presenting carrier name */
+"Enter carrier name" = "Ange transportföretagsnamn";
 
 /* Instruction text on the login's site addresss screen.
    Label for button to log in using your site address. */
@@ -474,10 +486,10 @@
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "Ange lösenordet för ditt konto på WordPress.com.";
 
-/* Add custom shipping provider. Placeholder of cell presenting tracking link */
+/* Add custom shipping carrier. Placeholder of cell presenting carrier link */
 "Enter tracking link" = "Ange spårningslänk";
 
-/* Add custom shipping provider. Placeholder of cell presenting tracking number */
+/* Add custom shipping carrier. Placeholder of cell presenting tracking number */
 "Enter tracking number" = "Ange spårningsnummer";
 
 /* Title of a button on the magic link screen.
@@ -496,6 +508,9 @@
 
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "Det gick inte att serialisera förfrågan till REST API.";
+
+/* Option to select the Fastmail app when logging in with magic links */
+"Fastmail" = "Fastmail";
 
 /* Navigates to the feature request screen */
 "Feature Request" = "Funktionsförfrågan";
@@ -520,6 +535,9 @@
 
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "Hämtar kontoinformation";
+
+/* Option to select the Gmail app when logging in with magic links */
+"Gmail" = "Gmail";
 
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Registrering via Google misslyckades.";
@@ -737,6 +755,9 @@
 /* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
 "Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "Skapad med kärlek av Automattic <a href=\"https:\/\/automattic.com\/work-with-us\/\">Vi letar efter medarbetare!<\/a>";
 
+/* Option to select the Apple Mail app when logging in with magic links */
+"Mail (Default)" = "E-post (standardval)";
+
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "Hantera ordrar, spåra försäljning och övervaka butiksaktivitet med varningar i realtid.";
 
@@ -744,7 +765,7 @@
 "Manage stock" = "Hantera lager";
 
 /* shown in promotional screens during first launch */
-"Manage your Jetpack-powered site on the go — you‘ve got WordPress in your pocket." = "Hantera din Jetpack-utrustade webbplats varsomhelst – WordPress finns i din ficka.";
+"Manage your Jetpack-powered site on the go — you've got WordPress in your pocket." = "Hantera din Jetpack-förstärkta webbplats när som helst – WordPress finns i din ficka.";
 
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "Manuella offset-värden";
@@ -766,6 +787,9 @@
 
 /* Message phone number button title */
 "Message" = "Meddelande";
+
+/* Option to select the Microsft Outlook app when logging in with magic links */
+"Microsoft Outlook" = "Microsoft Outlook";
 
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
 "Minimum value %1$@, maximum value %2$@" = "Minimivärde %1$@, maxvärde %2$@";
@@ -849,8 +873,8 @@
 /* Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "Inga resultat för de valda kriterierna";
 
-/* Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider' */
-"No results found for (term)\nAdd a custom provider" = "Inga resultat hittades för (term)\\n\nLägg till en anpassad leverantör";
+/* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier' */
+"No results found for (term)\nAdd a custom carrier" = "No results found for (term)\nAdd a custom carrier";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "Inga inkomster för denna period";
@@ -991,12 +1015,6 @@
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "Välj butik att ansluta";
 
-/* Product title error notice message, when the title is empty */
-"Please add a title" = "Lägg till en rubrik";
-
-/* Alert title for check your email during logIn/signUp. */
-"Please check your email" = "Kolla din e-post";
-
 /* Placeholder for editing the URL of a text link */
 "Please enter a URL" = "Ange en URL";
 
@@ -1035,9 +1053,6 @@
 
 /* Error message when an image captured by camera cannot be saved to the device Photos library */
 "Please make sure the app can access Photos in device settings" = "Se till att appen har åtkomst till Foton i enhetens inställningar";
-
-/* Message to ask the user to check their email and look for a WordPress.com email. */
-"Please open your email app and look for an email from WordPress.com." = "Öppna ditt e-postprogram och hitta ett brev från WordPress.com.";
 
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "Försök igen.";
@@ -1097,9 +1112,6 @@
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "Anvisningar med alternativet att ringa eller skicka meddelande till faktureringskunden.";
-
-/* Add Custom shipping provider. Title of cell presenting the provider name */
-"Provider name" = "Namn på leverantör";
 
 /* Display label for the product's published status */
 "Publish" = "Publicera";
@@ -1268,6 +1280,9 @@
 /* Page title for the select a different store screen */
 "Select Store" = "Välj butik";
 
+/* Add the shipping carrier. Placeholder of cell presenting carrier name */
+"Select carrier" = "Välj transportföretag";
+
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "Välj styckeformatering";
 
@@ -1305,11 +1320,14 @@
    Product Shipping Settings navigation title - Shipping label for payment view - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "Frakt";
 
+/* Title of view displaying all available Shipment Tracking Carriers */
+"Shipping Carriers" = "Transportföretag";
+
 /* Shipping method title for customer info cell */
 "Shipping Method" = "Fraktmetod";
 
-/* Title of view displaying all available Shipment Tracking Providers */
-"Shipping Providers" = "Transportleverantörer";
+/* Add / Edit shipping carrier. Title of cell presenting name */
+"Shipping carrier" = "Transportföretag";
 
 /* Title of the cell in Product Shipping Settings > Shipping class */
 "Shipping class" = "Fraktklass";
@@ -1328,9 +1346,6 @@
 
 /* Display label for the product's tax status setting option */
 "Shipping only" = "Endast frakt";
-
-/* Add / Edit shipping provider. Title of cell presenting name */
-"Shipping provider" = "Transportleverantör";
 
 /* The navigation bar title of the edit short description screen.
    Title of the Short Description row on Product main screen */
@@ -1362,9 +1377,6 @@
 
 /* Button title. Tapping begins our normal sign up process. */
 "Sign up with Email" = "Registrera dig med hjälp av e-postadress";
-
-/* Button title. Tapping begins sign up using Google. */
-"Sign up with Google" = "Registrera dig med hjälp av Google";
 
 /* Describes a site redirect domain */
 "Site Redirect" = "Omdirigera webbplats";
@@ -1433,6 +1445,9 @@
 /* Display label for the review's spam status
    Verb, spam a comment */
 "Spam" = "Skräppost";
+
+/* Option to select the Spark email app when logging in with magic links */
+"Spark" = "Spark";
 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "Standardmoms";
@@ -1691,12 +1706,9 @@
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "Det gick inte att hämta produkten";
 
-/* Product details screen — product title descriptive label
-   The navigation bar title of the Text editor screen. - Title in the Product Title row on Product form screen when the description is non-empty. */
+/* Placeholder in the Product Title row on Product form screen.
+   Product details screen — product title descriptive label - The navigation bar title of the Text editor screen. - Title in the Product Title row on Product form screen when the description is non-empty. */
 "Title" = "Rubrik";
-
-/* Placeholder in the Product Title row on Product form screen. */
-"Title (required)" = "Rubrik (krävs)";
 
 /* Title of the cell in Product Price Settings > Schedule sale To a certain date */
 "To" = "Till";
@@ -1741,10 +1753,10 @@
 /* Order tracking section title */
 "Tracking" = "Spårning";
 
-/* Add custom shipping provider. Title of cell presenting tracking link */
+/* Add custom shipping carrier. Title of cell presenting carrier link */
 "Tracking link (optional)" = "Spårningslänk (tillval)";
 
-/* Add / Edit shipping provider. Title of cell presenting tracking number */
+/* Add / Edit shipping carrier. Title of cell presenting tracking number */
 "Tracking number" = "Spårningsnummer";
 
 /* A unit test string. Reads as: 'Trackin number XXX_YYY_ZZZ'
@@ -1804,8 +1816,8 @@
 /* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number} */
 "Unable to fulfill order #(orderID)" = "Det gick inte att uppfylla ordernummer (orderID)";
 
-/* Content of error presented when loading the list of shipment providers failed. It reads: Unable to load Shipment Providers */
-"Unable to load Shipment Providers" = "Det gick inte att läsa in transportleverantörer";
+/* Content of error presented when loading the list of shipment carriers failed. It reads: Unable to load Shipment Carriers */
+"Unable to load Shipment Carriers" = "Det gick inte att läsa in transportföretag";
 
 /* Load Action Failed */
 "Unable to load content" = "Det gick inte att ladda innehållet";
@@ -1958,8 +1970,8 @@
 /* The info of the top banner on Dashboard that indicates new stats is unavailable */
 "We have reverted to the old stats. To use the beta stats, please activate the WooCommerce Admin plugin with version 0.23 or higher" = "Vi har återgått till den gamla statistiken. För att använda betastatistiken, aktivera WooCommerce Admin-tillägget med version 0.23 eller senare";
 
-/* Instructional text on how to open the email containing a magic link. */
-"We sent you a magic signup link! Check your email on this device, and tap the link in the email to finish signing up." = "Vi har skickat en magisk registreringslänk! Kolla din e-post på denna enhet och knacka på länken i e-postmeddelandet för att fullfölja registreringen.";
+/* message to ask a user to check their email for a WordPress.com email */
+"We just emailed a link to %@. Please check your mail app and tap the link to log in." = "Vi har just skickat en länk via e-post till %@. Kolla din e-post och tryck på länken för att logga in.";
 
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "Vi använder andra spårningsverktyg, inklusive verktyg från utomstående parter. Läs om dessa och hur vi kontrollerar dem.";
@@ -2024,6 +2036,9 @@
 /* The title of the Work In Progress top banner on the Products tab */
 "Work in progress!" = "Arbete pågår!";
 
+/* Option to select the Yahoo Mail app when logging in with magic links */
+"Yahoo Mail" = "Yahoo Mail";
+
 /* Statistical unit - a single year */
 "Year" = "År";
 
@@ -2038,9 +2053,6 @@
 
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Det verkar som att du har installerat ett mobiltillägg från DudaMobile som förhindrar att appen ansluter till din blogg";
-
-/* Instructional text on how to open the email containing a magic link. */
-"Your magic link is on its way! Check your email on this device, and tap the link in the email you receive from WordPress.com" = "Din magiska länk är på väg! Kolla e-postadressen för denna enhet och knacka på länken i det e-brev du får från WordPress.com";
 
 /* shown in promotional screens during first launch */
 "Your notifications travel with you — see comments and likes as they happen." = "Dina notifikationer följer med dig – du får veta direkt om någon kommenterar eller gillar.";

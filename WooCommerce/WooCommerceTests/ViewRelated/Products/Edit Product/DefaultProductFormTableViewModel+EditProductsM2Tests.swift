@@ -10,7 +10,7 @@ final class DefaultProductFormTableViewModel_EditProductsM2Tests: XCTestCase {
 
     private let mockFeatureFlagService = MockFeatureFlagService(isEditProductsRelease2On: true)
 
-    func testViewModelForSimplePhysicalProductWithoutImagesWhenM2FeatureFlagIsOff() {
+    func testViewModelForPhysicalSimpleProductWithoutImages() {
         let product = MockProduct().product(downloadable: false,
                                             name: "woo",
                                             productType: .simple,
@@ -47,7 +47,7 @@ final class DefaultProductFormTableViewModel_EditProductsM2Tests: XCTestCase {
         }
     }
 
-    func testViewModelForPhysicalSimpleProductWithImages() {
+    func testViewModelForVirtualSimpleProductWithImages() {
         let product = MockProduct().product(downloadable: false,
                                             name: "woo",
                                             productType: .simple,

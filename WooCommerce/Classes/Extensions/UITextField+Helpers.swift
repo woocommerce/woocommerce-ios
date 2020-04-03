@@ -6,4 +6,10 @@ extension UITextField {
         font = .body
         textColor = .text
     }
+
+    func applyHeadlineStyle() {
+        adjustsFontForContentSizeCategory = true
+        font = .headline
+        textColor = .text
+    }
 }

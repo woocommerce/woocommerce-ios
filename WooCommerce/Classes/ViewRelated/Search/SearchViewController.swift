@@ -199,11 +199,29 @@ where Cell.SearchModel == Command.CellViewModel {
         view.endEditing(true)
         dismiss(animated: true, completion: nil)
     }
+
+    override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
+
+        applyAdditionalKeyboardFrameHeightTo(children)
+    }
 }
+
+// MARK: - Keyboard Handling
 
 extension SearchViewController: KeyboardScrollable {
     var scrollable: UIScrollView {
         return tableView
+    }
+}
+
+private extension SearchViewController {
+    func applyAdditionalKeyboardFrameHeightTo(_ viewControllers: [UIViewController]) {
+        children.compactMap {
+            $0 as? KeyboardFrameAdjustmentProvider
+        }.forEach {
+            $0.additionalKeyboardFrameHeight = 0 - view.safeAreaInsets.bottom
+        }
     }
 }
 
@@ -328,7 +346,7 @@ extension SearchViewController: SyncingCoordinatorDelegate {
 
     /// Synchronizes the models for the Default Store (if any).
     ///
-    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)? = nil) {
+    func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: ((Bool) -> Void)? = nil) {
         let keyword = self.keyword
         searchUICommand.synchronizeModels(siteID: storeID,
                                           keyword: keyword,

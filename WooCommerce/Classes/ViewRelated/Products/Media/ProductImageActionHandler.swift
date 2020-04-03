@@ -4,15 +4,20 @@ import Yosemite
 /// Encapsulates the implementation of Product images actions from the UI.
 ///
 final class ProductImageActionHandler {
-    typealias OnAllStatusesUpdate = ([ProductImageStatus], Error?) -> Void
+    typealias AllStatuses = (productImageStatuses: [ProductImageStatus], error: Error?)
+    typealias OnAllStatusesUpdate = (AllStatuses) -> Void
     typealias OnAssetUpload = (PHAsset, ProductImage) -> Void
 
     private let siteID: Int64
 
-    private(set) var productImageStatuses: [ProductImageStatus] {
+    var productImageStatuses: [ProductImageStatus] {
+        return allStatuses.productImageStatuses
+    }
+
+    private var allStatuses: AllStatuses {
         didSet {
             observations.allStatusesUpdated.values.forEach { closure in
-                closure(productImageStatuses, nil)
+                closure(allStatuses)
             }
         }
     }
@@ -24,7 +29,7 @@ final class ProductImageActionHandler {
 
     init(siteID: Int64, product: Product) {
         self.siteID = siteID
-        self.productImageStatuses = product.imageStatuses
+        self.allStatuses = (productImageStatuses: product.imageStatuses, error: nil)
     }
 
     /// Observes when the image statuses have been updated.
@@ -37,7 +42,7 @@ final class ProductImageActionHandler {
                                          onUpdate: @escaping OnAllStatusesUpdate) -> ObservationToken {
         let id = UUID()
 
-        observations.allStatusesUpdated[id] = { [weak self, weak observer] statuses, error in
+        observations.allStatusesUpdated[id] = { [weak self, weak observer] allStatuses in
             // If the observer has been deallocated, we can
             // automatically remove the observation closure.
             guard observer != nil else {
@@ -45,11 +50,11 @@ final class ProductImageActionHandler {
                 return
             }
 
-            onUpdate(statuses, error)
+            onUpdate(allStatuses)
         }
 
         // Sends the initial value.
-        onUpdate(productImageStatuses, nil)
+        onUpdate(allStatuses)
 
         return ObservationToken { [weak self] in
             self?.observations.allStatusesUpdated.removeValue(forKey: id)
@@ -82,8 +87,14 @@ final class ProductImageActionHandler {
         }
     }
 
+    func addSiteMediaLibraryImagesToProduct(mediaItems: [Media]) {
+        let newProductImageStatuses = mediaItems.map { ProductImageStatus.remote(image: $0.toProductImage) }
+        productImageStatuses = newProductImageStatuses + productImageStatuses
+    }
+
     func uploadMediaAssetToSiteMediaLibrary(asset: PHAsset) {
-        productImageStatuses = [.uploading(asset: asset)] + productImageStatuses
+        let imageStatuses = [.uploading(asset: asset)] + allStatuses.productImageStatuses
+        allStatuses = (productImageStatuses: imageStatuses, error: nil)
 
         let action = MediaAction.uploadMedia(siteID: siteID,
                                              mediaAsset: asset) { [weak self] (media, error) in
@@ -115,18 +126,20 @@ final class ProductImageActionHandler {
     }
 
     func deleteProductImage(_ productImage: ProductImage) {
-        productImageStatuses.removeAll { status -> Bool in
+        var imageStatuses = allStatuses.productImageStatuses
+        imageStatuses.removeAll { status -> Bool in
             guard case .remote(let image) = status else {
                 return false
             }
             return image.imageID == productImage.imageID
         }
+        allStatuses = (productImageStatuses: imageStatuses, error: nil)
     }
 }
 
 private extension ProductImageActionHandler {
     func index(of asset: PHAsset) -> Int? {
-        return productImageStatuses.firstIndex(where: { status -> Bool in
+        return allStatuses.productImageStatuses.firstIndex(where: { status -> Bool in
             switch status {
             case .uploading(let uploadingAsset):
                 return uploadingAsset == asset
@@ -137,16 +150,20 @@ private extension ProductImageActionHandler {
     }
 
     func updateProductImageStatus(at index: Int, productImage: ProductImage) {
-        if case .uploading(let asset) = productImageStatuses[safe: index] {
+        if case .uploading(let asset) = allStatuses.productImageStatuses[safe: index] {
             observations.assetUploaded.values.forEach { closure in
                 closure(asset, productImage)
             }
         }
 
-        productImageStatuses[index] = .remote(image: productImage)
+        var imageStatuses = allStatuses.productImageStatuses
+        imageStatuses[index] = .remote(image: productImage)
+        allStatuses = (productImageStatuses: imageStatuses, error: nil)
     }
 
     func updateProductImageStatus(at index: Int, error: Error?) {
-        productImageStatuses.remove(at: index)
+        var imageStatuses = allStatuses.productImageStatuses
+        imageStatuses.remove(at: index)
+        allStatuses = (productImageStatuses: imageStatuses, error: error)
     }
 }

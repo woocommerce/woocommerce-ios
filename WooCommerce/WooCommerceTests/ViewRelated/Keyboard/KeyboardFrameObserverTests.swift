@@ -100,6 +100,26 @@ final class KeyboardFrameObserverTests: XCTestCase {
         expectationForKeyboardFrame.isInverted = true
         waitForExpectations(timeout: 0.1)
     }
+
+    func testItCanSendInitialEvents() {
+        // Arrange
+        let expectedKeyboardState = KeyboardState(
+            isVisible: true,
+            frameEnd: CGRect(x: 2_100, y: 3_123, width: 9_981_123, height: 1_514)
+        )
+        let keyboardStateProvider = MockKeyboardStateProvider(state: expectedKeyboardState)
+
+        var actualKeyboardFrame: CGRect = .zero
+        var keyboardFrameObserver = KeyboardFrameObserver(keyboardStateProvider: keyboardStateProvider) { frame in
+            actualKeyboardFrame = frame
+        }
+
+        // Act
+        keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)
+
+        // Assert
+        XCTAssertEqual(actualKeyboardFrame, expectedKeyboardState.frameEnd)
+    }
 }
 
 private extension NotificationCenter {
@@ -126,4 +146,8 @@ private extension NotificationCenter {
              object: nil,
              userInfo: [UIResponder.keyboardFrameEndUserInfoKey: CGRect.zero])
     }
+}
+
+private struct MockKeyboardStateProvider: KeyboardStateProviding {
+    let state: KeyboardState
 }

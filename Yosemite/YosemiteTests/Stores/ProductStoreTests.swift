@@ -72,7 +72,10 @@ class ProductStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
 
-        let action = ProductAction.synchronizeProducts(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+        let action = ProductAction.synchronizeProducts(siteID: sampleSiteID,
+                                                       pageNumber: defaultPageNumber,
+                                                       pageSize: defaultPageSize,
+                                                       sortOrder: .nameAscending) { error in
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 10)
             XCTAssertNil(error)
 
@@ -94,7 +97,10 @@ class ProductStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
 
-        let action = ProductAction.synchronizeProducts(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+        let action = ProductAction.synchronizeProducts(siteID: sampleSiteID,
+                                                       pageNumber: defaultPageNumber,
+                                                       pageSize: defaultPageSize,
+                                                       sortOrder: .nameAscending) { error in
             XCTAssertNil(error)
 
             let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: self.sampleProductID)
@@ -130,7 +136,8 @@ class ProductStoreTests: XCTestCase {
 
         let action = ProductAction.synchronizeProducts(siteID: siteID1,
                                                        pageNumber: ProductStore.Default.firstPageNumber,
-                                                       pageSize: defaultPageSize) { error in
+                                                       pageSize: defaultPageSize,
+                                                       sortOrder: .nameAscending) { error in
             XCTAssertNil(error)
 
             // The previously upserted Product for siteID1 should be deleted.
@@ -166,7 +173,7 @@ class ProductStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
 
-        let action = ProductAction.synchronizeProducts(siteID: siteID, pageNumber: 3, pageSize: defaultPageSize) { error in
+        let action = ProductAction.synchronizeProducts(siteID: siteID, pageNumber: 3, pageSize: defaultPageSize, sortOrder: .nameAscending) { error in
             XCTAssertNil(error)
 
             // The previously upserted Product's should stay in storage.
@@ -199,7 +206,10 @@ class ProductStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products", filename: "generic_error")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
 
-        let action = ProductAction.synchronizeProducts(siteID: siteID, pageNumber: ProductStore.Default.firstPageNumber, pageSize: defaultPageSize) { error in
+        let action = ProductAction.synchronizeProducts(siteID: siteID,
+                                                       pageNumber: ProductStore.Default.firstPageNumber,
+                                                       pageSize: defaultPageSize,
+                                                       sortOrder: .nameAscending) { error in
             XCTAssertNotNil(error)
 
             // The previously upserted Product's should stay in storage.
@@ -222,7 +232,10 @@ class ProductStoreTests: XCTestCase {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "products", filename: "generic_error")
-        let action = ProductAction.synchronizeProducts(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+        let action = ProductAction.synchronizeProducts(siteID: sampleSiteID,
+                                                       pageNumber: defaultPageNumber,
+                                                       pageSize: defaultPageSize,
+                                                       sortOrder: .nameAscending) { error in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -237,7 +250,10 @@ class ProductStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve products empty response")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = ProductAction.synchronizeProducts(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+        let action = ProductAction.synchronizeProducts(siteID: sampleSiteID,
+                                                       pageNumber: defaultPageNumber,
+                                                       pageSize: defaultPageSize,
+                                                       sortOrder: .nameAscending) { error in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }

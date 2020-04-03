@@ -27,7 +27,7 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
         case .images:
             return [ProductImagesHeaderTableViewCell.self]
         case .name:
-            return [ImageAndTitleAndTextTableViewCell.self, BasicTableViewCell.self]
+            return [TextFieldTableViewCell.self]
         case .description:
             return [ImageAndTitleAndTextTableViewCell.self, BasicTableViewCell.self]
         }
@@ -41,8 +41,8 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
         switch self {
         case .images:
             return ProductImagesHeaderTableViewCell.self
-        case .name(let name):
-            return name?.isEmpty == false ? ImageAndTitleAndTextTableViewCell.self: BasicTableViewCell.self
+        case .name:
+            return TextFieldTableViewCell.self
         case .description(let description):
             return description?.isEmpty == false ? ImageAndTitleAndTextTableViewCell.self: BasicTableViewCell.self
         }
@@ -52,7 +52,7 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
 extension ProductFormSection.SettingsRow: ReusableTableRow {
     var cellTypes: [UITableViewCell.Type] {
         switch self {
-        case .price, .inventory, .shipping, .briefDescription:
+        case .price, .inventory, .shipping, .categories, .briefDescription:
             return [ImageAndTitleAndTextTableViewCell.self]
         }
     }
@@ -63,7 +63,7 @@ extension ProductFormSection.SettingsRow: ReusableTableRow {
 
     private var cellType: UITableViewCell.Type {
         switch self {
-        case .price, .inventory, .shipping, .briefDescription:
+        case .price, .inventory, .shipping, .categories, .briefDescription:
             return ImageAndTitleAndTextTableViewCell.self
         }
     }

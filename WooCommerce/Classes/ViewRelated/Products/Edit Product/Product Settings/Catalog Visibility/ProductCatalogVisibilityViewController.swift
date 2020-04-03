@@ -194,14 +194,14 @@ extension ProductCatalogVisibilityViewController {
         let footer: String?
         let rows: [Row]
 
-        init(title: String? = nil, footer: String? = nil, rows: [Row]) {
+        init(footer: String? = nil, rows: [Row]) {
             self.title = title
             self.footer = footer
             self.rows = rows
         }
 
-        init(title: String? = nil, rightTitle: String? = nil, footer: String? = nil, row: Row) {
-            self.init(title: title, footer: footer, rows: [row])
+        init(footer: String? = nil, row: Row) {
+            self.init(footer: footer, rows: [row])
         }
     }
 }

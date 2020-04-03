@@ -37,6 +37,7 @@ private extension ProductCategoryListViewController {
         tableView.backgroundColor = .listBackground
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.removeLastCellSeparator()
     }
 
     func configureNavigationBar() {

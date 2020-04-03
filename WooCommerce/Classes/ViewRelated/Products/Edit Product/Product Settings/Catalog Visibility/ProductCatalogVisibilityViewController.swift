@@ -20,7 +20,7 @@ final class ProductCatalogVisibilityViewController: UIViewController {
         productSettings = settings
         let footerText = NSLocalizedString("This setting determines which shop pages products will be listed on.",
                                            comment: "Footer text in Product Catalog Visibility")
-        sections = [Section(rows: [.featuredProduct]), Section(footer: footerText, rows: [.visible, .catalog, .search, .hidden])]
+        sections = [Section(rows: [.featuredProduct]), Section(footer: footerText, rows: [.catalogVisibilityVisible, .catalogVisibilityCatalog, .catalogVisibilitySearch, .catalogVisibilityHidden])]
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
@@ -157,29 +157,29 @@ extension ProductCatalogVisibilityViewController {
     enum Row {
         /// Listed in the order they appear on screen
         case featuredProduct
-        case visible
-        case catalog
-        case search
-        case hidden
+        case catalogVisibilityVisible
+        case catalogVisibilityCatalog
+        case catalogVisibilitySearch
+        case catalogVisibilityHidden
 
         var reuseIdentifier: String {
             switch self {
             case .featuredProduct:
                 return SwitchTableViewCell.reuseIdentifier
-            case .visible, .catalog, .search, .hidden:
+            case .catalogVisibilityVisible, .catalogVisibilityCatalog, .catalogVisibilitySearch, .catalogVisibilityHidden:
                 return BasicTableViewCell.reuseIdentifier
             }
         }
 
         var catalogVisibility: ProductCatalogVisibility? {
             switch self {
-            case .visible:
+            case .catalogVisibilityVisible:
                 return .visible
-            case .catalog:
+            case .catalogVisibilityCatalog:
                 return .catalog
-            case .search:
+            case .catalogVisibilitySearch:
                 return .search
-            case .hidden:
+            case .catalogVisibilityHidden:
                 return .hidden
             default:
                 return nil

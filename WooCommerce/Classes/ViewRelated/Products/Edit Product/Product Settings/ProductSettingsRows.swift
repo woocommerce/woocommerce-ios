@@ -27,33 +27,6 @@ protocol ProductSettingsRowMediator {
 //
 enum ProductSettingsRows {
 
-    struct CatalogVisibility: ProductSettingsRowMediator {
-
-        private let settings: ProductSettings
-
-        init(_ settings: ProductSettings) {
-            self.settings = settings
-        }
-
-        func configure(cell: UITableViewCell) {
-            guard let cell = cell as? BasicTableViewCell else {
-                return
-            }
-
-            cell.textLabel?.text = NSLocalizedString("Catalog Visibility", comment: "Catalog Visibility label in Product Settings")
-            cell.detailTextLabel?.text = "TO BE IMPLEMENTED"
-            cell.accessoryType = .disclosureIndicator
-        }
-
-        func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
-            // TODO: Show a VC
-        }
-
-        let reuseIdentifier: String = BasicTableViewCell.reuseIdentifier
-
-        let cellTypes: [UITableViewCell.Type] = [BasicTableViewCell.self]
-    }
-
     struct Status: ProductSettingsRowMediator {
         private let settings: ProductSettings
 
@@ -83,6 +56,38 @@ enum ProductSettingsRows {
             }
             sourceViewController.navigationController?.pushViewController(listSelectorViewController, animated: true)
 
+        }
+
+        let reuseIdentifier: String = SettingTitleAndValueTableViewCell.reuseIdentifier
+
+        let cellTypes: [UITableViewCell.Type] = [SettingTitleAndValueTableViewCell.self]
+    }
+
+    struct CatalogVisibility: ProductSettingsRowMediator {
+
+        private let settings: ProductSettings
+
+        init(_ settings: ProductSettings) {
+            self.settings = settings
+        }
+
+        func configure(cell: UITableViewCell) {
+            guard let cell = cell as? SettingTitleAndValueTableViewCell else {
+                return
+            }
+
+            let titleView = NSLocalizedString("Catalog Visibility", comment: "Catalog Visibility label in Product Settings")
+            cell.updateUI(title: titleView, value: settings.catalogVisibility.description)
+            cell.accessoryType = .disclosureIndicator
+        }
+
+        func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
+            let viewController = ProductCatalogVisibilityViewController(settings: settings) { (productSettings) in
+                self.settings.featured = productSettings.featured
+                self.settings.catalogVisibility = productSettings.catalogVisibility
+                onCompletion(self.settings)
+            }
+            sourceViewController.navigationController?.pushViewController(viewController, animated: true)
         }
 
         let reuseIdentifier: String = SettingTitleAndValueTableViewCell.reuseIdentifier

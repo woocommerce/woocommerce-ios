@@ -18,7 +18,7 @@ public protocol ProductUpdater {
                                   stockStatus: ProductStockStatus?) -> Product
     func imagesUpdated(images: [ProductImage]) -> Product
     func briefDescriptionUpdated(briefDescription: String) -> Product
-    func productSettingsUpdated(status: ProductStatus) -> Product
+    func productSettingsUpdated(settings: ProductSettings) -> Product
 }
 
 extension Product: ProductUpdater {
@@ -472,7 +472,7 @@ extension Product: ProductUpdater {
                        groupedProducts: groupedProducts,
                        menuOrder: menuOrder)
     }
-    public func productSettingsUpdated(status: ProductStatus) -> Product {
+    public func productSettingsUpdated(settings: ProductSettings) -> Product {
         return Product(siteID: siteID,
                        productID: productID,
                        name: name,
@@ -483,9 +483,9 @@ extension Product: ProductUpdater {
                        dateOnSaleStart: dateOnSaleStart,
                        dateOnSaleEnd: dateOnSaleEnd,
                        productTypeKey: productTypeKey,
-                       statusKey: status.rawValue,
-                       featured: featured,
-                       catalogVisibilityKey: catalogVisibilityKey,
+                       statusKey: settings.status.rawValue,
+                       featured: settings.featured,
+                       catalogVisibilityKey: settings.catalogVisibility.rawValue,
                        fullDescription: fullDescription,
                        briefDescription: briefDescription,
                        sku: sku,

@@ -87,6 +87,10 @@ public struct Product: Codable {
         return ProductStatus(rawValue: statusKey)
     }
 
+    public var productCatalogVisibility: ProductCatalogVisibility {
+        return ProductCatalogVisibility(rawValue: catalogVisibilityKey)
+    }
+
     public var productStockStatus: ProductStockStatus {
         return ProductStockStatus(rawValue: stockStatusKey)
     }
@@ -453,6 +457,8 @@ public struct Product: Codable {
 
         // Product Settings
         try container.encode(statusKey, forKey: .statusKey)
+        try container.encode(featured, forKey: .featured)
+        try container.encode(catalogVisibilityKey, forKey: .catalogVisibilityKey)
     }
 }
 

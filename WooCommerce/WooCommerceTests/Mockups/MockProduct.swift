@@ -23,6 +23,8 @@ final class MockProduct {
                  variations: [Int64] = [],
                  virtual: Bool = false,
                  status: ProductStatus = .publish,
+                 featured: Bool = false,
+                 catalogVisibility: ProductCatalogVisibility = .visible,
                  images: [ProductImage] = []) -> Product {
 
     return Product(siteID: testSiteID,
@@ -36,8 +38,8 @@ final class MockProduct {
                    dateOnSaleEnd: dateOnSaleEnd,
                    productTypeKey: productType.rawValue,
                    statusKey: status.rawValue,
-                   featured: false,
-                   catalogVisibilityKey: "visible",
+                   featured: featured,
+                   catalogVisibilityKey: catalogVisibility.rawValue,
                    fullDescription: "<p>This is the party room!</p>\n",
                    briefDescription: """
                        [contact-form]\n<p>The green room&#8217;s max capacity is 30 people. Reserving the date / time of your event is free. \

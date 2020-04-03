@@ -6,7 +6,7 @@ final class ProductSettingsViewModelTests: XCTestCase {
 
     func testOnReloadClosure() {
 
-        let product = MockProduct().product(status: .publish)
+        let product = MockProduct().product(status: .publish, featured: true, catalogVisibility: .search)
         let viewModel = ProductSettingsViewModel(product: product)
 
         // Act
@@ -17,18 +17,20 @@ final class ProductSettingsViewModelTests: XCTestCase {
         }
 
         // Update settings. Section data changed. This will update the view model, and will fire the `onReload` closure.
-        viewModel.productSettings = ProductSettings(status: product.productStatus)
+        viewModel.productSettings = ProductSettings(status: product.productStatus, featured: true, catalogVisibility: .search)
 
         waitForExpectations(timeout: 1.5, handler: nil)
     }
 
     func testHasUnsavedChanges() {
-        let product = MockProduct().product(status: .publish)
+        let product = MockProduct().product(status: .publish, featured: false, catalogVisibility: .visible)
         let viewModel = ProductSettingsViewModel(product: product)
 
         XCTAssertFalse(viewModel.hasUnsavedChanges())
 
         viewModel.productSettings.status = .pending
+        viewModel.productSettings.featured = false
+        viewModel.productSettings.catalogVisibility = .search
 
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }

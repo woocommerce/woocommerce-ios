@@ -20,7 +20,8 @@ final class ProductCatalogVisibilityViewController: UIViewController {
         productSettings = settings
         let footerText = NSLocalizedString("This setting determines which shop pages products will be listed on.",
                                            comment: "Footer text in Product Catalog Visibility")
-        sections = [Section(rows: [.featuredProduct]), Section(footer: footerText, rows: [.catalogVisibilityVisible, .catalogVisibilityCatalog, .catalogVisibilitySearch, .catalogVisibilityHidden])]
+        sections = [Section(rows: [.featuredProduct]),
+                    Section(footer: footerText, rows: [.catalogVisibilityVisible, .catalogVisibilityCatalog, .catalogVisibilitySearch, .catalogVisibilityHidden])]
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }

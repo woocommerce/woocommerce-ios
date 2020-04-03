@@ -67,8 +67,8 @@ extension ProductCatalogVisibility: RawRepresentable {
 /// Enum containing the 'Known' ProductType Keys
 ///
 private enum Keys {
-    static let visible       = "visible"
-    static let catalog         = "catalog"
-    static let search       = "search"
-    static let hidden = "hidden"
+    static let visible = "visible"
+    static let catalog = "catalog"
+    static let search  = "search"
+    static let hidden  = "hidden"
 }

@@ -195,7 +195,6 @@ extension ProductCatalogVisibilityViewController {
         let rows: [Row]
 
         init(footer: String? = nil, rows: [Row]) {
-            self.title = title
             self.footer = footer
             self.rows = rows
         }

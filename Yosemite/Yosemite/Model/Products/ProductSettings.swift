@@ -13,7 +13,7 @@ public final class ProductSettings {
         self.featured = featured
         self.catalogVisibility = catalogVisibility
     }
-    
+
     public convenience init(from product: Product) {
         self.init(status: product.productStatus, featured: product.featured, catalogVisibility: product.productCatalogVisibility)
     }
@@ -21,7 +21,7 @@ public final class ProductSettings {
 
 // MARK: - Equatable Conformance
 //
-extension ProductSettings: Equatable{
+extension ProductSettings: Equatable {
     public static func == (lhs: ProductSettings, rhs: ProductSettings) -> Bool {
         return lhs.status.rawValue == rhs.status.rawValue &&
             lhs.featured == rhs.featured &&

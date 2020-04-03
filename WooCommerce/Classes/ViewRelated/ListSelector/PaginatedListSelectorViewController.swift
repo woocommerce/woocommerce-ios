@@ -255,7 +255,7 @@ private extension PaginatedListSelectorViewController {
         switch state {
         case .noResultsPlaceholder:
             displayNoResultsOverlay()
-        case .syncing(let pageNumber):
+        case .syncing:
             if isEmpty {
                 displayPlaceholderProducts()
             } else {

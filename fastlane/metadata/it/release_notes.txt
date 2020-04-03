@@ -1,5 +1,7 @@
-Per offrire un'immagine più completa dei tuoi guadagni, le statistiche della bacheca ora comprendono anche il fatturato negativo (ad esempio i rimborsi).
+Un breve elenco delle modifiche effettuate questa volta:
 
-- Abbiamo riprogettato l'elenco degli ordini per rendere le viste Elaborazione e Tutti gli ordini più prominenti. Desideri filtrare gli ordini per un diverso stato? Non preoccuparti: troverai altre opzioni nella vista Cerca.
-- Le recensioni sono molto importanti per i negozi online, ma a volte il loro caricamento non riusciva su alcune configurazioni WooCommerce. Abbiamo risolto il problema.
-- Alza la mano se vorresti modificare i prodotti in viaggio! Prova le opzioni di modifica disponibili sui tuoi semplici prodotti (ma prima di tutto devi abilitarle: vai a Impostazioni > Funzionalità in fase sperimentale > Prodotti).
+- L'etichetta dello stato dell'ordine nell'Elenco degli ordini non viene più tagliata, quindi puoi effettivamente vedere tutte le informazioni.
+- Se ti sei mai chiesto perché il logo di Woo sulla schermata di avvio sembrava leggermente allungato, è perché le proporzioni non erano affidabili. Ora il problema è stato risolto.
+- Per chiarezza, ora visualizzerai "Corriere della spedizione" nell'app invece di "Spedizioniere".
+
+Lavatevi le mani e state tutti al sicuro!

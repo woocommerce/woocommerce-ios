@@ -1,5 +1,7 @@
-Para ofrecerte una visión más completa de tus ganancias, las estadísticas del escritorio ahora también incluyen ingresos negativos (por ejemplo: reembolsos).
+Esta vez tenemos una lista de cambios corta:
 
-- Hemos rediseñado la lista de pedidos para dar más visibilidad a las vistas Todos los pedidos y Procesando. ¿Quieres filtrar pedidos por un estado distinto? No te preocupes: encontrarás otras opciones en la vista Búsqueda.
-- Las reseñas son muy importantes para las tiendas en línea, pero a veces no se cargan en algunas configuraciones de WooCommerce. Ya lo hemos solucionado.
-- Levanta la mano si te gustaría editar productos en cualquier momento y lugar. Prueba las opciones de edición disponibles en tus sencillos productos, pero primero debes activarlas. Para ello, accede a Configuración > Funciones experimentales > Productos.
+- La etiqueta de estado del pedido en la lista de pedidos ya no se corta, así que puedes ver toda la información.
+- Si alguna vez te has preguntado por qué el logo de Woo en la pantalla de inicio se veía un poco estirado, es porque la relación de aspecto estaba mal. Ya lo hemos solucionado.
+- Para mayor claridad, ahora verás "Empresa de transporte" en toda la aplicación en lugar de "Proveedor de envío".
+
+¡Cuidaos y lavaos las manos!

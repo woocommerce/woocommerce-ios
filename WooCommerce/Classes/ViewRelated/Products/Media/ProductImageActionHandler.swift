@@ -89,7 +89,8 @@ final class ProductImageActionHandler {
 
     func addSiteMediaLibraryImagesToProduct(mediaItems: [Media]) {
         let newProductImageStatuses = mediaItems.map { ProductImageStatus.remote(image: $0.toProductImage) }
-        productImageStatuses = newProductImageStatuses + productImageStatuses
+        let imageStatuses = newProductImageStatuses + productImageStatuses
+        allStatuses = (productImageStatuses: imageStatuses, error: nil)
     }
 
     func uploadMediaAssetToSiteMediaLibrary(asset: PHAsset) {

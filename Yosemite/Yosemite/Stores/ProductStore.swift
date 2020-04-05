@@ -390,14 +390,6 @@ private extension ProductStore {
                 storageProduct.addToCategories(newStorageCategory)
             }
         }
-
-        // Now, remove any objects that exist in storageProduct.categories but not in readOnlyProduct.categories
-        storageProduct.categories?.forEach { storageCategory in
-            if readOnlyProduct.categories.first(where: { $0.categoryID == storageCategory.categoryID } ) == nil {
-                storageProduct.removeFromCategories(storageCategory)
-                storage.deleteObject(storageCategory)
-            }
-        }
     }
 
     /// Updates, inserts, or prunes the provided StorageProduct's tags using the provided read-only Product's tags

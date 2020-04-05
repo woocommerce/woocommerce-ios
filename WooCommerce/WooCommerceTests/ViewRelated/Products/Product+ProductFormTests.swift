@@ -5,7 +5,7 @@ import Yosemite
 
 class Product_ProductFormTests: XCTestCase {
 
-    let sampleSiteID: Int64 = 109
+    private let sampleSiteID: Int64 = 109
 
     func testTrimmedFullDescriptionWithLeadingNewLinesAndHTMLTags() {
         let description = "\n\n\n  <p>This is the party room!</p>\n"

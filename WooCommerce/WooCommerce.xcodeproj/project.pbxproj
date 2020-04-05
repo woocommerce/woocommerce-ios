@@ -219,6 +219,7 @@
 		02FE89C7231FAA4100E85EF8 /* MainTabBarControllerTests+ProductListFeatureFlag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE89C6231FAA4100E85EF8 /* MainTabBarControllerTests+ProductListFeatureFlag.swift */; };
 		02FE89C9231FB31400E85EF8 /* FeatureFlagService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE89C8231FB31400E85EF8 /* FeatureFlagService.swift */; };
 		02FE89CB231FB36600E85EF8 /* DefaultFeatureFlagService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE89CA231FB36600E85EF8 /* DefaultFeatureFlagService.swift */; };
+		2611EE59243A473300A74490 /* ProductCategoryListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2611EE58243A473300A74490 /* ProductCategoryListViewModelTests.swift */; };
 		263EB409242C58EA00F3A15F /* DefaultProductFormTableViewModel+EditProductsM3Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263EB408242C58EA00F3A15F /* DefaultProductFormTableViewModel+EditProductsM3Tests.swift */; };
 		265BCA052430E611004E53EE /* ProductCategoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265BCA042430E611004E53EE /* ProductCategoryListViewController.swift */; };
 		265BCA072430E62E004E53EE /* ProductCategoryListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 265BCA062430E62E004E53EE /* ProductCategoryListViewController.xib */; };
@@ -1005,6 +1006,7 @@
 		02FE89C8231FB31400E85EF8 /* FeatureFlagService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagService.swift; sourceTree = "<group>"; };
 		02FE89CA231FB36600E85EF8 /* DefaultFeatureFlagService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultFeatureFlagService.swift; sourceTree = "<group>"; };
 		25D00C97936D2C6589F8ECE9 /* Pods-WooCommerce.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		2611EE58243A473300A74490 /* ProductCategoryListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryListViewModelTests.swift; sourceTree = "<group>"; };
 		263EB408242C58EA00F3A15F /* DefaultProductFormTableViewModel+EditProductsM3Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DefaultProductFormTableViewModel+EditProductsM3Tests.swift"; sourceTree = "<group>"; };
 		265BCA042430E611004E53EE /* ProductCategoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryListViewController.swift; sourceTree = "<group>"; };
 		265BCA062430E62E004E53EE /* ProductCategoryListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductCategoryListViewController.xib; sourceTree = "<group>"; };
@@ -1614,6 +1616,7 @@
 				02A275C723FEA102005C560F /* DefaultProductFormTableViewModel+EditProductsM2Tests.swift */,
 				263EB408242C58EA00F3A15F /* DefaultProductFormTableViewModel+EditProductsM3Tests.swift */,
 				02153210242376B5003F2BBD /* ProductPriceSettingsViewModelTests.swift */,
+				2611EE57243A46C500A74490 /* Categories */,
 				453770CF2431FEC400AC718D /* Settings */,
 			);
 			path = "Edit Product";
@@ -2050,6 +2053,14 @@
 				02F4F50E237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.xib */,
 			);
 			path = Cells;
+			sourceTree = "<group>";
+		};
+		2611EE57243A46C500A74490 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				2611EE58243A473300A74490 /* ProductCategoryListViewModelTests.swift */,
+			);
+			path = Categories;
 			sourceTree = "<group>";
 		};
 		265BCA032430E5EA004E53EE /* EditCategories */ = {
@@ -4567,6 +4578,7 @@
 				D82DFB4C225F303200EFE2CB /* EmptyListMessageWithActionTests.swift in Sources */,
 				020BE76923B4A268007FE54C /* AztecItalicFormatBarCommandTests.swift in Sources */,
 				B53A569B21123E8E000776C9 /* MockupTableView.swift in Sources */,
+				2611EE59243A473300A74490 /* ProductCategoryListViewModelTests.swift in Sources */,
 				0247AAA223A3C5A6007F967E /* DecimalInputFormatterTests.swift in Sources */,
 				B509FED521C052D1000076A9 /* MockupSupportManager.swift in Sources */,
 				02691782232605B9002AFC20 /* PaginatedListViewControllerStateCoordinatorTests.swift in Sources */,

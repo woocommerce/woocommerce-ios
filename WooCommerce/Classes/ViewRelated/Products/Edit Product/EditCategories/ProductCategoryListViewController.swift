@@ -83,6 +83,11 @@ private extension ProductCategoryListViewController {
 // MARK: - UITableViewConformace conformance
 //
 extension ProductCategoryListViewController: UITableViewDataSource, UITableViewDelegate {
+
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return viewModel.numberOfSections()
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel.numberOfRowsInSection(section: section)
     }

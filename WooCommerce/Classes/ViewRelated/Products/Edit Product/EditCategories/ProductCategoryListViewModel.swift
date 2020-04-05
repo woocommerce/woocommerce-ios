@@ -16,6 +16,12 @@ final class ProductCategoryListViewModel {
         self.product = product
     }
 
+    /// Returns the number sections.
+    ///
+    func numberOfSections() -> Int {
+        return categoriesResultController.sections.count
+    }
+
     /// Returns the number of items for a given `section` that should be displayed
     ///
     func numberOfRowsInSection(section: Int) -> Int {

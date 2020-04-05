@@ -286,7 +286,7 @@
         <attribute name="virtual" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="weight" optional="YES" attributeType="String"/>
         <relationship name="attributes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductAttribute" inverseName="product" inverseEntity="ProductAttribute"/>
-        <relationship name="categories" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductCategory" inverseName="products" inverseEntity="ProductCategory"/>
+        <relationship name="categories" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProductCategory" inverseName="products" inverseEntity="ProductCategory"/>
         <relationship name="defaultAttributes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductDefaultAttribute" inverseName="product" inverseEntity="ProductDefaultAttribute"/>
         <relationship name="dimensions" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ProductDimensions" inverseName="product" inverseEntity="ProductDimensions"/>
         <relationship name="downloads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProductDownload" inverseName="product" inverseEntity="ProductDownload"/>
@@ -311,7 +311,7 @@
         <attribute name="parentID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="siteID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="slug" attributeType="String"/>
-        <relationship name="products" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Product" inverseName="categories" inverseEntity="Product"/>
+        <relationship name="products" optional="YES" toMany="YES" deletionRule="Deny" destinationEntity="Product" inverseName="categories" inverseEntity="Product"/>
     </entity>
     <entity name="ProductDefaultAttribute" representedClassName="ProductDefaultAttribute" syncable="YES">
         <attribute name="attributeID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>

@@ -84,6 +84,32 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertNil(errorResponse)
     }
 
+    func testSyncrhonizeProductCategoriesUpdatesStoredCategoriesSuccessfulResponse() {
+        // Given an initial stored category and a stubed product-categories network response
+        let expectation = self.expectation(description: #function)
+        let initialCategory = sampleCategory(categoryID: 20)
+        storageManager.insertSampleProductCategory(readOnlyProductCategory: initialCategory)
+        network.simulateResponse(requestUrlSuffix: "products/categories", filename: "categories-all")
+
+        // When dispatching a `synchronizeProductCategories` action
+        var errorResponse: Error?
+        let action = ProductCategoryAction.synchronizeProductCategories(siteID: sampleSiteID,
+                                                                     pageNumber: defaultPageNumber,
+                                                                     pageSize: defaultPageSize) { error in
+            errorResponse = error
+            expectation.fulfill()
+        }
+        store.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        // Then the initial category should have it's values updated
+        let updatedCategory = viewStorage.loadProductCategory(siteID: sampleSiteID, categoryID: initialCategory.categoryID)
+        XCTAssertNotEqual(initialCategory.parentID, updatedCategory?.parentID)
+        XCTAssertNotEqual(initialCategory.name, updatedCategory?.name)
+        XCTAssertNotEqual(initialCategory.slug, updatedCategory?.slug)
+        XCTAssertNil(errorResponse)
+    }
+
     func testRetrieveProductCategoriesReturnsErrorUponReponseError() {
         // Given a stubed generic-error network response
         let expectation = self.expectation(description: #function)
@@ -125,5 +151,11 @@ final class ProductCategoryStoreTests: XCTestCase {
         // Then no categories should be stored
         XCTAssertEqual(storedProductCategoriesCount, 0)
         XCTAssertNotNil(errorResponse)
+    }
+}
+
+private extension ProductCategoryStoreTests {
+    func sampleCategory(categoryID: Int64) -> Networking.ProductCategory {
+        return Networking.ProductCategory(categoryID: categoryID, siteID: sampleSiteID, parentID: 0, name: "Sample", slug: "Sample")
     }
 }

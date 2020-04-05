@@ -12,11 +12,12 @@ final class ProductCategoryListMapperTests: XCTestCase {
         let productCategories = try mapLoadAllProductCategoriesResponse()
         XCTAssertEqual(productCategories.count, 2)
 
-        let firstProductCategory = productCategories[0]
-        XCTAssertEqual(firstProductCategory.categoryID, 104)
-        XCTAssertEqual(firstProductCategory.siteID, dummySiteID)
-        XCTAssertEqual(firstProductCategory.name, "Dress")
-        XCTAssertEqual(firstProductCategory.slug, "Shirt")
+        let secondProductCategory = productCategories[1]
+        XCTAssertEqual(secondProductCategory.categoryID, 20)
+        XCTAssertEqual(secondProductCategory.parentID, 17)
+        XCTAssertEqual(secondProductCategory.siteID, dummySiteID)
+        XCTAssertEqual(secondProductCategory.name, "American")
+        XCTAssertEqual(secondProductCategory.slug, "american")
     }
 }
 

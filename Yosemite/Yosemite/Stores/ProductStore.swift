@@ -383,7 +383,9 @@ private extension ProductStore {
         // Upsert the categories from the read-only product
         for readOnlyCategory in readOnlyProduct.categories {
             if let existingStorageCategory = storage.loadProductCategory(siteID: siteID, categoryID: readOnlyCategory.categoryID) {
-                existingStorageCategory.update(with: readOnlyCategory)
+                // ProductCategory response comes without a `parentID` so we update it with the `existingStorageCategory` one
+                let completeReadOnlyCategory = readOnlyCategory.updateWith(parentID: existingStorageCategory.parentID)
+                existingStorageCategory.update(with: completeReadOnlyCategory)
             } else {
                 let newStorageCategory = storage.insertNewObject(ofType: Storage.ProductCategory.self)
                 newStorageCategory.update(with: readOnlyCategory)

@@ -39,6 +39,33 @@ final class CopiableTests: XCTestCase {
         XCTAssertEqual(copy.alt, "_alt_copy_")
     }
 
+    func testItCanReplaceSomePropertyValues() {
+        // Given
+        let original = ProductImage(
+            imageID: 1_000,
+            dateCreated: Date(),
+            dateModified: nil,
+            src: "__src__",
+            name: nil,
+            alt: nil
+        )
+
+        // When
+        let copy = original.copy(
+            dateCreated: Date(timeIntervalSince1970: 100),
+            src: "_src_copy_",
+            alt: "_alt_copy_"
+        )
+
+        // Then
+        XCTAssertEqual(copy.imageID, original.imageID)
+        XCTAssertEqual(copy.dateCreated, Date(timeIntervalSince1970: 100))
+        XCTAssertEqual(copy.dateModified, original.dateModified)
+        XCTAssertEqual(copy.src, "_src_copy_")
+        XCTAssertEqual(copy.name, original.name)
+        XCTAssertEqual(copy.alt, "_alt_copy_")
+    }
+
     func testItCanSetNonNilPropertiesBackToNil() {
         // Given
         let original = ProductImage(

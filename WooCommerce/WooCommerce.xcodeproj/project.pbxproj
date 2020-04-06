@@ -239,6 +239,8 @@
 		453DBF8E2387F34A006762A5 /* UICollectionViewCell+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453DBF8D2387F34A006762A5 /* UICollectionViewCell+Helpers.swift */; };
 		453DBF9023882814006762A5 /* ProductImagesFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453DBF8F23882814006762A5 /* ProductImagesFlowLayout.swift */; };
 		454B28BE23BF63C600CD2091 /* DateIntervalFormatter+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454B28BD23BF63C600CD2091 /* DateIntervalFormatter+Helpers.swift */; };
+		457151AB243B6E8000EB2DFA /* ProductSlugViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457151A9243B6E8000EB2DFA /* ProductSlugViewController.swift */; };
+		457151AC243B6E8000EB2DFA /* ProductSlugViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 457151AA243B6E8000EB2DFA /* ProductSlugViewController.xib */; };
 		4580BA7423F192D400B5F764 /* ProductSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4580BA7223F192D400B5F764 /* ProductSettingsViewController.swift */; };
 		4580BA7523F192D400B5F764 /* ProductSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4580BA7323F192D400B5F764 /* ProductSettingsViewController.xib */; };
 		4580BA7723F19D4A00B5F764 /* ProductSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4580BA7623F19D4A00B5F764 /* ProductSettingsViewModel.swift */; };
@@ -1018,6 +1020,8 @@
 		453DBF8D2387F34A006762A5 /* UICollectionViewCell+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionViewCell+Helpers.swift"; sourceTree = "<group>"; };
 		453DBF8F23882814006762A5 /* ProductImagesFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesFlowLayout.swift; sourceTree = "<group>"; };
 		454B28BD23BF63C600CD2091 /* DateIntervalFormatter+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateIntervalFormatter+Helpers.swift"; sourceTree = "<group>"; };
+		457151A9243B6E8000EB2DFA /* ProductSlugViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSlugViewController.swift; sourceTree = "<group>"; };
+		457151AA243B6E8000EB2DFA /* ProductSlugViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductSlugViewController.xib; sourceTree = "<group>"; };
 		4580BA7223F192D400B5F764 /* ProductSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSettingsViewController.swift; sourceTree = "<group>"; };
 		4580BA7323F192D400B5F764 /* ProductSettingsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductSettingsViewController.xib; sourceTree = "<group>"; };
 		4580BA7623F19D4A00B5F764 /* ProductSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSettingsViewModel.swift; sourceTree = "<group>"; };
@@ -2077,6 +2081,15 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
+		457151A8243B6E6200EB2DFA /* Slug */ = {
+			isa = PBXGroup;
+			children = (
+				457151A9243B6E8000EB2DFA /* ProductSlugViewController.swift */,
+				457151AA243B6E8000EB2DFA /* ProductSlugViewController.xib */,
+			);
+			path = Slug;
+			sourceTree = "<group>";
+		};
 		45739F2E2436302600480C95 /* Catalog Visibility */ = {
 			isa = PBXGroup;
 			children = (
@@ -2095,6 +2108,7 @@
 				451C77722404534000413F73 /* ProductSettingsSections.swift */,
 				451C77702404518600413F73 /* ProductSettingsRows.swift */,
 				45739F2E2436302600480C95 /* Catalog Visibility */,
+				457151A8243B6E6200EB2DFA /* Slug */,
 				4524CD9F242D023300B2F20A /* List Selector Data Source */,
 			);
 			path = "Product Settings";
@@ -3754,6 +3768,7 @@
 				5795F22C23E26A8D00F6707C /* OrderSearchStarterViewController.xib in Resources */,
 				45B9C63F23A8E50D007FC4C5 /* ProductPriceSettingsViewController.xib in Resources */,
 				B5F571A621BEC92A0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.xib in Resources */,
+				457151AC243B6E8000EB2DFA /* ProductSlugViewController.xib in Resources */,
 				B5F355F121CD504400A7077A /* SearchViewController.xib in Resources */,
 				CE1EC8F020B8A408009762BF /* OrderNoteTableViewCell.xib in Resources */,
 				B55D4BFD20B5CDE700D7A50F /* replace_secrets.rb in Resources */,
@@ -4378,6 +4393,7 @@
 				B57C744E20F56E3800EEFC87 /* UITableViewCell+Helpers.swift in Sources */,
 				02CA63DA23D1ADD100BBF148 /* CameraCaptureCoordinator.swift in Sources */,
 				CEEC9B5C21E79B3E0055EEF0 /* FeatureFlag.swift in Sources */,
+				457151AB243B6E8000EB2DFA /* ProductSlugViewController.swift in Sources */,
 				02F49ADA23BF356E00FA0BFA /* TitleAndTextFieldTableViewCell.ViewModel+State.swift in Sources */,
 				74036CC0211B882100E462C2 /* PeriodDataViewController.swift in Sources */,
 				740382DB2267D94100A627F4 /* LargeImageTableViewCell.swift in Sources */,

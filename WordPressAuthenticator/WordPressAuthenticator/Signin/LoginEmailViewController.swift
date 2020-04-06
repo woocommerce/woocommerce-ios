@@ -188,7 +188,18 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         let button = WPStyleGuide.wpcomSignupButton()
         stackView.addArrangedSubview(button)
         button.on(.touchUpInside) { [weak self] (button) in
-            self?.performSegue(withIdentifier: .showSignupMethod, sender: self)
+            guard let vc = LoginPrologueSignupMethodViewController.instantiate(from: .login) else {
+                DDLogError("Failed to navigate to LoginPrologueSignupMethodViewController")
+                return
+            }
+
+            guard let self = self else { return }
+
+            vc.loginFields = self.loginFields
+            vc.dismissBlock = self.dismissBlock
+            vc.transitioningDelegate = self
+            vc.modalPresentationStyle = .custom
+            self.navigationController?.pushViewController(vc, animated: true)
         }
 
         stackView.addConstraints([
@@ -398,7 +409,12 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
                 self?.performSegue(withIdentifier: .showSigninV2, sender: self)
             }
             vc.googleTapped = { [weak self] in
-                self?.performSegue(withIdentifier: .showGoogle, sender: self)
+                guard let toVC = SignupGoogleViewController.instantiate(from: .signup) else {
+                    DDLogError("Failed to navigate to SignupGoogleViewController")
+                    return
+                }
+
+                self?.navigationController?.pushViewController(toVC, animated: true)
             }
             vc.modalPresentationStyle = .custom
         }

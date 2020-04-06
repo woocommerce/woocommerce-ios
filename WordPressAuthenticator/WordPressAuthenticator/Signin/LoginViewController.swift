@@ -205,7 +205,17 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         configureViewLoading(false)
 
         WordPressAuthenticator.track(.twoFactorCodeRequested)
-        self.performSegue(withIdentifier: .show2FA, sender: self)
+
+        guard let vc = Login2FAViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from LoginViewController to Login2FAViewController")
+            return
+        }
+
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     // Update safari stored credentials. Call after a successful sign in.
@@ -430,14 +440,23 @@ extension LoginViewController {
         loginFields.nonceInfo = nonceInfo
         loginFields.nonceUserID = userID
 
-        performSegue(withIdentifier: .show2FA, sender: self)
-
         var properties = [AnyHashable:Any]()
         if let service = loginFields.meta.socialService?.rawValue {
             properties["source"] = service
         }
 
         WordPressAuthenticator.track(.loginSocial2faNeeded, properties: properties)
+
+        guard let vc = Login2FAViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from LoginViewController to Login2FAViewController")
+            return
+        }
+
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     func signInAppleAccount() {

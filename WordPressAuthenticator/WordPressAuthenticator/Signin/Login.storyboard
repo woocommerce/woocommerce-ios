@@ -7,14 +7,6 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--googleSignup-->
-        <scene sceneID="GBa-1v-wvb">
-            <objects>
-                <viewControllerPlaceholder storyboardIdentifier="Signup" storyboardName="Signup" referencedIdentifier="googleSignup" id="MEg-KS-Afs" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="bjg-XU-5Rh" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1384" y="-231"/>
-        </scene>
         <!--Login Prologue Page View Controller-->
         <scene sceneID="Jbm-5H-sqY">
             <objects>
@@ -29,7 +21,7 @@
         <!--Login Prologue Signup Method View Controller-->
         <scene sceneID="8K7-Gj-yNn">
             <objects>
-                <viewController id="IwV-3R-6dB" customClass="LoginPrologueSignupMethodViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginPrologueSignupMethodViewController" id="IwV-3R-6dB" customClass="LoginPrologueSignupMethodViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="LS5-8f-iNn"/>
                         <viewControllerLayoutGuide type="bottom" id="NZ0-gC-OHl"/>
@@ -116,13 +108,10 @@
                     </view>
                     <navigationItem key="navigationItem" id="42E-2e-kOq"/>
                     <connections>
-                        <segue destination="IwV-3R-6dB" kind="presentation" identifier="showSignupMethod" id="gD5-d0-X3t"/>
                         <segue destination="T5n-nb-cOW" kind="show" identifier="showSigninV2" id="nCA-u7-fKm"/>
-                        <segue destination="MEg-KS-Afs" kind="show" identifier="showGoogle" id="aSC-hU-lzE"/>
                         <segue destination="hed-vB-osh" kind="presentation" identifier="showLoginMethod" id="N3P-wt-Rn3"/>
                         <segue destination="anK-hg-K4j" kind="show" identifier="showSelfHostedLogin" id="Njv-lY-Lyi"/>
                         <segue destination="lmD-c6-SLs" kind="show" identifier="showWPComLogin" id="UV4-XI-c0q"/>
-                        <segue destination="bAd-Df-IzS" kind="show" identifier="show2FA" id="2Of-BA-xqb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ieq-Ar-5OF" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -361,12 +350,9 @@
                         <outlet property="submitButton" destination="OZC-xf-OAn" id="k1c-SJ-qiK"/>
                         <segue destination="Kvo-Y2-yhG" kind="show" identifier="startMagicLinkFlow" id="db9-5R-Qq7"/>
                         <segue destination="lmD-c6-SLs" kind="show" identifier="showWPComLogin" id="ySQ-EM-6JI"/>
-                        <segue destination="bAd-Df-IzS" kind="show" identifier="show2FA" id="kRR-qz-Hu2"/>
                         <segue destination="anK-hg-K4j" kind="show" identifier="showSelfHostedLogin" id="bK1-J1-hfT"/>
                         <segue destination="klu-4U-PyL" kind="show" identifier="showSignupEmail" id="dh4-9P-l8W"/>
-                        <segue destination="IwV-3R-6dB" kind="presentation" identifier="showSignupMethod" id="EmH-Av-vhT"/>
                         <segue destination="T5n-nb-cOW" kind="show" identifier="showSigninV2" id="sIC-Hv-FJw"/>
-                        <segue destination="MEg-KS-Afs" kind="show" identifier="showGoogle" id="HMT-Z5-QHr"/>
                         <segue destination="SZS-o3-1P7" kind="show" identifier="showURLUsernamePassword" id="4SK-mG-U33"/>
                     </connections>
                 </viewController>
@@ -583,7 +569,6 @@
                         <outlet property="siteHeaderView" destination="Wnq-Hk-jIw" id="x0l-lh-uuX"/>
                         <outlet property="submitButton" destination="SBB-7Z-qWs" id="jfi-ms-7V1"/>
                         <outlet property="usernameField" destination="ESh-DI-dtB" id="T1z-yJ-peq"/>
-                        <segue destination="bAd-Df-IzS" kind="show" identifier="show2FA" id="fWM-mD-lXg"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="X4T-gd-ISx" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -761,7 +746,6 @@
                         <outlet property="instructionLabel" destination="bBi-2N-RAh" id="NDi-pM-b0p"/>
                         <outlet property="passwordField" destination="BtS-3D-CIU" id="FjI-Ba-FDh"/>
                         <outlet property="submitButton" destination="E3x-LN-sUk" id="9eE-vi-xgc"/>
-                        <segue destination="bAd-Df-IzS" kind="show" identifier="show2FA" id="qLI-qX-rkG"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Z8b-3z-D46" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1020,7 +1004,6 @@
                         <outlet property="label" destination="CmN-ir-1YK" id="Xhc-3L-kvy"/>
                         <outlet property="sendLinkButton" destination="iIy-Sm-1r0" id="9My-fJ-l9S"/>
                         <outlet property="usePasswordButton" destination="B6x-b7-hU9" id="mB8-03-VBa"/>
-                        <segue destination="Aii-0z-zLC" kind="show" identifier="showLinkMailView" id="xs3-qG-RaP"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cja-vu-y88" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1175,21 +1158,12 @@
                         <segue destination="SZS-o3-1P7" kind="show" identifier="showURLUsernamePassword" id="TkG-0R-c3i"/>
                         <segue destination="iMi-vX-AxR" kind="show" identifier="showWPUsernamePassword" id="dtm-iK-PLb"/>
                         <segue destination="hed-vB-osh" kind="presentation" identifier="showLoginMethod" id="5hL-j3-eMs"/>
-                        <segue destination="MEg-KS-Afs" kind="show" identifier="showGoogle" id="pe1-D0-Mpg"/>
                         <segue destination="lmD-c6-SLs" kind="show" identifier="showWPComLogin" id="8p6-rS-9Ml"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WlT-Oa-AoS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="794" y="1179"/>
-        </scene>
-        <!--LinkMailView-->
-        <scene sceneID="UUd-M2-Fvg">
-            <objects>
-                <viewControllerPlaceholder storyboardIdentifier="LinkMailView" storyboardName="EmailMagicLink" referencedIdentifier="LinkMailView" id="Aii-0z-zLC" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="WTT-3e-E71" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="3355" y="255"/>
         </scene>
         <!--Login Username Password View Controller-->
         <scene sceneID="b9v-Sc-w6J">
@@ -1407,7 +1381,6 @@
                         <outlet property="siteHeaderView" destination="vkO-HN-aFE" id="Eyg-MS-QDE"/>
                         <outlet property="submitButton" destination="YGE-OB-HmV" id="39T-xt-cuq"/>
                         <outlet property="usernameField" destination="ZUH-Y9-OaY" id="VLq-Va-EaD"/>
-                        <segue destination="bAd-Df-IzS" kind="show" identifier="show2FA" id="2Bq-Nv-ZkV"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mOF-Ry-81y" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1470,12 +1443,9 @@
     <inferredMetricsTieBreakers>
         <segue reference="N3P-wt-Rn3"/>
         <segue reference="Njv-lY-Lyi"/>
-        <segue reference="2Of-BA-xqb"/>
         <segue reference="UV4-XI-c0q"/>
         <segue reference="4SK-mG-U33"/>
-        <segue reference="nCA-u7-fKm"/>
-        <segue reference="swV-lc-6gI"/>
-        <segue reference="gD5-d0-X3t"/>
-        <segue reference="aSC-hU-lzE"/>
+        <segue reference="sIC-Hv-FJw"/>
+        <segue reference="iD4-VS-n3M"/>
     </inferredMetricsTieBreakers>
 </document>

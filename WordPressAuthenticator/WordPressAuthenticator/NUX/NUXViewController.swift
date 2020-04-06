@@ -25,17 +25,13 @@ open class NUXViewController: UIViewController, NUXViewControllerBase, UIViewCon
     // MARK: associated type for NUXSegueHandler
     /// Segue identifiers to avoid using strings
     public enum SegueIdentifier: String {
-        case showSignupMethod
         case showSigninV2
-        case showGoogle
         case showURLUsernamePassword
         case showWPUsernamePassword
         case showSelfHostedLogin
         case showWPComLogin
         case startMagicLinkFlow
         case showMagicLink
-        case showLinkMailView
-        case show2FA
         case showDomains
         case showCreateSite
         case showSignupEmail

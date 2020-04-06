@@ -143,7 +143,7 @@ private extension ProductSlugViewController {
 
 // MARK: - Constants
 //
-extension ProductSlugViewController {
+private extension ProductSlugViewController {
 
     /// Table Rows
     ///

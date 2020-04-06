@@ -1,5 +1,7 @@
-Para ter um panorama mais completo dos seus lucros, agora as estatísticas de painel incluem receita negativa, como reembolsos.
+Uma breve lista de alterações;
 
-- Novo design da Lista de pedidos para tornar as visualizações Processamento e Todos os pedidos mais proeminentes. Quer filtrar pedidos por outro status? Sem problemas: há outras opções na visualização Pesquisar.
-- Avaliações são vitais para lojas online, mas em raras vezes falhavam ao carregar algumas configurações do WooCommerce. Não mais.
-- Levante a mão quem gostaria de editar produtos de onde estiver! Experimente opções de edição em produtos simples. Para ativá-las, acesse: Configurações > Funcionalidades experimentais > Produtos.
+- O rótulo de status do pedido na Lista de pedidos não é mais cortado; ele exibe todas as informações.
+- Correção do bug na taxa de proporção que esticava o logotipo do WooCommerce na tela de início.
+- Agora em vez de “Fornecedora” você verá “Transportadora” no app.
+
+Fiquem seguros e lavem suas mãos!

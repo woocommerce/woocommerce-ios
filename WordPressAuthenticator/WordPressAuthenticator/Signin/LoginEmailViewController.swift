@@ -397,37 +397,6 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         return EmailFormatValidator.validate(string: loginFields.username)
     }
 
-
-    // MARK: - Segue
-
-    override open func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        super.prepare(for: segue, sender: sender)
-
-        if let vc = segue.destination as? LoginPrologueSignupMethodViewController {
-            vc.transitioningDelegate = self
-
-            vc.emailTapped = { [weak self] in
-                guard let toVC = SignupEmailViewController.instantiate(from: .signup) else {
-                    DDLogError("Failed to navigate from LoginEmailViewController to SignupEmailViewController")
-                    return
-                }
-
-                self?.navigationController?.pushViewController(toVC, animated: true)
-            }
-
-            vc.googleTapped = { [weak self] in
-                guard let toVC = SignupGoogleViewController.instantiate(from: .signup) else {
-                    DDLogError("Failed to navigate to SignupGoogleViewController")
-                    return
-                }
-
-                self?.navigationController?.pushViewController(toVC, animated: true)
-            }
-
-            vc.modalPresentationStyle = .custom
-        }
-    }
-
     // MARK: - Actions
 
 

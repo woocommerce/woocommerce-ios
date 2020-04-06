@@ -1,5 +1,7 @@
-För att ge en mer fullständig bild av dina intäkter inkluderar instrumentpanelen nu även negativa intäkter (till exempel: återbetalningar).
+En kort lista över ändringar som har utförts den här gången:
 
-- Vi har gjort om orderlistan för att göra vyerna Behandlas och Alla ordrar mer framträdande. Vill du filtrera ordrar efter en annan status? Inga problem: du kan hitta fler alternativ i sökvyn.
-- Recensioner är oerhört viktiga för onlinebutiker, men ibland gick de inte att ladda med vissa WooCommerce-konfigurationer. Vi har löst det.
-- Räck upp handen om du vill kunna redigera produkter när du är på språng! Prova de tillgängliga redigeringsalternativen på dina enkla produkter (först måste dock aktivera funktionen: gå till Inställningar > Experimentella funktioner > Produkter).
+- Orderstatusetiketten i orderlistan kapas inte längre av, så nu kan du faktiskt se all information.
+- Om du någonsin har undrat varför Woo-logotypen på startskärmen har sett lite utsträckt ut är det för att bredd-höjd-förhållandet var en aning felaktigt. Detta är nu åtgärdat.
+- För tydlighetens skull visas nu "Transportföretag" i hela appen istället för "Transportleverantör".
+
+Var försiktiga och tvätta händerna, allihopa!

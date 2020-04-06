@@ -36,6 +36,7 @@ public class MediaRemote: Remote {
     }
 
     /// Uploads an array of media in the local file system.
+    /// API reference: https://developer.wordpress.com/docs/api/1.1/post/sites/%24site/media/new/
     ///
     /// - Parameters:
     ///     - siteID: Site for which we'll upload the media to.
@@ -53,7 +54,7 @@ public class MediaRemote: Remote {
         ]
 
         let path = "sites/\(siteID)/media/new"
-        let request = DotcomRequest(wordpressApiVersion: .mark1_2,
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1,
                                     method: .post,
                                     path: path,
                                     parameters: parameters)

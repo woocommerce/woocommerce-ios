@@ -1,5 +1,7 @@
-Kazancınızın daha eksiksiz bir resmini sunmak için pano istatistikleri artık negatif geliri de içeriyor (örneğin: para iadeleri).
+Bu kez yapılan değişikliklerin kısa bir listesi:
 
-- İşleme ve Tüm Siparişler görünümlerini daha belirgin hale getirmek için Siparişler Listesi'ni yeniden tasarladık. Siparişleri farklı bir duruma göre filtrelemek ister misiniz? Endişe etmeyin: Arama görünümünde diğer seçenekleri bulabilirsiniz.
-- Yorumlar çevrimiçi mağazalar için çok önemli olsa da bazı WooCommerce yapılandırmalarına yüklenemiyorlardı. Sorunu çözdük.
-- Hareket halindeyken ürünleri düzenlemek istiyorsanız elinizi kaldırın! Mevcut düzenleme seçeneklerini basit ürünlerinizde deneyin (ancak öncelikle şu özelliği etkinleştirmeniz gerekir: Ayarlar > Deneysel Özellikler > Ürünler'e gidin).
+- Sipariş Listesindeki sipariş durumu etiketi artık kesilmiyor, tüm bilgileri görebiliyorsunuz.
+- Başlatma ekranındaki Woo logosunun neden biraz uzatılmış gibi göründüğünü merak ediyorsanız, bu sorun en-boy oranından kaynaklanıyordu ve artık düzeltildi.
+- Artık uygulama genelinde "Kargo Sağlayıcısı" yerine "Kargo Şirketi" ifadesini göreceksiniz.
+
+Herkes güvende kalsın ve ellerini yıkasın!

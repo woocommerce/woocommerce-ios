@@ -24,7 +24,9 @@ final class ProductSettingsViewModel {
 
     init(product: Product) {
         self.product = product
-        productSettings = ProductSettings(status: product.productStatus)
+        productSettings = ProductSettings(status: product.productStatus,
+                                          featured: product.featured,
+                                          catalogVisibility: product.productCatalogVisibility)
         sections = Self.configureSections(productSettings)
     }
 
@@ -40,11 +42,10 @@ final class ProductSettingsViewModel {
     }
 
     func hasUnsavedChanges() -> Bool {
-        if product.statusKey != productSettings.status.rawValue {
-            return true
+        guard ProductSettings(from: product) != productSettings else {
+            return false
         }
-
-        return false
+        return true
     }
 }
 
@@ -80,15 +81,5 @@ extension ProductSettingsViewModel {
         for kind in headersAndFooters {
             tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
         }
-    }
-}
-
-// Editable data
-//
-final class ProductSettings {
-    var status: ProductStatus
-
-    init(status: ProductStatus) {
-        self.status = status
     }
 }

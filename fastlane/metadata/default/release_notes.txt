@@ -1,5 +1,7 @@
-To offer a more complete picture of your earnings, dashboard stats now also include negative revenue (for example: refunds).
+A short list of changes this time around:
 
-- We’ve redesigned the Orders List to make the Processing and All Orders views more prominent. Want to filter orders by a different status? No worries: you’ll find other options in the Search view.
-- Reviews are so important for online stores, but they would occasionally fail to load on some WooCommerce configurations. We fixed it.
-- Raise your hand if you’d like to edit products on the go! Give available editing options a try on your simple products (but first, you’ll need to enable it: go to Settings > Experimental Features > Products).
+- The order status label in the Order List no longer gets cut off, so you can actually see all the information.
+- If you ever wondered why the Woo logo on the launch screen looked a little stretched out, its because the aspect ratio was wonky — that’s fixed now.
+- For clarity, you’ll now see “Shipping Carrier” throughout the app instead of “Shipping Provider.”
+
+Stay safe and wash your hands, everyone!

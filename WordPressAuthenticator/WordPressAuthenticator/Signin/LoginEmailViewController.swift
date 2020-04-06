@@ -45,7 +45,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
         localizeControls()
         setupOnePasswordButtonIfNeeded()
-        
+
         alternativeLoginLabel?.isHidden = showLoginOptions
         if !showLoginOptions {
             addGoogleButton()
@@ -214,6 +214,9 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
                 }
 
                 self?.navigationController?.pushViewController(toVC, animated: true)
+            }
+            vc.appleTapped = { [weak self] in
+                self?.appleTapped()
             }
 
             self.navigationController?.present(vc, animated: true, completion: nil)
@@ -391,7 +394,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
         loginWithUsernamePassword(immediately: true)
     }
-    
+
     /// Configures loginFields to log into wordpress.com and
     /// navigates to the selfhosted username/password form. Displays the specified
     /// error message when the new view controller appears.
@@ -467,6 +470,11 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
     @IBAction func handleSelfHostedButtonTapped(_ sender: UIButton) {
         loginToSelfHostedSite()
+    }
+
+    private func appleTapped() {
+        AppleAuthenticator.sharedInstance.delegate = self
+        AppleAuthenticator.sharedInstance.showFrom(viewController: self)
     }
 
 
@@ -548,5 +556,24 @@ extension LoginEmailViewController {
 extension LoginEmailViewController: GIDSignInDelegate {
     open func sign(_ signIn: GIDSignIn?, didSignInFor user: GIDGoogleUser?, withError error: Error?) {
         signInGoogleAccount(signIn, didSignInFor: user, withError: error)
+    }
+}
+
+// MARK: - AppleAuthenticatorDelegate
+
+extension LoginEmailViewController: AppleAuthenticatorDelegate {
+
+    func showWPComLogin(loginFields: LoginFields) {
+        self.loginFields = loginFields
+         performSegue(withIdentifier: .showWPComLogin, sender: self)
+    }
+
+    func showApple2FA(loginFields: LoginFields) {
+        self.loginFields = loginFields
+        signInAppleAccount()
+    }
+
+    func authFailedWithError(message: String) {
+        displayErrorAlert(message, sourceTag: .loginApple)
     }
 }

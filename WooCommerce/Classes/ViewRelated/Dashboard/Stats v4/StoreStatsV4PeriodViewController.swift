@@ -34,7 +34,7 @@ class StoreStatsV4PeriodViewController: UIViewController {
     private var orderStatsIntervals: [OrderStatsV4Interval] = [] {
         didSet {
             let helper = StoreStatsV4ChartAxisHelper()
-            let intervalDates = orderStatsIntervals.map({ $0.dateStart() })
+            let intervalDates = orderStatsIntervals.map({ $0.dateStart(timeZone: siteTimezone) })
             orderStatsIntervalLabels = helper.generateLabelText(for: intervalDates,
                                                                 timeRange: timeRange,
                                                                 siteTimezone: siteTimezone)
@@ -492,8 +492,8 @@ private extension StoreStatsV4PeriodViewController {
     ///
     /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
     func updateTimeRangeBar(selectedIndex: Int?) {
-        guard let startDate = orderStatsIntervals.first?.dateStart(),
-            let endDate = orderStatsIntervals.last?.dateStart() else {
+        guard let startDate = orderStatsIntervals.first?.dateStart(timeZone: siteTimezone),
+            let endDate = orderStatsIntervals.last?.dateStart(timeZone: siteTimezone) else {
                 return
         }
         guard let selectedIndex = selectedIndex else {
@@ -504,7 +504,7 @@ private extension StoreStatsV4PeriodViewController {
             timeRangeBarView.updateUI(viewModel: timeRangeBarViewModel)
             return
         }
-        let date = orderStatsIntervals[selectedIndex].dateStart()
+        let date = orderStatsIntervals[selectedIndex].dateStart(timeZone: siteTimezone)
         let timeRangeBarViewModel = StatsTimeRangeBarViewModel(startDate: startDate,
                                                                endDate: endDate,
                                                                selectedDate: date,
@@ -614,10 +614,10 @@ private extension StoreStatsV4PeriodViewController {
 
     func updateOrderDataIfNeeded() {
         orderStatsIntervals = orderStats?.intervals.sorted(by: { (lhs, rhs) -> Bool in
-            return lhs.dateStart() < rhs.dateStart()
+            return lhs.dateStart(timeZone: siteTimezone) < rhs.dateStart(timeZone: siteTimezone)
         }) ?? []
-        if let startDate = orderStatsIntervals.first?.dateStart(),
-            let endDate = orderStatsIntervals.last?.dateStart() {
+        if let startDate = orderStatsIntervals.first?.dateStart(timeZone: siteTimezone),
+            let endDate = orderStatsIntervals.last?.dateStart(timeZone: siteTimezone) {
             let timeRangeBarViewModel = StatsTimeRangeBarViewModel(startDate: startDate,
                                                                    endDate: endDate,
                                                                    timeRange: timeRange,
@@ -747,12 +747,12 @@ private extension StoreStatsV4PeriodViewController {
 
     func formattedAxisPeriodString(for item: OrderStatsV4Interval) -> String {
         let chartDateFormatter = timeRange.chartDateFormatter(siteTimezone: siteTimezone)
-        return chartDateFormatter.string(from: item.dateStart())
+        return chartDateFormatter.string(from: item.dateStart(timeZone: siteTimezone))
     }
 
     func formattedChartMarkerPeriodString(for item: OrderStatsV4Interval) -> String {
         let chartDateFormatter = timeRange.chartDateFormatter(siteTimezone: siteTimezone)
-        return chartDateFormatter.string(from: item.dateStart())
+        return chartDateFormatter.string(from: item.dateStart(timeZone: siteTimezone))
     }
 }
 

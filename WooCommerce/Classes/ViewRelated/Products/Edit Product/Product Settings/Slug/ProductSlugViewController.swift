@@ -29,7 +29,9 @@ final class ProductSlugViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        configureNavigationBar()
+        configureMainView()
+        configureTableView()
     }
     
     override func viewWillDisappear(_ animated: Bool) {

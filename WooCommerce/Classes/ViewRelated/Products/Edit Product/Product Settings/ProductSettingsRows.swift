@@ -113,7 +113,11 @@ enum ProductSettingsRows {
         }
 
         func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
-            // TODO: Show a VC
+            let viewController = ProductSlugViewController(settings: settings) { (productSettings) in
+                self.settings.slug = productSettings.slug
+                onCompletion(self.settings)
+            }
+            sourceViewController.navigationController?.pushViewController(viewController, animated: true)
         }
 
         let reuseIdentifier: String = SettingTitleAndValueTableViewCell.reuseIdentifier

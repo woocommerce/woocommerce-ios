@@ -380,12 +380,16 @@ private extension ProductStore {
     func handleProductCategories(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
         let siteID = readOnlyProduct.siteID
 
+        // Remove previous linked categories
+        storageProduct.categories?.removeAll()
+
         // Upsert the categories from the read-only product
         for readOnlyCategory in readOnlyProduct.categories {
             if let existingStorageCategory = storage.loadProductCategory(siteID: siteID, categoryID: readOnlyCategory.categoryID) {
                 // ProductCategory response comes without a `parentID` so we update it with the `existingStorageCategory` one
                 let completeReadOnlyCategory = readOnlyCategory.updateWith(parentID: existingStorageCategory.parentID)
                 existingStorageCategory.update(with: completeReadOnlyCategory)
+                storageProduct.addToCategories(existingStorageCategory)
             } else {
                 let newStorageCategory = storage.insertNewObject(ofType: Storage.ProductCategory.self)
                 newStorageCategory.update(with: readOnlyCategory)

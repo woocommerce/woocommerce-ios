@@ -12,10 +12,13 @@ final class ProductSlugViewController: UIViewController {
 
     private let productSettings: ProductSettings
     
+    private let sections: [Section]
+    
     /// Init
     ///
     init(settings: ProductSettings, completion: @escaping Completion) {
         productSettings = settings
+        sections = [Section(rows: [.slug])]
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
@@ -57,5 +60,40 @@ private extension ProductSlugViewController {
 
         tableView.backgroundColor = .listBackground
         tableView.removeLastCellSeparator()
+    }
+}
+
+// MARK: - Constants
+//
+extension ProductSlugViewController {
+
+    /// Table Rows
+    ///
+    enum Row {
+        /// Listed in the order they appear on screen
+        case slug
+
+        var reuseIdentifier: String {
+            switch self {
+            case .slug:
+                return TextFieldTableViewCell.reuseIdentifier
+            }
+        }
+    }
+
+    /// Table Sections
+    ///
+    struct Section {
+        let footer: String?
+        let rows: [Row]
+
+        init(footer: String? = nil, rows: [Row]) {
+            self.footer = footer
+            self.rows = rows
+        }
+
+        init(footer: String? = nil, row: Row) {
+            self.init(footer: footer, rows: [row])
+        }
     }
 }

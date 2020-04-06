@@ -18,7 +18,9 @@ final class ProductSlugViewController: UIViewController {
     ///
     init(settings: ProductSettings, completion: @escaping Completion) {
         productSettings = settings
-        sections = [Section(rows: [.slug])]
+        let footerText = NSLocalizedString("This is the URL-friendly version of the product title",
+        comment: "Footer text in Product Slug screen")
+        sections = [Section(footer: footerText, rows: [.slug])]
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
@@ -56,12 +58,81 @@ private extension ProductSlugViewController {
     }
 
     func configureTableView() {
-
-        //tableView.dataSource = self
-        //tableView.delegate = self
+        tableView.dataSource = self
+        tableView.delegate = self
 
         tableView.backgroundColor = .listBackground
         tableView.removeLastCellSeparator()
+    }
+}
+
+// MARK: - UITableViewDataSource Conformance
+//
+extension ProductSlugViewController: UITableViewDataSource {
+
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return sections.count
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return sections[section].rows.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let row = sections[indexPath.section].rows[indexPath.row]
+
+        let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
+        configure(cell, for: row, at: indexPath)
+
+        return cell
+    }
+}
+
+// MARK: - UITableViewDelegate Conformance
+//
+extension ProductSlugViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+
+    func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        return sections[section].footer
+    }
+}
+
+// MARK: - Support for UITableViewDataSource
+//
+private extension ProductSlugViewController {
+    /// Configure cellForRowAtIndexPath:
+    ///
+   func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+        switch cell {
+        case let cell as TextFieldTableViewCell:
+            configureSlug(cell: cell)
+        default:
+            fatalError("Unidentified product catalog visibility row type")
+        }
+    }
+
+    func configureSlug(cell: TextFieldTableViewCell) {
+        cell.accessoryType = .none
+
+        let placeholder = NSLocalizedString("Slug", comment: "Placeholder in the Product Slug row on Edit Product Slug screen.")
+
+        let viewModel = TextFieldTableViewCell.ViewModel(text: productSettings.slug, placeholder: placeholder, onTextChange: { [weak self] newName in
+            //self?.onNameChange?(newName)
+            }, onTextDidBeginEditing: {
+                //TODO: Add analytics track
+        })
+        cell.configure(viewModel: viewModel)
     }
 }
 

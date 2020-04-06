@@ -103,12 +103,12 @@ enum ProductSettingsRows {
         }
 
         func configure(cell: UITableViewCell) {
-            guard let cell = cell as? BasicTableViewCell else {
+            guard let cell = cell as? SettingTitleAndValueTableViewCell else {
                 return
             }
 
-            cell.textLabel?.text = NSLocalizedString("Slug", comment: "Slug label in Product Settings")
-            cell.detailTextLabel?.text = "TO BE IMPLEMENTED"
+            let titleView = NSLocalizedString("Slug", comment: "Slug label in Product Settings")
+            cell.updateUI(title: titleView, value: settings.slug)
             cell.accessoryType = .disclosureIndicator
         }
 
@@ -116,8 +116,8 @@ enum ProductSettingsRows {
             // TODO: Show a VC
         }
 
-        let reuseIdentifier: String = BasicTableViewCell.reuseIdentifier
+        let reuseIdentifier: String = SettingTitleAndValueTableViewCell.reuseIdentifier
 
-        let cellTypes: [UITableViewCell.Type] = [BasicTableViewCell.self]
+        let cellTypes: [UITableViewCell.Type] = [SettingTitleAndValueTableViewCell.self]
     }
 }

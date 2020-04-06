@@ -199,7 +199,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
             vc.dismissBlock = self.dismissBlock
             vc.transitioningDelegate = self
             vc.modalPresentationStyle = .custom
-            self.navigationController?.pushViewController(vc, animated: true)
+            self.navigationController?.present(vc, animated: true, completion: nil)
         }
 
         stackView.addConstraints([

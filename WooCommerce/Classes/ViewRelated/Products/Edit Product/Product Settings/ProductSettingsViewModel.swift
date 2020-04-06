@@ -24,9 +24,7 @@ final class ProductSettingsViewModel {
 
     init(product: Product) {
         self.product = product
-        productSettings = ProductSettings(status: product.productStatus,
-                                          featured: product.featured,
-                                          catalogVisibility: product.productCatalogVisibility)
+        productSettings = ProductSettings(from: product)
         sections = Self.configureSections(productSettings)
     }
 

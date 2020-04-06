@@ -31,7 +31,6 @@ open class NUXViewController: UIViewController, NUXViewControllerBase, UIViewCon
         case showWPComLogin
         case startMagicLinkFlow
         case showMagicLink
-        case show2FA
         case showDomains
         case showCreateSite
         case showSignupEmail

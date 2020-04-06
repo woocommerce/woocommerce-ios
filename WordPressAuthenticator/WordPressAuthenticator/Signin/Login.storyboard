@@ -111,7 +111,6 @@
                         <segue destination="hed-vB-osh" kind="presentation" identifier="showLoginMethod" id="N3P-wt-Rn3"/>
                         <segue destination="anK-hg-K4j" kind="show" identifier="showSelfHostedLogin" id="Njv-lY-Lyi"/>
                         <segue destination="lmD-c6-SLs" kind="show" identifier="showWPComLogin" id="UV4-XI-c0q"/>
-                        <segue destination="bAd-Df-IzS" kind="show" identifier="show2FA" id="2Of-BA-xqb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ieq-Ar-5OF" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -350,7 +349,6 @@
                         <outlet property="submitButton" destination="OZC-xf-OAn" id="k1c-SJ-qiK"/>
                         <segue destination="Kvo-Y2-yhG" kind="show" identifier="startMagicLinkFlow" id="db9-5R-Qq7"/>
                         <segue destination="lmD-c6-SLs" kind="show" identifier="showWPComLogin" id="ySQ-EM-6JI"/>
-                        <segue destination="bAd-Df-IzS" kind="show" identifier="show2FA" id="kRR-qz-Hu2"/>
                         <segue destination="anK-hg-K4j" kind="show" identifier="showSelfHostedLogin" id="bK1-J1-hfT"/>
                         <segue destination="klu-4U-PyL" kind="show" identifier="showSignupEmail" id="dh4-9P-l8W"/>
                         <segue destination="SZS-o3-1P7" kind="show" identifier="showURLUsernamePassword" id="4SK-mG-U33"/>
@@ -561,7 +559,6 @@
                         <outlet property="siteHeaderView" destination="Wnq-Hk-jIw" id="x0l-lh-uuX"/>
                         <outlet property="submitButton" destination="SBB-7Z-qWs" id="jfi-ms-7V1"/>
                         <outlet property="usernameField" destination="ESh-DI-dtB" id="T1z-yJ-peq"/>
-                        <segue destination="bAd-Df-IzS" kind="show" identifier="show2FA" id="fWM-mD-lXg"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="X4T-gd-ISx" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -739,7 +736,6 @@
                         <outlet property="instructionLabel" destination="bBi-2N-RAh" id="NDi-pM-b0p"/>
                         <outlet property="passwordField" destination="BtS-3D-CIU" id="FjI-Ba-FDh"/>
                         <outlet property="submitButton" destination="E3x-LN-sUk" id="9eE-vi-xgc"/>
-                        <segue destination="bAd-Df-IzS" kind="show" identifier="show2FA" id="qLI-qX-rkG"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Z8b-3z-D46" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1375,7 +1371,6 @@
                         <outlet property="siteHeaderView" destination="vkO-HN-aFE" id="Eyg-MS-QDE"/>
                         <outlet property="submitButton" destination="YGE-OB-HmV" id="39T-xt-cuq"/>
                         <outlet property="usernameField" destination="ZUH-Y9-OaY" id="VLq-Va-EaD"/>
-                        <segue destination="bAd-Df-IzS" kind="show" identifier="show2FA" id="2Bq-Nv-ZkV"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mOF-Ry-81y" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1438,7 +1433,6 @@
     <inferredMetricsTieBreakers>
         <segue reference="N3P-wt-Rn3"/>
         <segue reference="Njv-lY-Lyi"/>
-        <segue reference="2Of-BA-xqb"/>
         <segue reference="UV4-XI-c0q"/>
         <segue reference="4SK-mG-U33"/>
         <segue reference="iD4-VS-n3M"/>

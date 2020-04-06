@@ -79,6 +79,7 @@ extension Product: ProductUpdater {
     public func briefDescriptionUpdated(briefDescription: String) -> Product {
         copy(briefDescription: briefDescription)
     }
+
     public func productSettingsUpdated(settings: ProductSettings) -> Product {
         copy(
             statusKey: settings.status.rawValue,

@@ -187,6 +187,9 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
         let button = WPStyleGuide.wpcomSignupButton()
         stackView.addArrangedSubview(button)
+
+        // Tapping the Sign up text link in "Don't have an account? _Sign up_"
+        // will present the 3 button view for signing up.
         button.on(.touchUpInside) { [weak self] (button) in
             guard let vc = LoginPrologueSignupMethodViewController.instantiate(from: .login) else {
                 DDLogError("Failed to navigate to LoginPrologueSignupMethodViewController")
@@ -199,6 +202,20 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
             vc.dismissBlock = self.dismissBlock
             vc.transitioningDelegate = self
             vc.modalPresentationStyle = .custom
+
+            // Don't forget to handle the button taps!
+            vc.emailTapped = { [weak self] in
+                self?.performSegue(withIdentifier: .showSigninV2, sender: self)
+            }
+            vc.googleTapped = { [weak self] in
+                guard let toVC = SignupGoogleViewController.instantiate(from: .signup) else {
+                    DDLogError("Failed to navigate to SignupGoogleViewController")
+                    return
+                }
+
+                self?.navigationController?.pushViewController(toVC, animated: true)
+            }
+
             self.navigationController?.present(vc, animated: true, completion: nil)
         }
 

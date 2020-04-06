@@ -59,6 +59,7 @@ private extension ProductSlugViewController {
 
     func configureTableView() {
         tableView.register(TextFieldTableViewCell.loadNib(), forCellReuseIdentifier: TextFieldTableViewCell.reuseIdentifier)
+        
         tableView.dataSource = self
         tableView.delegate = self
 
@@ -128,12 +129,13 @@ private extension ProductSlugViewController {
 
         let placeholder = NSLocalizedString("Slug", comment: "Placeholder in the Product Slug row on Edit Product Slug screen.")
 
-        let viewModel = TextFieldTableViewCell.ViewModel(text: productSettings.slug, placeholder: placeholder, onTextChange: { [weak self] newName in
-            //self?.onNameChange?(newName)
+        let viewModel = TextFieldTableViewCell.ViewModel(text: productSettings.slug, placeholder: placeholder, onTextChange: { [weak self] newSlug in
+            self?.productSettings.slug = newSlug
             }, onTextDidBeginEditing: {
                 //TODO: Add analytics track
         })
         cell.configure(viewModel: viewModel)
+        cell.textField.applyBodyStyle()
     }
 }
 

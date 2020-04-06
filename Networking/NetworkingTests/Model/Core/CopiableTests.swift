@@ -57,7 +57,7 @@ final class CopiableTests: XCTestCase {
         XCTAssertNil(copy.name)
     }
 
-    func testItCanSetNonNilPropertiesBackToNilUsingAnotherValueSource() {
+    func testItCanSetNonNilPropertiesBackToNilUsingAStructValueSource() {
         // Given
         struct ValueSource {
             let alt: String?
@@ -81,6 +81,28 @@ final class CopiableTests: XCTestCase {
 
         // Then
         XCTAssertNil(copy.alt)
+    }
+
+    func testItCanSetNonNilPropertiesBackToNilUsingAVariableValueSource() {
+        // Given
+        let original = ProductImage(
+            imageID: 1_000,
+            dateCreated: Date(timeIntervalSince1970: 900),
+            dateModified: Date(timeIntervalSince1970: 700),
+            src: "_src_original_",
+            name: "_name_original_",
+            alt: "_alt_original"
+        )
+
+        let valueSource: Date? = nil
+
+        XCTAssertNotNil(original.dateModified)
+
+        // When
+        let copy = original.copy(dateModified: valueSource)
+
+        // Then
+        XCTAssertNil(copy.dateModified)
     }
 
     func testItWillLeaveTheUnspecifiedPropertiesUnchanged() {

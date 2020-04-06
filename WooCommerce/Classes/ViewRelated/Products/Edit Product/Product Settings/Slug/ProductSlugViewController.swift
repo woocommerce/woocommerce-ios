@@ -58,6 +58,7 @@ private extension ProductSlugViewController {
     }
 
     func configureTableView() {
+        tableView.register(TextFieldTableViewCell.loadNib(), forCellReuseIdentifier: TextFieldTableViewCell.reuseIdentifier)
         tableView.dataSource = self
         tableView.delegate = self
 

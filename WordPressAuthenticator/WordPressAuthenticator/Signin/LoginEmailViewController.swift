@@ -519,7 +519,9 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
 // MARK: - Google Sign In
 
-// LoginFacadeDelegate methods for Google Google Sign In
+/// Make Google Sign In conform to the LoginFacade protocol.
+/// The delegate calls these methods from LoginFacade.m.
+///
 extension LoginEmailViewController {
     func finishedLogin(withGoogleIDToken googleIDToken: String, authToken: String) {
         googleFinishedLogin(withGoogleIDToken: googleIDToken, authToken: authToken)
@@ -530,6 +532,9 @@ extension LoginEmailViewController {
         googleExistingUserNeedsConnection(email)
     }
 
+    /// After a successful Google Sign In, this method gets called when the user
+    /// has enabled 2-factor authentication for their WordPress.com account.
+    ///
     func needsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
         configureViewLoading(false)
         socialNeedsMultifactorCode(forUserID: userID, andNonceInfo: nonceInfo)

@@ -1,5 +1,7 @@
 4.1
 -----
+- [internal] Updated the empty search result views for Products and Orders. https://git.io/Jvdap
+
  
 4.0
 -----

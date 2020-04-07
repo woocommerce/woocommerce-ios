@@ -12,7 +12,6 @@
             <connections>
                 <outlet property="bordersView" destination="Ncr-u2-zVd" id="S5W-h1-qR2"/>
                 <outlet property="cancelButton" destination="YBC-g3-0LP" id="rmu-WT-3G1"/>
-                <outlet property="emptyStateLabel" destination="aau-QM-41g" id="ii2-DV-AHM"/>
                 <outlet property="searchBar" destination="cOC-iR-MJr" id="usQ-SP-NSs"/>
                 <outlet property="tableView" destination="y9n-QI-xEB" id="WSo-bN-Vnv"/>
                 <outlet property="view" destination="chb-2b-70h" id="wNB-f6-JWl"/>
@@ -53,12 +52,6 @@
                         <outlet property="delegate" destination="-1" id="RjJ-a4-Y3Q"/>
                     </connections>
                 </tableView>
-                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="[Empty State Legend]" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aau-QM-41g" userLabel="EmptyState Label">
-                    <rect key="frame" x="10" y="156" width="355" height="20.5"/>
-                    <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
-                    <nil key="textColor"/>
-                    <nil key="highlightedColor"/>
-                </label>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
@@ -69,15 +62,12 @@
                 <constraint firstItem="YBC-g3-0LP" firstAttribute="centerY" secondItem="cOC-iR-MJr" secondAttribute="centerY" constant="-1" id="JLs-22-kWd"/>
                 <constraint firstItem="y9n-QI-xEB" firstAttribute="top" secondItem="cOC-iR-MJr" secondAttribute="bottom" id="QMH-4a-wFC"/>
                 <constraint firstItem="l4O-t2-oPf" firstAttribute="trailing" secondItem="y9n-QI-xEB" secondAttribute="trailing" id="VSS-q1-BvR"/>
-                <constraint firstItem="aau-QM-41g" firstAttribute="top" secondItem="Ncr-u2-zVd" secondAttribute="bottom" constant="100" id="a24-2X-4yZ"/>
                 <constraint firstItem="cOC-iR-MJr" firstAttribute="top" secondItem="l4O-t2-oPf" secondAttribute="top" id="c7h-ay-W2D"/>
                 <constraint firstItem="Ncr-u2-zVd" firstAttribute="leading" secondItem="l4O-t2-oPf" secondAttribute="leading" id="h0G-Xc-ogd"/>
-                <constraint firstItem="aau-QM-41g" firstAttribute="leading" secondItem="l4O-t2-oPf" secondAttribute="leading" constant="10" id="hun-tC-V1N"/>
                 <constraint firstItem="YBC-g3-0LP" firstAttribute="leading" secondItem="cOC-iR-MJr" secondAttribute="trailing" constant="3" id="nSK-Od-9bp"/>
                 <constraint firstItem="l4O-t2-oPf" firstAttribute="bottom" secondItem="y9n-QI-xEB" secondAttribute="bottom" id="rig-yz-o3K"/>
                 <constraint firstItem="cOC-iR-MJr" firstAttribute="leading" secondItem="l4O-t2-oPf" secondAttribute="leading" constant="8" id="uzQ-AI-YZl"/>
                 <constraint firstItem="Ncr-u2-zVd" firstAttribute="top" secondItem="chb-2b-70h" secondAttribute="top" id="vuY-pt-mhn"/>
-                <constraint firstItem="l4O-t2-oPf" firstAttribute="trailing" secondItem="aau-QM-41g" secondAttribute="trailing" constant="10" id="xCy-eO-dQM"/>
             </constraints>
             <nil key="simulatedTopBarMetrics"/>
             <viewLayoutGuide key="safeArea" id="l4O-t2-oPf"/>

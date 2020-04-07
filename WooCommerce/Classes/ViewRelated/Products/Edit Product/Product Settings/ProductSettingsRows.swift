@@ -103,21 +103,25 @@ enum ProductSettingsRows {
         }
 
         func configure(cell: UITableViewCell) {
-            guard let cell = cell as? BasicTableViewCell else {
+            guard let cell = cell as? SettingTitleAndValueTableViewCell else {
                 return
             }
 
-            cell.textLabel?.text = NSLocalizedString("Slug", comment: "Slug label in Product Settings")
-            cell.detailTextLabel?.text = "TO BE IMPLEMENTED"
+            let titleView = NSLocalizedString("Slug", comment: "Slug label in Product Settings")
+            cell.updateUI(title: titleView, value: settings.slug)
             cell.accessoryType = .disclosureIndicator
         }
 
         func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
-            // TODO: Show a VC
+            let viewController = ProductSlugViewController(settings: settings) { (productSettings) in
+                self.settings.slug = productSettings.slug
+                onCompletion(self.settings)
+            }
+            sourceViewController.navigationController?.pushViewController(viewController, animated: true)
         }
 
-        let reuseIdentifier: String = BasicTableViewCell.reuseIdentifier
+        let reuseIdentifier: String = SettingTitleAndValueTableViewCell.reuseIdentifier
 
-        let cellTypes: [UITableViewCell.Type] = [BasicTableViewCell.self]
+        let cellTypes: [UITableViewCell.Type] = [SettingTitleAndValueTableViewCell.self]
     }
 }

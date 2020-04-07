@@ -476,7 +476,7 @@ extension Product: ProductUpdater {
         return Product(siteID: siteID,
                        productID: productID,
                        name: name,
-                       slug: slug,
+                       slug: settings.slug,
                        permalink: permalink,
                        dateCreated: dateCreated,
                        dateModified: dateModified,

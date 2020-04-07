@@ -55,6 +55,17 @@ final class String_HTMLTests: XCTestCase {
 
         XCTAssertEqual(stripped, Fixtures.longHTML.expectedWhenStripped)
     }
+
+    /// Test that we did not lose performance when we changed from using NSAttributedString
+    /// to HTMLParser.
+    ///
+    func testStrippingHTMLHasReasonablePerformance() {
+        let source = Fixtures.longHTML.source
+
+        measure {
+            _ = source.strippedHTML
+        }
+    }
 }
 
 private extension String_HTMLTests {
@@ -99,6 +110,7 @@ private extension String_HTMLTests {
                 }
                 </code></pre>
                 """,
+
             expectedWhenStripped:
                 """
                 HTML Ipsum Presents

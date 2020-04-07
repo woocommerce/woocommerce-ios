@@ -16,12 +16,15 @@ final class EmptySearchResultsViewController: UIViewController, KeyboardFrameAdj
     @IBOutlet private var imageView: UIImageView!
     @IBOutlet private var scrollView: UIScrollView!
 
-    /// The height constraint for the content view.
+    /// The height adjustment constraint for the content view.
+    ///
+    /// The contentView's height = superview's height + offset/adjustment. Only the
+    /// offset/adjustment is changed. See `verticallyAlignStackViewUsing`.
     ///
     /// This constraint has low priority to allow the content view to increase the height if the
     /// text (message) is too big.
     ///
-    @IBOutlet private var contentViewHeightConstraint: NSLayoutConstraint!
+    @IBOutlet private var contentViewHeightAdjustmentFromSuperviewConstraint: NSLayoutConstraint!
 
     private lazy var keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: { [weak self] frame in
         self?.handleKeyboardFrameUpdate(keyboardFrame: frame)
@@ -102,7 +105,7 @@ final class EmptySearchResultsViewController: UIViewController, KeyboardFrameAdj
             return 0 - keyboardHeight
         }()
 
-        contentViewHeightConstraint.constant = constraintConstant
+        contentViewHeightAdjustmentFromSuperviewConstraint.constant = constraintConstant
     }
 }
 

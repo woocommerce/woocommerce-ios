@@ -48,6 +48,8 @@ final class EmptySearchResultsViewController: UIViewController, KeyboardFrameAdj
 
         view.backgroundColor = .basicBackground
 
+        imageView.image = .emptySearchResultsImage
+
         messageLabel.applyBodyStyle()
 
         keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)

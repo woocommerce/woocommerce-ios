@@ -1,5 +1,7 @@
-Om je een vollediger overzicht van je inkomsten te geven, bevatten dashboardstatistieken nu ook de negatieve omzet (bijvoorbeeld: restituties).
+Een korte lijst met wijzigingen deze keer:
 
-- We hebben de Bestellijst bijgewerkt om de weergaven Verwerking en Alle bestellingen duidelijker naar voren te laten komen. Wil je bestellingen filteren op een andere status? Dit is geen enkel probleem: de andere opties vind je in de weergave Zoeken.
-- Beoordelingen zijn zeer belangrijk voor webwinkels, maar soms werden ze niet geladen op bepaalde WooCommerce-configuraties. We hebben dit probleem nu verholpen.
-- Steek je hand op als je producten onderweg wilt bewerken! Probeer mogelijke bewerkingsopties eens uit op je eenvoudige producten (je moet dit eerst inschakelen: ga naar Instellingen > Experimentele functies > Producten).
+- Het bestelstatus-label in de Bestellijst wordt niet meer ingekort, zodat je alle informatie kunt zien.
+- Als je je ooit hebt afgevraagd waarom het Woo-logo op het startscherm er gestrekt uitzag, dan kwam dat door een wazige beeldverhouding. Dat probleem is nu opgelost.
+- Voor de duidelijkheid zie je nu 'Bezorgservice' in de app in plaats van 'Verzendprovider'.
+
+Blijf veilig en was je handen allemaal!

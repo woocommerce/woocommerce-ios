@@ -1,0 +1,12 @@
+VIEW AND MANAGE ORDERS
+Scroll through, filter, or look up specific orders. Tap to view order information – including product(s), value, customer data, shipping details, and notes.
+
+TRACK YOUR STORE
+See which products are performing best. Check your overall revenue and view order and visitor data by week, month, and year.
+
+REAL-TIME ORDER ALERTS
+Get notifications about store activity – including new orders and product reviews.
+
+WooCommerce is the most customizable eCommerce platform for building your online business. Built on WordPress, it is integrated with the world’s best content management tools. From coffee subscriptions to Spanish lessons to gym memberships to complex enterprise-level eCommerce – visit WooCommerce.com/start to launch a new store and ship your idea.
+
+Requirements: WooCommerce v3.5+, the Jetpack plugin.

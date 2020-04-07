@@ -11,10 +11,10 @@ app_identifier "com.automattic.woocommerce"
 
 
 # This folder has to include one folder for each language
-screenshots_path "./promo_screenshots/"
+screenshots_path "./fastlane/promo_screenshots/"
 
 # Make sure to update these keys for a new version
-app_version "3.8"
+app_version "3.9"
 
 privacy_url({
   'default' => 'https://automattic.com/privacy/',

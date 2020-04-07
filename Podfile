@@ -7,6 +7,13 @@ use_modular_headers!
 platform :ios, '12.0'
 workspace 'WooCommerce.xcworkspace'
 
+## Pods shared between all the targets
+## ===================================
+##
+def aztec 
+  pod 'WordPress-Editor-iOS', '~> 1.11.0'
+end
+
 # Main Target!
 # ============
 #
@@ -34,7 +41,7 @@ target 'WooCommerce' do
 
   pod 'WordPressUI', '~> 1.5.2'
 
-  pod 'WordPress-Editor-iOS', '~> 1.11.0'
+  aztec
 
   pod 'WPMediaPicker', '~> 1.6.0'
 
@@ -92,6 +99,9 @@ def networking_pods
   pod 'Alamofire', '~> 4.8'
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
+
+  # Used for HTML parsing
+  aztec
 end
 
 # Networking Target:

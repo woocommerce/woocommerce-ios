@@ -30,7 +30,9 @@ extension Date {
     /// Returns self's end of week in the given time zone.
     func endOfWeek(timezone: TimeZone) -> Date {
         let calendar = createCalendar(timezone: timezone)
-        return calendar.date(byAdding: .second, value: 604799, to: startOfWeek(timezone: timezone))!
+        let weekStartDate = startOfWeek(timezone: timezone)
+        let nextWeekStartDate = calendar.date(byAdding: .weekOfYear, value: 1, to: weekStartDate)!
+        return Date(timeIntervalSince1970: nextWeekStartDate.timeIntervalSince1970 - 1)
     }
 
     // MARK: Month

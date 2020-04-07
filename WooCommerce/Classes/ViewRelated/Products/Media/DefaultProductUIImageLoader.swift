@@ -38,13 +38,13 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
         activeImageTasks.removeAll()
     }
 
-    func requestImage(productImage: ProductImage, completion: @escaping (UIImage) -> Void) {
+    func requestImage(productImage: ProductImage, completion: @escaping (UIImage) -> Void) -> Cancellable? {
         if let image = imagesByProductImageID[productImage.imageID] {
             completion(image)
-            return
+            return nil
         }
         guard let url = URL(string: productImage.src) else {
-            return
+            return nil
         }
         let task = imageService.downloadImage(with: url, shouldCacheImage: true) { [weak self] (image, error) in
             guard let image = image else {
@@ -56,6 +56,7 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
         if let task = task {
             activeImageTasks.append(task)
         }
+        return task
     }
 
     func requestImage(asset: PHAsset, targetSize: CGSize, completion: @escaping (UIImage) -> Void) {

@@ -1,9 +1,12 @@
-/* Translation-Revision-Date: 2020-03-18 00:54:58+0000 */
+/* Translation-Revision-Date: 2020-04-02 00:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
 
 /* No comment provided by engineer. */
+" Continue with Google" = "להמשיך עם Google";
+
+/* Format for each Product attribute */
 "%1$@ (%2$ld options)" = "%1$@ (%2$l אפשרויות)";
 
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
@@ -104,6 +107,9 @@
 
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "כלי מתקדם לבדיקת מצב האפליקציה";
+
+/* Option to select the Airmail app when logging in with magic links */
+"Airmail" = "Airmail";
 
 /* Title for the second page in the Orders tab. */
 "All Orders" = "כל ההזמנות";
@@ -227,15 +233,18 @@
 "Can Not Request Link" = "לא ניתן לבקש קישור";
 
 /* Button title Cancel in Discard Changes Action Sheet
-   Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image */
+   Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links */
 "Cancel" = "ביטול";
 
 /* The title of the alert when there is an error updating the product */
-"Cannot update Product" = "אין אפשרות לעדכן את המוצר";
+"Cannot update product" = "אין אפשרות לעדכן את המוצר";
 
 /* The title of the alert when there is an error uploading an image
    Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "לא ניתן להעלות את התמונה";
+
+/* Add Custom shipping carrier. Title of cell presenting the carrier name */
+"Carrier name" = "שם הספק";
 
 /* Catalog Visibility label in Product Settings */
 "Catalog Visibility" = "נראות הקטלוג";
@@ -245,6 +254,12 @@
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "שגיאה בתעודה";
+
+/* Instructional text on how to open the email containing a magic link. */
+"Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder." = "Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder.";
+
+/* Alert title for check your email during logIn/signUp. */
+"Check your email!" = "יש לבדוק את תיבת האימייל!";
 
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "לבחור מהמכשיר";
@@ -285,9 +300,6 @@
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "המשך קריאה";
 
-/* Button title. Tapping begins log in using Google. */
-"Continue with Google" = "להמשיך עם Google";
-
 /* Button title. Tapping begins our normal log in process. */
 "Continue with WordPress.com" = "להמשיך עם WordPress.com";
 
@@ -327,12 +339,12 @@
 /* Cell title: the current date. */
 "Current" = "נוכחי";
 
-/* Name of the section for custom shipment tracking providers */
+/* Name of the section for custom shipment tracking carriers */
 "Custom" = "התאמה אישית";
 
-/* Add custom shipping provider. Content of cell titled Shipping Provider
-   Placeholder name of a custom shipment tracking provider - Title of button to add a custom tracking provider if filtering the list yields no results. */
-"Custom Provider" = "ספק מותאם";
+/* Add custom shipping carrier. Content of cell titled Shipping Carrier
+   Placeholder name of a custom shipment tracking carrier - Title of button to add a custom tracking carrier if filtering the list yields no results. */
+"Custom Carrier" = "ספק מותאם";
 
 /* Customer info section title */
 "Customer" = "לקוח";
@@ -344,7 +356,7 @@
    Section title for a note from the customer */
 "Customer Provided Note" = "הערה שסופקה על-ידי הלקוח";
 
-/* Add / Edit shipping provider. Title of cell date shipped */
+/* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "תאריך משלוח";
 
 /* Statistical unit - a single day */
@@ -461,8 +473,8 @@
 /* The text placeholder for the Text Editor screen */
 "Enter a title..." = "יש להזין כותרת...";
 
-/* Add custom shipping provider. Placeholder of cell presenting provider name */
-"Enter provider name" = "יש להזין שם ספק";
+/* Add custom shipping carrier. Placeholder of cell presenting carrier name */
+"Enter carrier name" = "יש להזין את שם הספק";
 
 /* Instruction text on the login's site addresss screen.
    Label for button to log in using your site address. */
@@ -474,10 +486,10 @@
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "יש להזין את הסיסמה לחשבון WordPress.com שלך.";
 
-/* Add custom shipping provider. Placeholder of cell presenting tracking link */
+/* Add custom shipping carrier. Placeholder of cell presenting carrier link */
 "Enter tracking link" = "יש להזין קישור מעקב";
 
-/* Add custom shipping provider. Placeholder of cell presenting tracking number */
+/* Add custom shipping carrier. Placeholder of cell presenting tracking number */
 "Enter tracking number" = "יש להזין מספר מעקב";
 
 /* Title of a button on the magic link screen.
@@ -496,6 +508,9 @@
 
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "לא הצלחנו לערוך בסדרה בקשה אל REST API.";
+
+/* Option to select the Fastmail app when logging in with magic links */
+"Fastmail" = "Fastmail";
 
 /* Navigates to the feature request screen */
 "Feature Request" = "בקשת תכונה";
@@ -520,6 +535,9 @@
 
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "טוען פרטי חשבון";
+
+/* Option to select the Gmail app when logging in with magic links */
+"Gmail" = "Gmail";
 
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "ההרשמה ל-Google נכשלה.";
@@ -737,6 +755,9 @@
 /* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
 "Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "נוצר באהבה על ידי Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">אנחנו מחפשים עובדים!<\/a>";
 
+/* Option to select the Apple Mail app when logging in with magic links */
+"Mail (Default)" = "אימייל (ברירת מחדל)";
+
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "ניהול הזמנות, מעקב אחר מכירות ואחר פעילות החנות באמצעות התראות בזמן אמת.";
 
@@ -744,7 +765,7 @@
 "Manage stock" = "ניהול מלאי";
 
 /* shown in promotional screens during first launch */
-"Manage your Jetpack-powered site on the go — you‘ve got WordPress in your pocket." = "ניהול אתרים שמופעלים על ידי Jetpack מכל מקום - השירות של וורדפרס תמיד בהישג יד.";
+"Manage your Jetpack-powered site on the go — you've got WordPress in your pocket." = "לנהל אתרים שמופעלים על ידי Jetpack מכל מקום – השירות של WordPress תמיד בהישג יד.";
 
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "התאמות ידניות";
@@ -766,6 +787,9 @@
 
 /* Message phone number button title */
 "Message" = "הודעה";
+
+/* Option to select the Microsft Outlook app when logging in with magic links */
+"Microsoft Outlook" = "Microsoft Outlook";
 
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
 "Minimum value %1$@, maximum value %2$@" = "ערך מינימלי: %1$@, ערך מקסימלי: %2$@";
@@ -849,8 +873,8 @@
 /* Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "לא נמצאו תוצאות לקריטריונים שנבחרו";
 
-/* Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider' */
-"No results found for (term)\nAdd a custom provider" = "לא נמצאו תוצאות עבור (מונח)\nלהוסיף ספק מותאם";
+/* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier' */
+"No results found for (term)\nAdd a custom carrier" = "No results found for (term)\nAdd a custom carrier";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "אין רווחים בתקופה זאת";
@@ -991,12 +1015,6 @@
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "בחירה בחנות לחיבור";
 
-/* Product title error notice message, when the title is empty */
-"Please add a title" = "יש להוסיף כותרת";
-
-/* Alert title for check your email during logIn/signUp. */
-"Please check your email" = "יש לבדוק את תיבת האימייל";
-
 /* Placeholder for editing the URL of a text link */
 "Please enter a URL" = "יש להזין כתובת URL";
 
@@ -1035,9 +1053,6 @@
 
 /* Error message when an image captured by camera cannot be saved to the device Photos library */
 "Please make sure the app can access Photos in device settings" = "עליך לוודא שלאפליקציה יש הרשאה לגשת לתמונות בהגדרות המכשיר שלך";
-
-/* Message to ask the user to check their email and look for a WordPress.com email. */
-"Please open your email app and look for an email from WordPress.com." = "יש לפתוח את אפליקציית האימייל שלך ולחפש את ההודעה שנשלחה מ-WordPress.com.";
 
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "יש לנסות שוב.";
@@ -1097,9 +1112,6 @@
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "הצגת האפשרות להתקשרות או לשליחת הודעה אל הלקוח המשלם.";
-
-/* Add Custom shipping provider. Title of cell presenting the provider name */
-"Provider name" = "שם הספק";
 
 /* Display label for the product's published status */
 "Publish" = "לפרסם";
@@ -1268,6 +1280,9 @@
 /* Page title for the select a different store screen */
 "Select Store" = "בחירת חנות";
 
+/* Add the shipping carrier. Placeholder of cell presenting carrier name */
+"Select carrier" = "יש לבחור ספק";
+
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "בחירת סגנון פסקה";
 
@@ -1305,11 +1320,14 @@
    Product Shipping Settings navigation title - Shipping label for payment view - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "משלוח";
 
+/* Title of view displaying all available Shipment Tracking Carriers */
+"Shipping Carriers" = "ספק משלוח";
+
 /* Shipping method title for customer info cell */
 "Shipping Method" = "שיטת משלוח";
 
-/* Title of view displaying all available Shipment Tracking Providers */
-"Shipping Providers" = "ספקי משלוח";
+/* Add / Edit shipping carrier. Title of cell presenting name */
+"Shipping carrier" = "ספק משלוח";
 
 /* Title of the cell in Product Shipping Settings > Shipping class */
 "Shipping class" = "סיווג משלוח";
@@ -1328,9 +1346,6 @@
 
 /* Display label for the product's tax status setting option */
 "Shipping only" = "משלוח בלבד";
-
-/* Add / Edit shipping provider. Title of cell presenting name */
-"Shipping provider" = "ספק משלוח";
 
 /* The navigation bar title of the edit short description screen.
    Title of the Short Description row on Product main screen */
@@ -1362,9 +1377,6 @@
 
 /* Button title. Tapping begins our normal sign up process. */
 "Sign up with Email" = "הרשמה באמצעות אימייל";
-
-/* Button title. Tapping begins sign up using Google. */
-"Sign up with Google" = "הרשמה באמצעות Google";
 
 /* Describes a site redirect domain */
 "Site Redirect" = "Site Redirect";
@@ -1433,6 +1445,9 @@
 /* Display label for the review's spam status
    Verb, spam a comment */
 "Spam" = "תגובת זבל";
+
+/* Option to select the Spark email app when logging in with magic links */
+"Spark" = "Spark";
 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "תעריף סטנדרטי";
@@ -1691,12 +1706,9 @@
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "לא ניתן לטעון את המוצר";
 
-/* Product details screen — product title descriptive label
-   The navigation bar title of the Text editor screen. - Title in the Product Title row on Product form screen when the description is non-empty. */
+/* Placeholder in the Product Title row on Product form screen.
+   Product details screen — product title descriptive label - The navigation bar title of the Text editor screen. - Title in the Product Title row on Product form screen when the description is non-empty. */
 "Title" = "כותרת";
-
-/* Placeholder in the Product Title row on Product form screen. */
-"Title (required)" = "כותרת (נדרש)";
 
 /* Title of the cell in Product Price Settings > Schedule sale To a certain date */
 "To" = "עד";
@@ -1741,10 +1753,10 @@
 /* Order tracking section title */
 "Tracking" = "מבצע מעקב";
 
-/* Add custom shipping provider. Title of cell presenting tracking link */
+/* Add custom shipping carrier. Title of cell presenting carrier link */
 "Tracking link (optional)" = "קישור מעקב (אופציונלי)";
 
-/* Add / Edit shipping provider. Title of cell presenting tracking number */
+/* Add / Edit shipping carrier. Title of cell presenting tracking number */
 "Tracking number" = "מספר מעקב";
 
 /* A unit test string. Reads as: 'Trackin number XXX_YYY_ZZZ'
@@ -1804,8 +1816,8 @@
 /* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number} */
 "Unable to fulfill order #(orderID)" = "אין אפשרות להשלים את ההזמנה #(orderID)";
 
-/* Content of error presented when loading the list of shipment providers failed. It reads: Unable to load Shipment Providers */
-"Unable to load Shipment Providers" = "אין אפשרות לטעון את ספקי המשלוח";
+/* Content of error presented when loading the list of shipment carriers failed. It reads: Unable to load Shipment Carriers */
+"Unable to load Shipment Carriers" = "אין אפשרות לטעון את ספקי המשלוח";
 
 /* Load Action Failed */
 "Unable to load content" = "אין אפשרות להעלות את התוכן";
@@ -1958,8 +1970,8 @@
 /* The info of the top banner on Dashboard that indicates new stats is unavailable */
 "We have reverted to the old stats. To use the beta stats, please activate the WooCommerce Admin plugin with version 0.23 or higher" = "שינינו את הנתונים הסטטיסטיים הישנים. כדי להשתמש בנתונים הסטטיסטיים בגרסת ביתא, עליך להפעיל את התוסף של מנהל המערכת של WooCommerce עם גרסה 0.23 ומעלה";
 
-/* Instructional text on how to open the email containing a magic link. */
-"We sent you a magic signup link! Check your email on this device, and tap the link in the email to finish signing up." = "שלחנו אליך קישור ישיר להרשמה! עליך לבדוק את האימייל ממכשיר זה ולהקיש על הקישור בהודעה שקיבלת כדי להשלים את ההרשמה.";
+/* message to ask a user to check their email for a WordPress.com email */
+"We just emailed a link to %@. Please check your mail app and tap the link to log in." = "שלחנו לך כעת הודעת אימייל עם קישור אל %@. יש לבדוק את האפליקציה של האימייל שלך ולהקיש על הקישור כדי להתחבר.";
 
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "אנחנו משתמשים בכלים למעקב, כולל כלים של צד שלישי. אפשר לקרוא פרטים על אלו על אלו ועל אופן השליטה בהם.";
@@ -2024,6 +2036,9 @@
 /* The title of the Work In Progress top banner on the Products tab */
 "Work in progress!" = "העמוד בתהליך בנייה!";
 
+/* Option to select the Yahoo Mail app when logging in with magic links */
+"Yahoo Mail" = "Yahoo Mail";
+
 /* Statistical unit - a single year */
 "Year" = "שנה";
 
@@ -2038,9 +2053,6 @@
 
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "נראה שהתקנת תוסף למכשירים ניידים מ-DudaMobile שמונע מהאפליקציה להתחבר לבלוג שלך";
-
-/* Instructional text on how to open the email containing a magic link. */
-"Your magic link is on its way! Check your email on this device, and tap the link in the email you receive from WordPress.com" = "הקישור המיוחד שלך בדרך! עליך לבדוק את האימייל ממכשיר זה ולהקיש על הקישור בהודעה שקיבלת מ-WordPress.com";
 
 /* shown in promotional screens during first launch */
 "Your notifications travel with you — see comments and likes as they happen." = "ההודעות שלך אתך בכל מקום - אפשר לראות תגובות ולייקים בזמן אמת.";

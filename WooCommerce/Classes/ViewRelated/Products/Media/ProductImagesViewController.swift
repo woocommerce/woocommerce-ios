@@ -42,10 +42,13 @@ final class ProductImagesViewController: UIViewController {
     }()
 
     private lazy var mediaPickingCoordinator: MediaPickingCoordinator = {
-        return MediaPickingCoordinator(onCameraCaptureCompletion: { [weak self] asset, error in
-            self?.onCameraCaptureCompletion(asset: asset, error: error)
+        return MediaPickingCoordinator(siteID: siteID,
+                                       onCameraCaptureCompletion: { [weak self] asset, error in
+                                        self?.onCameraCaptureCompletion(asset: asset, error: error)
             }, onDeviceMediaLibraryPickerCompletion: { [weak self] assets in
                 self?.onDeviceMediaLibraryPickerCompletion(assets: assets)
+            }, onWPMediaPickerCompletion: { [weak self] mediaItems in
+                self?.onWPMediaPickerCompletion(mediaItems: mediaItems)
         })
     }()
 
@@ -215,6 +218,15 @@ private extension ProductImagesViewController {
         assets.forEach { asset in
             uploadMediaAssetToSiteMediaLibrary(asset: asset)
         }
+    }
+}
+
+// MARK: - Action handling for WordPress Media Library
+//
+private extension ProductImagesViewController {
+    func onWPMediaPickerCompletion(mediaItems: [Media]) {
+        dismiss(animated: true, completion: nil)
+        productImageActionHandler.addSiteMediaLibraryImagesToProduct(mediaItems: mediaItems)
     }
 }
 

@@ -1,5 +1,7 @@
-Pour offrir une image plus complète de vos revenus, les statistiques du tableau de bord incluent désormais également les revenus négatifs (par exemple : remboursements).
+Petite liste des changements qui se produisent pour l'instant :
 
-- Nous avons remanié la liste des commandes afin de mettre en évidence les vues Traitement et Toutes les commandes. Vous souhaitez filtrer les commandes par un statut différent ? Pas de soucis : vous trouverez d’autres options dans la vue Recherche.
-- Les analyses sont très importantes pour les boutiques en ligne, mais il arrive qu’elles ne se chargent pas sur certaines configurations de WooCommerce. Nous avons réglé ce problème.
-Levez la main si vous souhaitez éditer des produits en nomade ! Essayez les options d’édition disponibles sur vos produits simples (mais vous devez les activer au préalable : allez dans Paramètres > Fonctions expérimentales > Produits)
+- L'étiquette d'état de la commande dans la liste des commandes n'est plus tronquée. Vous pouvez à présent voir toutes les informations.
+- Si vous vous êtes un jour demandé pourquoi le logo Woo sur l'écran de lancement semblait légèrement étiré, c'est parce que ses proportions étaient incorrectes. Le problème a été résolu.
+- Pour plus de clarté, l'ancienne dénomination « Shipping Provider » dans l'interface de l'application en anglais a été remplacée par « Shipping Carrier ».
+
+Prenez soin de vous et lavez-vous les mains !

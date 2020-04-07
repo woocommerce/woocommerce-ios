@@ -74,6 +74,8 @@ def yosemite_pods
   pod 'Alamofire', '~> 4.8'
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
+
+  aztec
 end
 
 # Yosemite Target:

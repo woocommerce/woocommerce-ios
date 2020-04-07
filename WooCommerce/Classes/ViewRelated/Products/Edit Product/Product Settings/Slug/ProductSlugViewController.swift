@@ -169,9 +169,5 @@ private extension ProductSlugViewController {
             self.footer = footer
             self.rows = rows
         }
-
-        init(footer: String? = nil, row: Row) {
-            self.init(footer: footer, rows: [row])
-        }
     }
 }

@@ -596,7 +596,7 @@ private extension ProductFormViewController {
     }
 
     enum ActionSheetStrings {
-        static let viewProduct = NSLocalizedString("View product in store",
+        static let viewProduct = NSLocalizedString("View Product in Store",
                                                    comment: "Button title View product in store in Edit Product More Options Action Sheet")
         static let share = NSLocalizedString("Share", comment: "Button title Share in Edit Product More Options Action Sheet")
         static let productSettings = NSLocalizedString("Product Settings", comment: "Button title Product Settings in Edit Product More Options Action Sheet")

@@ -6,6 +6,7 @@ This file documents changes in the WCiOS Storage data model. Please explain any 
 - @ecarrion 2020-03-30
 - Update `ProductCategory`'s `product` relationship to `products`
 - Add `siteID` and `parentID` to  `ProductCategory` entity 
+- Used mapping model: `WooCommerceModelV26toV27.xcmappingmodel` to remove product categories without `siteID`
 
 ## Model 26 (Release 3.5.0.0)
 - @jaclync 2019-01-14

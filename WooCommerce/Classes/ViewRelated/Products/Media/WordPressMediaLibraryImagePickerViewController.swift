@@ -73,7 +73,9 @@ private extension WordPressMediaLibraryImagePickerViewController {
 
 extension WordPressMediaLibraryImagePickerViewController: WPMediaPickerViewControllerDelegate {
     func mediaPickerController(_ picker: WPMediaPickerViewController, didFinishPicking assets: [WPMediaAsset]) {
-        onCompletion(assets as? [Media] ?? [])
+        let cancellableMediaItems = assets as? [CancellableMedia] ?? []
+        let mediaItems = cancellableMediaItems.map { $0.media }
+        onCompletion(mediaItems)
     }
 
     func mediaPickerControllerDidCancel(_ picker: WPMediaPickerViewController) {

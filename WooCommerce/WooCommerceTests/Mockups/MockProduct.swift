@@ -25,12 +25,13 @@ final class MockProduct {
                  status: ProductStatus = .publish,
                  featured: Bool = false,
                  catalogVisibility: ProductCatalogVisibility = .visible,
+                 slug: String = "book-the-green-room",
                  images: [ProductImage] = []) -> Product {
 
     return Product(siteID: testSiteID,
                    productID: testProductID,
                    name: name,
-                   slug: "book-the-green-room",
+                   slug: slug,
                    permalink: "https://example.com/product/book-the-green-room/",
                    dateCreated: Date(),
                    dateModified: Date(),

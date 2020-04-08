@@ -138,6 +138,12 @@ extension UIImage {
         return UIImage(named: "woo-empty-reviews")!
     }
 
+    /// An image showing a hand holding a magnifying glass over a page.
+    ///
+    static var emptySearchResultsImage: UIImage {
+        UIImage(named: "woo-empty-search-results")!
+    }
+
     /// Error State Image
     ///
     static var errorStateImage: UIImage {

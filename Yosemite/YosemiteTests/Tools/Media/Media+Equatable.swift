@@ -2,7 +2,7 @@
 
 // MARK: - Equatable Conformance
 //
-extension Media {
+extension Media: Equatable {
     public static func == (lhs: Media, rhs: Media) -> Bool {
         return lhs.mediaID == rhs.mediaID &&
             lhs.date == rhs.date &&

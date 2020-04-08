@@ -206,14 +206,14 @@ private extension ProductFormViewController {
         present(alert, animated: true, completion: nil)
     }
 
-    func viewProductInStore() {
+    func displayWebViewForProductInStore() {
         guard let url = URL(string: product.permalink) else {
             return
         }
         WebviewHelper.launch(url, with: self)
     }
 
-    func shareProduct() {
+    func displayShareProduct() {
         guard let url = URL(string: product.permalink) else {
             return
         }
@@ -574,11 +574,11 @@ private extension ProductFormViewController {
         actionSheet.view.tintColor = .text
 
         actionSheet.addDefaultActionWithTitle(ActionSheetStrings.viewProduct) { [weak self] _ in
-            self?.viewProductInStore()
+            self?.displayWebViewForProductInStore()
         }
 
         actionSheet.addDefaultActionWithTitle(ActionSheetStrings.share) { [weak self] _ in
-            self?.shareProduct()
+            self?.displayShareProduct()
         }
 
         actionSheet.addDefaultActionWithTitle(ActionSheetStrings.productSettings) { [weak self] _ in

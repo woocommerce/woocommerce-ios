@@ -14,6 +14,7 @@ final class ProductCategoryListViewModel {
 
     init(product: Product) {
         self.product = product
+        performInitialFetch()
     }
 
     /// Returns the number sections.
@@ -38,13 +39,17 @@ final class ProductCategoryListViewModel {
     ///
     func observeCategoryListChanges(onReload: @escaping () -> (Void)) {
         observeResultControllerChanges(onReload: onReload)
-        syncronizeCategories()
-        try? categoriesResultController.performFetch()
     }
 
     /// Returns `true` if the receiver's product contains the given category. Otherwise returns `false`
     func isCategorySelected(_ category: ProductCategory) -> Bool {
         return product.categories.contains(category)
+    }
+
+    /// Load existing categories from storage and fire the synchronize product categories action
+    private func performInitialFetch() {
+        syncronizeCategories()
+        try? categoriesResultController.performFetch()
     }
 }
 
@@ -52,7 +57,7 @@ final class ProductCategoryListViewModel {
 //
 private extension ProductCategoryListViewModel {
     private func syncronizeCategories() {
-        /// TODO-2020: Page Number and PageSized to be updated when `SyncingCoordinator` is supported.
+        /// TODO-2020: Page Number and PageSized to be updated when `SyncingCoordinator` is implemented.
         let action = ProductCategoryAction.synchronizeProductCategories(siteID: product.siteID, pageNumber: 1, pageSize: 30) { error in
             if let error = error {
                 DDLogError("⛔️ Error fetching product categories: \(error.localizedDescription)")

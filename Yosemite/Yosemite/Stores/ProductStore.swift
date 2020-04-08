@@ -379,26 +379,21 @@ private extension ProductStore {
     ///
     func handleProductCategories(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
         let siteID = readOnlyProduct.siteID
-        let productID = readOnlyProduct.productID
+
+        // Remove previous linked categories
+        storageProduct.categories?.removeAll()
 
         // Upsert the categories from the read-only product
         for readOnlyCategory in readOnlyProduct.categories {
-            if let existingStorageCategory = storage.loadProductCategory(siteID: siteID,
-                                                                         productID: productID,
-                                                                         categoryID: readOnlyCategory.categoryID) {
-                existingStorageCategory.update(with: readOnlyCategory)
+            if let existingStorageCategory = storage.loadProductCategory(siteID: siteID, categoryID: readOnlyCategory.categoryID) {
+                // ProductCategory response comes without a `parentID` so we update it with the `existingStorageCategory` one
+                let completeReadOnlyCategory = readOnlyCategory.parentIDUpdated(parentID: existingStorageCategory.parentID)
+                existingStorageCategory.update(with: completeReadOnlyCategory)
+                storageProduct.addToCategories(existingStorageCategory)
             } else {
                 let newStorageCategory = storage.insertNewObject(ofType: Storage.ProductCategory.self)
                 newStorageCategory.update(with: readOnlyCategory)
                 storageProduct.addToCategories(newStorageCategory)
-            }
-        }
-
-        // Now, remove any objects that exist in storageProduct.categories but not in readOnlyProduct.categories
-        storageProduct.categories?.forEach { storageCategory in
-            if readOnlyProduct.categories.first(where: { $0.categoryID == storageCategory.categoryID } ) == nil {
-                storageProduct.removeFromCategories(storageCategory)
-                storage.deleteObject(storageCategory)
             }
         }
     }

@@ -3,11 +3,20 @@ import Foundation
 /// Mapper: ProductCategory List
 ///
 struct ProductCategoryListMapper: Mapper {
+    /// Site Identifier associated to the `ProductCategories`s that will be parsed.
+    ///
+    /// We're injecting this field via `JSONDecoder.userInfo` because SiteID is not returned in any of the ProductCategory Endpoints.
+    ///
+    let siteID: Int64
 
     /// (Attempts) to convert a dictionary into [ProductCategory].
     ///
     func map(response: Data) throws -> [ProductCategory] {
         let decoder = JSONDecoder()
+        decoder.userInfo = [
+            .siteID: siteID
+        ]
+
         return try decoder.decode(ProductCategoryListEnvelope.self, from: response).productCategories
     }
 }

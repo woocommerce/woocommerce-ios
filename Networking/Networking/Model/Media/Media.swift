@@ -1,6 +1,4 @@
 /// WordPress Site Media
-/// Note: this is an `NSObject` class instead of a struct because it has to conform to `WPMediaAsset` protocol defined in
-/// Objective-C.
 ///
 public struct Media {
     public let mediaID: Int64

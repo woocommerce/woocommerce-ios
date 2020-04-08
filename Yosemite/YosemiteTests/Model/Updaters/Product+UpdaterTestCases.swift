@@ -118,8 +118,18 @@ final class Product_UpdaterTestCases: XCTestCase {
     func testUpdatingProductSettings() {
         let product = sampleProduct()
         let newStatus = "pending"
-        let updatedProduct = product.productSettingsUpdated(status: .pending)
+        let featured = true
+        let catalogVisibility = "search"
+        let slug = "this-is-a-test"
+        let productSettings = ProductSettings(status: .pending,
+                                                                featured: featured,
+                                                                catalogVisibility: .search,
+                                                                slug: slug)
+        let updatedProduct = product.productSettingsUpdated(settings: productSettings)
         XCTAssertEqual(updatedProduct.statusKey, newStatus)
+        XCTAssertEqual(updatedProduct.featured, featured)
+        XCTAssertEqual(updatedProduct.catalogVisibilityKey, catalogVisibility)
+        XCTAssertEqual(updatedProduct.slug, slug)
     }
 }
 

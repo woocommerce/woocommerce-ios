@@ -1,5 +1,7 @@
-Untuk menawarkan gambaran penghasilan yang lebih lengkap, statistik dasbor kini juga menyertakan pendapatan negatif (misalnya: pengembalian dana.)
+Daftar singkat perubahan kali ini:
 
-- Kami telah merancang ulang Daftar Pesanan untuk membuat tampilan Pemrosesan dan Semua Pesanan lebih menonjol. Ingin menyaring pesanan menurut status yang berbeda? Jangan khawatir: Anda akan menemukan opsi lainnya di tampilan Pencarian.
-- Ulasan sangatlah penting bagi toko online, tetapi terkadang mereka tidak bisa memuat di beberapa konfigurasi WooCommerce. Kami telah memperbaikinya.
-- Angkat tangan bila Anda ingin menyunting produk di mana saja! Coba opsi penyuntingan yang tersedia pada produk sederhana Anda (tetapi Anda perlu mengaktifkannya terlebih dahulu: buka Pengaturan > Fitur Eksperimental > Produk).
+- Label status pesanan di Daftar Pesanan kini tak lagi terpotong, sehingga Anda dapat melihat semua informasi.
+- Jika Anda bertanya-tanya mengapa logo Woo di layar peluncuran terlihat sedikit lebih memanjang, itu karena rasio aspeknya tidak stabil — kini telah diperbaiki.
+- Agar lebih jelas, kini Anda akan melihat “Operator Pengiriman” melalui aplikasi, dan bukan “Penyedia Pengiriman.”
+
+Selalu jaga kesehatan dan cuci tangan semuanya!

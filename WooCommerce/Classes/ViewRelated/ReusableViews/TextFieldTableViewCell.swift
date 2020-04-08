@@ -10,7 +10,7 @@ final class TextFieldTableViewCell: UITableViewCell {
         let onTextDidBeginEditing: (() -> Void)?
     }
 
-    @IBOutlet private weak var textField: UITextField!
+    @IBOutlet weak var textField: UITextField!
 
     private var onTextChange: ((_ text: String?) -> Void)?
     private var onTextDidBeginEditing: (() -> Void)?

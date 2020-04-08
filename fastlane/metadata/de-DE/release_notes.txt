@@ -1,5 +1,7 @@
-Um dir ein umfassenderes Bild von deinen Einkünften zu geben, enthalten Statistiken im Dashboard nun auch negative Einnahmen (z. B. Rückerstattungen).
+Eine kurze Liste der aktuellen Änderungen:
 
-- Wir haben die Bestellliste überarbeitet: Die Ansichten für in Bearbeitung befindliche und alle Bestellungen sind besser hervorgehoben. Du möchtest Bestellungen nach einem anderen Status filtern? Kein Problem. In der Suchansicht findest du weitere Optionen.
-- Bewertungen sind für Onlineshops so wichtig, aber manchmal wurden sie bei einigen WooCommerce-Konfigurationen nicht geladen. Dieses Problem haben wir behoben.
-- Wer würde Produkte nicht gerne unterwegs bearbeiten können? Probiere verfügbare Bearbeitungsoptionen an deinen einfachen Produkten aus (zuerst musst du die Funktion aber aktivieren: Wechsle zu „Einstellungen“ > „Experimentelle Funktionen“ > „Produkte“).
+- Die Bestellstatusbezeichnung wird in der Bestellliste nicht mehr abgeschnitten, sodass jetzt alle Informationen angezeigt werden.
+- Wenn du dich schon einmal gefragt hast, warum das Woo-Logo auf dem Startbildschirm ein wenig gestreckt aussieht, dann liegt das daran, dass das Seitenverhältnis nicht gestimmt hat – das ist jetzt behoben.
+- Für mehr Klarheit wird in der gesamten App statt „Versanddienstleister“ jetzt „Lieferanbieter“ verwendet.
+
+Bleibt alle gesund und wascht eure Hände!

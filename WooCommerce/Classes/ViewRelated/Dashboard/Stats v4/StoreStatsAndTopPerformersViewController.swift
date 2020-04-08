@@ -117,20 +117,22 @@ private extension StoreStatsAndTopPerformersViewController {
             }
         }
 
-        // When the site time zone can be correctly fetched, and also supports the Stats v4 API, consider using the site time zone
-        // for stats UI (#1375).
-        let timezoneForStatsDates = TimeZone.current
+        // Since the stats charts are based on site time zone, we set the time zone for the stats UI to be the site time zone.
+        // On the other hand, when syncing the stats data with the API, we want to use the device time zone to find the time range since the API date parameters
+        // have no time zone information and are relative to the site time zone (e.g. 12:00am-11:59pm for "Today" tab).
+        let timezoneForStatsDates = TimeZone.siteTimezone
+        let timezoneForSync = TimeZone.current
 
         periodVCs.forEach { (vc) in
             vc.siteTimezone = timezoneForStatsDates
 
             let currentDate = Date()
             vc.currentDate = currentDate
-            let latestDateToInclude = vc.timeRange.latestDate(currentDate: currentDate, siteTimezone: timezoneForStatsDates)
+            let latestDateToInclude = vc.timeRange.latestDate(currentDate: currentDate, siteTimezone: timezoneForSync)
 
             group.enter()
             self.syncStats(for: siteID,
-                           siteTimezone: timezoneForStatsDates,
+                           siteTimezone: timezoneForSync,
                            timeRange: vc.timeRange,
                            latestDateToInclude: latestDateToInclude) { [weak self] error in
                 if let error = error {
@@ -144,7 +146,7 @@ private extension StoreStatsAndTopPerformersViewController {
 
             group.enter()
             self.syncSiteVisitStats(for: siteID,
-                                    siteTimezone: timezoneForStatsDates,
+                                    siteTimezone: timezoneForSync,
                                     timeRange: vc.timeRange,
                                     latestDateToInclude: latestDateToInclude) { error in
                 if let error = error {

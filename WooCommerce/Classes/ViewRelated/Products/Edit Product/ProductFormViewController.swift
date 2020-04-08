@@ -206,7 +206,14 @@ private extension ProductFormViewController {
         present(alert, animated: true, completion: nil)
     }
 
-    func shareProduct() {
+    func displayWebViewForProductInStore() {
+        guard let url = URL(string: product.permalink) else {
+            return
+        }
+        WebviewHelper.launch(url, with: self)
+    }
+
+    func displayShareProduct() {
         guard let url = URL(string: product.permalink) else {
             return
         }
@@ -566,8 +573,12 @@ private extension ProductFormViewController {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
 
+        actionSheet.addDefaultActionWithTitle(ActionSheetStrings.viewProduct) { [weak self] _ in
+            self?.displayWebViewForProductInStore()
+        }
+
         actionSheet.addDefaultActionWithTitle(ActionSheetStrings.share) { [weak self] _ in
-            self?.shareProduct()
+            self?.displayShareProduct()
         }
 
         actionSheet.addDefaultActionWithTitle(ActionSheetStrings.productSettings) { [weak self] _ in
@@ -585,6 +596,8 @@ private extension ProductFormViewController {
     }
 
     enum ActionSheetStrings {
+        static let viewProduct = NSLocalizedString("View Product in Store",
+                                                   comment: "Button title View product in store in Edit Product More Options Action Sheet")
         static let share = NSLocalizedString("Share", comment: "Button title Share in Edit Product More Options Action Sheet")
         static let productSettings = NSLocalizedString("Product Settings", comment: "Button title Product Settings in Edit Product More Options Action Sheet")
         static let cancel = NSLocalizedString("Cancel", comment: "Button title Cancel in Edit Product More Options Action Sheet")

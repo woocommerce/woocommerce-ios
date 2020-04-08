@@ -4,7 +4,7 @@ extension Kingfisher.DownloadTask: ImageDownloadTask {}
 
 extension Kingfisher.ImageDownloader: ImageDownloader {
     func downloadImage(with url: URL, onCompletion: ((Result<UIImage, Error>) -> Void)?) -> ImageDownloadTask? {
-        downloadImage(with: url, options: nil) { result in
+        return downloadImage(with: url, options: nil) { result in
             switch result {
             case .success(let imageResult):
                 onCompletion?(.success(imageResult.image))

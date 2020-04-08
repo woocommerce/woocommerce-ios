@@ -36,7 +36,7 @@ final class ProductUIImageLoaderTests: XCTestCase {
                                         alt: nil)
 
         let expectation = self.expectation(description: "Wait for image request")
-        imageLoader.requestImage(productImage: productImage) { image in
+        _ = imageLoader.requestImage(productImage: productImage) { image in
             XCTAssertEqual(image, self.testImage)
             expectation.fulfill()
         }

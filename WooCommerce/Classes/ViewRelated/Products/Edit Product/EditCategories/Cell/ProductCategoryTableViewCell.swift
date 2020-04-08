@@ -10,6 +10,7 @@ final class ProductCategoryTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        applyDefaultBackgroundStyle()
         styleLabels()
         styleCheckmark()
     }

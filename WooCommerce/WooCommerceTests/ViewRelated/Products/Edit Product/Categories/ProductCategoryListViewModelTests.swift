@@ -38,6 +38,6 @@ final class ProductCategoryListViewModelTests: XCTestCase {
 
 private extension ProductCategoryListViewModelTests {
     func sampleCategory(categoryID: Int64, name: String) -> ProductCategory {
-        return ProductCategory(categoryID: categoryID, siteID: 123, parentID:0, name: name, slug: "")
+        return ProductCategory(categoryID: categoryID, siteID: 123, parentID: 0, name: name, slug: "")
     }
 }

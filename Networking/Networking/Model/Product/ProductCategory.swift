@@ -74,18 +74,6 @@ extension ProductCategory: Comparable {
     }
 }
 
-// MARK: - Update functions
-//
-extension ProductCategory {
-    public func updateWith(parentID: Int64) -> ProductCategory {
-        return ProductCategory(categoryID: self.categoryID,
-                               siteID: self.siteID,
-                               parentID: parentID,
-                               name: self.name,
-                               slug: self.slug)
-    }
-}
-
 // MARK: - Decoding Errors
 //
 enum ProductCategoryDecodingError: Error {

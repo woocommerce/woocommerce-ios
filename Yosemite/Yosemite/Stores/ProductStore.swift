@@ -387,7 +387,7 @@ private extension ProductStore {
         for readOnlyCategory in readOnlyProduct.categories {
             if let existingStorageCategory = storage.loadProductCategory(siteID: siteID, categoryID: readOnlyCategory.categoryID) {
                 // ProductCategory response comes without a `parentID` so we update it with the `existingStorageCategory` one
-                let completeReadOnlyCategory = readOnlyCategory.updateWith(parentID: existingStorageCategory.parentID)
+                let completeReadOnlyCategory = readOnlyCategory.parentIDUpdated(parentID: existingStorageCategory.parentID)
                 existingStorageCategory.update(with: completeReadOnlyCategory)
                 storageProduct.addToCategories(existingStorageCategory)
             } else {

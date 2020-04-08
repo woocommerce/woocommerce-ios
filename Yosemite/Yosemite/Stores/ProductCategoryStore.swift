@@ -47,10 +47,22 @@ private extension ProductCategoryStore {
                 return
             }
 
+            if pageNumber == Default.firstPageNumber {
+                self?.deleteUnusedStoredProductCategories(siteID: siteID)
+            }
+
             self?.upsertStoredProductCategoriesInBackground(productCategories, siteID: siteID) {
                 onCompletion(nil)
             }
         }
+    }
+
+    /// Deletes any Storage.ProductCategory  that is not associated to a product on the specified `siteID`
+    ///
+    func deleteUnusedStoredProductCategories(siteID: Int64) {
+        let storage = storageManager.viewStorage
+        storage.deleteUnusedProductCategories(siteID: siteID)
+        storage.saveIfNeeded()
     }
 }
 

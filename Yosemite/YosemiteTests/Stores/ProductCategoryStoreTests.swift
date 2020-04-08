@@ -62,7 +62,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         super.tearDown()
     }
 
-    func testRetrieveProductCategoriesReturnsCategoriesUponSuccessfulResponse() throws {
+    func testSynchronizeProductCategoriesReturnsCategoriesUponSuccessfulResponse() throws {
         // Given a stubed product-categories network response
         let expectation = self.expectation(description: #function)
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "categories-all")
@@ -84,7 +84,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertNil(errorResponse)
     }
 
-    func testSyncrhonizeProductCategoriesUpdatesStoredCategoriesSuccessfulResponse() {
+    func testSynchronizeProductCategoriesUpdatesStoredCategoriesSuccessfulResponse() {
         // Given an initial stored category and a stubed product-categories network response
         let expectation = self.expectation(description: #function)
         let initialCategory = sampleCategory(categoryID: 20)
@@ -110,7 +110,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertNil(errorResponse)
     }
 
-    func testRetrieveProductCategoriesReturnsErrorUponReponseError() {
+    func testSynchronizeProductCategoriesReturnsErrorUponReponseError() {
         // Given a stubed generic-error network response
         let expectation = self.expectation(description: #function)
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "generic_error")
@@ -132,7 +132,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertNotNil(errorResponse)
     }
 
-    func testRetrieveProductCategoriesReturnsErrorUponEmptyResponse() {
+    func testSynchronizeProductCategoriesReturnsErrorUponEmptyResponse() {
         // Given a an empty network response
         let expectation = self.expectation(description: #function)
         XCTAssertEqual(storedProductCategoriesCount, 0)
@@ -151,6 +151,31 @@ final class ProductCategoryStoreTests: XCTestCase {
         // Then no categories should be stored
         XCTAssertEqual(storedProductCategoriesCount, 0)
         XCTAssertNotNil(errorResponse)
+    }
+
+    func testSynchronizeProductCategoriesDeletesUnusedCategories() {
+        // Given some stored product categories without product relationships
+        let expectation = self.expectation(description: #function)
+        let sampleCategories = (1...5).map { id in
+            return sampleCategory(categoryID: id)
+        }
+        sampleCategories.forEach { category in
+            storageManager.insertSampleProductCategory(readOnlyProductCategory: category)
+        }
+        XCTAssertEqual(storedProductCategoriesCount, sampleCategories.count)
+
+        // When dispatching a `synchronizeProductCategories` action
+        network.simulateResponse(requestUrlSuffix: "products/categories", filename: "categories-all")
+        let action = ProductCategoryAction.synchronizeProductCategories(siteID: sampleSiteID,
+                                                                     pageNumber: defaultPageNumber,
+                                                                     pageSize: defaultPageSize) { error in
+            expectation.fulfill()
+        }
+        store.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        // Then new categories should be stored and old categories should be deleted
+        XCTAssertEqual(storedProductCategoriesCount, 2)
     }
 }
 

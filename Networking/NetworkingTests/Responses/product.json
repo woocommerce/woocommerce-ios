@@ -51,7 +51,7 @@
             "shipping_required": false,
             "shipping_taxable": false,
             "shipping_class": "",
-            "shipping_class_id": 0,
+            "shipping_class_id": 134,
             "reviews_allowed": true,
             "average_rating": "4.30",
             "rating_count": 23,

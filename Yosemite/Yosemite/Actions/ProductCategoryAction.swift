@@ -5,7 +5,7 @@ import Networking
 ///
 public enum ProductCategoryAction: Action {
 
-    /// Retrieve ProductCategories matching the specified criteria.
+    /// Synchronizes ProductCategories matching the specified criteria.
     ///
-    case synchronizeProductCategories(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: ([ProductCategory]?, Error?) -> Void)
+    case synchronizeProductCategories(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)
 }

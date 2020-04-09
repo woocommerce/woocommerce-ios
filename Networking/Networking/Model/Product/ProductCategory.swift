@@ -5,15 +5,21 @@ import Foundation
 ///
 public struct ProductCategory: Decodable {
     public let categoryID: Int64
+    public let siteID: Int64
+    public let parentID: Int64
     public let name: String
     public let slug: String
 
     /// ProductCategory initializer.
     ///
     public init(categoryID: Int64,
+                siteID: Int64,
+                parentID: Int64,
                 name: String,
                 slug: String) {
         self.categoryID = categoryID
+        self.siteID = siteID
+        self.parentID = parentID
         self.name = name
         self.slug = slug
     }
@@ -21,13 +27,19 @@ public struct ProductCategory: Decodable {
     /// Public initializer for ProductCategory.
     ///
     public init(from decoder: Decoder) throws {
+        guard let siteID = decoder.userInfo[.siteID] as? Int64 else {
+            throw ProductCategoryDecodingError.missingSiteID
+        }
+
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let categoryID = try container.decode(Int64.self, forKey: .categoryID)
+        // Some product endpoints don't include the parent category ID
+        let parentID = container.failsafeDecodeIfPresent(Int64.self, forKey: .parentID) ?? 0
         let name = try container.decode(String.self, forKey: .name)
         let slug = try container.decode(String.self, forKey: .slug)
 
-        self.init(categoryID: categoryID, name: name, slug: slug)
+        self.init(categoryID: categoryID, siteID: siteID, parentID: parentID, name: name, slug: slug)
     }
 }
 
@@ -39,6 +51,7 @@ private extension ProductCategory {
         case categoryID = "id"
         case name       = "name"
         case slug       = "slug"
+        case parentID   = "parent"
     }
 }
 
@@ -48,6 +61,8 @@ private extension ProductCategory {
 extension ProductCategory: Comparable {
     public static func == (lhs: ProductCategory, rhs: ProductCategory) -> Bool {
         return lhs.categoryID == rhs.categoryID &&
+        lhs.siteID == rhs.siteID &&
+        lhs.parentID == rhs.parentID &&
         lhs.name == rhs.name &&
         lhs.slug == rhs.slug
     }
@@ -57,4 +72,10 @@ extension ProductCategory: Comparable {
             (lhs.categoryID == rhs.categoryID && lhs.name < rhs.name) ||
             (lhs.categoryID == rhs.categoryID && lhs.name == rhs.name && lhs.slug < rhs.slug)
     }
+}
+
+// MARK: - Decoding Errors
+//
+enum ProductCategoryDecodingError: Error {
+    case missingSiteID
 }

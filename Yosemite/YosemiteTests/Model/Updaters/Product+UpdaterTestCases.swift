@@ -210,7 +210,7 @@ private extension Product_UpdaterTestCases {
     }
 
     func sampleCategories() -> [Networking.ProductCategory] {
-        let category1 = ProductCategory(categoryID: 36, name: "Events", slug: "events")
+        let category1 = ProductCategory(categoryID: 36, siteID: 123, parentID: 0, name: "Events", slug: "events")
         return [category1]
     }
 

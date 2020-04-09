@@ -12,7 +12,8 @@ final class MockProduct {
                  stockStatus: ProductStockStatus = .inStock,
                  variations: [Int64] = [],
                  images: [ProductImage] = [],
-                 shippingClassID: Int64 = 0) -> Product {
+                 shippingClassID: Int64 = 0,
+                 categories: [ProductCategory] = []) -> Product {
 
         return Product(siteID: siteID,
                        productID: productID,
@@ -73,7 +74,7 @@ final class MockProduct {
                        crossSellIDs: [1234, 234234, 3],
                        parentID: 0,
                        purchaseNote: "Thank you!",
-                       categories: [],
+                       categories: categories,
                        tags: [],
                        images: images,
                        attributes: [],

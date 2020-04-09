@@ -116,6 +116,30 @@ class ProductStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    func testsRetrieveProductsDontNilStoredProductCategoryParentId() {
+        // Given an initial store category and simulated product response
+        let expectation = self.expectation(description: #function)
+        let initialCategory = sampleCategories(parentID: 17)[0]
+        storageManager.insertSampleProductCategory(readOnlyProductCategory: initialCategory)
+
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
+
+        // When a `synchronizeProducts` action is dispatched
+        let action = ProductAction.synchronizeProducts(siteID: sampleSiteID,
+                                                       pageNumber: defaultPageNumber,
+                                                       pageSize: defaultPageSize,
+                                                       sortOrder: .nameAscending) { error in
+            expectation.fulfill()
+        }
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        // Then the initially stored category should preserve it's `parentID`
+        let storedCategory = viewStorage.loadProductCategory(siteID: sampleSiteID, categoryID: initialCategory.categoryID)
+        XCTAssertEqual(storedCategory?.parentID, initialCategory.parentID)
+    }
+
     /// Verifies that ProductAction.synchronizeProducts for the first page deletes stored Products for the given site ID.
     ///
     func testSyncingProductsOnTheFirstPageResetsStoredProducts() {
@@ -994,8 +1018,8 @@ private extension ProductStoreTests {
         return ProductDimensions(length: "12", width: "33", height: "54")
     }
 
-    func sampleCategories() -> [Networking.ProductCategory] {
-        let category1 = ProductCategory(categoryID: 36, name: "Events", slug: "events")
+    func sampleCategories(parentID: Int64 = 0) -> [Networking.ProductCategory] {
+        let category1 = ProductCategory(categoryID: 36, siteID: sampleSiteID, parentID: parentID, name: "Events", slug: "events")
         return [category1]
     }
 
@@ -1136,8 +1160,8 @@ private extension ProductStoreTests {
     }
 
     func sampleCategoriesMutated() -> [Networking.ProductCategory] {
-        let category1 = ProductCategory(categoryID: 36, name: "Events", slug: "events")
-        let category2 = ProductCategory(categoryID: 362, name: "Other Stuff", slug: "other")
+        let category1 = ProductCategory(categoryID: 36, siteID: sampleSiteID, parentID: 0, name: "Events", slug: "events")
+        let category2 = ProductCategory(categoryID: 362, siteID: sampleSiteID, parentID: 0, name: "Other Stuff", slug: "other")
         return [category1, category2]
     }
 

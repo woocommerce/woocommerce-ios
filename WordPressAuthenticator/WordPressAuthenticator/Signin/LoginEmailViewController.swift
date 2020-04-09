@@ -45,7 +45,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
         localizeControls()
         setupOnePasswordButtonIfNeeded()
-        
+
         alternativeLoginLabel?.isHidden = showLoginOptions
         if !showLoginOptions {
             addGoogleButton()
@@ -187,6 +187,9 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
         let button = WPStyleGuide.wpcomSignupButton()
         stackView.addArrangedSubview(button)
+
+        // Tapping the Sign up text link in "Don't have an account? _Sign up_"
+        // will present the 3 button view for signing up.
         button.on(.touchUpInside) { [weak self] (button) in
             guard let vc = LoginPrologueSignupMethodViewController.instantiate(from: .login) else {
                 DDLogError("Failed to navigate to LoginPrologueSignupMethodViewController")
@@ -199,7 +202,24 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
             vc.dismissBlock = self.dismissBlock
             vc.transitioningDelegate = self
             vc.modalPresentationStyle = .custom
-            self.navigationController?.pushViewController(vc, animated: true)
+
+            // Don't forget to handle the button taps!
+            vc.emailTapped = { [weak self] in
+                self?.performSegue(withIdentifier: .showSigninV2, sender: self)
+            }
+            vc.googleTapped = { [weak self] in
+                guard let toVC = SignupGoogleViewController.instantiate(from: .signup) else {
+                    DDLogError("Failed to navigate to SignupGoogleViewController")
+                    return
+                }
+
+                self?.navigationController?.pushViewController(toVC, animated: true)
+            }
+            vc.appleTapped = { [weak self] in
+                self?.appleTapped()
+            }
+
+            self.navigationController?.present(vc, animated: true, completion: nil)
         }
 
         stackView.addConstraints([
@@ -374,7 +394,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
         loginWithUsernamePassword(immediately: true)
     }
-    
+
     /// Configures loginFields to log into wordpress.com and
     /// navigates to the selfhosted username/password form. Displays the specified
     /// error message when the new view controller appears.
@@ -427,6 +447,11 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
     @IBAction func handleSelfHostedButtonTapped(_ sender: UIButton) {
         loginToSelfHostedSite()
+    }
+
+    private func appleTapped() {
+        AppleAuthenticator.sharedInstance.delegate = self
+        AppleAuthenticator.sharedInstance.showFrom(viewController: self)
     }
 
 
@@ -513,5 +538,24 @@ extension LoginEmailViewController {
 extension LoginEmailViewController: GIDSignInDelegate {
     open func sign(_ signIn: GIDSignIn?, didSignInFor user: GIDGoogleUser?, withError error: Error?) {
         signInGoogleAccount(signIn, didSignInFor: user, withError: error)
+    }
+}
+
+// MARK: - AppleAuthenticatorDelegate
+
+extension LoginEmailViewController: AppleAuthenticatorDelegate {
+
+    func showWPComLogin(loginFields: LoginFields) {
+        self.loginFields = loginFields
+         performSegue(withIdentifier: .showWPComLogin, sender: self)
+    }
+
+    func showApple2FA(loginFields: LoginFields) {
+        self.loginFields = loginFields
+        signInAppleAccount()
+    }
+
+    func authFailedWithError(message: String) {
+        displayErrorAlert(message, sourceTag: .loginApple)
     }
 }

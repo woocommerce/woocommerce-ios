@@ -205,8 +205,14 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
             // Don't forget to handle the button taps!
             vc.emailTapped = { [weak self] in
-                self?.performSegue(withIdentifier: .showSigninV2, sender: self)
+                guard let toVC = SignupEmailViewController.instantiate(from: .signup) else {
+                    DDLogError("Failed to navigate from LoginEmailViewController to SignupEmailViewController")
+                    return
+                }
+
+                self?.navigationController?.pushViewController(toVC, animated: true)
             }
+
             vc.googleTapped = { [weak self] in
                 guard let toVC = SignupGoogleViewController.instantiate(from: .signup) else {
                     DDLogError("Failed to navigate to SignupGoogleViewController")
@@ -215,6 +221,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
                 self?.navigationController?.pushViewController(toVC, animated: true)
             }
+
             vc.appleTapped = { [weak self] in
                 self?.appleTapped()
             }
@@ -417,29 +424,6 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         return EmailFormatValidator.validate(string: loginFields.username)
     }
 
-
-    // MARK: - Segue
-
-    override open func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        super.prepare(for: segue, sender: sender)
-
-        if let vc = segue.destination as? LoginPrologueSignupMethodViewController {
-            vc.transitioningDelegate = self
-            vc.emailTapped = { [weak self] in
-                self?.performSegue(withIdentifier: .showSigninV2, sender: self)
-            }
-            vc.googleTapped = { [weak self] in
-                guard let toVC = SignupGoogleViewController.instantiate(from: .signup) else {
-                    DDLogError("Failed to navigate to SignupGoogleViewController")
-                    return
-                }
-
-                self?.navigationController?.pushViewController(toVC, animated: true)
-            }
-            vc.modalPresentationStyle = .custom
-        }
-    }
-
     // MARK: - Actions
 
 
@@ -536,7 +520,9 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
 // MARK: - Google Sign In
 
-// LoginFacadeDelegate methods for Google Google Sign In
+/// Make Google Sign In conform to the LoginFacade protocol.
+/// The delegate calls these methods from LoginFacade.m.
+///
 extension LoginEmailViewController {
     func finishedLogin(withGoogleIDToken googleIDToken: String, authToken: String) {
         googleFinishedLogin(withGoogleIDToken: googleIDToken, authToken: authToken)
@@ -547,6 +533,9 @@ extension LoginEmailViewController {
         googleExistingUserNeedsConnection(email)
     }
 
+    /// After a successful Google Sign In, this method gets called when the user
+    /// has enabled 2-factor authentication for their WordPress.com account.
+    ///
     func needsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
         configureViewLoading(false)
         socialNeedsMultifactorCode(forUserID: userID, andNonceInfo: nonceInfo)

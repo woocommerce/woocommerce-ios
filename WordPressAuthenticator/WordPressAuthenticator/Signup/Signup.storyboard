@@ -27,7 +27,7 @@
         <!--Signup Email View Controller-->
         <scene sceneID="b2m-u4-I3H">
             <objects>
-                <viewController storyboardIdentifier="SignupEmailViewController" id="Opx-rl-H3d" customClass="SignupEmailViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SignupEmailViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Opx-rl-H3d" customClass="SignupEmailViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="F3A-pe-bcZ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

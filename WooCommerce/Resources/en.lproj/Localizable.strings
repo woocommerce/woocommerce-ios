@@ -1,10 +1,4 @@
-﻿/* Button title. Tapping begins log in using Google. There are leading spaces to separate it from the Google logo. */
-"  Continue with Google" = "  Continue with Google";
-
-/* Button title. Tapping begins log in using Apple. There is a leading space to separate it from the Apple logo. */
-" Continue with Apple" = " Continue with Apple";
-
-/* Format for each Product attribute */
+﻿/* Format for each Product attribute */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld options)";
 
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
@@ -310,6 +304,12 @@
 
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "Continue reading";
+
+/* Button title. Tapping begins log in using Apple. */
+"Continue with Apple" = "Continue with Apple";
+
+/* Button title. Tapping begins log in using Google. */
+"Continue with Google" = "Continue with Google";
 
 /* Button title. Tapping begins our normal log in process. */
 "Continue with WordPress.com" = "Continue with WordPress.com";

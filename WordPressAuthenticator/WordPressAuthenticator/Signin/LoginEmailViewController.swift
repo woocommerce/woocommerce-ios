@@ -205,8 +205,14 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
             // Don't forget to handle the button taps!
             vc.emailTapped = { [weak self] in
-                self?.performSegue(withIdentifier: .showSigninV2, sender: self)
+                guard let toVC = SignupEmailViewController.instantiate(from: .signup) else {
+                    DDLogError("Failed to navigate from LoginEmailViewController to SignupEmailViewController")
+                    return
+                }
+
+                self?.navigationController?.pushViewController(toVC, animated: true)
             }
+
             vc.googleTapped = { [weak self] in
                 guard let toVC = SignupGoogleViewController.instantiate(from: .signup) else {
                     DDLogError("Failed to navigate to SignupGoogleViewController")
@@ -215,6 +221,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
                 self?.navigationController?.pushViewController(toVC, animated: true)
             }
+
             vc.appleTapped = { [weak self] in
                 self?.appleTapped()
             }

@@ -13,6 +13,7 @@ final class ProductImagesViewController: UIViewController {
 
     private let siteID: Int64
     private let productID: Int64
+    private let product: Product
 
     private let productImageActionHandler: ProductImageActionHandler
     private let productUIImageLoader: ProductUIImageLoader
@@ -58,6 +59,7 @@ final class ProductImagesViewController: UIViewController {
          productImageActionHandler: ProductImageActionHandler,
          productUIImageLoader: ProductUIImageLoader,
          completion: @escaping Completion) {
+        self.product = product
         self.siteID = product.siteID
         self.productID = product.productID
         self.productImageActionHandler = productImageActionHandler
@@ -171,17 +173,24 @@ extension ProductImagesViewController {
             presentDiscardChangesActionSheet()
             return false
         }
+        resetProductImages()
         return true
     }
 
     private func presentDiscardChangesActionSheet() {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+            self?.resetProductImages()
             self?.navigationController?.popViewController(animated: true)
         })
     }
 
+    private func resetProductImages() {
+        productImageActionHandler.resetProductImages(to: product)
+    }
+
     private func hasOutstandingChanges() -> Bool {
         return originalProductImages != productImages
+            || productImageStatuses.count != productImageStatuses.images.count
     }
 }
 

@@ -20,7 +20,9 @@ final class ProductFormViewController: UIViewController {
     private var product: Product {
         didSet {
             defer {
-                updateNavigationBar(isUpdateEnabled: product != originalProduct)
+                let isUpdateEnabled = product != originalProduct ||
+                    productImageActionHandler.productImageStatuses.hasImagesPendingUpload
+                updateNavigationBar(isUpdateEnabled: isUpdateEnabled)
             }
 
             if isNameTheOnlyChange(oldProduct: oldValue, newProduct: product) {

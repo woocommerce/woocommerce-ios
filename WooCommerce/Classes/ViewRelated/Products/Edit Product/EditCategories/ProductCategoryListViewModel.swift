@@ -5,7 +5,7 @@ final class ProductCategoryListViewModel {
 
     private let product: Product
 
-    private lazy var categoriesResultController: ResultsController<StorageProductCategory> = {
+    private lazy var resultController: ResultsController<StorageProductCategory> = {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID = %ld", self.product.siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageProductCategory.name, ascending: true)
@@ -20,19 +20,19 @@ final class ProductCategoryListViewModel {
     /// Returns the number sections.
     ///
     func numberOfSections() -> Int {
-        return categoriesResultController.sections.count
+        return resultController.sections.count
     }
 
     /// Returns the number of items for a given `section` that should be displayed
     ///
     func numberOfRowsInSection(section: Int) -> Int {
-        return categoriesResultController.sections[section].numberOfObjects
+        return resultController.sections[section].numberOfObjects
     }
 
     /// Returns a product category for a given `indexPath`
     ///
     func item(at indexPath: IndexPath) -> ProductCategory {
-        return categoriesResultController.object(at: indexPath)
+        return resultController.object(at: indexPath)
     }
 
     /// Observes and notifies of changes made to product categories
@@ -49,7 +49,7 @@ final class ProductCategoryListViewModel {
     /// Load existing categories from storage and fire the synchronize product categories action
     private func performInitialFetch() {
         syncronizeCategories()
-        try? categoriesResultController.performFetch()
+        try? resultController.performFetch()
     }
 }
 
@@ -67,7 +67,7 @@ private extension ProductCategoryListViewModel {
     }
 
     private func observeResultControllerChanges(onReload: @escaping () -> (Void)) {
-        categoriesResultController.onDidChangeContent = {
+        resultController.onDidChangeContent = {
             onReload()
         }
     }

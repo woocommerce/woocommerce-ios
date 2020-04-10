@@ -1,6 +1,8 @@
 import UIKit
 import Yosemite
 
+/// ProductCategoryListViewController: Displays the list of ProductCategories associated to the active Account.
+///
 final class ProductCategoryListViewController: UIViewController {
 
     @IBOutlet private var tableView: UITableView!

@@ -25,7 +25,9 @@ final class TextViewViewController: UIViewController {
     @IBOutlet private weak var placeholderLabelBottomConstraint: NSLayoutConstraint!
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
-        let keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: handleKeyboardFrameUpdate(keyboardFrame:))
+        let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
+            self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
+        }
         return keyboardFrameObserver
     }()
 

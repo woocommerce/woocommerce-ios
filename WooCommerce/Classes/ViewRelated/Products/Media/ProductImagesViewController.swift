@@ -190,7 +190,7 @@ extension ProductImagesViewController {
 
     private func hasOutstandingChanges() -> Bool {
         return originalProductImages != productImages
-            || productImageStatuses.count != productImageStatuses.images.count
+            || productImageStatuses.hasImagesPendingUpload
     }
 }
 

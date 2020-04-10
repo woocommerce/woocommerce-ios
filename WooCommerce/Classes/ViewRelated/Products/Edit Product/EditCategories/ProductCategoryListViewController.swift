@@ -23,7 +23,7 @@ final class ProductCategoryListViewController: UIViewController {
         registerTableViewCells()
         configureTableView()
         configureNavigationBar()
-        observeCategories()
+        configureViewModel()
     }
 }
 
@@ -65,9 +65,8 @@ private extension ProductCategoryListViewController {
 // MARK: - Synchronize Categories
 //
 private extension ProductCategoryListViewController {
-    /// Listen to category list changes and reload the table view when needed.
-    ///
-    func observeCategories() {
+    func configureViewModel() {
+        viewModel.performInitialFetch()
         viewModel.observeCategoryListChanges { [weak self] in
             self?.tableView.reloadData()
         }

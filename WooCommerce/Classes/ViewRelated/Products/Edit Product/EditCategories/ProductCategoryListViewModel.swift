@@ -14,7 +14,6 @@ final class ProductCategoryListViewModel {
 
     init(product: Product) {
         self.product = product
-        performInitialFetch()
     }
 
     /// Returns the number sections.
@@ -35,6 +34,13 @@ final class ProductCategoryListViewModel {
         return resultController.object(at: indexPath)
     }
 
+    /// Load existing categories from storage and fire the synchronize product categories action
+    ///
+    func performInitialFetch() {
+        syncronizeCategories()
+        try? resultController.performFetch()
+    }
+
     /// Observes and notifies of changes made to product categories
     ///
     func observeCategoryListChanges(onReload: @escaping () -> (Void)) {
@@ -42,21 +48,16 @@ final class ProductCategoryListViewModel {
     }
 
     /// Returns `true` if the receiver's product contains the given category. Otherwise returns `false`
+    ///
     func isCategorySelected(_ category: ProductCategory) -> Bool {
         return product.categories.contains(category)
-    }
-
-    /// Load existing categories from storage and fire the synchronize product categories action
-    private func performInitialFetch() {
-        syncronizeCategories()
-        try? resultController.performFetch()
     }
 }
 
 // MARK: - Synchronize Categories
 //
 private extension ProductCategoryListViewModel {
-    private func syncronizeCategories() {
+    func syncronizeCategories() {
         /// TODO-2020: Page Number and PageSized to be updated when `SyncingCoordinator` is implemented.
         let action = ProductCategoryAction.synchronizeProductCategories(siteID: product.siteID, pageNumber: 1, pageSize: 30) { error in
             if let error = error {
@@ -66,7 +67,7 @@ private extension ProductCategoryListViewModel {
         ServiceLocator.stores.dispatch(action)
     }
 
-    private func observeResultControllerChanges(onReload: @escaping () -> (Void)) {
+    func observeResultControllerChanges(onReload: @escaping () -> (Void)) {
         resultController.onDidChangeContent = {
             onReload()
         }

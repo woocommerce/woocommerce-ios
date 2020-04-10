@@ -168,6 +168,30 @@ private extension ProductFormViewController {
 
         navigationController?.present(inProgressViewController, animated: true, completion: nil)
 
+        let group = DispatchGroup()
+
+        // Waits for all product images to be uploaded before updating the product remotely.
+        group.enter()
+        let observationToken = productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
+            guard productImageStatuses.hasImagesPendingUpload == false else {
+                return
+            }
+
+            guard let self = self else {
+                return
+            }
+
+            self.product = self.productUpdater.imagesUpdated(images: productImageStatuses.images)
+            group.leave()
+        }
+
+        group.notify(queue: .main) { [weak self] in
+            observationToken.cancel()
+            self?.updateProductRemotely()
+        }
+    }
+
+    func updateProductRemotely() {
         let action = ProductAction.updateProduct(product: product) { [weak self] (product, error) in
             guard let product = product, error == nil else {
                 let errorDescription = error?.localizedDescription ?? "No error specified"

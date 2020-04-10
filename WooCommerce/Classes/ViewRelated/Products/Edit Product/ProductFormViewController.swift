@@ -20,8 +20,7 @@ final class ProductFormViewController: UIViewController {
     private var product: Product {
         didSet {
             defer {
-                let isUpdateEnabled = product != originalProduct ||
-                    productImageActionHandler.productImageStatuses.hasImagesPendingUpload
+                let isUpdateEnabled = hasUnsavedChanges(product: product)
                 updateNavigationBar(isUpdateEnabled: isUpdateEnabled)
             }
 
@@ -409,7 +408,7 @@ private extension ProductFormViewController {
 //
 extension ProductFormViewController {
     override func shouldPopOnBackButton() -> Bool {
-        if product != originalProduct {
+        if hasUnsavedChanges(product: product) {
             presentBackNavigationActionSheet()
             return false
         }
@@ -420,6 +419,10 @@ extension ProductFormViewController {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
             self?.navigationController?.popViewController(animated: true)
         })
+    }
+
+    private func hasUnsavedChanges(product: Product) -> Bool {
+        return product != originalProduct || productImageActionHandler.productImageStatuses.hasImagesPendingUpload
     }
 }
 

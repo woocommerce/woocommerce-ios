@@ -1,6 +1,7 @@
 4.1
 -----
 - Fix an intermittent crash when downloading Orders
+- The Photo Library permission alert shouldn't be prompted except for when uploading images in debug builds with Products M2 enabled.
 - [internal] Updated the empty search result views for Products and Orders. https://git.io/Jvdap
 
  

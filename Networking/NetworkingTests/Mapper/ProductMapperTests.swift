@@ -82,7 +82,7 @@ class ProductMapperTests: XCTestCase {
         XCTAssertFalse(product.shippingRequired)
         XCTAssertFalse(product.shippingTaxable)
         XCTAssertEqual(product.shippingClass, "")
-        XCTAssertEqual(product.shippingClassID, 0)
+        XCTAssertEqual(product.shippingClassID, 134)
 
         XCTAssertTrue(product.reviewsAllowed)
         XCTAssertEqual(product.averageRating, "4.30")

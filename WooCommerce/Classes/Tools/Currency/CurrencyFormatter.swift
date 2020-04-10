@@ -75,24 +75,15 @@ public class CurrencyFormatter {
     ///     - amount: a formatted string, preferably converted using `localize(_:in:with:including:)`.
     ///     - position: the currency position enum, either right, left, right_space, or left_space.
     ///     - symbol: the currency symbol as a string, to be used with the amount.
+    ///     - languageDirection: the language direction used. By default, it will be used the current Locale language direction.
     ///
-    func formatCurrency(using stringValue: String, at position: CurrencySettings.CurrencyPosition, with symbol: String, isNegative: Bool) -> String {
+    func formatCurrency(using stringValue: String, at position: CurrencySettings.CurrencyPosition, with symbol: String, isNegative: Bool, languageDirection: Locale.LanguageDirection = getCurrentLanguageDirection()) -> String {
         let space = "\u{00a0}" // unicode equivalent of &nbsp;
         let negative = isNegative ? "-" : ""
-
-        // We're relying on the phone's Locale to assist with language direction
-        let current = Locale.current as NSLocale
-        let languageCode = current.object(forKey: NSLocale.Key.languageCode) as? String
 
         // Remove all occurences of the minus sign from the string amount.
         // We want to position the minus sign manually.
         let amount = stringValue.replacingOccurrences(of: "-", with: "")
-
-        // Detect the language direction
-        var languageDirection: Locale.LanguageDirection = .unknown
-        if let language = languageCode {
-            languageDirection = Locale.characterDirection(forLanguage: language)
-        }
 
         // For left-to-right languages, such as English
         guard languageDirection == .rightToLeft else {
@@ -126,13 +117,14 @@ public class CurrencyFormatter {
     /// - Parameters:
     ///     - amount: a raw string representation of the amount, from the API, with no formatting applied. e.g. "19.87"
     ///     - currency: a 3-letter country code for currencies that are supported in the API. e.g. "USD"
+    ///     - languageDirection: the language direction used. By default, it will be used the current Locale language direction.
     ///
-    func formatAmount(_ stringAmount: String, with currency: String = CurrencySettings.shared.currencyCode.rawValue) -> String? {
+    func formatAmount(_ stringAmount: String, with currency: String = CurrencySettings.shared.currencyCode.rawValue, languageDirection: Locale.LanguageDirection = getCurrentLanguageDirection()) -> String? {
         guard let decimalAmount = convertToDecimal(from: stringAmount) else {
             return nil
         }
 
-        return formatAmount(decimalAmount, with: currency)
+        return formatAmount(decimalAmount, with: currency, languageDirection: languageDirection)
     }
 
 
@@ -143,6 +135,7 @@ public class CurrencyFormatter {
     ///   - amount: a raw string representation of the amount, from the API, with no formatting applied. e.g. "19.87"
     ///   - currency: a 3-letter country code for currencies that are supported in the API. e.g. "USD"
     ///   - roundSmallNumbers: if `true`, small numbers are rounded, if `false`, no rounding occurs (defaults to true)
+    ///   - languageDirection: the language direction used. By default, it will be used the current Locale language direction.
     /// - Returns: a formatted amount string
     ///
     /// For our purposes here, a "small number" is anything in-between -1000 and 1000 (exclusive).
@@ -168,7 +161,8 @@ public class CurrencyFormatter {
     ///
     func formatHumanReadableAmount(_ stringAmount: String,
                                    with currency: String = CurrencySettings.shared.currencyCode.rawValue,
-                                   roundSmallNumbers: Bool = true) -> String? {
+                                   roundSmallNumbers: Bool = true,
+                                   languageDirection: Locale.LanguageDirection = getCurrentLanguageDirection()) -> String? {
         guard let amount = convertToDecimal(from: stringAmount) else {
             return nil
         }
@@ -177,7 +171,7 @@ public class CurrencyFormatter {
         if humanReadableAmount == amount.stringValue, roundSmallNumbers == false {
             // The human readable version of amount is the same as the converted param value which means this is a "small"
             // number — format it normally *without* rounding.
-            return formatAmount(amount, with: currency)
+            return formatAmount(amount, with: currency, languageDirection: languageDirection)
         }
 
         // If we are here, the human readable version of the amount param is a "large" number *OR* a small number but rounding has been requested,
@@ -190,15 +184,17 @@ public class CurrencyFormatter {
         return formatCurrency(using: humanReadableAmount,
                               at: position,
                               with: symbol,
-                              isNegative: isNegative)
+                              isNegative: isNegative,
+                              languageDirection: languageDirection)
     }
 
     /// Applies currency option settings to the amount for the given currency.
     /// - Parameters:
     ///     - amount: a NSDecimalNumber representation of the amount, from the API, with no formatting applied. e.g. "19.87"
     ///     - currency: a 3-letter country code for currencies that are supported in the API. e.g. "USD"
+    ///     - languageDirection: the language direction used. By default, it will be used the current Locale language direction.
     ///
-    func formatAmount(_ decimalAmount: NSDecimalNumber, with currency: String = CurrencySettings.shared.currencyCode.rawValue) -> String? {
+    func formatAmount(_ decimalAmount: NSDecimalNumber, with currency: String = CurrencySettings.shared.currencyCode.rawValue, languageDirection: Locale.LanguageDirection = getCurrentLanguageDirection()) -> String? {
         // Get the currency code
         let code = CurrencySettings.CurrencyCode(rawValue: currency) ?? currencySettings.currencyCode
         // Grab the read-only currency options. These are set by the user in Site > Settings.
@@ -224,8 +220,22 @@ public class CurrencyFormatter {
         let formattedAmount = formatCurrency(using: localizedAmount,
                                              at: position,
                                              with: symbol,
-                                             isNegative: decimalAmount.isNegative())
+                                             isNegative: decimalAmount.isNegative(),
+                                             languageDirection: languageDirection)
 
         return formattedAmount
+    }
+    
+    static private func getCurrentLanguageDirection() -> Locale.LanguageDirection {
+        // We're relying on the phone's Locale to assist with language direction
+        let current = Locale.current as NSLocale
+        let languageCode = current.object(forKey: NSLocale.Key.languageCode) as? String
+
+        // Detect the language direction
+        var languageDirection: Locale.LanguageDirection = .unknown
+        if let language = languageCode {
+            languageDirection = Locale.characterDirection(forLanguage: language)
+        }
+        return languageDirection
     }
 }

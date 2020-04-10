@@ -293,12 +293,11 @@ extension ProductFormViewController: UITableViewDelegate {
                 ServiceLocator.analytics.track(.productDetailViewInventorySettingsTapped)
                 editInventorySettings()
             case .categories:
-                // TODO-2000
-                break
+                // TODO-2000 Edit Product M3 analytics
+                editCategories()
             case .briefDescription:
                 // TODO-1879: Edit Products M2 analytics
                 editBriefDescription()
-                break
             }
         }
     }
@@ -550,6 +549,16 @@ private extension ProductFormViewController {
             return
         }
         self.product = productUpdater.briefDescriptionUpdated(briefDescription: newBriefDescription)
+    }
+}
+
+// MARK: Action - Edit Product Categories
+//
+
+private extension ProductFormViewController {
+    func editCategories() {
+        let categoryListViewController = ProductCategoryListViewController(product: product)
+        show(categoryListViewController, sender: self)
     }
 }
 

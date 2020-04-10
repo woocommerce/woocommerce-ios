@@ -16,6 +16,7 @@ final class ProductCategoryTableViewCell: UITableViewCell {
     }
 
     override func prepareForReuse() {
+        super.prepareForReuse()
         nameLabel.text = nil
         accessoryType = .none
     }

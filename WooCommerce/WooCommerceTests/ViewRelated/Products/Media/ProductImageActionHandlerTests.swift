@@ -182,6 +182,27 @@ final class ProductImageActionHandlerTests: XCTestCase {
         let expectedImageStatuses = expectedImageStatusesFromSiteMediaLibrary + mockRemoteProductImageStatuses
         XCTAssertEqual(productImageActionHandler.productImageStatuses, expectedImageStatuses)
     }
+
+    // MARK: - `resetProductImages(to:)`
+
+    func testResettingProductImagesToAProduct() {
+        // Arrange
+        let mockProduct = MockProduct().product(images: [])
+        let productImageActionHandler = ProductImageActionHandler(siteID: 123,
+                                                                  product: mockProduct)
+
+        // Action
+        let mockProductImages = [
+            ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: ""),
+            ProductImage(imageID: 2, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
+        ]
+        let anotherMockProduct = MockProduct().product(images: mockProductImages)
+        productImageActionHandler.resetProductImages(to: anotherMockProduct)
+
+        // Assert
+        let expectedProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
+        XCTAssertEqual(productImageActionHandler.productImageStatuses, expectedProductImageStatuses)
+    }
 }
 
 private extension ProductImageActionHandlerTests {

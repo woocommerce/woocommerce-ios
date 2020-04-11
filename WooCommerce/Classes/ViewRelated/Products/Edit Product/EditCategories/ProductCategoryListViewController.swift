@@ -67,8 +67,13 @@ private extension ProductCategoryListViewController {
 private extension ProductCategoryListViewController {
     func configureViewModel() {
         viewModel.performInitialFetch()
-        viewModel.observeCategoryListChanges { [weak self] in
-            self?.tableView.reloadData()
+        viewModel.observeCategoryListStateChanges { [weak self] syncState in
+            switch syncState {
+            case .synced:
+                self?.tableView.reloadData()
+            default:
+                break
+            }
         }
     }
 }

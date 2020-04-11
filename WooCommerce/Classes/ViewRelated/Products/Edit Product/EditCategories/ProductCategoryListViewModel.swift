@@ -11,6 +11,8 @@ final class ProductCategoryListViewModel {
         case synced
     }
 
+    /// Product the user is editiing
+    ///
     private let product: Product
 
     /// Closure to be invoked when `synchronizeCategories` state  changes
@@ -64,6 +66,15 @@ final class ProductCategoryListViewModel {
         try? resultController.performFetch()
     }
 
+    /// Retry product categories synchronization when `syncCategoriesState` is on a `.failed` state.
+    ///
+    func retryCategorySynchronization(pageNumber: Int) {
+        guard syncCategoriesState == .failed(pageNumber: pageNumber) else {
+            return
+        }
+        synchronizeAllCategories(fromPageNumber: pageNumber)
+    }
+
     /// Observes and notifies of changes made to product categories. the current state will be dispatched upon subscription.
     /// Calling this method will remove any other previous observer.
     ///
@@ -85,7 +96,7 @@ private extension ProductCategoryListViewModel {
     /// Synchronizes all product categories starting at a specific page number. Default initial page number is set on `Default.firstPageNumber`
     ///
     func synchronizeAllCategories(fromPageNumber: Int = Default.firstPageNumber) {
-        // Start fetching the provided initial page and set the state as syning
+        // Start fetching the provided initial page and set the state as syncing
         self.syncCategoriesState = .syncing
         synchronizeCategories(pageNumber: fromPageNumber, pageSize: Default.pageSize) { [weak self] categories, error in
             guard let self = self  else {

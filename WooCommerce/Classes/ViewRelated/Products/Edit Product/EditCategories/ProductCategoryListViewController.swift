@@ -72,6 +72,9 @@ private extension ProductCategoryListViewController {
             switch syncState {
             case .syncing:
                 self?.displayPlaceholderCategories()
+            case let .failed(pageNumber):
+                self?.removePlaceholderCategories()
+                self?.displaySyncingErrorNotice(pageNumber: pageNumber)
             case .synced:
                 self?.removePlaceholderCategories()
             default:
@@ -107,6 +110,18 @@ private extension ProductCategoryListViewController {
     func removePlaceholderCategories() {
         tableView.removeGhostContent()
         tableView.reloadData()
+    }
+
+    /// Displays the Sync Error Notice.
+    ///
+    func displaySyncingErrorNotice(pageNumber: Int) {
+        let message = NSLocalizedString("Unable to load categories", comment: "Load Product Categories Action Failed")
+        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
+        let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
+            self?.viewModel.retryCategorySynchronization(pageNumber: pageNumber)
+        }
+
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 

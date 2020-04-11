@@ -70,9 +70,11 @@ final class ProductCategoryStoreTests: XCTestCase {
 
         // When dispatching a `synchronizeProductCategories` action
         var errorResponse: Error?
+        var categoriesResponse: [Networking.ProductCategory]?
         let action = ProductCategoryAction.synchronizeProductCategories(siteID: sampleSiteID,
                                                                      pageNumber: defaultPageNumber,
-                                                                     pageSize: defaultPageSize) { error in
+                                                                     pageSize: defaultPageSize) { categories, error in
+            categoriesResponse = categories
             errorResponse = error
             expectation.fulfill()
         }
@@ -81,6 +83,7 @@ final class ProductCategoryStoreTests: XCTestCase {
 
         // Then a valid set of categories should be stored
         XCTAssertEqual(storedProductCategoriesCount, 2)
+        XCTAssertNotNil(categoriesResponse)
         XCTAssertNil(errorResponse)
     }
 
@@ -93,9 +96,11 @@ final class ProductCategoryStoreTests: XCTestCase {
 
         // When dispatching a `synchronizeProductCategories` action
         var errorResponse: Error?
+        var categoriesResponse: [Networking.ProductCategory]?
         let action = ProductCategoryAction.synchronizeProductCategories(siteID: sampleSiteID,
                                                                      pageNumber: defaultPageNumber,
-                                                                     pageSize: defaultPageSize) { error in
+                                                                     pageSize: defaultPageSize) { categories, error in
+            categoriesResponse = categories
             errorResponse = error
             expectation.fulfill()
         }
@@ -107,6 +112,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertNotEqual(initialCategory.parentID, updatedCategory?.parentID)
         XCTAssertNotEqual(initialCategory.name, updatedCategory?.name)
         XCTAssertNotEqual(initialCategory.slug, updatedCategory?.slug)
+        XCTAssertNotNil(categoriesResponse)
         XCTAssertNil(errorResponse)
     }
 
@@ -117,10 +123,12 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertEqual(storedProductCategoriesCount, 0)
 
         // When dispatching a `synchronizeProductCategories` action
+        var categoriesResponse: [Networking.ProductCategory]?
         var errorResponse: Error?
         let action = ProductCategoryAction.synchronizeProductCategories(siteID: sampleSiteID,
                                                                         pageNumber: defaultPageNumber,
-                                                                        pageSize: defaultPageSize) { error in
+                                                                        pageSize: defaultPageSize) { categories, error in
+            categoriesResponse = categories
             errorResponse = error
             expectation.fulfill()
         }
@@ -129,6 +137,7 @@ final class ProductCategoryStoreTests: XCTestCase {
 
         // Then no categories should be stored
         XCTAssertEqual(storedProductCategoriesCount, 0)
+        XCTAssertNil(categoriesResponse)
         XCTAssertNotNil(errorResponse)
     }
 
@@ -138,10 +147,12 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertEqual(storedProductCategoriesCount, 0)
 
         // When dispatching a `synchronizeProductCategories` action
+        var categoriesResponse: [Networking.ProductCategory]?
         var errorResponse: Error?
         let action = ProductCategoryAction.synchronizeProductCategories(siteID: sampleSiteID,
                                                                         pageNumber: defaultPageNumber,
-                                                                        pageSize: defaultPageSize) { error in
+                                                                        pageSize: defaultPageSize) { categories, error in
+            categoriesResponse = categories
             errorResponse = error
             expectation.fulfill()
         }
@@ -150,6 +161,7 @@ final class ProductCategoryStoreTests: XCTestCase {
 
         // Then no categories should be stored
         XCTAssertEqual(storedProductCategoriesCount, 0)
+        XCTAssertNil(categoriesResponse)
         XCTAssertNotNil(errorResponse)
     }
 
@@ -168,7 +180,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "categories-all")
         let action = ProductCategoryAction.synchronizeProductCategories(siteID: sampleSiteID,
                                                                      pageNumber: defaultPageNumber,
-                                                                     pageSize: defaultPageSize) { error in
+                                                                     pageSize: defaultPageSize) { _, _ in
             expectation.fulfill()
         }
         store.onAction(action)

@@ -38,12 +38,12 @@ private extension ProductCategoryStore {
 
     /// Synchronizes product categories associated with a given Site ID.
     ///
-    func synchronizeProductCategories(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
+    func synchronizeProductCategories(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping ([ProductCategory]?, Error?) -> Void) {
         let remote = ProductCategoriesRemote(network: network)
 
         remote.loadAllProductCategories(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (productCategories, error) in
             guard let productCategories = productCategories else {
-                onCompletion(error)
+                onCompletion(nil, error)
                 return
             }
 
@@ -52,7 +52,7 @@ private extension ProductCategoryStore {
             }
 
             self?.upsertStoredProductCategoriesInBackground(productCategories, siteID: siteID) {
-                onCompletion(nil)
+                onCompletion(productCategories, nil)
             }
         }
     }

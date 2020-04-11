@@ -59,7 +59,7 @@ final class ProductCategoryListViewModel {
 private extension ProductCategoryListViewModel {
     func syncronizeCategories() {
         /// TODO-2020: Page Number and PageSized to be updated when `SyncingCoordinator` is implemented.
-        let action = ProductCategoryAction.synchronizeProductCategories(siteID: product.siteID, pageNumber: 1, pageSize: 30) { error in
+        let action = ProductCategoryAction.synchronizeProductCategories(siteID: product.siteID, pageNumber: 1, pageSize: 30) { _, error in
             if let error = error {
                 DDLogError("⛔️ Error fetching product categories: \(error.localizedDescription)")
             }

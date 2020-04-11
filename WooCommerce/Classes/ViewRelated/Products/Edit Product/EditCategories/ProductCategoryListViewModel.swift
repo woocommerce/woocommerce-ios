@@ -96,7 +96,7 @@ private extension ProductCategoryListViewModel {
     /// Synchronizes all product categories starting at a specific page number. Default initial page number is set on `Default.firstPageNumber`
     ///
     func synchronizeAllCategories(fromPageNumber: Int = Default.firstPageNumber) {
-        // Start fetching the provided initial page and set the state as syncing
+        // Start fetching the provided initial page and set the state as syncsynchronizeCategoriesing
         self.syncCategoriesState = .syncing
         synchronizeCategories(pageNumber: fromPageNumber, pageSize: Default.pageSize) { [weak self] categories, error in
             guard let self = self  else {
@@ -123,7 +123,9 @@ private extension ProductCategoryListViewModel {
     /// Synchronizes product categories with a given page number and page size.
     ///
     func synchronizeCategories(pageNumber: Int, pageSize: Int, onCompletion: @escaping (([ProductCategory]?, Error?) -> Void)) {
-        let action = ProductCategoryAction.synchronizeProductCategories(siteID: product.siteID, pageNumber: pageNumber, pageSize: pageSize) { categories, error in
+        let action = ProductCategoryAction.synchronizeProductCategories(siteID: product.siteID,
+                                                                        pageNumber: pageNumber,
+                                                                        pageSize: pageSize) { categories, error in
             if let error = error {
                 DDLogError("⛔️ Error fetching product categories: \(error.localizedDescription)")
             }

@@ -144,12 +144,8 @@ private extension ProductCategoryListViewController {
 //
 extension ProductCategoryListViewController: UITableViewDataSource, UITableViewDelegate {
 
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return viewModel.numberOfSections()
-    }
-
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.numberOfRowsInSection(section: section)
+        return viewModel.categoryViewModels.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -158,9 +154,8 @@ extension ProductCategoryListViewController: UITableViewDataSource, UITableViewD
             fatalError()
         }
 
-        let category = viewModel.item(at: indexPath)
-        let isSelected = viewModel.isCategorySelected(category)
-        cell.configure(name: category.name, selected: isSelected)
+        let categoryViewModel = viewModel.categoryViewModels[indexPath.row]
+        cell.configure(with: categoryViewModel)
         return cell
     }
 

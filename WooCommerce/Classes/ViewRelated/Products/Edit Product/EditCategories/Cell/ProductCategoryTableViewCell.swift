@@ -29,12 +29,10 @@ final class ProductCategoryTableViewCell: UITableViewCell {
         tintColor = .primary
     }
 
-    /// Configure the cell with the given content
-    /// - Parameters:
-    ///   - name: Product Category name
-    ///   - selected: `true` renders  a chekmark, `false` renders nothing.
-    func configure(name: String, selected: Bool) {
-        nameLabel.text = name
-        accessoryType = selected ? .checkmark : .none
+    /// Configure the cell with the given ViewModel
+    ///
+    func configure(with viewModel: ProductCategoryViewModel) {
+        nameLabel.text = viewModel.name
+        accessoryType = viewModel.isSelected ? .checkmark : .none
     }
 }

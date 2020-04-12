@@ -8,6 +8,10 @@ final class ProductCategoryTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var nameLabel: UILabel!
 
+    /// Leading constraint of the category name label
+    ///
+    @IBOutlet private var leadingNameLabelConstraint: NSLayoutConstraint!
+
     override func awakeFromNib() {
         super.awakeFromNib()
         applyDefaultBackgroundStyle()
@@ -19,6 +23,7 @@ final class ProductCategoryTableViewCell: UITableViewCell {
         super.prepareForReuse()
         nameLabel.text = nil
         accessoryType = .none
+        leadingNameLabelConstraint.constant = Constants.baseNameLabelMarging
     }
 
     private func styleLabels() {
@@ -34,5 +39,15 @@ final class ProductCategoryTableViewCell: UITableViewCell {
     func configure(with viewModel: ProductCategoryViewModel) {
         nameLabel.text = viewModel.name
         accessoryType = viewModel.isSelected ? .checkmark : .none
+        leadingNameLabelConstraint.constant = Constants.baseNameLabelMarging + (Constants.nameLabelIndentationFactor * CGFloat(viewModel.indentationLevel))
+    }
+}
+
+// MARK: - Constants!
+//
+private extension ProductCategoryTableViewCell {
+    enum Constants {
+        static let baseNameLabelMarging: CGFloat = 16.0
+        static let nameLabelIndentationFactor: CGFloat = 16.0
     }
 }

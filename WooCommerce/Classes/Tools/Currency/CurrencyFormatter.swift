@@ -127,12 +127,12 @@ public class CurrencyFormatter {
     ///     - amount: a raw string representation of the amount, from the API, with no formatting applied. e.g. "19.87"
     ///     - currency: a 3-letter country code for currencies that are supported in the API. e.g. "USD"
     ///
-    func formatAmount(_ stringAmount: String, with currency: String = CurrencySettings.shared.currencyCode.rawValue) -> String? {
+    func formatAmount(_ stringAmount: String, with currency: String? = nil) -> String? {
         guard let decimalAmount = convertToDecimal(from: stringAmount) else {
             return nil
         }
 
-        return formatAmount(decimalAmount, with: currency)
+        return formatAmount(decimalAmount, with: currency ?? currencySettings.currencyCode.rawValue)
     }
 
 
@@ -167,11 +167,13 @@ public class CurrencyFormatter {
     ///  - 5800199.56 becomes "$5.8m"
     ///
     func formatHumanReadableAmount(_ stringAmount: String,
-                                   with currency: String = CurrencySettings.shared.currencyCode.rawValue,
+                                   with currency: String? = nil,
                                    roundSmallNumbers: Bool = true) -> String? {
         guard let amount = convertToDecimal(from: stringAmount) else {
             return nil
         }
+
+        let currency = currency ?? currencySettings.currencyCode.rawValue
 
         let humanReadableAmount = amount.humanReadableString(roundSmallNumbers: roundSmallNumbers)
         if humanReadableAmount == amount.stringValue, roundSmallNumbers == false {
@@ -198,7 +200,8 @@ public class CurrencyFormatter {
     ///     - amount: a NSDecimalNumber representation of the amount, from the API, with no formatting applied. e.g. "19.87"
     ///     - currency: a 3-letter country code for currencies that are supported in the API. e.g. "USD"
     ///
-    func formatAmount(_ decimalAmount: NSDecimalNumber, with currency: String = CurrencySettings.shared.currencyCode.rawValue) -> String? {
+    func formatAmount(_ decimalAmount: NSDecimalNumber, with currency: String? = nil) -> String? {
+        let currency = currency ?? currencySettings.currencyCode.rawValue
         // Get the currency code
         let code = CurrencySettings.CurrencyCode(rawValue: currency) ?? currencySettings.currencyCode
         // Grab the read-only currency options. These are set by the user in Site > Settings.

@@ -17,7 +17,7 @@ final class ProductSettingsViewModelTests: XCTestCase {
         }
 
         // Update settings. Section data changed. This will update the view model, and will fire the `onReload` closure.
-        viewModel.productSettings = ProductSettings(status: product.productStatus, featured: true, catalogVisibility: .search, slug: "this-is-a-slug")
+        viewModel.productSettings = ProductSettings(status: product.productStatus, featured: true, catalogVisibility: .search, slug: "this-is-a-slug", purchaseNote: "This is a purchase note")
 
         waitForExpectations(timeout: 1.5, handler: nil)
     }

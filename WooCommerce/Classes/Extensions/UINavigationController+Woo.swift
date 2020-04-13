@@ -50,8 +50,8 @@ extension UIViewController: UINavigationBarBackButtonHandler {
 
 extension UINavigationController: UINavigationBarDelegate {
 
-    // This delegate method is not called on the simulator running iOS 13.4.
-    // Test it on a real device.
+    // This delegate method is not called on the simulator or device running iOS 13.4 from Xcode.
+    // You need to use a release build.
     public func navigationBar(_ navigationBar: UINavigationBar, shouldPop item: UINavigationItem) -> Bool {
         guard let items = navigationBar.items else {
             return false

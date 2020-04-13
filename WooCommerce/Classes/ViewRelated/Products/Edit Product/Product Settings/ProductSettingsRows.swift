@@ -137,14 +137,14 @@ enum ProductSettingsRows {
                 return
             }
 
-            let titleView = NSLocalizedString("Purchase Note", comment: "Slug label in Product Settings")
-            cell.updateUI(title: titleView, value: "purchase note placeholder")
+            let titleView = NSLocalizedString("Purchase Note", comment: "Purchase note label in Product Settings")
+            cell.updateUI(title: titleView, value: settings.purchaseNote)
             cell.accessoryType = .disclosureIndicator
         }
 
         func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
             let viewController = ProductSlugViewController(settings: settings) { (productSettings) in
-                //self.settings.slug = productSettings.slug
+                self.settings.purchaseNote = productSettings.purchaseNote
                 onCompletion(self.settings)
             }
             sourceViewController.navigationController?.pushViewController(viewController, animated: true)

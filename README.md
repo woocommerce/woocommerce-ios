@@ -14,9 +14,12 @@ A Jetpack-powered companion app for WooCommerce.
 3. Enter the project directory by `cd woocommerce-ios`
 4. Install the third party dependencies and tools required to run the project
     
-    We use a few tools to help with development. To install or update the required dependencies, run the follow command on the command line: `bundle exec pod install`
+    We use a few tools to help with development. To install or update the required dependencies, run the follow command on the command line:
     
-    In some cases, you may also have to: `bundle install`
+    ```bash
+    rake dependencies
+    ```
+    
 5. Open the project by double clicking on `WooCommerce.xcworkspace` file, or launching Xcode and choose File > Open and browse to `WooCommerce.xcworkspace`
 
 #### Credentials for external contributors

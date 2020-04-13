@@ -1,3 +1,4 @@
+import Photos
 import UIKit
 import Yosemite
 
@@ -59,8 +60,9 @@ final class ProductFormViewController: UIViewController {
         self.product = product
         self.viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
         self.productImageActionHandler = ProductImageActionHandler(siteID: product.siteID,
-                                                         product: product)
-        self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler)
+                                                                   product: product)
+        self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler,
+                                                                phAssetImageLoaderProvider: { PHImageManager.default() })
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel,
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
                                                                   productUIImageLoader: productUIImageLoader)

@@ -10,21 +10,32 @@ import Yosemite
 final class DefaultProductUIImageLoader: ProductUIImageLoader {
     private var imagesByProductImageID: [Int64: UIImage] = [:]
     private let imageService: ImageService
-    private let phAssetImageLoader: PHAssetImageLoader
 
     private let productImageActionHandler: ProductImageActionHandler?
+
+    private let phAssetImageLoaderProvider: (() -> PHAssetImageLoader)?
+    /// `PHAssetImageLoader` is lazy loaded to avoid triggering permission alert by initializing `PHImageManager` before it is used.
+    private lazy var phAssetImageLoader: PHAssetImageLoader = {
+        guard let phAssetImageLoaderProvider = phAssetImageLoaderProvider else {
+            assertionFailure("Trying to call `PHAssetImageLoader` without setting a provider during initialization")
+            return PHImageManager.default()
+        }
+        return phAssetImageLoaderProvider()
+    }()
 
     /// - Parameters:
     ///   - productImageActionHandler: if non-nil, the asset image is used after being uploaded to a remote image to avoid an extra network call.
     ///     Set this property when images are being uploaded in the scope.
     ///   - imageService: provides images given a URL.
-    ///   - phAssetImageLoader: provides images given a `PHAsset` asset.
+    ///   - phAssetImageLoaderProvider: provides a `PHAssetImageLoader` instance that loads an image given a `PHAsset` asset.
+    ///     Only non-nil if `PHAsset` image request is used (e.g. image upload).
+    ///     It is a callback because we lazy load `PHAssetImageLoader` to avoid triggering permission alert by initializing `PHImageManager` before it is used.
     init(productImageActionHandler: ProductImageActionHandler? = nil,
          imageService: ImageService = ServiceLocator.imageService,
-         phAssetImageLoader: PHAssetImageLoader = PHImageManager.default()) {
+         phAssetImageLoaderProvider: (() -> PHAssetImageLoader)? = nil) {
         self.productImageActionHandler = productImageActionHandler
         self.imageService = imageService
-        self.phAssetImageLoader = phAssetImageLoader
+        self.phAssetImageLoaderProvider = phAssetImageLoaderProvider
 
         productImageActionHandler?.addAssetUploadObserver(self) { [weak self] asset, productImage in
             self?.update(from: asset, to: productImage)

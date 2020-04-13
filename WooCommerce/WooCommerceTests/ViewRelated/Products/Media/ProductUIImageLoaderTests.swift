@@ -27,7 +27,7 @@ final class ProductUIImageLoaderTests: XCTestCase {
 
     func testRequestingImageWithRemoteProductImage() {
         let mockPHAssetImageLoader = MockPHAssetImageLoader(imagesByAsset: [:])
-        let imageLoader = DefaultProductUIImageLoader(imageService: imageService, phAssetImageLoader: mockPHAssetImageLoader)
+        let imageLoader = DefaultProductUIImageLoader(imageService: imageService, phAssetImageLoaderProvider: { mockPHAssetImageLoader })
         let productImage = ProductImage(imageID: mockProductImageID,
                                         dateCreated: Date(),
                                         dateModified: Date(),
@@ -46,7 +46,7 @@ final class ProductUIImageLoaderTests: XCTestCase {
     func testRequestingImageWithPHAsset() {
         let asset = PHAsset()
         let mockPHAssetImageLoader = MockPHAssetImageLoader(imagesByAsset: [asset: testImage])
-        let imageLoader = DefaultProductUIImageLoader(imageService: imageService, phAssetImageLoader: mockPHAssetImageLoader)
+        let imageLoader = DefaultProductUIImageLoader(imageService: imageService, phAssetImageLoaderProvider: { mockPHAssetImageLoader })
 
         let expectation = self.expectation(description: "Wait for image request")
         imageLoader.requestImage(asset: asset, targetSize: .zero) { image in

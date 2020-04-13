@@ -245,6 +245,8 @@
 		453DBF8E2387F34A006762A5 /* UICollectionViewCell+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453DBF8D2387F34A006762A5 /* UICollectionViewCell+Helpers.swift */; };
 		453DBF9023882814006762A5 /* ProductImagesFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453DBF8F23882814006762A5 /* ProductImagesFlowLayout.swift */; };
 		454B28BE23BF63C600CD2091 /* DateIntervalFormatter+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454B28BD23BF63C600CD2091 /* DateIntervalFormatter+Helpers.swift */; };
+		456CB50D2444BFAC00992A05 /* ProductPurchaseNoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456CB50B2444BFAC00992A05 /* ProductPurchaseNoteViewController.swift */; };
+		456CB50E2444BFAC00992A05 /* ProductPurchaseNoteViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 456CB50C2444BFAC00992A05 /* ProductPurchaseNoteViewController.xib */; };
 		457151AB243B6E8000EB2DFA /* ProductSlugViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457151A9243B6E8000EB2DFA /* ProductSlugViewController.swift */; };
 		457151AC243B6E8000EB2DFA /* ProductSlugViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 457151AA243B6E8000EB2DFA /* ProductSlugViewController.xib */; };
 		4580BA7423F192D400B5F764 /* ProductSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4580BA7223F192D400B5F764 /* ProductSettingsViewController.swift */; };
@@ -1034,6 +1036,8 @@
 		453DBF8D2387F34A006762A5 /* UICollectionViewCell+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionViewCell+Helpers.swift"; sourceTree = "<group>"; };
 		453DBF8F23882814006762A5 /* ProductImagesFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesFlowLayout.swift; sourceTree = "<group>"; };
 		454B28BD23BF63C600CD2091 /* DateIntervalFormatter+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateIntervalFormatter+Helpers.swift"; sourceTree = "<group>"; };
+		456CB50B2444BFAC00992A05 /* ProductPurchaseNoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductPurchaseNoteViewController.swift; sourceTree = "<group>"; };
+		456CB50C2444BFAC00992A05 /* ProductPurchaseNoteViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductPurchaseNoteViewController.xib; sourceTree = "<group>"; };
 		457151A9243B6E8000EB2DFA /* ProductSlugViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSlugViewController.swift; sourceTree = "<group>"; };
 		457151AA243B6E8000EB2DFA /* ProductSlugViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductSlugViewController.xib; sourceTree = "<group>"; };
 		4580BA7223F192D400B5F764 /* ProductSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSettingsViewController.swift; sourceTree = "<group>"; };
@@ -2127,6 +2131,15 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
+		456CB50A2444BF8400992A05 /* Purchase Note */ = {
+			isa = PBXGroup;
+			children = (
+				456CB50B2444BFAC00992A05 /* ProductPurchaseNoteViewController.swift */,
+				456CB50C2444BFAC00992A05 /* ProductPurchaseNoteViewController.xib */,
+			);
+			path = "Purchase Note";
+			sourceTree = "<group>";
+		};
 		457151A8243B6E6200EB2DFA /* Slug */ = {
 			isa = PBXGroup;
 			children = (
@@ -2155,6 +2168,7 @@
 				451C77702404518600413F73 /* ProductSettingsRows.swift */,
 				45739F2E2436302600480C95 /* Catalog Visibility */,
 				457151A8243B6E6200EB2DFA /* Slug */,
+				456CB50A2444BF8400992A05 /* Purchase Note */,
 				4524CD9F242D023300B2F20A /* List Selector Data Source */,
 			);
 			path = "Product Settings";
@@ -3858,6 +3872,7 @@
 				B59D1EE821908A08009D1978 /* Noticons.ttf in Resources */,
 				D81F2D35225F0CF70084BF9C /* EmptyListMessageWithActionView.xib in Resources */,
 				0290E276238E4F8100B5C466 /* PaginatedListSelectorViewController.xib in Resources */,
+				456CB50E2444BFAC00992A05 /* ProductPurchaseNoteViewController.xib in Resources */,
 				023A059B24135F2600E3FC99 /* ReviewsViewController.xib in Resources */,
 				026CF63B237E9ABE009563D4 /* ProductVariationsViewController.xib in Resources */,
 				CE27258021925AE8002B22EB /* ValueOneTableViewCell.xib in Resources */,
@@ -4156,6 +4171,7 @@
 				B59D49CD219B587E006BF0AD /* UILabel+OrderStatus.swift in Sources */,
 				265BCA0C2430E741004E53EE /* ProductCategoryTableViewCell.swift in Sources */,
 				02913E9723A774E600707A0C /* DecimalInputFormatter.swift in Sources */,
+				456CB50D2444BFAC00992A05 /* ProductPurchaseNoteViewController.swift in Sources */,
 				0218B4EC242E06F00083A847 /* MediaType+WPMediaType.swift in Sources */,
 				0216271E2375044D000208D2 /* AztecFormatBar+Update.swift in Sources */,
 				026CF63A237E9ABE009563D4 /* ProductVariationsViewController.swift in Sources */,

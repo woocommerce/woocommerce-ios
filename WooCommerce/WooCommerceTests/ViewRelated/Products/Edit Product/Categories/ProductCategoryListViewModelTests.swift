@@ -37,7 +37,7 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         XCTAssertFalse(isCategorySelected)
     }
 
-    func testSyncedStateForASuccessfullCategoriesFetch() {
+    func testItTransitionsToSyncedStateAfterSynchronizingCategories() {
         // Given
         let exp = expectation(description: #function)
         let product = MockProduct().product()
@@ -59,7 +59,7 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         XCTAssertEqual(storesManager.numberOfResponsesConsumed, 1)
     }
 
-    func testFailedStateForAnErroredCategoryFetch() {
+    func testItTransitionsToFailedStateAfterSynchronizingCategoriesErrors() {
         // Given
         let exp = expectation(description: #function)
         let product = MockProduct().product()

@@ -101,7 +101,6 @@ class OrdersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        refreshResultsPredicate()
         refreshStatusPredicate()
         registerTableViewHeadersAndCells()
 
@@ -130,22 +129,6 @@ class OrdersViewController: UIViewController {
 private extension OrdersViewController {
     /// Setup: Order filtering
     ///
-    func refreshResultsPredicate() {
-        resultsController.predicate = {
-            let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
-            let excludeNonMatchingStatus = statusFilter.map { NSPredicate(format: "statusKey = %@", $0.slug) }
-
-            var predicates = [ excludeSearchCache, excludeNonMatchingStatus ].compactMap { $0 }
-            if let tomorrow = Date.tomorrow() {
-                let dateSubPredicate = NSPredicate(format: "dateCreated < %@", tomorrow as NSDate)
-                predicates.append(dateSubPredicate)
-            }
-
-            return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
-        }()
-
-        tableView.setContentOffset(.zero, animated: false)
-        tableView.reloadData()
     }
 
     /// Setup: Order status predicate

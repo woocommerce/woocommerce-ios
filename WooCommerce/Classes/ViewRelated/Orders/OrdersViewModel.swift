@@ -30,7 +30,23 @@ final class OrdersViewModel {
         let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
 
-        return ResultsController<StorageOrder>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
+        let resultsController = ResultsController<StorageOrder>(storageManager: storageManager,
+                                                                sectionNameKeyPath: "normalizedAgeAsString",
+                                                                sortedBy: [descriptor])
+        resultsController.predicate = {
+            let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
+            let excludeNonMatchingStatus = statusFilter.map { NSPredicate(format: "statusKey = %@", $0.slug) }
+
+            var predicates = [ excludeSearchCache, excludeNonMatchingStatus ].compactMap { $0 }
+            if let tomorrow = Date.tomorrow() {
+                let dateSubPredicate = NSPredicate(format: "dateCreated < %@", tomorrow as NSDate)
+                predicates.append(dateSubPredicate)
+            }
+
+            return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        }()
+
+        return resultsController
     }()
 
     /// Indicates if there are no results.

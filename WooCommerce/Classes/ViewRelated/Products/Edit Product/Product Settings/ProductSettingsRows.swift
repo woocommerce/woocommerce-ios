@@ -143,7 +143,7 @@ enum ProductSettingsRows {
         }
 
         func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
-            let viewController = ProductSlugViewController(settings: settings) { (productSettings) in
+            let viewController = ProductPurchaseNoteViewController(settings: settings) { (productSettings) in
                 self.settings.purchaseNote = productSettings.purchaseNote
                 onCompletion(self.settings)
             }

@@ -413,14 +413,14 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
         guard let vc = LoginSelfHostedViewController.instantiate(from: .login) else {
             DDLogError("Failed to navigate from LoginEmailViewController to LoginSelfHostedViewController")
-                return
-            }
+            return
+        }
 
-            vc.loginFields = loginFields
-            vc.dismissBlock = dismissBlock
-            vc.errorToPresent = errorToPresent
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
 
-            navigationController?.pushViewController(vc, animated: true)
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     override open func displayRemoteError(_ error: Error) {

@@ -94,7 +94,7 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         // When
         viewModel.performInitialFetch()
         viewModel.observeCategoryListStateChanges { state in
-            if state == .failed(pageNumber: 1) {
+            if case .failed = state {
                 exp.fulfill()
             }
         }
@@ -117,7 +117,7 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         // When
         viewModel.performInitialFetch()
         viewModel.observeCategoryListStateChanges { state in
-            if state == .failed(pageNumber: 2) {
+            if case .failed = state {
                 exp.fulfill()
             }
         }

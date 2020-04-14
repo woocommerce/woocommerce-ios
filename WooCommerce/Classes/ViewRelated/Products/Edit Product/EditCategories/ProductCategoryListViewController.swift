@@ -86,9 +86,9 @@ private extension ProductCategoryListViewController {
                 break
             case .syncing:
                 self?.displayGhostTableView()
-            case let .failed(pageNumber):
+            case let .failed(retryToken):
                 self?.removeGhostTableView()
-                self?.displaySyncingErrorNotice(pageNumber: pageNumber)
+                self?.displaySyncingErrorNotice(retryToken: retryToken)
             case .synced:
                 self?.removeGhostTableView()
             }
@@ -129,11 +129,11 @@ private extension ProductCategoryListViewController {
 
     /// Displays the Sync Error Notice.
     ///
-    func displaySyncingErrorNotice(pageNumber: Int) {
+    func displaySyncingErrorNotice(retryToken: ProductCategoryListViewModel.RetryToken) {
         let message = NSLocalizedString("Unable to load categories", comment: "Load Product Categories Action Failed")
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
-            self?.viewModel.retryCategorySynchronization(pageNumber: pageNumber)
+            self?.viewModel.retryCategorySynchronization(retryToken: retryToken)
         }
 
         ServiceLocator.noticePresenter.enqueue(notice: notice)

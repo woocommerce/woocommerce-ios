@@ -2,12 +2,19 @@ import Foundation
 import Yosemite
 
 final class ProductCategoryListViewModel {
+
+    /// Obscure token that allows the view model to retry the synchronizeCategories operation
+    ///
+    struct RetryToken: Equatable {
+        fileprivate let fromPageNumber: Int
+    }
+
     /// Represents the current state of `synchronizeCategories` action. Useful for the consumer to update it's UI upon changes
     ///
     enum SyncingState: Equatable {
         case initialized
         case syncing
-        case failed(pageNumber: Int)
+        case failed(RetryToken)
         case synced
     }
 
@@ -68,11 +75,11 @@ final class ProductCategoryListViewModel {
 
     /// Retry product categories synchronization when `syncCategoriesState` is on a `.failed` state.
     ///
-    func retryCategorySynchronization(pageNumber: Int) {
-        guard syncCategoriesState == .failed(pageNumber: pageNumber) else {
+    func retryCategorySynchronization(retryToken: RetryToken) {
+        guard syncCategoriesState == .failed(retryToken) else {
             return
         }
-        synchronizeAllCategories(fromPageNumber: pageNumber)
+        synchronizeAllCategories(fromPageNumber: retryToken.fromPageNumber)
     }
 
     /// Observes and notifies of changes made to product categories. the current state will be dispatched upon subscription.
@@ -105,7 +112,8 @@ private extension ProductCategoryListViewModel {
 
             // If there is an error, end the recursion and set the sync state as .failed
             if error != nil {
-                self.syncCategoriesState = .failed(pageNumber: fromPageNumber)
+                let retryToken = RetryToken(fromPageNumber: fromPageNumber)
+                self.syncCategoriesState = .failed(retryToken)
                 return
             }
 

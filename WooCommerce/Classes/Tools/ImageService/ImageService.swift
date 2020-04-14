@@ -19,7 +19,7 @@ protocol ImageService {
     ///   - url: url of the image.
     ///   - shouldCacheImage: whether the downloaded image should be stored in the cache for faster access in the future.
     ///   - completion: called when the image download completes.
-    func downloadImage(with url: URL, shouldCacheImage: Bool, completion: ImageDownloadCompletion?)
+    func downloadImage(with url: URL, shouldCacheImage: Bool, completion: ImageDownloadCompletion?) -> ImageDownloadTask?
 
     /// Downloads and caches an image for a `UIImageView` given a URL and a placeholder.
     /// - Parameters:

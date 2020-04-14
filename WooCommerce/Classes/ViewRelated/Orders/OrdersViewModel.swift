@@ -176,6 +176,20 @@ final class OrdersViewModel {
     }
 }
 
+// MARK: - TableView Support
+
+extension OrdersViewModel {
+    /// Returns an `OrdersViewModel` instance for the `StorageOrder` at the given `indexPath`.
+    ///
+    func detailsViewModel(at indexPath: IndexPath) -> OrderDetailsViewModel {
+        let order = resultsController.object(at: indexPath)
+
+        return OrderDetailsViewModel(order: order)
+    }
+}
+
+// MARK: - Constants
+
 extension OrdersViewModel {
     enum Defaults {
         static let pageFirstIndex = SyncingCoordinator.Defaults.pageFirstIndex

@@ -410,12 +410,6 @@ private extension OrdersViewController {
 //
 private extension OrdersViewController {
 
-    func detailsViewModel(at indexPath: IndexPath) -> OrderDetailsViewModel {
-        let order = resultsController.object(at: indexPath)
-
-        return OrderDetailsViewModel(order: order)
-    }
-
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
         for orderStatus in currentSiteStatuses where orderStatus.slug == order.statusKey {
             return orderStatus
@@ -443,9 +437,9 @@ extension OrdersViewController: UITableViewDataSource {
             fatalError()
         }
 
-        let viewModel = detailsViewModel(at: indexPath)
-        let orderStatus = lookUpOrderStatus(for: viewModel.order)
-        cell.configureCell(viewModel: viewModel, orderStatus: orderStatus)
+        let detailsViewModel = viewModel.detailsViewModel(at: indexPath)
+        let orderStatus = lookUpOrderStatus(for: detailsViewModel.order)
+        cell.configureCell(detailsViewModel: detailsViewModel, orderStatus: orderStatus)
         cell.layoutIfNeeded()
         return cell
     }
@@ -482,7 +476,7 @@ extension OrdersViewController: UITableViewDelegate {
             assertionFailure("Expected OrderDetailsViewController to be instantiated")
             return
         }
-        orderDetailsVC.viewModel = detailsViewModel(at: indexPath)
+        orderDetailsVC.viewModel = viewModel.detailsViewModel(at: indexPath)
 
         navigationController?.pushViewController(orderDetailsVC, animated: true)
     }

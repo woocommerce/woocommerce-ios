@@ -71,12 +71,6 @@ class OrdersViewController: UIViewController {
         return statusResultsController.fetchedObjects
     }
 
-    /// Indicates if there are no results onscreen.
-    ///
-    private var isEmpty: Bool {
-        return resultsController.isEmpty
-    }
-
     /// Indicates if there's a filter being applied.
     ///
     private var isFiltered: Bool {
@@ -581,14 +575,14 @@ private extension OrdersViewController {
     /// we've got cached results, or not.
     ///
     func transitionToSyncingState() {
-        state = isEmpty ? .placeholder : .syncing
+        state = viewModel.isEmpty ? .placeholder : .syncing
     }
 
     /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
     /// Transitions to `.results` / `.emptyFiltered` / `.emptyUnfiltered` accordingly.
     ///
     func transitionToResultsUpdatedState() {
-        if isEmpty == false {
+        if viewModel.isEmpty == false {
             state = .results
             return
         }

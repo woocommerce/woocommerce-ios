@@ -33,6 +33,12 @@ final class OrdersViewModel {
         return ResultsController<StorageOrder>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
     }()
 
+    /// Indicates if there are no results.
+    ///
+    var isEmpty: Bool {
+        resultsController.isEmpty
+    }
+
     init(storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.storageManager = storageManager
     }

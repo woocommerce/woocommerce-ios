@@ -9,6 +9,18 @@ import XCTest
 ///
 final class ProductCategoryListViewModelTests: XCTestCase {
 
+    private var storesManager: MockProductCategoryStoresManager!
+
+    override func setUp() {
+        super.setUp()
+        storesManager = MockProductCategoryStoresManager()
+    }
+
+    override func tearDown() {
+        super.tearDown()
+        storesManager = nil
+    }
+
     func testsCategoriesAreSelectedIfTheyArePartOfMainProduct() {
         // Given
         let categories = sampleCategories(count: 3)
@@ -41,10 +53,8 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         // Given
         let exp = expectation(description: #function)
         let product = MockProduct().product()
-        let viewModel = ProductCategoryListViewModel(product: product)
-        let storesManager = MockProductCategoryStoresManager()
+        let viewModel = ProductCategoryListViewModel(storesManager: storesManager, product: product)
         storesManager.productCategoryResponse = nil
-        ServiceLocator.setStores(storesManager)
 
         // When
         viewModel.performFetch()
@@ -63,12 +73,10 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         // Given
         let exp = expectation(description: #function)
         let product = MockProduct().product()
-        let viewModel = ProductCategoryListViewModel(product: product)
-        let storesManager = MockProductCategoryStoresManager()
+        let viewModel = ProductCategoryListViewModel(storesManager: storesManager, product: product)
         let rawError = NSError(domain: "Category Error", code: 1, userInfo: nil)
         let error = ProductCategoryActionError.categoriesSynchronization(pageNumber: 1, rawError: rawError)
         storesManager.productCategoryResponse = error
-        ServiceLocator.setStores(storesManager)
 
         // When
         viewModel.performFetch()

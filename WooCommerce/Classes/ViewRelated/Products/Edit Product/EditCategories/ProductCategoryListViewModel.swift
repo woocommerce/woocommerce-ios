@@ -18,6 +18,10 @@ final class ProductCategoryListViewModel {
         case synced
     }
 
+    /// Reference to the StoresManager to dispatch Yosemite Actions.
+    ///
+    private let storesManager: StoresManager
+
     /// Product the user is editiing
     ///
     private let product: Product
@@ -44,7 +48,8 @@ final class ProductCategoryListViewModel {
         return ResultsController<StorageProductCategory>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
-    init(product: Product) {
+    init(storesManager: StoresManager = ServiceLocator.stores, product: Product) {
+        self.storesManager = storesManager
         self.product = product
     }
 
@@ -111,7 +116,7 @@ private extension ProductCategoryListViewModel {
             }
             self?.syncCategoriesState = .synced
         }
-        ServiceLocator.stores.dispatch(action)
+        storesManager.dispatch(action)
     }
 
     /// Update `syncCategoriesState` with the proper retryToken

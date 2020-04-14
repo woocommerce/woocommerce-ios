@@ -79,7 +79,7 @@ private extension ProductCategoryStore {
                 return
             }
 
-            if pageNumber == ProductCategoryStore.Default.firstPageNumber {
+            if pageNumber == Default.firstPageNumber {
                 self?.deleteUnusedStoredProductCategories(siteID: siteID)
             }
 

@@ -258,7 +258,16 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
     ///
     @objc func showSelfHostedUsernamePassword() {
         configureViewLoading(false)
-        performSegue(withIdentifier: .showURLUsernamePassword, sender: self)
+        guard let vc = LoginSelfHostedViewController.instantiate(from: .login) else {
+           DDLogError("Failed to navigate from LoginEmailViewController to LoginSelfHostedViewController")
+               return
+           }
+
+       vc.loginFields = loginFields
+       vc.dismissBlock = dismissBlock
+       vc.errorToPresent = errorToPresent
+
+       navigationController?.pushViewController(vc, animated: true)
     }
 
     /// Break away from the self-hosted flow.

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Ck1-vY-O11">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Ck1-vY-O11">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -361,7 +361,7 @@
         <!--Login Self Hosted View Controller-->
         <scene sceneID="b2O-iW-wfB">
             <objects>
-                <viewController storyboardIdentifier="selfHosted" useStoryboardIdentifierAsRestorationIdentifier="YES" id="SZS-o3-1P7" customClass="LoginSelfHostedViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
+                <viewController id="SZS-o3-1P7" customClass="LoginSelfHostedViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Yjk-Cc-Bxb"/>
                         <viewControllerLayoutGuide type="bottom" id="Ktl-It-Kmo"/>
@@ -1425,11 +1425,6 @@
             <point key="canvasLocation" x="-460" y="1248"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="icon-password-field" width="18" height="22"/>
-        <image name="icon-url-field" width="18" height="22"/>
-        <image name="icon-username-field" width="18" height="18"/>
-    </resources>
     <inferredMetricsTieBreakers>
         <segue reference="N3P-wt-Rn3"/>
         <segue reference="Njv-lY-Lyi"/>
@@ -1437,4 +1432,9 @@
         <segue reference="4SK-mG-U33"/>
         <segue reference="iD4-VS-n3M"/>
     </inferredMetricsTieBreakers>
+    <resources>
+        <image name="icon-password-field" width="18" height="22"/>
+        <image name="icon-url-field" width="18" height="22"/>
+        <image name="icon-username-field" width="18" height="18"/>
+    </resources>
 </document>

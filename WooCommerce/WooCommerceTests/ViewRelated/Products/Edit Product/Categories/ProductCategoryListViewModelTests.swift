@@ -37,13 +37,13 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         XCTAssertFalse(isCategorySelected)
     }
 
-    func testSyncedStateForASinglePageCategoryList() {
+    func testSyncedStateForASuccessfullCategoriesFetch() {
         // Given
         let exp = expectation(description: #function)
         let product = MockProduct().product()
         let viewModel = ProductCategoryListViewModel(product: product)
         let storesManager = MockProductCategoryStoresManager()
-        storesManager.productCategoryResponses = [(sampleCategories(count: 3), nil), ([], nil)]
+        storesManager.productCategoryResponse = nil
         ServiceLocator.setStores(storesManager)
 
         // When
@@ -53,65 +53,21 @@ final class ProductCategoryListViewModelTests: XCTestCase {
                 exp.fulfill()
             }
         }
-        wait(for: [exp], timeout: Constants.expectationTimeout)
-
-        // Then
-        XCTAssertEqual(storesManager.numberOfResponsesConsumed, 2)
-    }
-
-    func testSyncedStateForAMultiplePageCategoryList() {
-        // Given
-        let exp = expectation(description: #function)
-        let product = MockProduct().product()
-        let viewModel = ProductCategoryListViewModel(product: product)
-        let storesManager = MockProductCategoryStoresManager()
-        storesManager.productCategoryResponses = [(sampleCategories(count: 3), nil), (sampleCategories(count: 3), nil), ([], nil)]
-        ServiceLocator.setStores(storesManager)
-
-        // When
-        viewModel.performFetch()
-        viewModel.observeCategoryListStateChanges { state in
-            if state == .synced {
-                exp.fulfill()
-            }
-        }
-        wait(for: [exp], timeout: Constants.expectationTimeout)
-
-        // Then
-        XCTAssertEqual(storesManager.numberOfResponsesConsumed, 3)
-    }
-
-    func testFailedStateForASinglePageCategoryList() {
-        // Given
-        let exp = expectation(description: #function)
-        let product = MockProduct().product()
-        let viewModel = ProductCategoryListViewModel(product: product)
-        let storesManager = MockProductCategoryStoresManager()
-        let error = NSError(domain: "Category Error", code: 1, userInfo: nil)
-        storesManager.productCategoryResponses = [(nil, error)]
-        ServiceLocator.setStores(storesManager)
-
-        // When
-        viewModel.performFetch()
-        viewModel.observeCategoryListStateChanges { state in
-            if case .failed = state {
-                exp.fulfill()
-            }
-        }
-        wait(for: [exp], timeout: Constants.expectationTimeout)
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
 
         // Then
         XCTAssertEqual(storesManager.numberOfResponsesConsumed, 1)
     }
 
-    func testFailedStateForAMultiplePageCategoryList() {
+    func testFailedStateForAnErroredCategoryFetch() {
         // Given
         let exp = expectation(description: #function)
         let product = MockProduct().product()
         let viewModel = ProductCategoryListViewModel(product: product)
         let storesManager = MockProductCategoryStoresManager()
-        let error = NSError(domain: "Category Error", code: 1, userInfo: nil)
-        storesManager.productCategoryResponses = [(sampleCategories(count: 3), nil), (nil, error)]
+        let rawError = NSError(domain: "Category Error", code: 1, userInfo: nil)
+        let error = ProductCategoryActionError.categoriesSynchronization(pageNumber: 1, rawError: rawError)
+        storesManager.productCategoryResponse = error
         ServiceLocator.setStores(storesManager)
 
         // When
@@ -121,10 +77,10 @@ final class ProductCategoryListViewModelTests: XCTestCase {
                 exp.fulfill()
             }
         }
-        wait(for: [exp], timeout: Constants.expectationTimeout)
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
 
         // Then
-        XCTAssertEqual(storesManager.numberOfResponsesConsumed, 2)
+        XCTAssertEqual(storesManager.numberOfResponsesConsumed, 1)
     }
 }
 
@@ -144,10 +100,9 @@ private extension ProductCategoryListViewModelTests {
 ///
 private final class MockProductCategoryStoresManager: DefaultStoresManager {
 
-    typealias ProductCategoryResponse = (categories: [ProductCategory]?, error: Error?)
     /// Set mockup responses to be dispatched upon Product Category Actions.
     ///
-    var productCategoryResponses: [ProductCategoryResponse] = []
+    var productCategoryResponse: ProductCategoryActionError?
 
     /// Indicates how many times respones where consumed
     ///
@@ -165,10 +120,9 @@ private final class MockProductCategoryStoresManager: DefaultStoresManager {
 
     private func handleProductCategoryAction(_ action: ProductCategoryAction) {
         switch action {
-        case let .synchronizeProductCategories(_, pageNumber, _, onCompletion):
-            let response = productCategoryResponses[pageNumber - 1]
+        case let .synchronizeProductCategories(_, _, onCompletion):
             numberOfResponsesConsumed = numberOfResponsesConsumed + 1
-            onCompletion(response.categories, response.error)
+            onCompletion(productCategoryResponse)
         }
     }
 }

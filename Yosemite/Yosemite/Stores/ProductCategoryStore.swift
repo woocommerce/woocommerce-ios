@@ -25,16 +25,48 @@ public final class ProductCategoryStore: Store {
         }
 
         switch action {
-        case .synchronizeProductCategories(let siteID, let pageNumber, let pageSize, let onCompletion):
-            synchronizeProductCategories(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case let .synchronizeProductCategories(siteID, fromPageNumber, onCompletion):
+            synchronizeAllProductCategories(siteID: siteID, fromPageNumber: fromPageNumber, onCompletion: onCompletion)
         }
     }
 }
 
-
 // MARK: - Services
 //
 private extension ProductCategoryStore {
+
+    /// Synchronizes all product categories associated with a given Site ID, starting at a specific page number.
+    ///
+    func synchronizeAllProductCategories(siteID: Int64, fromPageNumber: Int, onCompletion: @escaping (ProductCategoryActionError?) -> Void) {
+        // Start fetching the provided initial page
+        synchronizeProductCategories(siteID: siteID, pageNumber: fromPageNumber, pageSize: Default.maxPageSize) { [weak self] categories, error in
+            guard let self = self  else {
+                return
+            }
+
+            // If there is an error, end the recursion and call `onCompletion` with an `error`
+            if let error = error {
+                let synchronizationError = ProductCategoryActionError.categoriesSynchronization(pageNumber: fromPageNumber, rawError: error)
+                onCompletion(synchronizationError)
+                return
+            }
+
+            // If categories is nil, end the recursion and call `onCompletion`
+            if categories == nil {
+                onCompletion(nil)
+                return
+            }
+
+            // If categories is empty, end the recursion and call `onCompletion`
+            if let categories = categories, categories.isEmpty {
+                onCompletion(nil)
+                return
+            }
+
+            // Request the next page recursively
+            self.synchronizeAllProductCategories(siteID: siteID, fromPageNumber: fromPageNumber + 1, onCompletion: onCompletion)
+        }
+    }
 
     /// Synchronizes product categories associated with a given Site ID.
     ///
@@ -107,5 +139,13 @@ private extension ProductCategoryStore {
             }()
             storageProductCategory.update(with: readOnlyProductCategory)
         }
+    }
+}
+
+// MARK: - Default
+//
+private extension ProductCategoryStore {
+    enum Default {
+        public static let maxPageSize = 100 // Max number allwed by the API to maximize our changces on getting all items in one request.
     }
 }

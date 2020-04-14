@@ -42,6 +42,8 @@
 		26615475242D7C9500A31661 /* ProductCategoryListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26615474242D7C9500A31661 /* ProductCategoryListMapper.swift */; };
 		26615479242DA54D00A31661 /* ProductCategoyListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26615478242DA54D00A31661 /* ProductCategoyListMapperTests.swift */; };
 		2661547B242DAC1C00A31661 /* ProductCategoriesRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2661547A242DAC1C00A31661 /* ProductCategoriesRemoteTests.swift */; };
+		2683D70E24456DB8002A1589 /* categories-empty.json in Resources */ = {isa = PBXBuildFile; fileRef = 2683D70D24456DB7002A1589 /* categories-empty.json */; };
+		2683D71024456EE4002A1589 /* categories-extra.json in Resources */ = {isa = PBXBuildFile; fileRef = 2683D70F24456EE4002A1589 /* categories-extra.json */; };
 		450106852399A7CB00E24722 /* TaxClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106842399A7CB00E24722 /* TaxClass.swift */; };
 		4501068F2399B19500E24722 /* TaxClassRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4501068E2399B19500E24722 /* TaxClassRemote.swift */; };
 		450106912399B2C800E24722 /* TaxClassListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106902399B2C800E24722 /* TaxClassListMapper.swift */; };
@@ -361,6 +363,8 @@
 		26615474242D7C9500A31661 /* ProductCategoryListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryListMapper.swift; sourceTree = "<group>"; };
 		26615478242DA54D00A31661 /* ProductCategoyListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoyListMapperTests.swift; sourceTree = "<group>"; };
 		2661547A242DAC1C00A31661 /* ProductCategoriesRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoriesRemoteTests.swift; sourceTree = "<group>"; };
+		2683D70D24456DB7002A1589 /* categories-empty.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "categories-empty.json"; sourceTree = "<group>"; };
+		2683D70F24456EE4002A1589 /* categories-extra.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "categories-extra.json"; sourceTree = "<group>"; };
 		450106842399A7CB00E24722 /* TaxClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClass.swift; sourceTree = "<group>"; };
 		4501068E2399B19500E24722 /* TaxClassRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassRemote.swift; sourceTree = "<group>"; };
 		450106902399B2C800E24722 /* TaxClassListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassListMapper.swift; sourceTree = "<group>"; };
@@ -973,6 +977,8 @@
 				B57B1E6B21C94C9F0046E764 /* timeout_error.json */,
 				743E84FB22174CE000FAC9D7 /* restnoroute_error.json */,
 				265BCA01243056E3004E53EE /* categories-all.json */,
+				2683D70F24456EE4002A1589 /* categories-extra.json */,
+				2683D70D24456DB7002A1589 /* categories-empty.json */,
 				74C9477F2193A6C60024CB60 /* comment-moderate-approved.json */,
 				74C9477E2193A6C60024CB60 /* comment-moderate-trash.json */,
 				74C947812193A6C70024CB60 /* comment-moderate-unapproved.json */,
@@ -1354,6 +1360,7 @@
 				265BCA02243056E3004E53EE /* categories-all.json in Resources */,
 				D8FBFF2422D52815006E3336 /* order-stats-v4-daily.json in Resources */,
 				CEC4BF91234E40B5008D9195 /* refund-single.json in Resources */,
+				2683D70E24456DB8002A1589 /* categories-empty.json in Resources */,
 				D8736B6222F089E200A14A29 /* orders-count.json in Resources */,
 				D823D90B22376EFE00C90817 /* shipment_tracking_delete.json in Resources */,
 				74C947832193A6C70024CB60 /* comment-moderate-trash.json in Resources */,
@@ -1402,6 +1409,7 @@
 				CE0A0F1F223998A10075ED8D /* products-load-all.json in Resources */,
 				74E30951216E8DCE00ABCE4C /* site-visits-alt.json in Resources */,
 				74ABA1C5213F17AA00FFAD30 /* top-performers-day.json in Resources */,
+				2683D71024456EE4002A1589 /* categories-extra.json in Resources */,
 				CECC759E23D6231A00486676 /* order-560-all-refunds.json in Resources */,
 				74ABA1CB213F19FE00FFAD30 /* top-performers-week.json in Resources */,
 				B524194721AC643900D6FC0A /* device-settings.json in Resources */,

@@ -103,43 +103,26 @@ private extension ProductCategoryListViewModel {
     /// Synchronizes all product categories starting at a specific page number. Default initial page number is set on `Default.firstPageNumber`
     ///
     func synchronizeAllCategories(fromPageNumber: Int = Default.firstPageNumber) {
-        // Start fetching the provided initial page and set the state as syncsynchronizeCategoriesing
         self.syncCategoriesState = .syncing
-        synchronizeCategories(pageNumber: fromPageNumber, pageSize: Default.pageSize) { [weak self] categories, error in
-            guard let self = self  else {
-                return
-            }
-
-            // If there is an error, end the recursion and set the sync state as .failed
-            if error != nil {
-                let retryToken = RetryToken(fromPageNumber: fromPageNumber)
-                self.syncCategoriesState = .failed(retryToken)
-                return
-            }
-
-            // If there isn't new categories, end the recursion and set the sync state as .synced
-            if let categories = categories, categories.isEmpty {
-                self.syncCategoriesState = .synced
-                return
-            }
-
-            // Request the next page recursively
-            self.synchronizeAllCategories(fromPageNumber: fromPageNumber + 1)
-        }
-    }
-
-    /// Synchronizes product categories with a given page number and page size.
-    ///
-    func synchronizeCategories(pageNumber: Int, pageSize: Int, onCompletion: @escaping (([ProductCategory]?, Error?) -> Void)) {
-        let action = ProductCategoryAction.synchronizeProductCategories(siteID: product.siteID,
-                                                                        pageNumber: pageNumber,
-                                                                        pageSize: pageSize) { categories, error in
+        let action = ProductCategoryAction.synchronizeProductCategories(siteID: product.siteID, fromPageNumber: fromPageNumber) { [weak self] error in
             if let error = error {
-                DDLogError("⛔️ Error fetching product categories: \(error.localizedDescription)")
+                self?.handleSychronizeAllCategoriesError(error)
+                return
             }
-            onCompletion(categories, error)
+            self?.syncCategoriesState = .synced
         }
         ServiceLocator.stores.dispatch(action)
+    }
+
+    /// Update `syncCategoriesState` with the proper retryToken
+    ///
+    func handleSychronizeAllCategoriesError(_ error: ProductCategoryActionError) {
+        switch error {
+        case let .categoriesSynchronization(pageNumber, rawError):
+            let retryToken = RetryToken(fromPageNumber: pageNumber)
+            syncCategoriesState = .failed(retryToken)
+            DDLogError("⛔️ Error fetching product categories: \(rawError.localizedDescription)")
+        }
     }
 }
 
@@ -148,6 +131,5 @@ private extension ProductCategoryListViewModel {
 private extension ProductCategoryListViewModel {
     enum Default {
         public static let firstPageNumber = 1
-        public static let pageSize = 100 // Max number allwed by the API to maximize our changces on getting all items in one request.
     }
 }

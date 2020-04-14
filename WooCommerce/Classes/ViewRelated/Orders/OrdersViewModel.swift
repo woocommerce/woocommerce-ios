@@ -76,12 +76,6 @@ final class OrdersViewModel {
     ///
     func activateAndForwardUpdates(to tableView: UITableView) {
         resultsController.startForwardingEvents(to: tableView)
-        performFetch()
-    }
-
-    /// Fetch DB results from the database.
-    ///
-    func performFetch() {
         try? resultsController.performFetch()
     }
 

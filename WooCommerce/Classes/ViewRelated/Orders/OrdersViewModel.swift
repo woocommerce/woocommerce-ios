@@ -1,6 +1,7 @@
 
 import Foundation
 import Yosemite
+import protocol Storage.StorageManagerType
 
 /// ViewModel for `OrdersViewController`.
 ///
@@ -19,6 +20,21 @@ final class OrdersViewModel {
     ///
     enum SyncReason: String {
         case pullToRefresh = "pull_to_refresh"
+    }
+
+    private let storageManager: StorageManagerType
+
+    /// Should be bound to the UITableView to auto-update the list of Orders.
+    ///
+    private(set) lazy var resultsController: ResultsController<StorageOrder> = {
+        let storageManager = ServiceLocator.storageManager
+        let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
+
+        return ResultsController<StorageOrder>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
+    }()
+
+    init(storageManager: StorageManagerType = ServiceLocator.storageManager) {
+        self.storageManager = storageManager
     }
 
     /// Returns what `OrderAction` should be used when synchronizing.

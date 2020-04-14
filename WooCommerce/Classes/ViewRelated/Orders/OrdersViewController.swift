@@ -46,15 +46,6 @@ class OrdersViewController: UIViewController {
         return FooterSpinnerView(tableViewStyle: tableView.style)
     }()
 
-    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Orders in sync.
-    ///
-    private lazy var resultsController: ResultsController<StorageOrder> = {
-        let storageManager = ServiceLocator.storageManager
-        let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
-
-        return ResultsController<StorageOrder>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
-    }()
-
     /// Used for looking up the `OrderStatus` to show in the `OrderTableViewCell`.
     ///
     /// The `OrderStatus` data is fetched from the API by `OrdersMasterViewModel`.

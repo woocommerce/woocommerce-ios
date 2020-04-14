@@ -70,6 +70,22 @@ final class OrdersViewModel {
         self.statusFilter = statusFilter
     }
 
+    /// Start fetching DB results and forward new changes to the given `tableView`.
+    ///
+    /// This is the main activation method for this ViewModel. This should only be called once.
+    /// And only when the corresponding view was loaded.
+    ///
+    func activateAndForwardUpdates(to tableView: UITableView) {
+        resultsController.startForwardingEvents(to: tableView)
+        performFetch()
+    }
+
+    /// Fetch DB results from the database.
+    ///
+    func performFetch() {
+        try? resultsController.performFetch()
+    }
+
     /// Returns what `OrderAction` should be used when synchronizing.
     ///
     /// Pulling to refresh on filtered lists, like the Processing tab, will perform 2 network GET

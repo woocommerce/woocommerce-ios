@@ -109,6 +109,8 @@ class OrdersViewController: UIViewController {
         configureGhostableTableView()
         configureResultsControllers()
 
+        configureViewModel()
+
         startListeningToNotifications()
     }
 
@@ -127,8 +129,10 @@ class OrdersViewController: UIViewController {
 // MARK: - User Interface Initialization
 //
 private extension OrdersViewController {
-    /// Setup: Order filtering
+    /// Initialize ViewModel operations
     ///
+    func configureViewModel() {
+        viewModel.activateAndForwardUpdates(to: tableView)
     }
 
     /// Setup: Order status predicate
@@ -150,10 +154,6 @@ private extension OrdersViewController {
     /// Setup: Results Controller
     ///
     func configureResultsControllers() {
-        // Orders FRC
-        resultsController.startForwardingEvents(to: tableView)
-        try? resultsController.performFetch()
-
         // Order status FRC
         try? statusResultsController.performFetch()
     }

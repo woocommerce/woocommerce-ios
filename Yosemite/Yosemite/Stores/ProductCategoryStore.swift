@@ -79,7 +79,7 @@ private extension ProductCategoryStore {
                 return
             }
 
-            if pageNumber == Default.firstPageNumber {
+            if pageNumber == ProductCategoryStore.Default.firstPageNumber {
                 self?.deleteUnusedStoredProductCategories(siteID: siteID)
             }
 
@@ -144,8 +144,6 @@ private extension ProductCategoryStore {
 
 // MARK: - Default
 //
-private extension ProductCategoryStore {
-    enum Default {
-        public static let maxPageSize = 100 // Max number allwed by the API to maximize our changces on getting all items in one request.
-    }
+private extension Store.Default {
+    static let maxPageSize = 100 // Max number allwed by the API to maximize our changces on getting all items in one request.
 }

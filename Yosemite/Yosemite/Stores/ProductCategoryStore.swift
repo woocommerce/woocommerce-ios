@@ -39,7 +39,7 @@ private extension ProductCategoryStore {
     ///
     func synchronizeAllProductCategories(siteID: Int64, fromPageNumber: Int, onCompletion: @escaping (ProductCategoryActionError?) -> Void) {
         // Start fetching the provided initial page
-        synchronizeProductCategories(siteID: siteID, pageNumber: fromPageNumber, pageSize: Default.maxPageSize) { [weak self] categories, error in
+        synchronizeProductCategories(siteID: siteID, pageNumber: fromPageNumber, pageSize: Constants.defaultMaxPageSize) { [weak self] categories, error in
             guard let self = self  else {
                 return
             }
@@ -142,8 +142,12 @@ private extension ProductCategoryStore {
     }
 }
 
-// MARK: - Default
+// MARK: - Constant
 //
-private extension Store.Default {
-    static let maxPageSize = 100 // Max number allwed by the API to maximize our changces on getting all items in one request.
+private extension ProductCategoryStore {
+    enum Constants {
+        /// Max number allwed by the API to maximize our changces on getting all item in one request.
+        ///
+        static let defaultMaxPageSize = 100
+    }
 }

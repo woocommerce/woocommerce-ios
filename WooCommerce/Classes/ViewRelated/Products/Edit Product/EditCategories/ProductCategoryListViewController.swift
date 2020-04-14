@@ -82,6 +82,8 @@ private extension ProductCategoryListViewController {
         viewModel.performInitialFetch()
         viewModel.observeCategoryListStateChanges { [weak self] syncState in
             switch syncState {
+            case .initialized:
+                break
             case .syncing:
                 self?.displayGhostTableView()
             case let .failed(pageNumber):
@@ -89,8 +91,6 @@ private extension ProductCategoryListViewController {
                 self?.displaySyncingErrorNotice(pageNumber: pageNumber)
             case .synced:
                 self?.removeGhostTableView()
-            default:
-                break
             }
         }
     }

@@ -3,9 +3,9 @@ import XCTest
 @testable import WooCommerce
 @testable import Yosemite
 
-/// Tests for `ProductCategoryViewModelTests`.
+/// Tests for `ProductCategoryViewModelBuilderTests`.
 ///
-final class ProductCategoryViewModelTests: XCTestCase {
+final class ProductCategoryViewModelBuilderTests: XCTestCase {
 
     /// Sample siteID
     ///
@@ -16,7 +16,7 @@ final class ProductCategoryViewModelTests: XCTestCase {
         let categories = sampleCategories(initialID: 1, count: 10)
 
         // When
-        let viewModels = ProductCategoryViewModel.viewModels(from: categories, selectedCategories: [])
+        let viewModels = ProductCategoryViewModelBuilder.viewModels(from: categories, selectedCategories: [])
 
         // Then
         let expectedCategoriesNames = categories.map { $0.name }
@@ -32,7 +32,7 @@ final class ProductCategoryViewModelTests: XCTestCase {
         let allCategories = rootCategories + subCategories1 + subCategories2
 
         // When
-        let viewModels = ProductCategoryViewModel.viewModels(from: allCategories, selectedCategories: [])
+        let viewModels = ProductCategoryViewModelBuilder.viewModels(from: allCategories, selectedCategories: [])
 
         // Then
         let expectedCategoriesNames: [String] = {
@@ -53,7 +53,7 @@ final class ProductCategoryViewModelTests: XCTestCase {
         let allCategories = rootCategories + subCategories1 + subCategories2
 
         // When
-        let viewModels = ProductCategoryViewModel.viewModels(from: allCategories, selectedCategories: [])
+        let viewModels = ProductCategoryViewModelBuilder.viewModels(from: allCategories, selectedCategories: [])
 
         // Then
         let rootCategoriesNames = rootCategories.map { $0.name }
@@ -80,7 +80,7 @@ final class ProductCategoryViewModelTests: XCTestCase {
         let selectedCategories = sampleCategories(initialID: 3, count: 5)
 
         // When
-        let viewModels = ProductCategoryViewModel.viewModels(from: categories, selectedCategories: selectedCategories)
+        let viewModels = ProductCategoryViewModelBuilder.viewModels(from: categories, selectedCategories: selectedCategories)
 
         // Then
         let selectedCategoryNames = selectedCategories.map { $0.name }
@@ -96,7 +96,7 @@ final class ProductCategoryViewModelTests: XCTestCase {
         let allCategories = rootCategories + subCategories1
 
         // Then
-        let viewModels = ProductCategoryViewModel.viewModels(from: allCategories, selectedCategories: selectedCategories)
+        let viewModels = ProductCategoryViewModelBuilder.viewModels(from: allCategories, selectedCategories: selectedCategories)
 
         // When
         let selectedCategoryNames = selectedCategories.map { $0.name }
@@ -107,7 +107,7 @@ final class ProductCategoryViewModelTests: XCTestCase {
 
 // MARK: Helpers
 //
-private extension ProductCategoryViewModelTests {
+private extension ProductCategoryViewModelBuilderTests {
     func sampleCategories(initialID: Int64, parentID: Int64 = 0, count: Int64) -> [ProductCategory] {
         return (initialID..<initialID + count).map {
             return sampleCategory(parentID: parentID, categoryID: $0)

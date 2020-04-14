@@ -174,7 +174,7 @@ private extension ProductFormViewController {
         // Waits for all product images to be uploaded before updating the product remotely.
         group.enter()
         let observationToken = productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
-            guard productImageStatuses.hasImagesPendingUpload == false else {
+            guard productImageStatuses.hasPendingUpload == false else {
                 return
             }
 
@@ -423,7 +423,7 @@ extension ProductFormViewController {
     }
 
     private func hasUnsavedChanges(product: Product) -> Bool {
-        return product != originalProduct || productImageActionHandler.productImageStatuses.hasImagesPendingUpload
+        return product != originalProduct || productImageActionHandler.productImageStatuses.hasPendingUpload
     }
 }
 

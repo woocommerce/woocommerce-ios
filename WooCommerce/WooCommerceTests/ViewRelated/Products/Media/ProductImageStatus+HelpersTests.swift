@@ -7,14 +7,14 @@ import XCTest
 final class ProductImageStatus_HelpersTests: XCTestCase {
     // MARK: - `images`
 
-    func testWithoutRemoteImages() {
+    func testImagesReturnsEmptyIfThereAreNoRemoteImages() {
         let statuses: [ProductImageStatus] = [
             .uploading(asset: PHAsset())
         ]
         XCTAssertEqual(statuses.images, [])
     }
 
-    func testWithRemoteImages() {
+    func testImagesReturnsProductImagesIfThereAreRemoteImages() {
         let productImage = ProductImage(imageID: 17, dateCreated: Date(), dateModified: Date(), src: "", name: nil, alt: nil)
 
         let statuses: [ProductImageStatus] = [
@@ -24,27 +24,27 @@ final class ProductImageStatus_HelpersTests: XCTestCase {
         XCTAssertEqual(statuses.images, [productImage])
     }
 
-    // MARK: - `hasImagesPendingUpload`
+    // MARK: - `hasPendingUpload`
 
-    func testHasImagesPendingUploadWithNoImages() {
+    func testHasPendingUploadWithNoImages() {
         let statuses: [ProductImageStatus] = []
-        XCTAssertFalse(statuses.hasImagesPendingUpload)
+        XCTAssertFalse(statuses.hasPendingUpload)
     }
 
-    func testHasImagesPendingUploadWithAllRemoteImages() {
+    func testHasPendingUploadWithAllRemoteImages() {
         let productImage = ProductImage(imageID: 17, dateCreated: Date(), dateModified: Date(), src: "", name: nil, alt: nil)
 
         let statuses: [ProductImageStatus] = [.remote(image: productImage), .remote(image: productImage)]
-        XCTAssertFalse(statuses.hasImagesPendingUpload)
+        XCTAssertFalse(statuses.hasPendingUpload)
     }
 
-    func testHasImagesPendingUploadWithBothStatusTypes() {
+    func testHasPendingUploadWithBothStatusTypes() {
         let productImage = ProductImage(imageID: 17, dateCreated: Date(), dateModified: Date(), src: "", name: nil, alt: nil)
 
         let statuses: [ProductImageStatus] = [
             .uploading(asset: PHAsset()),
             .remote(image: productImage)
         ]
-        XCTAssertTrue(statuses.hasImagesPendingUpload)
+        XCTAssertTrue(statuses.hasPendingUpload)
     }
 }

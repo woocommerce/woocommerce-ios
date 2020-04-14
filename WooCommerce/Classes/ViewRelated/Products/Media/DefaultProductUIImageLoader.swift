@@ -13,6 +13,8 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
 
     private let productImageActionHandler: ProductImageActionHandler?
 
+    private var activeImageTasks = [ImageDownloadTask]()
+
     private let phAssetImageLoaderProvider: (() -> PHAssetImageLoader)?
     /// `PHAssetImageLoader` is lazy loaded to avoid triggering permission alert by initializing `PHImageManager` before it is used.
     private lazy var phAssetImageLoader: PHAssetImageLoader = {
@@ -42,21 +44,30 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
         }
     }
 
-    func requestImage(productImage: ProductImage, completion: @escaping (UIImage) -> Void) {
+    deinit {
+        activeImageTasks.forEach { $0.cancel() }
+        activeImageTasks.removeAll()
+    }
+
+    func requestImage(productImage: ProductImage, completion: @escaping (UIImage) -> Void) -> Cancellable? {
         if let image = imagesByProductImageID[productImage.imageID] {
             completion(image)
-            return
+            return nil
         }
         guard let url = URL(string: productImage.src) else {
-            return
+            return nil
         }
-        imageService.downloadImage(with: url, shouldCacheImage: true) { [weak self] (image, error) in
+        let task = imageService.downloadImage(with: url, shouldCacheImage: true) { [weak self] (image, error) in
             guard let image = image else {
                 return
             }
             self?.imagesByProductImageID[productImage.imageID] = image
             completion(image)
         }
+        if let task = task {
+            activeImageTasks.append(task)
+        }
+        return task
     }
 
     func requestImage(asset: PHAsset, targetSize: CGSize, completion: @escaping (UIImage) -> Void) {

@@ -1,8 +1,6 @@
 /// WordPress Site Media
-/// Note: this is an `NSObject` class instead of a struct because it has to conform to `WPMediaAsset` protocol defined in
-/// Objective-C.
 ///
-public class Media: NSObject, Decodable {
+public struct Media {
     public let mediaID: Int64
     public let date: Date    // gmt iso8601
     public let fileExtension: String
@@ -37,10 +35,12 @@ public class Media: NSObject, Decodable {
         self.height = height
         self.width = width
     }
+}
 
+extension Media: Decodable {
     /// Decodable Initializer.
     ///
-    required public convenience init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let mediaID = try container.decode(Int64.self, forKey: .mediaID)

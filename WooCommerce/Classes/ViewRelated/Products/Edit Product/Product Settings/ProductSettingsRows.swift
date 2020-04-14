@@ -138,7 +138,7 @@ enum ProductSettingsRows {
             }
 
             let titleView = NSLocalizedString("Purchase Note", comment: "Purchase note label in Product Settings")
-            cell.updateUI(title: titleView, value: settings.purchaseNote)
+            cell.updateUI(title: titleView, value: settings.purchaseNote?.strippedHTML)
             cell.accessoryType = .disclosureIndicator
         }
 

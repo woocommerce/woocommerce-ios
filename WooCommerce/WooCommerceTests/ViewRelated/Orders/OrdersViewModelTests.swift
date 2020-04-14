@@ -290,4 +290,3 @@ private extension OrdersViewModelTests {
         return readonlyOrder
     }
 }
-

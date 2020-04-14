@@ -169,6 +169,16 @@ private extension ProductFormViewController {
 
         navigationController?.present(inProgressViewController, animated: true, completion: nil)
 
+        updateProductRemotely()
+    }
+
+    func updateProductRemotely() {
+        waitUntilAllImagesAreUploaded { [weak self] in
+            self?.dispatchUpdateProductAction()
+        }
+    }
+
+    func waitUntilAllImagesAreUploaded(onCompletion: @escaping () -> Void) {
         let group = DispatchGroup()
 
         // Waits for all product images to be uploaded before updating the product remotely.
@@ -186,13 +196,13 @@ private extension ProductFormViewController {
             group.leave()
         }
 
-        group.notify(queue: .main) { [weak self] in
+        group.notify(queue: .main) {
             observationToken.cancel()
-            self?.updateProductRemotely()
+            onCompletion()
         }
     }
 
-    func updateProductRemotely() {
+    func dispatchUpdateProductAction() {
         let action = ProductAction.updateProduct(product: product) { [weak self] (product, error) in
             guard let product = product, error == nil else {
                 let errorDescription = error?.localizedDescription ?? "No error specified"

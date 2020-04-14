@@ -26,12 +26,11 @@ final class OrdersViewModelTests: XCTestCase {
     //
     func testPullingToRefreshOnFilteredListItDeletesAndPerformsDualFetch() {
         // Arrange
-        let viewModel = OrdersViewModel()
+        let viewModel = OrdersViewModel(statusFilter: orderStatus(with: .processing))
 
         // Act
         let action = viewModel.synchronizationAction(
             siteID: siteID,
-            statusKey: OrderStatusEnum.processing.rawValue,
             pageNumber: Defaults.pageFirstIndex,
             pageSize: pageSize,
             reason: SyncReason.pullToRefresh,
@@ -53,12 +52,11 @@ final class OrdersViewModelTests: XCTestCase {
     //
     func testFirstPageLoadOnFilteredListWithNonPullToRefreshReasonsWillOnlyPerformDualFetch() {
         // Arrange
-        let viewModel = OrdersViewModel()
+        let viewModel = OrdersViewModel(statusFilter: orderStatus(with: .processing))
 
         // Act
         let action = viewModel.synchronizationAction(
             siteID: siteID,
-            statusKey: OrderStatusEnum.processing.rawValue,
             pageNumber: Defaults.pageFirstIndex,
             pageSize: pageSize,
             reason: nil,
@@ -81,12 +79,11 @@ final class OrdersViewModelTests: XCTestCase {
     //
     func testPullingToRefreshOnAllOrdersListDeletesAndFetchesFirstPageOfAllOrdersOnly() {
         // Arrange
-        let viewModel = OrdersViewModel()
+        let viewModel = OrdersViewModel(statusFilter: nil)
 
         // Act
         let action = viewModel.synchronizationAction(
             siteID: siteID,
-            statusKey: nil,
             pageNumber: Defaults.pageFirstIndex,
             pageSize: pageSize,
             reason: SyncReason.pullToRefresh,
@@ -108,12 +105,11 @@ final class OrdersViewModelTests: XCTestCase {
     //
     func testFirstPageLoadOnAllOrdersListWithNonPullToRefreshReasonsWillOnlyPerformSingleFetch() {
         // Arrange
-        let viewModel = OrdersViewModel()
+        let viewModel = OrdersViewModel(statusFilter: nil)
 
         // Act
         let action = viewModel.synchronizationAction(
             siteID: siteID,
-            statusKey: nil,
             pageNumber: Defaults.pageFirstIndex,
             pageSize: pageSize,
             reason: nil,
@@ -131,12 +127,11 @@ final class OrdersViewModelTests: XCTestCase {
 
     func testSubsequentPageLoadsOnFilteredListWillFetchTheGivenPageOnThatList() {
         // Arrange
-        let viewModel = OrdersViewModel()
+        let viewModel = OrdersViewModel(statusFilter: orderStatus(with: .pending))
 
         // Act
         let action = viewModel.synchronizationAction(
             siteID: siteID,
-            statusKey: OrderStatusEnum.pending.rawValue,
             pageNumber: Defaults.pageFirstIndex + 3,
             pageSize: pageSize,
             reason: nil,
@@ -155,12 +150,11 @@ final class OrdersViewModelTests: XCTestCase {
 
     func testSubsequentPageLoadsOnAllOrdersListWillFetchTheGivenPageOnThatList() {
         // Arrange
-        let viewModel = OrdersViewModel()
+        let viewModel = OrdersViewModel(statusFilter: nil)
 
         // Act
         let action = viewModel.synchronizationAction(
             siteID: siteID,
-            statusKey: nil,
             pageNumber: Defaults.pageFirstIndex + 5,
             pageSize: pageSize,
             reason: nil,
@@ -175,5 +169,13 @@ final class OrdersViewModelTests: XCTestCase {
         XCTAssertNil(statusKey)
         XCTAssertEqual(pageNumber, Defaults.pageFirstIndex + 5)
         XCTAssertEqual(pageSize, self.pageSize)
+    }
+}
+
+// MARK: - Builders
+
+private extension OrdersViewModelTests {
+    func orderStatus(with status: OrderStatusEnum) -> OrderStatus {
+        OrderStatus(name: nil, siteID: siteID, slug: status.rawValue, total: 0)
     }
 }

@@ -24,6 +24,10 @@ final class OrdersViewModel {
 
     private let storageManager: StorageManagerType
 
+    /// OrderStatus that must be matched by retrieved orders.
+    ///
+    let statusFilter: OrderStatus?
+
     /// Should be bound to the UITableView to auto-update the list of Orders.
     ///
     private lazy var resultsController: ResultsController<StorageOrder> = {
@@ -60,10 +64,6 @@ final class OrdersViewModel {
     var isFiltered: Bool {
         statusFilter != nil
     }
-
-    /// OrderStatus that must be matched by retrieved orders.
-    ///
-    private let statusFilter: OrderStatus?
 
     init(storageManager: StorageManagerType = ServiceLocator.storageManager, statusFilter: OrderStatus?) {
         self.storageManager = storageManager
@@ -149,11 +149,13 @@ final class OrdersViewModel {
     /// | Load next page   | All Orders  | .          | .                      | y               |
     ///
     func synchronizationAction(siteID: Int64,
-                               statusKey: String?,
                                pageNumber: Int,
                                pageSize: Int,
                                reason: SyncReason?,
                                completionHandler: @escaping (Error?) -> Void) -> OrderAction {
+
+        let statusKey = statusFilter?.slug
+
         if pageNumber == Defaults.pageFirstIndex {
             let deleteAllBeforeSaving = reason == SyncReason.pullToRefresh
 

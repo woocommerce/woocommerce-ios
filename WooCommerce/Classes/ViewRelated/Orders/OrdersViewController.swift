@@ -260,7 +260,6 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
 
         let action = viewModel.synchronizationAction(
             siteID: siteID,
-            statusKey: statusFilter?.slug,
             pageNumber: pageNumber,
             pageSize: pageSize,
             reason: SyncReason(rawValue: reason ?? "")) { [weak self] error in
@@ -272,7 +271,8 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
                     DDLogError("⛔️ Error synchronizing orders: \(error)")
                     self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize, reason: reason)
                 } else {
-                    ServiceLocator.analytics.track(.ordersListLoaded, withProperties: ["status": self.statusFilter?.slug ?? String()])
+                    let status = self.viewModel.statusFilter?.slug ?? String()
+                    ServiceLocator.analytics.track(.ordersListLoaded, withProperties: ["status": status])
                 }
 
                 self.transitionToResultsUpdatedState()

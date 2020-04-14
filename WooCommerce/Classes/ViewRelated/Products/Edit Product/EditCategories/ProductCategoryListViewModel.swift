@@ -94,7 +94,7 @@ private extension ProductCategoryListViewModel {
                 self?.handleSychronizeAllCategoriesError(error)
                 return
             }
-            self.updateViewModelsArray()
+            self?.updateViewModelsArray()
             self?.syncCategoriesState = .synced
         }
         storesManager.dispatch(action)

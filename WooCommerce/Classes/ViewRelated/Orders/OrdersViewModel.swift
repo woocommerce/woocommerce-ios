@@ -186,6 +186,36 @@ extension OrdersViewModel {
 
         return OrderDetailsViewModel(order: order)
     }
+
+    /// The number of DB results
+    ///
+    var numberOfObjects: Int {
+        resultsController.numberOfObjects
+    }
+
+    /// Converts the `rowIndexPath` to an `index` belonging to `numberOfObjects`.
+    ///
+    func objectIndex(from rowIndexPath: IndexPath) -> Int {
+        resultsController.objectIndex(from: rowIndexPath)
+    }
+
+    /// The number of sections that should be displayed
+    ///
+    var numberOfSections: Int {
+        resultsController.sections.count
+    }
+
+    /// Returns the number of rows in the given `section` index.
+    ///
+    func numberOfRows(in section: Int) -> Int {
+        resultsController.sections[section].numberOfObjects
+    }
+
+    /// Returns the `SectionInfo` for the given section index.
+    ///
+    func sectionInfo(at index: Int) -> ResultsController<StorageOrder>.SectionInfo {
+        resultsController.sections[index]
+    }
 }
 
 // MARK: - Constants

@@ -305,7 +305,7 @@ extension OrdersViewController {
             return false
         }
 
-        return highestPageBeingSynced * SyncingCoordinator.Defaults.pageSize > resultsController.numberOfObjects
+        return highestPageBeingSynced * SyncingCoordinator.Defaults.pageSize > viewModel.numberOfObjects
     }
 
     /// Stops animating the Footer Spinner.
@@ -425,11 +425,11 @@ private extension OrdersViewController {
 extension OrdersViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return resultsController.sections.count
+        viewModel.numberOfSections
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return resultsController.sections[section].numberOfObjects
+        viewModel.numberOfRows(in: section)
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -439,7 +439,7 @@ extension OrdersViewController: UITableViewDataSource {
 
         let detailsViewModel = viewModel.detailsViewModel(at: indexPath)
         let orderStatus = lookUpOrderStatus(for: detailsViewModel.order)
-        cell.configureCell(detailsViewModel: detailsViewModel, orderStatus: orderStatus)
+        cell.configureCell(viewModel: detailsViewModel, orderStatus: orderStatus)
         cell.layoutIfNeeded()
         return cell
     }
@@ -451,7 +451,7 @@ extension OrdersViewController: UITableViewDataSource {
         }
 
         header.leftText = {
-            let rawAge = resultsController.sections[section].name
+            let rawAge = viewModel.sectionInfo(at: section).name
             return Age(rawValue: rawAge)?.description
         }()
         header.rightText = nil
@@ -482,7 +482,7 @@ extension OrdersViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let orderIndex = resultsController.objectIndex(from: indexPath)
+        let orderIndex = viewModel.objectIndex(from: indexPath)
         syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: orderIndex)
     }
 }

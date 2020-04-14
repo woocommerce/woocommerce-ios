@@ -3,6 +3,9 @@ import Gridicons
 
 class TextViewTableViewCell: UITableViewCell {
 
+    @IBOutlet private weak var stackView: UIStackView!
+    
+    @IBOutlet weak var noteIconView: UIView!
     @IBOutlet var noteIconButton: UIButton!
 
     @IBOutlet var noteTextView: UITextView!
@@ -15,6 +18,7 @@ class TextViewTableViewCell: UITableViewCell {
             noteIconButton.setImage(newValue, for: .normal)
             noteIconButton.tintColor = .listForeground
             noteIconButton.layer.cornerRadius = noteIconButton.frame.width / 2
+            noteIconView.isHidden = newValue == nil
         }
     }
 

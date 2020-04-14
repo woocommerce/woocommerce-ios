@@ -125,7 +125,8 @@ private extension ProductPurchaseNoteViewController {
     }
 
     func configurePurchaseNote(cell: TextViewTableViewCell) {
-        cell.noteTextView.text = productSettings.purchaseNote
+        cell.iconImage = nil
+        cell.noteTextView.text = productSettings.purchaseNote?.strippedHTML
         cell.onTextChange = { [weak self] (text) in
             self?.productSettings.purchaseNote = text
         }

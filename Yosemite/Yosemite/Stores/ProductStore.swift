@@ -170,8 +170,9 @@ private extension ProductStore {
                 return
             }
 
-            self?.upsertStoredProductsInBackground(readOnlyProducts: [product]) {
-                onCompletion(product, nil)
+            self?.upsertStoredProductsInBackground(readOnlyProducts: [product]) { [weak self] in
+                let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: siteID, productID: productID)
+                onCompletion(storageProduct?.toReadOnly(), nil)
             }
         }
     }
@@ -187,8 +188,9 @@ private extension ProductStore {
                 return
             }
 
-            self?.upsertStoredProductsInBackground(readOnlyProducts: [product]) {
-                onCompletion(product, nil)
+            self?.upsertStoredProductsInBackground(readOnlyProducts: [product]) { [weak self] in
+                let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: product.siteID, productID: product.productID)
+                onCompletion(storageProduct?.toReadOnly(), nil)
             }
         }
     }

@@ -1,7 +1,7 @@
 import UIKit
 import Yosemite
 
-class ProductPurchaseNoteViewController: UIViewController {
+final class ProductPurchaseNoteViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
     

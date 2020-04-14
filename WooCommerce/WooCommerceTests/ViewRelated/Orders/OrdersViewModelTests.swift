@@ -3,6 +3,7 @@ import Foundation
 import XCTest
 @testable import WooCommerce
 import Yosemite
+import Storage
 
 private typealias SyncReason = OrdersViewModel.SyncReason
 private typealias Defaults = OrdersViewModel.Defaults
@@ -16,6 +17,22 @@ final class OrdersViewModelTests: XCTestCase {
 
     private let unimportantCompletionHandler: ((Error?) -> Void) = { _ in
         // noop
+    }
+
+    private var storageManager: StorageManagerType!
+
+    private var storage: StorageType {
+        storageManager.viewStorage
+    }
+
+    override func setUp() {
+        super.setUp()
+        storageManager = MockupStorageManager()
+    }
+
+    override func tearDown() {
+        storageManager = nil
+        super.tearDown()
     }
 
     // Test that when pulling to refresh on a filtered list (e.g. Processing tab), the action
@@ -170,12 +187,82 @@ final class OrdersViewModelTests: XCTestCase {
         XCTAssertEqual(pageNumber, Defaults.pageFirstIndex + 5)
         XCTAssertEqual(pageSize, self.pageSize)
     }
+
+    func testItLoadsTheFilteredOrdersFromTheDatabase() {
+        // Arrange
+        let viewModel = OrdersViewModel(storageManager: storageManager,
+                                        statusFilter: orderStatus(with: .processing))
+
+        let processingOrders = (0..<10).map { insertOrder(id: $0, status: .processing) }
+        let completedOrders = (100..<105).map { insertOrder(id: $0, status: .completed) }
+
+        XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), processingOrders.count + completedOrders.count)
+
+        // Act
+        viewModel.activateAndForwardUpdates(to: UITableView())
+
+        // Assert
+        XCTAssertTrue(viewModel.isFiltered)
+        XCTAssertFalse(viewModel.isEmpty)
+        XCTAssertEqual(viewModel.numberOfObjects, processingOrders.count)
+
+        let fetchedOrderIds = Set(viewModel.orders.map { $0.orderID })
+        let processingOrderIds = Set(processingOrders.map { $0.orderID })
+        XCTAssertEqual(fetchedOrderIds, processingOrderIds)
+    }
+}
+
+// MARK: - Helpers
+
+private extension OrdersViewModel {
+    /// Returns the Order instances for all the rows
+    ///
+    var orders: [Yosemite.Order] {
+        (0..<numberOfSections).flatMap { section in
+            (0..<numberOfRows(in: section)).map { row in
+                detailsViewModel(at: IndexPath(row: row, section: section)).order
+            }
+        }
+    }
 }
 
 // MARK: - Builders
 
 private extension OrdersViewModelTests {
-    func orderStatus(with status: OrderStatusEnum) -> OrderStatus {
+    func orderStatus(with status: OrderStatusEnum) -> Yosemite.OrderStatus {
         OrderStatus(name: nil, siteID: siteID, slug: status.rawValue, total: 0)
     }
+
+    func insertOrder(id orderID: Int64, status: OrderStatusEnum) -> Yosemite.Order {
+        let readonlyOrder = Order(siteID: siteID,
+                                  orderID: orderID,
+                                  parentID: 0,
+                                  customerID: 11,
+                                  number: "963",
+                                  statusKey: status.rawValue,
+                                  currency: "USD",
+                                  customerNote: "",
+                                  dateCreated: Date(),
+                                  dateModified: Date(),
+                                  datePaid: nil,
+                                  discountTotal: "30.00",
+                                  discountTax: "1.20",
+                                  shippingTotal: "0.00",
+                                  shippingTax: "0.00",
+                                  total: "31.20",
+                                  totalTax: "1.20",
+                                  paymentMethodTitle: "Credit Card (Stripe)",
+                                  items: [],
+                                  billingAddress: nil,
+                                  shippingAddress: nil,
+                                  shippingLines: [],
+                                  coupons: [],
+                                  refunds: [])
+
+        let storageOrder = storage.insertNewObject(ofType: StorageOrder.self)
+        storageOrder.update(with: readonlyOrder)
+
+        return readonlyOrder
+    }
 }
+

@@ -3,7 +3,43 @@ import Yosemite
 
 final class ProductCategoryListViewModel {
 
+    /// Obscure token that allows the view model to retry the synchronizeCategories operation
+    ///
+    struct RetryToken: Equatable {
+        fileprivate let fromPageNumber: Int
+    }
+
+    /// Represents the current state of `synchronizeCategories` action. Useful for the consumer to update it's UI upon changes
+    ///
+    enum SyncingState: Equatable {
+        case initialized
+        case syncing
+        case failed(RetryToken)
+        case synced
+    }
+
+    /// Reference to the StoresManager to dispatch Yosemite Actions.
+    ///
+    private let storesManager: StoresManager
+
+    /// Product the user is editiing
+    ///
     private let product: Product
+
+    /// Closure to be invoked when `synchronizeCategories` state  changes
+    ///
+    private var onSyncStateChange: ((SyncingState) -> Void)?
+
+    /// Current  category synchronization state
+    ///
+    private var syncCategoriesState: SyncingState = .initialized {
+        didSet {
+            guard syncCategoriesState != oldValue else {
+                return
+            }
+            onSyncStateChange?(syncCategoriesState)
+        }
+    }
 
     private lazy var resultController: ResultsController<StorageProductCategory> = {
         let storageManager = ServiceLocator.storageManager
@@ -12,7 +48,8 @@ final class ProductCategoryListViewModel {
         return ResultsController<StorageProductCategory>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
-    init(product: Product) {
+    init(storesManager: StoresManager = ServiceLocator.stores, product: Product) {
+        self.storesManager = storesManager
         self.product = product
     }
 
@@ -34,17 +71,28 @@ final class ProductCategoryListViewModel {
         return resultController.object(at: indexPath)
     }
 
-    /// Load existing categories from storage and fire the synchronize product categories action
+    /// Load existing categories from storage and fire the synchronize all categories action.
     ///
-    func performInitialFetch() {
-        syncronizeCategories()
+    func performFetch() {
+        synchronizeAllCategories()
         try? resultController.performFetch()
     }
 
-    /// Observes and notifies of changes made to product categories
+    /// Retry product categories synchronization when `syncCategoriesState` is on a `.failed` state.
     ///
-    func observeCategoryListChanges(onReload: @escaping () -> (Void)) {
-        observeResultControllerChanges(onReload: onReload)
+    func retryCategorySynchronization(retryToken: RetryToken) {
+        guard syncCategoriesState == .failed(retryToken) else {
+            return
+        }
+        synchronizeAllCategories(fromPageNumber: retryToken.fromPageNumber)
+    }
+
+    /// Observes and notifies of changes made to product categories. the current state will be dispatched upon subscription.
+    /// Calling this method will remove any other previous observer.
+    ///
+    func observeCategoryListStateChanges(onStateChanges: @escaping (SyncingState) -> Void) {
+        onSyncStateChange = onStateChanges
+        onSyncStateChange?(syncCategoriesState)
     }
 
     /// Returns `true` if the receiver's product contains the given category. Otherwise returns `false`
@@ -57,19 +105,36 @@ final class ProductCategoryListViewModel {
 // MARK: - Synchronize Categories
 //
 private extension ProductCategoryListViewModel {
-    func syncronizeCategories() {
-        /// TODO-2020: Page Number and PageSized to be updated when `SyncingCoordinator` is implemented.
-        let action = ProductCategoryAction.synchronizeProductCategories(siteID: product.siteID, pageNumber: 1, pageSize: 30) { error in
+    /// Synchronizes all product categories starting at a specific page number. Default initial page number is set on `Default.firstPageNumber`
+    ///
+    func synchronizeAllCategories(fromPageNumber: Int = Default.firstPageNumber) {
+        self.syncCategoriesState = .syncing
+        let action = ProductCategoryAction.synchronizeProductCategories(siteID: product.siteID, fromPageNumber: fromPageNumber) { [weak self] error in
             if let error = error {
-                DDLogError("⛔️ Error fetching product categories: \(error.localizedDescription)")
+                self?.handleSychronizeAllCategoriesError(error)
+                return
             }
+            self?.syncCategoriesState = .synced
         }
-        ServiceLocator.stores.dispatch(action)
+        storesManager.dispatch(action)
     }
 
-    func observeResultControllerChanges(onReload: @escaping () -> (Void)) {
-        resultController.onDidChangeContent = {
-            onReload()
+    /// Update `syncCategoriesState` with the proper retryToken
+    ///
+    func handleSychronizeAllCategoriesError(_ error: ProductCategoryActionError) {
+        switch error {
+        case let .categoriesSynchronization(pageNumber, rawError):
+            let retryToken = RetryToken(fromPageNumber: pageNumber)
+            syncCategoriesState = .failed(retryToken)
+            DDLogError("⛔️ Error fetching product categories: \(rawError.localizedDescription)")
         }
+    }
+}
+
+// MARK: - Constants
+//
+private extension ProductCategoryListViewModel {
+    enum Default {
+        public static let firstPageNumber = 1
     }
 }

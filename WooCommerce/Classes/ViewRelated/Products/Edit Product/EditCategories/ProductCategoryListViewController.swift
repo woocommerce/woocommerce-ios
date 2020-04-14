@@ -1,11 +1,13 @@
 import UIKit
 import Yosemite
+import WordPressUI
 
 /// ProductCategoryListViewController: Displays the list of ProductCategories associated to the active Account.
 ///
 final class ProductCategoryListViewController: UIViewController {
 
     @IBOutlet private var tableView: UITableView!
+    private let ghostTableView = UITableView()
 
     private let viewModel: ProductCategoryListViewModel
 
@@ -22,6 +24,7 @@ final class ProductCategoryListViewController: UIViewController {
         super.viewDidLoad()
         registerTableViewCells()
         configureTableView()
+        configureGhostTableView()
         configureNavigationBar()
         configureViewModel()
     }
@@ -32,6 +35,7 @@ final class ProductCategoryListViewController: UIViewController {
 private extension ProductCategoryListViewController {
     func registerTableViewCells() {
         tableView.register(ProductCategoryTableViewCell.loadNib(), forCellReuseIdentifier: ProductCategoryTableViewCell.reuseIdentifier)
+        ghostTableView.register(ProductCategoryTableViewCell.loadNib(), forCellReuseIdentifier: ProductCategoryTableViewCell.reuseIdentifier)
     }
 
     func configureTableView() {
@@ -40,6 +44,15 @@ private extension ProductCategoryListViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.removeLastCellSeparator()
+    }
+
+    func configureGhostTableView() {
+        view.addSubview(ghostTableView)
+        ghostTableView.isHidden = true
+        ghostTableView.translatesAutoresizingMaskIntoConstraints = false
+        ghostTableView.pinSubviewToAllEdges(view)
+        ghostTableView.backgroundColor = .listBackground
+        ghostTableView.removeLastCellSeparator()
     }
 
     func configureNavigationBar() {
@@ -66,9 +79,19 @@ private extension ProductCategoryListViewController {
 //
 private extension ProductCategoryListViewController {
     func configureViewModel() {
-        viewModel.performInitialFetch()
-        viewModel.observeCategoryListChanges { [weak self] in
-            self?.tableView.reloadData()
+        viewModel.performFetch()
+        viewModel.observeCategoryListStateChanges { [weak self] syncState in
+            switch syncState {
+            case .initialized:
+                break
+            case .syncing:
+                self?.displayGhostTableView()
+            case let .failed(retryToken):
+                self?.removeGhostTableView()
+                self?.displaySyncingErrorNotice(retryToken: retryToken)
+            case .synced:
+                self?.removeGhostTableView()
+            }
         }
     }
 }
@@ -78,6 +101,42 @@ private extension ProductCategoryListViewController {
 private extension ProductCategoryListViewController {
     @objc private func doneButtonTapped() {
         // TODO-2020: Submit category changes
+    }
+}
+
+// MARK: - Placeholders & Errors
+//
+private extension ProductCategoryListViewController {
+
+    /// Renders ghost placeholder categories.
+    ///
+    func displayGhostTableView() {
+        let placeholderCategoriesPerSection = [3]
+        let options = GhostOptions(displaysSectionHeader: false,
+                                   reuseIdentifier: ProductCategoryTableViewCell.reuseIdentifier,
+                                   rowsPerSection: placeholderCategoriesPerSection)
+        ghostTableView.displayGhostContent(options: options)
+        ghostTableView.isHidden = false
+    }
+
+    /// Removes ghost  placeholder categories.
+    ///
+    func removeGhostTableView() {
+        tableView.reloadData()
+        ghostTableView.removeGhostContent()
+        ghostTableView.isHidden = true
+    }
+
+    /// Displays the Sync Error Notice.
+    ///
+    func displaySyncingErrorNotice(retryToken: ProductCategoryListViewModel.RetryToken) {
+        let message = NSLocalizedString("Unable to load categories", comment: "Load Product Categories Action Failed")
+        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
+        let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
+            self?.viewModel.retryCategorySynchronization(retryToken: retryToken)
+        }
+
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 

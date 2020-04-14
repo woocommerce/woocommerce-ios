@@ -26,7 +26,7 @@ final class OrdersViewModel {
 
     /// Should be bound to the UITableView to auto-update the list of Orders.
     ///
-    private(set) lazy var resultsController: ResultsController<StorageOrder> = {
+    private lazy var resultsController: ResultsController<StorageOrder> = {
         let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
 

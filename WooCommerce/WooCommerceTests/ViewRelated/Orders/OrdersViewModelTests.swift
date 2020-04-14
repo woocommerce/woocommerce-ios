@@ -188,7 +188,7 @@ final class OrdersViewModelTests: XCTestCase {
         XCTAssertEqual(pageSize, self.pageSize)
     }
 
-    func testItLoadsTheFilteredOrdersFromTheDatabase() {
+    func testGivenAFilterItLoadsTheOrdersMatchingThatFilterFromTheDB() {
         // Arrange
         let viewModel = OrdersViewModel(storageManager: storageManager,
                                         statusFilter: orderStatus(with: .processing))
@@ -206,9 +206,34 @@ final class OrdersViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isEmpty)
         XCTAssertEqual(viewModel.numberOfObjects, processingOrders.count)
 
-        let fetchedOrderIds = Set(viewModel.orders.map { $0.orderID })
-        let processingOrderIds = Set(processingOrders.map { $0.orderID })
-        XCTAssertEqual(fetchedOrderIds, processingOrderIds)
+        let fetchedOrderIDs = Set(viewModel.orders.map { $0.orderID })
+        let processingOrderIDs = Set(processingOrders.map { $0.orderID })
+        XCTAssertEqual(fetchedOrderIDs, processingOrderIDs)
+    }
+
+    func testGivenNoFilterItLoadsAllTheOrdersFromTheDB() {
+        // Arrange
+        let viewModel = OrdersViewModel(storageManager: storageManager, statusFilter: nil)
+
+        let allInsertedOrders = [
+            (0..<10).map { insertOrder(id: $0, status: .processing) },
+            (100..<105).map { insertOrder(id: $0, status: .completed) },
+            (200..<203).map { insertOrder(id: $0, status: .pending) },
+        ].flatMap { $0 }
+
+        XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), allInsertedOrders.count)
+
+        // Act
+        viewModel.activateAndForwardUpdates(to: UITableView())
+
+        // Assert
+        XCTAssertFalse(viewModel.isFiltered)
+        XCTAssertFalse(viewModel.isEmpty)
+        XCTAssertEqual(viewModel.numberOfObjects, allInsertedOrders.count)
+
+        let fetchedOrderIDs = Set(viewModel.orders.map { $0.orderID })
+        let allInsertedOrderIDs = Set(allInsertedOrders.map { $0.orderID })
+        XCTAssertEqual(fetchedOrderIDs, allInsertedOrderIDs)
     }
 }
 

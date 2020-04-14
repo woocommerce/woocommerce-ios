@@ -1144,7 +1144,6 @@
                         <outlet property="siteAddressHelpButton" destination="roL-ID-k8n" id="QB2-ri-X5V"/>
                         <outlet property="siteURLField" destination="ZrT-CY-qD7" id="561-Zw-Ja9"/>
                         <outlet property="submitButton" destination="ltO-hW-mbe" id="wwr-D5-5kK"/>
-                        <segue destination="SZS-o3-1P7" kind="show" identifier="showURLUsernamePassword" id="TkG-0R-c3i"/>
                         <segue destination="iMi-vX-AxR" kind="show" identifier="showWPUsernamePassword" id="dtm-iK-PLb"/>
                         <segue destination="hed-vB-osh" kind="presentation" identifier="showLoginMethod" id="5hL-j3-eMs"/>
                         <segue destination="lmD-c6-SLs" kind="show" identifier="showWPComLogin" id="8p6-rS-9Ml"/>

@@ -7,6 +7,7 @@ import WordPressUI
 final class ProductCategoryListViewController: UIViewController {
 
     @IBOutlet private var tableView: UITableView!
+    private let ghostTableView = UITableView()
 
     private let viewModel: ProductCategoryListViewModel
 
@@ -23,6 +24,7 @@ final class ProductCategoryListViewController: UIViewController {
         super.viewDidLoad()
         registerTableViewCells()
         configureTableView()
+        configureGhostTableView()
         configureNavigationBar()
         configureViewModel()
     }
@@ -33,6 +35,7 @@ final class ProductCategoryListViewController: UIViewController {
 private extension ProductCategoryListViewController {
     func registerTableViewCells() {
         tableView.register(ProductCategoryTableViewCell.loadNib(), forCellReuseIdentifier: ProductCategoryTableViewCell.reuseIdentifier)
+        ghostTableView.register(ProductCategoryTableViewCell.loadNib(), forCellReuseIdentifier: ProductCategoryTableViewCell.reuseIdentifier)
     }
 
     func configureTableView() {
@@ -41,6 +44,15 @@ private extension ProductCategoryListViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.removeLastCellSeparator()
+    }
+
+    func configureGhostTableView() {
+        view.addSubview(ghostTableView)
+        ghostTableView.isHidden = true
+        ghostTableView.translatesAutoresizingMaskIntoConstraints = false
+        ghostTableView.pinSubviewToAllEdges(view)
+        ghostTableView.backgroundColor = .listBackground
+        ghostTableView.removeLastCellSeparator()
     }
 
     func configureNavigationBar() {
@@ -71,12 +83,12 @@ private extension ProductCategoryListViewController {
         viewModel.observeCategoryListStateChanges { [weak self] syncState in
             switch syncState {
             case .syncing:
-                self?.displayPlaceholderCategories()
+                self?.displayGhostTableView()
             case let .failed(pageNumber):
-                self?.removePlaceholderCategories()
+                self?.removeGhostTableView()
                 self?.displaySyncingErrorNotice(pageNumber: pageNumber)
             case .synced:
-                self?.removePlaceholderCategories()
+                self?.removeGhostTableView()
             default:
                 break
             }
@@ -95,21 +107,24 @@ private extension ProductCategoryListViewController {
 // MARK: - Placeholders & Errors
 //
 private extension ProductCategoryListViewController {
+
     /// Renders ghost placeholder categories.
     ///
-    func displayPlaceholderCategories() {
+    func displayGhostTableView() {
         let placeholderCategoriesPerSection = [3]
         let options = GhostOptions(displaysSectionHeader: false,
                                    reuseIdentifier: ProductCategoryTableViewCell.reuseIdentifier,
                                    rowsPerSection: placeholderCategoriesPerSection)
-        tableView.displayGhostContent(options: options)
+        ghostTableView.displayGhostContent(options: options)
+        ghostTableView.isHidden = false
     }
 
     /// Removes ghost  placeholder categories.
     ///
-    func removePlaceholderCategories() {
-        tableView.removeGhostContent()
+    func removeGhostTableView() {
         tableView.reloadData()
+        ghostTableView.removeGhostContent()
+        ghostTableView.isHidden = true
     }
 
     /// Displays the Sync Error Notice.

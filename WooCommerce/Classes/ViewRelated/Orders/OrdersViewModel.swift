@@ -39,6 +39,12 @@ final class OrdersViewModel {
         resultsController.isEmpty
     }
 
+    /// Indicates if there's a filter being applied.
+    ///
+    var isFiltered: Bool {
+        statusFilter != nil
+    }
+
     /// OrderStatus that must be matched by retrieved orders.
     ///
     private let statusFilter: OrderStatus?

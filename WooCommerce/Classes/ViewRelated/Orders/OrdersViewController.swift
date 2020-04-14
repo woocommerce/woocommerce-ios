@@ -67,12 +67,6 @@ class OrdersViewController: UIViewController {
         return statusResultsController.fetchedObjects
     }
 
-    /// Indicates if there's a filter being applied.
-    ///
-    private var isFiltered: Bool {
-        return statusFilter != nil
-    }
-
     /// UI Active State
     ///
     private var state: State = .results {
@@ -583,7 +577,7 @@ private extension OrdersViewController {
             return
         }
 
-        if isFiltered {
+        if viewModel.isFiltered {
             state = .emptyFiltered
             return
         }

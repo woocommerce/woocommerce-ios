@@ -360,7 +360,7 @@
         <!--Login Self Hosted View Controller-->
         <scene sceneID="b2O-iW-wfB">
             <objects>
-                <viewController id="SZS-o3-1P7" customClass="LoginSelfHostedViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginSelfHostedViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="SZS-o3-1P7" customClass="LoginSelfHostedViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Yjk-Cc-Bxb"/>
                         <viewControllerLayoutGuide type="bottom" id="Ktl-It-Kmo"/>

@@ -3,7 +3,7 @@ import Aztec
 struct AztecLinkFormatBarCommand: AztecFormatBarCommand {
     let formattingIdentifier: FormattingIdentifier = .link
 
-    private let presenter: UIViewController
+    private weak var presenter: UIViewController?
 
     init(linkDialogPresenter: UIViewController) {
         self.presenter = linkDialogPresenter
@@ -49,7 +49,7 @@ private extension AztecLinkFormatBarCommand {
                                         isNewLink: isInsertingNewLink)
         let linkController = LinkSettingsViewController(linkSettings: linkSettings,
                                                         callback: { (action, settings) in
-            self.presenter.dismiss(animated: true) {
+            self.presenter?.dismiss(animated: true) {
                 richTextView.becomeFirstResponder()
                 switch action {
                 case .insert, .update:
@@ -68,7 +68,7 @@ private extension AztecLinkFormatBarCommand {
 
         // TODO-1496: show the Link Settings as a popover.
         let navigationController = UINavigationController(rootViewController: linkController)
-        presenter.present(navigationController, animated: true)
+        presenter?.present(navigationController, animated: true)
         richTextView.resignFirstResponder()
     }
 

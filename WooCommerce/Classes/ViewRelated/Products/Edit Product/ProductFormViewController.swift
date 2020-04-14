@@ -1,3 +1,4 @@
+import Photos
 import UIKit
 import Yosemite
 
@@ -7,7 +8,9 @@ final class ProductFormViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
-        let keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: handleKeyboardFrameUpdate(keyboardFrame:))
+        let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
+            self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
+        }
         return keyboardFrameObserver
     }()
 
@@ -57,8 +60,9 @@ final class ProductFormViewController: UIViewController {
         self.product = product
         self.viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
         self.productImageActionHandler = ProductImageActionHandler(siteID: product.siteID,
-                                                         product: product)
-        self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler)
+                                                                   product: product)
+        self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler,
+                                                                phAssetImageLoaderProvider: { PHImageManager.default() })
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel,
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
                                                                   productUIImageLoader: productUIImageLoader)
@@ -291,12 +295,11 @@ extension ProductFormViewController: UITableViewDelegate {
                 ServiceLocator.analytics.track(.productDetailViewInventorySettingsTapped)
                 editInventorySettings()
             case .categories:
-                // TODO-2000
-                break
+                // TODO-2000 Edit Product M3 analytics
+                editCategories()
             case .briefDescription:
                 // TODO-1879: Edit Products M2 analytics
                 editBriefDescription()
-                break
             }
         }
     }
@@ -548,6 +551,16 @@ private extension ProductFormViewController {
             return
         }
         self.product = productUpdater.briefDescriptionUpdated(briefDescription: newBriefDescription)
+    }
+}
+
+// MARK: Action - Edit Product Categories
+//
+
+private extension ProductFormViewController {
+    func editCategories() {
+        let categoryListViewController = ProductCategoryListViewController(product: product)
+        show(categoryListViewController, sender: self)
     }
 }
 

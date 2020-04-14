@@ -26,6 +26,7 @@ final class MockProduct {
                  featured: Bool = false,
                  catalogVisibility: ProductCatalogVisibility = .visible,
                  slug: String = "book-the-green-room",
+                 categories: [ProductCategory] = [],
                  images: [ProductImage] = []) -> Product {
 
     return Product(siteID: testSiteID,
@@ -85,7 +86,7 @@ final class MockProduct {
                    crossSellIDs: [1234, 234234, 3],
                    parentID: 0,
                    purchaseNote: "Thank you!",
-                   categories: [],
+                   categories: categories,
                    tags: [],
                    images: images,
                    attributes: [],

@@ -15,7 +15,9 @@ final class OrderSearchStarterViewController: UIViewController, KeyboardFrameAdj
     private lazy var viewModel = OrderSearchStarterViewModel()
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
-        KeyboardFrameObserver(onKeyboardFrameUpdate: handleKeyboardFrameUpdate(keyboardFrame:))
+        KeyboardFrameObserver { [weak self] keyboardFrame in
+            self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
+        }
     }()
 
     /// Required implementation for `KeyboardFrameAdjustmentProvider`.

@@ -79,7 +79,7 @@ private extension ProductCategoryListViewController {
 //
 private extension ProductCategoryListViewController {
     func configureViewModel() {
-        viewModel.performInitialFetch()
+        viewModel.performFetch()
         viewModel.observeCategoryListStateChanges { [weak self] syncState in
             switch syncState {
             case .initialized:

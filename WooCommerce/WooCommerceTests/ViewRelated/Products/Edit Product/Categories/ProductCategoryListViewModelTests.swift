@@ -47,7 +47,7 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         ServiceLocator.setStores(storesManager)
 
         // When
-        viewModel.performInitialFetch()
+        viewModel.performFetch()
         viewModel.observeCategoryListStateChanges { state in
             if state == .synced {
                 exp.fulfill()
@@ -69,7 +69,7 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         ServiceLocator.setStores(storesManager)
 
         // When
-        viewModel.performInitialFetch()
+        viewModel.performFetch()
         viewModel.observeCategoryListStateChanges { state in
             if state == .synced {
                 exp.fulfill()
@@ -92,7 +92,7 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         ServiceLocator.setStores(storesManager)
 
         // When
-        viewModel.performInitialFetch()
+        viewModel.performFetch()
         viewModel.observeCategoryListStateChanges { state in
             if case .failed = state {
                 exp.fulfill()
@@ -115,7 +115,7 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         ServiceLocator.setStores(storesManager)
 
         // When
-        viewModel.performInitialFetch()
+        viewModel.performFetch()
         viewModel.observeCategoryListStateChanges { state in
             if case .failed = state {
                 exp.fulfill()

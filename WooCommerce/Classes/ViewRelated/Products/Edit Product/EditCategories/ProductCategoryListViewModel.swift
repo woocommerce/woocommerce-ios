@@ -68,7 +68,7 @@ final class ProductCategoryListViewModel {
 
     /// Load existing categories from storage and fire the synchronize all categories action.
     ///
-    func performInitialFetch() {
+    func performFetch() {
         synchronizeAllCategories()
         try? resultController.performFetch()
     }

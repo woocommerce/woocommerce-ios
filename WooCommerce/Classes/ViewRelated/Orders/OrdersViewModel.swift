@@ -39,8 +39,13 @@ final class OrdersViewModel {
         resultsController.isEmpty
     }
 
-    init(storageManager: StorageManagerType = ServiceLocator.storageManager) {
+    /// OrderStatus that must be matched by retrieved orders.
+    ///
+    private let statusFilter: OrderStatus?
+
+    init(storageManager: StorageManagerType = ServiceLocator.storageManager, statusFilter: OrderStatus?) {
         self.storageManager = storageManager
+        self.statusFilter = statusFilter
     }
 
     /// Returns what `OrderAction` should be used when synchronizing.

@@ -22,7 +22,7 @@ class OrdersViewController: UIViewController {
 
     weak var delegate: OrdersViewControllerDelegate?
 
-    private lazy var viewModel = OrdersViewModel()
+    private let viewModel: OrdersViewModel
 
     /// Main TableView.
     ///
@@ -61,10 +61,6 @@ class OrdersViewController: UIViewController {
     ///
     private let syncingCoordinator = SyncingCoordinator()
 
-    /// OrderStatus that must be matched by retrieved orders.
-    ///
-    private let statusFilter: OrderStatus?
-
     /// The current list of order statuses for the default site
     ///
     private var currentSiteStatuses: [OrderStatus] {
@@ -97,7 +93,7 @@ class OrdersViewController: UIViewController {
     /// - Parameter statusFilter The filter to use.
     ///
     init(title: String, statusFilter: OrderStatus? = nil) {
-        self.statusFilter = statusFilter
+        viewModel = OrdersViewModel(statusFilter: statusFilter)
 
         super.init(nibName: Self.nibName, bundle: nil)
 

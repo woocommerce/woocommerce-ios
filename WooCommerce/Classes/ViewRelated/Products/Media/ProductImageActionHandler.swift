@@ -115,7 +115,9 @@ final class ProductImageActionHandler {
         }
 
         return ObservationToken { [weak self] in
-            self?.observations.assetUploaded.removeValue(forKey: id)
+            self?.queue.async { [weak self] in
+                self?.observations.assetUploaded.removeValue(forKey: id)
+            }
         }
     }
 

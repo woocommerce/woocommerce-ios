@@ -1002,7 +1002,7 @@
         <!--Login Site Address View Controller-->
         <scene sceneID="idG-jg-gxH">
             <objects>
-                <viewController storyboardIdentifier="siteAddress" extendedLayoutIncludesOpaqueBars="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="anK-hg-K4j" customClass="LoginSiteAddressViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginSiteAddressViewController" extendedLayoutIncludesOpaqueBars="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="anK-hg-K4j" customClass="LoginSiteAddressViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="pmp-Uj-4NW"/>
                         <viewControllerLayoutGuide type="bottom" id="rYV-q2-blN"/>
@@ -1424,10 +1424,10 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="N3P-wt-Rn3"/>
+        <segue reference="5hL-j3-eMs"/>
         <segue reference="Njv-lY-Lyi"/>
-        <segue reference="UV4-XI-c0q"/>
-        <segue reference="iD4-VS-n3M"/>
+        <segue reference="8p6-rS-9Ml"/>
+        <segue reference="swV-lc-6gI"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="icon-password-field" width="18" height="22"/>

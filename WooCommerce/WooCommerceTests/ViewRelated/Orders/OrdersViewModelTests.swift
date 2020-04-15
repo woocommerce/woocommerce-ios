@@ -206,9 +206,8 @@ final class OrdersViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isEmpty)
         XCTAssertEqual(viewModel.numberOfObjects, processingOrders.count)
 
-        let fetchedOrderIDs = Set(viewModel.orders.map { $0.orderID })
         let processingOrderIDs = Set(processingOrders.map { $0.orderID })
-        XCTAssertEqual(fetchedOrderIDs, processingOrderIDs)
+        XCTAssertEqual(viewModel.fetchedOrderIDs, processingOrderIDs)
     }
 
     func testGivenNoFilterItLoadsAllTheOrdersFromTheDB() {
@@ -231,9 +230,8 @@ final class OrdersViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isEmpty)
         XCTAssertEqual(viewModel.numberOfObjects, allInsertedOrders.count)
 
-        let fetchedOrderIDs = Set(viewModel.orders.map { $0.orderID })
         let allInsertedOrderIDs = Set(allInsertedOrders.map { $0.orderID })
-        XCTAssertEqual(fetchedOrderIDs, allInsertedOrderIDs)
+        XCTAssertEqual(viewModel.fetchedOrderIDs, allInsertedOrderIDs)
     }
 }
 
@@ -242,12 +240,18 @@ final class OrdersViewModelTests: XCTestCase {
 private extension OrdersViewModel {
     /// Returns the Order instances for all the rows
     ///
-    var orders: [Yosemite.Order] {
+    var fetchedOrders: [Yosemite.Order] {
         (0..<numberOfSections).flatMap { section in
             (0..<numberOfRows(in: section)).map { row in
                 detailsViewModel(at: IndexPath(row: row, section: section)).order
             }
         }
+    }
+
+    /// Returns the IDs for all the Order rows
+    ///
+    var fetchedOrderIDs: Set<Int64> {
+        Set(fetchedOrders.map(\.orderID))
     }
 }
 

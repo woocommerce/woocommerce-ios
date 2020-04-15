@@ -21,7 +21,8 @@ final class ProductFormViewController: UIViewController {
     private var product: Product {
         didSet {
             defer {
-                updateNavigationBar(isUpdateEnabled: product != originalProduct)
+                let isUpdateEnabled = hasUnsavedChanges(product: product)
+                updateNavigationBar(isUpdateEnabled: isUpdateEnabled)
             }
 
             if isNameTheOnlyChange(oldProduct: oldValue, newProduct: product) {
@@ -168,6 +169,40 @@ private extension ProductFormViewController {
 
         navigationController?.present(inProgressViewController, animated: true, completion: nil)
 
+        updateProductRemotely()
+    }
+
+    func updateProductRemotely() {
+        waitUntilAllImagesAreUploaded { [weak self] in
+            self?.dispatchUpdateProductAction()
+        }
+    }
+
+    func waitUntilAllImagesAreUploaded(onCompletion: @escaping () -> Void) {
+        let group = DispatchGroup()
+
+        // Waits for all product images to be uploaded before updating the product remotely.
+        group.enter()
+        let observationToken = productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
+            guard productImageStatuses.hasPendingUpload == false else {
+                return
+            }
+
+            guard let self = self else {
+                return
+            }
+
+            self.product = self.productUpdater.imagesUpdated(images: productImageStatuses.images)
+            group.leave()
+        }
+
+        group.notify(queue: .main) {
+            observationToken.cancel()
+            onCompletion()
+        }
+    }
+
+    func dispatchUpdateProductAction() {
         let action = ProductAction.updateProduct(product: product) { [weak self] (product, error) in
             guard let product = product, error == nil else {
                 let errorDescription = error?.localizedDescription ?? "No error specified"
@@ -384,7 +419,7 @@ private extension ProductFormViewController {
 //
 extension ProductFormViewController {
     override func shouldPopOnBackButton() -> Bool {
-        if product != originalProduct {
+        if hasUnsavedChanges(product: product) {
             presentBackNavigationActionSheet()
             return false
         }
@@ -395,6 +430,10 @@ extension ProductFormViewController {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
             self?.navigationController?.popViewController(animated: true)
         })
+    }
+
+    private func hasUnsavedChanges(product: Product) -> Bool {
+        return product != originalProduct || productImageActionHandler.productImageStatuses.hasPendingUpload
     }
 }
 

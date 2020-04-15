@@ -24,6 +24,19 @@ extension Collection where Element == ProductImageStatus {
             }
         }
     }
+
+    /// Whether there are still any images being uploaded.
+    ///
+    var hasPendingUpload: Bool {
+        return contains(where: {
+            switch $0 {
+            case .uploading:
+                return true
+            default:
+                return false
+            }
+        })
+    }
 }
 
 extension ProductImageStatus {

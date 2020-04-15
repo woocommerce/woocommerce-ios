@@ -136,6 +136,12 @@ final class ProductImageActionHandler {
         }
         allStatuses = (productImageStatuses: imageStatuses, error: nil)
     }
+
+    /// Resets the product images to the ones from the given Product.
+    ///
+    func resetProductImages(to product: Product) {
+        allStatuses = (productImageStatuses: product.imageStatuses, error: nil)
+    }
 }
 
 private extension ProductImageActionHandler {

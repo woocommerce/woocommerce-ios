@@ -36,8 +36,8 @@ public final class MediaStore: Store {
         switch action {
         case .retrieveMediaLibrary(let siteID, let pageNumber, let pageSize, let onCompletion):
             retrieveMediaLibrary(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
-        case .uploadMedia(let siteID, let mediaAsset, let onCompletion):
-            uploadMedia(siteID: siteID, mediaAsset: mediaAsset, onCompletion: onCompletion)
+        case .uploadMedia(let siteID, let productID, let mediaAsset, let onCompletion):
+            uploadMedia(siteID: siteID, productID: productID, mediaAsset: mediaAsset, onCompletion: onCompletion)
         }
     }
 }
@@ -60,6 +60,7 @@ private extension MediaStore {
     /// 2) Uploads the exported media file to the server
     ///
     func uploadMedia(siteID: Int64,
+                     productID: Int64,
                      mediaAsset: ExportableAsset,
                      onCompletion: @escaping (_ uploadedMedia: Media?, _ error: Error?) -> Void) {
         mediaExportService.export(mediaAsset,
@@ -69,16 +70,19 @@ private extension MediaStore {
                                         return
                                     }
                                     self?.uploadMedia(siteID: siteID,
+                                                      productID: productID,
                                                       uploadableMedia: uploadableMedia,
                                                       onCompletion: onCompletion)
         })
     }
 
     func uploadMedia(siteID: Int64,
+                     productID: Int64,
                      uploadableMedia media: UploadableMedia,
                      onCompletion: @escaping (_ uploadedMedia: Media?, _ error: Error?) -> Void) {
         let remote = MediaRemote(network: network)
         remote.uploadMedia(for: siteID,
+                           productID: productID,
                            mediaItems: [media]) { (uploadedMediaItems, error) in
                             // Removes local media after the upload API request.
                             do {

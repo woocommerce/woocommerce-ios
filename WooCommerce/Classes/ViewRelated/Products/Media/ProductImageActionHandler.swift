@@ -9,6 +9,7 @@ final class ProductImageActionHandler {
     typealias OnAssetUpload = (PHAsset, ProductImage) -> Void
 
     private let siteID: Int64
+    private let productID: Int64
 
     var productImageStatuses: [ProductImageStatus] {
         return allStatuses.productImageStatuses
@@ -29,6 +30,7 @@ final class ProductImageActionHandler {
 
     init(siteID: Int64, product: Product) {
         self.siteID = siteID
+        self.productID = product.productID
         self.allStatuses = (productImageStatuses: product.imageStatuses, error: nil)
     }
 
@@ -98,6 +100,7 @@ final class ProductImageActionHandler {
         allStatuses = (productImageStatuses: imageStatuses, error: nil)
 
         let action = MediaAction.uploadMedia(siteID: siteID,
+                                             productID: productID,
                                              mediaAsset: asset) { [weak self] (media, error) in
                                                 guard let self = self else {
                                                     return

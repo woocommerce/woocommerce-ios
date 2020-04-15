@@ -68,6 +68,12 @@ extension Date {
         return calendar.date(byAdding: dayComponent, to: today)
     }
 
+    /// Returns `self` plus the given `days`.
+    ///
+    func adding(days: Int) -> Date? {
+        Calendar.current.date(byAdding: .day, value: days, to: self)
+    }
+
     /// Returns `true` if `self` is in the same year as `other`.
     ///
     func isSameYear(as otherDate: Date) -> Bool {

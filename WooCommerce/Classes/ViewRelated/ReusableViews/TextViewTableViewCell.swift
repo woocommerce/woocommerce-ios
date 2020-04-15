@@ -31,8 +31,6 @@ class TextViewTableViewCell: UITableViewCell {
         }
     }
 
-    var onTextChange: ((String) -> Void)?
-
     override func awakeFromNib() {
         super.awakeFromNib()
 
@@ -43,20 +41,12 @@ class TextViewTableViewCell: UITableViewCell {
     }
 }
 
-
-extension TextViewTableViewCell: UITextViewDelegate {
-    func textViewDidChange(_ textView: UITextView) {
-        onTextChange?(noteTextView.text)
-    }
-}
-
 private extension TextViewTableViewCell {
     func configureBackground() {
         applyDefaultBackgroundStyle()
     }
 
     func configureTextView() {
-        noteTextView.delegate = self
         noteTextView.backgroundColor = .listForeground
     }
 }

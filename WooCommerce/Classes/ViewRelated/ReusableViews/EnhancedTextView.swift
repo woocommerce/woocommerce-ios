@@ -4,6 +4,8 @@ import UIKit
 ///
 final class EnhancedTextView: UITextView {
 
+    var onTextChange: ((String) -> Void)?
+
     var placeholder: String? {
         didSet {
             placeholderLabel?.text = placeholder
@@ -78,6 +80,6 @@ extension EnhancedTextView: UITextViewDelegate {
 
     func textViewDidChange(_ textView: UITextView) {
         self.animatePlaceholder()
+        onTextChange?(textView.text)
     }
-
 }

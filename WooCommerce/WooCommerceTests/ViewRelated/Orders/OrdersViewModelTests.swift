@@ -233,6 +233,36 @@ final class OrdersViewModelTests: XCTestCase {
         let allInsertedOrderIDs = Set(allInsertedOrders.map { $0.orderID })
         XCTAssertEqual(viewModel.fetchedOrderIDs, allInsertedOrderIDs)
     }
+
+    func testGivenAProcessingFilterItAlsoLoadsFutureOrdersFromTheDB() {
+        // Arrange
+        let viewModel = OrdersViewModel(storageManager: storageManager, statusFilter: orderStatus(with: .processing))
+
+        let expectedFutureOrders = [
+            insertOrder(id: 1_000, status: .processing, dateCreated: Date().adding(days: 1)!),
+            insertOrder(id: 1_001, status: .processing, dateCreated: Date().adding(days: 2)!),
+            insertOrder(id: 1_002, status: .processing, dateCreated: Date().adding(days: 3)!),
+        ]
+
+        // This should be ignored because it is not .processing
+        let ignoredFutureOrder = insertOrder(id: 2_000, status: .cancelled, dateCreated: Date().adding(days: 1)!)
+
+        let expectedPastOrders = [
+            insertOrder(id: 4_000, status: .processing, dateCreated: Date().adding(days: -1)!),
+            insertOrder(id: 4_001, status: .processing, dateCreated: Date().adding(days: -20)!),
+        ]
+
+        // Act
+        viewModel.activateAndForwardUpdates(to: UITableView())
+
+        // Assert
+        XCTAssertEqual(viewModel.numberOfObjects, expectedFutureOrders.count + expectedPastOrders.count)
+        XCTAssertFalse(viewModel.fetchedOrderIDs.contains(ignoredFutureOrder.orderID))
+
+        let expectedOrderIDs = Set((expectedPastOrders + expectedFutureOrders).map(\.orderID))
+        XCTAssertEqual(viewModel.fetchedOrderIDs, expectedOrderIDs)
+    }
+
 }
 
 // MARK: - Helpers
@@ -262,7 +292,9 @@ private extension OrdersViewModelTests {
         OrderStatus(name: nil, siteID: siteID, slug: status.rawValue, total: 0)
     }
 
-    func insertOrder(id orderID: Int64, status: OrderStatusEnum) -> Yosemite.Order {
+    func insertOrder(id orderID: Int64,
+                     status: OrderStatusEnum,
+                     dateCreated: Date = Date()) -> Yosemite.Order {
         let readonlyOrder = Order(siteID: siteID,
                                   orderID: orderID,
                                   parentID: 0,
@@ -271,7 +303,7 @@ private extension OrdersViewModelTests {
                                   statusKey: status.rawValue,
                                   currency: "USD",
                                   customerNote: "",
-                                  dateCreated: Date(),
+                                  dateCreated: dateCreated,
                                   dateModified: Date(),
                                   datePaid: nil,
                                   discountTotal: "30.00",

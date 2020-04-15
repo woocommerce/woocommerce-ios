@@ -11,7 +11,7 @@ final class EnhancedTextView: UITextView {
         }
     }
     private var placeholderLabel: UILabel?
-    
+
     override var text: String! {
         didSet {
             if text.isEmpty {
@@ -22,7 +22,7 @@ final class EnhancedTextView: UITextView {
             }
         }
     }
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
         delegate = self
@@ -33,7 +33,7 @@ final class EnhancedTextView: UITextView {
         }
     }
 
-    private func animatePlaceholder(){
+    private func animatePlaceholder() {
         UIView.animate(withDuration: 0.2) { [weak self] in
             guard let self = self else {
                 return
@@ -41,8 +41,8 @@ final class EnhancedTextView: UITextView {
             self.placeholderLabel?.alpha = self.text.isEmpty && !self.isFirstResponder ? 1 : 0
         }
     }
-    
-    private func hidePlaceholder(){
+
+    private func hidePlaceholder() {
         UIView.animate(withDuration: 0.2) { [weak self] in
             guard let self = self else {
                 return
@@ -66,18 +66,18 @@ private extension EnhancedTextView {
 
 // MARK: UITextViewDelegate conformance
 //
-extension EnhancedTextView: UITextViewDelegate{
-    
+extension EnhancedTextView: UITextViewDelegate {
+
     func textViewDidBeginEditing(_ textView: UITextView) {
         self.hidePlaceholder()
     }
-    
+
     func textViewDidEndEditing(_ textView: UITextView) {
         self.animatePlaceholder()
     }
-    
+
     func textViewDidChange(_ textView: UITextView) {
         self.animatePlaceholder()
     }
-    
+
 }

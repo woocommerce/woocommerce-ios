@@ -1,5 +1,7 @@
 import UIKit
 
+/// A text view which support the placeholder label.
+///
 final class EnhancedTextView: UITextView {
 
     var placeholder: String? {
@@ -10,13 +12,22 @@ final class EnhancedTextView: UITextView {
     }
     private var placeholderLabel: UILabel?
     
+    override var text: String! {
+        didSet {
+            if text.isEmpty {
+                animatePlaceholder()
+            }
+            else {
+                hidePlaceholder()
+            }
+        }
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         delegate = self
         placeholderLabel = UILabel(frame: self.bounds)
-        //placeholderLabel?.font = UIFont(name: "HelveticaNeue", size: 15.0)
-        placeholderLabel?.numberOfLines = 0
-        placeholderLabel?.textColor = .gray
+        configureLabels()
         if let unwrappedLabel = placeholderLabel {
             addSubview(unwrappedLabel)
         }
@@ -42,6 +53,19 @@ final class EnhancedTextView: UITextView {
 
 }
 
+
+// MARK: Configurations
+//
+private extension EnhancedTextView {
+    func configureLabels() {
+        placeholderLabel?.numberOfLines = 0
+        placeholderLabel?.applyBodyStyle()
+        placeholderLabel?.textColor = .textSubtle
+    }
+}
+
+// MARK: UITextViewDelegate conformance
+//
 extension EnhancedTextView: UITextViewDelegate{
     
     func textViewDidBeginEditing(_ textView: UITextView) {

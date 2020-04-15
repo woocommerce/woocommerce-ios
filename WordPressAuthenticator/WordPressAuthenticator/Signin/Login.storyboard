@@ -348,7 +348,6 @@
                         <outlet property="submitButton" destination="OZC-xf-OAn" id="k1c-SJ-qiK"/>
                         <segue destination="Kvo-Y2-yhG" kind="show" identifier="startMagicLinkFlow" id="db9-5R-Qq7"/>
                         <segue destination="lmD-c6-SLs" kind="show" identifier="showWPComLogin" id="ySQ-EM-6JI"/>
-                        <segue destination="anK-hg-K4j" kind="show" identifier="showSelfHostedLogin" id="bK1-J1-hfT"/>
                         <segue destination="klu-4U-PyL" kind="show" identifier="showSignupEmail" id="dh4-9P-l8W"/>
                     </connections>
                 </viewController>
@@ -1423,8 +1422,8 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="5hL-j3-eMs"/>
-        <segue reference="8p6-rS-9Ml"/>
+        <segue reference="N3P-wt-Rn3"/>
+        <segue reference="ySQ-EM-6JI"/>
         <segue reference="swV-lc-6gI"/>
     </inferredMetricsTieBreakers>
     <resources>

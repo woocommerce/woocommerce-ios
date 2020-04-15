@@ -26,7 +26,7 @@ final class MockMediaStoresManager: DefaultStoresManager {
 
     private func onMediaAction(action: MediaAction) {
         switch action {
-        case .uploadMedia(_, _, let onCompletion):
+        case .uploadMedia(_, _, _, let onCompletion):
             onCompletion(media, nil)
         case .retrieveMediaLibrary(_, _, _, let onCompletion):
             guard let media = media else {

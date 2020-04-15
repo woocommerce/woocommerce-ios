@@ -19,7 +19,11 @@ public final class ProductSettings {
     }
 
     public convenience init(from product: Product) {
-        self.init(status: product.productStatus, featured: product.featured, catalogVisibility: product.productCatalogVisibility, slug: product.slug, purchaseNote: product.purchaseNote)
+        self.init(status: product.productStatus,
+                  featured: product.featured,
+                  catalogVisibility: product.productCatalogVisibility,
+                  slug: product.slug,
+                  purchaseNote: product.purchaseNote)
     }
 }
 

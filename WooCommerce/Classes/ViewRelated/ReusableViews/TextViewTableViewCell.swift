@@ -8,7 +8,7 @@ class TextViewTableViewCell: UITableViewCell {
     @IBOutlet weak var noteIconView: UIView!
     @IBOutlet var noteIconButton: UIButton!
 
-    @IBOutlet var noteTextView: UITextView!
+    @IBOutlet var noteTextView: EnhancedTextView!
 
     var iconImage: UIImage? {
         get {

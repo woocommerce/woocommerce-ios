@@ -126,6 +126,7 @@ private extension ProductPurchaseNoteViewController {
 
     func configurePurchaseNote(cell: TextViewTableViewCell) {
         cell.iconImage = nil
+        cell.noteTextView.placeholder = NSLocalizedString("Add a purchase note...", comment: "Placeholder text in Product Purchase Note screen")
         cell.noteTextView.text = productSettings.purchaseNote?.strippedHTML
         cell.onTextChange = { [weak self] (text) in
             self?.productSettings.purchaseNote = text

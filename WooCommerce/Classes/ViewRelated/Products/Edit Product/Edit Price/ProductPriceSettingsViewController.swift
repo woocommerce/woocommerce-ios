@@ -62,6 +62,7 @@ final class ProductPriceSettingsViewController: UIViewController {
         configureSections()
         configureTableView()
         retrieveProductTaxClass()
+        handleSwipeBackGesture()
     }
 }
 
@@ -130,6 +131,14 @@ private extension ProductPriceSettingsViewController {
 extension ProductPriceSettingsViewController {
 
     override func shouldPopOnBackButton() -> Bool {
+        if viewModel.hasUnsavedChanges() {
+            presentBackNavigationActionSheet()
+            return false
+        }
+        return true
+    }
+    
+    override func shouldPopOnSwipeBack() -> Bool {
         if viewModel.hasUnsavedChanges() {
             presentBackNavigationActionSheet()
             return false

@@ -26,7 +26,6 @@ open class NUXViewController: UIViewController, NUXViewControllerBase, UIViewCon
     /// Segue identifiers to avoid using strings
     public enum SegueIdentifier: String {
         case showWPUsernamePassword
-        case showSelfHostedLogin
         case showWPComLogin
         case startMagicLinkFlow
         case showMagicLink

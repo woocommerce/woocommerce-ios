@@ -403,13 +403,24 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     }
 
     /// Configures loginFields to log into wordpress.com and
-    /// navigates to the selfhosted username/password form. Displays the specified
-    /// error message when the new view controller appears.
+    /// navigates to the selfhosted username/password form.
+    /// Displays the specified error message when the new
+    /// view controller appears.
     ///
     @objc func showSelfHostedUsernamePasswordAndError(_ error: Error) {
         loginFields.siteAddress = "https://wordpress.com"
         errorToPresent = error
-        performSegue(withIdentifier: .showURLUsernamePassword, sender: self)
+
+        guard let vc = LoginSelfHostedViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from LoginEmailViewController to LoginSelfHostedViewController")
+            return
+        }
+
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     override open func displayRemoteError(_ error: Error) {

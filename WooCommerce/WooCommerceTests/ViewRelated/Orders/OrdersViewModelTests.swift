@@ -210,13 +210,13 @@ final class OrdersViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.fetchedOrderIDs, processingOrderIDs)
     }
 
-    func testGivenNoFilterItLoadsAllTheOrdersFromTheDB() {
+    func testGivenNoFilterItLoadsAllTheTodayAndPastOrdersFromTheDB() {
         // Arrange
         let viewModel = OrdersViewModel(storageManager: storageManager, statusFilter: nil)
 
         let allInsertedOrders = [
             (0..<10).map { insertOrder(id: $0, status: .processing) },
-            (100..<105).map { insertOrder(id: $0, status: .completed) },
+            (100..<105).map { insertOrder(id: $0, status: .completed, dateCreated: Date().adding(days: -2)!) },
             (200..<203).map { insertOrder(id: $0, status: .pending) },
         ].flatMap { $0 }
 

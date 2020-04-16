@@ -92,10 +92,18 @@ extension Date {
         return calendar.date(from: components)
     }
 
-    /// Returns `self` plus the given `days`.
+    /// Returns `self` plus the given `days` and `seconds` arguments.
     ///
-    func adding(days: Int, using calendar: Calendar = .current) -> Date? {
-        calendar.date(byAdding: .day, value: days, to: self)
+    /// This is generally used for testing. Feel free to add more arguments if needed.
+    ///
+    func adding(days: Int = 0, seconds: Int = 0, using calendar: Calendar = .current) -> Date? {
+        let components = DateComponents(
+            calendar: calendar,
+            day: days,
+            second: seconds
+        )
+
+        return calendar.date(byAdding: components, to: self)
     }
 
     /// Returns `true` if `self` is in the same year as `other`.

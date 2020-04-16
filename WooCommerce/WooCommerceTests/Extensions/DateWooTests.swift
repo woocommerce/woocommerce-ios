@@ -158,7 +158,7 @@ final class DateWooTests: XCTestCase {
         XCTAssertFalse(isSameYear)
     }
 
-    func testAddingDayMethodReturnsTheExpectedTargetWithTheSameTime() {
+    func testTheAddingMethodUsingDaysReturnsTheExpectedTargetWithTheSameTime() {
         // Given
         let formatter = DateFormatter.Defaults.iso8601
         let calendar = Calendar.gregorian(with: formatter.timeZone)
@@ -170,6 +170,21 @@ final class DateWooTests: XCTestCase {
 
         // Then
         let expected = formatter.date(from: "2020-03-13T14:53:11Z")!
+        XCTAssertEqual(actual, expected)
+    }
+
+    func testTheAddingMethodUsingDaysAndSecondsReturnsTheExpectedDateCalculation() {
+        // Given
+        let formatter = DateFormatter.Defaults.iso8601
+        let calendar = Calendar.gregorian(with: formatter.timeZone)
+
+        let fromDate = formatter.date(from: "2020-03-08T01:59:59Z")!
+
+        // When
+        let actual = fromDate.adding(days: 1, seconds: 1, using: calendar)
+
+        // Then
+        let expected = formatter.date(from: "2020-03-09T02:00:00Z")!
         XCTAssertEqual(actual, expected)
     }
 

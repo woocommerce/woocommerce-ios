@@ -94,8 +94,8 @@ extension Date {
 
     /// Returns `self` plus the given `days`.
     ///
-    func adding(days: Int) -> Date? {
-        Calendar.current.date(byAdding: .day, value: days, to: self)
+    func adding(days: Int, using calendar: Calendar = .current) -> Date? {
+        calendar.date(byAdding: .day, value: days, to: self)
     }
 
     /// Returns `true` if `self` is in the same year as `other`.

@@ -158,16 +158,27 @@ final class DateWooTests: XCTestCase {
         XCTAssertFalse(isSameYear)
     }
 
+    func testAddingDayMethodReturnsTheExpectedTargetWithTheSameTime() {
+        // Given
+        let formatter = DateFormatter.Defaults.iso8601
+        let calendar = Calendar.gregorian(with: formatter.timeZone)
+
+        let fromDate = formatter.date(from: "2020-03-08T14:53:11Z")!
+
+        // When
+        let actual = fromDate.adding(days: 5, using: calendar)
+
+        // Then
+        let expected = formatter.date(from: "2020-03-13T14:53:11Z")!
+        XCTAssertEqual(actual, expected)
+    }
+
     /// For example, if Date() is 2020-01-01 01:00:00, then nextMidnight() should return
     /// 2020-01-02 00:00:00.
     func testNextMidnightMethodReturnsTomorrowWithoutTime() {
         // Given
         let formatter = DateFormatter.Defaults.iso8601
-        let calendar: Calendar = {
-            var cal = Calendar(identifier: .gregorian)
-            cal.timeZone = formatter.timeZone
-            return cal
-        }()
+        let calendar = Calendar.gregorian(with: formatter.timeZone)
 
         let fromDate = formatter.date(from: "2020-03-08T01:56:12Z")!
 
@@ -177,5 +188,15 @@ final class DateWooTests: XCTestCase {
         // Then
         let expected = formatter.date(from: "2020-03-09T00:00:00Z")!
         XCTAssertEqual(actual, expected)
+    }
+}
+
+// MARK: - Utils
+
+private extension Calendar {
+    static func gregorian(with timeZone: TimeZone) -> Calendar {
+        var cal = Calendar(identifier: .gregorian)
+        cal.timeZone = timeZone
+        return cal
     }
 }

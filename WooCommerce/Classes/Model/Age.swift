@@ -28,9 +28,9 @@ extension Age {
 
     /// Returns the Age entity that best describes a given timespan.
     ///
-    static func from(startDate: Date, toDate: Date) -> Age {
+    static func from(startDate: Date, toDate: Date, using calendar: Calendar = Calendar.current) -> Age {
         let components = [.day, .weekOfYear, .month] as Set<Calendar.Component>
-        let dateComponents = Calendar.current.dateComponents(components, from: startDate, to: toDate)
+        let dateComponents = calendar.dateComponents(components, from: startDate, to: toDate)
 
         // Months
         if let month = dateComponents.month, month >= 1 {

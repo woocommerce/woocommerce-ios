@@ -294,6 +294,33 @@ final class OrdersViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.numberOfObjects, expectedOrders.count)
         XCTAssertEqual(viewModel.fetchedOrderIDs, expectedOrders.orderIDs)
     }
+
+    /// Orders with dateCreated in the future should be grouped in an "Upcoming" section.
+    func testItGroupsFutureOrdersInUpcomingSection() {
+        // Arrange
+        let viewModel = OrdersViewModel(storageManager: storageManager, statusFilter: orderStatus(with: .failed))
+
+        let expectedOrders = (
+            future: [
+                insertOrder(id: 1_000, status: .failed, dateCreated: Date().adding(days: 3)!),
+                insertOrder(id: 1_000, status: .failed, dateCreated: Date().adding(days: 4)!),
+            ],
+            past: [
+                insertOrder(id: 4_000, status: .failed, dateCreated: Date().adding(days: -1)!),
+            ]
+        )
+
+        // Act
+        viewModel.activateAndForwardUpdates(to: UITableView())
+
+        // Assert
+        XCTAssertEqual(viewModel.numberOfSections, 2)
+
+        // The first section should be the Upcoming section
+        let upcomingSection = viewModel.sectionInfo(at: 0)
+        XCTAssertEqual(Age(rawValue: upcomingSection.name), .upcoming)
+        XCTAssertEqual(upcomingSection.numberOfObjects, expectedOrders.future.count)
+    }
 }
 
 // MARK: - Helpers

@@ -11,7 +11,9 @@ extension ListSelectorViewController: DrawerPresentable {
         }
         tableView.layoutIfNeeded()
         let size = tableView.contentSize
-        let height = size.height + BottomSheetViewController.Constants.gripHeight + BottomSheetViewController.Constants.Header.spacing + BottomSheetViewController.Constants.Stack.insets.top
+        let height = size.height +
+            // TODO-jc: move these to an extension?
+            BottomSheetViewController.Constants.gripHeight + BottomSheetViewController.Constants.Header.spacing + BottomSheetViewController.Constants.Stack.insets.top
         return .contentHeight(height)
     }
 
@@ -308,7 +310,7 @@ private extension ProductsViewController {
         let sortTitle = NSLocalizedString("Sort by", comment: "Title of the toolbar button to sort products in different ways.")
         let sortButton = UIButton(frame: .zero)
         sortButton.setTitle(sortTitle, for: .normal)
-        sortButton.addTarget(self, action: #selector(sortButtonTapped), for: .touchUpInside)
+        sortButton.addTarget(self, action: #selector(sortButtonTapped(button:)), for: .touchUpInside)
 
         let filterTitle = NSLocalizedString("Filter", comment: "Title of the toolbar button to filter products by different attributes.")
         let filterButton = UIButton(frame: .zero)
@@ -482,7 +484,7 @@ private extension ProductsViewController {
         }
     }
 
-    @objc func sortButtonTapped() {
+    @objc func sortButtonTapped(button: UIButton) {
         let viewProperties = ListSelectorViewProperties(navigationBarTitle: "Sort by")
         let dataSource = ProductSortOptionListSelectorDataSource(selected: sortOrder)
         let sortOptionListViewController = ListSelectorViewController(viewProperties: viewProperties, dataSource: dataSource) { [weak self] selectedSortOrder in
@@ -497,7 +499,7 @@ private extension ProductsViewController {
         }
 
         let bottomSheet = BottomSheetViewController(childViewController: sortOptionListViewController)
-        bottomSheet.show(from: self)
+        bottomSheet.show(from: self, sourceView: button, arrowDirections: .up)
     }
 
     @objc func filterButtonTapped() {

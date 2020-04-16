@@ -49,7 +49,7 @@ final class OrdersViewModel {
             let excludeNonMatchingStatus = statusFilter.map { NSPredicate(format: "statusKey = %@", $0.slug) }
 
             var predicates = [ excludeSearchCache, excludeNonMatchingStatus ].compactMap { $0 }
-            if !includesFutureOrders, let nextMidnight = Date().nextMidnight()  {
+            if !includesFutureOrders, let nextMidnight = Date().nextMidnight() {
                 // Exclude orders on and after midnight of today's date
                 let dateSubPredicate = NSPredicate(format: "dateCreated < %@", nextMidnight as NSDate)
                 predicates.append(dateSubPredicate)

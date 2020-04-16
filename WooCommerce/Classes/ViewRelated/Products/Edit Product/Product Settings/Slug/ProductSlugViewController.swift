@@ -120,7 +120,7 @@ private extension ProductSlugViewController {
         case let cell as TextFieldTableViewCell:
             configureSlug(cell: cell)
         default:
-            fatalError("Unidentified product catalog visibility row type")
+            fatalError("Unidentified product slug row type")
         }
     }
 

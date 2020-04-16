@@ -32,7 +32,7 @@ struct ProductCategoryViewModelBuilder {
         /// Returns categories that don't have a `parentID`
         ///
         var rootCategories: [ProductCategory] {
-            return storage[0] ?? []
+            return storage[ProductCategory.noParentID] ?? []
         }
 
         /// Returns the inmediate subCategories of a given category or `nil` if there aren't any.

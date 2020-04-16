@@ -92,4 +92,3 @@ private extension EnhancedTextView {
         static let animationDuration    = 0.2
     }
 }
-

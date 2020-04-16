@@ -90,12 +90,14 @@ private extension ProductCategoryListViewModel {
     func synchronizeAllCategories(fromPageNumber: Int = Default.firstPageNumber) {
         self.syncCategoriesState = .syncing
         let action = ProductCategoryAction.synchronizeProductCategories(siteID: product.siteID, fromPageNumber: fromPageNumber) { [weak self] error in
+            // Make sure we always have view models to display
+            self?.updateViewModelsArray()
+
             if let error = error {
                 self?.handleSychronizeAllCategoriesError(error)
-                return
+            } else {
+                self?.syncCategoriesState = .synced
             }
-            self?.updateViewModelsArray()
-            self?.syncCategoriesState = .synced
         }
         storesManager.dispatch(action)
     }

@@ -32,7 +32,7 @@ extension UIAlertController {
     }
 }
 
-private extension ProductsSortOrder {
+extension ProductsSortOrder {
     var actionSheetTitle: String {
         switch self {
         case .dateAscending:

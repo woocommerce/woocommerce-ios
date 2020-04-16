@@ -32,7 +32,7 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where DataSource.Mo
 
     private let rowType = Cell.self
 
-    @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet weak var tableView: UITableView!
 
     init(viewProperties: ListSelectorViewProperties,
          dataSource: DataSource,
@@ -116,6 +116,8 @@ private extension ListSelectorViewController {
         tableView.backgroundColor = .listBackground
 
         registerTableViewCells()
+
+        tableView.removeLastCellSeparator()
     }
 
     func registerTableViewCells() {

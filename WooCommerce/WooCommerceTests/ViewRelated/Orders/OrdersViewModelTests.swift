@@ -269,18 +269,18 @@ final class OrdersViewModelTests: XCTestCase {
 
         let ignoredOrders = [
             // Orders in the future
-            insertOrder(id: 1_000, status: .pending, dateCreated: Date().adding(days: 1)!),
+            insertOrder(id: 1_001, status: .pending, dateCreated: Date().adding(days: 1)!),
             insertOrder(id: 1_002, status: .cancelled, dateCreated: Date().adding(days: 3)!),
             // Exactly midnight is also ignored because it is technically "tomorrow"
             insertOrder(id: 1_003, status: .processing, dateCreated: Date().nextMidnight()!),
         ]
 
         let expectedOrders = [
-            insertOrder(id: 4_000, status: .completed, dateCreated: Date()),
-            insertOrder(id: 4_000, status: .pending, dateCreated: Date().adding(days: -1)!),
-            insertOrder(id: 4_001, status: .pending, dateCreated: Date().adding(days: -20)!),
+            insertOrder(id: 4_001, status: .completed, dateCreated: Date()),
+            insertOrder(id: 4_002, status: .pending, dateCreated: Date().adding(days: -1)!),
+            insertOrder(id: 4_003, status: .pending, dateCreated: Date().adding(days: -20)!),
             // 1 second before midnight is included because it is technically "today"
-            insertOrder(id: 1_003, status: .processing, dateCreated: Date().nextMidnight()!.adding(seconds: -1)!),
+            insertOrder(id: 4_004, status: .processing, dateCreated: Date().nextMidnight()!.adding(seconds: -1)!),
         ]
 
         // Act

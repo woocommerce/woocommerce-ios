@@ -41,8 +41,9 @@ final class OrdersViewModel {
     private lazy var resultsController: ResultsController<StorageOrder> = {
         let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
 
+        let sectionNameKeyPath = #selector(StorageOrder.normalizedAgeAsString)
         let resultsController = ResultsController<StorageOrder>(storageManager: storageManager,
-                                                                sectionNameKeyPath: "normalizedAgeAsString",
+                                                                sectionNameKeyPath: "\(sectionNameKeyPath)",
                                                                 sortedBy: [descriptor])
         resultsController.predicate = {
             let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")

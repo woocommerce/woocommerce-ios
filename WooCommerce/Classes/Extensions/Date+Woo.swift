@@ -74,9 +74,7 @@ extension Date {
     ///
     /// Returns `nil` if `self` (Date) could not be calculated for some reason. ¯\_(ツ)_/¯
     ///
-    func nextMidnight() -> Date? {
-        let calendar = Calendar.current
-
+    func nextMidnight(using calendar: Calendar = .current) -> Date? {
         guard let tomorrowWithTime = calendar.date(byAdding: .day, value: 1, to: self) else {
             return nil
         }

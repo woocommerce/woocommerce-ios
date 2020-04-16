@@ -161,12 +161,21 @@ final class DateWooTests: XCTestCase {
     /// For example, if Date() is 2020-01-01 01:00:00, then nextMidnight() should return
     /// 2020-01-02 00:00:00.
     func testNextMidnightMethodReturnsTomorrowWithoutTime() {
-        let formatter = DateFormatter.Defaults.iso8601WithoutTimeZone
-        let fromDate = formatter.date(from: "2020-01-01T01:56:12")!
+        // Given
+        let formatter = DateFormatter.Defaults.iso8601
+        let calendar: Calendar = {
+            var cal = Calendar(identifier: .gregorian)
+            cal.timeZone = formatter.timeZone
+            return cal
+        }()
 
-        let actualTomorrow = fromDate.nextMidnight()
+        let fromDate = formatter.date(from: "2020-01-01T01:56:12Z")!
 
-        let expectedTomorrow = formatter.date(from: "2020-01-02T00:00:00")!
-        XCTAssertEqual(actualTomorrow, expectedTomorrow)
+        // When
+        let actual = fromDate.nextMidnight(using: calendar)
+
+        // Then
+        let expected = formatter.date(from: "2020-01-02T00:00:00Z")!
+        XCTAssertEqual(actual, expected)
     }
 }

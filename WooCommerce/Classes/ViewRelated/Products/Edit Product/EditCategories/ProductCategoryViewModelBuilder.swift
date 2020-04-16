@@ -49,18 +49,11 @@ struct ProductCategoryViewModelBuilder {
         // Create tree structure
         let tree = CategoryTree(categories: categories)
 
-        // For each root category, get all sub-categories and returned a flattened array of view models
+        // For each root category, get all sub-categories and return a flattened array of view models
         let viewModels = tree.rootCategories.flatMap { category -> [ProductCategoryViewModel] in
-
-            // Create view model for the root category
-            let rootViewModel = viewModel(for: category, selectedCategories: selectedCategories, indentationLevel: 0)
-
-            // Get sub-categories view models
-            let traversedSubViewModels = flattenViewModels(of: category, in: tree, selectedCategories: selectedCategories)
-
-            // Return a combined categoryVM + subCategoryVMs array
-            return [rootViewModel] + traversedSubViewModels
+            return flattenViewModels(of: category, in: tree, selectedCategories: selectedCategories)
         }
+
         return viewModels
     }
 
@@ -70,25 +63,21 @@ struct ProductCategoryViewModelBuilder {
     private static func flattenViewModels(of category: ProductCategory,
                                           in tree: CategoryTree,
                                           selectedCategories: [ProductCategory],
-                                          depthLevel: Int = 1) -> [ProductCategoryViewModel] {
+                                          depthLevel: Int = 0) -> [ProductCategoryViewModel] {
 
-        // Base case, return an empty array when a category doesn't have any sub-categories
+        // View model for the main category
+        let categoryViewModel = viewModel(for: category, selectedCategories: selectedCategories, indentationLevel: depthLevel)
+
+        // Base case, return the single view model when a category doesn't have any sub-categories
         guard let outterSubCategories = tree.outterSubCategories(of: category) else {
-            return []
+            return [categoryViewModel]
         }
 
-        // For each outter sub-category call this function recursively to traverse and return all possible sub-categories view models
-        // Increase the `depthLevel` to properly track the view model indentation level
-        return outterSubCategories.flatMap { outterSubCategory -> [ProductCategoryViewModel] in
+        // Return the main categoryViewModel + all possible sub-categories VMs by calling this function recursively
+        return [categoryViewModel] + outterSubCategories.flatMap { outterSubCategory -> [ProductCategoryViewModel] in
 
-            // Create view model for the specific sub-category
-            let outterViewModel = viewModel(for: outterSubCategory, selectedCategories: selectedCategories, indentationLevel: depthLevel)
-
-            // Get sub-categories view models
-            let traversedSubViewModels = flattenViewModels(of: outterSubCategory, in: tree, selectedCategories: selectedCategories, depthLevel: depthLevel + 1)
-
-            // Return a combined categoryVM + subCategoryVMs array
-            return [outterViewModel] + traversedSubViewModels
+            // Increase the `depthLevel` to properly track the view model indentation level
+            return flattenViewModels(of: outterSubCategory, in: tree, selectedCategories: selectedCategories, depthLevel: depthLevel + 1)
         }
     }
 

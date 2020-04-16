@@ -48,6 +48,6 @@ final class ProductCategoryTableViewCell: UITableViewCell {
 private extension ProductCategoryTableViewCell {
     enum Constants {
         static let baseNameLabelMargin: CGFloat = 16.0
-        static let nameLabelIndentationFactor: CGFloat = 16.0
+        static let nameLabelIndentationFactor: CGFloat = 20.0
     }
 }

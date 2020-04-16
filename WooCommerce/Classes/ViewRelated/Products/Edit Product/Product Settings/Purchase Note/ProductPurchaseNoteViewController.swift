@@ -14,6 +14,13 @@ final class ProductPurchaseNoteViewController: UIViewController {
 
     private let sections: [Section]
 
+    private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
+        let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
+            self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
+        }
+        return keyboardFrameObserver
+    }()
+
     /// Init
     ///
     init(settings: ProductSettings, completion: @escaping Completion) {
@@ -34,6 +41,7 @@ final class ProductPurchaseNoteViewController: UIViewController {
         configureNavigationBar()
         configureMainView()
         configureTableView()
+        startListeningToNotifications()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -131,6 +139,22 @@ private extension ProductPurchaseNoteViewController {
         cell.noteTextView.onTextChange = { [weak self] (text) in
             self?.productSettings.purchaseNote = text
         }
+    }
+}
+
+// MARK: - Keyboard management
+//
+private extension ProductPurchaseNoteViewController {
+    /// Registers for all of the related Notifications
+    ///
+    func startListeningToNotifications() {
+        keyboardFrameObserver.startObservingKeyboardFrame()
+    }
+}
+
+extension ProductPurchaseNoteViewController: KeyboardScrollable {
+    var scrollable: UIScrollView {
+        return tableView
     }
 }
 

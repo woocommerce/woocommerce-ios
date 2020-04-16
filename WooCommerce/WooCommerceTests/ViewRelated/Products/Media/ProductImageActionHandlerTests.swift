@@ -50,6 +50,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
         var observedProductImageStatusChanges: [[ProductImageStatus]] = []
         productImageActionHandler.addUpdateObserver(self) { (productImageStatuses, error) in
+            XCTAssertTrue(Thread.current.isMainThread)
             observedProductImageStatusChanges.append(productImageStatuses)
             if observedProductImageStatusChanges.count >= expectedStatusUpdates.count {
                 waitForStatusUpdates.fulfill()
@@ -58,6 +59,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
         let waitForAssetUpload = self.expectation(description: "Wait for asset upload callback from image upload")
         productImageActionHandler.addAssetUploadObserver(self) { (asset, productImage) in
+            XCTAssertTrue(Thread.current.isMainThread)
             XCTAssertEqual(asset, mockAsset)
             XCTAssertEqual(productImage, mockUploadedProductImage)
             waitForAssetUpload.fulfill()
@@ -98,6 +100,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
         var observedProductImageStatusChanges: [[ProductImageStatus]] = []
         productImageActionHandler.addUpdateObserver(self) { (productImageStatuses, error) in
+            XCTAssertTrue(Thread.current.isMainThread)
             observedProductImageStatusChanges.append(productImageStatuses)
             if observedProductImageStatusChanges.count >= expectedStatusUpdates.count {
                 expectation.fulfill()
@@ -134,6 +137,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
         var observedProductImageStatusChanges: [[ProductImageStatus]] = []
         productImageActionHandler.addUpdateObserver(self) { (productImageStatuses, error) in
+            XCTAssertTrue(Thread.current.isMainThread)
             observedProductImageStatusChanges.append(productImageStatuses)
             if observedProductImageStatusChanges.count >= expectedStatusUpdates.count {
                 expectation.fulfill()
@@ -163,7 +167,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: 123,
                                                                   product: mockProduct)
 
-        // Act
+        // Media items to upload to site media library.
         let mockMedia1 = Media(mediaID: 134, date: Date(),
                                fileExtension: "jpg", mimeType: "image/jpeg",
                                src: "pic", thumbnailURL: "https://test.com/pic1",
@@ -175,12 +179,52 @@ final class ProductImageActionHandlerTests: XCTestCase {
                                name: "woo", alt: "the second image",
                                height: 320, width: 776)
         let mockMediaItems = [mockMedia1, mockMedia2]
+
+        let expectedImageStatusesFromSiteMediaLibrary = mockMediaItems.map { ProductImageStatus.remote(image: $0.toProductImage) }
+        let expectedStatusUpdates: [[ProductImageStatus]] = [
+            mockRemoteProductImageStatuses,
+            expectedImageStatusesFromSiteMediaLibrary + mockRemoteProductImageStatuses
+        ]
+
+        let expectation = self.expectation(description: "Wait for image upload")
+        expectation.expectedFulfillmentCount = 1
+
+        var observedProductImageStatusChanges: [[ProductImageStatus]] = []
+        productImageActionHandler.addUpdateObserver(self) { (productImageStatuses, error) in
+            XCTAssertTrue(Thread.current.isMainThread)
+            observedProductImageStatusChanges.append(productImageStatuses)
+            if observedProductImageStatusChanges.count >= expectedStatusUpdates.count {
+                expectation.fulfill()
+            }
+        }
+
+        // Act
         productImageActionHandler.addSiteMediaLibraryImagesToProduct(mediaItems: mockMediaItems)
 
         // Assert
-        let expectedImageStatusesFromSiteMediaLibrary = mockMediaItems.map { ProductImageStatus.remote(image: $0.toProductImage) }
-        let expectedImageStatuses = expectedImageStatusesFromSiteMediaLibrary + mockRemoteProductImageStatuses
-        XCTAssertEqual(productImageActionHandler.productImageStatuses, expectedImageStatuses)
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+        XCTAssertEqual(observedProductImageStatusChanges, expectedStatusUpdates)
+    }
+
+    // MARK: - `resetProductImages(to:)`
+
+    func testResettingProductImagesToAProduct() {
+        // Arrange
+        let mockProduct = MockProduct().product(images: [])
+        let productImageActionHandler = ProductImageActionHandler(siteID: 123,
+                                                                  product: mockProduct)
+
+        // Action
+        let mockProductImages = [
+            ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: ""),
+            ProductImage(imageID: 2, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
+        ]
+        let anotherMockProduct = MockProduct().product(images: mockProductImages)
+        productImageActionHandler.resetProductImages(to: anotherMockProduct)
+
+        // Assert
+        let expectedProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
+        XCTAssertEqual(productImageActionHandler.productImageStatuses, expectedProductImageStatuses)
     }
 }
 

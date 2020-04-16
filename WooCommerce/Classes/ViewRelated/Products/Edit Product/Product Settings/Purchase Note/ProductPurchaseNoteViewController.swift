@@ -1,9 +1,9 @@
 import UIKit
 import Yosemite
 
-final class ProductSlugViewController: UIViewController {
+final class ProductPurchaseNoteViewController: UIViewController {
 
-    @IBOutlet weak private var tableView: UITableView!
+    @IBOutlet private weak var tableView: UITableView!
 
     // Completion callback
     //
@@ -14,13 +14,20 @@ final class ProductSlugViewController: UIViewController {
 
     private let sections: [Section]
 
+    private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
+        let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
+            self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
+        }
+        return keyboardFrameObserver
+    }()
+
     /// Init
     ///
     init(settings: ProductSettings, completion: @escaping Completion) {
         productSettings = settings
-        let footerText = NSLocalizedString("This is the URL-friendly version of the product title",
-        comment: "Footer text in Product Slug screen")
-        sections = [Section(footer: footerText, rows: [.slug])]
+        let footerText = NSLocalizedString("An optional note to send the customer after purchase",
+                                           comment: "Footer text in Product Purchase Note screen")
+        sections = [Section(footer: footerText, rows: [.purchaseNote])]
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
@@ -34,6 +41,7 @@ final class ProductSlugViewController: UIViewController {
         configureNavigationBar()
         configureMainView()
         configureTableView()
+        startListeningToNotifications()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -45,10 +53,10 @@ final class ProductSlugViewController: UIViewController {
 
 // MARK: - View Configuration
 //
-private extension ProductSlugViewController {
+private extension ProductPurchaseNoteViewController {
 
     func configureNavigationBar() {
-        title = NSLocalizedString("Slug", comment: "Product Slug navigation title")
+        title = NSLocalizedString("Purchase Note", comment: "Product Note navigation title")
 
         removeNavigationBackBarButtonText()
     }
@@ -58,7 +66,7 @@ private extension ProductSlugViewController {
     }
 
     func configureTableView() {
-        tableView.register(TextFieldTableViewCell.loadNib(), forCellReuseIdentifier: TextFieldTableViewCell.reuseIdentifier)
+        tableView.register(TextViewTableViewCell.loadNib(), forCellReuseIdentifier: TextViewTableViewCell.reuseIdentifier)
 
         tableView.dataSource = self
         tableView.delegate = self
@@ -70,7 +78,7 @@ private extension ProductSlugViewController {
 
 // MARK: - UITableViewDataSource Conformance
 //
-extension ProductSlugViewController: UITableViewDataSource {
+extension ProductPurchaseNoteViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
         return sections.count
@@ -92,7 +100,7 @@ extension ProductSlugViewController: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate Conformance
 //
-extension ProductSlugViewController: UITableViewDelegate {
+extension ProductPurchaseNoteViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -112,49 +120,58 @@ extension ProductSlugViewController: UITableViewDelegate {
 
 // MARK: - Support for UITableViewDataSource
 //
-private extension ProductSlugViewController {
+private extension ProductPurchaseNoteViewController {
     /// Configure cellForRowAtIndexPath:
     ///
    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as TextFieldTableViewCell:
-            configureSlug(cell: cell)
+        case let cell as TextViewTableViewCell:
+            configurePurchaseNote(cell: cell)
         default:
-            fatalError("Unidentified product slug row type")
+            fatalError("Unidentified product purchase note row type")
         }
     }
 
-    func configureSlug(cell: TextFieldTableViewCell) {
-        cell.accessoryType = .none
+    func configurePurchaseNote(cell: TextViewTableViewCell) {
+        cell.iconImage = nil
+        cell.noteTextView.placeholder = NSLocalizedString("Add a purchase note...", comment: "Placeholder text in Product Purchase Note screen")
+        cell.noteTextView.text = productSettings.purchaseNote?.strippedHTML
+        cell.noteTextView.onTextChange = { [weak self] (text) in
+            self?.productSettings.purchaseNote = text
+        }
+    }
+}
 
-        let placeholder = NSLocalizedString("Slug", comment: "Placeholder in the Product Slug row on Edit Product Slug screen.")
+// MARK: - Keyboard management
+//
+private extension ProductPurchaseNoteViewController {
+    /// Registers for all of the related Notifications
+    ///
+    func startListeningToNotifications() {
+        keyboardFrameObserver.startObservingKeyboardFrame()
+    }
+}
 
-        let viewModel = TextFieldTableViewCell.ViewModel(text: productSettings.slug, placeholder: placeholder, onTextChange: { [weak self] newName in
-            if let newName = newName {
-                self?.productSettings.slug = newName
-            }
-            }, onTextDidBeginEditing: {
-                //TODO: Add analytics track
-        })
-        cell.configure(viewModel: viewModel)
-        cell.textField.applyBodyStyle()
+extension ProductPurchaseNoteViewController: KeyboardScrollable {
+    var scrollable: UIScrollView {
+        return tableView
     }
 }
 
 // MARK: - Constants
 //
-private extension ProductSlugViewController {
+private extension ProductPurchaseNoteViewController {
 
     /// Table Rows
     ///
     enum Row {
         /// Listed in the order they appear on screen
-        case slug
+        case purchaseNote
 
         var reuseIdentifier: String {
             switch self {
-            case .slug:
-                return TextFieldTableViewCell.reuseIdentifier
+            case .purchaseNote:
+                return TextViewTableViewCell.reuseIdentifier
             }
         }
     }

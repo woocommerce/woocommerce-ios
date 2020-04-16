@@ -206,8 +206,7 @@ final class OrdersViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isEmpty)
         XCTAssertEqual(viewModel.numberOfObjects, processingOrders.count)
 
-        let processingOrderIDs = Set(processingOrders.map { $0.orderID })
-        XCTAssertEqual(viewModel.fetchedOrderIDs, processingOrderIDs)
+        XCTAssertEqual(viewModel.fetchedOrderIDs, processingOrders.orderIDs)
     }
 
     func testGivenNoFilterItLoadsAllTheTodayAndPastOrdersFromTheDB() {
@@ -230,8 +229,7 @@ final class OrdersViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isEmpty)
         XCTAssertEqual(viewModel.numberOfObjects, allInsertedOrders.count)
 
-        let allInsertedOrderIDs = Set(allInsertedOrders.map { $0.orderID })
-        XCTAssertEqual(viewModel.fetchedOrderIDs, allInsertedOrderIDs)
+        XCTAssertEqual(viewModel.fetchedOrderIDs, allInsertedOrders.orderIDs)
     }
 
     func testGivenAProcessingFilterItAlsoLoadsFutureOrdersFromTheDB() {
@@ -256,13 +254,11 @@ final class OrdersViewModelTests: XCTestCase {
         viewModel.activateAndForwardUpdates(to: UITableView())
 
         // Assert
-        XCTAssertEqual(viewModel.numberOfObjects, expectedFutureOrders.count + expectedPastOrders.count)
-        XCTAssertFalse(viewModel.fetchedOrderIDs.contains(ignoredFutureOrder.orderID))
+        XCTAssertTrue(viewModel.fetchedOrderIDs.isDisjoint(with: ignoredOrders.orderIDs))
 
-        let expectedOrderIDs = Set((expectedPastOrders + expectedFutureOrders).map(\.orderID))
-        XCTAssertEqual(viewModel.fetchedOrderIDs, expectedOrderIDs)
+        XCTAssertEqual(viewModel.numberOfObjects, expectedOrders.count)
+        XCTAssertEqual(viewModel.fetchedOrderIDs, expectedOrders.orderIDs)
     }
-
 }
 
 // MARK: - Helpers
@@ -282,6 +278,14 @@ private extension OrdersViewModel {
     ///
     var fetchedOrderIDs: Set<Int64> {
         Set(fetchedOrders.map(\.orderID))
+    }
+}
+
+private extension Array where Element == Yosemite.Order {
+    /// Returns all the IDs
+    ///
+    var orderIDs: Set<Int64> {
+        Set(map(\.orderID))
     }
 }
 

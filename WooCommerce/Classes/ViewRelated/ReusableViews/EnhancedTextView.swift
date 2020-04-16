@@ -28,15 +28,11 @@ final class EnhancedTextView: UITextView {
     override func awakeFromNib() {
         super.awakeFromNib()
         delegate = self
-        placeholderLabel = UILabel(frame: bounds)
-        configureLabels()
-        if let unwrappedLabel = placeholderLabel {
-            addSubview(unwrappedLabel)
-        }
+        configurePlaceholderLabel()
     }
 
     private func animatePlaceholder() {
-        UIView.animate(withDuration: 0.2) { [weak self] in
+        UIView.animate(withDuration: Constants.animationDuration) { [weak self] in
             guard let self = self else {
                 return
             }
@@ -45,7 +41,7 @@ final class EnhancedTextView: UITextView {
     }
 
     private func hidePlaceholder() {
-        UIView.animate(withDuration: 0.2) { [weak self] in
+        UIView.animate(withDuration: Constants.animationDuration) { [weak self] in
             guard let self = self else {
                 return
             }
@@ -59,7 +55,11 @@ final class EnhancedTextView: UITextView {
 // MARK: Configurations
 //
 private extension EnhancedTextView {
-    func configureLabels() {
+    func configurePlaceholderLabel() {
+        placeholderLabel = UILabel(frame: bounds)
+        if let unwrappedLabel = placeholderLabel {
+            addSubview(unwrappedLabel)
+        }
         placeholderLabel?.numberOfLines = 0
         placeholderLabel?.applyBodyStyle()
         placeholderLabel?.textColor = .textSubtle
@@ -83,3 +83,13 @@ extension EnhancedTextView: UITextViewDelegate {
         onTextChange?(textView.text)
     }
 }
+
+// MARK: - Constants!
+//
+private extension EnhancedTextView {
+
+    enum Constants {
+        static let animationDuration    = 0.2
+    }
+}
+

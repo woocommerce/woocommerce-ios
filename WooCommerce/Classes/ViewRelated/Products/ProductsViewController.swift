@@ -2,6 +2,56 @@ import UIKit
 import WordPressUI
 import Yosemite
 
+extension ListSelectorViewController: DrawerPresentable {
+    // TODO-jc: fix height to fit to content
+    var collapsedHeight: DrawerHeight {
+        guard let scrollableView = scrollableView else {
+            return .maxHeight
+        }
+        scrollableView.layoutIfNeeded()
+        let size = scrollableView.contentSize
+        let height = size.height + BottomSheetViewController.Constants.gripHeight + BottomSheetViewController.Constants.Header.spacing + BottomSheetViewController.Constants.Stack.insets.top
+        return .contentHeight(height)
+    }
+
+    var scrollableView: UIScrollView? {
+        tableView
+    }
+}
+
+/// `ListSelectorDataSource` for selecting a Product Backorders Setting.
+///
+struct ProductSortOptionListSelectorDataSource: ListSelectorDataSource {
+    typealias Model = ProductsSortOrder
+    typealias Cell = BasicTableViewCell
+
+    let data: [ProductsSortOrder] = [
+        .dateDescending,
+        .dateAscending,
+        .nameDescending,
+        .nameAscending
+    ]
+
+    var selected: ProductsSortOrder?
+
+    init(selected: ProductsSortOrder?) {
+        self.selected = selected
+    }
+
+    func configureCell(cell: BasicTableViewCell, model: ProductsSortOrder) {
+        cell.selectionStyle = .default
+        cell.textLabel?.text = model.actionSheetTitle
+    }
+
+    mutating func handleSelectedChange(selected: ProductsSortOrder) {
+        self.selected = selected
+    }
+
+    func isSelected(model: ProductsSortOrder) -> Bool {
+        return model == selected
+    }
+}
+
 /// Shows a list of products with pull to refresh and infinite scroll
 ///
 final class ProductsViewController: UIViewController {
@@ -435,11 +485,21 @@ private extension ProductsViewController {
     }
 
     @objc func sortButtonTapped() {
-        UIAlertController.presentSortProductsActionSheet(viewController: self, onSelect: { [weak self] sortOrder in
-            self?.sortOrder = sortOrder
-        }, onCancel: { [weak self] in
-            self?.dismiss(animated: true, completion: nil)
-        })
+        let viewProperties = ListSelectorViewProperties(navigationBarTitle: "Sort by")
+        let dataSource = ProductSortOptionListSelectorDataSource(selected: sortOrder)
+        let sortOptionListViewController = ListSelectorViewController(viewProperties: viewProperties, dataSource: dataSource) { [weak self] selectedSortOrder in
+            defer {
+                self?.dismiss(animated: true, completion: nil)
+            }
+
+            guard let selectedSortOrder = selectedSortOrder else {
+                return
+            }
+            self?.sortOrder = selectedSortOrder
+        }
+
+        let bottomSheet = BottomSheetViewController(childViewController: sortOptionListViewController)
+        bottomSheet.show(from: self)
     }
 
     @objc func filterButtonTapped() {

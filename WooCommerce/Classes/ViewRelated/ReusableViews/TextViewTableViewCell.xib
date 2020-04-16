@@ -62,7 +62,6 @@
                 <outlet property="noteIconButton" destination="WYv-eb-Aor" id="xbs-pE-r7t"/>
                 <outlet property="noteIconView" destination="pmR-Dp-2I7" id="U2C-nH-hCb"/>
                 <outlet property="noteTextView" destination="Ath-1M-eR6" id="P9H-JP-Ibj"/>
-                <outlet property="stackView" destination="8gO-gt-5sc" id="0dE-nW-mh3"/>
             </connections>
             <point key="canvasLocation" x="34" y="141"/>
         </tableViewCell>

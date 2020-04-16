@@ -3,8 +3,6 @@ import Gridicons
 
 class TextViewTableViewCell: UITableViewCell {
 
-    @IBOutlet private weak var stackView: UIStackView!
-
     @IBOutlet weak var noteIconView: UIView!
     @IBOutlet var noteIconButton: UIButton!
 

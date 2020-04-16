@@ -169,13 +169,13 @@ final class DateWooTests: XCTestCase {
             return cal
         }()
 
-        let fromDate = formatter.date(from: "2020-01-01T01:56:12Z")!
+        let fromDate = formatter.date(from: "2020-03-08T01:56:12Z")!
 
         // When
         let actual = fromDate.nextMidnight(using: calendar)
 
         // Then
-        let expected = formatter.date(from: "2020-01-02T00:00:00Z")!
+        let expected = formatter.date(from: "2020-03-09T00:00:00Z")!
         XCTAssertEqual(actual, expected)
     }
 }

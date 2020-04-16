@@ -68,6 +68,32 @@ extension Date {
         return calendar.date(byAdding: dayComponent, to: today)
     }
 
+    /// Returns the next midnight starting from `self`.
+    ///
+    /// For example, if `self` is 2020-01-03 00:41:09, the returned value will be 2020-01-04 00:00:00.
+    ///
+    /// Returns `nil` if `self` (Date) could not be calculated for some reason. ¯\_(ツ)_/¯
+    ///
+    func nextMidnight() -> Date? {
+        let calendar = Calendar.current
+
+        guard let tomorrowWithTime = calendar.date(byAdding: .day, value: 1, to: self) else {
+            return nil
+        }
+
+        let components = DateComponents(
+            calendar: calendar,
+            year: calendar.component(.year, from: tomorrowWithTime),
+            month: calendar.component(.month, from: tomorrowWithTime),
+            day: calendar.component(.day, from: tomorrowWithTime),
+            hour: 0,
+            minute: 0,
+            second: 0
+        )
+
+        return calendar.date(from: components)
+    }
+
     /// Returns `self` plus the given `days`.
     ///
     func adding(days: Int) -> Date? {

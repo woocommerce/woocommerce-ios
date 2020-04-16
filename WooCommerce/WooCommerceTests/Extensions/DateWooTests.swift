@@ -157,4 +157,16 @@ final class DateWooTests: XCTestCase {
 
         XCTAssertFalse(isSameYear)
     }
+
+    /// For example, if Date() is 2020-01-01 01:00:00, then nextMidnight() should return
+    /// 2020-01-02 00:00:00.
+    func testNextMidnightMethodReturnsTomorrowWithoutTime() {
+        let formatter = DateFormatter.Defaults.iso8601WithoutTimeZone
+        let fromDate = formatter.date(from: "2020-01-01T01:56:12")!
+
+        let actualTomorrow = fromDate.nextMidnight()
+
+        let expectedTomorrow = formatter.date(from: "2020-01-02T00:00:00")!
+        XCTAssertEqual(actualTomorrow, expectedTomorrow)
+    }
 }

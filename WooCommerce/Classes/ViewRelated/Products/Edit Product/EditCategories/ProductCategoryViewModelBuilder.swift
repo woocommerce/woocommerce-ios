@@ -11,10 +11,10 @@ struct ProductCategoryViewModelBuilder {
 
         /// Stores categories by holding a reference to it's `parentID`
         ///
-        private let storage: [Int64: [ProductCategory]]
+        private let nodes: [Int64: [ProductCategory]]
 
         init(categories: [ProductCategory]) {
-            storage = Self.storageFromCategories(categories)
+            nodes = Self.storageFromCategories(categories)
         }
 
         /// Returns a dictionary  where each key holds a category `parentID` each value an array of subcategories.
@@ -32,13 +32,13 @@ struct ProductCategoryViewModelBuilder {
         /// Returns categories that don't have a `parentID`
         ///
         var rootCategories: [ProductCategory] {
-            return storage[ProductCategory.noParentID] ?? []
+            return nodes[ProductCategory.noParentID] ?? []
         }
 
         /// Returns the inmediate subCategories of a given category or `nil` if there aren't any.
         ///
         func outterSubCategories(of category: ProductCategory) -> [ProductCategory]? {
-            return storage[category.categoryID]
+            return nodes[category.categoryID]
         }
     }
 

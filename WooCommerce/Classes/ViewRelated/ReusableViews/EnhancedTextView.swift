@@ -28,7 +28,7 @@ final class EnhancedTextView: UITextView {
     override func awakeFromNib() {
         super.awakeFromNib()
         delegate = self
-        placeholderLabel = UILabel(frame: self.bounds)
+        placeholderLabel = UILabel(frame: bounds)
         configureLabels()
         if let unwrappedLabel = placeholderLabel {
             addSubview(unwrappedLabel)
@@ -71,15 +71,15 @@ private extension EnhancedTextView {
 extension EnhancedTextView: UITextViewDelegate {
 
     func textViewDidBeginEditing(_ textView: UITextView) {
-        self.hidePlaceholder()
+        hidePlaceholder()
     }
 
     func textViewDidEndEditing(_ textView: UITextView) {
-        self.animatePlaceholder()
+        animatePlaceholder()
     }
 
     func textViewDidChange(_ textView: UITextView) {
-        self.animatePlaceholder()
+        animatePlaceholder()
         onTextChange?(textView.text)
     }
 }

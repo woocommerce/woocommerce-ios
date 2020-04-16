@@ -524,7 +524,7 @@ extension Product: ProductUpdater {
                        upsellIDs: upsellIDs,
                        crossSellIDs: crossSellIDs,
                        parentID: parentID,
-                       purchaseNote: purchaseNote,
+                       purchaseNote: settings.purchaseNote,
                        categories: categories,
                        tags: tags,
                        images: images,

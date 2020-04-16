@@ -10,14 +10,22 @@ final class ProductImageActionHandler {
 
     private let siteID: Int64
 
+    /// The queue where internal states like `allStatuses` and `observations` are updated on to maintain thread safety.
+    private let queue: DispatchQueue
+
     var productImageStatuses: [ProductImageStatus] {
         return allStatuses.productImageStatuses
     }
 
     private var allStatuses: AllStatuses {
         didSet {
-            observations.allStatusesUpdated.values.forEach { closure in
-                closure(allStatuses)
+            queue.async { [weak self] in
+                guard let self = self else {
+                    return
+                }
+                self.observations.allStatusesUpdated.values.forEach { closure in
+                    closure(self.allStatuses)
+                }
             }
         }
     }
@@ -27,8 +35,13 @@ final class ProductImageActionHandler {
         assetUploaded: [UUID: OnAssetUpload]()
     )
 
-    init(siteID: Int64, product: Product) {
+    /// - Parameters:
+    ///   - siteID: the ID of a site/store where the product belongs to.
+    ///   - product: the product whose image statuses and actions are of concern.
+    ///   - queue: the queue where the update callbacks are called on. Default to be the main queue.
+    init(siteID: Int64, product: Product, queue: DispatchQueue = .main) {
         self.siteID = siteID
+        self.queue = queue
         self.allStatuses = (productImageStatuses: product.imageStatuses, error: nil)
     }
 
@@ -36,28 +49,41 @@ final class ProductImageActionHandler {
     ///
     /// - Parameters:
     ///   - observer: the observer that `onUpdate` is associated with.
-    ///   - onUpdate: called when the image statuses have been updated, if `observer` is not nil.
+    ///   - onUpdate: called when the image statuses have been updated on the thread passed in the initializer (default to the main thread),
+    ///               if `observer` is not nil.
     @discardableResult
     func addUpdateObserver<T: AnyObject>(_ observer: T,
                                          onUpdate: @escaping OnAllStatusesUpdate) -> ObservationToken {
         let id = UUID()
 
-        observations.allStatusesUpdated[id] = { [weak self, weak observer] allStatuses in
-            // If the observer has been deallocated, we can
-            // automatically remove the observation closure.
-            guard observer != nil else {
-                self?.observations.allStatusesUpdated.removeValue(forKey: id)
+        queue.async { [weak self] in
+            guard let self = self else {
                 return
             }
 
-            onUpdate(allStatuses)
+            self.observations.allStatusesUpdated[id] = { [weak self, weak observer] allStatuses in
+                guard let self = self else {
+                    return
+                }
+
+                // If the observer has been deallocated, we can
+                // automatically remove the observation closure.
+                guard observer != nil else {
+                    self.observations.allStatusesUpdated.removeValue(forKey: id)
+                    return
+                }
+
+                onUpdate(self.allStatuses)
+            }
+
+            // Sends the initial value.
+            onUpdate(self.allStatuses)
         }
 
-        // Sends the initial value.
-        onUpdate(allStatuses)
-
         return ObservationToken { [weak self] in
-            self?.observations.allStatusesUpdated.removeValue(forKey: id)
+            self?.queue.async { [weak self] in
+                self?.observations.allStatusesUpdated.removeValue(forKey: id)
+            }
         }
     }
 
@@ -71,70 +97,103 @@ final class ProductImageActionHandler {
                                               onAssetUpload: @escaping OnAssetUpload) -> ObservationToken {
         let id = UUID()
 
-        observations.assetUploaded[id] = { [weak self, weak observer] asset, productImage in
-            // If the observer has been deallocated, we can
-            // automatically remove the observation closure.
-            guard observer != nil else {
-                self?.observations.assetUploaded.removeValue(forKey: id)
+        queue.async { [weak self] in
+            guard let self = self else {
                 return
             }
 
-            onAssetUpload(asset, productImage)
+            self.observations.assetUploaded[id] = { [weak self, weak observer] asset, productImage in
+                // If the observer has been deallocated, we can
+                // automatically remove the observation closure.
+                guard observer != nil else {
+                    self?.observations.assetUploaded.removeValue(forKey: id)
+                    return
+                }
+
+                onAssetUpload(asset, productImage)
+            }
         }
 
         return ObservationToken { [weak self] in
-            self?.observations.assetUploaded.removeValue(forKey: id)
+            self?.queue.async { [weak self] in
+                self?.observations.assetUploaded.removeValue(forKey: id)
+            }
         }
     }
 
     func addSiteMediaLibraryImagesToProduct(mediaItems: [Media]) {
-        let newProductImageStatuses = mediaItems.map { ProductImageStatus.remote(image: $0.toProductImage) }
-        let imageStatuses = newProductImageStatuses + productImageStatuses
-        allStatuses = (productImageStatuses: imageStatuses, error: nil)
+        queue.async { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            let newProductImageStatuses = mediaItems.map { ProductImageStatus.remote(image: $0.toProductImage) }
+            let imageStatuses = newProductImageStatuses + self.productImageStatuses
+            self.allStatuses = (productImageStatuses: imageStatuses, error: nil)
+        }
     }
 
     func uploadMediaAssetToSiteMediaLibrary(asset: PHAsset) {
-        let imageStatuses = [.uploading(asset: asset)] + allStatuses.productImageStatuses
-        allStatuses = (productImageStatuses: imageStatuses, error: nil)
+        queue.async { [weak self] in
+            guard let self = self else {
+                return
+            }
 
-        let action = MediaAction.uploadMedia(siteID: siteID,
-                                             mediaAsset: asset) { [weak self] (media, error) in
-                                                guard let self = self else {
-                                                    return
-                                                }
+            let imageStatuses = [.uploading(asset: asset)] + self.allStatuses.productImageStatuses
+            self.allStatuses = (productImageStatuses: imageStatuses, error: nil)
 
-                                                guard let index = self.index(of: asset) else {
-                                                    return
-                                                }
-
-                                                guard let media = media else {
-                                                    DispatchQueue.main.async {
-                                                        self.updateProductImageStatus(at: index, error: error)
+            self.uploadMediaAssetToSiteMediaLibrary(asset: asset) { [weak self] (media, error) in
+                                                self?.queue.async { [weak self] in
+                                                    guard let self = self else {
+                                                        return
                                                     }
-                                                    return
-                                                }
-                                                let productImage = ProductImage(imageID: media.mediaID,
-                                                                                dateCreated: media.date,
-                                                                                dateModified: media.date,
-                                                                                src: media.src,
-                                                                                name: media.name,
-                                                                                alt: media.alt)
-                                                DispatchQueue.main.async {
+
+                                                    guard let index = self.index(of: asset) else {
+                                                        return
+                                                    }
+
+                                                    guard let media = media else {
+                                                        self.updateProductImageStatus(at: index, error: error)
+                                                        return
+                                                    }
+                                                    let productImage = ProductImage(imageID: media.mediaID,
+                                                                                    dateCreated: media.date,
+                                                                                    dateModified: media.date,
+                                                                                    src: media.src,
+                                                                                    name: media.name,
+                                                                                    alt: media.alt)
                                                     self.updateProductImageStatus(at: index, productImage: productImage)
                                                 }
+            }
         }
-        ServiceLocator.stores.dispatch(action)
+    }
+
+    private func uploadMediaAssetToSiteMediaLibrary(asset: PHAsset, onCompletion: @escaping (_ uploadedMedia: Media?, _ error: Error?) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let siteID = self?.siteID else {
+                return
+            }
+
+            let action = MediaAction.uploadMedia(siteID: siteID, mediaAsset: asset, onCompletion: onCompletion)
+            ServiceLocator.stores.dispatch(action)
+        }
     }
 
     func deleteProductImage(_ productImage: ProductImage) {
-        var imageStatuses = allStatuses.productImageStatuses
-        imageStatuses.removeAll { status -> Bool in
-            guard case .remote(let image) = status else {
-                return false
+        queue.async { [weak self] in
+            guard let self = self else {
+                return
             }
-            return image.imageID == productImage.imageID
+
+            var imageStatuses = self.allStatuses.productImageStatuses
+            imageStatuses.removeAll { status -> Bool in
+                guard case .remote(let image) = status else {
+                    return false
+                }
+                return image.imageID == productImage.imageID
+            }
+            self.allStatuses = (productImageStatuses: imageStatuses, error: nil)
         }
-        allStatuses = (productImageStatuses: imageStatuses, error: nil)
     }
 
     /// Resets the product images to the ones from the given Product.

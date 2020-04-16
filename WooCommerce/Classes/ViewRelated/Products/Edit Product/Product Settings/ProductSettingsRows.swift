@@ -124,4 +124,34 @@ enum ProductSettingsRows {
 
         let cellTypes: [UITableViewCell.Type] = [SettingTitleAndValueTableViewCell.self]
     }
+
+    struct PurchaseNote: ProductSettingsRowMediator {
+        private let settings: ProductSettings
+
+        init(_ settings: ProductSettings) {
+            self.settings = settings
+        }
+
+        func configure(cell: UITableViewCell) {
+            guard let cell = cell as? SettingTitleAndValueTableViewCell else {
+                return
+            }
+
+            let titleView = NSLocalizedString("Purchase Note", comment: "Purchase note label in Product Settings")
+            cell.updateUI(title: titleView, value: settings.purchaseNote?.strippedHTML)
+            cell.accessoryType = .disclosureIndicator
+        }
+
+        func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
+            let viewController = ProductPurchaseNoteViewController(settings: settings) { (productSettings) in
+                self.settings.purchaseNote = productSettings.purchaseNote
+                onCompletion(self.settings)
+            }
+            sourceViewController.navigationController?.pushViewController(viewController, animated: true)
+        }
+
+        let reuseIdentifier: String = SettingTitleAndValueTableViewCell.reuseIdentifier
+
+        let cellTypes: [UITableViewCell.Type] = [SettingTitleAndValueTableViewCell.self]
+    }
 }

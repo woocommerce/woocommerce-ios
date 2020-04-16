@@ -232,22 +232,55 @@ final class OrdersViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.fetchedOrderIDs, allInsertedOrders.orderIDs)
     }
 
-    func testGivenAProcessingFilterItAlsoLoadsFutureOrdersFromTheDB() {
+    /// If there is a filter, all orders including orders dated in the future (dateCreated) will
+    /// be fetched.
+    func testGivenAFilterItAlsoLoadsFutureOrdersFromTheDB() {
         // Arrange
-        let viewModel = OrdersViewModel(storageManager: storageManager, statusFilter: orderStatus(with: .processing))
+        let viewModel = OrdersViewModel(storageManager: storageManager, statusFilter: orderStatus(with: .pending))
 
-        let expectedFutureOrders = [
-            insertOrder(id: 1_000, status: .processing, dateCreated: Date().adding(days: 1)!),
-            insertOrder(id: 1_001, status: .processing, dateCreated: Date().adding(days: 2)!),
-            insertOrder(id: 1_002, status: .processing, dateCreated: Date().adding(days: 3)!),
+        let expectedOrders = [
+            // Future orders
+            insertOrder(id: 1_000, status: .pending, dateCreated: Date().adding(days: 1)!),
+            insertOrder(id: 1_001, status: .pending, dateCreated: Date().adding(days: 2)!),
+            insertOrder(id: 1_002, status: .pending, dateCreated: Date().adding(days: 3)!),
+            // Past orders
+            insertOrder(id: 4_000, status: .pending, dateCreated: Date().adding(days: -1)!),
+            insertOrder(id: 4_001, status: .pending, dateCreated: Date().adding(days: -20)!),
         ]
 
-        // This should be ignored because it is not .processing
+        // This should be ignored because it is not the same filter
         let ignoredFutureOrder = insertOrder(id: 2_000, status: .cancelled, dateCreated: Date().adding(days: 1)!)
 
-        let expectedPastOrders = [
-            insertOrder(id: 4_000, status: .processing, dateCreated: Date().adding(days: -1)!),
-            insertOrder(id: 4_001, status: .processing, dateCreated: Date().adding(days: -20)!),
+        // Act
+        viewModel.activateAndForwardUpdates(to: UITableView())
+
+        // Assert
+        XCTAssertEqual(viewModel.numberOfObjects, expectedOrders.count)
+        XCTAssertEqual(viewModel.fetchedOrderIDs, expectedOrders.orderIDs)
+
+        XCTAssertFalse(viewModel.fetchedOrderIDs.contains(ignoredFutureOrder.orderID))
+    }
+
+    /// If there is no folder, only orders created up to the current day are returned. Orders before midnight are
+    /// included.
+    func testGivenNoFilterItOnlyLoadsOrdersUpToMidnightFromTheDB() {
+        // Arrange
+        let viewModel = OrdersViewModel(storageManager: storageManager, statusFilter: nil)
+
+        let ignoredOrders = [
+            // Orders in the future
+            insertOrder(id: 1_000, status: .pending, dateCreated: Date().adding(days: 1)!),
+            insertOrder(id: 1_002, status: .cancelled, dateCreated: Date().adding(days: 3)!),
+            // Exactly midnight is also ignored because it is technically "tomorrow"
+            insertOrder(id: 1_003, status: .processing, dateCreated: Date().nextMidnight()!),
+        ]
+
+        let expectedOrders = [
+            insertOrder(id: 4_000, status: .completed, dateCreated: Date()),
+            insertOrder(id: 4_000, status: .pending, dateCreated: Date().adding(days: -1)!),
+            insertOrder(id: 4_001, status: .pending, dateCreated: Date().adding(days: -20)!),
+            // 1 second before midnight is included because it is technically "today"
+            insertOrder(id: 1_003, status: .processing, dateCreated: Date().nextMidnight()!.adding(seconds: -1)!),
         ]
 
         // Act

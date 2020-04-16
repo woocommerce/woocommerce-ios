@@ -128,7 +128,7 @@ private extension ProductPurchaseNoteViewController {
         case let cell as TextViewTableViewCell:
             configurePurchaseNote(cell: cell)
         default:
-            fatalError("Unidentified product catalog visibility row type")
+            fatalError("Unidentified product purchase row type")
         }
     }
 

@@ -28,7 +28,7 @@ final class ProductCategoryListViewModel {
 
     /// Array of view models to be rendered by the View Controller.
     ///
-    private(set) var categoryViewModels: [ProductCategoryViewModel] = []
+    private(set) var categoryViewModels: [ProductCategoryCellViewModel] = []
 
     /// Closure to be invoked when `synchronizeCategories` state  changes
     ///

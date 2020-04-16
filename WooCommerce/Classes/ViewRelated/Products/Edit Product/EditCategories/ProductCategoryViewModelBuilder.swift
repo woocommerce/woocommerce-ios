@@ -1,7 +1,7 @@
 import Foundation
 import Yosemite
 
-/// Creates `ProductCategoryViewModel` types
+/// Creates `ProductCategoryCellViewModel` types
 ///
 struct ProductCategoryViewModelBuilder {
 
@@ -42,15 +42,15 @@ struct ProductCategoryViewModelBuilder {
         }
     }
 
-    /// Returns an array of `ProductCategoryViewModel` by sorting the provided `categories` following a `Category -> SubCategory` order.
+    /// Returns an array of `ProductCategoryCellViewModel` by sorting the provided `categories` following a `Category -> SubCategory` order.
     /// Provide an array of `selectedCategories` to properly reflect the selected state in the returned view model array.
     ///
-    static func viewModels(from categories: [ProductCategory], selectedCategories: [ProductCategory]) -> [ProductCategoryViewModel] {
+    static func viewModels(from categories: [ProductCategory], selectedCategories: [ProductCategory]) -> [ProductCategoryCellViewModel] {
         // Create tree structure
         let tree = CategoryTree(categories: categories)
 
         // For each root category, get all sub-categories and return a flattened array of view models
-        let viewModels = tree.rootCategories.flatMap { category -> [ProductCategoryViewModel] in
+        let viewModels = tree.rootCategories.flatMap { category -> [ProductCategoryCellViewModel] in
             return flattenViewModels(of: category, in: tree, selectedCategories: selectedCategories)
         }
 
@@ -63,7 +63,7 @@ struct ProductCategoryViewModelBuilder {
     private static func flattenViewModels(of category: ProductCategory,
                                           in tree: CategoryTree,
                                           selectedCategories: [ProductCategory],
-                                          depthLevel: Int = 0) -> [ProductCategoryViewModel] {
+                                          depthLevel: Int = 0) -> [ProductCategoryCellViewModel] {
 
         // View model for the main category
         let categoryViewModel = viewModel(for: category, selectedCategories: selectedCategories, indentationLevel: depthLevel)
@@ -74,7 +74,7 @@ struct ProductCategoryViewModelBuilder {
         }
 
         // Return the main categoryViewModel + all possible sub-categories VMs by calling this function recursively
-        return [categoryViewModel] + outterSubCategories.flatMap { outterSubCategory -> [ProductCategoryViewModel] in
+        return [categoryViewModel] + outterSubCategories.flatMap { outterSubCategory -> [ProductCategoryCellViewModel] in
 
             // Increase the `depthLevel` to properly track the view model indentation level
             return flattenViewModels(of: outterSubCategory, in: tree, selectedCategories: selectedCategories, depthLevel: depthLevel + 1)
@@ -85,8 +85,8 @@ struct ProductCategoryViewModelBuilder {
     ///
     private static func viewModel(for category: ProductCategory,
                                   selectedCategories: [ProductCategory],
-                                  indentationLevel: Int) -> ProductCategoryViewModel {
+                                  indentationLevel: Int) -> ProductCategoryCellViewModel {
         let isSelected = selectedCategories.contains(category)
-        return ProductCategoryViewModel(name: category.name, isSelected: isSelected, indentationLevel: indentationLevel)
+        return ProductCategoryCellViewModel(name: category.name, isSelected: isSelected, indentationLevel: indentationLevel)
     }
 }

@@ -36,7 +36,7 @@ final class ProductCategoryTableViewCell: UITableViewCell {
 
     /// Configure the cell with the given ViewModel
     ///
-    func configure(with viewModel: ProductCategoryViewModel) {
+    func configure(with viewModel: ProductCategoryCellViewModel) {
         nameLabel.text = viewModel.name
         accessoryType = viewModel.isSelected ? .checkmark : .none
         leadingNameLabelConstraint.constant = Constants.baseNameLabelMarging + (Constants.nameLabelIndentationFactor * CGFloat(viewModel.indentationLevel))

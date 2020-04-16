@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents a row in the ProductCategoryList screen
 ///
-struct ProductCategoryViewModel {
+struct ProductCategoryCellViewModel {
     /// Category name
     ///
     let name: String

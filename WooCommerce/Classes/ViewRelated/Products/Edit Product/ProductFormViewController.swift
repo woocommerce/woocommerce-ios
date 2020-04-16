@@ -87,7 +87,8 @@ final class ProductFormViewController: UIViewController {
         configureTableView()
 
         startListeningToNotifications()
-
+        handleSwipeBackGesture()
+        
         productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else {
                 return
@@ -424,6 +425,10 @@ extension ProductFormViewController {
             return false
         }
         return true
+    }
+    
+    override func shouldPopOnSwipeBack() -> Bool {
+        return shouldPopOnBackButton()
     }
 
     private func presentBackNavigationActionSheet() {

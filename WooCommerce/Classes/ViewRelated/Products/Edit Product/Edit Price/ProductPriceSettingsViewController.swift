@@ -139,11 +139,7 @@ extension ProductPriceSettingsViewController {
     }
     
     override func shouldPopOnSwipeBack() -> Bool {
-        if viewModel.hasUnsavedChanges() {
-            presentBackNavigationActionSheet()
-            return false
-        }
-        return true
+        return shouldPopOnBackButton()
     }
 
     @objc private func completeUpdating() {

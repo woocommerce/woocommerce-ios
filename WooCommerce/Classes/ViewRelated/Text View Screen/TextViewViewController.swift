@@ -68,6 +68,7 @@ final class TextViewViewController: UIViewController {
         configurePlaceholderLabel()
         refreshPlaceholderVisibility()
         startListeningToNotifications()
+        handleSwipeBackGesture()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -86,6 +87,10 @@ extension TextViewViewController {
             return false
         }
         return true
+    }
+    
+    override func shouldPopOnSwipeBack() -> Bool {
+        return shouldPopOnBackButton()
     }
 
     @objc private func completeEditing() {

@@ -232,11 +232,13 @@ final class OrdersViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.fetchedOrderIDs, allInsertedOrders.orderIDs)
     }
 
-    /// If there is a filter, all orders including orders dated in the future (dateCreated) will
+    /// If `includeFutureOrders` is `true`, all orders including orders dated in the future (dateCreated) will
     /// be fetched.
-    func testGivenAFilterItAlsoLoadsFutureOrdersFromTheDB() {
+    func testGivenIncludingFutureOrdersItAlsoLoadsFutureOrdersFromTheDB() {
         // Arrange
-        let viewModel = OrdersViewModel(storageManager: storageManager, statusFilter: orderStatus(with: .pending))
+        let viewModel = OrdersViewModel(storageManager: storageManager,
+                                        statusFilter: orderStatus(with: .pending),
+                                        includesFutureOrders: true)
 
         let expectedOrders = [
             // Future orders
@@ -261,11 +263,11 @@ final class OrdersViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.fetchedOrderIDs.contains(ignoredFutureOrder.orderID))
     }
 
-    /// If there is no folder, only orders created up to the current day are returned. Orders before midnight are
-    /// included.
-    func testGivenNoFilterItOnlyLoadsOrdersUpToMidnightFromTheDB() {
+    /// If `includesFutureOrders` is `false`, only orders created up to the current day are returned. Orders before
+    /// midnight are included.
+    func testGivenExcludingFutureOrdersItOnlyLoadsOrdersUpToMidnightFromTheDB() {
         // Arrange
-        let viewModel = OrdersViewModel(storageManager: storageManager, statusFilter: nil)
+        let viewModel = OrdersViewModel(storageManager: storageManager, statusFilter: nil, includesFutureOrders: false)
 
         let ignoredOrders = [
             // Orders in the future

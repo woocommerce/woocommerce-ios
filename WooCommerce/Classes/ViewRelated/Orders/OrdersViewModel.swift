@@ -28,6 +28,14 @@ final class OrdersViewModel {
     ///
     let statusFilter: OrderStatus?
 
+    /// If true, orders created after today's day will be included in the result.
+    ///
+    /// This will generally only be false for the All Orders tab. All other screens should show orders in the future.
+    ///
+    /// Defaults to `true`.
+    ///
+    private let includesFutureOrders: Bool
+
     /// Should be bound to the UITableView to auto-update the list of Orders.
     ///
     private lazy var resultsController: ResultsController<StorageOrder> = {
@@ -41,8 +49,8 @@ final class OrdersViewModel {
             let excludeNonMatchingStatus = statusFilter.map { NSPredicate(format: "statusKey = %@", $0.slug) }
 
             var predicates = [ excludeSearchCache, excludeNonMatchingStatus ].compactMap { $0 }
-            // Exclude orders on and after midnight of today's date
-            if let nextMidnight = Date().nextMidnight() {
+            if !includesFutureOrders, let nextMidnight = Date().nextMidnight()  {
+                // Exclude orders on and after midnight of today's date
                 let dateSubPredicate = NSPredicate(format: "dateCreated < %@", nextMidnight as NSDate)
                 predicates.append(dateSubPredicate)
             }
@@ -65,9 +73,12 @@ final class OrdersViewModel {
         statusFilter != nil
     }
 
-    init(storageManager: StorageManagerType = ServiceLocator.storageManager, statusFilter: OrderStatus?) {
+    init(storageManager: StorageManagerType = ServiceLocator.storageManager,
+         statusFilter: OrderStatus?,
+         includesFutureOrders: Bool = true) {
         self.storageManager = storageManager
         self.statusFilter = statusFilter
+        self.includesFutureOrders = includesFutureOrders
     }
 
     /// Start fetching DB results and forward new changes to the given `tableView`.

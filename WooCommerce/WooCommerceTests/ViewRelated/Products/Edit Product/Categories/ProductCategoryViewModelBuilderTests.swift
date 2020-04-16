@@ -59,7 +59,7 @@ final class ProductCategoryViewModelBuilderTests: XCTestCase {
         let rootCategoriesNames = rootCategories.map { $0.name }
         let subCategories1Names = subCategories1.map { $0.name }
         let subCategories2Names = subCategories2.map { $0.name }
-        
+
         let rootViewModels = viewModels.filter { rootCategoriesNames.contains($0.name) }
         XCTAssertEqual(rootViewModels.count, rootCategories.count)
         rootViewModels.forEach {
@@ -79,7 +79,7 @@ final class ProductCategoryViewModelBuilderTests: XCTestCase {
         }
     }
 
-    func testRootCategoriesAreMarkedAsSelected() {
+    func testRootCategoriesAreSelectedWhenProvidingProductSelectedCategories() {
         // Given
         let categories = sampleCategories(initialID: 1, count: 10)
         let selectedCategories = sampleCategories(initialID: 3, count: 5)
@@ -93,7 +93,7 @@ final class ProductCategoryViewModelBuilderTests: XCTestCase {
         XCTAssertEqual(selectedCategoryNames, selectedViewModelsNames)
     }
 
-    func testSubCategoriesAreMarkedAsSelectec() {
+    func testSubCategoriesAreSelectedWhenProvidingProductSelectedCategoriesWithSubCategories() {
         // Given
         let rootCategories = sampleCategories(initialID: 1, count: 10)
         let subCategories1 = sampleCategories(initialID: 11, parentID: 5, count: 5)

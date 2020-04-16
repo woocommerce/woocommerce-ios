@@ -108,6 +108,17 @@ final class ProductCategoryViewModelBuilderTests: XCTestCase {
         let selectedViewModelsNames = viewModels.filter { $0.isSelected }.map { $0.name }
         XCTAssertEqual(selectedCategoryNames, selectedViewModelsNames)
     }
+
+    func testViewModelGenerationTimeWithFromBigSetOfCategories() {
+        let rootCategories = sampleCategories(initialID: 1, count: 1000)
+        let subCategories1 = sampleCategories(initialID: 1001, parentID: 5, count: 500)
+        let subCategories2 = sampleCategories(initialID: 1601, parentID: 13, count: 300)
+        let selectedCategories = sampleCategories(initialID: 1100, parentID: 5, count: 100)
+        let allCategories = rootCategories + subCategories1 + subCategories2
+        measure {
+            _ = ProductCategoryListViewModel.CellViewModelBuilder.viewModels(from: allCategories, selectedCategories: selectedCategories)
+        }
+    }
 }
 
 // MARK: Helpers

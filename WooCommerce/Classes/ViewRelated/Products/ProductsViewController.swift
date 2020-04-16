@@ -5,18 +5,16 @@ import Yosemite
 extension ListSelectorViewController: DrawerPresentable {
     // TODO-jc: fix height to fit to content
     var collapsedHeight: DrawerHeight {
-        guard let scrollableView = scrollableView else {
+
+        guard let tableView = tableView else {
             return .maxHeight
         }
-        scrollableView.layoutIfNeeded()
-        let size = scrollableView.contentSize
+        tableView.layoutIfNeeded()
+        let size = tableView.contentSize
         let height = size.height + BottomSheetViewController.Constants.gripHeight + BottomSheetViewController.Constants.Header.spacing + BottomSheetViewController.Constants.Stack.insets.top
         return .contentHeight(height)
     }
 
-    var scrollableView: UIScrollView? {
-        tableView
-    }
 }
 
 /// `ListSelectorDataSource` for selecting a Product Backorders Setting.

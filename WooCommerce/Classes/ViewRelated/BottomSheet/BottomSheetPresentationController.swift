@@ -1,3 +1,6 @@
+import WordPressUI
+import UIKit
+
 /// A Presentation Controller which dims the background, allows the user to dismiss by tapping outside, and allows the user to swipit down
 class BottomSheetPresentationController: FancyAlertPresentationController {
 

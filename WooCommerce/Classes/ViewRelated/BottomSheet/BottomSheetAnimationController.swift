@@ -1,4 +1,6 @@
-class BottomSheetAnimationController: NSObject, UIViewControllerAnimatedTransitioning {
+import UIKit
+
+final class BottomSheetAnimationController: NSObject, UIViewControllerAnimatedTransitioning {
     enum TransitionType {
         case presenting
         case dismissing

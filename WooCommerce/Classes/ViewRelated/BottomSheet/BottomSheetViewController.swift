@@ -4,7 +4,6 @@ class BottomSheetViewController: UIViewController {
     enum Constants {
         static let gripHeight: CGFloat = 5
         static let cornerRadius: CGFloat = 8
-        static let buttonSpacing: CGFloat = 8
         static let additionalSafeAreaInsetsRegular: UIEdgeInsets = UIEdgeInsets(top: 20, left: 0, bottom: 20, right: 0)
         static let minimumWidth: CGFloat = 300
 
@@ -13,14 +12,6 @@ class BottomSheetViewController: UIViewController {
             static let insets: UIEdgeInsets = UIEdgeInsets(top: 0, left: 18, bottom: 0, right: 18)
         }
 
-        enum Button {
-            static let height: CGFloat = 54
-            static let contentInsets: UIEdgeInsets = UIEdgeInsets(top: 0, left: 18, bottom: 0, right: 35)
-            static let titleInsets: UIEdgeInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
-            static let imageTintColor: UIColor = .neutral(.shade30)
-            static let font: UIFont = .preferredFont(forTextStyle: .callout)
-            static let textColor: UIColor = .text
-        }
 
         enum Stack {
             static let insets: UIEdgeInsets = UIEdgeInsets(top: 5, left: 0, bottom: 0, right: 0)

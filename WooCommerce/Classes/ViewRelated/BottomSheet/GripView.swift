@@ -1,3 +1,5 @@
+import UIKit
+
 // A UIView with a centered "grip" view (like in Apple Maps)
 class GripButton: UIButton {
 
@@ -15,7 +17,8 @@ class GripButton: UIButton {
 
         addSubview(gripView)
 
-        gripView.backgroundColor = .placeholderElement
+        // TODO-jc: update color
+        gripView.backgroundColor = .lightGray
 
         NSLayoutConstraint.activate([
             gripView.widthAnchor.constraint(equalToConstant: Constants.width),

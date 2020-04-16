@@ -130,7 +130,7 @@ extension ProductShippingSettingsViewController {
         }
         return true
     }
-    
+
     override func shouldPopOnSwipeBack() -> Bool {
         return shouldPopOnBackButton()
     }

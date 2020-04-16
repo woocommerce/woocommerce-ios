@@ -258,7 +258,7 @@ extension AztecEditorViewController {
         }
         return true
     }
-    
+
     override func shouldPopOnSwipeBack() -> Bool {
         return shouldPopOnBackButton()
     }

@@ -177,7 +177,7 @@ extension ProductImagesViewController {
         resetProductImages()
         return true
     }
-    
+
     override func shouldPopOnSwipeBack() -> Bool {
         return shouldPopOnBackButton()
     }

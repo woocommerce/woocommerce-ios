@@ -137,7 +137,7 @@ extension ProductPriceSettingsViewController {
         }
         return true
     }
-    
+
     override func shouldPopOnSwipeBack() -> Bool {
         return shouldPopOnBackButton()
     }

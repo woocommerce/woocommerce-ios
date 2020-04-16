@@ -88,7 +88,7 @@ final class ProductFormViewController: UIViewController {
 
         startListeningToNotifications()
         handleSwipeBackGesture()
-        
+
         productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else {
                 return
@@ -426,7 +426,7 @@ extension ProductFormViewController {
         }
         return true
     }
-    
+
     override func shouldPopOnSwipeBack() -> Bool {
         return shouldPopOnBackButton()
     }

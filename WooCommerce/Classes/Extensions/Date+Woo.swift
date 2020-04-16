@@ -57,17 +57,6 @@ extension Date {
         return Strings.presentDeicticExpression
     }
 
-    /// Gets today's date and returns tomorrow's date, starting at midnight.
-    ///
-    static func tomorrow() -> Date? {
-        var dayComponent = DateComponents()
-        dayComponent.day = 1
-        let calendar = Calendar.current
-        let today = Date()
-
-        return calendar.date(byAdding: dayComponent, to: today)
-    }
-
     /// Returns the next midnight starting from `self`.
     ///
     /// For example, if `self` is 2020-01-03 00:41:09, the returned value will be 2020-01-04 00:00:00.

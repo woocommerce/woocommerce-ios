@@ -115,7 +115,7 @@ private extension ProductCategoryListViewModel {
     ///
     func updateViewModelsArray() {
         let fetchedCategories = resultController.fetchedObjects
-        categoryViewModels = ProductCategoryViewModelBuilder.viewModels(from: fetchedCategories, selectedCategories: product.categories)
+        categoryViewModels = CellViewModelBuilder.viewModels(from: fetchedCategories, selectedCategories: product.categories)
     }
 }
 

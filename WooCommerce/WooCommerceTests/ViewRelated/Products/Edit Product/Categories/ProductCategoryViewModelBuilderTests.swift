@@ -3,7 +3,7 @@ import XCTest
 @testable import WooCommerce
 @testable import Yosemite
 
-/// Tests for `ProductCategoryViewModelBuilderTests`.
+/// Tests for `ProductCategoryListViewModel.CellViewModelBuilder`.
 ///
 final class ProductCategoryViewModelBuilderTests: XCTestCase {
 
@@ -16,7 +16,7 @@ final class ProductCategoryViewModelBuilderTests: XCTestCase {
         let categories = sampleCategories(initialID: 1, count: 10)
 
         // When
-        let viewModels = ProductCategoryViewModelBuilder.viewModels(from: categories, selectedCategories: [])
+        let viewModels = ProductCategoryListViewModel.CellViewModelBuilder.viewModels(from: categories, selectedCategories: [])
 
         // Then
         let expectedCategoriesNames = categories.map { $0.name }
@@ -32,7 +32,7 @@ final class ProductCategoryViewModelBuilderTests: XCTestCase {
         let allCategories = rootCategories + subCategories1 + subCategories2
 
         // When
-        let viewModels = ProductCategoryViewModelBuilder.viewModels(from: allCategories, selectedCategories: [])
+        let viewModels = ProductCategoryListViewModel.CellViewModelBuilder.viewModels(from: allCategories, selectedCategories: [])
 
         // Then
         let expectedCategoriesNames: [String] = {
@@ -53,7 +53,7 @@ final class ProductCategoryViewModelBuilderTests: XCTestCase {
         let allCategories = rootCategories + subCategories1 + subCategories2
 
         // When
-        let viewModels = ProductCategoryViewModelBuilder.viewModels(from: allCategories, selectedCategories: [])
+        let viewModels = ProductCategoryListViewModel.CellViewModelBuilder.viewModels(from: allCategories, selectedCategories: [])
 
         // Then
         let rootCategoriesNames = rootCategories.map { $0.name }
@@ -80,7 +80,7 @@ final class ProductCategoryViewModelBuilderTests: XCTestCase {
         let selectedCategories = sampleCategories(initialID: 3, count: 5)
 
         // When
-        let viewModels = ProductCategoryViewModelBuilder.viewModels(from: categories, selectedCategories: selectedCategories)
+        let viewModels = ProductCategoryListViewModel.CellViewModelBuilder.viewModels(from: categories, selectedCategories: selectedCategories)
 
         // Then
         let selectedCategoryNames = selectedCategories.map { $0.name }
@@ -96,7 +96,7 @@ final class ProductCategoryViewModelBuilderTests: XCTestCase {
         let allCategories = rootCategories + subCategories1
 
         // Then
-        let viewModels = ProductCategoryViewModelBuilder.viewModels(from: allCategories, selectedCategories: selectedCategories)
+        let viewModels = ProductCategoryListViewModel.CellViewModelBuilder.viewModels(from: allCategories, selectedCategories: selectedCategories)
 
         // When
         let selectedCategoryNames = selectedCategories.map { $0.name }

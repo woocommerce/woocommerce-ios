@@ -23,7 +23,7 @@ final class ProductCategoryTableViewCell: UITableViewCell {
         super.prepareForReuse()
         nameLabel.text = nil
         accessoryType = .none
-        leadingNameLabelConstraint.constant = Constants.baseNameLabelMarging
+        leadingNameLabelConstraint.constant = Constants.baseNameLabelMargin
     }
 
     private func styleLabels() {
@@ -39,7 +39,7 @@ final class ProductCategoryTableViewCell: UITableViewCell {
     func configure(with viewModel: ProductCategoryCellViewModel) {
         nameLabel.text = viewModel.name
         accessoryType = viewModel.isSelected ? .checkmark : .none
-        leadingNameLabelConstraint.constant = Constants.baseNameLabelMarging + (Constants.nameLabelIndentationFactor * CGFloat(viewModel.indentationLevel))
+        leadingNameLabelConstraint.constant = Constants.baseNameLabelMargin + (Constants.nameLabelIndentationFactor * CGFloat(viewModel.indentationLevel))
     }
 }
 
@@ -47,7 +47,7 @@ final class ProductCategoryTableViewCell: UITableViewCell {
 //
 private extension ProductCategoryTableViewCell {
     enum Constants {
-        static let baseNameLabelMarging: CGFloat = 16.0
+        static let baseNameLabelMargin: CGFloat = 16.0
         static let nameLabelIndentationFactor: CGFloat = 16.0
     }
 }

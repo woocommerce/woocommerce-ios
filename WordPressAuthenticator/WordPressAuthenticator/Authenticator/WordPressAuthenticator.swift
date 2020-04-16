@@ -198,8 +198,7 @@ import AuthenticationServices
     /// Returns an instance of LoginSiteAddressViewController: allows the user to log into a WordPress.org website.
     ///
     @objc public class func signinForWPOrg() -> UIViewController {
-        let storyboard = UIStoryboard(name: "Login", bundle: bundle)
-        guard let controller = storyboard.instantiateViewController(withIdentifier: "siteAddress") as? LoginSiteAddressViewController else {
+        guard let controller = LoginSiteAddressViewController.instantiate(from: .login) else {
             fatalError("unable to create wpcom password screen")
         }
 

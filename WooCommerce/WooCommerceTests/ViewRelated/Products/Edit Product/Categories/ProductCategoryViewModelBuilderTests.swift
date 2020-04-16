@@ -59,18 +59,23 @@ final class ProductCategoryViewModelBuilderTests: XCTestCase {
         let rootCategoriesNames = rootCategories.map { $0.name }
         let subCategories1Names = subCategories1.map { $0.name }
         let subCategories2Names = subCategories2.map { $0.name }
-        for viewModel in viewModels {
-            if rootCategoriesNames.contains(viewModel.name) {
-                XCTAssertEqual(viewModel.indentationLevel, 0)
-            }
+        
+        let rootViewModels = viewModels.filter { rootCategoriesNames.contains($0.name) }
+        XCTAssertEqual(rootViewModels.count, rootCategories.count)
+        rootViewModels.forEach {
+            XCTAssertEqual($0.indentationLevel, 0)
+        }
 
-            if subCategories1Names.contains(viewModel.name) {
-                XCTAssertEqual(viewModel.indentationLevel, 1)
-            }
+        let subViewModels = viewModels.filter { subCategories1Names.contains($0.name) }
+        XCTAssertEqual(subViewModels.count, subCategories1.count)
+        subViewModels.forEach {
+            XCTAssertEqual($0.indentationLevel, 1)
+        }
 
-            if subCategories2Names.contains(viewModel.name) {
-                XCTAssertEqual(viewModel.indentationLevel, 2)
-            }
+        let subViewModels2 = viewModels.filter { subCategories2Names.contains($0.name) }
+        XCTAssertEqual(subViewModels2.count, subCategories2.count)
+        subViewModels2.forEach {
+            XCTAssertEqual($0.indentationLevel, 2)
         }
     }
 

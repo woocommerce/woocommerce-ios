@@ -9,6 +9,7 @@ enum Age: String {
     case days       = "4"
     case yesterday  = "5"
     case today      = "6"
+    case upcoming   = "7"
 
     var description: String {
         switch self {
@@ -17,6 +18,7 @@ enum Age: String {
         case .days:         return NSLocalizedString("Older than 2 days", comment: "+2 Days Section Header")
         case .yesterday:    return NSLocalizedString("Yesterday", comment: "Yesterday Section Header")
         case .today:        return NSLocalizedString("Today", comment: "Today Section Header")
+        case .upcoming:     return NSLocalizedString("Upcoming", comment: "Upcoming Section Header")
         }
     }
 }
@@ -51,6 +53,10 @@ extension Age {
             return .yesterday
         }
 
-        return .today
+        if let day = dateComponents.day, day == 0 {
+            return .today
+        }
+
+        return .upcoming
     }
 }

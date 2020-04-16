@@ -154,8 +154,9 @@ extension ProductCategoryListViewController: UITableViewDataSource, UITableViewD
             fatalError()
         }
 
-        let categoryViewModel = viewModel.categoryViewModels[indexPath.row]
-        cell.configure(with: categoryViewModel)
+        if let categoryViewModel = viewModel.categoryViewModels[safe: indexPath.row] {
+            cell.configure(with: categoryViewModel)
+        }
         return cell
     }
 

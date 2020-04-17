@@ -56,8 +56,6 @@ final class BottomSheetListSelectorViewController<DataSource: BottomSheetListSel
         let model = dataSource.data[indexPath.row]
         dataSource.configureCell(cell: cell, model: model)
 
-        cell.accessoryType = dataSource.isSelected(model: model) ? .checkmark: .none
-
         return cell
     }
 

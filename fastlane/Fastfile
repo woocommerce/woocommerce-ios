@@ -605,7 +605,7 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
       file.write(contents) 
     rescue IOError => e
       UI.crash(e)
-    ensure
+    ensure 
       file.close unless file.nil?
     end
   end

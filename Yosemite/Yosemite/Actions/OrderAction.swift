@@ -24,7 +24,7 @@ public enum OrderAction: Action {
     case fetchFilteredAndAllOrders(
         siteID: Int64,
         statusKey: String?,
-        before: Date?,
+        before: Date? = nil,
         deleteAllBeforeSaving: Bool,
         pageSize: Int,
         onCompletion: (Error?) -> Void
@@ -38,7 +38,7 @@ public enum OrderAction: Action {
     ///
     case synchronizeOrders(siteID: Int64,
                            statusKey: String?,
-                           before: Date?,
+                           before: Date? = nil,
                            pageNumber: Int,
                            pageSize: Int,
                            onCompletion: (Error?) -> Void)

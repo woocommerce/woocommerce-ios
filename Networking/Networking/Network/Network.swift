@@ -4,7 +4,13 @@ import Alamofire
 /// Constructs `multipart/form-data` for uploads within an HTTP or HTTPS body.
 ///
 public protocol MultipartFormData {
+    /// Appends a file with file URL for a name to form data.
+    ///
     func append(_ fileURL: URL, withName name: String, fileName: String, mimeType: String)
+
+    /// Appends data for a name to form data.
+    ///
+    func append(_ data: Data, withName name: String)
 }
 
 /// Defines all of the Network Operations we'll be performing. This allows us to swap the actual Wrapper in our

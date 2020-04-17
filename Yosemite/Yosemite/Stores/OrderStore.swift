@@ -41,7 +41,7 @@ public class OrderStore: Store {
                                       deleteAllBeforeSaving: deleteAllBeforeSaving,
                                       pageSize: pageSize,
                                       onCompletion: onCompletion)
-        case .synchronizeOrders(let siteID, let statusKey, let before, let pageNumber, let pageSize,  let onCompletion):
+        case .synchronizeOrders(let siteID, let statusKey, let before, let pageNumber, let pageSize, let onCompletion):
             synchronizeOrders(siteID: siteID,
                               statusKey: statusKey,
                               before: before,

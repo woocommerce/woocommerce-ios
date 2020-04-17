@@ -85,6 +85,7 @@
 		0235594824496449004BE2B8 /* BottomSheetAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0235594324496449004BE2B8 /* BottomSheetAnimationController.swift */; };
 		0235594924496449004BE2B8 /* BottomSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0235594424496449004BE2B8 /* BottomSheetViewController.swift */; };
 		0235594A24496449004BE2B8 /* DrawerPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0235594524496449004BE2B8 /* DrawerPresentationController.swift */; };
+		0235594C244965E6004BE2B8 /* BottomSheetViewController+Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0235594B244965E6004BE2B8 /* BottomSheetViewController+Constants.swift */; };
 		02357B2A23CDB3E300147C2B /* ProductImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02357B2823CDB3E300147C2B /* ProductImageViewController.swift */; };
 		02357B2B23CDB3E300147C2B /* ProductImageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02357B2923CDB3E300147C2B /* ProductImageViewController.xib */; };
 		02396251239948470096F34C /* UIImage+TintColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02396250239948470096F34C /* UIImage+TintColor.swift */; };
@@ -880,6 +881,7 @@
 		0235594324496449004BE2B8 /* BottomSheetAnimationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BottomSheetAnimationController.swift; sourceTree = "<group>"; };
 		0235594424496449004BE2B8 /* BottomSheetViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BottomSheetViewController.swift; sourceTree = "<group>"; };
 		0235594524496449004BE2B8 /* DrawerPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawerPresentationController.swift; sourceTree = "<group>"; };
+		0235594B244965E6004BE2B8 /* BottomSheetViewController+Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BottomSheetViewController+Constants.swift"; sourceTree = "<group>"; };
 		02357B2823CDB3E300147C2B /* ProductImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageViewController.swift; sourceTree = "<group>"; };
 		02357B2923CDB3E300147C2B /* ProductImageViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductImageViewController.xib; sourceTree = "<group>"; };
 		02396250239948470096F34C /* UIImage+TintColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+TintColor.swift"; sourceTree = "<group>"; };
@@ -1750,6 +1752,7 @@
 				0235594424496449004BE2B8 /* BottomSheetViewController.swift */,
 				0235594524496449004BE2B8 /* DrawerPresentationController.swift */,
 				0235594124496449004BE2B8 /* GripView.swift */,
+				0235594B244965E6004BE2B8 /* BottomSheetViewController+Constants.swift */,
 			);
 			path = BottomSheet;
 			sourceTree = "<group>";
@@ -4350,6 +4353,7 @@
 				CE227097228F152400C0626C /* WooBasicTableViewCell.swift in Sources */,
 				45B9C64323A91CB6007FC4C5 /* PriceInputFormatter.swift in Sources */,
 				B5FD111621D3F13700560344 /* BordersView.swift in Sources */,
+				0235594C244965E6004BE2B8 /* BottomSheetViewController+Constants.swift in Sources */,
 				0262DA5B23A244830029AF30 /* Product+ShippingSettingsViewModels.swift in Sources */,
 				0216272B2379662C000208D2 /* DefaultProductFormTableViewModel.swift in Sources */,
 				D8736B7522F1FE1600A14A29 /* BadgeLabel.swift in Sources */,

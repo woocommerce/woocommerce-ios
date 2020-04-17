@@ -66,6 +66,7 @@ final class ProductShippingSettingsViewController: UIViewController {
         configureMainView()
         configureTableView()
         retrieveProductShippingClass()
+        handleSwipeBackGesture()
     }
 }
 
@@ -128,6 +129,10 @@ extension ProductShippingSettingsViewController {
             return false
         }
         return true
+    }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        return shouldPopOnBackButton()
     }
 
     @objc private func completeUpdating() {

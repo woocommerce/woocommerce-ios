@@ -16,7 +16,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="462" height="53"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iPu-uq-Yz5">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iPu-uq-Yz5">
                         <rect key="frame" x="16" y="13" width="42" height="27"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
@@ -31,6 +31,7 @@
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="leadingNameLabelConstraint" destination="3hZ-f9-3Hj" id="G4V-Oj-W8q"/>
                 <outlet property="nameLabel" destination="iPu-uq-Yz5" id="D22-2I-Vyu"/>
             </connections>
             <point key="canvasLocation" x="-5.7971014492753632" y="-122.87946428571428"/>

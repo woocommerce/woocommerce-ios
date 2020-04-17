@@ -8,6 +8,10 @@ final class ProductCategoryTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var nameLabel: UILabel!
 
+    /// Leading constraint of the category name label
+    ///
+    @IBOutlet private var leadingNameLabelConstraint: NSLayoutConstraint!
+
     override func awakeFromNib() {
         super.awakeFromNib()
         applyDefaultBackgroundStyle()
@@ -19,6 +23,7 @@ final class ProductCategoryTableViewCell: UITableViewCell {
         super.prepareForReuse()
         nameLabel.text = nil
         accessoryType = .none
+        leadingNameLabelConstraint.constant = Constants.baseNameLabelMargin
     }
 
     private func styleLabels() {
@@ -29,12 +34,20 @@ final class ProductCategoryTableViewCell: UITableViewCell {
         tintColor = .primary
     }
 
-    /// Configure the cell with the given content
-    /// - Parameters:
-    ///   - name: Product Category name
-    ///   - selected: `true` renders  a chekmark, `false` renders nothing.
-    func configure(name: String, selected: Bool) {
-        nameLabel.text = name
-        accessoryType = selected ? .checkmark : .none
+    /// Configure the cell with the given ViewModel
+    ///
+    func configure(with viewModel: ProductCategoryCellViewModel) {
+        nameLabel.text = viewModel.name
+        accessoryType = viewModel.isSelected ? .checkmark : .none
+        leadingNameLabelConstraint.constant = Constants.baseNameLabelMargin + (Constants.nameLabelIndentationFactor * CGFloat(viewModel.indentationLevel))
+    }
+}
+
+// MARK: - Constants!
+//
+private extension ProductCategoryTableViewCell {
+    enum Constants {
+        static let baseNameLabelMargin: CGFloat = 16.0
+        static let nameLabelIndentationFactor: CGFloat = 20.0
     }
 }

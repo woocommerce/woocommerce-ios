@@ -21,34 +21,6 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         storesManager = nil
     }
 
-    func testsCategoriesAreSelectedIfTheyArePartOfMainProduct() {
-        // Given
-        let categories = sampleCategories(count: 3)
-        let product = MockProduct().product(categories: categories)
-        let viewModel = ProductCategoryListViewModel(product: product)
-
-        // When
-        for category in categories {
-            let isCategorySelected = viewModel.isCategorySelected(category)
-
-            // Then
-            XCTAssertTrue(isCategorySelected)
-        }
-    }
-
-    func testCategoryIsNotSelectedIfItsNotPartOfMainProduct() {
-        // Given
-        let category = sampleCategory(categoryID: 1, name: "1")
-        let product = MockProduct().product(categories: [])
-        let viewModel = ProductCategoryListViewModel(product: product)
-
-        // When
-        let isCategorySelected = viewModel.isCategorySelected(category)
-
-        // Then
-        XCTAssertFalse(isCategorySelected)
-    }
-
     func testItTransitionsToSyncedStateAfterSynchronizingCategories() {
         // Given
         let exp = expectation(description: #function)

@@ -1,6 +1,7 @@
 
 import Foundation
 import Yosemite
+import protocol Storage.StorageManagerType
 
 /// ViewModel for `OrdersViewController`.
 ///
@@ -19,6 +20,63 @@ final class OrdersViewModel {
     ///
     enum SyncReason: String {
         case pullToRefresh = "pull_to_refresh"
+    }
+
+    private let storageManager: StorageManagerType
+
+    /// OrderStatus that must be matched by retrieved orders.
+    ///
+    let statusFilter: OrderStatus?
+
+    /// Should be bound to the UITableView to auto-update the list of Orders.
+    ///
+    private lazy var resultsController: ResultsController<StorageOrder> = {
+        let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
+
+        let resultsController = ResultsController<StorageOrder>(storageManager: storageManager,
+                                                                sectionNameKeyPath: "normalizedAgeAsString",
+                                                                sortedBy: [descriptor])
+        resultsController.predicate = {
+            let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
+            let excludeNonMatchingStatus = statusFilter.map { NSPredicate(format: "statusKey = %@", $0.slug) }
+
+            var predicates = [ excludeSearchCache, excludeNonMatchingStatus ].compactMap { $0 }
+            if let tomorrow = Date.tomorrow() {
+                let dateSubPredicate = NSPredicate(format: "dateCreated < %@", tomorrow as NSDate)
+                predicates.append(dateSubPredicate)
+            }
+
+            return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        }()
+
+        return resultsController
+    }()
+
+    /// Indicates if there are no results.
+    ///
+    var isEmpty: Bool {
+        resultsController.isEmpty
+    }
+
+    /// Indicates if there's a filter being applied.
+    ///
+    var isFiltered: Bool {
+        statusFilter != nil
+    }
+
+    init(storageManager: StorageManagerType = ServiceLocator.storageManager, statusFilter: OrderStatus?) {
+        self.storageManager = storageManager
+        self.statusFilter = statusFilter
+    }
+
+    /// Start fetching DB results and forward new changes to the given `tableView`.
+    ///
+    /// This is the main activation method for this ViewModel. This should only be called once.
+    /// And only when the corresponding view was loaded.
+    ///
+    func activateAndForwardUpdates(to tableView: UITableView) {
+        resultsController.startForwardingEvents(to: tableView)
+        try? resultsController.performFetch()
     }
 
     /// Returns what `OrderAction` should be used when synchronizing.
@@ -84,11 +142,13 @@ final class OrdersViewModel {
     /// | Load next page   | All Orders  | .          | .                      | y               |
     ///
     func synchronizationAction(siteID: Int64,
-                               statusKey: String?,
                                pageNumber: Int,
                                pageSize: Int,
                                reason: SyncReason?,
                                completionHandler: @escaping (Error?) -> Void) -> OrderAction {
+
+        let statusKey = statusFilter?.slug
+
         if pageNumber == Defaults.pageFirstIndex {
             let deleteAllBeforeSaving = reason == SyncReason.pullToRefresh
 
@@ -110,6 +170,50 @@ final class OrdersViewModel {
         )
     }
 }
+
+// MARK: - TableView Support
+
+extension OrdersViewModel {
+    /// Returns an `OrdersViewModel` instance for the `StorageOrder` at the given `indexPath`.
+    ///
+    func detailsViewModel(at indexPath: IndexPath) -> OrderDetailsViewModel {
+        let order = resultsController.object(at: indexPath)
+
+        return OrderDetailsViewModel(order: order)
+    }
+
+    /// The number of DB results
+    ///
+    var numberOfObjects: Int {
+        resultsController.numberOfObjects
+    }
+
+    /// Converts the `rowIndexPath` to an `index` belonging to `numberOfObjects`.
+    ///
+    func objectIndex(from rowIndexPath: IndexPath) -> Int {
+        resultsController.objectIndex(from: rowIndexPath)
+    }
+
+    /// The number of sections that should be displayed
+    ///
+    var numberOfSections: Int {
+        resultsController.sections.count
+    }
+
+    /// Returns the number of rows in the given `section` index.
+    ///
+    func numberOfRows(in section: Int) -> Int {
+        resultsController.sections[section].numberOfObjects
+    }
+
+    /// Returns the `SectionInfo` for the given section index.
+    ///
+    func sectionInfo(at index: Int) -> ResultsController<StorageOrder>.SectionInfo {
+        resultsController.sections[index]
+    }
+}
+
+// MARK: - Constants
 
 extension OrdersViewModel {
     enum Defaults {

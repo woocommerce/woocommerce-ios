@@ -140,7 +140,7 @@ private extension NewNoteViewController {
             NSLocalizedString("Private note",
                               comment: "Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer.")
 
-        cell.onTextChange = { [weak self] (text) in
+        cell.noteTextView.onTextChange = { [weak self] (text) in
             self?.navigationItem.rightBarButtonItem?.isEnabled = !text.isEmpty
             self?.noteText = text
         }

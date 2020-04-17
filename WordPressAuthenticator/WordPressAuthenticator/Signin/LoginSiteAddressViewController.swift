@@ -275,7 +275,17 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
     ///
     @objc func showWPUsernamePassword() {
         configureViewLoading(false)
-        performSegue(withIdentifier: .showWPUsernamePassword, sender: self)
+
+        guard let vc = LoginUsernamePasswordViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from LoginSiteAddressViewController to LoginUsernamePasswordViewController")
+                return
+            }
+
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     /// Break away from the self-hosted flow.

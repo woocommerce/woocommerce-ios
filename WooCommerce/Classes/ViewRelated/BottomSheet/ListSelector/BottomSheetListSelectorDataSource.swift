@@ -1,6 +1,6 @@
 import UIKit
 
-/// A generic data source for the bottom sheet list selector UI `ListSelectorViewController`.
+/// A generic data source for the bottom sheet list selector UI `BottomSheetListSelectorViewController`.
 ///
 protocol BottomSheetListSelectorDataSource {
     associatedtype Model: Equatable

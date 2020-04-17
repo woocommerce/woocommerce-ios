@@ -1747,14 +1747,22 @@
 		0235594024496414004BE2B8 /* BottomSheet */ = {
 			isa = PBXGroup;
 			children = (
+				0235594D244967A7004BE2B8 /* Core */,
+				0235594B244965E6004BE2B8 /* BottomSheetViewController+Constants.swift */,
+			);
+			path = BottomSheet;
+			sourceTree = "<group>";
+		};
+		0235594D244967A7004BE2B8 /* Core */ = {
+			isa = PBXGroup;
+			children = (
 				0235594324496449004BE2B8 /* BottomSheetAnimationController.swift */,
 				0235594224496449004BE2B8 /* BottomSheetPresentationController.swift */,
 				0235594424496449004BE2B8 /* BottomSheetViewController.swift */,
 				0235594524496449004BE2B8 /* DrawerPresentationController.swift */,
 				0235594124496449004BE2B8 /* GripView.swift */,
-				0235594B244965E6004BE2B8 /* BottomSheetViewController+Constants.swift */,
 			);
-			path = BottomSheet;
+			path = Core;
 			sourceTree = "<group>";
 		};
 		02404EE52315272C00FF1170 /* Top Banner */ = {

@@ -54,7 +54,7 @@ final class OrdersViewModelTests: XCTestCase {
             completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .fetchFilteredAndAllOrders(_, let statusKey, let deleteAllBeforeSaving, _, _) = action else {
+        guard case .fetchFilteredAndAllOrders(_, let statusKey, _, let deleteAllBeforeSaving, _, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
@@ -80,7 +80,7 @@ final class OrdersViewModelTests: XCTestCase {
             completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .fetchFilteredAndAllOrders(_, let statusKey, let deleteAllBeforeSaving, _, _) = action else {
+        guard case .fetchFilteredAndAllOrders(_, let statusKey, _, let deleteAllBeforeSaving, _, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
@@ -107,7 +107,7 @@ final class OrdersViewModelTests: XCTestCase {
             completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .fetchFilteredAndAllOrders(_, let statusKey, let deleteAllBeforeSaving, _, _) = action else {
+        guard case .fetchFilteredAndAllOrders(_, let statusKey, _, let deleteAllBeforeSaving, _, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
@@ -133,7 +133,7 @@ final class OrdersViewModelTests: XCTestCase {
             completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .fetchFilteredAndAllOrders(_, let statusKey, let deleteAllBeforeSaving, _, _) = action else {
+        guard case .fetchFilteredAndAllOrders(_, let statusKey, _, let deleteAllBeforeSaving, _, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
@@ -155,7 +155,7 @@ final class OrdersViewModelTests: XCTestCase {
             completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .synchronizeOrders(_, let statusKey, let pageNumber, let pageSize, _) = action else {
+        guard case .synchronizeOrders(_, let statusKey, _, let pageNumber, let pageSize, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
@@ -178,7 +178,7 @@ final class OrdersViewModelTests: XCTestCase {
             completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .synchronizeOrders(_, let statusKey, let pageNumber, let pageSize, _) = action else {
+        guard case .synchronizeOrders(_, let statusKey, _, let pageNumber, let pageSize, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }

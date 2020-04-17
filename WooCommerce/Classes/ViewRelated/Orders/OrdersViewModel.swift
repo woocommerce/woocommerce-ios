@@ -161,6 +161,7 @@ final class OrdersViewModel {
                                completionHandler: @escaping (Error?) -> Void) -> OrderAction {
 
         let statusKey = statusFilter?.slug
+        let before = includesFutureOrders ? nil : Date().nextMidnight()
 
         if pageNumber == Defaults.pageFirstIndex {
             let deleteAllBeforeSaving = reason == SyncReason.pullToRefresh
@@ -168,6 +169,7 @@ final class OrdersViewModel {
             return OrderAction.fetchFilteredAndAllOrders(
                 siteID: siteID,
                 statusKey: statusKey,
+                before: before,
                 deleteAllBeforeSaving: deleteAllBeforeSaving,
                 pageSize: pageSize,
                 onCompletion: completionHandler
@@ -177,6 +179,7 @@ final class OrdersViewModel {
         return OrderAction.synchronizeOrders(
             siteID: siteID,
             statusKey: statusKey,
+            before: before,
             pageNumber: pageNumber,
             pageSize: pageSize,
             onCompletion: completionHandler

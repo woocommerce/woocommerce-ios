@@ -2,7 +2,8 @@ import UIKit
 
 /// Displays a list (implemented by table view) for the user to select a generic model from a bottom sheet.
 ///
-final class BottomSheetListSelectorViewController<DataSource: BottomSheetListSelectorDataSource, Model, Cell>: UIViewController, UITableViewDataSource, UITableViewDelegate where DataSource.Model == Model, DataSource.Cell == Cell {
+final class BottomSheetListSelectorViewController<DataSource: BottomSheetListSelectorDataSource, Model, Cell>:
+UIViewController, UITableViewDataSource, UITableViewDelegate where DataSource.Model == Model, DataSource.Cell == Cell {
     private let viewProperties: BottomSheetListSelectorViewProperties
     private var dataSource: DataSource
     private let onDismiss: (_ selected: Model?) -> Void
@@ -72,8 +73,9 @@ final class BottomSheetListSelectorViewController<DataSource: BottomSheetListSel
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: BottomSheetListSelectorSectionHeaderView.reuseIdentifier) as? BottomSheetListSelectorSectionHeaderView else {
-            fatalError()
+        guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: BottomSheetListSelectorSectionHeaderView.reuseIdentifier)
+            as? BottomSheetListSelectorSectionHeaderView else {
+                fatalError()
         }
         header.configure(text: viewProperties.title)
         return header

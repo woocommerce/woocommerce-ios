@@ -43,13 +43,7 @@ final class ProductSlugViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
-        /// Since there is only a text field in this view, the text field become the first responder immediately when the view did appear
-        ///
-        if let indexPath = getIndexPathForRow(.slug) {
-            let cell = tableView.cellForRow(at: indexPath) as? TextFieldTableViewCell
-            cell?.textField.becomeFirstResponder()
-        }
+        configureTextFieldFirstResponder()
     }
 }
 
@@ -75,6 +69,15 @@ private extension ProductSlugViewController {
 
         tableView.backgroundColor = .listBackground
         tableView.removeLastCellSeparator()
+    }
+    
+    /// Since there is only a text field in this view, the text field become the first responder immediately when the view did appear
+    ///
+    func configureTextFieldFirstResponder() {
+        if let indexPath = getIndexPathForRow(.slug) {
+            let cell = tableView.cellForRow(at: indexPath) as? TextFieldTableViewCell
+            cell?.textField.becomeFirstResponder()
+        }
     }
 }
 

@@ -52,12 +52,7 @@ final class ProductPurchaseNoteViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        /// Since there is only a text view in this view, the text view become the first responder immediately when the view did appear
-        ///
-        if let indexPath = getIndexPathForRow(.purchaseNote) {
-            let cell = tableView.cellForRow(at: indexPath) as? TextViewTableViewCell
-            cell?.noteTextView.becomeFirstResponder()
-        }
+        configureTextViewFirstResponder()
     }
 
 }
@@ -84,6 +79,15 @@ private extension ProductPurchaseNoteViewController {
 
         tableView.backgroundColor = .listBackground
         tableView.removeLastCellSeparator()
+    }
+    
+    /// Since there is only a text view in this view, the text view become the first responder immediately when the view did appear
+    ///
+    func configureTextViewFirstResponder() {
+        if let indexPath = getIndexPathForRow(.purchaseNote) {
+            let cell = tableView.cellForRow(at: indexPath) as? TextViewTableViewCell
+            cell?.noteTextView.becomeFirstResponder()
+        }
     }
 }
 

@@ -17,8 +17,7 @@ class GripButton: UIButton {
 
         addSubview(gripView)
 
-        // TODO-jc: update color
-        gripView.backgroundColor = .lightGray
+        gripView.backgroundColor = .gray(.shade5)
 
         NSLayoutConstraint.activate([
             gripView.widthAnchor.constraint(equalToConstant: Constants.width),

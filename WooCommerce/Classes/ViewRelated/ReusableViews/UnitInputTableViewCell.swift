@@ -125,8 +125,8 @@ private extension UnitInputTableViewCell {
         unitLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
         unitLabel.setContentHuggingPriority(.required, for: .horizontal)
     }
-    
-    func configureTapGestureRecognizer(){
+
+    func configureTapGestureRecognizer() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(cellTapped))
         tapGesture.cancelsTouchesInView = false
         addGestureRecognizer(tapGesture)

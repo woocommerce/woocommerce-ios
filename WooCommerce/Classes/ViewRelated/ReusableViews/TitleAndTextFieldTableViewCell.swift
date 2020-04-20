@@ -77,8 +77,8 @@ private extension TitleAndTextFieldTableViewCell {
     func configureContentStackView() {
         contentStackView.spacing = 30
     }
-    
-    func configureTapGestureRecognizer(){
+
+    func configureTapGestureRecognizer() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(cellTapped))
         tapGesture.cancelsTouchesInView = false
         addGestureRecognizer(tapGesture)

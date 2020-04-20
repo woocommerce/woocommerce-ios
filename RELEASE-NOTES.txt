@@ -1,3 +1,10 @@
+4.1
+-----
+- Fix an intermittent crash when downloading Orders
+- The Photo Library permission alert shouldn't be prompted when opening the readonly product details or edit product for simple products, which is reproducible on iOS 11 or 12 devices. (The permission is only triggered when uploading images in Zendesk support or in debug builds with Products M2 enabled.)
+- [internal] Updated the empty search result views for Products and Orders. https://git.io/Jvdap
+
+ 
 4.0
 -----
 - Products is now available with limited editing for simple products!

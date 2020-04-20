@@ -31,6 +31,7 @@ final class ProductSettingsViewController: UIViewController {
         configureNavigationBar()
         configureMainView()
         configureTableView()
+        handleSwipeBackGesture()
         viewModel.onReload = {  [weak self] in
             self?.tableView.reloadData()
         }
@@ -75,6 +76,10 @@ extension ProductSettingsViewController {
             return false
         }
         return true
+    }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        return shouldPopOnBackButton()
     }
 
     @objc private func completeUpdating() {

@@ -14,10 +14,6 @@ where Cell.SearchModel == Command.CellViewModel {
     ///
     @IBOutlet private var cancelButton: UIButton!
 
-    /// Empty State Legend
-    ///
-    @IBOutlet private var emptyStateLabel: UILabel!
-
     /// Main SearchBar
     ///
     @IBOutlet private var searchBar: UISearchBar!
@@ -46,6 +42,12 @@ where Cell.SearchModel == Command.CellViewModel {
     /// - SeeAlso: State.starter
     ///
     private var starterViewController: UIViewController?
+
+    /// The controller of the view to show if the search results are empty.
+    ///
+    /// - SeeAlso: State.empty
+    ///
+    private lazy var emptyStateViewController: Command.EmptyStateViewControllerType = searchUICommand.createEmptyStateViewController()
 
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
@@ -77,7 +79,9 @@ where Cell.SearchModel == Command.CellViewModel {
     }
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
-        let keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: handleKeyboardFrameUpdate(keyboardFrame:))
+        let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
+            self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
+        }
         return keyboardFrameObserver
     }()
 
@@ -113,7 +117,6 @@ where Cell.SearchModel == Command.CellViewModel {
         configureSyncingCoordinator()
         configureCancelButton()
         configureActions()
-        configureEmptyStateLabel()
         configureMainView()
         configureSearchBar()
         configureSearchBarBordersView()
@@ -217,7 +220,7 @@ extension SearchViewController: KeyboardScrollable {
 
 private extension SearchViewController {
     func applyAdditionalKeyboardFrameHeightTo(_ viewControllers: [UIViewController]) {
-        children.compactMap {
+        viewControllers.compactMap {
             $0 as? KeyboardFrameAdjustmentProvider
         }.forEach {
             $0.additionalKeyboardFrameHeight = 0 - view.safeAreaInsets.bottom
@@ -273,16 +276,6 @@ private extension SearchViewController {
     func configureActions() {
         let title = NSLocalizedString("Cancel", comment: "")
         cancelButton.setTitle(title, for: .normal)
-    }
-
-    /// Setup: No Results
-    ///
-    func configureEmptyStateLabel() {
-        emptyStateLabel.text = searchUICommand.emptyStateText
-        emptyStateLabel.textColor = .textSubtle
-        emptyStateLabel.font = .headline
-        emptyStateLabel.adjustsFontForContentSizeCategory = true
-        emptyStateLabel.numberOfLines = 0
     }
 
     /// Setup: Results Controller
@@ -417,16 +410,58 @@ extension SearchViewController {
 //
 private extension SearchViewController {
 
-    /// Displays the Empty State Legend.
+    /// Displays the view for the empty state.
     ///
     func displayEmptyState() {
-        emptyStateLabel.isHidden = false
+        // Create the controller if it doesn't exist yet
+        let childController = emptyStateViewController
+
+        // Abort if we are already displaying this childController
+        guard childController.parent == nil else {
+            return
+        }
+
+        // Before creating the view (below), give the childController the keyboard adjustments
+        // they should use. This simplifies any keyboard observation they have in  `viewDidLoad`.
+        applyAdditionalKeyboardFrameHeightTo([childController])
+
+        // Create the view by accessing `.view`. This should trigger `viewDidLoad`.
+        guard let childView = childController.view else {
+            return
+        }
+
+        searchUICommand.configureEmptyStateViewControllerBeforeDisplay(viewController: childController,
+                                                                       searchKeyword: keyword)
+
+        childView.translatesAutoresizingMaskIntoConstraints = false
+
+        add(childController)
+        view.addSubview(childView)
+
+        // Match the position and size to the `tableView`. Attach top to the searchBar
+        NSLayoutConstraint.activate([
+            childView.leadingAnchor.constraint(equalTo: tableView.leadingAnchor),
+            childView.trailingAnchor.constraint(equalTo: tableView.trailingAnchor),
+            childView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
+            childView.bottomAnchor.constraint(equalTo: tableView.bottomAnchor)
+        ])
+
+        childController.didMove(toParent: self)
     }
 
-    /// Removes the Empty State Legend.
+    /// Removes the view for the empty state.
     ///
     func removeEmptyState() {
-        emptyStateLabel.isHidden = true
+        let childController = emptyStateViewController
+
+        guard let childView = childController.view,
+              childController.parent == self else {
+            return
+        }
+
+        childController.willMove(toParent: nil)
+        childView.removeFromSuperview()
+        childController.removeFromParent()
     }
 }
 

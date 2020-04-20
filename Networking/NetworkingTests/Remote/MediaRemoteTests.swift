@@ -10,6 +10,10 @@ final class MediaRemoteTests: XCTestCase {
     ///
     let sampleSiteID: Int64 = 1234
 
+    /// Dummy Product ID
+    ///
+    private let sampleProductID: Int64 = 586
+
     /// Repeat always!
     ///
     override func setUp() {
@@ -64,6 +68,7 @@ final class MediaRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: path, filename: "media-upload")
 
         remote.uploadMedia(for: sampleSiteID,
+                           productID: sampleProductID,
                            mediaItems: []) { mediaItems, error in
             XCTAssertNil(error)
             XCTAssertNotNil(mediaItems)
@@ -81,6 +86,7 @@ final class MediaRemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Upload one media item")
 
         remote.uploadMedia(for: sampleSiteID,
+                           productID: sampleProductID,
                            mediaItems: []) { mediaItems, error in
             XCTAssertNil(mediaItems)
             XCTAssertNotNil(error)

@@ -26,7 +26,7 @@ public final class ProductCategoriesRemote: Remote {
 
         let path = Path.categories
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
-        let mapper = ProductCategoryListMapper()
+        let mapper = ProductCategoryListMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }

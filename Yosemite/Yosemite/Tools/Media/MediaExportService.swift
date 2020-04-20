@@ -79,7 +79,7 @@ private extension DefaultMediaExportService {
         ///
         static let imageExportOptions = MediaImageExportOptions(maximumImageSize: 3000,
                                                                 imageCompressionQuality: 0.85,
-                                                                stripsGeoLocationIfNeeded: false)
+                                                                stripsGeoLocationIfNeeded: true)
 
         static let allowableFileExtensions = Set<String>(["jpg", "jpeg", "png", "gif"])
     }

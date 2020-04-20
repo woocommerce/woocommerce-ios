@@ -6,9 +6,9 @@ extension WordPressMediaLibraryPickerDataSource {
     /// Implements `WPMediaGroup` protocol that represents a collection of media items from WP Media Library to be displayed.
     ///
     final class MediaGroup: NSObject, WPMediaGroup {
-        private let mediaItems: [Media]
+        private let mediaItems: [CancellableMedia]
 
-        init(mediaItems: [Media]) {
+        init(mediaItems: [CancellableMedia]) {
             self.mediaItems = mediaItems
             super.init()
         }
@@ -22,8 +22,7 @@ extension WordPressMediaLibraryPickerDataSource {
         }
 
         func cancelImageRequest(_ requestID: WPMediaRequestID) {
-            // TODO-2073: implement image request cancelling once the image fetching is not tied to `Media` since it needs to keep
-            // track of the task.
+            // No image is shown for the media group.
         }
 
         func baseGroup() -> Any {
@@ -49,7 +48,7 @@ final class WordPressMediaLibraryPickerDataSource: NSObject {
     /// Called when the media data have changed from outside of `loadData` calls. For example, this is called when the media data for the next page return.
     private var onDataChange: WPMediaChangesBlock?
 
-    private var mediaItems: [Media]
+    private var mediaItems: [CancellableMedia]
 
     private lazy var mediaGroup: WPMediaGroup = MediaGroup(mediaItems: mediaItems)
 
@@ -119,7 +118,7 @@ extension WordPressMediaLibraryPickerDataSource: WPMediaCollectionDataSource {
                 failureBlock?(error)
                 return
             }
-            self?.mediaItems = mediaItems
+            self?.mediaItems = mediaItems.map { CancellableMedia(media: $0) }
             successBlock?()
         }
     }
@@ -183,7 +182,7 @@ private extension WordPressMediaLibraryPickerDataSource {
             return
         }
 
-        mediaItems += newMediaItems
+        mediaItems += newMediaItems.map { CancellableMedia(media: $0) }
         onDataChange?(true, [], IndexSet(integersIn: mediaStartIndex...mediaEndIndex), [], [])
     }
 }

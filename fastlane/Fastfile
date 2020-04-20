@@ -593,6 +593,11 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
       configure_validate()
   end
 
+  desc "Run localization only"
+  lane :update_localization do | options |
+    ios_localize_project()
+  end
+
   def write_file(path, contents)
     begin
       FileUtils.rm_f(path)

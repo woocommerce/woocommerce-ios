@@ -79,6 +79,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.emptyReviewsImage)
     }
 
+    func testEmptySearchResultsImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.emptySearchResultsImage)
+    }
+
     func testErrorStateImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.errorStateImage)
     }

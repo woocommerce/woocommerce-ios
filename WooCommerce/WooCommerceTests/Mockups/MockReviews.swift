@@ -123,7 +123,7 @@ extension MockReviews {
     }
 
     func sampleCategories() -> [Networking.ProductCategory] {
-        let category1 = ProductCategory(categoryID: 36, name: "Events", slug: "events")
+        let category1 = ProductCategory(categoryID: 36, siteID: siteID, parentID: 0, name: "Events", slug: "events")
         return [category1]
     }
 
@@ -264,8 +264,8 @@ extension MockReviews {
     }
 
     func sampleCategoriesMutated() -> [Networking.ProductCategory] {
-        let category1 = ProductCategory(categoryID: 36, name: "Events", slug: "events")
-        let category2 = ProductCategory(categoryID: 362, name: "Other Stuff", slug: "other")
+        let category1 = ProductCategory(categoryID: 36, siteID: siteID, parentID: 0, name: "Events", slug: "events")
+        let category2 = ProductCategory(categoryID: 362, siteID: siteID, parentID: 0, name: "Other Stuff", slug: "other")
         return [category1, category2]
     }
 

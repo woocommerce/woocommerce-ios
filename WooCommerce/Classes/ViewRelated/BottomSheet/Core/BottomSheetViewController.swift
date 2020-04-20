@@ -65,8 +65,8 @@ class BottomSheetViewController: UIViewController {
         view.clipsToBounds = true
         view.layer.cornerRadius = Constants.cornerRadius
         view.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
-        view.backgroundColor = .basicBackground
 
+        view.backgroundColor = childViewController?.view.backgroundColor
         NSLayoutConstraint.activate([
             gripButton.heightAnchor.constraint(equalToConstant: Constants.gripHeight)
         ])

@@ -1,3 +1,8 @@
+4.2
+-----
+- Products: now the keyboard pop up automatically when a view with only one text field is opened.
+
+
 4.1
 -----
 - Fix an intermittent crash when downloading Orders

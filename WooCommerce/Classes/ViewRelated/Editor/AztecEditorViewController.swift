@@ -138,6 +138,11 @@ final class AztecEditorViewController: UIViewController, Editor {
         super.viewWillAppear(animated)
         startListeningToNotifications()
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        richTextView.becomeFirstResponder()
+    }
 }
 
 private extension AztecEditorViewController {

@@ -39,6 +39,7 @@ final class UnitInputTableViewCell: UITableViewCell {
         configureInputTextField()
         configureUnitLabel()
         applyDefaultBackgroundStyle()
+        configureTapGestureRecognizer()
     }
 
     func configure(viewModel: UnitInputViewModel) {
@@ -123,6 +124,20 @@ private extension UnitInputTableViewCell {
         unitLabel.applyBodyStyle()
         unitLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
         unitLabel.setContentHuggingPriority(.required, for: .horizontal)
+    }
+    
+    func configureTapGestureRecognizer(){
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(cellTapped))
+        tapGesture.cancelsTouchesInView = false
+        addGestureRecognizer(tapGesture)
+    }
+}
+
+private extension UnitInputTableViewCell {
+    /// When the cell is tapped, the text field become the first responder
+    ///
+    @objc func cellTapped(sender: UIView) {
+        inputTextField.becomeFirstResponder()
     }
 }
 

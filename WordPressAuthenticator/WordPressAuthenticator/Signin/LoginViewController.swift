@@ -136,8 +136,18 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     }
 
     /// Displays the self-hosted sign in form.
+    ///
     func loginToSelfHostedSite() {
-        performSegue(withIdentifier: .showSelfHostedLogin, sender: self)
+        guard let vc = LoginSiteAddressViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from LoginViewController to LoginSiteAddressViewController")
+            return
+        }
+
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     /// Validates what is entered in the various form fields and, if valid,

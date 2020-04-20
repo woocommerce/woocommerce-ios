@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Ck1-vY-O11">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Ck1-vY-O11">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -108,9 +108,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="42E-2e-kOq"/>
                     <connections>
-                        <segue destination="T5n-nb-cOW" kind="show" identifier="showSigninV2" id="nCA-u7-fKm"/>
                         <segue destination="hed-vB-osh" kind="presentation" identifier="showLoginMethod" id="N3P-wt-Rn3"/>
-                        <segue destination="anK-hg-K4j" kind="show" identifier="showSelfHostedLogin" id="Njv-lY-Lyi"/>
                         <segue destination="lmD-c6-SLs" kind="show" identifier="showWPComLogin" id="UV4-XI-c0q"/>
                     </connections>
                 </viewController>
@@ -350,28 +348,17 @@
                         <outlet property="submitButton" destination="OZC-xf-OAn" id="k1c-SJ-qiK"/>
                         <segue destination="Kvo-Y2-yhG" kind="show" identifier="startMagicLinkFlow" id="db9-5R-Qq7"/>
                         <segue destination="lmD-c6-SLs" kind="show" identifier="showWPComLogin" id="ySQ-EM-6JI"/>
-                        <segue destination="anK-hg-K4j" kind="show" identifier="showSelfHostedLogin" id="bK1-J1-hfT"/>
                         <segue destination="klu-4U-PyL" kind="show" identifier="showSignupEmail" id="dh4-9P-l8W"/>
-                        <segue destination="T5n-nb-cOW" kind="show" identifier="showSigninV2" id="sIC-Hv-FJw"/>
-                        <segue destination="SZS-o3-1P7" kind="show" identifier="showURLUsernamePassword" id="4SK-mG-U33"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wWl-qb-1Yp" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1674" y="188"/>
         </scene>
-        <!--SignupEmailViewController-->
-        <scene sceneID="CQL-qu-sjW">
-            <objects>
-                <viewControllerPlaceholder storyboardName="Signup" referencedIdentifier="SignupEmailViewController" id="T5n-nb-cOW" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="UdV-y0-6AN" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-530" y="760"/>
-        </scene>
         <!--Login Self Hosted View Controller-->
         <scene sceneID="b2O-iW-wfB">
             <objects>
-                <viewController storyboardIdentifier="selfHosted" useStoryboardIdentifierAsRestorationIdentifier="YES" id="SZS-o3-1P7" customClass="LoginSelfHostedViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginSelfHostedViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="SZS-o3-1P7" customClass="LoginSelfHostedViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Yjk-Cc-Bxb"/>
                         <viewControllerLayoutGuide type="bottom" id="Ktl-It-Kmo"/>
@@ -1013,7 +1000,7 @@
         <!--Login Site Address View Controller-->
         <scene sceneID="idG-jg-gxH">
             <objects>
-                <viewController storyboardIdentifier="siteAddress" extendedLayoutIncludesOpaqueBars="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="anK-hg-K4j" customClass="LoginSiteAddressViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginSiteAddressViewController" extendedLayoutIncludesOpaqueBars="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="anK-hg-K4j" customClass="LoginSiteAddressViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="pmp-Uj-4NW"/>
                         <viewControllerLayoutGuide type="bottom" id="rYV-q2-blN"/>
@@ -1155,7 +1142,6 @@
                         <outlet property="siteAddressHelpButton" destination="roL-ID-k8n" id="QB2-ri-X5V"/>
                         <outlet property="siteURLField" destination="ZrT-CY-qD7" id="561-Zw-Ja9"/>
                         <outlet property="submitButton" destination="ltO-hW-mbe" id="wwr-D5-5kK"/>
-                        <segue destination="SZS-o3-1P7" kind="show" identifier="showURLUsernamePassword" id="TkG-0R-c3i"/>
                         <segue destination="iMi-vX-AxR" kind="show" identifier="showWPUsernamePassword" id="dtm-iK-PLb"/>
                         <segue destination="hed-vB-osh" kind="presentation" identifier="showLoginMethod" id="5hL-j3-eMs"/>
                         <segue destination="lmD-c6-SLs" kind="show" identifier="showWPComLogin" id="8p6-rS-9Ml"/>
@@ -1435,17 +1421,14 @@
             <point key="canvasLocation" x="-460" y="1248"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="N3P-wt-Rn3"/>
+        <segue reference="UV4-XI-c0q"/>
+        <segue reference="iD4-VS-n3M"/>
+    </inferredMetricsTieBreakers>
     <resources>
         <image name="icon-password-field" width="18" height="22"/>
         <image name="icon-url-field" width="18" height="22"/>
         <image name="icon-username-field" width="18" height="18"/>
     </resources>
-    <inferredMetricsTieBreakers>
-        <segue reference="N3P-wt-Rn3"/>
-        <segue reference="Njv-lY-Lyi"/>
-        <segue reference="UV4-XI-c0q"/>
-        <segue reference="4SK-mG-U33"/>
-        <segue reference="sIC-Hv-FJw"/>
-        <segue reference="iD4-VS-n3M"/>
-    </inferredMetricsTieBreakers>
 </document>

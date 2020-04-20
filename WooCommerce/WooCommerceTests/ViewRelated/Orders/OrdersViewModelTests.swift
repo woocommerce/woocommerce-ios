@@ -206,7 +206,7 @@ final class OrdersViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isEmpty)
         XCTAssertEqual(viewModel.numberOfObjects, processingOrders.count)
 
-        XCTAssertEqual(viewModel.fetchedOrderIDs, processingOrders.orderIDs)
+        XCTAssertEqual(viewModel.fetchedOrders.orderIDs, processingOrders.orderIDs)
     }
 
     func testGivenNoFilterItLoadsAllTheTodayAndPastOrdersFromTheDB() {
@@ -229,7 +229,7 @@ final class OrdersViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isEmpty)
         XCTAssertEqual(viewModel.numberOfObjects, allInsertedOrders.count)
 
-        XCTAssertEqual(viewModel.fetchedOrderIDs, allInsertedOrders.orderIDs)
+        XCTAssertEqual(viewModel.fetchedOrders.orderIDs, allInsertedOrders.orderIDs)
     }
 
     /// If `includeFutureOrders` is `true`, all orders including orders dated in the future (dateCreated) will
@@ -258,9 +258,9 @@ final class OrdersViewModelTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(viewModel.numberOfObjects, expectedOrders.count)
-        XCTAssertEqual(viewModel.fetchedOrderIDs, expectedOrders.orderIDs)
+        XCTAssertEqual(viewModel.fetchedOrders.orderIDs, expectedOrders.orderIDs)
 
-        XCTAssertFalse(viewModel.fetchedOrderIDs.contains(ignoredFutureOrder.orderID))
+        XCTAssertFalse(viewModel.fetchedOrders.orderIDs.contains(ignoredFutureOrder.orderID))
     }
 
     /// If `includesFutureOrders` is `false`, only orders created up to the current day are returned. Orders before
@@ -289,10 +289,10 @@ final class OrdersViewModelTests: XCTestCase {
         viewModel.activateAndForwardUpdates(to: UITableView())
 
         // Assert
-        XCTAssertTrue(viewModel.fetchedOrderIDs.isDisjoint(with: ignoredOrders.orderIDs))
+        XCTAssertTrue(viewModel.fetchedOrders.orderIDs.isDisjoint(with: ignoredOrders.orderIDs))
 
         XCTAssertEqual(viewModel.numberOfObjects, expectedOrders.count)
-        XCTAssertEqual(viewModel.fetchedOrderIDs, expectedOrders.orderIDs)
+        XCTAssertEqual(viewModel.fetchedOrders.orderIDs, expectedOrders.orderIDs)
     }
 
     /// Orders with dateCreated in the future should be grouped in an "Upcoming" section.
@@ -334,12 +334,6 @@ private extension OrdersViewModel {
                 detailsViewModel(at: IndexPath(row: row, section: section)).order
             }
         }
-    }
-
-    /// Returns the IDs for all the Order rows
-    ///
-    var fetchedOrderIDs: Set<Int64> {
-        Set(fetchedOrders.map(\.orderID))
     }
 }
 

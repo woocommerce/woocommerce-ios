@@ -275,7 +275,17 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
     ///
     @objc func showWPUsernamePassword() {
         configureViewLoading(false)
-        performSegue(withIdentifier: .showWPUsernamePassword, sender: self)
+
+        guard let vc = LoginUsernamePasswordViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from LoginSiteAddressViewController to LoginUsernamePasswordViewController")
+                return
+            }
+
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     /// Break away from the self-hosted flow.
@@ -286,15 +296,22 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         performSegue(withIdentifier: .showLoginMethod, sender: self)
     }
 
+    /// Ref. https://git.io/JfJ4s - settings for Woo.
+    /// After a site address has been validated,
+    /// display the 3 button view login options.
+    ///
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
         
         if let vc = segue.destination as? LoginPrologueLoginMethodViewController {
             vc.transitioningDelegate = self
-            
+
+            // Continue with WordPress.com button action
             vc.emailTapped = { [weak self] in
                 self?.showWPUsernamePassword()
             }
+
+            // Continue with Google button action
             vc.googleTapped = { [weak self] in
                 guard let toVC = SignupGoogleViewController.instantiate(from: .signup) else {
                     DDLogError("Failed to navigate to SignupGoogleViewController")
@@ -303,6 +320,8 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
 
                 self?.navigationController?.pushViewController(toVC, animated: true)
             }
+
+            // Sign In With Apple (SIWA) button action
             vc.appleTapped = { [weak self] in
                 self?.appleTapped()
             }

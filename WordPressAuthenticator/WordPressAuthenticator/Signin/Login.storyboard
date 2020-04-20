@@ -3,7 +3,7 @@
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -1142,7 +1142,6 @@
                         <outlet property="siteAddressHelpButton" destination="roL-ID-k8n" id="QB2-ri-X5V"/>
                         <outlet property="siteURLField" destination="ZrT-CY-qD7" id="561-Zw-Ja9"/>
                         <outlet property="submitButton" destination="ltO-hW-mbe" id="wwr-D5-5kK"/>
-                        <segue destination="iMi-vX-AxR" kind="show" identifier="showWPUsernamePassword" id="dtm-iK-PLb"/>
                         <segue destination="hed-vB-osh" kind="presentation" identifier="showLoginMethod" id="5hL-j3-eMs"/>
                         <segue destination="lmD-c6-SLs" kind="show" identifier="showWPComLogin" id="8p6-rS-9Ml"/>
                     </connections>
@@ -1154,7 +1153,7 @@
         <!--Login Username Password View Controller-->
         <scene sceneID="b9v-Sc-w6J">
             <objects>
-                <viewController storyboardIdentifier="wpUsernamePassword" useStoryboardIdentifierAsRestorationIdentifier="YES" id="iMi-vX-AxR" customClass="LoginUsernamePasswordViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginUsernamePasswordViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="iMi-vX-AxR" customClass="LoginUsernamePasswordViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="De3-R2-Sm2"/>
                         <viewControllerLayoutGuide type="bottom" id="NPl-SI-4X2"/>
@@ -1422,9 +1421,9 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="N3P-wt-Rn3"/>
-        <segue reference="UV4-XI-c0q"/>
-        <segue reference="iD4-VS-n3M"/>
+        <segue reference="5hL-j3-eMs"/>
+        <segue reference="8p6-rS-9Ml"/>
+        <segue reference="JN3-Ck-2w7"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="icon-password-field" width="18" height="22"/>

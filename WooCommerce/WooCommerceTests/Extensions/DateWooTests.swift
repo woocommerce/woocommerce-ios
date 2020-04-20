@@ -161,7 +161,7 @@ final class DateWooTests: XCTestCase {
     func testTheAddingMethodUsingDaysReturnsTheExpectedTargetWithTheSameTime() {
         // Given
         let formatter = DateFormatter.Defaults.iso8601
-        let calendar = Calendar.gregorian(with: formatter.timeZone)
+        let calendar = Calendar(identifier: .gregorian, timeZone: formatter.timeZone)
 
         let fromDate = formatter.date(from: "2020-03-08T14:53:11Z")!
 
@@ -176,7 +176,7 @@ final class DateWooTests: XCTestCase {
     func testTheAddingMethodUsingDaysAndSecondsReturnsTheExpectedDateCalculation() {
         // Given
         let formatter = DateFormatter.Defaults.iso8601
-        let calendar = Calendar.gregorian(with: formatter.timeZone)
+        let calendar = Calendar(identifier: .gregorian, timeZone: formatter.timeZone)
 
         let fromDate = formatter.date(from: "2020-03-08T01:59:59Z")!
 
@@ -193,7 +193,7 @@ final class DateWooTests: XCTestCase {
     func testNextMidnightMethodReturnsTomorrowWithoutTime() {
         // Given
         let formatter = DateFormatter.Defaults.iso8601
-        let calendar = Calendar.gregorian(with: formatter.timeZone)
+        let calendar = Calendar(identifier: .gregorian, timeZone: formatter.timeZone)
 
         let fromDate = formatter.date(from: "2020-03-08T01:56:12Z")!
 
@@ -203,15 +203,5 @@ final class DateWooTests: XCTestCase {
         // Then
         let expected = formatter.date(from: "2020-03-09T00:00:00Z")!
         XCTAssertEqual(actual, expected)
-    }
-}
-
-// MARK: - Utils
-
-private extension Calendar {
-    static func gregorian(with timeZone: TimeZone) -> Calendar {
-        var cal = Calendar(identifier: .gregorian)
-        cal.timeZone = timeZone
-        return cal
     }
 }

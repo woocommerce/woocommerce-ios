@@ -15,11 +15,7 @@ final class AgeTests: XCTestCase {
         super.setUp()
 
         dateFormatter = DateFormatter.Defaults.iso8601
-        calendar = {
-            var cal = Calendar(identifier: .gregorian)
-            cal.timeZone = dateFormatter.timeZone
-            return cal
-        }()
+        calendar = Calendar(identifier: .gregorian, timeZone: dateFormatter.timeZone)
     }
 
     override func tearDown() {

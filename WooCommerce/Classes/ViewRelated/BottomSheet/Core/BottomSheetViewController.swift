@@ -32,6 +32,7 @@ class BottomSheetViewController: UIViewController {
             popoverPresentationController?.permittedArrowDirections = arrowDirections
             popoverPresentationController?.sourceView = sourceView ?? UIView()
             popoverPresentationController?.sourceRect = sourceView?.bounds ?? .zero
+            popoverPresentationController?.backgroundColor = view.backgroundColor
         } else {
             transitioningDelegate = self
             modalPresentationStyle = .custom

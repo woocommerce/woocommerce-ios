@@ -70,7 +70,7 @@ private extension ProductSlugViewController {
         tableView.backgroundColor = .listBackground
         tableView.removeLastCellSeparator()
     }
-    
+
     /// Since there is only a text field in this view, the text field become the first responder immediately when the view did appear
     ///
     func configureTextFieldFirstResponder() {

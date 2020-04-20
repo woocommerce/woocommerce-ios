@@ -80,7 +80,7 @@ private extension ProductPurchaseNoteViewController {
         tableView.backgroundColor = .listBackground
         tableView.removeLastCellSeparator()
     }
-    
+
     /// Since there is only a text view in this view, the text view become the first responder immediately when the view did appear
     ///
     func configureTextViewFirstResponder() {

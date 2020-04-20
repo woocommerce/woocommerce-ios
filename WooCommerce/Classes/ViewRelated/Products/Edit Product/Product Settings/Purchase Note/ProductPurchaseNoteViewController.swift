@@ -48,10 +48,10 @@ final class ProductPurchaseNoteViewController: UIViewController {
         super.viewWillDisappear(animated)
         onCompletion(productSettings)
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+
         /// Since there is only a text view in this view, the text view become the first responder immediately when the view did appear
         ///
         if let indexPath = getIndexPathForRow(.purchaseNote) {
@@ -151,7 +151,7 @@ private extension ProductPurchaseNoteViewController {
             self?.productSettings.purchaseNote = text
         }
     }
-    
+
     func getIndexPathForRow(_ row: Row) -> IndexPath? {
         for s in 0 ..< sections.count {
             for r in 0 ..< sections[s].rows.count {

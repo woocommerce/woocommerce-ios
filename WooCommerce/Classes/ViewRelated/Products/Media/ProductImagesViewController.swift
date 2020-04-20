@@ -86,6 +86,7 @@ final class ProductImagesViewController: UIViewController {
         configureAddButtonBottomBorderView()
         configureImagesContainerView()
         configureProductImagesObservation()
+        handleSwipeBackGesture()
     }
 }
 
@@ -175,6 +176,10 @@ extension ProductImagesViewController {
         }
         resetProductImages()
         return true
+    }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        return shouldPopOnBackButton()
     }
 
     private func presentDiscardChangesActionSheet() {

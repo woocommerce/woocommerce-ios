@@ -43,7 +43,7 @@ protocol UINavigationBarBackButtonHandler {
 
 extension UIViewController: UINavigationBarBackButtonHandler {
     //Do not block the "Back" button action by default, otherwise, override this function in the specified viewcontroller
-    @objc func  shouldPopOnBackButton() -> Bool {
+    @objc func shouldPopOnBackButton() -> Bool {
         return true
     }
 }
@@ -73,5 +73,36 @@ extension UINavigationController: UINavigationBarDelegate {
             }
         }
         return false
+    }
+}
+
+// MARK: - Handle the swipe back gesture
+protocol NavigationSwipeBackHandler {
+
+    /// Should block the 'SwipeBack' gesture
+    ///
+    /// - Returns: true - don't block，false - block
+    func shouldPopOnSwipeBack() -> Bool
+}
+
+extension UIViewController: NavigationSwipeBackHandler {
+    //Do not block the "Swipe back" gesture by default, otherwise, override this function in the specified viewcontroller
+    @objc func shouldPopOnSwipeBack() -> Bool {
+        return true
+    }
+}
+
+extension UIViewController: UIGestureRecognizerDelegate {
+
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        if gestureRecognizer.isEqual(navigationController?.interactivePopGestureRecognizer) {
+            return shouldPopOnSwipeBack()
+        }
+
+        return false
+    }
+
+    func handleSwipeBackGesture() {
+        navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
 }

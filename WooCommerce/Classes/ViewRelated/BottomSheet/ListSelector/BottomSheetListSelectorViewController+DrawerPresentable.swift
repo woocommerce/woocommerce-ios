@@ -2,9 +2,7 @@ import UIKit
 
 extension BottomSheetListSelectorViewController: DrawerPresentable {
     var collapsedHeight: DrawerHeight {
-        let bottomSheetHeight = fullBottomSheetHeight
-        let halfViewHeight = view.bounds.height / 0.5
-        return (bottomSheetHeight > halfViewHeight) ? .topMargin(halfViewHeight): .contentHeight(bottomSheetHeight)
+        return .contentHeight(fullBottomSheetHeight)
     }
 
     var expandedHeight: DrawerHeight {

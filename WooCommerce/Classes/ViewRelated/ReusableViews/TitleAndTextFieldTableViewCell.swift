@@ -42,6 +42,7 @@ final class TitleAndTextFieldTableViewCell: UITableViewCell {
         configureTextField()
         configureContentStackView()
         applyDefaultBackgroundStyle()
+        configureTapGestureRecognizer()
     }
 
     func configure(viewModel: ViewModel) {
@@ -76,7 +77,22 @@ private extension TitleAndTextFieldTableViewCell {
     func configureContentStackView() {
         contentStackView.spacing = 30
     }
+    
+    func configureTapGestureRecognizer(){
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(cellTapped))
+        tapGesture.cancelsTouchesInView = false
+        addGestureRecognizer(tapGesture)
+    }
 }
+
+private extension TitleAndTextFieldTableViewCell {
+    /// When the cell is tapped, the text field become the first responder
+    ///
+    @objc func cellTapped(sender: UIView) {
+        textField.becomeFirstResponder()
+    }
+}
+
 
 private extension TitleAndTextFieldTableViewCell {
     @objc func textFieldDidChange(textField: UITextField) {

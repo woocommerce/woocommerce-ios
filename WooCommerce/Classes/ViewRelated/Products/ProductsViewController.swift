@@ -439,15 +439,16 @@ private extension ProductsViewController {
                                       comment: "Message title for sort products action bottom sheet")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
         let dataSource = ProductsSortOrderBottomSheetListSelectorDataSource(selected: sortOrder)
-        let sortOrderListViewController = BottomSheetListSelectorViewController(viewProperties: viewProperties, dataSource: dataSource) { [weak self] selectedSortOrder in
-            defer {
-                self?.dismiss(animated: true, completion: nil)
-            }
+        let sortOrderListViewController = BottomSheetListSelectorViewController(viewProperties: viewProperties,
+                                                                                dataSource: dataSource) { [weak self] selectedSortOrder in
+                                                                                    defer {
+                                                                                        self?.dismiss(animated: true, completion: nil)
+                                                                                    }
 
-            guard let selectedSortOrder = selectedSortOrder else {
-                return
-            }
-            self?.sortOrder = selectedSortOrder
+                                                                                    guard let selectedSortOrder = selectedSortOrder else {
+                                                                                        return
+                                                                                    }
+                                                                                    self?.sortOrder = selectedSortOrder
         }
 
         let bottomSheet = BottomSheetViewController(childViewController: sortOrderListViewController)

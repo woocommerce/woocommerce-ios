@@ -83,8 +83,7 @@ final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
             total: 0
         )
         // We're intentionally not using `processingOrderStatus` as the source of the "Processing"
-        // text in here. Having an explicit `NSLocalizedString` makes sure that we'll have this
-        // word translated.
+        // text in here. We want the string to be translated.
         let processingOrdersVC = OrdersViewController(
             title: NSLocalizedString("Processing", comment: "Title for the first page in the Orders tab."),
             statusFilter: processingOrderStatus

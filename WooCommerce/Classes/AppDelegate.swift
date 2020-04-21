@@ -56,6 +56,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupPushNotificationsManagerIfPossible()
         setupAppRatingManager()
         setupWormholy()
+        setupKeyboardStateProvider()
         handleLaunchArguments()
 
         // Display the Authentication UI
@@ -291,6 +292,14 @@ private extension AppDelegate {
         /// We want to activate it programmatically, not using the shake.
         Wormholy.shakeEnabled = false
         #endif
+    }
+
+    /// Set up `KeyboardStateProvider`
+    ///
+    func setupKeyboardStateProvider() {
+        // Simply _accessing_ it is enough. We only want the object to be initialized right away
+        // so it can start observing keyboard changes.
+        _ = ServiceLocator.keyboardStateProvider
     }
 
     func handleLaunchArguments() {

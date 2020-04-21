@@ -1,7 +1,3 @@
-Un breve elenco delle modifiche effettuate questa volta:
-
-- L'etichetta dello stato dell'ordine nell'Elenco degli ordini non viene più tagliata, quindi puoi effettivamente vedere tutte le informazioni.
-- Se ti sei mai chiesto perché il logo di Woo sulla schermata di avvio sembrava leggermente allungato, è perché le proporzioni non erano affidabili. Ora il problema è stato risolto.
-- Per chiarezza, ora visualizzerai "Corriere della spedizione" nell'app invece di "Spedizioniere".
-
-Lavatevi le mani e state tutti al sicuro!
+*Siamo entusiasti di introdurre la scheda Prodotti.
+*Gli utenti hanno ora opzioni di modifica limitate per i prodotti semplici, con altre in arrivo.
+*Abbiamo eseguito una correzione in modo che, ogni volta che aggiorni la scheda Elaborazione, verranno visualizzati gli ordini aggiornati.

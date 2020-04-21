@@ -18,11 +18,43 @@ class Product_ProductFormTests: XCTestCase {
         let expectedDescription = "This is the party room!"
         XCTAssertEqual(product.trimmedBriefDescription, expectedDescription)
     }
+
+    func testNoCategoryDescriptionOutputsNilDescription() {
+        let product = sampleProduct(categories: [])
+        XCTAssertNil(product.categoriesDescription())
+    }
+
+    func testSingleCategoryDescriptionOutputsSingleCategory() {
+        let category = sampleCategory(name: "Pants")
+        let product = sampleProduct(categories: [category])
+        let expectedDescription = "Pants"
+        XCTAssertEqual(product.categoriesDescription(), expectedDescription)
+    }
+
+    func testMutipleCategoriesDescriptionOutputsFormattedList() {
+        let categories = ["Pants", "Dress", "Shoes"].map { sampleCategory(name: $0) }
+        let product = sampleProduct(categories: categories)
+        let expectedDescription: String = {
+            if #available(iOS 13.0, *) {
+                return "Pants, Dress, and Shoes"
+            } else {
+                return "Pants, Dress, Shoes"
+            }
+        }()
+        let usLocale = Locale(identifier: "en_US")
+        XCTAssertEqual(product.categoriesDescription(using: usLocale), expectedDescription)
+    }
 }
 
 private extension Product_ProductFormTests {
 
-    func sampleProduct(description: String? = "", briefDescription: String? = "") -> Product {
+    func sampleCategory(name: String = "") -> ProductCategory {
+        return ProductCategory(categoryID: Int64.random(in: 0 ..< Int64.max),
+                               name: name,
+                               slug: "")
+    }
+
+    func sampleProduct(description: String? = "", briefDescription: String? = "", categories: [ProductCategory] = []) -> Product {
         return Product(siteID: 109,
                        productID: 177,
                        name: "Book the Green Room",
@@ -75,7 +107,7 @@ private extension Product_ProductFormTests {
                        crossSellIDs: [1234, 234234, 3],
                        parentID: 0,
                        purchaseNote: "Thank you!",
-                       categories: [],
+                       categories: categories,
                        tags: [],
                        images: [],
                        attributes: [],

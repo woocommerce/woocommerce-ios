@@ -11,7 +11,7 @@ private class SyncingDelegateWrapper: SyncingCoordinatorDelegate {
 
     var onSync: OnSyncClosure?
 
-    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
+    func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: ((Bool) -> Void)?) {
         onSync?(pageNumber, onCompletion)
     }
 }

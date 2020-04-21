@@ -72,7 +72,10 @@ class ProductStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
 
-        let action = ProductAction.synchronizeProducts(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+        let action = ProductAction.synchronizeProducts(siteID: sampleSiteID,
+                                                       pageNumber: defaultPageNumber,
+                                                       pageSize: defaultPageSize,
+                                                       sortOrder: .nameAscending) { error in
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 10)
             XCTAssertNil(error)
 
@@ -94,7 +97,10 @@ class ProductStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
 
-        let action = ProductAction.synchronizeProducts(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+        let action = ProductAction.synchronizeProducts(siteID: sampleSiteID,
+                                                       pageNumber: defaultPageNumber,
+                                                       pageSize: defaultPageSize,
+                                                       sortOrder: .nameAscending) { error in
             XCTAssertNil(error)
 
             let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: self.sampleProductID)
@@ -130,7 +136,8 @@ class ProductStoreTests: XCTestCase {
 
         let action = ProductAction.synchronizeProducts(siteID: siteID1,
                                                        pageNumber: ProductStore.Default.firstPageNumber,
-                                                       pageSize: defaultPageSize) { error in
+                                                       pageSize: defaultPageSize,
+                                                       sortOrder: .nameAscending) { error in
             XCTAssertNil(error)
 
             // The previously upserted Product for siteID1 should be deleted.
@@ -166,7 +173,7 @@ class ProductStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
 
-        let action = ProductAction.synchronizeProducts(siteID: siteID, pageNumber: 3, pageSize: defaultPageSize) { error in
+        let action = ProductAction.synchronizeProducts(siteID: siteID, pageNumber: 3, pageSize: defaultPageSize, sortOrder: .nameAscending) { error in
             XCTAssertNil(error)
 
             // The previously upserted Product's should stay in storage.
@@ -199,7 +206,10 @@ class ProductStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products", filename: "generic_error")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
 
-        let action = ProductAction.synchronizeProducts(siteID: siteID, pageNumber: ProductStore.Default.firstPageNumber, pageSize: defaultPageSize) { error in
+        let action = ProductAction.synchronizeProducts(siteID: siteID,
+                                                       pageNumber: ProductStore.Default.firstPageNumber,
+                                                       pageSize: defaultPageSize,
+                                                       sortOrder: .nameAscending) { error in
             XCTAssertNotNil(error)
 
             // The previously upserted Product's should stay in storage.
@@ -222,7 +232,10 @@ class ProductStoreTests: XCTestCase {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "products", filename: "generic_error")
-        let action = ProductAction.synchronizeProducts(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+        let action = ProductAction.synchronizeProducts(siteID: sampleSiteID,
+                                                       pageNumber: defaultPageNumber,
+                                                       pageSize: defaultPageSize,
+                                                       sortOrder: .nameAscending) { error in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -237,7 +250,10 @@ class ProductStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve products empty response")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = ProductAction.synchronizeProducts(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+        let action = ProductAction.synchronizeProducts(siteID: sampleSiteID,
+                                                       pageNumber: defaultPageNumber,
+                                                       pageSize: defaultPageSize,
+                                                       sortOrder: .nameAscending) { error in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -252,11 +268,15 @@ class ProductStoreTests: XCTestCase {
     /// Verifies that `ProductAction.retrieveProduct` returns the expected `Product`.
     ///
     func testRetrieveSingleProductReturnsExpectedFields() {
+        // The shipping class ID should match the `shipping_class_id` field in `product.json`.
+        let expectedShippingClass = sampleProductShippingClass(remoteID: 134, siteID: sampleSiteID)
+        storageManager.insertSampleProductShippingClass(readOnlyProductShippingClass: expectedShippingClass)
+
         let expectation = self.expectation(description: "Retrieve single product")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let remoteProduct = sampleProduct()
+        let remoteProduct = sampleProduct(productShippingClass: expectedShippingClass)
 
-        network.simulateResponse(requestUrlSuffix: "products/282", filename: "product")
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product")
         let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleProductID) { (product, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(product)
@@ -295,7 +315,12 @@ class ProductStoreTests: XCTestCase {
     func testRetrieveSingleProductEffectivelyPersistsProductFieldsAndRelatedObjects() {
         let expectation = self.expectation(description: "Persist single product")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let remoteProduct = sampleProduct()
+
+        // The shipping class ID should match the `shipping_class_id` field in `product.json`.
+        let expectedShippingClass = sampleProductShippingClass(remoteID: 134, siteID: sampleSiteID)
+        storageManager.insertSampleProductShippingClass(readOnlyProductShippingClass: expectedShippingClass)
+
+        let remoteProduct = sampleProduct(productShippingClass: expectedShippingClass)
 
         network.simulateResponse(requestUrlSuffix: "products/282", filename: "product")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
@@ -732,6 +757,7 @@ class ProductStoreTests: XCTestCase {
         let expectedProductDescription = "Learn something!"
         let expectedProductShippingClassID: Int64 = 96987515
         let expectedProductShippingClassSlug = "two-days"
+        let expectedProductShippingClass = sampleProductShippingClass(remoteID: expectedProductShippingClassID, siteID: sampleSiteID)
         let expectedProductSKU = "94115"
         let expectedProductManageStock = true
         let expectedProductSoldIndividually = false
@@ -748,6 +774,11 @@ class ProductStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/\(expectedProductID)", filename: "product-update")
         let product = sampleProduct(productID: expectedProductID)
 
+        // Saves an existing shipping class into storage, so that it can be linked to the updated product.
+        // The shipping class ID should match the `shipping_class_id` field in `product.json`.
+        storageManager.insertSampleProductShippingClass(readOnlyProductShippingClass: expectedProductShippingClass)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageProductShippingClass.self), 1)
+
         // Saves an existing Product into storage.
         // Note: the fields to be tested should be different in the sample model and network response.
         storageManager.insertSampleProduct(readOnlyProduct: product)
@@ -762,6 +793,7 @@ class ProductStoreTests: XCTestCase {
             // Shipping settings.
             XCTAssertEqual(product?.shippingClassID, expectedProductShippingClassID)
             XCTAssertEqual(product?.shippingClass, expectedProductShippingClassSlug)
+            XCTAssertEqual(product?.productShippingClass, expectedProductShippingClass)
             // Inventory settings.
             XCTAssertEqual(product?.sku, expectedProductSKU)
             XCTAssertEqual(product?.manageStock, expectedProductManageStock)
@@ -904,7 +936,7 @@ class ProductStoreTests: XCTestCase {
 //
 private extension ProductStoreTests {
 
-    func sampleProduct(_ siteID: Int64? = nil, productID: Int64? = nil) -> Networking.Product {
+    func sampleProduct(_ siteID: Int64? = nil, productID: Int64? = nil, productShippingClass: Networking.ProductShippingClass? = nil) -> Networking.Product {
         let testSiteID = siteID ?? sampleSiteID
         let testProductID = productID ?? sampleProductID
         return Product(siteID: testSiteID,
@@ -953,9 +985,9 @@ private extension ProductStoreTests {
                        dimensions: sampleDimensions(),
                        shippingRequired: false,
                        shippingTaxable: false,
-                       shippingClass: "",
-                       shippingClassID: 0,
-                       productShippingClass: nil,
+                       shippingClass: productShippingClass?.slug ?? "",
+                       shippingClassID: productShippingClass?.shippingClassID ?? 0,
+                       productShippingClass: productShippingClass,
                        reviewsAllowed: true,
                        averageRating: "4.30",
                        ratingCount: 23,
@@ -1166,6 +1198,15 @@ private extension ProductStoreTests {
         let defaultAttribute1 = ProductDefaultAttribute(attributeID: 0, name: "Color", option: "Purple")
 
         return [defaultAttribute1]
+    }
+
+    func sampleProductShippingClass(remoteID: Int64, siteID: Int64) -> Yosemite.ProductShippingClass {
+        return ProductShippingClass(count: 3,
+                                    descriptionHTML: "Limited offer!",
+                                    name: "Free Shipping",
+                                    shippingClassID: remoteID,
+                                    siteID: siteID,
+                                    slug: "")
     }
 
     func sampleVariationTypeProduct(_ siteID: Int64? = nil) -> Networking.Product {

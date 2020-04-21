@@ -15,20 +15,6 @@ final class DashboardUIFactoryTests: XCTestCase {
         super.tearDown()
     }
 
-    func testStatsVersionWhenFeatureFlagIsOff() {
-        mockStoresManager = MockupStatsVersionStoresManager(sessionManager: SessionManager.testingInstance)
-        ServiceLocator.setStores(mockStoresManager)
-        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
-
-        let expectation = self.expectation(description: "Wait for the initial stats version")
-
-        dashboardUIFactory.reloadDashboardUI(isFeatureFlagOn: false) { dashboardUI in
-            XCTAssertTrue(dashboardUI is DashboardStatsV3ViewController)
-            expectation.fulfill()
-        }
-        waitForExpectations(timeout: 0.1, handler: nil)
-    }
-
     func testWhenV4IsAvailableWhileNoStatsVersionIsSaved() {
         mockStoresManager = MockupStatsVersionStoresManager(sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = true
@@ -43,7 +29,7 @@ final class DashboardUIFactoryTests: XCTestCase {
         let expectation = self.expectation(description: "Wait for the stats v4")
         expectation.expectedFulfillmentCount = 1
 
-        dashboardUIFactory.reloadDashboardUI(isFeatureFlagOn: true) { dashboardUI in
+        dashboardUIFactory.reloadDashboardUI { dashboardUI in
             dashboardUITypes.append(type(of: dashboardUI))
             if dashboardUITypes.count >= expectedDashboardUITypes.count {
                 for i in 0..<dashboardUITypes.count {
@@ -66,7 +52,7 @@ final class DashboardUIFactoryTests: XCTestCase {
         let expectation = self.expectation(description: "Wait for the stats v4")
         expectation.expectedFulfillmentCount = 1
 
-        dashboardUIFactory.reloadDashboardUI(isFeatureFlagOn: true) { dashboardUI in
+        dashboardUIFactory.reloadDashboardUI { dashboardUI in
             dashboardUIArray.append(dashboardUI)
             // 2 view controllers are expected to be the same v3 UI.
             if dashboardUIArray.count >= 2 {
@@ -91,7 +77,7 @@ final class DashboardUIFactoryTests: XCTestCase {
         let expectation = self.expectation(description: "Wait for the stats v4")
         expectation.expectedFulfillmentCount = 1
 
-        dashboardUIFactory.reloadDashboardUI(isFeatureFlagOn: true) { dashboardUI in
+        dashboardUIFactory.reloadDashboardUI { dashboardUI in
             dashboardUIArray.append(dashboardUI)
             // 2 view controllers are expected to be the same v3 UI.
             if dashboardUIArray.count >= 2 {
@@ -116,7 +102,7 @@ final class DashboardUIFactoryTests: XCTestCase {
         let expectation = self.expectation(description: "Wait for the stats v4")
         expectation.expectedFulfillmentCount = 1
 
-        dashboardUIFactory.reloadDashboardUI(isFeatureFlagOn: true) { dashboardUI in
+        dashboardUIFactory.reloadDashboardUI { dashboardUI in
             dashboardUIArray.append(dashboardUI)
             // 2 view controllers are expected to be the same v4 UI.
             if dashboardUIArray.count >= 2 {
@@ -141,7 +127,7 @@ final class DashboardUIFactoryTests: XCTestCase {
         let expectation = self.expectation(description: "Wait for the stats v4")
         expectation.expectedFulfillmentCount = 1
 
-        dashboardUIFactory.reloadDashboardUI(isFeatureFlagOn: true) { [weak self] dashboardUI in
+        dashboardUIFactory.reloadDashboardUI { [weak self] dashboardUI in
             dashboardUIArray.append(dashboardUI)
             // The first updated view controller is v4, and the second view controller is reverted back to v3.
             if dashboardUIArray.count >= 2 {
@@ -156,7 +142,7 @@ final class DashboardUIFactoryTests: XCTestCase {
                 self.mockStoresManager.isStatsV4Available = true
                 dashboardUIArray = []
 
-                self.dashboardUIFactory.reloadDashboardUI(isFeatureFlagOn: true) { dashboardUI in
+                self.dashboardUIFactory.reloadDashboardUI { dashboardUI in
                     dashboardUIArray.append(dashboardUI)
 
                     // The first view controller is v4 -> v3 UI, and the second view controller is v3 -> v4 UI.

@@ -5,6 +5,7 @@ import Foundation
 final class MockProduct {
     func product(siteID: Int64 = 2019,
                  productID: Int64 = 2020,
+                 dateCreated: Date = Date(),
                  name: String = "Hogsmeade",
                  sku: String? = nil,
                  stockQuantity: Int? = nil,
@@ -18,7 +19,7 @@ final class MockProduct {
                        name: name,
                        slug: "book-the-green-room",
                        permalink: "https://example.com/product/book-the-green-room/",
-                       dateCreated: Date(),
+                       dateCreated: dateCreated,
                        dateModified: Date(),
                        dateOnSaleStart: date(with: "2019-10-15T21:30:00"),
                        dateOnSaleEnd: date(with: "2019-10-27T21:29:59"),
@@ -56,7 +57,9 @@ final class MockProduct {
                        backordered: false,
                        soldIndividually: true,
                        weight: "213",
-                       dimensions: ProductDimensions(length: "0", width: "0", height: "0"),
+                       // Since the dimensions are not included in `update(with:)` in `ReadOnlyConvertible`, set them to empty here so that they are the same
+                       // as the default value.
+                       dimensions: ProductDimensions(length: "", width: "", height: ""),
                        shippingRequired: false,
                        shippingTaxable: false,
                        shippingClass: "",

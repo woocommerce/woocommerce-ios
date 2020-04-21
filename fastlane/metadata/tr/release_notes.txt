@@ -1,7 +1,3 @@
-Bu kez yapılan değişikliklerin kısa bir listesi:
-
-- Sipariş Listesindeki sipariş durumu etiketi artık kesilmiyor, tüm bilgileri görebiliyorsunuz.
-- Başlatma ekranındaki Woo logosunun neden biraz uzatılmış gibi göründüğünü merak ediyorsanız, bu sorun en-boy oranından kaynaklanıyordu ve artık düzeltildi.
-- Artık uygulama genelinde "Kargo Sağlayıcısı" yerine "Kargo Şirketi" ifadesini göreceksiniz.
-
-Herkes güvende kalsın ve ellerini yıkasın!
+* Ürünler sekmesini tanıtmaktan memnuniyet duyuyoruz!
+* Kullanıcılar artık Basit Ürünler için sınırlı düzenleme yetkilerine sahip olacak, zamanla daha fazlası da gelecek.
+* İşleme sekmesini her yenilediğinizde güncel siparişlerinizi göstermesi için bir düzeltme yaptık.

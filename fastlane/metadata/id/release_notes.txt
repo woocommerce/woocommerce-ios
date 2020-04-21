@@ -1,7 +1,3 @@
-Daftar singkat perubahan kali ini:
-
-- Label status pesanan di Daftar Pesanan kini tak lagi terpotong, sehingga Anda dapat melihat semua informasi.
-- Jika Anda bertanya-tanya mengapa logo Woo di layar peluncuran terlihat sedikit lebih memanjang, itu karena rasio aspeknya tidak stabil — kini telah diperbaiki.
-- Agar lebih jelas, kini Anda akan melihat “Operator Pengiriman” melalui aplikasi, dan bukan “Penyedia Pengiriman.”
-
-Selalu jaga kesehatan dan cuci tangan semuanya!
+* Dengan senang hati kami memperkenalkan tab Produk!
+* Sekarang pengguna juga memiliki kemampuan penyuntingan terbatas untuk Produk Sederhana, dengan lebih banyak fitur di pembaruan mendatang.
+* Kami melakukan perbaikan agar saat Anda menyegarkan tab Dalam Proses, pesanan terbaru Anda akan ditampilkan.

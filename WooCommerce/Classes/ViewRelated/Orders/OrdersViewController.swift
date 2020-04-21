@@ -84,14 +84,19 @@ class OrdersViewController: UIViewController {
 
     /// Designated initializer.
     ///
-    /// - Parameter statusFilter The filter to use.
-    ///
-    init(title: String, statusFilter: OrderStatus? = nil) {
-        viewModel = OrdersViewModel(statusFilter: statusFilter)
+    init(title: String, viewModel: OrdersViewModel) {
+        self.viewModel = viewModel
 
         super.init(nibName: Self.nibName, bundle: nil)
 
         self.title = title
+    }
+
+    /// Initialize using the given `statusFilter`.
+    ///
+    convenience init(title: String, statusFilter: OrderStatus? = nil) {
+        let viewModel = OrdersViewModel(statusFilter: statusFilter)
+        self.init(title: title, viewModel: viewModel)
     }
 
     required init?(coder aDecoder: NSCoder) {

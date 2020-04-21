@@ -1,6 +1,7 @@
 4.2
 -----
 - Products: now the keyboard pop up automatically in Edit Description (M1), in Edit Short Description (M2), Edit Slug (M2), Edit Purchase Note (M2)
+- The Processing orders list will now show upcoming (future) orders. 
 
 
 4.1

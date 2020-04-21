@@ -81,7 +81,6 @@
 		02305353237454C700487A64 /* AztecInsertMoreFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02305350237454C700487A64 /* AztecInsertMoreFormatBarCommand.swift */; };
 		0230535B2374FB6800487A64 /* AztecSourceCodeFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0230535A2374FB6800487A64 /* AztecSourceCodeFormatBarCommand.swift */; };
 		0235594624496449004BE2B8 /* GripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0235594124496449004BE2B8 /* GripView.swift */; };
-		0235594724496449004BE2B8 /* BottomSheetPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0235594224496449004BE2B8 /* BottomSheetPresentationController.swift */; };
 		0235594824496449004BE2B8 /* BottomSheetAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0235594324496449004BE2B8 /* BottomSheetAnimationController.swift */; };
 		0235594924496449004BE2B8 /* BottomSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0235594424496449004BE2B8 /* BottomSheetViewController.swift */; };
 		0235594A24496449004BE2B8 /* DrawerPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0235594524496449004BE2B8 /* DrawerPresentationController.swift */; };
@@ -885,7 +884,6 @@
 		02305350237454C700487A64 /* AztecInsertMoreFormatBarCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AztecInsertMoreFormatBarCommand.swift; sourceTree = "<group>"; };
 		0230535A2374FB6800487A64 /* AztecSourceCodeFormatBarCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecSourceCodeFormatBarCommand.swift; sourceTree = "<group>"; };
 		0235594124496449004BE2B8 /* GripView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GripView.swift; sourceTree = "<group>"; };
-		0235594224496449004BE2B8 /* BottomSheetPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BottomSheetPresentationController.swift; sourceTree = "<group>"; };
 		0235594324496449004BE2B8 /* BottomSheetAnimationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BottomSheetAnimationController.swift; sourceTree = "<group>"; };
 		0235594424496449004BE2B8 /* BottomSheetViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BottomSheetViewController.swift; sourceTree = "<group>"; };
 		0235594524496449004BE2B8 /* DrawerPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawerPresentationController.swift; sourceTree = "<group>"; };
@@ -1670,7 +1668,6 @@
 			isa = PBXGroup;
 			children = (
 				0235594324496449004BE2B8 /* BottomSheetAnimationController.swift */,
-				0235594224496449004BE2B8 /* BottomSheetPresentationController.swift */,
 				0235594424496449004BE2B8 /* BottomSheetViewController.swift */,
 				0235594524496449004BE2B8 /* DrawerPresentationController.swift */,
 				0235594124496449004BE2B8 /* GripView.swift */,
@@ -4518,7 +4515,6 @@
 				453DBF9023882814006762A5 /* ProductImagesFlowLayout.swift in Sources */,
 				024DF30E23742A70006658FE /* AztecBoldFormatBarCommand.swift in Sources */,
 				02396251239948470096F34C /* UIImage+TintColor.swift in Sources */,
-				0235594724496449004BE2B8 /* BottomSheetPresentationController.swift in Sources */,
 				0290E275238E4F8100B5C466 /* PaginatedListSelectorViewController.swift in Sources */,
 				020DD48F232392C9005822B1 /* UIViewController+AppReview.swift in Sources */,
 				CE263DE8206ACE3E0015A693 /* MainTabBarController.swift in Sources */,

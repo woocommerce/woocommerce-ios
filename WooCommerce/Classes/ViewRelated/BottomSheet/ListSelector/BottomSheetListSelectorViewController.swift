@@ -4,7 +4,7 @@ import UIKit
 ///
 final class BottomSheetListSelectorViewController<DataSource: BottomSheetListSelectorCommand, Model, Cell>:
 UIViewController, UITableViewDataSource, UITableViewDelegate where DataSource.Model == Model, DataSource.Cell == Cell {
-    private let viewProperties: BottomSheetListSelectorViewProperties
+    private let viewProperties: BottomSheetListSelectorViewController.ViewProperties
     private var dataSource: DataSource
     private let onDismiss: (_ selected: Model?) -> Void
 
@@ -14,7 +14,7 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where DataSource.Mo
 
     @IBOutlet private(set) weak var tableView: UITableView!
 
-    init(viewProperties: BottomSheetListSelectorViewProperties,
+    init(viewProperties: BottomSheetListSelectorViewController.ViewProperties,
          dataSource: DataSource,
          onDismiss: @escaping (_ selected: Model?) -> Void) {
         self.viewProperties = viewProperties

@@ -1,8 +1,8 @@
 import UIKit
 
-/// A generic data source for the bottom sheet list selector UI `BottomSheetListSelectorViewController`.
+/// A generic interface for rendering the bottom sheet list selector UI `BottomSheetListSelectorViewController`.
 ///
-protocol BottomSheetListSelectorDataSource {
+protocol BottomSheetListSelectorCommand {
     associatedtype Model: Equatable
     associatedtype Cell: UITableViewCell
 

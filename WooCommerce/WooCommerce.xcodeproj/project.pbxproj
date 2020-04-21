@@ -91,7 +91,7 @@
 		0235595024496853004BE2B8 /* BottomSheetListSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0235594E24496853004BE2B8 /* BottomSheetListSelectorViewController.swift */; };
 		0235595124496853004BE2B8 /* BottomSheetListSelectorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0235594F24496853004BE2B8 /* BottomSheetListSelectorViewController.xib */; };
 		0235595324496A93004BE2B8 /* BottomSheetListSelectorViewProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0235595224496A93004BE2B8 /* BottomSheetListSelectorViewProperties.swift */; };
-		0235595524496B6D004BE2B8 /* BottomSheetListSelectorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0235595424496B6D004BE2B8 /* BottomSheetListSelectorDataSource.swift */; };
+		0235595524496B6D004BE2B8 /* BottomSheetListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0235595424496B6D004BE2B8 /* BottomSheetListSelectorCommand.swift */; };
 		0235595B24496E88004BE2B8 /* BottomSheetListSelectorViewController+DrawerPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0235595A24496E88004BE2B8 /* BottomSheetListSelectorViewController+DrawerPresentable.swift */; };
 		02357B2A23CDB3E300147C2B /* ProductImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02357B2823CDB3E300147C2B /* ProductImageViewController.swift */; };
 		02357B2B23CDB3E300147C2B /* ProductImageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02357B2923CDB3E300147C2B /* ProductImageViewController.xib */; };
@@ -902,7 +902,7 @@
 		0235594E24496853004BE2B8 /* BottomSheetListSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetListSelectorViewController.swift; sourceTree = "<group>"; };
 		0235594F24496853004BE2B8 /* BottomSheetListSelectorViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BottomSheetListSelectorViewController.xib; sourceTree = "<group>"; };
 		0235595224496A93004BE2B8 /* BottomSheetListSelectorViewProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetListSelectorViewProperties.swift; sourceTree = "<group>"; };
-		0235595424496B6D004BE2B8 /* BottomSheetListSelectorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetListSelectorDataSource.swift; sourceTree = "<group>"; };
+		0235595424496B6D004BE2B8 /* BottomSheetListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetListSelectorCommand.swift; sourceTree = "<group>"; };
 		0235595A24496E88004BE2B8 /* BottomSheetListSelectorViewController+DrawerPresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BottomSheetListSelectorViewController+DrawerPresentable.swift"; sourceTree = "<group>"; };
 		02357B2823CDB3E300147C2B /* ProductImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageViewController.swift; sourceTree = "<group>"; };
 		02357B2923CDB3E300147C2B /* ProductImageViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductImageViewController.xib; sourceTree = "<group>"; };
@@ -1803,25 +1803,13 @@
 			path = BottomSheet;
 			sourceTree = "<group>";
 		};
-		0235594D244967A7004BE2B8 /* Core */ = {
-			isa = PBXGroup;
-			children = (
-				0235594324496449004BE2B8 /* BottomSheetAnimationController.swift */,
-				0235594224496449004BE2B8 /* BottomSheetPresentationController.swift */,
-				0235594424496449004BE2B8 /* BottomSheetViewController.swift */,
-				0235594524496449004BE2B8 /* DrawerPresentationController.swift */,
-				0235594124496449004BE2B8 /* GripView.swift */,
-			);
-			path = Core;
-			sourceTree = "<group>";
-		};
 		0235595624496C08004BE2B8 /* ListSelector */ = {
 			isa = PBXGroup;
 			children = (
 				0235594E24496853004BE2B8 /* BottomSheetListSelectorViewController.swift */,
 				0235594F24496853004BE2B8 /* BottomSheetListSelectorViewController.xib */,
 				0235595224496A93004BE2B8 /* BottomSheetListSelectorViewProperties.swift */,
-				0235595424496B6D004BE2B8 /* BottomSheetListSelectorDataSource.swift */,
+				0235595424496B6D004BE2B8 /* BottomSheetListSelectorCommand.swift */,
 				0235595A24496E88004BE2B8 /* BottomSheetListSelectorViewController+DrawerPresentable.swift */,
 				0212275B244972660042161F /* BottomSheetListSelectorSectionHeaderView.swift */,
 				0212275D2449728A0042161F /* BottomSheetListSelectorSectionHeaderView.xib */,
@@ -4380,7 +4368,7 @@
 				451A04EA2386D28300E368C9 /* ProductImagesViewModel.swift in Sources */,
 				D843D5D92248EE91001BFA55 /* ManualTrackingViewModel.swift in Sources */,
 				B57B678A2107546E00AF8905 /* Address+Woo.swift in Sources */,
-				0235595524496B6D004BE2B8 /* BottomSheetListSelectorDataSource.swift in Sources */,
+				0235595524496B6D004BE2B8 /* BottomSheetListSelectorCommand.swift in Sources */,
 				0235594624496449004BE2B8 /* GripView.swift in Sources */,
 				747AA0892107CEC60047A89B /* AnalyticsProvider.swift in Sources */,
 				B5DBF3CB20E149CC00B53AED /* AuthenticatedState.swift in Sources */,

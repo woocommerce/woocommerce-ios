@@ -2,7 +2,7 @@ import UIKit
 
 /// Displays a list (implemented by table view) for the user to select a generic model from a bottom sheet.
 ///
-final class BottomSheetListSelectorViewController<DataSource: BottomSheetListSelectorDataSource, Model, Cell>:
+final class BottomSheetListSelectorViewController<DataSource: BottomSheetListSelectorCommand, Model, Cell>:
 UIViewController, UITableViewDataSource, UITableViewDelegate where DataSource.Model == Model, DataSource.Cell == Cell {
     private let viewProperties: BottomSheetListSelectorViewProperties
     private var dataSource: DataSource

@@ -438,9 +438,9 @@ private extension ProductsViewController {
         let title = NSLocalizedString("Sort by",
                                       comment: "Message title for sort products action bottom sheet")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
-        let dataSource = ProductsSortOrderBottomSheetListSelectorDataSource(selected: sortOrder)
+        let command = ProductsSortOrderBottomSheetListSelectorCommand(selected: sortOrder)
         let sortOrderListViewController = BottomSheetListSelectorViewController(viewProperties: viewProperties,
-                                                                                dataSource: dataSource) { [weak self] selectedSortOrder in
+                                                                                command: command) { [weak self] selectedSortOrder in
                                                                                     defer {
                                                                                         self?.dismiss(animated: true, completion: nil)
                                                                                     }

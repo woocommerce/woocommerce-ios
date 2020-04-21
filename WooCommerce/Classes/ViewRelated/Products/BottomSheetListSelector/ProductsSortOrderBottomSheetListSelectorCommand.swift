@@ -1,8 +1,8 @@
 import Yosemite
 
-/// `BottomSheetListSelectorDataSource` for selecting a sort order for the Products tab.
+/// `BottomSheetListSelectorCommand` for selecting a sort order for the Products tab.
 ///
-struct ProductsSortOrderBottomSheetListSelectorDataSource: BottomSheetListSelectorCommand {
+struct ProductsSortOrderBottomSheetListSelectorCommand: BottomSheetListSelectorCommand {
     typealias Model = ProductsSortOrder
     typealias Cell = BasicTableViewCell
 

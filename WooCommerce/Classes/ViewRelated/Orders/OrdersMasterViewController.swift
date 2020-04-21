@@ -92,7 +92,7 @@ final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
 
         let allOrdersVC = OrdersViewController(
             title: NSLocalizedString("All Orders", comment: "Title for the second page in the Orders tab."),
-            statusFilter: nil
+            viewModel: OrdersViewModel(statusFilter: nil, includesFutureOrders: false)
         )
         allOrdersVC.delegate = self
 

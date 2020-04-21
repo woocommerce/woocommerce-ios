@@ -28,21 +28,31 @@ final class OrdersViewModel {
     ///
     let statusFilter: OrderStatus?
 
+    /// If true, orders created after today's day will be included in the result.
+    ///
+    /// This will generally only be false for the All Orders tab. All other screens should show orders in the future.
+    ///
+    /// Defaults to `true`.
+    ///
+    private let includesFutureOrders: Bool
+
     /// Should be bound to the UITableView to auto-update the list of Orders.
     ///
     private lazy var resultsController: ResultsController<StorageOrder> = {
         let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
 
+        let sectionNameKeyPath = #selector(StorageOrder.normalizedAgeAsString)
         let resultsController = ResultsController<StorageOrder>(storageManager: storageManager,
-                                                                sectionNameKeyPath: "normalizedAgeAsString",
+                                                                sectionNameKeyPath: "\(sectionNameKeyPath)",
                                                                 sortedBy: [descriptor])
         resultsController.predicate = {
             let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
             let excludeNonMatchingStatus = statusFilter.map { NSPredicate(format: "statusKey = %@", $0.slug) }
 
             var predicates = [ excludeSearchCache, excludeNonMatchingStatus ].compactMap { $0 }
-            if let tomorrow = Date.tomorrow() {
-                let dateSubPredicate = NSPredicate(format: "dateCreated < %@", tomorrow as NSDate)
+            if !includesFutureOrders, let nextMidnight = Date().nextMidnight() {
+                // Exclude orders on and after midnight of today's date
+                let dateSubPredicate = NSPredicate(format: "dateCreated < %@", nextMidnight as NSDate)
                 predicates.append(dateSubPredicate)
             }
 
@@ -64,9 +74,12 @@ final class OrdersViewModel {
         statusFilter != nil
     }
 
-    init(storageManager: StorageManagerType = ServiceLocator.storageManager, statusFilter: OrderStatus?) {
+    init(storageManager: StorageManagerType = ServiceLocator.storageManager,
+         statusFilter: OrderStatus?,
+         includesFutureOrders: Bool = true) {
         self.storageManager = storageManager
         self.statusFilter = statusFilter
+        self.includesFutureOrders = includesFutureOrders
     }
 
     /// Start fetching DB results and forward new changes to the given `tableView`.
@@ -148,6 +161,7 @@ final class OrdersViewModel {
                                completionHandler: @escaping (Error?) -> Void) -> OrderAction {
 
         let statusKey = statusFilter?.slug
+        let before = includesFutureOrders ? nil : Date().nextMidnight()
 
         if pageNumber == Defaults.pageFirstIndex {
             let deleteAllBeforeSaving = reason == SyncReason.pullToRefresh
@@ -155,6 +169,7 @@ final class OrdersViewModel {
             return OrderAction.fetchFilteredAndAllOrders(
                 siteID: siteID,
                 statusKey: statusKey,
+                before: before,
                 deleteAllBeforeSaving: deleteAllBeforeSaving,
                 pageSize: pageSize,
                 onCompletion: completionHandler
@@ -164,6 +179,7 @@ final class OrdersViewModel {
         return OrderAction.synchronizeOrders(
             siteID: siteID,
             statusKey: statusKey,
+            before: before,
             pageNumber: pageNumber,
             pageSize: pageSize,
             onCompletion: completionHandler

@@ -1,6 +1,6 @@
 4.2
 -----
-- Products: now the keyboard pop up automatically when a view with only one text field is opened.
+- Products: now the keyboard pop up automatically in Edit Description (M1), in Edit Short Description (M2), Edit Slug (M2), Edit Purchase Note (M2)
 
 
 4.1

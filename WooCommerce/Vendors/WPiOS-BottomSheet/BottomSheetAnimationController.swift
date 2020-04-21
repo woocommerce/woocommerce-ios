@@ -1,5 +1,7 @@
 import UIKit
 
+// Source: https://github.com/wordpress-mobile/WordPress-iOS/tree/develop/WordPress/Classes/ViewRelated/System/Action%20Sheet
+
 final class BottomSheetAnimationController: NSObject, UIViewControllerAnimatedTransitioning {
     enum TransitionType {
         case presenting

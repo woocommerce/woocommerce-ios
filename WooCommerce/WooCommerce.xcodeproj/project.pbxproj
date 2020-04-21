@@ -1642,6 +1642,26 @@
 			path = "Edit Product";
 			sourceTree = "<group>";
 		};
+		020C7947244E90D80098CEB2 /* Vendors */ = {
+			isa = PBXGroup;
+			children = (
+				020C7948244E91150098CEB2 /* WPiOS-BottomSheet */,
+			);
+			path = Vendors;
+			sourceTree = "<group>";
+		};
+		020C7948244E91150098CEB2 /* WPiOS-BottomSheet */ = {
+			isa = PBXGroup;
+			children = (
+				0235594324496449004BE2B8 /* BottomSheetAnimationController.swift */,
+				0235594224496449004BE2B8 /* BottomSheetPresentationController.swift */,
+				0235594424496449004BE2B8 /* BottomSheetViewController.swift */,
+				0235594524496449004BE2B8 /* DrawerPresentationController.swift */,
+				0235594124496449004BE2B8 /* GripView.swift */,
+			);
+			path = "WPiOS-BottomSheet";
+			sourceTree = "<group>";
+		};
 		020DD48B2322A5F9005822B1 /* View Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -1747,22 +1767,9 @@
 		0235594024496414004BE2B8 /* BottomSheet */ = {
 			isa = PBXGroup;
 			children = (
-				0235594D244967A7004BE2B8 /* Core */,
 				0235594B244965E6004BE2B8 /* BottomSheetViewController+Constants.swift */,
 			);
 			path = BottomSheet;
-			sourceTree = "<group>";
-		};
-		0235594D244967A7004BE2B8 /* Core */ = {
-			isa = PBXGroup;
-			children = (
-				0235594324496449004BE2B8 /* BottomSheetAnimationController.swift */,
-				0235594224496449004BE2B8 /* BottomSheetPresentationController.swift */,
-				0235594424496449004BE2B8 /* BottomSheetViewController.swift */,
-				0235594524496449004BE2B8 /* DrawerPresentationController.swift */,
-				0235594124496449004BE2B8 /* GripView.swift */,
-			);
-			path = Core;
 			sourceTree = "<group>";
 		};
 		02404EE52315272C00FF1170 /* Top Banner */ = {
@@ -2541,6 +2548,7 @@
 				B5A8F8A620B84CF600D211DE /* DerivedSources */,
 				B56DB3F12049C0B800D4AA8E /* Classes */,
 				B56DB3F22049C0C000D4AA8E /* Resources */,
+				020C7947244E90D80098CEB2 /* Vendors */,
 				B56DB3E02049BFAA00D4AA8E /* WooCommerceTests */,
 				F997170323DBB97500592D8E /* WooCommerceScreenshots */,
 				CCDC49CB23FFFFF4003166BA /* WooCommerceUITests */,

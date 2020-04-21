@@ -1,5 +1,7 @@
 import UIKit
 
+// Source: https://github.com/wordpress-mobile/WordPress-iOS/tree/develop/WordPress/Classes/ViewRelated/System/Action%20Sheet
+
 // A UIView with a centered "grip" view (like in Apple Maps)
 class GripButton: UIButton {
 

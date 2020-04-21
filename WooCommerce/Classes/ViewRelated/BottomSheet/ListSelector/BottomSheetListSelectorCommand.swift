@@ -15,9 +15,6 @@ protocol BottomSheetListSelectorCommand {
     /// Called when a different model is selected.
     mutating func handleSelectedChange(selected: Model)
 
-    /// Configures the selected UI.
-    func isSelected(model: Model) -> Bool
-
     /// Configures the cell with the given model.
     func configureCell(cell: Cell, model: Model)
 }

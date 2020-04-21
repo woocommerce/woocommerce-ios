@@ -73,6 +73,7 @@ final class ProductInventorySettingsViewController: UIViewController {
         configureMainView()
         configureTableView()
         reloadSections()
+        handleSwipeBackGesture()
     }
 }
 
@@ -191,6 +192,10 @@ extension ProductInventorySettingsViewController {
             return false
         }
         return true
+    }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        return shouldPopOnBackButton()
     }
 
     @objc private func completeUpdating() {

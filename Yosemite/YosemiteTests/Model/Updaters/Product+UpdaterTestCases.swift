@@ -121,15 +121,18 @@ final class Product_UpdaterTestCases: XCTestCase {
         let featured = true
         let catalogVisibility = "search"
         let slug = "this-is-a-test"
+        let purchaseNote = "This is a purchase note"
         let productSettings = ProductSettings(status: .pending,
                                                                 featured: featured,
                                                                 catalogVisibility: .search,
-                                                                slug: slug)
+                                                                slug: slug,
+                                                                purchaseNote: purchaseNote)
         let updatedProduct = product.productSettingsUpdated(settings: productSettings)
         XCTAssertEqual(updatedProduct.statusKey, newStatus)
         XCTAssertEqual(updatedProduct.featured, featured)
         XCTAssertEqual(updatedProduct.catalogVisibilityKey, catalogVisibility)
         XCTAssertEqual(updatedProduct.slug, slug)
+        XCTAssertEqual(updatedProduct.purchaseNote, purchaseNote)
     }
 }
 

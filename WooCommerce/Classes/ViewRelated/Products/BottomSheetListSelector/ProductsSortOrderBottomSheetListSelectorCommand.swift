@@ -19,7 +19,7 @@ private extension ProductsSortOrder {
 
 /// `BottomSheetListSelectorCommand` for selecting a sort order for the Products tab.
 ///
-struct ProductsSortOrderBottomSheetListSelectorCommand: BottomSheetListSelectorCommand {
+final class ProductsSortOrderBottomSheetListSelectorCommand: BottomSheetListSelectorCommand {
     typealias Model = ProductsSortOrder
     typealias Cell = BasicTableViewCell
 
@@ -42,7 +42,7 @@ struct ProductsSortOrderBottomSheetListSelectorCommand: BottomSheetListSelectorC
         cell.accessoryType = isSelected(model: model) ? .checkmark: .none
     }
 
-    mutating func handleSelectedChange(selected: ProductsSortOrder) {
+    func handleSelectedChange(selected: ProductsSortOrder) {
         self.selected = selected
     }
 

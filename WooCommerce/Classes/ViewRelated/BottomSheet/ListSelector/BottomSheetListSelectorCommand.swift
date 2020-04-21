@@ -13,7 +13,7 @@ protocol BottomSheetListSelectorCommand {
     var selected: Model? { get }
 
     /// Called when a different model is selected.
-    mutating func handleSelectedChange(selected: Model)
+    func handleSelectedChange(selected: Model)
 
     /// Configures the cell with the given model.
     func configureCell(cell: Cell, model: Model)

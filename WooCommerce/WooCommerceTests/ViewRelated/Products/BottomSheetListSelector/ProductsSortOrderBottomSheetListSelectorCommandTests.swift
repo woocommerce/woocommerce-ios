@@ -2,17 +2,17 @@ import XCTest
 @testable import WooCommerce
 @testable import Yosemite
 
-final class ProductsSortOrderBottomSheetListSelectorDataSourceTests: XCTestCase {
+final class ProductsSortOrderBottomSheetListSelectorCommandTests: XCTestCase {
     func testInitialSelectedValue() {
         let selected = ProductsSortOrder.nameAscending
-        let dataSource = ProductsSortOrderBottomSheetListSelectorDataSource(selected: selected)
+        let dataSource = ProductsSortOrderBottomSheetListSelectorCommand(selected: selected)
         XCTAssertEqual(dataSource.selected, selected)
     }
 
     func testSelectedValueAfterChange() {
         // Arrange
         let selected = ProductsSortOrder.nameAscending
-        var dataSource = ProductsSortOrderBottomSheetListSelectorDataSource(selected: selected)
+        var dataSource = ProductsSortOrderBottomSheetListSelectorCommand(selected: selected)
 
         // Action
         let newSelected = ProductsSortOrder.dateDescending
@@ -26,7 +26,7 @@ final class ProductsSortOrderBottomSheetListSelectorDataSourceTests: XCTestCase 
         // Arrange
         let selected = ProductsSortOrder.nameAscending
         let notSelected: [ProductsSortOrder] = [.nameDescending, .dateAscending, .dateDescending]
-        var dataSource = ProductsSortOrderBottomSheetListSelectorDataSource(selected: selected)
+        var dataSource = ProductsSortOrderBottomSheetListSelectorCommand(selected: selected)
         XCTAssertTrue(dataSource.isSelected(model: selected))
         notSelected.forEach { notSelectedSortOrder in
             XCTAssertFalse(dataSource.isSelected(model: notSelectedSortOrder))
@@ -42,23 +42,5 @@ final class ProductsSortOrderBottomSheetListSelectorDataSourceTests: XCTestCase 
         newNotSelected.forEach { notSelectedSortOrder in
             XCTAssertFalse(dataSource.isSelected(model: notSelectedSortOrder))
         }
-    }
-
-    func testCellConfiguration() {
-        // Arrange
-        let selected = ProductsSortOrder.nameAscending
-        let dataSource = ProductsSortOrderBottomSheetListSelectorDataSource(selected: selected)
-
-        let nib = Bundle.main.loadNibNamed(BasicTableViewCell.classNameWithoutNamespaces, owner: self, options: nil)
-        guard let cell = nib?.first as? BasicTableViewCell else {
-            XCTFail()
-            return
-        }
-
-        // Action
-        dataSource.configureCell(cell: cell, model: selected)
-
-        // Assert
-        XCTAssertEqual(cell.textLabel?.text, selected.actionSheetTitle)
     }
 }

@@ -4,7 +4,7 @@ import UIKit
 ///
 final class BottomSheetListSelectorViewController<Command: BottomSheetListSelectorCommand, Model, Cell>:
 UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model == Model, Command.Cell == Cell {
-    private let viewProperties: BottomSheetListSelectorViewController.ViewProperties
+    private let viewProperties: BottomSheetListSelectorViewProperties
     private var command: Command
     private let onDismiss: (_ selected: Model?) -> Void
 
@@ -23,7 +23,7 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
         return tableView.contentSize
     }
 
-    init(viewProperties: BottomSheetListSelectorViewController.ViewProperties,
+    init(viewProperties: BottomSheetListSelectorViewProperties,
          command: Command,
          onDismiss: @escaping (_ selected: Model?) -> Void) {
         self.viewProperties = viewProperties

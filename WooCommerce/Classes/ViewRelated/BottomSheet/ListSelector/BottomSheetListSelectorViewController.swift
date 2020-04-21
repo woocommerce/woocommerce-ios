@@ -12,7 +12,16 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
 
     private let estimatedSectionHeight = CGFloat(44)
 
-    @IBOutlet private(set) weak var tableView: UITableView!
+    @IBOutlet private weak var tableView: UITableView!
+
+    /// Used for calculating the full content height in `DrawerPresentable` implementation.
+    var contentSize: CGSize {
+        guard let tableView = tableView else {
+            return .zero
+        }
+        tableView.layoutIfNeeded()
+        return tableView.contentSize
+    }
 
     init(viewProperties: BottomSheetListSelectorViewController.ViewProperties,
          command: Command,

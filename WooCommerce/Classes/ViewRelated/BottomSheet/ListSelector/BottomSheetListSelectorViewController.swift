@@ -89,14 +89,6 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
         header.configure(text: viewProperties.title)
         return header
     }
-
-    func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        return estimatedSectionHeight
-    }
-
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return UITableView.automaticDimension
-    }
 }
 
 // MARK: - View Configuration
@@ -112,6 +104,9 @@ private extension BottomSheetListSelectorViewController {
         tableView.dataSource = self
 
         tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedSectionHeaderHeight = estimatedSectionHeight
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
+
         tableView.backgroundColor = .listForeground
 
         registerTableViewCells()

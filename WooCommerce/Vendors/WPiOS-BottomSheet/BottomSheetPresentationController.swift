@@ -1,6 +1,8 @@
 import WordPressUI
 import UIKit
 
+// Source: https://github.com/wordpress-mobile/WordPress-iOS/tree/develop/WordPress/Classes/ViewRelated/System/Action%20Sheet
+
 /// A Presentation Controller which dims the background, allows the user to dismiss by tapping outside, and allows the user to swipit down
 class BottomSheetPresentationController: FancyAlertPresentationController {
 

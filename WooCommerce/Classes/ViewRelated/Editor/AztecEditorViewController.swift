@@ -131,6 +131,7 @@ final class AztecEditorViewController: UIViewController, Editor {
         content = getHTML()
 
         refreshPlaceholderVisibility()
+        handleSwipeBackGesture()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -256,6 +257,10 @@ extension AztecEditorViewController {
             return false
         }
         return true
+    }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        return shouldPopOnBackButton()
     }
 
     private func presentBackNavigationActionSheet() {

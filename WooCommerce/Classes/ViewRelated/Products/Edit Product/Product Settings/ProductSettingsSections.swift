@@ -32,7 +32,7 @@ enum ProductSettingsSections {
         let rows: [ProductSettingsRowMediator]
 
         init(_ settings: ProductSettings) {
-            rows = [ProductSettingsRows.Slug(settings)]
+            rows = [ProductSettingsRows.Slug(settings), ProductSettingsRows.PurchaseNote(settings)]
         }
     }
 }

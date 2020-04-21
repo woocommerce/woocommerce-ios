@@ -74,6 +74,13 @@ extension ProductCategory: Comparable {
     }
 }
 
+// MARK: - Constants
+//
+public extension ProductCategory {
+    /// Value the API sends on the `parentID` field when a category does not have a parent.
+    static let noParentID: Int64 = 0
+}
+
 // MARK: - Decoding Errors
 //
 enum ProductCategoryDecodingError: Error {

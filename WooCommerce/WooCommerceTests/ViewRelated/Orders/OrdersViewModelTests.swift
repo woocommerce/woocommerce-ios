@@ -35,6 +35,8 @@ final class OrdersViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    // MARK: - Synchronization Spec
+
     // Test that when pulling to refresh on a filtered list (e.g. Processing tab), the action
     // returned will be for:
     //
@@ -188,6 +190,8 @@ final class OrdersViewModelTests: XCTestCase {
         XCTAssertEqual(pageSize, self.pageSize)
     }
 
+    // MARK: - Future Orders
+
     func testGivenAFilterItLoadsTheOrdersMatchingThatFilterFromTheDB() {
         // Arrange
         let viewModel = OrdersViewModel(storageManager: storageManager,
@@ -320,6 +324,47 @@ final class OrdersViewModelTests: XCTestCase {
         let upcomingSection = viewModel.sectionInfo(at: 0)
         XCTAssertEqual(Age(rawValue: upcomingSection.name), .upcoming)
         XCTAssertEqual(upcomingSection.numberOfObjects, expectedOrders.future.count)
+    }
+
+    // MARK: - App Activation
+
+    func testItRequestsAResynchronizationWhenTheAppIsActivated() {
+        // Arrange
+        let notificationCenter = NotificationCenter()
+        let viewModel = OrdersViewModel(notificationCenter: notificationCenter, statusFilter: nil)
+
+        var resynchronizeRequested = false
+        viewModel.onShouldResynchronizeAfterAppActivation = {
+            resynchronizeRequested = true
+        }
+
+        viewModel.activateAndForwardUpdates(to: UITableView())
+
+        // Act
+        notificationCenter.post(name: UIApplication.willResignActiveNotification, object: nil)
+        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+
+        // Assert
+        XCTAssertTrue(resynchronizeRequested)
+    }
+
+    func testGivenNoPreviousDeactivationItDoesNotRequestAResynchronizationWhenTheAppIsActivated() {
+        // Arrange
+        let notificationCenter = NotificationCenter()
+        let viewModel = OrdersViewModel(notificationCenter: notificationCenter, statusFilter: nil)
+
+        var resynchronizeRequested = false
+        viewModel.onShouldResynchronizeAfterAppActivation = {
+            resynchronizeRequested = true
+        }
+
+        viewModel.activateAndForwardUpdates(to: UITableView())
+
+        // Act
+        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+
+        // Assert
+        XCTAssertFalse(resynchronizeRequested)
     }
 }
 

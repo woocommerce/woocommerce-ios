@@ -1,7 +1,3 @@
-Uma breve lista de alterações;
-
-- O rótulo de status do pedido na Lista de pedidos não é mais cortado; ele exibe todas as informações.
-- Correção do bug na taxa de proporção que esticava o logotipo do WooCommerce na tela de início.
-- Agora em vez de “Fornecedora” você verá “Transportadora” no app.
-
-Fiquem seguros e lavem suas mãos!
+* Estamos felizes em apresentar a guia Produtos!
+* Agora os usuários têm recursos de edição limitados para produtos simples, e tem muito mais a caminho.
+* Fizemos uma correção para que, sempre que você recarregar a guia Processamento, ela mostre seus pedidos atualizados.

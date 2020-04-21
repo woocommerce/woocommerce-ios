@@ -1,7 +1,3 @@
-A short list of changes this time around:
-
-- The order status label in the Order List no longer gets cut off, so you can actually see all the information.
-- If you ever wondered why the Woo logo on the launch screen looked a little stretched out, its because the aspect ratio was wonky — that’s fixed now.
-- For clarity, you’ll now see “Shipping Carrier” throughout the app instead of “Shipping Provider.”
-
-Stay safe and wash your hands, everyone!
+* We’re excited to introduce a Products tab!
+* Users also now have limited editing capabilities for Simple Products, with more to come.
+* We’ve made a fix so that, whenever you refresh the Processing tab, it will show your up-to-date orders.

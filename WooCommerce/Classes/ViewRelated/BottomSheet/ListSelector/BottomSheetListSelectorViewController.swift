@@ -122,10 +122,7 @@ private extension BottomSheetListSelectorViewController {
     }
 
     func registerTableViewHeaderFooters() {
-        let headersAndFooters = [BottomSheetListSelectorSectionHeaderView.self]
-
-        for kind in headersAndFooters {
-            tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
-        }
+        let type = BottomSheetListSelectorSectionHeaderView.self
+        tableView.register(type.loadNib(), forHeaderFooterViewReuseIdentifier: type.reuseIdentifier)
     }
 }

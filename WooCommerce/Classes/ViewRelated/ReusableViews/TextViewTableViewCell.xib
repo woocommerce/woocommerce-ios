@@ -1,54 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" rowHeight="182" id="KGk-i7-Jjw" customClass="TextViewTableViewCell" customModule="WooCommerce" customModuleProvider="target">
+        <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" rowHeight="174" id="KGk-i7-Jjw" customClass="TextViewTableViewCell" customModule="WooCommerce" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="320" height="174"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="173.5"/>
+                <rect key="frame" x="0.0" y="0.0" width="320" height="174"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="Ath-1M-eR6">
-                        <rect key="frame" x="56" y="13.5" width="248" height="145"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <stackView opaque="NO" contentMode="scaleToFill" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="8gO-gt-5sc">
+                        <rect key="frame" x="15" y="13" width="290" height="146"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pmR-Dp-2I7">
+                                <rect key="frame" x="0.0" y="0.0" width="24" height="146"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WYv-eb-Aor">
+                                        <rect key="frame" x="0.0" y="7" width="24" height="24"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="24" id="Cf8-HO-VjA"/>
+                                            <constraint firstAttribute="width" constant="24" id="jl5-OT-sho"/>
+                                        </constraints>
+                                        <inset key="imageEdgeInsets" minX="4" minY="4" maxX="4" maxY="4"/>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="WYv-eb-Aor" firstAttribute="top" secondItem="pmR-Dp-2I7" secondAttribute="top" constant="7" id="JR0-oy-tCj"/>
+                                    <constraint firstItem="WYv-eb-Aor" firstAttribute="leading" secondItem="pmR-Dp-2I7" secondAttribute="leading" id="QmP-h5-VQV"/>
+                                    <constraint firstAttribute="trailing" secondItem="WYv-eb-Aor" secondAttribute="trailing" id="zzY-V2-A9p"/>
+                                </constraints>
+                            </view>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="Ath-1M-eR6" customClass="EnhancedTextView" customModule="WooCommerce" customModuleProvider="target">
+                                <rect key="frame" x="40" y="0.0" width="250" height="146"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
                         <constraints>
-                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="145" id="0oa-fJ-Z0a"/>
+                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="146" id="eNh-b6-Kat"/>
                         </constraints>
-                        <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                    </textView>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WYv-eb-Aor">
-                        <rect key="frame" x="16" y="16.5" width="24" height="24"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="24" id="Cf8-HO-VjA"/>
-                            <constraint firstAttribute="width" constant="24" id="jl5-OT-sho"/>
-                        </constraints>
-                        <inset key="imageEdgeInsets" minX="4" minY="4" maxX="4" maxY="4"/>
-                    </button>
+                    </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="Ath-1M-eR6" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="2.5" id="4vV-bo-cyA"/>
-                    <constraint firstItem="WYv-eb-Aor" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="7wf-vV-EAH"/>
-                    <constraint firstItem="Ath-1M-eR6" firstAttribute="leading" secondItem="WYv-eb-Aor" secondAttribute="trailing" constant="16" id="B4Q-vS-iOG"/>
-                    <constraint firstItem="WYv-eb-Aor" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="5.5" id="eNQ-BL-NSi"/>
-                    <constraint firstItem="Ath-1M-eR6" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="uAF-E1-L8T"/>
-                    <constraint firstAttribute="bottomMargin" secondItem="Ath-1M-eR6" secondAttribute="bottom" constant="4.5" id="yYC-k4-ejo"/>
+                    <constraint firstAttribute="bottom" secondItem="8gO-gt-5sc" secondAttribute="bottom" constant="15" id="1ga-S8-Ec3"/>
+                    <constraint firstAttribute="trailing" secondItem="8gO-gt-5sc" secondAttribute="trailing" constant="15" id="Gwo-v6-d3E"/>
+                    <constraint firstItem="8gO-gt-5sc" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="Vx3-3a-3Fo"/>
+                    <constraint firstItem="8gO-gt-5sc" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="13" id="yDM-uQ-kCz"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="noteIconButton" destination="WYv-eb-Aor" id="xbs-pE-r7t"/>
+                <outlet property="noteIconView" destination="pmR-Dp-2I7" id="U2C-nH-hCb"/>
                 <outlet property="noteTextView" destination="Ath-1M-eR6" id="P9H-JP-Ibj"/>
             </connections>
             <point key="canvasLocation" x="34" y="141"/>

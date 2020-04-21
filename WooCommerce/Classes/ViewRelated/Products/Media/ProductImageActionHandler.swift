@@ -9,6 +9,7 @@ final class ProductImageActionHandler {
     typealias OnAssetUpload = (PHAsset, ProductImage) -> Void
 
     private let siteID: Int64
+    private let productID: Int64
 
     /// The queue where internal states like `allStatuses` and `observations` are updated on to maintain thread safety.
     private let queue: DispatchQueue
@@ -41,6 +42,7 @@ final class ProductImageActionHandler {
     ///   - queue: the queue where the update callbacks are called on. Default to be the main queue.
     init(siteID: Int64, product: Product, queue: DispatchQueue = .main) {
         self.siteID = siteID
+        self.productID = product.productID
         self.queue = queue
         self.allStatuses = (productImageStatuses: product.imageStatuses, error: nil)
     }
@@ -170,11 +172,11 @@ final class ProductImageActionHandler {
 
     private func uploadMediaAssetToSiteMediaLibrary(asset: PHAsset, onCompletion: @escaping (_ uploadedMedia: Media?, _ error: Error?) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let siteID = self?.siteID else {
+            guard let siteID = self?.siteID, let productID = self?.productID else {
                 return
             }
 
-            let action = MediaAction.uploadMedia(siteID: siteID, mediaAsset: asset, onCompletion: onCompletion)
+            let action = MediaAction.uploadMedia(siteID: siteID, productID: productID, mediaAsset: asset, onCompletion: onCompletion)
             ServiceLocator.stores.dispatch(action)
         }
     }

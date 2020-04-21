@@ -26,6 +26,10 @@ final class ProductCategoryListViewModel {
     ///
     private let product: Product
 
+    /// Array of view models to be rendered by the View Controller.
+    ///
+    private(set) var categoryViewModels: [ProductCategoryCellViewModel] = []
+
     /// Closure to be invoked when `synchronizeCategories` state  changes
     ///
     private var onSyncStateChange: ((SyncingState) -> Void)?
@@ -53,24 +57,6 @@ final class ProductCategoryListViewModel {
         self.product = product
     }
 
-    /// Returns the number sections.
-    ///
-    func numberOfSections() -> Int {
-        return resultController.sections.count
-    }
-
-    /// Returns the number of items for a given `section` that should be displayed
-    ///
-    func numberOfRowsInSection(section: Int) -> Int {
-        return resultController.sections[section].numberOfObjects
-    }
-
-    /// Returns a product category for a given `indexPath`
-    ///
-    func item(at indexPath: IndexPath) -> ProductCategory {
-        return resultController.object(at: indexPath)
-    }
-
     /// Load existing categories from storage and fire the synchronize all categories action.
     ///
     func performFetch() {
@@ -94,12 +80,6 @@ final class ProductCategoryListViewModel {
         onSyncStateChange = onStateChanges
         onSyncStateChange?(syncCategoriesState)
     }
-
-    /// Returns `true` if the receiver's product contains the given category. Otherwise returns `false`
-    ///
-    func isCategorySelected(_ category: ProductCategory) -> Bool {
-        return product.categories.contains(category)
-    }
 }
 
 // MARK: - Synchronize Categories
@@ -110,11 +90,14 @@ private extension ProductCategoryListViewModel {
     func synchronizeAllCategories(fromPageNumber: Int = Default.firstPageNumber) {
         self.syncCategoriesState = .syncing
         let action = ProductCategoryAction.synchronizeProductCategories(siteID: product.siteID, fromPageNumber: fromPageNumber) { [weak self] error in
+            // Make sure we always have view models to display
+            self?.updateViewModelsArray()
+
             if let error = error {
                 self?.handleSychronizeAllCategoriesError(error)
-                return
+            } else {
+                self?.syncCategoriesState = .synced
             }
-            self?.syncCategoriesState = .synced
         }
         storesManager.dispatch(action)
     }
@@ -128,6 +111,13 @@ private extension ProductCategoryListViewModel {
             syncCategoriesState = .failed(retryToken)
             DDLogError("⛔️ Error fetching product categories: \(rawError.localizedDescription)")
         }
+    }
+
+    /// Updates  `categoryViewModels` from  the resultController's fetched objects.
+    ///
+    func updateViewModelsArray() {
+        let fetchedCategories = resultController.fetchedObjects
+        categoryViewModels = CellViewModelBuilder.viewModels(from: fetchedCategories, selectedCategories: product.categories)
     }
 }
 

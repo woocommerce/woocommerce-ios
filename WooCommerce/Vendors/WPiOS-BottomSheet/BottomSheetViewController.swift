@@ -1,5 +1,7 @@
 import UIKit
 
+// Source: https://github.com/wordpress-mobile/WordPress-iOS/tree/develop/WordPress/Classes/ViewRelated/System/Action%20Sheet
+
 class BottomSheetViewController: UIViewController {
     enum Constants {
         static let gripHeight: CGFloat = 5

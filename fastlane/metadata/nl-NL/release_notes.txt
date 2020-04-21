@@ -1,7 +1,3 @@
-Een korte lijst met wijzigingen deze keer:
-
-- Het bestelstatus-label in de Bestellijst wordt niet meer ingekort, zodat je alle informatie kunt zien.
-- Als je je ooit hebt afgevraagd waarom het Woo-logo op het startscherm er gestrekt uitzag, dan kwam dat door een wazige beeldverhouding. Dat probleem is nu opgelost.
-- Voor de duidelijkheid zie je nu 'Bezorgservice' in de app in plaats van 'Verzendprovider'.
-
-Blijf veilig en was je handen allemaal!
+* We kondigen met trots een Producten-tabblad aan!
+* Gebruikers kunnen nu ook beperkte bewerkingsfuncties voor eenvoudige producten gebruiken en later zullen er meer volgen.
+* We hebben een fix doorgevoerd zodat, wanneer je het tabblad Verwerking vernieuwt, de bijgewerkte bestellingen worden weergegeven.

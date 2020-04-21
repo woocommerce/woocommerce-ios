@@ -1,7 +1,3 @@
-Petite liste des changements qui se produisent pour l'instant :
-
-- L'étiquette d'état de la commande dans la liste des commandes n'est plus tronquée. Vous pouvez à présent voir toutes les informations.
-- Si vous vous êtes un jour demandé pourquoi le logo Woo sur l'écran de lancement semblait légèrement étiré, c'est parce que ses proportions étaient incorrectes. Le problème a été résolu.
-- Pour plus de clarté, l'ancienne dénomination « Shipping Provider » dans l'interface de l'application en anglais a été remplacée par « Shipping Carrier ».
-
-Prenez soin de vous et lavez-vous les mains !
+* Nous sommes heureux de vous présenter l’onglet Produits !
+* Les utilisateurs ont aussi pour l’instant des fonctions d’édition limitées pour les produits simples. Des fonctions supplémentaires seront bientôt ajoutées.
+* Nous avons apporté une correction afin que vos commandes à jour s’affichent dans l’onglet Traitement lorsque celui-ci est actualisé.

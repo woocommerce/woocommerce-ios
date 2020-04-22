@@ -47,11 +47,6 @@ private extension ArrayIndexPathTests {
         case wordpress
         case simplenote
         case tumblr
-
-
-        var reuseIdentifier: String {
-            return "The same identifier for every row"
-        }
     }
 
     /// Table Sections

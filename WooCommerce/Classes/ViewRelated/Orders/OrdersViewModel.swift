@@ -28,9 +28,6 @@ final class OrdersViewModel {
 
     /// The block called if self requests a resynchronization of the first page.
     ///
-    /// In the future, if the `SyncCoordinator` should be managed by this `ViewModel`, then we
-    /// wouldn't need this block at all.
-    ///
     var onShouldResynchronizeAfterAppActivation: (() -> ())?
 
     /// OrderStatus that must be matched by retrieved orders.

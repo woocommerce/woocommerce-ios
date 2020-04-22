@@ -1,5 +1,3 @@
-Pour offrir une image plus complète de vos revenus, les statistiques du tableau de bord incluent désormais également les revenus négatifs (par exemple : remboursements).
-
-- Nous avons remanié la liste des commandes afin de mettre en évidence les vues Traitement et Toutes les commandes. Vous souhaitez filtrer les commandes par un statut différent ? Pas de soucis : vous trouverez d’autres options dans la vue Recherche.
-- Les analyses sont très importantes pour les boutiques en ligne, mais il arrive qu’elles ne se chargent pas sur certaines configurations de WooCommerce. Nous avons réglé ce problème.
-Levez la main si vous souhaitez éditer des produits en nomade ! Essayez les options d’édition disponibles sur vos produits simples (mais vous devez les activer au préalable : allez dans Paramètres > Fonctions expérimentales > Produits)
+* Nous sommes heureux de vous présenter l’onglet Produits !
+* Les utilisateurs ont aussi pour l’instant des fonctions d’édition limitées pour les produits simples. Des fonctions supplémentaires seront bientôt ajoutées.
+* Nous avons apporté une correction afin que vos commandes à jour s’affichent dans l’onglet Traitement lorsque celui-ci est actualisé.

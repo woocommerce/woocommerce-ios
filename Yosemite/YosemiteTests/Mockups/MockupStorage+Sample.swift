@@ -49,4 +49,14 @@ extension MockupStorageManager {
 
         return newProductShippingClass
     }
+
+    /// Inserts a new (Sample) ProductCategory into the specified context.
+    ///
+    @discardableResult
+    func insertSampleProductCategory(readOnlyProductCategory: ProductCategory) -> StorageProductCategory {
+        let newProductCategory = viewStorage.insertNewObject(ofType: StorageProductCategory.self)
+        newProductCategory.update(with: readOnlyProductCategory)
+
+        return newProductCategory
+    }
 }

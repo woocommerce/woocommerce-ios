@@ -1,5 +1,3 @@
-Para ofrecerte una visión más completa de tus ganancias, las estadísticas del escritorio ahora también incluyen ingresos negativos (por ejemplo: reembolsos).
-
-- Hemos rediseñado la lista de pedidos para dar más visibilidad a las vistas Todos los pedidos y Procesando. ¿Quieres filtrar pedidos por un estado distinto? No te preocupes: encontrarás otras opciones en la vista Búsqueda.
-- Las reseñas son muy importantes para las tiendas en línea, pero a veces no se cargan en algunas configuraciones de WooCommerce. Ya lo hemos solucionado.
-- Levanta la mano si te gustaría editar productos en cualquier momento y lugar. Prueba las opciones de edición disponibles en tus sencillos productos, pero primero debes activarlas. Para ello, accede a Configuración > Funciones experimentales > Productos.
+* Te presentamos la nueva pestaña Productos.
+* Ahora, los usuarios también tienen funciones de edición limitadas en productos sencillos, y se irán añadiendo más.
+* Hemos aplicado una corrección para que, cada vez que actualices la pestaña Procesando, se muestren tus pedidos actualizados.

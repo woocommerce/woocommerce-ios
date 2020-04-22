@@ -22,7 +22,7 @@ class OrdersViewController: UIViewController {
 
     weak var delegate: OrdersViewControllerDelegate?
 
-    private lazy var viewModel = OrdersViewModel()
+    private let viewModel: OrdersViewModel
 
     /// Main TableView.
     ///
@@ -46,15 +46,6 @@ class OrdersViewController: UIViewController {
         return FooterSpinnerView(tableViewStyle: tableView.style)
     }()
 
-    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Orders in sync.
-    ///
-    private lazy var resultsController: ResultsController<StorageOrder> = {
-        let storageManager = ServiceLocator.storageManager
-        let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
-
-        return ResultsController<StorageOrder>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
-    }()
-
     /// Used for looking up the `OrderStatus` to show in the `OrderTableViewCell`.
     ///
     /// The `OrderStatus` data is fetched from the API by `OrdersMasterViewModel`.
@@ -70,26 +61,10 @@ class OrdersViewController: UIViewController {
     ///
     private let syncingCoordinator = SyncingCoordinator()
 
-    /// OrderStatus that must be matched by retrieved orders.
-    ///
-    private let statusFilter: OrderStatus?
-
     /// The current list of order statuses for the default site
     ///
     private var currentSiteStatuses: [OrderStatus] {
         return statusResultsController.fetchedObjects
-    }
-
-    /// Indicates if there are no results onscreen.
-    ///
-    private var isEmpty: Bool {
-        return resultsController.isEmpty
-    }
-
-    /// Indicates if there's a filter being applied.
-    ///
-    private var isFiltered: Bool {
-        return statusFilter != nil
     }
 
     /// UI Active State
@@ -109,14 +84,19 @@ class OrdersViewController: UIViewController {
 
     /// Designated initializer.
     ///
-    /// - Parameter statusFilter The filter to use.
-    ///
-    init(title: String, statusFilter: OrderStatus? = nil) {
-        self.statusFilter = statusFilter
+    init(title: String, viewModel: OrdersViewModel) {
+        self.viewModel = viewModel
 
         super.init(nibName: Self.nibName, bundle: nil)
 
         self.title = title
+    }
+
+    /// Initialize using the given `statusFilter`.
+    ///
+    convenience init(title: String, statusFilter: OrderStatus? = nil) {
+        let viewModel = OrdersViewModel(statusFilter: statusFilter)
+        self.init(title: title, viewModel: viewModel)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -126,7 +106,6 @@ class OrdersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        refreshResultsPredicate()
         refreshStatusPredicate()
         registerTableViewHeadersAndCells()
 
@@ -134,6 +113,8 @@ class OrdersViewController: UIViewController {
         configureTableView()
         configureGhostableTableView()
         configureResultsControllers()
+
+        configureViewModel()
 
         startListeningToNotifications()
     }
@@ -153,24 +134,10 @@ class OrdersViewController: UIViewController {
 // MARK: - User Interface Initialization
 //
 private extension OrdersViewController {
-    /// Setup: Order filtering
+    /// Initialize ViewModel operations
     ///
-    func refreshResultsPredicate() {
-        resultsController.predicate = {
-            let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
-            let excludeNonMatchingStatus = statusFilter.map { NSPredicate(format: "statusKey = %@", $0.slug) }
-
-            var predicates = [ excludeSearchCache, excludeNonMatchingStatus ].compactMap { $0 }
-            if let tomorrow = Date.tomorrow() {
-                let dateSubPredicate = NSPredicate(format: "dateCreated < %@", tomorrow as NSDate)
-                predicates.append(dateSubPredicate)
-            }
-
-            return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
-        }()
-
-        tableView.setContentOffset(.zero, animated: false)
-        tableView.reloadData()
+    func configureViewModel() {
+        viewModel.activateAndForwardUpdates(to: tableView)
     }
 
     /// Setup: Order status predicate
@@ -192,10 +159,6 @@ private extension OrdersViewController {
     /// Setup: Results Controller
     ///
     func configureResultsControllers() {
-        // Orders FRC
-        resultsController.startForwardingEvents(to: tableView)
-        try? resultsController.performFetch()
-
         // Order status FRC
         try? statusResultsController.performFetch()
     }
@@ -302,7 +265,6 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
 
         let action = viewModel.synchronizationAction(
             siteID: siteID,
-            statusKey: statusFilter?.slug,
             pageNumber: pageNumber,
             pageSize: pageSize,
             reason: SyncReason(rawValue: reason ?? "")) { [weak self] error in
@@ -314,7 +276,8 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
                     DDLogError("⛔️ Error synchronizing orders: \(error)")
                     self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize, reason: reason)
                 } else {
-                    ServiceLocator.analytics.track(.ordersListLoaded, withProperties: ["status": self.statusFilter?.slug ?? String()])
+                    let status = self.viewModel.statusFilter?.slug ?? String()
+                    ServiceLocator.analytics.track(.ordersListLoaded, withProperties: ["status": status])
                 }
 
                 self.transitionToResultsUpdatedState()
@@ -347,7 +310,7 @@ extension OrdersViewController {
             return false
         }
 
-        return highestPageBeingSynced * SyncingCoordinator.Defaults.pageSize > resultsController.numberOfObjects
+        return highestPageBeingSynced * SyncingCoordinator.Defaults.pageSize > viewModel.numberOfObjects
     }
 
     /// Stops animating the Footer Spinner.
@@ -452,12 +415,6 @@ private extension OrdersViewController {
 //
 private extension OrdersViewController {
 
-    func detailsViewModel(at indexPath: IndexPath) -> OrderDetailsViewModel {
-        let order = resultsController.object(at: indexPath)
-
-        return OrderDetailsViewModel(order: order)
-    }
-
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
         for orderStatus in currentSiteStatuses where orderStatus.slug == order.statusKey {
             return orderStatus
@@ -473,11 +430,11 @@ private extension OrdersViewController {
 extension OrdersViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return resultsController.sections.count
+        viewModel.numberOfSections
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return resultsController.sections[section].numberOfObjects
+        viewModel.numberOfRows(in: section)
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -485,9 +442,9 @@ extension OrdersViewController: UITableViewDataSource {
             fatalError()
         }
 
-        let viewModel = detailsViewModel(at: indexPath)
-        let orderStatus = lookUpOrderStatus(for: viewModel.order)
-        cell.configureCell(viewModel: viewModel, orderStatus: orderStatus)
+        let detailsViewModel = viewModel.detailsViewModel(at: indexPath)
+        let orderStatus = lookUpOrderStatus(for: detailsViewModel.order)
+        cell.configureCell(viewModel: detailsViewModel, orderStatus: orderStatus)
         cell.layoutIfNeeded()
         return cell
     }
@@ -499,7 +456,7 @@ extension OrdersViewController: UITableViewDataSource {
         }
 
         header.leftText = {
-            let rawAge = resultsController.sections[section].name
+            let rawAge = viewModel.sectionInfo(at: section).name
             return Age(rawValue: rawAge)?.description
         }()
         header.rightText = nil
@@ -524,13 +481,13 @@ extension OrdersViewController: UITableViewDelegate {
             assertionFailure("Expected OrderDetailsViewController to be instantiated")
             return
         }
-        orderDetailsVC.viewModel = detailsViewModel(at: indexPath)
+        orderDetailsVC.viewModel = viewModel.detailsViewModel(at: indexPath)
 
         navigationController?.pushViewController(orderDetailsVC, animated: true)
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let orderIndex = resultsController.objectIndex(from: indexPath)
+        let orderIndex = viewModel.objectIndex(from: indexPath)
         syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: orderIndex)
     }
 }
@@ -590,19 +547,19 @@ private extension OrdersViewController {
     /// we've got cached results, or not.
     ///
     func transitionToSyncingState() {
-        state = isEmpty ? .placeholder : .syncing
+        state = viewModel.isEmpty ? .placeholder : .syncing
     }
 
     /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
     /// Transitions to `.results` / `.emptyFiltered` / `.emptyUnfiltered` accordingly.
     ///
     func transitionToResultsUpdatedState() {
-        if isEmpty == false {
+        if viewModel.isEmpty == false {
             state = .results
             return
         }
 
-        if isFiltered {
+        if viewModel.isFiltered {
             state = .emptyFiltered
             return
         }

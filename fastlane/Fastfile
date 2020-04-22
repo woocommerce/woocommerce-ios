@@ -132,7 +132,7 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
   #####################################################################################
   # new_hotfix_release
   # -----------------------------------------------------------------------------------
-  # This lane updates the release branch for a new hotix release. 
+  # This lane creates the release branch for a new hotfix release. 
   # -----------------------------------------------------------------------------------
   # Usage:
   # bundle exec fastlane new_hotfix_release [skip_confirm:<skip confirm>] [version:<version>]
@@ -145,6 +145,22 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
   lane :new_hotfix_release do | options |
     prev_ver = ios_hotfix_prechecks(options)
     ios_bump_version_hotfix(previous_version: prev_ver, version: options[:version])
+  end
+
+  #####################################################################################
+  # finalize_hotfix_release
+  # -----------------------------------------------------------------------------------
+  # This lane finalizes the hotfix branch. 
+  # -----------------------------------------------------------------------------------
+  # Usage:
+  # bundle exec fastlane finalize_hotfix_release [skip_confirm:<skip confirm>]
+  #
+  # Example:
+  # bundle exec fastlane finalize_hotfix_release skip_confirm:true  
+  #####################################################################################
+  desc "Creates a new hotfix branch from the given tag"
+  lane :finalize_hotfix_release do | options |
+    ios_finalize_prechecks(options)
     ios_tag_build()
   end
 
@@ -578,6 +594,11 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
   desc "Run release preflight checks"
   lane :release_preflight do | options |
       configure_validate()
+  end
+
+  desc "Run localization only"
+  lane :update_localization do | options |
+    ios_localize_project()
   end
 
   def write_file(path, contents)

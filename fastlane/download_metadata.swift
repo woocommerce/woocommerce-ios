@@ -3,7 +3,7 @@
 import Foundation
 
 let glotPressSubtitleKey = "app_store_subtitle"
-let glotPressWhatsNewKey = "v3.9-whats-new"
+let glotPressWhatsNewKey = "v4.0-whats-new"
 let glotPressDescriptionKey = "app_store_desc"
 let glotPressKeywordsKey = "app_store_keywords"
 let glotPressPromoTextKey = "app_store_promo_text"
@@ -11,11 +11,13 @@ let baseFolder = "./metadata"
 
 // iTunes Connect language code: GlotPress code
 let languages = [
+    "ar-SA": "ar",
     "de-DE": "de",
     "default": "en-us", // Technically not a real GlotPress language
     "en-US": "en-us", // Technically not a real GlotPress language
     "es-ES": "es",
     "fr-FR": "fr",
+    "he": "he",
     "id": "id",
     "it": "it",
     "ja": "ja",

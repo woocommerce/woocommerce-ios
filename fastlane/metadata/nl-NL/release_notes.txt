@@ -1,5 +1,3 @@
-Om je een vollediger overzicht van je inkomsten te geven, bevatten dashboardstatistieken nu ook de negatieve omzet (bijvoorbeeld: restituties).
-
-- We hebben de Bestellijst bijgewerkt om de weergaven Verwerking en Alle bestellingen duidelijker naar voren te laten komen. Wil je bestellingen filteren op een andere status? Dit is geen enkel probleem: de andere opties vind je in de weergave Zoeken.
-- Beoordelingen zijn zeer belangrijk voor webwinkels, maar soms werden ze niet geladen op bepaalde WooCommerce-configuraties. We hebben dit probleem nu verholpen.
-- Steek je hand op als je producten onderweg wilt bewerken! Probeer mogelijke bewerkingsopties eens uit op je eenvoudige producten (je moet dit eerst inschakelen: ga naar Instellingen > Experimentele functies > Producten).
+* We kondigen met trots een Producten-tabblad aan!
+* Gebruikers kunnen nu ook beperkte bewerkingsfuncties voor eenvoudige producten gebruiken en later zullen er meer volgen.
+* We hebben een fix doorgevoerd zodat, wanneer je het tabblad Verwerking vernieuwt, de bijgewerkte bestellingen worden weergegeven.

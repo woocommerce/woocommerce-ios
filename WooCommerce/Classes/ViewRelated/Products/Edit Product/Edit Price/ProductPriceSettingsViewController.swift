@@ -35,7 +35,9 @@ final class ProductPriceSettingsViewController: UIViewController {
     private let onCompletion: Completion
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
-        let keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: handleKeyboardFrameUpdate(keyboardFrame:))
+        let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
+            self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
+        }
         return keyboardFrameObserver
     }()
 
@@ -60,6 +62,7 @@ final class ProductPriceSettingsViewController: UIViewController {
         configureSections()
         configureTableView()
         retrieveProductTaxClass()
+        handleSwipeBackGesture()
     }
 }
 
@@ -133,6 +136,10 @@ extension ProductPriceSettingsViewController {
             return false
         }
         return true
+    }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        return shouldPopOnBackButton()
     }
 
     @objc private func completeUpdating() {
@@ -216,6 +223,10 @@ extension ProductPriceSettingsViewController: UITableViewDelegate {
             refreshViewContent()
         case .scheduleSaleTo:
             datePickerSaleToVisible = !datePickerSaleToVisible
+            refreshViewContent()
+        case .removeSaleTo:
+            datePickerSaleToVisible = false
+            viewModel.handleSaleEndDateChange(nil)
             refreshViewContent()
         case .taxStatus:
             let title = NSLocalizedString("Tax Status", comment: "Navigation bar title of the Product tax status selector screen")
@@ -310,6 +321,8 @@ private extension ProductPriceSettingsViewController {
             configureScheduleSaleTo(cell: cell)
         case let cell as DatePickerTableViewCell where row == .datePickerSaleTo:
             configureSaleToPicker(cell: cell)
+        case let cell as BasicTableViewCell where row == .removeSaleTo:
+            configureRemoveSaleTo(cell: cell)
         case let cell as SettingTitleAndValueTableViewCell where row == .taxStatus:
             configureTaxStatus(cell: cell)
         case let cell as SettingTitleAndValueTableViewCell where row == .taxClass:
@@ -340,7 +353,7 @@ private extension ProductPriceSettingsViewController {
         cell.selectionStyle = .none
         cell.title = NSLocalizedString("Schedule sale", comment: "Title of the cell in Product Price Settings > Schedule sale")
         cell.subtitle = NSLocalizedString("Automatically start and end a sale", comment: "Subtitle of the cell in Product Price Settings > Schedule sale")
-        cell.isOn = (viewModel.dateOnSaleStart != nil && viewModel.dateOnSaleEnd != nil) ? true : false
+        cell.isOn = (viewModel.dateOnSaleStart != nil || viewModel.dateOnSaleEnd != nil) ? true : false
         cell.onChange = { [weak self] isOn in
             guard let self = self else {
                 return
@@ -352,17 +365,17 @@ private extension ProductPriceSettingsViewController {
     }
 
     func configureScheduleSaleFrom(cell: SettingTitleAndValueTableViewCell) {
-        let title = NSLocalizedString("From", comment: "Title of the cell in Product Price Settings > Schedule sale From a certain date")
-        let value = viewModel.dateOnSaleStart?.toString(dateStyle: .medium, timeStyle: .none, timeZone: timezoneForScheduleSaleDates)
+        let title = NSLocalizedString("From", comment: "Title of the cell in Product Price Settings > Schedule sale from a certain date")
+        let placeholder = NSLocalizedString("Select start date",
+                                            comment: "Placeholder value of the cell in Product Price Settings > Schedule sale from a certain date")
+        let value = viewModel.dateOnSaleStart?.toString(dateStyle: .medium, timeStyle: .none, timeZone: timezoneForScheduleSaleDates) ?? placeholder
         cell.updateUI(title: title, value: value)
     }
 
     func configureSaleFromPicker(cell: DatePickerTableViewCell) {
-        guard let dateOnSaleStart = viewModel.dateOnSaleStart else {
-            return
+        if let dateOnSaleStart = viewModel.dateOnSaleStart {
+            cell.getPicker().setDate(dateOnSaleStart, animated: false)
         }
-
-        cell.getPicker().setDate(dateOnSaleStart, animated: false)
         cell.getPicker().timeZone = timezoneForScheduleSaleDates
         cell.onDateSelected = { [weak self] date in
             guard let self = self else {
@@ -375,17 +388,17 @@ private extension ProductPriceSettingsViewController {
     }
 
     func configureScheduleSaleTo(cell: SettingTitleAndValueTableViewCell) {
-        let title = NSLocalizedString("To", comment: "Title of the cell in Product Price Settings > Schedule sale To a certain date")
-        let value = viewModel.dateOnSaleEnd?.toString(dateStyle: .medium, timeStyle: .none, timeZone: timezoneForScheduleSaleDates)
+        let title = NSLocalizedString("To", comment: "Title of the cell in Product Price Settings > Schedule sale to a certain date")
+        let placeholder = NSLocalizedString("Select end date",
+                                            comment: "Placeholder value of the cell in Product Price Settings > Schedule sale to a certain date")
+        let value = viewModel.dateOnSaleEnd?.toString(dateStyle: .medium, timeStyle: .none, timeZone: timezoneForScheduleSaleDates) ?? placeholder
         cell.updateUI(title: title, value: value)
     }
 
     func configureSaleToPicker(cell: DatePickerTableViewCell) {
-        guard let dateOnSaleEnd = viewModel.dateOnSaleEnd else {
-            return
+        if let dateOnSaleEnd = viewModel.dateOnSaleEnd {
+            cell.getPicker().setDate(dateOnSaleEnd, animated: false)
         }
-
-        cell.getPicker().setDate(dateOnSaleEnd, animated: false)
         cell.getPicker().timeZone = timezoneForScheduleSaleDates
         cell.onDateSelected = { [weak self] date in
             guard let self = self else {
@@ -394,6 +407,11 @@ private extension ProductPriceSettingsViewController {
             self.viewModel.handleSaleEndDateChange(date)
             self.refreshViewContent()
         }
+    }
+
+    func configureRemoveSaleTo(cell: BasicTableViewCell) {
+        cell.textLabel?.text = NSLocalizedString("Remove end date", comment: "Label action for removing a link from the editor")
+        cell.textLabel?.applyLinkBodyStyle()
     }
 
     func configureTaxStatus(cell: SettingTitleAndValueTableViewCell) {
@@ -424,7 +442,7 @@ private extension ProductPriceSettingsViewController {
 
     func configureSections() {
         var saleScheduleRows: [Row] = [.scheduleSale]
-        if viewModel.dateOnSaleStart != nil && viewModel.dateOnSaleEnd != nil {
+        if viewModel.dateOnSaleStart != nil || viewModel.dateOnSaleEnd != nil {
             saleScheduleRows.append(contentsOf: [.scheduleSaleFrom])
             if datePickerSaleFromVisible {
                 saleScheduleRows.append(contentsOf: [.datePickerSaleFrom])
@@ -432,6 +450,9 @@ private extension ProductPriceSettingsViewController {
             saleScheduleRows.append(contentsOf: [.scheduleSaleTo])
             if datePickerSaleToVisible {
                 saleScheduleRows.append(contentsOf: [.datePickerSaleTo])
+            }
+            if viewModel.dateOnSaleEnd != nil {
+                saleScheduleRows.append(.removeSaleTo)
             }
         }
 
@@ -461,6 +482,7 @@ private extension ProductPriceSettingsViewController {
         case datePickerSaleFrom
         case scheduleSaleTo
         case datePickerSaleTo
+        case removeSaleTo
 
         case taxStatus
         case taxClass
@@ -477,6 +499,8 @@ private extension ProductPriceSettingsViewController {
                 return DatePickerTableViewCell.self
             case .taxStatus, .taxClass:
                 return SettingTitleAndValueTableViewCell.self
+            case .removeSaleTo:
+                return BasicTableViewCell.self
             }
         }
 

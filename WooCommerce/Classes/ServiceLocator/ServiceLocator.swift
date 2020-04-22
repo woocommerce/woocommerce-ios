@@ -3,7 +3,7 @@ import CocoaLumberjack
 import Storage
 import Yosemite
 
-/// Provides global depedencies.
+/// Provides global dependencies.
 ///
 final class ServiceLocator {
 
@@ -48,7 +48,6 @@ final class ServiceLocator {
     /// Cocoalumberjack DDLog
     ///
     private static var _fileLogger: Logs = DDFileLogger()
-
 
     // MARK: - Getters
 
@@ -120,6 +119,13 @@ final class ServiceLocator {
     static var fileLogger: Logs {
         return _fileLogger
     }
+
+    /// Provides the last known `KeyboardState`.
+    ///
+    /// Because `static let` is lazy, this should be accessed when the app is started
+    /// (i.e. AppDelegate) for it to accurately provide the last known state.
+    ///
+    static let keyboardStateProvider: KeyboardStateProviding = KeyboardStateProvider()
 }
 
 

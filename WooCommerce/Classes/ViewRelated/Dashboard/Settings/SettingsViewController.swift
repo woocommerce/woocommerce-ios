@@ -304,8 +304,7 @@ private extension SettingsViewController {
     }
 
     func couldShowBetaFeaturesRow() -> Bool {
-        let featureFlagService = ServiceLocator.featureFlagService
-        return featureFlagService.isFeatureFlagEnabled(.stats) || featureFlagService.isFeatureFlagEnabled(.productList)
+        return true
     }
 }
 

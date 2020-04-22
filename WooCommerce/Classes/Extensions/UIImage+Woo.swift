@@ -36,7 +36,7 @@ extension UIImage {
     /// Brief Description Icon
     ///
     static var briefDescriptionImage: UIImage {
-        return UIImage.gridicon(.alignLeft, size: CGSize(width: 24, height: 24))
+        return UIImage.gridicon(.alignLeft, size: CGSize(width: 24, height: 24)).imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Camera Icon
@@ -45,6 +45,12 @@ extension UIImage {
         return UIImage.gridicon(.camera)
             .imageFlippedForRightToLeftLayoutDirection()
             .applyTintColor(.placeholderImage)!
+    }
+
+    /// Product categories Icon
+    ///
+    static var categoriesIcon: UIImage {
+        return UIImage.gridicon(.folder).imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Add Image icon
@@ -130,6 +136,12 @@ extension UIImage {
     ///
     static var emptyReviewsImage: UIImage {
         return UIImage(named: "woo-empty-reviews")!
+    }
+
+    /// An image showing a hand holding a magnifying glass over a page.
+    ///
+    static var emptySearchResultsImage: UIImage {
+        UIImage(named: "woo-empty-search-results")!
     }
 
     /// Error State Image
@@ -298,7 +310,7 @@ extension UIImage {
     /// Shipping Icon
     ///
     static var shippingImage: UIImage {
-        return UIImage.gridicon(.shipping, size: CGSize(width: 24, height: 24))
+        return UIImage.gridicon(.shipping, size: CGSize(width: 24, height: 24)).imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Shipping class list selector empty icon

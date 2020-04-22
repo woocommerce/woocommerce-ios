@@ -13,6 +13,7 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
     var siteTimezone: TimeZone = TimeZone.siteTimezone
 
     private let isEditProductsRelease2Enabled: Bool
+    private let isEditProductsRelease3Enabled: Bool
 
     init(product: Product,
          currency: String,
@@ -21,6 +22,7 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
         self.currency = currency
         self.currencyFormatter = currencyFormatter
         self.isEditProductsRelease2Enabled = featureFlagService.isFeatureFlagEnabled(.editProductsRelease2)
+        self.isEditProductsRelease3Enabled = featureFlagService.isFeatureFlagEnabled(.editProductsRelease3)
         configureSections(product: product)
     }
 }
@@ -49,11 +51,13 @@ private extension DefaultProductFormTableViewModel {
     func settingsRows(product: Product) -> [ProductFormSection.SettingsRow] {
         let shouldShowShippingSettingsRow = product.downloadable == false && product.virtual == false
         let shouldShowBriefDescriptionRow = isEditProductsRelease2Enabled
+        let shouldShowCategoriesRow = isEditProductsRelease3Enabled
 
         let rows: [ProductFormSection.SettingsRow?] = [
             .price(viewModel: priceSettingsRow(product: product)),
             shouldShowShippingSettingsRow ? .shipping(viewModel: shippingSettingsRow(product: product)): nil,
             .inventory(viewModel: inventorySettingsRow(product: product)),
+            shouldShowCategoriesRow ? .categories(viewModel: categoriesRow(product: product)): nil,
             shouldShowBriefDescriptionRow ? .briefDescription(viewModel: briefDescriptionRow(product: product)): nil
         ]
 
@@ -177,6 +181,13 @@ private extension DefaultProductFormTableViewModel {
                                                         details: details)
     }
 
+    func categoriesRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
+        let icon = UIImage.categoriesIcon
+        let title = Constants.categoriesTitle
+        let details = product.categoriesDescription() ?? Constants.categoriesPlaceholder
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon, title: title, details: details)
+    }
+
     func briefDescriptionRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.briefDescriptionImage
         let title = Constants.briefDescriptionTitle
@@ -196,6 +207,8 @@ private extension DefaultProductFormTableViewModel {
                                                               comment: "Title of the Inventory Settings row on Product main screen")
         static let shippingSettingsTitle = NSLocalizedString("Shipping",
                                                              comment: "Title of the Shipping Settings row on Product main screen")
+        static let categoriesTitle = NSLocalizedString("Categories",
+                                                       comment: "Title of the Categories row on Product main screen")
         static let briefDescriptionTitle = NSLocalizedString("Short description",
                                                              comment: "Title of the Short Description row on Product main screen")
 
@@ -232,5 +245,9 @@ private extension DefaultProductFormTableViewModel {
         // Short description
         static let briefDescriptionPlaceholder = NSLocalizedString("A brief excerpt about the product",
                                                                    comment: "Placeholder of the Product Short Description row on Product main screen")
+
+        // Categories
+        static let categoriesPlaceholder = NSLocalizedString("Uncategorized",
+                                                                   comment: "Placeholder of the Product Categories row on Product main screen")
     }
 }

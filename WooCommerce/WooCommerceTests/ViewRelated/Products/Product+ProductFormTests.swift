@@ -5,6 +5,8 @@ import Yosemite
 
 class Product_ProductFormTests: XCTestCase {
 
+    private let sampleSiteID: Int64 = 109
+
     func testTrimmedFullDescriptionWithLeadingNewLinesAndHTMLTags() {
         let description = "\n\n\n  <p>This is the party room!</p>\n"
         let product = sampleProduct(description: description)
@@ -18,12 +20,46 @@ class Product_ProductFormTests: XCTestCase {
         let expectedDescription = "This is the party room!"
         XCTAssertEqual(product.trimmedBriefDescription, expectedDescription)
     }
+
+    func testNoCategoryDescriptionOutputsNilDescription() {
+        let product = sampleProduct(categories: [])
+        XCTAssertNil(product.categoriesDescription())
+    }
+
+    func testSingleCategoryDescriptionOutputsSingleCategory() {
+        let category = sampleCategory(name: "Pants")
+        let product = sampleProduct(categories: [category])
+        let expectedDescription = "Pants"
+        XCTAssertEqual(product.categoriesDescription(), expectedDescription)
+    }
+
+    func testMutipleCategoriesDescriptionOutputsFormattedList() {
+        let categories = ["Pants", "Dress", "Shoes"].map { sampleCategory(name: $0) }
+        let product = sampleProduct(categories: categories)
+        let expectedDescription: String = {
+            if #available(iOS 13.0, *) {
+                return "Pants, Dress, and Shoes"
+            } else {
+                return "Pants, Dress, Shoes"
+            }
+        }()
+        let usLocale = Locale(identifier: "en_US")
+        XCTAssertEqual(product.categoriesDescription(using: usLocale), expectedDescription)
+    }
 }
 
 private extension Product_ProductFormTests {
 
-    func sampleProduct(description: String? = "", briefDescription: String? = "") -> Product {
-        return Product(siteID: 109,
+    func sampleCategory(name: String = "") -> ProductCategory {
+        return ProductCategory(categoryID: Int64.random(in: 0 ..< Int64.max),
+                               siteID: sampleSiteID,
+                               parentID: 0,
+                               name: name,
+                               slug: "")
+    }
+
+    func sampleProduct(description: String? = "", briefDescription: String? = "", categories: [ProductCategory] = []) -> Product {
+        return Product(siteID: sampleSiteID,
                        productID: 177,
                        name: "Book the Green Room",
                        slug: "book-the-green-room",
@@ -75,7 +111,7 @@ private extension Product_ProductFormTests {
                        crossSellIDs: [1234, 234234, 3],
                        parentID: 0,
                        purchaseNote: "Thank you!",
-                       categories: [],
+                       categories: categories,
                        tags: [],
                        images: [],
                        attributes: [],

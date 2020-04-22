@@ -34,7 +34,9 @@ final class ProductInventorySettingsViewController: UIViewController {
     private lazy var throttler: Throttler = Throttler(seconds: 0.5)
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
-        let keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: handleKeyboardFrameUpdate(keyboardFrame:))
+        let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
+            self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
+        }
         return keyboardFrameObserver
     }()
 
@@ -71,6 +73,7 @@ final class ProductInventorySettingsViewController: UIViewController {
         configureMainView()
         configureTableView()
         reloadSections()
+        handleSwipeBackGesture()
     }
 }
 
@@ -189,6 +192,10 @@ extension ProductInventorySettingsViewController {
             return false
         }
         return true
+    }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        return shouldPopOnBackButton()
     }
 
     @objc private func completeUpdating() {

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-03-19 00:54:48+0000 */
+/* Translation-Revision-Date: 2020-04-17 00:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -104,6 +104,9 @@
 
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "앱 상태를 검토하는 고급 도구";
+
+/* Option to select the Airmail app when logging in with magic links */
+"Airmail" = "Airmail";
 
 /* Title for the second page in the Orders tab. */
 "All Orders" = "모든 주문";
@@ -227,24 +230,37 @@
 "Can Not Request Link" = "링크를 요청할 수 없음";
 
 /* Button title Cancel in Discard Changes Action Sheet
-   Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image */
+   Button title Cancel in Edit Product More Options Action Sheet - Button title Cancel in Sort Products Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links */
 "Cancel" = "취소";
 
 /* The title of the alert when there is an error updating the product */
-"Cannot update Product" = "제품을 업데이트할 수 없음";
+"Cannot update product" = "제품을 업데이트할 수 없음";
 
 /* The title of the alert when there is an error uploading an image
    Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "이미지를 업로드할 수 없습니다.";
 
-/* Catalog Visibility label in Product Settings */
+/* Add Custom shipping carrier. Title of cell presenting the carrier name */
+"Carrier name" = "운송업체 이름";
+
+/* Catalog Visibility label in Product Settings
+   Product Catalog Visibility navigation title */
 "Catalog Visibility" = "카탈로그 공개 설정";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "언제, 어디서든지 즐겨 찾는 사이트의 최신 소식을 확인하고 대화에 참여하세요.";
 
+/* Title of the Categories row on Product main screen */
+"Categories" = "카테고리";
+
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "인증서 오류";
+
+/* Instructional text on how to open the email containing a magic link. */
+"Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder." = "Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder.";
+
+/* Alert title for check your email during logIn/signUp. */
+"Check your email!" = "이메일을 확인하세요!";
 
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "기기에서 선택";
@@ -284,6 +300,9 @@
 
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "계속 읽기";
+
+/* Button title. Tapping begins log in using Apple. */
+"Continue with Apple" = "Apple로 계속하기";
 
 /* Button title. Tapping begins log in using Google. */
 "Continue with Google" = "Google로 계속하기";
@@ -327,12 +346,12 @@
 /* Cell title: the current date. */
 "Current" = "현재";
 
-/* Name of the section for custom shipment tracking providers */
+/* Name of the section for custom shipment tracking carriers */
 "Custom" = "사용자 정의";
 
-/* Add custom shipping provider. Content of cell titled Shipping Provider
-   Placeholder name of a custom shipment tracking provider - Title of button to add a custom tracking provider if filtering the list yields no results. */
-"Custom Provider" = "사용자 정의 공급업체";
+/* Add custom shipping carrier. Content of cell titled Shipping Carrier
+   Placeholder name of a custom shipment tracking carrier - Title of button to add a custom tracking carrier if filtering the list yields no results. */
+"Custom Carrier" = "사용자 정의 운송업체";
 
 /* Customer info section title */
 "Customer" = "고객";
@@ -344,8 +363,14 @@
    Section title for a note from the customer */
 "Customer Provided Note" = "고객이 남긴 메모";
 
-/* Add / Edit shipping provider. Title of cell date shipped */
+/* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "배송일";
+
+/* Action sheet option to sort products from the newest to the oldest */
+"Date: Newest to Oldest" = "날짜: 최신 순";
+
+/* Action sheet option to sort products from the oldest to the newest */
+"Date: Oldest to Newest" = "날짜: 오래된 순";
 
 /* Statistical unit - a single day */
 "Day" = "일";
@@ -458,11 +483,8 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "빈 URL";
 
-/* The text placeholder for the Text Editor screen */
-"Enter a title..." = "제목을 입력하세요...";
-
-/* Add custom shipping provider. Placeholder of cell presenting provider name */
-"Enter provider name" = "공급업체 이름 입력";
+/* Add custom shipping carrier. Placeholder of cell presenting carrier name */
+"Enter carrier name" = "운송업체 이름 입력";
 
 /* Instruction text on the login's site addresss screen.
    Label for button to log in using your site address. */
@@ -474,10 +496,10 @@
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "워드프레스닷컴 계정에 대한 비밀번호를 입력합니다.";
 
-/* Add custom shipping provider. Placeholder of cell presenting tracking link */
+/* Add custom shipping carrier. Placeholder of cell presenting carrier link */
 "Enter tracking link" = "추적 링크 입력";
 
-/* Add custom shipping provider. Placeholder of cell presenting tracking number */
+/* Add custom shipping carrier. Placeholder of cell presenting tracking number */
 "Enter tracking number" = "추적 번호 입력";
 
 /* Title of a button on the magic link screen.
@@ -497,16 +519,25 @@
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "REST API에 요청을 일련화할 수 없습니다.";
 
+/* Option to select the Fastmail app when logging in with magic links */
+"Fastmail" = "Fastmail";
+
 /* Navigates to the feature request screen */
 "Feature Request" = "기능 요청";
+
+/* Featured Product switch in Product Catalog Visibility */
+"Featured Product" = "추천 상품";
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "비밀번호 관리자로 채우기";
 
+/* Title of the toolbar button to filter products by different attributes. */
+"Filter" = "필터";
+
 /* User role badge */
 "Follower" = "팔로워";
 
-/* Title of the cell in Product Price Settings > Schedule sale From a certain date */
+/* Title of the cell in Product Price Settings > Schedule sale from a certain date */
 "From" = "발신:";
 
 /* Order Fulfillment Title */
@@ -520,6 +551,9 @@
 
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "계정 정보 받기";
+
+/* Option to select the Gmail app when logging in with magic links */
+"Gmail" = "Gmail";
 
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Google 가입에 실패했습니다.";
@@ -587,7 +621,7 @@
 "Help Improve The App" = "앱 개선 지원";
 
 /* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
-   Shown in a Product Variation cell if the variation is not visible (purchasable is false) */
+   Display label for the product's catalog visibility - Shown in a Product Variation cell if the variation is not visible (purchasable is false) */
 "Hidden" = "숨김";
 
 /* Detail label for yes/no switch. */
@@ -737,6 +771,9 @@
 /* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
 "Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "많은 사랑을 받는 Automattic 제품 <a href=\"https:\/\/automattic.com\/work-with-us\/\">함께할 직원을 채용 중입니다!<\/a>";
 
+/* Option to select the Apple Mail app when logging in with magic links */
+"Mail (Default)" = "메일(기본값)";
+
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "실시간 알림을 통해 주문을 관리하고, 판매를 추적하고, 스토어 활동을 모니터링하세요.";
 
@@ -744,7 +781,7 @@
 "Manage stock" = "재고 관리";
 
 /* shown in promotional screens during first launch */
-"Manage your Jetpack-powered site on the go — you‘ve got WordPress in your pocket." = "이동 중에 젯팩 지원 사이트를 관리하세요. 어디에 가든지 워드프레스가 함께합니다.";
+"Manage your Jetpack-powered site on the go — you've got WordPress in your pocket." = "이동 중에 젯팩 지원 사이트를 관리하세요. 어디에 가든지 워드프레스가 함께합니다.";
 
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "수동 오프셋";
@@ -766,6 +803,9 @@
 
 /* Message phone number button title */
 "Message" = "메시지";
+
+/* Option to select the Microsft Outlook app when logging in with magic links */
+"Microsoft Outlook" = "Microsoft Outlook";
 
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
 "Minimum value %1$@, maximum value %2$@" = "최소값 %1$@, 최대값 %2$@";
@@ -837,6 +877,9 @@
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "사용 가능한 데이터 없음";
 
+/* Placeholder text shown when there are no images for the WordPress Media Library yet */
+"No images yet" = "아직 이미지 없음";
+
 /* The text on the placeholder overlay when there are no product variations on the Products tab */
 "No product variations yet" = "아직 제품 변형이 없습니다.";
 
@@ -849,8 +892,8 @@
 /* Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "선택한 기준에 맞는 결과가 없음";
 
-/* Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider' */
-"No results found for (term)\nAdd a custom provider" = "(term)에 대한 검색 결과가 없음\n사용자 정의 공급업체 추가";
+/* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier' */
+"No results found for (term)\nAdd a custom carrier" = "No results found for (term)\nAdd a custom carrier";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "이 기간에 해당하는 수익이 없습니다.";
@@ -974,13 +1017,15 @@
 /* Payment section title */
 "Payment" = "결제";
 
-/* Display label for the product's pending status
-   Display label for the review's pending status */
+/* Display label for the review's pending status */
 "Pending" = "대기중";
 
 /* A unit test string, appended before the title of a review.
    Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
 "Pending Review" = "검토중";
+
+/* Display label for the product's pending status */
+"Pending review" = "검토 대기 중";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "전화번호: %@";
@@ -990,12 +1035,6 @@
 
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "연결할 스토어 선택";
-
-/* Product title error notice message, when the title is empty */
-"Please add a title" = "제목을 추가하세요.";
-
-/* Alert title for check your email during logIn/signUp. */
-"Please check your email" = "이메일을 확인하세요.";
 
 /* Placeholder for editing the URL of a text link */
 "Please enter a URL" = "URL을 입력하세요.";
@@ -1035,9 +1074,6 @@
 
 /* Error message when an image captured by camera cannot be saved to the device Photos library */
 "Please make sure the app can access Photos in device settings" = "앱이 기기 설정의 사진에 액세스할 수 있는지 확인하세요.";
-
-/* Message to ask the user to check their email and look for a WordPress.com email. */
-"Please open your email app and look for an email from WordPress.com." = "이메일 앱을 열고 워드프레스닷컴에서 보낸 이메일을 찾으세요.";
 
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "다시 시도하세요.";
@@ -1098,17 +1134,14 @@
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "청구 고객에게 전화를 걸거나 메시지를 보낼 수 있는 옵션이 표시된 메시지가 나타납니다.";
 
-/* Add Custom shipping provider. Title of cell presenting the provider name */
-"Provider name" = "공급업체 이름";
-
-/* Display label for the product's published status */
-"Publish" = "게시";
-
 /* Title of the Publish Settings section on Product Settings screen */
 "Publish Settings" = "공개하기 설정";
 
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "공원에서 글을 발행하세요. 버스에서 블로그를 방문하세요. 카페에서 댓글을 다세요. 워드프레스는 어디에서든 사용할 수 있습니다.";
+
+/* Display label for the product's published status */
+"Published" = "게시됨";
 
 /* Title of the in-progress UI while updating the Product remotely */
 "Publishing your product..." = "제품을 게시하는 중...";
@@ -1184,6 +1217,9 @@
 
 /* Label action for removing a link from the editor */
 "Remove Link" = "링크 제거";
+
+/* Label action for removing a link from the editor */
+"Remove end date" = "종료 날짜 제거";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "충돌 보고";
@@ -1265,11 +1301,23 @@
 /* Search Products */
 "Search products" = "상품 검색";
 
+/* Display label for the product's catalog visibility */
+"Search results only" = "검색 결과만";
+
 /* Page title for the select a different store screen */
 "Select Store" = "스토어 선택";
 
+/* Add the shipping carrier. Placeholder of cell presenting carrier name */
+"Select carrier" = "운송업체 선택";
+
+/* Placeholder value of the cell in Product Price Settings > Schedule sale to a certain date */
+"Select end date" = "종료 날짜 선택";
+
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "단락 스타일 선택";
+
+/* Placeholder value of the cell in Product Price Settings > Schedule sale from a certain date */
+"Select start date" = "시작 날짜 선택";
 
 /* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
 "Selected Store" = "선택한 스토어";
@@ -1305,11 +1353,14 @@
    Product Shipping Settings navigation title - Shipping label for payment view - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "배송";
 
+/* Title of view displaying all available Shipment Tracking Carriers */
+"Shipping Carriers" = "운송업체";
+
 /* Shipping method title for customer info cell */
 "Shipping Method" = "배송 방법";
 
-/* Title of view displaying all available Shipment Tracking Providers */
-"Shipping Providers" = "배송 업체";
+/* Add / Edit shipping carrier. Title of cell presenting name */
+"Shipping carrier" = "운송업체";
 
 /* Title of the cell in Product Shipping Settings > Shipping class */
 "Shipping class" = "배송 클래스";
@@ -1329,8 +1380,11 @@
 /* Display label for the product's tax status setting option */
 "Shipping only" = "배송만";
 
-/* Add / Edit shipping provider. Title of cell presenting name */
-"Shipping provider" = "배송 업체";
+/* Display label for the product's catalog visibility */
+"Shop and search results" = "상점 및 검색 결과";
+
+/* Display label for the product's catalog visibility */
+"Shop only" = "상점만";
 
 /* The navigation bar title of the edit short description screen.
    Title of the Short Description row on Product main screen */
@@ -1362,9 +1416,6 @@
 
 /* Button title. Tapping begins our normal sign up process. */
 "Sign up with Email" = "이메일로 가입";
-
-/* Button title. Tapping begins sign up using Google. */
-"Sign up with Google" = "Google로 가입";
 
 /* Describes a site redirect domain */
 "Site Redirect" = "사이트 리디렉팅";
@@ -1430,9 +1481,16 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "죄송합니다. 해당 사이트 주소는 사용할 수 없습니다.";
 
+/* Message title for Sort Products Action Sheet
+   Title of the toolbar button to sort products in different ways. */
+"Sort by" = "정렬 기준";
+
 /* Display label for the review's spam status
    Verb, spam a comment */
 "Spam" = "스팸";
+
+/* Option to select the Spark email app when logging in with magic links */
+"Spark" = "Spark";
 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "표준 요율";
@@ -1442,6 +1500,10 @@
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "시작 기간 %1$@, 종료 기간 %2$@";
+
+/* Product status setting list selector navigation title
+   Status label in Product Settings */
+"Status" = "상태";
 
 /* A descriptive label prefix. Example: 'Stock quantity: 19' */
 "Stock quantity:" = "재고 수량:";
@@ -1691,14 +1753,20 @@
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "이 제품을 로드할 수 없음";
 
-/* Product details screen — product title descriptive label
-   The navigation bar title of the Text editor screen. - Title in the Product Title row on Product form screen when the description is non-empty. */
+/* Footer text in Product Catalog Visibility */
+"This setting determines which shop pages products will be listed on." = "이 설정은 제품이 어떤 상점 페이지에 등록될지 결정합니다.";
+
+/* Placeholder in the Product Title row on Product form screen.
+   Product details screen — product title descriptive label */
 "Title" = "제목";
 
-/* Placeholder in the Product Title row on Product form screen. */
-"Title (required)" = "제목(필수)";
+/* Action sheet option to sort products by ascending product name */
+"Title: A to Z" = "제목: 오름차순";
 
-/* Title of the cell in Product Price Settings > Schedule sale To a certain date */
+/* Action sheet option to sort products by descending product name */
+"Title: Z to A" = "제목: 내림차순";
+
+/* Title of the cell in Product Price Settings > Schedule sale to a certain date */
 "To" = "대상";
 
 /* Text instructing the user to enter their email address. */
@@ -1741,10 +1809,10 @@
 /* Order tracking section title */
 "Tracking" = "추적";
 
-/* Add custom shipping provider. Title of cell presenting tracking link */
+/* Add custom shipping carrier. Title of cell presenting carrier link */
 "Tracking link (optional)" = "추적 링크(옵션)";
 
-/* Add / Edit shipping provider. Title of cell presenting tracking number */
+/* Add / Edit shipping carrier. Title of cell presenting tracking number */
 "Tracking number" = "추적 번호";
 
 /* A unit test string. Reads as: 'Trackin number XXX_YYY_ZZZ'
@@ -1804,8 +1872,8 @@
 /* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number} */
 "Unable to fulfill order #(orderID)" = "주문 번호(orderID)를 처리할 수 없음";
 
-/* Content of error presented when loading the list of shipment providers failed. It reads: Unable to load Shipment Providers */
-"Unable to load Shipment Providers" = "배송 업체를 로드할 수 없음";
+/* Content of error presented when loading the list of shipment carriers failed. It reads: Unable to load Shipment Carriers */
+"Unable to load Shipment Carriers" = "운송업체를 로드할 수 없음";
 
 /* Load Action Failed */
 "Unable to load content" = "콘텐츠를 로드할 수 없음";
@@ -1830,6 +1898,9 @@
 
 /* Unapproves a comment. Spoken Hint. */
 "Unapproves the comment" = "댓글 승인 취소";
+
+/* Placeholder of the Product Categories row on Product main screen */
+"Uncategorized" = "미분류";
 
 /* Accessibility label for underline button on formatting toolbar. */
 "Underline" = "밑줄";
@@ -1958,8 +2029,8 @@
 /* The info of the top banner on Dashboard that indicates new stats is unavailable */
 "We have reverted to the old stats. To use the beta stats, please activate the WooCommerce Admin plugin with version 0.23 or higher" = "이전 통계로 되돌렸습니다. 베타 통계를 사용하려면 버전 0.23 이상으로 WooCommerce Admin 플러그인을 활성화하세요.";
 
-/* Instructional text on how to open the email containing a magic link. */
-"We sent you a magic signup link! Check your email on this device, and tap the link in the email to finish signing up." = "매직 가입 링크를 보냈습니다! 이 장치에서 이메일을 확인하고 이메일의 링크를 눌러 가입을 완료하세요.";
+/* message to ask a user to check their email for a WordPress.com email */
+"We just emailed a link to %@. Please check your mail app and tap the link to log in." = "%@에 대한 링크를 이메일로 전송했습니다. 메일 앱을 확인하고 링크를 탭하여 로그인하세요.";
 
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "워드프레스는 타사 제품을 포함한 다른 추적 도구를 사용합니다. 이 도구에 대해 읽고 제어하는 방법에 대해 알아보세요.";
@@ -1988,14 +2059,11 @@
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "무게: %1$@%2$@";
 
-/* The info of the Work In Progress top banner on the Products tab */
-"We’re hard at work on this new Products section, so you may see some changes as we get ready for launch 🚀" = "최선을 다해 이번 새로운 제품 섹션을 준비하고 있습니다. 출시 준비 과정에서 일부 변경 사항을 확인하실 수도 있습니다. 🚀";
-
 /* The info of the top banner on Dashboard that indicates new stats is available */
 "We’re rolling out improvements to stats for stores using the WooCommerce Admin plugin" = "WooCommerce 관리자 플러그인을 사용하여 스토어 통계 개선을 점진적으로 실시합니다.";
 
 /* The info of the Work In Progress top banner on the Products tab */
-"We’ve added editing functionality to simple products. Keep an eye out for editing on other product types soon" = "간단한 제품에 편집 기능을 추가했습니다. 곧 다른 유형 제품에서 편집할 수 있습니다.";
+"We’ve added editing functionality to simple products. Keep an eye out for more options soon!" = "간단한 제품에 편집 기능을 추가했습니다. 더 많은 옵션이 곧 제공됩니다!";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "내 사이트 주소는 무엇인가요?";
@@ -2015,14 +2083,15 @@
 /* Subject of new Zendesk ticket. */
 "WooCommerce for iOS Support" = "iOS용 우커머스 지원";
 
-/* Menu option for selecting media from the site's media library. */
+/* Menu option for selecting media from the site's media library.
+   Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "워드프레스 미디어 라이브러리";
 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "워드프레스 버전이 너무 오래됐습니다. %1$@의 사이트는 워드프레스 %2$@을(를) 사용합니다. 최신 버전 또는 %3$@ 이상으로 업데이트하세요.";
 
-/* The title of the Work In Progress top banner on the Products tab */
-"Work in progress!" = "작업 진행 중!";
+/* Option to select the Yahoo Mail app when logging in with magic links */
+"Yahoo Mail" = "야후 메일";
 
 /* Statistical unit - a single year */
 "Year" = "년";
@@ -2038,9 +2107,6 @@
 
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "DudaMobile에서 설치한 모바일 플러그인으로 인해 앱이 블로그에 연결할 수 없습니다.";
-
-/* Instructional text on how to open the email containing a magic link. */
-"Your magic link is on its way! Check your email on this device, and tap the link in the email you receive from WordPress.com" = "링크를 처리 중입니다. 이 기기에서 이메일을 확인하고 워드프레스닷컴에서 받은 이메일의 링크를 누르세요.";
 
 /* shown in promotional screens during first launch */
 "Your notifications travel with you — see comments and likes as they happen." = "회원님이 어떤 기기를 사용하든 알림을 받을 수 있습니다. 댓글 및 좋아요가 표시되면 즉시 확인하세요.";

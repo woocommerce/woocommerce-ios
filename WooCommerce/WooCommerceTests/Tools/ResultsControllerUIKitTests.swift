@@ -27,17 +27,27 @@ class ResultsControllerUIKitTests: XCTestCase {
         tableView = MockupTableView()
 
         resultsController = {
-            let viewContext = storageManager.persistentContainer.viewContext
+            let viewStorage = storageManager.viewStorage
             let sectionNameKeyPath = "username"
             let descriptor = NSSortDescriptor(keyPath: \StorageAccount.userID, ascending: false)
 
-            return ResultsController<StorageAccount>(viewContext: viewContext, sectionNameKeyPath: sectionNameKeyPath, sortedBy: [descriptor])
+            return ResultsController<StorageAccount>(
+                    viewStorage: viewStorage,
+                    sectionNameKeyPath: sectionNameKeyPath,
+                    sortedBy: [descriptor]
+            )
         }()
 
         resultsController.startForwardingEvents(to: tableView)
         try? resultsController.performFetch()
     }
 
+    override func tearDown() {
+        resultsController = nil
+        tableView = nil
+        storageManager = nil
+        super.tearDown()
+    }
 
     /// Verifies that `beginUpdates` + `endUpdates` are called in sequence.
     ///

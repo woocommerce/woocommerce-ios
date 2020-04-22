@@ -1,5 +1,3 @@
-Untuk menawarkan gambaran penghasilan yang lebih lengkap, statistik dasbor kini juga menyertakan pendapatan negatif (misalnya: pengembalian dana.)
-
-- Kami telah merancang ulang Daftar Pesanan untuk membuat tampilan Pemrosesan dan Semua Pesanan lebih menonjol. Ingin menyaring pesanan menurut status yang berbeda? Jangan khawatir: Anda akan menemukan opsi lainnya di tampilan Pencarian.
-- Ulasan sangatlah penting bagi toko online, tetapi terkadang mereka tidak bisa memuat di beberapa konfigurasi WooCommerce. Kami telah memperbaikinya.
-- Angkat tangan bila Anda ingin menyunting produk di mana saja! Coba opsi penyuntingan yang tersedia pada produk sederhana Anda (tetapi Anda perlu mengaktifkannya terlebih dahulu: buka Pengaturan > Fitur Eksperimental > Produk).
+* Dengan senang hati kami memperkenalkan tab Produk!
+* Sekarang pengguna juga memiliki kemampuan penyuntingan terbatas untuk Produk Sederhana, dengan lebih banyak fitur di pembaruan mendatang.
+* Kami melakukan perbaikan agar saat Anda menyegarkan tab Dalam Proses, pesanan terbaru Anda akan ditampilkan.

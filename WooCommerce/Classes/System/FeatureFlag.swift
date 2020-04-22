@@ -26,10 +26,6 @@ enum FeatureFlag: Int {
     ///
     case readonlyProductVariants
 
-    /// Store stats
-    ///
-    case stats
-
     /// Product Reviews
     ///
     case reviews

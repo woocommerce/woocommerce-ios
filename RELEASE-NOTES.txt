@@ -1,8 +1,33 @@
+4.2
+-----
+- Products: now tapping anywhere on a product cell where you need to insert data, like in Product Price and Product Shipping settings, you start to edit the text field.
+- Products: now the keyboard pop up automatically in Edit Description (M1), in Edit Short Description (M2), Edit Slug (M2), Edit Purchase Note (M2)
+- The Processing orders list will now show upcoming (future) orders.
+- Improved stats: fixed the incorrect time range on "This Week" tab when loading improved stats on a day when daily saving time changes.
+
+
+4.1
+-----
+- Fix an intermittent crash when downloading Orders
+- The Photo Library permission alert shouldn't be prompted when opening the readonly product details or edit product for simple products, which is reproducible on iOS 11 or 12 devices. (The permission is only triggered when uploading images in Zendesk support or in debug builds with Products M2 enabled.)
+- [internal] Updated the empty search result views for Products and Orders. https://git.io/Jvdap
+
+ 
 4.0
 -----
+- Products is now available with limited editing for simple products!
 - Fix pulling to refresh on the Processing tab sometimes will not show the up-to-date orders.
-- [internal] the signup and login Magic Link flows have code changes. See https://git.io/JvyB3 for testing details.
+- Edit Product > Price Settings: schedule sale is now available even when either the start or end date is not set, and the sale end date can be removed now.
+- Improved stats: fixed a crash when loading improved stats on a day when daily saving time changes.
 - [internal] Changed the Shipping and Tax classes list loading so that any cached data is shown right away
+- [internal] Edit Products M2: added an image upload source for product images - WordPress Media Library.
+- [internal] Slightly changed the dependency graph of the database fetching component. Please watch out for data loading regressions.
+- [internal] the signup and login Magic Link flows have code changes. See https://git.io/JvyB3 for testing details.
+- [internal] the login via Magic Link flows have code changes. See https://git.io/JvyB3 for testing details.
+- [internal] the login via Continue with Google flows have code changes that can cause regressions. See https://git.io/Jvyjg for testing details.
+- [internal] the signup and login Magic Link flows have code changes. See https://git.io/JvyB3 for testing details.
+- [internal] under Edit Products M2 feature flag, there are 4 ways to sort the products on the products tab.
+- [internal] the login flow has changes to the 2-factor authentication navigation. See https://git.io/JvdKP for testing details.
 
 3.9
 -----

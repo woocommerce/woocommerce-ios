@@ -1,5 +1,3 @@
-To offer a more complete picture of your earnings, dashboard stats now also include negative revenue (for example: refunds).
-
-- We’ve redesigned the Orders List to make the Processing and All Orders views more prominent. Want to filter orders by a different status? No worries: you’ll find other options in the Search view.
-- Reviews are so important for online stores, but they would occasionally fail to load on some WooCommerce configurations. We fixed it.
-- Raise your hand if you’d like to edit products on the go! Give available editing options a try on your simple products (but first, you’ll need to enable it: go to Settings > Experimental Features > Products).
+* We’re excited to introduce a Products tab!
+* Users also now have limited editing capabilities for Simple Products, with more to come.
+* We’ve made a fix so that, whenever you refresh the Processing tab, it will show your up-to-date orders.

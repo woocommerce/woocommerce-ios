@@ -1,5 +1,3 @@
-Kazancınızın daha eksiksiz bir resmini sunmak için pano istatistikleri artık negatif geliri de içeriyor (örneğin: para iadeleri).
-
-- İşleme ve Tüm Siparişler görünümlerini daha belirgin hale getirmek için Siparişler Listesi'ni yeniden tasarladık. Siparişleri farklı bir duruma göre filtrelemek ister misiniz? Endişe etmeyin: Arama görünümünde diğer seçenekleri bulabilirsiniz.
-- Yorumlar çevrimiçi mağazalar için çok önemli olsa da bazı WooCommerce yapılandırmalarına yüklenemiyorlardı. Sorunu çözdük.
-- Hareket halindeyken ürünleri düzenlemek istiyorsanız elinizi kaldırın! Mevcut düzenleme seçeneklerini basit ürünlerinizde deneyin (ancak öncelikle şu özelliği etkinleştirmeniz gerekir: Ayarlar > Deneysel Özellikler > Ürünler'e gidin).
+* Ürünler sekmesini tanıtmaktan memnuniyet duyuyoruz!
+* Kullanıcılar artık Basit Ürünler için sınırlı düzenleme yetkilerine sahip olacak, zamanla daha fazlası da gelecek.
+* İşleme sekmesini her yenilediğinizde güncel siparişlerinizi göstermesi için bir düzeltme yaptık.

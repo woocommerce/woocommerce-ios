@@ -1,5 +1,3 @@
-För att ge en mer fullständig bild av dina intäkter inkluderar instrumentpanelen nu även negativa intäkter (till exempel: återbetalningar).
-
-- Vi har gjort om orderlistan för att göra vyerna Behandlas och Alla ordrar mer framträdande. Vill du filtrera ordrar efter en annan status? Inga problem: du kan hitta fler alternativ i sökvyn.
-- Recensioner är oerhört viktiga för onlinebutiker, men ibland gick de inte att ladda med vissa WooCommerce-konfigurationer. Vi har löst det.
-- Räck upp handen om du vill kunna redigera produkter när du är på språng! Prova de tillgängliga redigeringsalternativen på dina enkla produkter (först måste dock aktivera funktionen: gå till Inställningar > Experimentella funktioner > Produkter).
+* Vi är glada att kunna introducera en Produkter-flik!
+* Användare har nu även begränsade redigeringsmöjligheter för Enkla produkter. Mer kommer.
+* Vi har gjort en korrigering så att dina uppdaterade beställningar nu visas när du uppdaterar Behandlar-fliken.

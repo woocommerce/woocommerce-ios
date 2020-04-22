@@ -8,7 +8,7 @@ import XCTest
 
 final class ArrayIndexPathTests: XCTestCase {
 
-    private var sections: [Section] = [Section(rows: [.simplenote, .wordpress]), Section(rows: [.woocommerce]), Section(rows: [.wordpress])]
+    private let sections: [Section] = [Section(rows: [.simplenote, .wordpress]), Section(rows: [.woocommerce]), Section(rows: [.wordpress])]
 
     func testIndexPathForRowReturnTheRightIndexPath() {
 

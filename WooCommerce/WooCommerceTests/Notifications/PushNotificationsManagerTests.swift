@@ -6,51 +6,69 @@ import Yosemite
 
 /// PushNotificationsManager Tests
 ///
-class PushNotificationsManagerTests: XCTestCase {
+final class PushNotificationsManagerTests: XCTestCase {
 
     /// PushNotifications Manager
     ///
-    private lazy var manager: PushNotificationsManager = {
-        let configuration = PushNotificationsConfiguration(application: self.application,
-                                                           defaults: self.defaults,
-                                                           storesManager: self.storesManager,
-                                                           supportManager: self.supportManager,
-                                                           userNotificationsCenter: self.userNotificationCenter)
-
-        return PushNotificationsManager(configuration: configuration)
-    }()
+    private var manager: PushNotificationsManager!
 
     /// Mockup: UIApplication
     ///
-    private let application = MockupApplicationAdapter()
+    private var application: MockupApplicationAdapter!
 
     /// UserDefaults: Testing Suite
     ///
-    private let defaults = UserDefaults(suiteName: Sample.defaultSuiteName)!
+    private var defaults: UserDefaults!
 
     /// Mockup: Stores Manager
     ///
-    private let storesManager = MockupStoresManager(sessionManager: .testingInstance)
+    private var storesManager: MockupStoresManager!
 
     /// Mockup: Support Manager
     ///
-    private let supportManager = MockupSupportManager()
+    private var supportManager: MockupSupportManager!
 
     /// Mockup: UserNotificationCenter
     ///
-    private let userNotificationCenter = MockupUserNotificationsCenterAdapter()
-
-
+    private var userNotificationCenter: MockupUserNotificationsCenterAdapter!
 
     // MARK: - Overridden Methods
 
     override func setUp() {
+        super.setUp()
+
+        application = MockupApplicationAdapter()
+
+        defaults = UserDefaults(suiteName: Sample.defaultSuiteName)
         defaults.removePersistentDomain(forName: Sample.defaultSuiteName)
-        application.reset()
-        storesManager.reset()
-        userNotificationCenter.reset()
+
+        storesManager = MockupStoresManager(sessionManager: .testingInstance)
+        supportManager = MockupSupportManager()
+        userNotificationCenter = MockupUserNotificationsCenterAdapter()
+
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: self.storesManager,
+                                                               supportManager: self.supportManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+
+            return PushNotificationsManager(configuration: configuration)
+        }()
     }
 
+    override func tearDown() {
+        manager = nil
+        userNotificationCenter = nil
+        supportManager = nil
+        storesManager = nil
+
+        defaults.removePersistentDomain(forName: Sample.defaultSuiteName)
+        defaults = nil
+
+        application = nil
+        super.tearDown()
+    }
 
     /// Verifies that the PushNotificationsManager calls `registerForRemoteNotifications` in the UIApplication's Wrapper.
     ///

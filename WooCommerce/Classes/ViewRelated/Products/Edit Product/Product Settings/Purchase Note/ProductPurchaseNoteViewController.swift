@@ -84,7 +84,7 @@ private extension ProductPurchaseNoteViewController {
     /// Since there is only a text view in this view, the text view become the first responder immediately when the view did appear
     ///
     func configureTextViewFirstResponder() {
-        if let indexPath = sections.getIndexPathForRow(.purchaseNote) {
+        if let indexPath = sections.indexPathForRow(.purchaseNote) {
             let cell = tableView.cellForRow(at: indexPath) as? TextViewTableViewCell
             cell?.noteTextView.becomeFirstResponder()
         }

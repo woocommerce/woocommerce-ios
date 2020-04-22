@@ -74,7 +74,7 @@ private extension ProductSlugViewController {
     /// Since there is only a text field in this view, the text field become the first responder immediately when the view did appear
     ///
     func configureTextFieldFirstResponder() {
-        if let indexPath = sections.getIndexPathForRow(.slug) {
+        if let indexPath = sections.indexPathForRow(.slug) {
             let cell = tableView.cellForRow(at: indexPath) as? TextFieldTableViewCell
             cell?.textField.becomeFirstResponder()
         }

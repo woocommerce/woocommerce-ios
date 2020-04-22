@@ -459,7 +459,7 @@ private extension ProductInventorySettingsViewController {
     }
 
     func getSkuCell() -> TitleAndTextFieldTableViewCell? {
-        guard let indexPath = sections.getIndexPathForRow(.sku) else {
+        guard let indexPath = sections.indexPathForRow(.sku) else {
             return nil
         }
         return tableView.cellForRow(at: indexPath) as? TitleAndTextFieldTableViewCell

@@ -1,7 +1,3 @@
-Esta vez tenemos una lista de cambios corta:
-
-- La etiqueta de estado del pedido en la lista de pedidos ya no se corta, así que puedes ver toda la información.
-- Si alguna vez te has preguntado por qué el logo de Woo en la pantalla de inicio se veía un poco estirado, es porque la relación de aspecto estaba mal. Ya lo hemos solucionado.
-- Para mayor claridad, ahora verás "Empresa de transporte" en toda la aplicación en lugar de "Proveedor de envío".
-
-¡Cuidaos y lavaos las manos!
+* Te presentamos la nueva pestaña Productos.
+* Ahora, los usuarios también tienen funciones de edición limitadas en productos sencillos, y se irán añadiendo más.
+* Hemos aplicado una corrección para que, cada vez que actualices la pestaña Procesando, se muestren tus pedidos actualizados.

@@ -9,6 +9,7 @@ enum Age: String {
     case days       = "4"
     case yesterday  = "5"
     case today      = "6"
+    case upcoming   = "7"
 
     var description: String {
         switch self {
@@ -17,6 +18,7 @@ enum Age: String {
         case .days:         return NSLocalizedString("Older than 2 days", comment: "+2 Days Section Header")
         case .yesterday:    return NSLocalizedString("Yesterday", comment: "Yesterday Section Header")
         case .today:        return NSLocalizedString("Today", comment: "Today Section Header")
+        case .upcoming:     return NSLocalizedString("Upcoming", comment: "Upcoming Section Header")
         }
     }
 }
@@ -28,9 +30,9 @@ extension Age {
 
     /// Returns the Age entity that best describes a given timespan.
     ///
-    static func from(startDate: Date, toDate: Date) -> Age {
+    static func from(startDate: Date, toDate: Date, using calendar: Calendar = Calendar.current) -> Age {
         let components = [.day, .weekOfYear, .month] as Set<Calendar.Component>
-        let dateComponents = Calendar.current.dateComponents(components, from: startDate, to: toDate)
+        let dateComponents = calendar.dateComponents(components, from: startDate, to: toDate)
 
         // Months
         if let month = dateComponents.month, month >= 1 {
@@ -51,6 +53,10 @@ extension Age {
             return .yesterday
         }
 
-        return .today
+        if let day = dateComponents.day, day == 0 {
+            return .today
+        }
+
+        return .upcoming
     }
 }

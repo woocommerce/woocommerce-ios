@@ -1,7 +1,3 @@
-En kort lista över ändringar som har utförts den här gången:
-
-- Orderstatusetiketten i orderlistan kapas inte längre av, så nu kan du faktiskt se all information.
-- Om du någonsin har undrat varför Woo-logotypen på startskärmen har sett lite utsträckt ut är det för att bredd-höjd-förhållandet var en aning felaktigt. Detta är nu åtgärdat.
-- För tydlighetens skull visas nu "Transportföretag" i hela appen istället för "Transportleverantör".
-
-Var försiktiga och tvätta händerna, allihopa!
+* Vi är glada att kunna introducera en Produkter-flik!
+* Användare har nu även begränsade redigeringsmöjligheter för Enkla produkter. Mer kommer.
+* Vi har gjort en korrigering så att dina uppdaterade beställningar nu visas när du uppdaterar Behandlar-fliken.

@@ -54,7 +54,7 @@ final class OrdersViewModelTests: XCTestCase {
             completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .fetchFilteredAndAllOrders(_, let statusKey, let deleteAllBeforeSaving, _, _) = action else {
+        guard case .fetchFilteredAndAllOrders(_, let statusKey, _, let deleteAllBeforeSaving, _, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
@@ -80,7 +80,7 @@ final class OrdersViewModelTests: XCTestCase {
             completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .fetchFilteredAndAllOrders(_, let statusKey, let deleteAllBeforeSaving, _, _) = action else {
+        guard case .fetchFilteredAndAllOrders(_, let statusKey, _, let deleteAllBeforeSaving, _, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
@@ -107,7 +107,7 @@ final class OrdersViewModelTests: XCTestCase {
             completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .fetchFilteredAndAllOrders(_, let statusKey, let deleteAllBeforeSaving, _, _) = action else {
+        guard case .fetchFilteredAndAllOrders(_, let statusKey, _, let deleteAllBeforeSaving, _, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
@@ -133,7 +133,7 @@ final class OrdersViewModelTests: XCTestCase {
             completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .fetchFilteredAndAllOrders(_, let statusKey, let deleteAllBeforeSaving, _, _) = action else {
+        guard case .fetchFilteredAndAllOrders(_, let statusKey, _, let deleteAllBeforeSaving, _, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
@@ -155,7 +155,7 @@ final class OrdersViewModelTests: XCTestCase {
             completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .synchronizeOrders(_, let statusKey, let pageNumber, let pageSize, _) = action else {
+        guard case .synchronizeOrders(_, let statusKey, _, let pageNumber, let pageSize, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
@@ -178,7 +178,7 @@ final class OrdersViewModelTests: XCTestCase {
             completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .synchronizeOrders(_, let statusKey, let pageNumber, let pageSize, _) = action else {
+        guard case .synchronizeOrders(_, let statusKey, _, let pageNumber, let pageSize, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
@@ -206,18 +206,16 @@ final class OrdersViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isEmpty)
         XCTAssertEqual(viewModel.numberOfObjects, processingOrders.count)
 
-        let fetchedOrderIDs = Set(viewModel.orders.map { $0.orderID })
-        let processingOrderIDs = Set(processingOrders.map { $0.orderID })
-        XCTAssertEqual(fetchedOrderIDs, processingOrderIDs)
+        XCTAssertEqual(viewModel.fetchedOrders.orderIDs, processingOrders.orderIDs)
     }
 
-    func testGivenNoFilterItLoadsAllTheOrdersFromTheDB() {
+    func testGivenNoFilterItLoadsAllTheTodayAndPastOrdersFromTheDB() {
         // Arrange
         let viewModel = OrdersViewModel(storageManager: storageManager, statusFilter: nil)
 
         let allInsertedOrders = [
             (0..<10).map { insertOrder(id: $0, status: .processing) },
-            (100..<105).map { insertOrder(id: $0, status: .completed) },
+            (100..<105).map { insertOrder(id: $0, status: .completed, dateCreated: Date().adding(days: -2)!) },
             (200..<203).map { insertOrder(id: $0, status: .pending) },
         ].flatMap { $0 }
 
@@ -231,9 +229,97 @@ final class OrdersViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isEmpty)
         XCTAssertEqual(viewModel.numberOfObjects, allInsertedOrders.count)
 
-        let fetchedOrderIDs = Set(viewModel.orders.map { $0.orderID })
-        let allInsertedOrderIDs = Set(allInsertedOrders.map { $0.orderID })
-        XCTAssertEqual(fetchedOrderIDs, allInsertedOrderIDs)
+        XCTAssertEqual(viewModel.fetchedOrders.orderIDs, allInsertedOrders.orderIDs)
+    }
+
+    /// If `includeFutureOrders` is `true`, all orders including orders dated in the future (dateCreated) will
+    /// be fetched.
+    func testGivenIncludingFutureOrdersItAlsoLoadsFutureOrdersFromTheDB() {
+        // Arrange
+        let viewModel = OrdersViewModel(storageManager: storageManager,
+                                        statusFilter: orderStatus(with: .pending),
+                                        includesFutureOrders: true)
+
+        let expectedOrders = [
+            // Future orders
+            insertOrder(id: 1_000, status: .pending, dateCreated: Date().adding(days: 1)!),
+            insertOrder(id: 1_001, status: .pending, dateCreated: Date().adding(days: 2)!),
+            insertOrder(id: 1_002, status: .pending, dateCreated: Date().adding(days: 3)!),
+            // Past orders
+            insertOrder(id: 4_000, status: .pending, dateCreated: Date().adding(days: -1)!),
+            insertOrder(id: 4_001, status: .pending, dateCreated: Date().adding(days: -20)!),
+        ]
+
+        // This should be ignored because it is not the same filter
+        let ignoredFutureOrder = insertOrder(id: 2_000, status: .cancelled, dateCreated: Date().adding(days: 1)!)
+
+        // Act
+        viewModel.activateAndForwardUpdates(to: UITableView())
+
+        // Assert
+        XCTAssertEqual(viewModel.numberOfObjects, expectedOrders.count)
+        XCTAssertEqual(viewModel.fetchedOrders.orderIDs, expectedOrders.orderIDs)
+
+        XCTAssertFalse(viewModel.fetchedOrders.orderIDs.contains(ignoredFutureOrder.orderID))
+    }
+
+    /// If `includesFutureOrders` is `false`, only orders created up to the current day are returned. Orders before
+    /// midnight are included.
+    func testGivenExcludingFutureOrdersItOnlyLoadsOrdersUpToMidnightFromTheDB() {
+        // Arrange
+        let viewModel = OrdersViewModel(storageManager: storageManager, statusFilter: nil, includesFutureOrders: false)
+
+        let ignoredOrders = [
+            // Orders in the future
+            insertOrder(id: 1_001, status: .pending, dateCreated: Date().adding(days: 1)!),
+            insertOrder(id: 1_002, status: .cancelled, dateCreated: Date().adding(days: 3)!),
+            // Exactly midnight is also ignored because it is technically "tomorrow"
+            insertOrder(id: 1_003, status: .processing, dateCreated: Date().nextMidnight()!),
+        ]
+
+        let expectedOrders = [
+            insertOrder(id: 4_001, status: .completed, dateCreated: Date()),
+            insertOrder(id: 4_002, status: .pending, dateCreated: Date().adding(days: -1)!),
+            insertOrder(id: 4_003, status: .pending, dateCreated: Date().adding(days: -20)!),
+            // 1 second before midnight is included because it is technically "today"
+            insertOrder(id: 4_004, status: .processing, dateCreated: Date().nextMidnight()!.adding(seconds: -1)!),
+        ]
+
+        // Act
+        viewModel.activateAndForwardUpdates(to: UITableView())
+
+        // Assert
+        XCTAssertTrue(viewModel.fetchedOrders.orderIDs.isDisjoint(with: ignoredOrders.orderIDs))
+
+        XCTAssertEqual(viewModel.numberOfObjects, expectedOrders.count)
+        XCTAssertEqual(viewModel.fetchedOrders.orderIDs, expectedOrders.orderIDs)
+    }
+
+    /// Orders with dateCreated in the future should be grouped in an "Upcoming" section.
+    func testItGroupsFutureOrdersInUpcomingSection() {
+        // Arrange
+        let viewModel = OrdersViewModel(storageManager: storageManager, statusFilter: orderStatus(with: .failed))
+
+        let expectedOrders = (
+            future: [
+                insertOrder(id: 1_000, status: .failed, dateCreated: Date().adding(days: 3)!),
+                insertOrder(id: 1_000, status: .failed, dateCreated: Date().adding(days: 4)!),
+            ],
+            past: [
+                insertOrder(id: 4_000, status: .failed, dateCreated: Date().adding(days: -1)!),
+            ]
+        )
+
+        // Act
+        viewModel.activateAndForwardUpdates(to: UITableView())
+
+        // Assert
+        XCTAssertEqual(viewModel.numberOfSections, 2)
+
+        // The first section should be the Upcoming section
+        let upcomingSection = viewModel.sectionInfo(at: 0)
+        XCTAssertEqual(Age(rawValue: upcomingSection.name), .upcoming)
+        XCTAssertEqual(upcomingSection.numberOfObjects, expectedOrders.future.count)
     }
 }
 
@@ -242,12 +328,20 @@ final class OrdersViewModelTests: XCTestCase {
 private extension OrdersViewModel {
     /// Returns the Order instances for all the rows
     ///
-    var orders: [Yosemite.Order] {
+    var fetchedOrders: [Yosemite.Order] {
         (0..<numberOfSections).flatMap { section in
             (0..<numberOfRows(in: section)).map { row in
                 detailsViewModel(at: IndexPath(row: row, section: section)).order
             }
         }
+    }
+}
+
+private extension Array where Element == Yosemite.Order {
+    /// Returns all the IDs
+    ///
+    var orderIDs: Set<Int64> {
+        Set(map(\.orderID))
     }
 }
 
@@ -258,7 +352,9 @@ private extension OrdersViewModelTests {
         OrderStatus(name: nil, siteID: siteID, slug: status.rawValue, total: 0)
     }
 
-    func insertOrder(id orderID: Int64, status: OrderStatusEnum) -> Yosemite.Order {
+    func insertOrder(id orderID: Int64,
+                     status: OrderStatusEnum,
+                     dateCreated: Date = Date()) -> Yosemite.Order {
         let readonlyOrder = Order(siteID: siteID,
                                   orderID: orderID,
                                   parentID: 0,
@@ -267,7 +363,7 @@ private extension OrdersViewModelTests {
                                   statusKey: status.rawValue,
                                   currency: "USD",
                                   customerNote: "",
-                                  dateCreated: Date(),
+                                  dateCreated: dateCreated,
                                   dateModified: Date(),
                                   datePaid: nil,
                                   discountTotal: "30.00",

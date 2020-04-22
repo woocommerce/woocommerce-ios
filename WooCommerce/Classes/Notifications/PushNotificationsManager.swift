@@ -7,7 +7,7 @@ import Yosemite
 
 /// PushNotificationsManager: Encapsulates all the tasks related to Push Notifications Auth + Registration + Handling.
 ///
-class PushNotificationsManager: PushNotesManager {
+final class PushNotificationsManager: PushNotesManager {
 
     /// PushNotifications Configuration
     ///

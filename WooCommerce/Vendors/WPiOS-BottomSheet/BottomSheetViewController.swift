@@ -34,6 +34,7 @@ class BottomSheetViewController: UIViewController {
             popoverPresentationController?.permittedArrowDirections = arrowDirections
             popoverPresentationController?.sourceView = sourceView ?? UIView()
             popoverPresentationController?.sourceRect = sourceView?.bounds ?? .zero
+            popoverPresentationController?.backgroundColor = view.backgroundColor
         } else {
             transitioningDelegate = self
             modalPresentationStyle = .custom
@@ -67,8 +68,8 @@ class BottomSheetViewController: UIViewController {
         view.clipsToBounds = true
         view.layer.cornerRadius = Constants.cornerRadius
         view.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
-        view.backgroundColor = .basicBackground
 
+        view.backgroundColor = childViewController?.view.backgroundColor
         NSLayoutConstraint.activate([
             gripButton.heightAnchor.constraint(equalToConstant: Constants.gripHeight)
         ])

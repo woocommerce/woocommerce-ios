@@ -260,7 +260,7 @@ private extension ProductsViewController {
         let sortTitle = NSLocalizedString("Sort by", comment: "Title of the toolbar button to sort products in different ways.")
         let sortButton = UIButton(frame: .zero)
         sortButton.setTitle(sortTitle, for: .normal)
-        sortButton.addTarget(self, action: #selector(sortButtonTapped), for: .touchUpInside)
+        sortButton.addTarget(self, action: #selector(sortButtonTapped(sender:)), for: .touchUpInside)
 
         let filterTitle = NSLocalizedString("Filter", comment: "Title of the toolbar button to filter products by different attributes.")
         let filterButton = UIButton(frame: .zero)
@@ -434,12 +434,25 @@ private extension ProductsViewController {
         }
     }
 
-    @objc func sortButtonTapped() {
-        UIAlertController.presentSortProductsActionSheet(viewController: self, onSelect: { [weak self] sortOrder in
-            self?.sortOrder = sortOrder
-        }, onCancel: { [weak self] in
-            self?.dismiss(animated: true, completion: nil)
-        })
+    @objc func sortButtonTapped(sender: UIButton) {
+        let title = NSLocalizedString("Sort by",
+                                      comment: "Message title for sort products action bottom sheet")
+        let viewProperties = BottomSheetListSelectorViewProperties(title: title)
+        let command = ProductsSortOrderBottomSheetListSelectorCommand(selected: sortOrder)
+        let sortOrderListViewController = BottomSheetListSelectorViewController(viewProperties: viewProperties,
+                                                                                command: command) { [weak self] selectedSortOrder in
+                                                                                    defer {
+                                                                                        self?.dismiss(animated: true, completion: nil)
+                                                                                    }
+
+                                                                                    guard let selectedSortOrder = selectedSortOrder else {
+                                                                                        return
+                                                                                    }
+                                                                                    self?.sortOrder = selectedSortOrder
+        }
+
+        let bottomSheet = BottomSheetViewController(childViewController: sortOrderListViewController)
+        bottomSheet.show(from: self, sourceView: sender, arrowDirections: .up)
     }
 
     @objc func filterButtonTapped() {

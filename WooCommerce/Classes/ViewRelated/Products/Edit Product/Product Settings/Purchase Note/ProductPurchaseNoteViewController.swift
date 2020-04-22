@@ -84,7 +84,7 @@ private extension ProductPurchaseNoteViewController {
     /// Since there is only a text view in this view, the text view become the first responder immediately when the view did appear
     ///
     func configureTextViewFirstResponder() {
-        if let indexPath = getIndexPathForRow(.purchaseNote) {
+        if let indexPath = sections.indexPathForRow(.purchaseNote) {
             let cell = tableView.cellForRow(at: indexPath) as? TextViewTableViewCell
             cell?.noteTextView.becomeFirstResponder()
         }
@@ -155,17 +155,6 @@ private extension ProductPurchaseNoteViewController {
             self?.productSettings.purchaseNote = text
         }
     }
-
-    func getIndexPathForRow(_ row: Row) -> IndexPath? {
-        for s in 0 ..< sections.count {
-            for r in 0 ..< sections[s].rows.count {
-                if sections[s].rows[r] == row {
-                    return IndexPath(row: r, section: s)
-                }
-            }
-        }
-        return nil
-    }
 }
 
 // MARK: - Keyboard management
@@ -204,7 +193,7 @@ private extension ProductPurchaseNoteViewController {
 
     /// Table Sections
     ///
-    struct Section {
+    struct Section: RowIterable {
         let footer: String?
         let rows: [Row]
 

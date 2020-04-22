@@ -458,19 +458,8 @@ private extension ProductInventorySettingsViewController {
         return sections[indexPath.section].rows[indexPath.row]
     }
 
-    func getIndexPathForRow(_ row: Row) -> IndexPath? {
-        for s in 0 ..< sections.count {
-            for r in 0 ..< sections[s].rows.count {
-                if sections[s].rows[r] == row {
-                    return IndexPath(row: r, section: s)
-                }
-            }
-        }
-        return nil
-    }
-
     func getSkuCell() -> TitleAndTextFieldTableViewCell? {
-        guard let indexPath = getIndexPathForRow(.sku) else {
+        guard let indexPath = sections.indexPathForRow(.sku) else {
             return nil
         }
         return tableView.cellForRow(at: indexPath) as? TitleAndTextFieldTableViewCell
@@ -483,7 +472,7 @@ private extension ProductInventorySettingsViewController {
         static let estimatedSectionHeaderHeight: CGFloat = 44
     }
 
-    struct Section {
+    struct Section: RowIterable {
         let errorTitle: String?
         let rows: [Row]
 

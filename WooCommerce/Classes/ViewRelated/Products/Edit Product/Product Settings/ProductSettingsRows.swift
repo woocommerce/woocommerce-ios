@@ -154,7 +154,7 @@ enum ProductSettingsRows {
 
         let cellTypes: [UITableViewCell.Type] = [SettingTitleAndValueTableViewCell.self]
     }
-    
+
     struct MenuOrder: ProductSettingsRowMediator {
         private let settings: ProductSettings
 

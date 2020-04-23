@@ -4,7 +4,7 @@ import Yosemite
 final class ProductMenuOrderViewController: UIViewController {
 
     @IBOutlet weak private var tableView: UITableView!
-    
+
     // Completion callback
     //
     typealias Completion = (_ productSettings: ProductSettings) -> Void
@@ -24,11 +24,11 @@ final class ProductMenuOrderViewController: UIViewController {
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigationBar()

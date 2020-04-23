@@ -43,7 +43,7 @@ final class ProductMenuOrderViewController: UIViewController {
 private extension ProductMenuOrderViewController {
 
     func configureNavigationBar() {
-        title = NSLocalizedString("Slug", comment: "Product Slug navigation title")
+        title = NSLocalizedString("Menu Order", comment: "Product Menu Order navigation title")
 
         removeNavigationBackBarButtonText()
     }

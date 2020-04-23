@@ -11,6 +11,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProductMenuOrderViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
                 <outlet property="tableView" destination="JYX-ph-feD" id="lvy-s7-NCl"/>
+                <outlet property="view" destination="1WG-jm-qSJ" id="JEY-Ml-9u5"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>

@@ -5,6 +5,7 @@
 - Products: now the keyboard pop up automatically in Edit Description (M1), in Edit Short Description (M2), Edit Slug (M2), Edit Purchase Note (M2)
 - The Processing orders list will now show upcoming (future) orders.
 - Improved stats: fixed the incorrect time range on "This Week" tab when loading improved stats on a day when daily saving time changes.
+- The Orders list are now automatically refreshed when reopening the app. 
 
 
 4.1

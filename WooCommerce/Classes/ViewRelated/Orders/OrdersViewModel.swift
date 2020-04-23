@@ -1,6 +1,7 @@
 
 import Foundation
 import Yosemite
+import class AutomatticTracks.CrashLogging
 import protocol Storage.StorageManagerType
 
 /// ViewModel for `OrdersViewController`.
@@ -89,7 +90,17 @@ final class OrdersViewModel {
     ///
     func activateAndForwardUpdates(to tableView: UITableView) {
         resultsController.startForwardingEvents(to: tableView)
-        try? resultsController.performFetch()
+        performFetch()
+    }
+
+    /// Execute the `resultsController` query, logging the error if there's any.
+    ///
+    private func performFetch() {
+        do {
+            try resultsController.performFetch()
+        } catch {
+            CrashLogging.logError(error)
+        }
     }
 
     /// Returns what `OrderAction` should be used when synchronizing.

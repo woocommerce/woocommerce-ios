@@ -122,4 +122,31 @@ final class AgeTests: XCTestCase {
 
         XCTAssertEqual(age, .upcoming)
     }
+
+    func testItReturnsUpcomingIfTheDateFromIsExactlyAMonthAfterDateTo() {
+        let dateFrom = dateFormatter.date(from: "2020-04-08T00:00:00Z")!
+        let dateTo = dateFormatter.date(from: "2020-03-08T00:00:00Z")!
+
+        let age = Age.from(startDate: dateFrom, toDate: dateTo, using: calendar)
+
+        XCTAssertEqual(age, .upcoming)
+    }
+
+    func testItReturnsUpcomingIfTheDateFromIsExactlyAWeekAfterDateTo() {
+        let dateFrom = dateFormatter.date(from: "2020-03-15T00:00:00Z")!
+        let dateTo = dateFormatter.date(from: "2020-03-08T00:00:00Z")!
+
+        let age = Age.from(startDate: dateFrom, toDate: dateTo, using: calendar)
+
+        XCTAssertEqual(age, .upcoming)
+    }
+
+    func testItReturnsUpcomingIfTheDateFromIsExactlyAYearAfterDateTo() {
+        let dateFrom = dateFormatter.date(from: "2021-03-08T00:00:00Z")!
+        let dateTo = dateFormatter.date(from: "2020-03-08T00:00:00Z")!
+
+        let age = Age.from(startDate: dateFrom, toDate: dateTo, using: calendar)
+
+        XCTAssertEqual(age, .upcoming)
+    }
 }

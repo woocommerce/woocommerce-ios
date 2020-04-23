@@ -53,7 +53,12 @@ extension Age {
             return .yesterday
         }
 
-        if let day = dateComponents.day, day == 0 {
+        if let month = dateComponents.month,
+           let weekOfYear = dateComponents.weekOfYear,
+           let day = dateComponents.day,
+           month == 0,
+           weekOfYear == 0,
+           day == 0 {
             return .today
         }
 

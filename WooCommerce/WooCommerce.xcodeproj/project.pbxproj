@@ -2338,6 +2338,14 @@
 			path = EmptySearchResultsViewController;
 			sourceTree = "<group>";
 		};
+		575472792451F0A500A94C3C /* Observables */ = {
+			isa = PBXGroup;
+			children = (
+				027B8BB923FE0D0C0040944E /* ObservationToken.swift */,
+			);
+			path = Observables;
+			sourceTree = "<group>";
+		};
 		57F34A9F2423D44000E38AFB /* Orders */ = {
 			isa = PBXGroup;
 			children = (
@@ -2600,6 +2608,7 @@
 		B55D4C2220B716CE00D7A50F /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				575472792451F0A500A94C3C /* Observables */,
 				CECC759A23D61BCC00486676 /* AggregateData */,
 				02C0CD2823B5BAFB00F880B1 /* ImageService */,
 				CEEC9B6121E79EBF0055EEF0 /* AppRatings */,
@@ -2620,7 +2629,6 @@
 				B55D4C2620B717C000D7A50F /* UserAgent.swift */,
 				CE22709E2293052700C0626C /* WebviewHelper.swift */,
 				45D685FD23D0FB25005F87D0 /* Throttler.swift */,
-				027B8BB923FE0D0C0040944E /* ObservationToken.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";

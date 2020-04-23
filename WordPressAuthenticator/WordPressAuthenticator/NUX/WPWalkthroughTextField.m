@@ -60,7 +60,8 @@ NSInteger const LeftImageSpacing = 8;
     }
 }
 
--(void)setRightView:(UIView *)rightView {
+-(void)setRightView:(UIView *)rightView
+{
     if (self.trailingViewWidth > 0) {
         rightView.frame = [self frameForTrailingView];
         rightView.contentMode = [self isLayoutLeftToRight] ? UIViewContentModeRight : UIViewContentModeLeft;
@@ -74,6 +75,12 @@ NSInteger const LeftImageSpacing = 8;
         }
     }
     [super setRightView:rightView];
+}
+
+- (void)setShowSecureTextEntryToggle:(BOOL)showSecureTextEntryToggle
+{
+    _showSecureTextEntryToggle = showSecureTextEntryToggle;
+    [self configureSecureTextEntryToggle];
 }
 
 - (void)commonInit

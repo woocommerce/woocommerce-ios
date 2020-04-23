@@ -133,9 +133,9 @@ private extension ProductMenuOrderViewController {
 
         let placeholder = NSLocalizedString("Menu order", comment: "Placeholder in the Product Menu Order row on Edit Product Menu Order screen.")
 
-        let viewModel = TextFieldTableViewCell.ViewModel(text: productSettings.slug, placeholder: placeholder, onTextChange: { [weak self] newName in
-            if let newName = newName {
-                self?.productSettings.slug = newName
+        let viewModel = TextFieldTableViewCell.ViewModel(text: String(productSettings.menuOrder), placeholder: placeholder, onTextChange: { [weak self] newMenuOrder in
+            if let newMenuOrder = Int(newMenuOrder ?? "0") {
+                self?.productSettings.menuOrder = newMenuOrder
             }
             }, onTextDidBeginEditing: {
                 //TODO: Add analytics track

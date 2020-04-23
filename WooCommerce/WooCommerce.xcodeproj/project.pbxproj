@@ -2285,8 +2285,16 @@
 				457151A8243B6E6200EB2DFA /* Slug */,
 				456CB50A2444BF8400992A05 /* Purchase Note */,
 				4524CD9F242D023300B2F20A /* List Selector Data Source */,
+				45A24E5C2451DB710050606B /* Menu Order */,
 			);
 			path = "Product Settings";
+			sourceTree = "<group>";
+		};
+		45A24E5C2451DB710050606B /* Menu Order */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "Menu Order";
 			sourceTree = "<group>";
 		};
 		45B9C63B23A8E4DB007FC4C5 /* Edit Price */ = {

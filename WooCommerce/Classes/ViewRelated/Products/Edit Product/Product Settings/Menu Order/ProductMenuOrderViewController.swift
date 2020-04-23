@@ -19,7 +19,7 @@ final class ProductMenuOrderViewController: UIViewController {
     init(settings: ProductSettings, completion: @escaping Completion) {
         productSettings = settings
         let footerText = NSLocalizedString("Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values",
-                                           comment: "Footer text in Product Slug screen")
+                                           comment: "Footer text in Product Menu order screen")
         sections = [Section(footer: footerText, rows: [.menuOrder])]
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)

@@ -251,8 +251,8 @@ private extension PushNotificationsManager {
             return false
         }
 
-        if let message = userInfo.dictionary(forKey: APNSKey.aps)?.string(forKey: APNSKey.alert) {
-            configuration.application.presentInAppNotification(message: message)
+        if let foregroundNotification = ForegroundNotification.from(userInfo: userInfo) {
+            configuration.application.presentInAppNotification(message: foregroundNotification.message)
         }
 
         synchronizeNotifications(completionHandler: completionHandler)
@@ -401,6 +401,20 @@ private extension PushNotificationsManager {
     }
 }
 
+// MARK: - ForegroundNotification Extension
+
+private extension ForegroundNotification {
+    static func from(userInfo: [AnyHashable: Any]) -> ForegroundNotification? {
+        guard let noteID = userInfo.integer(forKey: APNSKey.identifier),
+              let message = userInfo.dictionary(forKey: APNSKey.aps)?.string(forKey: APNSKey.alert),
+              let type = userInfo.string(forKey: APNSKey.type),
+              let noteKind = Note.Kind(rawValue: type) else {
+            return nil
+        }
+
+        return ForegroundNotification(noteID: noteID, kind: noteKind, message: message)
+    }
+}
 
 // MARK: - Private Types
 //

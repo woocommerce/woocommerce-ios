@@ -311,6 +311,7 @@
 		5754727B2451F14600A94C3C /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5754727A2451F14600A94C3C /* Observable.swift */; };
 		5754727D2451F1D800A94C3C /* PublishSubject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5754727C2451F1D800A94C3C /* PublishSubject.swift */; };
 		5754727F24520B2A00A94C3C /* Observer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5754727E24520B2A00A94C3C /* Observer.swift */; };
+		575472812452185300A94C3C /* ForegroundNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575472802452185300A94C3C /* ForegroundNotification.swift */; };
 		576F92222423C3C0003E5FEF /* OrdersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576F92212423C3C0003E5FEF /* OrdersViewModel.swift */; };
 		5795F22C23E26A8D00F6707C /* OrderSearchStarterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5795F22B23E26A8D00F6707C /* OrderSearchStarterViewController.xib */; };
 		5795F22E23E26A9E00F6707C /* OrderSearchStarterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5795F22D23E26A9E00F6707C /* OrderSearchStarterViewController.swift */; };
@@ -1131,6 +1132,7 @@
 		5754727A2451F14600A94C3C /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
 		5754727C2451F1D800A94C3C /* PublishSubject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishSubject.swift; sourceTree = "<group>"; };
 		5754727E24520B2A00A94C3C /* Observer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observer.swift; sourceTree = "<group>"; };
+		575472802452185300A94C3C /* ForegroundNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForegroundNotification.swift; sourceTree = "<group>"; };
 		576F92212423C3C0003E5FEF /* OrdersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersViewModel.swift; sourceTree = "<group>"; };
 		5795F22B23E26A8D00F6707C /* OrderSearchStarterViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderSearchStarterViewController.xib; sourceTree = "<group>"; };
 		5795F22D23E26A9E00F6707C /* OrderSearchStarterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSearchStarterViewController.swift; sourceTree = "<group>"; };
@@ -3669,6 +3671,7 @@
 				D831E2DB230E0558000037D0 /* Authentication.swift */,
 				D831E2DF230E0BA7000037D0 /* Logs.swift */,
 				02FE89C8231FB31400E85EF8 /* FeatureFlagService.swift */,
+				575472802452185300A94C3C /* ForegroundNotification.swift */,
 			);
 			path = ServiceLocator;
 			sourceTree = "<group>";
@@ -4664,6 +4667,7 @@
 				021AEF9E2407F55C00029D28 /* PHAssetImageLoader.swift in Sources */,
 				020BE74D23B1F5EB007FE54C /* TitleAndTextFieldTableViewCell.swift in Sources */,
 				D81F2D37225F0D160084BF9C /* EmptyListMessageWithActionView.swift in Sources */,
+				575472812452185300A94C3C /* ForegroundNotification.swift in Sources */,
 				B55BC1F121A878A30011A0C0 /* String+HTML.swift in Sources */,
 				B56C721221B5B44000E5E85B /* PushNotificationsConfiguration.swift in Sources */,
 				02279587237A50C900787C63 /* AztecHeaderFormatBarCommand.swift in Sources */,

@@ -10,7 +10,7 @@ workspace 'WooCommerce.xcworkspace'
 ## Pods shared between all the targets
 ## ===================================
 ##
-def aztec 
+def aztec
   pod 'WordPress-Editor-iOS', '~> 1.11.0'
 end
 
@@ -31,7 +31,7 @@ target 'WooCommerce' do
 
   pod 'Gridicons', '~> 1.0'
 
-  pod 'WordPressAuthenticator', '~> 1.14.0-beta.1'
+  pod 'WordPressAuthenticator', '~> 1.14.0'
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
   # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => ''
   # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => ''

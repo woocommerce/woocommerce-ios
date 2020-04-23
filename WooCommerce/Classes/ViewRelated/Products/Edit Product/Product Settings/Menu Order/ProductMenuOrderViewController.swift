@@ -31,11 +31,119 @@ final class ProductMenuOrderViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        configureNavigationBar()
+        configureMainView()
+        configureTableView()
     }
 
 }
 
+// MARK: - View Configuration
+//
+private extension ProductMenuOrderViewController {
+
+    func configureNavigationBar() {
+        title = NSLocalizedString("Slug", comment: "Product Slug navigation title")
+
+        removeNavigationBackBarButtonText()
+    }
+
+    func configureMainView() {
+        view.backgroundColor = .listBackground
+    }
+
+    func configureTableView() {
+        tableView.register(TextFieldTableViewCell.loadNib(), forCellReuseIdentifier: TextFieldTableViewCell.reuseIdentifier)
+
+        tableView.dataSource = self
+        tableView.delegate = self
+
+        tableView.backgroundColor = .listBackground
+        tableView.removeLastCellSeparator()
+    }
+
+    /// Since there is only a text field in this view, the text field become the first responder immediately when the view did appear
+    ///
+    func configureTextFieldFirstResponder() {
+        if let indexPath = sections.indexPathForRow(.menuOrder) {
+            let cell = tableView.cellForRow(at: indexPath) as? TextFieldTableViewCell
+            cell?.textField.becomeFirstResponder()
+        }
+    }
+}
+
+// MARK: - UITableViewDataSource Conformance
+//
+extension ProductMenuOrderViewController: UITableViewDataSource {
+
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return sections.count
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return sections[section].rows.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let row = sections[indexPath.section].rows[indexPath.row]
+
+        let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
+        configure(cell, for: row, at: indexPath)
+
+        return cell
+    }
+}
+
+// MARK: - UITableViewDelegate Conformance
+//
+extension ProductMenuOrderViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+
+    func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        return sections[section].footer
+    }
+}
+
+// MARK: - Support for UITableViewDataSource
+//
+private extension ProductMenuOrderViewController {
+    /// Configure cellForRowAtIndexPath:
+    ///
+   func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+        switch cell {
+        case let cell as TextFieldTableViewCell:
+            configureMenuOrder(cell: cell)
+        default:
+            fatalError("Unidentified product menu order row type")
+        }
+    }
+
+    func configureMenuOrder(cell: TextFieldTableViewCell) {
+        cell.accessoryType = .none
+
+        let placeholder = NSLocalizedString("Menu order", comment: "Placeholder in the Product Menu Order row on Edit Product Menu Order screen.")
+
+        let viewModel = TextFieldTableViewCell.ViewModel(text: productSettings.slug, placeholder: placeholder, onTextChange: { [weak self] newName in
+            if let newName = newName {
+                self?.productSettings.slug = newName
+            }
+            }, onTextDidBeginEditing: {
+                //TODO: Add analytics track
+        })
+        cell.configure(viewModel: viewModel)
+        cell.textField.applyBodyStyle()
+    }
+}
 
 // MARK: - Constants
 //

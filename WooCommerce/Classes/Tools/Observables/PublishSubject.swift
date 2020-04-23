@@ -10,7 +10,7 @@ import Foundation
 /// - https://developer.apple.com/documentation/combine/passthroughsubject
 /// - http://reactivex.io/documentation/subject.html
 ///
-final class PublishSubject<Element>: Observable {
+final class PublishSubject<Element>: Observable<Element> {
 
     private typealias OnCancel = () -> ()
 
@@ -18,7 +18,7 @@ final class PublishSubject<Element>: Observable {
 
     private let queue = DispatchQueue.main
 
-    func subscribe(_ onNext: @escaping OnNext<Element>) -> ObservationToken {
+    override func subscribe(_ onNext: @escaping OnNext<Element>) -> ObservationToken {
         let uuid = UUID()
 
         let onCancel: OnCancel = { [weak self] in

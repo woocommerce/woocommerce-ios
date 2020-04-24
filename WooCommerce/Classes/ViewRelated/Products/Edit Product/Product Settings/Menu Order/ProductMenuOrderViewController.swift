@@ -139,10 +139,10 @@ private extension ProductMenuOrderViewController {
             }
             }, onTextDidBeginEditing: {
                 //TODO: Add analytics track
-        }, inputFormatter: PositiveIntegerInputFormatter())
+        }, inputFormatter: IntegerInputFormatter())
         cell.configure(viewModel: viewModel)
         cell.textField.applyBodyStyle()
-        cell.textField.keyboardType = .decimalPad
+        cell.textField.keyboardType = .numbersAndPunctuation
     }
 }
 

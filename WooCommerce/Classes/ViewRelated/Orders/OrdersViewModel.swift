@@ -29,7 +29,7 @@ final class OrdersViewModel {
 
     /// Used for cancelling the observer for Remote Notifications when `self` is deallocated.
     ///
-    private var disposable: ObservationToken?
+    private var cancellable: ObservationToken?
 
     /// The block called if self requests a resynchronization of the first page.
     ///
@@ -252,7 +252,7 @@ private extension OrdersViewModel {
     /// A refresh will be requested when receiving them.
     ///
     func observeForegroundRemoteNotifications() {
-        disposable = pushNotificationsManager.foregroundNotifications.subscribe { [weak self] notification in
+        cancellable = pushNotificationsManager.foregroundNotifications.subscribe { [weak self] notification in
             guard notification.kind == .storeOrder else {
                 return
             }
@@ -262,7 +262,7 @@ private extension OrdersViewModel {
     }
 
     func stopObservingForegroundRemoteNotifications() {
-        disposable?.cancel()
+        cancellable?.cancel()
     }
 }
 

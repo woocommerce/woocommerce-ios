@@ -339,6 +339,52 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         XCTAssertEqual(application.presentInAppMessages.first, Sample.defaultMessage)
     }
+
+    // MARK: - Foreground Notification Observable
+
+    func testItEmitsForegroundNotificationsWhenItReceivesANotificationWhileAppIsActive() {
+        // Given
+        application.applicationState = .active
+
+        var emittedNotifications = [ForegroundNotification]()
+        _ = manager.foregroundNotifications.subscribe { notification in
+            emittedNotifications.append(notification)
+        }
+
+        let userinfo = notificationPayload(noteID: 9_981, type: .storeOrder)
+
+        // When
+        manager.handleNotification(userinfo) { _ in
+            // noop
+        }
+
+        // Then
+        XCTAssertEqual(emittedNotifications.count, 1)
+
+        let emittedNotification = emittedNotifications.first!
+        XCTAssertEqual(emittedNotification.kind, .storeOrder)
+        XCTAssertEqual(emittedNotification.noteID, 9_981)
+    }
+
+    func testItDoesNotEmitForegroundNotificationsWhenItReceivesANotificationWhileAppIsNotActive() {
+        // Given
+        application.applicationState = .background
+
+        var emittedNotifications = [ForegroundNotification]()
+        _ = manager.foregroundNotifications.subscribe { notification in
+            emittedNotifications.append(notification)
+        }
+
+        let userinfo = notificationPayload(noteID: 9_981, type: .storeOrder)
+
+        // When
+        manager.handleNotification(userinfo) { _ in
+            // noop
+        }
+
+        // Then
+        XCTAssertTrue(emittedNotifications.isEmpty)
+    }
 }
 
 

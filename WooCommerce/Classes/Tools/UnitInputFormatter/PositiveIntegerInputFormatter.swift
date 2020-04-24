@@ -1,8 +1,8 @@
 import Foundation
 
-/// `UnitInputFormatter` implementation for integer number input.
+/// `UnitInputFormatter` implementation for positive integer number input.
 ///
-struct IntegerInputFormatter: UnitInputFormatter {
+struct PositiveIntegerInputFormatter: UnitInputFormatter {
     func isValid(input: String) -> Bool {
         guard input.isEmpty == false else {
             // Allows empty input to be replaced by 0.

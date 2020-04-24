@@ -2,8 +2,8 @@ import XCTest
 
 @testable import WooCommerce
 
-final class IntegerInputFormatterTests: XCTestCase {
-    private let formatter = IntegerInputFormatter()
+final class PositiveIntegerInputFormatterTests: XCTestCase {
+    private let formatter = PositiveIntegerInputFormatter()
 
     // MARK: test cases for `isValid(input:)`
 

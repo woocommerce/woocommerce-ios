@@ -366,6 +366,48 @@ final class OrdersViewModelTests: XCTestCase {
         // Assert
         XCTAssertFalse(resynchronizeRequested)
     }
+
+    // MARK: - Foreground Notifications
+
+    func testGivenANewOrderNotificationItRequestsAResynchronization() {
+        // Arrange
+        let pushNotificationsManager = MockPushNotificationsManager()
+        let viewModel = OrdersViewModel(pushNotificationsManager: pushNotificationsManager, statusFilter: nil)
+
+        var resynchronizeRequested = false
+        viewModel.onShouldResynchronizeAfterAppActivation = {
+            resynchronizeRequested = true
+        }
+
+        viewModel.activateAndForwardUpdates(to: UITableView())
+
+        // Act
+        let notification = ForegroundNotification(noteID: 1, kind: .storeOrder, message: "")
+        pushNotificationsManager.sendForegroundNotification(notification)
+
+        // Assert
+        XCTAssertTrue(resynchronizeRequested)
+    }
+
+    func testGivenANonOrderNotificationItDoesNotRequestAResynchronization() {
+        // Arrange
+        let pushNotificationsManager = MockPushNotificationsManager()
+        let viewModel = OrdersViewModel(pushNotificationsManager: pushNotificationsManager, statusFilter: nil)
+
+        var resynchronizeRequested = false
+        viewModel.onShouldResynchronizeAfterAppActivation = {
+            resynchronizeRequested = true
+        }
+
+        viewModel.activateAndForwardUpdates(to: UITableView())
+
+        // Act
+        let notification = ForegroundNotification(noteID: 1, kind: .comment, message: "")
+        pushNotificationsManager.sendForegroundNotification(notification)
+
+        // Assert
+        XCTAssertFalse(resynchronizeRequested)
+    }
 }
 
 // MARK: - Helpers

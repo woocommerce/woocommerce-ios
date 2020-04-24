@@ -324,6 +324,7 @@
 		57F34AA12423D45A00E38AFB /* OrdersViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F34AA02423D45A00E38AFB /* OrdersViewModelTests.swift */; };
 		6856D2A5C2076F5BF14F2C11 /* KeyboardStateProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6856DCE1638958DA296D690F /* KeyboardStateProviderTests.swift */; };
 		6856D31F941A33BAE66F394D /* KeyboardFrameAdjustmentProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6856D3846BBF078CB5D955B9 /* KeyboardFrameAdjustmentProvider.swift */; };
+		6856D49DB7DCF4D87745C0B1 /* MockPushNotificationsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6856D249FD1702FE3864950A /* MockPushNotificationsManager.swift */; };
 		6856D806DE7DB61522D54044 /* NSMutableAttributedStringHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6856D7981E11F85D5E4EFED7 /* NSMutableAttributedStringHelperTests.swift */; };
 		6856DB2E741639716E149967 /* KeyboardStateProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6856D02484A69911F2B91714 /* KeyboardStateProvider.swift */; };
 		6856DE479EC3B2265AC1F775 /* Calendar+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6856D66A1963092C34D20674 /* Calendar+Extensions.swift */; };
@@ -1145,6 +1146,7 @@
 		57F34AA02423D45A00E38AFB /* OrdersViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersViewModelTests.swift; sourceTree = "<group>"; };
 		6856D02484A69911F2B91714 /* KeyboardStateProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardStateProvider.swift; sourceTree = "<group>"; };
 		6856D1A5F72A36AB3704D19D /* AgeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgeTests.swift; sourceTree = "<group>"; };
+		6856D249FD1702FE3864950A /* MockPushNotificationsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockPushNotificationsManager.swift; sourceTree = "<group>"; };
 		6856D3846BBF078CB5D955B9 /* KeyboardFrameAdjustmentProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardFrameAdjustmentProvider.swift; sourceTree = "<group>"; };
 		6856D66A1963092C34D20674 /* Calendar+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Calendar+Extensions.swift"; sourceTree = "<group>"; };
 		6856D7981E11F85D5E4EFED7 /* NSMutableAttributedStringHelperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSMutableAttributedStringHelperTests.swift; sourceTree = "<group>"; };
@@ -2452,6 +2454,7 @@
 				02A275C523FE9EFC005C560F /* MockFeatureFlagService.swift */,
 				02B653AB2429F7BF00A9C839 /* MockTaxClassStoresManager.swift */,
 				02EA6BFB2435EC3500FFF90A /* MockImageDownloader.swift */,
+				6856D249FD1702FE3864950A /* MockPushNotificationsManager.swift */,
 			);
 			path = Mockups;
 			sourceTree = "<group>";
@@ -4872,6 +4875,7 @@
 				6856D806DE7DB61522D54044 /* NSMutableAttributedStringHelperTests.swift in Sources */,
 				6856DF20E1BDCC391635F707 /* AgeTests.swift in Sources */,
 				6856DE479EC3B2265AC1F775 /* Calendar+Extensions.swift in Sources */,
+				6856D49DB7DCF4D87745C0B1 /* MockPushNotificationsManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

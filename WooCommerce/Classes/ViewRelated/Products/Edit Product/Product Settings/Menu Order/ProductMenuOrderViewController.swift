@@ -18,7 +18,9 @@ final class ProductMenuOrderViewController: UIViewController {
     ///
     init(settings: ProductSettings, completion: @escaping Completion) {
         productSettings = settings
-        let footerText = NSLocalizedString("Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values",
+        let text1 =
+        let footerText = NSLocalizedString("Determines the products positioning in the catalog."
+            + " The lower the value of the number, the higher the item will be on the product list. You can also use negative values",
                                            comment: "Footer text in Product Menu order screen")
         sections = [Section(footer: footerText, rows: [.menuOrder])]
         onCompletion = completion
@@ -141,8 +143,8 @@ private extension ProductMenuOrderViewController {
 
         let placeholder = NSLocalizedString("Menu order", comment: "Placeholder in the Product Menu Order row on Edit Product Menu Order screen.")
 
-        let viewModel = TextFieldTableViewCell.ViewModel(text: String(productSettings.menuOrder), placeholder: placeholder, onTextChange: { [weak self] newMenuOrder in
-            if let newMenuOrder = Int(newMenuOrder ?? "0") {
+        let viewModel = TextFieldTableViewCell.ViewModel(text: String(productSettings.menuOrder), placeholder: placeholder, onTextChange: { [weak self] menuOrder in
+            if let newMenuOrder = Int(menuOrder ?? "0") {
                 self?.productSettings.menuOrder = newMenuOrder
             }
             }, onTextDidBeginEditing: {

@@ -34,7 +34,9 @@ final class StorePickerCoordinator: Coordinator {
     func start() {
         showStorePicker()
     }
-
+    
+    /// A static method which allows easily to switch store
+    ///
     static func switchStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
         guard storeID != ServiceLocator.stores.sessionManager.defaultStoreID else {
             onCompletion()

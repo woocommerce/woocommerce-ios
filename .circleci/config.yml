@@ -18,7 +18,7 @@ jobs:
   Build Tests:
     executor:
       name: ios/default
-      xcode-version: "11.2.1"
+      xcode-version: "11.4.1"
     steps:
       - git/shallow-checkout
       - fix-circleci
@@ -36,10 +36,10 @@ jobs:
   Unit Tests:
     executor:
       name: ios/default
-      xcode-version: "11.2.1"
+      xcode-version: "11.4.1"
     steps:
       - ios/boot-simulator:
-          xcode-version: "11.2.1"
+          xcode-version: "11.4.1"
           device: iPhone 11
       - attach_workspace:
           at: ./
@@ -51,7 +51,7 @@ jobs:
   Installable Build:
     executor:
       name: ios/default
-      xcode-version: "11.2.1"
+      xcode-version: "11.4.1"
     steps:
       - git/shallow-checkout
       - fix-circleci

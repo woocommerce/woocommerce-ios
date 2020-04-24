@@ -41,8 +41,10 @@ final class MockPushNotificationsManager: PushNotesManager {
 }
 
 extension MockPushNotificationsManager {
+    /// Send a ForegroundNotification that will be emitted by the `foregroundNotifications`
+    /// observable.
+    ///
     func sendForegroundNotification(_ notification: ForegroundNotification) {
         foregroundNotificationsSubject.send(notification)
     }
 }
-

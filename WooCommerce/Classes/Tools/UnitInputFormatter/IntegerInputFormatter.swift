@@ -1,6 +1,6 @@
 import Foundation
 
-/// `UnitInputFormatter` implementation for integer number input (positive, zero, negative)
+/// `UnitInputFormatter` implementation for integer number input (positive, negative, or zero)
 ///
 struct IntegerInputFormatter: UnitInputFormatter {
     private let numberFormatter: NumberFormatter = {

@@ -148,7 +148,7 @@ private extension ProductSlugViewController {
             }
             }, onTextDidBeginEditing: {
                 //TODO: Add analytics track
-        })
+        }, inputFormatter: nil)
         cell.configure(viewModel: viewModel)
         cell.textField.applyBodyStyle()
     }

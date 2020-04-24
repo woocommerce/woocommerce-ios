@@ -21,7 +21,7 @@ extension Product {
                                   placeholder: "0",
                                   unitPosition: .none,
                                   keyboardType: .numberPad,
-                                  inputFormatter: PositiveIntegerInputFormatter(),
+                                  inputFormatter: IntegerInputFormatter(),
                                   onInputChange: onInputChange)
     }
 }

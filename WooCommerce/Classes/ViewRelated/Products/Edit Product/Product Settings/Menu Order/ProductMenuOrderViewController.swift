@@ -36,6 +36,15 @@ final class ProductMenuOrderViewController: UIViewController {
         configureTableView()
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        onCompletion(productSettings)
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        configureTextFieldFirstResponder()
+    }
 }
 
 // MARK: - View Configuration

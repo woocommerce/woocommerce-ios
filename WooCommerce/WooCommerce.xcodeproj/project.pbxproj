@@ -315,6 +315,7 @@
 		5795F22C23E26A8D00F6707C /* OrderSearchStarterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5795F22B23E26A8D00F6707C /* OrderSearchStarterViewController.xib */; };
 		5795F22E23E26A9E00F6707C /* OrderSearchStarterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5795F22D23E26A9E00F6707C /* OrderSearchStarterViewController.swift */; };
 		5795F23023E26B5300F6707C /* OrderSearchStarterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5795F22F23E26B5300F6707C /* OrderSearchStarterViewModel.swift */; };
+		5798191324526FE8000817F8 /* PublishSubjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5798191224526FE8000817F8 /* PublishSubjectTests.swift */; };
 		57AE0B0123ECD6D400237009 /* OrdersViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 57AE0B0023ECD6D400237009 /* OrdersViewController.xib */; };
 		57C503DC23E8C70C00EC0790 /* OrdersMasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C503DB23E8C70C00EC0790 /* OrdersMasterViewController.swift */; };
 		57C503DE23E8CE0D00EC0790 /* OrdersMasterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 57C503DD23E8CE0D00EC0790 /* OrdersMasterViewController.xib */; };
@@ -1134,6 +1135,7 @@
 		5795F22B23E26A8D00F6707C /* OrderSearchStarterViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderSearchStarterViewController.xib; sourceTree = "<group>"; };
 		5795F22D23E26A9E00F6707C /* OrderSearchStarterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSearchStarterViewController.swift; sourceTree = "<group>"; };
 		5795F22F23E26B5300F6707C /* OrderSearchStarterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSearchStarterViewModel.swift; sourceTree = "<group>"; };
+		5798191224526FE8000817F8 /* PublishSubjectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishSubjectTests.swift; sourceTree = "<group>"; };
 		57AE0B0023ECD6D400237009 /* OrdersViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrdersViewController.xib; sourceTree = "<group>"; };
 		57C503DB23E8C70C00EC0790 /* OrdersMasterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersMasterViewController.swift; sourceTree = "<group>"; };
 		57C503DD23E8CE0D00EC0790 /* OrdersMasterViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrdersMasterViewController.xib; sourceTree = "<group>"; };
@@ -2355,6 +2357,14 @@
 			path = Observables;
 			sourceTree = "<group>";
 		};
+		5798191124526FC7000817F8 /* Observables */ = {
+			isa = PBXGroup;
+			children = (
+				5798191224526FE8000817F8 /* PublishSubjectTests.swift */,
+			);
+			path = Observables;
+			sourceTree = "<group>";
+		};
 		57F34A9F2423D44000E38AFB /* Orders */ = {
 			isa = PBXGroup;
 			children = (
@@ -2521,6 +2531,7 @@
 		B53A569521123D27000776C9 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				5798191124526FC7000817F8 /* Observables */,
 				D8A8C4F22268288F001C72BF /* AddManualCustomTrackingViewModelTests.swift */,
 				D83F5938225B424B00626E75 /* AddManualTrackingViewModelTests.swift */,
 				CECC759823D6160000486676 /* AggregateDataHelperTests.swift */,
@@ -4774,6 +4785,7 @@
 				027B8BBD23FE0DE10040944E /* ProductImageActionHandlerTests.swift in Sources */,
 				B5980A6521AC905C00EBF596 /* UIDeviceWooTests.swift in Sources */,
 				45EF798624509B4C00B22BA2 /* ArrayIndexPathTests.swift in Sources */,
+				5798191324526FE8000817F8 /* PublishSubjectTests.swift in Sources */,
 				746791632108D7C0007CF1DC /* WooAnalyticsTests.swift in Sources */,
 				021FAFCD2355621E00B99241 /* UIView+SubviewsAxisTests.swift in Sources */,
 				74F3015A2200EC0800931B9E /* NSDecimalNumberWooTests.swift in Sources */,

@@ -1,2 +1,3 @@
-- Ketuk produk di “Performa Tertinggi” di dasbor untuk detail.
-- Pelokalan jumlah item dan lencana pesanan di tab pesanan.
+* Dengan senang hati kami memperkenalkan tab Produk!
+* Sekarang pengguna juga memiliki kemampuan penyuntingan terbatas untuk Produk Sederhana, dengan lebih banyak fitur di pembaruan mendatang.
+* Kami melakukan perbaikan agar saat Anda menyegarkan tab Dalam Proses, pesanan terbaru Anda akan ditampilkan.

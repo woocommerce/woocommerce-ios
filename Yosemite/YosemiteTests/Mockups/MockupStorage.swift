@@ -19,6 +19,8 @@ public class MockupStorageManager: StorageManagerType {
 
     /// Persistent Container: Holds the full CoreData Stack
     ///
+    /// TODO This should be private. It is not part of the `StorageManagerType` spec.
+    ///
     public lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: name, managedObjectModel: managedModel)
         container.persistentStoreDescriptions = [storeDescription]

@@ -7,6 +7,13 @@ use_modular_headers!
 platform :ios, '12.0'
 workspace 'WooCommerce.xcworkspace'
 
+## Pods shared between all the targets
+## ===================================
+##
+def aztec
+  pod 'WordPress-Editor-iOS', '~> 1.11.0'
+end
+
 # Main Target!
 # ============
 #
@@ -19,28 +26,29 @@ target 'WooCommerce' do
   #
 
   # Use the latest bugfix for coretelephony
-  #pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :tag => '0.2.4-beta.1'
-  pod 'Automattic-Tracks-iOS', '~> 0.4.0'
+  #pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :tag => '0.2.4'
+  pod 'Automattic-Tracks-iOS', '~> 0.4.4'
 
-  pod 'Gridicons', '~> 0.19'
+  pod 'Gridicons', '~> 1.0'
 
+  pod 'WordPressAuthenticator', '~> 1.14.0'
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  #pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => 'task/wc-support-site-url-login'
-  pod 'WordPressAuthenticator', '~> 1.10.6'
+  # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => ''
+  # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => ''
 
-  # pod 'WordPressShared', :git => 'https://github.com/wordpress-mobile/WordPress-iOS-Shared.git', :branch => 'task/support-swift-5'  
-  pod 'WordPressShared', '~> 1.8.2'
-  
-  pod 'WordPressUI', '~> 1.5.1'
+  # pod 'WordPressShared', :git => 'https://github.com/wordpress-mobile/WordPress-iOS-Shared.git', :branch => ''
+  pod 'WordPressShared', '~> 1.8.16'
 
-  pod 'WordPress-Editor-iOS', '~> 1.11.0'
+  pod 'WordPressUI', '~> 1.5.2'
+
+  aztec
 
   pod 'WPMediaPicker', '~> 1.6.0'
 
   # External Libraries
   # ==================
   #
-  pod 'Alamofire', '~> 4.7'
+  pod 'Alamofire', '~> 4.8'
   pod 'KeychainAccess', '~> 3.2'
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
@@ -48,7 +56,7 @@ target 'WooCommerce' do
   pod 'Charts', '~> 3.3.0'
   pod 'ZendeskSupportSDK', '~> 5.0'
   pod 'Kingfisher', '~> 5.11.0'
-  pod 'Wormholy', '~> 1.5.1', :configurations => ['Debug']
+  pod 'Wormholy', '~> 1.6.0', :configurations => ['Debug']
 
   # Unit Tests
   # ==========
@@ -63,9 +71,11 @@ end
 # ===============
 #
 def yosemite_pods
-  pod 'Alamofire', '~> 4.7'
+  pod 'Alamofire', '~> 4.8'
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
+
+  aztec
 end
 
 # Yosemite Target:
@@ -88,9 +98,12 @@ end
 # =================
 #
 def networking_pods
-  pod 'Alamofire', '~> 4.7'
+  pod 'Alamofire', '~> 4.8'
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
+
+  # Used for HTML parsing
+  aztec
 end
 
 # Networking Target:

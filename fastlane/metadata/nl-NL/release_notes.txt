@@ -1,2 +1,3 @@
-- Door in het dashboard op een product te tikken in het gedeelte 'Toppresteerders' worden de productgegevens geopend.
-- Het tabblad Bestellingen lokaliseert nu zowel het aantal artikelen en de bestellingsbadge.
+* We kondigen met trots een Producten-tabblad aan!
+* Gebruikers kunnen nu ook beperkte bewerkingsfuncties voor eenvoudige producten gebruiken en later zullen er meer volgen.
+* We hebben een fix doorgevoerd zodat, wanneer je het tabblad Verwerking vernieuwt, de bijgewerkte bestellingen worden weergegeven.

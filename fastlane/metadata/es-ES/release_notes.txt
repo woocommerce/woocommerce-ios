@@ -1,2 +1,3 @@
-- En el escritorio, se abre la información del producto al tocar en “Mejor rendimiento”.
-- Ahora, en la pestaña de pedidos se localizan las cantidades de los artículos y la insignia del pedido.
+* Te presentamos la nueva pestaña Productos.
+* Ahora, los usuarios también tienen funciones de edición limitadas en productos sencillos, y se irán añadiendo más.
+* Hemos aplicado una corrección para que, cada vez que actualices la pestaña Procesando, se muestren tus pedidos actualizados.

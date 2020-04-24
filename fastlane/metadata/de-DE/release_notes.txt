@@ -1,2 +1,3 @@
-- Wenn du im Dashboard im Abschnitt „Bestseller“ auf ein Produkt tippst, werden die Produktdetails geöffnet.
-- Auf dem Tab „Bestellungen“ werden jetzt sowohl die Artikelmenge als auch das Bestell-Badge lokalisiert.
+* Wir freuen uns, den Tab „Produkte“ vorzustellen!
+* Zusätzlich haben Benutzer jetzt begrenzte Bearbeitungsfunktionen für einfache Produkte, mehr Funktionen in Kürze.
+* Wir haben eine Behebung vorgenommen, sodass beim Aktualisieren des Tabs „In Bearbeitung“ deine aktuellen Bestellungen angezeigt werden.

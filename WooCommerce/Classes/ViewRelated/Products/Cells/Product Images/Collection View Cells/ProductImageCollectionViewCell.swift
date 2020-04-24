@@ -4,6 +4,8 @@ final class ProductImageCollectionViewCell: UICollectionViewCell {
 
     @IBOutlet weak var imageView: UIImageView!
 
+    var cancellableTask: Cancellable?
+
     override func awakeFromNib() {
         super.awakeFromNib()
         configureBackground()
@@ -15,6 +17,11 @@ final class ProductImageCollectionViewCell: UICollectionViewCell {
         super.traitCollectionDidChange(previousTraitCollection)
         // Border color is not automatically updated on trait collection changes and thus manually updated here.
         contentView.layer.borderColor = Colors.borderColor.cgColor
+    }
+
+    override func prepareForReuse() {
+        cancellableTask?.cancel()
+        cancellableTask = nil
     }
 }
 

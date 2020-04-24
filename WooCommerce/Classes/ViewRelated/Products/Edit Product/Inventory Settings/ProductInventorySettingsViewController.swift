@@ -34,7 +34,9 @@ final class ProductInventorySettingsViewController: UIViewController {
     private lazy var throttler: Throttler = Throttler(seconds: 0.5)
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
-        let keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: handleKeyboardFrameUpdate(keyboardFrame:))
+        let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
+            self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
+        }
         return keyboardFrameObserver
     }()
 
@@ -71,6 +73,7 @@ final class ProductInventorySettingsViewController: UIViewController {
         configureMainView()
         configureTableView()
         reloadSections()
+        handleSwipeBackGesture()
     }
 }
 
@@ -168,12 +171,31 @@ extension ProductInventorySettingsViewController {
             return true
         }
 
-        if sku != product.sku || manageStockEnabled != product.manageStock || soldIndividually != product.soldIndividually ||
-            stockQuantity != product.stockQuantity || backordersSetting != product.backordersSetting || stockStatus != product.productStockStatus {
+        // Checks general settings regardless of whether stock management is enabled.
+        let hasChangesInGeneralSettings = sku != product.sku || manageStockEnabled != product.manageStock || soldIndividually != product.soldIndividually
+
+        if hasChangesInGeneralSettings {
+            presentBackNavigationActionSheet()
+            return false
+        }
+
+        // Checks stock settings depending on whether stock management is enabled.
+        let hasChangesInStockSettings: Bool
+        if manageStockEnabled {
+            hasChangesInStockSettings = stockQuantity != product.stockQuantity || backordersSetting != product.backordersSetting
+        } else {
+            hasChangesInStockSettings = stockStatus != product.productStockStatus
+        }
+
+        if hasChangesInStockSettings {
             presentBackNavigationActionSheet()
             return false
         }
         return true
+    }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        return shouldPopOnBackButton()
     }
 
     @objc private func completeUpdating() {
@@ -436,19 +458,8 @@ private extension ProductInventorySettingsViewController {
         return sections[indexPath.section].rows[indexPath.row]
     }
 
-    func getIndexPathForRow(_ row: Row) -> IndexPath? {
-        for s in 0 ..< sections.count {
-            for r in 0 ..< sections[s].rows.count {
-                if sections[s].rows[r] == row {
-                    return IndexPath(row: r, section: s)
-                }
-            }
-        }
-        return nil
-    }
-
     func getSkuCell() -> TitleAndTextFieldTableViewCell? {
-        guard let indexPath = getIndexPathForRow(.sku) else {
+        guard let indexPath = sections.indexPathForRow(.sku) else {
             return nil
         }
         return tableView.cellForRow(at: indexPath) as? TitleAndTextFieldTableViewCell
@@ -461,7 +472,7 @@ private extension ProductInventorySettingsViewController {
         static let estimatedSectionHeaderHeight: CGFloat = 44
     }
 
-    struct Section {
+    struct Section: RowIterable {
         let errorTitle: String?
         let rows: [Row]
 

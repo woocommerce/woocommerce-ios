@@ -1,2 +1,3 @@
-- Nella bacheca, toccando un prodotto nella sezione di quelli con il migliore andamento si aprono i dettagli del prodotto.
-- La scheda degli ordini ora localizza sia le quantità degli articoli sia il badge dell'ordine.
+*Siamo entusiasti di introdurre la scheda Prodotti.
+*Gli utenti hanno ora opzioni di modifica limitate per i prodotti semplici, con altre in arrivo.
+*Abbiamo eseguito una correzione in modo che, ogni volta che aggiorni la scheda Elaborazione, verranno visualizzati gli ordini aggiornati.

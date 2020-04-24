@@ -86,10 +86,11 @@ private extension ProductImagesCollectionViewController {
         cell.imageView.contentMode = .center
         cell.imageView.image = .productsTabProductCellPlaceholderImage
 
-        productUIImageLoader.requestImage(productImage: productImage) { [weak cell] image in
+        let cancellable = productUIImageLoader.requestImage(productImage: productImage) { [weak cell] image in
             cell?.imageView.contentMode = .scaleAspectFit
             cell?.imageView.image = image
         }
+        cell.cancellableTask = cancellable
     }
 
     func configureUploadingImageCell(_ cell: UICollectionViewCell, asset: PHAsset) {

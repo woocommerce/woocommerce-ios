@@ -10,54 +10,60 @@ extension UIImage {
     /// Add Icon
     ///
     static var addOutlineImage: UIImage {
-        return Gridicon.iconOfType(.addOutline)
+        return UIImage.gridicon(.addOutline)
     }
 
     /// Notice Icon
     ///
     static var noticeImage: UIImage {
         let tintColor = UIColor.listIcon
-        return Gridicon.iconOfType(.notice).imageWithTintColor(tintColor)!
+        return UIImage.gridicon(.notice).imageWithTintColor(tintColor)!
     }
 
     /// Aside Image
     ///
     static var asideImage: UIImage {
-        return Gridicon.iconOfType(.aside)
+        return UIImage.gridicon(.aside)
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Bell Icon
     ///
     static var bellImage: UIImage {
-        return Gridicon.iconOfType(.bell)
+        return UIImage.gridicon(.bell)
     }
 
     /// Brief Description Icon
     ///
     static var briefDescriptionImage: UIImage {
-        return Gridicon.iconOfType(.alignLeft, withSize: CGSize(width: 24, height: 24))
+        return UIImage.gridicon(.alignLeft, size: CGSize(width: 24, height: 24)).imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Camera Icon
     ///
     static var cameraImage: UIImage {
-        return Gridicon.iconOfType(.camera)
+        return UIImage.gridicon(.camera)
             .imageFlippedForRightToLeftLayoutDirection()
             .applyTintColor(.placeholderImage)!
+    }
+
+    /// Product categories Icon
+    ///
+    static var categoriesIcon: UIImage {
+        return UIImage.gridicon(.folder).imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Add Image icon
     ///
     static var addImage: UIImage {
         let tintColor = UIColor.neutral(.shade40)
-        return Gridicon.iconOfType(.addImage).imageWithTintColor(tintColor)!
+        return UIImage.gridicon(.addImage).imageWithTintColor(tintColor)!
     }
 
     /// Checkmark image, no style applied
     ///
     static var checkmarkImage: UIImage {
-        return Gridicon.iconOfType(.checkmark)
+        return UIImage.gridicon(.checkmark)
     }
 
     /// WooCommerce Styled Checkmark
@@ -71,44 +77,44 @@ extension UIImage {
     ///
     static var chevronImage: UIImage {
         let tintColor = UIColor.neutral(.shade40)
-        return Gridicon.iconOfType(.chevronRight).imageWithTintColor(tintColor)!
+        return UIImage.gridicon(.chevronRight).imageWithTintColor(tintColor)!
     }
 
     /// Chevron Pointing Down
     ///
     static var chevronDownImage: UIImage {
-        return Gridicon.iconOfType(.chevronDown)
+        return UIImage.gridicon(.chevronDown)
     }
 
     /// Chevron Pointing Up
     ///
     static var chevronUpImage: UIImage {
-        return Gridicon.iconOfType(.chevronUp)
+        return UIImage.gridicon(.chevronUp)
     }
 
     /// Close bar button item
     ///
     static var closeButton: UIImage {
-        return Gridicon.iconOfType(.cross)
+        return UIImage.gridicon(.cross)
     }
 
     /// Cog Icon
     ///
     static var cogImage: UIImage {
-        return Gridicon.iconOfType(.cog)
+        return UIImage.gridicon(.cog)
     }
 
     /// Comment Icon
     ///
     static var commentImage: UIImage {
-        return Gridicon.iconOfType(.comment)
+        return UIImage.gridicon(.comment)
     }
 
     /// Delete Icon
     ///
     static var deleteImage: UIImage {
         let tintColor = UIColor.primary
-        return Gridicon.iconOfType(.crossCircle)
+        return UIImage.gridicon(.crossCircle)
             .imageWithTintColor(tintColor)!
             .imageFlippedForRightToLeftLayoutDirection()
     }
@@ -116,7 +122,7 @@ extension UIImage {
     /// Ellipsis Icon
     ///
     static var ellipsisImage: UIImage {
-        return Gridicon.iconOfType(.ellipsis)
+        return UIImage.gridicon(.ellipsis)
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
@@ -132,6 +138,12 @@ extension UIImage {
         return UIImage(named: "woo-empty-reviews")!
     }
 
+    /// An image showing a hand holding a magnifying glass over a page.
+    ///
+    static var emptySearchResultsImage: UIImage {
+        UIImage(named: "woo-empty-search-results")!
+    }
+
     /// Error State Image
     ///
     static var errorStateImage: UIImage {
@@ -141,20 +153,20 @@ extension UIImage {
     /// External Link Icon
     ///
     static var externalImage: UIImage {
-        return Gridicon.iconOfType(.external)
+        return UIImage.gridicon(.external)
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Filter Icon
     ///
     static var filterImage: UIImage {
-        return Gridicon.iconOfType(.filter)
+        return UIImage.gridicon(.filter)
     }
 
     /// Gift Icon (with a red dot at the top right corner)
     ///
     static var giftWithTopRightRedDotImage: UIImage {
-        guard let image = Gridicon.iconOfType(.gift, withSize: CGSize(width: 24, height: 24))
+        guard let image = UIImage.gridicon(.gift, size: CGSize(width: 24, height: 24))
             // Applies a constant gray color that looks fine in both Light/Dark modes, since we are generating an image with multiple colors.
             .applyTintColor(.gray(.shade30))?
             .imageWithTopRightDot(imageOrigin: CGPoint(x: 0, y: 2),
@@ -173,7 +185,7 @@ extension UIImage {
     /// Heart Outline
     ///
     static var heartOutlineImage: UIImage {
-        return Gridicon.iconOfType(.heartOutline)
+        return UIImage.gridicon(.heartOutline)
     }
 
     /// Login prologue slanted rectangle
@@ -185,7 +197,7 @@ extension UIImage {
     /// Inventory Icon
     ///
     static var inventoryImage: UIImage {
-        return Gridicon.iconOfType(.listCheckmark, withSize: CGSize(width: 24, height: 24))
+        return UIImage.gridicon(.listCheckmark, size: CGSize(width: 24, height: 24))
     }
 
     /// Jetpack Logo Image
@@ -197,13 +209,13 @@ extension UIImage {
     /// Info Icon
     ///
     static var infoImage: UIImage {
-        return Gridicon.iconOfType(.info, withSize: CGSize(width: 24, height: 24))
+        return UIImage.gridicon(.info, size: CGSize(width: 24, height: 24))
     }
 
     /// Invisible Image
     ///
     static var invisibleImage: UIImage {
-        return Gridicon.iconOfType(.image)
+        return UIImage.gridicon(.image)
     }
 
     /// Login magic link
@@ -221,7 +233,7 @@ extension UIImage {
     /// Mail Icon
     ///
     static var mailImage: UIImage {
-        return Gridicon.iconOfType(.mail)
+        return UIImage.gridicon(.mail)
     }
 
     /// More Icon
@@ -234,22 +246,21 @@ extension UIImage {
     /// Price Icon
     ///
     static var priceImage: UIImage {
-        return Gridicon.iconOfType(.money, withSize: CGSize(width: 24, height: 24))
+        return UIImage.gridicon(.money, size: CGSize(width: 24, height: 24))
     }
 
     /// Product Placeholder Image
     ///
     static var productPlaceholderImage: UIImage {
         let tintColor = UIColor.listIcon
-        return Gridicon.iconOfType(.product).imageWithTintColor(tintColor)!
+        return UIImage.gridicon(.product).imageWithTintColor(tintColor)!
     }
 
     /// Product Placeholder Image on Products Tab Cell
     ///
     static var productsTabProductCellPlaceholderImage: UIImage {
         let tintColor = UIColor.listSmallIcon
-        return Gridicon
-            .iconOfType(.product, withSize: CGSize(width: 20, height: 20))
+        return UIImage.gridicon(.product, size: CGSize(width: 20, height: 20))
             .imageWithTintColor(tintColor)!
     }
 
@@ -264,14 +275,14 @@ extension UIImage {
     /// Product Image
     ///
     static var productImage: UIImage {
-        return Gridicon.iconOfType(.product)
+        return UIImage.gridicon(.product)
     }
 
     /// Pencil Icon
     ///
     static var pencilImage: UIImage {
         let tintColor = UIColor.primary
-        return Gridicon.iconOfType(.pencil)
+        return UIImage.gridicon(.pencil)
             .imageWithTintColor(tintColor)!
             .imageFlippedForRightToLeftLayoutDirection()
     }
@@ -279,39 +290,39 @@ extension UIImage {
     /// Quote Image
     ///
     static var quoteImage: UIImage {
-        return Gridicon.iconOfType(.quote)
+        return UIImage.gridicon(.quote)
     }
 
     /// Pages Icon
     ///
     static var pagesImage: UIImage {
-        return Gridicon.iconOfType(.pages)
+        return UIImage.gridicon(.pages)
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Search Icon
     ///
     static var searchImage: UIImage {
-        return Gridicon.iconOfType(.search)
+        return UIImage.gridicon(.search)
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Shipping Icon
     ///
     static var shippingImage: UIImage {
-        return Gridicon.iconOfType(.shipping, withSize: CGSize(width: 24, height: 24))
+        return UIImage.gridicon(.shipping, size: CGSize(width: 24, height: 24)).imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Shipping class list selector empty icon
     ///
     static var shippingClassListSelectorEmptyImage: UIImage {
-        return Gridicon.iconOfType(.shipping, withSize: CGSize(width: 80, height: 80))
+        return UIImage.gridicon(.shipping, size: CGSize(width: 80, height: 80))
     }
 
     /// Spam Icon
     ///
     static var spamImage: UIImage {
-        return Gridicon.iconOfType(.spam)
+        return UIImage.gridicon(.spam)
     }
 
     /// Returns a star icon with the given size
@@ -322,40 +333,38 @@ extension UIImage {
     ///
     static func starImage(size: Double) -> UIImage {
         let starSize = CGSize(width: size, height: size)
-        return Gridicon.iconOfType(.star,
-                                   withSize: starSize)
+        return UIImage.gridicon(.star, size: starSize)
     }
 
     /// Returns a star outline icon with the given size
     ///
     /// - Parameters:
-    ///   - size: desired size of the resulting star icon
+    ///   - size: desired size of the resulting star icon, defaults to `Gridicon.defaultSize.height`
     /// - Returns: a bitmap image
     ///
-    static func starOutlineImage(size: Double) -> UIImage {
+    static func starOutlineImage(size: Double = Double(Gridicon.defaultSize.height)) -> UIImage {
         let starSize = CGSize(width: size, height: size)
-        return Gridicon.iconOfType(.starOutline,
-                                   withSize: starSize)
+        return UIImage.gridicon(.starOutline, size: starSize)
     }
 
     /// Stats Icon
     ///
     static var statsImage: UIImage {
-        return Gridicon.iconOfType(.stats)
+        return UIImage.gridicon(.stats)
         .imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Stats Alt Icon
     ///
     static var statsAltImage: UIImage {
-        return Gridicon.iconOfType(.statsAlt)
+        return UIImage.gridicon(.statsAlt)
         .imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Trash Can Icon
     ///
     static var trashImage: UIImage {
-        return Gridicon.iconOfType(.trash)
+        return UIImage.gridicon(.trash)
     }
 
     /// Creates a bitmap image of the Woo "bubble" logo based on a vector image in our asset catalog.

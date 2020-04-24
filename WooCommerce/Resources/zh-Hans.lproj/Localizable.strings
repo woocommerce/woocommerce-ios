@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-03-04 03:54:04+0000 */
+/* Translation-Revision-Date: 2020-04-16 00:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -54,6 +54,9 @@
 /* Content of the badge presented over the Orders icon when there are more than 99 orders processing */
 "99+" = "99+";
 
+/* Placeholder of the Product Short Description row on Product main screen */
+"A brief excerpt about the product" = "产品简介摘录";
+
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "必须提供有效电子邮件地址才能发送身份验证链接。请返回上一屏幕并提供有效电子邮件地址。";
 
@@ -102,8 +105,11 @@
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "用于查看应用程序状态的高级工具";
 
-/* Name of the All filter on the Order List screen - it means all orders will be displayed. */
-"All" = "全部";
+/* Option to select the Airmail app when logging in with magic links */
+"Airmail" = "Airmail";
+
+/* Title for the second page in the Orders tab. */
+"All Orders" = "所有订单";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "所有评论均已标记为已读";
@@ -224,23 +230,37 @@
 "Can Not Request Link" = "无法请求链接";
 
 /* Button title Cancel in Discard Changes Action Sheet
-   Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image */
+   Button title Cancel in Edit Product More Options Action Sheet - Button title Cancel in Sort Products Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links */
 "Cancel" = "取消";
 
 /* The title of the alert when there is an error updating the product */
-"Cannot update Product" = "无法更新产品";
+"Cannot update product" = "无法更新产品";
 
-/* Title of the alert when there is an error uploading image(s) */
+/* The title of the alert when there is an error uploading an image
+   Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "无法上传图像";
 
-/* Catalog Visibility label in Product Settings */
+/* Add Custom shipping carrier. Title of cell presenting the carrier name */
+"Carrier name" = "承运商名称";
+
+/* Catalog Visibility label in Product Settings
+   Product Catalog Visibility navigation title */
 "Catalog Visibility" = "目录可见性";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "密切关注您喜爱的站点，并随时随地加入对话。";
 
+/* Title of the Categories row on Product main screen */
+"Categories" = "分类";
+
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "证书错误";
+
+/* Instructional text on how to open the email containing a magic link. */
+"Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder." = "Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder.";
+
+/* Alert title for check your email during logIn/signUp. */
+"Check your email!" = "请查看电子邮件！";
 
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "从设备中选择";
@@ -280,6 +300,9 @@
 
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "继续阅读";
+
+/* Button title. Tapping begins log in using Apple. */
+"Continue with Apple" = "继续使用 Apple";
 
 /* Button title. Tapping begins log in using Google. */
 "Continue with Google" = "继续使用 Google";
@@ -323,12 +346,12 @@
 /* Cell title: the current date. */
 "Current" = "当前";
 
-/* Name of the section for custom shipment tracking providers */
+/* Name of the section for custom shipment tracking carriers */
 "Custom" = "自定义";
 
-/* Add custom shipping provider. Content of cell titled Shipping Provider
-   Placeholder name of a custom shipment tracking provider - Title of button to add a custom tracking provider if filtering the list yields no results. */
-"Custom Provider" = "自定义提供商";
+/* Add custom shipping carrier. Content of cell titled Shipping Carrier
+   Placeholder name of a custom shipment tracking carrier - Title of button to add a custom tracking carrier if filtering the list yields no results. */
+"Custom Carrier" = "自定义承运商";
 
 /* Customer info section title */
 "Customer" = "客户";
@@ -340,8 +363,14 @@
    Section title for a note from the customer */
 "Customer Provided Note" = "客户提供的备注";
 
-/* Add / Edit shipping provider. Title of cell date shipped */
+/* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "配送日期";
+
+/* Action sheet option to sort products from the newest to the oldest */
+"Date: Newest to Oldest" = "日期：最新到最旧";
+
+/* Action sheet option to sort products from the oldest to the newest */
+"Date: Oldest to Newest" = "日期：最旧到最新";
 
 /* Statistical unit - a single day */
 "Day" = "日";
@@ -454,11 +483,8 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "空 URL";
 
-/* The text placeholder for the Text Editor screen */
-"Enter a title..." = "输入标题...";
-
-/* Add custom shipping provider. Placeholder of cell presenting provider name */
-"Enter provider name" = "输入提供商名称";
+/* Add custom shipping carrier. Placeholder of cell presenting carrier name */
+"Enter carrier name" = "输入承运商名称";
 
 /* Instruction text on the login's site addresss screen.
    Label for button to log in using your site address. */
@@ -470,10 +496,10 @@
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "输入您的 WordPress.com 帐户的密码。";
 
-/* Add custom shipping provider. Placeholder of cell presenting tracking link */
+/* Add custom shipping carrier. Placeholder of cell presenting carrier link */
 "Enter tracking link" = "输入跟踪链接";
 
-/* Add custom shipping provider. Placeholder of cell presenting tracking number */
+/* Add custom shipping carrier. Placeholder of cell presenting tracking number */
 "Enter tracking number" = "输入跟踪编号";
 
 /* Title of a button on the magic link screen.
@@ -493,22 +519,25 @@
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "未能将请求序列化至 REST API。";
 
+/* Option to select the Fastmail app when logging in with magic links */
+"Fastmail" = "Fastmail";
+
 /* Navigates to the feature request screen */
 "Feature Request" = "功能请求";
+
+/* Featured Product switch in Product Catalog Visibility */
+"Featured Product" = "推荐产品";
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "使用密码管理器填写";
 
-/* Filter the orders list. */
-"Filter orders" = "过滤订单";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
-"Filters the order list by payment status." = "按付款状态过滤订单列表。";
+/* Title of the toolbar button to filter products by different attributes. */
+"Filter" = "过滤器";
 
 /* User role badge */
 "Follower" = "粉丝";
 
-/* Title of the cell in Product Price Settings > Schedule sale From a certain date */
+/* Title of the cell in Product Price Settings > Schedule sale from a certain date */
 "From" = "开始日期";
 
 /* Order Fulfillment Title */
@@ -522,6 +551,9 @@
 
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "获取账户信息";
+
+/* Option to select the Gmail app when logging in with magic links */
+"Gmail" = "Gmail";
 
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Google 注册失败。";
@@ -589,7 +621,7 @@
 "Help Improve The App" = "帮助改进应用程序";
 
 /* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
-   Shown in a Product Variation cell if the variation is not visible (purchasable is false) */
+   Display label for the product's catalog visibility - Shown in a Product Variation cell if the variation is not visible (purchasable is false) */
 "Hidden" = "已隐藏";
 
 /* Detail label for yes/no switch. */
@@ -739,6 +771,9 @@
 /* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
 "Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "Automattic 用爱心打造。<a href=\"https:\/\/automattic.com\/work-with-us\/\">我们正在招贤纳士！<\/a>";
 
+/* Option to select the Apple Mail app when logging in with magic links */
+"Mail (Default)" = "Mail（默认）";
+
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "通过实时提醒管理订单、跟踪销售情况，以及监控商店活动。";
 
@@ -746,7 +781,7 @@
 "Manage stock" = "管理库存";
 
 /* shown in promotional screens during first launch */
-"Manage your Jetpack-powered site on the go — you‘ve got WordPress in your pocket." = "随时随地管理由 Jetpack 提供支持的站点 - 将 WordPress 装进口袋中。";
+"Manage your Jetpack-powered site on the go — you've got WordPress in your pocket." = "随时随地管理由 Jetpack 提供支持的站点 - 将 WordPress 装进口袋中。";
 
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "手动选择偏差";
@@ -768,6 +803,9 @@
 
 /* Message phone number button title */
 "Message" = "邮件";
+
+/* Option to select the Microsft Outlook app when logging in with magic links */
+"Microsoft Outlook" = "Microsoft Outlook";
 
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
 "Minimum value %1$@, maximum value %2$@" = "最小值：%1$@；最大值：%2$@";
@@ -839,6 +877,9 @@
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "无可用数据";
 
+/* Placeholder text shown when there are no images for the WordPress Media Library yet */
+"No images yet" = "还没有图片";
+
 /* The text on the placeholder overlay when there are no product variations on the Products tab */
 "No product variations yet" = "尚无产品变体";
 
@@ -851,8 +892,8 @@
 /* Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "没有符合所选条件的结果";
 
-/* Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider' */
-"No results found for (term)\nAdd a custom provider" = "未找到与 (term) 相符的搜索结果\n添加自定义配送服务提供商";
+/* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier' */
+"No results found for (term)\nAdd a custom carrier" = "No results found for (term)\nAdd a custom carrier";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "此时期没有收入";
@@ -951,11 +992,8 @@
 "Ordered List" = "有序列表";
 
 /* Default title for Orders List shown when tapping on the Search filter.
-   Orders stat label on dashboard - should be plural. - The title of the Orders tab. - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+   Orders stat label on dashboard - should be plural. - The title of the Orders tab. */
 "Orders" = "订单";
-
-/* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
-"Orders: %@" = "订单：%@";
 
 /* My Store > Settings > Other app section */
 "Other" = "其他";
@@ -979,13 +1017,15 @@
 /* Payment section title */
 "Payment" = "付款";
 
-/* Display label for the product's pending status
-   Display label for the review's pending status */
+/* Display label for the review's pending status */
 "Pending" = "待审";
 
 /* A unit test string, appended before the title of a review.
    Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
 "Pending Review" = "待审核";
+
+/* Display label for the product's pending status */
+"Pending review" = "待审核";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "电话号码：%@";
@@ -995,12 +1035,6 @@
 
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "选择要关联的商店";
-
-/* Product title error notice message, when the title is empty */
-"Please add a title" = "请添加标题";
-
-/* Alert title for check your email during logIn/signUp. */
-"Please check your email" = "请检查电子邮件";
 
 /* Placeholder for editing the URL of a text link */
 "Please enter a URL" = "请输入 URL";
@@ -1041,8 +1075,8 @@
 /* Error message when an image captured by camera cannot be saved to the device Photos library */
 "Please make sure the app can access Photos in device settings" = "请确保设备设置中应用程序有访问照片的权限";
 
-/* Message to ask the user to check their email and look for a WordPress.com email. */
-"Please open your email app and look for an email from WordPress.com." = "请打开电子邮件应用程序，查找来自 WordPress.com 的电子邮件。";
+/* The message of the alert when there is an error uploading an image */
+"Please try again." = "请重试。";
 
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "我们正在将此产品发布到您的商店，请稍候";
@@ -1066,6 +1100,9 @@
 
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "私人备注";
+
+/* Title for the first page in the Orders tab. */
+"Processing" = "正在处理";
 
 /* Description for Top Performers left column header
    Product section title - Section header title for the product */
@@ -1097,17 +1134,14 @@
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "可选择给账单付款客户打电话还是发邮件的提示。";
 
-/* Add Custom shipping provider. Title of cell presenting the provider name */
-"Provider name" = "提供商名称";
-
-/* Display label for the product's published status */
-"Publish" = "发布";
-
 /* Title of the Publish Settings section on Product Settings screen */
 "Publish Settings" = "发布设置";
 
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "在公园中发布文章，在公共汽车上写博客，在咖啡馆中发表评论，WordPress 永远都陪着您。";
+
+/* Display label for the product's published status */
+"Published" = "已发布";
 
 /* Title of the in-progress UI while updating the Product remotely */
 "Publishing your product..." = "正在发布您的产品…";
@@ -1178,14 +1212,14 @@
 /* Confirm button on the alert when the user taps to delete a Product image */
 "Remove" = "删除";
 
-/* Action: Opens the Store in a browser */
-"Remove Filters" = "删除过滤器";
-
 /* Title on the alert when the user taps to delete a Product image */
 "Remove Image" = "删除图片";
 
 /* Label action for removing a link from the editor */
 "Remove Link" = "移除链接";
+
+/* Label action for removing a link from the editor */
+"Remove end date" = "移除结束日期";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "报告崩溃问题";
@@ -1267,11 +1301,23 @@
 /* Search Products */
 "Search products" = "搜索产品";
 
+/* Display label for the product's catalog visibility */
+"Search results only" = "仅在搜索结果中显示";
+
 /* Page title for the select a different store screen */
 "Select Store" = "选择商店";
 
+/* Add the shipping carrier. Placeholder of cell presenting carrier name */
+"Select carrier" = "选择承运商";
+
+/* Placeholder value of the cell in Product Price Settings > Schedule sale to a certain date */
+"Select end date" = "选择结束日期";
+
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "选择段落样式";
+
+/* Placeholder value of the cell in Product Price Settings > Schedule sale from a certain date */
+"Select start date" = "选择开始日期";
 
 /* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
 "Selected Store" = "已选商店";
@@ -1307,11 +1353,14 @@
    Product Shipping Settings navigation title - Shipping label for payment view - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "配送";
 
+/* Title of view displaying all available Shipment Tracking Carriers */
+"Shipping Carriers" = "承运商";
+
 /* Shipping method title for customer info cell */
 "Shipping Method" = "配送方式";
 
-/* Title of view displaying all available Shipment Tracking Providers */
-"Shipping Providers" = "配送服务提供商";
+/* Add / Edit shipping carrier. Title of cell presenting name */
+"Shipping carrier" = "承运商";
 
 /* Title of the cell in Product Shipping Settings > Shipping class */
 "Shipping class" = "运费类";
@@ -1331,8 +1380,15 @@
 /* Display label for the product's tax status setting option */
 "Shipping only" = "仅限运费";
 
-/* Add / Edit shipping provider. Title of cell presenting name */
-"Shipping provider" = "配送服务提供商";
+/* Display label for the product's catalog visibility */
+"Shop and search results" = "在店铺和搜索结果中显示";
+
+/* Display label for the product's catalog visibility */
+"Shop only" = "仅在店铺中显示";
+
+/* The navigation bar title of the edit short description screen.
+   Title of the Short Description row on Product main screen */
+"Short description" = "简短说明";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show a list of refunded order items for this order." = "显示此订单的退款订单项列表。";
@@ -1360,9 +1416,6 @@
 
 /* Button title. Tapping begins our normal sign up process. */
 "Sign up with Email" = "使用电子邮件注册";
-
-/* Button title. Tapping begins sign up using Google. */
-"Sign up with Google" = "使用 Google 注册";
 
 /* Describes a site redirect domain */
 "Site Redirect" = "站点重定向";
@@ -1428,9 +1481,16 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "抱歉，你不能使用这个站点地址。";
 
+/* Message title for Sort Products Action Sheet
+   Title of the toolbar button to sort products in different ways. */
+"Sort by" = "排序方式";
+
 /* Display label for the review's spam status
    Verb, spam a comment */
 "Spam" = "发表垃圾评论";
+
+/* Option to select the Spark email app when logging in with magic links */
+"Spark" = "Spark";
 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "标准税率";
@@ -1440,6 +1500,10 @@
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "起始日期：%1$@；结束日期：%2$@";
+
+/* Product status setting list selector navigation title
+   Status label in Product Settings */
+"Status" = "状态";
 
 /* A descriptive label prefix. Example: 'Stock quantity: 19' */
 "Stock quantity:" = "库存数量：";
@@ -1689,14 +1753,20 @@
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "无法加载此产品";
 
-/* Product details screen — product title descriptive label
-   The navigation bar title of the Text editor screen. - Title in the Product Title row on Product form screen when the description is non-empty. */
+/* Footer text in Product Catalog Visibility */
+"This setting determines which shop pages products will be listed on." = "此设置决定产品将在哪个店铺页面上列出。";
+
+/* Placeholder in the Product Title row on Product form screen.
+   Product details screen — product title descriptive label */
 "Title" = "标题";
 
-/* Placeholder in the Product Title row on Product form screen. */
-"Title (required)" = "标题（如需要）";
+/* Action sheet option to sort products by ascending product name */
+"Title: A to Z" = "标题：A 到 Z";
 
-/* Title of the cell in Product Price Settings > Schedule sale To a certain date */
+/* Action sheet option to sort products by descending product name */
+"Title: Z to A" = "标题：Z 到 A";
+
+/* Title of the cell in Product Price Settings > Schedule sale to a certain date */
 "To" = "结束日期";
 
 /* Text instructing the user to enter their email address. */
@@ -1739,10 +1809,10 @@
 /* Order tracking section title */
 "Tracking" = "跟踪";
 
-/* Add custom shipping provider. Title of cell presenting tracking link */
+/* Add custom shipping carrier. Title of cell presenting carrier link */
 "Tracking link (optional)" = "跟踪链接（可选）";
 
-/* Add / Edit shipping provider. Title of cell presenting tracking number */
+/* Add / Edit shipping carrier. Title of cell presenting tracking number */
 "Tracking number" = "跟踪编号";
 
 /* A unit test string. Reads as: 'Trackin number XXX_YYY_ZZZ'
@@ -1802,8 +1872,8 @@
 /* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number} */
 "Unable to fulfill order #(orderID)" = "无法履行订单号 (orderID)";
 
-/* Content of error presented when loading the list of shipment providers failed. It reads: Unable to load Shipment Providers */
-"Unable to load Shipment Providers" = "无法加载配送服务提供商";
+/* Content of error presented when loading the list of shipment carriers failed. It reads: Unable to load Shipment Carriers */
+"Unable to load Shipment Carriers" = "无法加载运输承运商";
 
 /* Load Action Failed */
 "Unable to load content" = "无法加载内容";
@@ -1828,6 +1898,9 @@
 
 /* Unapproves a comment. Spoken Hint. */
 "Unapproves the comment" = "不批准评论";
+
+/* Placeholder of the Product Categories row on Product main screen */
+"Uncategorized" = "未分类";
 
 /* Accessibility label for underline button on formatting toolbar. */
 "Underline" = "下划线";
@@ -1956,8 +2029,8 @@
 /* The info of the top banner on Dashboard that indicates new stats is unavailable */
 "We have reverted to the old stats. To use the beta stats, please activate the WooCommerce Admin plugin with version 0.23 or higher" = "我们已还原为旧统计信息。要使用测试版统计信息，请激活 0.23 或更高版本的 WooCommerce Admin 插件";
 
-/* Instructional text on how to open the email containing a magic link. */
-"We sent you a magic signup link! Check your email on this device, and tap the link in the email to finish signing up." = "我们向您发送了一个免密注册链接！请在该设备上检查电子邮件，并轻点电子邮件中的免密注册链接以完成注册。";
+/* message to ask a user to check their email for a WordPress.com email */
+"We just emailed a link to %@. Please check your mail app and tap the link to log in." = "我们刚刚通过电子邮件向 %@ 发送了一个链接。请查看您的邮箱应用程序，点击链接登录。";
 
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "我们使用其他跟踪工具，其中包括来自第三方的工具。了解这些工具及其使用方法。";
@@ -1986,14 +2059,11 @@
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "重量：%1$@%2$@";
 
-/* The info of the Work In Progress top banner on the Products tab */
-"We’re hard at work on this new Products section, so you may see some changes as we get ready for launch 🚀" = "我们正在努力开发此新的“产品”部分，因此，在我们准备发布时，您可能会看到一些更改 🚀";
-
 /* The info of the top banner on Dashboard that indicates new stats is available */
 "We’re rolling out improvements to stats for stores using the WooCommerce Admin plugin" = "我们正面向使用了 WooCommerce Admin 插件的商店推出经改进的统计页面";
 
 /* The info of the Work In Progress top banner on the Products tab */
-"We’ve added editing functionality to simple products. Keep an eye out for editing on other product types soon" = "我们已经为几款简单的产品添加了编辑功能。即将推出针对其他产品类型的编辑功能，请密切关注";
+"We’ve added editing functionality to simple products. Keep an eye out for more options soon!" = "我们已经为几款简单的产品添加了编辑功能。请关注即将推出的更多选项！";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "我的站点地址是什么？";
@@ -2013,14 +2083,15 @@
 /* Subject of new Zendesk ticket. */
 "WooCommerce for iOS Support" = "iOS 版 WooCommerce 支持";
 
-/* Menu option for selecting media from the site's media library. */
+/* Menu option for selecting media from the site's media library.
+   Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "WordPress 媒体库";
 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "WordPress 版本过旧。%1$@ 上的站点采用 WordPress %2$@。我们建议更新至最新版本或至少更新为 %3$@";
 
-/* The title of the Work In Progress top banner on the Products tab */
-"Work in progress!" = "工作进行中！";
+/* Option to select the Yahoo Mail app when logging in with magic links */
+"Yahoo Mail" = "Yahoo 邮箱";
 
 /* Statistical unit - a single year */
 "Year" = "年";
@@ -2036,9 +2107,6 @@
 
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "您似乎安装了来自 DudaMobile 的移动插件，该插件会阻止应用程序连接到您的博客";
-
-/* Instructional text on how to open the email containing a magic link. */
-"Your magic link is on its way! Check your email on this device, and tap the link in the email you receive from WordPress.com" = "神奇的链接就要来了！在此设备上查看电子邮件，并轻点您从 WordPress.com 收到的电子邮件中的链接";
 
 /* shown in promotional screens during first launch */
 "Your notifications travel with you — see comments and likes as they happen." = "无论您走到哪里都能收到通知 - 及时看到他人的评论和点赞。";

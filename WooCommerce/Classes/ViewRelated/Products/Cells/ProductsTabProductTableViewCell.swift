@@ -17,6 +17,11 @@ final class ProductsTabProductTableViewCell: UITableViewCell {
         return label
     }()
 
+    /// We use a custom view isntead of the default separator as it's width varies depending on the image size, which varies depending on the screen size.
+    private let bottomBorderView: UIView = {
+        return UIView(frame: .zero)
+    }()
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         configureBackground()
@@ -24,7 +29,7 @@ final class ProductsTabProductTableViewCell: UITableViewCell {
         configureNameLabel()
         configureDetailsLabel()
         configureProductImageView()
-        configureAccessoryType()
+        configureBottomBorderView()
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -81,14 +86,24 @@ private extension ProductsTabProductTableViewCell {
         stackView.alignment = .leading
 
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        bottomBorderView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(stackView)
+        contentView.addSubview(bottomBorderView)
         contentView.pinSubviewToAllEdges(stackView, insets: UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16))
+
+        NSLayoutConstraint.activate([
+            bottomBorderView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            bottomBorderView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            bottomBorderView.leadingAnchor.constraint(equalTo: contentStackView.leadingAnchor),
+            bottomBorderView.heightAnchor.constraint(equalToConstant: 0.5)
+        ])
     }
 
     func createContentStackView() -> UIView {
         let contentStackView = UIStackView(arrangedSubviews: [nameLabel, detailsLabel])
         contentStackView.translatesAutoresizingMaskIntoConstraints = false
         contentStackView.axis = .vertical
+        contentStackView.spacing = 4
         return contentStackView
     }
 
@@ -119,13 +134,14 @@ private extension ProductsTabProductTableViewCell {
         productImageView.clipsToBounds = true
 
         NSLayoutConstraint.activate([
+            // This multiplier matches the required size(37.5pt) for a 375pt(as per designs) content view width
             productImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.1),
             productImageView.widthAnchor.constraint(equalTo: productImageView.heightAnchor)
             ])
     }
 
-    func configureAccessoryType() {
-        accessoryType = .disclosureIndicator
+    func configureBottomBorderView() {
+        bottomBorderView.backgroundColor = .systemColor(.separator)
     }
 }
 
@@ -140,6 +156,6 @@ private extension ProductsTabProductTableViewCell {
     enum Colors {
         static let imageBorderColor = UIColor.border
         static let imagePlaceholderTintColor = UIColor.systemColor(.systemGray2)
-        static let imageBackgroundColor = UIColor.systemColor(.systemGray6)
+        static let imageBackgroundColor = UIColor.listForeground
     }
 }

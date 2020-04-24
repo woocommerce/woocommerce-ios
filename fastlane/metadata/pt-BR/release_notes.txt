@@ -1,2 +1,3 @@
-- Tocar em um produto na seção “Melhores desempenhos” no painel abre os detalhes do produto.
-- A guia Pedidos agora localiza tanto a quantidade de itens quanto o selo do pedido.
+* Estamos felizes em apresentar a guia Produtos!
+* Agora os usuários têm recursos de edição limitados para produtos simples, e tem muito mais a caminho.
+* Fizemos uma correção para que, sempre que você recarregar a guia Processamento, ela mostre seus pedidos atualizados.

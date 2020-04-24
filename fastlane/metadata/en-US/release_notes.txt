@@ -1,2 +1,3 @@
-- In the dashboard, tapping on a product in the “Top Performers” section opens the product detail.
-- The orders tab now localizes both item quantities and the order badge.
+* We’re excited to introduce a Products tab!
+* Users also now have limited editing capabilities for Simple Products, with more to come.
+* We’ve made a fix so that, whenever you refresh the Processing tab, it will show your up-to-date orders.

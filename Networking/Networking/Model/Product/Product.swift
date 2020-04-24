@@ -87,6 +87,10 @@ public struct Product: Codable {
         return ProductStatus(rawValue: statusKey)
     }
 
+    public var productCatalogVisibility: ProductCatalogVisibility {
+        return ProductCatalogVisibility(rawValue: catalogVisibilityKey)
+    }
+
     public var productStockStatus: ProductStockStatus {
         return ProductStockStatus(rawValue: stockStatusKey)
     }
@@ -266,16 +270,16 @@ public struct Product: Codable {
 
         let regularPrice = try container.decodeIfPresent(String.self, forKey: .regularPrice)
 
+        let onSale = try container.decode(Bool.self, forKey: .onSale)
+
         // Even though a plain install of WooCommerce Core provides string values,
         // some plugins alter the field value from String to Int or Decimal.
         var salePrice = ""
         if let parsedSalePriceString = container.failsafeDecodeIfPresent(stringForKey: .salePrice) {
-            salePrice = parsedSalePriceString
+            salePrice = (onSale && parsedSalePriceString.isEmpty) ? "0" : parsedSalePriceString
         } else if let parsedSalePriceDecimal = container.failsafeDecodeIfPresent(decimalForKey: .salePrice) {
             salePrice = NSDecimalNumber(decimal: parsedSalePriceDecimal).stringValue
         }
-
-        let onSale = try container.decode(Bool.self, forKey: .onSale)
 
         let purchasable = try container.decode(Bool.self, forKey: .purchasable)
         let totalSales = container.failsafeDecodeIfPresent(Int.self, forKey: .totalSales) ?? 0
@@ -450,6 +454,13 @@ public struct Product: Codable {
 
         // Brief description (short description).
         try container.encode(briefDescription, forKey: .briefDescription)
+
+        // Product Settings
+        try container.encode(statusKey, forKey: .statusKey)
+        try container.encode(featured, forKey: .featured)
+        try container.encode(catalogVisibilityKey, forKey: .catalogVisibilityKey)
+        try container.encode(slug, forKey: .slug)
+        try container.encode(purchaseNote, forKey: .purchaseNote)
     }
 }
 

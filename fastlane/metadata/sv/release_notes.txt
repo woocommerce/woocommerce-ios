@@ -1,2 +1,3 @@
-– På instrumentpanelen öppnar du produktinformationen genom att trycka lätt på en produkt i avsnittet för ”toppresterare”.
-– Beställningsfliken visar nu både artikelantalet och beställningsikonen.
+* Vi är glada att kunna introducera en Produkter-flik!
+* Användare har nu även begränsade redigeringsmöjligheter för Enkla produkter. Mer kommer.
+* Vi har gjort en korrigering så att dina uppdaterade beställningar nu visas när du uppdaterar Behandlar-fliken.

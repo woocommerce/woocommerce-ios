@@ -13,6 +13,7 @@ final class ProductImagesViewController: UIViewController {
 
     private let siteID: Int64
     private let productID: Int64
+    private let product: Product
 
     private let productImageActionHandler: ProductImageActionHandler
     private let productUIImageLoader: ProductUIImageLoader
@@ -42,10 +43,13 @@ final class ProductImagesViewController: UIViewController {
     }()
 
     private lazy var mediaPickingCoordinator: MediaPickingCoordinator = {
-        return MediaPickingCoordinator(onCameraCaptureCompletion: { [weak self] asset, error in
-            self?.onCameraCaptureCompletion(asset: asset, error: error)
+        return MediaPickingCoordinator(siteID: siteID,
+                                       onCameraCaptureCompletion: { [weak self] asset, error in
+                                        self?.onCameraCaptureCompletion(asset: asset, error: error)
             }, onDeviceMediaLibraryPickerCompletion: { [weak self] assets in
                 self?.onDeviceMediaLibraryPickerCompletion(assets: assets)
+            }, onWPMediaPickerCompletion: { [weak self] mediaItems in
+                self?.onWPMediaPickerCompletion(mediaItems: mediaItems)
         })
     }()
 
@@ -55,6 +59,7 @@ final class ProductImagesViewController: UIViewController {
          productImageActionHandler: ProductImageActionHandler,
          productUIImageLoader: ProductUIImageLoader,
          completion: @escaping Completion) {
+        self.product = product
         self.siteID = product.siteID
         self.productID = product.productID
         self.productImageActionHandler = productImageActionHandler
@@ -81,6 +86,7 @@ final class ProductImagesViewController: UIViewController {
         configureAddButtonBottomBorderView()
         configureImagesContainerView()
         configureProductImagesObservation()
+        handleSwipeBackGesture()
     }
 }
 
@@ -168,17 +174,28 @@ extension ProductImagesViewController {
             presentDiscardChangesActionSheet()
             return false
         }
+        resetProductImages()
         return true
+    }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        return shouldPopOnBackButton()
     }
 
     private func presentDiscardChangesActionSheet() {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+            self?.resetProductImages()
             self?.navigationController?.popViewController(animated: true)
         })
     }
 
+    private func resetProductImages() {
+        productImageActionHandler.resetProductImages(to: product)
+    }
+
     private func hasOutstandingChanges() -> Bool {
         return originalProductImages != productImages
+            || productImageStatuses.hasPendingUpload
     }
 }
 
@@ -215,6 +232,15 @@ private extension ProductImagesViewController {
         assets.forEach { asset in
             uploadMediaAssetToSiteMediaLibrary(asset: asset)
         }
+    }
+}
+
+// MARK: - Action handling for WordPress Media Library
+//
+private extension ProductImagesViewController {
+    func onWPMediaPickerCompletion(mediaItems: [Media]) {
+        dismiss(animated: true, completion: nil)
+        productImageActionHandler.addSiteMediaLibraryImagesToProduct(mediaItems: mediaItems)
     }
 }
 

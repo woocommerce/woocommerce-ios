@@ -1,2 +1,3 @@
-- Panoda "En İyiler" bölümündeki bir ürüne dokunulduğunda ürün ayrıntıları açılır.
-- Siparişler sekmesinde artık hem öğe adedi hem sipariş rozeti yerelleştirilmiştir.
+* Ürünler sekmesini tanıtmaktan memnuniyet duyuyoruz!
+* Kullanıcılar artık Basit Ürünler için sınırlı düzenleme yetkilerine sahip olacak, zamanla daha fazlası da gelecek.
+* İşleme sekmesini her yenilediğinizde güncel siparişlerinizi göstermesi için bir düzeltme yaptık.

@@ -262,7 +262,6 @@ public enum WooAnalyticsStat: String {
     case productDetailViewPriceSettingsTapped   = "product_detail_view_price_settings_tapped"
     case productDetailViewShippingSettingsTapped = "product_detail_view_shipping_settings_tapped"
     case productDetailViewInventorySettingsTapped = "product_detail_view_inventory_settings_tapped"
-    case productNameDoneButtonTapped            = "product_name_done_button_tapped"
     case productDescriptionDoneButtonTapped     = "product_description_done_button_tapped"
     case productPriceSettingsDoneButtonTapped   = "product_price_settings_done_button_tapped"
     case productShippingSettingsDoneButtonTapped = "product_shipping_settings_done_button_tapped"

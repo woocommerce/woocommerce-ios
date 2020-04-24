@@ -47,13 +47,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store wherever you are. The WooCommerce app makes it easy to manage orders and inventory, track sales, and monitor store activity like new orders and reviews."
 msgstr ""
 
-msgctxt "v3.8-whats-new"
+msgctxt "v4.1-whats-new"
 msgid ""
-"To offer a more complete picture of your earnings, dashboard stats now also include negative revenue (for example: refunds).\n"
-"\n"
-"- We’ve redesigned the Orders List to make the Processing and All Orders views more prominent. Want to filter orders by a different status? No worries: you’ll find other options in the Search view.\n"
-"- Reviews are so important for online stores, but they would occasionally fail to load on some WooCommerce configurations. We fixed it.\n"
-"- Raise your hand if you’d like to edit products on the go! Give available editing options a try on your simple products (but first, you’ll need to enable it: go to Settings > Experimental Features > Products).\n"
+"* We fixed an impolite bug that would sometimes crash the app while you were downloading Orders. Download away, we say!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

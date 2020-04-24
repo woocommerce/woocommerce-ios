@@ -21,6 +21,10 @@ final class ProductShippingSettingsViewController: UIViewController {
     //
     private var shippingClass: ProductShippingClass?
 
+    /// Tracks whether the original shipping class has been retrieved, if the product has a shipping class.
+    /// The shipping class picker action is blocked until the original shipping class has been retrieved.
+    private var hasRetrievedShippingClassIfNeeded: Bool = false
+
     /// Table Sections to be rendered
     ///
     private let sections: [Section] = [
@@ -62,6 +66,7 @@ final class ProductShippingSettingsViewController: UIViewController {
         configureMainView()
         configureTableView()
         retrieveProductShippingClass()
+        handleSwipeBackGesture()
     }
 }
 
@@ -96,15 +101,18 @@ private extension ProductShippingSettingsViewController {
     }
 
     func retrieveProductShippingClass() {
-        guard let shippingClass = shippingClass else {
+        let productHasShippingClass = product.shippingClass?.isEmpty == false
+        guard productHasShippingClass else {
+            hasRetrievedShippingClassIfNeeded = true
             return
         }
 
         let action = ProductShippingClassAction
             .retrieveProductShippingClass(siteID: product.siteID,
-                                          remoteID: shippingClass.shippingClassID) { [weak self] (shippingClass, error) in
-            self?.shippingClass = shippingClass
-            self?.tableView.reloadData()
+                                          remoteID: product.shippingClassID) { [weak self] (shippingClass, error) in
+                                            self?.shippingClass = shippingClass
+                                            self?.hasRetrievedShippingClassIfNeeded = true
+                                            self?.tableView.reloadData()
         }
         ServiceLocator.stores.dispatch(action)
     }
@@ -121,6 +129,10 @@ extension ProductShippingSettingsViewController {
             return false
         }
         return true
+    }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        return shouldPopOnBackButton()
     }
 
     @objc private func completeUpdating() {
@@ -187,6 +199,9 @@ extension ProductShippingSettingsViewController: UITableViewDelegate {
         let row = rowAtIndexPath(indexPath)
         switch row {
         case .shippingClass:
+            guard hasRetrievedShippingClassIfNeeded else {
+                return
+            }
             let dataSource = PaginatedProductShippingClassListSelectorDataSource(product: product, selected: shippingClass)
             let navigationBarTitle = NSLocalizedString("Shipping classes", comment: "Navigation bar title of the Product shipping class selector screen")
             let noResultsPlaceholderText = NSLocalizedString("No shipping classes yet",

@@ -1,2 +1,3 @@
-- Dans le tableau de bord, taper sur un produit dans la section « Meilleures performances » ouvre le détail du produit.
-- L’onglet Commandes localise désormais les quantités d’éléments et le badge de commande.
+* Nous sommes heureux de vous présenter l’onglet Produits !
+* Les utilisateurs ont aussi pour l’instant des fonctions d’édition limitées pour les produits simples. Des fonctions supplémentaires seront bientôt ajoutées.
+* Nous avons apporté une correction afin que vos commandes à jour s’affichent dans l’onglet Traitement lorsque celui-ci est actualisé.

@@ -2,21 +2,57 @@ import UIKit
 import Yosemite
 
 /// The Product Settings contains 2 sections: Publish Settings and More Options
-struct ProductSettingsViewModel {
+final class ProductSettingsViewModel {
 
-    let sections: [ProductSettingsSectionMediator]
+    private(set) var sections: [ProductSettingsSectionMediator] {
+        didSet {
+            self.onReload?()
+        }
+    }
+
+    var productSettings: ProductSettings {
+        didSet {
+            sections = Self.configureSections(productSettings)
+        }
+    }
+
+    private let product: Product
+
+    /// Closures
+    /// - `onReload` called when sections data are reloaded/refreshed
+    var onReload: (() -> Void)?
 
     init(product: Product) {
-        sections = Self.configureSections(product)
+        self.product = product
+        productSettings = ProductSettings(from: product)
+        sections = Self.configureSections(productSettings)
+    }
+
+    func handleCellTap(at indexPath: IndexPath, sourceViewController: UIViewController) {
+        let section = sections[indexPath.section]
+        let row = section.rows[indexPath.row]
+        row.handleTap(sourceViewController: sourceViewController) { [weak self] (settings) in
+            guard let self = self else {
+                return
+            }
+            self.productSettings = settings
+        }
+    }
+
+    func hasUnsavedChanges() -> Bool {
+        guard ProductSettings(from: product) != productSettings else {
+            return false
+        }
+        return true
     }
 }
 
 // MARK: Configure sections and rows in Product Settings
 //
 private extension ProductSettingsViewModel {
-    static func configureSections(_ product: Product) -> [ProductSettingsSectionMediator] {
-        return [ProductSettingsSections.PublishSettings(product),
-                     ProductSettingsSections.MoreOptions(product)
+    static func configureSections(_ settings: ProductSettings) -> [ProductSettingsSectionMediator] {
+        return [ProductSettingsSections.PublishSettings(settings),
+                     ProductSettingsSections.MoreOptions(settings)
         ]
     }
 }

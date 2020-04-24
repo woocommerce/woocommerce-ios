@@ -10,6 +10,8 @@ extension Storage.ProductCategory: ReadOnlyConvertible {
     ///
     public func update(with category: Yosemite.ProductCategory) {
         categoryID = category.categoryID
+        siteID = category.siteID
+        parentID = category.parentID
         name = category.name
         slug = category.slug
     }
@@ -18,6 +20,8 @@ extension Storage.ProductCategory: ReadOnlyConvertible {
     ///
     public func toReadOnly() -> Yosemite.ProductCategory {
         return ProductCategory(categoryID: categoryID,
+                               siteID: siteID,
+                               parentID: parentID,
                                name: name,
                                slug: slug)
     }

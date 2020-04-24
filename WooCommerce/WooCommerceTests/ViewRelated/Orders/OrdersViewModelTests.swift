@@ -334,7 +334,7 @@ final class OrdersViewModelTests: XCTestCase {
         let viewModel = OrdersViewModel(notificationCenter: notificationCenter, statusFilter: nil)
 
         var resynchronizeRequested = false
-        viewModel.onShouldResynchronizeAfterAppActivation = {
+        viewModel.onShouldResynchronizeIfViewIsVisible = {
             resynchronizeRequested = true
         }
 
@@ -354,7 +354,7 @@ final class OrdersViewModelTests: XCTestCase {
         let viewModel = OrdersViewModel(notificationCenter: notificationCenter, statusFilter: nil)
 
         var resynchronizeRequested = false
-        viewModel.onShouldResynchronizeAfterAppActivation = {
+        viewModel.onShouldResynchronizeIfViewIsVisible = {
             resynchronizeRequested = true
         }
 
@@ -375,7 +375,7 @@ final class OrdersViewModelTests: XCTestCase {
         let viewModel = OrdersViewModel(pushNotificationsManager: pushNotificationsManager, statusFilter: nil)
 
         var resynchronizeRequested = false
-        viewModel.onShouldResynchronizeAfterAppActivation = {
+        viewModel.onShouldResynchronizeIfViewIsVisible = {
             resynchronizeRequested = true
         }
 
@@ -395,7 +395,7 @@ final class OrdersViewModelTests: XCTestCase {
         let viewModel = OrdersViewModel(pushNotificationsManager: pushNotificationsManager, statusFilter: nil)
 
         var resynchronizeRequested = false
-        viewModel.onShouldResynchronizeAfterAppActivation = {
+        viewModel.onShouldResynchronizeIfViewIsVisible = {
             resynchronizeRequested = true
         }
 

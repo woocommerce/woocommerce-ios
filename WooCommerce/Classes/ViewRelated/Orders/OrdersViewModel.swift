@@ -31,9 +31,10 @@ final class OrdersViewModel {
     ///
     private var cancellable: ObservationToken?
 
-    /// The block called if self requests a resynchronization of the first page.
+    /// The block called if self requests a resynchronization of the first page. The
+    /// resynchronization should only be done if the view is visible.
     ///
-    var onShouldResynchronizeAfterAppActivation: (() -> ())?
+    var onShouldResynchronizeIfViewIsVisible: (() -> ())?
 
     /// OrderStatus that must be matched by retrieved orders.
     ///
@@ -143,7 +144,7 @@ final class OrdersViewModel {
         }
 
         isAppActive = true
-        onShouldResynchronizeAfterAppActivation?()
+        onShouldResynchronizeIfViewIsVisible?()
     }
 
     /// Returns what `OrderAction` should be used when synchronizing.
@@ -257,7 +258,7 @@ private extension OrdersViewModel {
                 return
             }
 
-            self?.onShouldResynchronizeAfterAppActivation?()
+            self?.onShouldResynchronizeIfViewIsVisible?()
         }
     }
 

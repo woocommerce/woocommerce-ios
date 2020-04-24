@@ -16,34 +16,21 @@ final class PublishSubject<Element>: Observable<Element> {
 
     private var observers = [UUID: Observer<Element>]()
 
-    private let queue = DispatchQueue.main
-
     override func subscribe(_ onNext: @escaping OnNext<Element>) -> ObservationToken {
         let uuid = UUID()
+
+        observers[uuid] = Observer(onNext: onNext)
 
         let onCancel: OnCancel = { [weak self] in
             self?.observers.removeValue(forKey: uuid)
         }
 
-        let token = ObservationToken(onCancel: onCancel)
-        let observer = Observer(onNext: onNext)
-
-        queue.async { [weak self] in
-            self?.observers[uuid] = observer
-        }
-
-        return token
+        return ObservationToken(onCancel: onCancel)
     }
 
     func send(_ element: Element) {
-        queue.async { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            self.observers.values.forEach { observer in
-                observer.send(element)
-            }
+        self.observers.values.forEach { observer in
+            observer.send(element)
         }
     }
 }

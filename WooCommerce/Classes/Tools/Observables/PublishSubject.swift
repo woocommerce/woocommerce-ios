@@ -12,6 +12,55 @@ import Foundation
 /// Multiple observers are allowed which makes this a possible replacement for
 /// `NSNotificationCenter` observations.
 ///
+/// ## Example Usage
+///
+/// In a class that you would like to emit values (or events), add the `PublishSubject` defining
+/// the value type:
+///
+/// ```
+/// class PostListViewModel {
+///     /// Calls observers/subscribers whenever the list of Post changes.
+///     private let postsSubject = PublishSubject<[Post]>()
+/// }
+/// ```
+///
+/// Since `PublishSubject` exposes `send()` which makes this a **mutable** Observable, we recommend
+/// exposing only the `Observable<[Post]>` interface:
+///
+/// ```
+/// class PostListViewModel {
+///     private let postsSubject = PublishSubject<[Post]>()
+///
+///     /// The public Observable that the ViewController will subscribe to
+///     var posts: Observable<[Post]> {
+///         postsSubject
+///     }
+/// }
+/// ```
+///
+/// The `ViewController` can then subscribe to the `posts` Observable:
+///
+/// ```
+/// func viewDidLoad() {
+///     viewModel.posts.subscribe { posts in
+///         // do something with posts
+///         tableView.reloadData()
+///     }
+/// }
+/// ```
+///
+/// Whenever the list of post changes, like after fetching from the API, the `ViewModel` can
+/// _notify_ the `ViewController` by updating `postsSubject`:
+///
+/// ```
+/// fetchFromAPI { fetchedPosts
+///     // Notify the observers (e.g. ViewController) that the list of posts have changed
+///     postsSubject.send(fetchedPosts)
+/// }
+/// ```
+///
+/// ## References
+///
 /// See here for info about similar observables in other frameworks:
 ///
 /// - https://developer.apple.com/documentation/combine/passthroughsubject

@@ -13,6 +13,16 @@ final class PushNotificationsManager: PushNotesManager {
     ///
     let configuration: PushNotificationsConfiguration
 
+    /// Mutable reference to `foregroundNotifications`.
+    private let foregroundNotificationsSubject = PublishSubject<ForegroundNotification>()
+
+    /// An observable that emits values when the Remote Notifications are received while the app is
+    /// in the foreground.
+    ///
+    var foregroundNotifications: Observable<ForegroundNotification> {
+        foregroundNotificationsSubject
+    }
+
     /// Returns the current Application's State
     ///
     private var applicationState: UIApplication.State {
@@ -253,6 +263,8 @@ private extension PushNotificationsManager {
 
         if let foregroundNotification = ForegroundNotification.from(userInfo: userInfo) {
             configuration.application.presentInAppNotification(message: foregroundNotification.message)
+
+            foregroundNotificationsSubject.send(foregroundNotification)
         }
 
         synchronizeNotifications(completionHandler: completionHandler)

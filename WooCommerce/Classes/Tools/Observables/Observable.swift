@@ -49,6 +49,8 @@ typealias OnNext<Element> = (Element) -> ()
 class Observable<Element> {
     /// Subscribe to values emitted by this `Observable`.
     ///
+    /// The given `onNext` is called a "Observer" or "Subscriber".
+    ///
     /// Example:
     ///
     /// ```

@@ -1,11 +1,18 @@
 
 import Foundation
 
-/// Emits values to observers as soon as the values arrive.
+/// Emits values to observers as soon as the values arrive. Only the values emitted after the
+/// subscription will be emitted.
 ///
 /// Acts like `PassthroughSubject` in Combine and `PublishSubject` in ReactiveX.
 ///
-/// See:
+/// This observable is a bridge between the imperative and reactive programming paradigms. It
+/// allows consumers to _manually_ emit values using the `send()` method.
+///
+/// Multiple observers are allowed which makes this a possible replacement for
+/// `NSNotificationCenter` observations.
+///
+/// See here for info about similar observables in other frameworks:
 ///
 /// - https://developer.apple.com/documentation/combine/passthroughsubject
 /// - http://reactivex.io/documentation/subject.html
@@ -28,6 +35,8 @@ final class PublishSubject<Element>: Observable<Element> {
         return ObservationToken(onCancel: onCancel)
     }
 
+    /// Emit a new value. All observers are immediately called with the given value.
+    ///
     func send(_ element: Element) {
         self.observers.values.forEach { observer in
             observer.send(element)

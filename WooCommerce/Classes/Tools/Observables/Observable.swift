@@ -1,6 +1,8 @@
 
 import Foundation
 
+/// Signature of a block called for every emitted Observable value.
+///
 typealias OnNext<Element> = (Element) -> ()
 
 /// Emits values over time.

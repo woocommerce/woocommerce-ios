@@ -21,6 +21,8 @@ final class PublishSubject<Element>: Observable<Element> {
 
     private typealias OnCancel = () -> ()
 
+    /// The list of Observers that will be notified when a new value is sent.
+    ///
     private var observers = [UUID: Observer<Element>]()
 
     override func subscribe(_ onNext: @escaping OnNext<Element>) -> ObservationToken {

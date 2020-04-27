@@ -3,6 +3,11 @@ import UIKit
 
 protocol PushNotesManager {
 
+    /// An observable that emits values when the Remote Notifications are received while the app is
+    /// in the foreground.
+    ///
+    var foregroundNotifications: Observable<ForegroundNotification> { get }
+
     /// Resets the Badge Count.
     ///
     func resetBadgeCount()

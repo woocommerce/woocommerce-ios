@@ -17,7 +17,7 @@ final class ProductTaxStatusListSelectorCommandTests: XCTestCase {
         XCTAssertEqual(command.selected, newTaxStatus)
 
         // Select the same data twice should not clear the selected data.
-        command.handleSelectedChange(selected: newTaxStatus, viewController: ProductTaxStatusListSelectorCommand.ViewController(coder: NSCoder())!)
+        command.handleSelectedChange(selected: newTaxStatus, viewController: viewController)
         XCTAssertNotNil(command.selected)
     }
 

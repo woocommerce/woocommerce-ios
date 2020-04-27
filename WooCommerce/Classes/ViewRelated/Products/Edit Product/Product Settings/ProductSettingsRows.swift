@@ -168,7 +168,7 @@ enum ProductSettingsRows {
             }
 
             let title = NSLocalizedString("Menu Order", comment: "Menu order label in Product Settings")
-            cell.updateUI(title: title, value: nil)
+            cell.updateUI(title: title, value: String(settings.menuOrder))
             cell.accessoryType = .disclosureIndicator
         }
 

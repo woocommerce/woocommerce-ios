@@ -48,7 +48,10 @@ private extension TextFieldTableViewCell {
 
 private extension TextFieldTableViewCell {
     @objc func textFieldDidChange(textField: UITextField) {
-        let formattedText = viewModel?.inputFormatter?.format(input: textField.text) ?? textField.text
+        guard let formattedText = viewModel?.inputFormatter?.format(input: textField.text) else {
+            onTextChange?(textField.text)
+            return
+        }
         textField.text = formattedText
         onTextChange?(formattedText)
     }

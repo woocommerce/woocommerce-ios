@@ -903,7 +903,7 @@
         <!--Login Link Request View Controller-->
         <scene sceneID="lHx-fY-p45">
             <objects>
-                <viewController storyboardIdentifier="LoginLinkRequestViewController" extendedLayoutIncludesOpaqueBars="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Kvo-Y2-yhG" customClass="LoginLinkRequestViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginLinkRequestViewController" extendedLayoutIncludesOpaqueBars="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Kvo-Y2-yhG" customClass="LoginLinkRequestViewController" customModule="WordPressAuthenticator" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="q8R-wf-TMO"/>
                         <viewControllerLayoutGuide type="bottom" id="h4a-j8-84P"/>
@@ -1422,7 +1422,7 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="5hL-j3-eMs"/>
-        <segue reference="8p6-rS-9Ml"/>
+        <segue reference="0ao-yi-yZI"/>
         <segue reference="JN3-Ck-2w7"/>
     </inferredMetricsTieBreakers>
     <resources>

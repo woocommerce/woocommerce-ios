@@ -1,11 +1,13 @@
 import UIKit
 import Yosemite
 
-/// `ListSelectorDataSource` for selecting a Product Status Setting.
+/// `ListSelectorCommand` for selecting a Product Status Setting.
 ///
-struct ProductStatusSettingListSelectorDataSource: ListSelectorDataSource {
+final class ProductStatusSettingListSelectorDataSource: ListSelectorCommand {
     typealias Model = ProductStatus
     typealias Cell = BasicTableViewCell
+
+    let navigationBarTitle: String? = NSLocalizedString("Status", comment: "Product status setting list selector navigation title")
 
     let data: [ProductStatus] = [
         .publish,
@@ -25,7 +27,7 @@ struct ProductStatusSettingListSelectorDataSource: ListSelectorDataSource {
         cell.textLabel?.text = model.description
     }
 
-    mutating func handleSelectedChange(selected: ProductStatus) {
+    func handleSelectedChange(selected: ProductStatus, viewController: ViewController) {
         self.selected = selected
     }
 

@@ -229,11 +229,8 @@ extension ProductPriceSettingsViewController: UITableViewDelegate {
             viewModel.handleSaleEndDateChange(nil)
             refreshViewContent()
         case .taxStatus:
-            let title = NSLocalizedString("Tax Status", comment: "Navigation bar title of the Product tax status selector screen")
-            let viewProperties = ListSelectorViewProperties(navigationBarTitle: title)
-            let dataSource = ProductTaxStatusListSelectorDataSource(selected: viewModel.taxStatus)
-            let listSelectorViewController = ListSelectorViewController(viewProperties: viewProperties,
-                                                                        dataSource: dataSource) { [weak self] selected in
+            let command = ProductTaxStatusListSelectorDataSource(selected: viewModel.taxStatus)
+            let listSelectorViewController = ListSelectorViewController(command: command) { [weak self] selected in
                                                                             if let selected = selected {
                                                                                 self?.viewModel.handleTaxStatusChange(selected)
                                                                             }

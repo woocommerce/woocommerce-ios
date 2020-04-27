@@ -316,21 +316,15 @@ extension ProductInventorySettingsViewController: UITableViewDelegate {
 
         switch rowAtIndexPath(indexPath) {
         case .stockStatus:
-            let title = NSLocalizedString("Stock status", comment: "Product stock status list selector navigation title")
-            let viewProperties = ListSelectorViewProperties(navigationBarTitle: title)
-            let dataSource = ProductStockStatusListSelectorDataSource(selected: stockStatus)
-            let listSelectorViewController = ListSelectorViewController(viewProperties: viewProperties,
-                                                                        dataSource: dataSource) { [weak self] selected in
+            let command = ProductStockStatusListSelectorDataSource(selected: stockStatus)
+            let listSelectorViewController = ListSelectorViewController(command: command) { [weak self] selected in
                                                                             self?.stockStatus = selected
                                                                             self?.tableView.reloadData()
             }
             navigationController?.pushViewController(listSelectorViewController, animated: true)
         case .backorders:
-            let title = NSLocalizedString("Backorders", comment: "Product backorders setting list selector navigation title")
-            let viewProperties = ListSelectorViewProperties(navigationBarTitle: title)
-            let dataSource = ProductBackordersSettingListSelectorDataSource(selected: backordersSetting)
-            let listSelectorViewController = ListSelectorViewController(viewProperties: viewProperties,
-                                                                        dataSource: dataSource) { [weak self] selected in
+            let command = ProductBackordersSettingListSelectorDataSource(selected: backordersSetting)
+            let listSelectorViewController = ListSelectorViewController(command: command) { [weak self] selected in
                                                                             self?.backordersSetting = selected
                                                                             self?.tableView.reloadData()
             }

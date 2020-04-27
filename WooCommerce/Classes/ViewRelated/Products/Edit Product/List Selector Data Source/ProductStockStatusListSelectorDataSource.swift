@@ -1,11 +1,13 @@
 import UIKit
 import Yosemite
 
-/// `ListSelectorDataSource` for selecting a Product Stock Status.
+/// `ListSelectorCommand` for selecting a Product Stock Status.
 ///
-struct ProductStockStatusListSelectorDataSource: ListSelectorDataSource {
+final class ProductStockStatusListSelectorDataSource: ListSelectorCommand {
     typealias Model = ProductStockStatus
     typealias Cell = BasicTableViewCell
+
+    let navigationBarTitle: String? = NSLocalizedString("Stock status", comment: "Product stock status list selector navigation title")
 
     let data: [ProductStockStatus] = [
         .inStock,
@@ -24,7 +26,7 @@ struct ProductStockStatusListSelectorDataSource: ListSelectorDataSource {
         cell.textLabel?.text = model.description
     }
 
-    mutating func handleSelectedChange(selected: ProductStockStatus) {
+    func handleSelectedChange(selected: ProductStockStatus, viewController: ViewController) {
         self.selected = selected
     }
 

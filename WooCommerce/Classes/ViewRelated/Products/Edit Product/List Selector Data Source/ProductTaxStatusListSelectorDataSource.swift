@@ -1,11 +1,13 @@
 import UIKit
 import Yosemite
 
-/// `ListSelectorDataSource` for selecting a Product Tax Status.
+/// `ListSelectorCommand` for selecting a Product Tax Status.
 ///
-struct ProductTaxStatusListSelectorDataSource: ListSelectorDataSource {
+final class ProductTaxStatusListSelectorDataSource: ListSelectorCommand {
     typealias Model = ProductTaxStatus
     typealias Cell = BasicTableViewCell
+
+    let navigationBarTitle: String? = NSLocalizedString("Tax Status", comment: "Navigation bar title of the Product tax status selector screen")
 
     let data: [ProductTaxStatus] = [
         .taxable,
@@ -24,7 +26,7 @@ struct ProductTaxStatusListSelectorDataSource: ListSelectorDataSource {
         cell.textLabel?.text = model.description
     }
 
-    mutating func handleSelectedChange(selected: ProductTaxStatus) {
+    func handleSelectedChange(selected: ProductTaxStatus, viewController: ViewController) {
         self.selected = selected
     }
 

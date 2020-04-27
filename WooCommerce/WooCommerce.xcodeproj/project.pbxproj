@@ -174,7 +174,6 @@
 		0290E270238E3CE400B5C466 /* ListSelectorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0290E26E238E3CE400B5C466 /* ListSelectorViewController.xib */; };
 		0290E275238E4F8100B5C466 /* PaginatedListSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290E273238E4F8100B5C466 /* PaginatedListSelectorViewController.swift */; };
 		0290E276238E4F8100B5C466 /* PaginatedListSelectorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0290E274238E4F8100B5C466 /* PaginatedListSelectorViewController.xib */; };
-		0290E27A238E590500B5C466 /* ListSelectorViewProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290E279238E590500B5C466 /* ListSelectorViewProperties.swift */; };
 		0290E27E238E5B5C00B5C466 /* ProductStockStatusListSelectorDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290E27D238E5B5C00B5C466 /* ProductStockStatusListSelectorDataSourceTests.swift */; };
 		02913E9523A774C500707A0C /* UnitInputFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02913E9423A774C500707A0C /* UnitInputFormatter.swift */; };
 		02913E9723A774E600707A0C /* DecimalInputFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02913E9623A774E600707A0C /* DecimalInputFormatter.swift */; };
@@ -987,7 +986,6 @@
 		0290E26E238E3CE400B5C466 /* ListSelectorViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ListSelectorViewController.xib; sourceTree = "<group>"; };
 		0290E273238E4F8100B5C466 /* PaginatedListSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedListSelectorViewController.swift; sourceTree = "<group>"; };
 		0290E274238E4F8100B5C466 /* PaginatedListSelectorViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PaginatedListSelectorViewController.xib; sourceTree = "<group>"; };
-		0290E279238E590500B5C466 /* ListSelectorViewProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListSelectorViewProperties.swift; sourceTree = "<group>"; };
 		0290E27D238E5B5C00B5C466 /* ProductStockStatusListSelectorDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockStatusListSelectorDataSourceTests.swift; sourceTree = "<group>"; };
 		02913E9423A774C500707A0C /* UnitInputFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitInputFormatter.swift; sourceTree = "<group>"; };
 		02913E9623A774E600707A0C /* DecimalInputFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecimalInputFormatter.swift; sourceTree = "<group>"; };
@@ -2129,7 +2127,6 @@
 		02E262C3238D04DB00B79588 /* ListSelector */ = {
 			isa = PBXGroup;
 			children = (
-				0290E279238E590500B5C466 /* ListSelectorViewProperties.swift */,
 				0290E26D238E3CE400B5C466 /* ListSelectorViewController.swift */,
 				0290E26E238E3CE400B5C466 /* ListSelectorViewController.xib */,
 				02ADC7CB239762E0008D4BED /* PaginatedListSelectorViewProperties.swift */,
@@ -4408,7 +4405,6 @@
 				028296EC237D28B600E84012 /* TextViewViewController.swift in Sources */,
 				454B28BE23BF63C600CD2091 /* DateIntervalFormatter+Helpers.swift in Sources */,
 				024DF3052372ADCD006658FE /* KeyboardScrollable.swift in Sources */,
-				0290E27A238E590500B5C466 /* ListSelectorViewProperties.swift in Sources */,
 				B555530F21B57DE700449E71 /* ApplicationAdapter.swift in Sources */,
 				029D444E22F141CD00DEFA8A /* DashboardStatsV3ViewController.swift in Sources */,
 				747AA08B2107CF8D0047A89B /* TracksProvider.swift in Sources */,

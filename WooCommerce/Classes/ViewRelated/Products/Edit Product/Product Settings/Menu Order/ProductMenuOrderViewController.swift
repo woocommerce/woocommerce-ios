@@ -39,7 +39,9 @@ final class ProductMenuOrderViewController: UIViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        onCompletion(productSettings)
+        if isMovingFromParent {
+            onCompletion(productSettings)
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {

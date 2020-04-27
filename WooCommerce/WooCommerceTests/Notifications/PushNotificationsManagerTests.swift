@@ -364,6 +364,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         let emittedNotification = emittedNotifications.first!
         XCTAssertEqual(emittedNotification.kind, .storeOrder)
         XCTAssertEqual(emittedNotification.noteID, 9_981)
+        XCTAssertEqual(emittedNotification.message, Sample.defaultMessage)
     }
 
     func testItDoesNotEmitForegroundNotificationsWhenItReceivesANotificationWhileAppIsNotActive() {

@@ -18,8 +18,6 @@ final class OrderSearchStarterViewModel {
     ///     - tableView: The table to use for the results. This is not retained by this class.
     ///
     func activate(using tableView: UITableView) {
-        tableView.dataSource = dataSource
-
         dataSource.startForwardingEvents(to: tableView)
 
         try? dataSource.performFetch()
@@ -28,19 +26,28 @@ final class OrderSearchStarterViewModel {
     /// The `OrderStatus` located at `indexPath`.
     ///
     func orderStatus(at indexPath: IndexPath) -> OrderStatus {
-        dataSource.orderStatus(at: indexPath)
+        dataSource.resultsController.object(at: indexPath)
     }
 }
 
+// MARK: - TableView Support
+
+extension OrderSearchStarterViewModel {
+    /// The number of DB results
+    ///
+    var numberOfObjects: Int {
+        dataSource.resultsController.numberOfObjects
+    }
+}
 
 private extension OrderSearchStarterViewModel {
     /// Encpsulates data loading and presentation of the `UITableViewCells`.
     ///
-    final class DataSource: NSObject, UITableViewDataSource {
+    final class DataSource: NSObject {
         private let storageManager = ServiceLocator.storageManager
         private let siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
 
-        private lazy var resultsController: ResultsController<StorageOrderStatus> = {
+        private(set) lazy var resultsController: ResultsController<StorageOrderStatus> = {
             let descriptor = NSSortDescriptor(key: "slug", ascending: true)
             let predicate = NSPredicate(format: "siteID == %lld", siteID)
             return ResultsController<StorageOrderStatus>(storageManager: storageManager,
@@ -60,32 +67,6 @@ private extension OrderSearchStarterViewModel {
         ///
         func startForwardingEvents(to tableView: UITableView) {
             resultsController.startForwardingEvents(to: tableView)
-        }
-
-        /// The `OrderStatus` located at `indexPath`.
-        ///
-        func orderStatus(at indexPath: IndexPath) -> OrderStatus {
-            resultsController.object(at: indexPath)
-        }
-
-        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-            resultsController.numberOfObjects
-        }
-
-        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            let cell = tableView.dequeueReusableCell(withIdentifier: BasicTableViewCell.reuseIdentifier,
-                                                     for: indexPath)
-            let orderStatus = self.orderStatus(at: indexPath)
-
-            cell.accessoryType = .disclosureIndicator
-            cell.selectionStyle = .default
-            cell.textLabel?.text = orderStatus.name
-
-            return cell
-        }
-
-        func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-            NSLocalizedString("Order Status", comment: "The section title for the list of Order statuses in the Order Search.")
         }
     }
 }

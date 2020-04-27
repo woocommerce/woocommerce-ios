@@ -40,13 +40,38 @@ final class OrderSearchStarterViewController: UIViewController, KeyboardFrameAdj
     }
 
     private func configureTableView() {
-        tableView.backgroundColor = .listBackground
-        tableView.delegate = self
-
         tableView.register(BasicTableViewCell.loadNib(),
                            forCellReuseIdentifier: BasicTableViewCell.reuseIdentifier)
 
+        tableView.backgroundColor = .listBackground
+        tableView.delegate = self
+        tableView.dataSource = self
+
         keyboardFrameObserver.startObservingKeyboardFrame()
+    }
+}
+
+// MARK: - UITableViewDataSource
+
+extension OrderSearchStarterViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        viewModel.numberOfObjects
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: BasicTableViewCell.reuseIdentifier,
+                                                 for: indexPath)
+        let orderStatus = viewModel.orderStatus(at: indexPath)
+
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = orderStatus.name
+
+        return cell
+    }
+
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        NSLocalizedString("Order Status", comment: "The section title for the list of Order statuses in the Order Search.")
     }
 }
 

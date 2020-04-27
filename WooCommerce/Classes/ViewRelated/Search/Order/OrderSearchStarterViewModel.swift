@@ -28,7 +28,7 @@ final class OrderSearchStarterViewModel {
     /// - Parameters:
     ///     - tableView: The table to use for the results. This is not retained by this class.
     ///
-    func activate(using tableView: UITableView) {
+    func activateAndForwardUpdates(to tableView: UITableView) {
         resultsController.startForwardingEvents(to: tableView)
 
         performFetch()

@@ -36,7 +36,7 @@ final class OrderSearchStarterViewController: UIViewController, KeyboardFrameAdj
 
         configureTableView()
 
-        viewModel.activate(using: tableView)
+        viewModel.activateAndForwardUpdates(to: tableView)
     }
 
     private func configureTableView() {

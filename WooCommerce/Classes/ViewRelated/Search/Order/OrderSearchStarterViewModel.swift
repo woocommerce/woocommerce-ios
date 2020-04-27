@@ -22,12 +22,6 @@ final class OrderSearchStarterViewModel {
 
         try? dataSource.performFetch()
     }
-
-    /// The `OrderStatus` located at `indexPath`.
-    ///
-    func orderStatus(at indexPath: IndexPath) -> OrderStatus {
-        dataSource.resultsController.object(at: indexPath)
-    }
 }
 
 // MARK: - TableView Support
@@ -37,6 +31,12 @@ extension OrderSearchStarterViewModel {
     ///
     var numberOfObjects: Int {
         dataSource.resultsController.numberOfObjects
+    }
+
+    /// The `OrderStatus` located at `indexPath`.
+    ///
+    func orderStatus(at indexPath: IndexPath) -> OrderStatus {
+        dataSource.resultsController.object(at: indexPath)
     }
 }
 

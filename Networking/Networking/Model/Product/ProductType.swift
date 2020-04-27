@@ -44,6 +44,23 @@ extension ProductType: RawRepresentable {
         case .custom(let payload):  return payload
         }
     }
+
+    /// Returns the localized text version of the Enum
+    ///
+    public var description: String {
+        switch self {
+        case .simple:
+            return NSLocalizedString("Simple", comment: "Display label for simple product type.")
+        case .grouped:
+            return NSLocalizedString("Grouped", comment: "Display label for grouped product type.")
+        case .affiliate:
+            return NSLocalizedString("External/Affiliate", comment: "Display label for affiliate product type.")
+        case .variable:
+            return NSLocalizedString("Variable", comment: "Display label for variable product type.")
+        case .custom(let payload):
+            return payload // unable to localize at runtime.
+        }
+    }
 }
 
 

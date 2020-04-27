@@ -65,9 +65,9 @@
 		021E2A1723A9FE5A00B1DE07 /* ProductInventorySettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021E2A1523A9FE5A00B1DE07 /* ProductInventorySettingsViewController.swift */; };
 		021E2A1823A9FE5A00B1DE07 /* ProductInventorySettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 021E2A1623A9FE5A00B1DE07 /* ProductInventorySettingsViewController.xib */; };
 		021E2A1A23AA07F800B1DE07 /* Product+InventorySettingsViewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021E2A1923AA07F800B1DE07 /* Product+InventorySettingsViewModels.swift */; };
-		021E2A1C23AA0DD100B1DE07 /* ProductBackordersSettingListSelectorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021E2A1B23AA0DD100B1DE07 /* ProductBackordersSettingListSelectorDataSource.swift */; };
+		021E2A1C23AA0DD100B1DE07 /* ProductBackordersSettingListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021E2A1B23AA0DD100B1DE07 /* ProductBackordersSettingListSelectorCommand.swift */; };
 		021E2A1E23AA24C600B1DE07 /* StringInputFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021E2A1D23AA24C600B1DE07 /* StringInputFormatter.swift */; };
-		021E2A2023AA274700B1DE07 /* ProductBackordersSettingListSelectorDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021E2A1F23AA274700B1DE07 /* ProductBackordersSettingListSelectorDataSourceTests.swift */; };
+		021E2A2023AA274700B1DE07 /* ProductBackordersSettingListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021E2A1F23AA274700B1DE07 /* ProductBackordersSettingListSelectorCommandTests.swift */; };
 		021FAFCD2355621E00B99241 /* UIView+SubviewsAxisTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021FAFCC2355621E00B99241 /* UIView+SubviewsAxisTests.swift */; };
 		021FAFCF23556D2B00B99241 /* UIView+SubviewsAxis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021FAFCE23556D2B00B99241 /* UIView+SubviewsAxis.swift */; };
 		02279586237A50C900787C63 /* AztecUnorderedListFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02279583237A50C900787C63 /* AztecUnorderedListFormatBarCommand.swift */; };
@@ -174,7 +174,7 @@
 		0290E270238E3CE400B5C466 /* ListSelectorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0290E26E238E3CE400B5C466 /* ListSelectorViewController.xib */; };
 		0290E275238E4F8100B5C466 /* PaginatedListSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290E273238E4F8100B5C466 /* PaginatedListSelectorViewController.swift */; };
 		0290E276238E4F8100B5C466 /* PaginatedListSelectorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0290E274238E4F8100B5C466 /* PaginatedListSelectorViewController.xib */; };
-		0290E27E238E5B5C00B5C466 /* ProductStockStatusListSelectorDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290E27D238E5B5C00B5C466 /* ProductStockStatusListSelectorDataSourceTests.swift */; };
+		0290E27E238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290E27D238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift */; };
 		02913E9523A774C500707A0C /* UnitInputFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02913E9423A774C500707A0C /* UnitInputFormatter.swift */; };
 		02913E9723A774E600707A0C /* DecimalInputFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02913E9623A774E600707A0C /* DecimalInputFormatter.swift */; };
 		029B0F57234197B80010C1F3 /* ProductSearchUICommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029B0F56234197B80010C1F3 /* ProductSearchUICommand.swift */; };
@@ -209,7 +209,7 @@
 		02DD81FA242CAA400060E50B /* Media+WPMediaAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DD81F6242CAA3F0060E50B /* Media+WPMediaAsset.swift */; };
 		02DD81FB242CAA400060E50B /* WordPressMediaLibraryPickerDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DD81F7242CAA3F0060E50B /* WordPressMediaLibraryPickerDataSource.swift */; };
 		02DD81FC242CAA400060E50B /* WordPressMediaLibraryImagePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02DD81F8242CAA400060E50B /* WordPressMediaLibraryImagePickerViewController.xib */; };
-		02E262C9238D0AD300B79588 /* ProductStockStatusListSelectorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E262C8238D0AD300B79588 /* ProductStockStatusListSelectorDataSource.swift */; };
+		02E262C9238D0AD300B79588 /* ProductStockStatusListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E262C8238D0AD300B79588 /* ProductStockStatusListSelectorCommand.swift */; };
 		02E4FD7A230688BA0049610C /* OrderStatsV4Interval+Chart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4FD79230688BA0049610C /* OrderStatsV4Interval+Chart.swift */; };
 		02E4FD7C2306A04C0049610C /* StatsTimeRangeBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4FD7B2306A04C0049610C /* StatsTimeRangeBarView.swift */; };
 		02E4FD7E2306A8180049610C /* StatsTimeRangeBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4FD7D2306A8180049610C /* StatsTimeRangeBarViewModel.swift */; };
@@ -256,11 +256,11 @@
 		451A04F52386F7C900E368C9 /* AddProductImageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 451A04F32386F7C900E368C9 /* AddProductImageCollectionViewCell.xib */; };
 		451C77712404518600413F73 /* ProductSettingsRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451C77702404518600413F73 /* ProductSettingsRows.swift */; };
 		451C77732404534000413F73 /* ProductSettingsSections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451C77722404534000413F73 /* ProductSettingsSections.swift */; };
-		4524CD9E242D01FD00B2F20A /* ProductStatusSettingListSelectorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4524CD9D242D01FD00B2F20A /* ProductStatusSettingListSelectorDataSource.swift */; };
-		4524CDA1242D045C00B2F20A /* ProductStatusSettingListSelectorDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4524CDA0242D045C00B2F20A /* ProductStatusSettingListSelectorDataSourceTests.swift */; };
+		4524CD9E242D01FD00B2F20A /* ProductStatusSettingListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4524CD9D242D01FD00B2F20A /* ProductStatusSettingListSelectorCommand.swift */; };
+		4524CDA1242D045C00B2F20A /* ProductStatusSettingListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4524CDA0242D045C00B2F20A /* ProductStatusSettingListSelectorCommandTests.swift */; };
 		453227B723C4D6EC00D816B3 /* TimeZone+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453227B623C4D6EC00D816B3 /* TimeZone+Woo.swift */; };
 		453770D12431FF4700AC718D /* ProductSettingsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453770D02431FF4700AC718D /* ProductSettingsViewModelTests.swift */; };
-		453904F323BB88B5007C4956 /* ProductTaxStatusListSelectorDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453904F223BB88B5007C4956 /* ProductTaxStatusListSelectorDataSourceTests.swift */; };
+		453904F323BB88B5007C4956 /* ProductTaxStatusListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453904F223BB88B5007C4956 /* ProductTaxStatusListSelectorCommandTests.swift */; };
 		453904F523BB8BD5007C4956 /* ProductTaxClassListSelectorDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453904F423BB8BD5007C4956 /* ProductTaxClassListSelectorDataSourceTests.swift */; };
 		453DBF8E2387F34A006762A5 /* UICollectionViewCell+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453DBF8D2387F34A006762A5 /* UICollectionViewCell+Helpers.swift */; };
 		453DBF9023882814006762A5 /* ProductImagesFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453DBF8F23882814006762A5 /* ProductImagesFlowLayout.swift */; };
@@ -293,7 +293,7 @@
 		45CDAFAE2434CFCA00F83C22 /* ProductCatalogVisibilityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45CDAFAC2434CFCA00F83C22 /* ProductCatalogVisibilityViewController.swift */; };
 		45CDAFAF2434CFCA00F83C22 /* ProductCatalogVisibilityViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45CDAFAD2434CFCA00F83C22 /* ProductCatalogVisibilityViewController.xib */; };
 		45D1CF4523BAC2A500945A36 /* ProductTaxClassListSelectorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D1CF4423BAC2A500945A36 /* ProductTaxClassListSelectorDataSource.swift */; };
-		45D1CF4723BAC89A00945A36 /* ProductTaxStatusListSelectorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D1CF4623BAC89A00945A36 /* ProductTaxStatusListSelectorDataSource.swift */; };
+		45D1CF4723BAC89A00945A36 /* ProductTaxStatusListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D1CF4623BAC89A00945A36 /* ProductTaxStatusListSelectorCommand.swift */; };
 		45D685FE23D0FB25005F87D0 /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D685FD23D0FB25005F87D0 /* Throttler.swift */; };
 		45EF7984244F26BB00B22BA2 /* Array+IndexPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45EF7983244F26BB00B22BA2 /* Array+IndexPath.swift */; };
 		45EF798624509B4C00B22BA2 /* ArrayIndexPathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45EF798524509B4C00B22BA2 /* ArrayIndexPathTests.swift */; };
@@ -877,9 +877,9 @@
 		021E2A1523A9FE5A00B1DE07 /* ProductInventorySettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInventorySettingsViewController.swift; sourceTree = "<group>"; };
 		021E2A1623A9FE5A00B1DE07 /* ProductInventorySettingsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductInventorySettingsViewController.xib; sourceTree = "<group>"; };
 		021E2A1923AA07F800B1DE07 /* Product+InventorySettingsViewModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+InventorySettingsViewModels.swift"; sourceTree = "<group>"; };
-		021E2A1B23AA0DD100B1DE07 /* ProductBackordersSettingListSelectorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductBackordersSettingListSelectorDataSource.swift; sourceTree = "<group>"; };
+		021E2A1B23AA0DD100B1DE07 /* ProductBackordersSettingListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductBackordersSettingListSelectorCommand.swift; sourceTree = "<group>"; };
 		021E2A1D23AA24C600B1DE07 /* StringInputFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringInputFormatter.swift; sourceTree = "<group>"; };
-		021E2A1F23AA274700B1DE07 /* ProductBackordersSettingListSelectorDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductBackordersSettingListSelectorDataSourceTests.swift; sourceTree = "<group>"; };
+		021E2A1F23AA274700B1DE07 /* ProductBackordersSettingListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductBackordersSettingListSelectorCommandTests.swift; sourceTree = "<group>"; };
 		021FAFCC2355621E00B99241 /* UIView+SubviewsAxisTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SubviewsAxisTests.swift"; sourceTree = "<group>"; };
 		021FAFCE23556D2B00B99241 /* UIView+SubviewsAxis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SubviewsAxis.swift"; sourceTree = "<group>"; };
 		02279583237A50C900787C63 /* AztecUnorderedListFormatBarCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AztecUnorderedListFormatBarCommand.swift; sourceTree = "<group>"; };
@@ -986,7 +986,7 @@
 		0290E26E238E3CE400B5C466 /* ListSelectorViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ListSelectorViewController.xib; sourceTree = "<group>"; };
 		0290E273238E4F8100B5C466 /* PaginatedListSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedListSelectorViewController.swift; sourceTree = "<group>"; };
 		0290E274238E4F8100B5C466 /* PaginatedListSelectorViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PaginatedListSelectorViewController.xib; sourceTree = "<group>"; };
-		0290E27D238E5B5C00B5C466 /* ProductStockStatusListSelectorDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockStatusListSelectorDataSourceTests.swift; sourceTree = "<group>"; };
+		0290E27D238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockStatusListSelectorCommandTests.swift; sourceTree = "<group>"; };
 		02913E9423A774C500707A0C /* UnitInputFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitInputFormatter.swift; sourceTree = "<group>"; };
 		02913E9623A774E600707A0C /* DecimalInputFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecimalInputFormatter.swift; sourceTree = "<group>"; };
 		029B0F56234197B80010C1F3 /* ProductSearchUICommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSearchUICommand.swift; sourceTree = "<group>"; };
@@ -1021,7 +1021,7 @@
 		02DD81F6242CAA3F0060E50B /* Media+WPMediaAsset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Media+WPMediaAsset.swift"; sourceTree = "<group>"; };
 		02DD81F7242CAA3F0060E50B /* WordPressMediaLibraryPickerDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordPressMediaLibraryPickerDataSource.swift; sourceTree = "<group>"; };
 		02DD81F8242CAA400060E50B /* WordPressMediaLibraryImagePickerViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WordPressMediaLibraryImagePickerViewController.xib; sourceTree = "<group>"; };
-		02E262C8238D0AD300B79588 /* ProductStockStatusListSelectorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockStatusListSelectorDataSource.swift; sourceTree = "<group>"; };
+		02E262C8238D0AD300B79588 /* ProductStockStatusListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockStatusListSelectorCommand.swift; sourceTree = "<group>"; };
 		02E4FD79230688BA0049610C /* OrderStatsV4Interval+Chart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Interval+Chart.swift"; sourceTree = "<group>"; };
 		02E4FD7B2306A04C0049610C /* StatsTimeRangeBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsTimeRangeBarView.swift; sourceTree = "<group>"; };
 		02E4FD7D2306A8180049610C /* StatsTimeRangeBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsTimeRangeBarViewModel.swift; sourceTree = "<group>"; };
@@ -1071,11 +1071,11 @@
 		451A04F32386F7C900E368C9 /* AddProductImageCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddProductImageCollectionViewCell.xib; sourceTree = "<group>"; };
 		451C77702404518600413F73 /* ProductSettingsRows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSettingsRows.swift; sourceTree = "<group>"; };
 		451C77722404534000413F73 /* ProductSettingsSections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSettingsSections.swift; sourceTree = "<group>"; };
-		4524CD9D242D01FD00B2F20A /* ProductStatusSettingListSelectorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStatusSettingListSelectorDataSource.swift; sourceTree = "<group>"; };
-		4524CDA0242D045C00B2F20A /* ProductStatusSettingListSelectorDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStatusSettingListSelectorDataSourceTests.swift; sourceTree = "<group>"; };
+		4524CD9D242D01FD00B2F20A /* ProductStatusSettingListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStatusSettingListSelectorCommand.swift; sourceTree = "<group>"; };
+		4524CDA0242D045C00B2F20A /* ProductStatusSettingListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStatusSettingListSelectorCommandTests.swift; sourceTree = "<group>"; };
 		453227B623C4D6EC00D816B3 /* TimeZone+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeZone+Woo.swift"; sourceTree = "<group>"; };
 		453770D02431FF4700AC718D /* ProductSettingsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSettingsViewModelTests.swift; sourceTree = "<group>"; };
-		453904F223BB88B5007C4956 /* ProductTaxStatusListSelectorDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTaxStatusListSelectorDataSourceTests.swift; sourceTree = "<group>"; };
+		453904F223BB88B5007C4956 /* ProductTaxStatusListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTaxStatusListSelectorCommandTests.swift; sourceTree = "<group>"; };
 		453904F423BB8BD5007C4956 /* ProductTaxClassListSelectorDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTaxClassListSelectorDataSourceTests.swift; sourceTree = "<group>"; };
 		453DBF8D2387F34A006762A5 /* UICollectionViewCell+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionViewCell+Helpers.swift"; sourceTree = "<group>"; };
 		453DBF8F23882814006762A5 /* ProductImagesFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesFlowLayout.swift; sourceTree = "<group>"; };
@@ -1108,7 +1108,7 @@
 		45CDAFAC2434CFCA00F83C22 /* ProductCatalogVisibilityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCatalogVisibilityViewController.swift; sourceTree = "<group>"; };
 		45CDAFAD2434CFCA00F83C22 /* ProductCatalogVisibilityViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductCatalogVisibilityViewController.xib; sourceTree = "<group>"; };
 		45D1CF4423BAC2A500945A36 /* ProductTaxClassListSelectorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTaxClassListSelectorDataSource.swift; sourceTree = "<group>"; };
-		45D1CF4623BAC89A00945A36 /* ProductTaxStatusListSelectorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTaxStatusListSelectorDataSource.swift; sourceTree = "<group>"; };
+		45D1CF4623BAC89A00945A36 /* ProductTaxStatusListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTaxStatusListSelectorCommand.swift; sourceTree = "<group>"; };
 		45D685FD23D0FB25005F87D0 /* Throttler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Throttler.swift; sourceTree = "<group>"; };
 		45EF7983244F26BB00B22BA2 /* Array+IndexPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+IndexPath.swift"; sourceTree = "<group>"; };
 		45EF798524509B4C00B22BA2 /* ArrayIndexPathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayIndexPathTests.swift; sourceTree = "<group>"; };
@@ -2033,12 +2033,12 @@
 		0290E27C238E5B4A00B5C466 /* ListSelector */ = {
 			isa = PBXGroup;
 			children = (
-				0290E27D238E5B5C00B5C466 /* ProductStockStatusListSelectorDataSourceTests.swift */,
+				0290E27D238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift */,
 				02ADC7CD23978EAA008D4BED /* PaginatedProductShippingClassListSelectorDataSourceTests.swift */,
-				021E2A1F23AA274700B1DE07 /* ProductBackordersSettingListSelectorDataSourceTests.swift */,
-				453904F223BB88B5007C4956 /* ProductTaxStatusListSelectorDataSourceTests.swift */,
+				021E2A1F23AA274700B1DE07 /* ProductBackordersSettingListSelectorCommandTests.swift */,
+				453904F223BB88B5007C4956 /* ProductTaxStatusListSelectorCommandTests.swift */,
 				453904F423BB8BD5007C4956 /* ProductTaxClassListSelectorDataSourceTests.swift */,
-				4524CDA0242D045C00B2F20A /* ProductStatusSettingListSelectorDataSourceTests.swift */,
+				4524CDA0242D045C00B2F20A /* ProductStatusSettingListSelectorCommandTests.swift */,
 			);
 			path = ListSelector;
 			sourceTree = "<group>";
@@ -2139,10 +2139,10 @@
 		02E262CA238D0D0500B79588 /* List Selector Data Source */ = {
 			isa = PBXGroup;
 			children = (
-				02E262C8238D0AD300B79588 /* ProductStockStatusListSelectorDataSource.swift */,
+				02E262C8238D0AD300B79588 /* ProductStockStatusListSelectorCommand.swift */,
 				0219B03623964527007DCD5E /* PaginatedProductShippingClassListSelectorDataSource.swift */,
-				021E2A1B23AA0DD100B1DE07 /* ProductBackordersSettingListSelectorDataSource.swift */,
-				45D1CF4623BAC89A00945A36 /* ProductTaxStatusListSelectorDataSource.swift */,
+				021E2A1B23AA0DD100B1DE07 /* ProductBackordersSettingListSelectorCommand.swift */,
+				45D1CF4623BAC89A00945A36 /* ProductTaxStatusListSelectorCommand.swift */,
 				45D1CF4423BAC2A500945A36 /* ProductTaxClassListSelectorDataSource.swift */,
 			);
 			path = "List Selector Data Source";
@@ -2230,7 +2230,7 @@
 		4524CD9F242D023300B2F20A /* List Selector Data Source */ = {
 			isa = PBXGroup;
 			children = (
-				4524CD9D242D01FD00B2F20A /* ProductStatusSettingListSelectorDataSource.swift */,
+				4524CD9D242D01FD00B2F20A /* ProductStatusSettingListSelectorCommand.swift */,
 			);
 			path = "List Selector Data Source";
 			sourceTree = "<group>";
@@ -4452,7 +4452,7 @@
 				451A04F02386F7B500E368C9 /* ProductImageCollectionViewCell.swift in Sources */,
 				02E8B17E23E2C8D900A43403 /* ProductImageActionHandler.swift in Sources */,
 				02695770237281A9001BA0BF /* AztecTextViewAttachmentHandler.swift in Sources */,
-				4524CD9E242D01FD00B2F20A /* ProductStatusSettingListSelectorDataSource.swift in Sources */,
+				4524CD9E242D01FD00B2F20A /* ProductStatusSettingListSelectorCommand.swift in Sources */,
 				02E8B17723E2C49000A43403 /* InProgressProductImageCollectionViewCell.swift in Sources */,
 				CE5F462C23AACBC4006B1A5C /* RefundDetailsResultController.swift in Sources */,
 				0230535B2374FB6800487A64 /* AztecSourceCodeFormatBarCommand.swift in Sources */,
@@ -4551,7 +4551,7 @@
 				CE1F51272064345B00C6C810 /* UIColor+Helpers.swift in Sources */,
 				934CB123224EAB150005CCB9 /* main.swift in Sources */,
 				02F4F50F237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.swift in Sources */,
-				021E2A1C23AA0DD100B1DE07 /* ProductBackordersSettingListSelectorDataSource.swift in Sources */,
+				021E2A1C23AA0DD100B1DE07 /* ProductBackordersSettingListSelectorCommand.swift in Sources */,
 				5795F22E23E26A9E00F6707C /* OrderSearchStarterViewController.swift in Sources */,
 				45F5A3C123DF206B007D40E5 /* ShippingInputFormatter.swift in Sources */,
 				45C8B2582313FA570002FA77 /* CustomerNoteTableViewCell.swift in Sources */,
@@ -4569,7 +4569,7 @@
 				74AAF6A5212A04A900C612B0 /* ChartMarker.swift in Sources */,
 				CE32B11520BF8779006FBCF4 /* FulfillButtonTableViewCell.swift in Sources */,
 				025FDD3223717D2900824006 /* EditorFactory.swift in Sources */,
-				45D1CF4723BAC89A00945A36 /* ProductTaxStatusListSelectorDataSource.swift in Sources */,
+				45D1CF4723BAC89A00945A36 /* ProductTaxStatusListSelectorCommand.swift in Sources */,
 				453DBF9023882814006762A5 /* ProductImagesFlowLayout.swift in Sources */,
 				024DF30E23742A70006658FE /* AztecBoldFormatBarCommand.swift in Sources */,
 				02396251239948470096F34C /* UIImage+TintColor.swift in Sources */,
@@ -4669,7 +4669,7 @@
 				74C6FEA521C2F1FA009286B6 /* AboutViewController.swift in Sources */,
 				B53B3F37219C75AC00DF1EB6 /* OrderLoaderViewController.swift in Sources */,
 				CE1D5A59228A1C2C00DF3715 /* ProductReviewsTableViewCell.swift in Sources */,
-				02E262C9238D0AD300B79588 /* ProductStockStatusListSelectorDataSource.swift in Sources */,
+				02E262C9238D0AD300B79588 /* ProductStockStatusListSelectorCommand.swift in Sources */,
 				CE2A9FC823C3D2D4002BEC1C /* RefundedProductsDataSource.swift in Sources */,
 				CECC759523D6057E00486676 /* OrderItem+Woo.swift in Sources */,
 				0235595924496D70004BE2B8 /* ProductsSortOrderBottomSheetListSelectorCommand.swift in Sources */,
@@ -4718,7 +4718,7 @@
 				263EB409242C58EA00F3A15F /* DefaultProductFormTableViewModel+EditProductsM3Tests.swift in Sources */,
 				02BA23C022EE9DAF009539E7 /* AsyncDictionaryTests.swift in Sources */,
 				B555531121B57E6F00449E71 /* MockupApplicationAdapter.swift in Sources */,
-				021E2A2023AA274700B1DE07 /* ProductBackordersSettingListSelectorDataSourceTests.swift in Sources */,
+				021E2A2023AA274700B1DE07 /* ProductBackordersSettingListSelectorCommandTests.swift in Sources */,
 				020BE76723B49FE9007FE54C /* AztecBoldFormatBarCommandTests.swift in Sources */,
 				CE4DA5C821DD759400074607 /* CurrencyFormatterTests.swift in Sources */,
 				B57C745120F56EE900EEFC87 /* UITableViewCellHelpersTests.swift in Sources */,
@@ -4781,7 +4781,7 @@
 				020BE76B23B4A380007FE54C /* AztecUnderlineFormatBarCommandTests.swift in Sources */,
 				D83F5937225B402E00626E75 /* EditableValueOneTableViewCellTests.swift in Sources */,
 				9379E1A6225537D0006A6BE4 /* TestingAppDelegate.swift in Sources */,
-				453904F323BB88B5007C4956 /* ProductTaxStatusListSelectorDataSourceTests.swift in Sources */,
+				453904F323BB88B5007C4956 /* ProductTaxStatusListSelectorCommandTests.swift in Sources */,
 				B56C721421B5BBC000E5E85B /* MockupStoresManager.swift in Sources */,
 				D8AB131E225DC25F002BB5D1 /* MockOrders.swift in Sources */,
 				D85136D5231E40B500DD0539 /* ProductReviewTableViewCellTests.swift in Sources */,
@@ -4811,7 +4811,7 @@
 				B5F571AB21BEECB60010D1B8 /* NoteWooTests.swift in Sources */,
 				B56BBD16214820A70053A32D /* SyncCoordinatorTests.swift in Sources */,
 				02A275C023FE58F6005C560F /* MockImageCache.swift in Sources */,
-				4524CDA1242D045C00B2F20A /* ProductStatusSettingListSelectorDataSourceTests.swift in Sources */,
+				4524CDA1242D045C00B2F20A /* ProductStatusSettingListSelectorCommandTests.swift in Sources */,
 				D8C11A6222E24C4A00D4A88D /* LedgerTableViewCellTests.swift in Sources */,
 				D83A6A7A23792B2400419D48 /* UIColor+Muriel-Tests.swift in Sources */,
 				B5DBF3C320E1484400B53AED /* StoresManagerTests.swift in Sources */,
@@ -4819,7 +4819,7 @@
 				B53A569721123D3B000776C9 /* ResultsControllerUIKitTests.swift in Sources */,
 				022A45EE237BADA6001417F0 /* Product+ProductFormTests.swift in Sources */,
 				B57C5C9921B80E7100FF82B2 /* DictionaryWooTests.swift in Sources */,
-				0290E27E238E5B5C00B5C466 /* ProductStockStatusListSelectorDataSourceTests.swift in Sources */,
+				0290E27E238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift in Sources */,
 				020B2F9123BDD71500BD79AD /* IntegerInputFormatterTests.swift in Sources */,
 				D816DDBC22265DA300903E59 /* OrderTrackingTableViewCellTests.swift in Sources */,
 				D85136DD231E613900DD0539 /* ReviewsViewModelTests.swift in Sources */,

@@ -44,7 +44,7 @@ enum ProductSettingsRows {
         }
 
         func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
-            let command = ProductStatusSettingListSelectorDataSource(selected: settings.status)
+            let command = ProductStatusSettingListSelectorCommand(selected: settings.status)
 
             let listSelectorViewController = ListSelectorViewController(command: command) { selected in
 

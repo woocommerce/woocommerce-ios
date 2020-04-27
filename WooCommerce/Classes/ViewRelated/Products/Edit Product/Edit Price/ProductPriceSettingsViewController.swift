@@ -229,7 +229,7 @@ extension ProductPriceSettingsViewController: UITableViewDelegate {
             viewModel.handleSaleEndDateChange(nil)
             refreshViewContent()
         case .taxStatus:
-            let command = ProductTaxStatusListSelectorDataSource(selected: viewModel.taxStatus)
+            let command = ProductTaxStatusListSelectorCommand(selected: viewModel.taxStatus)
             let listSelectorViewController = ListSelectorViewController(command: command) { [weak self] selected in
                                                                             if let selected = selected {
                                                                                 self?.viewModel.handleTaxStatusChange(selected)

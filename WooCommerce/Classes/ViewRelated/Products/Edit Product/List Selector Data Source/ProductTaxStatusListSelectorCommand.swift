@@ -3,7 +3,7 @@ import Yosemite
 
 /// `ListSelectorCommand` for selecting a Product Tax Status.
 ///
-final class ProductTaxStatusListSelectorDataSource: ListSelectorCommand {
+final class ProductTaxStatusListSelectorCommand: ListSelectorCommand {
     typealias Model = ProductTaxStatus
     typealias Cell = BasicTableViewCell
 

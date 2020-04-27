@@ -3,7 +3,7 @@ import Yosemite
 
 /// `ListSelectorCommand` for selecting a Product Backorders Setting.
 ///
-final class ProductBackordersSettingListSelectorDataSource: ListSelectorCommand {
+final class ProductBackordersSettingListSelectorCommand: ListSelectorCommand {
     typealias Model = ProductBackordersSetting
     typealias Cell = BasicTableViewCell
 

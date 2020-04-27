@@ -316,14 +316,14 @@ extension ProductInventorySettingsViewController: UITableViewDelegate {
 
         switch rowAtIndexPath(indexPath) {
         case .stockStatus:
-            let command = ProductStockStatusListSelectorDataSource(selected: stockStatus)
+            let command = ProductStockStatusListSelectorCommand(selected: stockStatus)
             let listSelectorViewController = ListSelectorViewController(command: command) { [weak self] selected in
                                                                             self?.stockStatus = selected
                                                                             self?.tableView.reloadData()
             }
             navigationController?.pushViewController(listSelectorViewController, animated: true)
         case .backorders:
-            let command = ProductBackordersSettingListSelectorDataSource(selected: backordersSetting)
+            let command = ProductBackordersSettingListSelectorCommand(selected: backordersSetting)
             let listSelectorViewController = ListSelectorViewController(command: command) { [weak self] selected in
                                                                             self?.backordersSetting = selected
                                                                             self?.tableView.reloadData()

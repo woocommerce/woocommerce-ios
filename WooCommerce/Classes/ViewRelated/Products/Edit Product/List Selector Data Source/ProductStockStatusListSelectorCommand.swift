@@ -3,7 +3,7 @@ import Yosemite
 
 /// `ListSelectorCommand` for selecting a Product Stock Status.
 ///
-final class ProductStockStatusListSelectorDataSource: ListSelectorCommand {
+final class ProductStockStatusListSelectorCommand: ListSelectorCommand {
     typealias Model = ProductStockStatus
     typealias Cell = BasicTableViewCell
 

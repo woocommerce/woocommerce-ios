@@ -69,10 +69,10 @@ extension TextFieldTableViewCell: UITextFieldDelegate {
         }
         let updatedText = text.replacingCharacters(in: textRange,
                                                    with: string)
-        guard let isValid = viewModel?.inputFormatter?.isValid(input: updatedText) else {
+        guard let inputFormatter = viewModel?.inputFormatter else {
             return true
         }
-        return isValid == true
+        return inputFormatter.isValid(input: updatedText)
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

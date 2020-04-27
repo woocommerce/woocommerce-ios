@@ -312,6 +312,7 @@
 		5795F22C23E26A8D00F6707C /* OrderSearchStarterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5795F22B23E26A8D00F6707C /* OrderSearchStarterViewController.xib */; };
 		5795F22E23E26A9E00F6707C /* OrderSearchStarterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5795F22D23E26A9E00F6707C /* OrderSearchStarterViewController.swift */; };
 		5795F23023E26B5300F6707C /* OrderSearchStarterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5795F22F23E26B5300F6707C /* OrderSearchStarterViewModel.swift */; };
+		57A3C0E324576207004FB211 /* OrderSearchStarterViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A3C0E224576207004FB211 /* OrderSearchStarterViewModelTests.swift */; };
 		57AE0B0123ECD6D400237009 /* OrdersViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 57AE0B0023ECD6D400237009 /* OrdersViewController.xib */; };
 		57C503DC23E8C70C00EC0790 /* OrdersMasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C503DB23E8C70C00EC0790 /* OrdersMasterViewController.swift */; };
 		57C503DE23E8CE0D00EC0790 /* OrdersMasterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 57C503DD23E8CE0D00EC0790 /* OrdersMasterViewController.xib */; };
@@ -1128,6 +1129,7 @@
 		5795F22B23E26A8D00F6707C /* OrderSearchStarterViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderSearchStarterViewController.xib; sourceTree = "<group>"; };
 		5795F22D23E26A9E00F6707C /* OrderSearchStarterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSearchStarterViewController.swift; sourceTree = "<group>"; };
 		5795F22F23E26B5300F6707C /* OrderSearchStarterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSearchStarterViewModel.swift; sourceTree = "<group>"; };
+		57A3C0E224576207004FB211 /* OrderSearchStarterViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSearchStarterViewModelTests.swift; sourceTree = "<group>"; };
 		57AE0B0023ECD6D400237009 /* OrdersViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrdersViewController.xib; sourceTree = "<group>"; };
 		57C503DB23E8C70C00EC0790 /* OrdersMasterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersMasterViewController.swift; sourceTree = "<group>"; };
 		57C503DD23E8CE0D00EC0790 /* OrdersMasterViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrdersMasterViewController.xib; sourceTree = "<group>"; };
@@ -2336,6 +2338,22 @@
 				57448D29242E777700A56A74 /* EmptySearchResultsViewController.xib */,
 			);
 			path = EmptySearchResultsViewController;
+			sourceTree = "<group>";
+		};
+		57A3C0E0245761DD004FB211 /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				57A3C0E1245761EE004FB211 /* Order */,
+			);
+			path = Search;
+			sourceTree = "<group>";
+		};
+		57A3C0E1245761EE004FB211 /* Order */ = {
+			isa = PBXGroup;
+			children = (
+				57A3C0E224576207004FB211 /* OrderSearchStarterViewModelTests.swift */,
+			);
+			path = Order;
 			sourceTree = "<group>";
 		};
 		57F34A9F2423D44000E38AFB /* Orders */ = {
@@ -3588,6 +3606,7 @@
 		D816DDBA22265D8000903E59 /* ViewRelated */ = {
 			isa = PBXGroup;
 			children = (
+				57A3C0E0245761DD004FB211 /* Search */,
 				57F34A9F2423D44000E38AFB /* Orders */,
 				0290E27C238E5B4A00B5C466 /* ListSelector */,
 				0227958E237A5D5200787C63 /* Editor */,
@@ -4726,6 +4745,7 @@
 				020BE76723B49FE9007FE54C /* AztecBoldFormatBarCommandTests.swift in Sources */,
 				CE4DA5C821DD759400074607 /* CurrencyFormatterTests.swift in Sources */,
 				B57C745120F56EE900EEFC87 /* UITableViewCellHelpersTests.swift in Sources */,
+				57A3C0E324576207004FB211 /* OrderSearchStarterViewModelTests.swift in Sources */,
 				D85136C9231E12B600DD0539 /* ReviewViewModelTests.swift in Sources */,
 				D83A6A782379097A00419D48 /* MurielColorTests.swift in Sources */,
 				020BE77723B4A9D9007FE54C /* AztecLinkFormatBarCommandTests.swift in Sources */,

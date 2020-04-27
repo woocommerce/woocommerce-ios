@@ -115,9 +115,8 @@ final class PublishSubjectTests: XCTestCase {
 
     // MARK: - Proof of Compatibility with Combine's PassthroughSubject
 
-    func testCombinePassthroughSubjectEmitsValuesToAnObserver() throws {
+    func testCombinePassthroughSubjectEmitsValuesToAnObserver() {
         guard #available(iOS 13.0, *) else {
-            try XCTSkipIf(true, "This test is for iOS 13.0+ only")
             return
         }
 
@@ -139,9 +138,8 @@ final class PublishSubjectTests: XCTestCase {
         XCTAssertEqual(emittedValues, ["dicta"])
     }
 
-    func testCombinePassthroughSubjectContinuouslyEmitsValuesToAnObserver() throws {
+    func testCombinePassthroughSubjectContinuouslyEmitsValuesToAnObserver() {
         guard #available(iOS 13.0, *) else {
-            try XCTSkipIf(true, "This test is for iOS 13.0+ only")
             return
         }
 
@@ -165,9 +163,8 @@ final class PublishSubjectTests: XCTestCase {
         XCTAssertEqual(emittedValues, ["dicta", "amet", "dolor"])
     }
 
-    func testCombinePassthroughSubjectDoesNotEmitValuesBeforeTheSubscription() throws {
+    func testCombinePassthroughSubjectDoesNotEmitValuesBeforeTheSubscription() {
         guard #available(iOS 13.0, *) else {
-            try XCTSkipIf(true, "This test is for iOS 13.0+ only")
             return
         }
 
@@ -196,9 +193,8 @@ final class PublishSubjectTests: XCTestCase {
         XCTAssertEqual(emittedValues, ["dolor"])
     }
 
-    func testCombinePassthroughSubjectEmitsValuesToAllObservers() throws {
+    func testCombinePassthroughSubjectEmitsValuesToAllObservers() {
         guard #available(iOS 13.0, *) else {
-            try XCTSkipIf(true, "This test is for iOS 13.0+ only")
             return
         }
 
@@ -231,9 +227,8 @@ final class PublishSubjectTests: XCTestCase {
         XCTAssertEqual(emittedValues, ["dicta", "dicta", "amet", "amet"])
     }
 
-    func testCombinePassthroughSubjectDoesNotEmitValuesToCancelledObservers() throws {
+    func testCombinePassthroughSubjectDoesNotEmitValuesToCancelledObservers() {
         guard #available(iOS 13.0, *) else {
-            try XCTSkipIf(true, "This test is for iOS 13.0+ only")
             return
         }
 

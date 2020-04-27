@@ -46,7 +46,7 @@ final class ProductMenuOrderViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        configureTextFieldFirstResponder()
+        configureFirstTextFieldAsFirstResponder()
     }
 }
 
@@ -71,11 +71,16 @@ private extension ProductMenuOrderViewController {
 
         tableView.backgroundColor = .listBackground
         tableView.removeLastCellSeparator()
+
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
+        tableView.sectionFooterHeight = UITableView.automaticDimension
+
+        tableView.allowsSelection = false
     }
 
     /// Since there is only a text field in this view, the text field become the first responder immediately when the view did appear
     ///
-    func configureTextFieldFirstResponder() {
+    func configureFirstTextFieldAsFirstResponder() {
         if let indexPath = sections.indexPathForRow(.menuOrder) {
             let cell = tableView.cellForRow(at: indexPath) as? TextFieldTableViewCell
             cell?.textField.becomeFirstResponder()
@@ -108,17 +113,6 @@ extension ProductMenuOrderViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate Conformance
 //
 extension ProductMenuOrderViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-    }
-
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return UITableView.automaticDimension
-    }
 
     func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         return sections[section].footer

@@ -76,8 +76,8 @@ enum ProductSettingsRows {
                 return
             }
 
-            let titleView = NSLocalizedString("Catalog Visibility", comment: "Catalog Visibility label in Product Settings")
-            cell.updateUI(title: titleView, value: settings.catalogVisibility.description)
+            let title = NSLocalizedString("Catalog Visibility", comment: "Catalog Visibility label in Product Settings")
+            cell.updateUI(title: title, value: settings.catalogVisibility.description)
             cell.accessoryType = .disclosureIndicator
         }
 
@@ -107,8 +107,8 @@ enum ProductSettingsRows {
                 return
             }
 
-            let titleView = NSLocalizedString("Slug", comment: "Slug label in Product Settings")
-            cell.updateUI(title: titleView, value: settings.slug)
+            let title = NSLocalizedString("Slug", comment: "Slug label in Product Settings")
+            cell.updateUI(title: title, value: settings.slug)
             cell.accessoryType = .disclosureIndicator
         }
 
@@ -137,8 +137,8 @@ enum ProductSettingsRows {
                 return
             }
 
-            let titleView = NSLocalizedString("Purchase Note", comment: "Purchase note label in Product Settings")
-            cell.updateUI(title: titleView, value: settings.purchaseNote?.strippedHTML)
+            let title = NSLocalizedString("Purchase Note", comment: "Purchase note label in Product Settings")
+            cell.updateUI(title: title, value: settings.purchaseNote?.strippedHTML)
             cell.accessoryType = .disclosureIndicator
         }
 
@@ -167,8 +167,8 @@ enum ProductSettingsRows {
                 return
             }
 
-            let titleView = NSLocalizedString("Menu Order", comment: "Menu order label in Product Settings")
-            cell.updateUI(title: titleView, value: nil)
+            let title = NSLocalizedString("Menu Order", comment: "Menu order label in Product Settings")
+            cell.updateUI(title: title, value: nil)
             cell.accessoryType = .disclosureIndicator
         }
 

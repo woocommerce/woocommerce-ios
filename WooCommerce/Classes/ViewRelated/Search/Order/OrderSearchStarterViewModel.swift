@@ -4,14 +4,15 @@ import UIKit
 import Yosemite
 
 import class AutomatticTracks.CrashLogging
+import protocol Storage.StorageManagerType
 
 /// ViewModel for `OrderSearchStarterViewController`.
 ///
 /// This encapsulates all the `OrderStatus` data loading and `UITableViewCell` presentation.
 ///
 final class OrderSearchStarterViewModel {
-    private let storageManager = ServiceLocator.storageManager
-    private let siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
+    private let siteID: Int64
+    private let storageManager: StorageManagerType
 
     private lazy var resultsController: ResultsController<StorageOrderStatus> = {
         let descriptor = NSSortDescriptor(key: "slug", ascending: true)
@@ -20,6 +21,12 @@ final class OrderSearchStarterViewModel {
                                                      matching: predicate,
                                                      sortedBy: [descriptor])
     }()
+
+    init(siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+        self.siteID = siteID
+        self.storageManager = storageManager
+    }
 
     /// Start all the operations that this `ViewModel` is responsible for.
     ///

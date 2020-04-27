@@ -3,6 +3,8 @@ import Foundation
 import UIKit
 import Yosemite
 
+import class AutomatticTracks.CrashLogging
+
 /// ViewModel for `OrderSearchStarterViewController`.
 ///
 /// This encapsulates all the `OrderStatus` data loading and `UITableViewCell` presentation.
@@ -29,7 +31,17 @@ final class OrderSearchStarterViewModel {
     func activate(using tableView: UITableView) {
         resultsController.startForwardingEvents(to: tableView)
 
-        try? resultsController.performFetch()
+        performFetch()
+    }
+
+    /// Fetch and log the error if there's any.
+    ///
+    private func performFetch() {
+        do {
+            try resultsController.performFetch()
+        } catch {
+            CrashLogging.logError(error)
+        }
     }
 }
 

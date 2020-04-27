@@ -20,7 +20,6 @@ final class OrderSearchStarterViewModel {
     func activate(using tableView: UITableView) {
         tableView.dataSource = dataSource
 
-        dataSource.registerCells(for: tableView)
         dataSource.startForwardingEvents(to: tableView)
 
         try? dataSource.performFetch()
@@ -61,15 +60,6 @@ private extension OrderSearchStarterViewModel {
         ///
         func startForwardingEvents(to tableView: UITableView) {
             resultsController.startForwardingEvents(to: tableView)
-        }
-
-        /// Register the `UITableViewCells` that will be used.
-        ///
-        /// This should only be called once.
-        ///
-        func registerCells(for tableView: UITableView) {
-            tableView.register(BasicTableViewCell.loadNib(),
-                               forCellReuseIdentifier: BasicTableViewCell.reuseIdentifier)
         }
 
         /// The `OrderStatus` located at `indexPath`.

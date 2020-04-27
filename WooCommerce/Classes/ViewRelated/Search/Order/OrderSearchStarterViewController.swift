@@ -43,6 +43,9 @@ final class OrderSearchStarterViewController: UIViewController, KeyboardFrameAdj
         tableView.backgroundColor = .listBackground
         tableView.delegate = self
 
+        tableView.register(BasicTableViewCell.loadNib(),
+                           forCellReuseIdentifier: BasicTableViewCell.reuseIdentifier)
+
         keyboardFrameObserver.startObservingKeyboardFrame()
     }
 }

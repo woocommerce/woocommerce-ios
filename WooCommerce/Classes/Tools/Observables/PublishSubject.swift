@@ -89,7 +89,7 @@ final class PublishSubject<Element>: Observable<Element> {
     /// Emit a new value. All observers are immediately called with the given value.
     ///
     func send(_ element: Element) {
-        self.observers.values.forEach { observer in
+        observers.values.forEach { observer in
             observer.send(element)
         }
     }

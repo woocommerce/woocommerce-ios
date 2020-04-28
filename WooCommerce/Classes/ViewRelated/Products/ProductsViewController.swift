@@ -99,6 +99,8 @@ final class ProductsViewController: UIViewController {
 
     private let imageService: ImageService = ServiceLocator.imageService
 
+    private lazy var filters: FilterProductListCommand.Filters = FilterProductListCommand.Filters(stockStatus: nil, productStatus: nil, productType: nil)
+
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
@@ -456,7 +458,12 @@ private extension ProductsViewController {
     }
 
     @objc func filterButtonTapped() {
-        // TODO-2037: implement filtering products
+        let command = FilterProductListCommand(sourceViewController: self, filters: filters) { [weak self] filters in
+            self?.filters = filters
+            // TODO-2037: filter products based on the filters
+        }
+        let filterProductListViewController = FilterListViewController(command: command)
+        present(filterProductListViewController, animated: true, completion: nil)
     }
 }
 

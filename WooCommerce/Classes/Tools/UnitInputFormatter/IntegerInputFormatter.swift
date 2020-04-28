@@ -4,7 +4,7 @@ import Foundation
 ///
 struct IntegerInputFormatter: UnitInputFormatter {
 
-    /// The default value used by format() when the text is empty or the number formatter return a nil value
+    /// The default value used by format() when the text is empty or the number formatter returns a nil value
     ///
     let defaultValue: String
 

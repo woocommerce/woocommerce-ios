@@ -109,6 +109,7 @@
 		02482A8B237BE8C7007E73ED /* LinkSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02482A89237BE8C7007E73ED /* LinkSettingsViewController.swift */; };
 		02482A8C237BE8C7007E73ED /* LinkSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02482A8A237BE8C7007E73ED /* LinkSettingsViewController.xib */; };
 		02482A8E237BEAE9007E73ED /* AztecLinkFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02482A8D237BEAE9007E73ED /* AztecLinkFormatBarCommand.swift */; };
+		0248B3512457C41000A271A4 /* FilterProductListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0248B3502457C41000A271A4 /* FilterProductListSelectorCommand.swift */; };
 		024A543422BA6F8F00F4F38E /* DeveloperEmailChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024A543322BA6F8F00F4F38E /* DeveloperEmailChecker.swift */; };
 		024A543622BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024A543522BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift */; };
 		024DF3052372ADCD006658FE /* KeyboardScrollable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024DF3042372ADCD006658FE /* KeyboardScrollable.swift */; };
@@ -198,10 +199,10 @@
 		02C0CD2A23B5BB1C00F880B1 /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C0CD2923B5BB1C00F880B1 /* ImageService.swift */; };
 		02C0CD2C23B5BC9600F880B1 /* DefaultImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C0CD2B23B5BC9600F880B1 /* DefaultImageService.swift */; };
 		02C0CD2E23B5E3AE00F880B1 /* DefaultImageServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C0CD2D23B5E3AE00F880B1 /* DefaultImageServiceTests.swift */; };
-		02C887712450285100E4470F /* BottomButtonContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C887702450285100E4470F /* BottomButtonContainerView.swift */; };
 		02C8876D24501FAC00E4470F /* FilterListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C8876B24501FAC00E4470F /* FilterListViewController.swift */; };
 		02C8876E24501FAC00E4470F /* FilterListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02C8876C24501FAC00E4470F /* FilterListViewController.xib */; };
 		02C887712450285100E4470F /* BottomButtonContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C887702450285100E4470F /* BottomButtonContainerView.swift */; };
+		02C88775245036D400E4470F /* FilterProductListCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C88774245036D400E4470F /* FilterProductListCommand.swift */; };
 		02CA63DA23D1ADD100BBF148 /* CameraCaptureCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CA63D623D1ADD100BBF148 /* CameraCaptureCoordinator.swift */; };
 		02CA63DB23D1ADD100BBF148 /* MediaPickingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CA63D723D1ADD100BBF148 /* MediaPickingCoordinator.swift */; };
 		02CA63DC23D1ADD100BBF148 /* DeviceMediaLibraryPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CA63D823D1ADD100BBF148 /* DeviceMediaLibraryPicker.swift */; };
@@ -931,6 +932,7 @@
 		02482A89237BE8C7007E73ED /* LinkSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkSettingsViewController.swift; sourceTree = "<group>"; };
 		02482A8A237BE8C7007E73ED /* LinkSettingsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LinkSettingsViewController.xib; sourceTree = "<group>"; };
 		02482A8D237BEAE9007E73ED /* AztecLinkFormatBarCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecLinkFormatBarCommand.swift; sourceTree = "<group>"; };
+		0248B3502457C41000A271A4 /* FilterProductListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductListSelectorCommand.swift; sourceTree = "<group>"; };
 		024A543322BA6F8F00F4F38E /* DeveloperEmailChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperEmailChecker.swift; sourceTree = "<group>"; };
 		024A543522BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperEmailCheckerTests.swift; sourceTree = "<group>"; };
 		024DF3042372ADCD006658FE /* KeyboardScrollable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardScrollable.swift; sourceTree = "<group>"; };
@@ -1020,10 +1022,10 @@
 		02C0CD2923B5BB1C00F880B1 /* ImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
 		02C0CD2B23B5BC9600F880B1 /* DefaultImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultImageService.swift; sourceTree = "<group>"; };
 		02C0CD2D23B5E3AE00F880B1 /* DefaultImageServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultImageServiceTests.swift; sourceTree = "<group>"; };
-		02C887702450285100E4470F /* BottomButtonContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomButtonContainerView.swift; sourceTree = "<group>"; };
 		02C8876B24501FAC00E4470F /* FilterListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterListViewController.swift; sourceTree = "<group>"; };
 		02C8876C24501FAC00E4470F /* FilterListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FilterListViewController.xib; sourceTree = "<group>"; };
 		02C887702450285100E4470F /* BottomButtonContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomButtonContainerView.swift; sourceTree = "<group>"; };
+		02C88774245036D400E4470F /* FilterProductListCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductListCommand.swift; sourceTree = "<group>"; };
 		02CA63D623D1ADD100BBF148 /* CameraCaptureCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraCaptureCoordinator.swift; sourceTree = "<group>"; };
 		02CA63D723D1ADD100BBF148 /* MediaPickingCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaPickingCoordinator.swift; sourceTree = "<group>"; };
 		02CA63D823D1ADD100BBF148 /* DeviceMediaLibraryPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceMediaLibraryPicker.swift; sourceTree = "<group>"; };
@@ -1865,6 +1867,14 @@
 			path = LinkSettings;
 			sourceTree = "<group>";
 		};
+		0248B34F2457C3FE00A271A4 /* ListSelectorCommand */ = {
+			isa = PBXGroup;
+			children = (
+				0248B3502457C41000A271A4 /* FilterProductListSelectorCommand.swift */,
+			);
+			path = ListSelectorCommand;
+			sourceTree = "<group>";
+		};
 		024A543222BA6DD500F4F38E /* Developer */ = {
 			isa = PBXGroup;
 			children = (
@@ -2139,8 +2149,10 @@
 		02C8876A24501F5000E4470F /* Filters */ = {
 			isa = PBXGroup;
 			children = (
+				0248B34F2457C3FE00A271A4 /* ListSelectorCommand */,
 				02C8876B24501FAC00E4470F /* FilterListViewController.swift */,
 				02C8876C24501FAC00E4470F /* FilterListViewController.xib */,
+				02C88774245036D400E4470F /* FilterProductListCommand.swift */,
 			);
 			path = Filters;
 			sourceTree = "<group>";
@@ -4489,6 +4501,7 @@
 				D831E2DC230E0558000037D0 /* Authentication.swift in Sources */,
 				024A543422BA6F8F00F4F38E /* DeveloperEmailChecker.swift in Sources */,
 				027B8BB823FE0CB30040944E /* DefaultProductUIImageLoader.swift in Sources */,
+				0248B3512457C41000A271A4 /* FilterProductListSelectorCommand.swift in Sources */,
 				0202B6922387AB0C00F3EBE0 /* WooTab+Tag.swift in Sources */,
 				D8736B5A22F07D7100A14A29 /* MainTabViewModel.swift in Sources */,
 				CE4DA5C621DD755E00074607 /* CurrencyFormatter.swift in Sources */,
@@ -4757,6 +4770,7 @@
 				B541B21A2189F3A2008FE7C1 /* StringFormatter.swift in Sources */,
 				D817586422BDD81600289CFE /* OrderDetailsDataSource.swift in Sources */,
 				CE1F512920697F0100C6C810 /* UIFont+Helpers.swift in Sources */,
+				02C88775245036D400E4470F /* FilterProductListCommand.swift in Sources */,
 				02C8876D24501FAC00E4470F /* FilterListViewController.swift in Sources */,
 				45D1CF4523BAC2A500945A36 /* ProductTaxClassListSelectorDataSource.swift in Sources */,
 				6856D31F941A33BAE66F394D /* KeyboardFrameAdjustmentProvider.swift in Sources */,

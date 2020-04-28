@@ -69,6 +69,25 @@ final class OrderSearchStarterViewModelTests: XCTestCase {
         let actualSlugs = viewModel.fetchedOrderStatuses.map(\.slug)
         XCTAssertEqual(actualSlugs, expectedSlugs)
     }
+
+    func testItReturnsTheNameSlugAndTotalInTheCellViewModel() {
+        // Given
+        let viewModel = OrderSearchStarterViewModel(siteID: siteID, storageManager: storageManager)
+
+        insert(OrderStatus(name: "autem", siteID: siteID, slug: "delta", total: 18))
+        insert(OrderStatus(name: "dolores", siteID: siteID, slug: "charlie", total: 73))
+
+        viewModel.activateAndForwardUpdates(to: UITableView())
+
+        // When
+        // Retrieve "delta" which is the second row
+        let cellViewModel = viewModel.cellViewModel(at: IndexPath(row: 1, section: 0))
+
+        // Then
+        XCTAssertEqual(cellViewModel.name, "autem")
+        XCTAssertEqual(cellViewModel.slug, "delta")
+        XCTAssertEqual(cellViewModel.total, "18")
+    }
 }
 
 // MARK: - Helpers

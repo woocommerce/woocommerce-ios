@@ -8,6 +8,8 @@ import protocol Storage.StorageType
 
 @testable import WooCommerce
 
+private typealias CellViewModel = OrderSearchStarterViewModel.CellViewModel
+
 /// Tests for `OrderSearchStarterViewModel`
 ///
 final class OrderSearchStarterViewModelTests: XCTestCase {
@@ -46,9 +48,8 @@ final class OrderSearchStarterViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.numberOfObjects, expectedItems.count)
-        XCTAssertEqual(viewModel.fetchedOrderStatuses, expectedItems)
-        XCTAssertFalse(viewModel.fetchedOrderStatuses.contains(where: { $0.siteID != siteID }))
-        XCTAssertFalse(viewModel.fetchedOrderStatuses.contains(unexpectedItem))
+        XCTAssertEqual(viewModel.cellViewModels.slugs, expectedItems.slugs)
+        XCTAssertFalse(viewModel.cellViewModels.contains(where: { $0.slug == unexpectedItem.slug }))
     }
 
     func testItSortsTheOrderStatusesBySlug() {
@@ -66,8 +67,7 @@ final class OrderSearchStarterViewModelTests: XCTestCase {
 
         // Then
         let expectedSlugs = ["alpha", "beta", "charlie", "delta", "echo"]
-        let actualSlugs = viewModel.fetchedOrderStatuses.map(\.slug)
-        XCTAssertEqual(actualSlugs, expectedSlugs)
+        XCTAssertEqual(viewModel.cellViewModels.slugs, expectedSlugs)
     }
 
     func testItReturnsTheNameSlugAndTotalInTheCellViewModel() {
@@ -109,10 +109,22 @@ final class OrderSearchStarterViewModelTests: XCTestCase {
 // MARK: - Helpers
 
 private extension OrderSearchStarterViewModel {
-    /// Returns the `OrderStatus` for all the rows
+    /// Returns all the `CellViewModel` based on the fetched `OrderStatus`.
     ///
-    var fetchedOrderStatuses: [OrderStatus] {
-        (0..<numberOfObjects).map { orderStatus(at: IndexPath(row: $0, section: 0)) }
+    var cellViewModels: [CellViewModel] {
+        (0..<numberOfObjects).map { cellViewModel(at: IndexPath(row: $0, section: 0)) }
+    }
+}
+
+private extension Array where Element == OrderStatus {
+    var slugs: [String] {
+        map(\.slug)
+    }
+}
+
+private extension Array where Element == CellViewModel {
+    var slugs: [String] {
+        map(\.slug)
     }
 }
 

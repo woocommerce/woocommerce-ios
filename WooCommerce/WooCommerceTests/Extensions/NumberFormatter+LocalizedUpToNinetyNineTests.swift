@@ -4,7 +4,7 @@ import XCTest
 @testable import WooCommerce
 
 final class NumberFormatterLocalizedUpToNinetyNineTests: XCTestCase {
-    
+
     func testItReturnsNinetyNinePlusIfTheNumberIsGreaterThanNinetyNine() {
         let localized = NumberFormatter.localizedUpToNinetyNine(100)
 

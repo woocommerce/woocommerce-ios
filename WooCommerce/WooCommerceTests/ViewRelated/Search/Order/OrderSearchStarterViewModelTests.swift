@@ -2,7 +2,9 @@
 import XCTest
 import Foundation
 import Yosemite
-import Storage
+
+import protocol Storage.StorageManagerType
+import protocol Storage.StorageType
 
 @testable import WooCommerce
 
@@ -74,7 +76,7 @@ final class OrderSearchStarterViewModelTests: XCTestCase {
 private extension OrderSearchStarterViewModel {
     /// Returns the `OrderStatus` for all the rows
     ///
-    var fetchedOrderStatuses: [Yosemite.OrderStatus] {
+    var fetchedOrderStatuses: [OrderStatus] {
         (0..<numberOfObjects).map { orderStatus(at: IndexPath(row: $0, section: 0)) }
     }
 }
@@ -85,7 +87,7 @@ private extension OrderSearchStarterViewModelTests {
     @discardableResult
     func insertOrderStatus(siteID: Int64,
                            status: OrderStatusEnum,
-                           slug: String? = nil) -> Yosemite.OrderStatus {
+                           slug: String? = nil) -> OrderStatus {
         let readOnlyOrderStatus = OrderStatus(name: status.rawValue,
                                               siteID: siteID,
                                               slug: slug ?? status.rawValue,

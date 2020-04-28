@@ -137,7 +137,7 @@ private extension OrdersViewController {
     /// Initialize ViewModel operations
     ///
     func configureViewModel() {
-        viewModel.onShouldResynchronizeAfterAppActivation = { [weak self] in
+        viewModel.onShouldResynchronizeIfViewIsVisible = { [weak self] in
             guard let self = self,
                   // Avoid synchronizing if the view is not visible. The refresh will be handled in
                   // `viewWillAppear` instead.

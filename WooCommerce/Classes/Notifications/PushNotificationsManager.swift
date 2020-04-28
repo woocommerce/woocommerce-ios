@@ -13,6 +13,16 @@ final class PushNotificationsManager: PushNotesManager {
     ///
     let configuration: PushNotificationsConfiguration
 
+    /// Mutable reference to `foregroundNotifications`.
+    private let foregroundNotificationsSubject = PublishSubject<ForegroundNotification>()
+
+    /// An observable that emits values when the Remote Notifications are received while the app is
+    /// in the foreground.
+    ///
+    var foregroundNotifications: Observable<ForegroundNotification> {
+        foregroundNotificationsSubject
+    }
+
     /// Returns the current Application's State
     ///
     private var applicationState: UIApplication.State {
@@ -251,8 +261,10 @@ private extension PushNotificationsManager {
             return false
         }
 
-        if let message = userInfo.dictionary(forKey: APNSKey.aps)?.string(forKey: APNSKey.alert) {
-            configuration.application.presentInAppNotification(message: message)
+        if let foregroundNotification = ForegroundNotification.from(userInfo: userInfo) {
+            configuration.application.presentInAppNotification(message: foregroundNotification.message)
+
+            foregroundNotificationsSubject.send(foregroundNotification)
         }
 
         synchronizeNotifications(completionHandler: completionHandler)
@@ -401,6 +413,20 @@ private extension PushNotificationsManager {
     }
 }
 
+// MARK: - ForegroundNotification Extension
+
+private extension ForegroundNotification {
+    static func from(userInfo: [AnyHashable: Any]) -> ForegroundNotification? {
+        guard let noteID = userInfo.integer(forKey: APNSKey.identifier),
+              let message = userInfo.dictionary(forKey: APNSKey.aps)?.string(forKey: APNSKey.alert),
+              let type = userInfo.string(forKey: APNSKey.type),
+              let noteKind = Note.Kind(rawValue: type) else {
+            return nil
+        }
+
+        return ForegroundNotification(noteID: noteID, kind: noteKind, message: message)
+    }
+}
 
 // MARK: - Private Types
 //

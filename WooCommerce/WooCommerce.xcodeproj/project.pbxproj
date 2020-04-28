@@ -110,6 +110,7 @@
 		02482A8C237BE8C7007E73ED /* LinkSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02482A8A237BE8C7007E73ED /* LinkSettingsViewController.xib */; };
 		02482A8E237BEAE9007E73ED /* AztecLinkFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02482A8D237BEAE9007E73ED /* AztecLinkFormatBarCommand.swift */; };
 		0248B3512457C41000A271A4 /* FilterProductListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0248B3502457C41000A271A4 /* FilterProductListSelectorCommand.swift */; };
+		0248B3542457CF3E00A271A4 /* FilterProductListCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0248B3532457CF3E00A271A4 /* FilterProductListCommandTests.swift */; };
 		024A543422BA6F8F00F4F38E /* DeveloperEmailChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024A543322BA6F8F00F4F38E /* DeveloperEmailChecker.swift */; };
 		024A543622BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024A543522BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift */; };
 		024DF3052372ADCD006658FE /* KeyboardScrollable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024DF3042372ADCD006658FE /* KeyboardScrollable.swift */; };
@@ -933,6 +934,7 @@
 		02482A8A237BE8C7007E73ED /* LinkSettingsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LinkSettingsViewController.xib; sourceTree = "<group>"; };
 		02482A8D237BEAE9007E73ED /* AztecLinkFormatBarCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecLinkFormatBarCommand.swift; sourceTree = "<group>"; };
 		0248B3502457C41000A271A4 /* FilterProductListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductListSelectorCommand.swift; sourceTree = "<group>"; };
+		0248B3532457CF3E00A271A4 /* FilterProductListCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductListCommandTests.swift; sourceTree = "<group>"; };
 		024A543322BA6F8F00F4F38E /* DeveloperEmailChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperEmailChecker.swift; sourceTree = "<group>"; };
 		024A543522BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperEmailCheckerTests.swift; sourceTree = "<group>"; };
 		024DF3042372ADCD006658FE /* KeyboardScrollable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardScrollable.swift; sourceTree = "<group>"; };
@@ -1875,6 +1877,14 @@
 			path = ListSelectorCommand;
 			sourceTree = "<group>";
 		};
+		0248B3522457CF1500A271A4 /* Filters */ = {
+			isa = PBXGroup;
+			children = (
+				0248B3532457CF3E00A271A4 /* FilterProductListCommandTests.swift */,
+			);
+			path = Filters;
+			sourceTree = "<group>";
+		};
 		024A543222BA6DD500F4F38E /* Developer */ = {
 			isa = PBXGroup;
 			children = (
@@ -1935,6 +1945,7 @@
 			isa = PBXGroup;
 			children = (
 				02A9A494244D848F00757B99 /* BottomSheetListSelector */,
+				0248B3522457CF1500A271A4 /* Filters */,
 				027B8BBB23FE0DCD0040944E /* Media */,
 				020B2F9723BDF2D000BD79AD /* Edit Product */,
 				45FBDF29238BF87800127F77 /* Collection View Cells */,
@@ -2516,8 +2527,8 @@
 		74EC34A3225FE1F3004BBC2E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				02C8876A24501F5000E4470F /* Filters */,
 				0235595724496D31004BE2B8 /* BottomSheetListSelector */,
+				02C8876A24501F5000E4470F /* Filters */,
 				0286B27523C704FC003D784B /* Media */,
 				026CF637237E9AA5009563D4 /* Variations */,
 				021627232379637E000208D2 /* Edit Product */,
@@ -4878,6 +4889,7 @@
 				D83F5935225B3CDD00626E75 /* DatePickerTableViewCellTests.swift in Sources */,
 				02A275C823FEA102005C560F /* DefaultProductFormTableViewModel+EditProductsM2Tests.swift in Sources */,
 				93FA787221CD2A1A00B663E5 /* CurrencySettingsTests.swift in Sources */,
+				0248B3542457CF3E00A271A4 /* FilterProductListCommandTests.swift in Sources */,
 				45FBDF2D238BF8BF00127F77 /* AddProductImageCollectionViewCellTests.swift in Sources */,
 				CECC759923D6160000486676 /* AggregateDataHelperTests.swift in Sources */,
 				020BE76F23B4A468007FE54C /* AztecBlockquoteFormatBarCommandTests.swift in Sources */,

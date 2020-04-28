@@ -19,10 +19,17 @@ final class OrderSearchStarterViewModel {
     struct CellViewModel {
         let name: String?
         let slug: String
+
         /// The total displayed on the right side.
         ///
         /// If this is above 99, this will be “99+”.
         let total: String
+
+        /// The source `OrderStatus` used to create this `ViewModel`.
+        ///
+        /// This should only be used for initializing `OrdersViewController`.
+        ///
+        let orderStatus: OrderStatus
     }
 
     private lazy var resultsController: ResultsController<StorageOrderStatus> = {
@@ -72,12 +79,6 @@ extension OrderSearchStarterViewModel {
         resultsController.numberOfObjects
     }
 
-    /// The `OrderStatus` located at `indexPath`.
-    ///
-    func orderStatus(at indexPath: IndexPath) -> OrderStatus {
-        resultsController.object(at: indexPath)
-    }
-
     /// The `CellViewModel` located at `indexPath`.
     ///
     func cellViewModel(at indexPath: IndexPath) -> CellViewModel {
@@ -87,6 +88,7 @@ extension OrderSearchStarterViewModel {
 
         return CellViewModel(name: orderStatus.name,
                              slug: orderStatus.slug,
-                             total: total)
+                             total: total,
+                             orderStatus: orderStatus)
     }
 }

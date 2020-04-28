@@ -84,13 +84,12 @@ extension OrderSearchStarterViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cellViewModel = viewModel.cellViewModel(at: indexPath)
-        let orderStatus = viewModel.orderStatus(at: indexPath)
 
         analytics.trackSelectionOf(orderStatusSlug: cellViewModel.slug)
 
         let ordersViewController = OrdersViewController(
-            title: orderStatus.name ?? NSLocalizedString("Orders", comment: "Default title for Orders List shown when tapping on the Search filter."),
-            statusFilter: orderStatus
+            title: cellViewModel.name ?? NSLocalizedString("Orders", comment: "Default title for Orders List shown when tapping on the Search filter."),
+            statusFilter: cellViewModel.orderStatus
         )
 
         navigationController?.pushViewController(ordersViewController, animated: true)

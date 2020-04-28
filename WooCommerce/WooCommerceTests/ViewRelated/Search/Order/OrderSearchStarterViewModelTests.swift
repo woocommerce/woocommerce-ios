@@ -86,7 +86,23 @@ final class OrderSearchStarterViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(cellViewModel.name, "autem")
         XCTAssertEqual(cellViewModel.slug, "delta")
-        XCTAssertEqual(cellViewModel.total, "18")
+        XCTAssertEqual(cellViewModel.total,
+                       NumberFormatter.localizedString(from: NSNumber(value: 18), number: .none))
+    }
+
+    func testGivenAnOrderStatusTotalOfMoreThanNinetyNineItUsesNinetyNinePlus() {
+        // Given
+        let viewModel = OrderSearchStarterViewModel(siteID: siteID, storageManager: storageManager)
+
+        insert(OrderStatus(name: "Processing", siteID: siteID, slug: "slug", total: 200))
+
+        viewModel.activateAndForwardUpdates(to: UITableView())
+
+        // When
+        let cellViewModel = viewModel.cellViewModel(at: IndexPath(row: 0, section: 0))
+
+        // Then
+        XCTAssertEqual(cellViewModel.total, NSLocalizedString("99+", comment: ""))
     }
 }
 

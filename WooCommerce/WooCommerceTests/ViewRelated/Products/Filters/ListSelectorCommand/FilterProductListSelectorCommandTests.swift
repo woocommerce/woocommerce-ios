@@ -5,7 +5,7 @@ import XCTest
 final class FilterProductListSelectorCommandTests: XCTestCase {
     func testSelectedIsAlwaysNilAfterSelections() {
         let filters = FilterProductListCommand.Filters(stockStatus: .inStock, productStatus: nil, productType: nil)
-        let command = FilterProductListSelectorCommand(filters: filters, onFilterSelected: { _,_  in })
+        let command = FilterProductListSelectorCommand(filters: filters, onFilterSelected: { _, _  in })
         let viewController = ListSelectorViewController(command: command, onDismiss: { _ in })
         XCTAssertNil(command.selected)
 
@@ -21,7 +21,7 @@ final class FilterProductListSelectorCommandTests: XCTestCase {
 
     func testCellConfigurationForOptionalFilterValues() {
         let filters = FilterProductListCommand.Filters(stockStatus: .inStock, productStatus: nil, productType: .affiliate)
-        let command = FilterProductListSelectorCommand(filters: filters, onFilterSelected: { _,_  in })
+        let command = FilterProductListSelectorCommand(filters: filters, onFilterSelected: { _, _  in })
         let nib = Bundle.main.loadNibNamed(SettingTitleAndValueTableViewCell.classNameWithoutNamespaces, owner: self, options: nil)
         guard let cell = nib?.first as? SettingTitleAndValueTableViewCell else {
             XCTFail()
@@ -42,7 +42,7 @@ final class FilterProductListSelectorCommandTests: XCTestCase {
 
     func testNavigationBarTitleWithoutActiveFilters() {
         let filters = FilterProductListCommand.Filters(stockStatus: nil, productStatus: nil, productType: nil)
-        let command = FilterProductListSelectorCommand(filters: filters, onFilterSelected: { _,_  in })
+        let command = FilterProductListSelectorCommand(filters: filters, onFilterSelected: { _, _  in })
 
         let expectedTitle = NSLocalizedString("Filters", comment: "Navigation bar title format for filtering a list of products without filters applied.")
         XCTAssertEqual(command.navigationBarTitle, expectedTitle)
@@ -50,7 +50,7 @@ final class FilterProductListSelectorCommandTests: XCTestCase {
 
     func testNavigationBarTitleWithTwoActiveFilters() {
         let filters = FilterProductListCommand.Filters(stockStatus: .inStock, productStatus: nil, productType: .affiliate)
-        let command = FilterProductListSelectorCommand(filters: filters, onFilterSelected: { _,_  in })
+        let command = FilterProductListSelectorCommand(filters: filters, onFilterSelected: { _, _  in })
 
         let format = NSLocalizedString("Filters (%ld)", comment: "Navigation bar title format for filtering a list of products with filters applied.")
         let expectedTitle = String.localizedStringWithFormat(format, 2)

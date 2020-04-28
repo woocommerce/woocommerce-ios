@@ -48,10 +48,11 @@ final class FilterListViewController<Command: FilterListCommand>: UIViewControll
     private var command: Command
     private let rowType = SettingTitleAndValueTableViewCell.self
 
-    private lazy var listSelector: ListSelectorViewController<Command.ListSelectorUICommand, Command.ListSelectorUICommand.Model, Command.ListSelectorUICommand.Cell> = {
-        return ListSelectorViewController(command: command.filterListSelectorCommand) { [weak self] _ in
-            self?.command.onDismissActionTapped()
-        }
+    private lazy var listSelector: ListSelectorViewController
+        <Command.ListSelectorUICommand, Command.ListSelectorUICommand.Model, Command.ListSelectorUICommand.Cell> = {
+            return ListSelectorViewController(command: command.filterListSelectorCommand) { [weak self] _ in
+                self?.command.onDismissActionTapped()
+            }
     }()
 
     private var clearAllBarButtonItem: UIBarButtonItem?
@@ -97,7 +98,10 @@ final class FilterListViewController<Command: FilterListCommand>: UIViewControll
 private extension FilterListViewController {
     func configureNavigation() {
         let dismissButtonTitle = NSLocalizedString("Dismiss", comment: "Button title for dismissing filtering a list.")
-        listSelector.navigationItem.leftBarButtonItem = UIBarButtonItem(title: dismissButtonTitle, style: .plain, target: self, action: #selector(dismissButtonTapped))
+        listSelector.navigationItem.leftBarButtonItem = UIBarButtonItem(title: dismissButtonTitle,
+                                                                        style: .plain,
+                                                                        target: self,
+                                                                        action: #selector(dismissButtonTapped))
 
         let clearAllButtonTitle = NSLocalizedString("Clear all", comment: "Button title for clearing all filters for the list.")
         clearAllBarButtonItem = UIBarButtonItem(title: clearAllButtonTitle, style: .plain, target: self, action: #selector(clearAllButtonTapped))

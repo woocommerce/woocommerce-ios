@@ -68,7 +68,7 @@ extension OrderSearchStarterViewController: UITableViewDataSource {
         let cellViewModel = viewModel.cellViewModel(at: indexPath)
 
         cell.accessoryType = .disclosureIndicator
-        cell.updateUI(title: cellViewModel.name, value: cellViewModel.total)
+        cell.updateUI(title: cellViewModel.name ?? "", value: cellViewModel.total)
 
         return cell
     }

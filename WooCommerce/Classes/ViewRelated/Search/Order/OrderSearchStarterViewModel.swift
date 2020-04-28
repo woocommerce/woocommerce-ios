@@ -17,7 +17,7 @@ final class OrderSearchStarterViewModel {
     /// The `ViewModel` containing only the data used by the displayed cell.
     ///
     struct CellViewModel {
-        let name: String
+        let name: String?
         let slug: String
         /// The total displayed on the right side.
         ///
@@ -85,7 +85,7 @@ extension OrderSearchStarterViewModel {
 
         let total = NumberFormatter.localizedUpToNinetyNine(orderStatus.total)
 
-        return CellViewModel(name: orderStatus.name ?? "",
+        return CellViewModel(name: orderStatus.name,
                              slug: orderStatus.slug,
                              total: total)
     }

@@ -83,9 +83,10 @@ extension OrderSearchStarterViewController: UITableViewDataSource {
 extension OrderSearchStarterViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let cellViewModel = viewModel.cellViewModel(at: indexPath)
         let orderStatus = viewModel.orderStatus(at: indexPath)
 
-        analytics.trackSelectionOf(orderStatus: orderStatus)
+        analytics.trackSelectionOf(orderStatusSlug: cellViewModel.slug)
 
         let ordersViewController = OrdersViewController(
             title: orderStatus.name ?? NSLocalizedString("Orders", comment: "Default title for Orders List shown when tapping on the Search filter."),
@@ -111,8 +112,8 @@ extension OrderSearchStarterViewController: KeyboardScrollable {
 private extension Analytics {
     /// Submit events depicting selection of an `OrderStatus` in the UI.
     ///
-    func trackSelectionOf(orderStatus: OrderStatus) {
-        track(.filterOrdersOptionSelected, withProperties: ["status": orderStatus.slug])
-        track(.ordersListFilterOrSearch, withProperties: ["filter": orderStatus.slug, "search": ""])
+    func trackSelectionOf(orderStatusSlug: String) {
+        track(.filterOrdersOptionSelected, withProperties: ["status": orderStatusSlug])
+        track(.ordersListFilterOrSearch, withProperties: ["filter": orderStatusSlug, "search": ""])
     }
 }

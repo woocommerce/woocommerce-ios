@@ -3,7 +3,7 @@ import XCTest
 @testable import WooCommerce
 
 final class IntegerInputFormatterTests: XCTestCase {
-    private let formatter = IntegerInputFormatter()
+    private let formatter = IntegerInputFormatter(defaultValue: "0")
 
     // MARK: test cases for `isValid(input:)`
 

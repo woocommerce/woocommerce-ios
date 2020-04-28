@@ -55,7 +55,53 @@ final class FilterProductListCommand: FilterListCommand {
     }
 
     func onFilterSelected(_ filter: ProductListFilter, viewController: ListSelectorCommand.ViewController) {
-        // TODO-2037: navigate to the filter option list selector
+        let filterOptionListSelector: UIViewController
+        switch filter {
+        case .stockStatus:
+            let command = FilterProductsByStockStatusListSelectorCommand(selected: filterListSelectorCommand.filters.stockStatus) { [weak self] selected in
+                guard let self = self else {
+                    return
+                }
+
+                /// TODO: update to use `Copiable`.
+                let currentFilters = self.filterListSelectorCommand.filters
+                let newFilters = Filters(stockStatus: selected ?? nil, productStatus: currentFilters.productStatus, productType: currentFilters.productType)
+                self.onFiltersUpdate(filters: newFilters) { [weak viewController] in
+                    viewController?.reloadData()
+                }
+            }
+            filterOptionListSelector = ListSelectorViewController(command: command, onDismiss: { _ in })
+        case .productStatus:
+            let command = FilterProductsByProductStatusListSelectorCommand(selected: filterListSelectorCommand.filters.productStatus) { [weak self] selected in
+                guard let self = self else {
+                    return
+                }
+
+                /// TODO: update to use `Copiable`.
+                let currentFilters = self.filterListSelectorCommand.filters
+                let newFilters = Filters(stockStatus: currentFilters.stockStatus, productStatus: selected ?? nil, productType: currentFilters.productType)
+                self.onFiltersUpdate(filters: newFilters) { [weak viewController] in
+                    viewController?.reloadData()
+                }
+            }
+            filterOptionListSelector = ListSelectorViewController(command: command, onDismiss: { _ in })
+        case .productType:
+            let command = FilterProductsByProductTypeListSelectorCommand(selected: filterListSelectorCommand.filters.productType) { [weak self] selected in
+                guard let self = self else {
+                    return
+                }
+
+                /// TODO: update to use `Copiable`.
+                let currentFilters = self.filterListSelectorCommand.filters
+                let newFilters = Filters(stockStatus: currentFilters.stockStatus, productStatus: currentFilters.productStatus, productType: selected ?? nil)
+                self.onFiltersUpdate(filters: newFilters) { [weak viewController] in
+                    viewController?.reloadData()
+                }
+            }
+            filterOptionListSelector = ListSelectorViewController(command: command, onDismiss: { _ in })
+        }
+
+        viewController.navigationController?.pushViewController(filterOptionListSelector, animated: true)
     }
 
     func onFilterActionTapped() {

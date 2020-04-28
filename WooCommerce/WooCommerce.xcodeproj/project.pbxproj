@@ -112,6 +112,12 @@
 		0248B3512457C41000A271A4 /* FilterProductListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0248B3502457C41000A271A4 /* FilterProductListSelectorCommand.swift */; };
 		0248B3542457CF3E00A271A4 /* FilterProductListCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0248B3532457CF3E00A271A4 /* FilterProductListCommandTests.swift */; };
 		0248B3572457D47900A271A4 /* FilterProductListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0248B3562457D47900A271A4 /* FilterProductListSelectorCommandTests.swift */; };
+		0248B359245813B300A271A4 /* FilterProductsByStockStatusListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0248B358245813B300A271A4 /* FilterProductsByStockStatusListSelectorCommand.swift */; };
+		0248B35B245813E700A271A4 /* FilterProductsByProductStatusListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0248B35A245813E700A271A4 /* FilterProductsByProductStatusListSelectorCommand.swift */; };
+		0248B35D245814E600A271A4 /* FilterProductsByProductTypeListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0248B35C245814E600A271A4 /* FilterProductsByProductTypeListSelectorCommand.swift */; };
+		0248B35F2458163D00A271A4 /* FilterProductsByStockStatusListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0248B35E2458163D00A271A4 /* FilterProductsByStockStatusListSelectorCommandTests.swift */; };
+		0248B3612458185600A271A4 /* FilterProductsByProductStatusListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0248B3602458185600A271A4 /* FilterProductsByProductStatusListSelectorCommandTests.swift */; };
+		0248B3632458191800A271A4 /* FilterProductsByProductTypeListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0248B3622458191800A271A4 /* FilterProductsByProductTypeListSelectorCommandTests.swift */; };
 		024A543422BA6F8F00F4F38E /* DeveloperEmailChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024A543322BA6F8F00F4F38E /* DeveloperEmailChecker.swift */; };
 		024A543622BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024A543522BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift */; };
 		024DF3052372ADCD006658FE /* KeyboardScrollable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024DF3042372ADCD006658FE /* KeyboardScrollable.swift */; };
@@ -937,6 +943,12 @@
 		0248B3502457C41000A271A4 /* FilterProductListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductListSelectorCommand.swift; sourceTree = "<group>"; };
 		0248B3532457CF3E00A271A4 /* FilterProductListCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductListCommandTests.swift; sourceTree = "<group>"; };
 		0248B3562457D47900A271A4 /* FilterProductListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductListSelectorCommandTests.swift; sourceTree = "<group>"; };
+		0248B358245813B300A271A4 /* FilterProductsByStockStatusListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductsByStockStatusListSelectorCommand.swift; sourceTree = "<group>"; };
+		0248B35A245813E700A271A4 /* FilterProductsByProductStatusListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductsByProductStatusListSelectorCommand.swift; sourceTree = "<group>"; };
+		0248B35C245814E600A271A4 /* FilterProductsByProductTypeListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductsByProductTypeListSelectorCommand.swift; sourceTree = "<group>"; };
+		0248B35E2458163D00A271A4 /* FilterProductsByStockStatusListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductsByStockStatusListSelectorCommandTests.swift; sourceTree = "<group>"; };
+		0248B3602458185600A271A4 /* FilterProductsByProductStatusListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductsByProductStatusListSelectorCommandTests.swift; sourceTree = "<group>"; };
+		0248B3622458191800A271A4 /* FilterProductsByProductTypeListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductsByProductTypeListSelectorCommandTests.swift; sourceTree = "<group>"; };
 		024A543322BA6F8F00F4F38E /* DeveloperEmailChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperEmailChecker.swift; sourceTree = "<group>"; };
 		024A543522BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperEmailCheckerTests.swift; sourceTree = "<group>"; };
 		024DF3042372ADCD006658FE /* KeyboardScrollable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardScrollable.swift; sourceTree = "<group>"; };
@@ -1875,6 +1887,9 @@
 			isa = PBXGroup;
 			children = (
 				0248B3502457C41000A271A4 /* FilterProductListSelectorCommand.swift */,
+				0248B358245813B300A271A4 /* FilterProductsByStockStatusListSelectorCommand.swift */,
+				0248B35A245813E700A271A4 /* FilterProductsByProductStatusListSelectorCommand.swift */,
+				0248B35C245814E600A271A4 /* FilterProductsByProductTypeListSelectorCommand.swift */,
 			);
 			path = ListSelectorCommand;
 			sourceTree = "<group>";
@@ -1892,6 +1907,9 @@
 			isa = PBXGroup;
 			children = (
 				0248B3562457D47900A271A4 /* FilterProductListSelectorCommandTests.swift */,
+				0248B35E2458163D00A271A4 /* FilterProductsByStockStatusListSelectorCommandTests.swift */,
+				0248B3602458185600A271A4 /* FilterProductsByProductStatusListSelectorCommandTests.swift */,
+				0248B3622458191800A271A4 /* FilterProductsByProductTypeListSelectorCommandTests.swift */,
 			);
 			path = ListSelectorCommand;
 			sourceTree = "<group>";
@@ -4491,6 +4509,7 @@
 				02EA6BF82435E80600FFF90A /* ImageDownloader.swift in Sources */,
 				CECC758623D21AC200486676 /* AggregateOrderItem.swift in Sources */,
 				02357B2A23CDB3E300147C2B /* ProductImageViewController.swift in Sources */,
+				0248B35D245814E600A271A4 /* FilterProductsByProductTypeListSelectorCommand.swift in Sources */,
 				B53B3F39219C817800DF1EB6 /* UIStoryboard+Woo.swift in Sources */,
 				021E2A1723A9FE5A00B1DE07 /* ProductInventorySettingsViewController.swift in Sources */,
 				020F41E823176F8E00776C4D /* TopBannerPresenter.swift in Sources */,
@@ -4579,6 +4598,7 @@
 				02EA6BFA2435E92600FFF90A /* KingfisherImageDownloader+ImageDownloadable.swift in Sources */,
 				0206483A23FA4160008441BB /* OrdersRootViewController.swift in Sources */,
 				022BF7FD23B9D708000A1DFB /* InProgressViewController.swift in Sources */,
+				0248B35B245813E700A271A4 /* FilterProductsByProductStatusListSelectorCommand.swift in Sources */,
 				D82DFB4A225F22D400EFE2CB /* UISearchBar+Appearance.swift in Sources */,
 				7441E1D221503F77004E6ECE /* IntrinsicTableView.swift in Sources */,
 				B517EA1D218B41F200730EC4 /* String+Woo.swift in Sources */,
@@ -4630,6 +4650,7 @@
 				B5D1AFB820BC510200DB0E8C /* UIImage+Woo.swift in Sources */,
 				B5980A6121AC878900EBF596 /* UIDevice+Woo.swift in Sources */,
 				02521E11243DC3C400DC7810 /* CancellableMedia.swift in Sources */,
+				0248B359245813B300A271A4 /* FilterProductsByStockStatusListSelectorCommand.swift in Sources */,
 				5754727F24520B2A00A94C3C /* Observer.swift in Sources */,
 				02404EDC2314CD3600FF1170 /* StatsV4ToV3BannerActionHandler.swift in Sources */,
 				027B8BBA23FE0D0C0040944E /* ObservationToken.swift in Sources */,
@@ -4855,6 +4876,7 @@
 				B5980A6521AC905C00EBF596 /* UIDeviceWooTests.swift in Sources */,
 				45EF798624509B4C00B22BA2 /* ArrayIndexPathTests.swift in Sources */,
 				5798191324526FE8000817F8 /* PublishSubjectTests.swift in Sources */,
+				0248B3632458191800A271A4 /* FilterProductsByProductTypeListSelectorCommandTests.swift in Sources */,
 				746791632108D7C0007CF1DC /* WooAnalyticsTests.swift in Sources */,
 				021FAFCD2355621E00B99241 /* UIView+SubviewsAxisTests.swift in Sources */,
 				74F3015A2200EC0800931B9E /* NSDecimalNumberWooTests.swift in Sources */,
@@ -4871,6 +4893,7 @@
 				02EA6BFC2435EC3500FFF90A /* MockImageDownloader.swift in Sources */,
 				45B9C64523A945C0007FC4C5 /* PriceInputFormatterTests.swift in Sources */,
 				453904F523BB8BD5007C4956 /* ProductTaxClassListSelectorDataSourceTests.swift in Sources */,
+				0248B3612458185600A271A4 /* FilterProductsByProductStatusListSelectorCommandTests.swift in Sources */,
 				746FC23D2200A62B00C3096C /* DateWooTests.swift in Sources */,
 				021AEF9C2407B07300029D28 /* ProductImageStatus+HelpersTests.swift in Sources */,
 				024A543622BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift in Sources */,
@@ -4919,6 +4942,7 @@
 				B56BBD16214820A70053A32D /* SyncCoordinatorTests.swift in Sources */,
 				02A275C023FE58F6005C560F /* MockImageCache.swift in Sources */,
 				4524CDA1242D045C00B2F20A /* ProductStatusSettingListSelectorCommandTests.swift in Sources */,
+				0248B35F2458163D00A271A4 /* FilterProductsByStockStatusListSelectorCommandTests.swift in Sources */,
 				D8C11A6222E24C4A00D4A88D /* LedgerTableViewCellTests.swift in Sources */,
 				D83A6A7A23792B2400419D48 /* UIColor+Muriel-Tests.swift in Sources */,
 				B5DBF3C320E1484400B53AED /* StoresManagerTests.swift in Sources */,

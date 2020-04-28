@@ -44,6 +44,7 @@ final class OrderSearchStarterViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.numberOfObjects, expectedItems.count)
+        XCTAssertEqual(viewModel.fetchedOrderStatuses, expectedItems)
         XCTAssertFalse(viewModel.fetchedOrderStatuses.contains(where: { $0.siteID != siteID }))
         XCTAssertFalse(viewModel.fetchedOrderStatuses.contains(unexpectedItem))
     }

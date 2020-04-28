@@ -6,7 +6,8 @@ final class FilterProductsByProductStatusListSelectorCommand: ListSelectorComman
     typealias Model = ProductStatus?
     typealias Cell = BasicTableViewCell
 
-    let navigationBarTitle: String? = NSLocalizedString("Product status", comment: "Navigation bar title of the selector for filtering products by stock status.")
+    let navigationBarTitle: String? = NSLocalizedString("Product status",
+                                                        comment: "Navigation bar title of the selector for filtering products by product status.")
 
     let data: [ProductStatus?] = [nil, .publish, .draft, .pending]
 

@@ -24,11 +24,17 @@ final class OrdersViewModel {
     }
 
     private let storageManager: StorageManagerType
+    private let pushNotificationsManager: PushNotesManager
     private let notificationCenter: NotificationCenter
 
-    /// The block called if self requests a resynchronization of the first page.
+    /// Used for cancelling the observer for Remote Notifications when `self` is deallocated.
     ///
-    var onShouldResynchronizeAfterAppActivation: (() -> ())?
+    private var cancellable: ObservationToken?
+
+    /// The block called if self requests a resynchronization of the first page. The
+    /// resynchronization should only be done if the view is visible.
+    ///
+    var onShouldResynchronizeIfViewIsVisible: (() -> ())?
 
     /// OrderStatus that must be matched by retrieved orders.
     ///
@@ -84,13 +90,19 @@ final class OrdersViewModel {
     }
 
     init(storageManager: StorageManagerType = ServiceLocator.storageManager,
+         pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          notificationCenter: NotificationCenter = .default,
          statusFilter: OrderStatus?,
          includesFutureOrders: Bool = true) {
         self.storageManager = storageManager
+        self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
         self.statusFilter = statusFilter
         self.includesFutureOrders = includesFutureOrders
+    }
+
+    deinit {
+        stopObservingForegroundRemoteNotifications()
     }
 
     /// Start fetching DB results and forward new changes to the given `tableView`.
@@ -106,6 +118,8 @@ final class OrdersViewModel {
                                        name: UIApplication.willResignActiveNotification, object: nil)
         notificationCenter.addObserver(self, selector: #selector(handleAppActivation),
                                        name: UIApplication.didBecomeActiveNotification, object: nil)
+
+        observeForegroundRemoteNotifications()
     }
 
     /// Execute the `resultsController` query, logging the error if there's any.
@@ -130,7 +144,7 @@ final class OrdersViewModel {
         }
 
         isAppActive = true
-        onShouldResynchronizeAfterAppActivation?()
+        onShouldResynchronizeIfViewIsVisible?()
     }
 
     /// Returns what `OrderAction` should be used when synchronizing.
@@ -227,6 +241,29 @@ final class OrdersViewModel {
             pageSize: pageSize,
             onCompletion: completionHandler
         )
+    }
+}
+
+// MARK: - Remote Notifications Observation
+
+private extension OrdersViewModel {
+    /// Watch for "new order" Remote Notifications that are received while the app is in the
+    /// foreground.
+    ///
+    /// A refresh will be requested when receiving them.
+    ///
+    func observeForegroundRemoteNotifications() {
+        cancellable = pushNotificationsManager.foregroundNotifications.subscribe { [weak self] notification in
+            guard notification.kind == .storeOrder else {
+                return
+            }
+
+            self?.onShouldResynchronizeIfViewIsVisible?()
+        }
+    }
+
+    func stopObservingForegroundRemoteNotifications() {
+        cancellable?.cancel()
     }
 }
 

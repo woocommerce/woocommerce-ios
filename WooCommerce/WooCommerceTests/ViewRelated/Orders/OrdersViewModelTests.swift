@@ -334,7 +334,7 @@ final class OrdersViewModelTests: XCTestCase {
         let viewModel = OrdersViewModel(notificationCenter: notificationCenter, statusFilter: nil)
 
         var resynchronizeRequested = false
-        viewModel.onShouldResynchronizeAfterAppActivation = {
+        viewModel.onShouldResynchronizeIfViewIsVisible = {
             resynchronizeRequested = true
         }
 
@@ -354,7 +354,7 @@ final class OrdersViewModelTests: XCTestCase {
         let viewModel = OrdersViewModel(notificationCenter: notificationCenter, statusFilter: nil)
 
         var resynchronizeRequested = false
-        viewModel.onShouldResynchronizeAfterAppActivation = {
+        viewModel.onShouldResynchronizeIfViewIsVisible = {
             resynchronizeRequested = true
         }
 
@@ -362,6 +362,48 @@ final class OrdersViewModelTests: XCTestCase {
 
         // Act
         notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+
+        // Assert
+        XCTAssertFalse(resynchronizeRequested)
+    }
+
+    // MARK: - Foreground Notifications
+
+    func testGivenANewOrderNotificationItRequestsAResynchronization() {
+        // Arrange
+        let pushNotificationsManager = MockPushNotificationsManager()
+        let viewModel = OrdersViewModel(pushNotificationsManager: pushNotificationsManager, statusFilter: nil)
+
+        var resynchronizeRequested = false
+        viewModel.onShouldResynchronizeIfViewIsVisible = {
+            resynchronizeRequested = true
+        }
+
+        viewModel.activateAndForwardUpdates(to: UITableView())
+
+        // Act
+        let notification = ForegroundNotification(noteID: 1, kind: .storeOrder, message: "")
+        pushNotificationsManager.sendForegroundNotification(notification)
+
+        // Assert
+        XCTAssertTrue(resynchronizeRequested)
+    }
+
+    func testGivenANonOrderNotificationItDoesNotRequestAResynchronization() {
+        // Arrange
+        let pushNotificationsManager = MockPushNotificationsManager()
+        let viewModel = OrdersViewModel(pushNotificationsManager: pushNotificationsManager, statusFilter: nil)
+
+        var resynchronizeRequested = false
+        viewModel.onShouldResynchronizeIfViewIsVisible = {
+            resynchronizeRequested = true
+        }
+
+        viewModel.activateAndForwardUpdates(to: UITableView())
+
+        // Act
+        let notification = ForegroundNotification(noteID: 1, kind: .comment, message: "")
+        pushNotificationsManager.sendForegroundNotification(notification)
 
         // Assert
         XCTAssertFalse(resynchronizeRequested)

@@ -65,10 +65,10 @@ extension OrderSearchStarterViewController: UITableViewDataSource {
                                             fatalError("Unexpected or missing cell")
         }
 
-        let orderStatus = viewModel.orderStatus(at: indexPath)
+        let cellViewModel = viewModel.cellViewModel(at: indexPath)
 
         cell.accessoryType = .disclosureIndicator
-        cell.updateUI(title: orderStatus.name ?? "", value: "\(orderStatus.total)")
+        cell.updateUI(title: cellViewModel.name, value: cellViewModel.total)
 
         return cell
     }

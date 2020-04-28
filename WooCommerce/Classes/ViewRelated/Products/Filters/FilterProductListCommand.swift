@@ -14,13 +14,16 @@ final class FilterProductListCommand: FilterListCommand {
 
     let filterActionTitle = NSLocalizedString("Show Products", comment: "Button title for applying filters to a list of products.")
 
-    /// Set by `FilterListViewController` in `viewDidLoad`.
-    var onClearAllActionVisibilityChanged: ((_ isClearAllActionVisible: Bool) -> Void)?
-
     /// The Clear All CTA is only visible when at least one filter is applied.
     var isClearAllActionVisible: Bool {
         return hasAppliedAnyFilters(filters: filterListSelectorCommand.filters)
     }
+
+    var shouldReloadUIObservable: Observable<Void> {
+        shouldReloadUISubject
+    }
+
+    private let shouldReloadUISubject: PublishSubject<Void> = PublishSubject<Void>()
 
     /// Used to configure the list of filters, with a callback when the user taps on a filter row.
     private(set) lazy var filterListSelectorCommand: ListSelectorCommand = {
@@ -69,25 +72,20 @@ final class FilterProductListCommand: FilterListCommand {
         sourceViewController.dismiss(animated: true, completion: nil)
     }
 
-    func onClearAllActionTapped(onCompletion: @escaping () -> Void) {
-        onFiltersUpdate(filters: Filters(stockStatus: nil, productStatus: nil, productType: nil), onCompletion: onCompletion)
+    func onClearAllActionTapped() {
+        onFiltersUpdate(filters: Filters(stockStatus: nil, productStatus: nil, productType: nil))
     }
 }
 
 private extension FilterProductListCommand {
-    func onFiltersUpdate(filters: Filters, onCompletion: @escaping () -> Void) {
-        defer {
-            onCompletion()
-        }
-
+    func onFiltersUpdate(filters: Filters) {
         guard filters != filterListSelectorCommand.filters else {
             return
         }
 
         filterListSelectorCommand.filters = filters
 
-        let isClearAllActionVisible = hasAppliedAnyFilters(filters: filterListSelectorCommand.filters)
-        onClearAllActionVisibilityChanged?(isClearAllActionVisible)
+        shouldReloadUISubject.send(())
     }
 
     func hasAppliedAnyFilters(filters: Filters) -> Bool {

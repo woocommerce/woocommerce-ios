@@ -20,8 +20,10 @@ protocol FilterListCommand {
     /// Whether the Clear All CTA is visible.
     var isClearAllActionVisible: Bool { get }
 
-    /// Called when the Clear All CTA visibility changes.
-    var onClearAllActionVisibilityChanged: ((_ isClearAllActionVisible: Bool) -> Void)? { get set }
+    /// Called when we should reload UI when one of the following changes:
+    /// - Clear All CTA visibility
+    /// - Filter list selector (`filterListSelectorCommand`) data
+    var shouldReloadUIObservable: Observable<Void> { get }
 
     // Navigation & Actions
 
@@ -32,8 +34,7 @@ protocol FilterListCommand {
     func onDismissActionTapped()
 
     /// Called when the user taps on the CTA to clear all filters.
-    /// - Parameter onCompletion: Called when the filters are cleared in the data sources for any potential list selctor UI reload in the completion block.
-    func onClearAllActionTapped(onCompletion: @escaping () -> Void)
+    func onClearAllActionTapped()
 }
 
 /// Allows the user to filter a list of models with generic filters.
@@ -57,6 +58,8 @@ final class FilterListViewController<Command: FilterListCommand>: UIViewControll
 
     private var clearAllBarButtonItem: UIBarButtonItem?
 
+    private var observationToken: ObservationToken?
+
     init(command: Command) {
         self.command = command
         super.init(nibName: "FilterListViewController", bundle: nil)
@@ -64,6 +67,10 @@ final class FilterListViewController<Command: FilterListCommand>: UIViewControll
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit {
+        observationToken?.cancel()
     }
 
     override func viewDidLoad() {
@@ -74,6 +81,7 @@ final class FilterListViewController<Command: FilterListCommand>: UIViewControll
         configureClearAllActionVisibility()
         configureChildNavigationController()
         configureFilterActionContainerView()
+        observeShouldReloadUI()
     }
 
     // MARK: - Navigation
@@ -87,9 +95,7 @@ final class FilterListViewController<Command: FilterListCommand>: UIViewControll
     }
 
     @objc func clearAllButtonTapped() {
-        command.onClearAllActionTapped(onCompletion: { [weak self] in
-            self?.listSelector.reloadData()
-        })
+        command.onClearAllActionTapped()
     }
 }
 
@@ -119,12 +125,8 @@ private extension FilterListViewController {
     }
 
     func configureClearAllActionVisibility() {
-        let onVisibilityChanged: (_ isVisible: Bool) -> Void = { [weak self] isVisible in
-            self?.listSelector.navigationItem.rightBarButtonItem = isVisible ? self?.clearAllBarButtonItem: nil
-        }
-
-        command.onClearAllActionVisibilityChanged = onVisibilityChanged
-        onVisibilityChanged(command.isClearAllActionVisible)
+        // Until we have a `PassthroughSubject`/`BehaviorSubject`, we have to initialize the Clear All CTA visibility manually.
+        listSelector.navigationItem.rightBarButtonItem = command.isClearAllActionVisible ? clearAllBarButtonItem: nil
     }
 
     func configureChildNavigationController() {
@@ -146,5 +148,12 @@ private extension FilterListViewController {
         filterActionContainerView.pinSubviewToAllEdges(buttonContainerView)
         filterActionContainerView.setContentCompressionResistancePriority(.required, for: .vertical)
         filterActionContainerView.setContentHuggingPriority(.required, for: .vertical)
+    }
+
+    func observeShouldReloadUI() {
+        observationToken = command.shouldReloadUIObservable.subscribe { [weak self] in
+            self?.listSelector.navigationItem.rightBarButtonItem = self?.command.isClearAllActionVisible == true ? self?.clearAllBarButtonItem: nil
+            self?.listSelector.reloadData()
+        }
     }
 }

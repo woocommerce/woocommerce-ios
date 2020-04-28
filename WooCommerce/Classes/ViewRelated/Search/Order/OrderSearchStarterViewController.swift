@@ -40,8 +40,8 @@ final class OrderSearchStarterViewController: UIViewController, KeyboardFrameAdj
     }
 
     private func configureTableView() {
-        tableView.register(BasicTableViewCell.loadNib(),
-                           forCellReuseIdentifier: BasicTableViewCell.reuseIdentifier)
+        tableView.register(SettingTitleAndValueTableViewCell.loadNib(),
+                           forCellReuseIdentifier: SettingTitleAndValueTableViewCell.reuseIdentifier)
 
         tableView.backgroundColor = .listBackground
         tableView.delegate = self
@@ -59,13 +59,16 @@ extension OrderSearchStarterViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: BasicTableViewCell.reuseIdentifier,
-                                                 for: indexPath)
+        guard let cell =
+            tableView.dequeueReusableCell(withIdentifier: SettingTitleAndValueTableViewCell.reuseIdentifier,
+                                          for: indexPath) as? SettingTitleAndValueTableViewCell else {
+                                            fatalError("Unexpected or missing cell")
+        }
+
         let orderStatus = viewModel.orderStatus(at: indexPath)
 
         cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
-        cell.textLabel?.text = orderStatus.name
+        cell.updateUI(title: orderStatus.name ?? "", value: "\(orderStatus.total)")
 
         return cell
     }

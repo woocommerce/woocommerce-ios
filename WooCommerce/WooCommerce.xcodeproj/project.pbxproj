@@ -199,6 +199,8 @@
 		02C0CD2C23B5BC9600F880B1 /* DefaultImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C0CD2B23B5BC9600F880B1 /* DefaultImageService.swift */; };
 		02C0CD2E23B5E3AE00F880B1 /* DefaultImageServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C0CD2D23B5E3AE00F880B1 /* DefaultImageServiceTests.swift */; };
 		02C887712450285100E4470F /* BottomButtonContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C887702450285100E4470F /* BottomButtonContainerView.swift */; };
+		02C8876D24501FAC00E4470F /* FilterListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C8876B24501FAC00E4470F /* FilterListViewController.swift */; };
+		02C8876E24501FAC00E4470F /* FilterListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02C8876C24501FAC00E4470F /* FilterListViewController.xib */; };
 		02CA63DA23D1ADD100BBF148 /* CameraCaptureCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CA63D623D1ADD100BBF148 /* CameraCaptureCoordinator.swift */; };
 		02CA63DB23D1ADD100BBF148 /* MediaPickingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CA63D723D1ADD100BBF148 /* MediaPickingCoordinator.swift */; };
 		02CA63DC23D1ADD100BBF148 /* DeviceMediaLibraryPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CA63D823D1ADD100BBF148 /* DeviceMediaLibraryPicker.swift */; };
@@ -1018,6 +1020,8 @@
 		02C0CD2B23B5BC9600F880B1 /* DefaultImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultImageService.swift; sourceTree = "<group>"; };
 		02C0CD2D23B5E3AE00F880B1 /* DefaultImageServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultImageServiceTests.swift; sourceTree = "<group>"; };
 		02C887702450285100E4470F /* BottomButtonContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomButtonContainerView.swift; sourceTree = "<group>"; };
+		02C8876B24501FAC00E4470F /* FilterListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterListViewController.swift; sourceTree = "<group>"; };
+		02C8876C24501FAC00E4470F /* FilterListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FilterListViewController.xib; sourceTree = "<group>"; };
 		02CA63D623D1ADD100BBF148 /* CameraCaptureCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraCaptureCoordinator.swift; sourceTree = "<group>"; };
 		02CA63D723D1ADD100BBF148 /* MediaPickingCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaPickingCoordinator.swift; sourceTree = "<group>"; };
 		02CA63D823D1ADD100BBF148 /* DeviceMediaLibraryPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceMediaLibraryPicker.swift; sourceTree = "<group>"; };
@@ -2130,6 +2134,15 @@
 			path = ImageService;
 			sourceTree = "<group>";
 		};
+		02C8876A24501F5000E4470F /* Filters */ = {
+			isa = PBXGroup;
+			children = (
+				02C8876B24501FAC00E4470F /* FilterListViewController.swift */,
+				02C8876C24501FAC00E4470F /* FilterListViewController.xib */,
+			);
+			path = Filters;
+			sourceTree = "<group>";
+		};
 		02C8876F245027F200E4470F /* BottomButtonContainer */ = {
 			isa = PBXGroup;
 			children = (
@@ -2489,6 +2502,7 @@
 		74EC34A3225FE1F3004BBC2E /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				02C8876A24501F5000E4470F /* Filters */,
 				0235595724496D31004BE2B8 /* BottomSheetListSelector */,
 				0286B27523C704FC003D784B /* Media */,
 				026CF637237E9AA5009563D4 /* Variations */,
@@ -4072,6 +4086,7 @@
 				02357B2B23CDB3E300147C2B /* ProductImageViewController.xib in Resources */,
 				CE85FD5320F677770080B73E /* Dashboard.storyboard in Resources */,
 				B56DB3CF2049BFAA00D4AA8E /* Main.storyboard in Resources */,
+				02C8876E24501FAC00E4470F /* FilterListViewController.xib in Resources */,
 				CE21B3D820FE669A00A259D5 /* BasicTableViewCell.xib in Resources */,
 				74334F37214AB130006D6AC5 /* ProductTableViewCell.xib in Resources */,
 				CE1EC8C820B478B6009762BF /* TwoColumnLabelView.xib in Resources */,
@@ -4740,6 +4755,7 @@
 				B541B21A2189F3A2008FE7C1 /* StringFormatter.swift in Sources */,
 				D817586422BDD81600289CFE /* OrderDetailsDataSource.swift in Sources */,
 				CE1F512920697F0100C6C810 /* UIFont+Helpers.swift in Sources */,
+				02C8876D24501FAC00E4470F /* FilterListViewController.swift in Sources */,
 				45D1CF4523BAC2A500945A36 /* ProductTaxClassListSelectorDataSource.swift in Sources */,
 				6856D31F941A33BAE66F394D /* KeyboardFrameAdjustmentProvider.swift in Sources */,
 				6856DB2E741639716E149967 /* KeyboardStateProvider.swift in Sources */,

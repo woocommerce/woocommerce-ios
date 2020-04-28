@@ -104,21 +104,6 @@ final class OrderSearchStarterViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(cellViewModel.total, NSLocalizedString("99+", comment: ""))
     }
-
-    func testGivenAnOrderStatusTotalOfZeroItReturnsAnEmptyString() {
-        // Given
-        let viewModel = OrderSearchStarterViewModel(siteID: siteID, storageManager: storageManager)
-
-        insert(OrderStatus(name: "Processing", siteID: siteID, slug: "slug", total: 0))
-
-        viewModel.activateAndForwardUpdates(to: UITableView())
-
-        // When
-        let cellViewModel = viewModel.cellViewModel(at: IndexPath(row: 0, section: 0))
-
-        // Then
-        XCTAssertEqual(cellViewModel.total, "")
-    }
 }
 
 // MARK: - Helpers

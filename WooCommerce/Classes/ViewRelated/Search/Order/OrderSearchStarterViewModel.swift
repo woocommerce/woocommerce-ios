@@ -83,7 +83,7 @@ extension OrderSearchStarterViewModel {
     func cellViewModel(at indexPath: IndexPath) -> CellViewModel {
         let orderStatus = resultsController.object(at: indexPath)
 
-        let total = orderStatus.total > 0 ? NumberFormatter.localizedUpToNinetyNine(orderStatus.total) : ""
+        let total = NumberFormatter.localizedUpToNinetyNine(orderStatus.total)
 
         return CellViewModel(name: orderStatus.name ?? "",
                              slug: orderStatus.slug,

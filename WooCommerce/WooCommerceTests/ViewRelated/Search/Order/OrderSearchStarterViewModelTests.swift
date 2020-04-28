@@ -18,8 +18,8 @@ final class OrderSearchStarterViewModelTests: XCTestCase {
     }
 
     override func setUp() {
-        storageManager = MockupStorageManager()
         super.setUp()
+        storageManager = MockupStorageManager()
     }
 
     override func tearDown() {

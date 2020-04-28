@@ -66,9 +66,7 @@ final class FilterProductListCommand: FilterListCommand {
                 /// TODO: update to use `Copiable`.
                 let currentFilters = self.filterListSelectorCommand.filters
                 let newFilters = Filters(stockStatus: selected ?? nil, productStatus: currentFilters.productStatus, productType: currentFilters.productType)
-                self.onFiltersUpdate(filters: newFilters) { [weak viewController] in
-                    viewController?.reloadData()
-                }
+                self.onFiltersUpdate(filters: newFilters)
             }
             filterOptionListSelector = ListSelectorViewController(command: command, onDismiss: { _ in })
         case .productStatus:
@@ -80,9 +78,7 @@ final class FilterProductListCommand: FilterListCommand {
                 /// TODO: update to use `Copiable`.
                 let currentFilters = self.filterListSelectorCommand.filters
                 let newFilters = Filters(stockStatus: currentFilters.stockStatus, productStatus: selected ?? nil, productType: currentFilters.productType)
-                self.onFiltersUpdate(filters: newFilters) { [weak viewController] in
-                    viewController?.reloadData()
-                }
+                self.onFiltersUpdate(filters: newFilters)
             }
             filterOptionListSelector = ListSelectorViewController(command: command, onDismiss: { _ in })
         case .productType:
@@ -94,9 +90,7 @@ final class FilterProductListCommand: FilterListCommand {
                 /// TODO: update to use `Copiable`.
                 let currentFilters = self.filterListSelectorCommand.filters
                 let newFilters = Filters(stockStatus: currentFilters.stockStatus, productStatus: currentFilters.productStatus, productType: selected ?? nil)
-                self.onFiltersUpdate(filters: newFilters) { [weak viewController] in
-                    viewController?.reloadData()
-                }
+                self.onFiltersUpdate(filters: newFilters)
             }
             filterOptionListSelector = ListSelectorViewController(command: command, onDismiss: { _ in })
         }

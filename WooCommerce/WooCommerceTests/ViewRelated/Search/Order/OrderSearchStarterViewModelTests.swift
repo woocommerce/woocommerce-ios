@@ -55,11 +55,11 @@ final class OrderSearchStarterViewModelTests: XCTestCase {
         // Given
         let viewModel = OrderSearchStarterViewModel(siteID: siteID, storageManager: storageManager)
 
-        insertOrderStatus(siteID: siteID, status: .completed, slug: "delta")
-        insertOrderStatus(siteID: siteID, status: .processing, slug: "charlie")
-        insertOrderStatus(siteID: siteID, status: .failed, slug: "echo")
-        insertOrderStatus(siteID: siteID, status: .cancelled, slug: "alpha")
-        insertOrderStatus(siteID: siteID, status: .cancelled, slug: "beta")
+        insert(OrderStatus(name: "autem", siteID: siteID, slug: "delta", total: 0))
+        insert(OrderStatus(name: "dolores", siteID: siteID, slug: "charlie", total: 0))
+        insert(OrderStatus(name: "fugit", siteID: siteID, slug: "echo", total: 0))
+        insert(OrderStatus(name: "itaque", siteID: siteID, slug: "alpha", total: 0))
+        insert(OrderStatus(name: "eos", siteID: siteID, slug: "beta", total: 0))
 
         // When
         viewModel.activateAndForwardUpdates(to: UITableView())
@@ -85,17 +85,19 @@ private extension OrderSearchStarterViewModel {
 
 private extension OrderSearchStarterViewModelTests {
     @discardableResult
-    func insertOrderStatus(siteID: Int64,
-                           status: OrderStatusEnum,
-                           slug: String? = nil) -> OrderStatus {
-        let readOnlyOrderStatus = OrderStatus(name: status.rawValue,
-                                              siteID: siteID,
-                                              slug: slug ?? status.rawValue,
-                                              total: 0)
-
+    func insert(_ readOnlyOrderStatus: OrderStatus) -> OrderStatus {
         let storageOrderStatus = storage.insertNewObject(ofType: StorageOrderStatus.self)
         storageOrderStatus.update(with: readOnlyOrderStatus)
-
         return readOnlyOrderStatus
+    }
+
+    @discardableResult
+    func insertOrderStatus(siteID: Int64, status: OrderStatusEnum) -> OrderStatus {
+        let readOnlyOrderStatus = OrderStatus(name: status.rawValue,
+                                              siteID: siteID,
+                                              slug: status.rawValue,
+                                              total: 0)
+
+        return insert(readOnlyOrderStatus)
     }
 }

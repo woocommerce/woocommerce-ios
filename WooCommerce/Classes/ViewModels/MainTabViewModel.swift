@@ -55,7 +55,7 @@ private extension MainTabViewModel {
             return
         }
 
-        onBadgeReload?(NumberFormatter.localizedUpToNinetyNine(processingCount))
+        onBadgeReload?(NumberFormatter.localizedOrNinetyNinePlus(processingCount))
     }
 
     private func observeBadgeRefreshNotifications() {

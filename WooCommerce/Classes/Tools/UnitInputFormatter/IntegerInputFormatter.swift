@@ -3,11 +3,11 @@ import Foundation
 /// `UnitInputFormatter` implementation for integer number input (positive, negative, or zero)
 ///
 struct IntegerInputFormatter: UnitInputFormatter {
-    
+
     /// The default value used by format() when the text is empty or the number formatter return a nil value
     ///
     let defaultValue: String
-    
+
     private let numberFormatter: NumberFormatter = {
         let numberFormatter = NumberFormatter()
         numberFormatter.allowsFloats = false
@@ -26,9 +26,9 @@ struct IntegerInputFormatter: UnitInputFormatter {
         guard let text = text, text.isEmpty == false else {
             return defaultValue
         }
-        
+
         var formattedText = numberFormatter.number(from: text)?.stringValue ?? defaultValue
-        
+
         // The minus sign is mantained if present
         let minus: Character = "-"
         if text.first == minus {
@@ -36,7 +36,7 @@ struct IntegerInputFormatter: UnitInputFormatter {
         }
         return formattedText
     }
-    
+
     init(defaultValue: String = "0") {
         self.defaultValue = defaultValue
     }

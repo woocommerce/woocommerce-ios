@@ -16,28 +16,10 @@ public class SitePostsRemote: Remote {
     ///   - completion: Closure to be executed upon completion.
     ///
     public func loadSitePost(for siteID: Int64, postID: Int64, completion: @escaping (SitePost?, Error?) -> Void) {
-        let path = String(format: Paths.singlePost, siteID, postID)
+        let path = String(format: "/sites/%@/posts/%@", siteID, postID)
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path)
         let mapper = SitePostMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
-    }
-}
-
-
-// MARK: - Constants!
-//
-private extension SitePostsRemote {
-
-    enum Paths {
-        static let singlePost = "/sites/%@/posts/%@"
-    }
-    
-    enum ParameterKeys {
-        static let fields: String = "_fields"
-    }
-
-    enum ParameterValues {
-        static let fieldValues: String = "authentication,namespaces"
     }
 }

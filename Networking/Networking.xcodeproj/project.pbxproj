@@ -48,6 +48,8 @@
 		4501068F2399B19500E24722 /* TaxClassRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4501068E2399B19500E24722 /* TaxClassRemote.swift */; };
 		450106912399B2C800E24722 /* TaxClassListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106902399B2C800E24722 /* TaxClassListMapper.swift */; };
 		4524CD9C242CEFAB00B2F20A /* product-on-sale-with-empty-sale-price.json in Resources */ = {isa = PBXBuildFile; fileRef = 4524CD9B242CEFAB00B2F20A /* product-on-sale-with-empty-sale-price.json */; };
+		4568E2222459ADC60007E478 /* SitePostsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4568E2212459ADC60007E478 /* SitePostsRemote.swift */; };
+		4568E2242459D3230007E478 /* SitePost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4568E2232459D3230007E478 /* SitePost.swift */; };
 		457FC68C2382B2FD00B41B02 /* product-update.json in Resources */ = {isa = PBXBuildFile; fileRef = 457FC68B2382B2FD00B41B02 /* product-update.json */; };
 		45CDAFAB2434CA9300F83C22 /* ProductCatalogVisibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45CDAFAA2434CA9300F83C22 /* ProductCatalogVisibility.swift */; };
 		45D1CF4923BACA6500945A36 /* ProductTaxStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D1CF4823BACA6500945A36 /* ProductTaxStatus.swift */; };
@@ -369,6 +371,8 @@
 		4501068E2399B19500E24722 /* TaxClassRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassRemote.swift; sourceTree = "<group>"; };
 		450106902399B2C800E24722 /* TaxClassListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassListMapper.swift; sourceTree = "<group>"; };
 		4524CD9B242CEFAB00B2F20A /* product-on-sale-with-empty-sale-price.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-on-sale-with-empty-sale-price.json"; sourceTree = "<group>"; };
+		4568E2212459ADC60007E478 /* SitePostsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePostsRemote.swift; sourceTree = "<group>"; };
+		4568E2232459D3230007E478 /* SitePost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePost.swift; sourceTree = "<group>"; };
 		457FC68B2382B2FD00B41B02 /* product-update.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-update.json"; sourceTree = "<group>"; };
 		45CDAFAA2434CA9300F83C22 /* ProductCatalogVisibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCatalogVisibility.swift; sourceTree = "<group>"; };
 		45D1CF4823BACA6500945A36 /* ProductTaxStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTaxStatus.swift; sourceTree = "<group>"; };
@@ -890,6 +894,7 @@
 				7426CA0C21AF27B9004E9FFC /* SiteAPIRemote.swift */,
 				74046E1A217A684D007DD7BF /* SiteSettingsRemote.swift */,
 				74A1D26E21189EA000931DFA /* SiteVisitStatsRemote.swift */,
+				4568E2212459ADC60007E478 /* SitePostsRemote.swift */,
 				4501068E2399B19500E24722 /* TaxClassRemote.swift */,
 				74ABA1D0213F22CA00FFAD30 /* TopEarnersStatsRemote.swift */,
 				026CF61F237D69D6009563D4 /* ProductVariationsRemote.swift */,
@@ -954,6 +959,7 @@
 				45E3EEBA237009CF00A826AC /* ShippingLine.swift */,
 				B56C1EB720EA76F500D749F9 /* Site.swift */,
 				7426CA0E21AF2C90004E9FFC /* SiteAPI.swift */,
+				4568E2232459D3230007E478 /* SitePost.swift */,
 				74046E1C217A6989007DD7BF /* SiteSetting.swift */,
 				74159624224D4045003C21CF /* SiteSettingGroup.swift */,
 				CE50345F21B5799F007573C6 /* SitePlan.swift */,
@@ -1568,6 +1574,7 @@
 				D823D905223746CE00C90817 /* NewShipmentTrackingMapper.swift in Sources */,
 				743057B5218B6ACD00441A76 /* Queue.swift in Sources */,
 				74A1D26821189A7100931DFA /* SiteVisitStats.swift in Sources */,
+				4568E2242459D3230007E478 /* SitePost.swift in Sources */,
 				B557DA0320975500005962F4 /* Remote.swift in Sources */,
 				748D424C210FA34400CF7D1B /* OrderStatsMapper.swift in Sources */,
 				B53EF53C21814900003E146F /* SuccessResultMapper.swift in Sources */,
@@ -1589,6 +1596,7 @@
 				B53EF5322180F21C003E146F /* Dictionary+Woo.swift in Sources */,
 				74A1D26D21189DFF00931DFA /* SiteVisitStatsMapper.swift in Sources */,
 				D8FBFF2222D5266E006E3336 /* OrderStatsV4Interval.swift in Sources */,
+				4568E2222459ADC60007E478 /* SitePostsRemote.swift in Sources */,
 				93D8BBFD226BBEE800AD2EB3 /* AccountSettingsMapper.swift in Sources */,
 				74D522B62113607F00042831 /* StatGranularity.swift in Sources */,
 				B518662220A097C200037A38 /* Network.swift in Sources */,

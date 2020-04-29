@@ -3,7 +3,7 @@ import XCTest
 @testable import WooCommerce
 
 final class IntegerInputFormatterTests: XCTestCase {
-    private let formatter = IntegerInputFormatter()
+    private let formatter = IntegerInputFormatter(defaultValue: "1")
 
     // MARK: test cases for `isValid(input:)`
 
@@ -37,11 +37,16 @@ final class IntegerInputFormatterTests: XCTestCase {
         XCTAssertTrue(formatter.isValid(input: input))
     }
 
+    func testMinusSignInputIsValid() {
+        let input = "-"
+        XCTAssertTrue(formatter.isValid(input: input))
+    }
+
     // MARK: test cases for `format(input:)`
 
     func testFormattingEmptyInput() {
         let input = ""
-        XCTAssertEqual(formatter.format(input: input), "0")
+        XCTAssertEqual(formatter.format(input: input), "1")
     }
 
     func testFormattingInputWithLeadingZeros() {
@@ -57,5 +62,15 @@ final class IntegerInputFormatterTests: XCTestCase {
     func testFormattingNegativeIntegerInput() {
         let input = "-3412424214"
         XCTAssertEqual(formatter.format(input: input), "-3412424214")
+    }
+
+    func testFormattingMinusSignInput() {
+        let input = "-"
+        XCTAssertEqual(formatter.format(input: input), "-1")
+    }
+
+    func testFormattingMultipleMinusSignInput() {
+        let input = "--"
+        XCTAssertEqual(formatter.format(input: input), "-1")
     }
 }

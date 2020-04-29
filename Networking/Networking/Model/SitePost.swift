@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a SitePost Entity.
 ///
-public struct SitePost: Decodable {
+public struct SitePost: Codable {
 
     /// WordPress.com Site Identifier.
     ///

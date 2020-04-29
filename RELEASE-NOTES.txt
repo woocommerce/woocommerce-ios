@@ -4,6 +4,7 @@
 - Products: now the keyboard pop up automatically in Edit Description
 - The Processing orders list will now show upcoming (future) orders.
 - Improved stats: fixed the incorrect time range on "This Week" tab when loading improved stats on a day when daily saving time changes.
+- [internal]: the "send magic link" screen has navigation changes that can cause regressions. See https://git.io/Jfqio for testing details.
 - The Orders list is now automatically refreshed when reopening the app. 
 - The Orders list is automatically refreshed if a new order (push notification) comes in.
 

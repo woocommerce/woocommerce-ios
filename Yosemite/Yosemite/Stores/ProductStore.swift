@@ -34,8 +34,22 @@ public class ProductStore: Store {
             retrieveProducts(siteID: siteID, productIDs: productIDs, onCompletion: onCompletion)
         case .searchProducts(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
             searchProducts(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
-        case .synchronizeProducts(let siteID, let pageNumber, let pageSize, let sortOrder, let onCompletion):
-            synchronizeProducts(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, sortOrder: sortOrder, onCompletion: onCompletion)
+        case .synchronizeProducts(let siteID,
+                                  let pageNumber,
+                                  let pageSize,
+                                  let stockStatus,
+                                  let productStatus,
+                                  let productType,
+                                  let sortOrder,
+                                  let onCompletion):
+            synchronizeProducts(siteID: siteID,
+                                pageNumber: pageNumber,
+                                pageSize: pageSize,
+                                stockStatus: stockStatus,
+                                productStatus: productStatus,
+                                productType: productType,
+                                sortOrder: sortOrder,
+                                onCompletion: onCompletion)
         case .requestMissingProducts(let order, let onCompletion):
             requestMissingProducts(for: order, onCompletion: onCompletion)
         case .updateProduct(let product, let onCompletion):
@@ -85,12 +99,22 @@ private extension ProductStore {
 
     /// Synchronizes the products associated with a given Site ID, sorted by ascending name.
     ///
-    func synchronizeProducts(siteID: Int64, pageNumber: Int, pageSize: Int, sortOrder: ProductsSortOrder, onCompletion: @escaping (Error?) -> Void) {
+    func synchronizeProducts(siteID: Int64,
+                             pageNumber: Int,
+                             pageSize: Int,
+                             stockStatus: ProductStockStatus?,
+                             productStatus: ProductStatus?,
+                             productType: ProductType?,
+                             sortOrder: ProductsSortOrder,
+                             onCompletion: @escaping (Error?) -> Void) {
         let remote = ProductsRemote(network: network)
 
         remote.loadAllProducts(for: siteID,
                                pageNumber: pageNumber,
                                pageSize: pageSize,
+                               stockStatus: stockStatus,
+                               productStatus: productStatus,
+                               productType: productType,
                                orderBy: sortOrder.remoteOrderKey,
                                order: sortOrder.remoteOrder) { [weak self] (products, error) in
             guard let products = products else {

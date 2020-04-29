@@ -8,6 +8,8 @@ struct IntegerInputFormatter: UnitInputFormatter {
     ///
     let defaultValue: String
 
+    private let minus: Character = "-"
+
     private let numberFormatter: NumberFormatter = {
         let numberFormatter = NumberFormatter()
         numberFormatter.allowsFloats = false
@@ -19,7 +21,7 @@ struct IntegerInputFormatter: UnitInputFormatter {
             // Allows empty input to be replaced by defaultValue
             return true
         }
-        return numberFormatter.number(from: input) != nil || input == "-"
+        return numberFormatter.number(from: input) != nil || input == String(minus)
     }
 
     func format(input text: String?) -> String {
@@ -29,8 +31,7 @@ struct IntegerInputFormatter: UnitInputFormatter {
 
         var formattedText = numberFormatter.number(from: text)?.stringValue ?? defaultValue
 
-        // The minus sign is mantained if present
-        let minus: Character = "-"
+        // The minus sign is maintained if present
         if text.first == minus {
             formattedText = String(minus) + formattedText.replacingOccurrences(of: "-", with: "")
         }

@@ -8,11 +8,15 @@ class SitePostsRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
-    let network = MockupNetwork()
+    private let network = MockupNetwork()
 
     /// Dummy Site ID
     ///
-    let sampleSiteID: Int64 = 3584907
+    private let sampleSiteID: Int64 = 3584907
+
+    /// Dummy Post ID
+    ///
+    private let postID: Int64 = 7
 
     /// Repeat always!
     ///
@@ -28,8 +32,10 @@ class SitePostsRemoteTests: XCTestCase {
         let remote = SitePostsRemote(network: network)
         let expectation = self.expectation(description: "Load site post")
 
-        network.simulateResponse(requestUrlSuffix: "settings/general", filename: "site-post")
-        remote.loadSitePost(for: sampleSiteID, postID: 7) {[weak self] (sitePost, error) in
+        let postID: Int64 = 7
+
+        network.simulateResponse(requestUrlSuffix: "/sites/\(sampleSiteID)/posts/\(postID)", filename: "site-post")
+        remote.loadSitePost(for: sampleSiteID, postID: postID) {[weak self] (sitePost, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(sitePost)
             XCTAssertEqual(sitePost?.siteID, self?.sampleSiteID)

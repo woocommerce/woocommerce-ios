@@ -16,7 +16,7 @@ public class SitePostsRemote: Remote {
     ///   - completion: Closure to be executed upon completion.
     ///
     public func loadSitePost(for siteID: Int64, postID: Int64, completion: @escaping (SitePost?, Error?) -> Void) {
-        let path = String(format: "/sites/%@/posts/%@", siteID, postID)
+        let path = String(format: "/sites/%d/posts/%d", siteID, postID)
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path)
         let mapper = SitePostMapper()
 

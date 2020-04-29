@@ -73,8 +73,8 @@ enum ProductSettingsRows {
                 return
             }
 
-            let titleView = NSLocalizedString("Catalog Visibility", comment: "Catalog Visibility label in Product Settings")
-            cell.updateUI(title: titleView, value: settings.catalogVisibility.description)
+            let title = NSLocalizedString("Catalog Visibility", comment: "Catalog Visibility label in Product Settings")
+            cell.updateUI(title: title, value: settings.catalogVisibility.description)
             cell.accessoryType = .disclosureIndicator
         }
 
@@ -104,8 +104,8 @@ enum ProductSettingsRows {
                 return
             }
 
-            let titleView = NSLocalizedString("Slug", comment: "Slug label in Product Settings")
-            cell.updateUI(title: titleView, value: settings.slug)
+            let title = NSLocalizedString("Slug", comment: "Slug label in Product Settings")
+            cell.updateUI(title: title, value: settings.slug)
             cell.accessoryType = .disclosureIndicator
         }
 
@@ -134,14 +134,44 @@ enum ProductSettingsRows {
                 return
             }
 
-            let titleView = NSLocalizedString("Purchase Note", comment: "Purchase note label in Product Settings")
-            cell.updateUI(title: titleView, value: settings.purchaseNote?.strippedHTML)
+            let title = NSLocalizedString("Purchase Note", comment: "Purchase note label in Product Settings")
+            cell.updateUI(title: title, value: settings.purchaseNote?.strippedHTML)
             cell.accessoryType = .disclosureIndicator
         }
 
         func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
             let viewController = ProductPurchaseNoteViewController(settings: settings) { (productSettings) in
                 self.settings.purchaseNote = productSettings.purchaseNote
+                onCompletion(self.settings)
+            }
+            sourceViewController.navigationController?.pushViewController(viewController, animated: true)
+        }
+
+        let reuseIdentifier: String = SettingTitleAndValueTableViewCell.reuseIdentifier
+
+        let cellTypes: [UITableViewCell.Type] = [SettingTitleAndValueTableViewCell.self]
+    }
+
+    struct MenuOrder: ProductSettingsRowMediator {
+        private let settings: ProductSettings
+
+        init(_ settings: ProductSettings) {
+            self.settings = settings
+        }
+
+        func configure(cell: UITableViewCell) {
+            guard let cell = cell as? SettingTitleAndValueTableViewCell else {
+                return
+            }
+
+            let title = NSLocalizedString("Menu Order", comment: "Menu order label in Product Settings")
+            cell.updateUI(title: title, value: String(settings.menuOrder))
+            cell.accessoryType = .disclosureIndicator
+        }
+
+        func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
+            let viewController = ProductMenuOrderViewController(settings: settings) { (productSettings) in
+                self.settings.menuOrder = productSettings.menuOrder
                 onCompletion(self.settings)
             }
             sourceViewController.navigationController?.pushViewController(viewController, animated: true)

@@ -1,7 +1,7 @@
 import UIKit
 import Yosemite
 
-final class ProductSlugViewController: UIViewController {
+final class ProductMenuOrderViewController: UIViewController {
 
     @IBOutlet weak private var tableView: UITableView!
 
@@ -18,9 +18,10 @@ final class ProductSlugViewController: UIViewController {
     ///
     init(settings: ProductSettings, completion: @escaping Completion) {
         productSettings = settings
-        let footerText = NSLocalizedString("This is the URL-friendly version of the product title",
-        comment: "Footer text in Product Slug screen")
-        sections = [Section(footer: footerText, rows: [.slug])]
+        let footerText = NSLocalizedString("Determines the products positioning in the catalog."
+            + " The lower the value of the number, the higher the item will be on the product list. You can also use negative values",
+                                           comment: "Footer text in Product Menu order screen")
+        sections = [Section(footer: footerText, rows: [.menuOrder])]
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
@@ -38,22 +39,23 @@ final class ProductSlugViewController: UIViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        onCompletion(productSettings)
+        if isMovingFromParent {
+            onCompletion(productSettings)
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        configureTextFieldFirstResponder()
+        configureFirstTextFieldAsFirstResponder()
     }
 }
 
 // MARK: - View Configuration
 //
-private extension ProductSlugViewController {
+private extension ProductMenuOrderViewController {
 
     func configureNavigationBar() {
-        title = NSLocalizedString("Slug", comment: "Product Slug navigation title")
-
+        title = NSLocalizedString("Menu Order", comment: "Product Menu Order navigation title")
         removeNavigationBackBarButtonText()
     }
 
@@ -69,12 +71,17 @@ private extension ProductSlugViewController {
 
         tableView.backgroundColor = .listBackground
         tableView.removeLastCellSeparator()
+
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
+        tableView.sectionFooterHeight = UITableView.automaticDimension
+
+        tableView.allowsSelection = false
     }
 
     /// Since there is only a text field in this view, the text field become the first responder immediately when the view did appear
     ///
-    func configureTextFieldFirstResponder() {
-        if let indexPath = sections.indexPathForRow(.slug) {
+    func configureFirstTextFieldAsFirstResponder() {
+        if let indexPath = sections.indexPathForRow(.menuOrder) {
             let cell = tableView.cellForRow(at: indexPath) as? TextFieldTableViewCell
             cell?.textField.becomeFirstResponder()
         }
@@ -83,7 +90,7 @@ private extension ProductSlugViewController {
 
 // MARK: - UITableViewDataSource Conformance
 //
-extension ProductSlugViewController: UITableViewDataSource {
+extension ProductMenuOrderViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
         return sections.count
@@ -105,18 +112,7 @@ extension ProductSlugViewController: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate Conformance
 //
-extension ProductSlugViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-    }
-
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return UITableView.automaticDimension
-    }
+extension ProductMenuOrderViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         return sections[section].footer
@@ -125,48 +121,51 @@ extension ProductSlugViewController: UITableViewDelegate {
 
 // MARK: - Support for UITableViewDataSource
 //
-private extension ProductSlugViewController {
+private extension ProductMenuOrderViewController {
     /// Configure cellForRowAtIndexPath:
     ///
    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as TextFieldTableViewCell:
-            configureSlug(cell: cell)
+            configureMenuOrder(cell: cell)
         default:
-            fatalError("Unidentified product slug row type")
+            fatalError("Unidentified product menu order row type")
         }
     }
 
-    func configureSlug(cell: TextFieldTableViewCell) {
+    func configureMenuOrder(cell: TextFieldTableViewCell) {
         cell.accessoryType = .none
 
-        let placeholder = NSLocalizedString("Slug", comment: "Placeholder in the Product Slug row on Edit Product Slug screen.")
+        let placeholder = NSLocalizedString("Menu order", comment: "Placeholder in the Product Menu Order row on Edit Product Menu Order screen.")
 
-        let viewModel = TextFieldTableViewCell.ViewModel(text: productSettings.slug, placeholder: placeholder, onTextChange: { [weak self] newName in
-            if let newName = newName {
-                self?.productSettings.slug = newName
+        let viewModel = TextFieldTableViewCell.ViewModel(text: String(productSettings.menuOrder),
+                                                         placeholder: placeholder,
+                                                         onTextChange: { [weak self] menuOrder in
+            if let newMenuOrder = Int(menuOrder ?? "0") {
+                self?.productSettings.menuOrder = newMenuOrder
             }
             }, onTextDidBeginEditing: {
                 //TODO: Add analytics track
-        }, inputFormatter: nil)
+        }, inputFormatter: IntegerInputFormatter())
         cell.configure(viewModel: viewModel)
         cell.textField.applyBodyStyle()
+        cell.textField.keyboardType = .numbersAndPunctuation
     }
 }
 
 // MARK: - Constants
 //
-private extension ProductSlugViewController {
+private extension ProductMenuOrderViewController {
 
     /// Table Rows
     ///
     enum Row {
         /// Listed in the order they appear on screen
-        case slug
+        case menuOrder
 
         var reuseIdentifier: String {
             switch self {
-            case .slug:
+            case .menuOrder:
                 return TextFieldTableViewCell.reuseIdentifier
             }
         }

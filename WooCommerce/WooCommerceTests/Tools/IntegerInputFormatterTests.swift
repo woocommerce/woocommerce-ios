@@ -32,6 +32,11 @@ final class IntegerInputFormatterTests: XCTestCase {
         XCTAssertTrue(formatter.isValid(input: input))
     }
 
+    func testNegativeIntegerInputIsValid() {
+        let input = "-888888"
+        XCTAssertTrue(formatter.isValid(input: input))
+    }
+
     // MARK: test cases for `format(input:)`
 
     func testFormattingEmptyInput() {
@@ -47,5 +52,10 @@ final class IntegerInputFormatterTests: XCTestCase {
     func testFormattingIntegerInput() {
         let input = "314200"
         XCTAssertEqual(formatter.format(input: input), "314200")
+    }
+
+    func testFormattingNegativeIntegerInput() {
+        let input = "-3412424214"
+        XCTAssertEqual(formatter.format(input: input), "-3412424214")
     }
 }

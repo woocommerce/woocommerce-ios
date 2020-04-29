@@ -273,6 +273,8 @@
 		4580BA7523F192D400B5F764 /* ProductSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4580BA7323F192D400B5F764 /* ProductSettingsViewController.xib */; };
 		4580BA7723F19D4A00B5F764 /* ProductSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4580BA7623F19D4A00B5F764 /* ProductSettingsViewModel.swift */; };
 		459097F823CDE47F00DEA9E0 /* UIAlertController+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459097F723CDE47F00DEA9E0 /* UIAlertController+Helpers.swift */; };
+		45A24E5F2451DF1A0050606B /* ProductMenuOrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A24E5D2451DF1A0050606B /* ProductMenuOrderViewController.swift */; };
+		45A24E602451DF1A0050606B /* ProductMenuOrderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45A24E5E2451DF1A0050606B /* ProductMenuOrderViewController.xib */; };
 		45AE1B9C2417C10C00A9E8BD /* UserAgentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE1B9B2417C10C00A9E8BD /* UserAgentTests.swift */; };
 		45AE582C230D9D35001901E3 /* OrderNoteHeaderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE582A230D9D35001901E3 /* OrderNoteHeaderTableViewCell.swift */; };
 		45AE582D230D9D35001901E3 /* OrderNoteHeaderTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45AE582B230D9D35001901E3 /* OrderNoteHeaderTableViewCell.xib */; };
@@ -1095,6 +1097,8 @@
 		4580BA7323F192D400B5F764 /* ProductSettingsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductSettingsViewController.xib; sourceTree = "<group>"; };
 		4580BA7623F19D4A00B5F764 /* ProductSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSettingsViewModel.swift; sourceTree = "<group>"; };
 		459097F723CDE47F00DEA9E0 /* UIAlertController+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertController+Helpers.swift"; sourceTree = "<group>"; };
+		45A24E5D2451DF1A0050606B /* ProductMenuOrderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductMenuOrderViewController.swift; sourceTree = "<group>"; };
+		45A24E5E2451DF1A0050606B /* ProductMenuOrderViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductMenuOrderViewController.xib; sourceTree = "<group>"; };
 		45AE1B9B2417C10C00A9E8BD /* UserAgentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAgentTests.swift; sourceTree = "<group>"; };
 		45AE582A230D9D35001901E3 /* OrderNoteHeaderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderNoteHeaderTableViewCell.swift; sourceTree = "<group>"; };
 		45AE582B230D9D35001901E3 /* OrderNoteHeaderTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderNoteHeaderTableViewCell.xib; sourceTree = "<group>"; };
@@ -2295,9 +2299,19 @@
 				45739F2E2436302600480C95 /* Catalog Visibility */,
 				457151A8243B6E6200EB2DFA /* Slug */,
 				456CB50A2444BF8400992A05 /* Purchase Note */,
+				45A24E5C2451DB710050606B /* Menu Order */,
 				4524CD9F242D023300B2F20A /* List Selector Data Source */,
 			);
 			path = "Product Settings";
+			sourceTree = "<group>";
+		};
+		45A24E5C2451DB710050606B /* Menu Order */ = {
+			isa = PBXGroup;
+			children = (
+				45A24E5D2451DF1A0050606B /* ProductMenuOrderViewController.swift */,
+				45A24E5E2451DF1A0050606B /* ProductMenuOrderViewController.xib */,
+			);
+			path = "Menu Order";
 			sourceTree = "<group>";
 		};
 		45B9C63B23A8E4DB007FC4C5 /* Edit Price */ = {
@@ -4044,6 +4058,7 @@
 				CE24BCD0212DE8A6001CD12E /* HeadlineLabelTableViewCell.xib in Resources */,
 				B559EBB020A0BF8F00836CD4 /* LICENSE in Resources */,
 				74EC34A9225FE69C004BBC2E /* ProductDetailsViewController.xib in Resources */,
+				45A24E602451DF1A0050606B /* ProductMenuOrderViewController.xib in Resources */,
 				CE32B10B20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib in Resources */,
 				B5FD110E21D3CB8500560344 /* OrderTableViewCell.xib in Resources */,
 				D83C129F22250BF0004CA04C /* OrderTrackingTableViewCell.xib in Resources */,
@@ -4633,6 +4648,7 @@
 				CE263DE8206ACE3E0015A693 /* MainTabBarController.swift in Sources */,
 				CE14452E2188C11700A991D8 /* ZendeskManager.swift in Sources */,
 				B5BE75DB213F1D1E00909A14 /* OverlayMessageView.swift in Sources */,
+				45A24E5F2451DF1A0050606B /* ProductMenuOrderViewController.swift in Sources */,
 				02D4564C231D05E2008CF0A9 /* BetaFeaturesViewController.swift in Sources */,
 				CE37C04422984E81008DCB39 /* PickListTableViewCell.swift in Sources */,
 				020DD48D2322A617005822B1 /* ProductsTabProductViewModel.swift in Sources */,

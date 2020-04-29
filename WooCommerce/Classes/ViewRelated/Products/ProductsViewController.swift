@@ -339,7 +339,10 @@ private extension ProductsViewController {
 
     func createResultsController(siteID: Int64) -> ResultsController<StorageProduct> {
         let storageManager = ServiceLocator.storageManager
-        let predicate = NSPredicate.createProductPredicate(siteID: siteID, stockStatus: filters.stockStatus, productStatus: filters.productStatus, productType: filters.productType)
+        let predicate = NSPredicate.createProductPredicate(siteID: siteID,
+                                                           stockStatus: filters.stockStatus,
+                                                           productStatus: filters.productStatus,
+                                                           productType: filters.productType)
 
         return ResultsController<StorageProduct>(storageManager: storageManager,
                                                  matching: predicate,

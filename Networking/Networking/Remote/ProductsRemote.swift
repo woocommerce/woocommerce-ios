@@ -196,7 +196,7 @@ public extension ProductsRemote {
         static let order: String      = "order"
         static let sku: String        = "sku"
         static let productStatus: String = "status"
-        static let productType:String = "type"
+        static let productType: String = "type"
         static let stockStatus: String = "stock_status"
         static let fields: String     = "_fields"
     }

@@ -2,7 +2,10 @@ import CoreData
 import Storage
 
 extension NSPredicate {
-    public static func createProductPredicate(siteID: Int64, stockStatus: ProductStockStatus? = nil, productStatus: ProductStatus? = nil, productType: ProductType? = nil) -> NSPredicate {
+    public static func createProductPredicate(siteID: Int64,
+                                              stockStatus: ProductStockStatus? = nil,
+                                              productStatus: ProductStatus? = nil,
+                                              productType: ProductType? = nil) -> NSPredicate {
         let siteIDPredicate = NSPredicate(format: "siteID == %lld", siteID)
 
         let stockStatusPredicate = stockStatus.flatMap { stockStatus -> NSPredicate? in

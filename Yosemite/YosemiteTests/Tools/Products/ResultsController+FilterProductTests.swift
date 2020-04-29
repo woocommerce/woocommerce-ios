@@ -28,7 +28,7 @@ final class ResultsController_FilterProductTests: XCTestCase {
         let expectedProducts = [
             MockProduct().product(siteID: sampleSiteID, productID: 62, name: "A", productStatus: .draft, productType: .affiliate, stockStatus: .onBackOrder),
             MockProduct().product(siteID: sampleSiteID, productID: 2, name: "B", productStatus: .publish, productType: .simple, stockStatus: .inStock),
-            MockProduct().product(siteID: sampleSiteID, productID: 25, name: "C", productStatus: .privateStatus, productType: .variable, stockStatus: .outOfStock),
+            MockProduct().product(siteID: sampleSiteID, productID: 25, name: "C", productStatus: .pending, productType: .variable, stockStatus: .outOfStock),
             ]
 
         expectedProducts.forEach { product in

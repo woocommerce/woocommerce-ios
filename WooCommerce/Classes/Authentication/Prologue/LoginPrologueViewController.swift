@@ -112,7 +112,7 @@ private extension LoginPrologueViewController {
     }
 
     func setupLoginButton() {
-        let title = NSLocalizedString("Log in with Jetpack", comment: "Authentication Login Button")
+        let title = NSLocalizedString("Log In", comment: "Authentication Login Button")
         loginButton.titleLabel?.adjustsFontForContentSizeCategory = true
         loginButton.setTitle(title, for: .normal)
         loginButton.accessibilityIdentifier = "login-prologue-login-with-jetpack"

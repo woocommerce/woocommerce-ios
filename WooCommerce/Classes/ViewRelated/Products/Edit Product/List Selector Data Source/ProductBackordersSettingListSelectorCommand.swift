@@ -1,11 +1,13 @@
 import UIKit
 import Yosemite
 
-/// `ListSelectorDataSource` for selecting a Product Backorders Setting.
+/// `ListSelectorCommand` for selecting a Product Backorders Setting.
 ///
-struct ProductBackordersSettingListSelectorDataSource: ListSelectorDataSource {
+final class ProductBackordersSettingListSelectorCommand: ListSelectorCommand {
     typealias Model = ProductBackordersSetting
     typealias Cell = BasicTableViewCell
+
+    let navigationBarTitle: String? = NSLocalizedString("Backorders", comment: "Product backorders setting list selector navigation title")
 
     let data: [ProductBackordersSetting] = [
         .notAllowed,
@@ -24,7 +26,7 @@ struct ProductBackordersSettingListSelectorDataSource: ListSelectorDataSource {
         cell.textLabel?.text = model.description
     }
 
-    mutating func handleSelectedChange(selected: ProductBackordersSetting) {
+    func handleSelectedChange(selected: ProductBackordersSetting, viewController: ViewController) {
         self.selected = selected
     }
 

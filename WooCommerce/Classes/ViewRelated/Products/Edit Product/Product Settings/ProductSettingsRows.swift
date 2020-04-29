@@ -44,12 +44,9 @@ enum ProductSettingsRows {
         }
 
         func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
-            let title = NSLocalizedString("Status", comment: "Product status setting list selector navigation title")
-            let viewProperties = ListSelectorViewProperties(navigationBarTitle: title)
-            let dataSource = ProductStatusSettingListSelectorDataSource(selected: settings.status)
+            let command = ProductStatusSettingListSelectorCommand(selected: settings.status)
 
-            let listSelectorViewController = ListSelectorViewController(viewProperties: viewProperties,
-                                                                        dataSource: dataSource) { selected in
+            let listSelectorViewController = ListSelectorViewController(command: command) { selected in
 
                                                                             self.settings.status = selected ?? self.settings.status
                                                                             onCompletion(self.settings)

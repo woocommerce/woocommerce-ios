@@ -2,9 +2,13 @@
 import XCTest
 import Foundation
 import Yosemite
-import Storage
+
+import protocol Storage.StorageManagerType
+import protocol Storage.StorageType
 
 @testable import WooCommerce
+
+private typealias CellViewModel = OrderSearchStarterViewModel.CellViewModel
 
 /// Tests for `OrderSearchStarterViewModel`
 ///
@@ -44,38 +48,83 @@ final class OrderSearchStarterViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.numberOfObjects, expectedItems.count)
-        XCTAssertEqual(viewModel.fetchedOrderStatuses, expectedItems)
-        XCTAssertFalse(viewModel.fetchedOrderStatuses.contains(where: { $0.siteID != siteID }))
-        XCTAssertFalse(viewModel.fetchedOrderStatuses.contains(unexpectedItem))
+        XCTAssertEqual(viewModel.cellViewModels.slugs, expectedItems.slugs)
+        XCTAssertFalse(viewModel.cellViewModels.contains(where: { $0.slug == unexpectedItem.slug }))
     }
 
     func testItSortsTheOrderStatusesBySlug() {
         // Given
         let viewModel = OrderSearchStarterViewModel(siteID: siteID, storageManager: storageManager)
 
-        insertOrderStatus(siteID: siteID, status: .completed, slug: "delta")
-        insertOrderStatus(siteID: siteID, status: .processing, slug: "charlie")
-        insertOrderStatus(siteID: siteID, status: .failed, slug: "echo")
-        insertOrderStatus(siteID: siteID, status: .cancelled, slug: "alpha")
-        insertOrderStatus(siteID: siteID, status: .cancelled, slug: "beta")
+        insert(OrderStatus(name: "autem", siteID: siteID, slug: "delta", total: 0))
+        insert(OrderStatus(name: "dolores", siteID: siteID, slug: "charlie", total: 0))
+        insert(OrderStatus(name: "fugit", siteID: siteID, slug: "echo", total: 0))
+        insert(OrderStatus(name: "itaque", siteID: siteID, slug: "alpha", total: 0))
+        insert(OrderStatus(name: "eos", siteID: siteID, slug: "beta", total: 0))
 
         // When
         viewModel.activateAndForwardUpdates(to: UITableView())
 
         // Then
         let expectedSlugs = ["alpha", "beta", "charlie", "delta", "echo"]
-        let actualSlugs = viewModel.fetchedOrderStatuses.map(\.slug)
-        XCTAssertEqual(actualSlugs, expectedSlugs)
+        XCTAssertEqual(viewModel.cellViewModels.slugs, expectedSlugs)
+    }
+
+    func testItReturnsTheNameSlugAndTotalInTheCellViewModel() {
+        // Given
+        let viewModel = OrderSearchStarterViewModel(siteID: siteID, storageManager: storageManager)
+
+        insert(OrderStatus(name: "autem", siteID: siteID, slug: "delta", total: 18))
+        insert(OrderStatus(name: "dolores", siteID: siteID, slug: "charlie", total: 73))
+
+        viewModel.activateAndForwardUpdates(to: UITableView())
+
+        // When
+        // Retrieve "delta" which is the second row
+        let cellViewModel = viewModel.cellViewModel(at: IndexPath(row: 1, section: 0))
+
+        // Then
+        XCTAssertEqual(cellViewModel.name, "autem")
+        XCTAssertEqual(cellViewModel.slug, "delta")
+        XCTAssertEqual(cellViewModel.total,
+                       NumberFormatter.localizedString(from: NSNumber(value: 18), number: .none))
+    }
+
+    func testGivenAnOrderStatusTotalOfMoreThanNinetyNineItUsesNinetyNinePlus() {
+        // Given
+        let viewModel = OrderSearchStarterViewModel(siteID: siteID, storageManager: storageManager)
+
+        insert(OrderStatus(name: "Processing", siteID: siteID, slug: "slug", total: 200))
+
+        viewModel.activateAndForwardUpdates(to: UITableView())
+
+        // When
+        let cellViewModel = viewModel.cellViewModel(at: IndexPath(row: 0, section: 0))
+
+        // Then
+        XCTAssertEqual(cellViewModel.total, NSLocalizedString("99+", comment: ""))
     }
 }
 
 // MARK: - Helpers
 
 private extension OrderSearchStarterViewModel {
-    /// Returns the `OrderStatus` for all the rows
+    /// Returns all the `CellViewModel` based on the fetched `OrderStatus`.
     ///
-    var fetchedOrderStatuses: [Yosemite.OrderStatus] {
-        (0..<numberOfObjects).map { orderStatus(at: IndexPath(row: $0, section: 0)) }
+    var cellViewModels: [CellViewModel] {
+        (0..<numberOfObjects).map { cellViewModel(at: IndexPath(row: $0, section: 0)) }
+    }
+}
+
+private extension Array where Element == OrderStatus {
+    var slugs: [String] {
+        map(\.slug)
+    }
+}
+
+private extension Array where Element == CellViewModel {
+    var slugs: [String] {
+        map(\.slug)
     }
 }
 
@@ -83,17 +132,19 @@ private extension OrderSearchStarterViewModel {
 
 private extension OrderSearchStarterViewModelTests {
     @discardableResult
-    func insertOrderStatus(siteID: Int64,
-                           status: OrderStatusEnum,
-                           slug: String? = nil) -> Yosemite.OrderStatus {
-        let readOnlyOrderStatus = OrderStatus(name: status.rawValue,
-                                              siteID: siteID,
-                                              slug: slug ?? status.rawValue,
-                                              total: 0)
-
+    func insert(_ readOnlyOrderStatus: OrderStatus) -> OrderStatus {
         let storageOrderStatus = storage.insertNewObject(ofType: StorageOrderStatus.self)
         storageOrderStatus.update(with: readOnlyOrderStatus)
-
         return readOnlyOrderStatus
+    }
+
+    @discardableResult
+    func insertOrderStatus(siteID: Int64, status: OrderStatusEnum) -> OrderStatus {
+        let readOnlyOrderStatus = OrderStatus(name: status.rawValue,
+                                              siteID: siteID,
+                                              slug: status.rawValue,
+                                              total: 0)
+
+        return insert(readOnlyOrderStatus)
     }
 }

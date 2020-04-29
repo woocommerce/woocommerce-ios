@@ -7,6 +7,7 @@
 - [internal]: the "send magic link" screen has navigation changes that can cause regressions. See https://git.io/Jfqio for testing details.
 - The Orders list is now automatically refreshed when reopening the app. 
 - The Orders list is automatically refreshed if a new order (push notification) comes in.
+- Orders -> Search: The statuses now shows the total number of orders with that status.
 
 
 4.1

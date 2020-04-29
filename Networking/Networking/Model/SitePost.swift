@@ -4,11 +4,11 @@ import Foundation
 /// Represents a SitePost Entity.
 ///
 public struct SitePost: Decodable {
-    
+
     /// WordPress.com Site Identifier.
     ///
     public let siteID: Int64
-    
+
     public let password: String
 
     /// Site Post struct initializer.
@@ -26,10 +26,10 @@ public struct SitePost: Decodable {
 
         let siteID = try container.decode(Int64.self, forKey: .siteID)
         let password = try container.decode(String.self, forKey: .password)
-        
+
         self.init(siteID: siteID, password: password)
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
@@ -55,7 +55,7 @@ extension SitePost: Comparable {
         return lhs.siteID == rhs.siteID &&
             lhs.password == rhs.password
     }
-    
+
     public static func < (lhs: SitePost, rhs: SitePost) -> Bool {
         return lhs.siteID < rhs.siteID
     }

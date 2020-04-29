@@ -6,7 +6,7 @@ import Alamofire
 ///
 public class SitePostsRemote: Remote {
 
-    
+
     /// Loads the Post by ID from WP.com
     ///
     ///

@@ -54,5 +54,5 @@ class SitePostsRemoteTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
-    
+
 }

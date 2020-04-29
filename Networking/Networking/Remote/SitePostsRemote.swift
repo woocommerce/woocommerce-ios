@@ -15,13 +15,13 @@ public class SitePostsRemote: Remote {
     ///   - postID: Id of the post that we want to fetch
     ///   - completion: Closure to be executed upon completion.
     ///
-//    public func loadAPIInformation(for siteID: Int64, postID: Int64, completion: @escaping (SitePost?, Error?) -> Void) {
-//        let path = String(format: Paths.singlePost, siteID, postID)
-//        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path)
-//        let mapper = SitePost()
-//
-//        enqueue(request, mapper: mapper, completion: completion)
-//    }
+    public func loadSitePost(for siteID: Int64, postID: Int64, completion: @escaping (SitePost?, Error?) -> Void) {
+        let path = String(format: Paths.singlePost, siteID, postID)
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path)
+        let mapper = SitePostMapper()
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 

@@ -22,7 +22,7 @@ public class SitePostsRemote: Remote {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
-    
+
     /// Update a post from WP.com
     ///
     /// - Parameters:
@@ -37,7 +37,7 @@ public class SitePostsRemote: Remote {
             let path = String(format: "/sites/%d/posts/%d", siteID, postID)
             let request = DotcomRequest(wordpressApiVersion: .mark1_2, method: .post, path: path, parameters: parameters)
             let mapper = SitePostMapper()
-            
+
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
             completion(nil, error)

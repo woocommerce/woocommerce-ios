@@ -91,6 +91,27 @@ final class EmptyStateViewControllerTests: XCTestCase {
         // Then
         XCTAssertFalse(mirror.imageView.isHidden)
     }
+
+    func testItCallsTheActionButtonCallbackWhenTheButtonIsTapped() throws {
+        // Given
+        let viewController = EmptyStateViewController()
+        XCTAssertNotNil(viewController.view)
+
+        let mirror = try self.mirror(of: viewController)
+
+        var callbackWasCalled: Bool = false
+        let actionButtonConfig = EmptyStateViewController.ActionButtonConfig(title: "Bakero!") {
+            callbackWasCalled = true
+        }
+
+        viewController.configure(actionButton: actionButtonConfig)
+
+        // When
+        mirror.actionButton.sendActions(for: .touchUpInside)
+
+        // Then
+        XCTAssertTrue(callbackWasCalled)
+    }
 }
 
 // MARK: - Mirroring

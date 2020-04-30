@@ -48,7 +48,7 @@ class SitePostsRemoteTests: XCTestCase {
 
     /// Verifies that 'loadSitePost' properly relays Networking Layer errors.
     ///
-    func testSearchSkuProperlyRelaysNetwokingErrors() {
+    func testLoadSitePostRelaysNetwokingErrors() {
         let remote = SitePostsRemote(network: network)
         let expectation = self.expectation(description: "Wait for a site post result")
 

@@ -45,7 +45,7 @@ final class OrderSearchUICommand: SearchUICommand {
         let message = NSMutableAttributedString(string: format)
         message.replaceFirstOccurrence(of: "%@", with: boldSearchKeyword)
 
-        viewController.configure(message: message)
+        viewController.configure(message: message, image: .emptySearchResultsImage)
     }
 
     func createCellViewModel(model: Order) -> OrderSearchCellViewModel {

@@ -99,8 +99,9 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     ///
     /// This is the only "configurable" point for consumers using this class.
     ///
-    func configure(message: NSAttributedString?) {
+    func configure(message: NSAttributedString? = nil) {
         messageLabel.attributedText = message
+        messageLabel.isHidden = message == nil
     }
 
     /// Watch for device orientation changes and update the `imageView`'s visibility accordingly.

@@ -29,7 +29,14 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
         }
     }
 
-    @IBOutlet private var actionButton: UIButton!
+    /// The button shown below the detail text.
+    ///
+    @IBOutlet private var actionButton: UIButton! {
+        didSet {
+            actionButton.titleLabel?.text = nil
+            actionButton.isHidden = true
+        }
+    }
 
     /// The scrollable view containing all the content (labels, image, etc).
     ///

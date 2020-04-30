@@ -10,6 +10,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="EmptyStateViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
+                <outlet property="actionButton" destination="MHH-Z6-FbG" id="Qnb-WS-A16"/>
                 <outlet property="contentViewHeightAdjustmentFromSuperviewConstraint" destination="j6E-vd-ZVT" id="vd1-ew-yqy"/>
                 <outlet property="detailsLabel" destination="iFj-AP-WfL" id="U8q-I7-0hs"/>
                 <outlet property="imageView" destination="YZ8-4Q-SGO" id="0Oa-4c-NbW"/>
@@ -30,7 +31,7 @@
                             <rect key="frame" x="0.0" y="0.0" width="414" height="818"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="32" translatesAutoresizingMaskIntoConstraints="NO" id="Usx-wg-Fgl">
-                                    <rect key="frame" x="58" y="250" width="298" height="318.5"/>
+                                    <rect key="frame" x="58" y="219" width="298" height="380.5"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="We're sorry, we couldn't find results for &quot;adidas&quot;" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h54-zO-thf">
                                             <rect key="frame" x="0.0" y="0.0" width="298" height="41"/>
@@ -48,6 +49,10 @@
                                             <color key="textColor" systemColor="secondaryLabelColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MHH-Z6-FbG" userLabel="Action Button">
+                                            <rect key="frame" x="0.0" y="350.5" width="298" height="30"/>
+                                            <state key="normal" title="Action Button"/>
+                                        </button>
                                     </subviews>
                                 </stackView>
                             </subviews>

@@ -29,6 +29,8 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
         }
     }
 
+    @IBOutlet private var actionButton: UIButton!
+
     /// The scrollable view containing all the content (labels, image, etc).
     ///
     @IBOutlet private var scrollView: UIScrollView!
@@ -69,6 +71,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
 
         messageLabel.applyBodyStyle()
         detailsLabel.applySecondaryBodyStyle()
+        actionButton.applyPrimaryButtonStyle()
 
         keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)
     }

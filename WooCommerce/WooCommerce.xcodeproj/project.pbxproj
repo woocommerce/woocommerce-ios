@@ -2374,13 +2374,13 @@
 			path = Order;
 			sourceTree = "<group>";
 		};
-		57448D26242E772300A56A74 /* EmptySearchResultsViewController */ = {
+		57448D26242E772300A56A74 /* EmptyStateViewController */ = {
 			isa = PBXGroup;
 			children = (
 				57448D27242E775000A56A74 /* EmptyStateViewController.swift */,
 				57448D29242E777700A56A74 /* EmptyStateViewController.xib */,
 			);
-			path = EmptySearchResultsViewController;
+			path = EmptyStateViewController;
 			sourceTree = "<group>";
 		};
 		575472792451F0A500A94C3C /* Observables */ = {
@@ -3569,7 +3569,7 @@
 		CED6021A20B35FBF0032C639 /* ReusableViews */ = {
 			isa = PBXGroup;
 			children = (
-				57448D26242E772300A56A74 /* EmptySearchResultsViewController */,
+				57448D26242E772300A56A74 /* EmptyStateViewController */,
 				D8736B7422F1FE1600A14A29 /* BadgeLabel.swift */,
 				CE21B3D520FE669A00A259D5 /* BasicTableViewCell.swift */,
 				CE21B3D620FE669A00A259D5 /* BasicTableViewCell.xib */,

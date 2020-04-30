@@ -5,7 +5,7 @@ import UIKit
 ///
 /// This is generally used with `SearchUICommand`.
 ///
-final class EmptySearchResultsViewController: UIViewController, KeyboardFrameAdjustmentProvider {
+final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentProvider {
 
     @IBOutlet private var messageLabel: UILabel! {
         didSet {
@@ -113,7 +113,7 @@ final class EmptySearchResultsViewController: UIViewController, KeyboardFrameAdj
 
 // MARK: - KeyboardScrollable
 
-extension EmptySearchResultsViewController: KeyboardScrollable {
+extension EmptyStateViewController: KeyboardScrollable {
     var scrollable: UIScrollView {
         scrollView
     }

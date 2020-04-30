@@ -36,7 +36,7 @@ final class OrderSearchUICommand: SearchUICommand {
         OrderSearchStarterViewController()
     }
 
-    func configureEmptyStateViewControllerBeforeDisplay(viewController: EmptySearchResultsViewController,
+    func configureEmptyStateViewControllerBeforeDisplay(viewController: EmptyStateViewController,
                                                         searchKeyword: String) {
         let boldSearchKeyword = NSAttributedString(string: searchKeyword, attributes: [.font: viewController.messageFont.bold])
 

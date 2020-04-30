@@ -54,7 +54,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     ///
     @IBOutlet private var actionButton: UIButton! {
         didSet {
-            actionButton.titleLabel?.text = nil
+            actionButton.setTitle(nil, for: .normal)
             actionButton.isHidden = true
         }
     }
@@ -130,7 +130,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
         detailsLabel.isHidden = details == nil
 
         lastActionButtonConfig = actionButton
-        self.actionButton.titleLabel?.text = actionButton?.title
+        self.actionButton.setTitle(actionButton?.title, for: .normal)
         self.actionButton.isHidden = actionButton == nil
     }
 

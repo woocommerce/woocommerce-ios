@@ -33,16 +33,6 @@ class SitePostStoreTests: XCTestCase {
         network = MockupNetwork()
     }
 
-    /// Get site post password
-       ///
-//       case getSitePostPassword(siteID: Int64, postID: Int64, onCompletion: (_ password: String?, _ error: Error?) -> Void)
-//
-//       /// Update site post password
-//       ///
-//       case updateSitePostPassword(siteID: Int64, postID: Int64, password: String, onCompletion: (_ password: String?, _ error: Error?) -> Void)
-
-    // MARK: - SitePostAction.getSitePostPassword
-
     /// Verifies that SitePostAction.getSitePostPassword returns the expected result.
     ///
     func testRetrieveSitePostPasswordReturnsExpectedResult() {
@@ -56,6 +46,28 @@ class SitePostStoreTests: XCTestCase {
             XCTAssertNil(error)
             XCTAssertNotNil(password)
             XCTAssertEqual(password, "woooooooo!")
+            expectation.fulfill()
+        }
+
+        sitePostStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that SitePostAction.updateSitePostPassword returns the expected result.
+    ///
+    func testUpdateSitePostPasswordReturnsExpectedResult() {
+        let expectation = self.expectation(description: "Update site post password")
+        let sitePostStore = SitePostStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let postID: Int64 = 7
+
+        network.simulateResponse(requestUrlSuffix: "/sites/\(sampleSiteID)/posts/\(postID)", filename: "site-post-update")
+
+        let newPassword = "new-password"
+        let action = SitePostAction.updateSitePostPassword(siteID: sampleSiteID, postID: postID, password: newPassword) { (password, error) in
+            XCTAssertNil(error)
+            XCTAssertNotNil(password)
+            XCTAssertEqual(password, newPassword)
             expectation.fulfill()
         }
 

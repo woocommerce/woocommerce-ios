@@ -122,7 +122,8 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     /// Hide the `imageView` if there is not enough vertical space (e.g. iPhone landscape).
     ///
     private func updateImageVisibilityUsing(traits: UITraitCollection) {
-        let shouldShowImageView = traits.verticalSizeClass != .compact
+        let shouldShowImageView = traits.verticalSizeClass != .compact &&
+            imageView.image != nil
         imageView.isHidden = !shouldShowImageView
     }
 

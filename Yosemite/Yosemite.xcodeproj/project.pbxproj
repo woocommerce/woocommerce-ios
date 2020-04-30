@@ -77,6 +77,8 @@
 		450106872399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106862399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift */; };
 		45010693239A6C9F00E24722 /* TaxClassStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45010692239A6C9F00E24722 /* TaxClassStore.swift */; };
 		45010695239A6CDE00E24722 /* TaxClassAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45010694239A6CDE00E24722 /* TaxClassAction.swift */; };
+		453305F7245AE68C00264E50 /* SitePostStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453305F6245AE68C00264E50 /* SitePostStore.swift */; };
+		453305F9245AE6B200264E50 /* SitePostAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453305F8245AE6B200264E50 /* SitePostAction.swift */; };
 		45739F372437680F00480C95 /* ProductSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45739F362437680F00480C95 /* ProductSettings.swift */; };
 		45E18632237046CB009241F3 /* ShippingLine+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E18631237046CB009241F3 /* ShippingLine+ReadOnlyConvertible.swift */; };
 		45ED4F16239E939A004F1BE3 /* TaxClassStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ED4F15239E939A004F1BE3 /* TaxClassStoreTests.swift */; };
@@ -289,6 +291,8 @@
 		450106862399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxClass+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		45010692239A6C9F00E24722 /* TaxClassStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassStore.swift; sourceTree = "<group>"; };
 		45010694239A6CDE00E24722 /* TaxClassAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassAction.swift; sourceTree = "<group>"; };
+		453305F6245AE68C00264E50 /* SitePostStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePostStore.swift; sourceTree = "<group>"; };
+		453305F8245AE6B200264E50 /* SitePostAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePostAction.swift; sourceTree = "<group>"; };
 		45739F362437680F00480C95 /* ProductSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductSettings.swift; sourceTree = "<group>"; };
 		45E18631237046CB009241F3 /* ShippingLine+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLine+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		45ED4F15239E939A004F1BE3 /* TaxClassStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassStoreTests.swift; sourceTree = "<group>"; };
@@ -731,6 +735,7 @@
 				D831E2E1230E3513000037D0 /* ProductReviewStore.swift */,
 				261F94E5242EFF8700762B58 /* ProductCategoryStore.swift */,
 				CE179D56235F4E7500C24EB3 /* RefundStore.swift */,
+				453305F6245AE68C00264E50 /* SitePostStore.swift */,
 				7492FADC217FAF5C00ED2C69 /* SettingStore.swift */,
 				74D7FFF9221F01E90008CC0E /* ShipmentStore.swift */,
 				74A18C552113827E00DCF8A8 /* StatsStore.swift */,
@@ -913,6 +918,7 @@
 				D831E2E3230E3524000037D0 /* ProductReviewAction.swift */,
 				261F94E3242EFA6D00762B58 /* ProductCategoryAction.swift */,
 				CE179D54235F4E1700C24EB3 /* RefundAction.swift */,
+				453305F8245AE6B200264E50 /* SitePostAction.swift */,
 				7492FADE217FB11D00ED2C69 /* SettingAction.swift */,
 				74643EE0221F567E00EDC51A /* ShipmentAction.swift */,
 				74A18C57211382A000DCF8A8 /* StatsAction.swift */,
@@ -1136,6 +1142,7 @@
 				D8C11A5622DFB0BE00D4A88D /* OrderStatsV4Totals+ReadOnlyConvertible.swift in Sources */,
 				74685D4E20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift in Sources */,
 				7471401121877668009A11CC /* NotificationAction.swift in Sources */,
+				453305F9245AE6B200264E50 /* SitePostAction.swift in Sources */,
 				CE4FD4522350FB5400A16B31 /* OrderItemTaxRefund+ReadOnlyConvertible.swift in Sources */,
 				02FF055223D983F30058E6E7 /* MediaExportService.swift in Sources */,
 				45010695239A6CDE00E24722 /* TaxClassAction.swift in Sources */,
@@ -1257,6 +1264,7 @@
 				741F34802195EA62005F5BD9 /* CommentAction.swift in Sources */,
 				0218B4F0242E091C0083A847 /* Media+MediaType.swift in Sources */,
 				74937502224968F8007D85D1 /* Product+ReadOnlyType.swift in Sources */,
+				453305F7245AE68C00264E50 /* SitePostStore.swift in Sources */,
 				026CF62A237D92C6009563D4 /* ProductVariation+ReadOnlyConvertible.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

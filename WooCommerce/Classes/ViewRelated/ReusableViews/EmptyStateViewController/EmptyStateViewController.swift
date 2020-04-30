@@ -19,7 +19,12 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
 
     /// An image shown below the message.
     ///
-    @IBOutlet private var imageView: UIImageView!
+    @IBOutlet private var imageView: UIImageView! {
+        didSet {
+            imageView.image = nil
+            imageView.isHidden = true
+        }
+    }
 
     /// Additional text shown below the image.
     ///

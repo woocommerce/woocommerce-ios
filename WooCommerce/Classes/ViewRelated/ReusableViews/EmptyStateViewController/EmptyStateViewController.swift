@@ -7,13 +7,20 @@ import UIKit
 ///
 final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentProvider {
 
+    /// The main message shown at the top.
+    ///
     @IBOutlet private var messageLabel: UILabel! {
         didSet {
             // Remove dummy text in Interface Builder
             messageLabel.text = nil
         }
     }
+    /// An image shown below the message.
+    ///
     @IBOutlet private var imageView: UIImageView!
+    /// Additional text shown below the image.
+    ///
+    @IBOutlet private var detailsLabel: UILabel! 
     @IBOutlet private var scrollView: UIScrollView!
 
     /// The height adjustment constraint for the content view.
@@ -51,6 +58,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
         imageView.image = .emptySearchResultsImage
 
         messageLabel.applyBodyStyle()
+        detailsLabel.applySecondaryBodyStyle()
 
         keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)
     }

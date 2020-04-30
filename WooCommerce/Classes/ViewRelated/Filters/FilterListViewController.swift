@@ -91,7 +91,8 @@ final class FilterListViewController: UIViewController {
 
     private var clearAllBarButtonItem: UIBarButtonItem?
 
-    private var observationToken: ObservationToken?
+    private var cancellableSelectedFilterType: ObservationToken?
+    private var cancellableSelectedFilterValue: ObservationToken?
 
     init(viewModel: FilterListViewModel) {
         self.viewModel = viewModel
@@ -104,7 +105,8 @@ final class FilterListViewController: UIViewController {
     }
 
     deinit {
-        observationToken?.cancel()
+        cancellableSelectedFilterType?.cancel()
+        cancellableSelectedFilterValue?.cancel()
     }
 
     override func viewDidLoad() {
@@ -162,7 +164,7 @@ private extension FilterListViewController {
     }
 
     func observeListSelectorCommandItemSelection() {
-        observationToken = listSelectorCommand.onItemSelected.subscribe { [weak self] selected in
+        cancellableSelectedFilterType = listSelectorCommand.onItemSelected.subscribe { [weak self] selected in
             guard let self = self else {
                 return
             }
@@ -172,7 +174,7 @@ private extension FilterListViewController {
                 let command = StaticListSelectorCommand(navigationBarTitle: selected.title,
                                                         data: options,
                                                         selected: selected.selectedValue)
-                self.observationToken = command.onItemSelected.subscribe { [weak self] selectedOption in
+                self.cancellableSelectedFilterValue = command.onItemSelected.subscribe { [weak self] selectedOption in
                     guard let self = self else {
                         return
                     }

@@ -99,8 +99,6 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
 
         view.backgroundColor = .basicBackground
 
-        imageView.image = .emptySearchResultsImage
-
         messageLabel.applyBodyStyle()
         detailsLabel.applySecondaryBodyStyle()
         actionButton.applyPrimaryButtonStyle()

@@ -6,6 +6,12 @@ import UIKit
 /// This is generally used with `SearchUICommand`.
 ///
 final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentProvider {
+    /// The submitted argument when configuring the `actionButton`.
+    ///
+    struct ActionButtonConfig {
+        let title: String
+        let onTap: () -> ()
+    }
 
     /// The main message shown at the top.
     ///
@@ -58,6 +64,10 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     ///
     @IBOutlet private var contentViewHeightAdjustmentFromSuperviewConstraint: NSLayoutConstraint!
 
+    /// The last `ActionButtonConfig` passed during `configure()`
+    ///
+    private var lastActionButtonConfig: ActionButtonConfig?
+
     private lazy var keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: { [weak self] frame in
         self?.handleKeyboardFrameUpdate(keyboardFrame: frame)
         self?.verticallyAlignStackViewUsing(keyboardHeight: frame.height)
@@ -101,7 +111,8 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     ///
     func configure(message: NSAttributedString? = nil,
                    image: UIImage? = nil,
-                   details: String? = nil) {
+                   details: String? = nil,
+                   actionButton: ActionButtonConfig? = nil) {
         messageLabel.attributedText = message
         messageLabel.isHidden = message == nil
 
@@ -110,6 +121,10 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
 
         detailsLabel.text = details
         detailsLabel.isHidden = details == nil
+
+        lastActionButtonConfig = actionButton
+        self.actionButton.titleLabel?.text = actionButton?.title
+        self.actionButton.isHidden = actionButton == nil
     }
 
     /// Watch for device orientation changes and update the `imageView`'s visibility accordingly.
@@ -155,7 +170,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     }
 
     @IBAction private func callActionButtonConfigOnTapCallback(_ sender: Any) {
-        
+        lastActionButtonConfig?.onTap()
     }
 }
 

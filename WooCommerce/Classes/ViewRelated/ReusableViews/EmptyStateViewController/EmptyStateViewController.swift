@@ -15,12 +15,22 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
             messageLabel.text = nil
         }
     }
+
     /// An image shown below the message.
     ///
     @IBOutlet private var imageView: UIImageView!
+
     /// Additional text shown below the image.
     ///
-    @IBOutlet private var detailsLabel: UILabel! 
+    @IBOutlet private var detailsLabel: UILabel! {
+        didSet {
+            detailsLabel.text = nil
+            detailsLabel.isHidden = true
+        }
+    }
+
+    /// The scrollable view containing all the content (labels, image, etc).
+    ///
     @IBOutlet private var scrollView: UIScrollView!
 
     /// The height adjustment constraint for the content view.

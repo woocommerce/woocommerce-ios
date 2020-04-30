@@ -95,17 +95,21 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
         updateImageVisibilityUsing(traits: traitCollection)
     }
 
-    /// Change the message being displayed.
+    /// Change the elements being displayed.
     ///
     /// This is the only "configurable" point for consumers using this class.
     ///
     func configure(message: NSAttributedString? = nil,
-                   image: UIImage? = nil) {
+                   image: UIImage? = nil,
+                   details: String? = nil) {
         messageLabel.attributedText = message
         messageLabel.isHidden = message == nil
 
         imageView.image = image
         imageView.isHidden = image == nil
+
+        detailsLabel.text = details
+        detailsLabel.isHidden = details == nil
     }
 
     /// Watch for device orientation changes and update the `imageView`'s visibility accordingly.

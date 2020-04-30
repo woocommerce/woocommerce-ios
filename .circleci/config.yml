@@ -179,23 +179,26 @@ workflows:
               only:
                 - develop
                 - /^release.*/
-      #Optionally run UI tests on PRs
-      - Optional Tests:
+  #Optionally run UI tests on PRs
+  Optional Tests:
+    jobs:
+      - Hold:
           type: approval
-          requires: [ "Build Tests" ]
           filters:
             branches:
               ignore:
                 - develop
                 - /^release.*/
+      - Build Tests:
+          requires: [ "Hold" ]
       - UI Tests:
           name: Optional UI Tests (iPhone 11)
           device: iPhone 11
-          requires: [ "Optional Tests" ]
+          requires: [ "Build Tests" ]
       - UI Tests:
           name: Optional UI Tests (iPad Air 3rd generation)
           device: iPad Air \\(3rd generation\\)
-          requires: [ "Optional Tests" ]
+          requires: [ "Build Tests" ]
   Installable Build:
     jobs:
       - Hold:

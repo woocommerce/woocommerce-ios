@@ -17,14 +17,14 @@ final class FilterProductListCommandTests: XCTestCase {
     // MARK: Clear All CTA Visibility - initial visibility
 
     func testClearAllActionIsInitiallyVisibleWithOneActiveFilter() throws {
-        let filters = FilterProductListCommand.Filters(stockStatus: .inStock, productStatus: nil, productType: nil)
-        let command = FilterProductListCommand(sourceViewController: sourceViewController, filters: filters) { _ in }
+        let filters = FilterProductListViewModel.Filters(stockStatus: .inStock, productStatus: nil, productType: nil)
+        let command = FilterProductListViewModel(sourceViewController: sourceViewController, filters: filters) { _ in }
         XCTAssertTrue(command.isClearAllActionVisible)
     }
 
     func testClearAllActionIsInitiallyInvisibleWithoutActiveFilters() throws {
-        let filters = FilterProductListCommand.Filters(stockStatus: nil, productStatus: nil, productType: nil)
-        let command = FilterProductListCommand(sourceViewController: sourceViewController, filters: filters) { _ in }
+        let filters = FilterProductListViewModel.Filters(stockStatus: nil, productStatus: nil, productType: nil)
+        let command = FilterProductListViewModel(sourceViewController: sourceViewController, filters: filters) { _ in }
         XCTAssertFalse(command.isClearAllActionVisible)
     }
 
@@ -32,8 +32,8 @@ final class FilterProductListCommandTests: XCTestCase {
 
     func testClearAllActionIsInvisibleAfterClearingAllFilters() throws {
         // Arrange
-        let filters = FilterProductListCommand.Filters(stockStatus: .inStock, productStatus: nil, productType: nil)
-        let command = FilterProductListCommand(sourceViewController: sourceViewController, filters: filters) { _ in }
+        let filters = FilterProductListViewModel.Filters(stockStatus: .inStock, productStatus: nil, productType: nil)
+        let command = FilterProductListViewModel(sourceViewController: sourceViewController, filters: filters) { _ in }
 
         // Action
         command.onClearAllActionTapped()
@@ -46,10 +46,10 @@ final class FilterProductListCommandTests: XCTestCase {
 
     func testFiltersAreTheSameAfterFilterActionWithoutChanges() throws {
         // Arrange
-        let filters = FilterProductListCommand.Filters(stockStatus: .inStock, productStatus: nil, productType: nil)
-        var filtersOnFilterAction: FilterProductListCommand.Filters?
+        let filters = FilterProductListViewModel.Filters(stockStatus: .inStock, productStatus: nil, productType: nil)
+        var filtersOnFilterAction: FilterProductListViewModel.Filters?
         let expectation = self.expectation(description: "Wait for filter action tap handling completion")
-        let command = FilterProductListCommand(sourceViewController: sourceViewController, filters: filters) { filters in
+        let command = FilterProductListViewModel(sourceViewController: sourceViewController, filters: filters) { filters in
             filtersOnFilterAction = filters
             expectation.fulfill()
         }
@@ -65,8 +65,8 @@ final class FilterProductListCommandTests: XCTestCase {
     // MARK: Dismiss CTA
 
     func testFilterCompletionIsNotCalledAfterDismissActionWithoutChanges() throws {
-        let filters = FilterProductListCommand.Filters(stockStatus: .inStock, productStatus: nil, productType: nil)
-        let command = FilterProductListCommand(sourceViewController: sourceViewController, filters: filters) { filters in
+        let filters = FilterProductListViewModel.Filters(stockStatus: .inStock, productStatus: nil, productType: nil)
+        let command = FilterProductListViewModel(sourceViewController: sourceViewController, filters: filters) { filters in
             XCTFail("Should not be called on dismiss")
         }
         command.onDismissActionTapped()
@@ -76,8 +76,8 @@ final class FilterProductListCommandTests: XCTestCase {
 
     func testShouldReloadUIIsEmittedAfterClearingAllFiltersWithChanges() throws {
         // Arrange
-        let filters = FilterProductListCommand.Filters(stockStatus: .inStock, productStatus: nil, productType: nil)
-        let command = FilterProductListCommand(sourceViewController: sourceViewController, filters: filters) { _ in }
+        let filters = FilterProductListViewModel.Filters(stockStatus: .inStock, productStatus: nil, productType: nil)
+        let command = FilterProductListViewModel(sourceViewController: sourceViewController, filters: filters) { _ in }
         let expectation = self.expectation(description: "Wait for should reload UI signal")
         let observationToken = command.shouldReloadUIObservable.subscribe { _ in
             expectation.fulfill()
@@ -93,8 +93,8 @@ final class FilterProductListCommandTests: XCTestCase {
 
     func testShouldReloadUIIsNotEmittedAfterClearingAllFiltersWithoutChanges() throws {
         // Arrange
-        let filters = FilterProductListCommand.Filters(stockStatus: nil, productStatus: nil, productType: nil)
-        let command = FilterProductListCommand(sourceViewController: sourceViewController, filters: filters) { _ in }
+        let filters = FilterProductListViewModel.Filters(stockStatus: nil, productStatus: nil, productType: nil)
+        let command = FilterProductListViewModel(sourceViewController: sourceViewController, filters: filters) { _ in }
         let observationToken = command.shouldReloadUIObservable.subscribe { _ in
             XCTFail("Should not be called since initial filters are already cleared")
         }

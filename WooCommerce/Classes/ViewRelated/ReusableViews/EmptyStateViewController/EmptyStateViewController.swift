@@ -1,11 +1,20 @@
 
 import UIKit
 
-/// Shows a view with a message and a standard empty search results image.
+/// A configurable view to display an "empty state".
 ///
-/// This is generally used with `SearchUICommand`.
+/// This can show (from top to bottom):
+///
+/// - A message
+/// - An image
+/// - A label suitable for a longer message
+/// - An action button
+///
+/// These elements are hidden by default and can be configured and shown using
+/// the `configure` method.
 ///
 final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentProvider {
+
     /// The submitted argument when configuring the `actionButton`.
     ///
     struct ActionButtonConfig {
@@ -169,6 +178,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
         contentViewHeightAdjustmentFromSuperviewConstraint.constant = constraintConstant
     }
 
+    /// OnTouchUpInside handler for the `actionButton`.
     @IBAction private func callActionButtonConfigOnTapCallback(_ sender: Any) {
         lastActionButtonConfig?.onTap()
     }

@@ -13,6 +13,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
         didSet {
             // Remove dummy text in Interface Builder
             messageLabel.text = nil
+            messageLabel.isHidden = true
         }
     }
 

@@ -55,6 +55,9 @@
                                                 <constraint firstAttribute="width" constant="228" id="ytx-Jd-N6j"/>
                                             </constraints>
                                             <state key="normal" title="Action Button"/>
+                                            <connections>
+                                                <action selector="callActionButtonConfigOnTapCallback:" destination="-1" eventType="touchUpInside" id="Tdd-LW-tQx"/>
+                                            </connections>
                                         </button>
                                     </subviews>
                                 </stackView>

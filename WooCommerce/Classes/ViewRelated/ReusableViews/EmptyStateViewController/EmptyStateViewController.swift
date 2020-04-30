@@ -153,6 +153,10 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
 
         contentViewHeightAdjustmentFromSuperviewConstraint.constant = constraintConstant
     }
+
+    @IBAction private func callActionButtonConfigOnTapCallback(_ sender: Any) {
+        
+    }
 }
 
 // MARK: - KeyboardScrollable

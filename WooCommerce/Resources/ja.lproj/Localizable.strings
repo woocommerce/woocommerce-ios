@@ -28,7 +28,7 @@
 "%1$@-%2$@" = "%1$@-%2$@";
 
 /* <item total> (<item individual price> multipled by <quantity>) */
-"%1$@ (%2$@ x %3$@)" = "%1$@ (%2$@ x %3$@)";
+"%@ (%@ x %@)" = "%1$@ (%2$@ x %3$@)";
 
 /* 1 Item */
 "%@ Item" = "%@個のアイテム";
@@ -37,10 +37,10 @@
 "%@ Items" = "%@個のアイテム";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
-"%1$@ left a review on %2$@" = "%1$@ さんが %2$@ に関するレビューを書きました";
+"%@ left a review on %@" = "%1$@ さんが %2$@ に関するレビューを書きました";
 
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
-"%1$@ via %2$@" = "%2$@ 経由 %1$@";
+"%@ via %@" = "%2$@ 経由 %1$@";
 
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "在庫%ld個";
@@ -200,7 +200,7 @@
 
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}.
    VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
-"Bar number %1$i, %2$@, " = "バー番号%1$i、%2$@、";
+"Bar number %i, %@, " = "バー番号%1$i、%2$@、";
 
 /* Begin fulfill order button title */
 "Begin Fulfillment" = "フルフィルメントを開始";
@@ -808,7 +808,7 @@
 "Microsoft Outlook" = "Microsoft Outlook";
 
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
-"Minimum value %1$@, maximum value %2$@" = "最小値%1$@、最大値%2$@";
+"Minimum value %@, maximum value %@" = "最小値%1$@、最大値%2$@";
 
 /* Statistical unit - a single week */
 "Month" = "月";
@@ -1499,7 +1499,7 @@
 "Start writing..." = "執筆を開始…";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
-"Starting period %1$@, ending period %2$@" = "開始期間%1$@、終了期間%2$@";
+"Starting period %@, ending period %@" = "開始期間%1$@、終了期間%2$@";
 
 /* Product status setting list selector navigation title
    Status label in Product Settings */
@@ -2088,7 +2088,7 @@
 "WordPress Media Library" = "WordPress メディアライブラリ";
 
 /* No comment provided by engineer. */
-"WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "WordPress バージョンが古すぎます。%1$@ のサイトは WordPress %2$@ を使用しています。最新バージョンか、最低でも %3$@ に更新することをおすすめします。";
+"WordPress version too old. The site at %@ uses WordPress %@. We recommend to update to the latest version, or at least %@" = "WordPress バージョンが古すぎます。%1$@ のサイトは WordPress %2$@ を使用しています。最新バージョンか、最低でも %3$@ に更新することをおすすめします。";
 
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo Mail";

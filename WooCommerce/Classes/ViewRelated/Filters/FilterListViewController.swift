@@ -183,6 +183,7 @@ private extension FilterListViewController {
     }
 
     func observeListSelectorCommandItemSelection() {
+        cancellableSelectedFilterType?.cancel()
         cancellableSelectedFilterType = listSelectorCommand.onItemSelected.subscribe { [weak self] selected in
             guard let self = self else {
                 return
@@ -190,6 +191,7 @@ private extension FilterListViewController {
 
             switch selected.listSelectorConfig {
             case .staticOptions(let options):
+                self.cancellableSelectedFilterValue?.cancel()
                 let command = StaticListSelectorCommand(navigationBarTitle: selected.title,
                                                         data: options,
                                                         selected: selected.selectedValue)

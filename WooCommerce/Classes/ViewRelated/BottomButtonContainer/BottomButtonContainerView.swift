@@ -8,7 +8,7 @@ final class BottomButtonContainerView: UIView {
         let configureButton: (UIButton) -> Void
 
         /// Called when the button is tapped.
-        let onButtonTapped: () -> Void
+        let onButtonTapped: (UIButton) -> Void
     }
 
     private let button: UIButton = UIButton(type: .custom)
@@ -47,13 +47,13 @@ private extension BottomButtonContainerView {
         button.translatesAutoresizingMaskIntoConstraints = false
         pinSubviewToAllEdges(button, insets: Constants.buttonMarginInsets)
 
-        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
 
         viewModel.configureButton(button)
     }
 
-    @objc func buttonTapped() {
-        viewModel.onButtonTapped()
+    @objc func buttonTapped(_ sender: UIButton) {
+        viewModel.onButtonTapped(sender)
     }
 }
 

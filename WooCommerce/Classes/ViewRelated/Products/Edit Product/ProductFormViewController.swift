@@ -170,7 +170,7 @@ private extension ProductFormViewController {
             button.applyLinkButtonStyle()
             button.contentEdgeInsets = .zero
             button.distributeTitleAndImage(spacing: 16)
-        }, onButtonTapped: {
+        }, onButtonTapped: { _ in
             // TODO-2053: show more details bottom sheet
         })
         let buttonContainerView = BottomButtonContainerView(viewModel: viewModel)

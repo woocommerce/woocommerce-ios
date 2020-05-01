@@ -1,3 +1,1 @@
-* We kondigen met trots een Producten-tabblad aan!
-* Gebruikers kunnen nu ook beperkte bewerkingsfuncties voor eenvoudige producten gebruiken en later zullen er meer volgen.
-* We hebben een fix doorgevoerd zodat, wanneer je het tabblad Verwerking vernieuwt, de bijgewerkte bestellingen worden weergegeven.
+* We hebben een vervelende bug opgelost die er soms voor zorgde dat de app crashte terwijl je bestellingen aan het downloaden was. Vanaf nu kun je weer naar hartenlust downloaden!

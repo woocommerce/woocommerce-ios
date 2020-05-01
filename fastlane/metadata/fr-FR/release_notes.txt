@@ -1,3 +1,1 @@
-* Nous sommes heureux de vous présenter l’onglet Produits !
-* Les utilisateurs ont aussi pour l’instant des fonctions d’édition limitées pour les produits simples. Des fonctions supplémentaires seront bientôt ajoutées.
-* Nous avons apporté une correction afin que vos commandes à jour s’affichent dans l’onglet Traitement lorsque celui-ci est actualisé.
+* Nous avons résolu un bug insupportable qui entraînait parfois l'arrêt de l'application lors du téléchargement de commandes. Vous pouvez désormais télécharger en toute tranquillité !

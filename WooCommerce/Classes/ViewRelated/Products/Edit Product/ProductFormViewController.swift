@@ -209,7 +209,7 @@ private extension ProductFormViewController {
                                                                                 self?.dismiss(animated: true, completion: nil)
         }
         let bottomSheet = BottomSheetViewController(childViewController: listSelectorViewController)
-        bottomSheet.show(from: self, sourceView: button, arrowDirections: .up)
+        bottomSheet.show(from: self, sourceView: button, arrowDirections: .down)
     }
 }
 

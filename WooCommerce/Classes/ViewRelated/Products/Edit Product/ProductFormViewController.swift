@@ -170,8 +170,8 @@ private extension ProductFormViewController {
             button.applyLinkButtonStyle()
             button.contentEdgeInsets = .zero
             button.distributeTitleAndImage(spacing: 16)
-        }, onButtonTapped: { _ in
-            // TODO-2053: show more details bottom sheet
+        }, onButtonTapped: { [weak self] button in
+            self?.moreDetailsButtonTapped(button: button)
         })
         let buttonContainerView = BottomButtonContainerView(viewModel: viewModel)
 
@@ -179,6 +179,39 @@ private extension ProductFormViewController {
         moreDetailsContainerView.pinSubviewToAllEdges(buttonContainerView)
         moreDetailsContainerView.setContentCompressionResistancePriority(.required, for: .vertical)
         moreDetailsContainerView.setContentHuggingPriority(.required, for: .vertical)
+    }
+}
+
+// MARK: More details actions
+//
+private extension ProductFormViewController {
+    func moreDetailsButtonTapped(button: UIButton) {
+        let title = NSLocalizedString("Add more details", comment: "")
+        let viewProperties = BottomSheetListSelectorViewProperties(title: title)
+        let isEditProductsRelease2Enabled = featureFlagService.isFeatureFlagEnabled(.editProductsRelease2)
+        let isEditProductsRelease3Enabled = featureFlagService.isFeatureFlagEnabled(.editProductsRelease3)
+        let dataSource = ProductFormBottomSheetListSelectorCommand(product: product,
+                                                                   isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                                                   isEditProductsRelease3Enabled: isEditProductsRelease3Enabled) { [weak self] action in
+                                                                    self?.dismiss(animated: true) { [weak self] in
+                                                                        switch action {
+                                                                        case .editInventorySettings:
+                                                                            self?.editInventorySettings()
+                                                                        case .editShippingSettings:
+                                                                            self?.editShippingSettings()
+                                                                        case .editCategories:
+                                                                            self?.editCategories()
+                                                                        case .editBriefDescription:
+                                                                            self?.editBriefDescription()
+                                                                        }
+                                                                    }
+        }
+        let listSelectorViewController = BottomSheetListSelectorViewController(viewProperties: viewProperties,
+                                                                               command: dataSource) { [weak self] selectedSortOrder in
+                                                                                self?.dismiss(animated: true, completion: nil)
+        }
+        let bottomSheet = BottomSheetViewController(childViewController: listSelectorViewController)
+        bottomSheet.show(from: self, sourceView: button, arrowDirections: .up)
     }
 }
 

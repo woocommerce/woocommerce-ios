@@ -50,6 +50,8 @@
 		020F41E823176F8E00776C4D /* TopBannerPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020F41E723176F8E00776C4D /* TopBannerPresenter.swift */; };
 		0212275C244972660042161F /* BottomSheetListSelectorSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0212275B244972660042161F /* BottomSheetListSelectorSectionHeaderView.swift */; };
 		0212275E2449728A0042161F /* BottomSheetListSelectorSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0212275D2449728A0042161F /* BottomSheetListSelectorSectionHeaderView.xib */; };
+		0212276124498A270042161F /* ProductFormBottomSheetListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0212276024498A270042161F /* ProductFormBottomSheetListSelectorCommand.swift */; };
+		0212276324498CDC0042161F /* ProductFormBottomSheetAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0212276224498CDC0042161F /* ProductFormBottomSheetAction.swift */; };
 		0215320B24231D5A003F2BBD /* UIStackView+Subviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0215320A24231D5A003F2BBD /* UIStackView+Subviews.swift */; };
 		0215320D2423309B003F2BBD /* UIStackView+SubviewsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0215320C2423309B003F2BBD /* UIStackView+SubviewsTests.swift */; };
 		02153211242376B5003F2BBD /* ProductPriceSettingsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02153210242376B5003F2BBD /* ProductPriceSettingsViewModelTests.swift */; };
@@ -875,6 +877,8 @@
 		020F41E723176F8E00776C4D /* TopBannerPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBannerPresenter.swift; sourceTree = "<group>"; };
 		0212275B244972660042161F /* BottomSheetListSelectorSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetListSelectorSectionHeaderView.swift; sourceTree = "<group>"; };
 		0212275D2449728A0042161F /* BottomSheetListSelectorSectionHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BottomSheetListSelectorSectionHeaderView.xib; sourceTree = "<group>"; };
+		0212276024498A270042161F /* ProductFormBottomSheetListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormBottomSheetListSelectorCommand.swift; sourceTree = "<group>"; };
+		0212276224498CDC0042161F /* ProductFormBottomSheetAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormBottomSheetAction.swift; sourceTree = "<group>"; };
 		0215320A24231D5A003F2BBD /* UIStackView+Subviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+Subviews.swift"; sourceTree = "<group>"; };
 		0215320C2423309B003F2BBD /* UIStackView+SubviewsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+SubviewsTests.swift"; sourceTree = "<group>"; };
 		02153210242376B5003F2BBD /* ProductPriceSettingsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductPriceSettingsViewModelTests.swift; sourceTree = "<group>"; };
@@ -1727,9 +1731,19 @@
 			path = "View Models";
 			sourceTree = "<group>";
 		};
+		0212275F244989D20042161F /* BottomSheetListSelector */ = {
+			isa = PBXGroup;
+			children = (
+				0212276024498A270042161F /* ProductFormBottomSheetListSelectorCommand.swift */,
+				0212276224498CDC0042161F /* ProductFormBottomSheetAction.swift */,
+			);
+			path = BottomSheetListSelector;
+			sourceTree = "<group>";
+		};
 		021627232379637E000208D2 /* Edit Product */ = {
 			isa = PBXGroup;
 			children = (
+				0212275F244989D20042161F /* BottomSheetListSelector */,
 				020B2F9223BDDBC300BD79AD /* Error Handling */,
 				02F4F50C237AFBB700E13A9C /* Cells */,
 				021E2A1223A9FBF200B1DE07 /* Inventory Settings */,
@@ -4495,6 +4509,8 @@
 				028296EC237D28B600E84012 /* TextViewViewController.swift in Sources */,
 				454B28BE23BF63C600CD2091 /* DateIntervalFormatter+Helpers.swift in Sources */,
 				024DF3052372ADCD006658FE /* KeyboardScrollable.swift in Sources */,
+				0290E27A238E590500B5C466 /* ListSelectorViewProperties.swift in Sources */,
+				0212276324498CDC0042161F /* ProductFormBottomSheetAction.swift in Sources */,
 				B555530F21B57DE700449E71 /* ApplicationAdapter.swift in Sources */,
 				029D444E22F141CD00DEFA8A /* DashboardStatsV3ViewController.swift in Sources */,
 				747AA08B2107CF8D0047A89B /* TracksProvider.swift in Sources */,
@@ -4629,6 +4645,7 @@
 				B517EA18218B232700730EC4 /* StringFormatter+Notes.swift in Sources */,
 				CE583A072107849F00D73C1C /* SwitchTableViewCell.swift in Sources */,
 				D8149F562251EE300006A245 /* UITextField+Helpers.swift in Sources */,
+				0212276124498A270042161F /* ProductFormBottomSheetListSelectorCommand.swift in Sources */,
 				D831E2E0230E0BA7000037D0 /* Logs.swift in Sources */,
 				0235594924496449004BE2B8 /* BottomSheetViewController.swift in Sources */,
 				CECC759C23D61C1400486676 /* AggregateDataHelper.swift in Sources */,

@@ -49,7 +49,7 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func settingsRows(product: Product) -> [ProductFormSection.SettingsRow] {
-        let shouldShowShippingSettingsRow = product.downloadable == false && product.virtual == false
+        let shouldShowShippingSettingsRow = product.isShippingEnabled
         let shouldShowBriefDescriptionRow = isEditProductsRelease2Enabled
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
 

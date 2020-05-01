@@ -45,6 +45,7 @@
 		02E262BD238CE46A00B79588 /* ShippingSettingsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E262BC238CE46A00B79588 /* ShippingSettingsService.swift */; };
 		02E262C0238CE80100B79588 /* StorageShippingSettingsServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E262BF238CE80100B79588 /* StorageShippingSettingsServiceTests.swift */; };
 		02E262C2238CF74D00B79588 /* StorageShippingSettingsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E262C1238CF74D00B79588 /* StorageShippingSettingsService.swift */; };
+		02E493EB245C0DCC000AEA9E /* Product+Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E493EA245C0DCC000AEA9E /* Product+Settings.swift */; };
 		02E4F5E423CD5628003B0010 /* NSOrderedSet+Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4F5E323CD5628003B0010 /* NSOrderedSet+Array.swift */; };
 		02F096C4240670A400C0C1D5 /* Media+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F096C3240670A400C0C1D5 /* Media+Equatable.swift */; };
 		02FF054D23D983F30058E6E7 /* MediaFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF054523D983F30058E6E7 /* MediaFileManager.swift */; };
@@ -258,6 +259,7 @@
 		02E262BC238CE46A00B79588 /* ShippingSettingsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingSettingsService.swift; sourceTree = "<group>"; };
 		02E262BF238CE80100B79588 /* StorageShippingSettingsServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageShippingSettingsServiceTests.swift; sourceTree = "<group>"; };
 		02E262C1238CF74D00B79588 /* StorageShippingSettingsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageShippingSettingsService.swift; sourceTree = "<group>"; };
+		02E493EA245C0DCC000AEA9E /* Product+Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+Settings.swift"; sourceTree = "<group>"; };
 		02E4F5E323CD5628003B0010 /* NSOrderedSet+Array.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSOrderedSet+Array.swift"; sourceTree = "<group>"; };
 		02F096C3240670A400C0C1D5 /* Media+Equatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Media+Equatable.swift"; sourceTree = "<group>"; };
 		02FF054523D983F30058E6E7 /* MediaFileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaFileManager.swift; sourceTree = "<group>"; };
@@ -507,6 +509,7 @@
 			isa = PBXGroup;
 			children = (
 				0225512022FC2F3000D98613 /* OrderStatsV4Interval+Date.swift */,
+				02E493EA245C0DCC000AEA9E /* Product+Settings.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1145,6 +1148,7 @@
 				026CF62C237D92DC009563D4 /* ProductVariationAttribute+ReadOnlyConvertible.swift in Sources */,
 				74B7D6B020F910AF002667AC /* OrderNote+ReadOnlyConvertible.swift in Sources */,
 				74B2601F2188A92A0041793A /* Note+ReadOnlyConvertible.swift in Sources */,
+				02E493EB245C0DCC000AEA9E /* Product+Settings.swift in Sources */,
 				CE179D57235F4E7500C24EB3 /* RefundStore.swift in Sources */,
 				0218B4EE242E08B20083A847 /* MediaType.swift in Sources */,
 				CE3B7AD72225ECA90050FE4B /* OrderStatusStore.swift in Sources */,

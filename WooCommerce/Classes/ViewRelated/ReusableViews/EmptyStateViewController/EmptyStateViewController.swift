@@ -1,19 +1,66 @@
 
 import UIKit
 
-/// Shows a view with a message and a standard empty search results image.
+/// A configurable view to display an "empty state".
 ///
-/// This is generally used with `SearchUICommand`.
+/// This can show (from top to bottom):
 ///
-final class EmptySearchResultsViewController: UIViewController, KeyboardFrameAdjustmentProvider {
+/// - A message
+/// - An image
+/// - A label suitable for a longer message
+/// - An action button
+///
+/// These elements are hidden by default and can be configured and shown using
+/// the `configure` method.
+///
+final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentProvider {
 
+    /// The submitted argument when configuring the `actionButton`.
+    ///
+    struct ActionButtonConfig {
+        let title: String
+        let onTap: () -> ()
+    }
+
+    /// The main message shown at the top.
+    ///
     @IBOutlet private var messageLabel: UILabel! {
         didSet {
             // Remove dummy text in Interface Builder
             messageLabel.text = nil
+            messageLabel.isHidden = true
         }
     }
-    @IBOutlet private var imageView: UIImageView!
+
+    /// An image shown below the message.
+    ///
+    @IBOutlet private var imageView: UIImageView! {
+        didSet {
+            imageView.image = nil
+            imageView.isHidden = true
+        }
+    }
+
+    /// Additional text shown below the image.
+    ///
+    @IBOutlet private var detailsLabel: UILabel! {
+        didSet {
+            detailsLabel.text = nil
+            detailsLabel.isHidden = true
+        }
+    }
+
+    /// The button shown below the detail text.
+    ///
+    @IBOutlet private var actionButton: UIButton! {
+        didSet {
+            actionButton.setTitle(nil, for: .normal)
+            actionButton.isHidden = true
+        }
+    }
+
+    /// The scrollable view containing all the content (labels, image, etc).
+    ///
     @IBOutlet private var scrollView: UIScrollView!
 
     /// The height adjustment constraint for the content view.
@@ -25,6 +72,10 @@ final class EmptySearchResultsViewController: UIViewController, KeyboardFrameAdj
     /// text (message) is too big.
     ///
     @IBOutlet private var contentViewHeightAdjustmentFromSuperviewConstraint: NSLayoutConstraint!
+
+    /// The last `ActionButtonConfig` passed during `configure()`
+    ///
+    private var lastActionButtonConfig: ActionButtonConfig?
 
     private lazy var keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: { [weak self] frame in
         self?.handleKeyboardFrameUpdate(keyboardFrame: frame)
@@ -48,9 +99,9 @@ final class EmptySearchResultsViewController: UIViewController, KeyboardFrameAdj
 
         view.backgroundColor = .basicBackground
 
-        imageView.image = .emptySearchResultsImage
-
         messageLabel.applyBodyStyle()
+        detailsLabel.applySecondaryBodyStyle()
+        actionButton.applyPrimaryButtonStyle()
 
         keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)
     }
@@ -61,12 +112,26 @@ final class EmptySearchResultsViewController: UIViewController, KeyboardFrameAdj
         updateImageVisibilityUsing(traits: traitCollection)
     }
 
-    /// Change the message being displayed.
+    /// Change the elements being displayed.
     ///
     /// This is the only "configurable" point for consumers using this class.
     ///
-    func configure(message: NSAttributedString?) {
+    func configure(message: NSAttributedString? = nil,
+                   image: UIImage? = nil,
+                   details: String? = nil,
+                   actionButton actionButtonConfig: ActionButtonConfig? = nil) {
         messageLabel.attributedText = message
+        messageLabel.isHidden = message == nil
+
+        imageView.image = image
+        imageView.isHidden = image == nil
+
+        detailsLabel.text = details
+        detailsLabel.isHidden = details == nil
+
+        lastActionButtonConfig = actionButtonConfig
+        actionButton.setTitle(actionButtonConfig?.title, for: .normal)
+        actionButton.isHidden = actionButtonConfig == nil
     }
 
     /// Watch for device orientation changes and update the `imageView`'s visibility accordingly.
@@ -83,7 +148,8 @@ final class EmptySearchResultsViewController: UIViewController, KeyboardFrameAdj
     /// Hide the `imageView` if there is not enough vertical space (e.g. iPhone landscape).
     ///
     private func updateImageVisibilityUsing(traits: UITraitCollection) {
-        let shouldShowImageView = traits.verticalSizeClass != .compact
+        let shouldShowImageView = traits.verticalSizeClass != .compact &&
+            imageView.image != nil
         imageView.isHidden = !shouldShowImageView
     }
 
@@ -109,11 +175,16 @@ final class EmptySearchResultsViewController: UIViewController, KeyboardFrameAdj
 
         contentViewHeightAdjustmentFromSuperviewConstraint.constant = constraintConstant
     }
+
+    /// OnTouchUpInside handler for the `actionButton`.
+    @IBAction private func actionButtonTapped(_ sender: Any) {
+        lastActionButtonConfig?.onTap()
+    }
 }
 
 // MARK: - KeyboardScrollable
 
-extension EmptySearchResultsViewController: KeyboardScrollable {
+extension EmptyStateViewController: KeyboardScrollable {
     var scrollable: UIScrollView {
         scrollView
     }

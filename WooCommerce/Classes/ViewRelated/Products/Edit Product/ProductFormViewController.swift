@@ -161,7 +161,7 @@ private extension ProductFormViewController {
         }
 
         let viewModel = BottomButtonContainerView.ViewModel(configureButton: { button in
-            let title = NSLocalizedString("Add more details", comment: "Title of the button at the bottom of the product form to add more product details.")
+            let title = NSLocalizedString("Add more details", comment: "Title of the product form bottom sheet with a list of actions to edit product details.")
             button.setTitle(title, for: .normal)
 
             let icon = UIImage.plusImage

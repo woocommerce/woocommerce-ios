@@ -115,7 +115,7 @@ final class FilterListViewController: UIViewController {
         configureNavigation()
         configureMainView()
         configureChildNavigationController()
-        configureFilterActionContainerView()
+        configureBottomFilterButtonContainerView()
         observeListSelectorCommandItemSelection()
         updateUI(numberOfActiveFilters: viewModel.filterTypeViewModels.numberOfActiveFilters)
     }
@@ -202,7 +202,7 @@ private extension FilterListViewController {
         navigationControllerContainerView.pinSubviewToAllEdges(navigationController.view)
     }
 
-    func configureFilterActionContainerView() {
+    func configureBottomFilterButtonContainerView() {
         let buttonContainerViewModel = BottomButtonContainerView.ViewModel(buttonTitle: viewModel.filterActionTitle) { [weak self] in
             self?.filterActionButtonTapped()
         }

@@ -22,8 +22,8 @@ protocol FilterListViewModel {
 
     // Navigation & Actions
 
-    /// Called when the user taps on the CTA to clear all filters.
-    func onClearAllActionTapped()
+    /// Resets the filter criteria.
+    func clearAll()
 }
 
 /// Contains data for rendering the filter list selector and the list selector for the filter value.
@@ -150,7 +150,7 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
     }
 
     @objc func clearAllButtonTapped() {
-        viewModel.onClearAllActionTapped()
+        viewModel.clearAll()
         listSelectorCommand.data = viewModel.filterTypeViewModels
         updateUI(numberOfActiveFilters: viewModel.filterTypeViewModels.numberOfActiveFilters)
         listSelector.reloadData()

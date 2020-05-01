@@ -41,7 +41,7 @@ final class FilterProductListViewModel: FilterListViewModel {
         return Filters(stockStatus: stockStatus, productStatus: productStatus, productType: productType)
     }
 
-    func onClearAllActionTapped() {
+    func clearAll() {
         let clearedStockStatus: ProductStockStatus? = nil
         stockStatusFilterViewModel.selectedValue = clearedStockStatus
 

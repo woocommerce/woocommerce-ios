@@ -177,7 +177,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     }
 
     /// OnTouchUpInside handler for the `actionButton`.
-    @IBAction private func callActionButtonConfigOnTapCallback(_ sender: Any) {
+    @IBAction private func actionButtonTapped(_ sender: Any) {
         lastActionButtonConfig?.onTap()
     }
 }

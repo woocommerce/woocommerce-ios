@@ -40,7 +40,7 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="woo-empty-search-results" translatesAutoresizingMaskIntoConstraints="NO" id="YZ8-4Q-SGO">
-                                            <rect key="frame" x="76.5" y="73" width="145" height="105"/>
+                                            <rect key="frame" x="76" y="73" width="146" height="105"/>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iFj-AP-WfL">
                                             <rect key="frame" x="0.5" y="210" width="297" height="108.5"/>
@@ -56,7 +56,7 @@
                                             </constraints>
                                             <state key="normal" title="Action Button"/>
                                             <connections>
-                                                <action selector="callActionButtonConfigOnTapCallback:" destination="-1" eventType="touchUpInside" id="Tdd-LW-tQx"/>
+                                                <action selector="actionButtonTapped:" destination="-1" eventType="touchUpInside" id="Tdd-LW-tQx"/>
                                             </connections>
                                         </button>
                                     </subviews>

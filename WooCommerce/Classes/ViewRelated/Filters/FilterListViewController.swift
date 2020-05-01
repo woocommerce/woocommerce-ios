@@ -3,6 +3,9 @@ import UIKit
 /// The view model protocol for filtering a list of models with generic filters.
 ///
 protocol FilterListViewModel {
+    /// The type of the final value returned to the caller of `FilterListViewController`.
+    associatedtype Criteria
+
     // Filter Action UI configuration
 
     /// The title of the Filter CTA at the bottom.
@@ -14,13 +17,10 @@ protocol FilterListViewModel {
     /// Tapping on each filter type row navigates to another list selector for the filter value.
     var filterTypeViewModels: [FilterTypeViewModel] { get }
 
+    /// The final value returned to the caller of `FilterListViewController`.
+    var criteria: Criteria { get }
+
     // Navigation & Actions
-
-    /// Called when the user taps on the CTA to filter the list with the latest filters.
-    func onFilterActionTapped()
-
-    /// Called when the user dismisses the filter list screen.
-    func onDismissActionTapped()
 
     /// Called when the user taps on the CTA to clear all filters.
     func onClearAllActionTapped()
@@ -76,12 +76,12 @@ protocol FilterType {
 /// The UI consists of a list of filters at the top and a Filter CTA at the bottom that is always visible to apply the filters.
 /// Tapping on a filter in the list navigates to a list of options for the filter.
 ///
-final class FilterListViewController: UIViewController {
+final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewController {
 
     @IBOutlet private weak var navigationControllerContainerView: UIView!
     @IBOutlet private weak var filterActionContainerView: UIView!
 
-    private let viewModel: FilterListViewModel
+    private let viewModel: ViewModel
     private let listSelectorCommand: FilterListSelectorCommand
 
     private lazy var listSelector: ListSelectorViewController
@@ -94,8 +94,21 @@ final class FilterListViewController: UIViewController {
     private var cancellableSelectedFilterType: ObservationToken?
     private var cancellableSelectedFilterValue: ObservationToken?
 
-    init(viewModel: FilterListViewModel) {
+    private let onFilterAction: (ViewModel.Criteria) -> Void
+
+    // Strings.
+
+    private let navigationBarTitleWithoutActiveFilters =
+        NSLocalizedString("Filters", comment: "Navigation bar title format for filtering a list of products without filters applied.")
+    private let navigationBarTitleFormatWithActiveFilters =
+        NSLocalizedString("Filters (%ld)", comment: "Navigation bar title format for filtering a list of products with filters applied.")
+
+    /// - Parameters:
+    ///   - viewModel: Used to render the filter list selector and the selected filter value list selector.
+    ///   - onFilterAction: Called when the user taps on the Filter CTA.
+    init(viewModel: ViewModel, onFilterAction: @escaping (ViewModel.Criteria) -> Void) {
         self.viewModel = viewModel
+        self.onFilterAction = onFilterAction
         self.listSelectorCommand = FilterListSelectorCommand(data: viewModel.filterTypeViewModels)
         super.init(nibName: "FilterListViewController", bundle: nil)
     }
@@ -123,11 +136,17 @@ final class FilterListViewController: UIViewController {
     // MARK: - Navigation
     //
     @objc func filterActionButtonTapped() {
-        viewModel.onFilterActionTapped()
+        dismiss(animated: true) { [weak self] in
+            guard let self = self else {
+                return
+            }
+            let criteria = self.viewModel.criteria
+            self.onFilterAction(criteria)
+        }
     }
 
     @objc func dismissButtonTapped() {
-        viewModel.onDismissActionTapped()
+        dismiss(animated: true) {}
     }
 
     @objc func clearAllButtonTapped() {
@@ -224,19 +243,12 @@ private extension FilterListViewController {
 
     func updateListSelectorNavigationTitle(numberOfActiveFilters: Int) {
         listSelectorCommand.navigationBarTitle = numberOfActiveFilters > 0 ?
-            String.localizedStringWithFormat(Strings.navigationBarTitleFormatWithActiveFilters, numberOfActiveFilters):
-            Strings.navigationBarTitleWithoutActiveFilters
+            String.localizedStringWithFormat(navigationBarTitleFormatWithActiveFilters, numberOfActiveFilters):
+            navigationBarTitleWithoutActiveFilters
     }
 
     func updateClearAllActionVisibility(numberOfActiveFilters: Int) {
         listSelector.navigationItem.rightBarButtonItem = numberOfActiveFilters > 0 ? clearAllBarButtonItem: nil
-    }
-
-    enum Strings {
-        static let navigationBarTitleWithoutActiveFilters =
-            NSLocalizedString("Filters", comment: "Navigation bar title format for filtering a list of products without filters applied.")
-        static let navigationBarTitleFormatWithActiveFilters =
-            NSLocalizedString("Filters (%ld)", comment: "Navigation bar title format for filtering a list of products with filters applied.")
     }
 }
 

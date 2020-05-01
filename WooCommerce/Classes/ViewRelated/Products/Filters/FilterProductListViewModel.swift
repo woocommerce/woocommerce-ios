@@ -3,6 +3,8 @@ import Yosemite
 
 /// `FilterListViewModel` for filtering a list of products.
 final class FilterProductListViewModel: FilterListViewModel {
+    typealias Criteria = Filters
+
     /// Aggregates the filter values that can be updated in the Filter Products UI.
     struct Filters {
         let stockStatus: ProductStockStatus?
@@ -18,20 +20,9 @@ final class FilterProductListViewModel: FilterListViewModel {
     private let productStatusFilterViewModel: FilterTypeViewModel
     private let productTypeFilterViewModel: FilterTypeViewModel
 
-    /// Used to dismiss the Filter Products UI.
-    private let sourceViewController: UIViewController
-
-    typealias FilterCompletion = (_ filters: Filters) -> Void
-    private let onFilterCompletion: FilterCompletion
-
     /// - Parameters:
-    ///   - sourceViewController: the view controller that presents the Filter Products UI, used to dismiss the screen upon user actions.
     ///   - filters: the filters to be applied initially.
-    ///   - onFilterCompletion: called when the user taps the Filter CTA to apply the latest filters to the product list.
-    init(sourceViewController: UIViewController, filters: Filters, onFilterCompletion: @escaping FilterCompletion) {
-        self.sourceViewController = sourceViewController
-        self.onFilterCompletion = onFilterCompletion
-
+    init(filters: Filters) {
         self.stockStatusFilterViewModel = ProductListFilter.stockStatus.createViewModel(filters: filters)
         self.productStatusFilterViewModel = ProductListFilter.productStatus.createViewModel(filters: filters)
         self.productTypeFilterViewModel = ProductListFilter.productType.createViewModel(filters: filters)
@@ -43,21 +34,11 @@ final class FilterProductListViewModel: FilterListViewModel {
         ]
     }
 
-    func onFilterActionTapped() {
-        sourceViewController.dismiss(animated: true) { [weak self] in
-            guard let self = self else {
-                return
-            }
-            let stockStatus = self.stockStatusFilterViewModel.selectedValue as? ProductStockStatus ?? nil
-            let productStatus = self.productStatusFilterViewModel.selectedValue as? ProductStatus ?? nil
-            let productType = self.productTypeFilterViewModel.selectedValue as? ProductType ?? nil
-            let filters = Filters(stockStatus: stockStatus, productStatus: productStatus, productType: productType)
-            self.onFilterCompletion(filters)
-        }
-    }
-
-    func onDismissActionTapped() {
-        sourceViewController.dismiss(animated: true, completion: nil)
+    var criteria: Filters {
+        let stockStatus = stockStatusFilterViewModel.selectedValue as? ProductStockStatus ?? nil
+        let productStatus = productStatusFilterViewModel.selectedValue as? ProductStatus ?? nil
+        let productType = productTypeFilterViewModel.selectedValue as? ProductType ?? nil
+        return Filters(stockStatus: stockStatus, productStatus: productStatus, productType: productType)
     }
 
     func onClearAllActionTapped() {

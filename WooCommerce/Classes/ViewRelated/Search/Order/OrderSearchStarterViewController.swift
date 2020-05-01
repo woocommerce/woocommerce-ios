@@ -40,8 +40,8 @@ final class OrderSearchStarterViewController: UIViewController, KeyboardFrameAdj
     }
 
     private func configureTableView() {
-        tableView.register(BasicTableViewCell.loadNib(),
-                           forCellReuseIdentifier: BasicTableViewCell.reuseIdentifier)
+        tableView.register(SettingTitleAndValueTableViewCell.loadNib(),
+                           forCellReuseIdentifier: SettingTitleAndValueTableViewCell.reuseIdentifier)
 
         tableView.backgroundColor = .listBackground
         tableView.delegate = self
@@ -59,13 +59,16 @@ extension OrderSearchStarterViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: BasicTableViewCell.reuseIdentifier,
-                                                 for: indexPath)
-        let orderStatus = viewModel.orderStatus(at: indexPath)
+        guard let cell =
+            tableView.dequeueReusableCell(withIdentifier: SettingTitleAndValueTableViewCell.reuseIdentifier,
+                                          for: indexPath) as? SettingTitleAndValueTableViewCell else {
+                                            fatalError("Unexpected or missing cell")
+        }
+
+        let cellViewModel = viewModel.cellViewModel(at: indexPath)
 
         cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
-        cell.textLabel?.text = orderStatus.name
+        cell.updateUI(title: cellViewModel.name ?? "", value: cellViewModel.total)
 
         return cell
     }
@@ -80,13 +83,13 @@ extension OrderSearchStarterViewController: UITableViewDataSource {
 extension OrderSearchStarterViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let orderStatus = viewModel.orderStatus(at: indexPath)
+        let cellViewModel = viewModel.cellViewModel(at: indexPath)
 
-        analytics.trackSelectionOf(orderStatus: orderStatus)
+        analytics.trackSelectionOf(orderStatusSlug: cellViewModel.slug)
 
         let ordersViewController = OrdersViewController(
-            title: orderStatus.name ?? NSLocalizedString("Orders", comment: "Default title for Orders List shown when tapping on the Search filter."),
-            statusFilter: orderStatus
+            title: cellViewModel.name ?? NSLocalizedString("Orders", comment: "Default title for Orders List shown when tapping on the Search filter."),
+            statusFilter: cellViewModel.orderStatus
         )
 
         navigationController?.pushViewController(ordersViewController, animated: true)
@@ -108,8 +111,8 @@ extension OrderSearchStarterViewController: KeyboardScrollable {
 private extension Analytics {
     /// Submit events depicting selection of an `OrderStatus` in the UI.
     ///
-    func trackSelectionOf(orderStatus: OrderStatus) {
-        track(.filterOrdersOptionSelected, withProperties: ["status": orderStatus.slug])
-        track(.ordersListFilterOrSearch, withProperties: ["filter": orderStatus.slug, "search": ""])
+    func trackSelectionOf(orderStatusSlug: String) {
+        track(.filterOrdersOptionSelected, withProperties: ["status": orderStatusSlug])
+        track(.ordersListFilterOrSearch, withProperties: ["filter": orderStatusSlug, "search": ""])
     }
 }

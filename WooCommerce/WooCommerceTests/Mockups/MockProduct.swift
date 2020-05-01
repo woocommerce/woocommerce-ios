@@ -26,6 +26,7 @@ final class MockProduct {
                  featured: Bool = false,
                  catalogVisibility: ProductCatalogVisibility = .visible,
                  slug: String = "book-the-green-room",
+                 menuOrder: Int = 0,
                  categories: [ProductCategory] = [],
                  images: [ProductImage] = []) -> Product {
 
@@ -93,7 +94,7 @@ final class MockProduct {
                    defaultAttributes: [],
                    variations: variations,
                    groupedProducts: [],
-                   menuOrder: 0)
+                   menuOrder: menuOrder)
 
     }
 

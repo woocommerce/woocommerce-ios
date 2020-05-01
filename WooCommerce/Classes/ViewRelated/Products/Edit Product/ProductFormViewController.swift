@@ -188,10 +188,8 @@ private extension ProductFormViewController {
     func moreDetailsButtonTapped(button: UIButton) {
         let title = NSLocalizedString("Add more details", comment: "")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
-        let isEditProductsRelease2Enabled = featureFlagService.isFeatureFlagEnabled(.editProductsRelease2)
         let isEditProductsRelease3Enabled = featureFlagService.isFeatureFlagEnabled(.editProductsRelease3)
         let dataSource = ProductFormBottomSheetListSelectorCommand(product: product,
-                                                                   isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
                                                                    isEditProductsRelease3Enabled: isEditProductsRelease3Enabled) { [weak self] action in
                                                                     self?.dismiss(animated: true) { [weak self] in
                                                                         switch action {

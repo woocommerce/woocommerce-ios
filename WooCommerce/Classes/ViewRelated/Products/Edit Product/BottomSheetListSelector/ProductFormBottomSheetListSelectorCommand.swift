@@ -13,18 +13,18 @@ final class ProductFormBottomSheetListSelectorCommand: BottomSheetListSelectorCo
     private let onSelection: (ProductFormBottomSheetAction) -> Void
 
     init(product: Product,
-         isEditProductsRelease2Enabled: Bool,
-         isEditProductsRelease3Enabled: Bool, onSelection: @escaping (ProductFormBottomSheetAction) -> Void) {
+         isEditProductsRelease3Enabled: Bool,
+         onSelection: @escaping (ProductFormBottomSheetAction) -> Void) {
         self.onSelection = onSelection
 
         let shouldShowShippingSettingsRow = product.isShippingEnabled
-        let shouldShowBriefDescriptionRow = isEditProductsRelease2Enabled
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
         let actions: [ProductFormBottomSheetAction?] = [
             .editInventorySettings,
             shouldShowShippingSettingsRow ? .editShippingSettings: nil,
             shouldShowCategoriesRow ? .editCategories: nil,
-            shouldShowBriefDescriptionRow ? .editBriefDescription: nil]
+            .editBriefDescription
+        ]
         self.data = actions.compactMap({ $0 })
     }
 

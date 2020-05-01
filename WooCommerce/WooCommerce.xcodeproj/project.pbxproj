@@ -214,6 +214,7 @@
 		02DD81FB242CAA400060E50B /* WordPressMediaLibraryPickerDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DD81F7242CAA3F0060E50B /* WordPressMediaLibraryPickerDataSource.swift */; };
 		02DD81FC242CAA400060E50B /* WordPressMediaLibraryImagePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02DD81F8242CAA400060E50B /* WordPressMediaLibraryImagePickerViewController.xib */; };
 		02E262C9238D0AD300B79588 /* ProductStockStatusListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E262C8238D0AD300B79588 /* ProductStockStatusListSelectorCommand.swift */; };
+		02E493EF245C1087000AEA9E /* ProductFormBottomSheetListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E493EE245C1087000AEA9E /* ProductFormBottomSheetListSelectorCommandTests.swift */; };
 		02E4FD7A230688BA0049610C /* OrderStatsV4Interval+Chart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4FD79230688BA0049610C /* OrderStatsV4Interval+Chart.swift */; };
 		02E4FD7C2306A04C0049610C /* StatsTimeRangeBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4FD7B2306A04C0049610C /* StatsTimeRangeBarView.swift */; };
 		02E4FD7E2306A8180049610C /* StatsTimeRangeBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4FD7D2306A8180049610C /* StatsTimeRangeBarViewModel.swift */; };
@@ -1041,6 +1042,7 @@
 		02DD81F7242CAA3F0060E50B /* WordPressMediaLibraryPickerDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordPressMediaLibraryPickerDataSource.swift; sourceTree = "<group>"; };
 		02DD81F8242CAA400060E50B /* WordPressMediaLibraryImagePickerViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WordPressMediaLibraryImagePickerViewController.xib; sourceTree = "<group>"; };
 		02E262C8238D0AD300B79588 /* ProductStockStatusListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockStatusListSelectorCommand.swift; sourceTree = "<group>"; };
+		02E493EE245C1087000AEA9E /* ProductFormBottomSheetListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormBottomSheetListSelectorCommandTests.swift; sourceTree = "<group>"; };
 		02E4FD79230688BA0049610C /* OrderStatsV4Interval+Chart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Interval+Chart.swift"; sourceTree = "<group>"; };
 		02E4FD7B2306A04C0049610C /* StatsTimeRangeBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsTimeRangeBarView.swift; sourceTree = "<group>"; };
 		02E4FD7D2306A8180049610C /* StatsTimeRangeBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsTimeRangeBarViewModel.swift; sourceTree = "<group>"; };
@@ -2148,6 +2150,7 @@
 			isa = PBXGroup;
 			children = (
 				02A9A495244D84AB00757B99 /* ProductsSortOrderBottomSheetListSelectorCommandTests.swift */,
+				02E493EE245C1087000AEA9E /* ProductFormBottomSheetListSelectorCommandTests.swift */,
 			);
 			path = BottomSheetListSelector;
 			sourceTree = "<group>";
@@ -4509,7 +4512,6 @@
 				028296EC237D28B600E84012 /* TextViewViewController.swift in Sources */,
 				454B28BE23BF63C600CD2091 /* DateIntervalFormatter+Helpers.swift in Sources */,
 				024DF3052372ADCD006658FE /* KeyboardScrollable.swift in Sources */,
-				0290E27A238E590500B5C466 /* ListSelectorViewProperties.swift in Sources */,
 				0212276324498CDC0042161F /* ProductFormBottomSheetAction.swift in Sources */,
 				B555530F21B57DE700449E71 /* ApplicationAdapter.swift in Sources */,
 				029D444E22F141CD00DEFA8A /* DashboardStatsV3ViewController.swift in Sources */,
@@ -4930,6 +4932,7 @@
 				D8C11A6222E24C4A00D4A88D /* LedgerTableViewCellTests.swift in Sources */,
 				D83A6A7A23792B2400419D48 /* UIColor+Muriel-Tests.swift in Sources */,
 				B5DBF3C320E1484400B53AED /* StoresManagerTests.swift in Sources */,
+				02E493EF245C1087000AEA9E /* ProductFormBottomSheetListSelectorCommandTests.swift in Sources */,
 				D88D5A3B230B5D63007B6E01 /* MockupAnalyticsProvider.swift in Sources */,
 				B53A569721123D3B000776C9 /* ResultsControllerUIKitTests.swift in Sources */,
 				022A45EE237BADA6001417F0 /* Product+ProductFormTests.swift in Sources */,

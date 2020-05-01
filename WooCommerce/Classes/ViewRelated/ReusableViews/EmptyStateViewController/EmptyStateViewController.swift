@@ -119,7 +119,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     func configure(message: NSAttributedString? = nil,
                    image: UIImage? = nil,
                    details: String? = nil,
-                   actionButton: ActionButtonConfig? = nil) {
+                   actionButton actionButtonConfig: ActionButtonConfig? = nil) {
         messageLabel.attributedText = message
         messageLabel.isHidden = message == nil
 
@@ -129,9 +129,9 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
         detailsLabel.text = details
         detailsLabel.isHidden = details == nil
 
-        lastActionButtonConfig = actionButton
-        self.actionButton.setTitle(actionButton?.title, for: .normal)
-        self.actionButton.isHidden = actionButton == nil
+        lastActionButtonConfig = actionButtonConfig
+        actionButton.setTitle(actionButtonConfig?.title, for: .normal)
+        actionButton.isHidden = actionButtonConfig == nil
     }
 
     /// Watch for device orientation changes and update the `imageView`'s visibility accordingly.

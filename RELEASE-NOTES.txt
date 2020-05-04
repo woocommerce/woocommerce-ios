@@ -8,6 +8,7 @@
 - The Orders list is now automatically refreshed when reopening the app. 
 - The Orders list is automatically refreshed if a new order (push notification) comes in.
 - Orders -> Search: The statuses now shows the total number of orders with that status.
+- Products: now the Product details can be edited and saved outside Products tab (e.g. from Order details or Top Performers).
 
 
 4.1

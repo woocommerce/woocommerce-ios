@@ -65,6 +65,7 @@ private extension BottomButtonContainerView {
 
         button.setTitle(viewModel.title, for: .normal)
         button.addTarget(self, action: #selector(buttonTapped(sender:)), for: .touchUpInside)
+        button.titleLabel?.lineBreakMode = .byTruncatingTail
 
         switch viewModel.style {
         case .primary:

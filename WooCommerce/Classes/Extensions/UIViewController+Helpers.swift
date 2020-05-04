@@ -20,8 +20,8 @@ extension UIViewController {
 
     /// Show the X close button on the left bar button item position
     ///
-    func addCloseNavigationBarButton() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: .closeButton, style: .plain, target: self, action: #selector(dismissVC))
+    func addCloseNavigationBarButton(action: Selector? = #selector(dismissVC)) {
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: .closeButton, style: .plain, target: self, action: action)
     }
 
 }

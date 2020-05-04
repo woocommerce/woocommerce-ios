@@ -67,7 +67,7 @@ final class ProductLoaderViewController: UIViewController {
         configureNavigationTitle()
         configureSpinner()
         configureMainView()
-        addCloseNavigationBarButton()
+        addCloseNavigationBarButton(action: #selector(closeButtonTapped))
         loadProduct()
     }
 }
@@ -123,6 +123,16 @@ private extension ProductLoaderViewController {
 
         state = .loading
         ServiceLocator.stores.dispatch(action)
+    }
+
+    @objc func closeButtonTapped() {
+        guard let productViewController = productViewController else {
+            dismiss(animated: true, completion: nil)
+            return
+        }
+        if productViewController.shouldPopOnBackButton() {
+            dismiss(animated: true, completion: nil)
+        }
     }
 }
 

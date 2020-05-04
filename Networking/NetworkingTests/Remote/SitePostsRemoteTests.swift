@@ -21,6 +21,7 @@ class SitePostsRemoteTests: XCTestCase {
     /// Repeat always!
     ///
     override func setUp() {
+        super.setUp()
         network.removeAllSimulatedResponses()
     }
 

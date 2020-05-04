@@ -34,17 +34,22 @@ protocol ListSelectorCommand {
 final class ListSelectorViewController<Command: ListSelectorCommand, Model, Cell>:
 UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model == Model, Command.Cell == Cell {
     private let command: Command
+    private let tableViewStyle: UITableView.Style
     private let onDismiss: (_ selected: Model?) -> Void
 
     private let rowType = Cell.self
 
-    @IBOutlet private weak var tableView: UITableView!
+    private lazy var tableView: UITableView = {
+        return UITableView(frame: .zero, style: tableViewStyle)
+    }()
 
     init(command: Command,
+         tableViewStyle: UITableView.Style = .grouped,
          onDismiss: @escaping (_ selected: Model?) -> Void) {
         self.command = command
+        self.tableViewStyle = tableViewStyle
         self.onDismiss = onDismiss
-        super.init(nibName: "ListSelectorViewController", bundle: nil)
+        super.init(nibName: nil, bundle: nil)
     }
 
     required init?(coder: NSCoder) {
@@ -126,6 +131,11 @@ private extension ListSelectorViewController {
 
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
+        tableView.removeLastCellSeparator()
+
+        view.addSubview(tableView)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToSafeArea(tableView)
 
         registerTableViewCells()
     }

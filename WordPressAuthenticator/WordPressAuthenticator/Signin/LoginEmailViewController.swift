@@ -339,11 +339,20 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         }
     }
 
-    /// Proceeds along the "magic link" sign-in flow, showing a form that let's
+    /// Proceeds along the "magic link" sign-in flow, showing a form that lets
     /// the user request a magic link.
     ///
     func requestLink() {
-        performSegue(withIdentifier: .startMagicLinkFlow, sender: self)
+        guard let vc = LoginLinkRequestViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from LoginEmailViewController to LoginLinkRequestViewController")
+            return
+        }
+
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
     }
 
 

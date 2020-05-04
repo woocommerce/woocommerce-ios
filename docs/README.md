@@ -1,5 +1,14 @@
 # WooCommerce for iOS 
 
+**Table of Contents**
+
+- [Architecture](#architecture)
+- [Coding Guidelines](#coding-guidelines)
+    - [Coding Style](#coding-style)
+    - [Choosing Between Structures and Classes](#choosing-between-structures-and-classes)
+- [Design Patterns](#design-patterns)
+    - [Copiable](#copiable)
+
 ## Architecture
 
 - [Architecture](ARCHITECTURE.md)

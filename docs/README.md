@@ -29,7 +29,7 @@ But consider using `class` instead if:
 
 ### Copiable 
 
-In the WooCommerce module, we generally work with [immutable objects](../Yosemite/Yosemite/Model/Model). Mutation only happens within Yosemite and Storage. This is an intentional design and promotes clarity of [where and when those objects will be updated](https://git.io/JvALp). 
+In the WooCommerce module, we generally work with [immutable objects](../Yosemite/Yosemite/Model/Model.swift). Mutation only happens within Yosemite and Storage. This is an intentional design and promotes clarity of [where and when those objects will be updated](https://git.io/JvALp). 
 
 But in order to _update_ something, we still need to pass an _updated_ object to Yosemite. For example, to use the [`ProductAction.updateProduct`](../Yosemite/Yosemite/Actions/ProductAction.swift) action, we'd probably have to create a new [`Product`](../Networking/Networking/Model/Product/Product.swift) object: 
 

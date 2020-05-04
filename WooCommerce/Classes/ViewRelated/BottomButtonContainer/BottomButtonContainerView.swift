@@ -13,13 +13,13 @@ final class BottomButtonContainerView: UIView {
         let style: ButtonStyle
         let title: String
         let image: UIImage?
-        let onButtonTapped: () -> Void
+        let onButtonTapped: (UIButton) -> Void
 
-        init(style: ButtonStyle, title: String, onButtonTapped: @escaping () -> Void) {
+        init(style: ButtonStyle, title: String, onButtonTapped: @escaping (UIButton) -> Void) {
             self.init(style: style, title: title, image: nil, onButtonTapped: onButtonTapped)
         }
 
-        init(style: ButtonStyle, title: String, image: UIImage?, onButtonTapped: @escaping () -> Void) {
+        init(style: ButtonStyle, title: String, image: UIImage?, onButtonTapped: @escaping (UIButton) -> Void) {
             self.style = style
             self.title = title
             self.image = image
@@ -64,7 +64,7 @@ private extension BottomButtonContainerView {
         pinSubviewToAllEdges(button, insets: Constants.buttonMarginInsets)
 
         button.setTitle(viewModel.title, for: .normal)
-        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(buttonTapped(sender:)), for: .touchUpInside)
 
         switch viewModel.style {
         case .primary:
@@ -81,8 +81,8 @@ private extension BottomButtonContainerView {
         }
     }
 
-    @objc func buttonTapped() {
-        viewModel.onButtonTapped()
+    @objc func buttonTapped(sender: UIButton) {
+        viewModel.onButtonTapped(sender)
     }
 }
 

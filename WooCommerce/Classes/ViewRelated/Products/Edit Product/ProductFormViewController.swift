@@ -163,7 +163,7 @@ private extension ProductFormViewController {
         let title = NSLocalizedString("Add more details", comment: "Title of the button at the bottom of the product form to add more product details.")
         let viewModel = BottomButtonContainerView.ViewModel(style: .link,
                                                             title: title,
-                                                            image: .plusImage) {
+                                                            image: .plusImage) { _ in
                                                                 // TODO-2053: show more details bottom sheet
         }
         let buttonContainerView = BottomButtonContainerView(viewModel: viewModel)

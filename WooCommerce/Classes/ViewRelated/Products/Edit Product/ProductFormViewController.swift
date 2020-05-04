@@ -134,6 +134,9 @@ private extension ProductFormViewController {
         tableView.backgroundColor = .listForeground
         tableView.removeLastCellSeparator()
 
+        // Since the table view is in a container under a stack view, the safe area adjustment should be handled in the container view.
+        tableView.contentInsetAdjustmentBehavior = .never
+
         tableView.reloadData()
     }
 
@@ -160,19 +163,12 @@ private extension ProductFormViewController {
             return
         }
 
-        let viewModel = BottomButtonContainerView.ViewModel(configureButton: { button in
-            let title = NSLocalizedString("Add more details", comment: "Title of the product form bottom sheet with a list of actions to edit product details.")
-            button.setTitle(title, for: .normal)
-
-            let icon = UIImage.plusImage
-            button.setImage(icon, for: .normal)
-            button.contentHorizontalAlignment = .leading
-            button.applyLinkButtonStyle()
-            button.contentEdgeInsets = .zero
-            button.distributeTitleAndImage(spacing: 16)
-        }, onButtonTapped: { [weak self] button in
-            self?.moreDetailsButtonTapped(button: button)
-        })
+        let title = NSLocalizedString("Add more details", comment: "Title of the button at the bottom of the product form to add more product details.")
+        let viewModel = BottomButtonContainerView.ViewModel(style: .link,
+                                                            title: title,
+                                                            image: .plusImage) { [weak self] button in
+                                                                self?.moreDetailsButtonTapped(button: button)
+        }
         let buttonContainerView = BottomButtonContainerView(viewModel: viewModel)
 
         moreDetailsContainerView.addSubview(buttonContainerView)

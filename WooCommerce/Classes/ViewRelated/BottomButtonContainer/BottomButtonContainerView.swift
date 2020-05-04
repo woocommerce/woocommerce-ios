@@ -3,12 +3,28 @@ import UIKit
 /// Contains a button with insets to be displayed at the bottom of a view.
 ///
 final class BottomButtonContainerView: UIView {
-    struct ViewModel {
-        /// Allows the view model to configure and style the button.
-        let configureButton: (UIButton) -> Void
+    /// The style of the button.
+    enum ButtonStyle {
+        case primary
+        case link
+    }
 
-        /// Called when the button is tapped.
+    struct ViewModel {
+        let style: ButtonStyle
+        let title: String
+        let image: UIImage?
         let onButtonTapped: (UIButton) -> Void
+
+        init(style: ButtonStyle, title: String, onButtonTapped: @escaping (UIButton) -> Void) {
+            self.init(style: style, title: title, image: nil, onButtonTapped: onButtonTapped)
+        }
+
+        init(style: ButtonStyle, title: String, image: UIImage?, onButtonTapped: @escaping (UIButton) -> Void) {
+            self.style = style
+            self.title = title
+            self.image = image
+            self.onButtonTapped = onButtonTapped
+        }
     }
 
     private let button: UIButton = UIButton(type: .custom)
@@ -47,12 +63,26 @@ private extension BottomButtonContainerView {
         button.translatesAutoresizingMaskIntoConstraints = false
         pinSubviewToAllEdges(button, insets: Constants.buttonMarginInsets)
 
-        button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
+        button.setTitle(viewModel.title, for: .normal)
+        button.addTarget(self, action: #selector(buttonTapped(sender:)), for: .touchUpInside)
+        button.titleLabel?.lineBreakMode = .byTruncatingTail
 
-        viewModel.configureButton(button)
+        switch viewModel.style {
+        case .primary:
+            button.applyPrimaryButtonStyle()
+        case .link:
+            button.applyLinkButtonStyle()
+            button.contentHorizontalAlignment = .leading
+            button.contentEdgeInsets = .zero
+        }
+
+        if let image = viewModel.image {
+            button.setImage(image, for: .normal)
+            button.distributeTitleAndImage(spacing: 16)
+        }
     }
 
-    @objc func buttonTapped(_ sender: UIButton) {
+    @objc func buttonTapped(sender: UIButton) {
         viewModel.onButtonTapped(sender)
     }
 }

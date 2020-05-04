@@ -48,6 +48,13 @@
 		4501068F2399B19500E24722 /* TaxClassRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4501068E2399B19500E24722 /* TaxClassRemote.swift */; };
 		450106912399B2C800E24722 /* TaxClassListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106902399B2C800E24722 /* TaxClassListMapper.swift */; };
 		4524CD9C242CEFAB00B2F20A /* product-on-sale-with-empty-sale-price.json in Resources */ = {isa = PBXBuildFile; fileRef = 4524CD9B242CEFAB00B2F20A /* product-on-sale-with-empty-sale-price.json */; };
+		453305E92459DF2100264E50 /* PostMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453305E82459DF2100264E50 /* PostMapper.swift */; };
+		453305EB2459E01A00264E50 /* PostMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453305EA2459E01A00264E50 /* PostMapperTests.swift */; };
+		453305ED2459E1AA00264E50 /* site-post.json in Resources */ = {isa = PBXBuildFile; fileRef = 453305EC2459E1AA00264E50 /* site-post.json */; };
+		453305EF2459E46100264E50 /* SitePostsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453305EE2459E46000264E50 /* SitePostsRemoteTests.swift */; };
+		453305F52459ED2700264E50 /* site-post-update.json in Resources */ = {isa = PBXBuildFile; fileRef = 453305F42459ED2700264E50 /* site-post-update.json */; };
+		4568E2222459ADC60007E478 /* SitePostsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4568E2212459ADC60007E478 /* SitePostsRemote.swift */; };
+		4568E2242459D3230007E478 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4568E2232459D3230007E478 /* Post.swift */; };
 		457FC68C2382B2FD00B41B02 /* product-update.json in Resources */ = {isa = PBXBuildFile; fileRef = 457FC68B2382B2FD00B41B02 /* product-update.json */; };
 		45CDAFAB2434CA9300F83C22 /* ProductCatalogVisibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45CDAFAA2434CA9300F83C22 /* ProductCatalogVisibility.swift */; };
 		45D1CF4923BACA6500945A36 /* ProductTaxStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D1CF4823BACA6500945A36 /* ProductTaxStatus.swift */; };
@@ -369,6 +376,13 @@
 		4501068E2399B19500E24722 /* TaxClassRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassRemote.swift; sourceTree = "<group>"; };
 		450106902399B2C800E24722 /* TaxClassListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassListMapper.swift; sourceTree = "<group>"; };
 		4524CD9B242CEFAB00B2F20A /* product-on-sale-with-empty-sale-price.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-on-sale-with-empty-sale-price.json"; sourceTree = "<group>"; };
+		453305E82459DF2100264E50 /* PostMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostMapper.swift; sourceTree = "<group>"; };
+		453305EA2459E01A00264E50 /* PostMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostMapperTests.swift; sourceTree = "<group>"; };
+		453305EC2459E1AA00264E50 /* site-post.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "site-post.json"; sourceTree = "<group>"; };
+		453305EE2459E46000264E50 /* SitePostsRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePostsRemoteTests.swift; sourceTree = "<group>"; };
+		453305F42459ED2700264E50 /* site-post-update.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "site-post-update.json"; sourceTree = "<group>"; };
+		4568E2212459ADC60007E478 /* SitePostsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePostsRemote.swift; sourceTree = "<group>"; };
+		4568E2232459D3230007E478 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		457FC68B2382B2FD00B41B02 /* product-update.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-update.json"; sourceTree = "<group>"; };
 		45CDAFAA2434CA9300F83C22 /* ProductCatalogVisibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCatalogVisibility.swift; sourceTree = "<group>"; };
 		45D1CF4823BACA6500945A36 /* ProductTaxStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTaxStatus.swift; sourceTree = "<group>"; };
@@ -778,6 +792,7 @@
 				7412A8F121B6E47A005D182A /* ReportRemoteTests.swift */,
 				743E84F9221742E300FAC9D7 /* ShipmentsRemoteTests.swift */,
 				74AB5B5021AF426D00859C12 /* SiteAPIRemoteTests.swift */,
+				453305EE2459E46000264E50 /* SitePostsRemoteTests.swift */,
 				74D5BECD217E0F98007B0348 /* SiteSettingsRemoteTests.swift */,
 				74002D6B2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift */,
 				45ED4F13239E8F2E004F1BE3 /* TaxClassRemoteTests.swift */,
@@ -890,6 +905,7 @@
 				7426CA0C21AF27B9004E9FFC /* SiteAPIRemote.swift */,
 				74046E1A217A684D007DD7BF /* SiteSettingsRemote.swift */,
 				74A1D26E21189EA000931DFA /* SiteVisitStatsRemote.swift */,
+				4568E2212459ADC60007E478 /* SitePostsRemote.swift */,
 				4501068E2399B19500E24722 /* TaxClassRemote.swift */,
 				74ABA1D0213F22CA00FFAD30 /* TopEarnersStatsRemote.swift */,
 				026CF61F237D69D6009563D4 /* ProductVariationsRemote.swift */,
@@ -954,6 +970,7 @@
 				45E3EEBA237009CF00A826AC /* ShippingLine.swift */,
 				B56C1EB720EA76F500D749F9 /* Site.swift */,
 				7426CA0E21AF2C90004E9FFC /* SiteAPI.swift */,
+				4568E2232459D3230007E478 /* Post.swift */,
 				74046E1C217A6989007DD7BF /* SiteSetting.swift */,
 				74159624224D4045003C21CF /* SiteSettingGroup.swift */,
 				CE50345F21B5799F007573C6 /* SitePlan.swift */,
@@ -1045,6 +1062,8 @@
 				7426CA1221AF34A3004E9FFC /* site-api.json */,
 				74AB5B4E21AF3F0D00859C12 /* site-api-no-woo.json */,
 				CE50346621B5DCBE007573C6 /* site-plan.json */,
+				453305EC2459E1AA00264E50 /* site-post.json */,
+				453305F42459ED2700264E50 /* site-post-update.json */,
 				74A1D25F211898F000931DFA /* site-visits-day.json */,
 				74A1D260211898F000931DFA /* site-visits-week.json */,
 				74A1D261211898F000931DFA /* site-visits-month.json */,
@@ -1098,6 +1117,7 @@
 				7426CA1021AF30BD004E9FFC /* SiteAPIMapper.swift */,
 				B56C1EB520EA757B00D749F9 /* SiteListMapper.swift */,
 				CE50345D21B571A7007573C6 /* SitePlanMapper.swift */,
+				453305E82459DF2100264E50 /* PostMapper.swift */,
 				74046E1E217A6B70007DD7BF /* SiteSettingsMapper.swift */,
 				74A1D26C21189DFE00931DFA /* SiteVisitStatsMapper.swift */,
 				B53EF53B21814900003E146F /* SuccessResultMapper.swift */,
@@ -1181,6 +1201,7 @@
 				7412A8ED21B6E335005D182A /* ReportOrderMapperTests.swift */,
 				743E84F722172E1F00FAC9D7 /* ShipmentTrackingListMapperTests.swift */,
 				74AB5B4C21AF354E00859C12 /* SiteAPIMapperTests.swift */,
+				453305EA2459E01A00264E50 /* PostMapperTests.swift */,
 				74A7B4BB217A807400E85A8B /* SiteSettingsMapperTests.swift */,
 				74002D692118B26000A63C19 /* SiteVisitStatsMapperTests.swift */,
 				45ED4F0F239E8A54004F1BE3 /* TaxClassListMapperTest.swift */,
@@ -1373,6 +1394,7 @@
 				74C8F06620EEB76400B6EDC9 /* order-notes.json in Resources */,
 				7426CA1321AF34A3004E9FFC /* site-api.json in Resources */,
 				748D424E210FB1F500CF7D1B /* order-stats-day.json in Resources */,
+				453305ED2459E1AA00264E50 /* site-post.json in Resources */,
 				74749B99224135C4005C4CF2 /* product.json in Resources */,
 				CEF88DAF233E9F7E00BED485 /* order-details-partially-refunded.json in Resources */,
 				743FDB9E210FB36900AC737F /* order-stats-week.json in Resources */,
@@ -1410,6 +1432,7 @@
 				74E30951216E8DCE00ABCE4C /* site-visits-alt.json in Resources */,
 				74ABA1C5213F17AA00FFAD30 /* top-performers-day.json in Resources */,
 				2683D71024456EE4002A1589 /* categories-extra.json in Resources */,
+				453305F52459ED2700264E50 /* site-post-update.json in Resources */,
 				CECC759E23D6231A00486676 /* order-560-all-refunds.json in Resources */,
 				74ABA1CB213F19FE00FFAD30 /* top-performers-week.json in Resources */,
 				B524194721AC643900D6FC0A /* device-settings.json in Resources */,
@@ -1520,6 +1543,7 @@
 				B5BB1D0C20A2050300112D92 /* DateFormatter+Woo.swift in Sources */,
 				743E84EE2217244C00FAC9D7 /* ShipmentTrackingListMapper.swift in Sources */,
 				B567AF2520A0CCA300AB6C62 /* AuthenticatedRequest.swift in Sources */,
+				453305E92459DF2100264E50 /* PostMapper.swift in Sources */,
 				CE430672234B9EB20073CBFF /* OrderItemTax.swift in Sources */,
 				D8736B5C22F083C500A14A29 /* OrderCount.swift in Sources */,
 				B505F6EA20BEFC3700BB1B69 /* MockupNetwork.swift in Sources */,
@@ -1568,6 +1592,7 @@
 				D823D905223746CE00C90817 /* NewShipmentTrackingMapper.swift in Sources */,
 				743057B5218B6ACD00441A76 /* Queue.swift in Sources */,
 				74A1D26821189A7100931DFA /* SiteVisitStats.swift in Sources */,
+				4568E2242459D3230007E478 /* Post.swift in Sources */,
 				B557DA0320975500005962F4 /* Remote.swift in Sources */,
 				748D424C210FA34400CF7D1B /* OrderStatsMapper.swift in Sources */,
 				B53EF53C21814900003E146F /* SuccessResultMapper.swift in Sources */,
@@ -1589,6 +1614,7 @@
 				B53EF5322180F21C003E146F /* Dictionary+Woo.swift in Sources */,
 				74A1D26D21189DFF00931DFA /* SiteVisitStatsMapper.swift in Sources */,
 				D8FBFF2222D5266E006E3336 /* OrderStatsV4Interval.swift in Sources */,
+				4568E2222459ADC60007E478 /* SitePostsRemote.swift in Sources */,
 				93D8BBFD226BBEE800AD2EB3 /* AccountSettingsMapper.swift in Sources */,
 				74D522B62113607F00042831 /* StatGranularity.swift in Sources */,
 				B518662220A097C200037A38 /* Network.swift in Sources */,
@@ -1683,6 +1709,7 @@
 				7412A8EE21B6E335005D182A /* ReportOrderMapperTests.swift in Sources */,
 				74CF0A8C22414D7800DB993F /* ProductMapperTests.swift in Sources */,
 				B505F6D720BEE58800BB1B69 /* AccountRemoteTests.swift in Sources */,
+				453305EB2459E01A00264E50 /* PostMapperTests.swift in Sources */,
 				CE0A0F1D22398D520075ED8D /* ProductListMapperTests.swift in Sources */,
 				025CA2C6238F4F3500B05C81 /* ProductShippingClassRemoteTests.swift in Sources */,
 				B554FA8B2180B1D500C54DFF /* NotificationsRemoteTests.swift in Sources */,
@@ -1706,6 +1733,7 @@
 				743E84F822172E1F00FAC9D7 /* ShipmentTrackingListMapperTests.swift in Sources */,
 				45ED4F14239E8F2E004F1BE3 /* TaxClassRemoteTests.swift in Sources */,
 				D88D5A4D230BD010007B6E01 /* ProductReviewsRemoteTests.swift in Sources */,
+				453305EF2459E46100264E50 /* SitePostsRemoteTests.swift in Sources */,
 				740211E121939908002248DA /* CommentRemoteTests.swift in Sources */,
 				B57B1E6A21C925280046E764 /* DotcomValidatorTests.swift in Sources */,
 				B567AF3020A0FB8F00AB6C62 /* DotcomRequestTests.swift in Sources */,

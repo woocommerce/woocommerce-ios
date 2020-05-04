@@ -5,6 +5,13 @@ import Yosemite
 /// The entry UI for adding/editing a Product.
 final class ProductFormViewController: UIViewController {
 
+    var navigationItemRightBarButtonItems: Observable<[UIBarButtonItem]> {
+        navigationItemRightBarButtonItemsSubject
+    }
+
+    private let navigationItemRightBarButtonItemsSubject = PublishSubject<[UIBarButtonItem]>()
+    private var cancellable: ObservationToken?
+
     @IBOutlet private weak var tableView: UITableView!
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
@@ -79,6 +86,10 @@ final class ProductFormViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    deinit {
+        cancellable?.cancel()
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -88,6 +99,7 @@ final class ProductFormViewController: UIViewController {
 
         startListeningToNotifications()
         handleSwipeBackGesture()
+        observeNavigationItemRightBarButtonItems()
 
         productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else {
@@ -147,6 +159,12 @@ private extension ProductFormViewController {
             default:
                 return
             }
+        }
+    }
+
+    func observeNavigationItemRightBarButtonItems() {
+        cancellable = navigationItemRightBarButtonItems.subscribe { [weak self] rightBarButtonItems in
+            self?.navigationItem.rightBarButtonItems = rightBarButtonItems
         }
     }
 }
@@ -284,7 +302,7 @@ private extension ProductFormViewController {
             rightBarButtonItems.insert(createMoreOptionsBarButtonItem(), at: 0)
         }
 
-        navigationItem.rightBarButtonItems = rightBarButtonItems
+        navigationItemRightBarButtonItemsSubject.send(rightBarButtonItems)
     }
 
     func createUpdateBarButtonItem() -> UIBarButtonItem {

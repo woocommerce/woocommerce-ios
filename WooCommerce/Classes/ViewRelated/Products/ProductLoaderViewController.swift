@@ -33,6 +33,14 @@ final class ProductLoaderViewController: UIViewController {
         }
     }
 
+    /// Product child view controller
+    ///
+    private var productViewController: UIViewController?
+
+    /// Observation token for the product form right navigation bar items
+    ///
+    private var cancellable: ObservationToken?
+
     // MARK: - Initializers
 
     init(productID: Int64, siteID: Int64, currency: String) {
@@ -47,6 +55,9 @@ final class ProductLoaderViewController: UIViewController {
         fatalError("Please specify the ProductID and SiteID!")
     }
 
+    deinit {
+        cancellable?.cancel()
+    }
 
     // MARK: - Overridden Methods
 
@@ -164,11 +175,22 @@ private extension ProductLoaderViewController {
     func presentProductDetails(for product: Product, isEditProductsEnabled: Bool) {
         let viewController: UIViewController
         if product.productType == .simple && isEditProductsEnabled {
-            viewController = ProductFormViewController(product: product, currency: currency)
+            let productForm = ProductFormViewController(product: product, currency: currency)
+            viewController = productForm
+
+            // Observes the right navigation bar items from the product form view controller.
+            cancellable = productForm.navigationItemRightBarButtonItems.subscribe { [weak self] rightBarButtonItems in
+                self?.navigationItem.rightBarButtonItems = rightBarButtonItems
+            }
         } else {
             let viewModel = ProductDetailsViewModel(product: product, currency: currency)
             viewController = ProductDetailsViewController(viewModel: viewModel)
+
+            // Borrows the right nav bar items
+            navigationItem.rightBarButtonItems = viewController.navigationItem.rightBarButtonItems
         }
+
+        productViewController = viewController
 
         // Attach
         addChild(viewController)
@@ -178,7 +200,6 @@ private extension ProductLoaderViewController {
 
         // And, of course, borrow the Child's Title + right nav bar items
         title = viewController.title
-        navigationItem.rightBarButtonItems = viewController.navigationItem.rightBarButtonItems
     }
 
     /// Removes all of the children UIViewControllers

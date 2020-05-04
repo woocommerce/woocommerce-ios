@@ -532,6 +532,6 @@ extension Product: ProductUpdater {
                        defaultAttributes: defaultAttributes,
                        variations: variations,
                        groupedProducts: groupedProducts,
-                       menuOrder: menuOrder)
+                       menuOrder: settings.menuOrder)
     }
 }

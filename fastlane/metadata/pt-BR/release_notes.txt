@@ -1,3 +1,1 @@
-* Estamos felizes em apresentar a guia Produtos!
-* Agora os usuários têm recursos de edição limitados para produtos simples, e tem muito mais a caminho.
-* Fizemos uma correção para que, sempre que você recarregar a guia Processamento, ela mostre seus pedidos atualizados.
+* Corrigimos um bug mal criado que fechava o aplicativo enquanto você fazia o download de encomendas. Faça seus downloads à vontade!

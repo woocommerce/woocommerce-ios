@@ -8,11 +8,11 @@ public class SitePostsRemote: Remote {
 
 
     /// Loads the Post by ID from WP.com
-    ///
+    /// https://developer.wordpress.com/docs/api/1.1/get/sites/%24site/posts/%24post_ID/
     ///
     /// - Parameters:
     ///   - siteID: Site for which we'll fetch the post.
-    ///   - postID: Id of the post that we want to fetch
+    ///   - postID: Id of the post that we want to fetch.
     ///   - completion: Closure to be executed upon completion.
     ///
     public func loadSitePost(for siteID: Int64, postID: Int64, completion: @escaping (Post?, Error?) -> Void) {
@@ -24,10 +24,11 @@ public class SitePostsRemote: Remote {
     }
 
     /// Update a post from WP.com
+    /// https://developer.wordpress.com/docs/api/1.2/post/sites/%24site/posts/%24post_ID/
     ///
     /// - Parameters:
     ///     - siteID: Site for which we'll update the post.
-    ///     - postID: Id of the post that we want to update
+    ///     - postID: Id of the post that we want to update.
     ///     - post: Post that we will use to update the post.
     ///     - completion: Closure to be executed upon completion.
     ///

@@ -224,8 +224,9 @@ private extension FilterListViewController {
     }
 
     func configureBottomFilterButtonContainerView() {
-        let buttonContainerViewModel = BottomButtonContainerView.ViewModel(buttonTitle: viewModel.filterActionTitle) { [weak self] in
-            self?.filterActionButtonTapped()
+        let buttonContainerViewModel = BottomButtonContainerView.ViewModel(style: .primary,
+                                                                           title: viewModel.filterActionTitle) { [weak self] in
+                                                                            self?.filterActionButtonTapped()
         }
         let buttonContainerView = BottomButtonContainerView(viewModel: buttonContainerViewModel)
         filterActionContainerView.addSubview(buttonContainerView)

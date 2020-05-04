@@ -160,19 +160,12 @@ private extension ProductFormViewController {
             return
         }
 
-        let viewModel = BottomButtonContainerView.ViewModel(configureButton: { button in
-            let title = NSLocalizedString("Add more details", comment: "Title of the button at the bottom of the product form to add more product details.")
-            button.setTitle(title, for: .normal)
-
-            let icon = UIImage.plusImage
-            button.setImage(icon, for: .normal)
-            button.contentHorizontalAlignment = .leading
-            button.applyLinkButtonStyle()
-            button.contentEdgeInsets = .zero
-            button.distributeTitleAndImage(spacing: 16)
-        }, onButtonTapped: {
-            // TODO-2053: show more details bottom sheet
-        })
+        let title = NSLocalizedString("Add more details", comment: "Title of the button at the bottom of the product form to add more product details.")
+        let viewModel = BottomButtonContainerView.ViewModel(style: .link,
+                                                            title: title,
+                                                            image: .plusImage) {
+                                                                // TODO-2053: show more details bottom sheet
+        }
         let buttonContainerView = BottomButtonContainerView(viewModel: viewModel)
 
         moreDetailsContainerView.addSubview(buttonContainerView)

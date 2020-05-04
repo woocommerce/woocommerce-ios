@@ -5,7 +5,7 @@ import XCTest
 
 /// SitePostStore Unit Tests
 ///
-class SitePostStoreTests: XCTestCase {
+final class SitePostStoreTests: XCTestCase {
 
     /// Mockup Dispatcher!
     ///

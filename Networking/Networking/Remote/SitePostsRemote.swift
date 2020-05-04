@@ -17,7 +17,8 @@ public class SitePostsRemote: Remote {
     ///
     public func loadSitePost(for siteID: Int64, postID: Int64, completion: @escaping (Post?, Error?) -> Void) {
         let path = String(format: "/sites/%d/posts/%d", siteID, postID)
-        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path)
+        let parameters = ["fields": "site_ID,password"]
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
         let mapper = PostMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -34,7 +35,9 @@ public class SitePostsRemote: Remote {
     ///
     public func updateSitePost(for siteID: Int64, postID: Int64, post: Post, completion: @escaping (Post?, Error?) -> Void) {
         do {
-            let parameters = try post.toDictionary()
+            var parameters = try post.toDictionary()
+            let parametersFields = ["fields": "site_ID,password"]
+            parameters.merge(parametersFields) { (current, _) in current }
             let path = String(format: "/sites/%d/posts/%d", siteID, postID)
             let request = DotcomRequest(wordpressApiVersion: .mark1_2, method: .post, path: path, parameters: parameters)
             let mapper = PostMapper()

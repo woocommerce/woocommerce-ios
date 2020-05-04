@@ -140,14 +140,6 @@
             </objects>
             <point key="canvasLocation" x="451" y="714"/>
         </scene>
-        <!--Signup Email Entry-->
-        <scene sceneID="gjg-iE-qSx">
-            <objects>
-                <viewControllerPlaceholder storyboardName="Signup" referencedIdentifier="SignupEmailViewController" id="klu-4U-PyL" userLabel="Signup Email Entry" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="OWM-SL-SwW" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2387" y="-231"/>
-        </scene>
         <!--Login Email View Controller-->
         <scene sceneID="w6Y-pB-a3f">
             <objects>
@@ -347,7 +339,6 @@
                         <outlet property="instructionLabel" destination="DKR-9c-zZQ" id="2Rj-ad-hnL"/>
                         <outlet property="submitButton" destination="OZC-xf-OAn" id="k1c-SJ-qiK"/>
                         <segue destination="lmD-c6-SLs" kind="show" identifier="showWPComLogin" id="ySQ-EM-6JI"/>
-                        <segue destination="klu-4U-PyL" kind="show" identifier="showSignupEmail" id="dh4-9P-l8W"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wWl-qb-1Yp" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1421,7 +1412,7 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="5hL-j3-eMs"/>
-        <segue reference="0ao-yi-yZI"/>
+        <segue reference="ySQ-EM-6JI"/>
         <segue reference="JN3-Ck-2w7"/>
     </inferredMetricsTieBreakers>
     <resources>

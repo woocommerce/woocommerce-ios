@@ -216,6 +216,8 @@ private extension ProductImagesViewController {
             return
         }
         uploadMediaAssetToSiteMediaLibrary(asset: asset)
+        // Commits product image changes automatically.
+        doneButtonTapped()
     }
 }
 
@@ -223,8 +225,16 @@ private extension ProductImagesViewController {
 //
 private extension ProductImagesViewController {
     func onDeviceMediaLibraryPickerCompletion(assets: [PHAsset]) {
+        let shouldCommitChanges = assets.isNotEmpty
         defer {
-            dismiss(animated: true, completion: nil)
+            dismiss(animated: !shouldCommitChanges) { [weak self] in
+                guard shouldCommitChanges else {
+                    return
+                }
+
+                // Commits product image changes automatically.
+                self?.doneButtonTapped()
+            }
         }
         guard assets.isEmpty == false else {
             return
@@ -239,7 +249,15 @@ private extension ProductImagesViewController {
 //
 private extension ProductImagesViewController {
     func onWPMediaPickerCompletion(mediaItems: [Media]) {
-        dismiss(animated: true, completion: nil)
+        let shouldCommitChanges = mediaItems.isNotEmpty
+        dismiss(animated: !shouldCommitChanges) { [weak self] in
+            guard shouldCommitChanges else {
+                return
+            }
+
+            // Commits product image changes automatically.
+            self?.doneButtonTapped()
+        }
         productImageActionHandler.addSiteMediaLibraryImagesToProduct(mediaItems: mediaItems)
     }
 }

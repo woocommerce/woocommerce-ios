@@ -93,9 +93,9 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
                                                         fatalError()
         }
         let model = command.data[indexPath.row]
-        command.configureCell(cell: cell, model: model)
-
+        // Configures the cell's `accessoryType` before calling `command.configureCell` so that the command could override the `accessoryType`.
         cell.accessoryType = command.isSelected(model: model) ? .checkmark: .none
+        command.configureCell(cell: cell, model: model)
 
         return cell
     }

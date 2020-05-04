@@ -62,8 +62,11 @@ final class ProductFormViewController: UIViewController {
 
     private let currency: String
 
-    init(product: Product, currency: String) {
+    private let onDismiss: (UIViewController) -> Void
+
+    init(product: Product, currency: String, onDismiss: @escaping (UIViewController) -> Void) {
         self.currency = currency
+        self.onDismiss = onDismiss
         self.originalProduct = product
         self.product = product
         self.viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
@@ -451,7 +454,10 @@ extension ProductFormViewController {
 
     private func presentBackNavigationActionSheet() {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
-            self?.navigationController?.popViewController(animated: true)
+            guard let self = self else {
+                return
+            }
+            self.onDismiss(self)
         })
     }
 

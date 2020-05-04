@@ -35,7 +35,7 @@ final class ProductLoaderViewController: UIViewController {
 
     /// Product child view controller
     ///
-    private var productViewController: UIViewController?
+    private var productFormViewController: UIViewController?
 
     /// Observation token for the product form right navigation bar items
     ///
@@ -67,7 +67,7 @@ final class ProductLoaderViewController: UIViewController {
         configureNavigationTitle()
         configureSpinner()
         configureMainView()
-        addCloseNavigationBarButton(action: #selector(closeButtonTapped))
+        addCloseNavigationBarButton()
         loadProduct()
     }
 }
@@ -126,11 +126,11 @@ private extension ProductLoaderViewController {
     }
 
     @objc func closeButtonTapped() {
-        guard let productViewController = productViewController else {
+        guard let productFormViewController = productFormViewController else {
             dismiss(animated: true, completion: nil)
             return
         }
-        if productViewController.shouldPopOnBackButton() {
+        if productFormViewController.shouldPopOnBackButton() {
             dismiss(animated: true, completion: nil)
         }
     }
@@ -183,33 +183,31 @@ private extension ProductLoaderViewController {
     }
 
     func presentProductDetails(for product: Product, isEditProductsEnabled: Bool) {
-        let viewController: UIViewController
         if product.productType == .simple && isEditProductsEnabled {
-            let productForm = ProductFormViewController(product: product, currency: currency)
-            viewController = productForm
-
-            // Observes the right navigation bar items from the product form view controller.
-            cancellable = productForm.navigationItemRightBarButtonItems.subscribe { [weak self] rightBarButtonItems in
-                self?.navigationItem.rightBarButtonItems = rightBarButtonItems
+            let productForm = ProductFormViewController(product: product, currency: currency) { viewController in
+                viewController.dismiss(animated: true, completion: nil)
             }
+            productFormViewController = productForm
+
+            navigationController?.pushViewController(productForm, animated: false)
+            productForm.navigationItem.hidesBackButton = true
+            productForm.addCloseNavigationBarButton(target: self, action: #selector(closeButtonTapped))
         } else {
             let viewModel = ProductDetailsViewModel(product: product, currency: currency)
-            viewController = ProductDetailsViewController(viewModel: viewModel)
+            let viewController = ProductDetailsViewController(viewModel: viewModel)
+
+            // Attach
+            addChild(viewController)
+            attachSubview(viewController.view)
+            viewController.didMove(toParent: self)
+
+
+            // And, of course, borrow the Child's Title + right nav bar items
+            title = viewController.title
 
             // Borrows the right nav bar items
             navigationItem.rightBarButtonItems = viewController.navigationItem.rightBarButtonItems
         }
-
-        productViewController = viewController
-
-        // Attach
-        addChild(viewController)
-        attachSubview(viewController.view)
-        viewController.didMove(toParent: self)
-
-
-        // And, of course, borrow the Child's Title + right nav bar items
-        title = viewController.title
     }
 
     /// Removes all of the children UIViewControllers

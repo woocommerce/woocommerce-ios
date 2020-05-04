@@ -29,13 +29,6 @@ final class MainTabViewModel {
 
 
 private extension MainTabViewModel {
-    enum Constants {
-        static let ninetyNinePlus = NSLocalizedString(
-            "99+",
-            comment: "Content of the badge presented over the Orders icon when there are more than 99 orders processing"
-        )
-    }
-
     @objc func requestBadgeCount() {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             DDLogError("# Error: Cannot fetch order count")
@@ -62,14 +55,7 @@ private extension MainTabViewModel {
             return
         }
 
-        let returnValue = readableCount(processingCount)
-
-        onBadgeReload?(returnValue)
-    }
-
-    private func readableCount(_ count: Int) -> String {
-        let localizedCount = NumberFormatter.localizedString(from: NSNumber(value: count), number: .none)
-        return count > 99 ? Constants.ninetyNinePlus : localizedCount
+        onBadgeReload?(NumberFormatter.localizedOrNinetyNinePlus(processingCount))
     }
 
     private func observeBadgeRefreshNotifications() {

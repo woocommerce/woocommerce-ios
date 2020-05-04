@@ -5,7 +5,7 @@ import Yosemite
 protocol SearchUICommand {
     associatedtype Model
     associatedtype CellViewModel
-    associatedtype EmptyStateViewControllerType: UIViewController = EmptySearchResultsViewController
+    associatedtype EmptyStateViewControllerType: UIViewController = EmptyStateViewController
 
     /// The placeholder of the search bar.
     var searchBarPlaceholder: String { get }
@@ -84,13 +84,13 @@ extension SearchUICommand {
 
     /// Creates an instance of `EmptySearchResultsViewController`
     ///
-    func createEmptyStateViewController() -> EmptySearchResultsViewController {
-        EmptySearchResultsViewController()
+    func createEmptyStateViewController() -> EmptyStateViewController {
+        EmptyStateViewController()
     }
 
     /// Default implementation which does not do anything.
     ///
-    func configureEmptyStateViewControllerBeforeDisplay(viewController: EmptySearchResultsViewController,
+    func configureEmptyStateViewControllerBeforeDisplay(viewController: EmptyStateViewController,
                                                         searchKeyword: String) {
         // noop
     }

@@ -3,7 +3,7 @@ import UIKit
 /// A generic data source for the list selector UI `ListSelectorViewController`.
 ///
 protocol ListSelectorCommand {
-    associatedtype Model: Equatable
+    associatedtype Model
     associatedtype Cell: UITableViewCell
     typealias ViewController = ListSelectorViewController<Self, Model, Cell>
 
@@ -101,7 +101,7 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
         tableView.deselectRow(at: indexPath, animated: true)
 
         let selected = command.data[indexPath.row]
-        if selected != command.selected {
+        if !command.isSelected(model: selected) {
             command.handleSelectedChange(selected: selected, viewController: self)
             tableView.reloadData()
         }

@@ -128,7 +128,7 @@ private extension ProductFormTableViewDataSource {
             self?.onNameChange?(newName)
             }, onTextDidBeginEditing: {
                 ServiceLocator.analytics.track(.productDetailViewProductNameTapped)
-        })
+        }, inputFormatter: nil)
         cell.configure(viewModel: viewModel)
     }
 

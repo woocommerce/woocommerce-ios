@@ -97,7 +97,7 @@ let leia = luke.copy(name: "Leia")
 
 In the above, `leia` would have the same `id` and `address` as `luke` because those arguments were not given. 
 
-```json
+```swift
 { id: 1, name: "Leia", address: "Jakku" }
 ```
 
@@ -113,7 +113,7 @@ let lukeWithNoAddress = luke.copy(address: address)
 
 The `lukeWithNoAddress` variable will have a `nil` address as expected:
 
-```json
+```swift
 { id: 1, name: "Luke", address: nil }
 ```
 

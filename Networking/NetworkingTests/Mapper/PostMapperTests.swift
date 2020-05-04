@@ -2,11 +2,11 @@ import XCTest
 @testable import Networking
 
 
-/// SitePostMapper Unit Tests
+/// PostMapper Unit Tests
 ///
-final class SitePostMapperTests: XCTestCase {
+final class PostMapperTests: XCTestCase {
 
-    /// Verifies that all of the SitePost fields are parsed correctly.
+    /// Verifies that all of the Post fields are parsed correctly.
     ///
     func testFieldsAreProperlyParsed() {
         guard let sitePost = mapSitePost() else {
@@ -22,15 +22,15 @@ final class SitePostMapperTests: XCTestCase {
 
 /// Private Methods.
 ///
-private extension SitePostMapperTests {
+private extension PostMapperTests {
 
-    /// Returns the SitePostMapper output upon receiving `site-post` json (Data Encoded)
+    /// Returns the PostMapper output upon receiving `site-post` json (Data Encoded)
     ///
-    func mapSitePost() -> SitePost? {
+    func mapSitePost() -> Post? {
         guard let response = Loader.contentsOf("site-post") else {
             return nil
         }
 
-        return try! SitePostMapper().map(response: response)
+        return try! PostMapper().map(response: response)
     }
 }

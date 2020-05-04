@@ -1,9 +1,9 @@
 import Foundation
 
 
-/// Represents a SitePost Entity.
+/// Represents a Post Entity.
 ///
-public struct SitePost: Codable {
+public struct Post: Codable {
 
     /// WordPress.com Site Identifier.
     ///
@@ -40,7 +40,7 @@ public struct SitePost: Codable {
 
 /// Defines all of the Site Post CodingKeys
 ///
-private extension SitePost {
+private extension Post {
     enum CodingKeys: String, CodingKey {
         case siteID         = "site_ID"
         case password       = "password"
@@ -50,13 +50,13 @@ private extension SitePost {
 
 // MARK: - Comparable Conformance
 //
-extension SitePost: Comparable {
-    public static func == (lhs: SitePost, rhs: SitePost) -> Bool {
+extension Post: Comparable {
+    public static func == (lhs: Post, rhs: Post) -> Bool {
         return lhs.siteID == rhs.siteID &&
             lhs.password == rhs.password
     }
 
-    public static func < (lhs: SitePost, rhs: SitePost) -> Bool {
+    public static func < (lhs: Post, rhs: Post) -> Bool {
         return lhs.siteID < rhs.siteID
     }
 

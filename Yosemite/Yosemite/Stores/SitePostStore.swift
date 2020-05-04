@@ -47,7 +47,7 @@ private extension SitePostStore {
     ///
     func updateSitePostPassword(siteID: Int64, postID: Int64, password: String, onCompletion: @escaping (_ password: String?, _ error: Error?) -> Void) {
         let remote = SitePostsRemote(network: network)
-        let newSitePost = SitePost(siteID: siteID, password: password)
+        let newSitePost = Post(siteID: siteID, password: password)
         remote.updateSitePost(for: siteID, postID: postID, post: newSitePost) { (sitePost, error) in
             guard error == nil else {
                 onCompletion(nil, error)

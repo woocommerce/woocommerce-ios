@@ -37,10 +37,6 @@ final class ProductLoaderViewController: UIViewController {
     ///
     private var productFormViewController: UIViewController?
 
-    /// Observation token for the product form right navigation bar items
-    ///
-    private var cancellable: ObservationToken?
-
     // MARK: - Initializers
 
     init(productID: Int64, siteID: Int64, currency: String) {
@@ -55,9 +51,6 @@ final class ProductLoaderViewController: UIViewController {
         fatalError("Please specify the ProductID and SiteID!")
     }
 
-    deinit {
-        cancellable?.cancel()
-    }
 
     // MARK: - Overridden Methods
 
@@ -201,11 +194,8 @@ private extension ProductLoaderViewController {
             attachSubview(viewController.view)
             viewController.didMove(toParent: self)
 
-
             // And, of course, borrow the Child's Title + right nav bar items
             title = viewController.title
-
-            // Borrows the right nav bar items
             navigationItem.rightBarButtonItems = viewController.navigationItem.rightBarButtonItems
         }
     }

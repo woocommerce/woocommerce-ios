@@ -89,7 +89,9 @@ final class AztecEditorViewController: UIViewController, Editor {
     }()
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
-        let keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: handleKeyboardFrameUpdate(keyboardFrame:))
+        let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
+            self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
+        }
         return keyboardFrameObserver
     }()
 
@@ -129,6 +131,7 @@ final class AztecEditorViewController: UIViewController, Editor {
         content = getHTML()
 
         refreshPlaceholderVisibility()
+        handleSwipeBackGesture()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -254,6 +257,10 @@ extension AztecEditorViewController {
             return false
         }
         return true
+    }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        return shouldPopOnBackButton()
     }
 
     private func presentBackNavigationActionSheet() {

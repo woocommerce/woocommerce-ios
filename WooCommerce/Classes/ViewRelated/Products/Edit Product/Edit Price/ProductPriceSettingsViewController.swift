@@ -35,7 +35,9 @@ final class ProductPriceSettingsViewController: UIViewController {
     private let onCompletion: Completion
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
-        let keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: handleKeyboardFrameUpdate(keyboardFrame:))
+        let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
+            self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
+        }
         return keyboardFrameObserver
     }()
 
@@ -60,6 +62,7 @@ final class ProductPriceSettingsViewController: UIViewController {
         configureSections()
         configureTableView()
         retrieveProductTaxClass()
+        handleSwipeBackGesture()
     }
 }
 
@@ -133,6 +136,10 @@ extension ProductPriceSettingsViewController {
             return false
         }
         return true
+    }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        return shouldPopOnBackButton()
     }
 
     @objc private func completeUpdating() {

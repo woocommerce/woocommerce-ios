@@ -28,7 +28,7 @@
 "%1$@-%2$@" = "%1$@-%2$@";
 
 /* <item total> (<item individual price> multipled by <quantity>) */
-"%1$@ (%2$@ x %3$@)" = "%1$@ (%2$@ x %3$@)";
+"%@ (%@ x %@)" = "%1$@ (%2$@ x %3$@)";
 
 /* 1 Item */
 "%@ Item" = "%@ elemento";
@@ -37,10 +37,10 @@
 "%@ Items" = "%@ elementi";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
-"%1$@ left a review on %2$@" = "%1$@ ha lasciato una recensione su %2$@";
+"%@ left a review on %@" = "%1$@ ha lasciato una recensione su %2$@";
 
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
-"%1$@ via %2$@" = "%1$@ tramite %2$@";
+"%@ via %@" = "%1$@ tramite %2$@";
 
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld in magazzino";
@@ -200,7 +200,7 @@
 
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}.
    VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
-"Bar number %1$i, %2$@, " = "Numero della barra %1$i, %2$@, ";
+"Bar number %i, %@, " = "Numero della barra %1$i, %2$@, ";
 
 /* Begin fulfill order button title */
 "Begin Fulfillment" = "Inizia evasione";
@@ -808,7 +808,7 @@
 "Microsoft Outlook" = "Microsoft Outlook";
 
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
-"Minimum value %1$@, maximum value %2$@" = "Valore minimo %1$@, valore massimo %2$@";
+"Minimum value %@, maximum value %@" = "Valore minimo %1$@, valore massimo %2$@";
 
 /* Statistical unit - a single week */
 "Month" = "Mese";
@@ -1499,7 +1499,7 @@
 "Start writing..." = "Inizia a scrivere...";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
-"Starting period %1$@, ending period %2$@" = "Periodo di inizio %1$@, periodo di fine %2$@";
+"Starting period %@, ending period %@" = "Periodo di inizio %1$@, periodo di fine %2$@";
 
 /* Product status setting list selector navigation title
    Status label in Product Settings */
@@ -2088,7 +2088,7 @@
 "WordPress Media Library" = "Libreria multimediale WordPress";
 
 /* No comment provided by engineer. */
-"WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "La versione di WordPress è troppo vecchia Il sito %1$@ usa WordPress %2$@. Ti suggeriamo di aggiornare all'ultima versione, o, almeno, alla versione %3$@";
+"WordPress version too old. The site at %@ uses WordPress %@. We recommend to update to the latest version, or at least %@" = "La versione di WordPress è troppo vecchia Il sito %1$@ usa WordPress %2$@. Ti suggeriamo di aggiornare all'ultima versione, o, almeno, alla versione %3$@";
 
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo Mail";

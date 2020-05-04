@@ -1,4 +1,13 @@
-@testable import Kingfisher
+import UIKit
+@testable import WooCommerce
+
+final class MockImageDownloadTask: ImageDownloadTask {
+    private(set) var isCancelled: Bool = false
+
+    func cancel() {
+        isCancelled = true
+    }
+}
 
 final class MockImageDownloader: ImageDownloader {
     // Mocks in-memory cache.
@@ -6,29 +15,15 @@ final class MockImageDownloader: ImageDownloader {
 
     init(imagesByKey: [String: UIImage]) {
         self.imagesByKey = imagesByKey
-        super.init(name: "Mock!")
     }
 
-    override func downloadImage(with url: URL,
-                                options: KingfisherOptionsInfo? = nil,
-                                progressBlock: DownloadProgressBlock?,
-                                completionHandler: ((Result<ImageLoadingResult, KingfisherError>) -> Void)? = nil) -> DownloadTask? {
+    func downloadImage(with url: URL, onCompletion: ((Result<UIImage, Error>) -> Void)?) -> ImageDownloadTask? {
         if let image = imagesByKey[url.absoluteString] {
-            completionHandler?(.success(.init(image: image, url: url, originalData: Data())))
+            onCompletion?(.success(image))
         } else {
-            completionHandler?(.failure(.cacheError(reason: .imageNotExisting(key: url.absoluteString) )))
+            let error = NSError(domain: "MockDownloadable", code: 1, userInfo: nil)
+            onCompletion?(.failure(error))
         }
-        return nil
-    }
-
-    override func downloadImage(with url: URL,
-                                options: KingfisherParsedOptionsInfo,
-                                completionHandler: ((Result<ImageLoadingResult, KingfisherError>) -> Void)? = nil) -> DownloadTask? {
-        if let image = imagesByKey[url.absoluteString] {
-            completionHandler?(.success(.init(image: image, url: url, originalData: Data())))
-        } else {
-            completionHandler?(.failure(.cacheError(reason: .imageNotExisting(key: url.absoluteString) )))
-        }
-        return nil
+        return MockImageDownloadTask()
     }
 }

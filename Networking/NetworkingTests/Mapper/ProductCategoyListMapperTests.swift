@@ -2,6 +2,9 @@ import XCTest
 @testable import Networking
 
 final class ProductCategoryListMapperTests: XCTestCase {
+    /// Dummy Site ID.
+    ///
+    private let dummySiteID: Int64 = 33334444
 
     /// Verifies that all of the ProductCatefory Fields are parsed correctly.
     ///
@@ -9,10 +12,12 @@ final class ProductCategoryListMapperTests: XCTestCase {
         let productCategories = try mapLoadAllProductCategoriesResponse()
         XCTAssertEqual(productCategories.count, 2)
 
-        let firstProductCategory = productCategories[0]
-        XCTAssertEqual(firstProductCategory.categoryID, 104)
-        XCTAssertEqual(firstProductCategory.name, "Dress")
-        XCTAssertEqual(firstProductCategory.slug, "Shirt")
+        let secondProductCategory = productCategories[1]
+        XCTAssertEqual(secondProductCategory.categoryID, 20)
+        XCTAssertEqual(secondProductCategory.parentID, 17)
+        XCTAssertEqual(secondProductCategory.siteID, dummySiteID)
+        XCTAssertEqual(secondProductCategory.name, "American")
+        XCTAssertEqual(secondProductCategory.slug, "american")
     }
 }
 
@@ -28,7 +33,7 @@ private extension ProductCategoryListMapperTests {
             return []
         }
 
-        return try ProductCategoryListMapper().map(response: response)
+        return try ProductCategoryListMapper(siteID: dummySiteID).map(response: response)
     }
 
     /// Returns the ProductListMapper output upon receiving `categories-all`

@@ -14,6 +14,8 @@ final class ProductImageViewController: UIViewController {
 
     private var previousBarTintColor: UIColor?
 
+    private var imageLoaderTask: Cancellable?
+
     init(productImage: ProductImage,
          productUIImageLoader: ProductUIImageLoader,
          onDeletion: @escaping Deletion) {
@@ -25,6 +27,10 @@ final class ProductImageViewController: UIViewController {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit {
+        imageLoaderTask?.cancel()
     }
 
     override func viewDidLoad() {
@@ -63,7 +69,7 @@ private extension ProductImageViewController {
         imageView.contentMode = Constants.imageContentMode
         imageView.clipsToBounds = Constants.clipToBounds
 
-        productUIImageLoader.requestImage(productImage: productImage) { [weak imageView] image in
+        imageLoaderTask = productUIImageLoader.requestImage(productImage: productImage) { [weak imageView] image in
             imageView?.image = image
         }
     }

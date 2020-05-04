@@ -1,11 +1,19 @@
+4.2
+-----
+ 
 4.1
 -----
+- Fix an intermittent crash when downloading Orders
+- The Photo Library permission alert shouldn't be prompted when opening the readonly product details or edit product for simple products, which is reproducible on iOS 11 or 12 devices. (The permission is only triggered when uploading images in Zendesk support or in debug builds with Products M2 enabled.)
+- [internal] Updated the empty search result views for Products and Orders. https://git.io/Jvdap
+
  
 4.0
 -----
 - Products is now available with limited editing for simple products!
 - Fix pulling to refresh on the Processing tab sometimes will not show the up-to-date orders.
 - Edit Product > Price Settings: schedule sale is now available even when either the start or end date is not set, and the sale end date can be removed now.
+- Improved stats: fixed a crash when loading improved stats on a day when daily saving time changes.
 - [internal] Changed the Shipping and Tax classes list loading so that any cached data is shown right away
 - [internal] Edit Products M2: added an image upload source for product images - WordPress Media Library.
 - [internal] Slightly changed the dependency graph of the database fetching component. Please watch out for data loading regressions.

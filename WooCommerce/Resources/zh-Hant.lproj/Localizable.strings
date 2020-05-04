@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-04-09 16:23:30+0000 */
+/* Translation-Revision-Date: 2020-04-18 00:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -28,7 +28,7 @@
 "%1$@-%2$@" = "%1$@-%2$@";
 
 /* <item total> (<item individual price> multipled by <quantity>) */
-"%1$@ (%2$@ x %3$@)" = "%1$@ (%2$@ x %3$@)";
+"%@ (%@ x %@)" = "%1$@ (%2$@ x %3$@)";
 
 /* 1 Item */
 "%@ Item" = "%@ 個品項";
@@ -37,10 +37,10 @@
 "%@ Items" = "%@ 個品項";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
-"%1$@ left a review on %2$@" = "%1$@ left a review on %2$@";
+"%@ left a review on %@" = "%@ left a review on %@";
 
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
-"%1$@ via %2$@" = "已在 %1$@ 收到 %2$@ 付款";
+"%@ via %@" = "已在 %1$@ 收到 %2$@ 付款";
 
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld 尚有存貨";
@@ -200,7 +200,7 @@
 
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}.
    VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
-"Bar number %1$i, %2$@, " = "長條數目 %1$i, %2$@,";
+"Bar number %i, %@, " = "長條數目 %1$i, %2$@,";
 
 /* Begin fulfill order button title */
 "Begin Fulfillment" = "開始履行";
@@ -251,7 +251,7 @@
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "隨時隨地掌握最愛網站的最新動態並加入討論。";
 
 /* Title of the Categories row on Product main screen */
-"Categories" = "Categories";
+"Categories" = "分類";
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "憑證錯誤";
@@ -367,10 +367,10 @@
 "Date shipped" = "出貨日期";
 
 /* Action sheet option to sort products from the newest to the oldest */
-"Date: Newest to Oldest" = "Date: Newest to Oldest";
+"Date: Newest to Oldest" = "日期：從最新到最舊排序";
 
 /* Action sheet option to sort products from the oldest to the newest */
-"Date: Oldest to Newest" = "Date: Oldest to Newest";
+"Date: Oldest to Newest" = "日期：從最舊到最新排序";
 
 /* Statistical unit - a single day */
 "Day" = "天";
@@ -526,13 +526,13 @@
 "Feature Request" = "功能要求";
 
 /* Featured Product switch in Product Catalog Visibility */
-"Featured Product" = "Featured Product";
+"Featured Product" = "特色商品";
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "使用密碼管理員填寫";
 
 /* Title of the toolbar button to filter products by different attributes. */
-"Filter" = "Filter";
+"Filter" = "篩選";
 
 /* User role badge */
 "Follower" = "關注者";
@@ -808,7 +808,7 @@
 "Microsoft Outlook" = "Microsoft Outlook";
 
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
-"Minimum value %1$@, maximum value %2$@" = "最小值：%1$@；最大值：%2$@";
+"Minimum value %@, maximum value %@" = "最小值：%1$@；最大值：%2$@";
 
 /* Statistical unit - a single week */
 "Month" = "月";
@@ -878,7 +878,7 @@
 "No data available" = "目前沒有資料";
 
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
-"No images yet" = "No images yet";
+"No images yet" = "尚未有圖片";
 
 /* The text on the placeholder overlay when there are no product variations on the Products tab */
 "No product variations yet" = "尚未有任何不同型號產品";
@@ -1025,7 +1025,7 @@
 "Pending Review" = "待審中";
 
 /* Display label for the product's pending status */
-"Pending review" = "Pending review";
+"Pending review" = "待審中";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "電話號碼：%@";
@@ -1219,7 +1219,7 @@
 "Remove Link" = "移除連結";
 
 /* Label action for removing a link from the editor */
-"Remove end date" = "Remove end date";
+"Remove end date" = "移除結束日期";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "報告當機";
@@ -1302,7 +1302,7 @@
 "Search products" = "搜尋產品";
 
 /* Display label for the product's catalog visibility */
-"Search results only" = "Search results only";
+"Search results only" = "僅限搜尋結果";
 
 /* Page title for the select a different store screen */
 "Select Store" = "選取商店";
@@ -1311,13 +1311,13 @@
 "Select carrier" = "選擇貨運業者";
 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale to a certain date */
-"Select end date" = "Select end date";
+"Select end date" = "選擇結束日期";
 
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "選取段落風格";
 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale from a certain date */
-"Select start date" = "Select start date";
+"Select start date" = "選擇開始日期";
 
 /* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
 "Selected Store" = "已選取商店";
@@ -1381,10 +1381,10 @@
 "Shipping only" = "僅限運送";
 
 /* Display label for the product's catalog visibility */
-"Shop and search results" = "Shop and search results";
+"Shop and search results" = "商店和搜尋結果";
 
 /* Display label for the product's catalog visibility */
-"Shop only" = "Shop only";
+"Shop only" = "僅限商店";
 
 /* The navigation bar title of the edit short description screen.
    Title of the Short Description row on Product main screen */
@@ -1483,7 +1483,7 @@
 
 /* Message title for Sort Products Action Sheet
    Title of the toolbar button to sort products in different ways. */
-"Sort by" = "Sort by";
+"Sort by" = "排序依據";
 
 /* Display label for the review's spam status
    Verb, spam a comment */
@@ -1499,11 +1499,11 @@
 "Start writing..." = "開始撰寫內容…";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
-"Starting period %1$@, ending period %2$@" = "期限：%1$@ 至 %2$@";
+"Starting period %@, ending period %@" = "期限：%1$@ 至 %2$@";
 
 /* Product status setting list selector navigation title
    Status label in Product Settings */
-"Status" = "Status";
+"Status" = "狀態";
 
 /* A descriptive label prefix. Example: 'Stock quantity: 19' */
 "Stock quantity:" = "存貨數量：";
@@ -1754,17 +1754,17 @@
 "This product couldn't be loaded" = "無法載入此產品";
 
 /* Footer text in Product Catalog Visibility */
-"This setting determines which shop pages products will be listed on." = "This setting determines which shop pages products will be listed on.";
+"This setting determines which shop pages products will be listed on." = "此設定可決定產品要在哪個商店頁面顯示。";
 
 /* Placeholder in the Product Title row on Product form screen.
    Product details screen — product title descriptive label */
 "Title" = "標題";
 
 /* Action sheet option to sort products by ascending product name */
-"Title: A to Z" = "Title: A to Z";
+"Title: A to Z" = "標題：A 到 Z";
 
 /* Action sheet option to sort products by descending product name */
-"Title: Z to A" = "Title: Z to A";
+"Title: Z to A" = "標題：Z 到 A";
 
 /* Title of the cell in Product Price Settings > Schedule sale to a certain date */
 "To" = "至";
@@ -1900,7 +1900,7 @@
 "Unapproves the comment" = "駁回此留言";
 
 /* Placeholder of the Product Categories row on Product main screen */
-"Uncategorized" = "Uncategorized";
+"Uncategorized" = "未分類";
 
 /* Accessibility label for underline button on formatting toolbar. */
 "Underline" = "底線";
@@ -2063,7 +2063,7 @@
 "We’re rolling out improvements to stats for stores using the WooCommerce Admin plugin" = "我們即將為使用 WooCommerce 管理員外掛程式的商店推出統計資料改善功能";
 
 /* The info of the Work In Progress top banner on the Products tab */
-"We’ve added editing functionality to simple products. Keep an eye out for more options soon!" = "We’ve added editing functionality to simple products. Keep an eye out for more options soon!";
+"We’ve added editing functionality to simple products. Keep an eye out for more options soon!" = "我們已在簡單產品中新增了編輯功能。有更多選項即將登場，敬請密切注意！";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "我的網站位址是？";
@@ -2088,7 +2088,7 @@
 "WordPress Media Library" = "WordPress 媒體庫";
 
 /* No comment provided by engineer. */
-"WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "WordPress 版本過舊。網址為 %1$@ 的網站使用 WordPress %2$@。建議更新至最新版本，或至少更新至 %3$@";
+"WordPress version too old. The site at %@ uses WordPress %@. We recommend to update to the latest version, or at least %@" = "WordPress 版本過舊。網址為 %1$@ 的網站使用 WordPress %2$@。建議更新至最新版本，或至少更新至 %3$@";
 
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo奇摩電子信箱";

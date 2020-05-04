@@ -25,7 +25,9 @@ final class TextViewViewController: UIViewController {
     @IBOutlet private weak var placeholderLabelBottomConstraint: NSLayoutConstraint!
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
-        let keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: handleKeyboardFrameUpdate(keyboardFrame:))
+        let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
+            self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
+        }
         return keyboardFrameObserver
     }()
 
@@ -66,6 +68,7 @@ final class TextViewViewController: UIViewController {
         configurePlaceholderLabel()
         refreshPlaceholderVisibility()
         startListeningToNotifications()
+        handleSwipeBackGesture()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -84,6 +87,10 @@ extension TextViewViewController {
             return false
         }
         return true
+    }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        return shouldPopOnBackButton()
     }
 
     @objc private func completeEditing() {

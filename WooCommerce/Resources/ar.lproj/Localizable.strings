@@ -28,7 +28,7 @@
 "%1$@-%2$@" = "‎%1$@-%2$@‎";
 
 /* <item total> (<item individual price> multipled by <quantity>) */
-"%1$@ (%2$@ x %3$@)" = "%1$@ (%2$@ x ‏%3$@)";
+"%@ (%@ x %@)" = "%1$@ (%2$@ x ‏%3$@)";
 
 /* 1 Item */
 "%@ Item" = "%@ من العناصر";
@@ -37,10 +37,10 @@
 "%@ Items" = "%@ من العناصر";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
-"%1$@ left a review on %2$@" = "تركَ %1$@ مراجعة حول %2$@";
+"%@ left a review on %@" = "تركَ %1$@ مراجعة حول %2$@";
 
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
-"%1$@ via %2$@" = "%1$@ بواسطة %2$@";
+"%@ via %@" = "%1$@ بواسطة %2$@";
 
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld متوافرة";
@@ -200,7 +200,7 @@
 
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}.
    VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
-"Bar number %1$i, %2$@, " = "رقم الشريط %1$i, %2$@, ";
+"Bar number %i, %@, " = "رقم الشريط %1$i, %2$@, ";
 
 /* Begin fulfill order button title */
 "Begin Fulfillment" = "بدء التنفيذ";
@@ -808,7 +808,7 @@
 "Microsoft Outlook" = "Microsoft Outlook";
 
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
-"Minimum value %1$@, maximum value %2$@" = "قيمة الحد الأدنى %1$@، قيمة الحد الأقصى %2$@";
+"Minimum value %@, maximum value %@" = "قيمة الحد الأدنى %1$@، قيمة الحد الأقصى %2$@";
 
 /* Statistical unit - a single week */
 "Month" = "شهر";
@@ -1499,7 +1499,7 @@
 "Start writing..." = "بدء الكتابة...";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
-"Starting period %1$@, ending period %2$@" = "فترة البدء %1$@، فترة الانتهاء %2$@";
+"Starting period %@, ending period %@" = "فترة البدء %1$@، فترة الانتهاء %2$@";
 
 /* Product status setting list selector navigation title
    Status label in Product Settings */
@@ -2088,7 +2088,7 @@
 "WordPress Media Library" = "مكتبة وسائط ووردبريس";
 
 /* No comment provided by engineer. */
-"WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "إصدار WordPress قديم جدًا. يستخدم الموقع في %1$@ WordPress %2$@. نوصي بالتحديث إلى أحدث إصدار أو الإصدار %3$@ على الأقل";
+"WordPress version too old. The site at %@ uses WordPress %@. We recommend to update to the latest version, or at least %@" = "إصدار WordPress قديم جدًا. يستخدم الموقع في %1$@ WordPress %2$@. نوصي بالتحديث إلى أحدث إصدار أو الإصدار %3$@ على الأقل";
 
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo Mail";

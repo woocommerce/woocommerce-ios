@@ -1,3 +1,4 @@
+import Photos
 import UIKit
 import Yosemite
 
@@ -7,7 +8,9 @@ final class ProductFormViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
-        let keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: handleKeyboardFrameUpdate(keyboardFrame:))
+        let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
+            self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
+        }
         return keyboardFrameObserver
     }()
 
@@ -18,7 +21,8 @@ final class ProductFormViewController: UIViewController {
     private var product: Product {
         didSet {
             defer {
-                updateNavigationBar(isUpdateEnabled: product != originalProduct)
+                let isUpdateEnabled = hasUnsavedChanges(product: product)
+                updateNavigationBar(isUpdateEnabled: isUpdateEnabled)
             }
 
             if isNameTheOnlyChange(oldProduct: oldValue, newProduct: product) {
@@ -57,8 +61,9 @@ final class ProductFormViewController: UIViewController {
         self.product = product
         self.viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
         self.productImageActionHandler = ProductImageActionHandler(siteID: product.siteID,
-                                                         product: product)
-        self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler)
+                                                                   product: product)
+        self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler,
+                                                                phAssetImageLoaderProvider: { PHImageManager.default() })
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel,
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
                                                                   productUIImageLoader: productUIImageLoader)
@@ -82,6 +87,7 @@ final class ProductFormViewController: UIViewController {
         configureTableView()
 
         startListeningToNotifications()
+        handleSwipeBackGesture()
 
         productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else {
@@ -164,6 +170,40 @@ private extension ProductFormViewController {
 
         navigationController?.present(inProgressViewController, animated: true, completion: nil)
 
+        updateProductRemotely()
+    }
+
+    func updateProductRemotely() {
+        waitUntilAllImagesAreUploaded { [weak self] in
+            self?.dispatchUpdateProductAction()
+        }
+    }
+
+    func waitUntilAllImagesAreUploaded(onCompletion: @escaping () -> Void) {
+        let group = DispatchGroup()
+
+        // Waits for all product images to be uploaded before updating the product remotely.
+        group.enter()
+        let observationToken = productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
+            guard productImageStatuses.hasPendingUpload == false else {
+                return
+            }
+
+            guard let self = self else {
+                return
+            }
+
+            self.product = self.productUpdater.imagesUpdated(images: productImageStatuses.images)
+            group.leave()
+        }
+
+        group.notify(queue: .main) {
+            observationToken.cancel()
+            onCompletion()
+        }
+    }
+
+    func dispatchUpdateProductAction() {
         let action = ProductAction.updateProduct(product: product) { [weak self] (product, error) in
             guard let product = product, error == nil else {
                 let errorDescription = error?.localizedDescription ?? "No error specified"
@@ -206,7 +246,14 @@ private extension ProductFormViewController {
         present(alert, animated: true, completion: nil)
     }
 
-    func shareProduct() {
+    func displayWebViewForProductInStore() {
+        guard let url = URL(string: product.permalink) else {
+            return
+        }
+        WebviewHelper.launch(url, with: self)
+    }
+
+    func displayShareProduct() {
         guard let url = URL(string: product.permalink) else {
             return
         }
@@ -284,12 +331,11 @@ extension ProductFormViewController: UITableViewDelegate {
                 ServiceLocator.analytics.track(.productDetailViewInventorySettingsTapped)
                 editInventorySettings()
             case .categories:
-                // TODO-2000
-                break
+                // TODO-2000 Edit Product M3 analytics
+                editCategories()
             case .briefDescription:
                 // TODO-1879: Edit Products M2 analytics
                 editBriefDescription()
-                break
             }
         }
     }
@@ -374,17 +420,25 @@ private extension ProductFormViewController {
 //
 extension ProductFormViewController {
     override func shouldPopOnBackButton() -> Bool {
-        if product != originalProduct {
+        if hasUnsavedChanges(product: product) {
             presentBackNavigationActionSheet()
             return false
         }
         return true
     }
 
+    override func shouldPopOnSwipeBack() -> Bool {
+        return shouldPopOnBackButton()
+    }
+
     private func presentBackNavigationActionSheet() {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
             self?.navigationController?.popViewController(animated: true)
         })
+    }
+
+    private func hasUnsavedChanges(product: Product) -> Bool {
+        return product != originalProduct || productImageActionHandler.productImageStatuses.hasPendingUpload
     }
 }
 
@@ -544,6 +598,16 @@ private extension ProductFormViewController {
     }
 }
 
+// MARK: Action - Edit Product Categories
+//
+
+private extension ProductFormViewController {
+    func editCategories() {
+        let categoryListViewController = ProductCategoryListViewController(product: product)
+        show(categoryListViewController, sender: self)
+    }
+}
+
 // MARK: Convenience Methods
 //
 private extension ProductFormViewController {
@@ -566,8 +630,12 @@ private extension ProductFormViewController {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
 
+        actionSheet.addDefaultActionWithTitle(ActionSheetStrings.viewProduct) { [weak self] _ in
+            self?.displayWebViewForProductInStore()
+        }
+
         actionSheet.addDefaultActionWithTitle(ActionSheetStrings.share) { [weak self] _ in
-            self?.shareProduct()
+            self?.displayShareProduct()
         }
 
         actionSheet.addDefaultActionWithTitle(ActionSheetStrings.productSettings) { [weak self] _ in
@@ -585,6 +653,8 @@ private extension ProductFormViewController {
     }
 
     enum ActionSheetStrings {
+        static let viewProduct = NSLocalizedString("View Product in Store",
+                                                   comment: "Button title View product in store in Edit Product More Options Action Sheet")
         static let share = NSLocalizedString("Share", comment: "Button title Share in Edit Product More Options Action Sheet")
         static let productSettings = NSLocalizedString("Product Settings", comment: "Button title Product Settings in Edit Product More Options Action Sheet")
         static let cancel = NSLocalizedString("Cancel", comment: "Button title Cancel in Edit Product More Options Action Sheet")

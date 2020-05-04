@@ -3,6 +3,7 @@ import Foundation
 import XCTest
 @testable import WooCommerce
 import Yosemite
+import Storage
 
 private typealias SyncReason = OrdersViewModel.SyncReason
 private typealias Defaults = OrdersViewModel.Defaults
@@ -18,6 +19,22 @@ final class OrdersViewModelTests: XCTestCase {
         // noop
     }
 
+    private var storageManager: StorageManagerType!
+
+    private var storage: StorageType {
+        storageManager.viewStorage
+    }
+
+    override func setUp() {
+        super.setUp()
+        storageManager = MockupStorageManager()
+    }
+
+    override func tearDown() {
+        storageManager = nil
+        super.tearDown()
+    }
+
     // Test that when pulling to refresh on a filtered list (e.g. Processing tab), the action
     // returned will be for:
     //
@@ -26,12 +43,11 @@ final class OrdersViewModelTests: XCTestCase {
     //
     func testPullingToRefreshOnFilteredListItDeletesAndPerformsDualFetch() {
         // Arrange
-        let viewModel = OrdersViewModel()
+        let viewModel = OrdersViewModel(statusFilter: orderStatus(with: .processing))
 
         // Act
         let action = viewModel.synchronizationAction(
             siteID: siteID,
-            statusKey: OrderStatusEnum.processing.rawValue,
             pageNumber: Defaults.pageFirstIndex,
             pageSize: pageSize,
             reason: SyncReason.pullToRefresh,
@@ -53,12 +69,11 @@ final class OrdersViewModelTests: XCTestCase {
     //
     func testFirstPageLoadOnFilteredListWithNonPullToRefreshReasonsWillOnlyPerformDualFetch() {
         // Arrange
-        let viewModel = OrdersViewModel()
+        let viewModel = OrdersViewModel(statusFilter: orderStatus(with: .processing))
 
         // Act
         let action = viewModel.synchronizationAction(
             siteID: siteID,
-            statusKey: OrderStatusEnum.processing.rawValue,
             pageNumber: Defaults.pageFirstIndex,
             pageSize: pageSize,
             reason: nil,
@@ -81,12 +96,11 @@ final class OrdersViewModelTests: XCTestCase {
     //
     func testPullingToRefreshOnAllOrdersListDeletesAndFetchesFirstPageOfAllOrdersOnly() {
         // Arrange
-        let viewModel = OrdersViewModel()
+        let viewModel = OrdersViewModel(statusFilter: nil)
 
         // Act
         let action = viewModel.synchronizationAction(
             siteID: siteID,
-            statusKey: nil,
             pageNumber: Defaults.pageFirstIndex,
             pageSize: pageSize,
             reason: SyncReason.pullToRefresh,
@@ -108,12 +122,11 @@ final class OrdersViewModelTests: XCTestCase {
     //
     func testFirstPageLoadOnAllOrdersListWithNonPullToRefreshReasonsWillOnlyPerformSingleFetch() {
         // Arrange
-        let viewModel = OrdersViewModel()
+        let viewModel = OrdersViewModel(statusFilter: nil)
 
         // Act
         let action = viewModel.synchronizationAction(
             siteID: siteID,
-            statusKey: nil,
             pageNumber: Defaults.pageFirstIndex,
             pageSize: pageSize,
             reason: nil,
@@ -131,12 +144,11 @@ final class OrdersViewModelTests: XCTestCase {
 
     func testSubsequentPageLoadsOnFilteredListWillFetchTheGivenPageOnThatList() {
         // Arrange
-        let viewModel = OrdersViewModel()
+        let viewModel = OrdersViewModel(statusFilter: orderStatus(with: .pending))
 
         // Act
         let action = viewModel.synchronizationAction(
             siteID: siteID,
-            statusKey: OrderStatusEnum.pending.rawValue,
             pageNumber: Defaults.pageFirstIndex + 3,
             pageSize: pageSize,
             reason: nil,
@@ -155,12 +167,11 @@ final class OrdersViewModelTests: XCTestCase {
 
     func testSubsequentPageLoadsOnAllOrdersListWillFetchTheGivenPageOnThatList() {
         // Arrange
-        let viewModel = OrdersViewModel()
+        let viewModel = OrdersViewModel(statusFilter: nil)
 
         // Act
         let action = viewModel.synchronizationAction(
             siteID: siteID,
-            statusKey: nil,
             pageNumber: Defaults.pageFirstIndex + 5,
             pageSize: pageSize,
             reason: nil,
@@ -175,5 +186,107 @@ final class OrdersViewModelTests: XCTestCase {
         XCTAssertNil(statusKey)
         XCTAssertEqual(pageNumber, Defaults.pageFirstIndex + 5)
         XCTAssertEqual(pageSize, self.pageSize)
+    }
+
+    func testGivenAFilterItLoadsTheOrdersMatchingThatFilterFromTheDB() {
+        // Arrange
+        let viewModel = OrdersViewModel(storageManager: storageManager,
+                                        statusFilter: orderStatus(with: .processing))
+
+        let processingOrders = (0..<10).map { insertOrder(id: $0, status: .processing) }
+        let completedOrders = (100..<105).map { insertOrder(id: $0, status: .completed) }
+
+        XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), processingOrders.count + completedOrders.count)
+
+        // Act
+        viewModel.activateAndForwardUpdates(to: UITableView())
+
+        // Assert
+        XCTAssertTrue(viewModel.isFiltered)
+        XCTAssertFalse(viewModel.isEmpty)
+        XCTAssertEqual(viewModel.numberOfObjects, processingOrders.count)
+
+        let fetchedOrderIDs = Set(viewModel.orders.map { $0.orderID })
+        let processingOrderIDs = Set(processingOrders.map { $0.orderID })
+        XCTAssertEqual(fetchedOrderIDs, processingOrderIDs)
+    }
+
+    func testGivenNoFilterItLoadsAllTheOrdersFromTheDB() {
+        // Arrange
+        let viewModel = OrdersViewModel(storageManager: storageManager, statusFilter: nil)
+
+        let allInsertedOrders = [
+            (0..<10).map { insertOrder(id: $0, status: .processing) },
+            (100..<105).map { insertOrder(id: $0, status: .completed) },
+            (200..<203).map { insertOrder(id: $0, status: .pending) },
+        ].flatMap { $0 }
+
+        XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), allInsertedOrders.count)
+
+        // Act
+        viewModel.activateAndForwardUpdates(to: UITableView())
+
+        // Assert
+        XCTAssertFalse(viewModel.isFiltered)
+        XCTAssertFalse(viewModel.isEmpty)
+        XCTAssertEqual(viewModel.numberOfObjects, allInsertedOrders.count)
+
+        let fetchedOrderIDs = Set(viewModel.orders.map { $0.orderID })
+        let allInsertedOrderIDs = Set(allInsertedOrders.map { $0.orderID })
+        XCTAssertEqual(fetchedOrderIDs, allInsertedOrderIDs)
+    }
+}
+
+// MARK: - Helpers
+
+private extension OrdersViewModel {
+    /// Returns the Order instances for all the rows
+    ///
+    var orders: [Yosemite.Order] {
+        (0..<numberOfSections).flatMap { section in
+            (0..<numberOfRows(in: section)).map { row in
+                detailsViewModel(at: IndexPath(row: row, section: section)).order
+            }
+        }
+    }
+}
+
+// MARK: - Builders
+
+private extension OrdersViewModelTests {
+    func orderStatus(with status: OrderStatusEnum) -> Yosemite.OrderStatus {
+        OrderStatus(name: nil, siteID: siteID, slug: status.rawValue, total: 0)
+    }
+
+    func insertOrder(id orderID: Int64, status: OrderStatusEnum) -> Yosemite.Order {
+        let readonlyOrder = Order(siteID: siteID,
+                                  orderID: orderID,
+                                  parentID: 0,
+                                  customerID: 11,
+                                  number: "963",
+                                  statusKey: status.rawValue,
+                                  currency: "USD",
+                                  customerNote: "",
+                                  dateCreated: Date(),
+                                  dateModified: Date(),
+                                  datePaid: nil,
+                                  discountTotal: "30.00",
+                                  discountTax: "1.20",
+                                  shippingTotal: "0.00",
+                                  shippingTax: "0.00",
+                                  total: "31.20",
+                                  totalTax: "1.20",
+                                  paymentMethodTitle: "Credit Card (Stripe)",
+                                  items: [],
+                                  billingAddress: nil,
+                                  shippingAddress: nil,
+                                  shippingLines: [],
+                                  coupons: [],
+                                  refunds: [])
+
+        let storageOrder = storage.insertNewObject(ofType: StorageOrder.self)
+        storageOrder.update(with: readonlyOrder)
+
+        return readonlyOrder
     }
 }

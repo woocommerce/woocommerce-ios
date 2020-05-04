@@ -33,7 +33,7 @@ final class ProductLoaderViewController: UIViewController {
         }
     }
 
-    /// Product child view controller
+    /// Product form child view controller
     ///
     private var productFormViewController: UIViewController?
 
@@ -118,7 +118,7 @@ private extension ProductLoaderViewController {
         ServiceLocator.stores.dispatch(action)
     }
 
-    @objc func closeButtonTapped() {
+    @objc func productFormCloseButtonTapped() {
         guard let productFormViewController = productFormViewController else {
             dismiss(animated: true, completion: nil)
             return
@@ -182,9 +182,10 @@ private extension ProductLoaderViewController {
             }
             productFormViewController = productForm
 
-            navigationController?.pushViewController(productForm, animated: false)
             productForm.navigationItem.hidesBackButton = true
-            productForm.addCloseNavigationBarButton(target: self, action: #selector(closeButtonTapped))
+            productForm.addCloseNavigationBarButton(target: self, action: #selector(productFormCloseButtonTapped))
+
+            navigationController?.pushViewController(productForm, animated: false)
         } else {
             let viewModel = ProductDetailsViewModel(product: product, currency: currency)
             let viewController = ProductDetailsViewController(viewModel: viewModel)

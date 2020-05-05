@@ -4,27 +4,32 @@ import Yosemite
 /// The Product Settings contains 2 sections: Publish Settings and More Options
 final class ProductSettingsViewModel {
 
+    let siteID: Int64
+    let productID: Int64
+    
+    private let product: Product
+    
+    var productSettings: ProductSettings {
+        didSet {
+            sections = Self.configureSections(productSettings)
+        }
+    }
+    
     private(set) var sections: [ProductSettingsSectionMediator] {
         didSet {
             self.onReload?()
         }
     }
 
-    var productSettings: ProductSettings {
-        didSet {
-            sections = Self.configureSections(productSettings)
-        }
-    }
-
-    private let product: Product
-
     /// Closures
     /// - `onReload` called when sections data are reloaded/refreshed
     var onReload: (() -> Void)?
 
     init(product: Product) {
+        siteID = product.siteID
+        productID = product.productID
         self.product = product
-        productSettings = ProductSettings(from: product)
+        productSettings = ProductSettings(from: product, password: "")
         sections = Self.configureSections(productSettings)
     }
 
@@ -40,7 +45,7 @@ final class ProductSettingsViewModel {
     }
 
     func hasUnsavedChanges() -> Bool {
-        guard ProductSettings(from: product) != productSettings else {
+        guard ProductSettings(from: product, password: "") != productSettings else {
             return false
         }
         return true

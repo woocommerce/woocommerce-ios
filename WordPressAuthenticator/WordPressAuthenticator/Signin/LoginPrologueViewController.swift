@@ -79,7 +79,35 @@ class LoginPrologueViewController: LoginViewController {
                 return
             }
 
-            navigationController?.pushViewController(vc, animated: true)
+            vc.transitioningDelegate = self
+
+            // Continue with WordPress.com button action
+            vc.emailTapped = { [weak self] in
+                guard let toVC = LoginEmailViewController.instantiate(from: .login) else {
+                    DDLogError("Failed to navigate to LoginEmailVC from LoginPrologueVC")
+                    return
+                }
+
+                self?.navigationController?.pushViewController(toVC, animated: true)
+            }
+
+            // Continue with Google button action
+            vc.googleTapped = { [weak self] in
+                self?.googleLoginTapped(withDelegate: self)
+            }
+
+            // Site address text link button action
+            vc.selfHostedTapped = { [weak self] in
+                self?.loginToSelfHostedSite()
+            }
+
+            // Sign In With Apple (SIWA) button action
+            vc.appleTapped = { [weak self] in
+                self?.appleTapped()
+            }
+
+            vc.modalPresentationStyle = .custom
+            navigationController?.present(vc, animated: true, completion: nil)
         } else {
             guard let vc = LoginEmailViewController.instantiate(from: .login) else {
                 DDLogError("Failed to navigate to LoginEmailViewController from LoginPrologueViewController")

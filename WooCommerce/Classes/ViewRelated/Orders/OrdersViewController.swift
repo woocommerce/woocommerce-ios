@@ -20,22 +20,6 @@ protocol OrdersViewControllerDelegate: class {
 ///
 class OrdersViewController: UIViewController {
 
-    /// Configuration for the view if the list is empty.
-    ///
-    struct EmptyStateAttributes {
-        let message: NSAttributedString
-        let image: UIImage
-        let details: String?
-        let actionButton: (title: String, url: URL)?
-
-        /// The font that will be used for the `message`.
-        ///
-        /// This is exposed so that `NSAttributedString` instances can use it for styling
-        /// the message content.
-        ///
-        static let messageFont = EmptyStateViewController.messageFont
-    }
-
     weak var delegate: OrdersViewControllerDelegate?
 
     private let viewModel: OrdersViewModel
@@ -64,7 +48,7 @@ class OrdersViewController: UIViewController {
 
     /// The configuration to use for the view if the list is empty.
     ///
-    private let emptyStateAttributes: EmptyStateAttributes
+    private let emptyStateConfig: EmptyStateViewController.Config
 
     /// The view shown if the list is empty.
     ///
@@ -108,9 +92,9 @@ class OrdersViewController: UIViewController {
 
     /// Designated initializer.
     ///
-    init(title: String, viewModel: OrdersViewModel, emptyStateAttributes: EmptyStateAttributes) {
+    init(title: String, viewModel: OrdersViewModel, emptyStateConfig: EmptyStateViewController.Config) {
         self.viewModel = viewModel
-        self.emptyStateAttributes = emptyStateAttributes
+        self.emptyStateConfig = emptyStateConfig
 
         super.init(nibName: Self.nibName, bundle: nil)
 
@@ -405,22 +389,7 @@ private extension OrdersViewController {
             return
         }
 
-        let actionButtonConfig: EmptyStateViewController.ActionButtonConfig? = {
-            if let config = emptyStateAttributes.actionButton {
-                return .init(title: config.title) {
-                    #warning("Handle button tap")
-                }
-            } else {
-                return nil
-            }
-        }()
-
-        childController.configure(
-            message: emptyStateAttributes.message,
-            image: emptyStateAttributes.image,
-            details: emptyStateAttributes.details,
-            actionButton: actionButtonConfig
-        )
+        childController.configure(emptyStateConfig)
 
         childView.translatesAutoresizingMaskIntoConstraints = false
 

@@ -94,7 +94,7 @@ extension OrderSearchStarterViewController: UITableViewDelegate {
             }
 
             let boldStatusName = NSAttributedString(string: statusName,
-                                                    attributes: [.font: OrdersViewController.EmptyStateAttributes.messageFont.bold])
+                                                    attributes: [.font: EmptyStateViewController.Config.messageFont.bold])
 
             let format = NSLocalizedString("We're sorry, we couldn't find any “%@” orders",
                                            comment: "Message shown if a filtered Orders list is empty. The %@ is a placeholder for the order status.")
@@ -106,12 +106,7 @@ extension OrderSearchStarterViewController: UITableViewDelegate {
         let ordersViewController = OrdersViewController(
             title: cellViewModel.name ?? NSLocalizedString("Orders", comment: "Default title for Orders List shown when tapping on the Search filter."),
             viewModel: OrdersViewModel(statusFilter: cellViewModel.orderStatus),
-            emptyStateAttributes: .init(
-                message: emptyStateMessage,
-                image: .emptySearchResultsImage,
-                details: nil,
-                actionButton: nil
-            )
+            emptyStateConfig: .simple(message: emptyStateMessage, image: .emptySearchResultsImage)
         )
 
         navigationController?.pushViewController(ordersViewController, animated: true)

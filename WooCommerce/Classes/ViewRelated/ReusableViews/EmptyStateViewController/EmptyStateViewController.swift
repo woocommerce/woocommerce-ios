@@ -225,12 +225,21 @@ extension EmptyStateViewController: KeyboardScrollable {
 extension EmptyStateViewController {
     /// The configuration for this Empty State View
     enum Config {
+        /// The font used by the message's `UILabel`.
+        ///
+        /// This is exposed so that consumers can build `NSAttributedString` instances using the same
+        /// font. The `NSAttributedString` instance can then be used in `configure(message:`).
+        ///
+        /// This must match the `applyBodyStyle()` call in `viewDidLoad`.
+        ///
+        static let messageFont: UIFont = .body
+
         /// Show a message and image only.
         ///
         case simple(message: NSAttributedString, image: UIImage)
         /// Show all the elements and a button which navigates to a URL when tapped.
         ///
-        case withLink(message: NSAttributedString, image: UIImage, detail: String, linkTitle: String, linkURL: URL)
+        case withLink(message: NSAttributedString, image: UIImage, details: String, linkTitle: String, linkURL: URL)
 
         fileprivate var message: NSAttributedString {
             switch self {

@@ -122,8 +122,20 @@ final class ProductFormBottomSheetListSelectorCommandTests: XCTestCase {
 
 private extension ProductFormBottomSheetListSelectorCommandTests {
     enum Fixtures {
-        static let physicalProduct = MockProduct().product(downloadable: false, virtual: false)
-        static let virtualProduct = MockProduct().product(downloadable: false, virtual: true)
-        static let downloadableProduct = MockProduct().product(downloadable: true, virtual: false)
+        // downloadable: false, virtual: false, missing inventory/shipping/categories/brief description
+        static let physicalProduct = MockProduct().product(downloadable: false, briefDescription: "", manageStock: true, sku: nil, stockQuantity: nil,
+                                                           dimensions: ProductDimensions(length: "", width: "", height: ""), weight: nil,
+                                                           virtual: false,
+                                                           categories: [])
+        // downloadable: false, virtual: true, missing inventory/shipping/categories/brief description
+        static let virtualProduct = MockProduct().product(downloadable: false, briefDescription: "", manageStock: true, sku: nil, stockQuantity: nil,
+                                                          dimensions: ProductDimensions(length: "", width: "", height: ""), weight: nil,
+                                                          virtual: true,
+                                                          categories: [])
+        // downloadable: true, virtual: true, missing inventory/shipping/categories/brief description
+        static let downloadableProduct = MockProduct().product(downloadable: true, briefDescription: "", manageStock: true, sku: nil, stockQuantity: nil,
+                                                               dimensions: ProductDimensions(length: "", width: "", height: ""), weight: nil,
+                                                               virtual: true,
+                                                               categories: [])
     }
 }

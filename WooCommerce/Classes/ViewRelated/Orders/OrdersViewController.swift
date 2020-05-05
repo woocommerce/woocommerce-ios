@@ -52,7 +52,7 @@ class OrdersViewController: UIViewController {
 
     /// The view shown if the list is empty.
     ///
-    private lazy var emptyStateViewController = EmptyStateViewController()
+    private lazy var emptyStateViewController = EmptyStateViewController(style: .list)
 
     /// Used for looking up the `OrderStatus` to show in the `OrderTableViewCell`.
     ///

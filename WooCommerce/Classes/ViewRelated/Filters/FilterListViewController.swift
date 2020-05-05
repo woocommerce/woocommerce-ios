@@ -130,7 +130,7 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
         configureChildNavigationController()
         configureBottomFilterButtonContainerView()
         observeListSelectorCommandItemSelection()
-        updateUI(numberOfActiveFilters: viewModel.filterTypeViewModels.numberOfActiveFilters)
+        updateUI(numberOfActiveFilters: viewModel.numberOfActiveFilters)
     }
 
     // MARK: - Navigation
@@ -152,7 +152,7 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
     @objc func clearAllButtonTapped() {
         viewModel.clearAll()
         listSelectorCommand.data = viewModel.filterTypeViewModels
-        updateUI(numberOfActiveFilters: viewModel.filterTypeViewModels.numberOfActiveFilters)
+        updateUI(numberOfActiveFilters: viewModel.numberOfActiveFilters)
         listSelector.reloadData()
     }
 }
@@ -201,7 +201,7 @@ private extension FilterListViewController {
                     }
                     if selectedOption.description != selected.selectedValue.description {
                         selected.selectedValue = selectedOption
-                        self.updateUI(numberOfActiveFilters: self.viewModel.filterTypeViewModels.numberOfActiveFilters)
+                        self.updateUI(numberOfActiveFilters: self.viewModel.numberOfActiveFilters)
                         self.listSelector.reloadData()
                     }
                 }

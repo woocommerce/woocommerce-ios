@@ -48,6 +48,9 @@ final class ProductsViewController: UIViewController {
         return createToolbar()
     }()
 
+    /// The filter CTA in the top toolbar.
+    private var filterButton: UIButton?
+
     /// Top banner that shows that the Products feature is still work in progress.
     ///
     private lazy var topBannerView: TopBannerView = {
@@ -102,6 +105,8 @@ final class ProductsViewController: UIViewController {
     private var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters(stockStatus: nil, productStatus: nil, productType: nil) {
         didSet {
             if filters != oldValue {
+                updateFilterButtonTitle(filters: filters)
+
                 guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
                     assertionFailure("No valid site ID for Products tab")
                     return
@@ -280,6 +285,7 @@ private extension ProductsViewController {
 
         let filterTitle = NSLocalizedString("Filter", comment: "Title of the toolbar button to filter products by different attributes.")
         let filterButton = UIButton(frame: .zero)
+        self.filterButton = filterButton
         filterButton.setTitle(filterTitle, for: .normal)
         filterButton.addTarget(self, action: #selector(filterButtonTapped), for: .touchUpInside)
 
@@ -625,6 +631,24 @@ private extension ProductsViewController {
 
     func transitionToResultsUpdatedState() {
         stateCoordinator.transitionToResultsUpdatedState(hasData: !isEmpty)
+    }
+}
+
+// MARK: - Filter UI Helpers
+//
+private extension ProductsViewController {
+    func updateFilterButtonTitle(filters: FilterProductListViewModel.Filters) {
+        let activeFilterCount = FilterProductListViewModel(filters: filters).numberOfActiveFilters
+
+        let titleWithoutActiveFilters =
+            NSLocalizedString("Filter", comment: "Title of the toolbar button to filter products without any filters applied.")
+        let titleFormatWithActiveFilters =
+            NSLocalizedString("Filter (%ld)", comment: "Title of the toolbar button to filter products with filters applied.")
+
+        let title = activeFilterCount > 0 ?
+            String.localizedStringWithFormat(titleFormatWithActiveFilters, activeFilterCount): titleWithoutActiveFilters
+
+        filterButton?.setTitle(title, for: .normal)
     }
 }
 

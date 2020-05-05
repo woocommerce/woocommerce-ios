@@ -33,7 +33,7 @@ final class ProductSearchUICommand: SearchUICommand {
     func configureEmptyStateViewControllerBeforeDisplay(viewController: EmptyStateViewController,
                                                         searchKeyword: String) {
         let boldSearchKeyword = NSAttributedString(string: searchKeyword,
-                                                   attributes: [.font: EmptyStateViewController.messageFont.bold])
+                                                   attributes: [.font: EmptyStateViewController.Config.messageFont.bold])
 
         let format = NSLocalizedString("We're sorry, we couldn't find results for “%@”",
                                        comment: "Message for empty Products search results. The %@ is a placeholder for the text entered by the user.")

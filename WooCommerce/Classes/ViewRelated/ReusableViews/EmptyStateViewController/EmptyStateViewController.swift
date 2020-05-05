@@ -76,15 +76,6 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
         self?.verticallyAlignStackViewUsing(keyboardHeight: frame.height)
     })
 
-    /// The font used by the message's `UILabel`.
-    ///
-    /// This is exposed so that consumers can build `NSAttributedString` instances using the same
-    /// font. The `NSAttributedString` instance can then be used in `configure(message:`).
-    ///
-    /// This must match the `applyBodyStyle()` call in `viewDidLoad`.
-    ///
-    static let messageFont: UIFont = .body
-
     /// Required implementation by `KeyboardFrameAdjustmentProvider`.
     var additionalKeyboardFrameHeight: CGFloat = 0
 

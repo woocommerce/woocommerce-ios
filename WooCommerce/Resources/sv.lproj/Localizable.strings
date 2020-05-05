@@ -28,7 +28,7 @@
 "%1$@-%2$@" = "%1$@-%2$@";
 
 /* <item total> (<item individual price> multipled by <quantity>) */
-"%1$@ (%2$@ x %3$@)" = "%1$@ (%2$@ x %3$@)";
+"%@ (%@ x %@)" = "%1$@ (%2$@ x %3$@)";
 
 /* 1 Item */
 "%@ Item" = "%@ artikel";
@@ -37,10 +37,10 @@
 "%@ Items" = "%@ artiklar";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
-"%1$@ left a review on %2$@" = "%1$@ lämnade en recension om %2$@";
+"%@ left a review on %@" = "%1$@ lämnade en recension om %2$@";
 
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
-"%1$@ via %2$@" = "%1$@ via %2$@";
+"%@ via %@" = "%1$@ via %2$@";
 
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld i lager";
@@ -200,7 +200,7 @@
 
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}.
    VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
-"Bar number %1$i, %2$@, " = "Fältnummer %1$i, %2$@, ";
+"Bar number %i, %@, " = "Fältnummer %1$i, %2$@, ";
 
 /* Begin fulfill order button title */
 "Begin Fulfillment" = "Börja uppfylla kraven";
@@ -808,7 +808,7 @@
 "Microsoft Outlook" = "Microsoft Outlook";
 
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
-"Minimum value %1$@, maximum value %2$@" = "Minimivärde %1$@, maxvärde %2$@";
+"Minimum value %@, maximum value %@" = "Minimivärde %1$@, maxvärde %2$@";
 
 /* Statistical unit - a single week */
 "Month" = "Månad";
@@ -1499,7 +1499,7 @@
 "Start writing..." = "Börja skriva...";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
-"Starting period %1$@, ending period %2$@" = "Startperiod %1$@, slutperiod %2$@";
+"Starting period %@, ending period %@" = "Startperiod %1$@, slutperiod %2$@";
 
 /* Product status setting list selector navigation title
    Status label in Product Settings */
@@ -2088,7 +2088,7 @@
 "WordPress Media Library" = "WordPress mediabibliotek";
 
 /* No comment provided by engineer. */
-"WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "WordPress-versionen är för gammal. Webbplatsen %1$@ använder WordPress %2$@. Vi rekommenderar att du uppdaterar till den senaste versionen, dock allra minst %3$@.";
+"WordPress version too old. The site at %@ uses WordPress %@. We recommend to update to the latest version, or at least %@" = "WordPress-versionen är för gammal. Webbplatsen %1$@ använder WordPress %2$@. Vi rekommenderar att du uppdaterar till den senaste versionen, dock allra minst %3$@.";
 
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo Mail";

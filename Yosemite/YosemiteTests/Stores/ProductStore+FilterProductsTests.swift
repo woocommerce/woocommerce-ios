@@ -3,10 +3,9 @@ import XCTest
 @testable import Networking
 @testable import Storage
 
-
-/// ProductStore Unit Tests with different sort orders
+/// ProductStore Unit Tests with products filtering
 ///
-final class ProductStore_ProductsSortOrderTests: XCTestCase {
+final class ProductStore_FilterProductsTests: XCTestCase {
 
     /// Mockup Dispatcher!
     ///
@@ -41,9 +40,16 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
         network = MockupNetwork()
     }
 
+    override func tearDown() {
+        dispatcher = nil
+        storageManager = nil
+        network = nil
+        super.tearDown()
+    }
+
     // MARK: - ProductAction.synchronizeProducts
 
-    func testSynchronizingProductsWithAscendingNameSortOrder() {
+    func testSynchronizingProductsWithoutFilters() {
         let expectation = self.expectation(description: "Retrieve product list")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -58,7 +64,9 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
                                                             XCTFail()
                                                             return
                                                         }
-                                                        self.assertSortOrderParamValues(orderByValue: "title", orderValue: "asc")
+                                                        self.assertParamValues(stockStatusValue: nil,
+                                                                               productStatusValue: nil,
+                                                                               productTypeValue: nil)
 
                                                         expectation.fulfill()
         }
@@ -67,22 +75,24 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    func testSynchronizingProductsWithDescendingNameSortOrder() {
+    func testSynchronizingProductsWithOnlyStockStatusFilter() {
         let expectation = self.expectation(description: "Retrieve product list")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         let action = ProductAction.synchronizeProducts(siteID: sampleSiteID,
                                                        pageNumber: defaultPageNumber,
                                                        pageSize: defaultPageSize,
-                                                       stockStatus: nil,
+                                                       stockStatus: .inStock,
                                                        productStatus: nil,
                                                        productType: nil,
-                                                       sortOrder: .nameDescending) { [weak self] error in
+                                                       sortOrder: .nameAscending) { [weak self] error in
                                                         guard let self = self else {
                                                             XCTFail()
                                                             return
                                                         }
-                                                        self.assertSortOrderParamValues(orderByValue: "title", orderValue: "desc")
+                                                        self.assertParamValues(stockStatusValue: ProductStockStatus.inStock.rawValue,
+                                                                               productStatusValue: nil,
+                                                                               productTypeValue: nil)
 
                                                         expectation.fulfill()
         }
@@ -91,7 +101,7 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    func testSynchronizingProductsWithAscendingDateSortOrder() {
+    func testSynchronizingProductsWithOnlyProductStatusFilter() {
         let expectation = self.expectation(description: "Retrieve product list")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -99,14 +109,16 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
                                                        pageNumber: defaultPageNumber,
                                                        pageSize: defaultPageSize,
                                                        stockStatus: nil,
-                                                       productStatus: nil,
+                                                       productStatus: .draft,
                                                        productType: nil,
-                                                       sortOrder: .dateAscending) { [weak self] error in
+                                                       sortOrder: .nameAscending) { [weak self] error in
                                                         guard let self = self else {
                                                             XCTFail()
                                                             return
                                                         }
-                                                        self.assertSortOrderParamValues(orderByValue: "date", orderValue: "asc")
+                                                        self.assertParamValues(stockStatusValue: nil,
+                                                                               productStatusValue: ProductStatus.draft.rawValue,
+                                                                               productTypeValue: nil)
 
                                                         expectation.fulfill()
         }
@@ -115,7 +127,7 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    func testSynchronizingProductsWithDescendingDateSortOrder() {
+    func testSynchronizingProductsWithOnlyProductTypeFilter() {
         let expectation = self.expectation(description: "Retrieve product list")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -124,13 +136,15 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
                                                        pageSize: defaultPageSize,
                                                        stockStatus: nil,
                                                        productStatus: nil,
-                                                       productType: nil,
-                                                       sortOrder: .dateDescending) { [weak self] error in
+                                                       productType: .variable,
+                                                       sortOrder: .nameAscending) { [weak self] error in
                                                         guard let self = self else {
                                                             XCTFail()
                                                             return
                                                         }
-                                                        self.assertSortOrderParamValues(orderByValue: "date", orderValue: "desc")
+                                                        self.assertParamValues(stockStatusValue: nil,
+                                                                               productStatusValue: nil,
+                                                                               productTypeValue: ProductType.variable.rawValue)
 
                                                         expectation.fulfill()
         }
@@ -140,17 +154,35 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
     }
 }
 
-private extension ProductStore_ProductsSortOrderTests {
-    func assertSortOrderParamValues(orderByValue: String, orderValue: String) {
+private extension ProductStore_FilterProductsTests {
+    func assertParamValues(stockStatusValue: String?, productStatusValue: String?, productTypeValue: String?) {
         guard let pathComponents = network.pathComponents else {
             XCTFail("Cannot parse path from the API request")
             return
         }
 
-        let expectedOrderbyParam = "orderby=\(orderByValue)"
-        XCTAssertTrue(pathComponents.contains(expectedOrderbyParam), "Expected to have param: \(expectedOrderbyParam)")
+        let stockStatusParameter = "stock_status"
+        if let stockStatusValue = stockStatusValue {
+            let expectedParam = "\(stockStatusParameter)=\(stockStatusValue)"
+            XCTAssertTrue(pathComponents.contains(expectedParam), "Expected to have param: \(expectedParam)")
+        } else {
+            XCTAssertFalse(pathComponents.contains(where: { $0.starts(with: stockStatusParameter) }))
+        }
 
-        let expectedOrderParam = "order=\(orderValue)"
-        XCTAssertTrue(pathComponents.contains(expectedOrderParam), "Expected to have param: \(expectedOrderParam)")
+        let productStatusParameter = "status"
+        if let productStatusValue = productStatusValue {
+            let expectedParam = "\(productStatusParameter)=\(productStatusValue)"
+            XCTAssertTrue(pathComponents.contains(expectedParam), "Expected to have param: \(expectedParam)")
+        } else {
+            XCTAssertFalse(pathComponents.contains(where: { $0.starts(with: productStatusParameter) }))
+        }
+
+        let productTypeParameter = "type"
+        if let productTypeValue = productTypeValue {
+            let expectedParam = "\(productTypeParameter)=\(productTypeValue)"
+            XCTAssertTrue(pathComponents.contains(expectedParam), "Expected to have param: \(expectedParam)")
+        } else {
+            XCTAssertFalse(pathComponents.contains(where: { $0.starts(with: productTypeParameter) }))
+        }
     }
 }

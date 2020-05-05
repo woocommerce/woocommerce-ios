@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-04-16 00:54:04+0000 */
+/* Translation-Revision-Date: 2020-05-01 12:27:38+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -28,7 +28,7 @@
 "%1$@-%2$@" = "%1$@-%2$@";
 
 /* <item total> (<item individual price> multipled by <quantity>) */
-"%1$@ (%2$@ x %3$@)" = "%1$@ (%2$@ x %3$@)";
+"%@ (%@ x %@)" = "%1$@ (%2$@ x %3$@)";
 
 /* 1 Item */
 "%@ Item" = "%@ Artikel";
@@ -37,10 +37,10 @@
 "%@ Items" = "%@ Artikel";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
-"%1$@ left a review on %2$@" = "%1$@ hat am %2$@ eine Bewertung abgegeben";
+"%@ left a review on %@" = "%1$@ hat am %2$@ eine Bewertung abgegeben";
 
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
-"%1$@ via %2$@" = "%1$@ per %2$@";
+"%@ via %@" = "%1$@ per %2$@";
 
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld auf Lager";
@@ -200,7 +200,7 @@
 
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}.
    VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
-"Bar number %1$i, %2$@, " = "Barcodenummer %1$i, %2$@, ";
+"Bar number %i, %@, " = "Barcodenummer %1$i, %2$@, ";
 
 /* Begin fulfill order button title */
 "Begin Fulfillment" = "Auftragsabwicklung starten";
@@ -257,7 +257,7 @@
 "Certificate error" = "Zertifikatsfehler";
 
 /* Instructional text on how to open the email containing a magic link. */
-"Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder." = "Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder.";
+"Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder." = "Überprüfen Sie Ihre E-Mail auf diesem Gerät, und tippen Sie auf den Link in der E-Mail die Sie von WordPress.com erhalten.\n\n Nicht zu sehen , die E - Mail? Überprüfen Sie Ihren Spam oder Junk-Mail-Ordner.";
 
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "Sieh in deinem Postfach nach!";
@@ -808,7 +808,7 @@
 "Microsoft Outlook" = "Microsoft Outlook";
 
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
-"Minimum value %1$@, maximum value %2$@" = "Mindestwert %1$@, Maximalwert %2$@";
+"Minimum value %@, maximum value %@" = "Mindestwert %1$@, Maximalwert %2$@";
 
 /* Statistical unit - a single week */
 "Month" = "Monat";
@@ -893,7 +893,7 @@
 "No results for the selected criteria" = "Keine Ergebnisse für die ausgewählten Kriterien";
 
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier' */
-"No results found for (term)\nAdd a custom carrier" = "No results found for (term)\nAdd a custom carrier";
+"No results found for (term)\nAdd a custom carrier" = "Keine Ergebnisse für (term) gefunden \n Fügen Sie einen benutzerdefinierten Träger";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "Keine Einnahmen in diesem Zeitraum";
@@ -1499,7 +1499,7 @@
 "Start writing..." = "Beginne zu schreiben …";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
-"Starting period %1$@, ending period %2$@" = "Startzeitraum %1$@, Endzeitraum %2$@";
+"Starting period %@, ending period %@" = "Startzeitraum %1$@, Endzeitraum %2$@";
 
 /* Product status setting list selector navigation title
    Status label in Product Settings */
@@ -2088,7 +2088,7 @@
 "WordPress Media Library" = "WordPress-Mediathek";
 
 /* No comment provided by engineer. */
-"WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "Zu alte WordPress-Version. Die Website unter %1$@ benutzt WordPress %2$@. Wir empfehlen ein Update auf die aktuellste Version oder zumindest auf %3$@";
+"WordPress version too old. The site at %@ uses WordPress %@. We recommend to update to the latest version, or at least %@" = "Zu alte WordPress-Version. Die Website unter %1$@ benutzt WordPress %2$@. Wir empfehlen ein Update auf die aktuellste Version oder zumindest auf %3$@";
 
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo Mail";

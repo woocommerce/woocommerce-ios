@@ -1,3 +1,1 @@
-* Dengan senang hati kami memperkenalkan tab Produk!
-* Sekarang pengguna juga memiliki kemampuan penyuntingan terbatas untuk Produk Sederhana, dengan lebih banyak fitur di pembaruan mendatang.
-* Kami melakukan perbaikan agar saat Anda menyegarkan tab Dalam Proses, pesanan terbaru Anda akan ditampilkan.
+* Kami telah memperbaiki bug mengganggu yang terkadang menyebabkan crash pada aplikasi saat Anda sedang mengunduh Pesanan. Tinggal unduh saja!

@@ -139,6 +139,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.moreImage)
     }
 
+    func testPlusImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.plusImage)
+    }
+
     func testPriceImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.priceImage)
     }

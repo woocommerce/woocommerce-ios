@@ -1,3 +1,1 @@
-* Ürünler sekmesini tanıtmaktan memnuniyet duyuyoruz!
-* Kullanıcılar artık Basit Ürünler için sınırlı düzenleme yetkilerine sahip olacak, zamanla daha fazlası da gelecek.
-* İşleme sekmesini her yenilediğinizde güncel siparişlerinizi göstermesi için bir düzeltme yaptık.
+* Siparişleri indirirken bazen uygulamanın kilitlenmesine neden olan kaba bir hata düzeltildi. Artık indirebilirsiniz.

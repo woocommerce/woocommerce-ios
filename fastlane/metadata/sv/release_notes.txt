@@ -1,3 +1,1 @@
-* Vi är glada att kunna introducera en Produkter-flik!
-* Användare har nu även begränsade redigeringsmöjligheter för Enkla produkter. Mer kommer.
-* Vi har gjort en korrigering så att dina uppdaterade beställningar nu visas när du uppdaterar Behandlar-fliken.
+* Vi har åtgärdat ett besvärande fel som ibland gjorde att appen kraschade när man laddade ner beställningar. Nu är det bara att ladda ner!

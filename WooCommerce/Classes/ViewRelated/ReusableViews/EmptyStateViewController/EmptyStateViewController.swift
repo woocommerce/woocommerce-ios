@@ -112,7 +112,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
         messageLabel.attributedText = config.message
 
         imageView.image = config.image
-        imageView.isHidden = false
+        updateImageVisibilityUsing(traits: traitCollection)
 
         detailsLabel.text = config.details
         detailsLabel.isHidden = config.details == nil

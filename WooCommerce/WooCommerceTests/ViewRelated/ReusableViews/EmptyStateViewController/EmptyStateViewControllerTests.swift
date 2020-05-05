@@ -40,7 +40,6 @@ final class EmptyStateViewControllerTests: XCTestCase {
 
         // Then
         XCTAssertFalse(mirror.messageLabel.isHidden)
-        XCTAssertFalse(mirror.imageView.isHidden)
         XCTAssertTrue(mirror.detailsLabel.isHidden)
         XCTAssertTrue(mirror.actionButton.isHidden)
 
@@ -66,7 +65,6 @@ final class EmptyStateViewControllerTests: XCTestCase {
 
         // Then
         XCTAssertFalse(mirror.messageLabel.isHidden)
-        XCTAssertFalse(mirror.imageView.isHidden)
         XCTAssertFalse(mirror.detailsLabel.isHidden)
         XCTAssertFalse(mirror.actionButton.isHidden)
 
@@ -74,6 +72,29 @@ final class EmptyStateViewControllerTests: XCTestCase {
         XCTAssertEqual(mirror.imageView.image, UIImage.appleIcon)
         XCTAssertEqual(mirror.detailsLabel.text, "Dolores eum")
         XCTAssertEqual(mirror.actionButton.titleLabel?.text, "Bakero!")
+    }
+
+    func testTheImageViewVisibilityIsSetDuringConfigure() throws {
+        // Given
+        let viewController = EmptyStateViewController()
+        XCTAssertNotNil(viewController.view)
+
+        let mirror = try self.mirror(of: viewController)
+
+        // Should be hidden by default
+        XCTAssertTrue(mirror.imageView.isHidden)
+
+        // When
+        viewController.configure(.simple(message: NSAttributedString(string: "Ola"), image: .appleIcon))
+
+        // Then
+
+        // The visibility depends on the traitCollection which we don't control. If the test
+        // environment is in landscape, we cannot reliably test it. So for now, we'll have
+        // to define what the visibility should be.
+        let shouldBeHidden = viewController.traitCollection.verticalSizeClass == .compact
+
+        XCTAssertEqual(mirror.imageView.isHidden, shouldBeHidden)
     }
 
     func testGivenACompactVerticalSizeClassItWillHideTheImageView() throws {

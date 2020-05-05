@@ -27,6 +27,13 @@ class OrdersViewController: UIViewController {
         let image: UIImage
         let details: String?
         let actionButton: (title: String, url: URL)?
+
+        /// The font that will be used for the `message`.
+        ///
+        /// This is exposed so that `NSAttributedString` instances can use it for styling
+        /// the message content.
+        ///
+        static let messageFont = EmptyStateViewController.messageFont
     }
 
     weak var delegate: OrdersViewControllerDelegate?

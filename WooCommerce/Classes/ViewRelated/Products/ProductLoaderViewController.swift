@@ -33,10 +33,6 @@ final class ProductLoaderViewController: UIViewController {
         }
     }
 
-    /// Product form child view controller
-    ///
-    private var productFormViewController: UIViewController?
-
     // MARK: - Initializers
 
     init(productID: Int64, siteID: Int64, currency: String) {
@@ -117,16 +113,6 @@ private extension ProductLoaderViewController {
         state = .loading
         ServiceLocator.stores.dispatch(action)
     }
-
-    @objc func productFormCloseButtonTapped() {
-        guard let productFormViewController = productFormViewController else {
-            dismiss(animated: true, completion: nil)
-            return
-        }
-        if productFormViewController.shouldPopOnBackButton() {
-            dismiss(animated: true, completion: nil)
-        }
-    }
 }
 
 
@@ -176,29 +162,22 @@ private extension ProductLoaderViewController {
     }
 
     func presentProductDetails(for product: Product, isEditProductsEnabled: Bool) {
+        let viewController: UIViewController
         if product.productType == .simple && isEditProductsEnabled {
-            let productForm = ProductFormViewController(product: product, currency: currency) { viewController in
-                viewController.dismiss(animated: true, completion: nil)
-            }
-            productFormViewController = productForm
-
-            productForm.navigationItem.hidesBackButton = true
-            productForm.addCloseNavigationBarButton(target: self, action: #selector(productFormCloseButtonTapped))
-
-            navigationController?.pushViewController(productForm, animated: false)
+            viewController = ProductFormViewController(product: product, currency: currency, presentationStyle: .contained(containerViewController: self))
         } else {
             let viewModel = ProductDetailsViewModel(product: product, currency: currency)
-            let viewController = ProductDetailsViewController(viewModel: viewModel)
-
-            // Attach
-            addChild(viewController)
-            attachSubview(viewController.view)
-            viewController.didMove(toParent: self)
-
-            // And, of course, borrow the Child's Title + right nav bar items
-            title = viewController.title
-            navigationItem.rightBarButtonItems = viewController.navigationItem.rightBarButtonItems
+            viewController = ProductDetailsViewController(viewModel: viewModel)
         }
+
+        // Attach
+        addChild(viewController)
+        attachSubview(viewController.view)
+        viewController.didMove(toParent: self)
+
+        // And, of course, borrow the Child's Title + right nav bar items
+        title = viewController.title
+        navigationItem.rightBarButtonItems = viewController.navigationItem.rightBarButtonItems
     }
 
     /// Removes all of the children UIViewControllers

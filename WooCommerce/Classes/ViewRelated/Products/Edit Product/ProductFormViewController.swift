@@ -55,11 +55,20 @@ final class ProductFormViewController: UIViewController {
 
     private let currency: String
 
-    private let onDismiss: (UIViewController) -> Void
+    private lazy var exitForm: () -> Void = {
+        presentationStyle.createExitForm(viewController: self)
+    }()
 
-    init(product: Product, currency: String, onDismiss: @escaping (UIViewController) -> Void) {
+    private let presentationStyle: PresentationStyle
+    private let navigationRightBarButtonItemsSubject = PublishSubject<[UIBarButtonItem]>()
+    private var navigationRightBarButtonItems: Observable<[UIBarButtonItem]> {
+        navigationRightBarButtonItemsSubject
+    }
+    private var cancellable: ObservationToken?
+
+    init(product: Product, currency: String, presentationStyle: PresentationStyle) {
         self.currency = currency
-        self.onDismiss = onDismiss
+        self.presentationStyle = presentationStyle
         self.originalProduct = product
         self.product = product
         self.viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
@@ -82,6 +91,10 @@ final class ProductFormViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    deinit {
+        cancellable?.cancel()
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -91,6 +104,7 @@ final class ProductFormViewController: UIViewController {
 
         startListeningToNotifications()
         handleSwipeBackGesture()
+        configurePresentationStyle()
 
         productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else {
@@ -150,6 +164,30 @@ private extension ProductFormViewController {
             default:
                 return
             }
+        }
+    }
+
+    func configurePresentationStyle() {
+        switch presentationStyle {
+        case .contained(let containerViewController):
+            containerViewController.addCloseNavigationBarButton(target: self, action: #selector(closeNavigationBarButtonTapped))
+            observeNavigationRightBarButtonItems(viewControllerWithNavigationItem: containerViewController)
+        case .navigationStack:
+            observeNavigationRightBarButtonItems(viewControllerWithNavigationItem: self)
+        }
+    }
+
+    @objc func closeNavigationBarButtonTapped() {
+        guard hasUnsavedChanges(product: product) == false else {
+            presentBackNavigationActionSheet()
+            return
+        }
+        exitForm()
+    }
+
+    func observeNavigationRightBarButtonItems(viewControllerWithNavigationItem: UIViewController) {
+        cancellable = navigationRightBarButtonItems.subscribe { [weak viewControllerWithNavigationItem] rightBarButtonItems in
+            viewControllerWithNavigationItem?.navigationItem.rightBarButtonItems = rightBarButtonItems
         }
     }
 }
@@ -287,7 +325,7 @@ private extension ProductFormViewController {
             rightBarButtonItems.insert(createMoreOptionsBarButtonItem(), at: 0)
         }
 
-        navigationItem.rightBarButtonItems = rightBarButtonItems
+        navigationRightBarButtonItemsSubject.send(rightBarButtonItems)
     }
 
     func createUpdateBarButtonItem() -> UIBarButtonItem {
@@ -439,7 +477,7 @@ extension ProductFormViewController {
             guard let self = self else {
                 return
             }
-            self.onDismiss(self)
+            self.exitForm()
         })
     }
 

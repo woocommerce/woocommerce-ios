@@ -71,9 +71,7 @@ final class ProductSearchUICommand: SearchUICommand {
         let currency = CurrencySettings.shared.symbol(from: currencyCode)
         let vc: UIViewController
         if model.productType == .simple && isEditProductsEnabled {
-            vc = ProductFormViewController(product: model, currency: currency) { viewController in
-                viewController.navigationController?.popViewController(animated: true)
-            }
+            vc = ProductFormViewController(product: model, currency: currency, presentationStyle: .navigationStack)
             // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
             vc.hidesBottomBarWhenPushed = true
         } else {

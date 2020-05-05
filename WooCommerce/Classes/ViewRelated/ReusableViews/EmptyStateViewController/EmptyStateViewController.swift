@@ -275,5 +275,3 @@ extension EmptyStateViewController {
         }
     }
 }
-
-

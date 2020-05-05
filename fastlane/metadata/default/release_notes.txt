@@ -1,3 +1,1 @@
-* We’re excited to introduce a Products tab!
-* Users also now have limited editing capabilities for Simple Products, with more to come.
-* We’ve made a fix so that, whenever you refresh the Processing tab, it will show your up-to-date orders.
+* We fixed an impolite bug that would sometimes crash the app while you were downloading Orders. Download away, we say!

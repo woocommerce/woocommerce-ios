@@ -28,7 +28,7 @@
 "%1$@-%2$@" = "%1$@~%2$@";
 
 /* <item total> (<item individual price> multipled by <quantity>) */
-"%1$@ (%2$@ x %3$@)" = "%1$@(%2$@ x %3$@)";
+"%@ (%@ x %@)" = "%1$@(%2$@ x %3$@)";
 
 /* 1 Item */
 "%@ Item" = "%@개 항목";
@@ -37,10 +37,10 @@
 "%@ Items" = "%@개 항목";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
-"%1$@ left a review on %2$@" = "%1$@ left a review on %2$@";
+"%@ left a review on %@" = "%@ left a review on %@";
 
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
-"%1$@ via %2$@" = "%2$@을(를) 통한 %1$@";
+"%@ via %@" = "%2$@을(를) 통한 %1$@";
 
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld 재고 있음";
@@ -200,7 +200,7 @@
 
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}.
    VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
-"Bar number %1$i, %2$@, " = "표시줄 번호 %1$i, %2$@, ";
+"Bar number %i, %@, " = "표시줄 번호 %1$i, %2$@, ";
 
 /* Begin fulfill order button title */
 "Begin Fulfillment" = "처리 시작";
@@ -808,7 +808,7 @@
 "Microsoft Outlook" = "Microsoft Outlook";
 
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
-"Minimum value %1$@, maximum value %2$@" = "최소값 %1$@, 최대값 %2$@";
+"Minimum value %@, maximum value %@" = "최소값 %1$@, 최대값 %2$@";
 
 /* Statistical unit - a single week */
 "Month" = "월";
@@ -1499,7 +1499,7 @@
 "Start writing..." = "글쓰기 시작...";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
-"Starting period %1$@, ending period %2$@" = "시작 기간 %1$@, 종료 기간 %2$@";
+"Starting period %@, ending period %@" = "시작 기간 %1$@, 종료 기간 %2$@";
 
 /* Product status setting list selector navigation title
    Status label in Product Settings */
@@ -2088,7 +2088,7 @@
 "WordPress Media Library" = "워드프레스 미디어 라이브러리";
 
 /* No comment provided by engineer. */
-"WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "워드프레스 버전이 너무 오래됐습니다. %1$@의 사이트는 워드프레스 %2$@을(를) 사용합니다. 최신 버전 또는 %3$@ 이상으로 업데이트하세요.";
+"WordPress version too old. The site at %@ uses WordPress %@. We recommend to update to the latest version, or at least %@" = "워드프레스 버전이 너무 오래됐습니다. %1$@의 사이트는 워드프레스 %2$@을(를) 사용합니다. 최신 버전 또는 %3$@ 이상으로 업데이트하세요.";
 
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "야후 메일";

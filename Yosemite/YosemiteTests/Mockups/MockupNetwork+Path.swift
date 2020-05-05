@@ -2,6 +2,7 @@ import XCTest
 @testable import Networking
 
 extension MockupNetwork {
+    /// Returns the parameters ("\(key)=\(value)") for the WC API path in the first network request URL.
     var pathComponents: [String]? {
         guard let request = requestsForResponseData.first,
             let urlRequest = try? request.asURLRequest(),

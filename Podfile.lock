@@ -155,7 +155,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   WordPressAuthenticator:
-    :commit: c91f1961b71b782eb212300b5e2a8815989d440d
+    :commit: e765a71cbdcfaa393bede74884c68e37d66a90ee
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 SPEC CHECKSUMS:
@@ -197,6 +197,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: acf2694d6984aa4e24f323c84f64ad1ff087a0a2
+PODFILE CHECKSUM: e016402008fcb8e4128ff37827f395135b4538c8
 
 COCOAPODS: 1.9.1

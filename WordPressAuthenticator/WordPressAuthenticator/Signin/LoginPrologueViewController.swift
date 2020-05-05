@@ -97,7 +97,12 @@ class LoginPrologueViewController: LoginViewController {
 
     private func loginTapped() {
         if WordPressAuthenticator.shared.configuration.showLoginOptions {
-            performSegue(withIdentifier: .showLoginMethod, sender: self)
+            guard let vc = LoginPrologueLoginMethodViewController.instantiate(from: .login) else {
+                DDLogError("Failed to navigate to LoginPrologueLoginMethodViewController from LoginPrologueViewController")
+                return
+            }
+
+            navigationController?.pushViewController(vc, animated: true)
         } else {
             guard let vc = LoginEmailViewController.instantiate(from: .login) else {
                 DDLogError("Failed to navigate to LoginEmailViewController from LoginPrologueViewController")

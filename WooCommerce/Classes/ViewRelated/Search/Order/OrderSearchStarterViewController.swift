@@ -87,9 +87,18 @@ extension OrderSearchStarterViewController: UITableViewDelegate {
 
         analytics.trackSelectionOf(orderStatusSlug: cellViewModel.slug)
 
+        #warning("Change the message later!")
         let ordersViewController = OrdersViewController(
             title: cellViewModel.name ?? NSLocalizedString("Orders", comment: "Default title for Orders List shown when tapping on the Search filter."),
-            statusFilter: cellViewModel.orderStatus
+            viewModel: OrdersViewModel(
+                statusFilter: cellViewModel.orderStatus,
+                emptyStateAttributes: .init(
+                    message: "Temporary name",
+                    image: .emptySearchResultsImage,
+                    details: nil,
+                    actionButton: nil
+                )
+            )
         )
 
         navigationController?.pushViewController(ordersViewController, animated: true)

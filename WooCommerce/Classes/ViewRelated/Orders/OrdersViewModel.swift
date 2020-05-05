@@ -23,6 +23,14 @@ final class OrdersViewModel {
         case pullToRefresh = "pull_to_refresh"
     }
 
+    /// Configuration for the view if the list is empty.
+    struct EmptyStateAttributes {
+        let message: String
+        let image: UIImage
+        let details: String?
+        let actionButton: (title: String, link: URL)?
+    }
+
     private let storageManager: StorageManagerType
     private let pushNotificationsManager: PushNotesManager
     private let notificationCenter: NotificationCenter
@@ -49,7 +57,12 @@ final class OrdersViewModel {
     private let includesFutureOrders: Bool
 
     /// Used for tracking whether the app was _previously_ in the background.
+    ///
     private var isAppActive: Bool = true
+
+    /// The configuration to use for the view if the list is empty.
+    ///
+    let emptyStateAttributes: EmptyStateAttributes
 
     /// Should be bound to the UITableView to auto-update the list of Orders.
     ///
@@ -93,11 +106,13 @@ final class OrdersViewModel {
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          notificationCenter: NotificationCenter = .default,
          statusFilter: OrderStatus?,
+         emptyStateAttributes: EmptyStateAttributes,
          includesFutureOrders: Bool = true) {
         self.storageManager = storageManager
         self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
         self.statusFilter = statusFilter
+        self.emptyStateAttributes = emptyStateAttributes
         self.includesFutureOrders = includesFutureOrders
     }
 

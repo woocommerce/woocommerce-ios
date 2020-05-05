@@ -119,12 +119,14 @@ final class Product_UpdaterTestCases: XCTestCase {
         let product = sampleProduct()
         let newStatus = "pending"
         let featured = true
+        let password = ""
         let catalogVisibility = "search"
         let slug = "this-is-a-test"
         let purchaseNote = "This is a purchase note"
         let menuOrder = 0
         let productSettings = ProductSettings(status: .pending,
                                                                 featured: featured,
+                                                                password: password,
                                                                 catalogVisibility: .search,
                                                                 slug: slug,
                                                                 purchaseNote: purchaseNote,

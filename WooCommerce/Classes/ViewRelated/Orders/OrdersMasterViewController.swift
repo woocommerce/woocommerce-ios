@@ -86,35 +86,30 @@ final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
         // text in here. We want the string to be translated.
         let processingOrdersVC = OrdersViewController(
             title: NSLocalizedString("Processing", comment: "Title for the first page in the Orders tab."),
-            viewModel: OrdersViewModel(
-                statusFilter: processingOrderStatus,
-                emptyStateAttributes: .init(
-                    message: NSLocalizedString("All orders have been fulfilled",
-                                               comment: "The message shown in the Orders → Processing tab if the list is empty."),
-                    image: .waitingForCustomersImage,
-                    details: nil,
-                    actionButton: nil
-                )
+            viewModel: OrdersViewModel(statusFilter: processingOrderStatus),
+            emptyStateAttributes: .init(
+                message: NSLocalizedString("All orders have been fulfilled",
+                                           comment: "The message shown in the Orders → Processing tab if the list is empty."),
+                image: .waitingForCustomersImage,
+                details: nil,
+                actionButton: nil
             )
         )
         processingOrdersVC.delegate = self
 
         let allOrdersVC = OrdersViewController(
             title: NSLocalizedString("All Orders", comment: "Title for the second page in the Orders tab."),
-            viewModel: OrdersViewModel(
-                statusFilter: nil,
-                emptyStateAttributes: .init(
-                    message: NSLocalizedString("Waiting for your first order", 
-                                               comment: "The message shown in the Orders → All Orders tab if the list is empty."),
-                    image: .emptyOrdersImage,
-                    details: NSLocalizedString("We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales.",
-                                               comment: "The detailed message shown in the Orders → All Orders tab if the list is empty."),
-                    actionButton: (
-                        title: NSLocalizedString("Learn more", comment: "Title of button shown in the Orders → All Orders tab if the list is empty."),
-                        url: .wooCommerceBlog
-                    )
-                ),
-                includesFutureOrders: false
+            viewModel: OrdersViewModel(statusFilter: nil, includesFutureOrders: false),
+            emptyStateAttributes: .init(
+                message: NSLocalizedString("Waiting for your first order",
+                                           comment: "The message shown in the Orders → All Orders tab if the list is empty."),
+                image: .emptyOrdersImage,
+                details: NSLocalizedString("We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales.",
+                                           comment: "The detailed message shown in the Orders → All Orders tab if the list is empty."),
+                actionButton: (
+                    title: NSLocalizedString("Learn more", comment: "Title of button shown in the Orders → All Orders tab if the list is empty."),
+                    url: .wooCommerceBlog
+                )
             )
         )
         allOrdersVC.delegate = self

@@ -20,5 +20,4 @@ extension URL {
             fatalError("Expected URL \(url) to be a well-formed URL.")
         }
     }
-
 }

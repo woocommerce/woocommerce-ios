@@ -20,6 +20,15 @@ protocol OrdersViewControllerDelegate: class {
 ///
 class OrdersViewController: UIViewController {
 
+    /// Configuration for the view if the list is empty.
+    ///
+    struct EmptyStateAttributes {
+        let message: String
+        let image: UIImage
+        let details: String?
+        let actionButton: (title: String, url: URL)?
+    }
+
     weak var delegate: OrdersViewControllerDelegate?
 
     private let viewModel: OrdersViewModel
@@ -45,6 +54,10 @@ class OrdersViewController: UIViewController {
     private lazy var footerSpinnerView = {
         return FooterSpinnerView(tableViewStyle: tableView.style)
     }()
+
+    /// The configuration to use for the view if the list is empty.
+    ///
+    private let emptyStateAttributes: EmptyStateAttributes
 
     /// The view shown if the list is empty.
     ///
@@ -88,8 +101,9 @@ class OrdersViewController: UIViewController {
 
     /// Designated initializer.
     ///
-    init(title: String, viewModel: OrdersViewModel) {
+    init(title: String, viewModel: OrdersViewModel, emptyStateAttributes: EmptyStateAttributes) {
         self.viewModel = viewModel
+        self.emptyStateAttributes = emptyStateAttributes
 
         super.init(nibName: Self.nibName, bundle: nil)
 
@@ -384,9 +398,8 @@ private extension OrdersViewController {
             return
         }
 
-        let attributes = viewModel.emptyStateAttributes
         let actionButtonConfig: EmptyStateViewController.ActionButtonConfig? = {
-            if let config = attributes.actionButton {
+            if let config = emptyStateAttributes.actionButton {
                 return .init(title: config.title) {
                     #warning("Handle button tap")
                 }
@@ -396,9 +409,9 @@ private extension OrdersViewController {
         }()
 
         childController.configure(
-            message: NSAttributedString(string: attributes.message),
-            image: attributes.image,
-            details: attributes.details,
+            message: NSAttributedString(string: emptyStateAttributes.message),
+            image: emptyStateAttributes.image,
+            details: emptyStateAttributes.details,
             actionButton: actionButtonConfig
         )
 

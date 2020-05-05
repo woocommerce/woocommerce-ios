@@ -68,6 +68,10 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     ///
     @IBOutlet private var contentViewHeightAdjustmentFromSuperviewConstraint: NSLayoutConstraint!
 
+    /// The configured style for this view.
+    ///
+    private let style: Style
+
     /// The handler to execute when the button is tapped.
     ///
     /// This is normally set up in `configure()`.
@@ -82,10 +86,20 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     /// Required implementation by `KeyboardFrameAdjustmentProvider`.
     var additionalKeyboardFrameHeight: CGFloat = 0
 
+    init(style: Style = .basic) {
+        self.style = style
+        super.init(nibName: type(of: self).nibName, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("Not supported.")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .basicBackground
+        view.backgroundColor = style.backgroundColor
+        contentView.backgroundColor = style.backgroundColor
 
         messageLabel.applyBodyStyle()
         detailsLabel.applySecondaryBodyStyle()
@@ -182,9 +196,29 @@ extension EmptyStateViewController: KeyboardScrollable {
     }
 }
 
-// MARK: - Config
+// MARK: - Styling and Configuration
 
 extension EmptyStateViewController {
+    /// The style applied.
+    ///
+    /// The style is currently just the background color. ¯\_(ツ)_/¯
+    ///
+    enum Style {
+        /// Shows a light background.
+        case basic
+        /// Shows a gray background.
+        case list
+
+        fileprivate var backgroundColor: UIColor {
+            switch self {
+            case .basic:
+                return .basicBackground
+            case .list:
+                return .listBackground
+            }
+        }
+    }
+
     /// The configuration for this Empty State View
     enum Config {
 

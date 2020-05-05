@@ -77,6 +77,12 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     ///
     private var lastActionButtonConfig: ActionButtonConfig?
 
+    /// The handler to execute when the button is tapped.
+    ///
+    /// This is normally set up in `configure()`.
+    ///
+    private var lastActionButtonTapHandler: (() -> ())?
+
     private lazy var keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: { [weak self] frame in
         self?.handleKeyboardFrameUpdate(keyboardFrame: frame)
         self?.verticallyAlignStackViewUsing(keyboardHeight: frame.height)
@@ -110,6 +116,30 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
         super.viewWillAppear(animated)
 
         updateImageVisibilityUsing(traits: traitCollection)
+    }
+
+    /// Configure the elements to be displayed.
+    ///
+    func configure(_ config: Config) {
+        messageLabel.attributedText = config.message
+        messageLabel.isHidden = false
+
+        imageView.image = config.image
+        imageView.isHidden = false
+
+        detailsLabel.text = config.details
+        detailsLabel.isHidden = config.details == nil
+
+        actionButton.setTitle(config.actionButtonTitle, for: .normal)
+        actionButton.isHidden = config.actionButtonTitle == nil
+
+        lastActionButtonTapHandler = nil
+
+        if case let Config.withLink(_, _, _, _, linkURL) = config {
+            lastActionButtonTapHandler = {
+                #warning("Show the linkURL")
+            }
+        }
     }
 
     /// Change the elements being displayed.
@@ -189,3 +219,52 @@ extension EmptyStateViewController: KeyboardScrollable {
         scrollView
     }
 }
+
+// MARK: - Config
+
+extension EmptyStateViewController {
+    /// The configuration for this Empty State View
+    enum Config {
+        /// Show a message and image only.
+        ///
+        case simple(message: NSAttributedString, image: UIImage)
+        /// Show all the elements and a button which navigates to a URL when tapped.
+        ///
+        case withLink(message: NSAttributedString, image: UIImage, detail: String, linkTitle: String, linkURL: URL)
+
+        fileprivate var message: NSAttributedString {
+            switch self {
+            case .simple(let message, _),
+                 .withLink(let message, _, _, _, _):
+                return message
+            }
+        }
+
+        fileprivate var image: UIImage {
+            switch self {
+            case .simple(_, let image),
+                 .withLink(_, let image, _, _, _):
+                return image
+            }
+        }
+
+        fileprivate var details: String? {
+            switch self {
+            case .simple:
+                return nil
+            case .withLink(_, _, let detail, _, _):
+                return detail
+            }
+        }
+
+        fileprivate var actionButtonTitle: String? {
+            switch self {
+            case .simple:
+                return nil
+            case .withLink(_, _, _, let linkTitle, _):
+                return linkTitle
+            }
+        }
+    }
+}
+

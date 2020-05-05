@@ -28,7 +28,6 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
         didSet {
             // Remove dummy text in Interface Builder
             messageLabel.text = nil
-            messageLabel.isHidden = true
         }
     }
 
@@ -122,7 +121,6 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     ///
     func configure(_ config: Config) {
         messageLabel.attributedText = config.message
-        messageLabel.isHidden = false
 
         imageView.image = config.image
         imageView.isHidden = false

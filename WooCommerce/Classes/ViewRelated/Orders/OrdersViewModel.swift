@@ -96,12 +96,6 @@ final class OrdersViewModel {
         resultsController.isEmpty
     }
 
-    /// Indicates if there's a filter being applied.
-    ///
-    var isFiltered: Bool {
-        statusFilter != nil
-    }
-
     init(storageManager: StorageManagerType = ServiceLocator.storageManager,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          notificationCenter: NotificationCenter = .default,

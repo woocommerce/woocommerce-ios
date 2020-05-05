@@ -534,9 +534,7 @@ private extension OrdersViewController {
 
     func didEnter(state: State) {
         switch state {
-        case .emptyUnfiltered:
-            displayEmptyViewController()
-        case .emptyFiltered:
+        case .empty:
             displayEmptyViewController()
         case .placeholder:
             displayPlaceholderOrders()
@@ -549,9 +547,7 @@ private extension OrdersViewController {
 
     func didLeave(state: State) {
         switch state {
-        case .emptyFiltered:
-            removeEmptyViewController()
-        case .emptyUnfiltered:
+        case .empty:
             removeEmptyViewController()
         case .placeholder:
             removePlaceholderOrders()
@@ -573,17 +569,7 @@ private extension OrdersViewController {
     /// Transitions to `.results` / `.emptyFiltered` / `.emptyUnfiltered` accordingly.
     ///
     func transitionToResultsUpdatedState() {
-        if viewModel.isEmpty == false {
-            state = .results
-            return
-        }
-
-        if viewModel.isFiltered {
-            state = .emptyFiltered
-            return
-        }
-
-        state = .emptyUnfiltered
+        state = viewModel.isEmpty ? .empty : .results
     }
 }
 
@@ -615,7 +601,6 @@ private extension OrdersViewController {
         case placeholder
         case syncing
         case results
-        case emptyUnfiltered
-        case emptyFiltered
+        case empty
     }
 }

@@ -88,8 +88,8 @@ final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
             title: NSLocalizedString("Processing", comment: "Title for the first page in the Orders tab."),
             viewModel: OrdersViewModel(statusFilter: processingOrderStatus),
             emptyStateAttributes: .init(
-                message: NSLocalizedString("All orders have been fulfilled",
-                                           comment: "The message shown in the Orders → Processing tab if the list is empty."),
+                message: NSAttributedString(string: NSLocalizedString("All orders have been fulfilled",
+                                                                      comment: "The message shown in the Orders → Processing tab if the list is empty.")),
                 image: .waitingForCustomersImage,
                 details: nil,
                 actionButton: nil
@@ -101,8 +101,8 @@ final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
             title: NSLocalizedString("All Orders", comment: "Title for the second page in the Orders tab."),
             viewModel: OrdersViewModel(statusFilter: nil, includesFutureOrders: false),
             emptyStateAttributes: .init(
-                message: NSLocalizedString("Waiting for your first order",
-                                           comment: "The message shown in the Orders → All Orders tab if the list is empty."),
+                message: NSAttributedString(string: NSLocalizedString("Waiting for your first order",
+                                                                      comment: "The message shown in the Orders → All Orders tab if the list is empty.")),
                 image: .emptyOrdersImage,
                 details: NSLocalizedString("We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales.",
                                            comment: "The detailed message shown in the Orders → All Orders tab if the list is empty."),

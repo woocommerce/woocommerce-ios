@@ -92,7 +92,7 @@ extension OrderSearchStarterViewController: UITableViewDelegate {
             title: cellViewModel.name ?? NSLocalizedString("Orders", comment: "Default title for Orders List shown when tapping on the Search filter."),
             viewModel: OrdersViewModel(statusFilter: cellViewModel.orderStatus),
             emptyStateAttributes: .init(
-                message: "Temporary name",
+                message: NSAttributedString(string: "Temporary name"),
                 image: .emptySearchResultsImage,
                 details: nil,
                 actionButton: nil

@@ -23,7 +23,7 @@ class OrdersViewController: UIViewController {
     /// Configuration for the view if the list is empty.
     ///
     struct EmptyStateAttributes {
-        let message: String
+        let message: NSAttributedString
         let image: UIImage
         let details: String?
         let actionButton: (title: String, url: URL)?
@@ -416,7 +416,7 @@ private extension OrdersViewController {
         }()
 
         childController.configure(
-            message: NSAttributedString(string: emptyStateAttributes.message),
+            message: emptyStateAttributes.message,
             image: emptyStateAttributes.image,
             details: emptyStateAttributes.details,
             actionButton: actionButtonConfig

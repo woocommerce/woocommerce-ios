@@ -1,32 +1,34 @@
-//
-//  ProductVisibilityViewController.swift
-//  WooCommerce
-//
-//  Created by Paolo Musolino on 05/05/2020.
-//  Copyright © 2020 Automattic. All rights reserved.
-//
-
 import UIKit
+import Yosemite
 
-class ProductVisibilityViewController: UIViewController {
+final class ProductVisibilityViewController: UIViewController {
 
-    @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet weak private var tableView: UITableView!
+    
+    // Completion callback
+    //
+    typealias Completion = (_ productSettings: ProductSettings) -> Void
+    private let onCompletion: Completion
+
+    private let productSettings: ProductSettings
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        
+    }
+    
+    /// Init
+    ///
+    init(settings: ProductSettings, completion: @escaping Completion) {
+        productSettings = settings
+        onCompletion = completion
+        super.init(nibName: nil, bundle: nil)
     }
 
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
-    */
+
 
 }

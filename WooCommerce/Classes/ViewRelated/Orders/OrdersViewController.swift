@@ -378,6 +378,8 @@ private extension OrdersViewController {
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
+    /// Shows the EmptyStateViewController
+    ///
     func displayEmptyViewController() {
         let childController = emptyStateViewController
 
@@ -555,7 +557,7 @@ private extension OrdersViewController {
     }
 
     /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
-    /// Transitions to `.results` / `.emptyFiltered` / `.emptyUnfiltered` accordingly.
+    /// Transitions to `.results` or `.empty`.
     ///
     func transitionToResultsUpdatedState() {
         state = viewModel.isEmpty ? .empty : .results

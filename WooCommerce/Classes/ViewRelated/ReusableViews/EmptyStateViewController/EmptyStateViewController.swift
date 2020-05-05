@@ -131,8 +131,10 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
         lastActionButtonTapHandler = {
             switch config {
             case .withLink(_, _, _, _, let linkURL):
-                return {
-                    WebviewHelper.launch(linkURL, with: self)
+                return { [weak self] in
+                    if let self = self {
+                        WebviewHelper.launch(linkURL, with: self)
+                    }
                 }
             default:
                 return nil

@@ -30,5 +30,53 @@ final class ProductVisibilityViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+}
 
+// MARK: - Constants
+//
+extension ProductVisibilityViewController {
+
+    /// Table Rows
+    ///
+    enum Row {
+        /// Listed in the order they appear on screen
+        case publicVisibility
+        case passwordVisibility
+        case passwordField
+        case privateVisibility
+
+        var reuseIdentifier: String {
+            switch self {
+            case .publicVisibility, .passwordVisibility, .passwordField, .privateVisibility:
+                return BasicTableViewCell.reuseIdentifier
+            }
+        }
+
+        var description: String {
+            switch self {
+            case .publicVisibility:
+                return NSLocalizedString("Public", comment: "One of the possible options in Product Visibility")
+            case .passwordVisibility:
+                return NSLocalizedString("Password Protected", comment: "One of the possible options in Product Visibility")
+            case .passwordField:
+                return NSLocalizedString("Password", comment: "One of the possible options in Product Visibility")
+            case .privateVisibility:
+                return NSLocalizedString("Private", comment: "One of the possible options in Product Visibility")
+            }
+        }
+    }
+
+    /// Table Sections
+    ///
+    struct Section {
+        let rows: [Row]
+
+        init(rows: [Row]) {
+            self.rows = rows
+        }
+
+        init(row: Row) {
+            self.init(rows: [row])
+        }
+    }
 }

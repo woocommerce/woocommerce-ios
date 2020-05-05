@@ -300,6 +300,12 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Plus Icon
+    ///
+    static var plusImage: UIImage {
+        return UIImage.gridicon(.plus)
+    }
+
     /// Search Icon
     ///
     static var searchImage: UIImage {

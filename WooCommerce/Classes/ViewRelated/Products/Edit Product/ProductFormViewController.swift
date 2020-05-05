@@ -6,6 +6,7 @@ import Yosemite
 final class ProductFormViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var moreDetailsContainerView: UIView!
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
         let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
@@ -54,9 +55,11 @@ final class ProductFormViewController: UIViewController {
     private let productUIImageLoader: ProductUIImageLoader
 
     private let currency: String
+    private let featureFlagService: FeatureFlagService
 
-    init(product: Product, currency: String) {
+    init(product: Product, currency: String, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.currency = currency
+        self.featureFlagService = featureFlagService
         self.originalProduct = product
         self.product = product
         self.viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
@@ -85,6 +88,7 @@ final class ProductFormViewController: UIViewController {
         configureNavigationBar()
         configureMainView()
         configureTableView()
+        configureMoreDetailsContainerView()
 
         startListeningToNotifications()
         handleSwipeBackGesture()
@@ -118,7 +122,7 @@ private extension ProductFormViewController {
     }
 
     func configureMainView() {
-        view.backgroundColor = .listBackground
+        view.backgroundColor = .basicBackground
     }
 
     func configureTableView() {
@@ -127,8 +131,11 @@ private extension ProductFormViewController {
         tableView.dataSource = tableViewDataSource
         tableView.delegate = self
 
-        tableView.backgroundColor = .listBackground
+        tableView.backgroundColor = .listForeground
         tableView.removeLastCellSeparator()
+
+        // Since the table view is in a container under a stack view, the safe area adjustment should be handled in the container view.
+        tableView.contentInsetAdjustmentBehavior = .never
 
         tableView.reloadData()
     }
@@ -148,6 +155,26 @@ private extension ProductFormViewController {
                 return
             }
         }
+    }
+
+    func configureMoreDetailsContainerView() {
+        guard featureFlagService.isFeatureFlagEnabled(.editProductsRelease2) else {
+            moreDetailsContainerView.isHidden = true
+            return
+        }
+
+        let title = NSLocalizedString("Add more details", comment: "Title of the button at the bottom of the product form to add more product details.")
+        let viewModel = BottomButtonContainerView.ViewModel(style: .link,
+                                                            title: title,
+                                                            image: .plusImage) { _ in
+                                                                // TODO-2053: show more details bottom sheet
+        }
+        let buttonContainerView = BottomButtonContainerView(viewModel: viewModel)
+
+        moreDetailsContainerView.addSubview(buttonContainerView)
+        moreDetailsContainerView.pinSubviewToAllEdges(buttonContainerView)
+        moreDetailsContainerView.setContentCompressionResistancePriority(.required, for: .vertical)
+        moreDetailsContainerView.setContentHuggingPriority(.required, for: .vertical)
     }
 }
 
@@ -355,7 +382,7 @@ extension ProductFormViewController: UITableViewDelegate {
         switch section {
         case .settings:
             let clearView = UIView(frame: .zero)
-            clearView.backgroundColor = .clear
+            clearView.backgroundColor = .listBackground
             return clearView
         default:
             return nil

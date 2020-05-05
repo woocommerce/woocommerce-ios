@@ -99,7 +99,21 @@ final class ProductsViewController: UIViewController {
 
     private let imageService: ImageService = ServiceLocator.imageService
 
-    private lazy var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters(stockStatus: nil, productStatus: nil, productType: nil)
+    private var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters(stockStatus: nil, productStatus: nil, productType: nil) {
+        didSet {
+            if filters != oldValue {
+                guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+                    assertionFailure("No valid site ID for Products tab")
+                    return
+                }
+                resultsController.updatePredicate(siteID: siteID,
+                                                  stockStatus: filters.stockStatus,
+                                                  productStatus: filters.productStatus,
+                                                  productType: filters.productType)
+                syncingCoordinator.resynchronize {}
+            }
+        }
+    }
 
     // MARK: - View Lifecycle
 
@@ -325,7 +339,10 @@ private extension ProductsViewController {
 
     func createResultsController(siteID: Int64) -> ResultsController<StorageProduct> {
         let storageManager = ServiceLocator.storageManager
-        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let predicate = NSPredicate.createProductPredicate(siteID: siteID,
+                                                           stockStatus: filters.stockStatus,
+                                                           productStatus: filters.productStatus,
+                                                           productType: filters.productType)
 
         return ResultsController<StorageProduct>(storageManager: storageManager,
                                                  matching: predicate,
@@ -461,7 +478,6 @@ private extension ProductsViewController {
         let viewModel = FilterProductListViewModel(filters: filters)
         let filterProductListViewController = FilterListViewController(viewModel: viewModel) { [weak self] filters in
             self?.filters = filters
-            // TODO-2037: filter products based on the filters
         }
         present(filterProductListViewController, animated: true, completion: nil)
     }
@@ -548,6 +564,9 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
             .synchronizeProducts(siteID: siteID,
                                  pageNumber: pageNumber,
                                  pageSize: pageSize,
+                                 stockStatus: filters.stockStatus,
+                                 productStatus: filters.productStatus,
+                                 productType: filters.productType,
                                  sortOrder: sortOrder) { [weak self] error in
                                     guard let self = self else {
                                         return

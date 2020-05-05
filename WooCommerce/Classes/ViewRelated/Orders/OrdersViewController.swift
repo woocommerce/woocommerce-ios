@@ -92,13 +92,6 @@ class OrdersViewController: UIViewController {
         self.title = title
     }
 
-    /// Initialize using the given `statusFilter`.
-    ///
-    convenience init(title: String, statusFilter: OrderStatus? = nil) {
-        let viewModel = OrdersViewModel(statusFilter: statusFilter)
-        self.init(title: title, viewModel: viewModel)
-    }
-
     required init?(coder aDecoder: NSCoder) {
         fatalError("Not supported")
     }

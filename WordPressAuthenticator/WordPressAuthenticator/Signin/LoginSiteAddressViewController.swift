@@ -235,14 +235,16 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
                 }
                 
                 if WordPressAuthenticator.shared.configuration.showLoginOptionsFromSiteAddress {
+                    // If WCiOS has enabled the configuration, display
+                    // the "3 button view" on receiving a valid site address.
                     self.showLoginMethods()
                 } else {
                     self.showWPUsernamePassword()
                 }
-                
+
                 return
             }
-            
+
             self.displayError(message: originalError.localizedDescription)
         })
     }
@@ -279,7 +281,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         guard let vc = LoginUsernamePasswordViewController.instantiate(from: .login) else {
             DDLogError("Failed to navigate from LoginSiteAddressViewController to LoginUsernamePasswordViewController")
                 return
-            }
+        }
 
         vc.loginFields = loginFields
         vc.dismissBlock = dismissBlock
@@ -323,6 +325,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         }
 
         vc.modalPresentationStyle = .custom
+        navigationController?.present(vc, animated: true, completion: nil)
     }
 
     private func appleTapped() {

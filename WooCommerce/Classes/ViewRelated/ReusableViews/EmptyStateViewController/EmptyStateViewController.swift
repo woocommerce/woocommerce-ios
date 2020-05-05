@@ -124,7 +124,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
             switch config {
             case .withLink(_, _, _, _, let linkURL):
                 return {
-                    #warning("Show the link URL")
+                    WebviewHelper.launch(linkURL, with: self)
                 }
             default:
                 return nil

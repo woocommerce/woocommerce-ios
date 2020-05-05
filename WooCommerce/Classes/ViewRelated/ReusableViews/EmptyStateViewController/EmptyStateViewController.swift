@@ -15,13 +15,6 @@ import UIKit
 ///
 final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentProvider {
 
-    /// The submitted argument when configuring the `actionButton`.
-    ///
-    struct ActionButtonConfig {
-        let title: String
-        let onTap: () -> ()
-    }
-
     /// The main message shown at the top.
     ///
     @IBOutlet private var messageLabel: UILabel! {
@@ -71,10 +64,6 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     /// text (message) is too big.
     ///
     @IBOutlet private var contentViewHeightAdjustmentFromSuperviewConstraint: NSLayoutConstraint!
-
-    /// The last `ActionButtonConfig` passed during `configure()`
-    ///
-    private var lastActionButtonConfig: ActionButtonConfig?
 
     /// The handler to execute when the button is tapped.
     ///
@@ -140,28 +129,6 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
         }
     }
 
-    /// Change the elements being displayed.
-    ///
-    /// This is the only "configurable" point for consumers using this class.
-    ///
-    func configure(message: NSAttributedString? = nil,
-                   image: UIImage? = nil,
-                   details: String? = nil,
-                   actionButton actionButtonConfig: ActionButtonConfig? = nil) {
-        messageLabel.attributedText = message
-        messageLabel.isHidden = message == nil
-
-        imageView.image = image
-        imageView.isHidden = image == nil
-
-        detailsLabel.text = details
-        detailsLabel.isHidden = details == nil
-
-        lastActionButtonConfig = actionButtonConfig
-        actionButton.setTitle(actionButtonConfig?.title, for: .normal)
-        actionButton.isHidden = actionButtonConfig == nil
-    }
-
     /// Watch for device orientation changes and update the `imageView`'s visibility accordingly.
     ///
     override func willTransition(to newCollection: UITraitCollection,
@@ -206,7 +173,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
 
     /// OnTouchUpInside handler for the `actionButton`.
     @IBAction private func actionButtonTapped(_ sender: Any) {
-        lastActionButtonConfig?.onTap()
+        lastActionButtonTapHandler?()
     }
 }
 

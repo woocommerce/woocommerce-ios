@@ -30,6 +30,8 @@ final class ProductFormViewController: UIViewController {
                 return
             }
 
+            updateMoreDetailsButtonVisibility(product: product)
+
             viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
             tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel,
                                                                  productImageStatuses: productImageActionHandler.productImageStatuses,
@@ -175,6 +177,8 @@ private extension ProductFormViewController {
         moreDetailsContainerView.pinSubviewToAllEdges(buttonContainerView)
         moreDetailsContainerView.setContentCompressionResistancePriority(.required, for: .vertical)
         moreDetailsContainerView.setContentHuggingPriority(.required, for: .vertical)
+
+        updateMoreDetailsButtonVisibility(product: product)
     }
 }
 
@@ -206,6 +210,17 @@ private extension ProductFormViewController {
         }
         let bottomSheet = BottomSheetViewController(childViewController: listSelectorViewController)
         bottomSheet.show(from: self, sourceView: button, arrowDirections: .down)
+    }
+
+    func updateMoreDetailsButtonVisibility(product: Product) {
+        guard featureFlagService.isFeatureFlagEnabled(.editProductsRelease2) else {
+            moreDetailsContainerView.isHidden = true
+            return
+        }
+
+        let moreDetailsActions: [ProductFormBottomSheetAction] = [.editInventorySettings, .editShippingSettings, .editCategories, .editBriefDescription]
+        let hasVisibleActions = moreDetailsActions.map({ $0.isVisible(product: product) }).contains(true)
+        moreDetailsContainerView.isHidden = hasVisibleActions == false
     }
 }
 

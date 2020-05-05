@@ -25,7 +25,7 @@ final class ProductFormBottomSheetListSelectorCommand: BottomSheetListSelectorCo
             shouldShowCategoriesRow ? .editCategories: nil,
             .editBriefDescription
         ]
-        self.data = actions.compactMap({ $0 })
+        self.data = actions.compactMap({ $0 }).filter({ $0.isVisible(product: product) })
     }
 
     func configureCell(cell: ImageAndTitleAndTextTableViewCell, model: ProductFormBottomSheetAction) {

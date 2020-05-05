@@ -61,7 +61,7 @@ private extension DefaultProductFormTableViewModel {
             shouldShowBriefDescriptionRow ? .briefDescription(viewModel: briefDescriptionRow(product: product)): nil
         ]
 
-        return rows.compactMap { $0 }
+        return rows.compactMap { $0 }.filter { $0.isVisible(product: product) }
     }
 }
 

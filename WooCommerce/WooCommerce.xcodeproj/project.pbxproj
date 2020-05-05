@@ -199,6 +199,10 @@
 		02B296A722FA6DB500FD7A4C /* Date+StartAndEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B296A622FA6DB500FD7A4C /* Date+StartAndEnd.swift */; };
 		02B296A922FA6E0000FD7A4C /* DateStartAndEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B296A822FA6E0000FD7A4C /* DateStartAndEndTests.swift */; };
 		02B653AC2429F7BF00A9C839 /* MockTaxClassStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B653AB2429F7BF00A9C839 /* MockTaxClassStoresManager.swift */; };
+		02BA12852461674B008D8325 /* Optional+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BA12842461674B008D8325 /* Optional+String.swift */; };
+		02BA1287246167C7008D8325 /* ProductFormSection.SettingsRow+Visibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BA1286246167C7008D8325 /* ProductFormSection.SettingsRow+Visibility.swift */; };
+		02BA128B24616B48008D8325 /* ProductFormSectionSettingsRow+VisibilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BA128A24616B48008D8325 /* ProductFormSectionSettingsRow+VisibilityTests.swift */; };
+		02BA128D2461711D008D8325 /* ProductFormBottomSheetAction+VisibilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BA128C2461711D008D8325 /* ProductFormBottomSheetAction+VisibilityTests.swift */; };
 		02BA23C022EE9DAF009539E7 /* AsyncDictionaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BA23BF22EE9DAF009539E7 /* AsyncDictionaryTests.swift */; };
 		02C0CD2A23B5BB1C00F880B1 /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C0CD2923B5BB1C00F880B1 /* ImageService.swift */; };
 		02C0CD2C23B5BC9600F880B1 /* DefaultImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C0CD2B23B5BC9600F880B1 /* DefaultImageService.swift */; };
@@ -1033,6 +1037,10 @@
 		02B296A622FA6DB500FD7A4C /* Date+StartAndEnd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+StartAndEnd.swift"; sourceTree = "<group>"; };
 		02B296A822FA6E0000FD7A4C /* DateStartAndEndTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateStartAndEndTests.swift; sourceTree = "<group>"; };
 		02B653AB2429F7BF00A9C839 /* MockTaxClassStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockTaxClassStoresManager.swift; sourceTree = "<group>"; };
+		02BA12842461674B008D8325 /* Optional+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Optional+String.swift"; sourceTree = "<group>"; };
+		02BA1286246167C7008D8325 /* ProductFormSection.SettingsRow+Visibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormSection.SettingsRow+Visibility.swift"; sourceTree = "<group>"; };
+		02BA128A24616B48008D8325 /* ProductFormSectionSettingsRow+VisibilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormSectionSettingsRow+VisibilityTests.swift"; sourceTree = "<group>"; };
+		02BA128C2461711D008D8325 /* ProductFormBottomSheetAction+VisibilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormBottomSheetAction+VisibilityTests.swift"; sourceTree = "<group>"; };
 		02BA23BF22EE9DAF009539E7 /* AsyncDictionaryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncDictionaryTests.swift; sourceTree = "<group>"; };
 		02C0CD2923B5BB1C00F880B1 /* ImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
 		02C0CD2B23B5BC9600F880B1 /* DefaultImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultImageService.swift; sourceTree = "<group>"; };
@@ -1714,6 +1722,8 @@
 				02153210242376B5003F2BBD /* ProductPriceSettingsViewModelTests.swift */,
 				2611EE57243A46C500A74490 /* Categories */,
 				453770CF2431FEC400AC718D /* Settings */,
+				02BA128A24616B48008D8325 /* ProductFormSectionSettingsRow+VisibilityTests.swift */,
+				02BA128C2461711D008D8325 /* ProductFormBottomSheetAction+VisibilityTests.swift */,
 			);
 			path = "Edit Product";
 			sourceTree = "<group>";
@@ -1773,6 +1783,7 @@
 				025B1747237A92D800C780B4 /* ProductFormSection+ReusableTableRow.swift */,
 				025B1749237AA49D00C780B4 /* Product+ProductForm.swift */,
 				4580BA7123F192A300B5F764 /* Product Settings */,
+				02BA1286246167C7008D8325 /* ProductFormSection.SettingsRow+Visibility.swift */,
 			);
 			path = "Edit Product";
 			sourceTree = "<group>";
@@ -3400,6 +3411,7 @@
 				0215320A24231D5A003F2BBD /* UIStackView+Subviews.swift */,
 				029BFD4E24597D4B00FDDEEC /* UIButton+TitleAndImage.swift */,
 				57612988245888E2007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlus.swift */,
+				02BA12842461674B008D8325 /* Optional+String.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -4796,6 +4808,7 @@
 				74036CC0211B882100E462C2 /* PeriodDataViewController.swift in Sources */,
 				740382DB2267D94100A627F4 /* LargeImageTableViewCell.swift in Sources */,
 				CE22709F2293052700C0626C /* WebviewHelper.swift in Sources */,
+				02BA12852461674B008D8325 /* Optional+String.swift in Sources */,
 				744F00D221B582A9007EFA93 /* StarRatingView.swift in Sources */,
 				0282DD96233C960C006A5FDB /* SearchResultCell.swift in Sources */,
 				74AFF2EA211B9B1B0038153A /* StoreStatsViewController.swift in Sources */,
@@ -4830,6 +4843,7 @@
 				024DF31423742B7A006658FE /* AztecUnderlineFormatBarCommand.swift in Sources */,
 				CE32B10D20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift in Sources */,
 				D8D15F85230A18AB00D48B3F /* Analytics.swift in Sources */,
+				02BA1287246167C7008D8325 /* ProductFormSection.SettingsRow+Visibility.swift in Sources */,
 				D8C62471227AE0030011A7D6 /* SiteCountry.swift in Sources */,
 				B582F95920FFCEAA0060934A /* UITableViewHeaderFooterView+Helpers.swift in Sources */,
 				02C0CD2C23B5BC9600F880B1 /* DefaultImageService.swift in Sources */,
@@ -4882,12 +4896,14 @@
 				02FE89C7231FAA4100E85EF8 /* MainTabBarControllerTests+ProductListFeatureFlag.swift in Sources */,
 				B57C5C9F21B80E8300FF82B2 /* SampleError.swift in Sources */,
 				02404EE42315151400FF1170 /* MockupStatsVersionStoresManager.swift in Sources */,
+				02BA128D2461711D008D8325 /* ProductFormBottomSheetAction+VisibilityTests.swift in Sources */,
 				B53B898920D450AF00EDB467 /* SessionManagerTests.swift in Sources */,
 				5761298B24589B84007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlusTests.swift in Sources */,
 				7435E59021C0162C00216F0F /* OrderNoteWooTests.swift in Sources */,
 				45F5A3C323DF31D2007D40E5 /* ShippingInputFormatterTests.swift in Sources */,
 				02153211242376B5003F2BBD /* ProductPriceSettingsViewModelTests.swift in Sources */,
 				45C8B25D231529410002FA77 /* CustomerInfoTableViewCellTests.swift in Sources */,
+				02BA128B24616B48008D8325 /* ProductFormSectionSettingsRow+VisibilityTests.swift in Sources */,
 				D85B8336222FCDA1002168F3 /* StatusListTableViewCellTests.swift in Sources */,
 				265D909D2446688C00D66F0F /* ProductCategoryViewModelBuilderTests.swift in Sources */,
 				B555531321B57E8800449E71 /* MockupUserNotificationsCenterAdapter.swift in Sources */,

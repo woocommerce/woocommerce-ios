@@ -120,13 +120,16 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
         actionButton.setTitle(config.actionButtonTitle, for: .normal)
         actionButton.isHidden = config.actionButtonTitle == nil
 
-        lastActionButtonTapHandler = nil
-
-        if case let Config.withLink(_, _, _, _, linkURL) = config {
-            lastActionButtonTapHandler = {
-                #warning("Show the linkURL")
+        lastActionButtonTapHandler = {
+            switch config {
+            case .withLink(_, _, _, _, let linkURL):
+                return {
+                    #warning("Show the link URL")
+                }
+            default:
+                return nil
             }
-        }
+        }()
     }
 
     /// Watch for device orientation changes and update the `imageView`'s visibility accordingly.

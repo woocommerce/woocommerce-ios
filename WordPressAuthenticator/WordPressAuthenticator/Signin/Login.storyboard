@@ -1365,7 +1365,7 @@
         <!--Login Prologue Login Method View Controller-->
         <scene sceneID="4ov-Vw-tga">
             <objects>
-                <viewController id="hed-vB-osh" customClass="LoginPrologueLoginMethodViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginPrologueLoginMethodViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="hed-vB-osh" customClass="LoginPrologueLoginMethodViewController" customModule="WordPressAuthenticator" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="EBT-D5-afP"/>
                         <viewControllerLayoutGuide type="bottom" id="wML-ff-0Cg"/>
@@ -1411,7 +1411,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="5hL-j3-eMs"/>
+        <segue reference="N3P-wt-Rn3"/>
         <segue reference="ySQ-EM-6JI"/>
         <segue reference="JN3-Ck-2w7"/>
     </inferredMetricsTieBreakers>

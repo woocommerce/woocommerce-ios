@@ -60,6 +60,37 @@ enum ProductSettingsRows {
         let cellTypes: [UITableViewCell.Type] = [SettingTitleAndValueTableViewCell.self]
     }
 
+    struct Visibility: ProductSettingsRowMediator {
+
+        private let settings: ProductSettings
+
+        init(_ settings: ProductSettings) {
+            self.settings = settings
+        }
+
+        func configure(cell: UITableViewCell) {
+            guard let cell = cell as? SettingTitleAndValueTableViewCell else {
+                return
+            }
+
+            let title = NSLocalizedString("Visibility", comment: "Visibility label in Product Settings")
+            cell.updateUI(title: title, value: nil) //settings.catalogVisibility.description
+            cell.accessoryType = .disclosureIndicator
+        }
+
+        func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
+            let viewController = ProductCatalogVisibilityViewController(settings: settings) { (productSettings) in
+                //self.settings.catalogVisibility = productSettings.catalogVisibility
+                onCompletion(self.settings)
+            }
+            sourceViewController.navigationController?.pushViewController(viewController, animated: true)
+        }
+
+        let reuseIdentifier: String = SettingTitleAndValueTableViewCell.reuseIdentifier
+
+        let cellTypes: [UITableViewCell.Type] = [SettingTitleAndValueTableViewCell.self]
+    }
+    
     struct CatalogVisibility: ProductSettingsRowMediator {
 
         private let settings: ProductSettings

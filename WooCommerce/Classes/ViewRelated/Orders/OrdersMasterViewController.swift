@@ -107,8 +107,12 @@ final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
                     message: NSLocalizedString("Waiting for your first order", 
                                                comment: "The message shown in the Orders → All Orders tab if the list is empty."),
                     image: .emptyOrdersImage,
-                    details: nil,
-                    actionButton: nil
+                    details: NSLocalizedString("We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales.",
+                                               comment: "The detailed message shown in the Orders → All Orders tab if the list is empty."),
+                    actionButton: (
+                        title: NSLocalizedString("Learn more", comment: "Title of button shown in the Orders → All Orders tab if the list is empty."),
+                        url: .wooCommerceBlog
+                    )
                 ),
                 includesFutureOrders: false
             )

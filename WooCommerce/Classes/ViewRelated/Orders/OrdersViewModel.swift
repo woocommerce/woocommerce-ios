@@ -28,7 +28,7 @@ final class OrdersViewModel {
         let message: String
         let image: UIImage
         let details: String?
-        let actionButton: (title: String, link: URL)?
+        let actionButton: (title: String, url: URL)?
     }
 
     private let storageManager: StorageManagerType

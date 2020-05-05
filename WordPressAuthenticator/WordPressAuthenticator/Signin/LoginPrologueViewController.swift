@@ -45,29 +45,6 @@ class LoginPrologueViewController: LoginViewController {
         if let vc = segue.destination as? NUXButtonViewController {
             buttonViewController = vc
         }
-        else if let vc = segue.destination as? LoginPrologueLoginMethodViewController {
-            vc.transitioningDelegate = self
-            
-            vc.emailTapped = { [weak self] in
-                guard let vc = LoginEmailViewController.instantiate(from: .login) else {
-                    DDLogError("Failed to navigate to LoginEmailViewController")
-                    return
-                }
-
-                self?.navigationController?.pushViewController(vc, animated: true)
-            }
-            vc.googleTapped = { [weak self] in
-                self?.googleLoginTapped(withDelegate: self)
-            }
-            vc.selfHostedTapped = { [weak self] in
-                self?.loginToSelfHostedSite()
-            }
-            vc.appleTapped = { [weak self] in
-                self?.appleTapped()
-            }
-
-            vc.modalPresentationStyle = .custom
-        }
     }
 
     private func configureButtonVC() {

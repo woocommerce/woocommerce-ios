@@ -1233,6 +1233,9 @@
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cCX-uI-ruO" userLabel="Title">
                                                                         <rect key="frame" x="0.0" y="0.0" width="281" height="18"/>
+                                                                        <constraints>
+                                                                            <constraint firstAttribute="height" constant="18" id="Coh-Dn-nk1"/>
+                                                                        </constraints>
                                                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                                         <color key="textColor" red="0.18039215689999999" green="0.2666666667" blue="0.32549019610000002" alpha="1" colorSpace="calibratedRGB"/>
                                                                         <nil key="highlightedColor"/>
@@ -1250,6 +1253,12 @@
                                                                 </subviews>
                                                             </stackView>
                                                         </subviews>
+                                                        <constraints>
+                                                            <constraint firstItem="DWy-yy-er4" firstAttribute="bottom" secondItem="IMk-aA-1GF" secondAttribute="bottomMargin" id="I9F-s9-a8t"/>
+                                                            <constraint firstItem="DWy-yy-er4" firstAttribute="trailing" secondItem="IMk-aA-1GF" secondAttribute="trailingMargin" id="gca-Ce-u6f"/>
+                                                            <constraint firstItem="DWy-yy-er4" firstAttribute="leading" secondItem="Gak-2q-wul" secondAttribute="trailing" constant="10" id="h93-X9-jIc"/>
+                                                            <constraint firstItem="DWy-yy-er4" firstAttribute="top" secondItem="IMk-aA-1GF" secondAttribute="topMargin" id="sNI-Q9-kLs"/>
+                                                        </constraints>
                                                     </stackView>
                                                 </subviews>
                                             </stackView>

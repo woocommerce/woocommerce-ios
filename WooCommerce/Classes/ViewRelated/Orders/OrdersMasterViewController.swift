@@ -106,7 +106,7 @@ final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
                 emptyStateAttributes: .init(
                     message: NSLocalizedString("Waiting for your first order", 
                                                comment: "The message shown in the Orders → All Orders tab if the list is empty."),
-                    image: .waitingForCustomersImage,
+                    image: .emptyOrdersImage,
                     details: nil,
                     actionButton: nil
                 ),

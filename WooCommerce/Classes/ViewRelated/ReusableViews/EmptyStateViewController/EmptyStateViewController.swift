@@ -51,9 +51,12 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
         }
     }
 
-    /// The scrollable view containing all the content (labels, image, etc).
+    /// The scrollable view which contains the `contentView`.
     ///
     @IBOutlet private var scrollView: UIScrollView!
+    /// The child of the scrollView containing all the content (labels, image, etc).
+    ///
+    @IBOutlet private var contentView: UIView!
 
     /// The height adjustment constraint for the content view.
     ///

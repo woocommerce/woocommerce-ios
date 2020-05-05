@@ -78,7 +78,7 @@ private extension BottomButtonContainerView {
 
         if let image = viewModel.image {
             button.setImage(image, for: .normal)
-            button.distributeTitleAndImage(spacing: 16)
+            button.distributeTitleAndImage(spacing: Constants.buttonTitleAndImageSpacing)
         }
     }
 
@@ -90,5 +90,6 @@ private extension BottomButtonContainerView {
 private extension BottomButtonContainerView {
     enum Constants {
         static let buttonMarginInsets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+        static let buttonTitleAndImageSpacing: CGFloat = 16
     }
 }

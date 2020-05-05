@@ -6,15 +6,15 @@ final class ProductSettingsViewModel {
 
     let siteID: Int64
     let productID: Int64
-    
+
     private let product: Product
-    
+
     var productSettings: ProductSettings {
         didSet {
             sections = Self.configureSections(productSettings)
         }
     }
-    
+
     private(set) var sections: [ProductSettingsSectionMediator] {
         didSet {
             self.onReload?()

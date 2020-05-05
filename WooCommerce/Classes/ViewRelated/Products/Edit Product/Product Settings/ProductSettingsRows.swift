@@ -90,7 +90,7 @@ enum ProductSettingsRows {
 
         let cellTypes: [UITableViewCell.Type] = [SettingTitleAndValueTableViewCell.self]
     }
-    
+
     struct CatalogVisibility: ProductSettingsRowMediator {
 
         private let settings: ProductSettings

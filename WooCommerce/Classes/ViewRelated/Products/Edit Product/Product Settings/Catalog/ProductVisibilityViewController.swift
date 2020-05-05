@@ -4,20 +4,20 @@ import Yosemite
 final class ProductVisibilityViewController: UIViewController {
 
     @IBOutlet weak private var tableView: UITableView!
-    
+
     // Completion callback
     //
     typealias Completion = (_ productSettings: ProductSettings) -> Void
     private let onCompletion: Completion
 
     private let productSettings: ProductSettings
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        
+
     }
-    
+
     /// Init
     ///
     init(settings: ProductSettings, completion: @escaping Completion) {

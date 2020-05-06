@@ -16,7 +16,7 @@ final class KeyboardFrameObserverTests: XCTestCase {
 
         var actualFrames = [CGRect]()
 
-        var keyboardFrameObserver = KeyboardFrameObserver(notificationCenter: notificationCenter) { (keyboardFrame: CGRect) in
+        let keyboardFrameObserver = KeyboardFrameObserver(notificationCenter: notificationCenter) { (keyboardFrame: CGRect) in
             actualFrames.append(keyboardFrame)
             if actualFrames.count >= expectedFrames.count {
                 XCTAssertEqual(actualFrames, expectedFrames)
@@ -47,7 +47,7 @@ final class KeyboardFrameObserverTests: XCTestCase {
 
         var actualFrames = [CGRect]()
 
-        var keyboardFrameObserver = KeyboardFrameObserver(notificationCenter: notificationCenter) { (keyboardFrame: CGRect) in
+        let keyboardFrameObserver = KeyboardFrameObserver(notificationCenter: notificationCenter) { (keyboardFrame: CGRect) in
             actualFrames.append(keyboardFrame)
             if actualFrames.count >= expectedFrames.count {
                 XCTAssertEqual(actualFrames, expectedFrames)
@@ -70,7 +70,7 @@ final class KeyboardFrameObserverTests: XCTestCase {
 
         let expectationForKeyboardFrame = expectation(description: "Wait for keyboard frame updates")
 
-        var keyboardFrameObserver = KeyboardFrameObserver(notificationCenter: notificationCenter) { (keyboardFrame: CGRect) in
+        let keyboardFrameObserver = KeyboardFrameObserver(notificationCenter: notificationCenter) { (keyboardFrame: CGRect) in
             expectationForKeyboardFrame.fulfill()
         }
         keyboardFrameObserver.startObservingKeyboardFrame()
@@ -88,7 +88,7 @@ final class KeyboardFrameObserverTests: XCTestCase {
 
         let expectationForKeyboardFrame = expectation(description: "Wait for keyboard frame updates")
 
-        var keyboardFrameObserver = KeyboardFrameObserver(notificationCenter: notificationCenter) { (keyboardFrame: CGRect) in
+        let keyboardFrameObserver = KeyboardFrameObserver(notificationCenter: notificationCenter) { (keyboardFrame: CGRect) in
             expectationForKeyboardFrame.fulfill()
         }
         keyboardFrameObserver.startObservingKeyboardFrame()
@@ -135,7 +135,7 @@ final class KeyboardFrameObserverTests: XCTestCase {
         let keyboardStateProvider = MockKeyboardStateProvider(state: expectedKeyboardState)
 
         var actualKeyboardFrame: CGRect = .zero
-        var keyboardFrameObserver = KeyboardFrameObserver(keyboardStateProvider: keyboardStateProvider) { frame in
+        let keyboardFrameObserver = KeyboardFrameObserver(keyboardStateProvider: keyboardStateProvider) { frame in
             actualKeyboardFrame = frame
         }
 

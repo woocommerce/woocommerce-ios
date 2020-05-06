@@ -1,8 +1,6 @@
 #import "WPWalkthroughTextField.h"
 #import <WordPressShared/WordPressShared.h>
 
-
-
 NSInteger const LeftImageSpacing = 8;
 
 @import Gridicons;
@@ -122,8 +120,10 @@ NSInteger const LeftImageSpacing = 8;
 
     self.secureTextEntryToggle = [UIButton buttonWithType:UIButtonTypeCustom];
     self.secureTextEntryToggle.clipsToBounds = true;
+
     // colors here are overridden in LoginTextField
-    self.secureTextEntryToggle.tintColor = [WPStyleGuide greyLighten10];
+    self.secureTextEntryToggle.tintColor = (self.secureTextEntryImageColor != nil) ? self.secureTextEntryImageColor : [WPStyleGuide greyLighten10];
+
     [self.secureTextEntryToggle addTarget:self action:@selector(secureTextEntryToggleAction:) forControlEvents:UIControlEventTouchUpInside];
 
     [self updateSecureTextEntryToggleImage];

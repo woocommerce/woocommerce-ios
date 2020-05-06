@@ -8,7 +8,17 @@ struct KeyboardState: Equatable {
     let isVisible: Bool
     /// The frame of the keyboard when it is fully shown or hidden.
     ///
-    /// The value is usually from `UIResponder.keyboardFrameEndUserInfoKey`.
+    /// The value is from `UIResponder.keyboardFrameEndUserInfoKey`.
+    ///
+    /// Note that even if `isVisible` is `false`, this can still have a **non-zero** value. This
+    /// can happen in this scenario:
+    ///
+    /// 1. View-A is shown and the keyboard is shown.
+    /// 2. User taps on something which presents View-B **while** the keyboard is present.
+    ///    View-B does not have a user responder (text field) so the keyboard is not visible.
+    /// 3. NSNotificationCenter emits a `keyboardDidHideNotification` but with a
+    ///    `keyboardFrameEndUserInfoKey` value set to the **previously shown keyboard's frame**.
+    ///
     let frameEnd: CGRect
 }
 

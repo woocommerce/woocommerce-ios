@@ -5,6 +5,8 @@ final class ProductVisibilityViewController: UIViewController {
 
     @IBOutlet weak private var tableView: UITableView!
 
+    private var sections: [Section] = []
+    
     // Completion callback
     //
     typealias Completion = (_ productSettings: ProductSettings) -> Void
@@ -14,8 +16,9 @@ final class ProductVisibilityViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-
+        configureNavigationBar()
+        configureMainView()
+        configureTableView()
     }
 
     /// Init
@@ -30,6 +33,36 @@ final class ProductVisibilityViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+//    func reloadSections() {
+//        if productSettings.password.isEmpty {
+//            sections = [Section(rows: [.publicVisibility, .passwordVisibility, .privateVisibility])]
+//        }
+//    }
+}
+
+// MARK: - View Configuration
+//
+private extension ProductVisibilityViewController {
+
+    func configureNavigationBar() {
+        title = NSLocalizedString("Visibility", comment: "Product Visibility navigation title")
+
+        removeNavigationBackBarButtonText()
+    }
+
+    func configureMainView() {
+        view.backgroundColor = .listBackground
+    }
+
+    func configureTableView() {
+        tableView.register(BasicTableViewCell.loadNib(), forCellReuseIdentifier: BasicTableViewCell.reuseIdentifier)
+
+        //tableView.dataSource = self
+        //tableView.delegate = self
+
+        tableView.backgroundColor = .listBackground
+        tableView.removeLastCellSeparator()
+    }
 }
 
 // MARK: - Constants

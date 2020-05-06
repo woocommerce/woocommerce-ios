@@ -101,6 +101,31 @@ final class KeyboardFrameObserverTests: XCTestCase {
         waitForExpectations(timeout: 0.1)
     }
 
+    func testItWillNotEmitNewEventsWhenItIsDeallocated() {
+        // Arrange
+        let notificationCenter = NotificationCenter()
+
+        var eventsLogged = 0
+        var keyboardFrameObserver: KeyboardFrameObserver? = KeyboardFrameObserver(notificationCenter: notificationCenter) { _ in
+            eventsLogged += 1
+        }
+
+        keyboardFrameObserver?.startObservingKeyboardFrame()
+
+        // These should be logged
+        notificationCenter.postKeyboardWillShowNotification(keyboardFrame: CGRect(x: 1, y: 1, width: 1, height: 1))
+        notificationCenter.postKeyboardWillShowNotification(keyboardFrame: CGRect(x: 2, y: 2, width: 2, height: 2))
+
+        // Act
+        keyboardFrameObserver = nil
+
+        // This should not be logged anymore
+        notificationCenter.postKeyboardWillShowNotification(keyboardFrame: CGRect(x: 3, y: 3, width: 3, height: 3))
+
+        // Assert
+        XCTAssertEqual(eventsLogged, 2)
+    }
+
     func testItCanSendInitialEvents() {
         // Arrange
         let expectedKeyboardState = KeyboardState(

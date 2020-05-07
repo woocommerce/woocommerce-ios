@@ -36,7 +36,7 @@ final class ProductSettingsViewController: UIViewController {
             self?.tableView.reloadData()
         }
         retrieveProductPassword { [weak self] (password, error) in
-            guard error != nil, let password = password else {
+            guard error == nil, let password = password else {
                 return
             }
             self?.viewModel.productSettings.password = password

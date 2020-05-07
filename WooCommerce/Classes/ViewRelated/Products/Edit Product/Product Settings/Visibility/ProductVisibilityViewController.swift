@@ -16,15 +16,6 @@ final class ProductVisibilityViewController: UIViewController {
     
     private var visibility: ProductVisibility = .publicVisibility
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        configureNavigationBar()
-        configureMainView()
-        configureTableView()
-        visibility = getProductVisibility(productSettings)
-        reloadSections()
-    }
-
     /// Init
     ///
     init(settings: ProductSettings, completion: @escaping Completion) {
@@ -37,6 +28,20 @@ final class ProductVisibilityViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        configureNavigationBar()
+        configureMainView()
+        configureTableView()
+        visibility = getProductVisibility(productSettings)
+        reloadSections()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        onCompletion(productSettings)
+    }
+    
     func reloadSections() {
         if visibility == .passwordProtected {
             sections = [Section(rows: [.publicVisibility, .passwordVisibility, .passwordField, .privateVisibility])]

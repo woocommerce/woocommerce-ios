@@ -38,7 +38,7 @@ enum ProductSettingsRows {
             guard let cell = cell as? SettingTitleAndValueTableViewCell else {
                 return
             }
-            
+
             /// If the status is private, the status cell becomes not editable.
             if settings.status == .privateStatus {
                 cell.accessoryType = .none
@@ -50,17 +50,17 @@ enum ProductSettingsRows {
                 cell.selectionStyle = .default
                 cell.applyDefaultLabelsStyle()
             }
-            
+
             cell.updateUI(title: NSLocalizedString("Status", comment: "Status label in Product Settings"), value: settings.status.description)
         }
 
         func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
-            
+
             /// If the status is private, the cell doesn't trigger any action
             guard settings.status != .privateStatus else {
                 return
             }
-            
+
             let command = ProductStatusSettingListSelectorCommand(selected: settings.status)
 
             let listSelectorViewController = ListSelectorViewController(command: command) { selected in

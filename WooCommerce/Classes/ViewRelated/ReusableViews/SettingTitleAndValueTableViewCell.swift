@@ -31,11 +31,11 @@ extension SettingTitleAndValueTableViewCell {
         valueLabel.applyBodyStyle()
         valueLabel.textColor = .textSubtle
     }
-    
+
     func applyNonSelectableLabelsStyle() {
         titleLabel.applyBodyStyle()
         titleLabel.textColor = .text
-        
+
         valueLabel.applyBodyStyle()
         valueLabel.textColor = .textTertiary
     }

@@ -40,7 +40,7 @@ final class ProductSettingsViewModelTests: XCTestCase {
 
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
-    
+
     func testHasUnsavedChangesWithOnlyThePasswordChanged() {
         let product = MockProduct().product(status: .publish, featured: false, catalogVisibility: .visible)
         let viewModel = ProductSettingsViewModel(product: product, password: nil)

@@ -8,10 +8,10 @@ final class ProductSettingsViewModel {
     let productID: Int64
 
     private let product: Product
-    
+
     /// The original password, the one fetched from site post API
     private var password: String?
-    
+
     var productSettings: ProductSettings {
         didSet {
             sections = Self.configureSections(productSettings)
@@ -35,9 +35,9 @@ final class ProductSettingsViewModel {
         self.password = password
         productSettings = ProductSettings(from: product, password: password)
         sections = Self.configureSections(productSettings)
-        
+
         /// If nil, we fetch the password from site post API because it was never fetched
-        if password == nil{
+        if password == nil {
             retrieveProductPassword { [weak self] (password, error) in
                 guard let self = self else {
                     return

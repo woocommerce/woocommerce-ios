@@ -6,16 +6,16 @@ final class ProductVisibilityViewController: UIViewController {
     @IBOutlet weak private var tableView: UITableView!
 
     private var sections: [Section] = []
-    
+
     // Completion callback
     //
     typealias Completion = (_ productSettings: ProductSettings) -> Void
     private let onCompletion: Completion
 
     private let productSettings: ProductSettings
-    
+
     private var visibility: ProductVisibility = .publicVisibility
-    
+
     /// Init
     ///
     init(settings: ProductSettings, completion: @escaping Completion) {
@@ -41,7 +41,7 @@ final class ProductVisibilityViewController: UIViewController {
         super.viewWillDisappear(animated)
         onCompletion(productSettings)
     }
-    
+
     func reloadSections() {
         if visibility == .passwordProtected {
             sections = [Section(rows: [.publicVisibility, .passwordVisibility, .passwordField, .privateVisibility])]
@@ -51,7 +51,7 @@ final class ProductVisibilityViewController: UIViewController {
         }
         tableView.reloadData()
     }
-    
+
     /**
     * The visibility is determined by the status and the password. If the password isn't empty, then
     * visibility is `passwordProtected`. If there's no password and the product status is `private`
@@ -68,7 +68,7 @@ final class ProductVisibilityViewController: UIViewController {
             return .publicVisibility
         }
     }
-    
+
     func getProductStatus(_ productVibility: ProductVisibility) -> ProductStatus {
         switch productVibility {
         case .privateVisibility:
@@ -142,7 +142,7 @@ extension ProductVisibilityViewController: UITableViewDelegate {
 // MARK: - Support for UITableViewDataSource
 //
 private extension ProductVisibilityViewController {
-    
+
     /// Configure cellForRowAtIndexPath:
     ///
    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
@@ -195,7 +195,7 @@ extension ProductVisibilityViewController {
                 return NSLocalizedString("Password", comment: "One of the possible options in Product Visibility")
             }
         }
-        
+
         var editable: Bool {
             switch self {
             case .passwordField:
@@ -204,7 +204,7 @@ extension ProductVisibilityViewController {
                 return false
             }
         }
-        
+
         var visibility: ProductVisibility {
             switch self {
             case .publicVisibility:

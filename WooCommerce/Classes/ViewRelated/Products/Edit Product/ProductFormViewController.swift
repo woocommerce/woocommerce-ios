@@ -43,7 +43,7 @@ final class ProductFormViewController: UIViewController {
             tableView.reloadData()
         }
     }
-    
+
     /// The product password, fetched in Product Settings
     private var password: String?
 

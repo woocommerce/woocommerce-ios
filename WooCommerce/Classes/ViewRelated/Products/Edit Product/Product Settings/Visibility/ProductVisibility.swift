@@ -4,11 +4,11 @@ import Yosemite
 /// Represents a ProductVisibility Entity.
 ///
 enum ProductVisibility {
-    
+
     case publicVisibility
     case passwordProtected
     case privateVisibility
-    
+
     /// Returns the localized text version of the Enum
     ///
     public var description: String {
@@ -26,7 +26,7 @@ enum ProductVisibility {
 /// RawRepresentable Conformance
 ///
 extension ProductVisibility {
-    
+
     /// Designated Initializer.
     ///
     public init(status: ProductStatus, password: String?) {
@@ -41,4 +41,3 @@ extension ProductVisibility {
         }
     }
 }
-    

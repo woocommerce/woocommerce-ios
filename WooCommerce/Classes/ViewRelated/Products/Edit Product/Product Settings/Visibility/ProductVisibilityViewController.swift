@@ -14,8 +14,6 @@ final class ProductVisibilityViewController: UIViewController {
 
     private let productSettings: ProductSettings
     
-    private var isPasswordSelected: Bool = false
-    
     private var visibility: ProductVisibility = .publicVisibility
 
     override func viewDidLoad() {
@@ -31,7 +29,6 @@ final class ProductVisibilityViewController: UIViewController {
     ///
     init(settings: ProductSettings, completion: @escaping Completion) {
         productSettings = settings
-        isPasswordSelected = productSettings.password.isNotEmpty
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
@@ -41,7 +38,7 @@ final class ProductVisibilityViewController: UIViewController {
     }
 
     func reloadSections() {
-        if isPasswordSelected {
+        if visibility == .passwordProtected {
             sections = [Section(rows: [.publicVisibility, .passwordVisibility, .passwordField, .privateVisibility])]
         }
         else {
@@ -137,7 +134,7 @@ private extension ProductVisibilityViewController {
         case let cell as BasicTableViewCell:
             configureVisibilityCell(cell: cell, indexPath: indexPath)
         default:
-            fatalError("Unidentified product catalog visibility row type")
+            fatalError("Unidentified product visibility row type")
         }
     }
 
@@ -176,14 +173,10 @@ extension ProductVisibilityViewController {
 
         var description: String {
             switch self {
-            case .publicVisibility:
-                return NSLocalizedString("Public", comment: "One of the possible options in Product Visibility")
-            case .passwordVisibility:
-                return NSLocalizedString("Password Protected", comment: "One of the possible options in Product Visibility")
+            case .publicVisibility, .passwordVisibility, .privateVisibility:
+                return self.visibility.description
             case .passwordField:
                 return NSLocalizedString("Password", comment: "One of the possible options in Product Visibility")
-            case .privateVisibility:
-                return NSLocalizedString("Private", comment: "One of the possible options in Product Visibility")
             }
         }
         
@@ -234,6 +227,19 @@ enum ProductVisibility {
     case publicVisibility
     case passwordProtected
     case privateVisibility
+    
+    /// Returns the localized text version of the Enum
+    ///
+    public var description: String {
+        switch self {
+        case .publicVisibility:
+            return NSLocalizedString("Public", comment: "One of the possible options in Product Visibility")
+        case .passwordProtected:
+            return NSLocalizedString("Password Protected", comment: "One of the possible options in Product Visibility")
+        case .privateVisibility:
+            return NSLocalizedString("Private", comment: "One of the possible options in Product Visibility")
+        }
+    }
 }
 
 /// RawRepresentable Conformance

@@ -17,6 +17,10 @@ final class TopPerformerDataViewController: UIViewController {
 
     @IBOutlet private weak var tableView: IntrinsicTableView!
 
+    /// A child view controller that is shown when `displayGhostContent()` is called.
+    ///
+    private lazy var ghostTableViewController = GhostTableViewController()
+
     /// ResultsController: Loads TopEarnerStats for the current granularity from the Storage Layer
     ///
     private lazy var resultsController: ResultsController<StorageTopEarnerStats> = {
@@ -114,23 +118,35 @@ extension TopPerformerDataViewController {
     }
 
     /// Renders Placeholder Content.
+    ///
     /// Why is this public? Because the `syncTopPerformers` method is actually called from TopPerformersViewController.
     /// We coordinate multiple placeholder animations from that spot!
     ///
     func displayGhostContent() {
-        let options = GhostOptions(displaysSectionHeader: false,
-                                   reuseIdentifier: ProductTableViewCell.reuseIdentifier,
-                                   rowsPerSection: Constants.placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options,
-                                      style: .wooDefaultGhostStyle)
+        guard let ghostView = ghostTableViewController.view else {
+            return
+        }
+
+        ghostView.translatesAutoresizingMaskIntoConstraints = false
+        addChild(ghostTableViewController)
+        view.addSubview(ghostView)
+        view.pinSubviewToAllEdges(ghostView)
+        ghostTableViewController.didMove(toParent: self)
     }
 
     /// Removes the Placeholder Content.
+    ///
     /// Why is this public? Because the `syncTopPerformers` method is actually called from TopPerformersViewController.
     /// We coordinate multiple placeholder animations from that spot!
     ///
     func removeGhostContent() {
-        tableView.removeGhostContent()
+        guard let ghostView = ghostTableViewController.view else {
+            return
+        }
+
+        ghostTableViewController.willMove(toParent: nil)
+        ghostView.removeFromSuperview()
+        ghostTableViewController.removeFromParent()
     }
 }
 
@@ -300,6 +316,51 @@ private extension TopPerformerDataViewController {
     }
 }
 
+// MARK: - Ghost View 
+
+private extension TopPerformerDataViewController {
+    final class GhostTableViewController: UITableViewController {
+
+        init() {
+            super.init(style: .plain)
+        }
+
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+
+        override func viewDidLoad() {
+            super.viewDidLoad()
+
+            tableView.backgroundColor = TableViewStyle.backgroundColor
+            tableView.separatorStyle = .none
+            tableView.estimatedRowHeight = Constants.estimatedRowHeight
+            tableView.applyFooterViewForHidingExtraRowPlaceholders()
+
+            tableView.register(ProductTableViewCell.loadNib(),
+                               forCellReuseIdentifier: ProductTableViewCell.reuseIdentifier)
+        }
+
+        /// Activate the ghost if this view is added to the parent.
+        ///
+        override func viewWillAppear(_ animated: Bool) {
+            super.viewWillAppear(animated)
+
+            let options = GhostOptions(displaysSectionHeader: false,
+                                       reuseIdentifier: ProductTableViewCell.reuseIdentifier,
+                                       rowsPerSection: Constants.placeholderRowsPerSection)
+            tableView.displayGhostContent(options: options,
+                                          style: .wooDefaultGhostStyle)
+        }
+
+        /// Deactivate the ghost if this view is removed from the parent.
+        ///
+        override func viewWillDisappear(_ animated: Bool) {
+            super.viewWillDisappear(animated)
+            tableView.removeGhostContent()
+        }
+    }
+}
 
 // MARK: - Constants!
 //

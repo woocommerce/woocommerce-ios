@@ -15,7 +15,7 @@ final class ProductVisibilityViewController: UIViewController {
     private let productSettings: ProductSettings
     
     private var visibility: ProductVisibility = .publicVisibility
-
+    
     /// Init
     ///
     init(settings: ProductSettings, completion: @escaping Completion) {
@@ -66,6 +66,15 @@ final class ProductVisibilityViewController: UIViewController {
         }
         else {
             return .publicVisibility
+        }
+    }
+    
+    func getProductStatus(_ productVibility: ProductVisibility) -> ProductStatus {
+        switch productVibility {
+        case .privateVisibility:
+            return .privateStatus
+        default:
+            return .publish
         }
     }
 }
@@ -124,6 +133,8 @@ extension ProductVisibilityViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         let row = sections[indexPath.section].rows[indexPath.row]
         visibility = row.visibility
+        productSettings.status = getProductStatus(visibility)
+        //productSettings.password = password
         reloadSections()
     }
 }

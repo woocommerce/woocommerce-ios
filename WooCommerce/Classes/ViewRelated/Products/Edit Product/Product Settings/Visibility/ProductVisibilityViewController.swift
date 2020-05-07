@@ -192,7 +192,7 @@ extension ProductVisibilityViewController {
             case .publicVisibility, .passwordVisibility, .privateVisibility:
                 return self.visibility.description
             case .passwordField:
-                return NSLocalizedString("Password", comment: "One of the possible options in Product Visibility")
+                return NSLocalizedString("Password", comment: "Password field title in Product Visibility")
             }
         }
 

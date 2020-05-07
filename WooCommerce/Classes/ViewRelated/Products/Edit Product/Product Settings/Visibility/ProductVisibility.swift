@@ -1,3 +1,6 @@
+import Foundation
+import Yosemite
+
 /// Represents a ProductVisibility Entity.
 ///
 enum ProductVisibility {

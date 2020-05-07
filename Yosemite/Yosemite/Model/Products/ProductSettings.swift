@@ -6,13 +6,13 @@ import Foundation
 public final class ProductSettings {
     public var status: ProductStatus
     public var featured: Bool
-    public var password: String
+    public var password: String?
     public var catalogVisibility: ProductCatalogVisibility
     public var slug: String
     public var purchaseNote: String?
     public var menuOrder: Int
 
-    public init(status: ProductStatus, featured: Bool, password: String, catalogVisibility: ProductCatalogVisibility, slug: String, purchaseNote: String?, menuOrder: Int) {
+    public init(status: ProductStatus, featured: Bool, password: String?, catalogVisibility: ProductCatalogVisibility, slug: String, purchaseNote: String?, menuOrder: Int) {
         self.status = status
         self.featured = featured
         self.password = password
@@ -22,7 +22,7 @@ public final class ProductSettings {
         self.menuOrder = menuOrder
     }
 
-    public convenience init(from product: Product, password: String) {
+    public convenience init(from product: Product, password: String?) {
         self.init(status: product.productStatus,
                   featured: product.featured,
                   password: password,

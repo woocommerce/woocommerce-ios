@@ -8,7 +8,10 @@ final class ProductSettingsViewModel {
     let productID: Int64
 
     private let product: Product
-
+    
+    /// The original password, the one fetched from site post API
+    private var password: String?
+    
     var productSettings: ProductSettings {
         didSet {
             sections = Self.configureSections(productSettings)
@@ -25,12 +28,28 @@ final class ProductSettingsViewModel {
     /// - `onReload` called when sections data are reloaded/refreshed
     var onReload: (() -> Void)?
 
-    init(product: Product) {
+    init(product: Product, password: String?) {
         siteID = product.siteID
         productID = product.productID
         self.product = product
-        productSettings = ProductSettings(from: product, password: "")
+        self.password = password
+        productSettings = ProductSettings(from: product, password: password)
         sections = Self.configureSections(productSettings)
+        
+        /// If nil, we fetch the password from site post API because it was never fetched
+        if password == nil{
+            retrieveProductPassword { [weak self] (password, error) in
+                guard let self = self else {
+                    return
+                }
+                guard error == nil, let password = password else {
+                    return
+                }
+                self.password = password
+                self.productSettings.password = password
+                self.sections = Self.configureSections(self.productSettings)
+            }
+        }
     }
 
     func handleCellTap(at indexPath: IndexPath, sourceViewController: UIViewController) {
@@ -45,10 +64,27 @@ final class ProductSettingsViewModel {
     }
 
     func hasUnsavedChanges() -> Bool {
-        guard ProductSettings(from: product, password: "") != productSettings else {
+        guard ProductSettings(from: product, password: password) != productSettings else {
             return false
         }
         return true
+    }
+}
+
+// MARK: Syncing data. Yosemite related stuff
+private extension ProductSettingsViewModel {
+    func retrieveProductPassword(onCompletion: ((String?, Error?) -> ())? = nil) {
+        let action = SitePostAction.retrieveSitePostPassword(siteID: siteID, postID: productID) { (password, error) in
+            guard let _ = password else {
+                DDLogError("⛔️ Error fetching product password: \(error.debugDescription)")
+                onCompletion?(nil, error)
+                return
+            }
+
+            onCompletion?(password, nil)
+        }
+
+        ServiceLocator.stores.dispatch(action)
     }
 }
 

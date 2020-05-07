@@ -53,7 +53,7 @@ final class ProductVisibilityViewController: UIViewController {
     * then the visibility is `privateVisibility`, otherwise it's `publicVisibility`.
     */
     func getProductVisibility(_ productSettings: ProductSettings) -> ProductVisibility {
-        if productSettings.password.isNotEmpty {
+        if productSettings.password?.isNotEmpty == true {
             return .passwordProtected
         }
         else if productSettings.status == .privateStatus {
@@ -248,8 +248,8 @@ extension ProductVisibility {
     
     /// Designated Initializer.
     ///
-    public init(status: ProductStatus, password: String) {
-        if password.isNotEmpty {
+    public init(status: ProductStatus, password: String?) {
+        if password?.isNotEmpty == true {
             self = .passwordProtected
         }
         else if status == .privateStatus {

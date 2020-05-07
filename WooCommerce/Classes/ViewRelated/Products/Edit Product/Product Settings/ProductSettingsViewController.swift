@@ -16,8 +16,8 @@ final class ProductSettingsViewController: UIViewController {
 
     /// Init
     ///
-    init(product: Product, completion: @escaping Completion) {
-        viewModel = ProductSettingsViewModel(product: product)
+    init(product: Product, password: String?, completion: @escaping Completion) {
+        viewModel = ProductSettingsViewModel(product: product, password: password)
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
@@ -34,12 +34,6 @@ final class ProductSettingsViewController: UIViewController {
         handleSwipeBackGesture()
         viewModel.onReload = {  [weak self] in
             self?.tableView.reloadData()
-        }
-        retrieveProductPassword { [weak self] (password, error) in
-            guard error == nil, let password = password else {
-                return
-            }
-            self?.viewModel.productSettings.password = password
         }
     }
 
@@ -97,23 +91,6 @@ extension ProductSettingsViewController {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
             self?.navigationController?.popViewController(animated: true)
         })
-    }
-}
-
-// MARK: - Syncing data. Yosemite related stuff
-extension ProductSettingsViewController {
-    func retrieveProductPassword(onCompletion: ((String?, Error?) -> ())? = nil) {
-        let action = SitePostAction.retrieveSitePostPassword(siteID: viewModel.siteID, postID: viewModel.productID) { (password, error) in
-            guard let _ = password else {
-                DDLogError("⛔️ Error fetching product password: \(error.debugDescription)")
-                onCompletion?(nil, error)
-                return
-            }
-
-            onCompletion?(password, nil)
-        }
-
-        ServiceLocator.stores.dispatch(action)
     }
 }
 

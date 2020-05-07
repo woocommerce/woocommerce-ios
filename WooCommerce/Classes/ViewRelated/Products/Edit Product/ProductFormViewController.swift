@@ -43,6 +43,9 @@ final class ProductFormViewController: UIViewController {
             tableView.reloadData()
         }
     }
+    
+    /// The product password, fetched in Product Settings
+    private var password: String?
 
     private var productUpdater: ProductUpdater {
         return product
@@ -289,11 +292,12 @@ private extension ProductFormViewController {
     }
 
     func displayProductSettings() {
-        let viewController = ProductSettingsViewController(product: product) { [weak self] (productSettings) in
+        let viewController = ProductSettingsViewController(product: product, password: password) { [weak self] (productSettings) in
             guard let self = self else {
                 return
             }
             self.product = self.productUpdater.productSettingsUpdated(settings: productSettings)
+            self.password = productSettings.password
         }
         navigationController?.pushViewController(viewController, animated: true)
     }

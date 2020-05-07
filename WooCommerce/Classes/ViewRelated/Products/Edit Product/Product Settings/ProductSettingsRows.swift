@@ -74,13 +74,14 @@ enum ProductSettingsRows {
             }
 
             let title = NSLocalizedString("Visibility", comment: "Visibility label in Product Settings")
-            cell.updateUI(title: title, value: nil) //settings.catalogVisibility.description
+            cell.updateUI(title: title, value: ProductVisibility(status: settings.status, password: settings.password).description)
             cell.accessoryType = .disclosureIndicator
         }
 
         func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
-            let viewController = ProductCatalogVisibilityViewController(settings: settings) { (productSettings) in
-                //self.settings.catalogVisibility = productSettings.catalogVisibility
+            let viewController = ProductVisibilityViewController(settings: settings) { (productSettings) in
+                self.settings.password = productSettings.password
+                self.settings.status = productSettings.status
                 onCompletion(self.settings)
             }
             sourceViewController.navigationController?.pushViewController(viewController, animated: true)

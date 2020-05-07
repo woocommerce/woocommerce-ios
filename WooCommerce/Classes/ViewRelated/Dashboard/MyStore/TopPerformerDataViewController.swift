@@ -148,7 +148,7 @@ private extension TopPerformerDataViewController {
         tableView.separatorColor = TableViewStyle.separatorColor
         tableView.estimatedRowHeight = Constants.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.tableFooterView = Constants.emptyView
+        tableView.applyFooterViewForHidingExtraRowPlaceholders()
     }
 
     func configureResultsController() {
@@ -321,7 +321,6 @@ private extension TopPerformerDataViewController {
         static let estimatedSectionHeight       = CGFloat(125)
         static let numberOfSections             = 1
         static let emptyStateRowCount           = 1
-        static let emptyView                    = UIView(frame: .zero)
         static let placeholderRowsPerSection    = [3]
     }
 }

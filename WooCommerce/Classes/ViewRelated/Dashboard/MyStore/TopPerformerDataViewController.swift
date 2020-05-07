@@ -332,6 +332,12 @@ private extension TopPerformerDataViewController {
         override func viewDidLoad() {
             super.viewDidLoad()
 
+            // Make sure that Ghost will not have any dataSource or delegate to _swap_. This is
+            // just to reduce the chance of having ”invalid number of rows” crashes because of
+            // delegate swapping.
+            tableView.dataSource = nil
+            tableView.delegate = nil
+
             tableView.backgroundColor = TableViewStyle.backgroundColor
             tableView.separatorStyle = .none
             tableView.estimatedRowHeight = Constants.estimatedRowHeight

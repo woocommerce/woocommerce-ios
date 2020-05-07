@@ -9,7 +9,7 @@ final class TopPerformerDataViewController: UIViewController {
 
     // MARK: - Properties
 
-    let granularity: StatGranularity
+    private let granularity: StatGranularity
 
     var hasTopEarnerStatsItems: Bool {
         return (topEarnerStats?.items?.count ?? 0) > 0
@@ -316,7 +316,7 @@ private extension TopPerformerDataViewController {
     }
 }
 
-// MARK: - Ghost View 
+// MARK: - Ghost View
 
 private extension TopPerformerDataViewController {
     final class GhostTableViewController: UITableViewController {

@@ -108,7 +108,6 @@
                     </view>
                     <navigationItem key="navigationItem" id="42E-2e-kOq"/>
                     <connections>
-                        <segue destination="hed-vB-osh" kind="presentation" identifier="showLoginMethod" id="N3P-wt-Rn3"/>
                         <segue destination="lmD-c6-SLs" kind="show" identifier="showWPComLogin" id="UV4-XI-c0q"/>
                     </connections>
                 </viewController>
@@ -1132,7 +1131,6 @@
                         <outlet property="siteAddressHelpButton" destination="roL-ID-k8n" id="QB2-ri-X5V"/>
                         <outlet property="siteURLField" destination="ZrT-CY-qD7" id="561-Zw-Ja9"/>
                         <outlet property="submitButton" destination="ltO-hW-mbe" id="wwr-D5-5kK"/>
-                        <segue destination="hed-vB-osh" kind="presentation" identifier="showLoginMethod" id="5hL-j3-eMs"/>
                         <segue destination="lmD-c6-SLs" kind="show" identifier="showWPComLogin" id="8p6-rS-9Ml"/>
                     </connections>
                 </viewController>
@@ -1235,6 +1233,9 @@
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cCX-uI-ruO" userLabel="Title">
                                                                         <rect key="frame" x="0.0" y="0.0" width="281" height="18"/>
+                                                                        <constraints>
+                                                                            <constraint firstAttribute="height" constant="18" id="Coh-Dn-nk1"/>
+                                                                        </constraints>
                                                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                                         <color key="textColor" red="0.18039215689999999" green="0.2666666667" blue="0.32549019610000002" alpha="1" colorSpace="calibratedRGB"/>
                                                                         <nil key="highlightedColor"/>
@@ -1252,6 +1253,12 @@
                                                                 </subviews>
                                                             </stackView>
                                                         </subviews>
+                                                        <constraints>
+                                                            <constraint firstItem="DWy-yy-er4" firstAttribute="bottom" secondItem="IMk-aA-1GF" secondAttribute="bottomMargin" id="I9F-s9-a8t"/>
+                                                            <constraint firstItem="DWy-yy-er4" firstAttribute="trailing" secondItem="IMk-aA-1GF" secondAttribute="trailingMargin" id="gca-Ce-u6f"/>
+                                                            <constraint firstItem="DWy-yy-er4" firstAttribute="leading" secondItem="Gak-2q-wul" secondAttribute="trailing" constant="10" id="h93-X9-jIc"/>
+                                                            <constraint firstItem="DWy-yy-er4" firstAttribute="top" secondItem="IMk-aA-1GF" secondAttribute="topMargin" id="sNI-Q9-kLs"/>
+                                                        </constraints>
                                                     </stackView>
                                                 </subviews>
                                             </stackView>
@@ -1365,7 +1372,7 @@
         <!--Login Prologue Login Method View Controller-->
         <scene sceneID="4ov-Vw-tga">
             <objects>
-                <viewController id="hed-vB-osh" customClass="LoginPrologueLoginMethodViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginPrologueLoginMethodViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="hed-vB-osh" customClass="LoginPrologueLoginMethodViewController" customModule="WordPressAuthenticator" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="EBT-D5-afP"/>
                         <viewControllerLayoutGuide type="bottom" id="wML-ff-0Cg"/>
@@ -1411,8 +1418,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="5hL-j3-eMs"/>
-        <segue reference="ySQ-EM-6JI"/>
+        <segue reference="8p6-rS-9Ml"/>
         <segue reference="JN3-Ck-2w7"/>
     </inferredMetricsTieBreakers>
     <resources>

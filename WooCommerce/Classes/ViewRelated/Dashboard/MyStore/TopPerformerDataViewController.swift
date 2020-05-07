@@ -3,6 +3,7 @@ import Yosemite
 import Charts
 import XLPagerTabStrip
 import WordPressUI
+import class AutomatticTracks.CrashLogging
 
 
 final class TopPerformerDataViewController: UIViewController {
@@ -174,7 +175,12 @@ private extension TopPerformerDataViewController {
         resultsController.onDidResetContent = { [weak self] in
             self?.tableView.reloadData()
         }
-        try? resultsController.performFetch()
+
+        do {
+            try resultsController.performFetch()
+        } catch {
+            CrashLogging.logError(error)
+        }
     }
 
     func registerTableViewCells() {

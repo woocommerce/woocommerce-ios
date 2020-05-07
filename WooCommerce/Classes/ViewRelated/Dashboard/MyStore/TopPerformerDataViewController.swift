@@ -5,7 +5,7 @@ import XLPagerTabStrip
 import WordPressUI
 
 
-class TopPerformerDataViewController: UIViewController {
+final class TopPerformerDataViewController: UIViewController {
 
     // MARK: - Properties
 

@@ -52,7 +52,10 @@ jobs:
       - ios/wait-for-simulator
       - run:
           name: Run Unit Tests
-          command: bundle exec fastlane test_without_building xctestrun:DerivedData/Build/Products/WooCommerce_UnitTests_iphonesimulator13.2-x86_64.xctestrun destination:"platform=iOS Simulator,id=$SIMULATOR_UDID" try_count:3
+          command: |
+          bundle exec fastlane test_without_building \
+          xctestrun:DerivedData/Build/Products/WooCommerce_UnitTests_iphonesimulator13.2-x86_64.xctestrun \
+          destination:"platform=iOS Simulator,id=$SIMULATOR_UDID" try_count:3
       - ios/save-xcodebuild-artifacts:
           result-bundle-path: build/results
   UI Tests:
@@ -83,7 +86,10 @@ jobs:
       - ios/wait-for-simulator
       - run:
           name: Run UI Tests
-          command: bundle exec fastlane test_without_building xctestrun:DerivedData/Build/Products/WooCommerce_UITests_iphonesimulator13.2-x86_64.xctestrun destination:"platform=iOS Simulator,id=$SIMULATOR_UDID" try_count:3
+          command: |
+          bundle exec fastlane test_without_building \
+          xctestrun:DerivedData/Build/Products/WooCommerce_UITests_iphonesimulator13.2-x86_64.xctestrun \
+          destination:"platform=iOS Simulator,id=$SIMULATOR_UDID" try_count:3
       - ios/save-xcodebuild-artifacts:
           result-bundle-path: build/results
       - when:

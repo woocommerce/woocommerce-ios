@@ -144,8 +144,8 @@ private extension TopPerformerDataViewController {
     }
 
     func configureTableView() {
-        tableView.backgroundColor = .basicBackground
-        tableView.separatorColor = .systemColor(.separator)
+        tableView.backgroundColor = TableViewStyle.backgroundColor
+        tableView.separatorColor = TableViewStyle.separatorColor
         tableView.estimatedRowHeight = Constants.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.tableFooterView = Constants.emptyView
@@ -309,6 +309,11 @@ private extension TopPerformerDataViewController {
                                                           comment: "Description for Top Performers section of My Store tab.")
         static let sectionLeftColumn = NSLocalizedString("Product", comment: "Description for Top Performers left column header")
         static let sectionRightColumn = NSLocalizedString("Total Spend", comment: "Description for Top Performers right column header")
+    }
+
+    enum TableViewStyle {
+        static let backgroundColor = UIColor.basicBackground
+        static let separatorColor = UIColor.systemColor(.separator)
     }
 
     enum Constants {

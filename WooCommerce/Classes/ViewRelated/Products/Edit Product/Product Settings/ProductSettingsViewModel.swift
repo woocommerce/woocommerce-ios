@@ -26,7 +26,9 @@ final class ProductSettingsViewModel {
 
     /// Closures
     /// - `onReload` called when sections data are reloaded/refreshed
+    /// - `onPasswordRetrieved` called when the password is fetched
     var onReload: (() -> Void)?
+    var onPasswordRetrieved: ((_ password: String) -> Void)?
 
     init(product: Product, password: String?) {
         siteID = product.siteID
@@ -45,6 +47,7 @@ final class ProductSettingsViewModel {
                 guard error == nil, let password = password else {
                     return
                 }
+                self.onPasswordRetrieved?(password)
                 self.password = password
                 self.productSettings.password = password
                 self.sections = Self.configureSections(self.productSettings)

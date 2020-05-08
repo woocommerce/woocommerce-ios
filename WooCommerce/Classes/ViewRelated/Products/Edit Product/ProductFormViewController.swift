@@ -318,12 +318,14 @@ private extension ProductFormViewController {
     }
 
     func displayProductSettings() {
-        let viewController = ProductSettingsViewController(product: product, password: password) { [weak self] (productSettings) in
+        let viewController = ProductSettingsViewController(product: product, password: password, completion: { [weak self] (productSettings) in
             guard let self = self else {
                 return
             }
             self.product = self.productUpdater.productSettingsUpdated(settings: productSettings)
             self.password = productSettings.password
+        }) { [weak self] (originalPassword) in
+            self?.password = originalPassword
         }
         navigationController?.pushViewController(viewController, animated: true)
     }

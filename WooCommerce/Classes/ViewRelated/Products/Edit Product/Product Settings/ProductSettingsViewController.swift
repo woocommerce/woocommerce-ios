@@ -13,12 +13,18 @@ final class ProductSettingsViewController: UIViewController {
     //
     typealias Completion = (_ productSettings: ProductSettings) -> Void
     private let onCompletion: Completion
+    
+    // Password Completion callback called when the password is fetched
+    //
+    typealias PasswordCompletion = (_ password: String) -> Void
+    private let onPasswordCompletion: PasswordCompletion
 
     /// Init
     ///
-    init(product: Product, password: String?, completion: @escaping Completion) {
+    init(product: Product, password: String?, completion: @escaping Completion, fetchedPassword: @escaping PasswordCompletion) {
         viewModel = ProductSettingsViewModel(product: product, password: password)
         onCompletion = completion
+        onPasswordCompletion = fetchedPassword
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -34,6 +40,9 @@ final class ProductSettingsViewController: UIViewController {
         handleSwipeBackGesture()
         viewModel.onReload = {  [weak self] in
             self?.tableView.reloadData()
+        }
+        viewModel.onPasswordRetrieved = { [weak self] (passwordRetrieved) in
+            self?.onPasswordCompletion(passwordRetrieved)
         }
     }
 
@@ -126,7 +135,6 @@ extension ProductSettingsViewController: UITableViewDelegate {
 
         viewModel.handleCellTap(at: indexPath, sourceViewController: self)
     }
-
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return UITableView.automaticDimension

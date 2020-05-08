@@ -272,7 +272,8 @@ private extension ProductFormViewController {
         // Update product password if available
         if let password = password {
             group.enter()
-            let passwordUpdateAction = SitePostAction.updateSitePostPassword(siteID: product.siteID, postID: product.productID, password: password) { [weak self] (password, error) in
+            let passwordUpdateAction = SitePostAction.updateSitePostPassword(siteID: product.siteID, postID: product.productID,
+                                                                             password: password) { [weak self] (password, error) in
                 guard let _ = password else {
                     DDLogError("⛔️ Error updating product password: \(error.debugDescription)")
                     group.leave()

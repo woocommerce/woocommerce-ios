@@ -12,7 +12,13 @@ public final class ProductSettings {
     public var purchaseNote: String?
     public var menuOrder: Int
 
-    public init(status: ProductStatus, featured: Bool, password: String?, catalogVisibility: ProductCatalogVisibility, slug: String, purchaseNote: String?, menuOrder: Int) {
+    public init(status: ProductStatus,
+                featured: Bool,
+                password: String?,
+                catalogVisibility: ProductCatalogVisibility,
+                slug: String,
+                purchaseNote: String?,
+                menuOrder: Int) {
         self.status = status
         self.featured = featured
         self.password = password

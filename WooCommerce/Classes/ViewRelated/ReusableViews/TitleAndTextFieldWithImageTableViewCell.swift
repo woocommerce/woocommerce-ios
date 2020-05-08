@@ -80,7 +80,15 @@ private extension TitleAndTextFieldWithImageTableViewCell {
     }
 
     func configureTextField() {
-        textField.textAlignment = .right
+        if traitCollection.layoutDirection == .rightToLeft {
+            // swiftlint:disable:next natural_text_alignment
+            textField.textAlignment = .left
+            // swiftlint:enable:next natural_text_alignment
+        } else {
+            // swiftlint:disable:next inverse_text_alignment
+            textField.textAlignment = .right
+            // swiftlint:enable:next inverse_text_alignment
+        }
         textField.applyBodyStyle()
         textField.textColor = .textBrand
         textField.borderStyle = .none

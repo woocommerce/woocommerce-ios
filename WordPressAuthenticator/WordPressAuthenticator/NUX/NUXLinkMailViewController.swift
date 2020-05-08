@@ -21,6 +21,19 @@ class NUXLinkMailViewController: LoginViewController {
         }
     }
 
+    @IBAction func usePasswordButtonPressed(_ sender: Any) {
+        guard let vc = LoginWPComViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate to LoginWPComViewController from NUXLinkMailViewController")
+            return
+        }
+
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
 
     // MARK: - Lifecycle Methods
 

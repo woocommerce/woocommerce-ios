@@ -168,17 +168,17 @@ private extension ProductVisibilityViewController {
             cell.accessoryType = row.visibility == visibility ? .checkmark : .none
         }
     }
-    
+
     func configurePasswordFieldCell(cell: TitleAndTextFieldWithImageTableViewCell, indexPath: IndexPath) {
         let row = sections[indexPath.section].rows[indexPath.row]
-        
+
         let placeholder = NSLocalizedString("Enter password", comment: "Enter password placeholder in Product Visibility")
         let viewModel = TitleAndTextFieldWithImageTableViewCell.ViewModel(title: row.description, text: productSettings.password, placeholder: placeholder, image: .passwordFieldImage) { (text) in
-            
+
         }
         cell.configure(viewModel: viewModel)
         cell.selectionStyle = .none
-        
+
     }
 }
 

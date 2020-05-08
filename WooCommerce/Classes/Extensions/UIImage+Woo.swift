@@ -396,7 +396,7 @@ extension UIImage {
     static var passwordFieldImage: UIImage {
         return UIImage.gridicon(.visible)
     }
-    
+
     /// Waiting for Customers Image
     ///
     static var waitingForCustomersImage: UIImage {

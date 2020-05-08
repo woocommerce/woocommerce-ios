@@ -14,9 +14,9 @@ extension XCTestCase {
     /// }
     /// ```
     ///
-    func waitForExpectation(description: String? = nil,
-                            timeout: TimeInterval = Constants.expectationTimeout,
-                            _ block: (XCTestExpectation) -> ()) {
+    public func waitForExpectation(description: String? = nil,
+                                   timeout: TimeInterval = TimeInterval(10),
+                                   _ block: (XCTestExpectation) -> ()) {
         let exp = expectation(description: description ?? "")
         block(exp)
         wait(for: [exp], timeout: timeout)

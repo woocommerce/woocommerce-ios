@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -49,7 +49,7 @@
         <!--Link Mail View Controller-->
         <scene sceneID="zhV-IL-bW4">
             <objects>
-                <viewController storyboardIdentifier="NUXLinkMailViewController" extendedLayoutIncludesOpaqueBars="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="GSd-vy-rpZ" customClass="NUXLinkMailViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="NUXLinkMailViewController" extendedLayoutIncludesOpaqueBars="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="GSd-vy-rpZ" customClass="NUXLinkMailViewController" customModule="WordPressAuthenticator" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="s8Z-uG-nj5"/>
                         <viewControllerLayoutGuide type="bottom" id="vKK-Mm-0yR"/>
@@ -127,7 +127,6 @@
                                 </state>
                                 <connections>
                                     <action selector="handleUsePasswordTapped:" destination="GSd-vy-rpZ" eventType="touchUpInside" id="I1f-Mc-BbK"/>
-                                    <segue destination="x7Q-Q4-j7h" kind="show" id="Jfl-Zm-PRR"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -158,14 +157,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ypF-IN-pDx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2669.5999999999999" y="146.17691154422789"/>
-        </scene>
-        <!--LoginWPcomPassword-->
-        <scene sceneID="mn2-Hn-7VV">
-            <objects>
-                <viewControllerPlaceholder storyboardIdentifier="LoginWPcomPassword" storyboardName="Login" referencedIdentifier="LoginWPcomPassword" id="x7Q-Q4-j7h" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="ODH-aE-Rej" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2670" y="616"/>
         </scene>
     </scenes>
     <resources>

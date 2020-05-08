@@ -5,7 +5,7 @@ import UIKit
 /// See: http://khanlou.com/2015/01/the-coordinator/
 ///
 protocol Coordinator {
-
+    // TODO Not sure if it's a good idea to expose this.
     var navigationController: UINavigationController { get set }
 
     func start()

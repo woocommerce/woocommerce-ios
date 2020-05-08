@@ -335,7 +335,6 @@ private extension ProductFormViewController {
             self.product = self.productUpdater.productSettingsUpdated(settings: productSettings)
             self.password = productSettings.password
         }) { [weak self] (originalPassword) in
-            print("original password", originalPassword)
             self?.originalPassword = originalPassword
         }
         navigationController?.pushViewController(viewController, animated: true)

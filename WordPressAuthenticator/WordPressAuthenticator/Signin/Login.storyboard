@@ -951,7 +951,6 @@
                                 <state key="normal" title="Enter your password instead"/>
                                 <connections>
                                     <action selector="handleUsePasswordTapped:" destination="Kvo-Y2-yhG" eventType="touchUpInside" id="T8m-o8-zic"/>
-                                    <segue destination="lmD-c6-SLs" kind="show" id="0ao-yi-yZI"/>
                                 </connections>
                             </button>
                         </subviews>

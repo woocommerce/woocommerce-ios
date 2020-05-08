@@ -18,24 +18,23 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LwL-SE-cCG">
-                        <rect key="frame" x="16" y="10" width="288" height="22"/>
+                        <rect key="frame" x="16" y="10" width="288" height="24"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tKq-Oq-YaU">
-                                <rect key="frame" x="0.0" y="0.0" width="42" height="22"/>
+                                <rect key="frame" x="0.0" y="0.0" width="42" height="24"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Ebf-sL-ER8">
-                                <rect key="frame" x="42" y="0.0" width="224" height="22"/>
+                                <rect key="frame" x="42" y="0.0" width="224" height="24"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Vgn-FR-Tfa">
-                                <rect key="frame" x="266" y="0.0" width="22" height="22"/>
+                                <rect key="frame" x="266" y="0.0" width="22" height="24"/>
                                 <constraints>
                                     <constraint firstAttribute="width" priority="999" constant="22" id="Tcs-GQ-Lwv"/>
-                                    <constraint firstAttribute="height" constant="22" id="nI4-Kx-e36"/>
                                 </constraints>
                             </imageView>
                         </subviews>

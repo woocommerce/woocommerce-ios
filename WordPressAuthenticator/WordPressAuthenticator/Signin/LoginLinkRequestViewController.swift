@@ -18,19 +18,6 @@ class LoginLinkRequestViewController: LoginViewController {
         }
     }
 
-    @IBAction func usePasswordButtonPressed(_ sender: Any) {
-        guard let vc = LoginWPComViewController.instantiate(from: .login) else {
-            DDLogError("Failed to navigate from LoginLinkRequestViewController to LoginWPComViewController")
-            return
-        }
-
-        vc.loginFields = loginFields
-        vc.dismissBlock = dismissBlock
-        vc.errorToPresent = errorToPresent
-
-        navigationController?.pushViewController(vc, animated: true)
-    }
-
 
     // MARK: - Lifecycle Methods
 
@@ -145,6 +132,21 @@ class LoginLinkRequestViewController: LoginViewController {
 
     // MARK: - Actions
 
+
+    @IBAction func handleUsePasswordTapped(_ sender: UIButton) {
+        guard let vc = LoginWPComViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from LoginLinkRequestViewController to LoginWPComViewController")
+            return
+        }
+
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
+        WordPressAuthenticator.track(.loginMagicLinkExited)
+    }
+
     @IBAction func handleSendLinkTapped(_ sender: UIButton) {
         requestAuthenticationLink()
     }
@@ -161,10 +163,6 @@ class LoginLinkRequestViewController: LoginViewController {
         vc.loginFields = self.loginFields
         vc.loginFields.restrictToWPCom = true
         navigationController?.pushViewController(vc, animated: true)
-    }
-
-    @IBAction func handleUsePasswordTapped(_ sender: UIButton) {
-        WordPressAuthenticator.track(.loginMagicLinkExited)
     }
 }
 

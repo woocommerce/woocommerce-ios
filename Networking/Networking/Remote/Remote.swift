@@ -1,6 +1,5 @@
 import Foundation
-import Alamofire
-
+import protocol Alamofire.URLRequestConvertible
 
 /// Represents a collection of Remote Endpoints
 ///
@@ -80,6 +79,40 @@ public class Remote {
             } catch {
                 DDLogError("<> Mapping Error: \(error)")
                 completion(nil, error)
+            }
+        }
+    }
+
+    /// Enqueues the specified Network Request.
+    ///
+    /// - Important:
+    ///     - Parsing will be performed by the Mapper.
+    ///
+    /// - Parameters:
+    ///     - request: Request that should be performed.
+    ///     - mapper: Mapper entitity that will be used to attempt to parse the Backend's Response.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    func enqueue<M: Mapper>(_ request: URLRequestConvertible, mapper: M,
+                            completion: @escaping (Result<M.Output, Error>) -> Void) {
+        network.responseData(for: request) { result in
+            switch result {
+            case .success(let data):
+                if let dotcomError = DotcomValidator.error(from: data) {
+                    self.dotcomErrorWasReceived(error: dotcomError, for: request)
+                    completion(.failure(dotcomError))
+                    return
+                }
+
+                do {
+                    let parsed = try mapper.map(response: data)
+                    completion(.success(parsed))
+                } catch {
+                    DDLogError("<> Mapping Error: \(error)")
+                    completion(.failure(error))
+                }
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
     }

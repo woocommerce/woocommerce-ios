@@ -149,6 +149,13 @@ extension UIColor {
         return UIColor(light: .accent,
                        dark: .systemColor(.label))
     }
+    
+    /// Text. WooCommercePurple-60 (< iOS 13 and Light Mode) and WooCommercePurple-30 (Dark Mode)
+    ///
+    static var textBrand: UIColor {
+        return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60),
+        dark: .withColorStudio(.wooCommercePurple, shade: .shade30))
+    }
 }
 
 

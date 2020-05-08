@@ -335,7 +335,16 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         if immediately {
             validateFormAndLogin()
         } else {
-            performSegue(withIdentifier: .showWPComLogin, sender: self)
+            guard let vc = LoginWPComViewController.instantiate(from: .login) else {
+                DDLogError("Failed to navigate from LoginEmailViewController to LoginWPComViewController")
+                return
+            }
+
+            vc.loginFields = loginFields
+            vc.dismissBlock = dismissBlock
+            vc.errorToPresent = errorToPresent
+
+            navigationController?.pushViewController(vc, animated: true)
         }
     }
 

@@ -441,9 +441,19 @@ extension LoginViewController {
         loginFields.username = email
         loginFields.emailAddress = email
 
-        performSegue(withIdentifier: .showWPComLogin, sender: self)
         WordPressAuthenticator.track(.loginSocialAccountsNeedConnecting, properties: ["source": "google"])
         configureViewLoading(false)
+
+        guard let vc = LoginWPComViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from Google Login to LoginWPComViewController (password VC)")
+            return
+        }
+
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     func socialNeedsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {

@@ -34,7 +34,7 @@
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Vgn-FR-Tfa">
                                 <rect key="frame" x="266" y="0.0" width="22" height="22"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="22" id="Tcs-GQ-Lwv"/>
+                                    <constraint firstAttribute="width" priority="999" constant="22" id="Tcs-GQ-Lwv"/>
                                     <constraint firstAttribute="height" constant="22" id="nI4-Kx-e36"/>
                                 </constraints>
                             </imageView>

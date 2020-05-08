@@ -1,7 +1,7 @@
 import UIKit
 
 /// Observes the keyboard frame and notifies its subscriber.
-struct KeyboardFrameObserver {
+final class KeyboardFrameObserver {
     private let onKeyboardFrameUpdate: OnKeyboardFrameUpdate
 
     /// Provides the last known keyboard state.
@@ -36,19 +36,16 @@ struct KeyboardFrameObserver {
     ///
     /// - Parameter sendInitialEvent: If true, the subscriber will be immediately notified
     ///                               using the last known keyboard frame.
-    mutating func startObservingKeyboardFrame(sendInitialEvent: Bool = false) {
-        var observer = self
-        notificationCenter.addObserver(forName: UIResponder.keyboardWillShowNotification,
-                                       object: nil,
-                                       queue: nil) { notification in
-                                        observer.keyboardWillShow(notification)
-        }
+    func startObservingKeyboardFrame(sendInitialEvent: Bool = false) {
+        notificationCenter.addObserver(self,
+                                       selector: #selector(keyboardWillShow(_:)),
+                                       name: UIResponder.keyboardWillShowNotification,
+                                       object: nil)
 
-        notificationCenter.addObserver(forName: UIResponder.keyboardWillHideNotification,
-                                       object: nil,
-                                       queue: nil) { notification in
-                                        observer.keyboardWillHide(notification)
-        }
+        notificationCenter.addObserver(self,
+                                       selector: #selector(keyboardWillHide(_:)),
+                                       name: UIResponder.keyboardWillHideNotification,
+                                       object: nil)
 
         if sendInitialEvent {
             keyboardFrame = keyboardStateProvider.state.frameEnd
@@ -57,14 +54,14 @@ struct KeyboardFrameObserver {
 }
 
 private extension KeyboardFrameObserver {
-    mutating func keyboardWillShow(_ notification: Foundation.Notification) {
+    @objc func keyboardWillShow(_ notification: Foundation.Notification) {
         guard let keyboardFrame = keyboardRect(from: notification) else {
             return
         }
         self.keyboardFrame = keyboardFrame
     }
 
-    mutating func keyboardWillHide(_ notification: Foundation.Notification) {
+    @objc func keyboardWillHide(_ notification: Foundation.Notification) {
         self.keyboardFrame = .zero
     }
 }

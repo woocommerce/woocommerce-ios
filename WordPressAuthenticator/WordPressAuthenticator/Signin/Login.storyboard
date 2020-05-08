@@ -551,10 +551,10 @@
             </objects>
             <point key="canvasLocation" x="768.79999999999995" y="1946.6266866566718"/>
         </scene>
-        <!--LoginWP Com View Controller-->
+        <!--LoginWPComViewController-->
         <scene sceneID="brQ-1M-iPT">
             <objects>
-                <viewController storyboardIdentifier="LoginWPComViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="lmD-c6-SLs" customClass="LoginWPComViewController" customModule="WordPressAuthenticator" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginWPComViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="lmD-c6-SLs" userLabel="LoginWPComViewController" customClass="LoginWPComViewController" customModule="WordPressAuthenticator" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="dAs-4b-ACP"/>
                         <viewControllerLayoutGuide type="bottom" id="kOH-fr-1L0"/>

@@ -334,7 +334,6 @@
                         <outlet property="inputStack" destination="JdU-yW-tzf" id="99m-CN-GKR"/>
                         <outlet property="instructionLabel" destination="DKR-9c-zZQ" id="2Rj-ad-hnL"/>
                         <outlet property="submitButton" destination="OZC-xf-OAn" id="k1c-SJ-qiK"/>
-                        <segue destination="lmD-c6-SLs" kind="show" identifier="showWPComLogin" id="ySQ-EM-6JI"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wWl-qb-1Yp" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -31,7 +31,18 @@ public protocol Network {
     ///     - request: Request that should be performed.
     ///     - completion: Closure to be executed upon completion.
     ///
+    @available(*, deprecated, message: "Use the responseData() with a Result callback instead")
     func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void)
+
+    /// Executes the specified Network Request. Upon completion, the payload will be sent back to
+    /// the caller as a Data instance.
+    ///
+    /// - Parameters:
+    ///     - request: Request that should be performed.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    func responseData(for request: URLRequestConvertible,
+                      completion: @escaping (Swift.Result<Data, Error>) -> Void)
 
     /// Executes the specified Network Request for file uploads. Upon completion, the payload will be sent back to the caller as a Data instance.
     ///

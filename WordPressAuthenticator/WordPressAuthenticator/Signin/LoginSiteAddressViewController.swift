@@ -409,11 +409,24 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
     }
 }
 
+/// The Site Address VC conforms to the AppleAuth delegate so that the 3 button view
+/// can be presented after a successful Site Address was submitted.
+/// See also: WordPressAuthenticatorConfiguration.showLoginOptionsFromSiteAddress.
+///
 extension LoginSiteAddressViewController: AppleAuthenticatorDelegate {
 
     func showWPComLogin(loginFields: LoginFields) {
         self.loginFields = loginFields
-        performSegue(withIdentifier: .showWPComLogin, sender: self)
+        guard let vc = LoginWPComViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from Sign in with Apple to LoginWPComViewController")
+            return
+        }
+
+        vc.loginFields = self.loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     func showApple2FA(loginFields: LoginFields) {

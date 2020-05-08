@@ -16,6 +16,13 @@ final class ProductVisibilityViewController: UIViewController {
 
     private var visibility: ProductVisibility = .publicVisibility
 
+    private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
+        let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
+            self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
+        }
+        return keyboardFrameObserver
+    }()
+
     /// Init
     ///
     init(settings: ProductSettings, completion: @escaping Completion) {
@@ -102,6 +109,8 @@ private extension ProductVisibilityViewController {
 
         tableView.backgroundColor = .listBackground
         tableView.removeLastCellSeparator()
+
+        keyboardFrameObserver.startObservingKeyboardFrame()
     }
 }
 
@@ -250,5 +259,13 @@ extension ProductVisibilityViewController {
         init(row: Row) {
             self.init(rows: [row])
         }
+    }
+}
+
+// MARK: - Keyboard management
+//
+extension ProductVisibilityViewController: KeyboardScrollable {
+    var scrollable: UIScrollView {
+        return tableView
     }
 }

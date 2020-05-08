@@ -31,7 +31,6 @@
 		B56090CA208A4F5400399AE4 /* NUXButtonView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B56090BC208A4F5300399AE4 /* NUXButtonView.storyboard */; };
 		B56090CB208A4F5400399AE4 /* NUXNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56090BD208A4F5400399AE4 /* NUXNavigationController.swift */; };
 		B56090CC208A4F5400399AE4 /* NUXTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56090BE208A4F5400399AE4 /* NUXTableViewController.swift */; };
-		B56090CD208A4F5400399AE4 /* NUXSegueHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56090BF208A4F5400399AE4 /* NUXSegueHandler.swift */; };
 		B56090CF208A4F5400399AE4 /* NUXCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56090C1208A4F5400399AE4 /* NUXCollectionViewController.swift */; };
 		B56090D0208A4F5400399AE4 /* NUXViewControllerBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56090C2208A4F5400399AE4 /* NUXViewControllerBase.swift */; };
 		B56090D1208A4F5400399AE4 /* NUXViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56090C3208A4F5400399AE4 /* NUXViewController.swift */; };
@@ -181,7 +180,6 @@
 		B56090BC208A4F5300399AE4 /* NUXButtonView.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = NUXButtonView.storyboard; sourceTree = "<group>"; };
 		B56090BD208A4F5400399AE4 /* NUXNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NUXNavigationController.swift; sourceTree = "<group>"; };
 		B56090BE208A4F5400399AE4 /* NUXTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NUXTableViewController.swift; sourceTree = "<group>"; };
-		B56090BF208A4F5400399AE4 /* NUXSegueHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NUXSegueHandler.swift; sourceTree = "<group>"; };
 		B56090C1208A4F5400399AE4 /* NUXCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NUXCollectionViewController.swift; sourceTree = "<group>"; };
 		B56090C2208A4F5400399AE4 /* NUXViewControllerBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NUXViewControllerBase.swift; sourceTree = "<group>"; };
 		B56090C3208A4F5400399AE4 /* NUXViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NUXViewController.swift; sourceTree = "<group>"; };
@@ -444,7 +442,6 @@
 				B56090C5208A4F5400399AE4 /* NUXLinkAuthViewController.swift */,
 				B56090BB208A4F5300399AE4 /* NUXLinkMailViewController.swift */,
 				B56090BD208A4F5400399AE4 /* NUXNavigationController.swift */,
-				B56090BF208A4F5400399AE4 /* NUXSegueHandler.swift */,
 				B56090BE208A4F5400399AE4 /* NUXTableViewController.swift */,
 				B56090C3208A4F5400399AE4 /* NUXViewController.swift */,
 				B56090C2208A4F5400399AE4 /* NUXViewControllerBase.swift */,
@@ -907,7 +904,6 @@
 			files = (
 				982C8E7923021C20003F1BA0 /* LoginPrologueLoginMethodViewController.swift in Sources */,
 				B5609144208A563800399AE4 /* LoginPrologueSignupMethodViewController.swift in Sources */,
-				B56090CD208A4F5400399AE4 /* NUXSegueHandler.swift in Sources */,
 				B56090D1208A4F5400399AE4 /* NUXViewController.swift in Sources */,
 				B5609140208A563800399AE4 /* LoginSocialErrorCell.swift in Sources */,
 				B56090F7208A533200399AE4 /* WordPressAuthenticator+Errors.swift in Sources */,

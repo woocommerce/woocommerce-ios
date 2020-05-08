@@ -13,7 +13,7 @@ final class ProductSettingsViewController: UIViewController {
     //
     typealias Completion = (_ productSettings: ProductSettings) -> Void
     private let onCompletion: Completion
-    
+
     // Password Completion callback called when the password is fetched
     //
     typealias PasswordCompletion = (_ password: String) -> Void

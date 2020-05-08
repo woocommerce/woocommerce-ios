@@ -42,6 +42,7 @@ final class ProductVisibilityViewController: UIViewController {
         configureTableView()
         visibility = getProductVisibility(productSettings)
         reloadSections()
+        handleSwipeBackGesture()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -55,7 +56,7 @@ final class ProductVisibilityViewController: UIViewController {
         onCompletion(productSettings)
     }
 
-    func reloadSections() {
+    private func reloadSections() {
         if visibility == .passwordProtected {
             sections = [Section(rows: [.publicVisibility, .passwordVisibility, .passwordField, .privateVisibility])]
         }
@@ -70,7 +71,7 @@ final class ProductVisibilityViewController: UIViewController {
     * visibility is `passwordProtected`. If there's no password and the product status is `private`
     * then the visibility is `privateVisibility`, otherwise it's `publicVisibility`.
     */
-    func getProductVisibility(_ productSettings: ProductSettings) -> ProductVisibility {
+    private func getProductVisibility(_ productSettings: ProductSettings) -> ProductVisibility {
         if productSettings.password?.isNotEmpty == true {
             return .passwordProtected
         }
@@ -82,7 +83,7 @@ final class ProductVisibilityViewController: UIViewController {
         }
     }
 
-    func getProductStatus(_ productVibility: ProductVisibility) -> ProductStatus {
+    private func getProductStatus(_ productVibility: ProductVisibility) -> ProductStatus {
         switch productVibility {
         case .privateVisibility:
             return .privateStatus
@@ -117,6 +118,51 @@ private extension ProductVisibilityViewController {
         tableView.removeLastCellSeparator()
 
         keyboardFrameObserver.startObservingKeyboardFrame()
+    }
+}
+
+// MARK: - Navigation actions handling
+//
+extension ProductVisibilityViewController {
+
+    override func shouldPopOnBackButton() -> Bool {
+        guard visibility == .passwordProtected else {
+            return true
+        }
+
+        if productSettings.password?.isEmpty == true || productSettings.password == nil {
+            presentBackNavigationAlertController()
+            return false
+        }
+        return true
+    }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        return shouldPopOnBackButton()
+    }
+
+    private func presentBackNavigationAlertController() {
+        let messageTitle = NSLocalizedString(
+            "Are you sure you want to discard your changes?",
+            comment: "Alert title to confirm the user wants to discard changes in Product Visibility"
+        )
+        let messageDescription = NSLocalizedString(
+            "You need to add a password to make your product password-protected",
+            comment: "Alert message to confirm the user wants to discard changes in Product Visibility"
+        )
+
+        let alertController = UIAlertController(title: messageTitle, message: messageDescription, preferredStyle: .alert)
+
+        let cancelText = NSLocalizedString("Discard", comment: "Alert button title - dismisses alert, which discard changes on Product Visibility screen")
+        alertController.addActionWithTitle(cancelText, style: .cancel) { [weak self] _ in
+            self?.navigationController?.popViewController(animated: true)
+        }
+
+        let logoutText = NSLocalizedString("Keep Editing", comment: "Alert button title - which keeps the user on the Product Visibility screen")
+        alertController.addDefaultActionWithTitle(logoutText) { _ in
+        }
+
+        present(alertController, animated: true)
     }
 }
 

@@ -95,6 +95,7 @@ private extension ProductVisibilityViewController {
 
     func configureTableView() {
         tableView.register(BasicTableViewCell.loadNib(), forCellReuseIdentifier: BasicTableViewCell.reuseIdentifier)
+        tableView.register(TitleAndTextFieldWithImageTableViewCell.loadNib(), forCellReuseIdentifier: TitleAndTextFieldWithImageTableViewCell.reuseIdentifier)
 
         tableView.dataSource = self
         tableView.delegate = self
@@ -149,6 +150,8 @@ private extension ProductVisibilityViewController {
         switch cell {
         case let cell as BasicTableViewCell:
             configureVisibilityCell(cell: cell, indexPath: indexPath)
+        case let cell as TitleAndTextFieldWithImageTableViewCell:
+            configurePasswordFieldCell(cell: cell, indexPath: indexPath)
         default:
             fatalError("Unidentified product visibility row type")
         }
@@ -164,6 +167,18 @@ private extension ProductVisibilityViewController {
         else {
             cell.accessoryType = row.visibility == visibility ? .checkmark : .none
         }
+    }
+    
+    func configurePasswordFieldCell(cell: TitleAndTextFieldWithImageTableViewCell, indexPath: IndexPath) {
+        let row = sections[indexPath.section].rows[indexPath.row]
+        
+        let placeholder = NSLocalizedString("Enter password", comment: "Enter password placeholder in Product Visibility")
+        let viewModel = TitleAndTextFieldWithImageTableViewCell.ViewModel(title: row.description, text: productSettings.password, placeholder: placeholder, image: .passwordFieldImage) { (text) in
+            
+        }
+        cell.configure(viewModel: viewModel)
+        cell.selectionStyle = .none
+        
     }
 }
 
@@ -182,8 +197,10 @@ extension ProductVisibilityViewController {
 
         var reuseIdentifier: String {
             switch self {
-            case .publicVisibility, .passwordVisibility, .passwordField, .privateVisibility:
+            case .publicVisibility, .passwordVisibility, .privateVisibility:
                 return BasicTableViewCell.reuseIdentifier
+            case .passwordField:
+                return TitleAndTextFieldWithImageTableViewCell.reuseIdentifier
             }
         }
 

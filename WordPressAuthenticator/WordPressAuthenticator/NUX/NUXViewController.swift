@@ -5,7 +5,7 @@ import WordPressUI
 /// Base class to use for NUX view controllers that aren't a table view
 /// Note: shares most of its code with NUXTableViewController and NUXCollectionViewController. Look to make
 ///       most changes in either the base protocol NUXViewControllerBase or further subclasses like LoginViewController
-open class NUXViewController: UIViewController, NUXViewControllerBase, UIViewControllerTransitioningDelegate, NUXSegueHandler {
+open class NUXViewController: UIViewController, NUXViewControllerBase, UIViewControllerTransitioningDelegate {
     // MARK: NUXViewControllerBase properties
     /// these properties comply with NUXViewControllerBase and are duplicated with NUXTableViewController
     public var helpNotificationIndicator: WPHelpIndicatorView = WPHelpIndicatorView()
@@ -20,12 +20,6 @@ open class NUXViewController: UIViewController, NUXViewControllerBase, UIViewCon
 
     override open var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return UIDevice.isPad() ? .all : .portrait
-    }
-
-    // MARK: associated type for NUXSegueHandler
-    /// Segue identifiers to avoid using strings
-    public enum SegueIdentifier: String {
-        case showWPComLogin
     }
 
     override open func viewDidLoad() {

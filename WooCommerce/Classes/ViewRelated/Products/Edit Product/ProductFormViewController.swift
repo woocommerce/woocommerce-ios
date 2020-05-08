@@ -45,6 +45,11 @@ final class ProductFormViewController: UIViewController {
     }
 
     /// The product password, fetched in Product Settings
+    private var originalPassword: String? {
+        didSet {
+            password = originalPassword
+        }
+    }
     private var password: String?
 
     private var productUpdater: ProductUpdater {
@@ -269,7 +274,7 @@ private extension ProductFormViewController {
                     return
                 }
 
-                self?.password = password
+                self?.originalPassword = password
                 group.leave()
             }
             ServiceLocator.stores.dispatch(passwordUpdateAction)
@@ -325,7 +330,7 @@ private extension ProductFormViewController {
             self.product = self.productUpdater.productSettingsUpdated(settings: productSettings)
             self.password = productSettings.password
         }) { [weak self] (originalPassword) in
-            self?.password = originalPassword
+            self?.originalPassword = originalPassword
         }
         navigationController?.pushViewController(viewController, animated: true)
     }

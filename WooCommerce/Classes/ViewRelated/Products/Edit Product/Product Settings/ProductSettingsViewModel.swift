@@ -4,9 +4,6 @@ import Yosemite
 /// The Product Settings contains 2 sections: Publish Settings and More Options
 final class ProductSettingsViewModel {
 
-    let siteID: Int64
-    let productID: Int64
-
     private let product: Product
 
     /// The original password, the one fetched from site post API
@@ -31,8 +28,6 @@ final class ProductSettingsViewModel {
     var onPasswordRetrieved: ((_ password: String) -> Void)?
 
     init(product: Product, password: String?) {
-        siteID = product.siteID
-        productID = product.productID
         self.product = product
         self.password = password
         productSettings = ProductSettings(from: product, password: password)
@@ -40,7 +35,7 @@ final class ProductSettingsViewModel {
 
         /// If nil, we fetch the password from site post API because it was never fetched
         if password == nil {
-            retrieveProductPassword { [weak self] (password, error) in
+            retrieveProductPassword(siteID: product.siteID, productID: product.productID) { [weak self] (password, error) in
                 guard let self = self else {
                     return
                 }
@@ -76,7 +71,7 @@ final class ProductSettingsViewModel {
 
 // MARK: Syncing data. Yosemite related stuff
 private extension ProductSettingsViewModel {
-    func retrieveProductPassword(onCompletion: ((String?, Error?) -> ())? = nil) {
+    func retrieveProductPassword(siteID: Int64, productID: Int64, onCompletion: ((String?, Error?) -> ())? = nil) {
         let action = SitePostAction.retrieveSitePostPassword(siteID: siteID, postID: productID) { (password, error) in
             guard let _ = password else {
                 DDLogError("⛔️ Error fetching product password: \(error.debugDescription)")

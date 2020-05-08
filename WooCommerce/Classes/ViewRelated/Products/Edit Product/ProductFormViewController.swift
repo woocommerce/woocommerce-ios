@@ -22,7 +22,7 @@ final class ProductFormViewController: UIViewController {
     private var product: Product {
         didSet {
             defer {
-                let isUpdateEnabled = hasUnsavedChanges(product: product)
+                let isUpdateEnabled = hasUnsavedChanges(product: product, password: password)
                 updateNavigationBar(isUpdateEnabled: isUpdateEnabled)
             }
 
@@ -50,7 +50,12 @@ final class ProductFormViewController: UIViewController {
             password = originalPassword
         }
     }
-    private var password: String?
+    private var password: String? {
+        didSet {
+            let isUpdateEnabled = hasUnsavedChanges(product: product, password: password)
+            updateNavigationBar(isUpdateEnabled: isUpdateEnabled)
+        }
+    }
 
     private var productUpdater: ProductUpdater {
         return product
@@ -330,6 +335,7 @@ private extension ProductFormViewController {
             self.product = self.productUpdater.productSettingsUpdated(settings: productSettings)
             self.password = productSettings.password
         }) { [weak self] (originalPassword) in
+            print("original password", originalPassword)
             self?.originalPassword = originalPassword
         }
         navigationController?.pushViewController(viewController, animated: true)
@@ -484,7 +490,7 @@ private extension ProductFormViewController {
 //
 extension ProductFormViewController {
     override func shouldPopOnBackButton() -> Bool {
-        if hasUnsavedChanges(product: product) {
+        if hasUnsavedChanges(product: product, password: password) {
             presentBackNavigationActionSheet()
             return false
         }
@@ -501,8 +507,8 @@ extension ProductFormViewController {
         })
     }
 
-    private func hasUnsavedChanges(product: Product) -> Bool {
-        return product != originalProduct || productImageActionHandler.productImageStatuses.hasPendingUpload
+    private func hasUnsavedChanges(product: Product, password: String?) -> Bool {
+        return product != originalProduct || productImageActionHandler.productImageStatuses.hasPendingUpload || password != originalPassword
     }
 }
 

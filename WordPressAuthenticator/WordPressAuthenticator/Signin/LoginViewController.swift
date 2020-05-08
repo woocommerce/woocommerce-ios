@@ -419,7 +419,16 @@ extension LoginViewController {
             present(socialErrorNav, animated: true) {}
         } else {
             errorToPresent = error
-            performSegue(withIdentifier: .showWPComLogin, sender: self)
+            guard let vc = LoginWPComViewController.instantiate(from: .login) else {
+                DDLogError("Failed to navigate from Google Login to LoginWPComViewController (password VC)")
+                return
+            }
+
+            vc.loginFields = loginFields
+            vc.dismissBlock = dismissBlock
+            vc.errorToPresent = errorToPresent
+
+            navigationController?.pushViewController(vc, animated: true)
         }
     }
     

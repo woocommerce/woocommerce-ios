@@ -80,6 +80,7 @@ private extension TitleAndTextFieldWithImageTableViewCell {
     }
 
     func configureTextField() {
+        textField.textAlignment = .right
         textField.applyBodyStyle()
         textField.textColor = .textBrand
         textField.borderStyle = .none

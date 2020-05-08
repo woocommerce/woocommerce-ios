@@ -171,7 +171,16 @@ extension LoginPrologueViewController: AppleAuthenticatorDelegate {
 
     func showWPComLogin(loginFields: LoginFields) {
         self.loginFields = loginFields
-         performSegue(withIdentifier: .showWPComLogin, sender: self)
+        guard let vc = LoginWPComViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from Prologue > Sign in with Apple to LoginWPComViewController")
+            return
+        }
+
+        vc.loginFields = self.loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     func showApple2FA(loginFields: LoginFields) {

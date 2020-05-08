@@ -234,7 +234,11 @@ private extension ProductFormViewController {
     }
 
     func dispatchUpdateProductAction() {
-        let action = ProductAction.updateProduct(product: product) { [weak self] (product, error) in
+        let group = DispatchGroup()
+
+        // Updated Product
+        group.enter()
+        let updateProductAction = ProductAction.updateProduct(product: product) { [weak self] (product, error) in
             guard let product = product, error == nil else {
                 let errorDescription = error?.localizedDescription ?? "No error specified"
                 DDLogError("⛔️ Error updating Product: \(errorDescription)")
@@ -243,16 +247,38 @@ private extension ProductFormViewController {
                 self?.navigationController?.dismiss(animated: true) {
                     self?.displayError(error: error)
                 }
+                group.leave()
                 return
             }
             self?.originalProduct = product
             self?.product = product
 
             ServiceLocator.analytics.track(.productDetailUpdateSuccess)
+            group.leave()
+        }
+        ServiceLocator.stores.dispatch(updateProductAction)
+
+
+        // Update product password if available
+        if let password = password {
+            group.enter()
+            let passwordUpdateAction = SitePostAction.updateSitePostPassword(siteID: product.siteID, postID: product.productID, password: password) { [weak self] (password, error) in
+                guard let _ = password else {
+                    DDLogError("⛔️ Error updating product password: \(error.debugDescription)")
+                    group.leave()
+                    return
+                }
+
+                self?.password = password
+                group.leave()
+            }
+            ServiceLocator.stores.dispatch(passwordUpdateAction)
+        }
+
+        group.notify(queue: .main) { [weak self] in
             // Dismisses the in-progress UI.
             self?.navigationController?.dismiss(animated: true, completion: nil)
         }
-        ServiceLocator.stores.dispatch(action)
     }
 
     func displayError(error: ProductUpdateError?) {

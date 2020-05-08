@@ -554,7 +554,7 @@
         <!--LoginWP Com View Controller-->
         <scene sceneID="brQ-1M-iPT">
             <objects>
-                <viewController storyboardIdentifier="LoginWPcomPassword" useStoryboardIdentifierAsRestorationIdentifier="YES" id="lmD-c6-SLs" customClass="LoginWPComViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginWPComViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="lmD-c6-SLs" customClass="LoginWPComViewController" customModule="WordPressAuthenticator" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="dAs-4b-ACP"/>
                         <viewControllerLayoutGuide type="bottom" id="kOH-fr-1L0"/>
@@ -1418,7 +1418,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="8p6-rS-9Ml"/>
+        <segue reference="UV4-XI-c0q"/>
         <segue reference="JN3-Ck-2w7"/>
     </inferredMetricsTieBreakers>
     <resources>

@@ -107,9 +107,6 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="42E-2e-kOq"/>
-                    <connections>
-                        <segue destination="lmD-c6-SLs" kind="show" identifier="showWPComLogin" id="UV4-XI-c0q"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ieq-Ar-5OF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -1418,7 +1415,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="UV4-XI-c0q"/>
+        <segue reference="8p6-rS-9Ml"/>
         <segue reference="JN3-Ck-2w7"/>
     </inferredMetricsTieBreakers>
     <resources>

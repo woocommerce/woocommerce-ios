@@ -170,17 +170,6 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         loginFacade.signIn(with: loginFields)
     }
 
-    /// Manages data transfer when seguing to a new VC
-    ///
-    override open func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let source = segue.source as? LoginViewController, let destination = segue.destination as? LoginViewController else {
-            return
-        }
-
-        destination.loginFields = source.loginFields
-        destination.dismissBlock = source.dismissBlock
-        destination.errorToPresent = source.errorToPresent
-    }
 
     // MARK: SigninWPComSyncHandler methods
     dynamic open func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {

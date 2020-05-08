@@ -16,4 +16,14 @@ extension Result {
     public var isFailure: Bool {
         !isSuccess
     }
+
+    /// Returns the value of `.failure()` if `self` is a failure.
+    ///
+    public var failure: Failure? {
+        guard case let .failure(error) = self else {
+            return nil
+        }
+
+        return error
+    }
 }

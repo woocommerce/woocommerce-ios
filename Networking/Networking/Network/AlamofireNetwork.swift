@@ -114,6 +114,8 @@ private extension Alamofire.DataResponse {
 // MARK: - Swift.Result Conversion
 
 private extension Alamofire.Result {
+    /// Convert this `Alamofire.Result` to a `Swift.Result`.
+    ///
     func toSwiftResult() -> Swift.Result<Value, Error> {
         switch self {
         case .success(let value):

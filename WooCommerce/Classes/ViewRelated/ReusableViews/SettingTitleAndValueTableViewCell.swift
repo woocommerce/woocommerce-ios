@@ -8,6 +8,7 @@ final class SettingTitleAndValueTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
+        configureBackground()
         configureLabels()
     }
 }
@@ -24,6 +25,10 @@ extension SettingTitleAndValueTableViewCell {
 // MARK: Configurations
 //
 private extension SettingTitleAndValueTableViewCell {
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+    }
+
     func configureLabels() {
         titleLabel.applyBodyStyle()
         titleLabel.textColor = .text

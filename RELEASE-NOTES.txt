@@ -1,6 +1,7 @@
 4.3
 -----
 - Products: now the Product details can be edited and saved outside Products tab (e.g. from Order details or Top Performers).
+- [internal]: the navigation to the password entry screen has changed and can cause regressions. See https://git.io/JflDW for testing details.
 
 
 4.2

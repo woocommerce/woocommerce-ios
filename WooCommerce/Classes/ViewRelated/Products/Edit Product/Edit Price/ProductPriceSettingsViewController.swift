@@ -333,10 +333,15 @@ private extension ProductPriceSettingsViewController {
     func configurePrice(cell: UnitInputTableViewCell) {
         let cellViewModel = Product.createRegularPriceViewModel(regularPrice: viewModel.regularPrice, using: CurrencySettings.shared) { [weak self] value in
             self?.viewModel.handleRegularPriceChange(value)
+            self?.setCellPriceAccessibility(price: cell.value, cell: cell)
         }
         cell.selectionStyle = .none
         cell.configure(viewModel: cellViewModel)
         
+        setCellPriceAccessibility(price: viewModel.regularPrice, cell: cell)
+    }
+    
+    func setCellPriceAccessibility(price: String?, cell: UnitInputTableViewCell) {
         let accessibilityText = String.localizedStringWithFormat(
             NSLocalizedString(
                 "Price %@ %@",
@@ -345,11 +350,11 @@ private extension ProductPriceSettingsViewController {
             cell.value ?? "",
             CurrencySettings.shared.currencyCode.rawValue
         )
-        cell.accessibilityLabel = accessibilityText
-        cell.accessibilityHint = NSLocalizedString(
+        let accessibilityHint = NSLocalizedString(
             "Show the regular price for this product, which is also editable.",
             comment: "VoiceOver accessibility hint, informing the user that the cell shows the price information for this product."
         )
+        cell.setAccessitibily(label: accessibilityText, hint: accessibilityHint)
     }
 
     func configureSalePrice(cell: UnitInputTableViewCell) {

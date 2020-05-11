@@ -30,6 +30,10 @@ final class UnitInputTableViewCell: UITableViewCell {
     private var inputFormatter: UnitInputFormatter?
     private var onInputChange: ((_ input: String?) -> Void)?
 
+    /// The value inside `inputTextField` exposed outside of the cell
+    ///
+    private (set) var value: String?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
 
@@ -49,6 +53,7 @@ final class UnitInputTableViewCell: UITableViewCell {
         inputTextField.text = viewModel.value
         inputTextField.placeholder = viewModel.placeholder
         inputTextField.keyboardType = viewModel.keyboardType
+        value = viewModel.value
         inputFormatter = viewModel.inputFormatter
         onInputChange = viewModel.onInputChange
 
@@ -56,8 +61,7 @@ final class UnitInputTableViewCell: UITableViewCell {
     }
     
     func setAccessitibily(label: String, hint: String) {
-        inputTextField.accessibilityLabel = ""
-        inputTextField.accessibilityHint = ""
+        inputTextField.isAccessibilityElement = false
         self.accessibilityLabel = label
         self.accessibilityHint = hint
     }
@@ -164,6 +168,7 @@ private extension UnitInputTableViewCell {
     @objc func textFieldDidChange(textField: UITextField) {
         let formattedText = inputFormatter?.format(input: textField.text)
         textField.text = inputFormatter?.format(input: formattedText)
+        value = textField.text
         onInputChange?(formattedText)
     }
 }

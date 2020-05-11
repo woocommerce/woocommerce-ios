@@ -27,23 +27,33 @@ enum WooConstants {
 
     /// Terms of Service Website. Displayed by the Authenticator (when / if needed).
     ///
-    static let termsOfServiceUrl = URL(string: "https://wordpress.com/tos/")!
+    static var termsOfServiceUrl: URL {
+        trustedURL("https://wordpress.com/tos/")
+    }
 
     /// Cookie policy URL
     ///
-    static let cookieURL = URL(string: "https://automattic.com/cookies/")!
+    static var cookieURL: URL {
+        trustedURL("https://automattic.com/cookies/")
+    }
 
     /// Privacy policy URL
     ///
-    static let privacyURL = URL(string: "https://automattic.com/privacy/")!
+    static var privacyURL: URL {
+        trustedURL("https://automattic.com/privacy/")
+    }
 
     /// Help Center URL
     ///
-    static let helpCenterURL = URL(string: "https://docs.woocommerce.com/document/woocommerce-ios/")!
+    static var helpCenterURL: URL {
+        trustedURL("https://docs.woocommerce.com/document/woocommerce-ios/")
+    }
 
     /// Feature Request URL
     ///
-    static let featureRequestURL = URL(string: "http://ideas.woocommerce.com/forums/133476-woocommerce?category_id=84283")!
+    static var featureRequestURL: URL {
+        trustedURL("http://ideas.woocommerce.com/forums/133476-woocommerce?category_id=84283")
+    }
 
     /// URL used for Learn More button in Orders empty state.
     ///

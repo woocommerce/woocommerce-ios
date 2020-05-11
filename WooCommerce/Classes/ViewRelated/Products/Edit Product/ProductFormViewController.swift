@@ -323,7 +323,7 @@ private extension ProductFormViewController {
         let moreButton = UIBarButtonItem(image: .moreImage,
                                      style: .plain,
                                      target: self,
-                                     action: #selector(presentMoreOptionsActionSheet))
+                                     action: #selector(presentMoreOptionsActionSheet(_:)))
         moreButton.accessibilityLabel = NSLocalizedString("More options", comment: "Accessibility label for the Edit Product More Options action sheet")
         moreButton.accessibilityIdentifier = "edit-product-more-options-button"
         return moreButton
@@ -653,7 +653,7 @@ private extension ProductFormViewController {
 
     /// More Options Action Sheet
     ///
-    @objc func presentMoreOptionsActionSheet() {
+    @objc func presentMoreOptionsActionSheet(_ sender: UIBarButtonItem) {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
 
@@ -673,8 +673,7 @@ private extension ProductFormViewController {
         }
 
         let popoverController = actionSheet.popoverPresentationController
-        popoverController?.sourceView = view
-        popoverController?.sourceRect = view.bounds
+        popoverController?.barButtonItem = sender
 
         present(actionSheet, animated: true)
     }

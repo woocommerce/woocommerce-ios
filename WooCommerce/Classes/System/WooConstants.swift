@@ -45,6 +45,12 @@ enum WooConstants {
     ///
     static let featureRequestURL = URL(string: "http://ideas.woocommerce.com/forums/133476-woocommerce?category_id=84283")!
 
+    /// URL used for Learn More button in Orders empty state.
+    ///
+    static var wooCommerceBlog: URL {
+        trustedURL("https://woocommerce.com/blog/")
+    }
+
     /// Number of section events required before an app review prompt appears
     ///
     static let notificationEventCount = 5
@@ -53,4 +59,18 @@ enum WooConstants {
     /// before an app review prompt appears
     ///
     static let systemEventCount = 10
+}
+
+// MARK: - Utils
+
+private extension WooConstants {
+    /// Convert a `string` to a `URL`. Crash if it is malformed.
+    ///
+    private static func trustedURL(_ url: String) -> URL {
+        if let url = URL(string: url) {
+            return url
+        } else {
+            fatalError("Expected URL \(url) to be a well-formed URL.")
+        }
+    }
 }

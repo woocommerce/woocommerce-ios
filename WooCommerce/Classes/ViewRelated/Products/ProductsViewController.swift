@@ -102,7 +102,7 @@ final class ProductsViewController: UIViewController {
 
     private let imageService: ImageService = ServiceLocator.imageService
 
-    private var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters(stockStatus: nil, productStatus: nil, productType: nil) {
+    private var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters() {
         didSet {
             if filters != oldValue {
                 updateFilterButtonTitle(filters: filters)
@@ -636,7 +636,7 @@ private extension ProductsViewController {
 //
 private extension ProductsViewController {
     func updateFilterButtonTitle(filters: FilterProductListViewModel.Filters) {
-        let activeFilterCount = FilterProductListViewModel(filters: filters).numberOfActiveFilters
+        let activeFilterCount = filters.numberOfActiveFilters
 
         let titleWithoutActiveFilters =
             NSLocalizedString("Filter", comment: "Title of the toolbar button to filter products without any filters applied.")

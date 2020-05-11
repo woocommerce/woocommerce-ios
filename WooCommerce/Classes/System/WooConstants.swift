@@ -57,7 +57,7 @@ enum WooConstants {
 
     /// URL used for Learn More button in Orders empty state.
     ///
-    static var wooCommerceBlog: URL {
+    static var blogURL: URL {
         trustedURL("https://woocommerce.com/blog/")
     }
 

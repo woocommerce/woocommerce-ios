@@ -11,6 +11,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="EmptyStateViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
                 <outlet property="actionButton" destination="MHH-Z6-FbG" id="Qnb-WS-A16"/>
+                <outlet property="contentView" destination="nZ1-Qr-0N4" id="bnc-WC-RLp"/>
                 <outlet property="contentViewHeightAdjustmentFromSuperviewConstraint" destination="j6E-vd-ZVT" id="vd1-ew-yqy"/>
                 <outlet property="detailsLabel" destination="iFj-AP-WfL" id="U8q-I7-0hs"/>
                 <outlet property="imageView" destination="YZ8-4Q-SGO" id="0Oa-4c-NbW"/>

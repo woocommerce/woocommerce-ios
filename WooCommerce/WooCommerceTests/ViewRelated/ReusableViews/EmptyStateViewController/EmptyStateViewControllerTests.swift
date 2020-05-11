@@ -8,7 +8,7 @@ import XCTest
 ///
 final class EmptyStateViewControllerTests: XCTestCase {
 
-    func testItHidesAllConfigurableElementsByDefault() throws {
+    func testItHidesAllConfigurableElementsExceptMessageByDefault() throws {
         // Given
         let viewController = EmptyStateViewController()
 
@@ -18,7 +18,6 @@ final class EmptyStateViewControllerTests: XCTestCase {
         let mirror = try self.mirror(of: viewController)
 
         // Then
-        XCTAssertTrue(mirror.messageLabel.isHidden)
         XCTAssertTrue(mirror.imageView.isHidden)
         XCTAssertTrue(mirror.detailsLabel.isHidden)
         XCTAssertTrue(mirror.actionButton.isHidden)
@@ -29,7 +28,7 @@ final class EmptyStateViewControllerTests: XCTestCase {
         XCTAssertNil(mirror.actionButton.titleLabel?.text)
     }
 
-    func testItShowsTheConfigurableElementsWhenProvided() throws {
+    func testGivenASimpleConfigItHidesTheDetailsAndActionButton() throws {
         // Given
         let viewController = EmptyStateViewController()
         XCTAssertNotNil(viewController.view)
@@ -37,25 +36,65 @@ final class EmptyStateViewControllerTests: XCTestCase {
         let mirror = try self.mirror(of: viewController)
 
         // When
-        let actionButtonConfig = EmptyStateViewController.ActionButtonConfig(title: "Bakero!") {
-            // noop
-        }
-
-        viewController.configure(message: NSAttributedString(string: "Ola"),
-                                 image: .appleIcon,
-                                 details: "Dolores eum",
-                                 actionButton: actionButtonConfig)
+        viewController.configure(.simple(message: NSAttributedString(string: "Ola"), image: .appleIcon))
 
         // Then
         XCTAssertFalse(mirror.messageLabel.isHidden)
-        XCTAssertFalse(mirror.imageView.isHidden)
+        XCTAssertTrue(mirror.detailsLabel.isHidden)
+        XCTAssertTrue(mirror.actionButton.isHidden)
+
+        XCTAssertEqual(mirror.messageLabel.attributedText, NSAttributedString(string: "Ola"))
+        XCTAssertEqual(mirror.imageView.image, UIImage.appleIcon)
+    }
+
+    func testGivenALinkConfigItShowsAllTheElements() throws {
+        // Given
+        let viewController = EmptyStateViewController()
+        XCTAssertNotNil(viewController.view)
+
+        let mirror = try self.mirror(of: viewController)
+
+        // When
+        viewController.configure(.withLink(
+            message: NSAttributedString(string: "Ola"),
+            image: .appleIcon,
+            details: "Dolores eum",
+            linkTitle: "Bakero!",
+            linkURL: .wooCommerceBlog
+        ))
+
+        // Then
+        XCTAssertFalse(mirror.messageLabel.isHidden)
         XCTAssertFalse(mirror.detailsLabel.isHidden)
         XCTAssertFalse(mirror.actionButton.isHidden)
 
         XCTAssertEqual(mirror.messageLabel.attributedText, NSAttributedString(string: "Ola"))
         XCTAssertEqual(mirror.imageView.image, UIImage.appleIcon)
         XCTAssertEqual(mirror.detailsLabel.text, "Dolores eum")
-        XCTAssertEqual(mirror.actionButton.titleLabel?.text, actionButtonConfig.title)
+        XCTAssertEqual(mirror.actionButton.titleLabel?.text, "Bakero!")
+    }
+
+    func testTheImageViewVisibilityIsSetDuringConfigure() throws {
+        // Given
+        let viewController = EmptyStateViewController()
+        XCTAssertNotNil(viewController.view)
+
+        let mirror = try self.mirror(of: viewController)
+
+        // Should be hidden by default
+        XCTAssertTrue(mirror.imageView.isHidden)
+
+        // When
+        viewController.configure(.simple(message: NSAttributedString(string: "Ola"), image: .appleIcon))
+
+        // Then
+
+        // The visibility depends on the traitCollection which we don't control. If the test
+        // environment is in landscape, we cannot reliably test it. So for now, we'll have
+        // to define what the visibility should be.
+        let shouldBeHidden = viewController.traitCollection.verticalSizeClass == .compact
+
+        XCTAssertEqual(mirror.imageView.isHidden, shouldBeHidden)
     }
 
     func testGivenACompactVerticalSizeClassItWillHideTheImageView() throws {
@@ -65,7 +104,7 @@ final class EmptyStateViewControllerTests: XCTestCase {
 
         let mirror = try self.mirror(of: viewController)
 
-        viewController.configure(image: .appleIcon)
+        viewController.configure(.simple(message: NSAttributedString(string: ""), image: .appleIcon))
 
         // When
         viewController.willTransition(to: UITraitCollection(verticalSizeClass: .compact),
@@ -82,7 +121,7 @@ final class EmptyStateViewControllerTests: XCTestCase {
 
         let mirror = try self.mirror(of: viewController)
 
-        viewController.configure(image: .appleIcon)
+        viewController.configure(.simple(message: NSAttributedString(string: ""), image: .appleIcon))
 
         // When
         viewController.willTransition(to: UITraitCollection(verticalSizeClass: .regular),
@@ -90,27 +129,6 @@ final class EmptyStateViewControllerTests: XCTestCase {
 
         // Then
         XCTAssertFalse(mirror.imageView.isHidden)
-    }
-
-    func testItCallsTheActionButtonCallbackWhenTheButtonIsTapped() throws {
-        // Given
-        let viewController = EmptyStateViewController()
-        XCTAssertNotNil(viewController.view)
-
-        let mirror = try self.mirror(of: viewController)
-
-        var callbackWasCalled: Bool = false
-        let actionButtonConfig = EmptyStateViewController.ActionButtonConfig(title: "Bakero!") {
-            callbackWasCalled = true
-        }
-
-        viewController.configure(actionButton: actionButtonConfig)
-
-        // When
-        mirror.actionButton.sendActions(for: .touchUpInside)
-
-        // Then
-        XCTAssertTrue(callbackWasCalled)
     }
 }
 

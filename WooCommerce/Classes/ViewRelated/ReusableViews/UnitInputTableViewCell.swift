@@ -33,7 +33,7 @@ final class UnitInputTableViewCell: UITableViewCell {
     /// The value inside `inputTextField` exposed outside of the cell
     ///
     private (set) var value: String = ""
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
 
@@ -59,7 +59,7 @@ final class UnitInputTableViewCell: UITableViewCell {
 
         rearrangeInputAndUnitStackViewSubviews(using: viewModel.unitPosition)
     }
-    
+
     func setAccessitibily(label: String, hint: String) {
         inputTextField.isAccessibilityElement = false
         self.accessibilityLabel = label

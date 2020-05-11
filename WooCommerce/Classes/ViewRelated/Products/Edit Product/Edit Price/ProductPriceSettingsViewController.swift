@@ -339,7 +339,7 @@ private extension ProductPriceSettingsViewController {
         cell.configure(viewModel: cellViewModel)
         setCellPriceAccessibility(price: cell.value, cell: cell)
     }
-    
+
     func setCellPriceAccessibility(price: String?, cell: UnitInputTableViewCell) {
         let value = cell.value.isEmpty == false ? cell.value : NSLocalizedString("empty", comment: "Accessibility text for when a price is empty")
         let currency = cell.value.isEmpty == false ? CurrencySettings.shared.currencyCode.rawValue : ""
@@ -367,7 +367,7 @@ private extension ProductPriceSettingsViewController {
         cell.configure(viewModel: cellViewModel)
         setCellSalePriceAccessibility(price: cell.value, cell: cell)
     }
-    
+
     func setCellSalePriceAccessibility(price: String?, cell: UnitInputTableViewCell) {
         let value = cell.value.isEmpty == false ? cell.value : NSLocalizedString("empty", comment: "Accessibility text for when a price is empty")
         let currency = cell.value.isEmpty == false ? CurrencySettings.shared.currencyCode.rawValue : ""

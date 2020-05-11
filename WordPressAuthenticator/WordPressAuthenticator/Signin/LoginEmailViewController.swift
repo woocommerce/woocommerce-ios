@@ -582,7 +582,7 @@ extension LoginEmailViewController: GIDSignInDelegate {
 extension LoginEmailViewController: AppleAuthenticatorDelegate {
 
     func showWPComLogin(loginFields: LoginFields) {
-        self.loginFields = loginFields // why does the LoginEmailVC need to capture these fields from the delegate?
+        self.loginFields = loginFields
 
         guard let vc = LoginWPComViewController.instantiate(from: .login) else {
             DDLogError("Failed to navigate from LoginEmailViewController to LoginWPComViewController")

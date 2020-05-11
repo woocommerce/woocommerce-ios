@@ -41,4 +41,14 @@ extension UITableView {
         tableFooterView = UIView(frame: CGRect(origin: .zero,
                                                size: CGSize(width: frame.width, height: 1)))
     }
+
+    /// Change `self.tableFooterView` to an empty view in order to hide the `UITableView`'s
+    /// default row placeholders (with separators).
+    ///
+    /// This intentionally have an absurdingly long method name because we want to be clear that
+    /// we are replacing the `tableFooterView` property.
+    ///
+    func applyFooterViewForHidingExtraRowPlaceholders() {
+        tableFooterView = UIView(frame: .zero)
+    }
 }

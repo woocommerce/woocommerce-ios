@@ -152,6 +152,10 @@ private extension ProductImagesViewController {
     }
 
     @objc func doneButtonTapped() {
+        commitAndDismiss()
+    }
+
+    func commitAndDismiss() {
         onCompletion(productImages)
     }
 
@@ -216,6 +220,7 @@ private extension ProductImagesViewController {
             return
         }
         uploadMediaAssetToSiteMediaLibrary(asset: asset)
+        commitAndDismiss()
     }
 }
 
@@ -223,14 +228,16 @@ private extension ProductImagesViewController {
 //
 private extension ProductImagesViewController {
     func onDeviceMediaLibraryPickerCompletion(assets: [PHAsset]) {
-        defer {
-            dismiss(animated: true, completion: nil)
-        }
-        guard assets.isEmpty == false else {
-            return
-        }
-        assets.forEach { asset in
-            uploadMediaAssetToSiteMediaLibrary(asset: asset)
+        let shouldAnimateMediaLibraryDismissal = assets.isEmpty
+        dismiss(animated: shouldAnimateMediaLibraryDismissal) { [weak self] in
+            guard let self = self, assets.isNotEmpty else {
+                return
+            }
+
+            assets.forEach { asset in
+                self.uploadMediaAssetToSiteMediaLibrary(asset: asset)
+            }
+            self.commitAndDismiss()
         }
     }
 }
@@ -239,8 +246,15 @@ private extension ProductImagesViewController {
 //
 private extension ProductImagesViewController {
     func onWPMediaPickerCompletion(mediaItems: [Media]) {
-        dismiss(animated: true, completion: nil)
-        productImageActionHandler.addSiteMediaLibraryImagesToProduct(mediaItems: mediaItems)
+        let shouldAnimateWPMediaPickerDismissal = mediaItems.isEmpty
+        dismiss(animated: shouldAnimateWPMediaPickerDismissal) { [weak self] in
+            guard let self = self, mediaItems.isNotEmpty else {
+                return
+            }
+
+            self.productImageActionHandler.addSiteMediaLibraryImagesToProduct(mediaItems: mediaItems)
+            self.commitAndDismiss()
+        }
     }
 }
 

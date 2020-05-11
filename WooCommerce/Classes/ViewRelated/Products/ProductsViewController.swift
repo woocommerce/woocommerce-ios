@@ -49,7 +49,7 @@ final class ProductsViewController: UIViewController {
     }()
 
     /// The filter CTA in the top toolbar.
-    private var filterButton: UIButton?
+    private lazy var filterButton: UIButton = UIButton(frame: .zero)
 
     /// Top banner that shows that the Products feature is still work in progress.
     ///
@@ -284,8 +284,6 @@ private extension ProductsViewController {
         sortButton.addTarget(self, action: #selector(sortButtonTapped(sender:)), for: .touchUpInside)
 
         let filterTitle = NSLocalizedString("Filter", comment: "Title of the toolbar button to filter products by different attributes.")
-        let filterButton = UIButton(frame: .zero)
-        self.filterButton = filterButton
         filterButton.setTitle(filterTitle, for: .normal)
         filterButton.addTarget(self, action: #selector(filterButtonTapped), for: .touchUpInside)
 
@@ -648,7 +646,7 @@ private extension ProductsViewController {
         let title = activeFilterCount > 0 ?
             String.localizedStringWithFormat(titleFormatWithActiveFilters, activeFilterCount): titleWithoutActiveFilters
 
-        filterButton?.setTitle(title, for: .normal)
+        filterButton.setTitle(title, for: .normal)
     }
 }
 

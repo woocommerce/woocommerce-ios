@@ -164,7 +164,7 @@ private extension ProductLoaderViewController {
     func presentProductDetails(for product: Product, isEditProductsEnabled: Bool) {
         let viewController: UIViewController
         if product.productType == .simple && isEditProductsEnabled {
-            viewController = ProductFormViewController(product: product, currency: currency)
+            viewController = ProductFormViewController(product: product, currency: currency, presentationStyle: .contained(containerViewController: self))
         } else {
             let viewModel = ProductDetailsViewModel(product: product, currency: currency)
             viewController = ProductDetailsViewController(viewModel: viewModel)
@@ -174,7 +174,6 @@ private extension ProductLoaderViewController {
         addChild(viewController)
         attachSubview(viewController.view)
         viewController.didMove(toParent: self)
-
 
         // And, of course, borrow the Child's Title + right nav bar items
         title = viewController.title

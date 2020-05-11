@@ -431,7 +431,7 @@ private extension ProductsViewController {
         let currency = CurrencySettings.shared.symbol(from: currencyCode)
         let viewController: UIViewController
         if product.productType == .simple && isEditProductsEnabled {
-            viewController = ProductFormViewController(product: product, currency: currency)
+            viewController = ProductFormViewController(product: product, currency: currency, presentationStyle: .navigationStack)
             // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
             viewController.hidesBottomBarWhenPushed = true
         } else {

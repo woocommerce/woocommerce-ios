@@ -75,6 +75,9 @@ class ProductStoreTests: XCTestCase {
         let action = ProductAction.synchronizeProducts(siteID: sampleSiteID,
                                                        pageNumber: defaultPageNumber,
                                                        pageSize: defaultPageSize,
+                                                       stockStatus: nil,
+                                                       productStatus: nil,
+                                                       productType: nil,
                                                        sortOrder: .nameAscending) { error in
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 10)
             XCTAssertNil(error)
@@ -100,6 +103,9 @@ class ProductStoreTests: XCTestCase {
         let action = ProductAction.synchronizeProducts(siteID: sampleSiteID,
                                                        pageNumber: defaultPageNumber,
                                                        pageSize: defaultPageSize,
+                                                       stockStatus: nil,
+                                                       productStatus: nil,
+                                                       productType: nil,
                                                        sortOrder: .nameAscending) { error in
             XCTAssertNil(error)
 
@@ -129,6 +135,9 @@ class ProductStoreTests: XCTestCase {
         let action = ProductAction.synchronizeProducts(siteID: sampleSiteID,
                                                        pageNumber: defaultPageNumber,
                                                        pageSize: defaultPageSize,
+                                                       stockStatus: nil,
+                                                       productStatus: nil,
+                                                       productType: nil,
                                                        sortOrder: .nameAscending) { error in
             expectation.fulfill()
         }
@@ -161,6 +170,9 @@ class ProductStoreTests: XCTestCase {
         let action = ProductAction.synchronizeProducts(siteID: siteID1,
                                                        pageNumber: ProductStore.Default.firstPageNumber,
                                                        pageSize: defaultPageSize,
+                                                       stockStatus: nil,
+                                                       productStatus: nil,
+                                                       productType: nil,
                                                        sortOrder: .nameAscending) { error in
             XCTAssertNil(error)
 
@@ -197,7 +209,13 @@ class ProductStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
 
-        let action = ProductAction.synchronizeProducts(siteID: siteID, pageNumber: 3, pageSize: defaultPageSize, sortOrder: .nameAscending) { error in
+        let action = ProductAction.synchronizeProducts(siteID: siteID,
+                                                       pageNumber: 3,
+                                                       pageSize: defaultPageSize,
+                                                       stockStatus: nil,
+                                                       productStatus: nil,
+                                                       productType: nil,
+                                                       sortOrder: .nameAscending) { error in
             XCTAssertNil(error)
 
             // The previously upserted Product's should stay in storage.
@@ -233,6 +251,9 @@ class ProductStoreTests: XCTestCase {
         let action = ProductAction.synchronizeProducts(siteID: siteID,
                                                        pageNumber: ProductStore.Default.firstPageNumber,
                                                        pageSize: defaultPageSize,
+                                                       stockStatus: nil,
+                                                       productStatus: nil,
+                                                       productType: nil,
                                                        sortOrder: .nameAscending) { error in
             XCTAssertNotNil(error)
 
@@ -259,6 +280,9 @@ class ProductStoreTests: XCTestCase {
         let action = ProductAction.synchronizeProducts(siteID: sampleSiteID,
                                                        pageNumber: defaultPageNumber,
                                                        pageSize: defaultPageSize,
+                                                       stockStatus: nil,
+                                                       productStatus: nil,
+                                                       productType: nil,
                                                        sortOrder: .nameAscending) { error in
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -277,6 +301,9 @@ class ProductStoreTests: XCTestCase {
         let action = ProductAction.synchronizeProducts(siteID: sampleSiteID,
                                                        pageNumber: defaultPageNumber,
                                                        pageSize: defaultPageSize,
+                                                       stockStatus: nil,
+                                                       productStatus: nil,
+                                                       productType: nil,
                                                        sortOrder: .nameAscending) { error in
             XCTAssertNotNil(error)
             expectation.fulfill()

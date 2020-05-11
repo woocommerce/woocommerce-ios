@@ -6,6 +6,7 @@ import Yosemite
 final class ProductFormViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var moreDetailsContainerView: UIView!
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
         let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
@@ -54,9 +55,23 @@ final class ProductFormViewController: UIViewController {
     private let productUIImageLoader: ProductUIImageLoader
 
     private let currency: String
+    private let featureFlagService: FeatureFlagService
 
-    init(product: Product, currency: String) {
+    private lazy var exitForm: () -> Void = {
+        presentationStyle.createExitForm(viewController: self)
+    }()
+
+    private let presentationStyle: PresentationStyle
+    private let navigationRightBarButtonItemsSubject = PublishSubject<[UIBarButtonItem]>()
+    private var navigationRightBarButtonItems: Observable<[UIBarButtonItem]> {
+        navigationRightBarButtonItemsSubject
+    }
+    private var cancellable: ObservationToken?
+
+    init(product: Product, currency: String, presentationStyle: PresentationStyle, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.currency = currency
+        self.presentationStyle = presentationStyle
+        self.featureFlagService = featureFlagService
         self.originalProduct = product
         self.product = product
         self.viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
@@ -79,15 +94,21 @@ final class ProductFormViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    deinit {
+        cancellable?.cancel()
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         configureNavigationBar()
         configureMainView()
         configureTableView()
+        configureMoreDetailsContainerView()
 
         startListeningToNotifications()
         handleSwipeBackGesture()
+        configurePresentationStyle()
 
         productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else {
@@ -118,7 +139,7 @@ private extension ProductFormViewController {
     }
 
     func configureMainView() {
-        view.backgroundColor = .listBackground
+        view.backgroundColor = .basicBackground
     }
 
     func configureTableView() {
@@ -127,8 +148,11 @@ private extension ProductFormViewController {
         tableView.dataSource = tableViewDataSource
         tableView.delegate = self
 
-        tableView.backgroundColor = .listBackground
+        tableView.backgroundColor = .listForeground
         tableView.removeLastCellSeparator()
+
+        // Since the table view is in a container under a stack view, the safe area adjustment should be handled in the container view.
+        tableView.contentInsetAdjustmentBehavior = .never
 
         tableView.reloadData()
     }
@@ -148,6 +172,50 @@ private extension ProductFormViewController {
                 return
             }
         }
+    }
+
+    func configurePresentationStyle() {
+        switch presentationStyle {
+        case .contained(let containerViewController):
+            containerViewController.addCloseNavigationBarButton(target: self, action: #selector(closeNavigationBarButtonTapped))
+            observeNavigationRightBarButtonItems(viewControllerWithNavigationItem: containerViewController)
+        case .navigationStack:
+            observeNavigationRightBarButtonItems(viewControllerWithNavigationItem: self)
+        }
+    }
+
+    @objc func closeNavigationBarButtonTapped() {
+        guard hasUnsavedChanges(product: product) == false else {
+            presentBackNavigationActionSheet()
+            return
+        }
+        exitForm()
+    }
+
+    func observeNavigationRightBarButtonItems(viewControllerWithNavigationItem: UIViewController) {
+        cancellable = navigationRightBarButtonItems.subscribe { [weak viewControllerWithNavigationItem] rightBarButtonItems in
+            viewControllerWithNavigationItem?.navigationItem.rightBarButtonItems = rightBarButtonItems
+        }
+    }
+
+    func configureMoreDetailsContainerView() {
+        guard featureFlagService.isFeatureFlagEnabled(.editProductsRelease2) else {
+            moreDetailsContainerView.isHidden = true
+            return
+        }
+
+        let title = NSLocalizedString("Add more details", comment: "Title of the button at the bottom of the product form to add more product details.")
+        let viewModel = BottomButtonContainerView.ViewModel(style: .link,
+                                                            title: title,
+                                                            image: .plusImage) { _ in
+                                                                // TODO-2053: show more details bottom sheet
+        }
+        let buttonContainerView = BottomButtonContainerView(viewModel: viewModel)
+
+        moreDetailsContainerView.addSubview(buttonContainerView)
+        moreDetailsContainerView.pinSubviewToAllEdges(buttonContainerView)
+        moreDetailsContainerView.setContentCompressionResistancePriority(.required, for: .vertical)
+        moreDetailsContainerView.setContentHuggingPriority(.required, for: .vertical)
     }
 }
 
@@ -284,7 +352,7 @@ private extension ProductFormViewController {
             rightBarButtonItems.insert(createMoreOptionsBarButtonItem(), at: 0)
         }
 
-        navigationItem.rightBarButtonItems = rightBarButtonItems
+        navigationRightBarButtonItemsSubject.send(rightBarButtonItems)
     }
 
     func createUpdateBarButtonItem() -> UIBarButtonItem {
@@ -296,7 +364,7 @@ private extension ProductFormViewController {
         let moreButton = UIBarButtonItem(image: .moreImage,
                                      style: .plain,
                                      target: self,
-                                     action: #selector(presentMoreOptionsActionSheet))
+                                     action: #selector(presentMoreOptionsActionSheet(_:)))
         moreButton.accessibilityLabel = NSLocalizedString("More options", comment: "Accessibility label for the Edit Product More Options action sheet")
         moreButton.accessibilityIdentifier = "edit-product-more-options-button"
         return moreButton
@@ -355,7 +423,7 @@ extension ProductFormViewController: UITableViewDelegate {
         switch section {
         case .settings:
             let clearView = UIView(frame: .zero)
-            clearView.backgroundColor = .clear
+            clearView.backgroundColor = .listBackground
             return clearView
         default:
             return nil
@@ -433,7 +501,10 @@ extension ProductFormViewController {
 
     private func presentBackNavigationActionSheet() {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
-            self?.navigationController?.popViewController(animated: true)
+            guard let self = self else {
+                return
+            }
+            self.exitForm()
         })
     }
 
@@ -626,7 +697,7 @@ private extension ProductFormViewController {
 
     /// More Options Action Sheet
     ///
-    @objc func presentMoreOptionsActionSheet() {
+    @objc func presentMoreOptionsActionSheet(_ sender: UIBarButtonItem) {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
 
@@ -646,8 +717,7 @@ private extension ProductFormViewController {
         }
 
         let popoverController = actionSheet.popoverPresentationController
-        popoverController?.sourceView = view
-        popoverController?.sourceRect = view.bounds
+        popoverController?.barButtonItem = sender
 
         present(actionSheet, animated: true)
     }

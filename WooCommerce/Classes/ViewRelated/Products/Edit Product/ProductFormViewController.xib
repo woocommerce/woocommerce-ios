@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProductFormViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
+                <outlet property="moreDetailsContainerView" destination="wEZ-yI-3BV" id="t5o-n0-TNf"/>
                 <outlet property="tableView" destination="jKS-9T-UtT" id="B2S-Hy-ugv"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -19,17 +20,29 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="jKS-9T-UtT">
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="lnJ-QS-EwA">
                     <rect key="frame" x="0.0" y="44" width="414" height="818"/>
-                    <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                </tableView>
+                    <subviews>
+                        <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="jKS-9T-UtT">
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="768"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        </tableView>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wEZ-yI-3BV">
+                            <rect key="frame" x="0.0" y="768" width="414" height="50"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="50" placeholder="YES" id="4De-Hk-k6R"/>
+                            </constraints>
+                        </view>
+                    </subviews>
+                </stackView>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="jKS-9T-UtT" secondAttribute="trailing" id="IAY-Ez-MeG"/>
-                <constraint firstItem="jKS-9T-UtT" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="XNr-rD-CSG"/>
-                <constraint firstItem="jKS-9T-UtT" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="XUS-aw-ncD"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="jKS-9T-UtT" secondAttribute="bottom" id="ki0-L9-nvX"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="lnJ-QS-EwA" secondAttribute="bottom" id="2pu-vl-eJo"/>
+                <constraint firstItem="lnJ-QS-EwA" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="iSP-Yg-fhy"/>
+                <constraint firstItem="lnJ-QS-EwA" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="lnT-av-lRI"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="lnJ-QS-EwA" secondAttribute="trailing" id="pRJ-Xx-P8D"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <point key="canvasLocation" x="139" y="96"/>

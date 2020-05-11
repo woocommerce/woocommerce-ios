@@ -32,7 +32,7 @@ final class UnitInputTableViewCell: UITableViewCell {
 
     /// The value inside `inputTextField` exposed outside of the cell
     ///
-    private (set) var value: String?
+    private (set) var value: String = ""
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -53,7 +53,7 @@ final class UnitInputTableViewCell: UITableViewCell {
         inputTextField.text = viewModel.value
         inputTextField.placeholder = viewModel.placeholder
         inputTextField.keyboardType = viewModel.keyboardType
-        value = viewModel.value
+        value = viewModel.value ?? ""
         inputFormatter = viewModel.inputFormatter
         onInputChange = viewModel.onInputChange
 
@@ -168,7 +168,7 @@ private extension UnitInputTableViewCell {
     @objc func textFieldDidChange(textField: UITextField) {
         let formattedText = inputFormatter?.format(input: textField.text)
         textField.text = inputFormatter?.format(input: formattedText)
-        value = textField.text
+        value = textField.text ?? ""
         onInputChange?(formattedText)
     }
 }

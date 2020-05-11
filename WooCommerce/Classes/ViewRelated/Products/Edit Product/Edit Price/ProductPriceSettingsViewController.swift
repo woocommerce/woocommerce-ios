@@ -337,21 +337,22 @@ private extension ProductPriceSettingsViewController {
         }
         cell.selectionStyle = .none
         cell.configure(viewModel: cellViewModel)
-        
-        setCellPriceAccessibility(price: viewModel.regularPrice, cell: cell)
+        setCellPriceAccessibility(price: cell.value, cell: cell)
     }
     
     func setCellPriceAccessibility(price: String?, cell: UnitInputTableViewCell) {
+        let value = cell.value.isEmpty == false ? cell.value : NSLocalizedString("empty", comment: "Accessibility text for when a price is empty")
+        let currency = cell.value.isEmpty == false ? CurrencySettings.shared.currencyCode.rawValue : ""
         let accessibilityText = String.localizedStringWithFormat(
             NSLocalizedString(
                 "Price %@ %@",
                 comment: "Accessibility label for the regular price cell in Product Price"
             ),
-            cell.value ?? "",
-            CurrencySettings.shared.currencyCode.rawValue
+            value,
+            currency
         )
         let accessibilityHint = NSLocalizedString(
-            "Show the regular price for this product, which is also editable.",
+            "The regular price for this product, which is also editable.",
             comment: "VoiceOver accessibility hint, informing the user that the cell shows the price information for this product."
         )
         cell.setAccessitibily(label: accessibilityText, hint: accessibilityHint)
@@ -360,9 +361,29 @@ private extension ProductPriceSettingsViewController {
     func configureSalePrice(cell: UnitInputTableViewCell) {
         let cellViewModel = Product.createSalePriceViewModel(salePrice: viewModel.salePrice, using: CurrencySettings.shared) { [weak self] value in
             self?.viewModel.handleSalePriceChange(value)
+            self?.setCellSalePriceAccessibility(price: cell.value, cell: cell)
         }
         cell.selectionStyle = .none
         cell.configure(viewModel: cellViewModel)
+        setCellSalePriceAccessibility(price: cell.value, cell: cell)
+    }
+    
+    func setCellSalePriceAccessibility(price: String?, cell: UnitInputTableViewCell) {
+        let value = cell.value.isEmpty == false ? cell.value : NSLocalizedString("empty", comment: "Accessibility text for when a price is empty")
+        let currency = cell.value.isEmpty == false ? CurrencySettings.shared.currencyCode.rawValue : ""
+        let accessibilityText = String.localizedStringWithFormat(
+            NSLocalizedString(
+                "Sale price %@ %@",
+                comment: "Accessibility label for the sale price cell in Product Price"
+            ),
+            value,
+            currency
+        )
+        let accessibilityHint = NSLocalizedString(
+            "The sale price for this product, which is also editable.",
+            comment: "VoiceOver accessibility hint, informing the user that the cell shows the sale price information for this product."
+        )
+        cell.setAccessitibily(label: accessibilityText, hint: accessibilityHint)
     }
 
     func configureScheduleSale(cell: SwitchTableViewCell) {

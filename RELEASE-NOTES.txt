@@ -1,3 +1,6 @@
+4.3
+-----
+ 
 4.2
 -----
 - Products: now tapping anywhere on a product cell where you need to insert data, like in Product Price and Product Shipping settings, you start to edit the text field.

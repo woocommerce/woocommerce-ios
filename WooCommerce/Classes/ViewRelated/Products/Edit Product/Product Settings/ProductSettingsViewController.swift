@@ -16,12 +16,12 @@ final class ProductSettingsViewController: UIViewController {
 
     // Password Completion callback called when the password is fetched
     //
-    typealias PasswordCompletion = (_ password: String) -> Void
-    private let onPasswordCompletion: PasswordCompletion
+    typealias PasswordRetrievedCompletion = (_ password: String) -> Void
+    private let onPasswordCompletion: PasswordRetrievedCompletion
 
     /// Init
     ///
-    init(product: Product, password: String?, completion: @escaping Completion, fetchedPassword: @escaping PasswordCompletion) {
+    init(product: Product, password: String?, completion: @escaping Completion, fetchedPassword: @escaping PasswordRetrievedCompletion) {
         viewModel = ProductSettingsViewModel(product: product, password: password)
         onCompletion = completion
         onPasswordCompletion = fetchedPassword

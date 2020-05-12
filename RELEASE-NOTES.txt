@@ -1,7 +1,7 @@
 4.3
 -----
 - Products: now the Product details can be edited and saved outside Products tab (e.g. from Order details or Top Performers).
-- Products: we improved our VoiceOver support in Product Price
+- Products: we improved our VoiceOver support in Product Price settings
 
 
 4.2

@@ -10,6 +10,22 @@ final class FilterProductListViewModel: FilterListViewModel {
         let stockStatus: ProductStockStatus?
         let productStatus: ProductStatus?
         let productType: ProductType?
+
+        let numberOfActiveFilters: Int
+
+        init() {
+            stockStatus = nil
+            productStatus = nil
+            productType = nil
+            numberOfActiveFilters = 0
+        }
+
+        init(stockStatus: ProductStockStatus?, productStatus: ProductStatus?, productType: ProductType?, numberOfActiveFilters: Int) {
+            self.stockStatus = stockStatus
+            self.productStatus = productStatus
+            self.productType = productType
+            self.numberOfActiveFilters = numberOfActiveFilters
+        }
     }
 
     let filterActionTitle = NSLocalizedString("Show Products", comment: "Button title for applying filters to a list of products.")
@@ -38,7 +54,8 @@ final class FilterProductListViewModel: FilterListViewModel {
         let stockStatus = stockStatusFilterViewModel.selectedValue as? ProductStockStatus ?? nil
         let productStatus = productStatusFilterViewModel.selectedValue as? ProductStatus ?? nil
         let productType = productTypeFilterViewModel.selectedValue as? ProductType ?? nil
-        return Filters(stockStatus: stockStatus, productStatus: productStatus, productType: productType)
+        let numberOfActiveFilters = filterTypeViewModels.numberOfActiveFilters
+        return Filters(stockStatus: stockStatus, productStatus: productStatus, productType: productType, numberOfActiveFilters: numberOfActiveFilters)
     }
 
     func clearAll() {

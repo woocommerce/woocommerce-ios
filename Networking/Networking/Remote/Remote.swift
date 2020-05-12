@@ -57,7 +57,7 @@ public class Remote {
     ///
     /// - Parameters:
     ///     - request: Request that should be performed.
-    ///     - mapper: Mapper entitity that will be used to attempt to parse the Backend's Response.
+    ///     - mapper: Mapper entity that will be used to attempt to parse the Backend's Response.
     ///     - completion: Closure to be executed upon completion.
     ///
     func enqueue<M: Mapper>(_ request: URLRequestConvertible, mapper: M, completion: @escaping (M.Output?, Error?) -> Void) {
@@ -90,7 +90,7 @@ public class Remote {
     ///
     /// - Parameters:
     ///     - request: Request that should be performed.
-    ///     - mapper: Mapper entitity that will be used to attempt to parse the Backend's Response.
+    ///     - mapper: Mapper entity that will be used to attempt to parse the Backend's Response.
     ///     - completion: Closure to be executed upon completion.
     ///
     func enqueue<M: Mapper>(_ request: URLRequestConvertible, mapper: M,

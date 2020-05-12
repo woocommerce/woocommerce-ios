@@ -4,7 +4,7 @@ import UIKit
 ///
 final class BottomSheetListSelectorPresenter<Command: BottomSheetListSelectorCommand> {
     private let bottomSheetChildViewController: DrawerPresentableViewController
-    
+
     init(viewProperties: BottomSheetListSelectorViewProperties,
          command: Command,
          onDismiss: @escaping (_ selected: Command.Model?) -> Void) {

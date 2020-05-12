@@ -215,7 +215,7 @@ private extension ProductFormViewController {
 
     func updateProductRemotely() {
         waitUntilAllImagesAreUploaded { [weak self] in
-            self?.dispatchUpdateProductAction()
+            self?.dispatchUpdateProductAndPasswordAction()
         }
     }
 
@@ -243,7 +243,7 @@ private extension ProductFormViewController {
         }
     }
 
-    func dispatchUpdateProductAction() {
+    func dispatchUpdateProductAndPasswordAction() {
         let group = DispatchGroup()
 
         // Updated Product

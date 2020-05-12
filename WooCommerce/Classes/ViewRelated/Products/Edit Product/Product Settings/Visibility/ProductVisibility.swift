@@ -22,8 +22,12 @@ enum ProductVisibility {
         }
     }
 
-    /// Designated Initializer.
-    ///
+    /**
+    * Designated Initializer.
+    * The visibility is determined by the status and the password. If the password isn't empty, then
+    * visibility is `passwordProtected`. If there's no password and the product status is `private`
+    * then the visibility is `privateVisibility`, otherwise it's `publicVisibility`.
+    */
     public init(status: ProductStatus, password: String?) {
         if password?.isNotEmpty == true {
             self = .passwordProtected

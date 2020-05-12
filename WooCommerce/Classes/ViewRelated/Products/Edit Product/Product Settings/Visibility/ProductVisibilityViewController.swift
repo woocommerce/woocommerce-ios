@@ -66,21 +66,8 @@ final class ProductVisibilityViewController: UIViewController {
         tableView.reloadData()
     }
 
-    /**
-    * The visibility is determined by the status and the password. If the password isn't empty, then
-    * visibility is `passwordProtected`. If there's no password and the product status is `private`
-    * then the visibility is `privateVisibility`, otherwise it's `publicVisibility`.
-    */
     private func getProductVisibility(_ productSettings: ProductSettings) -> ProductVisibility {
-        if productSettings.password?.isNotEmpty == true {
-            return .passwordProtected
-        }
-        else if productSettings.status == .privateStatus {
-            return .privateVisibility
-        }
-        else {
-            return .publicVisibility
-        }
+        return ProductVisibility(status: productSettings.status, password: productSettings.password)
     }
 
     private func getProductStatus(_ productVibility: ProductVisibility) -> ProductStatus {

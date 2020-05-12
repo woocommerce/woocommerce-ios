@@ -294,10 +294,6 @@ extension ProductVisibilityViewController {
         init(rows: [Row]) {
             self.rows = rows
         }
-
-        init(row: Row) {
-            self.init(rows: [row])
-        }
     }
 }
 

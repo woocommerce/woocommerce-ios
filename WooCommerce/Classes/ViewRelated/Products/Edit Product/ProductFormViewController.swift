@@ -247,30 +247,32 @@ private extension ProductFormViewController {
         let group = DispatchGroup()
 
         // Updated Product
-        group.enter()
-        let updateProductAction = ProductAction.updateProduct(product: product) { [weak self] (product, error) in
-            guard let product = product, error == nil else {
-                let errorDescription = error?.localizedDescription ?? "No error specified"
-                DDLogError("⛔️ Error updating Product: \(errorDescription)")
-                ServiceLocator.analytics.track(.productDetailUpdateError)
-                // Dismisses the in-progress UI then presents the error alert.
-                self?.navigationController?.dismiss(animated: true) {
-                    self?.displayError(error: error)
+        if product != originalProduct {
+            group.enter()
+            let updateProductAction = ProductAction.updateProduct(product: product) { [weak self] (product, error) in
+                guard let product = product, error == nil else {
+                    let errorDescription = error?.localizedDescription ?? "No error specified"
+                    DDLogError("⛔️ Error updating Product: \(errorDescription)")
+                    ServiceLocator.analytics.track(.productDetailUpdateError)
+                    // Dismisses the in-progress UI then presents the error alert.
+                    self?.navigationController?.dismiss(animated: true) {
+                        self?.displayError(error: error)
+                    }
+                    group.leave()
+                    return
                 }
-                group.leave()
-                return
-            }
-            self?.originalProduct = product
-            self?.product = product
+                self?.originalProduct = product
+                self?.product = product
 
-            ServiceLocator.analytics.track(.productDetailUpdateSuccess)
-            group.leave()
+                ServiceLocator.analytics.track(.productDetailUpdateSuccess)
+                group.leave()
+            }
+            ServiceLocator.stores.dispatch(updateProductAction)
         }
-        ServiceLocator.stores.dispatch(updateProductAction)
 
 
         // Update product password if available
-        if let password = password {
+        if let password = password, password != originalPassword {
             group.enter()
             let passwordUpdateAction = SitePostAction.updateSitePostPassword(siteID: product.siteID, postID: product.productID,
                                                                              password: password) { [weak self] (password, error) in

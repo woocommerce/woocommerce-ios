@@ -32,7 +32,7 @@ When adding a new UI test, consider:
 
 It's preferred to focus UI tests on entire user flows, and group tests with related flows or goals in the same test suite.
 
-When you add a new test, you may need to add new screens and methods. We use screen (page) objects and method chaining for clarity in our tests. Wherever possible, use an existing `accessibilityIdentifier` (or add one to the app) instead of a string to select a UI element on the screen. This ensures tests can be run regardless of the device language.
+When you add a new test, you may need to add new screens and methods. We use [screen (page) objects](https://www.martinfowler.com/bliki/PageObject.html) and method chaining for clarity in our tests. Wherever possible, use an existing `accessibilityIdentifier` (or add one to the app) instead of a string to select a UI element on the screen. This ensures tests can be run regardless of the device language.
 
 ## Adding or updating network mocks
 

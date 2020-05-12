@@ -86,7 +86,7 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
 
     private lazy var listSelector: ListSelectorViewController
         <FilterListSelectorCommand, FilterListSelectorCommand.Model, FilterListSelectorCommand.Cell> = {
-            return ListSelectorViewController(command: listSelectorCommand) { [weak self] _ in }
+            return ListSelectorViewController(command: listSelectorCommand, tableViewStyle: .plain) { [weak self] _ in }
     }()
 
     private var clearAllBarButtonItem: UIBarButtonItem?
@@ -205,7 +205,7 @@ private extension FilterListViewController {
                         self.listSelector.reloadData()
                     }
                 }
-                let staticListSelector = ListSelectorViewController(command: command) { _ in }
+                let staticListSelector = ListSelectorViewController(command: command, tableViewStyle: .plain) { _ in }
                 self.listSelector.navigationController?.pushViewController(staticListSelector, animated: true)
             case .custom:
                 break

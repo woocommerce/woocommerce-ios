@@ -144,6 +144,12 @@ extension UIImage {
         UIImage(named: "woo-empty-search-results")!
     }
 
+    /// An image showing a bar chart. This is used to show an empty All Orders tab.
+    ///
+    static var emptyOrdersImage: UIImage {
+        UIImage(named: "woo-empty-orders")!
+    }
+
     /// Error State Image
     ///
     static var errorStateImage: UIImage {

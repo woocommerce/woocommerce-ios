@@ -70,8 +70,20 @@ final class ProductFormViewController: UIViewController {
     private let currency: String
     private let featureFlagService: FeatureFlagService
 
-    init(product: Product, currency: String, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+    private lazy var exitForm: () -> Void = {
+        presentationStyle.createExitForm(viewController: self)
+    }()
+
+    private let presentationStyle: PresentationStyle
+    private let navigationRightBarButtonItemsSubject = PublishSubject<[UIBarButtonItem]>()
+    private var navigationRightBarButtonItems: Observable<[UIBarButtonItem]> {
+        navigationRightBarButtonItemsSubject
+    }
+    private var cancellable: ObservationToken?
+
+    init(product: Product, currency: String, presentationStyle: PresentationStyle, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.currency = currency
+        self.presentationStyle = presentationStyle
         self.featureFlagService = featureFlagService
         self.originalProduct = product
         self.product = product
@@ -95,6 +107,10 @@ final class ProductFormViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    deinit {
+        cancellable?.cancel()
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -105,6 +121,7 @@ final class ProductFormViewController: UIViewController {
 
         startListeningToNotifications()
         handleSwipeBackGesture()
+        configurePresentationStyle()
 
         productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else {
@@ -167,6 +184,30 @@ private extension ProductFormViewController {
             default:
                 return
             }
+        }
+    }
+
+    func configurePresentationStyle() {
+        switch presentationStyle {
+        case .contained(let containerViewController):
+            containerViewController.addCloseNavigationBarButton(target: self, action: #selector(closeNavigationBarButtonTapped))
+            observeNavigationRightBarButtonItems(viewControllerWithNavigationItem: containerViewController)
+        case .navigationStack:
+            observeNavigationRightBarButtonItems(viewControllerWithNavigationItem: self)
+        }
+    }
+
+    @objc func closeNavigationBarButtonTapped() {
+        guard hasUnsavedChanges(product: product) == false else {
+            presentBackNavigationActionSheet()
+            return
+        }
+        exitForm()
+    }
+
+    func observeNavigationRightBarButtonItems(viewControllerWithNavigationItem: UIViewController) {
+        cancellable = navigationRightBarButtonItems.subscribe { [weak viewControllerWithNavigationItem] rightBarButtonItems in
+            viewControllerWithNavigationItem?.navigationItem.rightBarButtonItems = rightBarButtonItems
         }
     }
 
@@ -356,7 +397,7 @@ private extension ProductFormViewController {
             rightBarButtonItems.insert(createMoreOptionsBarButtonItem(), at: 0)
         }
 
-        navigationItem.rightBarButtonItems = rightBarButtonItems
+        navigationRightBarButtonItemsSubject.send(rightBarButtonItems)
     }
 
     func createUpdateBarButtonItem() -> UIBarButtonItem {
@@ -368,7 +409,7 @@ private extension ProductFormViewController {
         let moreButton = UIBarButtonItem(image: .moreImage,
                                      style: .plain,
                                      target: self,
-                                     action: #selector(presentMoreOptionsActionSheet))
+                                     action: #selector(presentMoreOptionsActionSheet(_:)))
         moreButton.accessibilityLabel = NSLocalizedString("More options", comment: "Accessibility label for the Edit Product More Options action sheet")
         moreButton.accessibilityIdentifier = "edit-product-more-options-button"
         return moreButton
@@ -505,7 +546,10 @@ extension ProductFormViewController {
 
     private func presentBackNavigationActionSheet() {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
-            self?.navigationController?.popViewController(animated: true)
+            guard let self = self else {
+                return
+            }
+            self.exitForm()
         })
     }
 
@@ -698,7 +742,7 @@ private extension ProductFormViewController {
 
     /// More Options Action Sheet
     ///
-    @objc func presentMoreOptionsActionSheet() {
+    @objc func presentMoreOptionsActionSheet(_ sender: UIBarButtonItem) {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
 
@@ -718,8 +762,7 @@ private extension ProductFormViewController {
         }
 
         let popoverController = actionSheet.popoverPresentationController
-        popoverController?.sourceView = view
-        popoverController?.sourceRect = view.bounds
+        popoverController?.barButtonItem = sender
 
         present(actionSheet, animated: true)
     }

@@ -198,7 +198,7 @@ private extension ProductFormViewController {
     }
 
     @objc func closeNavigationBarButtonTapped() {
-        guard hasUnsavedChanges(product: product) == false else {
+        guard hasUnsavedChanges(product: product, password: password) == false else {
             presentBackNavigationActionSheet()
             return
         }

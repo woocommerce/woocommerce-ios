@@ -21,10 +21,10 @@ final class ProductSettingsViewController: UIViewController {
 
     /// Init
     ///
-    init(product: Product, password: String?, completion: @escaping Completion, fetchedPassword: @escaping PasswordRetrievedCompletion) {
+    init(product: Product, password: String?, completion: @escaping Completion, onPasswordRetrieved: @escaping PasswordRetrievedCompletion) {
         viewModel = ProductSettingsViewModel(product: product, password: password)
         onCompletion = completion
-        onPasswordCompletion = fetchedPassword
+        onPasswordCompletion = onPasswordRetrieved
         super.init(nibName: nil, bundle: nil)
     }
 

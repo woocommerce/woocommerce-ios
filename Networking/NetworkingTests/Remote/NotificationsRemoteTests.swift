@@ -4,7 +4,7 @@ import XCTest
 
 /// NotificationsRemote Tests
 ///
-class NotificationsRemoteTests: XCTestCase {
+final class NotificationsRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
@@ -19,21 +19,28 @@ class NotificationsRemoteTests: XCTestCase {
 
     /// Verifies that `loadNotes` properly returns all of the retrieved notifications.
     ///
-    func testLoadNotesProperlyParsesRemoteNotifications() {
+    func testLoadNotesProperlyParsesRemoteNotifications() throws {
+        // Given
         let remote = NotificationsRemote(network: network)
         let expectation = self.expectation(description: "Load Notifications")
 
         network.simulateResponse(requestUrlSuffix: "notifications", filename: "notifications-load-all")
 
-        remote.loadNotes { (notes, error) in
-            XCTAssertNotNil(notes)
-            XCTAssertNil(error)
-            XCTAssertEqual(notes?.count, 40)
-
+        // When
+        var resultMaybe: Result<[Note], Error>?
+        remote.loadNotes { aResult in
+            resultMaybe = aResult
             expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        // Then
+        let result = try XCTUnwrap(resultMaybe)
+        XCTAssertTrue(result.isSuccess)
+
+        let notes = try result.get()
+        XCTAssertEqual(notes.count, 40)
     }
 
     /// Verifies that `loadHashes` properly returns all of the retrieved hashes.

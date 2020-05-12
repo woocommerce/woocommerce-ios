@@ -58,10 +58,6 @@ final class TitleAndTextFieldWithImageTableViewCell: UITableViewCell {
         onTextChange = viewModel.onTextChange
     }
 
-    func textFieldBecomeFirstResponder() {
-        textField.becomeFirstResponder()
-    }
-
 }
 
 private extension TitleAndTextFieldWithImageTableViewCell {

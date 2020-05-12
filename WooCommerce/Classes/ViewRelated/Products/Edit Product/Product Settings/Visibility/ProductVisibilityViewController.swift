@@ -235,13 +235,13 @@ private extension ProductVisibilityViewController {
         let placeholder = NSLocalizedString("Enter password", comment: "Enter password placeholder in Product Visibility")
         let viewModel = TitleAndTextFieldWithImageTableViewCell.ViewModel(title: row.description, text: productSettings.password,
                                                                           placeholder: placeholder, image: .passwordFieldImage) { [weak self] (text) in
-            cell.rightImageViewIsHidden = text?.isEmpty == true
+            cell.rightImageViewIsHidden = text?.isEmpty == false
             self?.productSettings.password = text
         }
         cell.configure(viewModel: viewModel)
 
         /// Hides the image when there is a password, or show it if the password is empty
-        cell.rightImageViewIsHidden = (productSettings.password?.isEmpty == true || productSettings.password == nil)
+        cell.rightImageViewIsHidden = (productSettings.password?.isEmpty == false || productSettings.password == nil)
 
         cell.selectionStyle = .none
     }

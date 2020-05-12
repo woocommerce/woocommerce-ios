@@ -257,6 +257,11 @@ final class ProductReviewStoreTests: XCTestCase {
         XCTAssertNotNil(result.error)
         XCTAssertNil(result.review)
 
+        guard case NetworkError.notFound = try XCTUnwrap(result.error) else {
+            XCTFail("Expected a notFound NetworkError")
+            return
+        }
+
         // The existing ProductReview should be deleted
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageProductReview.self), 0)
     }

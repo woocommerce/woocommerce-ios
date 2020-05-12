@@ -11,11 +11,6 @@ final class TitleAndTextFieldWithImageTableViewCell: UITableViewCell {
         let image: UIImage?
         let onTextChange: ((_ text: String?) -> Void)?
 
-        enum State {
-            case normal
-            case error
-        }
-
         init(title: String?,
              text: String?,
              placeholder: String?,

@@ -40,7 +40,7 @@ enum ProductSettingsRows {
             }
 
             /// If the status is private, the status cell becomes not editable.
-            if settings.status == .privateStatus {
+            if isStatusPrivate() {
                 cell.accessoryType = .none
                 cell.selectionStyle = .none
                 cell.applyNonSelectableLabelsStyle()
@@ -57,7 +57,7 @@ enum ProductSettingsRows {
         func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
 
             /// If the status is private, the cell doesn't trigger any action
-            guard settings.status != .privateStatus else {
+            guard isStatusPrivate() else {
                 return
             }
 
@@ -75,6 +75,11 @@ enum ProductSettingsRows {
         let reuseIdentifier: String = SettingTitleAndValueTableViewCell.reuseIdentifier
 
         let cellTypes: [UITableViewCell.Type] = [SettingTitleAndValueTableViewCell.self]
+
+        /// Utils
+        func isStatusPrivate() -> Bool {
+            return settings.status == .privateStatus
+        }
     }
 
     struct Visibility: ProductSettingsRowMediator {

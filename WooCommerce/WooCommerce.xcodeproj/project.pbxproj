@@ -172,7 +172,6 @@
 		028BAC4522F3AE5C008BB4AF /* StoreStatsV4PeriodViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 028BAC4422F3AE5C008BB4AF /* StoreStatsV4PeriodViewController.xib */; };
 		028BAC4722F3B550008BB4AF /* StatsTimeRangeV4+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028BAC4622F3B550008BB4AF /* StatsTimeRangeV4+UI.swift */; };
 		0290E26F238E3CE400B5C466 /* ListSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290E26D238E3CE400B5C466 /* ListSelectorViewController.swift */; };
-		0290E270238E3CE400B5C466 /* ListSelectorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0290E26E238E3CE400B5C466 /* ListSelectorViewController.xib */; };
 		0290E275238E4F8100B5C466 /* PaginatedListSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290E273238E4F8100B5C466 /* PaginatedListSelectorViewController.swift */; };
 		0290E276238E4F8100B5C466 /* PaginatedListSelectorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0290E274238E4F8100B5C466 /* PaginatedListSelectorViewController.xib */; };
 		0290E27E238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290E27D238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift */; };
@@ -1005,7 +1004,6 @@
 		028BAC4422F3AE5C008BB4AF /* StoreStatsV4PeriodViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StoreStatsV4PeriodViewController.xib; sourceTree = "<group>"; };
 		028BAC4622F3B550008BB4AF /* StatsTimeRangeV4+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StatsTimeRangeV4+UI.swift"; sourceTree = "<group>"; };
 		0290E26D238E3CE400B5C466 /* ListSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListSelectorViewController.swift; sourceTree = "<group>"; };
-		0290E26E238E3CE400B5C466 /* ListSelectorViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ListSelectorViewController.xib; sourceTree = "<group>"; };
 		0290E273238E4F8100B5C466 /* PaginatedListSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedListSelectorViewController.swift; sourceTree = "<group>"; };
 		0290E274238E4F8100B5C466 /* PaginatedListSelectorViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PaginatedListSelectorViewController.xib; sourceTree = "<group>"; };
 		0290E27D238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockStatusListSelectorCommandTests.swift; sourceTree = "<group>"; };
@@ -2207,7 +2205,6 @@
 			isa = PBXGroup;
 			children = (
 				0290E26D238E3CE400B5C466 /* ListSelectorViewController.swift */,
-				0290E26E238E3CE400B5C466 /* ListSelectorViewController.xib */,
 				02ADC7CB239762E0008D4BED /* PaginatedListSelectorViewProperties.swift */,
 				0290E273238E4F8100B5C466 /* PaginatedListSelectorViewController.swift */,
 				0290E274238E4F8100B5C466 /* PaginatedListSelectorViewController.xib */,
@@ -4150,7 +4147,6 @@
 				021E2A1823A9FE5A00B1DE07 /* ProductInventorySettingsViewController.xib in Resources */,
 				57448D2A242E777700A56A74 /* EmptyStateViewController.xib in Resources */,
 				0286B27A23C7051F003D784B /* ProductImagesCollectionViewController.xib in Resources */,
-				0290E270238E3CE400B5C466 /* ListSelectorViewController.xib in Resources */,
 				B59D1EE821908A08009D1978 /* Noticons.ttf in Resources */,
 				D81F2D35225F0CF70084BF9C /* EmptyListMessageWithActionView.xib in Resources */,
 				0290E276238E4F8100B5C466 /* PaginatedListSelectorViewController.xib in Resources */,

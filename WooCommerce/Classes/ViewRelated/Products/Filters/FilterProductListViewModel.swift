@@ -84,11 +84,11 @@ private extension FilterProductListViewModel.ProductListFilter {
     var title: String {
         switch self {
         case .stockStatus:
-            return NSLocalizedString("Stock status", comment: "Row title for filtering products by stock status.")
+            return NSLocalizedString("Stock Status", comment: "Row title for filtering products by stock status.")
         case .productStatus:
-            return NSLocalizedString("Product status", comment: "Row title for filtering products by product status.")
+            return NSLocalizedString("Product Status", comment: "Row title for filtering products by product status.")
         case .productType:
-            return NSLocalizedString("Product type", comment: "Row title for filtering products by product type.")
+            return NSLocalizedString("Product Type", comment: "Row title for filtering products by product type.")
         }
     }
 }

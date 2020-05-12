@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		020220E42396969E00290165 /* MockProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020220E32396969E00290165 /* MockProduct.swift */; };
-		0202B690238790E200F3EBE0 /* ProductsVisibilityPListWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B68F238790E200F3EBE0 /* ProductsVisibilityPListWrapper.swift */; };
+		0202B690238790E200F3EBE0 /* ProductsFeatureSwitchPListWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B68F238790E200F3EBE0 /* ProductsFeatureSwitchPListWrapper.swift */; };
 		0202B6972387AFBF00F3EBE0 /* MockInMemoryStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B6962387AFBF00F3EBE0 /* MockInMemoryStorage.swift */; };
 		0202B6992387B01500F3EBE0 /* AppSettingsStoreTests+ProductsVisibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B6982387B01500F3EBE0 /* AppSettingsStoreTests+ProductsVisibility.swift */; };
 		020B2F9623BDE4DD00BD79AD /* ProductStoreTests+Validation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020B2F9523BDE4DD00BD79AD /* ProductStoreTests+Validation.swift */; };
@@ -228,7 +228,7 @@
 
 /* Begin PBXFileReference section */
 		020220E32396969E00290165 /* MockProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProduct.swift; sourceTree = "<group>"; };
-		0202B68F238790E200F3EBE0 /* ProductsVisibilityPListWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsVisibilityPListWrapper.swift; sourceTree = "<group>"; };
+		0202B68F238790E200F3EBE0 /* ProductsFeatureSwitchPListWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsFeatureSwitchPListWrapper.swift; sourceTree = "<group>"; };
 		0202B6962387AFBF00F3EBE0 /* MockInMemoryStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInMemoryStorage.swift; sourceTree = "<group>"; };
 		0202B6982387B01500F3EBE0 /* AppSettingsStoreTests+ProductsVisibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppSettingsStoreTests+ProductsVisibility.swift"; sourceTree = "<group>"; };
 		020B2F9523BDE4DD00BD79AD /* ProductStoreTests+Validation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductStoreTests+Validation.swift"; sourceTree = "<group>"; };
@@ -471,7 +471,7 @@
 		0202B68E238790B900F3EBE0 /* PListStorage */ = {
 			isa = PBXGroup;
 			children = (
-				0202B68F238790E200F3EBE0 /* ProductsVisibilityPListWrapper.swift */,
+				0202B68F238790E200F3EBE0 /* ProductsFeatureSwitchPListWrapper.swift */,
 			);
 			path = PListStorage;
 			sourceTree = "<group>";
@@ -1236,7 +1236,7 @@
 				B5C9DE182087FF0E006B910A /* Assert.swift in Sources */,
 				CE0DB6C0233EB3F300A27E7A /* OrderRefundCondensed+ReadOnlyConvertible.swift in Sources */,
 				0225512122FC2F3000D98613 /* OrderStatsV4Interval+Date.swift in Sources */,
-				0202B690238790E200F3EBE0 /* ProductsVisibilityPListWrapper.swift in Sources */,
+				0202B690238790E200F3EBE0 /* ProductsFeatureSwitchPListWrapper.swift in Sources */,
 				74D7F29B20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift in Sources */,
 				026CF628237D8F30009563D4 /* ProductVariationAction.swift in Sources */,
 				B52E002E211A3F5500700FDE /* ReadOnlyType.swift in Sources */,

@@ -39,7 +39,7 @@ final class AppSettingsStoreTests_ProductsVisibility: XCTestCase {
 
     func testLoadingProductsVisibilityWithoutPreviousData() {
         let expectation = self.expectation(description: "Load products visibility")
-        let loadAction = AppSettingsAction.loadProductsVisibility { isVisible in
+        let loadAction = AppSettingsAction.loadProductsFeatureSwitch { isVisible in
             XCTAssertFalse(isVisible)
             expectation.fulfill()
         }
@@ -51,7 +51,7 @@ final class AppSettingsStoreTests_ProductsVisibility: XCTestCase {
         let expectation = self.expectation(description: "Set and load products visibility")
 
         let isVisibleValue = true
-        let setAction = AppSettingsAction.setProductsVisibility(isVisible: isVisibleValue) {
+        let setAction = AppSettingsAction.setProductsFeatureSwitch(isVisible: isVisibleValue) {
             let loadAction = AppSettingsAction.loadProductsVisibility { isVisible in
                 XCTAssertEqual(isVisible, isVisibleValue)
                 expectation.fulfill()

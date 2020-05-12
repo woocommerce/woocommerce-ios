@@ -345,8 +345,8 @@ private extension ProductPriceSettingsViewController {
         let currency = cell.value.isEmpty == false ? CurrencySettings.shared.currencyCode.rawValue : ""
         let accessibilityText = String.localizedStringWithFormat(
             NSLocalizedString(
-                "Price %@ %@",
-                comment: "Accessibility label for the regular price cell in Product Price"
+                "Price %1$@ %2$@",
+                comment: "Accessibility label for the regular price cell in Product Price. It's read like: Price 100 dollars."
             ),
             value,
             currency
@@ -373,8 +373,8 @@ private extension ProductPriceSettingsViewController {
         let currency = cell.value.isEmpty == false ? CurrencySettings.shared.currencyCode.rawValue : ""
         let accessibilityText = String.localizedStringWithFormat(
             NSLocalizedString(
-                "Sale price %@ %@",
-                comment: "Accessibility label for the sale price cell in Product Price"
+                "Sale price %1$@ %2$@",
+                comment: "Accessibility label for the sale price cell in Product Price. It's read like: Sale price 100 dollars."
             ),
             value,
             currency

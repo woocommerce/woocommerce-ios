@@ -21,12 +21,7 @@ enum ProductVisibility {
             return NSLocalizedString("Private", comment: "One of the possible options in Product Visibility")
         }
     }
-}
-
-/// RawRepresentable Conformance
-///
-extension ProductVisibility {
-
+    
     /// Designated Initializer.
     ///
     public init(status: ProductStatus, password: String?) {

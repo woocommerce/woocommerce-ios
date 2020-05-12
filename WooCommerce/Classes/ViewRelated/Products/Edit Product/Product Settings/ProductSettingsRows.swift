@@ -57,7 +57,7 @@ enum ProductSettingsRows {
         func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
 
             /// If the status is private, the cell doesn't trigger any action
-            guard isStatusPrivate() else {
+            guard !isStatusPrivate() else {
                 return
             }
 
@@ -101,6 +101,11 @@ enum ProductSettingsRows {
         }
 
         func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
+            // If the password was not fetched, the cell is not selectable
+            guard settings.password != nil else {
+                return
+            }
+
             let viewController = ProductVisibilityViewController(settings: settings) { (productSettings) in
                 self.settings.password = productSettings.password
                 self.settings.status = productSettings.status

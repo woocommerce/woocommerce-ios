@@ -88,18 +88,14 @@ private extension BetaFeaturesViewController {
             }
             guard eligibleStatsVersion == .v4 else {
                 self.sections = [
-                    // TODO: commenting out this code since we are enabling products for all users in the next release.
-                    // Once product M2 editing features are live, we can enable product editing switch from this screen again.
-                    //self.productsSection()
+                    self.productsSection()
                 ]
 
                 return
             }
             self.sections = [
                 self.statsSection(),
-                // TODO: commenting out this code since we are enabling products for all users in the next release.
-                // Once product M2 editing features are live, we can enable product editing switch from this screen again.
-                //self.productsSection()
+                self.productsSection()
             ]
         }
         ServiceLocator.stores.dispatch(action)
@@ -219,7 +215,7 @@ private extension BetaFeaturesViewController {
 
         let description: String
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts) {
-            description = NSLocalizedString("Test out the new product editing functionality as we get ready to launch",
+            description = NSLocalizedString("Test out new product editing functionalities as we get ready to launch them",
                                             comment: "My Store > Settings > Experimental features > Product editing")
         } else {
             description = NSLocalizedString("Test out the new products section as we get ready to launch",

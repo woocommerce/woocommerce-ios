@@ -179,7 +179,7 @@ private extension FilterListViewController {
     }
 
     func configureMainView() {
-        view.backgroundColor = .listBackground
+        view.backgroundColor = .basicBackground
     }
 
     func observeListSelectorCommandItemSelection() {

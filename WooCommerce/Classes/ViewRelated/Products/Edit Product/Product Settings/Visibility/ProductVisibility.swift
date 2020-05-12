@@ -21,7 +21,7 @@ enum ProductVisibility {
             return NSLocalizedString("Private", comment: "One of the possible options in Product Visibility")
         }
     }
-    
+
     /// Designated Initializer.
     ///
     public init(status: ProductStatus, password: String?) {

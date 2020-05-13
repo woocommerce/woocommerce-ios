@@ -39,7 +39,7 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
     /// Renders the specified Order ViewModel
     ///
     func configureCell(viewModel: OrderDetailsViewModel, orderStatus: OrderStatus?) {
-        titleLabel.text = viewModel.summaryTitle
+        titleLabel.text = title(for: viewModel.order)
         totalLabel.text = viewModel.totalFriendlyString
         dateCreatedLabel.text = viewModel.formattedDateCreated
 
@@ -105,6 +105,15 @@ private extension OrderTableViewCell {
 
         paymentStatusLabel.backgroundColor = paymentColor
         paymentStatusLabel.layer.borderColor = borderColor
+    }
+
+    /// For example, #560 Pamela Nguyen
+    ///
+    func title(for order: Order) -> String {
+        if let billingAddress = order.billingAddress {
+            return "#\(order.number) \(billingAddress.firstName) \(billingAddress.lastName)"
+        }
+        return "#\(order.number)"
     }
 }
 

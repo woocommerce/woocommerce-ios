@@ -61,7 +61,7 @@ final class UnitInputTableViewCell: UITableViewCell {
         rearrangeInputAndUnitStackViewSubviews(using: viewModel.unitPosition)
     }
 
-    func setAccessitibily(label: String, hint: String) {
+    func setAccessibility(label: String, hint: String) {
         inputTextField.isAccessibilityElement = false
         accessibilityLabel = label
         accessibilityHint = hint

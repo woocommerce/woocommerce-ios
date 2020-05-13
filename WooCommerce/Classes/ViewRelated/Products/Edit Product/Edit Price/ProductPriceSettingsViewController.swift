@@ -355,7 +355,7 @@ private extension ProductPriceSettingsViewController {
             "The regular price for this product, which is also editable.",
             comment: "VoiceOver accessibility hint, informing the user that the cell shows the price information for this product."
         )
-        cell.setAccessitibily(label: accessibilityText, hint: accessibilityHint)
+        cell.setAccessibility(label: accessibilityText, hint: accessibilityHint)
     }
 
     func configureSalePrice(cell: UnitInputTableViewCell) {
@@ -383,7 +383,7 @@ private extension ProductPriceSettingsViewController {
             "The sale price for this product, which is also editable.",
             comment: "VoiceOver accessibility hint, informing the user that the cell shows the sale price information for this product."
         )
-        cell.setAccessitibily(label: accessibilityText, hint: accessibilityHint)
+        cell.setAccessibility(label: accessibilityText, hint: accessibilityHint)
     }
 
     func configureScheduleSale(cell: SwitchTableViewCell) {

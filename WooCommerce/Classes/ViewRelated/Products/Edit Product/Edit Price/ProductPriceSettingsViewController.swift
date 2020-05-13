@@ -333,57 +333,17 @@ private extension ProductPriceSettingsViewController {
     func configurePrice(cell: UnitInputTableViewCell) {
         let cellViewModel = Product.createRegularPriceViewModel(regularPrice: viewModel.regularPrice, using: CurrencySettings.shared) { [weak self] value in
             self?.viewModel.handleRegularPriceChange(value)
-            self?.setCellPriceAccessibility(price: cell.value, cell: cell)
         }
         cell.selectionStyle = .none
         cell.configure(viewModel: cellViewModel)
-        setCellPriceAccessibility(price: cell.value, cell: cell)
-    }
-
-    func setCellPriceAccessibility(price: String?, cell: UnitInputTableViewCell) {
-        let value = cell.value.isEmpty == false ? cell.value : NSLocalizedString("empty", comment: "Accessibility text for when a price is empty")
-        let currency = cell.value.isEmpty == false ? CurrencySettings.shared.currencyCode.rawValue : ""
-        let accessibilityText = String.localizedStringWithFormat(
-            NSLocalizedString(
-                "Price %1$@ %2$@",
-                comment: "Accessibility label for the regular price cell in Product Price. It's read like: Price 100 dollars."
-            ),
-            value,
-            currency
-        )
-        let accessibilityHint = NSLocalizedString(
-            "The regular price for this product, which is also editable.",
-            comment: "VoiceOver accessibility hint, informing the user that the cell shows the price information for this product."
-        )
-        cell.setAccessibility(label: accessibilityText, hint: accessibilityHint)
     }
 
     func configureSalePrice(cell: UnitInputTableViewCell) {
         let cellViewModel = Product.createSalePriceViewModel(salePrice: viewModel.salePrice, using: CurrencySettings.shared) { [weak self] value in
             self?.viewModel.handleSalePriceChange(value)
-            self?.setCellSalePriceAccessibility(price: cell.value, cell: cell)
         }
         cell.selectionStyle = .none
         cell.configure(viewModel: cellViewModel)
-        setCellSalePriceAccessibility(price: cell.value, cell: cell)
-    }
-
-    func setCellSalePriceAccessibility(price: String?, cell: UnitInputTableViewCell) {
-        let value = cell.value.isEmpty == false ? cell.value : NSLocalizedString("empty", comment: "Accessibility text for when a price is empty")
-        let currency = cell.value.isEmpty == false ? CurrencySettings.shared.currencyCode.rawValue : ""
-        let accessibilityText = String.localizedStringWithFormat(
-            NSLocalizedString(
-                "Sale price %1$@ %2$@",
-                comment: "Accessibility label for the sale price cell in Product Price. It's read like: Sale price 100 dollars."
-            ),
-            value,
-            currency
-        )
-        let accessibilityHint = NSLocalizedString(
-            "The sale price for this product, which is also editable.",
-            comment: "VoiceOver accessibility hint, informing the user that the cell shows the sale price information for this product."
-        )
-        cell.setAccessibility(label: accessibilityText, hint: accessibilityHint)
     }
 
     func configureScheduleSale(cell: SwitchTableViewCell) {

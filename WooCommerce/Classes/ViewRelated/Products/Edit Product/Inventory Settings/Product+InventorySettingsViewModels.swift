@@ -19,6 +19,9 @@ extension Product {
                                   unit: "",
                                   value: value,
                                   placeholder: "0",
+                                  accessibilityHint: NSLocalizedString(
+                                  "The stock quantity for this product. Editable.",
+                                  comment: "VoiceOver accessibility hint, informing the user that the cell shows the stock quantity information for this product."),
                                   unitPosition: .none,
                                   keyboardType: .numberPad,
                                   inputFormatter: IntegerInputFormatter(),

@@ -14,6 +14,9 @@ extension Product {
                                   unit: unit,
                                   value: value,
                                   placeholder: placeholder,
+                                  accessibilityHint: NSLocalizedString(
+                                  "The shipping weight for this product. Editable.",
+                                  comment: "VoiceOver accessibility hint, informing the user that the cell shows the shipping weight information for this product."),
                                   unitPosition: .afterInput,
                                   keyboardType: .decimalPad,
                                   inputFormatter: ShippingInputFormatter(),
@@ -29,6 +32,9 @@ extension Product {
                                   unit: unit,
                                   value: length,
                                   placeholder: placeholder,
+                                  accessibilityHint: NSLocalizedString(
+                                  "The shipping length for this product. Editable.",
+                                  comment: "VoiceOver accessibility hint, informing the user that the cell shows the shipping length information for this product."),
                                   unitPosition: .afterInput,
                                   keyboardType: .decimalPad,
                                   inputFormatter: ShippingInputFormatter(),
@@ -44,6 +50,9 @@ extension Product {
                                   unit: unit,
                                   value: width,
                                   placeholder: placeholder,
+                                  accessibilityHint: NSLocalizedString(
+                                  "The shipping width for this product. Editable.",
+                                  comment: "VoiceOver accessibility hint, informing the user that the cell shows the shipping width information for this product."),
                                   unitPosition: .afterInput,
                                   keyboardType: .decimalPad,
                                   inputFormatter: ShippingInputFormatter(),
@@ -59,6 +68,9 @@ extension Product {
                                   unit: unit,
                                   value: height,
                                   placeholder: placeholder,
+                                  accessibilityHint: NSLocalizedString(
+                                  "The shipping height for this product. Editable.",
+                                  comment: "VoiceOver accessibility hint, informing the user that the cell shows the shipping height information for this product."),
                                   unitPosition: .afterInput,
                                   keyboardType: .decimalPad,
                                   inputFormatter: ShippingInputFormatter(),

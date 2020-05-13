@@ -47,13 +47,14 @@ final class ProductVisibilityViewController: UIViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-
-        /// if the visibility selected is different from protected by password, the password becomes always an empty string (no password)
-        if visibility != .passwordProtected {
-            productSettings.password = ""
+        if isMovingFromParent {
+            /// if the visibility selected is different from protected by password, the password becomes always an empty string (no password)
+            if visibility != .passwordProtected {
+                productSettings.password = ""
+            }
+            
+            onCompletion(productSettings)
         }
-
-        onCompletion(productSettings)
     }
 
     private func reloadSections() {

@@ -7,9 +7,6 @@ import XCTest
 /// When we fully launch Edit Products M2 and M3, we can replace `DefaultProductFormTableViewModel_EditProductsM2Tests` with the test cases here.
 ///
 final class DefaultProductFormTableViewModel_EditProductsM3Tests: XCTestCase {
-
-    private let mockFeatureFlagService = MockFeatureFlagService(isEditProductsRelease2On: true, isEditProductsRelease3On: true)
-
     func testViewModelForSimplePhysicalProductWithoutImages() {
         let product = MockProduct().product(downloadable: false,
                                             name: "woo",
@@ -17,7 +14,8 @@ final class DefaultProductFormTableViewModel_EditProductsM3Tests: XCTestCase {
                                             virtual: false)
         let viewModel = DefaultProductFormTableViewModel(product: product,
                                                          currency: "$",
-                                                         featureFlagService: mockFeatureFlagService)
+                                                         isEditProductsRelease2Enabled: true,
+                                                         isEditProductsRelease3Enabled: true)
         let primaryFieldsSection = ProductFormSection.primaryFields(rows: [
             .images(product: product),
             .name(name: product.name),
@@ -58,7 +56,8 @@ final class DefaultProductFormTableViewModel_EditProductsM3Tests: XCTestCase {
                                             images: sampleImages())
         let viewModel = DefaultProductFormTableViewModel(product: product,
                                                          currency: "$",
-                                                         featureFlagService: mockFeatureFlagService)
+                                                         isEditProductsRelease2Enabled: true,
+                                                         isEditProductsRelease3Enabled: true)
         let primaryFieldsSection = ProductFormSection.primaryFields(rows: [
             .images(product: product),
             .name(name: product.name),
@@ -94,7 +93,8 @@ final class DefaultProductFormTableViewModel_EditProductsM3Tests: XCTestCase {
                                             productType: .simple)
         let viewModel = DefaultProductFormTableViewModel(product: product,
                                                          currency: "$",
-                                                         featureFlagService: mockFeatureFlagService)
+                                                         isEditProductsRelease2Enabled: true,
+                                                         isEditProductsRelease3Enabled: true)
         let primaryFieldsSection = ProductFormSection.primaryFields(rows: [
             .images(product: product),
             .name(name: product.name),
@@ -130,7 +130,8 @@ final class DefaultProductFormTableViewModel_EditProductsM3Tests: XCTestCase {
                                             virtual: true)
         let viewModel = DefaultProductFormTableViewModel(product: product,
                                                          currency: "$",
-                                                         featureFlagService: mockFeatureFlagService)
+                                                         isEditProductsRelease2Enabled: true,
+                                                         isEditProductsRelease3Enabled: true)
         let primaryFieldsSection = ProductFormSection.primaryFields(rows: [
             .images(product: product),
             .name(name: product.name),

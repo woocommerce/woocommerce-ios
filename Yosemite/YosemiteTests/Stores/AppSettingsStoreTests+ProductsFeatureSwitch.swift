@@ -3,7 +3,7 @@ import XCTest
 @testable import Yosemite
 @testable import Storage
 
-final class AppSettingsStoreTests_ProductsVisibility: XCTestCase {
+final class AppSettingsStoreTests_ProductsFeatureSwitch: XCTestCase {
 
     /// Mockup Dispatcher!
     ///
@@ -37,23 +37,23 @@ final class AppSettingsStoreTests_ProductsVisibility: XCTestCase {
         super.tearDown()
     }
 
-    func testLoadingProductsVisibilityWithoutPreviousData() {
-        let expectation = self.expectation(description: "Load products visibility")
-        let loadAction = AppSettingsAction.loadProductsFeatureSwitch { isVisible in
-            XCTAssertFalse(isVisible)
+    func testLoadingProductsFeatureSwitchWithoutPreviousData() {
+        let expectation = self.expectation(description: "Load products feature switch")
+        let loadAction = AppSettingsAction.loadProductsFeatureSwitch { isEnabled in
+            XCTAssertFalse(isEnabled)
             expectation.fulfill()
         }
         subject.onAction(loadAction)
         waitForExpectations(timeout: 0.1, handler: nil)
     }
 
-    func testSettingAndLoadingProductsVisibility() {
-        let expectation = self.expectation(description: "Set and load products visibility")
+    func testSettingAndLoadingProductsFeatureSwitch() {
+        let expectation = self.expectation(description: "Set and load products feature switch")
 
-        let isVisibleValue = true
-        let setAction = AppSettingsAction.setProductsFeatureSwitch(isVisible: isVisibleValue) {
-            let loadAction = AppSettingsAction.loadProductsVisibility { isVisible in
-                XCTAssertEqual(isVisible, isVisibleValue)
+        let isEnabledValue = true
+        let setAction = AppSettingsAction.setProductsFeatureSwitch(isEnabled: isEnabledValue) {
+            let loadAction = AppSettingsAction.loadProductsFeatureSwitch() { isEnabled in
+                XCTAssertEqual(isEnabled, isEnabledValue)
                 expectation.fulfill()
             }
             self.subject.onAction(loadAction)

@@ -33,4 +33,10 @@ final class ProductVisibilityTests: XCTestCase {
         XCTAssertEqual(visibility, .publicVisibility)
     }
 
+    func testProductVisibilityPasswordProtected() {
+        let visibility = ProductVisibility(status: .publish, password: "1234")
+
+        XCTAssertEqual(visibility, .passwordProtected)
+    }
+
 }

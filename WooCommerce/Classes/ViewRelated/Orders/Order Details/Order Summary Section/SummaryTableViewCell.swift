@@ -7,6 +7,27 @@ struct SummaryTableViewCellPresentation {
     let statusName: String
 }
 
+/// The ViewModel for `SummaryTableViewCell`.
+///
+/// TODO This and that cell class should be renamed to be less ambiguous.
+///
+struct SummaryTableViewCellViewModel {
+    private let billingAddress: Address?
+    private let dateCreated: Date
+
+    init(order: Order) {
+        billingAddress = order.billingAddress
+        dateCreated = order.dateCreated
+    }
+
+    var billedPersonName: String {
+        if let billingAddress = billingAddress {
+            return "\(billingAddress.firstName) \(billingAddress.lastName)"
+        } else {
+            return ""
+        }
+    }
+}
 
 // MARK: - SummaryTableViewCell
 //
@@ -28,17 +49,6 @@ final class SummaryTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var updateStatusButton: UIButton!
 
-    /// Title
-    ///
-    var title: String? {
-        get {
-            return titleLabel.text
-        }
-        set {
-            titleLabel.text = newValue
-        }
-    }
-
     /// Date
     ///
     var dateCreated: String? {
@@ -53,6 +63,10 @@ final class SummaryTableViewCell: UITableViewCell {
     /// Closure to be executed whenever the edit button is tapped.
     ///
     var onEditTouchUp: (() -> Void)?
+
+    func configure(_ viewModel: SummaryTableViewCellViewModel) {
+        titleLabel.text = viewModel.billedPersonName
+    }
 
     /// Displays the specified OrderStatus, and applies the right Label Style
     ///

@@ -497,13 +497,9 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureSummary(cell: SummaryTableViewCell) {
-        cell.title = {
-            if let billingAddress = order.billingAddress {
-                return "\(billingAddress.firstName) \(billingAddress.lastName)"
-            } else {
-                return ""
-            }
-        }()
+        let cellViewModel = SummaryTableViewCellViewModel(order: order)
+
+        cell.configure(cellViewModel)
         cell.dateCreated = summaryDateCreated
         cell.onEditTouchUp = { [weak self] in
             self?.onCellAction?(.summary, nil)

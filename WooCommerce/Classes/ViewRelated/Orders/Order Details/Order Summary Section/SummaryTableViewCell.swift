@@ -16,10 +16,17 @@ struct SummaryTableViewCellViewModel {
     private let dateCreated: Date
     private let orderNumber: String
 
-    init(order: Order) {
+    let presentation: SummaryTableViewCellPresentation
+
+    init(order: Order, status: OrderStatus?) {
         billingAddress = order.billingAddress
         dateCreated = order.dateCreated
         orderNumber = order.number
+
+        presentation = SummaryTableViewCellPresentation(
+            status: status?.status ?? OrderStatusEnum(rawValue: order.statusKey),
+            statusName: status?.name ?? order.statusKey
+        )
     }
 
     var billedPersonName: String {
@@ -71,11 +78,13 @@ final class SummaryTableViewCell: UITableViewCell {
     func configure(_ viewModel: SummaryTableViewCellViewModel) {
         titleLabel.text = viewModel.billedPersonName
         createdLabel.text = viewModel.dateCreatedAndOrderNumber
+
+        display(presentation: viewModel.presentation)
     }
 
     /// Displays the specified OrderStatus, and applies the right Label Style
     ///
-    func display(presentation: SummaryTableViewCellPresentation) {
+    private func display(presentation: SummaryTableViewCellPresentation) {
         paymentStatusLabel.applyStyle(for: presentation.status)
         paymentStatusLabel.text = presentation.statusName
     }

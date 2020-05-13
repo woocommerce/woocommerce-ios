@@ -491,19 +491,16 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureSummary(cell: SummaryTableViewCell) {
-        let cellViewModel = SummaryTableViewCellViewModel(order: order)
+        let cellViewModel = SummaryTableViewCellViewModel(
+            order: order,
+            status: lookUpOrderStatus(for: order)
+        )
 
         cell.configure(cellViewModel)
 
         cell.onEditTouchUp = { [weak self] in
             self?.onCellAction?(.summary, nil)
         }
-
-        let status = lookUpOrderStatus(for: order)?.status ?? OrderStatusEnum(rawValue: order.statusKey)
-        let statusName = lookUpOrderStatus(for: order)?.name ?? order.statusKey
-        let presentation = SummaryTableViewCellPresentation(status: status, statusName: statusName)
-
-        cell.display(presentation: presentation)
     }
 }
 

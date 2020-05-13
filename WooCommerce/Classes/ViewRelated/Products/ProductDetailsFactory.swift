@@ -2,6 +2,13 @@ import UIKit
 import Yosemite
 
 struct ProductDetailsFactory {
+    /// Creates a product details view controller asynchronously based on the app settings.
+    /// - Parameters:
+    ///   - product: product model.
+    ///   - presentationStyle: how the product details are presented.
+    ///   - currencySettings: site currency settings.
+    ///   - featureFlagService: where edit product feature flags are read.
+    ///   - onCompletion: called when the view controller is created and ready for display.
     static func productDetails(product: Product,
                                presentationStyle: ProductFormViewController.PresentationStyle,
                                currencySettings: CurrencySettings = CurrencySettings.shared,

@@ -137,6 +137,8 @@ final class RetrieveProductReviewFromNoteUseCase {
             let storageReview = derivedStorage.loadProductReview(siteID: review.siteID, reviewID: review.reviewID)
                 ?? derivedStorage.insertNewObject(ofType: StorageProductReview.self)
             storageReview.update(with: review)
+
+            DispatchQueue.main.async(execute: next)
         }
     }
 

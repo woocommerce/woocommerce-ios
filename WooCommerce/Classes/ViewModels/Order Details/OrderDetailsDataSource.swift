@@ -33,12 +33,6 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var trackingIsReachable: Bool = false
 
-    /// For example, Oct 1, 2019 at 2:31 PM
-    ///
-    private var summaryDateCreated: String {
-        return order.dateModified.relativelyFormattedUpdateString
-    }
-
     /// Closure to be executed when the cell was tapped.
     ///
     var onCellAction: ((CellActionType, IndexPath?) -> Void)?
@@ -500,11 +494,10 @@ private extension OrderDetailsDataSource {
         let cellViewModel = SummaryTableViewCellViewModel(order: order)
 
         cell.configure(cellViewModel)
-        cell.dateCreated = summaryDateCreated
+
         cell.onEditTouchUp = { [weak self] in
             self?.onCellAction?(.summary, nil)
         }
-
 
         let status = lookUpOrderStatus(for: order)?.status ?? OrderStatusEnum(rawValue: order.statusKey)
         let statusName = lookUpOrderStatus(for: order)?.name ?? order.statusKey

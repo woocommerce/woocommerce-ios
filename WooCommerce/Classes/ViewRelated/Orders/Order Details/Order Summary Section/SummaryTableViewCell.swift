@@ -14,10 +14,12 @@ struct SummaryTableViewCellPresentation {
 struct SummaryTableViewCellViewModel {
     private let billingAddress: Address?
     private let dateCreated: Date
+    private let orderNumber: String
 
     init(order: Order) {
         billingAddress = order.billingAddress
         dateCreated = order.dateCreated
+        orderNumber = order.number
     }
 
     var billedPersonName: String {
@@ -26,6 +28,19 @@ struct SummaryTableViewCellViewModel {
         } else {
             return ""
         }
+    }
+
+    /// The date and the order number concatenated together. Example, “Jan 22, 2018 • #1587”.
+    ///
+    /// If the date is today, the time will be returned instead.
+    ///
+    var dateCreatedAndOrderNumber: String {
+        let formatter = DateFormatter.mediumLengthLocalizedDateFormatter
+
+        return [
+            formatter.string(from: dateCreated),
+            "#\(orderNumber)"
+        ].compactMap({ $0 }).joined(separator: " • ")
     }
 }
 
@@ -49,23 +64,13 @@ final class SummaryTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var updateStatusButton: UIButton!
 
-    /// Date
-    ///
-    var dateCreated: String? {
-        get {
-            return createdLabel.text
-        }
-        set {
-            createdLabel.text = newValue
-        }
-    }
-
     /// Closure to be executed whenever the edit button is tapped.
     ///
     var onEditTouchUp: (() -> Void)?
 
     func configure(_ viewModel: SummaryTableViewCellViewModel) {
         titleLabel.text = viewModel.billedPersonName
+        createdLabel.text = viewModel.dateCreatedAndOrderNumber
     }
 
     /// Displays the specified OrderStatus, and applies the right Label Style

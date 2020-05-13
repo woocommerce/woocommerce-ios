@@ -15,20 +15,12 @@ import UIKit
 ///
 final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentProvider {
 
-    /// The submitted argument when configuring the `actionButton`.
-    ///
-    struct ActionButtonConfig {
-        let title: String
-        let onTap: () -> ()
-    }
-
     /// The main message shown at the top.
     ///
     @IBOutlet private var messageLabel: UILabel! {
         didSet {
             // Remove dummy text in Interface Builder
             messageLabel.text = nil
-            messageLabel.isHidden = true
         }
     }
 
@@ -59,9 +51,12 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
         }
     }
 
-    /// The scrollable view containing all the content (labels, image, etc).
+    /// The scrollable view which contains the `contentView`.
     ///
     @IBOutlet private var scrollView: UIScrollView!
+    /// The child of the scrollView containing all the content (labels, image, etc).
+    ///
+    @IBOutlet private var contentView: UIView!
 
     /// The height adjustment constraint for the content view.
     ///
@@ -73,31 +68,38 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     ///
     @IBOutlet private var contentViewHeightAdjustmentFromSuperviewConstraint: NSLayoutConstraint!
 
-    /// The last `ActionButtonConfig` passed during `configure()`
+    /// The configured style for this view.
     ///
-    private var lastActionButtonConfig: ActionButtonConfig?
+    private let style: Style
+
+    /// The handler to execute when the button is tapped.
+    ///
+    /// This is normally set up in `configure()`.
+    ///
+    private var lastActionButtonTapHandler: (() -> ())?
 
     private lazy var keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: { [weak self] frame in
         self?.handleKeyboardFrameUpdate(keyboardFrame: frame)
         self?.verticallyAlignStackViewUsing(keyboardHeight: frame.height)
     })
 
-    /// The font used by the message's `UILabel`.
-    ///
-    /// This is exposed so that consumers can build `NSAttributedString` instances using the same
-    /// font. The `NSAttributedString` instance can then be used in `configure(message:`).
-    ///
-    var messageFont: UIFont {
-        messageLabel.font
-    }
-
     /// Required implementation by `KeyboardFrameAdjustmentProvider`.
     var additionalKeyboardFrameHeight: CGFloat = 0
+
+    init(style: Style = .basic) {
+        self.style = style
+        super.init(nibName: type(of: self).nibName, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("Not supported.")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .basicBackground
+        view.backgroundColor = style.backgroundColor
+        contentView.backgroundColor = style.backgroundColor
 
         messageLabel.applyBodyStyle()
         detailsLabel.applySecondaryBodyStyle()
@@ -112,26 +114,32 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
         updateImageVisibilityUsing(traits: traitCollection)
     }
 
-    /// Change the elements being displayed.
+    /// Configure the elements to be displayed.
     ///
-    /// This is the only "configurable" point for consumers using this class.
-    ///
-    func configure(message: NSAttributedString? = nil,
-                   image: UIImage? = nil,
-                   details: String? = nil,
-                   actionButton actionButtonConfig: ActionButtonConfig? = nil) {
-        messageLabel.attributedText = message
-        messageLabel.isHidden = message == nil
+    func configure(_ config: Config) {
+        messageLabel.attributedText = config.message
 
-        imageView.image = image
-        imageView.isHidden = image == nil
+        imageView.image = config.image
+        updateImageVisibilityUsing(traits: traitCollection)
 
-        detailsLabel.text = details
-        detailsLabel.isHidden = details == nil
+        detailsLabel.text = config.details
+        detailsLabel.isHidden = config.details == nil
 
-        lastActionButtonConfig = actionButtonConfig
-        actionButton.setTitle(actionButtonConfig?.title, for: .normal)
-        actionButton.isHidden = actionButtonConfig == nil
+        actionButton.setTitle(config.actionButtonTitle, for: .normal)
+        actionButton.isHidden = config.actionButtonTitle == nil
+
+        lastActionButtonTapHandler = {
+            switch config {
+            case .withLink(_, _, _, _, let linkURL):
+                return { [weak self] in
+                    if let self = self {
+                        WebviewHelper.launch(linkURL, with: self)
+                    }
+                }
+            default:
+                return nil
+            }
+        }()
     }
 
     /// Watch for device orientation changes and update the `imageView`'s visibility accordingly.
@@ -178,7 +186,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
 
     /// OnTouchUpInside handler for the `actionButton`.
     @IBAction private func actionButtonTapped(_ sender: Any) {
-        lastActionButtonConfig?.onTap()
+        lastActionButtonTapHandler?()
     }
 }
 
@@ -187,5 +195,83 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
 extension EmptyStateViewController: KeyboardScrollable {
     var scrollable: UIScrollView {
         scrollView
+    }
+}
+
+// MARK: - Styling and Configuration
+
+extension EmptyStateViewController {
+    /// The style applied.
+    ///
+    /// The style is currently just the background color. ¯\_(ツ)_/¯
+    ///
+    enum Style {
+        /// Shows a light background.
+        case basic
+        /// Shows a gray background.
+        case list
+
+        fileprivate var backgroundColor: UIColor {
+            switch self {
+            case .basic:
+                return .basicBackground
+            case .list:
+                return .listBackground
+            }
+        }
+    }
+
+    /// The configuration for this Empty State View
+    enum Config {
+
+        /// Show a message and image only.
+        ///
+        case simple(message: NSAttributedString, image: UIImage)
+        /// Show all the elements and a button which navigates to a URL when tapped.
+        ///
+        case withLink(message: NSAttributedString, image: UIImage, details: String, linkTitle: String, linkURL: URL)
+
+        /// The font used by the message's `UILabel`.
+        ///
+        /// This is exposed so that consumers can build `NSAttributedString` instances using the same
+        /// font. The `NSAttributedString` instance can then be used in `configure(message:`).
+        ///
+        /// This must match the `applyBodyStyle()` call in `viewDidLoad`.
+        ///
+        static let messageFont: UIFont = .body
+
+        fileprivate var message: NSAttributedString {
+            switch self {
+            case .simple(let message, _),
+                 .withLink(let message, _, _, _, _):
+                return message
+            }
+        }
+
+        fileprivate var image: UIImage {
+            switch self {
+            case .simple(_, let image),
+                 .withLink(_, let image, _, _, _):
+                return image
+            }
+        }
+
+        fileprivate var details: String? {
+            switch self {
+            case .simple:
+                return nil
+            case .withLink(_, _, let detail, _, _):
+                return detail
+            }
+        }
+
+        fileprivate var actionButtonTitle: String? {
+            switch self {
+            case .simple:
+                return nil
+            case .withLink(_, _, _, let linkTitle, _):
+                return linkTitle
+            }
+        }
     }
 }

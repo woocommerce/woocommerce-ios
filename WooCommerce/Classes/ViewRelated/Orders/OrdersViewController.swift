@@ -46,6 +46,14 @@ class OrdersViewController: UIViewController {
         return FooterSpinnerView(tableViewStyle: tableView.style)
     }()
 
+    /// The configuration to use for the view if the list is empty.
+    ///
+    private let emptyStateConfig: EmptyStateViewController.Config
+
+    /// The view shown if the list is empty.
+    ///
+    private lazy var emptyStateViewController = EmptyStateViewController(style: .list)
+
     /// Used for looking up the `OrderStatus` to show in the `OrderTableViewCell`.
     ///
     /// The `OrderStatus` data is fetched from the API by `OrdersMasterViewModel`.
@@ -84,19 +92,13 @@ class OrdersViewController: UIViewController {
 
     /// Designated initializer.
     ///
-    init(title: String, viewModel: OrdersViewModel) {
+    init(title: String, viewModel: OrdersViewModel, emptyStateConfig: EmptyStateViewController.Config) {
         self.viewModel = viewModel
+        self.emptyStateConfig = emptyStateConfig
 
         super.init(nibName: Self.nibName, bundle: nil)
 
         self.title = title
-    }
-
-    /// Initialize using the given `statusFilter`.
-    ///
-    convenience init(title: String, statusFilter: OrderStatus? = nil) {
-        let viewModel = OrdersViewModel(statusFilter: statusFilter)
-        self.init(title: title, viewModel: viewModel)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -376,48 +378,45 @@ private extension OrdersViewController {
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
-    /// Displays the Empty State Overlay.
+    /// Shows the EmptyStateViewController
     ///
-    func displayEmptyUnfilteredOverlay() {
-        let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
-        overlayView.messageImage = .waitingForCustomersImage
-        overlayView.messageText = NSLocalizedString("Waiting for Customers", comment: "Orders List (Empty State / No Filters)")
-        overlayView.actionText = NSLocalizedString("Share your Store", comment: "Action: Opens the Store in a browser")
-        overlayView.onAction = { [weak self] in
-            guard let `self` = self else {
-                return
-            }
-            guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
-                return
-            }
-            guard let url = URL(string: site.url) else {
-                return
-            }
+    func displayEmptyViewController() {
+        let childController = emptyStateViewController
 
-            ServiceLocator.analytics.track(.orderShareStoreButtonTapped)
-            SharingHelper.shareURL(url: url, title: site.name, from: overlayView.actionButtonView, in: self)
+        // Abort if we are already displaying this childController
+        guard childController.parent == nil else {
+            return
+        }
+        guard let childView = childController.view else {
+            return
         }
 
-        overlayView.attach(to: view)
+        childController.configure(emptyStateConfig)
+
+        childView.translatesAutoresizingMaskIntoConstraints = false
+
+        addChild(childController)
+        view.addSubview(childView)
+        NSLayoutConstraint.activate([
+            childView.leadingAnchor.constraint(equalTo: tableView.leadingAnchor),
+            childView.trailingAnchor.constraint(equalTo: tableView.trailingAnchor),
+            childView.topAnchor.constraint(equalTo: tableView.topAnchor),
+            childView.bottomAnchor.constraint(equalTo: tableView.bottomAnchor)
+        ])
+        childController.didMove(toParent: self)
     }
 
-    /// Displays the Empty State (with filters applied!) Overlay.
-    ///
-    func displayEmptyFilteredOverlay() {
-        let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
-        overlayView.messageImage = .waitingForCustomersImage
-        overlayView.messageText = NSLocalizedString("No results for the selected criteria", comment: "Orders List (Empty State + Filters)")
-        overlayView.actionVisible = false
+    func removeEmptyViewController() {
+        let childController = emptyStateViewController
 
-        overlayView.attach(to: view)
-    }
-
-    /// Removes all of the the OverlayMessageView instances in the view hierarchy.
-    ///
-    func removeAllOverlays() {
-        for subview in view.subviews where subview is OverlayMessageView {
-            subview.removeFromSuperview()
+        guard childController.parent == self,
+            let childView = childController.view else {
+            return
         }
+
+        childController.willMove(toParent: nil)
+        childView.removeFromSuperview()
+        childController.removeFromParent()
     }
 }
 
@@ -526,10 +525,8 @@ private extension OrdersViewController {
 
     func didEnter(state: State) {
         switch state {
-        case .emptyUnfiltered:
-            displayEmptyUnfilteredOverlay()
-        case .emptyFiltered:
-            displayEmptyFilteredOverlay()
+        case .empty:
+            displayEmptyViewController()
         case .placeholder:
             displayPlaceholderOrders()
         case .syncing:
@@ -541,10 +538,8 @@ private extension OrdersViewController {
 
     func didLeave(state: State) {
         switch state {
-        case .emptyFiltered:
-            removeAllOverlays()
-        case .emptyUnfiltered:
-            removeAllOverlays()
+        case .empty:
+            removeEmptyViewController()
         case .placeholder:
             removePlaceholderOrders()
         case .syncing:
@@ -562,20 +557,10 @@ private extension OrdersViewController {
     }
 
     /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
-    /// Transitions to `.results` / `.emptyFiltered` / `.emptyUnfiltered` accordingly.
+    /// Transitions to `.results` or `.empty`.
     ///
     func transitionToResultsUpdatedState() {
-        if viewModel.isEmpty == false {
-            state = .results
-            return
-        }
-
-        if viewModel.isFiltered {
-            state = .emptyFiltered
-            return
-        }
-
-        state = .emptyUnfiltered
+        state = viewModel.isEmpty ? .empty : .results
     }
 }
 
@@ -607,7 +592,6 @@ private extension OrdersViewController {
         case placeholder
         case syncing
         case results
-        case emptyUnfiltered
-        case emptyFiltered
+        case empty
     }
 }

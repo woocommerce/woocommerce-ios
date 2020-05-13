@@ -35,7 +35,7 @@ class SitePostsRemoteTests: XCTestCase {
 
         let postID: Int64 = 7
 
-        network.simulateResponse(requestUrlSuffix: "/sites/\(sampleSiteID)/posts/\(postID)", filename: "site-post")
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/posts/\(postID)", filename: "site-post")
         remote.loadSitePost(for: sampleSiteID, postID: postID) {[weak self] (sitePost, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(sitePost)
@@ -70,7 +70,7 @@ class SitePostsRemoteTests: XCTestCase {
         let remote = SitePostsRemote(network: network)
         let expectation = self.expectation(description: "Wait for site post update")
 
-        network.simulateResponse(requestUrlSuffix: "/sites/\(sampleSiteID)/posts/\(postID)", filename: "site-post-update")
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/posts/\(postID)", filename: "site-post-update")
 
         let newPassword = "new-password"
         let post = Post(siteID: sampleSiteID, password: newPassword)

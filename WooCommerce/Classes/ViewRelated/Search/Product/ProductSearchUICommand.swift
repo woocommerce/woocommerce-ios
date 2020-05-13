@@ -32,14 +32,15 @@ final class ProductSearchUICommand: SearchUICommand {
 
     func configureEmptyStateViewControllerBeforeDisplay(viewController: EmptyStateViewController,
                                                         searchKeyword: String) {
-        let boldSearchKeyword = NSAttributedString(string: searchKeyword, attributes: [.font: viewController.messageFont.bold])
+        let boldSearchKeyword = NSAttributedString(string: searchKeyword,
+                                                   attributes: [.font: EmptyStateViewController.Config.messageFont.bold])
 
         let format = NSLocalizedString("We're sorry, we couldn't find results for “%@”",
                                        comment: "Message for empty Products search results. The %@ is a placeholder for the text entered by the user.")
         let message = NSMutableAttributedString(string: format)
         message.replaceFirstOccurrence(of: "%@", with: boldSearchKeyword)
 
-        viewController.configure(message: message, image: .emptySearchResultsImage)
+        viewController.configure(.simple(message: message, image: .emptySearchResultsImage))
     }
 
     func createCellViewModel(model: Product) -> ProductsTabProductViewModel {

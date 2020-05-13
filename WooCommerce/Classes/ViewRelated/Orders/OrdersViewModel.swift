@@ -49,6 +49,7 @@ final class OrdersViewModel {
     private let includesFutureOrders: Bool
 
     /// Used for tracking whether the app was _previously_ in the background.
+    ///
     private var isAppActive: Bool = true
 
     /// Should be bound to the UITableView to auto-update the list of Orders.
@@ -81,12 +82,6 @@ final class OrdersViewModel {
     ///
     var isEmpty: Bool {
         resultsController.isEmpty
-    }
-
-    /// Indicates if there's a filter being applied.
-    ///
-    var isFiltered: Bool {
-        statusFilter != nil
     }
 
     init(storageManager: StorageManagerType = ServiceLocator.storageManager,

@@ -48,6 +48,9 @@ final class ProductsViewController: UIViewController {
         return createToolbar()
     }()
 
+    /// The filter CTA in the top toolbar.
+    private lazy var filterButton: UIButton = UIButton(frame: .zero)
+
     /// Top banner that shows that the Products feature is still work in progress.
     ///
     private lazy var topBannerView: TopBannerView = {
@@ -99,9 +102,11 @@ final class ProductsViewController: UIViewController {
 
     private let imageService: ImageService = ServiceLocator.imageService
 
-    private var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters(stockStatus: nil, productStatus: nil, productType: nil) {
+    private var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters() {
         didSet {
             if filters != oldValue {
+                updateFilterButtonTitle(filters: filters)
+
                 guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
                     assertionFailure("No valid site ID for Products tab")
                     return
@@ -279,7 +284,6 @@ private extension ProductsViewController {
         sortButton.addTarget(self, action: #selector(sortButtonTapped(sender:)), for: .touchUpInside)
 
         let filterTitle = NSLocalizedString("Filter", comment: "Title of the toolbar button to filter products by different attributes.")
-        let filterButton = UIButton(frame: .zero)
         filterButton.setTitle(filterTitle, for: .normal)
         filterButton.addTarget(self, action: #selector(filterButtonTapped), for: .touchUpInside)
 
@@ -458,20 +462,18 @@ private extension ProductsViewController {
                                       comment: "Message title for sort products action bottom sheet")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
         let command = ProductsSortOrderBottomSheetListSelectorCommand(selected: sortOrder)
-        let sortOrderListViewController = BottomSheetListSelectorViewController(viewProperties: viewProperties,
-                                                                                command: command) { [weak self] selectedSortOrder in
-                                                                                    defer {
-                                                                                        self?.dismiss(animated: true, completion: nil)
-                                                                                    }
+        let sortOrderListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties,
+                                                                      command: command) { [weak self] selectedSortOrder in
+                                                                        defer {
+                                                                            self?.dismiss(animated: true, completion: nil)
+                                                                        }
 
-                                                                                    guard let selectedSortOrder = selectedSortOrder else {
-                                                                                        return
-                                                                                    }
-                                                                                    self?.sortOrder = selectedSortOrder
+                                                                        guard let selectedSortOrder = selectedSortOrder else {
+                                                                            return
+                                                                        }
+                                                                        self?.sortOrder = selectedSortOrder
         }
-
-        let bottomSheet = BottomSheetViewController(childViewController: sortOrderListViewController)
-        bottomSheet.show(from: self, sourceView: sender, arrowDirections: .up)
+        sortOrderListPresenter.show(from: self, sourceView: sender, arrowDirections: .up)
     }
 
     @objc func filterButtonTapped() {
@@ -625,6 +627,24 @@ private extension ProductsViewController {
 
     func transitionToResultsUpdatedState() {
         stateCoordinator.transitionToResultsUpdatedState(hasData: !isEmpty)
+    }
+}
+
+// MARK: - Filter UI Helpers
+//
+private extension ProductsViewController {
+    func updateFilterButtonTitle(filters: FilterProductListViewModel.Filters) {
+        let activeFilterCount = filters.numberOfActiveFilters
+
+        let titleWithoutActiveFilters =
+            NSLocalizedString("Filter", comment: "Title of the toolbar button to filter products without any filters applied.")
+        let titleFormatWithActiveFilters =
+            NSLocalizedString("Filter (%ld)", comment: "Title of the toolbar button to filter products with filters applied.")
+
+        let title = activeFilterCount > 0 ?
+            String.localizedStringWithFormat(titleFormatWithActiveFilters, activeFilterCount): titleWithoutActiveFilters
+
+        filterButton.setTitle(title, for: .normal)
     }
 }
 

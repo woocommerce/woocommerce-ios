@@ -206,7 +206,6 @@ final class OrdersViewModelTests: XCTestCase {
         viewModel.activateAndForwardUpdates(to: UITableView())
 
         // Assert
-        XCTAssertTrue(viewModel.isFiltered)
         XCTAssertFalse(viewModel.isEmpty)
         XCTAssertEqual(viewModel.numberOfObjects, processingOrders.count)
 
@@ -229,7 +228,6 @@ final class OrdersViewModelTests: XCTestCase {
         viewModel.activateAndForwardUpdates(to: UITableView())
 
         // Assert
-        XCTAssertFalse(viewModel.isFiltered)
         XCTAssertFalse(viewModel.isEmpty)
         XCTAssertEqual(viewModel.numberOfObjects, allInsertedOrders.count)
 

@@ -142,24 +142,22 @@ private extension OrderStore {
                                  statusKey: statusKey,
                                  before: before,
                                  pageNumber: pageNumber,
-                                 pageSize: pageSize) { orders, error in
+                                 pageSize: pageSize) { result in
                 serialQueue.async { [weak self] in
                     guard let self = self else {
                         completion()
                         return
                     }
 
-                    if let orders = orders {
+                    switch result {
+                    case .success(let orders):
                         if deleteAllBeforeSaving {
                             deleteAllOrdersOnce()
                         }
 
                         self.upsertStoredOrdersInBackground(readOnlyOrders: orders, onCompletion: completion)
-                    } else if let error = error {
+                    case .failure(let error):
                         fetchErrors.append(error)
-                        completion()
-                    } else {
-                        // This shouldn't happen but we're adding it just in case.
                         completion()
                     }
                 }
@@ -200,14 +198,14 @@ private extension OrderStore {
                              statusKey: statusKey,
                              before: before,
                              pageNumber: pageNumber,
-                             pageSize: pageSize) { [weak self] (orders, error) in
-            guard let orders = orders else {
+                             pageSize: pageSize) { [weak self] result in
+            switch result {
+            case .success(let orders):
+                self?.upsertStoredOrdersInBackground(readOnlyOrders: orders) {
+                    onCompletion(nil)
+                }
+            case .failure(let error):
                 onCompletion(error)
-                return
-            }
-
-            self?.upsertStoredOrdersInBackground(readOnlyOrders: orders) {
-                onCompletion(nil)
             }
         }
     }

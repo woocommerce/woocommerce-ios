@@ -3,19 +3,24 @@ import Yosemite
 import Charts
 import XLPagerTabStrip
 import WordPressUI
+import class AutomatticTracks.CrashLogging
 
 
-class TopPerformerDataViewController: UIViewController {
+final class TopPerformerDataViewController: UIViewController {
 
     // MARK: - Properties
 
-    let granularity: StatGranularity
+    private let granularity: StatGranularity
 
     var hasTopEarnerStatsItems: Bool {
         return (topEarnerStats?.items?.count ?? 0) > 0
     }
 
     @IBOutlet private weak var tableView: IntrinsicTableView!
+
+    /// A child view controller that is shown when `displayGhostContent()` is called.
+    ///
+    private lazy var ghostTableViewController = GhostTableViewController()
 
     /// ResultsController: Loads TopEarnerStats for the current granularity from the Storage Layer
     ///
@@ -114,23 +119,35 @@ extension TopPerformerDataViewController {
     }
 
     /// Renders Placeholder Content.
+    ///
     /// Why is this public? Because the `syncTopPerformers` method is actually called from TopPerformersViewController.
     /// We coordinate multiple placeholder animations from that spot!
     ///
     func displayGhostContent() {
-        let options = GhostOptions(displaysSectionHeader: false,
-                                   reuseIdentifier: ProductTableViewCell.reuseIdentifier,
-                                   rowsPerSection: Constants.placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options,
-                                      style: .wooDefaultGhostStyle)
+        guard let ghostView = ghostTableViewController.view else {
+            return
+        }
+
+        ghostView.translatesAutoresizingMaskIntoConstraints = false
+        addChild(ghostTableViewController)
+        view.addSubview(ghostView)
+        view.pinSubviewToAllEdges(ghostView)
+        ghostTableViewController.didMove(toParent: self)
     }
 
     /// Removes the Placeholder Content.
+    ///
     /// Why is this public? Because the `syncTopPerformers` method is actually called from TopPerformersViewController.
     /// We coordinate multiple placeholder animations from that spot!
     ///
     func removeGhostContent() {
-        tableView.removeGhostContent()
+        guard let ghostView = ghostTableViewController.view else {
+            return
+        }
+
+        ghostTableViewController.willMove(toParent: nil)
+        ghostView.removeFromSuperview()
+        ghostTableViewController.removeFromParent()
     }
 }
 
@@ -144,11 +161,11 @@ private extension TopPerformerDataViewController {
     }
 
     func configureTableView() {
-        tableView.backgroundColor = .basicBackground
-        tableView.separatorColor = .systemColor(.separator)
+        tableView.backgroundColor = TableViewStyle.backgroundColor
+        tableView.separatorColor = TableViewStyle.separatorColor
         tableView.estimatedRowHeight = Constants.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.tableFooterView = Constants.emptyView
+        tableView.applyFooterViewForHidingExtraRowPlaceholders()
     }
 
     func configureResultsController() {
@@ -158,7 +175,12 @@ private extension TopPerformerDataViewController {
         resultsController.onDidResetContent = { [weak self] in
             self?.tableView.reloadData()
         }
-        try? resultsController.performFetch()
+
+        do {
+            try resultsController.performFetch()
+        } catch {
+            CrashLogging.logError(error)
+        }
     }
 
     func registerTableViewCells() {
@@ -300,6 +322,57 @@ private extension TopPerformerDataViewController {
     }
 }
 
+// MARK: - Ghost View
+
+private extension TopPerformerDataViewController {
+    final class GhostTableViewController: UITableViewController {
+
+        init() {
+            super.init(style: .plain)
+        }
+
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+
+        override func viewDidLoad() {
+            super.viewDidLoad()
+
+            // Make sure that Ghost will not have any dataSource or delegate to _swap_. This is
+            // just to reduce the chance of having ”invalid number of rows” crashes because of
+            // delegate swapping.
+            tableView.dataSource = nil
+            tableView.delegate = nil
+
+            tableView.backgroundColor = TableViewStyle.backgroundColor
+            tableView.separatorStyle = .none
+            tableView.estimatedRowHeight = Constants.estimatedRowHeight
+            tableView.applyFooterViewForHidingExtraRowPlaceholders()
+
+            tableView.register(ProductTableViewCell.loadNib(),
+                               forCellReuseIdentifier: ProductTableViewCell.reuseIdentifier)
+        }
+
+        /// Activate the ghost if this view is added to the parent.
+        ///
+        override func viewWillAppear(_ animated: Bool) {
+            super.viewWillAppear(animated)
+
+            let options = GhostOptions(displaysSectionHeader: false,
+                                       reuseIdentifier: ProductTableViewCell.reuseIdentifier,
+                                       rowsPerSection: Constants.placeholderRowsPerSection)
+            tableView.displayGhostContent(options: options,
+                                          style: .wooDefaultGhostStyle)
+        }
+
+        /// Deactivate the ghost if this view is removed from the parent.
+        ///
+        override func viewWillDisappear(_ animated: Bool) {
+            super.viewWillDisappear(animated)
+            tableView.removeGhostContent()
+        }
+    }
+}
 
 // MARK: - Constants!
 //
@@ -311,12 +384,16 @@ private extension TopPerformerDataViewController {
         static let sectionRightColumn = NSLocalizedString("Total Spend", comment: "Description for Top Performers right column header")
     }
 
+    enum TableViewStyle {
+        static let backgroundColor = UIColor.basicBackground
+        static let separatorColor = UIColor.systemColor(.separator)
+    }
+
     enum Constants {
         static let estimatedRowHeight           = CGFloat(80)
         static let estimatedSectionHeight       = CGFloat(125)
         static let numberOfSections             = 1
         static let emptyStateRowCount           = 1
-        static let emptyView                    = UIView(frame: .zero)
         static let placeholderRowsPerSection    = [3]
     }
 }

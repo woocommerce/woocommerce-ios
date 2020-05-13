@@ -21,7 +21,7 @@ enum ProductSettingsSections {
         let rows: [ProductSettingsRowMediator]
 
         init(_ settings: ProductSettings) {
-            rows = [ProductSettingsRows.Status(settings), ProductSettingsRows.CatalogVisibility(settings)]
+            rows = [ProductSettingsRows.Status(settings), ProductSettingsRows.Visibility(settings), ProductSettingsRows.CatalogVisibility(settings)]
         }
     }
 

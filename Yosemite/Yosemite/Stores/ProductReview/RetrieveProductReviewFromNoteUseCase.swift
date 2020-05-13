@@ -11,7 +11,8 @@ public struct ProductReviewFromNoteParcel {
 
 /// Fetches the `Note`, `ProductReview`, and `Product` in sequence from the API using a `noteID`.
 ///
-/// This can be used to present a view when a push notification is received.
+/// This can be used to present a view when a push notification is received. This should only
+/// be used as part of `ProductReviewStore`.
 ///
 /// ## Saving
 ///

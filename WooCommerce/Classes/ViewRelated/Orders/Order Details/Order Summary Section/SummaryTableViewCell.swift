@@ -44,10 +44,10 @@ struct SummaryTableViewCellViewModel {
     var dateCreatedAndOrderNumber: String {
         let formatter = DateFormatter.mediumLengthLocalizedDateFormatter
 
-        return [
-            formatter.string(from: dateCreated),
-            "#\(orderNumber)"
-        ].compactMap({ $0 }).joined(separator: " • ")
+        return [formatter.string(from: dateCreated), "#\(orderNumber)"]
+            .compactMap({ $0 })
+            .reversed(when: UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft)
+            .joined(separator: " • ")
     }
 }
 

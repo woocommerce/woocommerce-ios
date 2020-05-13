@@ -106,6 +106,13 @@ extension Date {
 
         return selfYear == otherYear
     }
+
+    /// Returns `true` if `self` is in the same day as `other`.
+    ///
+    func isSameDay(as other: Date) -> Bool {
+        let calendar = Calendar.current
+        return calendar.isDate(self, inSameDayAs: other)
+    }
 }
 
 

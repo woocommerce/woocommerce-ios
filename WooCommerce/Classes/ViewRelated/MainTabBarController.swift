@@ -123,6 +123,8 @@ final class MainTabBarController: UITabBarController {
         }()
 
         loadReviewsTabNotificationCountAndUpdateBadge()
+
+        reviewsCoordinator.start()
     }
 
     override func viewWillAppear(_ animated: Bool) {

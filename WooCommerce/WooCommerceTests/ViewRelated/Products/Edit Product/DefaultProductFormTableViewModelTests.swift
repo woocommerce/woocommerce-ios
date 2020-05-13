@@ -18,12 +18,12 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
             .description(description: product.trimmedFullDescription)
         ])
         XCTAssertEqual(viewModel.sections[0], primaryFieldsSection)
-        
+
         let settingFieldsSection = viewModel.sections[1]
         switch settingFieldsSection {
         case .settings(let rows):
             XCTAssertEqual(rows.count, 3)
-            
+
             if case .price(_) = rows[0] {} else {
                 XCTFail("Unexpected setting section: \(rows[0])")
             }
@@ -37,7 +37,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
             XCTFail("Unexpected section: \(settingFieldsSection)")
         }
     }
-    
+
     func testViewModelForPhysicalSimpleProductWithImages() {
         let product = MockProduct().product(downloadable: false,
                                             name: "woo",
@@ -54,12 +54,12 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
             .description(description: product.trimmedFullDescription)
         ])
         XCTAssertEqual(viewModel.sections[0], primaryFieldsSection)
-        
+
         let settingFieldsSection = viewModel.sections[1]
         switch settingFieldsSection {
         case .settings(let rows):
             XCTAssertEqual(rows.count, 2)
-            
+
             if case .price(_) = rows[0] {} else {
                 XCTFail("Unexpected setting section: \(rows[0])")
             }
@@ -70,7 +70,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
             XCTFail("Unexpected section: \(settingFieldsSection)")
         }
     }
-    
+
     func testViewModelForDownloadableSimpleProduct() {
         let product = MockProduct().product(downloadable: true,
                                             name: "woo",
@@ -84,7 +84,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
             .description(description: product.trimmedFullDescription)
         ])
         XCTAssertEqual(viewModel.sections[0], primaryFieldsSection)
-        
+
         let settingFieldsSection = viewModel.sections[1]
         switch settingFieldsSection {
         case .settings(let rows):
@@ -99,7 +99,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
             XCTFail("Unexpected section: \(settingFieldsSection)")
         }
     }
-    
+
     func testViewModelForVirtualSimpleProduct() {
         let product = MockProduct().product(downloadable: false,
                                             name: "woo",
@@ -114,7 +114,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
             .description(description: product.trimmedFullDescription)
         ])
         XCTAssertEqual(viewModel.sections[0], primaryFieldsSection)
-        
+
         let settingFieldsSection = viewModel.sections[1]
         switch settingFieldsSection {
         case .settings(let rows):

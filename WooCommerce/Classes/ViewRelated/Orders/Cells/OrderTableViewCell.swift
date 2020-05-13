@@ -95,7 +95,6 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
 // MARK: - Private
 //
 private extension OrderTableViewCell {
-
     /// Preserves the current Payment BG Color
     ///
     func preserveLabelColors(action: () -> Void) {
@@ -107,7 +106,11 @@ private extension OrderTableViewCell {
         paymentStatusLabel.backgroundColor = paymentColor
         paymentStatusLabel.layer.borderColor = borderColor
     }
+}
 
+// MARK: - Setup
+
+private extension OrderTableViewCell {
     func configureBackground() {
         backgroundColor = .listForeground
         selectedBackgroundView = UIView()

@@ -75,12 +75,12 @@ final class RetrieveProductReviewFromNoteUseCase {
             completion(.failure($0))
         }
 
-        fetchNote(noteID: noteID, abort: abort) { [weak self] note in
-            self?.fetchProductReview(from: note, abort: abort) { review in
-                self?.saveProductReview(review, abort: abort) {
-                    self?.fetchProduct(siteID: review.siteID, productID: review.productID, abort: abort, next: { product in
-                        let payload = ProductReviewFromNoteParcel(note: note, review: review, product: product)
-                        completion(.success(payload))
+        fetchNote(noteID: noteID, abort: abort) { note in
+            self.fetchProductReview(from: note, abort: abort) { review in
+                self.saveProductReview(review, abort: abort) {
+                    self.fetchProduct(siteID: review.siteID, productID: review.productID, abort: abort, next: { product in
+                        let parcel = ProductReviewFromNoteParcel(note: note, review: review, product: product)
+                        completion(.success(parcel))
                     })
                 }
             }

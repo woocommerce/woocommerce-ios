@@ -186,7 +186,8 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func moreDetailsButtonTapped(button: UIButton) {
-        let title = NSLocalizedString("Add more details", comment: "")
+        let title = NSLocalizedString("Add more details",
+                                      comment: "Title of the bottom sheet from the product form to add more product details.")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
         let isEditProductsRelease3Enabled = featureFlagService.isFeatureFlagEnabled(.editProductsRelease3)
         let dataSource = ProductFormBottomSheetListSelectorCommand(product: product,

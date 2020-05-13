@@ -1,6 +1,7 @@
 4.3
 -----
 - Products: now the Product details can be edited and saved outside Products tab (e.g. from Order details or Top Performers).
+- In Settings > Experimental Features, a Products switch is now available for turning Products M2 features on and off for simple products (default off for beta testing).
 
 
 4.2

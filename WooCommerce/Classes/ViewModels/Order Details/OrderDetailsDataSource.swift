@@ -33,15 +33,6 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var trackingIsReachable: Bool = false
 
-    /// For example, #560 Pamela Nguyen
-    ///
-    var summaryTitle: String? {
-        if let billingAddress = order.billingAddress {
-            return "#\(order.number) \(billingAddress.firstName) \(billingAddress.lastName)"
-        }
-        return "#\(order.number)"
-    }
-
     /// For example, Oct 1, 2019 at 2:31 PM
     ///
     private var summaryDateCreated: String {
@@ -506,7 +497,13 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureSummary(cell: SummaryTableViewCell) {
-        cell.title = summaryTitle
+        cell.title = {
+            if let billingAddress = order.billingAddress {
+                return "\(billingAddress.firstName) \(billingAddress.lastName)"
+            } else {
+                return ""
+            }
+        }()
         cell.dateCreated = summaryDateCreated
         cell.onEditTouchUp = { [weak self] in
             self?.onCellAction?(.summary, nil)

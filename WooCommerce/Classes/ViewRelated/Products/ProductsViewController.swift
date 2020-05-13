@@ -453,20 +453,18 @@ private extension ProductsViewController {
                                       comment: "Message title for sort products action bottom sheet")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
         let command = ProductsSortOrderBottomSheetListSelectorCommand(selected: sortOrder)
-        let sortOrderListViewController = BottomSheetListSelectorViewController(viewProperties: viewProperties,
-                                                                                command: command) { [weak self] selectedSortOrder in
-                                                                                    defer {
-                                                                                        self?.dismiss(animated: true, completion: nil)
-                                                                                    }
+        let sortOrderListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties,
+                                                                      command: command) { [weak self] selectedSortOrder in
+                                                                        defer {
+                                                                            self?.dismiss(animated: true, completion: nil)
+                                                                        }
 
-                                                                                    guard let selectedSortOrder = selectedSortOrder else {
-                                                                                        return
-                                                                                    }
-                                                                                    self?.sortOrder = selectedSortOrder
+                                                                        guard let selectedSortOrder = selectedSortOrder else {
+                                                                            return
+                                                                        }
+                                                                        self?.sortOrder = selectedSortOrder
         }
-
-        let bottomSheet = BottomSheetViewController(childViewController: sortOrderListViewController)
-        bottomSheet.show(from: self, sourceView: sender, arrowDirections: .up)
+        sortOrderListPresenter.show(from: self, sourceView: sender, arrowDirections: .up)
     }
 
     @objc func filterButtonTapped() {

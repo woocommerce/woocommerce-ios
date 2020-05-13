@@ -18,11 +18,12 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
     init(product: Product,
          currency: String,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(),
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         isEditProductsRelease2Enabled: Bool,
+         isEditProductsRelease3Enabled: Bool) {
         self.currency = currency
         self.currencyFormatter = currencyFormatter
-        self.isEditProductsRelease2Enabled = featureFlagService.isFeatureFlagEnabled(.editProductsRelease2)
-        self.isEditProductsRelease3Enabled = featureFlagService.isFeatureFlagEnabled(.editProductsRelease3)
+        self.isEditProductsRelease2Enabled = isEditProductsRelease2Enabled
+        self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
         configureSections(product: product)
     }
 }

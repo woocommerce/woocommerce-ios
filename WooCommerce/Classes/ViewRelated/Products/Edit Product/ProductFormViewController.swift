@@ -30,10 +30,14 @@ final class ProductFormViewController: UIViewController {
                 return
             }
 
-            viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
+            viewModel = DefaultProductFormTableViewModel(product: product,
+                                                         currency: currency,
+                                                         isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                                         isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
             tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel,
                                                                  productImageStatuses: productImageActionHandler.productImageStatuses,
-                                                                 productUIImageLoader: productUIImageLoader)
+                                                                 productUIImageLoader: productUIImageLoader,
+                                                                 canEditImages: isEditProductsRelease2Enabled)
             tableViewDataSource.configureActions(onNameChange: { [weak self] name in
                 self?.onEditProductNameCompletion(newName: name ?? "")
             }, onAddImage: { [weak self] in
@@ -55,7 +59,8 @@ final class ProductFormViewController: UIViewController {
     private let productUIImageLoader: ProductUIImageLoader
 
     private let currency: String
-    private let featureFlagService: FeatureFlagService
+    private let isEditProductsRelease2Enabled: Bool
+    private let isEditProductsRelease3Enabled: Bool
 
     private lazy var exitForm: () -> Void = {
         presentationStyle.createExitForm(viewController: self)
@@ -68,20 +73,29 @@ final class ProductFormViewController: UIViewController {
     }
     private var cancellable: ObservationToken?
 
-    init(product: Product, currency: String, presentationStyle: PresentationStyle, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+    init(product: Product,
+         currency: String,
+         presentationStyle: PresentationStyle,
+         isEditProductsRelease2Enabled: Bool,
+         isEditProductsRelease3Enabled: Bool) {
         self.currency = currency
         self.presentationStyle = presentationStyle
-        self.featureFlagService = featureFlagService
+        self.isEditProductsRelease2Enabled = isEditProductsRelease2Enabled
+        self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
         self.originalProduct = product
         self.product = product
-        self.viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
+        self.viewModel = DefaultProductFormTableViewModel(product: product,
+                                                          currency: currency,
+                                                          isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                                          isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
         self.productImageActionHandler = ProductImageActionHandler(siteID: product.siteID,
                                                                    product: product)
         self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler,
                                                                 phAssetImageLoaderProvider: { PHImageManager.default() })
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel,
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
-                                                                  productUIImageLoader: productUIImageLoader)
+                                                                  productUIImageLoader: productUIImageLoader,
+                                                                  canEditImages: isEditProductsRelease2Enabled)
         super.init(nibName: nil, bundle: nil)
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
             self?.onEditProductNameCompletion(newName: name ?? "")
@@ -199,7 +213,7 @@ private extension ProductFormViewController {
     }
 
     func configureMoreDetailsContainerView() {
-        guard featureFlagService.isFeatureFlagEnabled(.editProductsRelease2) else {
+        guard isEditProductsRelease2Enabled else {
             moreDetailsContainerView.isHidden = true
             return
         }
@@ -348,7 +362,7 @@ private extension ProductFormViewController {
             rightBarButtonItems.append(createUpdateBarButtonItem())
         }
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease2) {
+        if isEditProductsRelease2Enabled {
             rightBarButtonItems.insert(createMoreOptionsBarButtonItem(), at: 0)
         }
 

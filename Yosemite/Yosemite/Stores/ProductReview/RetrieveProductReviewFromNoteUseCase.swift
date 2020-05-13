@@ -3,6 +3,8 @@ import Foundation
 import Networking
 import protocol Storage.StorageType
 
+/// The result from `RetrieveProductReviewFromNoteUseCase`.
+///
 public struct ProductReviewFromNoteParcel {
     public let note: Note
     public let review: ProductReview
@@ -66,11 +68,17 @@ final class RetrieveProductReviewFromNoteUseCase {
     ///
     private weak var derivedStorage: StorageType?
 
+    /// Create an instance of self.
+    ///
+    /// - Parameters:
+    ///   - derivedStorage: The derived (background) `StorageType` of `ProductReviewStore`.
     init(network: Network, derivedStorage: StorageType) {
         self.network = network
         self.derivedStorage = derivedStorage
     }
 
+    /// Retrieve the `Note`, `ProductReview`, and `Product` based on the given `noteID`.
+    ///
     func retrieve(noteID: Int64, completion: @escaping CompletionBlock) {
         let abort: (Error) -> () = {
             completion(.failure($0))
@@ -88,6 +96,8 @@ final class RetrieveProductReviewFromNoteUseCase {
         }
     }
 
+    /// Fetch the Note from the API.
+    ///
     private func fetchNote(noteID: Int64,
                            abort: @escaping AbortBlock,
                            next: @escaping (Note) -> Void) {
@@ -107,6 +117,8 @@ final class RetrieveProductReviewFromNoteUseCase {
         }
     }
 
+    /// Fetch the ProductReview based on the given Note from the API.
+    ///
     private func fetchProductReview(from note: Note,
                                     abort: @escaping AbortBlock,
                                     next: @escaping (ProductReview) -> Void) {
@@ -127,6 +139,8 @@ final class RetrieveProductReviewFromNoteUseCase {
         }
     }
 
+    /// Save the given ProductReview to the database.
+    ///
     private func saveProductReview(_ review: ProductReview,
                                    abort: @escaping AbortBlock,
                                    next: @escaping () -> Void) {
@@ -143,6 +157,8 @@ final class RetrieveProductReviewFromNoteUseCase {
         }
     }
 
+    /// Fetch the `Product` from the API.
+    ///
     private func fetchProduct(siteID: Int64,
                               productID: Int64,
                               abort: @escaping AbortBlock,

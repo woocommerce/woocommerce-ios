@@ -4177,7 +4177,6 @@
 				021E2A1823A9FE5A00B1DE07 /* ProductInventorySettingsViewController.xib in Resources */,
 				57448D2A242E777700A56A74 /* EmptyStateViewController.xib in Resources */,
 				0286B27A23C7051F003D784B /* ProductImagesCollectionViewController.xib in Resources */,
-				0290E270238E3CE400B5C466 /* ListSelectorViewController.xib in Resources */,
 				4512055324655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.xib in Resources */,
 				B59D1EE821908A08009D1978 /* Noticons.ttf in Resources */,
 				D81F2D35225F0CF70084BF9C /* EmptyListMessageWithActionView.xib in Resources */,

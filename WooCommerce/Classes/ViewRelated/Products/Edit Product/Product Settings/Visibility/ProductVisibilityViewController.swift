@@ -209,12 +209,7 @@ private extension ProductVisibilityViewController {
         let row = sections[indexPath.section].rows[indexPath.row]
         cell.selectionStyle = .default
         cell.textLabel?.text = row.description
-        if row.editable {
-            cell.accessoryType = .none
-        }
-        else {
-            cell.accessoryType = row.visibility == visibility ? .checkmark : .none
-        }
+        cell.accessoryType = row.visibility == visibility ? .checkmark : .none
     }
 
     func configurePasswordFieldCell(cell: TitleAndTextFieldWithImageTableViewCell, indexPath: IndexPath) {
@@ -263,15 +258,6 @@ extension ProductVisibilityViewController {
                 return self.visibility.description
             case .passwordField:
                 return NSLocalizedString("Password", comment: "Password field title in Product Visibility")
-            }
-        }
-
-        var editable: Bool {
-            switch self {
-            case .passwordField:
-                return true
-            default:
-                return false
             }
         }
 

@@ -11,26 +11,26 @@ final class ProductVisibilityTests: XCTestCase {
         let visibility = ProductVisibility(status: .publish, password: nil)
         let visibility2 = ProductVisibility(status: .publish, password: "")
 
-        XCTAssertEqual(visibility, .publicVisibility)
-        XCTAssertEqual(visibility2, .publicVisibility)
+        XCTAssertEqual(visibility, .public)
+        XCTAssertEqual(visibility2, .public)
     }
 
     func testProductVisibilityWithPrivateStatus() {
         let visibility = ProductVisibility(status: .privateStatus, password: nil)
 
-        XCTAssertEqual(visibility, .privateVisibility)
+        XCTAssertEqual(visibility, .private)
     }
 
     func testProductVisibilityWithPendingStatus() {
         let visibility = ProductVisibility(status: .pending, password: nil)
 
-        XCTAssertEqual(visibility, .publicVisibility)
+        XCTAssertEqual(visibility, .public)
     }
 
     func testProductVisibilityWithDraftStatus() {
         let visibility = ProductVisibility(status: .draft, password: nil)
 
-        XCTAssertEqual(visibility, .publicVisibility)
+        XCTAssertEqual(visibility, .public)
     }
 
     func testProductVisibilityPasswordProtected() {

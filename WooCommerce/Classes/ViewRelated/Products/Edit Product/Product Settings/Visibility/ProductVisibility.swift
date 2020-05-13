@@ -5,19 +5,19 @@ import Yosemite
 ///
 enum ProductVisibility {
 
-    case publicVisibility
+    case `public`
     case passwordProtected
-    case privateVisibility
+    case `private`
 
     /// Returns the localized text version of the Enum
     ///
     public var description: String {
         switch self {
-        case .publicVisibility:
+        case .public:
             return NSLocalizedString("Public", comment: "One of the possible options in Product Visibility")
         case .passwordProtected:
             return NSLocalizedString("Password Protected", comment: "One of the possible options in Product Visibility")
-        case .privateVisibility:
+        case .private:
             return NSLocalizedString("Private", comment: "One of the possible options in Product Visibility")
         }
     }
@@ -33,10 +33,10 @@ enum ProductVisibility {
             self = .passwordProtected
         }
         else if status == .privateStatus {
-            self = .privateVisibility
+            self = .private
         }
         else {
-            self = .publicVisibility
+            self = .public
         }
     }
 }

@@ -14,7 +14,7 @@ final class ProductVisibilityViewController: UIViewController {
 
     private let productSettings: ProductSettings
 
-    private var visibility: ProductVisibility = .publicVisibility
+    private var visibility: ProductVisibility = .public
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
         let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
@@ -52,7 +52,7 @@ final class ProductVisibilityViewController: UIViewController {
             if visibility != .passwordProtected {
                 productSettings.password = ""
             }
-            
+
             onCompletion(productSettings)
         }
     }
@@ -73,7 +73,7 @@ final class ProductVisibilityViewController: UIViewController {
 
     private func getProductStatus(_ productVibility: ProductVisibility) -> ProductStatus {
         switch productVibility {
-        case .privateVisibility:
+        case .private:
             return .privateStatus
         default:
             return .publish
@@ -278,11 +278,11 @@ extension ProductVisibilityViewController {
         var visibility: ProductVisibility {
             switch self {
             case .publicVisibility:
-                return .publicVisibility
+                return .public
             case .passwordVisibility, .passwordField:
                 return .passwordProtected
             case .privateVisibility:
-                return .privateVisibility
+                return .private
             }
         }
     }

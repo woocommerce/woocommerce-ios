@@ -41,6 +41,7 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
 
         configureMainView()
         configureTableView()
+        configurePreferredContentSize()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -124,5 +125,11 @@ private extension BottomSheetListSelectorViewController {
     func registerTableViewHeaderFooters() {
         let type = BottomSheetListSelectorSectionHeaderView.self
         tableView.register(type.loadNib(), forHeaderFooterViewReuseIdentifier: type.reuseIdentifier)
+    }
+
+    func configurePreferredContentSize() {
+        let size = contentSize
+        let height = contentSize.height + BottomSheetViewController.Constants.additionalContentTopMargin
+        preferredContentSize = CGSize(width: size.width, height: height)
     }
 }

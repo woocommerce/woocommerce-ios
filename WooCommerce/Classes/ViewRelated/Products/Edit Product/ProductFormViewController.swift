@@ -22,7 +22,7 @@ final class ProductFormViewController: UIViewController {
     private var product: Product {
         didSet {
             defer {
-                let isUpdateEnabled = hasUnsavedChanges(product: product)
+                let isUpdateEnabled = hasUnsavedChanges(product: product, password: password)
                 updateNavigationBar(isUpdateEnabled: isUpdateEnabled)
             }
 
@@ -41,6 +41,19 @@ final class ProductFormViewController: UIViewController {
             })
             tableView.dataSource = tableViewDataSource
             tableView.reloadData()
+        }
+    }
+
+    /// The product password, fetched in Product Settings
+    private var originalPassword: String? {
+        didSet {
+            password = originalPassword
+        }
+    }
+    private var password: String? {
+        didSet {
+            let isUpdateEnabled = hasUnsavedChanges(product: product, password: password)
+            updateNavigationBar(isUpdateEnabled: isUpdateEnabled)
         }
     }
 
@@ -185,7 +198,7 @@ private extension ProductFormViewController {
     }
 
     @objc func closeNavigationBarButtonTapped() {
-        guard hasUnsavedChanges(product: product) == false else {
+        guard hasUnsavedChanges(product: product, password: password) == false else {
             presentBackNavigationActionSheet()
             return
         }
@@ -243,7 +256,7 @@ private extension ProductFormViewController {
 
     func updateProductRemotely() {
         waitUntilAllImagesAreUploaded { [weak self] in
-            self?.dispatchUpdateProductAction()
+            self?.dispatchUpdateProductAndPasswordAction()
         }
     }
 
@@ -271,26 +284,55 @@ private extension ProductFormViewController {
         }
     }
 
-    func dispatchUpdateProductAction() {
-        let action = ProductAction.updateProduct(product: product) { [weak self] (product, error) in
-            guard let product = product, error == nil else {
-                let errorDescription = error?.localizedDescription ?? "No error specified"
-                DDLogError("⛔️ Error updating Product: \(errorDescription)")
-                ServiceLocator.analytics.track(.productDetailUpdateError)
-                // Dismisses the in-progress UI then presents the error alert.
-                self?.navigationController?.dismiss(animated: true) {
-                    self?.displayError(error: error)
-                }
-                return
-            }
-            self?.originalProduct = product
-            self?.product = product
+    func dispatchUpdateProductAndPasswordAction() {
+        let group = DispatchGroup()
 
-            ServiceLocator.analytics.track(.productDetailUpdateSuccess)
+        // Updated Product
+        if product != originalProduct {
+            group.enter()
+            let updateProductAction = ProductAction.updateProduct(product: product) { [weak self] (product, error) in
+                guard let product = product, error == nil else {
+                    let errorDescription = error?.localizedDescription ?? "No error specified"
+                    DDLogError("⛔️ Error updating Product: \(errorDescription)")
+                    ServiceLocator.analytics.track(.productDetailUpdateError)
+                    // Dismisses the in-progress UI then presents the error alert.
+                    self?.navigationController?.dismiss(animated: true) {
+                        self?.displayError(error: error)
+                    }
+                    group.leave()
+                    return
+                }
+                self?.originalProduct = product
+                self?.product = product
+
+                ServiceLocator.analytics.track(.productDetailUpdateSuccess)
+                group.leave()
+            }
+            ServiceLocator.stores.dispatch(updateProductAction)
+        }
+
+
+        // Update product password if available
+        if let password = password, password != originalPassword {
+            group.enter()
+            let passwordUpdateAction = SitePostAction.updateSitePostPassword(siteID: product.siteID, postID: product.productID,
+                                                                             password: password) { [weak self] (password, error) in
+                guard let _ = password else {
+                    DDLogError("⛔️ Error updating product password: \(error.debugDescription)")
+                    group.leave()
+                    return
+                }
+
+                self?.originalPassword = password
+                group.leave()
+            }
+            ServiceLocator.stores.dispatch(passwordUpdateAction)
+        }
+
+        group.notify(queue: .main) { [weak self] in
             // Dismisses the in-progress UI.
             self?.navigationController?.dismiss(animated: true, completion: nil)
         }
-        ServiceLocator.stores.dispatch(action)
     }
 
     func displayError(error: ProductUpdateError?) {
@@ -330,12 +372,15 @@ private extension ProductFormViewController {
     }
 
     func displayProductSettings() {
-        let viewController = ProductSettingsViewController(product: product) { [weak self] (productSettings) in
+        let viewController = ProductSettingsViewController(product: product, password: password, completion: { [weak self] (productSettings) in
             guard let self = self else {
                 return
             }
             self.product = self.productUpdater.productSettingsUpdated(settings: productSettings)
-        }
+            self.password = productSettings.password
+        }, onPasswordRetrieved: { [weak self] (originalPassword) in
+            self?.originalPassword = originalPassword
+        })
         navigationController?.pushViewController(viewController, animated: true)
     }
 }
@@ -488,7 +533,7 @@ private extension ProductFormViewController {
 //
 extension ProductFormViewController {
     override func shouldPopOnBackButton() -> Bool {
-        if hasUnsavedChanges(product: product) {
+        if hasUnsavedChanges(product: product, password: password) {
             presentBackNavigationActionSheet()
             return false
         }
@@ -508,8 +553,8 @@ extension ProductFormViewController {
         })
     }
 
-    private func hasUnsavedChanges(product: Product) -> Bool {
-        return product != originalProduct || productImageActionHandler.productImageStatuses.hasPendingUpload
+    private func hasUnsavedChanges(product: Product, password: String?) -> Bool {
+        return product != originalProduct || productImageActionHandler.productImageStatuses.hasPendingUpload || password != originalPassword
     }
 }
 

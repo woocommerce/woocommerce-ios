@@ -53,7 +53,7 @@ struct SummaryTableViewCellViewModel {
     ///
     /// If the date is today, the time will be returned instead.
     ///
-    var dateCreatedAndOrderNumber: String {
+    var subtitle: String {
         let formatter: DateFormatter = {
             if dateCreated.isSameDay(as: Date(), using: calendar) {
                 return DateFormatter.timeFormatter
@@ -94,7 +94,7 @@ final class SummaryTableViewCell: UITableViewCell {
 
     func configure(_ viewModel: SummaryTableViewCellViewModel) {
         titleLabel.text = viewModel.billedPersonName
-        createdLabel.text = viewModel.dateCreatedAndOrderNumber
+        createdLabel.text = viewModel.subtitle
 
         display(presentation: viewModel.presentation)
     }

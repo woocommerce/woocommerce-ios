@@ -45,7 +45,7 @@ final class SummaryTableViewCellViewModelTests: XCTestCase {
                                                       layoutDirection: .leftToRight)
 
         // When
-        let subtitle = viewModel.dateCreatedAndOrderNumber
+        let subtitle = viewModel.subtitle
 
         // Then
         let expectedSubtitle = expectedFormatter.string(from: order.dateCreated) + " • #\(order.number)"
@@ -65,7 +65,7 @@ final class SummaryTableViewCellViewModelTests: XCTestCase {
                                                       layoutDirection: .rightToLeft)
 
         // When
-        let subtitle = viewModel.dateCreatedAndOrderNumber
+        let subtitle = viewModel.subtitle
 
         // Then
         let expectedSubtitle = "#\(order.number) • " + expectedFormatter.string(from: order.dateCreated)
@@ -85,7 +85,7 @@ final class SummaryTableViewCellViewModelTests: XCTestCase {
                                                       layoutDirection: .leftToRight)
 
         // When
-        let subtitle = viewModel.dateCreatedAndOrderNumber
+        let subtitle = viewModel.subtitle
 
         // Then
         let expectedSubtitle = expectedFormatter.string(from: order.dateCreated) + " • #\(order.number)"

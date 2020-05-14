@@ -31,7 +31,7 @@ final class SummaryTableViewCellTests: XCTestCase {
 
         cell.configure(viewModel)
 
-        XCTAssertEqual(mirror.createdLabel.text, viewModel.dateCreatedAndOrderNumber)
+        XCTAssertEqual(mirror.subtitleLabel.text, viewModel.subtitle)
     }
 
     func testDisplayStatusLabelIsSetToThePresentationStatusName() throws {
@@ -101,7 +101,7 @@ private extension SummaryTableViewCellTests {
     ///
     struct SummaryTableViewCellMirror {
         let titleLabel: UILabel
-        let createdLabel: UILabel
+        let subtitleLabel: UILabel
         let paymentStatusLabel: PaddedLabel
         let updateStatusButton: UIButton
     }
@@ -113,7 +113,7 @@ private extension SummaryTableViewCellTests {
 
         return SummaryTableViewCellMirror(
             titleLabel: try XCTUnwrap(mirror.descendant("titleLabel") as? UILabel),
-            createdLabel: try XCTUnwrap(mirror.descendant("createdLabel") as? UILabel),
+            subtitleLabel: try XCTUnwrap(mirror.descendant("subtitleLabel") as? UILabel),
             paymentStatusLabel: try XCTUnwrap(mirror.descendant("paymentStatusLabel") as? PaddedLabel),
             updateStatusButton: try XCTUnwrap(mirror.descendant("updateStatusButton") as? UIButton)
         )

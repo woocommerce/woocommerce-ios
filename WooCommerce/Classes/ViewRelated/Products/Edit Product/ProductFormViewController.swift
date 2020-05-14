@@ -30,10 +30,16 @@ final class ProductFormViewController: UIViewController {
                 return
             }
 
-            viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
+            updateMoreDetailsButtonVisibility(product: product)
+
+            viewModel = DefaultProductFormTableViewModel(product: product,
+                                                         currency: currency,
+                                                         isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                                         isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
             tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel,
                                                                  productImageStatuses: productImageActionHandler.productImageStatuses,
-                                                                 productUIImageLoader: productUIImageLoader)
+                                                                 productUIImageLoader: productUIImageLoader,
+                                                                 canEditImages: isEditProductsRelease2Enabled)
             tableViewDataSource.configureActions(onNameChange: { [weak self] name in
                 self?.onEditProductNameCompletion(newName: name ?? "")
             }, onAddImage: { [weak self] in
@@ -68,7 +74,8 @@ final class ProductFormViewController: UIViewController {
     private let productUIImageLoader: ProductUIImageLoader
 
     private let currency: String
-    private let featureFlagService: FeatureFlagService
+    private let isEditProductsRelease2Enabled: Bool
+    private let isEditProductsRelease3Enabled: Bool
 
     private lazy var exitForm: () -> Void = {
         presentationStyle.createExitForm(viewController: self)
@@ -81,20 +88,29 @@ final class ProductFormViewController: UIViewController {
     }
     private var cancellable: ObservationToken?
 
-    init(product: Product, currency: String, presentationStyle: PresentationStyle, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+    init(product: Product,
+         currency: String,
+         presentationStyle: PresentationStyle,
+         isEditProductsRelease2Enabled: Bool,
+         isEditProductsRelease3Enabled: Bool) {
         self.currency = currency
         self.presentationStyle = presentationStyle
-        self.featureFlagService = featureFlagService
+        self.isEditProductsRelease2Enabled = isEditProductsRelease2Enabled
+        self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
         self.originalProduct = product
         self.product = product
-        self.viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
+        self.viewModel = DefaultProductFormTableViewModel(product: product,
+                                                          currency: currency,
+                                                          isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                                          isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
         self.productImageActionHandler = ProductImageActionHandler(siteID: product.siteID,
                                                                    product: product)
         self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler,
                                                                 phAssetImageLoaderProvider: { PHImageManager.default() })
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel,
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
-                                                                  productUIImageLoader: productUIImageLoader)
+                                                                  productUIImageLoader: productUIImageLoader,
+                                                                  canEditImages: isEditProductsRelease2Enabled)
         super.init(nibName: nil, bundle: nil)
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
             self?.onEditProductNameCompletion(newName: name ?? "")
@@ -212,7 +228,7 @@ private extension ProductFormViewController {
     }
 
     func configureMoreDetailsContainerView() {
-        guard featureFlagService.isFeatureFlagEnabled(.editProductsRelease2) else {
+        guard isEditProductsRelease2Enabled else {
             moreDetailsContainerView.isHidden = true
             return
         }
@@ -220,8 +236,8 @@ private extension ProductFormViewController {
         let title = NSLocalizedString("Add more details", comment: "Title of the button at the bottom of the product form to add more product details.")
         let viewModel = BottomButtonContainerView.ViewModel(style: .link,
                                                             title: title,
-                                                            image: .plusImage) { _ in
-                                                                // TODO-2053: show more details bottom sheet
+                                                            image: .plusImage) { [weak self] button in
+                                                                self?.moreDetailsButtonTapped(button: button)
         }
         let buttonContainerView = BottomButtonContainerView(viewModel: viewModel)
 
@@ -229,6 +245,50 @@ private extension ProductFormViewController {
         moreDetailsContainerView.pinSubviewToAllEdges(buttonContainerView)
         moreDetailsContainerView.setContentCompressionResistancePriority(.required, for: .vertical)
         moreDetailsContainerView.setContentHuggingPriority(.required, for: .vertical)
+
+        updateMoreDetailsButtonVisibility(product: product)
+    }
+}
+
+// MARK: More details actions
+//
+private extension ProductFormViewController {
+    func moreDetailsButtonTapped(button: UIButton) {
+        let title = NSLocalizedString("Add more details",
+                                      comment: "Title of the bottom sheet from the product form to add more product details.")
+        let viewProperties = BottomSheetListSelectorViewProperties(title: title)
+        let dataSource = ProductFormBottomSheetListSelectorCommand(product: product,
+                                                                   isEditProductsRelease3Enabled: isEditProductsRelease3Enabled) { [weak self] action in
+                                                                    self?.dismiss(animated: true) { [weak self] in
+                                                                        switch action {
+                                                                        case .editInventorySettings:
+                                                                            self?.editInventorySettings()
+                                                                        case .editShippingSettings:
+                                                                            self?.editShippingSettings()
+                                                                        case .editCategories:
+                                                                            self?.editCategories()
+                                                                        case .editBriefDescription:
+                                                                            self?.editBriefDescription()
+                                                                        }
+                                                                    }
+        }
+        let listSelectorViewController = BottomSheetListSelectorViewController(viewProperties: viewProperties,
+                                                                               command: dataSource) { [weak self] selectedSortOrder in
+                                                                                self?.dismiss(animated: true, completion: nil)
+        }
+        let bottomSheet = BottomSheetViewController(childViewController: listSelectorViewController)
+        bottomSheet.show(from: self, sourceView: button, arrowDirections: .down)
+    }
+
+    func updateMoreDetailsButtonVisibility(product: Product) {
+        guard isEditProductsRelease2Enabled else {
+            moreDetailsContainerView.isHidden = true
+            return
+        }
+
+        let moreDetailsActions: [ProductFormBottomSheetAction] = [.editInventorySettings, .editShippingSettings, .editCategories, .editBriefDescription]
+        let hasVisibleActions = moreDetailsActions.map({ $0.isVisible(product: product) }).contains(true)
+        moreDetailsContainerView.isHidden = hasVisibleActions == false
     }
 }
 
@@ -393,7 +453,7 @@ private extension ProductFormViewController {
             rightBarButtonItems.append(createUpdateBarButtonItem())
         }
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease2) {
+        if isEditProductsRelease2Enabled {
             rightBarButtonItems.insert(createMoreOptionsBarButtonItem(), at: 0)
         }
 

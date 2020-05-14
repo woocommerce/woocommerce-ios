@@ -66,13 +66,14 @@ public enum AppSettingsAction: Action {
     case setStatsVersionPreference(siteID: Int64,
         statsVersion: StatsVersion)
 
-    /// Loads the user preferred Product Features visibility given the latest app settings
+    /// Loads the user preferred Product feature switch given the latest app settings
     ///
-    case loadProductsVisibility(onCompletion: (Bool) -> Void)
+    case loadProductsFeatureSwitch(onCompletion: (Bool) -> Void)
 
-    /// Sets the user preferred Product Features visibility
+    /// Sets the user preferred Product feature switch
+    /// If on, Products M2 features are available
     ///
-    case setProductsVisibility(isVisible: Bool, onCompletion: () -> Void)
+    case setProductsFeatureSwitch(isEnabled: Bool, onCompletion: () -> Void)
 
     /// Clears all the states related to stats version
     ///

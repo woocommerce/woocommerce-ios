@@ -162,14 +162,12 @@ private extension ProductLoaderViewController {
     }
 
     func presentProductDetails(for product: Product, isEditProductsEnabled: Bool) {
-        let viewController: UIViewController
-        if product.productType == .simple && isEditProductsEnabled {
-            viewController = ProductFormViewController(product: product, currency: currency, presentationStyle: .contained(containerViewController: self))
-        } else {
-            let viewModel = ProductDetailsViewModel(product: product, currency: currency)
-            viewController = ProductDetailsViewController(viewModel: viewModel)
+        ProductDetailsFactory.productDetails(product: product, presentationStyle: .contained(containerViewController: self)) { [weak self] viewController in
+            self?.attachProductDetailsChildViewController(viewController)
         }
+    }
 
+    func attachProductDetailsChildViewController(_ viewController: UIViewController) {
         // Attach
         addChild(viewController)
         attachSubview(viewController.view)

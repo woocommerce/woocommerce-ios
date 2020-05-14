@@ -48,14 +48,19 @@ final class SummaryTableViewCellTests: XCTestCase {
         XCTAssertEqual(mirror.paymentStatusLabel.text, orderStatus.name)
     }
 
-    func testTappingButtonExecutesCallback() {
+    func testTappingButtonExecutesCallback() throws {
+        // Given
+        let mirror = try self.mirror(of: cell)
+
         let expect = expectation(description: "The action assigned gets called")
         cell.onEditTouchUp = {
             expect.fulfill()
         }
 
-        cell.getEditButton().sendActions(for: .touchUpInside)
+        // When
+        mirror.updateStatusButton.sendActions(for: .touchUpInside)
 
+        // Then
         waitForExpectations(timeout: 1, handler: nil)
     }
 
@@ -273,6 +278,7 @@ private extension SummaryTableViewCellTests {
         let titleLabel: UILabel
         let createdLabel: UILabel
         let paymentStatusLabel: PaddedLabel
+        let updateStatusButton: UIButton
     }
 
     /// Create testable struct to test private properties of `SummaryTableViewCell`
@@ -283,7 +289,8 @@ private extension SummaryTableViewCellTests {
         return SummaryTableViewCellMirror(
             titleLabel: try XCTUnwrap(mirror.descendant("titleLabel") as? UILabel),
             createdLabel: try XCTUnwrap(mirror.descendant("createdLabel") as? UILabel),
-            paymentStatusLabel: try XCTUnwrap(mirror.descendant("paymentStatusLabel") as? PaddedLabel)
+            paymentStatusLabel: try XCTUnwrap(mirror.descendant("paymentStatusLabel") as? PaddedLabel),
+            updateStatusButton: try XCTUnwrap(mirror.descendant("updateStatusButton") as? UIButton)
         )
     }
 }

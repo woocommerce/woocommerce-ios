@@ -180,23 +180,3 @@ private extension SummaryTableViewCell {
                                                                  comment: "Accessibility hint for the button to update the order status")
     }
 }
-
-
-/// MARK: - Testability
-extension SummaryTableViewCell {
-    func getTitle() -> UILabel {
-        return titleLabel
-    }
-
-    func getCreatedLabel() -> UILabel {
-        return createdLabel
-    }
-
-    func getStatusLabel() -> UILabel {
-        return paymentStatusLabel
-    }
-
-    func getEditButton() -> UIButton {
-        return updateStatusButton
-    }
-}

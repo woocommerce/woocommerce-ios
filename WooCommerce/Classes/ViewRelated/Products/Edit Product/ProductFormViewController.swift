@@ -507,7 +507,7 @@ extension ProductFormViewController: UITableViewDelegate {
                 // TODO-2000 Edit Product M3 analytics
                 editCategories()
             case .briefDescription:
-                // TODO-1879: Edit Products M2 analytics
+                ServiceLocator.analytics.track(.productDetailViewShortDescriptionTapped)
                 editBriefDescription()
             }
         }
@@ -767,7 +767,7 @@ private extension ProductFormViewController {
             navigationController?.popViewController(animated: true)
         }
         let hasChangedData = newBriefDescription != product.briefDescription
-        // TODO-1879: Edit Products M2 analytics
+        ServiceLocator.analytics.track(.productShortDescriptionDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
 
         guard hasChangedData else {
             return
@@ -819,6 +819,7 @@ private extension ProductFormViewController {
         }
 
         actionSheet.addDefaultActionWithTitle(ActionSheetStrings.productSettings) { [weak self] _ in
+            ServiceLocator.analytics.track(.productDetailViewSettingsButtonTapped)
             self?.displayProductSettings()
         }
 

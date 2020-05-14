@@ -278,16 +278,16 @@ public enum WooAnalyticsStat: String {
     case productDetailShareButtonTapped = "product_detail_share_button_tapped"
 
     // Product Settings
-    case product_detail_view_settings_button_tapped = "product_detail_view_settings_button_tapped"
-    case product_settings_done_button_tapped = "product_settings_done_button_tapped"
-    case product_settings_status_tapped = "product_settings_status_tapped"
-    case product_settings_catalog_visibility_tapped = "product_settings_catalog_visibility_tapped"
-    case product_detail_view_short_description_tapped = "product_detail_view_short_description_tapped"
-    case product_short_description_done_button_tapped = "product_short_description_done_button_tapped"
-    case product_settings_slug_tapped = "product_settings_slug_tapped"
-    case product_settings_purchase_note_tapped = "product_settings_purchase_note_tapped"
-    case product_settings_visibility_tapped = "product_settings_visibility_tapped"
-    case product_settings_menu_order_tapped = "product_settings_menu_order_tapped"
+    case productDetailViewSettingsButtonTapped = "product_detail_view_settings_button_tapped"
+    case productSettingsDoneButtonTapped = "product_settings_done_button_tapped"
+    case productSettingsStatusTapped = "product_settings_status_tapped"
+    case productSettingsVisibilityTapped = "product_settings_visibility_tapped"
+    case productSettingsCatalogVisibilityTapped = "product_settings_catalog_visibility_tapped"
+    case productDetailViewShortDescriptionTapped = "product_detail_view_short_description_tapped"
+    case productShortDescriptionDoneButtonTapped = "product_short_description_done_button_tapped"
+    case productSettingsSlugTapped = "product_settings_slug_tapped"
+    case productSettingsPurchaseNoteTapped = "product_settings_purchase_note_tapped"
+    case productSettingsMenuOrderTapped = "product_settings_menu_order_tapped"
 
     // Product List Sorting/Filtering
     case product_list_view_sorting_options_tapped = "product_list_view_sorting_options_tapped"

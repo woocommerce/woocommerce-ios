@@ -50,7 +50,7 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func settingsRows(product: Product) -> [ProductFormSection.SettingsRow] {
-        let shouldShowShippingSettingsRow = product.downloadable == false && product.virtual == false
+        let shouldShowShippingSettingsRow = product.isShippingEnabled
         let shouldShowBriefDescriptionRow = isEditProductsRelease2Enabled
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
 
@@ -62,7 +62,7 @@ private extension DefaultProductFormTableViewModel {
             shouldShowBriefDescriptionRow ? .briefDescription(viewModel: briefDescriptionRow(product: product)): nil
         ]
 
-        return rows.compactMap { $0 }
+        return rows.compactMap { $0 }.filter { $0.isVisible(product: product) }
     }
 }
 

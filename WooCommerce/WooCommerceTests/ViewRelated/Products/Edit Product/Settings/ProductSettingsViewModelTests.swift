@@ -7,7 +7,7 @@ final class ProductSettingsViewModelTests: XCTestCase {
     func testOnReloadClosure() {
 
         let product = MockProduct().product(status: .publish, featured: true, catalogVisibility: .search, slug: "this-is-a-slug", menuOrder: 1)
-        let viewModel = ProductSettingsViewModel(product: product)
+        let viewModel = ProductSettingsViewModel(product: product, password: "1234")
 
         // Act
         let expectation = self.expectation(description: "Wait for the view model data to be updated")
@@ -19,6 +19,7 @@ final class ProductSettingsViewModelTests: XCTestCase {
         // Update settings. Section data changed. This will update the view model, and will fire the `onReload` closure.
         viewModel.productSettings = ProductSettings(status: product.productStatus,
                                                     featured: true,
+                                                    password: "1234",
                                                     catalogVisibility: .search,
                                                     slug: "this-is-a-slug",
                                                     purchaseNote: "This is a purchase note",
@@ -29,13 +30,26 @@ final class ProductSettingsViewModelTests: XCTestCase {
 
     func testHasUnsavedChanges() {
         let product = MockProduct().product(status: .publish, featured: false, catalogVisibility: .visible)
-        let viewModel = ProductSettingsViewModel(product: product)
+        let viewModel = ProductSettingsViewModel(product: product, password: "12345")
 
         XCTAssertFalse(viewModel.hasUnsavedChanges())
 
         viewModel.productSettings.status = .pending
         viewModel.productSettings.featured = false
         viewModel.productSettings.catalogVisibility = .search
+
+        XCTAssertTrue(viewModel.hasUnsavedChanges())
+    }
+
+    func testHasUnsavedChangesWithOnlyThePasswordChanged() {
+        let product = MockProduct().product(status: .publish, featured: false, catalogVisibility: .visible)
+        let viewModel = ProductSettingsViewModel(product: product, password: nil)
+
+        XCTAssertFalse(viewModel.hasUnsavedChanges())
+
+        viewModel.productSettings.status = .pending
+        viewModel.productSettings.featured = false
+        viewModel.productSettings.password = "12345"
 
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }

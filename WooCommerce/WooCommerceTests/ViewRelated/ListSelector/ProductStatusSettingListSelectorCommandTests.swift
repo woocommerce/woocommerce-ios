@@ -19,7 +19,7 @@ final class ProductStatusSettingListSelectorCommandTests: XCTestCase {
 
     func testSettingListData() {
         let command = ProductStatusSettingListSelectorCommand(selected: nil)
-        XCTAssertEqual(command.data.count, 4)
+        XCTAssertEqual(command.data.count, 3)
     }
 
     func testCellConfiguration() {

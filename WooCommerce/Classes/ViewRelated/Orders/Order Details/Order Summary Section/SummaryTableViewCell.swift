@@ -42,7 +42,13 @@ struct SummaryTableViewCellViewModel {
     /// If the date is today, the time will be returned instead.
     ///
     var dateCreatedAndOrderNumber: String {
-        let formatter = DateFormatter.mediumLengthLocalizedDateFormatter
+        let formatter: DateFormatter = {
+            if dateCreated.isSameDay(as: Date()) {
+                return DateFormatter.timeFormatter
+            } else {
+                return DateFormatter.mediumLengthLocalizedDateFormatter
+            }
+        }()
 
         return [formatter.string(from: dateCreated), "#\(orderNumber)"]
             .compactMap({ $0 })

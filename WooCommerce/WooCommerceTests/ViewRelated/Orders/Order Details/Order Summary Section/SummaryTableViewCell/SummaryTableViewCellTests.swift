@@ -5,10 +5,10 @@ import XCTest
 final class SummaryTableViewCellTests: XCTestCase {
     private var cell: SummaryTableViewCell!
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
+    override func setUp() {
+        try super.setUp()
         let nib = Bundle.main.loadNibNamed("SummaryTableViewCell", owner: self, options: nil)
-        cell = try XCTUnwrap(nib?.first as? SummaryTableViewCell)
+        cell = nib?.first as! SummaryTableViewCell
     }
 
     override func tearDown() {

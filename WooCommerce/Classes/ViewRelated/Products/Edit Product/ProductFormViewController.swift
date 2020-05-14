@@ -1,5 +1,6 @@
 import Photos
 import UIKit
+import WordPressUI
 import Yosemite
 
 /// The entry UI for adding/editing a Product.

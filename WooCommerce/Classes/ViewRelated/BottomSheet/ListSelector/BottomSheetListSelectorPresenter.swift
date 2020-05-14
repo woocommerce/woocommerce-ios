@@ -1,4 +1,5 @@
 import UIKit
+import WordPressUI
 
 /// Presents a bottom sheet list selector specified in its initializer.
 ///

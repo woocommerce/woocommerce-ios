@@ -1,4 +1,5 @@
 import UIKit
+import WordPressUI
 
 /// Displays a list (implemented by table view) for the user to select a generic model from a bottom sheet.
 ///

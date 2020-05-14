@@ -268,16 +268,19 @@ public enum WooAnalyticsStat: String {
     case productInventorySettingsDoneButtonTapped = "product_inventory_settings_done_button_tapped"
 
     // Product Images Events
+    //
     case productImageSettingsDoneButtonTapped = "product_image_settings_done_button_tapped"
     case productDetailAddImageTapped = "product_detail_add_image_tapped"
     case productImageSettingsAddImagesButtonTapped = "product_image_settings_add_images_button_tapped"
     case productImageSettingsDeleteImageButtonTapped = "product_image_settings_delete_image_button_tapped"
 
     // Product More Menu
+    //
     case productDetailViewProductButtonTapped = "product_detail_view_product_button_tapped"
     case productDetailShareButtonTapped = "product_detail_share_button_tapped"
 
     // Product Settings
+    //
     case productDetailViewSettingsButtonTapped = "product_detail_view_settings_button_tapped"
     case productSettingsDoneButtonTapped = "product_settings_done_button_tapped"
     case productSettingsStatusTapped = "product_settings_status_tapped"
@@ -290,6 +293,7 @@ public enum WooAnalyticsStat: String {
     case productSettingsMenuOrderTapped = "product_settings_menu_order_tapped"
 
     // Product List Sorting/Filtering
+    //
     case productListViewSortingOptionsTapped = "product_list_view_sorting_options_tapped"
     case productListViewFilterOptionsTapped = "product_list_view_filter_options_tapped"
     case productFilterListShowProductsButtonTapped = "product_filter_list_show_products_button_tapped"

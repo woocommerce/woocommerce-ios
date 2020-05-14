@@ -114,34 +114,47 @@ final class ProductReviewsRemoteTests: XCTestCase {
 
     /// Verifies that loadProductReview properly parses the `reviews-single` sample response.
     ///
-    func testLoadProductReviewProperlyReturnsParsedProductReviews() {
+    func testLoadProductReviewProperlyReturnsParsedProductReviews() throws {
+        // Given
         let remote = ProductReviewsRemote(network: network)
         let expectation = self.expectation(description: "Load Single Product Review")
 
         network.simulateResponse(requestUrlSuffix: "products/reviews/\(sampleReviewID)", filename: "reviews-single")
 
-        remote.loadProductReview(for: sampleSiteID, reviewID: sampleReviewID) { review, error in
-            XCTAssertNil(error)
-            XCTAssertNotNil(review)
+        // When
+        var resultMaybe: Result<ProductReview, Error>?
+        remote.loadProductReview(for: sampleSiteID, reviewID: sampleReviewID) { aResult in
+            resultMaybe = aResult
             expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        // Then
+        let result = try XCTUnwrap(resultMaybe)
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertNotNil(try result.get())
     }
 
     /// Verifies that loadProductReview properly relays Networking Layer errors.
     ///
-    func testLoadProductReviewProperlyRelaysNetwokingErrors() {
+    func testLoadProductReviewProperlyRelaysNetworkingErrors() throws {
+        // Given
         let remote = ProductReviewsRemote(network: network)
         let expectation = self.expectation(description: "Load a single Product Review returns error")
 
-        remote.loadProductReview(for: sampleSiteID, reviewID: sampleReviewID) { review, error in
-            XCTAssertNil(review)
-            XCTAssertNotNil(error)
+        // When
+        var resultMaybe: Result<ProductReview, Error>?
+        remote.loadProductReview(for: sampleSiteID, reviewID: sampleReviewID) { aResult in
+            resultMaybe = aResult
             expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        // Then
+        let result = try XCTUnwrap(resultMaybe)
+        XCTAssertTrue(result.isFailure)
     }
 
 

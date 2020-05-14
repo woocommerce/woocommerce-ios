@@ -185,19 +185,24 @@ private extension ProductStore {
     func retrieveProduct(siteID: Int64, productID: Int64, onCompletion: @escaping (Networking.Product?, Error?) -> Void) {
         let remote = ProductsRemote(network: network)
 
-        remote.loadProduct(for: siteID, productID: productID) { [weak self] (product, error) in
-            guard let product = product else {
-                if case NetworkError.notFound? = error {
-                    self?.deleteStoredProduct(siteID: siteID, productID: productID)
-                }
-                onCompletion(nil, error)
+        remote.loadProduct(for: siteID, productID: productID) { [weak self] result in
+            guard let self = self else {
                 return
             }
 
-            self?.upsertStoredProductsInBackground(readOnlyProducts: [product]) { [weak self] in
-                let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: siteID, productID: productID)
-                onCompletion(storageProduct?.toReadOnly(), nil)
+            switch result {
+            case .failure(let error):
+                if case NetworkError.notFound = error {
+                    self.deleteStoredProduct(siteID: siteID, productID: productID)
+                }
+                onCompletion(nil, error)
+            case .success(let product):
+                self.upsertStoredProductsInBackground(readOnlyProducts: [product]) { [weak self] in
+                    let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: siteID, productID: productID)
+                    onCompletion(storageProduct?.toReadOnly(), nil)
+                }
             }
+
         }
     }
 

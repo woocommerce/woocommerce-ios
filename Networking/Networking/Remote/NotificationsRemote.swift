@@ -1,5 +1,4 @@
 import Foundation
-import Alamofire
 
 
 /// Notifications: Remote Endpoints
@@ -13,7 +12,7 @@ public class NotificationsRemote: Remote {
     ///     - pageSize: Number of hashes to retrieve.
     ///     - completion: callback to be executed on completion.
     ///
-    public func loadNotes(noteIDs: [Int64]? = nil, pageSize: Int? = nil, completion: @escaping ([Note]?, Error?) -> Void) {
+    public func loadNotes(noteIDs: [Int64]? = nil, pageSize: Int? = nil, completion: @escaping (Result<[Note], Error>) -> Void) {
         let request = requestForNotifications(fields: .all, noteIDs: noteIDs, pageSize: pageSize)
         let mapper = NoteListMapper()
 

@@ -449,6 +449,7 @@ private extension ProductsViewController {
     }
 
     @objc func sortButtonTapped(sender: UIButton) {
+        ServiceLocator.analytics.track(.productListViewSortingOptionsTapped, withProperties: ["order": sortOrder.analyticsDescription])
         let title = NSLocalizedString("Sort by",
                                       comment: "Message title for sort products action bottom sheet")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
@@ -468,10 +469,16 @@ private extension ProductsViewController {
     }
 
     @objc func filterButtonTapped() {
+        ServiceLocator.analytics.track(.productListViewFilterOptionsTapped)
         let viewModel = FilterProductListViewModel(filters: filters)
-        let filterProductListViewController = FilterListViewController(viewModel: viewModel) { [weak self] filters in
+        let filterProductListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
+            ServiceLocator.analytics.track(.productFilterListShowProductsButtonTapped, withProperties: ["filters": filters.analyticsDescription])
             self?.filters = filters
-        }
+        }, onClearAction: {
+            ServiceLocator.analytics.track(.productFilterListClearMenuButtonTapped)
+        }, onDismissAction: {
+            ServiceLocator.analytics.track(.productFilterListDismissButtonTapped)
+        })
         present(filterProductListViewController, animated: true, completion: nil)
     }
 }

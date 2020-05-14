@@ -273,7 +273,7 @@ public enum WooAnalyticsStat: String {
     case productImageSettingsAddImagesButtonTapped = "product_image_settings_add_images_button_tapped"
     case productImageSettingsDeleteImageButtonTapped = "product_image_settings_delete_image_button_tapped"
 
-    // More Product Menu
+    // Product More Menu
     case productDetailViewProductButtonTapped = "product_detail_view_product_button_tapped"
     case productDetailShareButtonTapped = "product_detail_share_button_tapped"
 
@@ -290,11 +290,11 @@ public enum WooAnalyticsStat: String {
     case productSettingsMenuOrderTapped = "product_settings_menu_order_tapped"
 
     // Product List Sorting/Filtering
-    case product_list_view_sorting_options_tapped = "product_list_view_sorting_options_tapped"
-    case product_list_view_filter_options_tapped = "product_list_view_filter_options_tapped"
-    case product_filter_list_show_products_button_tapped = "product_filter_list_show_products_button_tapped"
-    case product_filter_list_clear_menu_button_tapped = "product_filter_list_clear_menu_button_tapped"
-    case product_filter_list_dismiss_button_tapped = "product_filter_list_dismiss_button_tapped"
+    case productListViewSortingOptionsTapped = "product_list_view_sorting_options_tapped"
+    case productListViewFilterOptionsTapped = "product_list_view_filter_options_tapped"
+    case productFilterListShowProductsButtonTapped = "product_filter_list_show_products_button_tapped"
+    case productFilterListClearMenuButtonTapped = "product_filter_list_clear_menu_button_tapped"
+    case productFilterListDismissButtonTapped = "product_filter_list_dismiss_button_tapped"
 
     // Readonly Product Variations Events
     //

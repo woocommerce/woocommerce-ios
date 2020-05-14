@@ -18,7 +18,14 @@ struct SummaryTableViewCellViewModel {
 
     let presentation: SummaryTableViewCellPresentation
 
-    init(order: Order, status: OrderStatus?) {
+    private let calendar: Calendar
+    private let layoutDirection: UIUserInterfaceLayoutDirection
+
+    init(order: Order,
+         status: OrderStatus?,
+         calendar: Calendar = .current,
+         layoutDirection: UIUserInterfaceLayoutDirection = UIApplication.shared.userInterfaceLayoutDirection) {
+
         billingAddress = order.billingAddress
         dateCreated = order.dateCreated
         orderNumber = order.number
@@ -27,8 +34,13 @@ struct SummaryTableViewCellViewModel {
             status: status?.status ?? OrderStatusEnum(rawValue: order.statusKey),
             statusName: status?.name ?? order.statusKey
         )
+
+        self.calendar = calendar
+        self.layoutDirection = layoutDirection
     }
 
+    /// The full name from the billing address
+    ///
     var billedPersonName: String {
         if let billingAddress = billingAddress {
             return "\(billingAddress.firstName) \(billingAddress.lastName)"
@@ -43,7 +55,7 @@ struct SummaryTableViewCellViewModel {
     ///
     var dateCreatedAndOrderNumber: String {
         let formatter: DateFormatter = {
-            if dateCreated.isSameDay(as: Date()) {
+            if dateCreated.isSameDay(as: Date(), using: calendar) {
                 return DateFormatter.timeFormatter
             } else {
                 return DateFormatter.mediumLengthLocalizedDateFormatter
@@ -51,8 +63,7 @@ struct SummaryTableViewCellViewModel {
         }()
 
         return [formatter.string(from: dateCreated), "#\(orderNumber)"]
-            .compactMap({ $0 })
-            .reversed(when: UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft)
+            .reversed(when: layoutDirection == .rightToLeft)
             .joined(separator: " • ")
     }
 }

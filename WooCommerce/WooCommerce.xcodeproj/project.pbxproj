@@ -130,7 +130,7 @@
 		02521E11243DC3C400DC7810 /* CancellableMedia.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02521E10243DC3C400DC7810 /* CancellableMedia.swift */; };
 		02564A88246C047C00D6DB2A /* Optional+StringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02564A87246C047C00D6DB2A /* Optional+StringTests.swift */; };
 		02564A8A246CDF6100D6DB2A /* ProductsTopBannerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02564A89246CDF6100D6DB2A /* ProductsTopBannerFactory.swift */; };
-		02564A8C246CE38E00D6DB2A /* ProductsTopBannerContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02564A8B246CE38E00D6DB2A /* ProductsTopBannerContainerView.swift */; };
+		02564A8C246CE38E00D6DB2A /* SwappableSubviewContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02564A8B246CE38E00D6DB2A /* SwappableSubviewContainerView.swift */; };
 		0257285C230ACC7E00A288C4 /* StoreStatsV4ChartAxisHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0257285B230ACC7E00A288C4 /* StoreStatsV4ChartAxisHelperTests.swift */; };
 		0259EF77246BF4EC00B84FDF /* ProductDetailsFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0259EF76246BF4EC00B84FDF /* ProductDetailsFactoryTests.swift */; };
 		0259EF79246BF66000B84FDF /* MockProductsAppSettingsStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0259EF78246BF66000B84FDF /* MockProductsAppSettingsStoresManager.swift */; };
@@ -981,7 +981,7 @@
 		02521E10243DC3C400DC7810 /* CancellableMedia.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CancellableMedia.swift; sourceTree = "<group>"; };
 		02564A87246C047C00D6DB2A /* Optional+StringTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Optional+StringTests.swift"; sourceTree = "<group>"; };
 		02564A89246CDF6100D6DB2A /* ProductsTopBannerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsTopBannerFactory.swift; sourceTree = "<group>"; };
-		02564A8B246CE38E00D6DB2A /* ProductsTopBannerContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsTopBannerContainerView.swift; sourceTree = "<group>"; };
+		02564A8B246CE38E00D6DB2A /* SwappableSubviewContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwappableSubviewContainerView.swift; sourceTree = "<group>"; };
 		0257285B230ACC7E00A288C4 /* StoreStatsV4ChartAxisHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsV4ChartAxisHelperTests.swift; sourceTree = "<group>"; };
 		0259EF76246BF4EC00B84FDF /* ProductDetailsFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailsFactoryTests.swift; sourceTree = "<group>"; };
 		0259EF78246BF66000B84FDF /* MockProductsAppSettingsStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductsAppSettingsStoresManager.swift; sourceTree = "<group>"; };
@@ -1978,6 +1978,15 @@
 			path = Command;
 			sourceTree = "<group>";
 		};
+		02564A8F246CEBCB00D6DB2A /* Containers */ = {
+			isa = PBXGroup;
+			children = (
+				02564A8B246CE38E00D6DB2A /* SwappableSubviewContainerView.swift */,
+				02C8876F245027F200E4470F /* BottomButtonContainer */,
+			);
+			path = Containers;
+			sourceTree = "<group>";
+		};
 		025FDD3023717D1A00824006 /* Editor */ = {
 			isa = PBXGroup;
 			children = (
@@ -2664,7 +2673,6 @@
 				0260F40023224E8100EDA10A /* ProductsViewController.swift */,
 				020DD49023239DD6005822B1 /* PaginatedListViewControllerStateCoordinator.swift */,
 				02564A89246CDF6100D6DB2A /* ProductsTopBannerFactory.swift */,
-				02564A8B246CE38E00D6DB2A /* ProductsTopBannerContainerView.swift */,
 			);
 			path = Products;
 			sourceTree = "<group>";
@@ -2889,9 +2897,9 @@
 		B56DB3EF2049C06D00D4AA8E /* ViewRelated */ = {
 			isa = PBXGroup;
 			children = (
-				027D67CF245ADDCC0036B8DB /* Filters */,
-				02C8876F245027F200E4470F /* BottomButtonContainer */,
 				0235594024496414004BE2B8 /* BottomSheet */,
+				02564A8F246CEBCB00D6DB2A /* Containers */,
+				027D67CF245ADDCC0036B8DB /* Filters */,
 				02E262C3238D04DB00B79588 /* ListSelector */,
 				028296E9237D289900E84012 /* Text View Screen */,
 				025FDD3023717D1A00824006 /* Editor */,
@@ -4714,7 +4722,7 @@
 				D82DFB4A225F22D400EFE2CB /* UISearchBar+Appearance.swift in Sources */,
 				7441E1D221503F77004E6ECE /* IntrinsicTableView.swift in Sources */,
 				B517EA1D218B41F200730EC4 /* String+Woo.swift in Sources */,
-				02564A8C246CE38E00D6DB2A /* ProductsTopBannerContainerView.swift in Sources */,
+				02564A8C246CE38E00D6DB2A /* SwappableSubviewContainerView.swift in Sources */,
 				024DF31223742B18006658FE /* AztecItalicFormatBarCommand.swift in Sources */,
 				D83F5933225B2EB900626E75 /* ManualTrackingViewController.swift in Sources */,
 				B57C744A20F5649300EEFC87 /* EmptyStoresTableViewCell.swift in Sources */,

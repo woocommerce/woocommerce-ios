@@ -53,7 +53,7 @@ final class ProductsViewController: UIViewController {
 
     /// Container of the top banner that shows that the Products feature is still work in progress.
     ///
-    private lazy var topBannerContainerView: ProductsTopBannerContainerView = ProductsTopBannerContainerView()
+    private lazy var topBannerContainerView: SwappableSubviewContainerView = SwappableSubviewContainerView()
 
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Products in sync.
     ///
@@ -330,7 +330,7 @@ private extension ProductsViewController {
         ProductsTopBannerFactory.topBanner(expandedStateChangeHandler: { [weak self] in
             self?.tableView.updateHeaderHeight()
         }, onCompletion: { [weak self] topBannerView in
-            self?.topBannerContainerView.updateTopBanner(topBannerView)
+            self?.topBannerContainerView.updateSubview(topBannerView)
             self?.tableView.updateHeaderHeight()
         })
     }

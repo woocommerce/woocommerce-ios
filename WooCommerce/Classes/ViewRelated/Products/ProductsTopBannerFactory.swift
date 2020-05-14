@@ -32,7 +32,8 @@ private extension ProductsTopBannerFactory {
             NSLocalizedString("Limited editing available",
                               comment: "The title of the Work In Progress top banner on the Products tab when the Products release 2 feature switch is off.")
         static let infoWhenEditProductsRelease2IsEnabled =
-            NSLocalizedString("We've added more editing functionalities to products. You can now update images, see previews and sort, filter & share products!",
+            NSLocalizedString(
+                "We've added more editing functionalities to products. You can now update images, see previews and sort, filter & share products!",
                               comment: "The info of the Work In Progress top banner on the Products tab when the Products release 2 feature switch is on.")
         static let infoWhenEditProductsRelease2IsDisabled =
             NSLocalizedString("We've added editing functionality to simple products. Keep an eye out for more options soon!",

@@ -352,6 +352,7 @@
 		57C503DE23E8CE0D00EC0790 /* OrdersMasterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 57C503DD23E8CE0D00EC0790 /* OrdersMasterViewController.xib */; };
 		57C503E023E8D4D600EC0790 /* OrdersMasterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C503DF23E8D4D600EC0790 /* OrdersMasterViewModel.swift */; };
 		57F2C6CD246DECC10074063B /* SummaryTableViewCellViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F2C6CC246DECC10074063B /* SummaryTableViewCellViewModelTests.swift */; };
+		57F2C6CF246DF8210074063B /* Array+HelpersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F2C6CE246DF8210074063B /* Array+HelpersTests.swift */; };
 		57F34AA12423D45A00E38AFB /* OrdersViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F34AA02423D45A00E38AFB /* OrdersViewModelTests.swift */; };
 		6856D2A5C2076F5BF14F2C11 /* KeyboardStateProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6856DCE1638958DA296D690F /* KeyboardStateProviderTests.swift */; };
 		6856D31F941A33BAE66F394D /* KeyboardFrameAdjustmentProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6856D3846BBF078CB5D955B9 /* KeyboardFrameAdjustmentProvider.swift */; };
@@ -1205,6 +1206,7 @@
 		57C503DD23E8CE0D00EC0790 /* OrdersMasterViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrdersMasterViewController.xib; sourceTree = "<group>"; };
 		57C503DF23E8D4D600EC0790 /* OrdersMasterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersMasterViewModel.swift; sourceTree = "<group>"; };
 		57F2C6CC246DECC10074063B /* SummaryTableViewCellViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryTableViewCellViewModelTests.swift; sourceTree = "<group>"; };
+		57F2C6CE246DF8210074063B /* Array+HelpersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+HelpersTests.swift"; sourceTree = "<group>"; };
 		57F34AA02423D45A00E38AFB /* OrdersViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersViewModelTests.swift; sourceTree = "<group>"; };
 		6856D02484A69911F2B91714 /* KeyboardStateProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardStateProvider.swift; sourceTree = "<group>"; };
 		6856D1A5F72A36AB3704D19D /* AgeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgeTests.swift; sourceTree = "<group>"; };
@@ -5072,6 +5074,7 @@
 				D83F5935225B3CDD00626E75 /* DatePickerTableViewCellTests.swift in Sources */,
 				02A275C823FEA102005C560F /* DefaultProductFormTableViewModel+EditProductsM2Tests.swift in Sources */,
 				93FA787221CD2A1A00B663E5 /* CurrencySettingsTests.swift in Sources */,
+				57F2C6CF246DF8210074063B /* Array+HelpersTests.swift in Sources */,
 				45FBDF2D238BF8BF00127F77 /* AddProductImageCollectionViewCellTests.swift in Sources */,
 				CECC759923D6160000486676 /* AggregateDataHelperTests.swift in Sources */,
 				020BE76F23B4A468007FE54C /* AztecBlockquoteFormatBarCommandTests.swift in Sources */,

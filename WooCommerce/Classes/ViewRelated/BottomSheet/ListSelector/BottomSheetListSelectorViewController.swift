@@ -129,8 +129,6 @@ private extension BottomSheetListSelectorViewController {
     }
 
     func configurePreferredContentSize() {
-        let size = contentSize
-        let height = contentSize.height + BottomSheetViewController.Constants.additionalContentTopMargin
-        preferredContentSize = CGSize(width: size.width, height: height)
+        preferredContentSize = contentSize
     }
 }

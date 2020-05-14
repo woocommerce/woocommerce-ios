@@ -463,7 +463,8 @@ private extension ProductsViewController {
                                                                             return
                                                                         }
                                                                         self?.sortOrder = selectedSortOrder
-                                                                        ServiceLocator.analytics.track(.productListViewSortingOptionsTapped, withProperties: ["order": selectedSortOrder.analyticsDescription])
+                                                                        ServiceLocator.analytics.track(.productListViewSortingOptionsTapped,
+                                                                                                       withProperties: ["order": selectedSortOrder.analyticsDescription])
         }
         sortOrderListPresenter.show(from: self, sourceView: sender, arrowDirections: .up)
     }

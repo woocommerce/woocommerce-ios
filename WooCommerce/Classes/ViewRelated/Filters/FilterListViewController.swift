@@ -110,7 +110,10 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
     ///   - onFilterAction: Called when the user taps on the Filter CTA.
     ///   - onClearAction: Called when the user taps on the Clear CTA.
     ///   - onDismissAction: Called when the user taps on the Dismiss CTA.
-    init(viewModel: ViewModel, onFilterAction: @escaping (ViewModel.Criteria) -> Void, onClearAction: @escaping () -> Void, onDismissAction: @escaping () -> Void) {
+    init(viewModel: ViewModel,
+         onFilterAction: @escaping (ViewModel.Criteria) -> Void,
+         onClearAction: @escaping () -> Void,
+         onDismissAction: @escaping () -> Void) {
         self.viewModel = viewModel
         self.onFilterAction = onFilterAction
         self.onClearAction = onClearAction

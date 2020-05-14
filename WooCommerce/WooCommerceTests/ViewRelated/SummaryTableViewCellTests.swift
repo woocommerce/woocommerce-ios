@@ -63,37 +63,6 @@ final class SummaryTableViewCellTests: XCTestCase {
         // Then
         waitForExpectations(timeout: 1, handler: nil)
     }
-
-    func testTitleLabelIsAppliedHeadStyle() {
-        let mockLabel = UILabel()
-        mockLabel.applyHeadlineStyle()
-
-        let cellTitleLabel = cell.getTitle()
-
-        XCTAssertEqual(cellTitleLabel.font, mockLabel.font)
-        XCTAssertEqual(cellTitleLabel.textColor, mockLabel.textColor)
-    }
-
-    func testCreatedLabelIsAppliedHeadStyle() {
-        let mockLabel = UILabel()
-        mockLabel.applyFootnoteStyle()
-
-        let cellCreatedLabel = cell.getCreatedLabel()
-
-        XCTAssertEqual(cellCreatedLabel.font, mockLabel.font)
-        XCTAssertEqual(cellCreatedLabel.textColor, mockLabel.textColor)
-    }
-
-    func testStatusLabelIsAppliedPaddedLabelStyle() {
-        let mockLabel = UILabel()
-        mockLabel.applyPaddedLabelDefaultStyles()
-
-        let cellStatusLabel = cell.getStatusLabel()
-
-        XCTAssertEqual(cellStatusLabel.font, mockLabel.font)
-        XCTAssertEqual(cellStatusLabel.layer.borderWidth, mockLabel.layer.borderWidth)
-        XCTAssertEqual(cellStatusLabel.layer.cornerRadius, mockLabel.layer.cornerRadius)
-    }
 }
 
 private extension SummaryTableViewCellTests {

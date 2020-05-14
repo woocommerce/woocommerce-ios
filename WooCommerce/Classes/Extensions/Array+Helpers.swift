@@ -18,12 +18,6 @@ extension Array {
     var isNotEmpty: Bool {
         return !isEmpty
     }
-
-    /// Returns a reversed version of this array if the given condition is `true`.
-    ///
-    func reversed(when condition: Bool) -> [Element] {
-        condition ? reversed() : self
-    }
 }
 
 

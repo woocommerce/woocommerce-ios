@@ -6,9 +6,9 @@ final class SummaryTableViewCellTests: XCTestCase {
     private var cell: SummaryTableViewCell!
 
     override func setUp() {
-        try super.setUp()
+        super.setUp()
         let nib = Bundle.main.loadNibNamed("SummaryTableViewCell", owner: self, options: nil)
-        cell = nib?.first as! SummaryTableViewCell
+        cell = nib?.first as? SummaryTableViewCell
     }
 
     override func tearDown() {

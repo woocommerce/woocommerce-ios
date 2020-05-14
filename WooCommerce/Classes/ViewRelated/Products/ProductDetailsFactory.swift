@@ -45,19 +45,16 @@ private extension ProductDetailsFactory {
                                isEditProductsEnabled: Bool,
                                isEditProductsRelease2Enabled: Bool,
                                isEditProductsRelease3Enabled: Bool) -> UIViewController {
-        let currencyCode = currencySettings.currencyCode
-        let currency = currencySettings.symbol(from: currencyCode)
         let vc: UIViewController
         if isEditProductsEnabled {
             vc = ProductFormViewController(product: product,
-                                           currency: currency,
                                            presentationStyle: presentationStyle,
                                            isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
                                            isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
             // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
             vc.hidesBottomBarWhenPushed = true
         } else {
-            let viewModel = ProductDetailsViewModel(product: product, currency: currency)
+            let viewModel = ProductDetailsViewModel(product: product)
             vc = ProductDetailsViewController(viewModel: viewModel)
         }
         return vc

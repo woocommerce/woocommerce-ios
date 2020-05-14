@@ -41,34 +41,13 @@ final class SummaryTableViewCellViewModelTests: XCTestCase {
 
         let viewModel = SummaryTableViewCellViewModel(order: order,
                                                       status: nil,
-                                                      calendar: calendar,
-                                                      layoutDirection: .leftToRight)
+                                                      calendar: calendar)
 
         // When
         let subtitle = viewModel.subtitle
 
         // Then
         let expectedSubtitle = expectedFormatter.string(from: order.dateCreated) + " • #\(order.number)"
-        XCTAssertEqual(subtitle, expectedSubtitle)
-    }
-
-    func testGivenRTLThenSubtitleReturnsTheDateAndOrderNumberInReverse() throws {
-        // Given
-        let expectedFormatter = DateFormatter.mediumLengthLocalizedDateFormatter
-        let calendar = Calendar(identifier: .gregorian, timeZone: expectedFormatter.timeZone)
-
-        let order = makeOrder(dateCreated: try XCTUnwrap(Date().adding(days: -2, using: calendar)))
-
-        let viewModel = SummaryTableViewCellViewModel(order: order,
-                                                      status: nil,
-                                                      calendar: calendar,
-                                                      layoutDirection: .rightToLeft)
-
-        // When
-        let subtitle = viewModel.subtitle
-
-        // Then
-        let expectedSubtitle = "#\(order.number) • " + expectedFormatter.string(from: order.dateCreated)
         XCTAssertEqual(subtitle, expectedSubtitle)
     }
 
@@ -81,8 +60,7 @@ final class SummaryTableViewCellViewModelTests: XCTestCase {
 
         let viewModel = SummaryTableViewCellViewModel(order: order,
                                                       status: nil,
-                                                      calendar: calendar,
-                                                      layoutDirection: .leftToRight)
+                                                      calendar: calendar)
 
         // When
         let subtitle = viewModel.subtitle

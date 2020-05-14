@@ -19,12 +19,10 @@ struct SummaryTableViewCellViewModel {
     let presentation: SummaryTableViewCellPresentation
 
     private let calendar: Calendar
-    private let layoutDirection: UIUserInterfaceLayoutDirection
 
     init(order: Order,
          status: OrderStatus?,
-         calendar: Calendar = .current,
-         layoutDirection: UIUserInterfaceLayoutDirection = UIApplication.shared.userInterfaceLayoutDirection) {
+         calendar: Calendar = .current) {
 
         billingAddress = order.billingAddress
         dateCreated = order.dateCreated
@@ -36,7 +34,6 @@ struct SummaryTableViewCellViewModel {
         )
 
         self.calendar = calendar
-        self.layoutDirection = layoutDirection
     }
 
     /// The full name from the billing address
@@ -62,9 +59,7 @@ struct SummaryTableViewCellViewModel {
             }
         }()
 
-        return [formatter.string(from: dateCreated), "#\(orderNumber)"]
-            .reversed(when: layoutDirection == .rightToLeft)
-            .joined(separator: " • ")
+        return "\(formatter.string(from: dateCreated)) • #\(orderNumber)"
     }
 }
 

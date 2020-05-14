@@ -148,6 +148,7 @@ private extension ProductImagesViewController {
 private extension ProductImagesViewController {
 
     @objc func addTapped() {
+        ServiceLocator.analytics.track(.productImageSettingsAddImagesButtonTapped)
         showOptionsMenu()
     }
 

@@ -269,9 +269,9 @@ public enum WooAnalyticsStat: String {
     
     // Product Images Events
     case productImageSettingsDoneButtonTapped = "product_image_settings_done_button_tapped"
-    case product_detail_add_image_tapped = "product_detail_add_image_tapped"
-    case product_image_settings_add_images_button_tapped = "product_image_settings_add_images_button_tapped"
-    case product_image_settings_delete_image_button_tapped = "product_image_settings_delete_image_button_tapped"
+    case productDetailAddImageTapped = "product_detail_add_image_tapped"
+    case productImageSettingsAddImagesButtonTapped = "product_image_settings_add_images_button_tapped"
+    case productImageSettingsDeleteImageButtonTapped = "product_image_settings_delete_image_button_tapped"
     
     // More Product Menu
     case product_detail_view_product_button_tapped = "product_detail_view_product_button_tapped"

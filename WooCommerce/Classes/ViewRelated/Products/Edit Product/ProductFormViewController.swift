@@ -568,7 +568,9 @@ private extension ProductFormViewController {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        guard images != product.images else {
+        let hasChangedData = images != product.images
+        ServiceLocator.analytics.track(.productImageSettingsDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
+        guard hasChangedData else {
             return
         }
         self.product = productUpdater.imagesUpdated(images: images)

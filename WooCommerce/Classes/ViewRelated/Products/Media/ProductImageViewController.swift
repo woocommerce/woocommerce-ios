@@ -103,6 +103,8 @@ private extension ProductImageViewController {
         alert.addAction(cancel)
         alert.addAction(delete)
 
+        ServiceLocator.analytics.track(.productImageSettingsAddImagesButtonTapped)
+        
         present(alert, animated: true, completion: nil)
     }
 }

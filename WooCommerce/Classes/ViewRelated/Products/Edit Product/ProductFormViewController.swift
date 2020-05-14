@@ -30,6 +30,8 @@ final class ProductFormViewController: UIViewController {
                 return
             }
 
+            updateMoreDetailsButtonVisibility(product: product)
+
             viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
             tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel,
                                                                  productImageStatuses: productImageActionHandler.productImageStatuses,
@@ -220,8 +222,8 @@ private extension ProductFormViewController {
         let title = NSLocalizedString("Add more details", comment: "Title of the button at the bottom of the product form to add more product details.")
         let viewModel = BottomButtonContainerView.ViewModel(style: .link,
                                                             title: title,
-                                                            image: .plusImage) { _ in
-                                                                // TODO-2053: show more details bottom sheet
+                                                            image: .plusImage) { [weak self] button in
+                                                                self?.moreDetailsButtonTapped(button: button)
         }
         let buttonContainerView = BottomButtonContainerView(viewModel: viewModel)
 
@@ -229,6 +231,51 @@ private extension ProductFormViewController {
         moreDetailsContainerView.pinSubviewToAllEdges(buttonContainerView)
         moreDetailsContainerView.setContentCompressionResistancePriority(.required, for: .vertical)
         moreDetailsContainerView.setContentHuggingPriority(.required, for: .vertical)
+
+        updateMoreDetailsButtonVisibility(product: product)
+    }
+}
+
+// MARK: More details actions
+//
+private extension ProductFormViewController {
+    func moreDetailsButtonTapped(button: UIButton) {
+        let title = NSLocalizedString("Add more details",
+                                      comment: "Title of the bottom sheet from the product form to add more product details.")
+        let viewProperties = BottomSheetListSelectorViewProperties(title: title)
+        let isEditProductsRelease3Enabled = featureFlagService.isFeatureFlagEnabled(.editProductsRelease3)
+        let dataSource = ProductFormBottomSheetListSelectorCommand(product: product,
+                                                                   isEditProductsRelease3Enabled: isEditProductsRelease3Enabled) { [weak self] action in
+                                                                    self?.dismiss(animated: true) { [weak self] in
+                                                                        switch action {
+                                                                        case .editInventorySettings:
+                                                                            self?.editInventorySettings()
+                                                                        case .editShippingSettings:
+                                                                            self?.editShippingSettings()
+                                                                        case .editCategories:
+                                                                            self?.editCategories()
+                                                                        case .editBriefDescription:
+                                                                            self?.editBriefDescription()
+                                                                        }
+                                                                    }
+        }
+        let listSelectorViewController = BottomSheetListSelectorViewController(viewProperties: viewProperties,
+                                                                               command: dataSource) { [weak self] selectedSortOrder in
+                                                                                self?.dismiss(animated: true, completion: nil)
+        }
+        let bottomSheet = BottomSheetViewController(childViewController: listSelectorViewController)
+        bottomSheet.show(from: self, sourceView: button, arrowDirections: .down)
+    }
+
+    func updateMoreDetailsButtonVisibility(product: Product) {
+        guard featureFlagService.isFeatureFlagEnabled(.editProductsRelease2) else {
+            moreDetailsContainerView.isHidden = true
+            return
+        }
+
+        let moreDetailsActions: [ProductFormBottomSheetAction] = [.editInventorySettings, .editShippingSettings, .editCategories, .editBriefDescription]
+        let hasVisibleActions = moreDetailsActions.map({ $0.isVisible(product: product) }).contains(true)
+        moreDetailsContainerView.isHidden = hasVisibleActions == false
     }
 }
 

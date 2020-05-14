@@ -13,6 +13,7 @@ struct UnitInputViewModel {
     let unit: String
     let value: String?
     let placeholder: String?
+    let accessibilityHint: String?
     let unitPosition: UnitPosition
     let keyboardType: UIKeyboardType
     let inputFormatter: UnitInputFormatter
@@ -49,6 +50,7 @@ final class UnitInputTableViewCell: UITableViewCell {
         inputTextField.text = viewModel.value
         inputTextField.placeholder = viewModel.placeholder
         inputTextField.keyboardType = viewModel.keyboardType
+        accessibilityHint = viewModel.accessibilityHint
         inputFormatter = viewModel.inputFormatter
         onInputChange = viewModel.onInputChange
 
@@ -164,5 +166,36 @@ private extension UnitInputTableViewCell {
 private extension UnitInputTableViewCell {
     enum Constants {
         static let stackViewSpacing: CGFloat = 6
+    }
+}
+
+// MARK: - Accessibility config
+//
+extension UnitInputTableViewCell {
+
+    /// Make this the accessibile element. Do not allow text field to be accessible right away.
+    override  var isAccessibilityElement: Bool {
+        get {
+            true
+        }
+        set { }
+    }
+
+    override var accessibilityLabel: String? {
+        get {
+            titleLabel.text
+        }
+        set { }
+    }
+
+    override var accessibilityValue: String? {
+        get {
+            if inputTextField.text?.isEmpty ?? true {
+                return NSLocalizedString("Empty", comment: "Accessibility text for Unit Input cell")
+            } else {
+                return (inputTextField.text ?? "") + " " + (unitLabel.text ?? "")
+            }
+        }
+        set { }
     }
 }

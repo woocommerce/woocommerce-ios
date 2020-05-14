@@ -809,10 +809,12 @@ private extension ProductFormViewController {
         actionSheet.view.tintColor = .text
 
         actionSheet.addDefaultActionWithTitle(ActionSheetStrings.viewProduct) { [weak self] _ in
+            ServiceLocator.analytics.track(.productDetailViewProductButtonTapped)
             self?.displayWebViewForProductInStore()
         }
 
         actionSheet.addDefaultActionWithTitle(ActionSheetStrings.share) { [weak self] _ in
+            ServiceLocator.analytics.track(.productDetailShareButtonTapped)
             self?.displayShareProduct()
         }
 

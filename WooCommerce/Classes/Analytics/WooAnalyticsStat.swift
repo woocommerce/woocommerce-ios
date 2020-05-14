@@ -268,7 +268,7 @@ public enum WooAnalyticsStat: String {
     case productInventorySettingsDoneButtonTapped = "product_inventory_settings_done_button_tapped"
     
     // Product Images Events
-    case product_image_settings_done_button_tapped = "_product_image_settings_done_button_tapped"
+    case productImageSettingsDoneButtonTapped = "_product_image_settings_done_button_tapped"
     case product_detail_add_image_tapped = "product_detail_add_image_tapped"
     case product_image_settings_add_images_button_tapped = "product_image_settings_add_images_button_tapped"
     case product_image_settings_delete_image_button_tapped = "product_image_settings_delete_image_button_tapped"

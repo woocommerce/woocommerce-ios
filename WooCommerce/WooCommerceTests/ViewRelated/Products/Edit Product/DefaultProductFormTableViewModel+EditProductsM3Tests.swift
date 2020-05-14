@@ -7,14 +7,12 @@ import XCTest
 /// When we fully launch Edit Products M2 and M3, we can replace `DefaultProductFormTableViewModel_EditProductsM2Tests` with the test cases here.
 ///
 final class DefaultProductFormTableViewModel_EditProductsM3Tests: XCTestCase {
-
-    private let mockFeatureFlagService = MockFeatureFlagService(isEditProductsRelease2On: true, isEditProductsRelease3On: true)
-
     func testViewModelForPhysicalSimpleProductWithoutImages() {
         let product = Fixtures.physicalSimpleProductWithoutImages
         let viewModel = DefaultProductFormTableViewModel(product: product,
                                                          currency: "$",
-                                                         featureFlagService: mockFeatureFlagService)
+                                                         isEditProductsRelease2Enabled: true,
+                                                         isEditProductsRelease3Enabled: true)
         let primaryFieldsSection = ProductFormSection.primaryFields(rows: [
             .images(product: product),
             .name(name: product.name),
@@ -51,7 +49,8 @@ final class DefaultProductFormTableViewModel_EditProductsM3Tests: XCTestCase {
         let product = Fixtures.physicalSimpleProductWithImages
         let viewModel = DefaultProductFormTableViewModel(product: product,
                                                          currency: "$",
-                                                         featureFlagService: mockFeatureFlagService)
+                                                         isEditProductsRelease2Enabled: true,
+                                                         isEditProductsRelease3Enabled: true)
         let primaryFieldsSection = ProductFormSection.primaryFields(rows: [
             .images(product: product),
             .name(name: product.name),
@@ -88,7 +87,8 @@ final class DefaultProductFormTableViewModel_EditProductsM3Tests: XCTestCase {
         let product = Fixtures.downloadableSimpleProduct
         let viewModel = DefaultProductFormTableViewModel(product: product,
                                                          currency: "$",
-                                                         featureFlagService: mockFeatureFlagService)
+                                                         isEditProductsRelease2Enabled: true,
+                                                         isEditProductsRelease3Enabled: true)
         let primaryFieldsSection = ProductFormSection.primaryFields(rows: [
             .images(product: product),
             .name(name: product.name),
@@ -121,7 +121,8 @@ final class DefaultProductFormTableViewModel_EditProductsM3Tests: XCTestCase {
         let product = Fixtures.virtualSimpleProduct
         let viewModel = DefaultProductFormTableViewModel(product: product,
                                                          currency: "$",
-                                                         featureFlagService: mockFeatureFlagService)
+                                                         isEditProductsRelease2Enabled: true,
+                                                         isEditProductsRelease3Enabled: true)
         let primaryFieldsSection = ProductFormSection.primaryFields(rows: [
             .images(product: product),
             .name(name: product.name),

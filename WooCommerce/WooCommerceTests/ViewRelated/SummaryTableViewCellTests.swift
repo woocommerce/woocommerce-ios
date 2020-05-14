@@ -3,12 +3,12 @@ import XCTest
 @testable import Yosemite
 
 final class SummaryTableViewCellTests: XCTestCase {
-    private var cell: SummaryTableViewCell?
+    private var cell: SummaryTableViewCell!
 
-    override func setUp() {
-        super.setUp()
+    override func setUpWithError() throws {
+        try super.setUpWithError()
         let nib = Bundle.main.loadNibNamed("SummaryTableViewCell", owner: self, options: nil)
-        cell = nib?.first as? SummaryTableViewCell
+        cell = try XCTUnwrap(nib?.first as? SummaryTableViewCell)
     }
 
     override func tearDown() {
@@ -16,36 +16,45 @@ final class SummaryTableViewCellTests: XCTestCase {
         super.tearDown()
     }
 
-    func testTitleSetsTitleLabelText() {
-        let mockTitle = "Automattic"
-        cell?.title = mockTitle
+    func testTitleLabelIsSetToTheBilledPersonName() throws {
+        let mirror = try self.mirror(of: cell)
+        let viewModel = SummaryTableViewCellViewModel(order: sampleOrder(), status: nil)
 
-        XCTAssertEqual(cell?.getTitle().text, mockTitle)
+        cell.configure(viewModel)
+
+        XCTAssertEqual(mirror.titleLabel.text, viewModel.billedPersonName)
     }
 
-    func testDateCreatedSetsDateLabelText() {
-        let mockDate = Date().toString(dateStyle: .medium, timeStyle: .short)
-        cell?.dateCreated = mockDate
+    func testCreatedLabelIsSetToTheCreationDateAndOrderNumber() throws {
+        let mirror = try self.mirror(of: cell)
+        let viewModel = SummaryTableViewCellViewModel(order: sampleOrder(), status: nil)
 
-        XCTAssertEqual(cell?.getCreatedLabel().text, mockDate)
+        cell.configure(viewModel)
+
+        XCTAssertEqual(mirror.createdLabel.text, viewModel.dateCreatedAndOrderNumber)
     }
 
-    func testDisplayStatusSetsPaymentDateLabel() {
-        let mockStatus = OrderStatus(name: "Automattic", siteID: 123, slug: "automattic", total: 0)
-        let presentation = SummaryTableViewCellPresentation(status: mockStatus.status, statusName: mockStatus.name!)
+    func testDisplayStatusLabelIsSetToThePresentationStatusName() throws {
+        // Given
+        let mirror = try self.mirror(of: cell)
 
-        cell?.display(presentation: presentation)
+        let orderStatus = OrderStatus(name: "Automattic", siteID: 123, slug: "automattic", total: 0)
+        let viewModel = SummaryTableViewCellViewModel(order: sampleOrder(), status: orderStatus)
 
-        XCTAssertEqual(cell?.getStatusLabel().text, mockStatus.name)
+        // When
+        cell.configure(viewModel)
+
+        // Then
+        XCTAssertEqual(mirror.paymentStatusLabel.text, orderStatus.name)
     }
 
     func testTappingButtonExecutesCallback() {
         let expect = expectation(description: "The action assigned gets called")
-        cell?.onEditTouchUp = {
+        cell.onEditTouchUp = {
             expect.fulfill()
         }
 
-        cell?.getEditButton().sendActions(for: .touchUpInside)
+        cell.getEditButton().sendActions(for: .touchUpInside)
 
         waitForExpectations(timeout: 1, handler: nil)
     }
@@ -54,31 +63,31 @@ final class SummaryTableViewCellTests: XCTestCase {
         let mockLabel = UILabel()
         mockLabel.applyHeadlineStyle()
 
-        let cellTitleLabel = cell?.getTitle()
+        let cellTitleLabel = cell.getTitle()
 
-        XCTAssertEqual(cellTitleLabel?.font, mockLabel.font)
-        XCTAssertEqual(cellTitleLabel?.textColor, mockLabel.textColor)
+        XCTAssertEqual(cellTitleLabel.font, mockLabel.font)
+        XCTAssertEqual(cellTitleLabel.textColor, mockLabel.textColor)
     }
 
     func testCreatedLabelIsAppliedHeadStyle() {
         let mockLabel = UILabel()
         mockLabel.applyFootnoteStyle()
 
-        let cellCreatedLabel = cell?.getCreatedLabel()
+        let cellCreatedLabel = cell.getCreatedLabel()
 
-        XCTAssertEqual(cellCreatedLabel?.font, mockLabel.font)
-        XCTAssertEqual(cellCreatedLabel?.textColor, mockLabel.textColor)
+        XCTAssertEqual(cellCreatedLabel.font, mockLabel.font)
+        XCTAssertEqual(cellCreatedLabel.textColor, mockLabel.textColor)
     }
 
     func testStatusLabelIsAppliedPaddedLabelStyle() {
         let mockLabel = UILabel()
         mockLabel.applyPaddedLabelDefaultStyles()
 
-        let cellStatusLabel = cell?.getStatusLabel()
+        let cellStatusLabel = cell.getStatusLabel()
 
-        XCTAssertEqual(cellStatusLabel?.font, mockLabel.font)
-        XCTAssertEqual(cellStatusLabel?.layer.borderWidth, mockLabel.layer.borderWidth)
-        XCTAssertEqual(cellStatusLabel?.layer.cornerRadius, mockLabel.layer.cornerRadius)
+        XCTAssertEqual(cellStatusLabel.font, mockLabel.font)
+        XCTAssertEqual(cellStatusLabel.layer.borderWidth, mockLabel.layer.borderWidth)
+        XCTAssertEqual(cellStatusLabel.layer.cornerRadius, mockLabel.layer.cornerRadius)
     }
 }
 
@@ -252,5 +261,29 @@ private extension SummaryTableViewCellTests {
             return Date()
         }
         return date
+    }
+}
+
+// MARK: - Mirror
+
+private extension SummaryTableViewCellTests {
+    /// Represents private properties of `SummaryTableViewCell`
+    ///
+    struct SummaryTableViewCellMirror {
+        let titleLabel: UILabel
+        let createdLabel: UILabel
+        let paymentStatusLabel: PaddedLabel
+    }
+
+    /// Create testable struct to test private properties of `SummaryTableViewCell`
+    ///
+    func mirror(of cell: SummaryTableViewCell) throws -> SummaryTableViewCellMirror {
+        let mirror = Mirror(reflecting: cell)
+
+        return SummaryTableViewCellMirror(
+            titleLabel: try XCTUnwrap(mirror.descendant("titleLabel") as? UILabel),
+            createdLabel: try XCTUnwrap(mirror.descendant("createdLabel") as? UILabel),
+            paymentStatusLabel: try XCTUnwrap(mirror.descendant("paymentStatusLabel") as? PaddedLabel)
+        )
     }
 }

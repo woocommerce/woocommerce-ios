@@ -76,9 +76,9 @@ final class SummaryTableViewCell: UITableViewCell {
     ///
     @IBOutlet private weak var titleLabel: UILabel!
 
-    /// Label: Creation / Update Date
+    /// Shows the dateCreated and order number.
     ///
-    @IBOutlet private weak var createdLabel: UILabel!
+    @IBOutlet private weak var subtitleLabel: UILabel!
 
     /// Label: Payment Status
     ///
@@ -94,7 +94,7 @@ final class SummaryTableViewCell: UITableViewCell {
 
     func configure(_ viewModel: SummaryTableViewCellViewModel) {
         titleLabel.text = viewModel.billedPersonName
-        createdLabel.text = viewModel.subtitle
+        subtitleLabel.text = viewModel.subtitle
 
         display(presentation: viewModel.presentation)
     }
@@ -160,8 +160,8 @@ private extension SummaryTableViewCell {
     func configureLabels() {
         titleLabel.applyHeadlineStyle()
         titleLabel.accessibilityIdentifier = "summary-table-view-cell-title-label"
-        createdLabel.applyFootnoteStyle()
-        createdLabel.accessibilityIdentifier = "summary-table-view-cell-created-label"
+        subtitleLabel.applyFootnoteStyle()
+        subtitleLabel.accessibilityIdentifier = "summary-table-view-cell-created-label"
         paymentStatusLabel.applyPaddedLabelDefaultStyles()
         paymentStatusLabel.accessibilityIdentifier = "summary-table-view-cell-payment-status-label"
     }

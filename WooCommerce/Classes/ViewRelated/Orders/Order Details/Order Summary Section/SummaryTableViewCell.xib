@@ -61,8 +61,8 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
-                <outlet property="createdLabel" destination="Kz9-1h-fRY" id="lxU-eQ-lCc"/>
                 <outlet property="paymentStatusLabel" destination="uIV-Sn-Yeh" id="7Go-fW-UgK"/>
+                <outlet property="subtitleLabel" destination="Kz9-1h-fRY" id="NEV-D0-Rfz"/>
                 <outlet property="titleLabel" destination="VuR-wG-Bbc" id="d7c-2Y-FFD"/>
                 <outlet property="updateStatusButton" destination="0jq-dU-DSt" id="f15-0P-cBB"/>
             </connections>

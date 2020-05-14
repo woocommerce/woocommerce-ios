@@ -9,9 +9,17 @@ final class MockProduct {
 
     func product(downloadable: Bool = false,
                  name: String = "Hogsmeade",
+                 briefDescription: String? = """
+                 [contact-form]\n<p>The green room&#8217;s max capacity is 30 people. Reserving the date / time of your event is free. \
+                 We can also accommodate large groups, with seating for 85 board game players at a time. If you have a large group, let us \
+                 know and we&#8217;ll send you our large group rate.</p>\n<p>GROUP RATES</p>\n<p>Reserve your event for up to 30 guests \
+                 for $100.</p>\n
+                 """,
                  productShippingClass: ProductShippingClass? = nil,
                  backordersSetting: ProductBackordersSetting = .notAllowed,
                  productType: ProductType = .simple,
+                 manageStock: Bool = false,
+                 sku: String? = "",
                  stockQuantity: Int? = nil,
                  taxClass: String? = "",
                  taxStatus: ProductTaxStatus = .taxable,
@@ -20,6 +28,8 @@ final class MockProduct {
                  salePrice: String? = "",
                  dateOnSaleStart: Date? = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-15T21:30:00"),
                  dateOnSaleEnd: Date? = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-27T21:29:59"),
+                 dimensions: ProductDimensions = ProductDimensions(length: "0", width: "0", height: "0"),
+                 weight: String? = "213",
                  variations: [Int64] = [],
                  virtual: Bool = false,
                  status: ProductStatus = .publish,
@@ -44,13 +54,8 @@ final class MockProduct {
                    featured: featured,
                    catalogVisibilityKey: catalogVisibility.rawValue,
                    fullDescription: "<p>This is the party room!</p>\n",
-                   briefDescription: """
-                       [contact-form]\n<p>The green room&#8217;s max capacity is 30 people. Reserving the date / time of your event is free. \
-                       We can also accommodate large groups, with seating for 85 board game players at a time. If you have a large group, let us \
-                       know and we&#8217;ll send you our large group rate.</p>\n<p>GROUP RATES</p>\n<p>Reserve your event for up to 30 guests \
-                       for $100.</p>\n
-                       """,
-                   sku: "",
+                   briefDescription: briefDescription,
+                   sku: sku,
                    price: "0",
                    regularPrice: regularPrice,
                    salePrice: salePrice,
@@ -65,15 +70,15 @@ final class MockProduct {
                    externalURL: "http://somewhere.com",
                    taxStatusKey: taxStatus.rawValue,
                    taxClass: taxClass,
-                   manageStock: false,
+                   manageStock: manageStock,
                    stockQuantity: stockQuantity,
                    stockStatusKey: stockStatus.rawValue,
                    backordersKey: backordersSetting.rawValue,
                    backordersAllowed: false,
                    backordered: false,
                    soldIndividually: true,
-                   weight: "213",
-                   dimensions: ProductDimensions(length: "0", width: "0", height: "0"),
+                   weight: weight,
+                   dimensions: dimensions,
                    shippingRequired: false,
                    shippingTaxable: false,
                    shippingClass: "",

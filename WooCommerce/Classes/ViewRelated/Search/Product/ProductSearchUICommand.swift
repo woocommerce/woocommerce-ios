@@ -67,18 +67,8 @@ final class ProductSearchUICommand: SearchUICommand {
     }
 
     func didSelectSearchResult(model: Product, from viewController: UIViewController) {
-        let isEditProductsEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts)
-        let currencyCode = CurrencySettings.shared.currencyCode
-        let currency = CurrencySettings.shared.symbol(from: currencyCode)
-        let vc: UIViewController
-        if model.productType == .simple && isEditProductsEnabled {
-            vc = ProductFormViewController(product: model, currency: currency, presentationStyle: .navigationStack)
-            // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
-            vc.hidesBottomBarWhenPushed = true
-        } else {
-            let viewModel = ProductDetailsViewModel(product: model, currency: currency)
-            vc = ProductDetailsViewController(viewModel: viewModel)
+        ProductDetailsFactory.productDetails(product: model, presentationStyle: .navigationStack) { [weak viewController] vc in
+            viewController?.navigationController?.pushViewController(vc, animated: true)
         }
-        viewController.navigationController?.pushViewController(vc, animated: true)
     }
 }

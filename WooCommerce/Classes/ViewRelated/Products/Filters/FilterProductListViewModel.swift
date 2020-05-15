@@ -29,10 +29,7 @@ final class FilterProductListViewModel: FilterListViewModel {
 
         // Generate a string based on populated filters, like "instock,publish,simple"
         var analyticsDescription: String {
-            var elements: [String?] = []
-            elements.append(stockStatus?.rawValue)
-            elements.append(productStatus?.rawValue)
-            elements.append(productType?.rawValue)
+            let elements: [String?] = [stockStatus?.rawValue, productStatus?.rawValue, productType?.rawValue]
             return elements.compactMap { $0 }.joined(separator: ",")
         }
     }

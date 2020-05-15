@@ -24,19 +24,19 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="#00 Jane Doe" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VuR-wG-Bbc">
-                        <rect key="frame" x="15" y="32" width="290" height="37"/>
+                        <rect key="frame" x="15" y="32" width="290" height="41"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="740" text="Processing" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uIV-Sn-Yeh" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
-                        <rect key="frame" x="15" y="77" width="67" height="16"/>
+                        <rect key="frame" x="15" y="81" width="67" height="16"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0jq-dU-DSt">
-                        <rect key="frame" x="285" y="75" width="20" height="20"/>
+                        <rect key="frame" x="285" y="79" width="20" height="20"/>
                         <constraints>
                             <constraint firstAttribute="width" secondItem="0jq-dU-DSt" secondAttribute="height" multiplier="1:1" id="JlF-NG-SGG"/>
                             <constraint firstAttribute="width" constant="20" id="weV-me-Oj4"/>
@@ -47,7 +47,7 @@
                 <constraints>
                     <constraint firstItem="0jq-dU-DSt" firstAttribute="centerY" secondItem="uIV-Sn-Yeh" secondAttribute="centerY" id="0cI-jv-Lbj"/>
                     <constraint firstItem="Kz9-1h-fRY" firstAttribute="leading" secondItem="VuR-wG-Bbc" secondAttribute="leading" id="0iO-Eg-LvT"/>
-                    <constraint firstAttribute="bottomMargin" secondItem="uIV-Sn-Yeh" secondAttribute="bottom" constant="4" id="3OU-Nl-wcg"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="uIV-Sn-Yeh" secondAttribute="bottom" id="3OU-Nl-wcg"/>
                     <constraint firstItem="uIV-Sn-Yeh" firstAttribute="top" secondItem="VuR-wG-Bbc" secondAttribute="bottom" constant="8" id="4yW-xe-vMw"/>
                     <constraint firstItem="VuR-wG-Bbc" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="ALe-dT-Iae"/>
                     <constraint firstItem="VuR-wG-Bbc" firstAttribute="top" secondItem="Kz9-1h-fRY" secondAttribute="bottom" constant="8" id="B6Q-cI-ASJ"/>

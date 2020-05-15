@@ -16,7 +16,7 @@ struct SummaryTableViewCellViewModel {
     private let dateCreated: Date
     private let orderNumber: String
 
-    let presentation: SummaryTableViewCellPresentation
+    fileprivate let presentation: SummaryTableViewCellPresentation
 
     private let calendar: Calendar
 

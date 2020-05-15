@@ -5,7 +5,7 @@ import Yosemite
 /// Displays Product images with edit functionality.
 ///
 final class ProductImagesViewController: UIViewController {
-    typealias Completion = (_ images: [ProductImage]) -> Void
+    typealias Completion = (_ images: [ProductImage], _ hasChangedData: Bool) -> Void
 
     @IBOutlet private weak var addButton: UIButton!
     @IBOutlet private weak var addButtonBottomBorderView: UIView!
@@ -157,7 +157,7 @@ private extension ProductImagesViewController {
     }
 
     func commitAndDismiss() {
-        onCompletion(productImages)
+        onCompletion(productImages, hasOutstandingChanges())
     }
 
     func showOptionsMenu() {

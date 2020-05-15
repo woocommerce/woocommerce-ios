@@ -558,17 +558,16 @@ private extension ProductFormViewController {
     func showProductImages() {
         let imagesViewController = ProductImagesViewController(product: product,
                                                                productImageActionHandler: productImageActionHandler,
-                                                               productUIImageLoader: productUIImageLoader) { [weak self] images in
-            self?.onEditProductImagesCompletion(images: images)
+                                                               productUIImageLoader: productUIImageLoader) { [weak self] images, hasChangedData in
+                                                                self?.onEditProductImagesCompletion(images: images, hasChangedData: hasChangedData)
         }
         navigationController?.pushViewController(imagesViewController, animated: true)
     }
 
-    func onEditProductImagesCompletion(images: [ProductImage]) {
+    func onEditProductImagesCompletion(images: [ProductImage], hasChangedData: Bool) {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        let hasChangedData = images != product.images
         ServiceLocator.analytics.track(.productImageSettingsDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
         guard hasChangedData else {
             return

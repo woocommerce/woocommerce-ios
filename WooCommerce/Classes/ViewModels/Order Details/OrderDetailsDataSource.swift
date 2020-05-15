@@ -1,11 +1,16 @@
 import Foundation
 import UIKit
 import Yosemite
+import protocol Storage.StorageManagerType
 
 
 /// The main file for Order Details data.
 ///
 final class OrderDetailsDataSource: NSObject {
+
+    /// This is only used to pass as a dependency to `OrderDetailsResultsControllers`.
+    private let storageManager: StorageManagerType
+
     private(set) var order: Order
     private let couponLines: [OrderCouponLine]?
 
@@ -142,7 +147,7 @@ final class OrderDetailsDataSource: NSObject {
     private var orderNotesSections: [NoteSection] = []
 
     private lazy var resultsControllers: OrderDetailsResultsControllers = {
-        return OrderDetailsResultsControllers(order: self.order)
+        return OrderDetailsResultsControllers(order: self.order, storageManager: self.storageManager)
     }()
 
     private lazy var orderNoteAsyncDictionary: AsyncDictionary<Int64, String> = {
@@ -151,7 +156,8 @@ final class OrderDetailsDataSource: NSObject {
 
     private let imageService: ImageService = ServiceLocator.imageService
 
-    init(order: Order) {
+    init(order: Order, storageManager: StorageManagerType = ServiceLocator.storageManager) {
+        self.storageManager = storageManager
         self.order = order
         self.couponLines = order.coupons
 

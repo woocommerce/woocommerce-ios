@@ -111,9 +111,12 @@ private extension OrderTableViewCell {
     ///
     func title(for order: Order) -> String {
         if let billingAddress = order.billingAddress {
-            return "#\(order.number) \(billingAddress.firstName) \(billingAddress.lastName)"
+            return Localization.title(orderNumber: order.number,
+                                      firstName: billingAddress.firstName,
+                                      lastName: billingAddress.lastName)
         }
-        return "#\(order.number)"
+
+        return Localization.title(orderNumber: order.number)
     }
 }
 
@@ -136,5 +139,27 @@ private extension OrderTableViewCell {
         paymentStatusLabel.numberOfLines = 0
 
         dateCreatedLabel.applyCaption1Style()
+    }
+}
+
+// MARK: - Constants
+
+private extension OrderTableViewCell {
+    enum Localization {
+        static func title(orderNumber: String, firstName: String, lastName: String) -> String {
+            let format = NSLocalizedString("#%1$@ %2$@ %3$@", comment: "In Order List,"
+                + " the pattern to show the order number and the full name. For example, “#123 John Doe”."
+                + " The %1$@ is the order number. The %2$@ is the first name. The %3$@ is the last name.")
+
+            return String.localizedStringWithFormat(format, orderNumber, firstName, lastName)
+        }
+
+        static func title(orderNumber: String) -> String {
+            let format = NSLocalizedString("#%@", comment: "In Order List,"
+                + " the pattern to show the order number. For example, “#123456”."
+                + " The %@ placeholder is the order number.")
+
+            return String.localizedStringWithFormat(format, orderNumber)
+        }
     }
 }

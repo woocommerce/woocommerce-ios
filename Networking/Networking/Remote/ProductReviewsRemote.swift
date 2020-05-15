@@ -43,7 +43,7 @@ public final class ProductReviewsRemote: Remote {
     ///     - reviewID: Identifier of the ProductReview.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadProductReview(for siteID: Int64, reviewID: Int64, completion: @escaping (ProductReview?, Error?) -> Void) {
+    public func loadProductReview(for siteID: Int64, reviewID: Int64, completion: @escaping (Result<ProductReview, Error>) -> Void) {
         let path = "\(Path.reviews)/\(reviewID)"
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
         let mapper = ProductReviewMapper(siteID: siteID)

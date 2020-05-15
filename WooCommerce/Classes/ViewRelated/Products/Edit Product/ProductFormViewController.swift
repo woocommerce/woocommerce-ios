@@ -1,5 +1,6 @@
 import Photos
 import UIKit
+import WordPressUI
 import Yosemite
 
 /// The entry UI for adding/editing a Product.
@@ -286,7 +287,9 @@ private extension ProductFormViewController {
             return
         }
 
-        let moreDetailsActions: [ProductFormBottomSheetAction] = [.editInventorySettings, .editShippingSettings, .editCategories, .editBriefDescription]
+        let moreDetailsActions: [ProductFormBottomSheetAction] = isEditProductsRelease3Enabled ?
+            [.editInventorySettings, .editShippingSettings, .editCategories, .editBriefDescription]:
+            [.editInventorySettings, .editShippingSettings, .editBriefDescription]
         let hasVisibleActions = moreDetailsActions.map({ $0.isVisible(product: product) }).contains(true)
         moreDetailsContainerView.isHidden = hasVisibleActions == false
     }

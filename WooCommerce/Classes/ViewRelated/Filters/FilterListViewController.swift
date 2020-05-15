@@ -4,7 +4,7 @@ import UIKit
 ///
 protocol FilterListViewModel {
     /// The type of the final value returned to the caller of `FilterListViewController`.
-    associatedtype Criteria
+    associatedtype Criteria: Equatable
 
     // Filter Action UI configuration
 
@@ -82,6 +82,7 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
     @IBOutlet private weak var filterActionContainerView: UIView!
 
     private let viewModel: ViewModel
+    private let originalCriteria: ViewModel.Criteria
     private let listSelectorCommand: FilterListSelectorCommand
 
     private lazy var listSelector: ListSelectorViewController
@@ -115,6 +116,7 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
          onClearAction: @escaping () -> Void,
          onDismissAction: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.originalCriteria = viewModel.criteria
         self.onFilterAction = onFilterAction
         self.onClearAction = onClearAction
         self.onDismissAction = onDismissAction
@@ -155,6 +157,13 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
     }
 
     @objc func dismissButtonTapped() {
+        if hasFilterChanges() {
+            UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+                self?.dismiss(animated: true) {}
+            })
+            return
+        }
+
         dismiss(animated: true) { [weak self] in
             self?.onDismissAction()
         }
@@ -264,6 +273,14 @@ private extension FilterListViewController {
 
     func updateClearAllActionVisibility(numberOfActiveFilters: Int) {
         listSelector.navigationItem.rightBarButtonItem = numberOfActiveFilters > 0 ? clearAllBarButtonItem: nil
+    }
+}
+
+// MARK: Private helpers
+//
+private extension FilterListViewController {
+    func hasFilterChanges() -> Bool {
+        return viewModel.criteria != originalCriteria
     }
 }
 

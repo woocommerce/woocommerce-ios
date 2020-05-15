@@ -1,5 +1,4 @@
 import Foundation
-import Alamofire
 
 /// Product: Remote Endpoints
 ///
@@ -83,7 +82,7 @@ public class ProductsRemote: Remote {
     ///     - productID: Identifier of the Product.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadProduct(for siteID: Int64, productID: Int64, completion: @escaping (Product?, Error?) -> Void) {
+    public func loadProduct(for siteID: Int64, productID: Int64, completion: @escaping (Result<Product, Error>) -> Void) {
         let path = "\(Path.products)/\(productID)"
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
         let mapper = ProductMapper(siteID: siteID)

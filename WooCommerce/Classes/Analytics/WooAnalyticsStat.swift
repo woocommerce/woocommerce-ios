@@ -272,6 +272,7 @@ public enum WooAnalyticsStat: String {
     case productImageSettingsDoneButtonTapped = "product_image_settings_done_button_tapped"
     case productDetailAddImageTapped = "product_detail_add_image_tapped"
     case productImageSettingsAddImagesButtonTapped = "product_image_settings_add_images_button_tapped"
+    case productImageSettingsAddImagesSourceTapped = "product_image_settings_add_images_source_tapped"
     case productImageSettingsDeleteImageButtonTapped = "product_image_settings_delete_image_button_tapped"
 
     // Product More Menu

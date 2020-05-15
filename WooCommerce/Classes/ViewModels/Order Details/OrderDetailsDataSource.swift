@@ -692,8 +692,8 @@ extension OrderDetailsDataSource {
                     shippingNotice,
                     products,
                     refundedProducts,
-                    customerInformation,
                     payment,
+                    customerInformation,
                     tracking,
                     addTracking,
                     notes].compactMap { $0 }

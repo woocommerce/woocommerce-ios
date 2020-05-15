@@ -276,7 +276,7 @@ public enum WooAnalyticsStat: String {
 
     // Product More Menu
     //
-    case productDetailViewProductButtonTapped = "product_detail_view_product_button_tapped"
+    case productDetailViewProductButtonTapped = "product_detail_view_external_tapped"
     case productDetailShareButtonTapped = "product_detail_share_button_tapped"
 
     // Product Settings

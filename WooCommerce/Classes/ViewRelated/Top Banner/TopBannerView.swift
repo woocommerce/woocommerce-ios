@@ -54,6 +54,7 @@ final class TopBannerView: UIView {
 
     init(viewModel: TopBannerViewModel) {
         isActionEnabled = viewModel.actionHandler != nil
+        isExpanded = viewModel.isExpanded
         onDismiss = viewModel.dismissHandler
         onAction = viewModel.actionHandler
         onExpandedStateChange = viewModel.expandedStateChangeHandler

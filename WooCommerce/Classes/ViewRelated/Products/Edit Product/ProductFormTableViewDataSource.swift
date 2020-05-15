@@ -7,7 +7,7 @@ private extension ProductFormSection.SettingsRow.ViewModel {
                                                            text: details,
                                                            image: icon,
                                                            imageTintColor: .textSubtle,
-                                                           numberOfLinesForText: 0)
+                                                           numberOfLinesForText: numberOfLinesForDetails)
     }
 }
 
@@ -25,7 +25,7 @@ final class ProductFormTableViewDataSource: NSObject {
     init(viewModel: ProductFormTableViewModel,
          productImageStatuses: [ProductImageStatus],
          productUIImageLoader: ProductUIImageLoader,
-         canEditImages: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease2)) {
+         canEditImages: Bool) {
         self.viewModel = viewModel
         self.canEditImages = canEditImages
         self.productImageStatuses = productImageStatuses

@@ -34,10 +34,10 @@ final class ProductsViewController: UIViewController {
     /// Top stack view that is shown above the table view as the table header view.
     ///
     private lazy var topStackView: UIStackView = {
-        let subviews = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease2) ? [topBannerView, toolbar]: [topBannerView]
+        let subviews = [topBannerContainerView, toolbar]
         let stackView = UIStackView(arrangedSubviews: subviews)
         stackView.axis = .vertical
-        stackView.spacing = 0
+        stackView.spacing = 8
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
@@ -48,11 +48,12 @@ final class ProductsViewController: UIViewController {
         return createToolbar()
     }()
 
-    /// Top banner that shows that the Products feature is still work in progress.
+    /// The filter CTA in the top toolbar.
+    private lazy var filterButton: UIButton = UIButton(frame: .zero)
+
+    /// Container of the top banner that shows that the Products feature is still work in progress.
     ///
-    private lazy var topBannerView: TopBannerView = {
-        return createTopBannerView()
-    }()
+    private lazy var topBannerContainerView: SwappableSubviewContainerView = SwappableSubviewContainerView()
 
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Products in sync.
     ///
@@ -99,9 +100,11 @@ final class ProductsViewController: UIViewController {
 
     private let imageService: ImageService = ServiceLocator.imageService
 
-    private var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters(stockStatus: nil, productStatus: nil, productType: nil) {
+    private var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters() {
         didSet {
             if filters != oldValue {
+                updateFilterButtonTitle(filters: filters)
+
                 guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
                     assertionFailure("No valid site ID for Products tab")
                     return
@@ -115,6 +118,10 @@ final class ProductsViewController: UIViewController {
         }
     }
 
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
@@ -125,6 +132,9 @@ final class ProductsViewController: UIViewController {
         configureTableView()
         configureSyncingCoordinator()
         registerTableViewCells()
+
+        updateTopBannerView()
+        observeProductsFeatureSwitchChange()
 
         startListeningToNotifications()
         syncingCoordinator.resynchronize()
@@ -279,7 +289,6 @@ private extension ProductsViewController {
         sortButton.addTarget(self, action: #selector(sortButtonTapped(sender:)), for: .touchUpInside)
 
         let filterTitle = NSLocalizedString("Filter", comment: "Title of the toolbar button to filter products by different attributes.")
-        let filterButton = UIButton(frame: .zero)
         filterButton.setTitle(filterTitle, for: .normal)
         filterButton.addTarget(self, action: #selector(filterButtonTapped), for: .touchUpInside)
 
@@ -293,25 +302,6 @@ private extension ProductsViewController {
         toolbar.setSubviews(leftViews: [sortButton], rightViews: [filterButton])
 
         return toolbar
-    }
-
-    func createTopBannerView() -> TopBannerView {
-        let title: String
-        let infoText: String
-
-        title = NSLocalizedString("Limited editing available",
-                                  comment: "The title of the Work In Progress top banner on the Products tab")
-        infoText = NSLocalizedString("We’ve added editing functionality to simple products. Keep an eye out for more options soon!",
-                                     comment: "The info of the Work In Progress top banner on the Products tab")
-
-        let viewModel = TopBannerViewModel(title: title,
-                                           infoText: infoText,
-                                           icon: .workInProgressBanner) { [weak self] in
-                                            self?.tableView.updateHeaderHeight()
-        }
-        let topBannerView = TopBannerView(viewModel: viewModel)
-        topBannerView.translatesAutoresizingMaskIntoConstraints = false
-        return topBannerView
     }
 
     /// Setup: Sync'ing Coordinator
@@ -330,6 +320,21 @@ private extension ProductsViewController {
 // MARK: - Updates
 //
 private extension ProductsViewController {
+    func observeProductsFeatureSwitchChange() {
+        NotificationCenter.default.addObserver(forName: .ProductsFeatureSwitchDidChange, object: nil, queue: nil) { [weak self] _ in
+            self?.updateTopBannerView()
+        }
+    }
+
+    func updateTopBannerView() {
+        ProductsTopBannerFactory.topBanner(expandedStateChangeHandler: { [weak self] in
+            self?.tableView.updateHeaderHeight()
+        }, onCompletion: { [weak self] topBannerView in
+            self?.topBannerContainerView.updateSubview(topBannerView)
+            self?.tableView.updateHeaderHeight()
+        })
+    }
+
     func updateResultsController(siteID: Int64) {
         resultsController = createResultsController(siteID: siteID)
         configureResultsController(resultsController) { [weak self] in
@@ -427,18 +432,9 @@ extension ProductsViewController: UITableViewDelegate {
 
 private extension ProductsViewController {
     func didSelectProduct(product: Product, isEditProductsEnabled: Bool) {
-        let currencyCode = CurrencySettings.shared.currencyCode
-        let currency = CurrencySettings.shared.symbol(from: currencyCode)
-        let viewController: UIViewController
-        if product.productType == .simple && isEditProductsEnabled {
-            viewController = ProductFormViewController(product: product, currency: currency, presentationStyle: .navigationStack)
-            // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
-            viewController.hidesBottomBarWhenPushed = true
-        } else {
-            let viewModel = ProductDetailsViewModel(product: product, currency: currency)
-            viewController = ProductDetailsViewController(viewModel: viewModel)
+        ProductDetailsFactory.productDetails(product: product, presentationStyle: .navigationStack) { [weak self] viewController in
+            self?.navigationController?.pushViewController(viewController, animated: true)
         }
-        navigationController?.pushViewController(viewController, animated: true)
     }
 }
 
@@ -458,20 +454,18 @@ private extension ProductsViewController {
                                       comment: "Message title for sort products action bottom sheet")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
         let command = ProductsSortOrderBottomSheetListSelectorCommand(selected: sortOrder)
-        let sortOrderListViewController = BottomSheetListSelectorViewController(viewProperties: viewProperties,
-                                                                                command: command) { [weak self] selectedSortOrder in
-                                                                                    defer {
-                                                                                        self?.dismiss(animated: true, completion: nil)
-                                                                                    }
+        let sortOrderListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties,
+                                                                      command: command) { [weak self] selectedSortOrder in
+                                                                        defer {
+                                                                            self?.dismiss(animated: true, completion: nil)
+                                                                        }
 
-                                                                                    guard let selectedSortOrder = selectedSortOrder else {
-                                                                                        return
-                                                                                    }
-                                                                                    self?.sortOrder = selectedSortOrder
+                                                                        guard let selectedSortOrder = selectedSortOrder else {
+                                                                            return
+                                                                        }
+                                                                        self?.sortOrder = selectedSortOrder
         }
-
-        let bottomSheet = BottomSheetViewController(childViewController: sortOrderListViewController)
-        bottomSheet.show(from: self, sourceView: sender, arrowDirections: .up)
+        sortOrderListPresenter.show(from: self, sourceView: sender, arrowDirections: .up)
     }
 
     @objc func filterButtonTapped() {
@@ -625,6 +619,24 @@ private extension ProductsViewController {
 
     func transitionToResultsUpdatedState() {
         stateCoordinator.transitionToResultsUpdatedState(hasData: !isEmpty)
+    }
+}
+
+// MARK: - Filter UI Helpers
+//
+private extension ProductsViewController {
+    func updateFilterButtonTitle(filters: FilterProductListViewModel.Filters) {
+        let activeFilterCount = filters.numberOfActiveFilters
+
+        let titleWithoutActiveFilters =
+            NSLocalizedString("Filter", comment: "Title of the toolbar button to filter products without any filters applied.")
+        let titleFormatWithActiveFilters =
+            NSLocalizedString("Filter (%ld)", comment: "Title of the toolbar button to filter products with filters applied.")
+
+        let title = activeFilterCount > 0 ?
+            String.localizedStringWithFormat(titleFormatWithActiveFilters, activeFilterCount): titleWithoutActiveFilters
+
+        filterButton.setTitle(title, for: .normal)
     }
 }
 

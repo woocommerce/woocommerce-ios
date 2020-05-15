@@ -60,9 +60,9 @@ public class AppSettingsStore: Store {
 
     /// URL to the plist file that we use to determine the visibility for Product features.
     ///
-    private lazy var productsVisibilityURL: URL = {
+    private lazy var productsFeatureSwitchURL: URL = {
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        return documents!.appendingPathComponent(Constants.productsVisibilityFileName)
+        return documents!.appendingPathComponent(Constants.productsFeatureSwitchFileName)
     }()
 
     /// Registers for supported Actions.
@@ -113,10 +113,10 @@ public class AppSettingsStore: Store {
             loadStatsVersionBannerVisibility(banner: banner, onCompletion: onCompletion)
         case .setStatsVersionBannerVisibility(let banner, let shouldShowBanner):
             setStatsVersionBannerVisibility(banner: banner, shouldShowBanner: shouldShowBanner)
-        case .loadProductsVisibility(let onCompletion):
-            loadProductsVisibility(onCompletion: onCompletion)
-        case .setProductsVisibility(let isVisible, let onCompletion):
-            setProductsVisibility(isVisible: isVisible, onCompletion: onCompletion)
+        case .loadProductsFeatureSwitch(let onCompletion):
+            loadProductsFeatureSwitch(onCompletion: onCompletion)
+        case .setProductsFeatureSwitch(let isEnabled, let onCompletion):
+            setProductsFeatureSwitch(isEnabled: isEnabled, onCompletion: onCompletion)
         case .resetStatsVersionStates:
             resetStatsVersionStates()
         }
@@ -356,20 +356,20 @@ private extension AppSettingsStore {
         write(StatsVersionBannerVisibility(visibilityByBanner: visibilityByBanner), to: fileURL, onCompletion: { _ in })
     }
 
-    func loadProductsVisibility(onCompletion: (Bool) -> Void) {
-        guard let existingData: ProductsVisibilityPListWrapper = read(from: productsVisibilityURL) else {
+    func loadProductsFeatureSwitch(onCompletion: (Bool) -> Void) {
+        guard let existingData: ProductsFeatureSwitchPListWrapper = read(from: productsFeatureSwitchURL) else {
             onCompletion(false)
             return
         }
-        onCompletion(existingData.isVisible)
+        onCompletion(existingData.isEnabled)
     }
 
-    func setProductsVisibility(isVisible: Bool, onCompletion: () -> Void) {
-        let fileURL = productsVisibilityURL
-        let visibilityWrapper = ProductsVisibilityPListWrapper(isVisible: isVisible)
-        write(visibilityWrapper, to: fileURL) { error in
+    func setProductsFeatureSwitch(isEnabled: Bool, onCompletion: () -> Void) {
+        let fileURL = productsFeatureSwitchURL
+        let wrapper = ProductsFeatureSwitchPListWrapper(isEnabled: isEnabled)
+        write(wrapper, to: fileURL) { error in
             if let error = error {
-                DDLogError("⛔️ Saving the Products visibility to \(isVisible) failed: \(error)")
+                DDLogError("⛔️ Saving the Products visibility to \(isEnabled) failed: \(error)")
             }
             onCompletion()
         }
@@ -439,5 +439,5 @@ private enum Constants {
     static let statsVersionBannerVisibilityFileName = "stats-version-banner-visibility.plist"
     static let statsVersionEligibleFileName = "stats-version-eligible.plist"
     static let statsVersionLastShownFileName = "stats-version-last-shown.plist"
-    static let productsVisibilityFileName = "products-visibility.plist"
+    static let productsFeatureSwitchFileName = "products-feature-switch.plist"
 }

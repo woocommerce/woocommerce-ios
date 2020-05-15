@@ -105,7 +105,7 @@ final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
                 details: NSLocalizedString("We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales.",
                                            comment: "The detailed message shown in the Orders → All Orders tab if the list is empty."),
                 linkTitle: NSLocalizedString("Learn more", comment: "Title of button shown in the Orders → All Orders tab if the list is empty."),
-                linkURL: .wooCommerceBlog
+                linkURL: WooConstants.blogURL
             )
         )
         allOrdersVC.delegate = self

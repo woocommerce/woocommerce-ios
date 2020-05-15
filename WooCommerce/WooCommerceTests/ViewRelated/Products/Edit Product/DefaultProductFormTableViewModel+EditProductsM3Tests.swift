@@ -7,17 +7,12 @@ import XCTest
 /// When we fully launch Edit Products M2 and M3, we can replace `DefaultProductFormTableViewModel_EditProductsM2Tests` with the test cases here.
 ///
 final class DefaultProductFormTableViewModel_EditProductsM3Tests: XCTestCase {
-
-    private let mockFeatureFlagService = MockFeatureFlagService(isEditProductsRelease2On: true, isEditProductsRelease3On: true)
-
-    func testViewModelForSimplePhysicalProductWithoutImages() {
-        let product = MockProduct().product(downloadable: false,
-                                            name: "woo",
-                                            productType: .simple,
-                                            virtual: false)
+    func testViewModelForPhysicalSimpleProductWithoutImages() {
+        let product = Fixtures.physicalSimpleProductWithoutImages
         let viewModel = DefaultProductFormTableViewModel(product: product,
                                                          currency: "$",
-                                                         featureFlagService: mockFeatureFlagService)
+                                                         isEditProductsRelease2Enabled: true,
+                                                         isEditProductsRelease3Enabled: true)
         let primaryFieldsSection = ProductFormSection.primaryFields(rows: [
             .images(product: product),
             .name(name: product.name),
@@ -51,14 +46,11 @@ final class DefaultProductFormTableViewModel_EditProductsM3Tests: XCTestCase {
     }
 
     func testViewModelForPhysicalSimpleProductWithImages() {
-        let product = MockProduct().product(downloadable: false,
-                                            name: "woo",
-                                            productType: .simple,
-                                            virtual: true,
-                                            images: sampleImages())
+        let product = Fixtures.physicalSimpleProductWithImages
         let viewModel = DefaultProductFormTableViewModel(product: product,
                                                          currency: "$",
-                                                         featureFlagService: mockFeatureFlagService)
+                                                         isEditProductsRelease2Enabled: true,
+                                                         isEditProductsRelease3Enabled: true)
         let primaryFieldsSection = ProductFormSection.primaryFields(rows: [
             .images(product: product),
             .name(name: product.name),
@@ -69,19 +61,22 @@ final class DefaultProductFormTableViewModel_EditProductsM3Tests: XCTestCase {
         let settingFieldsSection = viewModel.sections[1]
         switch settingFieldsSection {
         case .settings(let rows):
-            XCTAssertEqual(rows.count, 4)
+            XCTAssertEqual(rows.count, 5)
 
             if case .price(_) = rows[0] {} else {
                 XCTFail("Unexpected setting section: \(rows[0])")
             }
-            if case .inventory(_) = rows[1] {} else {
+            if case .shipping(_) = rows[1] {} else {
                 XCTFail("Unexpected setting section: \(rows[1])")
             }
-            if case .categories(_) = rows[2] {} else {
+            if case .inventory(_) = rows[2] {} else {
                 XCTFail("Unexpected setting section: \(rows[2])")
             }
-            if case .briefDescription(_) = rows[3] {} else {
+            if case .categories(_) = rows[3] {} else {
                 XCTFail("Unexpected setting section: \(rows[3])")
+            }
+            if case .briefDescription(_) = rows[4] {} else {
+                XCTFail("Unexpected setting section: \(rows[4])")
             }
         default:
             XCTFail("Unexpected section: \(settingFieldsSection)")
@@ -89,12 +84,11 @@ final class DefaultProductFormTableViewModel_EditProductsM3Tests: XCTestCase {
     }
 
     func testViewModelForDownloadableSimpleProduct() {
-        let product = MockProduct().product(downloadable: true,
-                                            name: "woo",
-                                            productType: .simple)
+        let product = Fixtures.downloadableSimpleProduct
         let viewModel = DefaultProductFormTableViewModel(product: product,
                                                          currency: "$",
-                                                         featureFlagService: mockFeatureFlagService)
+                                                         isEditProductsRelease2Enabled: true,
+                                                         isEditProductsRelease3Enabled: true)
         let primaryFieldsSection = ProductFormSection.primaryFields(rows: [
             .images(product: product),
             .name(name: product.name),
@@ -124,13 +118,11 @@ final class DefaultProductFormTableViewModel_EditProductsM3Tests: XCTestCase {
     }
 
     func testViewModelForVirtualSimpleProduct() {
-        let product = MockProduct().product(downloadable: false,
-                                            name: "woo",
-                                            productType: .simple,
-                                            virtual: true)
+        let product = Fixtures.virtualSimpleProduct
         let viewModel = DefaultProductFormTableViewModel(product: product,
                                                          currency: "$",
-                                                         featureFlagService: mockFeatureFlagService)
+                                                         isEditProductsRelease2Enabled: true,
+                                                         isEditProductsRelease3Enabled: true)
         let primaryFieldsSection = ProductFormSection.primaryFields(rows: [
             .images(product: product),
             .name(name: product.name),
@@ -161,13 +153,37 @@ final class DefaultProductFormTableViewModel_EditProductsM3Tests: XCTestCase {
 }
 
 private extension DefaultProductFormTableViewModel_EditProductsM3Tests {
-    func sampleImages() -> [ProductImage] {
-        let image1 = ProductImage(imageID: 19,
-                                  dateCreated: Date(),
-                                  dateModified: Date(),
-                                  src: "https://photo.jpg",
-                                  name: "Tshirt",
-                                  alt: "")
-        return [image1]
+    enum Fixtures {
+        static let category = ProductCategory(categoryID: 1, siteID: 2, parentID: 6, name: "", slug: "")
+        static let image = ProductImage(imageID: 19,
+                                        dateCreated: Date(),
+                                        dateModified: Date(),
+                                        src: "https://photo.jpg",
+                                        name: "Tshirt",
+                                        alt: "")
+        // downloadable: false, virtual: false, with inventory/shipping/categories/brief description
+        static let physicalSimpleProductWithoutImages = MockProduct().product(downloadable: false, briefDescription: "desc", productType: .simple,
+                                                                              manageStock: true, sku: "uks", stockQuantity: nil,
+                                                                              dimensions: ProductDimensions(length: "", width: "", height: ""), weight: "2",
+                                                                              virtual: false,
+                                                                              categories: [category], images: [])
+        // downloadable: false, virtual: true, with inventory/shipping/categories/brief description
+        static let physicalSimpleProductWithImages = MockProduct().product(downloadable: false, briefDescription: "desc", productType: .simple,
+                                                                              manageStock: true, sku: "uks", stockQuantity: nil,
+                                                                              dimensions: ProductDimensions(length: "", width: "", height: ""), weight: "2",
+                                                                              virtual: false,
+                                                                              categories: [category], images: [image])
+        // downloadable: false, virtual: true, with inventory/shipping/categories/brief description
+        static let virtualSimpleProduct = MockProduct().product(downloadable: false, briefDescription: "desc", productType: .simple,
+                                                                manageStock: true, sku: "uks", stockQuantity: nil,
+                                                                dimensions: ProductDimensions(length: "", width: "", height: ""), weight: "2",
+                                                                virtual: true,
+                                                                categories: [category])
+        // downloadable: true, virtual: true, missing inventory/shipping/categories/brief description
+        static let downloadableSimpleProduct = MockProduct().product(downloadable: true, briefDescription: "desc", productType: .simple,
+                                                                     manageStock: true, sku: "uks", stockQuantity: nil,
+                                                                     dimensions: ProductDimensions(length: "", width: "", height: ""), weight: "3",
+                                                                     virtual: true,
+                                                                     categories: [category])
     }
 }

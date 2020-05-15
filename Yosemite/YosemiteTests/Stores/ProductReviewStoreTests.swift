@@ -1,4 +1,5 @@
 import XCTest
+
 @testable import Yosemite
 @testable import Networking
 @testable import Storage
@@ -231,6 +232,38 @@ final class ProductReviewStoreTests: XCTestCase {
 
         store.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ProductReviewAction.retrieveProductReview` returns an error whenever there is no backend response.
+    ///
+    func testRetrieveSingleProductReviewDeletesTheReviewWhenReceivingA404Response() throws {
+        // Given
+        let storageReview = viewStorage.insertNewObject(ofType: StorageProductReview.self)
+        storageReview.update(with: sampleProductReview())
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageProductReview.self), 1)
+
+        // When
+        var resultMaybe: (review: Yosemite.ProductReview?, error: Error?)?
+        waitForExpectation { expectation in
+            let action = ProductReviewAction.retrieveProductReview(siteID: sampleSiteID, reviewID: sampleReviewID) { (review, error) in
+                resultMaybe = (review: review, error: error)
+                expectation.fulfill()
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let result = try XCTUnwrap(resultMaybe)
+        XCTAssertNotNil(result.error)
+        XCTAssertNil(result.review)
+
+        guard case NetworkError.notFound = try XCTUnwrap(result.error) else {
+            XCTFail("Expected a notFound NetworkError")
+            return
+        }
+
+        // The existing ProductReview should be deleted
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageProductReview.self), 0)
     }
 
 

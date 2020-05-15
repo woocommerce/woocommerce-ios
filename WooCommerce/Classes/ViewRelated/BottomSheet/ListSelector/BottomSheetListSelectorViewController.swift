@@ -1,4 +1,5 @@
 import UIKit
+import WordPressUI
 
 /// Displays a list (implemented by table view) for the user to select a generic model from a bottom sheet.
 ///
@@ -41,6 +42,7 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
 
         configureMainView()
         configureTableView()
+        configurePreferredContentSize()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -124,5 +126,9 @@ private extension BottomSheetListSelectorViewController {
     func registerTableViewHeaderFooters() {
         let type = BottomSheetListSelectorSectionHeaderView.self
         tableView.register(type.loadNib(), forHeaderFooterViewReuseIdentifier: type.reuseIdentifier)
+    }
+
+    func configurePreferredContentSize() {
+        preferredContentSize = contentSize
     }
 }

@@ -12,8 +12,7 @@ final class ProductStatusSettingListSelectorCommand: ListSelectorCommand {
     let data: [ProductStatus] = [
         .publish,
         .draft,
-        .pending,
-        .privateStatus
+        .pending
     ]
 
     private(set) var selected: ProductStatus?

@@ -18,11 +18,12 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
     init(product: Product,
          currency: String,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(),
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         isEditProductsRelease2Enabled: Bool,
+         isEditProductsRelease3Enabled: Bool) {
         self.currency = currency
         self.currencyFormatter = currencyFormatter
-        self.isEditProductsRelease2Enabled = featureFlagService.isFeatureFlagEnabled(.editProductsRelease2)
-        self.isEditProductsRelease3Enabled = featureFlagService.isFeatureFlagEnabled(.editProductsRelease3)
+        self.isEditProductsRelease2Enabled = isEditProductsRelease2Enabled
+        self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
         configureSections(product: product)
     }
 }
@@ -49,7 +50,7 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func settingsRows(product: Product) -> [ProductFormSection.SettingsRow] {
-        let shouldShowShippingSettingsRow = product.downloadable == false && product.virtual == false
+        let shouldShowShippingSettingsRow = product.isShippingEnabled
         let shouldShowBriefDescriptionRow = isEditProductsRelease2Enabled
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
 
@@ -61,7 +62,7 @@ private extension DefaultProductFormTableViewModel {
             shouldShowBriefDescriptionRow ? .briefDescription(viewModel: briefDescriptionRow(product: product)): nil
         ]
 
-        return rows.compactMap { $0 }
+        return rows.compactMap { $0 }.filter { $0.isVisible(product: product) }
     }
 }
 
@@ -195,7 +196,8 @@ private extension DefaultProductFormTableViewModel {
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
-                                                        details: details)
+                                                        details: details,
+                                                        numberOfLinesForDetails: 1)
     }
 }
 

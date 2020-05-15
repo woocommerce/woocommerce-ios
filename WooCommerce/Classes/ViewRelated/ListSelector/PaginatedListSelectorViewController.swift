@@ -102,7 +102,7 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
         self.viewProperties = viewProperties
         self.dataSource = dataSource
         self.onDismiss = onDismiss
-        super.init(nibName: "ListSelectorViewController", bundle: nil)
+        super.init(nibName: "PaginatedListSelectorViewController", bundle: nil)
     }
 
     required init?(coder: NSCoder) {

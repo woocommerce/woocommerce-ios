@@ -1,5 +1,6 @@
 import Photos
 import UIKit
+import WordPressUI
 import Yosemite
 
 /// The entry UI for adding/editing a Product.
@@ -22,7 +23,7 @@ final class ProductFormViewController: UIViewController {
     private var product: Product {
         didSet {
             defer {
-                let isUpdateEnabled = hasUnsavedChanges(product: product)
+                let isUpdateEnabled = hasUnsavedChanges(product: product, password: password)
                 updateNavigationBar(isUpdateEnabled: isUpdateEnabled)
             }
 
@@ -30,10 +31,16 @@ final class ProductFormViewController: UIViewController {
                 return
             }
 
-            viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
+            updateMoreDetailsButtonVisibility(product: product)
+
+            viewModel = DefaultProductFormTableViewModel(product: product,
+                                                         currency: currency,
+                                                         isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                                         isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
             tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel,
                                                                  productImageStatuses: productImageActionHandler.productImageStatuses,
-                                                                 productUIImageLoader: productUIImageLoader)
+                                                                 productUIImageLoader: productUIImageLoader,
+                                                                 canEditImages: isEditProductsRelease2Enabled)
             tableViewDataSource.configureActions(onNameChange: { [weak self] name in
                 self?.onEditProductNameCompletion(newName: name ?? "")
             }, onAddImage: { [weak self] in
@@ -41,6 +48,19 @@ final class ProductFormViewController: UIViewController {
             })
             tableView.dataSource = tableViewDataSource
             tableView.reloadData()
+        }
+    }
+
+    /// The product password, fetched in Product Settings
+    private var originalPassword: String? {
+        didSet {
+            password = originalPassword
+        }
+    }
+    private var password: String? {
+        didSet {
+            let isUpdateEnabled = hasUnsavedChanges(product: product, password: password)
+            updateNavigationBar(isUpdateEnabled: isUpdateEnabled)
         }
     }
 
@@ -55,7 +75,8 @@ final class ProductFormViewController: UIViewController {
     private let productUIImageLoader: ProductUIImageLoader
 
     private let currency: String
-    private let featureFlagService: FeatureFlagService
+    private let isEditProductsRelease2Enabled: Bool
+    private let isEditProductsRelease3Enabled: Bool
 
     private lazy var exitForm: () -> Void = {
         presentationStyle.createExitForm(viewController: self)
@@ -68,20 +89,29 @@ final class ProductFormViewController: UIViewController {
     }
     private var cancellable: ObservationToken?
 
-    init(product: Product, currency: String, presentationStyle: PresentationStyle, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+    init(product: Product,
+         currency: String = CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode),
+         presentationStyle: PresentationStyle,
+         isEditProductsRelease2Enabled: Bool,
+         isEditProductsRelease3Enabled: Bool) {
         self.currency = currency
         self.presentationStyle = presentationStyle
-        self.featureFlagService = featureFlagService
+        self.isEditProductsRelease2Enabled = isEditProductsRelease2Enabled
+        self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
         self.originalProduct = product
         self.product = product
-        self.viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
+        self.viewModel = DefaultProductFormTableViewModel(product: product,
+                                                          currency: currency,
+                                                          isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                                          isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
         self.productImageActionHandler = ProductImageActionHandler(siteID: product.siteID,
                                                                    product: product)
         self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler,
                                                                 phAssetImageLoaderProvider: { PHImageManager.default() })
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel,
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
-                                                                  productUIImageLoader: productUIImageLoader)
+                                                                  productUIImageLoader: productUIImageLoader,
+                                                                  canEditImages: isEditProductsRelease2Enabled)
         super.init(nibName: nil, bundle: nil)
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
             self?.onEditProductNameCompletion(newName: name ?? "")
@@ -185,7 +215,7 @@ private extension ProductFormViewController {
     }
 
     @objc func closeNavigationBarButtonTapped() {
-        guard hasUnsavedChanges(product: product) == false else {
+        guard hasUnsavedChanges(product: product, password: password) == false else {
             presentBackNavigationActionSheet()
             return
         }
@@ -199,7 +229,7 @@ private extension ProductFormViewController {
     }
 
     func configureMoreDetailsContainerView() {
-        guard featureFlagService.isFeatureFlagEnabled(.editProductsRelease2) else {
+        guard isEditProductsRelease2Enabled else {
             moreDetailsContainerView.isHidden = true
             return
         }
@@ -207,8 +237,8 @@ private extension ProductFormViewController {
         let title = NSLocalizedString("Add more details", comment: "Title of the button at the bottom of the product form to add more product details.")
         let viewModel = BottomButtonContainerView.ViewModel(style: .link,
                                                             title: title,
-                                                            image: .plusImage) { _ in
-                                                                // TODO-2053: show more details bottom sheet
+                                                            image: .plusImage) { [weak self] button in
+                                                                self?.moreDetailsButtonTapped(button: button)
         }
         let buttonContainerView = BottomButtonContainerView(viewModel: viewModel)
 
@@ -216,6 +246,52 @@ private extension ProductFormViewController {
         moreDetailsContainerView.pinSubviewToAllEdges(buttonContainerView)
         moreDetailsContainerView.setContentCompressionResistancePriority(.required, for: .vertical)
         moreDetailsContainerView.setContentHuggingPriority(.required, for: .vertical)
+
+        updateMoreDetailsButtonVisibility(product: product)
+    }
+}
+
+// MARK: More details actions
+//
+private extension ProductFormViewController {
+    func moreDetailsButtonTapped(button: UIButton) {
+        let title = NSLocalizedString("Add more details",
+                                      comment: "Title of the bottom sheet from the product form to add more product details.")
+        let viewProperties = BottomSheetListSelectorViewProperties(title: title)
+        let dataSource = ProductFormBottomSheetListSelectorCommand(product: product,
+                                                                   isEditProductsRelease3Enabled: isEditProductsRelease3Enabled) { [weak self] action in
+                                                                    self?.dismiss(animated: true) { [weak self] in
+                                                                        switch action {
+                                                                        case .editInventorySettings:
+                                                                            self?.editInventorySettings()
+                                                                        case .editShippingSettings:
+                                                                            self?.editShippingSettings()
+                                                                        case .editCategories:
+                                                                            self?.editCategories()
+                                                                        case .editBriefDescription:
+                                                                            self?.editBriefDescription()
+                                                                        }
+                                                                    }
+        }
+        let listSelectorViewController = BottomSheetListSelectorViewController(viewProperties: viewProperties,
+                                                                               command: dataSource) { [weak self] selectedSortOrder in
+                                                                                self?.dismiss(animated: true, completion: nil)
+        }
+        let bottomSheet = BottomSheetViewController(childViewController: listSelectorViewController)
+        bottomSheet.show(from: self, sourceView: button, arrowDirections: .down)
+    }
+
+    func updateMoreDetailsButtonVisibility(product: Product) {
+        guard isEditProductsRelease2Enabled else {
+            moreDetailsContainerView.isHidden = true
+            return
+        }
+
+        let moreDetailsActions: [ProductFormBottomSheetAction] = isEditProductsRelease3Enabled ?
+            [.editInventorySettings, .editShippingSettings, .editCategories, .editBriefDescription]:
+            [.editInventorySettings, .editShippingSettings, .editBriefDescription]
+        let hasVisibleActions = moreDetailsActions.map({ $0.isVisible(product: product) }).contains(true)
+        moreDetailsContainerView.isHidden = hasVisibleActions == false
     }
 }
 
@@ -243,7 +319,7 @@ private extension ProductFormViewController {
 
     func updateProductRemotely() {
         waitUntilAllImagesAreUploaded { [weak self] in
-            self?.dispatchUpdateProductAction()
+            self?.dispatchUpdateProductAndPasswordAction()
         }
     }
 
@@ -271,26 +347,55 @@ private extension ProductFormViewController {
         }
     }
 
-    func dispatchUpdateProductAction() {
-        let action = ProductAction.updateProduct(product: product) { [weak self] (product, error) in
-            guard let product = product, error == nil else {
-                let errorDescription = error?.localizedDescription ?? "No error specified"
-                DDLogError("⛔️ Error updating Product: \(errorDescription)")
-                ServiceLocator.analytics.track(.productDetailUpdateError)
-                // Dismisses the in-progress UI then presents the error alert.
-                self?.navigationController?.dismiss(animated: true) {
-                    self?.displayError(error: error)
-                }
-                return
-            }
-            self?.originalProduct = product
-            self?.product = product
+    func dispatchUpdateProductAndPasswordAction() {
+        let group = DispatchGroup()
 
-            ServiceLocator.analytics.track(.productDetailUpdateSuccess)
+        // Updated Product
+        if product != originalProduct {
+            group.enter()
+            let updateProductAction = ProductAction.updateProduct(product: product) { [weak self] (product, error) in
+                guard let product = product, error == nil else {
+                    let errorDescription = error?.localizedDescription ?? "No error specified"
+                    DDLogError("⛔️ Error updating Product: \(errorDescription)")
+                    ServiceLocator.analytics.track(.productDetailUpdateError)
+                    // Dismisses the in-progress UI then presents the error alert.
+                    self?.navigationController?.dismiss(animated: true) {
+                        self?.displayError(error: error)
+                    }
+                    group.leave()
+                    return
+                }
+                self?.originalProduct = product
+                self?.product = product
+
+                ServiceLocator.analytics.track(.productDetailUpdateSuccess)
+                group.leave()
+            }
+            ServiceLocator.stores.dispatch(updateProductAction)
+        }
+
+
+        // Update product password if available
+        if let password = password, password != originalPassword {
+            group.enter()
+            let passwordUpdateAction = SitePostAction.updateSitePostPassword(siteID: product.siteID, postID: product.productID,
+                                                                             password: password) { [weak self] (password, error) in
+                guard let _ = password else {
+                    DDLogError("⛔️ Error updating product password: \(error.debugDescription)")
+                    group.leave()
+                    return
+                }
+
+                self?.originalPassword = password
+                group.leave()
+            }
+            ServiceLocator.stores.dispatch(passwordUpdateAction)
+        }
+
+        group.notify(queue: .main) { [weak self] in
             // Dismisses the in-progress UI.
             self?.navigationController?.dismiss(animated: true, completion: nil)
         }
-        ServiceLocator.stores.dispatch(action)
     }
 
     func displayError(error: ProductUpdateError?) {
@@ -330,12 +435,15 @@ private extension ProductFormViewController {
     }
 
     func displayProductSettings() {
-        let viewController = ProductSettingsViewController(product: product) { [weak self] (productSettings) in
+        let viewController = ProductSettingsViewController(product: product, password: password, completion: { [weak self] (productSettings) in
             guard let self = self else {
                 return
             }
             self.product = self.productUpdater.productSettingsUpdated(settings: productSettings)
-        }
+            self.password = productSettings.password
+        }, onPasswordRetrieved: { [weak self] (originalPassword) in
+            self?.originalPassword = originalPassword
+        })
         navigationController?.pushViewController(viewController, animated: true)
     }
 }
@@ -348,7 +456,7 @@ private extension ProductFormViewController {
             rightBarButtonItems.append(createUpdateBarButtonItem())
         }
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease2) {
+        if isEditProductsRelease2Enabled {
             rightBarButtonItems.insert(createMoreOptionsBarButtonItem(), at: 0)
         }
 
@@ -488,7 +596,7 @@ private extension ProductFormViewController {
 //
 extension ProductFormViewController {
     override func shouldPopOnBackButton() -> Bool {
-        if hasUnsavedChanges(product: product) {
+        if hasUnsavedChanges(product: product, password: password) {
             presentBackNavigationActionSheet()
             return false
         }
@@ -508,8 +616,8 @@ extension ProductFormViewController {
         })
     }
 
-    private func hasUnsavedChanges(product: Product) -> Bool {
-        return product != originalProduct || productImageActionHandler.productImageStatuses.hasPendingUpload
+    private func hasUnsavedChanges(product: Product, password: String?) -> Bool {
+        return product != originalProduct || productImageActionHandler.productImageStatuses.hasPendingUpload || password != originalPassword
     }
 }
 

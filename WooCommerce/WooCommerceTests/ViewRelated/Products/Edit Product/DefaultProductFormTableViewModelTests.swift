@@ -4,8 +4,6 @@ import XCTest
 @testable import Yosemite
 
 final class DefaultProductFormTableViewModelTests: XCTestCase {
-    private let mockFeatureFlagService = MockFeatureFlagService(isEditProductsRelease2On: false)
-
     func testViewModelForSimplePhysicalProductWithoutImagesWhenM2FeatureFlagIsOff() {
         let product = MockProduct().product(downloadable: false,
                                             name: "woo",
@@ -13,7 +11,8 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
                                             virtual: false)
         let viewModel = DefaultProductFormTableViewModel(product: product,
                                                          currency: "$",
-                                                         featureFlagService: mockFeatureFlagService)
+                                                         isEditProductsRelease2Enabled: false,
+                                                         isEditProductsRelease3Enabled: false)
         let primaryFieldsSection = ProductFormSection.primaryFields(rows: [
             .name(name: product.name),
             .description(description: product.trimmedFullDescription)
@@ -47,7 +46,8 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
                                             images: sampleImages())
         let viewModel = DefaultProductFormTableViewModel(product: product,
                                                          currency: "$",
-                                                         featureFlagService: mockFeatureFlagService)
+                                                         isEditProductsRelease2Enabled: false,
+                                                         isEditProductsRelease3Enabled: false)
         let primaryFieldsSection = ProductFormSection.primaryFields(rows: [
             .images(product: product),
             .name(name: product.name),
@@ -77,7 +77,8 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
                                             productType: .simple)
         let viewModel = DefaultProductFormTableViewModel(product: product,
                                                          currency: "$",
-                                                         featureFlagService: mockFeatureFlagService)
+                                                         isEditProductsRelease2Enabled: false,
+                                                         isEditProductsRelease3Enabled: false)
         let primaryFieldsSection = ProductFormSection.primaryFields(rows: [
             .name(name: product.name),
             .description(description: product.trimmedFullDescription)
@@ -106,7 +107,8 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
                                             virtual: true)
         let viewModel = DefaultProductFormTableViewModel(product: product,
                                                          currency: "$",
-                                                         featureFlagService: mockFeatureFlagService)
+                                                         isEditProductsRelease2Enabled: false,
+                                                         isEditProductsRelease3Enabled: false)
         let primaryFieldsSection = ProductFormSection.primaryFields(rows: [
             .name(name: product.name),
             .description(description: product.trimmedFullDescription)

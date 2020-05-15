@@ -217,6 +217,7 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Help & Support", comment: "Contact Support Action")
+        cell.accessibilityIdentifier = "settings-help-button"
     }
 
     func configurePrivacy(cell: BasicTableViewCell) {

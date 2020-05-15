@@ -18,13 +18,13 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Created eons ago at 9:51" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kz9-1h-fRY">
-                        <rect key="frame" x="15" y="8" width="290" height="16"/>
+                        <rect key="frame" x="15" y="11" width="290" height="16"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="#00 Jane Doe" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VuR-wG-Bbc">
-                        <rect key="frame" x="15" y="32" width="290" height="41"/>
+                        <rect key="frame" x="15" y="35" width="290" height="38"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -56,7 +56,7 @@
                     <constraint firstItem="0jq-dU-DSt" firstAttribute="trailing" secondItem="VuR-wG-Bbc" secondAttribute="trailing" id="Yrn-9W-9Dw"/>
                     <constraint firstItem="uIV-Sn-Yeh" firstAttribute="leading" secondItem="VuR-wG-Bbc" secondAttribute="leading" id="h9K-qI-gKu"/>
                     <constraint firstItem="VuR-wG-Bbc" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="mSL-pS-fig"/>
-                    <constraint firstItem="Kz9-1h-fRY" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="uxx-qn-5Vc"/>
+                    <constraint firstItem="Kz9-1h-fRY" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="uxx-qn-5Vc"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

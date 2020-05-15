@@ -40,7 +40,8 @@ struct SummaryTableViewCellViewModel {
     ///
     var billedPersonName: String {
         if let billingAddress = billingAddress {
-            return "\(billingAddress.firstName) \(billingAddress.lastName)"
+            return Localization.billedPerson(firstName: billingAddress.firstName,
+                                             lastName: billingAddress.lastName)
         } else {
             return ""
         }
@@ -184,5 +185,19 @@ private extension SummaryTableViewCell {
         updateStatusButton.accessibilityTraits = .button
         updateStatusButton.accessibilityHint = NSLocalizedString("Opens a list of available statuses.",
                                                                  comment: "Accessibility hint for the button to update the order status")
+    }
+}
+
+/// MARK: - Localization
+
+private extension SummaryTableViewCellViewModel {
+    enum Localization {
+        static func billedPerson(firstName: String, lastName: String) -> String {
+            let format = NSLocalizedString("%1$@ %2$@", comment: "In Order Details,"
+                + " the pattern to show the billed person's full name. For example, “John Doe”."
+                + " The %1$@ is the first name. The %2$@ is the last name.")
+
+            return String.localizedStringWithFormat(format, firstName, lastName)
+        }
     }
 }

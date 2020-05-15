@@ -3,8 +3,8 @@ import Yosemite
 import Gridicons
 
 struct OrderStatusPresentation {
-    let status: OrderStatusEnum
-    let statusName: String
+    let style: OrderStatusEnum
+    let title: String
 }
 
 /// The ViewModel for `SummaryTableViewCell`.
@@ -29,8 +29,8 @@ struct SummaryTableViewCellViewModel {
         orderNumber = order.number
 
         presentation = OrderStatusPresentation(
-            status: status?.status ?? OrderStatusEnum(rawValue: order.statusKey),
-            statusName: status?.name ?? order.statusKey
+            style: status?.status ?? OrderStatusEnum(rawValue: order.statusKey),
+            title: status?.name ?? order.statusKey
         )
 
         self.calendar = calendar
@@ -97,8 +97,8 @@ final class SummaryTableViewCell: UITableViewCell {
     /// Displays the specified OrderStatus, and applies the right Label Style
     ///
     private func display(presentation: OrderStatusPresentation) {
-        paymentStatusLabel.applyStyle(for: presentation.status)
-        paymentStatusLabel.text = presentation.statusName
+        paymentStatusLabel.applyStyle(for: presentation.style)
+        paymentStatusLabel.text = presentation.title
     }
 
     // MARK: - Overridden Methods

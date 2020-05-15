@@ -90,7 +90,7 @@ final class ProductFormViewController: UIViewController {
     private var cancellable: ObservationToken?
 
     init(product: Product,
-         currency: String,
+         currency: String = CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode),
          presentationStyle: PresentationStyle,
          isEditProductsRelease2Enabled: Bool,
          isEditProductsRelease3Enabled: Bool) {

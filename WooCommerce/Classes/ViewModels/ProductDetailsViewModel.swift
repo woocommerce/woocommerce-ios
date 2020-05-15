@@ -25,9 +25,11 @@ final class ProductDetailsViewModel {
         }
     }
 
-    /// Yosemite.Order.currency
+    /// The default currency configured on the store
     ///
-    let currency: String
+    var currency: String {
+        return CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode)
+    }
 
     /// Nav bar title
     ///
@@ -118,9 +120,8 @@ final class ProductDetailsViewModel {
 
     /// Designated initializer.
     ///
-    init(product: Product, currency: String) {
+    init(product: Product) {
         self.product = product
-        self.currency = currency
 
         refreshResultsController()
     }

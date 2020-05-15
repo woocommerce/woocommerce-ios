@@ -4,9 +4,54 @@ import XCTest
 
 final class ProductFormBottomSheetActionsFactoryTests: XCTestCase {
 
-    // M3 feature flag off & M2 feature flag is on
+    // M3 feature flag off & M2 feature flag off
 
-    func testDataHasNoEditProductsRelease3ActionsForAPhysicalProductWhenFeatureFlagIsOff() {
+    func testDataHasNoEditProductsRelease2And3ActionsForAPhysicalProductWhenBothFeatureFlagsAreOff() {
+        let product = Fixtures.physicalProduct
+        let isEditProductsRelease2Enabled = false
+        let isEditProductsRelease3Enabled = false
+        let actions = ProductFormBottomSheetActionsFactory.actions(product: product,
+                                                                   isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                                                   isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+
+        let expectedActions: [ProductFormBottomSheetAction] = [
+            .editInventorySettings,
+            .editShippingSettings
+        ]
+        XCTAssertEqual(actions, expectedActions)
+    }
+
+    func testDataHasNoEditProductsRelease2And3AndShippingActionsForAVirtualProductWhenBothFeatureFlagsAreOff() {
+        let product = Fixtures.virtualProduct
+        let isEditProductsRelease2Enabled = false
+        let isEditProductsRelease3Enabled = false
+        let actions = ProductFormBottomSheetActionsFactory.actions(product: product,
+                                                                   isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                                                   isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+
+        let expectedActions: [ProductFormBottomSheetAction] = [
+            .editInventorySettings
+        ]
+        XCTAssertEqual(actions, expectedActions)
+    }
+
+    func testDataHasNoEditProductsRelease2And3AndShippingActionsForADownloadableProductWhenBothFeatureFlagsAreOff() {
+        let product = Fixtures.downloadableProduct
+        let isEditProductsRelease2Enabled = false
+        let isEditProductsRelease3Enabled = false
+        let actions = ProductFormBottomSheetActionsFactory.actions(product: product,
+                                                                   isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                                                   isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+
+        let expectedActions: [ProductFormBottomSheetAction] = [
+            .editInventorySettings
+        ]
+        XCTAssertEqual(actions, expectedActions)
+    }
+
+    // M3 feature flag off & M2 feature flag on
+
+    func testDataHasNoEditProductsRelease3ActionsForAPhysicalProductWhenM3FeatureFlagIsOff() {
         let product = Fixtures.physicalProduct
         let isEditProductsRelease2Enabled = true
         let isEditProductsRelease3Enabled = false
@@ -22,7 +67,7 @@ final class ProductFormBottomSheetActionsFactoryTests: XCTestCase {
         XCTAssertEqual(actions, expectedActions)
     }
 
-    func testDataHasNoEditProductsRelease3AndShippingActionsForAVirtualProductWhenFeatureFlagIsOff() {
+    func testDataHasNoEditProductsRelease3AndShippingActionsForAVirtualProductWhenM3FeatureFlagIsOff() {
         let product = Fixtures.virtualProduct
         let isEditProductsRelease2Enabled = true
         let isEditProductsRelease3Enabled = false
@@ -37,7 +82,7 @@ final class ProductFormBottomSheetActionsFactoryTests: XCTestCase {
         XCTAssertEqual(actions, expectedActions)
     }
 
-    func testDataHasNoEditProductsRelease3AndShippingActionsForADownloadableProductWhenFeatureFlagIsOff() {
+    func testDataHasNoEditProductsRelease3AndShippingActionsForADownloadableProductWhenM3FeatureFlagIsOff() {
         let product = Fixtures.downloadableProduct
         let isEditProductsRelease2Enabled = true
         let isEditProductsRelease3Enabled = false
@@ -54,7 +99,7 @@ final class ProductFormBottomSheetActionsFactoryTests: XCTestCase {
 
     // M3 feature flag on & M2 feature flag is on
 
-    func testDataHasEditProductsRelease3ActionsForAPhysicalProductWhenFeatureFlagIsOn() {
+    func testDataHasEditProductsRelease3ActionsForAPhysicalProductWhenBothFeatureFlagsAreOn() {
         let product = Fixtures.physicalProduct
         let isEditProductsRelease2Enabled = true
         let isEditProductsRelease3Enabled = true
@@ -71,7 +116,7 @@ final class ProductFormBottomSheetActionsFactoryTests: XCTestCase {
         XCTAssertEqual(actions, expectedActions)
     }
 
-    func testDataHasEditProductsRelease3ButNoShippingActionsForAVirtualProductWhenFeatureFlagIsOn() {
+    func testDataHasEditProductsRelease3ButNoShippingActionsForAVirtualProductWhenBothFeatureFlagsAreOn() {
         let product = Fixtures.virtualProduct
         let isEditProductsRelease2Enabled = true
         let isEditProductsRelease3Enabled = true
@@ -87,7 +132,7 @@ final class ProductFormBottomSheetActionsFactoryTests: XCTestCase {
         XCTAssertEqual(actions, expectedActions)
     }
 
-    func testDataHasEditProductsRelease3ButNoShippingActionsForADownloadableProductWhenFeatureFlagIsOn() {
+    func testDataHasEditProductsRelease3ButNoShippingActionsForADownloadableProductWhenBothFeatureFlagsAreOn() {
         let product = Fixtures.downloadableProduct
         let isEditProductsRelease2Enabled = true
         let isEditProductsRelease3Enabled = true

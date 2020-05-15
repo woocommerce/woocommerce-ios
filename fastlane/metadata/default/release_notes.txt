@@ -1,1 +1,2 @@
-* We fixed an impolite bug that would sometimes crash the app while you were downloading Orders. Download away, we say!
+* Easier product description editing: Tap anywhere on a product cell to start editing. Need the keyboard? It pops up automatically. And while we were at it, we fixed a couple of bugs.
+* Up-to-the-minute order reporting: The Order list refreshes automatically every time you open the app or get a new order, and the Processing Orders list now shows upcoming future orders.

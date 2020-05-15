@@ -46,7 +46,7 @@ final class TopBannerView: UIView {
 
     private let isActionEnabled: Bool
 
-    private var isExpanded: Bool = true
+    private(set) var isExpanded: Bool
 
     private let onDismiss: (() -> Void)?
     private let onAction: (() -> Void)?

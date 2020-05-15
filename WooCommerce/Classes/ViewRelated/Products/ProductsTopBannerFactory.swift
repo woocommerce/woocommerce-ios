@@ -4,9 +4,11 @@ import Yosemite
 struct ProductsTopBannerFactory {
     /// Creates a products tab top banner asynchronously based on the app settings.
     /// - Parameters:
+    ///   - isExpanded: whether the top banner is expanded by default.
     ///   - expandedStateChangeHandler: called when the top banner expanded state changes.
     ///   - onCompletion: called when the view controller is created and ready for display.
-    static func topBanner(expandedStateChangeHandler: @escaping () -> Void,
+    static func topBanner(isExpanded: Bool,
+                          expandedStateChangeHandler: @escaping () -> Void,
                           onCompletion: @escaping (TopBannerView) -> Void) {
         let action = AppSettingsAction.loadProductsFeatureSwitch { isEditProductsRelease2Enabled in
             let title = isEditProductsRelease2Enabled ? Strings.titleWhenEditProductsRelease2IsEnabled: Strings.titleWhenEditProductsRelease2IsDisabled
@@ -14,6 +16,7 @@ struct ProductsTopBannerFactory {
             let viewModel = TopBannerViewModel(title: title,
                                                infoText: infoText,
                                                icon: .workInProgressBanner,
+                                               isExpanded: isExpanded,
                                                expandedStateChangeHandler: expandedStateChangeHandler)
             let topBannerView = TopBannerView(viewModel: viewModel)
             topBannerView.translatesAutoresizingMaskIntoConstraints = false

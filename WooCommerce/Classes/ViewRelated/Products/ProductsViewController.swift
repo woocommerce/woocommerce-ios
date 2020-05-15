@@ -55,6 +55,10 @@ final class ProductsViewController: UIViewController {
     ///
     private lazy var topBannerContainerView: SwappableSubviewContainerView = SwappableSubviewContainerView()
 
+    /// Top banner that shows that the Products feature is still work in progress.
+    ///
+    private var topBannerView: TopBannerView?
+
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Products in sync.
     ///
     private lazy var resultsController: ResultsController<StorageProduct> = {
@@ -327,10 +331,12 @@ private extension ProductsViewController {
     }
 
     func updateTopBannerView() {
-        ProductsTopBannerFactory.topBanner(expandedStateChangeHandler: { [weak self] in
+        let isExpanded = topBannerView?.isExpanded ?? false
+        ProductsTopBannerFactory.topBanner(isExpanded: isExpanded, expandedStateChangeHandler: { [weak self] in
             self?.tableView.updateHeaderHeight()
         }, onCompletion: { [weak self] topBannerView in
             self?.topBannerContainerView.updateSubview(topBannerView)
+            self?.topBannerView = topBannerView
             self?.tableView.updateHeaderHeight()
         })
     }

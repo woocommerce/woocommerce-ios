@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-04-16 00:54:04+0000 */
+/* Translation-Revision-Date: 2020-05-13 08:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -51,7 +51,7 @@
 /* Label about number of variations shown on Products tab */
 "%ld variants" = "%ld個のバリエーション";
 
-/* Content of the badge presented over the Orders icon when there are more than 99 orders processing */
+/* Shown when there are more than 99 items of something (e.g. Processing Orders). */
 "99+" = "99+";
 
 /* Placeholder of the Product Short Description row on Product main screen */
@@ -95,6 +95,9 @@
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "商品画像を追加";
+
+/* Placeholder text in Product Purchase Note screen */
+"Add a purchase note..." = "注意事項を追加…";
 
 /* Accessibility label for the 'Add a tracking' button */
 "Add a tracking" = "追跡を追加";
@@ -140,6 +143,12 @@
 
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "リクエストの処理中にエラーが発生しました。";
+
+/* Footer text in Product Purchase Note screen */
+"An optional note to send the customer after purchase" = "購入後、お客様に送るオプション備考";
+
+/* Title when there is no filter set. */
+"Any" = "任意";
 
 /* Message shown when Apple authentication fails. */
 "Apple authentication failed." = "Apple の認証に失敗しました。";
@@ -230,7 +239,7 @@
 "Can Not Request Link" = "リンクをリクエストできません";
 
 /* Button title Cancel in Discard Changes Action Sheet
-   Button title Cancel in Edit Product More Options Action Sheet - Button title Cancel in Sort Products Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links */
+   Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links */
 "Cancel" = "キャンセル";
 
 /* The title of the alert when there is an error updating the product */
@@ -250,7 +259,8 @@
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "お気に入りのサイトをいつでもチェックし、いつでもどこからでもコメントできます。";
 
-/* Title of the Categories row on Product main screen */
+/* Edit product categories screen - Screen title
+   Title of the Categories row on Product main screen */
 "Categories" = "カテゴリー";
 
 /* Popup title for wrong SSL certificate. */
@@ -264,6 +274,9 @@
 
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "デバイスから選択";
+
+/* Button title for clearing all filters for the list. */
+"Clear all" = "すべてクリア";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "情報を収集";
@@ -404,6 +417,9 @@
 /* Screen title: Details Order number (number) */
 "Details Order #(viewModel.order.number)" = "注文番号 (viewModel.order.number) の詳細";
 
+/* Footer text in Product Menu order screen */
+"Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "カタログ内の製品の位置を決定します。数字の値が小さいほど、アイテムは商品リストの上の方に表示されます。マイナスの値も利用できます";
+
 /* Format of all 3 dimensions on the Shipping Settings row - L x W x H[unit] */
 "Dimensions: %1$@ x %2$@ x %3$@%4$@" = "サイズ :%1$@ x %2$@ x %3$@%4$@";
 
@@ -420,7 +436,7 @@
 "Discount" = "割引";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet */
 "Dismiss" = "非表示";
 
 /* Display label for the product's inventory backorders setting option */
@@ -428,6 +444,9 @@
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "アカウントをお持ちでない場合は_登録_してください。";
+
+/* Edit product categories screen - button title to apply categories selection */
+"Done" = "完了";
 
 /* WordPress.com (unmapped!) error */
 "Dotcom Error: [(code)] (theMessage)" = "Dotcom エラー: [(code)] (theMessage)";
@@ -516,6 +535,9 @@
 /* For example: 'Expiry: 30 days' */
 "Expiry: %ld days" = "有効期限 :%ld日";
 
+/* Display label for affiliate product type. */
+"External\/Affiliate" = "外部 \/ アフィリエイト";
+
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "REST API へのリクエストをシリアライズできませんでした。";
 
@@ -533,6 +555,12 @@
 
 /* Title of the toolbar button to filter products by different attributes. */
 "Filter" = "フィルター";
+
+/* Navigation bar title format for filtering a list of products without filters applied. */
+"Filters" = "フィルター";
+
+/* Navigation bar title format for filtering a list of products with filters applied. */
+"Filters (%ld)" = "Filters (%ld)";
 
 /* User role badge */
 "Follower" = "フォロワー";
@@ -557,6 +585,9 @@
 
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Google の登録に失敗しました。";
+
+/* Display label for grouped product type. */
+"Grouped" = "グループ化";
 
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "どのようなサポートをお求めですか ?";
@@ -736,8 +767,8 @@
 /* Displayed when an Product is being retrieved */
 "Loading Product" = "商品を読み込み中";
 
-/* Button title.  Tapping takes the user to the login form.
-   Log In button label. */
+/* Authentication Login Button
+   Button title.  Tapping takes the user to the login form. - Log In button label. */
 "Log In" = "ログイン";
 
 /* Alert button title - confirms and logs out the user
@@ -755,9 +786,6 @@
 
 /* Instruction text on the login's email address screen. */
 "Log in to your WordPress.com account with your email address." = "メールアドレスで WordPress.com アカウントにログインします。";
-
-/* Authentication Login Button */
-"Log in with Jetpack" = "Jetpack でログイン";
 
 /* Sign in instructions on the 'log in using email' screen. */
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "WooCommerce ストアを管理するには、WordPress.com アカウントのメールアドレスを使用してログインします。";
@@ -800,6 +828,13 @@
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "メディアにはアップロードする関連したファイルはありません。";
+
+/* Menu order label in Product Settings
+   Product Menu Order navigation title */
+"Menu Order" = "メニューの表示順";
+
+/* Placeholder in the Product Menu Order row on Edit Product Menu Order screen. */
+"Menu order" = "メニューの表示順";
 
 /* Message phone number button title */
 "Message" = "メッセージ";
@@ -861,9 +896,6 @@
    Title of a button. The text should be capitalized. */
 "Next" = "次へ";
 
-/* Search Orders (Empty State) */
-"No Orders found" = "注文が見つかりません";
-
 /* Empty Reviews List Message */
 "No Reviews Yet!" = "まだレビューがありません。";
 
@@ -882,9 +914,6 @@
 
 /* The text on the placeholder overlay when there are no product variations on the Products tab */
 "No product variations yet" = "商品のバリエーションはまだありません";
-
-/* Search Products (Empty State) */
-"No products found" = "商品が見つかりません";
 
 /* The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "まだ商品がありません";
@@ -1124,6 +1153,12 @@
 /* My Store > Settings > Experimental features > Product editing */
 "Product editing" = "商品編集";
 
+/* Row title for filtering products by product status. */
+"Product status" = "商品ステータス";
+
+/* Row title for filtering products by product type. */
+"Product type" = "商品タイプ";
+
 /* My Store > Settings > Experimental features > Switch Products
    Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "商品";
@@ -1148,6 +1183,10 @@
 
 /* Product Details - purchase details section title */
 "Purchase Details" = "購入情報";
+
+/* Product Note navigation title
+   Purchase note label in Product Settings */
+"Purchase Note" = "注意事項";
 
 /* Product Details > Purchase Details > Purchase note cell title
    Title for purchase note alert. */
@@ -1390,6 +1429,9 @@
    Title of the Short Description row on Product main screen */
 "Short description" = "簡単な説明";
 
+/* Button title for applying filters to a list of products. */
+"Show Products" = "商品を表示";
+
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show a list of refunded order items for this order." = "この注文で返金された注文アイテムのリストを表示します。";
 
@@ -1417,6 +1459,9 @@
 /* Button title. Tapping begins our normal sign up process. */
 "Sign up with Email" = "メールアドレスで登録";
 
+/* Display label for simple product type. */
+"Simple" = "シンプル";
+
 /* Describes a site redirect domain */
 "Site Redirect" = "サイト転送";
 
@@ -1429,7 +1474,8 @@
 /* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
 "Size:" = "寸法 :";
 
-/* Slug label in Product Settings */
+/* Placeholder in the Product Slug row on Edit Product Slug screen.
+   Product Slug navigation title - Slug label in Product Settings */
 "Slug" = "スラッグ";
 
 /* A unit test for reviews, checking that anonymous users are added as the author named `someone`
@@ -1481,7 +1527,7 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "ご指定のサイトアドレスはご利用いただけません。";
 
-/* Message title for Sort Products Action Sheet
+/* Message title for sort products action bottom sheet
    Title of the toolbar button to sort products in different ways. */
 "Sort by" = "並び順";
 
@@ -1509,7 +1555,7 @@
 "Stock quantity:" = "在庫数 :";
 
 /* Product stock status list selector navigation title
-   Title of the cell in Product Inventory Settings > Stock status */
+   Row title for filtering products by stock status. - Title of the cell in Product Inventory Settings > Stock status */
 "Stock status" = "在庫状況";
 
 /* A descriptive label prefix. Example: 'Stock status: In stock' */
@@ -1746,6 +1792,9 @@
 /* Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect. */
 "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy." = "この情報は、製品を改善し、マーケティングをより関連性の高いものとし、WordPress.com の利用をパーソナライズするのに役立ちます。さらに詳しくは、個人情報保護方針をご覧ください。";
 
+/* Footer text in Product Slug screen */
+"This is the URL-friendly version of the product title" = "これは商品タイトルの URL フレンドリーなバージョンです。";
+
 /* Accessibility label for the Shipping notice
    Shipping notice row label when there is more than one shipping method */
 "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete." = "この注文は配送料の計算に拡張機能を使用しています。配送方法が一部表示されない場合があります。";
@@ -1875,6 +1924,9 @@
 /* Content of error presented when loading the list of shipment carriers failed. It reads: Unable to load Shipment Carriers */
 "Unable to load Shipment Carriers" = "配送業者を読み込めません";
 
+/* Load Product Categories Action Failed */
+"Unable to load categories" = "カテゴリーを読み込めませんでした";
+
 /* Load Action Failed */
 "Unable to load content" = "コンテンツを読み込めませんでした";
 
@@ -1930,6 +1982,9 @@
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "最大7日間分のログが保存されます。";
 
+/* Upcoming Section Header */
+"Upcoming" = "予定済み";
+
 /* Action for updating a Product remotely
    Label action for updating a link on the editor */
 "Update" = "更新";
@@ -1976,6 +2031,9 @@
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "ユーザー名は4文字以上にしてください。";
 
+/* Display label for variable product type. */
+"Variable" = "変数";
+
 /* Product Details > descriptive label for the Product Variants cell.
    Title that appears on top of the Product Variation List screen. */
 "Variations" = "バリエーション";
@@ -1992,6 +2050,9 @@
 /* Accessibility label for the 'View Billing Information' button
    Button on bottom of Customer's information to show the billing details */
 "View Billing Information" = "お支払い情報を表示";
+
+/* Button title View product in store in Edit Product More Options Action Sheet */
+"View Product in Store" = "ストアで商品を表示";
 
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "アフィリエイト向け商品を表示";
@@ -2043,6 +2104,10 @@
 
 /* Error message shown when having trouble connecting to a Jetpack site. */
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "その URL の Jetpack サイトと連携することはできません。サポートにご連絡ください。";
+
+/* Message for empty Orders search results. The %@ is a placeholder for the text entered by the user.
+   Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
+"We're sorry, we couldn't find results for “%@”" = "「%@」の検索結果が見つかりませんでした。";
 
 /* Statistical unit - a single week */
 "Week" = "週";

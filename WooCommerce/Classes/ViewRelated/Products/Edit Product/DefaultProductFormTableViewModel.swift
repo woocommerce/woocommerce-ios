@@ -122,11 +122,11 @@ private extension DefaultProductFormTableViewModel {
             inventoryDetails.append(String.localizedStringWithFormat(Constants.skuFormat, sku))
         }
 
-        if let stockQuantity = product.stockQuantity {
+        if let stockQuantity = product.stockQuantity, product.manageStock {
             inventoryDetails.append(String.localizedStringWithFormat(Constants.stockQuantityFormat, stockQuantity))
-        } else {
+        } else if product.manageStock == false {
             let stockStatus = product.productStockStatus
-            inventoryDetails.append(String.localizedStringWithFormat(Constants.stockStatusFormat, stockStatus.description))
+            inventoryDetails.append(stockStatus.description)
         }
 
         let details = inventoryDetails.isEmpty ? nil: inventoryDetails.joined(separator: "\n")
@@ -230,8 +230,6 @@ private extension DefaultProductFormTableViewModel {
                                                  comment: "Format of the SKU on the Inventory Settings row")
         static let stockQuantityFormat = NSLocalizedString("Quantity: %ld",
                                                            comment: "Format of the stock quantity on the Inventory Settings row")
-        static let stockStatusFormat = NSLocalizedString("Stock status: %@",
-                                                         comment: "Format of the stock status on the Inventory Settings row")
 
         // Shipping
         static let weightFormat = NSLocalizedString("Weight: %1$@%2$@",

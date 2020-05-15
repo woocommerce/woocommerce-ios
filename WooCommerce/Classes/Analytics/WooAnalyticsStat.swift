@@ -296,6 +296,7 @@ public enum WooAnalyticsStat: String {
     // Product List Sorting/Filtering
     //
     case productListViewSortingOptionsTapped = "product_list_view_sorting_options_tapped"
+    case productSortingListOptionSelected = "product_sorting_list_option_selected"
     case productListViewFilterOptionsTapped = "product_list_view_filter_options_tapped"
     case productFilterListShowProductsButtonTapped = "product_filter_list_show_products_button_tapped"
     case productFilterListClearMenuButtonTapped = "product_filter_list_clear_menu_button_tapped"

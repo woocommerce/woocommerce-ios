@@ -449,6 +449,7 @@ private extension ProductsViewController {
     }
 
     @objc func sortButtonTapped(sender: UIButton) {
+        ServiceLocator.analytics.track(.productListViewSortingOptionsTapped)
         let title = NSLocalizedString("Sort by",
                                       comment: "Message title for sort products action bottom sheet")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
@@ -463,7 +464,7 @@ private extension ProductsViewController {
                                                                             return
                                                                         }
                                                                         self?.sortOrder = selectedSortOrder
-         ServiceLocator.analytics.track(.productListViewSortingOptionsTapped, withProperties: ["order": selectedSortOrder.analyticsDescription])
+         ServiceLocator.analytics.track(.productSortingListOptionSelected, withProperties: ["order": selectedSortOrder.analyticsDescription])
         }
         sortOrderListPresenter.show(from: self, sourceView: sender, arrowDirections: .up)
     }

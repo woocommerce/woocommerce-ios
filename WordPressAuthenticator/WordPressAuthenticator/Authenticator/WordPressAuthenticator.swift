@@ -213,8 +213,7 @@ import AuthenticationServices
         loginFields.emailAddress = dotcomEmailAddress ?? String()
         loginFields.username = dotcomUsername ?? String()
 
-        let storyboard = UIStoryboard(name: "Login", bundle: bundle)
-        guard let controller = storyboard.instantiateViewController(withIdentifier: "LoginWPcomPassword") as? LoginWPComViewController else {
+        guard let controller = LoginWPComViewController.instantiate(from: .login) else {
             fatalError("unable to create wpcom password screen")
         }
 

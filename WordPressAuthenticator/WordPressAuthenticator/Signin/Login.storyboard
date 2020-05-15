@@ -107,9 +107,6 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="42E-2e-kOq"/>
-                    <connections>
-                        <segue destination="lmD-c6-SLs" kind="show" identifier="showWPComLogin" id="UV4-XI-c0q"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ieq-Ar-5OF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -337,7 +334,6 @@
                         <outlet property="inputStack" destination="JdU-yW-tzf" id="99m-CN-GKR"/>
                         <outlet property="instructionLabel" destination="DKR-9c-zZQ" id="2Rj-ad-hnL"/>
                         <outlet property="submitButton" destination="OZC-xf-OAn" id="k1c-SJ-qiK"/>
-                        <segue destination="lmD-c6-SLs" kind="show" identifier="showWPComLogin" id="ySQ-EM-6JI"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wWl-qb-1Yp" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -551,10 +547,10 @@
             </objects>
             <point key="canvasLocation" x="768.79999999999995" y="1946.6266866566718"/>
         </scene>
-        <!--LoginWP Com View Controller-->
+        <!--LoginWPComViewController-->
         <scene sceneID="brQ-1M-iPT">
             <objects>
-                <viewController storyboardIdentifier="LoginWPcomPassword" useStoryboardIdentifierAsRestorationIdentifier="YES" id="lmD-c6-SLs" customClass="LoginWPComViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginWPComViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="lmD-c6-SLs" userLabel="LoginWPComViewController" customClass="LoginWPComViewController" customModule="WordPressAuthenticator" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="dAs-4b-ACP"/>
                         <viewControllerLayoutGuide type="bottom" id="kOH-fr-1L0"/>
@@ -955,7 +951,6 @@
                                 <state key="normal" title="Enter your password instead"/>
                                 <connections>
                                     <action selector="handleUsePasswordTapped:" destination="Kvo-Y2-yhG" eventType="touchUpInside" id="T8m-o8-zic"/>
-                                    <segue destination="lmD-c6-SLs" kind="show" id="0ao-yi-yZI"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -1131,7 +1126,6 @@
                         <outlet property="siteAddressHelpButton" destination="roL-ID-k8n" id="QB2-ri-X5V"/>
                         <outlet property="siteURLField" destination="ZrT-CY-qD7" id="561-Zw-Ja9"/>
                         <outlet property="submitButton" destination="ltO-hW-mbe" id="wwr-D5-5kK"/>
-                        <segue destination="lmD-c6-SLs" kind="show" identifier="showWPComLogin" id="8p6-rS-9Ml"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WlT-Oa-AoS" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1418,7 +1412,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="8p6-rS-9Ml"/>
         <segue reference="JN3-Ck-2w7"/>
     </inferredMetricsTieBreakers>
     <resources>

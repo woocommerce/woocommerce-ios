@@ -170,17 +170,6 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         loginFacade.signIn(with: loginFields)
     }
 
-    /// Manages data transfer when seguing to a new VC
-    ///
-    override open func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let source = segue.source as? LoginViewController, let destination = segue.destination as? LoginViewController else {
-            return
-        }
-
-        destination.loginFields = source.loginFields
-        destination.dismissBlock = source.dismissBlock
-        destination.errorToPresent = source.errorToPresent
-    }
 
     // MARK: SigninWPComSyncHandler methods
     dynamic open func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {
@@ -419,7 +408,16 @@ extension LoginViewController {
             present(socialErrorNav, animated: true) {}
         } else {
             errorToPresent = error
-            performSegue(withIdentifier: .showWPComLogin, sender: self)
+            guard let vc = LoginWPComViewController.instantiate(from: .login) else {
+                DDLogError("Failed to navigate from Google Login to LoginWPComViewController (password VC)")
+                return
+            }
+
+            vc.loginFields = loginFields
+            vc.dismissBlock = dismissBlock
+            vc.errorToPresent = errorToPresent
+
+            navigationController?.pushViewController(vc, animated: true)
         }
     }
     
@@ -441,9 +439,19 @@ extension LoginViewController {
         loginFields.username = email
         loginFields.emailAddress = email
 
-        performSegue(withIdentifier: .showWPComLogin, sender: self)
         WordPressAuthenticator.track(.loginSocialAccountsNeedConnecting, properties: ["source": "google"])
         configureViewLoading(false)
+
+        guard let vc = LoginWPComViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from Google Login to LoginWPComViewController (password VC)")
+            return
+        }
+
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     func socialNeedsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {

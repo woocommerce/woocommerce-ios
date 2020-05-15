@@ -22,6 +22,14 @@ enum ProductFormSection {
             let icon: UIImage
             let title: String?
             let details: String?
+            let numberOfLinesForDetails: Int
+
+            init(icon: UIImage, title: String?, details: String?, numberOfLinesForDetails: Int = 0) {
+                self.icon = icon
+                self.title = title
+                self.details = details
+                self.numberOfLinesForDetails = numberOfLinesForDetails
+            }
         }
     }
 }

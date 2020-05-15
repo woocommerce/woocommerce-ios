@@ -7,7 +7,7 @@ private extension ProductFormSection.SettingsRow.ViewModel {
                                                            text: details,
                                                            image: icon,
                                                            imageTintColor: .textSubtle,
-                                                           numberOfLinesForText: 0)
+                                                           numberOfLinesForText: numberOfLinesForDetails)
     }
 }
 

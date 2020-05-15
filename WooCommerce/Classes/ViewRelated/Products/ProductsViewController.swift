@@ -34,7 +34,7 @@ final class ProductsViewController: UIViewController {
     /// Top stack view that is shown above the table view as the table header view.
     ///
     private lazy var topStackView: UIStackView = {
-        let subviews = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease2) ? [topBannerView, toolbar]: [topBannerView]
+        let subviews = [topBannerContainerView, toolbar]
         let stackView = UIStackView(arrangedSubviews: subviews)
         stackView.axis = .vertical
         stackView.spacing = 0
@@ -51,11 +51,9 @@ final class ProductsViewController: UIViewController {
     /// The filter CTA in the top toolbar.
     private lazy var filterButton: UIButton = UIButton(frame: .zero)
 
-    /// Top banner that shows that the Products feature is still work in progress.
+    /// Container of the top banner that shows that the Products feature is still work in progress.
     ///
-    private lazy var topBannerView: TopBannerView = {
-        return createTopBannerView()
-    }()
+    private lazy var topBannerContainerView: SwappableSubviewContainerView = SwappableSubviewContainerView()
 
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Products in sync.
     ///
@@ -120,6 +118,10 @@ final class ProductsViewController: UIViewController {
         }
     }
 
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
@@ -130,6 +132,9 @@ final class ProductsViewController: UIViewController {
         configureTableView()
         configureSyncingCoordinator()
         registerTableViewCells()
+
+        updateTopBannerView()
+        observeProductsFeatureSwitchChange()
 
         startListeningToNotifications()
         syncingCoordinator.resynchronize()
@@ -299,25 +304,6 @@ private extension ProductsViewController {
         return toolbar
     }
 
-    func createTopBannerView() -> TopBannerView {
-        let title: String
-        let infoText: String
-
-        title = NSLocalizedString("Limited editing available",
-                                  comment: "The title of the Work In Progress top banner on the Products tab")
-        infoText = NSLocalizedString("We’ve added editing functionality to simple products. Keep an eye out for more options soon!",
-                                     comment: "The info of the Work In Progress top banner on the Products tab")
-
-        let viewModel = TopBannerViewModel(title: title,
-                                           infoText: infoText,
-                                           icon: .workInProgressBanner) { [weak self] in
-                                            self?.tableView.updateHeaderHeight()
-        }
-        let topBannerView = TopBannerView(viewModel: viewModel)
-        topBannerView.translatesAutoresizingMaskIntoConstraints = false
-        return topBannerView
-    }
-
     /// Setup: Sync'ing Coordinator
     ///
     func configureSyncingCoordinator() {
@@ -334,6 +320,21 @@ private extension ProductsViewController {
 // MARK: - Updates
 //
 private extension ProductsViewController {
+    func observeProductsFeatureSwitchChange() {
+        NotificationCenter.default.addObserver(forName: .ProductsFeatureSwitchDidChange, object: nil, queue: nil) { [weak self] _ in
+            self?.updateTopBannerView()
+        }
+    }
+
+    func updateTopBannerView() {
+        ProductsTopBannerFactory.topBanner(expandedStateChangeHandler: { [weak self] in
+            self?.tableView.updateHeaderHeight()
+        }, onCompletion: { [weak self] topBannerView in
+            self?.topBannerContainerView.updateSubview(topBannerView)
+            self?.tableView.updateHeaderHeight()
+        })
+    }
+
     func updateResultsController(siteID: Int64) {
         resultsController = createResultsController(siteID: siteID)
         configureResultsController(resultsController) { [weak self] in

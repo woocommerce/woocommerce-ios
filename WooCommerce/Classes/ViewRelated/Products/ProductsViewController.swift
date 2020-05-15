@@ -37,7 +37,7 @@ final class ProductsViewController: UIViewController {
         let subviews = [topBannerContainerView, toolbar]
         let stackView = UIStackView(arrangedSubviews: subviews)
         stackView.axis = .vertical
-        stackView.spacing = 0
+        stackView.spacing = 8
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()

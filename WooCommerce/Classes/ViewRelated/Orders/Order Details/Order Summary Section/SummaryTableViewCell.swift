@@ -2,16 +2,16 @@ import UIKit
 import Yosemite
 import Gridicons
 
-struct OrderStatusPresentation {
-    let style: OrderStatusEnum
-    let title: String
-}
-
 /// The ViewModel for `SummaryTableViewCell`.
 ///
 /// TODO This and that cell class should be renamed to be less ambiguous.
 ///
 struct SummaryTableViewCellViewModel {
+    fileprivate struct OrderStatusPresentation {
+        let style: OrderStatusEnum
+        let title: String
+    }
+
     private let billingAddress: Address?
     private let dateCreated: Date
     private let orderNumber: String
@@ -96,7 +96,7 @@ final class SummaryTableViewCell: UITableViewCell {
 
     /// Displays the specified OrderStatus, and applies the right Label Style
     ///
-    private func display(presentation: OrderStatusPresentation) {
+    private func display(presentation: SummaryTableViewCellViewModel.OrderStatusPresentation) {
         paymentStatusLabel.applyStyle(for: presentation.style)
         paymentStatusLabel.text = presentation.title
     }

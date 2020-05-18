@@ -1,6 +1,9 @@
 import UIKit
 import Yosemite
 
+
+/// Simplifies and decouples the store picker from the caller
+///
 final class SwitchStoreUseCase {
     /// A static method which allows easily to switch store
     ///
@@ -11,7 +14,7 @@ final class SwitchStoreUseCase {
         }
 
         SwitchStoreUseCase.logOutOfCurrentStore {
-            finalizeStoreSelection(storeID, configuration: .switchingStores)
+            finalizeStoreSelection(storeID)
             presentStoreSwitchedNotice(configuration: .switchingStores)
 
             // Reload orders badge
@@ -74,7 +77,7 @@ final class SwitchStoreUseCase {
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
-    static func finalizeStoreSelection(_ storeID: Int64, configuration: StorePickerConfiguration) {
+    static func finalizeStoreSelection(_ storeID: Int64) {
         ServiceLocator.stores.updateDefaultStore(storeID: storeID)
 
         // We need to call refreshUserData() here because the user selected
@@ -84,8 +87,5 @@ final class SwitchStoreUseCase {
                                   withProperties: ["selected_store_id": ServiceLocator.stores.sessionManager.defaultStoreID ?? String()])
 
         AppDelegate.shared.authenticatorWasDismissed()
-        if configuration == .login {
-            MainTabBarController.switchToMyStoreTab(animated: true)
-        }
     }
 }

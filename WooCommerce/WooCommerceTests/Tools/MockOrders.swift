@@ -1,10 +1,10 @@
-@testable import Networking
+import Yosemite
 
 final class MockOrders {
     let siteID: Int64 = 1234
     let orderID: Int64 = 5678
 
-    func sampleOrder() -> Networking.Order {
+    func sampleOrder() -> Order {
         return Order(siteID: siteID,
                      orderID: orderID,
                      parentID: 0,
@@ -31,7 +31,7 @@ final class MockOrders {
                      refunds: [])
     }
 
-    func sampleOrderCreatedInCurrentYear() -> Networking.Order {
+    func sampleOrderCreatedInCurrentYear() -> Order {
         return Order(siteID: siteID,
                      orderID: orderID,
                      parentID: 0,
@@ -58,7 +58,7 @@ final class MockOrders {
                      refunds: [])
     }
 
-    func sampleShippingLines() -> [Networking.ShippingLine] {
+    func sampleShippingLines() -> [ShippingLine] {
         return [ShippingLine(shippingID: 123,
         methodTitle: "International Priority Mail Express Flat Rate",
         methodID: "usps",
@@ -66,7 +66,7 @@ final class MockOrders {
         totalTax: "0.00")]
     }
 
-    func sampleAddress() -> Networking.Address {
+    func sampleAddress() -> Address {
         return Address(firstName: "Johnny",
                        lastName: "Appleseed",
                        company: "",
@@ -140,7 +140,7 @@ final class MockOrders {
 
     /// An address that may or may not be broken, that came from `broken-order.json`
     ///
-    func brokenAddress() -> Networking.Address {
+    func brokenAddress() -> Address {
         return Address(firstName: "",
                        lastName: "",
                        company: "",
@@ -156,7 +156,7 @@ final class MockOrders {
 
     /// A shipping line that may or may not be broken, from `broken-order.json`
     ///
-    func brokenShippingLines() -> [Networking.ShippingLine] {
+    func brokenShippingLines() -> [ShippingLine] {
         return [ShippingLine(shippingID: 1,
                             methodTitle: "Shipping",
                             methodID: "",

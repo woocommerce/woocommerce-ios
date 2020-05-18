@@ -1,5 +1,6 @@
 import MobileCoreServices
 import WPMediaPicker
+import Photos
 
 /// Encapsulates capturing media from a device camera.
 ///
@@ -83,7 +84,11 @@ private extension CameraCaptureCoordinator {
 
     func requestPhotoLibraryPermission(completion: @escaping (_ authorized: Bool) -> Void) {
         PHPhotoLibrary.requestAuthorization { status in
-            completion(status == .authorized)
+            // The requestAuthorization block can be called on a serial queue so we're making sure
+            // the completion block is called on the main thread.
+            DispatchQueue.main.async {
+                completion(status == .authorized)
+            }
         }
     }
 }

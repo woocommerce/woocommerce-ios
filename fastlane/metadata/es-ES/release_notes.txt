@@ -1,3 +1,2 @@
-* Te presentamos la nueva pestaña Productos.
-* Ahora, los usuarios también tienen funciones de edición limitadas en productos sencillos, y se irán añadiendo más.
-* Hemos aplicado una corrección para que, cada vez que actualices la pestaña Procesando, se muestren tus pedidos actualizados.
+* Ahora, puedes editar más fácilmente la descripción del producto: Toca en cualquier parte en un producto para empezar a editar. ¿Necesitas el teclado? Aparece de forma automática. También hemos aprovechado para corregir un par de errores.
+* La información de pedidos se actualiza en tiempo real: La lista de pedidos se actualiza automáticamente cada vez que abres la aplicación o recibes un nuevo pedido. Además, en la lista Procesando, ahora se muestran los próximos pedidos.

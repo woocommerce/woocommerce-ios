@@ -3,12 +3,48 @@ import Foundation
 import UIKit
 import Yosemite
 
+import class AutomatticTracks.CrashLogging
+import protocol Storage.StorageManagerType
+
 /// ViewModel for `OrderSearchStarterViewController`.
 ///
 /// This encapsulates all the `OrderStatus` data loading and `UITableViewCell` presentation.
 ///
 final class OrderSearchStarterViewModel {
-    private lazy var dataSource = DataSource()
+    private let siteID: Int64
+    private let storageManager: StorageManagerType
+
+    /// The `ViewModel` containing only the data used by the displayed cell.
+    ///
+    struct CellViewModel {
+        let name: String?
+        let slug: String
+
+        /// The total displayed on the right side.
+        ///
+        /// If this is above 99, this will be “99+”.
+        let total: String
+
+        /// The source `OrderStatus` used to create this `ViewModel`.
+        ///
+        /// This should only be used for initializing `OrdersViewController`.
+        ///
+        let orderStatus: OrderStatus
+    }
+
+    private lazy var resultsController: ResultsController<StorageOrderStatus> = {
+        let descriptor = NSSortDescriptor(key: "slug", ascending: true)
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        return ResultsController<StorageOrderStatus>(storageManager: storageManager,
+                                                     matching: predicate,
+                                                     sortedBy: [descriptor])
+    }()
+
+    init(siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+        self.siteID = siteID
+        self.storageManager = storageManager
+    }
 
     /// Start all the operations that this `ViewModel` is responsible for.
     ///
@@ -17,85 +53,42 @@ final class OrderSearchStarterViewModel {
     /// - Parameters:
     ///     - tableView: The table to use for the results. This is not retained by this class.
     ///
-    func activate(using tableView: UITableView) {
-        tableView.dataSource = dataSource
+    func activateAndForwardUpdates(to tableView: UITableView) {
+        resultsController.startForwardingEvents(to: tableView)
 
-        dataSource.registerCells(for: tableView)
-        dataSource.startForwardingEvents(to: tableView)
-
-        try? dataSource.performFetch()
+        performFetch()
     }
 
-    /// The `OrderStatus` located at `indexPath`.
+    /// Fetch and log the error if there's any.
     ///
-    func orderStatus(at indexPath: IndexPath) -> OrderStatus {
-        dataSource.orderStatus(at: indexPath)
+    private func performFetch() {
+        do {
+            try resultsController.performFetch()
+        } catch {
+            CrashLogging.logError(error)
+        }
     }
 }
 
+// MARK: - TableView Support
 
-private extension OrderSearchStarterViewModel {
-    /// Encpsulates data loading and presentation of the `UITableViewCells`.
+extension OrderSearchStarterViewModel {
+    /// The number of DB results
     ///
-    final class DataSource: NSObject, UITableViewDataSource {
-        private let storageManager = ServiceLocator.storageManager
-        private let siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
+    var numberOfObjects: Int {
+        resultsController.numberOfObjects
+    }
 
-        private lazy var resultsController: ResultsController<StorageOrderStatus> = {
-            let descriptor = NSSortDescriptor(key: "slug", ascending: true)
-            let predicate = NSPredicate(format: "siteID == %lld", siteID)
-            return ResultsController<StorageOrderStatus>(storageManager: storageManager,
-                                                         matching: predicate,
-                                                         sortedBy: [descriptor])
-        }()
+    /// The `CellViewModel` located at `indexPath`.
+    ///
+    func cellViewModel(at indexPath: IndexPath) -> CellViewModel {
+        let orderStatus = resultsController.object(at: indexPath)
 
-        /// Run the query to fetch all the `OrderStatus`.
-        ///
-        func performFetch() throws {
-            try resultsController.performFetch()
-        }
+        let total = NumberFormatter.localizedOrNinetyNinePlus(orderStatus.total)
 
-        /// Attach events so the `tableView` is always kept up to date.
-        ///
-        /// This should only be called once.
-        ///
-        func startForwardingEvents(to tableView: UITableView) {
-            resultsController.startForwardingEvents(to: tableView)
-        }
-
-        /// Register the `UITableViewCells` that will be used.
-        ///
-        /// This should only be called once.
-        ///
-        func registerCells(for tableView: UITableView) {
-            tableView.register(BasicTableViewCell.loadNib(),
-                               forCellReuseIdentifier: BasicTableViewCell.reuseIdentifier)
-        }
-
-        /// The `OrderStatus` located at `indexPath`.
-        ///
-        func orderStatus(at indexPath: IndexPath) -> OrderStatus {
-            resultsController.object(at: indexPath)
-        }
-
-        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-            resultsController.numberOfObjects
-        }
-
-        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            let cell = tableView.dequeueReusableCell(withIdentifier: BasicTableViewCell.reuseIdentifier,
-                                                     for: indexPath)
-            let orderStatus = self.orderStatus(at: indexPath)
-
-            cell.accessoryType = .disclosureIndicator
-            cell.selectionStyle = .default
-            cell.textLabel?.text = orderStatus.name
-
-            return cell
-        }
-
-        func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-            NSLocalizedString("Order Status", comment: "The section title for the list of Order statuses in the Order Search.")
-        }
+        return CellViewModel(name: orderStatus.name,
+                             slug: orderStatus.slug,
+                             total: total,
+                             orderStatus: orderStatus)
     }
 }

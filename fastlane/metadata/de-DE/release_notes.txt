@@ -1,3 +1,2 @@
-* Wir freuen uns, den Tab „Produkte“ vorzustellen!
-* Zusätzlich haben Benutzer jetzt begrenzte Bearbeitungsfunktionen für einfache Produkte, mehr Funktionen in Kürze.
-* Wir haben eine Behebung vorgenommen, sodass beim Aktualisieren des Tabs „In Bearbeitung“ deine aktuellen Bestellungen angezeigt werden.
+* Einfacheres Bearbeiten der Produktbeschreibung: Tippe zur Bearbeitung auf eine beliebige Produktzelle. Du benötigst die Tastatur? Sie erscheint automatisch. Und wo wir schon dabei waren, haben wir auch gleich noch ein paar andere Fehler behoben.
+* Topaktuelle Berichterstellung für Bestellungen: Die Bestellliste aktualisiert sich automatisch jedes Mal, wenn du die App öffnest oder eine Bestellung erhältst. Die Liste der Bestellungen in Bearbeitung zeigt nun auch bevorstehende Bestellungen an.

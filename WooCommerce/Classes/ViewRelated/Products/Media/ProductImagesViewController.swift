@@ -5,7 +5,7 @@ import Yosemite
 /// Displays Product images with edit functionality.
 ///
 final class ProductImagesViewController: UIViewController {
-    typealias Completion = (_ images: [ProductImage]) -> Void
+    typealias Completion = (_ images: [ProductImage], _ hasChangedData: Bool) -> Void
 
     @IBOutlet private weak var addButton: UIButton!
     @IBOutlet private weak var addButtonBottomBorderView: UIView!
@@ -148,11 +148,16 @@ private extension ProductImagesViewController {
 private extension ProductImagesViewController {
 
     @objc func addTapped() {
+        ServiceLocator.analytics.track(.productImageSettingsAddImagesButtonTapped)
         showOptionsMenu()
     }
 
     @objc func doneButtonTapped() {
-        onCompletion(productImages)
+        commitAndDismiss(hasOutstandingChanges())
+    }
+
+    func commitAndDismiss(_ hasChangedData: Bool) {
+        onCompletion(productImages, hasChangedData)
     }
 
     func showOptionsMenu() {
@@ -216,6 +221,7 @@ private extension ProductImagesViewController {
             return
         }
         uploadMediaAssetToSiteMediaLibrary(asset: asset)
+        commitAndDismiss(true)
     }
 }
 
@@ -223,14 +229,16 @@ private extension ProductImagesViewController {
 //
 private extension ProductImagesViewController {
     func onDeviceMediaLibraryPickerCompletion(assets: [PHAsset]) {
-        defer {
-            dismiss(animated: true, completion: nil)
-        }
-        guard assets.isEmpty == false else {
-            return
-        }
-        assets.forEach { asset in
-            uploadMediaAssetToSiteMediaLibrary(asset: asset)
+        let shouldAnimateMediaLibraryDismissal = assets.isEmpty
+        dismiss(animated: shouldAnimateMediaLibraryDismissal) { [weak self] in
+            guard let self = self, assets.isNotEmpty else {
+                return
+            }
+
+            assets.forEach { asset in
+                self.uploadMediaAssetToSiteMediaLibrary(asset: asset)
+            }
+            self.commitAndDismiss(true)
         }
     }
 }
@@ -239,8 +247,15 @@ private extension ProductImagesViewController {
 //
 private extension ProductImagesViewController {
     func onWPMediaPickerCompletion(mediaItems: [Media]) {
-        dismiss(animated: true, completion: nil)
-        productImageActionHandler.addSiteMediaLibraryImagesToProduct(mediaItems: mediaItems)
+        let shouldAnimateWPMediaPickerDismissal = mediaItems.isEmpty
+        dismiss(animated: shouldAnimateWPMediaPickerDismissal) { [weak self] in
+            guard let self = self, mediaItems.isNotEmpty else {
+                return
+            }
+
+            self.productImageActionHandler.addSiteMediaLibraryImagesToProduct(mediaItems: mediaItems)
+            self.commitAndDismiss(true)
+        }
     }
 }
 

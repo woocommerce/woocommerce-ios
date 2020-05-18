@@ -25,6 +25,9 @@ extension Product {
                                   unit: unit,
                                   value: value,
                                   placeholder: placeholder,
+                                  accessibilityHint: NSLocalizedString(
+                                  "The price for this product. Editable.",
+                                  comment: "VoiceOver accessibility hint, informing the user that the cell shows the price information for this product."),
                                   unitPosition: currencySettings.currencyUnitPosition,
                                   keyboardType: .decimalPad,
                                   inputFormatter: PriceInputFormatter(),
@@ -47,6 +50,9 @@ extension Product {
                                   unit: unit,
                                   value: value,
                                   placeholder: placeholder,
+                                  accessibilityHint: NSLocalizedString(
+                                  "The sale price for this product. Editable.",
+                                  comment: "VoiceOver accessibility hint, informing the user that the cell shows the sale price information for this product."),
                                   unitPosition: currencySettings.currencyUnitPosition,
                                   keyboardType: .decimalPad,
                                   inputFormatter: PriceInputFormatter(),

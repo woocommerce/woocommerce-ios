@@ -1,8 +1,6 @@
 struct DefaultFeatureFlagService: FeatureFlagService {
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
         switch featureFlag {
-        case .productList:
-            return true
         case .editProducts:
             return true
         case .editProductsRelease2:

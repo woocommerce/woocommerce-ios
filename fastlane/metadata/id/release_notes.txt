@@ -1,3 +1,2 @@
-* Dengan senang hati kami memperkenalkan tab Produk!
-* Sekarang pengguna juga memiliki kemampuan penyuntingan terbatas untuk Produk Sederhana, dengan lebih banyak fitur di pembaruan mendatang.
-* Kami melakukan perbaikan agar saat Anda menyegarkan tab Dalam Proses, pesanan terbaru Anda akan ditampilkan.
+* Penyuntingan deskripsi produk yang lebih mudah: Ketuk di mana saja pada sel produk untuk mulai menyunting. Butuh keyboard? Keyboard nanti akan muncul otomatis. Selain itu, kami juga memperbaiki beberapa bug.
+* Pelaporan pesanan terkini: Daftar Pesanan akan disegarkan otomatis tiap kali Anda membuka aplkasi atau mendapatkan pesanan baru, dan daftar Memproses Pesanan kini menampilkan pesanan yang akan datang.

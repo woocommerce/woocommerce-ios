@@ -1,3 +1,2 @@
-* Ürünler sekmesini tanıtmaktan memnuniyet duyuyoruz!
-* Kullanıcılar artık Basit Ürünler için sınırlı düzenleme yetkilerine sahip olacak, zamanla daha fazlası da gelecek.
-* İşleme sekmesini her yenilediğinizde güncel siparişlerinizi göstermesi için bir düzeltme yaptık.
+* Daha kolay düzenlenen ürün açıklamaları: Düzenlemeye başlamak için ürün hücresinde herhangi bir yere dokunun. Klavyeye mi ihtiyacınız var? Otomatik olarak açılır. Başlamışken birkaç hatayı da düzelttik.
+* En güncel sipariş raporlaması: Sipariş listesi, uygulamayı her açtığınızda veya yeni bir sipariş aldığınızda otomatik olarak yenilenir ve İşlenen Siparişler listesinde artık gelecek siparişler de gösterilmektedir.

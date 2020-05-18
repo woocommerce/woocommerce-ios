@@ -1,5 +1,4 @@
 import Foundation
-import Alamofire
 
 /// Product: Remote Endpoints
 ///
@@ -15,6 +14,9 @@ public class ProductsRemote: Remote {
     ///                determines fields present in response. Default is view.
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of products to be retrieved per page.
+    ///     - stockStatus: Optional stock status filtering. Default to nil (no filtering).
+    ///     - productStatus: Optional product status filtering. Default to nil (no filtering).
+    ///     - productType: Optional product type filtering. Default to nil (no filtering).
     ///     - orderBy: the key to order the remote products. Default to product name.
     ///     - order: ascending or descending order. Default to ascending.
     ///     - completion: Closure to be executed upon completion.
@@ -23,16 +25,25 @@ public class ProductsRemote: Remote {
                                 context: String? = nil,
                                 pageNumber: Int = Default.pageNumber,
                                 pageSize: Int = Default.pageSize,
+                                stockStatus: ProductStockStatus? = nil,
+                                productStatus: ProductStatus? = nil,
+                                productType: ProductType? = nil,
                                 orderBy: OrderKey = .name,
                                 order: Order = .ascending,
                                 completion: @escaping ([Product]?, Error?) -> Void) {
+        let filterParameters = [
+            ParameterKey.stockStatus: stockStatus?.rawValue ?? "",
+            ParameterKey.productStatus: productStatus?.rawValue ?? "",
+            ParameterKey.productType: productType?.rawValue ?? ""
+            ].filter({ $0.value.isEmpty == false })
+
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.contextKey: context ?? Default.context,
             ParameterKey.orderBy: orderBy.value,
             ParameterKey.order: order.value
-        ]
+        ].merging(filterParameters, uniquingKeysWith: { (first, _) in first })
 
         let path = Path.products
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
@@ -71,7 +82,7 @@ public class ProductsRemote: Remote {
     ///     - productID: Identifier of the Product.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadProduct(for siteID: Int64, productID: Int64, completion: @escaping (Product?, Error?) -> Void) {
+    public func loadProduct(for siteID: Int64, productID: Int64, completion: @escaping (Result<Product, Error>) -> Void) {
         let path = "\(Path.products)/\(productID)"
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
         let mapper = ProductMapper(siteID: siteID)
@@ -183,6 +194,9 @@ public extension ProductsRemote {
         static let orderBy: String    = "orderby"
         static let order: String      = "order"
         static let sku: String        = "sku"
+        static let productStatus: String = "status"
+        static let productType: String = "type"
+        static let stockStatus: String = "stock_status"
         static let fields: String     = "_fields"
     }
 

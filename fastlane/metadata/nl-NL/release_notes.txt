@@ -1,3 +1,2 @@
-* We kondigen met trots een Producten-tabblad aan!
-* Gebruikers kunnen nu ook beperkte bewerkingsfuncties voor eenvoudige producten gebruiken en later zullen er meer volgen.
-* We hebben een fix doorgevoerd zodat, wanneer je het tabblad Verwerking vernieuwt, de bijgewerkte bestellingen worden weergegeven.
+* Eenvoudigere bewerking van de productbeschrijving: Tik op een willekeurige plek op een productcel om deze te bewerken. Toetsenbord nodig? Het wordt automatisch weergegeven. En nu we toch bezig zijn: we hebben een aantal bugs verwijderd.
+* Elke minuut bijgewerkte bestellijst: De bestellijst wordt elke keer bijgewerkt dat je de app opent of een nieuwe bestelling ontvangt en in de lijst Bestellingen verwerken worden nu komende bestellingen weergegeven.

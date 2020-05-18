@@ -1,6 +1,4 @@
 import Foundation
-import Alamofire
-
 
 /// Order: Remote Endpoints
 ///
@@ -22,7 +20,7 @@ public class OrdersRemote: Remote {
                               before: Date? = nil,
                               pageNumber: Int = Defaults.pageNumber,
                               pageSize: Int = Defaults.pageSize,
-                              completion: @escaping ([Order]?, Error?) -> Void) {
+                              completion: @escaping (Result<[Order], Error>) -> Void) {
         let utcDateFormatter = DateFormatter.Defaults.iso8601
 
         let parameters: [String: Any] = {

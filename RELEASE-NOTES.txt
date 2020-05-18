@@ -1,10 +1,23 @@
+4.3
+-----
+- Products: now the Product details can be edited and saved outside Products tab (e.g. from Order details or Top Performers).
+- [internal]: the navigation to the password entry screen has changed and can cause regressions. See https://git.io/JflDW for testing details.
+- [internal] Refactored some API calls for fetching a Note, Product, and Product Review. 
+- Products: we improved our VoiceOver support in Product Price settings
+- In Settings > Experimental Features, a Products switch is now available for turning Products M2 features on and off for simple products (default off for beta testing). Products M2 features: update product images, product settings, viewing and sharing a product.
+- The WIP banner on the Products tab is now collapsed by default for more vertical space.
+
+
 4.2
 -----
 - Products: now tapping anywhere on a product cell where you need to insert data, like in Product Price and Product Shipping settings, you start to edit the text field.
 - Products: now the keyboard pop up automatically in Edit Description
 - The Processing orders list will now show upcoming (future) orders.
 - Improved stats: fixed the incorrect time range on "This Week" tab when loading improved stats on a day when daily saving time changes.
-- The Orders list are now automatically refreshed when reopening the app. 
+- [internal]: the "send magic link" screen has navigation changes that can cause regressions. See https://git.io/Jfqio for testing details.
+- The Orders list is now automatically refreshed when reopening the app. 
+- The Orders list is automatically refreshed if a new order (push notification) comes in.
+- Orders -> Search: The statuses now shows the total number of orders with that status.
 
 
 4.1

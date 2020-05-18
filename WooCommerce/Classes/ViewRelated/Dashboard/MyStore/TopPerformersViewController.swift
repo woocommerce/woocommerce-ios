@@ -3,7 +3,7 @@ import Yosemite
 import XLPagerTabStrip
 
 
-class TopPerformersViewController: ButtonBarPagerTabStripViewController {
+final class TopPerformersViewController: ButtonBarPagerTabStripViewController {
 
     // MARK: - Properties
 

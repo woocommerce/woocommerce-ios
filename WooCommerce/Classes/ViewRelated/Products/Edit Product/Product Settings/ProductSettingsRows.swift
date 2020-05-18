@@ -39,23 +39,81 @@ enum ProductSettingsRows {
                 return
             }
 
+            /// If the status is private, the status cell becomes not editable.
+            if isStatusPrivate() {
+                cell.accessoryType = .none
+                cell.selectionStyle = .none
+                cell.applyNonSelectableLabelsStyle()
+            }
+            else {
+                cell.accessoryType = .disclosureIndicator
+                cell.selectionStyle = .default
+                cell.applyDefaultLabelsStyle()
+            }
+
             cell.updateUI(title: NSLocalizedString("Status", comment: "Status label in Product Settings"), value: settings.status.description)
-            cell.accessoryType = .disclosureIndicator
         }
 
         func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
-            let title = NSLocalizedString("Status", comment: "Product status setting list selector navigation title")
-            let viewProperties = ListSelectorViewProperties(navigationBarTitle: title)
-            let dataSource = ProductStatusSettingListSelectorDataSource(selected: settings.status)
 
-            let listSelectorViewController = ListSelectorViewController(viewProperties: viewProperties,
-                                                                        dataSource: dataSource) { selected in
+            /// If the status is private, the cell doesn't trigger any action
+            guard !isStatusPrivate() else {
+                return
+            }
+
+            ServiceLocator.analytics.track(.productSettingsStatusTapped)
+            let command = ProductStatusSettingListSelectorCommand(selected: settings.status)
+
+            let listSelectorViewController = ListSelectorViewController(command: command) { selected in
 
                                                                             self.settings.status = selected ?? self.settings.status
                                                                             onCompletion(self.settings)
             }
             sourceViewController.navigationController?.pushViewController(listSelectorViewController, animated: true)
 
+        }
+
+        let reuseIdentifier: String = SettingTitleAndValueTableViewCell.reuseIdentifier
+
+        let cellTypes: [UITableViewCell.Type] = [SettingTitleAndValueTableViewCell.self]
+
+        /// Utils
+        func isStatusPrivate() -> Bool {
+            return settings.status == .privateStatus
+        }
+    }
+
+    struct Visibility: ProductSettingsRowMediator {
+
+        private let settings: ProductSettings
+
+        init(_ settings: ProductSettings) {
+            self.settings = settings
+        }
+
+        func configure(cell: UITableViewCell) {
+            guard let cell = cell as? SettingTitleAndValueTableViewCell else {
+                return
+            }
+
+            let title = NSLocalizedString("Visibility", comment: "Visibility label in Product Settings")
+            cell.updateUI(title: title, value: ProductVisibility(status: settings.status, password: settings.password).description)
+            cell.accessoryType = .disclosureIndicator
+        }
+
+        func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
+            // If the password was not fetched, the cell is not selectable
+            guard settings.password != nil else {
+                return
+            }
+
+            ServiceLocator.analytics.track(.productSettingsVisibilityTapped)
+            let viewController = ProductVisibilityViewController(settings: settings) { (productSettings) in
+                self.settings.password = productSettings.password
+                self.settings.status = productSettings.status
+                onCompletion(self.settings)
+            }
+            sourceViewController.navigationController?.pushViewController(viewController, animated: true)
         }
 
         let reuseIdentifier: String = SettingTitleAndValueTableViewCell.reuseIdentifier
@@ -76,12 +134,13 @@ enum ProductSettingsRows {
                 return
             }
 
-            let titleView = NSLocalizedString("Catalog Visibility", comment: "Catalog Visibility label in Product Settings")
-            cell.updateUI(title: titleView, value: settings.catalogVisibility.description)
+            let title = NSLocalizedString("Catalog Visibility", comment: "Catalog Visibility label in Product Settings")
+            cell.updateUI(title: title, value: settings.catalogVisibility.description)
             cell.accessoryType = .disclosureIndicator
         }
 
         func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
+            ServiceLocator.analytics.track(.productSettingsCatalogVisibilityTapped)
             let viewController = ProductCatalogVisibilityViewController(settings: settings) { (productSettings) in
                 self.settings.featured = productSettings.featured
                 self.settings.catalogVisibility = productSettings.catalogVisibility
@@ -107,12 +166,13 @@ enum ProductSettingsRows {
                 return
             }
 
-            let titleView = NSLocalizedString("Slug", comment: "Slug label in Product Settings")
-            cell.updateUI(title: titleView, value: settings.slug)
+            let title = NSLocalizedString("Slug", comment: "Slug label in Product Settings")
+            cell.updateUI(title: title, value: settings.slug)
             cell.accessoryType = .disclosureIndicator
         }
 
         func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
+            ServiceLocator.analytics.track(.productSettingsSlugTapped)
             let viewController = ProductSlugViewController(settings: settings) { (productSettings) in
                 self.settings.slug = productSettings.slug
                 onCompletion(self.settings)
@@ -137,14 +197,46 @@ enum ProductSettingsRows {
                 return
             }
 
-            let titleView = NSLocalizedString("Purchase Note", comment: "Purchase note label in Product Settings")
-            cell.updateUI(title: titleView, value: settings.purchaseNote?.strippedHTML)
+            let title = NSLocalizedString("Purchase Note", comment: "Purchase note label in Product Settings")
+            cell.updateUI(title: title, value: settings.purchaseNote?.strippedHTML)
             cell.accessoryType = .disclosureIndicator
         }
 
         func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
+            ServiceLocator.analytics.track(.productSettingsPurchaseNoteTapped)
             let viewController = ProductPurchaseNoteViewController(settings: settings) { (productSettings) in
                 self.settings.purchaseNote = productSettings.purchaseNote
+                onCompletion(self.settings)
+            }
+            sourceViewController.navigationController?.pushViewController(viewController, animated: true)
+        }
+
+        let reuseIdentifier: String = SettingTitleAndValueTableViewCell.reuseIdentifier
+
+        let cellTypes: [UITableViewCell.Type] = [SettingTitleAndValueTableViewCell.self]
+    }
+
+    struct MenuOrder: ProductSettingsRowMediator {
+        private let settings: ProductSettings
+
+        init(_ settings: ProductSettings) {
+            self.settings = settings
+        }
+
+        func configure(cell: UITableViewCell) {
+            guard let cell = cell as? SettingTitleAndValueTableViewCell else {
+                return
+            }
+
+            let title = NSLocalizedString("Menu Order", comment: "Menu order label in Product Settings")
+            cell.updateUI(title: title, value: String(settings.menuOrder))
+            cell.accessoryType = .disclosureIndicator
+        }
+
+        func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
+            ServiceLocator.analytics.track(.productSettingsMenuOrderTapped)
+            let viewController = ProductMenuOrderViewController(settings: settings) { (productSettings) in
+                self.settings.menuOrder = productSettings.menuOrder
                 onCompletion(self.settings)
             }
             sourceViewController.navigationController?.pushViewController(viewController, animated: true)

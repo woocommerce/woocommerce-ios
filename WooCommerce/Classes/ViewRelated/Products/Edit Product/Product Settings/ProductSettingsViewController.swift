@@ -14,11 +14,17 @@ final class ProductSettingsViewController: UIViewController {
     typealias Completion = (_ productSettings: ProductSettings) -> Void
     private let onCompletion: Completion
 
+    // Password Completion callback called when the password is fetched
+    //
+    typealias PasswordRetrievedCompletion = (_ password: String) -> Void
+    private let onPasswordCompletion: PasswordRetrievedCompletion
+
     /// Init
     ///
-    init(product: Product, completion: @escaping Completion) {
-        viewModel = ProductSettingsViewModel(product: product)
+    init(product: Product, password: String?, completion: @escaping Completion, onPasswordRetrieved: @escaping PasswordRetrievedCompletion) {
+        viewModel = ProductSettingsViewModel(product: product, password: password)
         onCompletion = completion
+        onPasswordCompletion = onPasswordRetrieved
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -34,6 +40,9 @@ final class ProductSettingsViewController: UIViewController {
         handleSwipeBackGesture()
         viewModel.onReload = {  [weak self] in
             self?.tableView.reloadData()
+        }
+        viewModel.onPasswordRetrieved = { [weak self] (passwordRetrieved) in
+            self?.onPasswordCompletion(passwordRetrieved)
         }
     }
 
@@ -83,6 +92,7 @@ extension ProductSettingsViewController {
     }
 
     @objc private func completeUpdating() {
+        ServiceLocator.analytics.track(.productSettingsDoneButtonTapped)
         onCompletion(viewModel.productSettings)
         navigationController?.popViewController(animated: true)
     }
@@ -126,7 +136,6 @@ extension ProductSettingsViewController: UITableViewDelegate {
 
         viewModel.handleCellTap(at: indexPath, sourceViewController: self)
     }
-
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return UITableView.automaticDimension

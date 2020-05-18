@@ -290,7 +290,7 @@ extension MainTabBarController {
                 return
             }
             let siteID = note.meta.identifier(forKey: .site) ?? Int.min
-            SwitchStoreUseCase.switchStore(with: Int64(siteID)) {
+            SwitchStoreUseCase(stores: ServiceLocator.stores, noticePresenter: ServiceLocator.noticePresenter).switchStore(with: Int64(siteID)) {
                 presentNotificationDetails(for: note)
             }
         }

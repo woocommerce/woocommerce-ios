@@ -50,7 +50,7 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
             return
         }
 
-        SwitchStoreUseCase.logOutOfCurrentStore(onCompletion: onCompletion)
+        SwitchStoreUseCase(stores: ServiceLocator.stores, noticePresenter: ServiceLocator.noticePresenter).logOutOfCurrentStore(onCompletion: onCompletion)
     }
 
     func didSelectStore(with storeID: Int64) {
@@ -58,11 +58,11 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
             return
         }
 
-        SwitchStoreUseCase.finalizeStoreSelection(storeID)
+        SwitchStoreUseCase(stores: ServiceLocator.stores, noticePresenter: ServiceLocator.noticePresenter).finalizeStoreSelection(storeID)
         if selectedConfiguration == .login {
             MainTabBarController.switchToMyStoreTab(animated: true)
         }
-        SwitchStoreUseCase.presentStoreSwitchedNotice(configuration: selectedConfiguration)
+        SwitchStoreUseCase(stores: ServiceLocator.stores, noticePresenter: ServiceLocator.noticePresenter).presentStoreSwitchedNotice(configuration: selectedConfiguration)
 
         // Reload orders badge
         NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)

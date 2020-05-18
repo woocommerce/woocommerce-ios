@@ -6,17 +6,25 @@ import Yosemite
 ///
 final class SwitchStoreUseCase {
 
+    private let stores: StoresManager
+    private let noticePresenter: NoticePresenter
+
+    init(stores: StoresManager, noticePresenter: NoticePresenter) {
+        self.stores = stores
+        self.noticePresenter = noticePresenter
+    }
+
     /// A static method which allows easily to switch store
     ///
-    static func switchStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
-        guard storeID != ServiceLocator.stores.sessionManager.defaultStoreID else {
+    func switchStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
+        guard storeID != stores.sessionManager.defaultStoreID else {
             onCompletion()
             return
         }
 
-        SwitchStoreUseCase.logOutOfCurrentStore {
-            finalizeStoreSelection(storeID)
-            presentStoreSwitchedNotice(configuration: .switchingStores)
+        logOutOfCurrentStore { [weak self] in
+            self?.finalizeStoreSelection(storeID)
+            self?.presentStoreSwitchedNotice(configuration: .switchingStores)
 
             // Reload orders badge
             NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
@@ -24,8 +32,8 @@ final class SwitchStoreUseCase {
         }
     }
 
-    static func logOutOfCurrentStore(onCompletion: @escaping () -> Void) {
-        ServiceLocator.stores.removeDefaultStore()
+    func logOutOfCurrentStore(onCompletion: @escaping () -> Void) {
+        stores.removeDefaultStore()
 
         // Note: We are not deleting products here because products from multiple sites
         // can exist in Storage simultaneously. Eventually we should make orders and stats
@@ -37,36 +45,36 @@ final class SwitchStoreUseCase {
         let statsAction = StatsAction.resetStoredStats {
             group.leave()
         }
-        ServiceLocator.stores.dispatch(statsAction)
+        stores.dispatch(statsAction)
 
         group.enter()
         let statsV4Action = StatsActionV4.resetStoredStats {
             group.leave()
         }
-        ServiceLocator.stores.dispatch(statsV4Action)
+        stores.dispatch(statsV4Action)
 
         group.enter()
         let orderAction = OrderAction.resetStoredOrders {
             group.leave()
         }
-        ServiceLocator.stores.dispatch(orderAction)
+        stores.dispatch(orderAction)
 
         group.enter()
         let reviewAction = ProductReviewAction.resetStoredProductReviews {
             group.leave()
         }
-        ServiceLocator.stores.dispatch(reviewAction)
+        stores.dispatch(reviewAction)
 
         group.notify(queue: .main) {
             onCompletion()
         }
     }
 
-    static func presentStoreSwitchedNotice(configuration: StorePickerConfiguration) {
+    func presentStoreSwitchedNotice(configuration: StorePickerConfiguration) {
         guard configuration == .switchingStores else {
             return
         }
-        guard let newStoreName = ServiceLocator.stores.sessionManager.defaultSite?.name else {
+        guard let newStoreName = stores.sessionManager.defaultSite?.name else {
             return
         }
 
@@ -75,17 +83,17 @@ final class SwitchStoreUseCase {
                 + "Reads like: Switched to {store name}. You will only receive notifications from this store.")
         let notice = Notice(title: message, feedbackType: .success)
 
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
+        noticePresenter.enqueue(notice: notice)
     }
 
-    static func finalizeStoreSelection(_ storeID: Int64) {
-        ServiceLocator.stores.updateDefaultStore(storeID: storeID)
+    func finalizeStoreSelection(_ storeID: Int64) {
+        stores.updateDefaultStore(storeID: storeID)
 
         // We need to call refreshUserData() here because the user selected
         // their default store and tracks should to know about it.
         ServiceLocator.analytics.refreshUserData()
         ServiceLocator.analytics.track(.sitePickerContinueTapped,
-                                  withProperties: ["selected_store_id": ServiceLocator.stores.sessionManager.defaultStoreID ?? String()])
+                                  withProperties: ["selected_store_id": stores.sessionManager.defaultStoreID ?? String()])
 
         AppDelegate.shared.authenticatorWasDismissed()
     }

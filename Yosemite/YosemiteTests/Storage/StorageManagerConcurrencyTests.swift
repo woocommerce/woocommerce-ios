@@ -139,6 +139,59 @@ final class StorageManagerConcurrencyTests: XCTestCase {
         // Then
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatus.self), 1)
     }
+
+    func testWhenNotSavingThenADerivedStorageWillNotShareDataToItsSiblings() {
+        // Given
+        let firstDerivedStorage = storageManager.newDerivedStorage()
+        let secondDerivedStorage = storageManager.newDerivedStorage()
+
+        let orderStatus = Networking.OrderStatus(name: "In Space", siteID: 1_998, slug: "in-space", total: 9)
+
+        XCTAssertEqual(firstDerivedStorage.countObjects(ofType: Storage.OrderStatus.self), 0)
+
+        // When
+        waitForExpectation { exp in
+            firstDerivedStorage.perform {
+                self.upsert(orderStatus: orderStatus, using: firstDerivedStorage)
+
+                exp.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertEqual(secondDerivedStorage.countObjects(ofType: Storage.OrderStatus.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatus.self), 0)
+
+        XCTAssertEqual(firstDerivedStorage.countObjects(ofType: Storage.OrderStatus.self), 1)
+    }
+
+    func testWhenSavedThenADerivedStorageWillShareDataToItsSiblings() {
+        // Given
+        let firstDerivedStorage = storageManager.newDerivedStorage()
+        let secondDerivedStorage = storageManager.newDerivedStorage()
+
+        let orderStatus = Networking.OrderStatus(name: "In Space", siteID: 1_998, slug: "in-space", total: 9)
+
+        XCTAssertEqual(firstDerivedStorage.countObjects(ofType: Storage.OrderStatus.self), 0)
+
+        // When
+        waitForExpectation { exp in
+            firstDerivedStorage.perform {
+                self.upsert(orderStatus: orderStatus, using: firstDerivedStorage)
+
+                firstDerivedStorage.saveIfNeeded()
+
+                exp.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertEqual(secondDerivedStorage.countObjects(ofType: Storage.OrderStatus.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatus.self), 1)
+
+        XCTAssertEqual(firstDerivedStorage.countObjects(ofType: Storage.OrderStatus.self), 1)
+    }
+
 }
 
 // MARK: - Utils

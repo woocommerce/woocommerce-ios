@@ -26,7 +26,7 @@ final class StorageManagerConcurrencyTests: XCTestCase {
         super.tearDown()
     }
 
-    func testGivenSequentialSavingTheArchitectureCanAllowSavingOfDuplicates() {
+    func testWhenSequentiallySavingItCanAllowSavingOfDuplicates() {
         // Given
         let firstDerivedStorage = storageManager.newDerivedStorage()
         let secondDerivedStorage = storageManager.newDerivedStorage()
@@ -56,7 +56,7 @@ final class StorageManagerConcurrencyTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatus.self), 2)
     }
 
-    func testGivenConcurrentSavingTheArchitectureCanAllowSavingOfDuplicates() {
+    func testWhenConcurrentlySavingItCanAllowSavingOfDuplicates() {
         // Given
         let firstDerivedStorage = storageManager.newDerivedStorage()
         let secondDerivedStorage = storageManager.newDerivedStorage()
@@ -89,7 +89,7 @@ final class StorageManagerConcurrencyTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatus.self), 2)
     }
 
-    func testGivenConcurrentSavingInASinglePerformBlockTheArchitectureCanAllowSavingOfDuplicates() {
+    func testWhenConcurrentlySavingUsingASinglePerformBlockItCanAllowSavingOfDuplicates() {
         // Given
         let firstDerivedStorage = storageManager.newDerivedStorage()
         let secondDerivedStorage = storageManager.newDerivedStorage()

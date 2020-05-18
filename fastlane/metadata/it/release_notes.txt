@@ -1,1 +1,2 @@
-*Abbiamo risolto un bug sgradevole che a volte provocava un arresto anomalo dell'app durante il download degli ordini. Ti diciamo, scarica ora!
+* Modifica della descrizione del prodotto più semplice: tocca in qualsiasi punto sulla cella di un prodotto per iniziare la modifica. Hai bisogno della tastiera? Compare in automatico. Inoltre, nel frattempo abbiamo risolvo un paio di bug.
+* Rapporto sugli ordini aggiornato: l'elenco degli ordini si aggiorna automaticamente ogni volta che apri l'app o ricevi un nuovo ordine e l'elenco degli ordini in elaborazione ora mostra gli ordini futuri in arrivo.

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-04-17 00:54:04+0000 */
+/* Translation-Revision-Date: 2020-05-13 13:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -51,7 +51,7 @@
 /* Label about number of variations shown on Products tab */
 "%ld variants" = "%ld משתנים";
 
-/* Content of the badge presented over the Orders icon when there are more than 99 orders processing */
+/* Shown when there are more than 99 items of something (e.g. Processing Orders). */
 "99+" = "‎99+‎";
 
 /* Placeholder of the Product Short Description row on Product main screen */
@@ -95,6 +95,9 @@
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "להוסיף תמונה למוצר";
+
+/* Placeholder text in Product Purchase Note screen */
+"Add a purchase note..." = "להוסיף הערת רכישה...";
 
 /* Accessibility label for the 'Add a tracking' button */
 "Add a tracking" = "להוסיף למעקב";
@@ -140,6 +143,12 @@
 
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "אירעה שגיאה בעת עיבוד הבקשה שלך: ";
+
+/* Footer text in Product Purchase Note screen */
+"An optional note to send the customer after purchase" = "הערה אופציונלית לשלוח ללקוחות לאחר הרכישה";
+
+/* Title when there is no filter set. */
+"Any" = "כל אפשרות";
 
 /* Message shown when Apple authentication fails. */
 "Apple authentication failed." = "האימות של Apple נכשל.";
@@ -230,7 +239,7 @@
 "Can Not Request Link" = "לא ניתן לבקש קישור";
 
 /* Button title Cancel in Discard Changes Action Sheet
-   Button title Cancel in Edit Product More Options Action Sheet - Button title Cancel in Sort Products Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links */
+   Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links */
 "Cancel" = "ביטול";
 
 /* The title of the alert when there is an error updating the product */
@@ -250,7 +259,8 @@
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "אפשר לבדוק את העדכונים באתרים המועדפים עליך ולהצטרף לשיחה בכל מקום ובכל זמן.";
 
-/* Title of the Categories row on Product main screen */
+/* Edit product categories screen - Screen title
+   Title of the Categories row on Product main screen */
 "Categories" = "קטגוריות";
 
 /* Popup title for wrong SSL certificate. */
@@ -264,6 +274,9 @@
 
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "לבחור מהמכשיר";
+
+/* Button title for clearing all filters for the list. */
+"Clear all" = "למחוק הכול";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "איסוף מידע";
@@ -404,6 +417,9 @@
 /* Screen title: Details Order number (number) */
 "Details Order #(viewModel.order.number)" = "פרטי הזמנה ‎#‎(viewModel.order.number)‎";
 
+/* Footer text in Product Menu order screen */
+"Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "ההגדרה קובעת את המיקום של המוצרים בקטלוג. ככל שהערך המספרי נמוך יותר, הפריט יופיע במקום גבוה יותר ברשימת המוצרים. ניתן להשתמש גם בערכים שליליים";
+
 /* Format of all 3 dimensions on the Shipping Settings row - L x W x H[unit] */
 "Dimensions: %1$@ x %2$@ x %3$@%4$@" = "ממדים: %1$@ x %2$@ x %3$@%4$@";
 
@@ -420,7 +436,7 @@
 "Discount" = "הנחה";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet */
 "Dismiss" = "בטל";
 
 /* Display label for the product's inventory backorders setting option */
@@ -428,6 +444,9 @@
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "אין לך חשבון עדיין? _הרשמה_";
+
+/* Edit product categories screen - button title to apply categories selection */
+"Done" = "בוצע";
 
 /* WordPress.com (unmapped!) error */
 "Dotcom Error: [(code)] (theMessage)" = "שגיאת Dotcom: [(code)] (theMessage)";
@@ -516,6 +535,9 @@
 /* For example: 'Expiry: 30 days' */
 "Expiry: %ld days" = "תוקף: %ld ימים";
 
+/* Display label for affiliate product type. */
+"External\/Affiliate" = "חיצוני\/ממומן";
+
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "לא הצלחנו לערוך בסדרה בקשה אל REST API.";
 
@@ -533,6 +555,12 @@
 
 /* Title of the toolbar button to filter products by different attributes. */
 "Filter" = "לסנן";
+
+/* Navigation bar title format for filtering a list of products without filters applied. */
+"Filters" = "מסננים";
+
+/* Navigation bar title format for filtering a list of products with filters applied. */
+"Filters (%ld)" = "מסננים (%ld)";
 
 /* User role badge */
 "Follower" = "עוקב";
@@ -557,6 +585,9 @@
 
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "ההרשמה ל-Google נכשלה.";
+
+/* Display label for grouped product type. */
+"Grouped" = "בקבוצה";
 
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "כיצד נוכל לעזור?";
@@ -736,8 +767,8 @@
 /* Displayed when an Product is being retrieved */
 "Loading Product" = "טוען את המוצר";
 
-/* Button title.  Tapping takes the user to the login form.
-   Log In button label. */
+/* Authentication Login Button
+   Button title.  Tapping takes the user to the login form. - Log In button label. */
 "Log In" = "התחבר";
 
 /* Alert button title - confirms and logs out the user
@@ -755,9 +786,6 @@
 
 /* Instruction text on the login's email address screen. */
 "Log in to your WordPress.com account with your email address." = "יש להתחבר לחשבון שלך ב-WordPress.com באמצעות כתובת האימייל שלך.";
-
-/* Authentication Login Button */
-"Log in with Jetpack" = "התחברות באמצעות Jetpack";
 
 /* Sign in instructions on the 'log in using email' screen. */
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "עליך להתחבר באמצעות כתובת האימייל של החשבון ב-WordPress.com כדי לנהל את החנויות שלך ב-WooCommerce.";
@@ -800,6 +828,13 @@
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "לפריט המדיה חסר קובץ מקושר להעלאה.";
+
+/* Menu order label in Product Settings
+   Product Menu Order navigation title */
+"Menu Order" = "הסדר בתפריט";
+
+/* Placeholder in the Product Menu Order row on Edit Product Menu Order screen. */
+"Menu order" = "הסדר בתפריט";
 
 /* Message phone number button title */
 "Message" = "הודעה";
@@ -861,9 +896,6 @@
    Title of a button. The text should be capitalized. */
 "Next" = "הבא";
 
-/* Search Orders (Empty State) */
-"No Orders found" = "לא נמצאו הזמנות";
-
 /* Empty Reviews List Message */
 "No Reviews Yet!" = "עוד אין ביקורות!";
 
@@ -882,9 +914,6 @@
 
 /* The text on the placeholder overlay when there are no product variations on the Products tab */
 "No product variations yet" = "אין עוד סוגים למוצר";
-
-/* Search Products (Empty State) */
-"No products found" = "לא נמצאו מוצרים";
 
 /* The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "עדיין אין מוצרים";
@@ -1124,6 +1153,12 @@
 /* My Store > Settings > Experimental features > Product editing */
 "Product editing" = "עריכת מוצר";
 
+/* Row title for filtering products by product status. */
+"Product status" = "מצב המוצר";
+
+/* Row title for filtering products by product type. */
+"Product type" = "סוג מוצר";
+
 /* My Store > Settings > Experimental features > Switch Products
    Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "מוצרים";
@@ -1148,6 +1183,10 @@
 
 /* Product Details - purchase details section title */
 "Purchase Details" = "פרטי הרכישה";
+
+/* Product Note navigation title
+   Purchase note label in Product Settings */
+"Purchase Note" = "הערת רכישה";
 
 /* Product Details > Purchase Details > Purchase note cell title
    Title for purchase note alert. */
@@ -1390,6 +1429,9 @@
    Title of the Short Description row on Product main screen */
 "Short description" = "תיאור קצר";
 
+/* Button title for applying filters to a list of products. */
+"Show Products" = "להציג את המוצרים";
+
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show a list of refunded order items for this order." = "להציג רשימה של פריטי הזמנה שעבורם התקבל החזר כספי בהזמנה זאת.";
 
@@ -1417,6 +1459,9 @@
 /* Button title. Tapping begins our normal sign up process. */
 "Sign up with Email" = "הרשמה באמצעות אימייל";
 
+/* Display label for simple product type. */
+"Simple" = "פשוט";
+
 /* Describes a site redirect domain */
 "Site Redirect" = "Site Redirect";
 
@@ -1429,7 +1474,8 @@
 /* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
 "Size:" = "גודל:";
 
-/* Slug label in Product Settings */
+/* Placeholder in the Product Slug row on Edit Product Slug screen.
+   Product Slug navigation title - Slug label in Product Settings */
 "Slug" = "מזהה לכתובת";
 
 /* A unit test for reviews, checking that anonymous users are added as the author named `someone`
@@ -1481,7 +1527,7 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "לא ניתן להשתמש בכתובת את זו.";
 
-/* Message title for Sort Products Action Sheet
+/* Message title for sort products action bottom sheet
    Title of the toolbar button to sort products in different ways. */
 "Sort by" = "מיון לפי";
 
@@ -1509,7 +1555,7 @@
 "Stock quantity:" = "כמות המלאי:";
 
 /* Product stock status list selector navigation title
-   Title of the cell in Product Inventory Settings > Stock status */
+   Row title for filtering products by stock status. - Title of the cell in Product Inventory Settings > Stock status */
 "Stock status" = "מצב המלאי";
 
 /* A descriptive label prefix. Example: 'Stock status: In stock' */
@@ -1746,6 +1792,9 @@
 /* Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect. */
 "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy." = "המידע הזה עוזר לנו לשפר את המוצרים שלנו, להציג שיווק רלוונטי יותר, לספק לך חוויית שימוש אישית ב-WordPress.com ועוד, כפי שמפורט במדיניות הפרטיות שלנו.";
 
+/* Footer text in Product Slug screen */
+"This is the URL-friendly version of the product title" = "זאת גרסה ידידותית לכתובות URL בכותרת המוצר";
+
 /* Accessibility label for the Shipping notice
    Shipping notice row label when there is more than one shipping method */
 "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete." = "בהזמנה זו נעשה שימוש בהרחבות לחישוב עלות המשלוח. ייתכן שדרכי המשלוח המוצגות אינן כוללות את כל הדרכים הזמינות.";
@@ -1875,6 +1924,9 @@
 /* Content of error presented when loading the list of shipment carriers failed. It reads: Unable to load Shipment Carriers */
 "Unable to load Shipment Carriers" = "אין אפשרות לטעון את ספקי המשלוח";
 
+/* Load Product Categories Action Failed */
+"Unable to load categories" = "לא ניתן לטעון את הקטגוריות";
+
 /* Load Action Failed */
 "Unable to load content" = "אין אפשרות להעלות את התוכן";
 
@@ -1930,6 +1982,9 @@
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "אנחנו שומרים יומנים באורך של עד שבעה ימים.";
 
+/* Upcoming Section Header */
+"Upcoming" = "אירועים קרובים";
+
 /* Action for updating a Product remotely
    Label action for updating a link on the editor */
 "Update" = "לעדכן";
@@ -1976,6 +2031,9 @@
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "שם המשתמש צריך להכיל 4 תווים לפחות.";
 
+/* Display label for variable product type. */
+"Variable" = "משתנה";
+
 /* Product Details > descriptive label for the Product Variants cell.
    Title that appears on top of the Product Variation List screen. */
 "Variations" = "סוגים";
@@ -1992,6 +2050,9 @@
 /* Accessibility label for the 'View Billing Information' button
    Button on bottom of Customer's information to show the billing details */
 "View Billing Information" = "להציג את פרטי החיוב";
+
+/* Button title View product in store in Edit Product More Options Action Sheet */
+"View Product in Store" = "להציג את המוצר בחנות";
 
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "צפייה במוצר הממומן";
@@ -2043,6 +2104,10 @@
 
 /* Error message shown when having trouble connecting to a Jetpack site. */
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "אין אפשרות להתחבר לאתר Jetpack בכתובת URL זו. יש ליצור אתנו קשר לעזרה.";
+
+/* Message for empty Orders search results. The %@ is a placeholder for the text entered by the user.
+   Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
+"We're sorry, we couldn't find results for “%@”" = "מצטערים, לא הצלחנו למצוא תוצאות עבור \"%@\"";
 
 /* Statistical unit - a single week */
 "Week" = "שבוע";

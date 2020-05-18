@@ -1,1 +1,2 @@
-* Siparişleri indirirken bazen uygulamanın kilitlenmesine neden olan kaba bir hata düzeltildi. Artık indirebilirsiniz.
+* Daha kolay düzenlenen ürün açıklamaları: Düzenlemeye başlamak için ürün hücresinde herhangi bir yere dokunun. Klavyeye mi ihtiyacınız var? Otomatik olarak açılır. Başlamışken birkaç hatayı da düzelttik.
+* En güncel sipariş raporlaması: Sipariş listesi, uygulamayı her açtığınızda veya yeni bir sipariş aldığınızda otomatik olarak yenilenir ve İşlenen Siparişler listesinde artık gelecek siparişler de gösterilmektedir.

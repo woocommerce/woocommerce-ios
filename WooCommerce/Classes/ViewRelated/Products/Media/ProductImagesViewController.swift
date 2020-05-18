@@ -153,11 +153,11 @@ private extension ProductImagesViewController {
     }
 
     @objc func doneButtonTapped() {
-        commitAndDismiss()
+        commitAndDismiss(hasOutstandingChanges())
     }
 
-    func commitAndDismiss() {
-        onCompletion(productImages, hasOutstandingChanges())
+    func commitAndDismiss(_ hasChanges: Bool) {
+        onCompletion(productImages, hasChanges)
     }
 
     func showOptionsMenu() {
@@ -221,7 +221,7 @@ private extension ProductImagesViewController {
             return
         }
         uploadMediaAssetToSiteMediaLibrary(asset: asset)
-        commitAndDismiss()
+        commitAndDismiss(true)
     }
 }
 
@@ -238,7 +238,7 @@ private extension ProductImagesViewController {
             assets.forEach { asset in
                 self.uploadMediaAssetToSiteMediaLibrary(asset: asset)
             }
-            self.commitAndDismiss()
+            self.commitAndDismiss(true)
         }
     }
 }
@@ -254,7 +254,7 @@ private extension ProductImagesViewController {
             }
 
             self.productImageActionHandler.addSiteMediaLibraryImagesToProduct(mediaItems: mediaItems)
-            self.commitAndDismiss()
+            self.commitAndDismiss(true)
         }
     }
 }

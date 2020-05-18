@@ -19,7 +19,7 @@ final class SwitchStoreUseCase {
             onCompletion()
         }
     }
-    
+
     static func logOutOfCurrentStore(onCompletion: @escaping () -> Void) {
         ServiceLocator.stores.removeDefaultStore()
 
@@ -57,7 +57,7 @@ final class SwitchStoreUseCase {
             onCompletion()
         }
     }
-    
+
     static func presentStoreSwitchedNotice(configuration: StorePickerConfiguration) {
         guard configuration == .switchingStores else {
             return

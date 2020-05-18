@@ -36,17 +36,17 @@ final class StorageManagerConcurrencyTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatus.self), 0)
 
         // When
-        [firstDerivedStorage, secondDerivedStorage].forEach { derivedContext in
-            derivedContext.perform {
-                let storageOrderStatus = derivedContext.loadOrderStatus(siteID: orderStatus.siteID, slug: orderStatus.slug) ??
-                    derivedContext.insertNewObject(ofType: Storage.OrderStatus.self)
+        [firstDerivedStorage, secondDerivedStorage].forEach { derivedStorage in
+            derivedStorage.perform {
+                let storageOrderStatus = derivedStorage.loadOrderStatus(siteID: orderStatus.siteID, slug: orderStatus.slug) ??
+                    derivedStorage.insertNewObject(ofType: Storage.OrderStatus.self)
                 storageOrderStatus.update(with: orderStatus)
             }
         }
 
-        [firstDerivedStorage, secondDerivedStorage].forEach { derivedContext in
+        [firstDerivedStorage, secondDerivedStorage].forEach { derivedStorage in
             waitForExpectation { exp in
-                storageManager.saveDerivedType(derivedStorage: derivedContext) {
+                storageManager.saveDerivedType(derivedStorage: derivedStorage) {
                     exp.fulfill()
                 }
             }
@@ -69,15 +69,15 @@ final class StorageManagerConcurrencyTests: XCTestCase {
         let exp = expectation(description: "concurrent-saving")
         exp.expectedFulfillmentCount = 2
 
-        [firstDerivedStorage, secondDerivedStorage].forEach { derivedContext in
-            derivedContext.perform {
-                let storageOrderStatus = derivedContext.loadOrderStatus(siteID: orderStatus.siteID, slug: orderStatus.slug) ??
-                    derivedContext.insertNewObject(ofType: Storage.OrderStatus.self)
+        [firstDerivedStorage, secondDerivedStorage].forEach { derivedStorage in
+            derivedStorage.perform {
+                let storageOrderStatus = derivedStorage.loadOrderStatus(siteID: orderStatus.siteID, slug: orderStatus.slug) ??
+                    derivedStorage.insertNewObject(ofType: Storage.OrderStatus.self)
                 storageOrderStatus.update(with: orderStatus)
             }
 
-            derivedContext.perform {
-                self.storageManager.saveDerivedType(derivedStorage: derivedContext) {
+            derivedStorage.perform {
+                self.storageManager.saveDerivedType(derivedStorage: derivedStorage) {
                     exp.fulfill()
                 }
             }

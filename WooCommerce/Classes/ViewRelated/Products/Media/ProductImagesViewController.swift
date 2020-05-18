@@ -156,8 +156,8 @@ private extension ProductImagesViewController {
         commitAndDismiss(hasOutstandingChanges())
     }
 
-    func commitAndDismiss(_ hasChanges: Bool) {
-        onCompletion(productImages, hasChanges)
+    func commitAndDismiss(_ hasChangedData: Bool) {
+        onCompletion(productImages, hasChangedData)
     }
 
     func showOptionsMenu() {

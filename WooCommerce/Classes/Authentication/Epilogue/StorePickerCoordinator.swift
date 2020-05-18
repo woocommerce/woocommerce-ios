@@ -62,7 +62,8 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
         if selectedConfiguration == .login {
             MainTabBarController.switchToMyStoreTab(animated: true)
         }
-        SwitchStoreUseCase(stores: ServiceLocator.stores, noticePresenter: ServiceLocator.noticePresenter).presentStoreSwitchedNotice(configuration: selectedConfiguration)
+        SwitchStoreUseCase(stores: ServiceLocator.stores, noticePresenter: ServiceLocator.noticePresenter)
+            .presentStoreSwitchedNotice(configuration: selectedConfiguration)
 
         // Reload orders badge
         NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)

@@ -1,1 +1,2 @@
-* We hebben een vervelende bug opgelost die er soms voor zorgde dat de app crashte terwijl je bestellingen aan het downloaden was. Vanaf nu kun je weer naar hartenlust downloaden!
+* Eenvoudigere bewerking van de productbeschrijving: Tik op een willekeurige plek op een productcel om deze te bewerken. Toetsenbord nodig? Het wordt automatisch weergegeven. En nu we toch bezig zijn: we hebben een aantal bugs verwijderd.
+* Elke minuut bijgewerkte bestellijst: De bestellijst wordt elke keer bijgewerkt dat je de app opent of een nieuwe bestelling ontvangt en in de lijst Bestellingen verwerken worden nu komende bestellingen weergegeven.

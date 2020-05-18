@@ -55,6 +55,10 @@ final class ProductsViewController: UIViewController {
     ///
     private lazy var topBannerContainerView: SwappableSubviewContainerView = SwappableSubviewContainerView()
 
+    /// Top banner that shows that the Products feature is still work in progress.
+    ///
+    private var topBannerView: TopBannerView?
+
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Products in sync.
     ///
     private lazy var resultsController: ResultsController<StorageProduct> = {
@@ -327,10 +331,12 @@ private extension ProductsViewController {
     }
 
     func updateTopBannerView() {
-        ProductsTopBannerFactory.topBanner(expandedStateChangeHandler: { [weak self] in
+        let isExpanded = topBannerView?.isExpanded ?? false
+        ProductsTopBannerFactory.topBanner(isExpanded: isExpanded, expandedStateChangeHandler: { [weak self] in
             self?.tableView.updateHeaderHeight()
         }, onCompletion: { [weak self] topBannerView in
             self?.topBannerContainerView.updateSubview(topBannerView)
+            self?.topBannerView = topBannerView
             self?.tableView.updateHeaderHeight()
         })
     }
@@ -450,6 +456,7 @@ private extension ProductsViewController {
     }
 
     @objc func sortButtonTapped(sender: UIButton) {
+        ServiceLocator.analytics.track(.productListViewSortingOptionsTapped)
         let title = NSLocalizedString("Sort by",
                                       comment: "Message title for sort products action bottom sheet")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
@@ -464,15 +471,22 @@ private extension ProductsViewController {
                                                                             return
                                                                         }
                                                                         self?.sortOrder = selectedSortOrder
+         ServiceLocator.analytics.track(.productSortingListOptionSelected, withProperties: ["order": selectedSortOrder.analyticsDescription])
         }
         sortOrderListPresenter.show(from: self, sourceView: sender, arrowDirections: .up)
     }
 
     @objc func filterButtonTapped() {
+        ServiceLocator.analytics.track(.productListViewFilterOptionsTapped)
         let viewModel = FilterProductListViewModel(filters: filters)
-        let filterProductListViewController = FilterListViewController(viewModel: viewModel) { [weak self] filters in
+        let filterProductListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
+            ServiceLocator.analytics.track(.productFilterListShowProductsButtonTapped, withProperties: ["filters": filters.analyticsDescription])
             self?.filters = filters
-        }
+        }, onClearAction: {
+            ServiceLocator.analytics.track(.productFilterListClearMenuButtonTapped)
+        }, onDismissAction: {
+            ServiceLocator.analytics.track(.productFilterListDismissButtonTapped)
+        })
         present(filterProductListViewController, animated: true, completion: nil)
     }
 }

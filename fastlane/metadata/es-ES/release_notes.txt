@@ -1,1 +1,2 @@
-* Hemos solucionado un error maleducado que a veces hacía que la aplicación se bloqueara mientras se descargaban los pedidos. ¡A descargar!
+* Ahora, puedes editar más fácilmente la descripción del producto: Toca en cualquier parte en un producto para empezar a editar. ¿Necesitas el teclado? Aparece de forma automática. También hemos aprovechado para corregir un par de errores.
+* La información de pedidos se actualiza en tiempo real: La lista de pedidos se actualiza automáticamente cada vez que abres la aplicación o recibes un nuevo pedido. Además, en la lista Procesando, ahora se muestran los próximos pedidos.

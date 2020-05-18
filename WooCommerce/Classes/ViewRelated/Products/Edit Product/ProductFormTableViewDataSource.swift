@@ -111,6 +111,7 @@ private extension ProductFormTableViewDataSource {
             // TODO: open image detail
         }
         cell.onAddImage = { [weak self] in
+            ServiceLocator.analytics.track(.productDetailAddImageTapped)
             self?.onAddImage?()
         }
     }

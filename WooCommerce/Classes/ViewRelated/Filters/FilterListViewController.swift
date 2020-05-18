@@ -96,6 +96,8 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
     private var cancellableSelectedFilterValue: ObservationToken?
 
     private let onFilterAction: (ViewModel.Criteria) -> Void
+    private let onClearAction: () -> Void
+    private let onDismissAction: () -> Void
 
     // Strings.
 
@@ -107,10 +109,17 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
     /// - Parameters:
     ///   - viewModel: Used to render the filter list selector and the selected filter value list selector.
     ///   - onFilterAction: Called when the user taps on the Filter CTA.
-    init(viewModel: ViewModel, onFilterAction: @escaping (ViewModel.Criteria) -> Void) {
+    ///   - onClearAction: Called when the user taps on the Clear CTA.
+    ///   - onDismissAction: Called when the user taps on the Dismiss CTA.
+    init(viewModel: ViewModel,
+         onFilterAction: @escaping (ViewModel.Criteria) -> Void,
+         onClearAction: @escaping () -> Void,
+         onDismissAction: @escaping () -> Void) {
         self.viewModel = viewModel
         self.originalCriteria = viewModel.criteria
         self.onFilterAction = onFilterAction
+        self.onClearAction = onClearAction
+        self.onDismissAction = onDismissAction
         self.listSelectorCommand = FilterListSelectorCommand(data: viewModel.filterTypeViewModels)
         super.init(nibName: "FilterListViewController", bundle: nil)
     }
@@ -155,7 +164,9 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
             return
         }
 
-        dismiss(animated: true) {}
+        dismiss(animated: true) { [weak self] in
+            self?.onDismissAction()
+        }
     }
 
     @objc func clearAllButtonTapped() {
@@ -163,6 +174,7 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
         listSelectorCommand.data = viewModel.filterTypeViewModels
         updateUI(numberOfActiveFilters: viewModel.filterTypeViewModels.numberOfActiveFilters)
         listSelector.reloadData()
+        onClearAction()
     }
 }
 

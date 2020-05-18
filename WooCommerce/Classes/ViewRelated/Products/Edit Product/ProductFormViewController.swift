@@ -90,7 +90,7 @@ final class ProductFormViewController: UIViewController {
     private var cancellable: ObservationToken?
 
     init(product: Product,
-         currency: String,
+         currency: String = CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode),
          presentationStyle: PresentationStyle,
          isEditProductsRelease2Enabled: Bool,
          isEditProductsRelease3Enabled: Bool) {
@@ -510,7 +510,7 @@ extension ProductFormViewController: UITableViewDelegate {
                 // TODO-2000 Edit Product M3 analytics
                 editCategories()
             case .briefDescription:
-                // TODO-1879: Edit Products M2 analytics
+                ServiceLocator.analytics.track(.productDetailViewShortDescriptionTapped)
                 editBriefDescription()
             }
         }
@@ -561,17 +561,18 @@ private extension ProductFormViewController {
     func showProductImages() {
         let imagesViewController = ProductImagesViewController(product: product,
                                                                productImageActionHandler: productImageActionHandler,
-                                                               productUIImageLoader: productUIImageLoader) { [weak self] images in
-            self?.onEditProductImagesCompletion(images: images)
+                                                               productUIImageLoader: productUIImageLoader) { [weak self] images, hasChangedData in
+                                                                self?.onEditProductImagesCompletion(images: images, hasChangedData: hasChangedData)
         }
         navigationController?.pushViewController(imagesViewController, animated: true)
     }
 
-    func onEditProductImagesCompletion(images: [ProductImage]) {
+    func onEditProductImagesCompletion(images: [ProductImage], hasChangedData: Bool) {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        guard images != product.images else {
+        ServiceLocator.analytics.track(.productImageSettingsDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
+        guard hasChangedData else {
             return
         }
         self.product = productUpdater.imagesUpdated(images: images)
@@ -768,7 +769,7 @@ private extension ProductFormViewController {
             navigationController?.popViewController(animated: true)
         }
         let hasChangedData = newBriefDescription != product.briefDescription
-        // TODO-1879: Edit Products M2 analytics
+        ServiceLocator.analytics.track(.productShortDescriptionDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
 
         guard hasChangedData else {
             return
@@ -810,14 +811,17 @@ private extension ProductFormViewController {
         actionSheet.view.tintColor = .text
 
         actionSheet.addDefaultActionWithTitle(ActionSheetStrings.viewProduct) { [weak self] _ in
+            ServiceLocator.analytics.track(.productDetailViewProductButtonTapped)
             self?.displayWebViewForProductInStore()
         }
 
         actionSheet.addDefaultActionWithTitle(ActionSheetStrings.share) { [weak self] _ in
+            ServiceLocator.analytics.track(.productDetailShareButtonTapped)
             self?.displayShareProduct()
         }
 
         actionSheet.addDefaultActionWithTitle(ActionSheetStrings.productSettings) { [weak self] _ in
+            ServiceLocator.analytics.track(.productDetailViewSettingsButtonTapped)
             self?.displayProductSettings()
         }
 

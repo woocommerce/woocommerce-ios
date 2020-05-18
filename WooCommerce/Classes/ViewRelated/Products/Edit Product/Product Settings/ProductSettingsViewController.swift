@@ -92,6 +92,7 @@ extension ProductSettingsViewController {
     }
 
     @objc private func completeUpdating() {
+        ServiceLocator.analytics.track(.productSettingsDoneButtonTapped)
         onCompletion(viewModel.productSettings)
         navigationController?.popViewController(animated: true)
     }

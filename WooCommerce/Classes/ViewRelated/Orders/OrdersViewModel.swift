@@ -267,6 +267,9 @@ private extension OrdersViewModel {
 extension OrdersViewModel {
     /// Returns an `OrdersViewModel` instance for the `StorageOrder` at the given `indexPath`.
     ///
+    /// TODO Ideally we should have a very tiny ViewModel for the cell instead of
+    /// `OrderDetailsViewModel` which is used in `OrderDetailsViewController` too.
+    ///
     func detailsViewModel(at indexPath: IndexPath) -> OrderDetailsViewModel {
         let order = resultsController.object(at: indexPath)
 

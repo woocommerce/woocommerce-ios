@@ -578,7 +578,7 @@ private extension ZendeskManager {
             }
         }()
 
-        let networkCarrier = CTTelephonyNetworkInfo().subscriberCellularProvider
+        let networkCarrier = CTTelephonyNetworkInfo().serviceSubscriberCellularProviders?.first?.value
         let carrierName = networkCarrier?.carrierName ?? Constants.unknownValue
         let carrierCountryCode = networkCarrier?.isoCountryCode ?? Constants.unknownValue
 

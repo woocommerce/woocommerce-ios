@@ -1,1 +1,2 @@
-* Beim Herunterladen der Bestellungen musst du dir nun auch keine Sorgen mehr machen, dass die App abstürzt, denn auch diesen Fehler haben wir behoben. Fröhliches Downloaden!
+* Einfacheres Bearbeiten der Produktbeschreibung: Tippe zur Bearbeitung auf eine beliebige Produktzelle. Du benötigst die Tastatur? Sie erscheint automatisch. Und wo wir schon dabei waren, haben wir auch gleich noch ein paar andere Fehler behoben.
+* Topaktuelle Berichterstellung für Bestellungen: Die Bestellliste aktualisiert sich automatisch jedes Mal, wenn du die App öffnest oder eine Bestellung erhältst. Die Liste der Bestellungen in Bearbeitung zeigt nun auch bevorstehende Bestellungen an.

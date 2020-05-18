@@ -26,6 +26,12 @@ final class FilterProductListViewModel: FilterListViewModel {
             self.productType = productType
             self.numberOfActiveFilters = numberOfActiveFilters
         }
+
+        // Generate a string based on populated filters, like "instock,publish,simple"
+        var analyticsDescription: String {
+            let elements: [String?] = [stockStatus?.rawValue, productStatus?.rawValue, productType?.rawValue]
+            return elements.compactMap { $0 }.joined(separator: ",")
+        }
     }
 
     let filterActionTitle = NSLocalizedString("Show Products", comment: "Button title for applying filters to a list of products.")

@@ -32,10 +32,6 @@ final class OrderDetailsViewModel {
         return formatter.string(from: order.dateCreated)
     }
 
-    var summaryTitle: String? {
-        return dataSource.summaryTitle
-    }
-
     let productLeftTitle = NSLocalizedString("PRODUCT", comment: "Product section title")
 
     let productRightTitle = NSLocalizedString("QTY", comment: "Quantity abbreviation for section title")

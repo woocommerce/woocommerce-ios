@@ -39,7 +39,7 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
     /// Renders the specified Order ViewModel
     ///
     func configureCell(viewModel: OrderDetailsViewModel, orderStatus: OrderStatus?) {
-        titleLabel.text = viewModel.summaryTitle
+        titleLabel.text = title(for: viewModel.order)
         totalLabel.text = viewModel.totalFriendlyString
         dateCreatedLabel.text = viewModel.formattedDateCreated
 
@@ -95,7 +95,6 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
 // MARK: - Private
 //
 private extension OrderTableViewCell {
-
     /// Preserves the current Payment BG Color
     ///
     func preserveLabelColors(action: () -> Void) {
@@ -108,6 +107,22 @@ private extension OrderTableViewCell {
         paymentStatusLabel.layer.borderColor = borderColor
     }
 
+    /// For example, #560 Pamela Nguyen
+    ///
+    func title(for order: Order) -> String {
+        if let billingAddress = order.billingAddress {
+            return Localization.title(orderNumber: order.number,
+                                      firstName: billingAddress.firstName,
+                                      lastName: billingAddress.lastName)
+        }
+
+        return Localization.title(orderNumber: order.number)
+    }
+}
+
+// MARK: - Setup
+
+private extension OrderTableViewCell {
     func configureBackground() {
         backgroundColor = .listForeground
         selectedBackgroundView = UIView()
@@ -124,5 +139,27 @@ private extension OrderTableViewCell {
         paymentStatusLabel.numberOfLines = 0
 
         dateCreatedLabel.applyCaption1Style()
+    }
+}
+
+// MARK: - Constants
+
+private extension OrderTableViewCell {
+    enum Localization {
+        static func title(orderNumber: String, firstName: String, lastName: String) -> String {
+            let format = NSLocalizedString("#%1$@ %2$@ %3$@", comment: "In Order List,"
+                + " the pattern to show the order number and the full name. For example, “#123 John Doe”."
+                + " The %1$@ is the order number. The %2$@ is the first name. The %3$@ is the last name.")
+
+            return String.localizedStringWithFormat(format, orderNumber, firstName, lastName)
+        }
+
+        static func title(orderNumber: String) -> String {
+            let format = NSLocalizedString("#%@", comment: "In Order List,"
+                + " the pattern to show the order number. For example, “#123456”."
+                + " The %@ placeholder is the order number.")
+
+            return String.localizedStringWithFormat(format, orderNumber)
+        }
     }
 }

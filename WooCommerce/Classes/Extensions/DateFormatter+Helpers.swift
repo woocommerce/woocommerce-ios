@@ -138,4 +138,12 @@ extension DateFormatter {
         formatter.setLocalizedDateFormatFromTemplate("yyyy")
         return formatter
     }()
+
+    /// Localized date formatter that generates the time only. Example, “11:23 AM”.
+    ///
+    static let timeFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.setLocalizedDateFormatFromTemplate("hh:mm a")
+        return formatter
+    }()
 }

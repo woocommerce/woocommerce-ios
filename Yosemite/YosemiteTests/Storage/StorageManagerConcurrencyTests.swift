@@ -26,7 +26,7 @@ final class StorageManagerConcurrencyTests: XCTestCase {
         super.tearDown()
     }
 
-    func testTheConcurrencyArchitectureCanAllowSavingOfDuplicates() {
+    func testGivenSequentialSavingTheArchitectureCanAllowSavingOfDuplicates() {
         // Given
         let firstDerivedStorage = storageManager.newDerivedStorage()
         let secondDerivedStorage = storageManager.newDerivedStorage()
@@ -51,6 +51,39 @@ final class StorageManagerConcurrencyTests: XCTestCase {
                 }
             }
         }
+
+        // Then
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatus.self), 2)
+    }
+
+    func testGivenConcurrentSavingTheArchitectureCanAllowSavingOfDuplicates() {
+        // Given
+        let firstDerivedStorage = storageManager.newDerivedStorage()
+        let secondDerivedStorage = storageManager.newDerivedStorage()
+
+        let orderStatus = Networking.OrderStatus(name: "In Space", siteID: 1_998, slug: "in-space", total: 9)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatus.self), 0)
+
+        // When
+        let exp = expectation(description: "concurrent-saving")
+        exp.expectedFulfillmentCount = 2
+
+        [firstDerivedStorage, secondDerivedStorage].forEach { derivedContext in
+            derivedContext.perform {
+                let storageOrderStatus = derivedContext.loadOrderStatus(siteID: orderStatus.siteID, slug: orderStatus.slug) ??
+                    derivedContext.insertNewObject(ofType: Storage.OrderStatus.self)
+                storageOrderStatus.update(with: orderStatus)
+            }
+
+            derivedContext.perform {
+                self.storageManager.saveDerivedType(derivedStorage: derivedContext) {
+                    exp.fulfill()
+                }
+            }
+        }
+
+        wait(for: [exp], timeout: Constants.expectationTimeout)
 
         // Then
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatus.self), 2)

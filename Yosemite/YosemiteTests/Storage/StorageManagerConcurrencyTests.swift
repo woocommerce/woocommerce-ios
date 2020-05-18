@@ -38,12 +38,9 @@ final class StorageManagerConcurrencyTests: XCTestCase {
         // When
         [firstDerivedStorage, secondDerivedStorage].forEach { derivedContext in
             derivedContext.perform {
-                if let existing = derivedContext.loadOrderStatus(siteID: orderStatus.siteID, slug: orderStatus.slug) {
-                    existing.update(with: orderStatus)
-                } else {
-                    let newStorageOrderStatus = derivedContext.insertNewObject(ofType: Storage.OrderStatus.self)
-                    newStorageOrderStatus.update(with: orderStatus)
-                }
+                let storageOrderStatus = derivedContext.loadOrderStatus(siteID: orderStatus.siteID, slug: orderStatus.slug) ??
+                    derivedContext.insertNewObject(ofType: Storage.OrderStatus.self)
+                storageOrderStatus.update(with: orderStatus)
             }
         }
 

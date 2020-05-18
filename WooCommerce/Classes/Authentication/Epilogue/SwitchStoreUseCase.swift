@@ -5,6 +5,7 @@ import Yosemite
 /// Simplifies and decouples the store picker from the caller
 ///
 final class SwitchStoreUseCase {
+
     /// A static method which allows easily to switch store
     ///
     static func switchStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {

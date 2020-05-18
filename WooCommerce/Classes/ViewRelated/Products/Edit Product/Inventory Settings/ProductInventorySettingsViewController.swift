@@ -316,21 +316,15 @@ extension ProductInventorySettingsViewController: UITableViewDelegate {
 
         switch rowAtIndexPath(indexPath) {
         case .stockStatus:
-            let title = NSLocalizedString("Stock status", comment: "Product stock status list selector navigation title")
-            let viewProperties = ListSelectorViewProperties(navigationBarTitle: title)
-            let dataSource = ProductStockStatusListSelectorDataSource(selected: stockStatus)
-            let listSelectorViewController = ListSelectorViewController(viewProperties: viewProperties,
-                                                                        dataSource: dataSource) { [weak self] selected in
+            let command = ProductStockStatusListSelectorCommand(selected: stockStatus)
+            let listSelectorViewController = ListSelectorViewController(command: command) { [weak self] selected in
                                                                             self?.stockStatus = selected
                                                                             self?.tableView.reloadData()
             }
             navigationController?.pushViewController(listSelectorViewController, animated: true)
         case .backorders:
-            let title = NSLocalizedString("Backorders", comment: "Product backorders setting list selector navigation title")
-            let viewProperties = ListSelectorViewProperties(navigationBarTitle: title)
-            let dataSource = ProductBackordersSettingListSelectorDataSource(selected: backordersSetting)
-            let listSelectorViewController = ListSelectorViewController(viewProperties: viewProperties,
-                                                                        dataSource: dataSource) { [weak self] selected in
+            let command = ProductBackordersSettingListSelectorCommand(selected: backordersSetting)
+            let listSelectorViewController = ListSelectorViewController(command: command) { [weak self] selected in
                                                                             self?.backordersSetting = selected
                                                                             self?.tableView.reloadData()
             }
@@ -458,19 +452,8 @@ private extension ProductInventorySettingsViewController {
         return sections[indexPath.section].rows[indexPath.row]
     }
 
-    func getIndexPathForRow(_ row: Row) -> IndexPath? {
-        for s in 0 ..< sections.count {
-            for r in 0 ..< sections[s].rows.count {
-                if sections[s].rows[r] == row {
-                    return IndexPath(row: r, section: s)
-                }
-            }
-        }
-        return nil
-    }
-
     func getSkuCell() -> TitleAndTextFieldTableViewCell? {
-        guard let indexPath = getIndexPathForRow(.sku) else {
+        guard let indexPath = sections.indexPathForRow(.sku) else {
             return nil
         }
         return tableView.cellForRow(at: indexPath) as? TitleAndTextFieldTableViewCell
@@ -483,7 +466,7 @@ private extension ProductInventorySettingsViewController {
         static let estimatedSectionHeaderHeight: CGFloat = 44
     }
 
-    struct Section {
+    struct Section: RowIterable {
         let errorTitle: String?
         let rows: [Row]
 

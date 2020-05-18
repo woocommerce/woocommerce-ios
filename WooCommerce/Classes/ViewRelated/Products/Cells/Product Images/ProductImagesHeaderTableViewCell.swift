@@ -21,6 +21,10 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
     ///
     var onAddImage: (() -> Void)?
 
+    /// Keeps track of the cell config to update collection view layout on change.
+    ///
+    private var config: ProductImagesCellConfig?
+
     override func awakeFromNib() {
         super.awakeFromNib()
 
@@ -120,6 +124,13 @@ private extension ProductImagesHeaderTableViewCell {
         collectionView.dataSource = dataSource
         collectionView.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
         collectionView.showsHorizontalScrollIndicator = false
+
+        guard config != self.config else {
+            return
+        }
+
+        self.config = config
+
         switch config {
         case .extendedAddImages:
             collectionView.collectionViewLayout = ProductImagesFlowLayout(itemSize: frame.size, config: config)

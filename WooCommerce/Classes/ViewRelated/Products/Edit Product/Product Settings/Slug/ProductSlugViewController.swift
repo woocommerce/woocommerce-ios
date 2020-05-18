@@ -41,6 +41,10 @@ final class ProductSlugViewController: UIViewController {
         onCompletion(productSettings)
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        configureTextFieldFirstResponder()
+    }
 }
 
 // MARK: - View Configuration
@@ -65,6 +69,15 @@ private extension ProductSlugViewController {
 
         tableView.backgroundColor = .listBackground
         tableView.removeLastCellSeparator()
+    }
+
+    /// Since there is only a text field in this view, the text field become the first responder immediately when the view did appear
+    ///
+    func configureTextFieldFirstResponder() {
+        if let indexPath = sections.indexPathForRow(.slug) {
+            let cell = tableView.cellForRow(at: indexPath) as? TextFieldTableViewCell
+            cell?.textField.becomeFirstResponder()
+        }
     }
 }
 
@@ -135,7 +148,7 @@ private extension ProductSlugViewController {
             }
             }, onTextDidBeginEditing: {
                 //TODO: Add analytics track
-        })
+        }, inputFormatter: nil)
         cell.configure(viewModel: viewModel)
         cell.textField.applyBodyStyle()
     }
@@ -161,7 +174,7 @@ private extension ProductSlugViewController {
 
     /// Table Sections
     ///
-    struct Section {
+    struct Section: RowIterable {
         let footer: String?
         let rows: [Row]
 

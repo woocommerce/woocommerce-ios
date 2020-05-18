@@ -1,1 +1,2 @@
-* Nous avons résolu un bug insupportable qui entraînait parfois l'arrêt de l'application lors du téléchargement de commandes. Vous pouvez désormais télécharger en toute tranquillité !
+* Simplification de la modification de la description du produit : Il suffit d’appuyer n’importe où sur la cellule d’un produit pour commencer à modifier sa description. Besoin du clavier ? Celui-ci s’affiche automatiquement. Nous en avons également profité pour corriger quelques bogues.
+* Actualisation des rapports relatifs aux commandes : La liste des commandes s’actualise automatiquement à chaque fois que vous ouvrez l’application ou que vous recevez une nouvelle commande, et la liste Commandes en cours affiche désormais les commandes à venir.

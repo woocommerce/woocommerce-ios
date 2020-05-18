@@ -1,6 +1,7 @@
 
 import Foundation
 import Yosemite
+import class AutomatticTracks.CrashLogging
 import protocol Storage.StorageManagerType
 
 /// ViewModel for `OrdersViewController`.
@@ -23,26 +24,50 @@ final class OrdersViewModel {
     }
 
     private let storageManager: StorageManagerType
+    private let pushNotificationsManager: PushNotesManager
+    private let notificationCenter: NotificationCenter
+
+    /// Used for cancelling the observer for Remote Notifications when `self` is deallocated.
+    ///
+    private var cancellable: ObservationToken?
+
+    /// The block called if self requests a resynchronization of the first page. The
+    /// resynchronization should only be done if the view is visible.
+    ///
+    var onShouldResynchronizeIfViewIsVisible: (() -> ())?
 
     /// OrderStatus that must be matched by retrieved orders.
     ///
     let statusFilter: OrderStatus?
+
+    /// If true, orders created after today's day will be included in the result.
+    ///
+    /// This will generally only be false for the All Orders tab. All other screens should show orders in the future.
+    ///
+    /// Defaults to `true`.
+    ///
+    private let includesFutureOrders: Bool
+
+    /// Used for tracking whether the app was _previously_ in the background.
+    private var isAppActive: Bool = true
 
     /// Should be bound to the UITableView to auto-update the list of Orders.
     ///
     private lazy var resultsController: ResultsController<StorageOrder> = {
         let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
 
+        let sectionNameKeyPath = #selector(StorageOrder.normalizedAgeAsString)
         let resultsController = ResultsController<StorageOrder>(storageManager: storageManager,
-                                                                sectionNameKeyPath: "normalizedAgeAsString",
+                                                                sectionNameKeyPath: "\(sectionNameKeyPath)",
                                                                 sortedBy: [descriptor])
         resultsController.predicate = {
             let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
             let excludeNonMatchingStatus = statusFilter.map { NSPredicate(format: "statusKey = %@", $0.slug) }
 
             var predicates = [ excludeSearchCache, excludeNonMatchingStatus ].compactMap { $0 }
-            if let tomorrow = Date.tomorrow() {
-                let dateSubPredicate = NSPredicate(format: "dateCreated < %@", tomorrow as NSDate)
+            if !includesFutureOrders, let nextMidnight = Date().nextMidnight() {
+                // Exclude orders on and after midnight of today's date
+                let dateSubPredicate = NSPredicate(format: "dateCreated < %@", nextMidnight as NSDate)
                 predicates.append(dateSubPredicate)
             }
 
@@ -64,9 +89,20 @@ final class OrdersViewModel {
         statusFilter != nil
     }
 
-    init(storageManager: StorageManagerType = ServiceLocator.storageManager, statusFilter: OrderStatus?) {
+    init(storageManager: StorageManagerType = ServiceLocator.storageManager,
+         pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
+         notificationCenter: NotificationCenter = .default,
+         statusFilter: OrderStatus?,
+         includesFutureOrders: Bool = true) {
         self.storageManager = storageManager
+        self.pushNotificationsManager = pushNotificationsManager
+        self.notificationCenter = notificationCenter
         self.statusFilter = statusFilter
+        self.includesFutureOrders = includesFutureOrders
+    }
+
+    deinit {
+        stopObservingForegroundRemoteNotifications()
     }
 
     /// Start fetching DB results and forward new changes to the given `tableView`.
@@ -76,7 +112,39 @@ final class OrdersViewModel {
     ///
     func activateAndForwardUpdates(to tableView: UITableView) {
         resultsController.startForwardingEvents(to: tableView)
-        try? resultsController.performFetch()
+        performFetch()
+
+        notificationCenter.addObserver(self, selector: #selector(handleAppDeactivation),
+                                       name: UIApplication.willResignActiveNotification, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(handleAppActivation),
+                                       name: UIApplication.didBecomeActiveNotification, object: nil)
+
+        observeForegroundRemoteNotifications()
+    }
+
+    /// Execute the `resultsController` query, logging the error if there's any.
+    ///
+    private func performFetch() {
+        do {
+            try resultsController.performFetch()
+        } catch {
+            CrashLogging.logError(error)
+        }
+    }
+
+    @objc private func handleAppDeactivation() {
+        isAppActive = false
+    }
+
+    /// Request a resynchornization if the app was previously in the background.
+    ///
+    @objc private func handleAppActivation() {
+        guard !isAppActive else {
+            return
+        }
+
+        isAppActive = true
+        onShouldResynchronizeIfViewIsVisible?()
     }
 
     /// Returns what `OrderAction` should be used when synchronizing.
@@ -135,9 +203,11 @@ final class OrdersViewModel {
     /// | Action           | Current Tab | Delete All | GET ?status=processing | GET ?status=any |
     /// |------------------|-------------|------------|------------------------|-----------------|
     /// | Pull-to-refresh  | Processing  | y          | y                      | y               |
+    /// | App activated    | Processing  | .          | y                      | y               |
     /// | `viewWillAppear` | Processing  | .          | y                      | y               |
     /// | Load next page   | Processing  | .          | y                      | .               |
     /// | Pull-to-refresh  | All Orders  | y          | .                      | y               |
+    /// | App activated    | All Orders  | .          | .                      | y               |
     /// | `viewWillAppear` | All Orders  | .          | .                      | y               |
     /// | Load next page   | All Orders  | .          | .                      | y               |
     ///
@@ -148,6 +218,7 @@ final class OrdersViewModel {
                                completionHandler: @escaping (Error?) -> Void) -> OrderAction {
 
         let statusKey = statusFilter?.slug
+        let before = includesFutureOrders ? nil : Date().nextMidnight()
 
         if pageNumber == Defaults.pageFirstIndex {
             let deleteAllBeforeSaving = reason == SyncReason.pullToRefresh
@@ -155,6 +226,7 @@ final class OrdersViewModel {
             return OrderAction.fetchFilteredAndAllOrders(
                 siteID: siteID,
                 statusKey: statusKey,
+                before: before,
                 deleteAllBeforeSaving: deleteAllBeforeSaving,
                 pageSize: pageSize,
                 onCompletion: completionHandler
@@ -164,10 +236,34 @@ final class OrdersViewModel {
         return OrderAction.synchronizeOrders(
             siteID: siteID,
             statusKey: statusKey,
+            before: before,
             pageNumber: pageNumber,
             pageSize: pageSize,
             onCompletion: completionHandler
         )
+    }
+}
+
+// MARK: - Remote Notifications Observation
+
+private extension OrdersViewModel {
+    /// Watch for "new order" Remote Notifications that are received while the app is in the
+    /// foreground.
+    ///
+    /// A refresh will be requested when receiving them.
+    ///
+    func observeForegroundRemoteNotifications() {
+        cancellable = pushNotificationsManager.foregroundNotifications.subscribe { [weak self] notification in
+            guard notification.kind == .storeOrder else {
+                return
+            }
+
+            self?.onShouldResynchronizeIfViewIsVisible?()
+        }
+    }
+
+    func stopObservingForegroundRemoteNotifications() {
+        cancellable?.cancel()
     }
 }
 

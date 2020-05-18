@@ -1,1 +1,2 @@
-* Vi har åtgärdat ett besvärande fel som ibland gjorde att appen kraschade när man laddade ner beställningar. Nu är det bara att ladda ner!
+* Enklare redigering av produktbeskrivningar: Tryck var som helst i en produktcell för att börja redigera. Behöver du tangentbordet? Det dyker upp automatiskt. Dessutom åtgärdade vi ett par fel när vi ändå höll på.
+* Ständigt uppdaterad orderrapportering: Orderlistan uppdateras automatiskt varje gång du öppnar appen eller får en ny order och listan Ordrar som behandlas visar nu kommande framtida ordrar.

@@ -84,14 +84,19 @@ class OrdersViewController: UIViewController {
 
     /// Designated initializer.
     ///
-    /// - Parameter statusFilter The filter to use.
-    ///
-    init(title: String, statusFilter: OrderStatus? = nil) {
-        viewModel = OrdersViewModel(statusFilter: statusFilter)
+    init(title: String, viewModel: OrdersViewModel) {
+        self.viewModel = viewModel
 
         super.init(nibName: Self.nibName, bundle: nil)
 
         self.title = title
+    }
+
+    /// Initialize using the given `statusFilter`.
+    ///
+    convenience init(title: String, statusFilter: OrderStatus? = nil) {
+        let viewModel = OrdersViewModel(statusFilter: statusFilter)
+        self.init(title: title, viewModel: viewModel)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -132,6 +137,17 @@ private extension OrdersViewController {
     /// Initialize ViewModel operations
     ///
     func configureViewModel() {
+        viewModel.onShouldResynchronizeIfViewIsVisible = { [weak self] in
+            guard let self = self,
+                  // Avoid synchronizing if the view is not visible. The refresh will be handled in
+                  // `viewWillAppear` instead.
+                  self.viewIfLoaded?.window != nil else {
+                return
+            }
+
+            self.syncingCoordinator.resynchronize()
+        }
+
         viewModel.activateAndForwardUpdates(to: tableView)
     }
 

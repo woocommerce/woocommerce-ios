@@ -1,7 +1,3 @@
-4.4
------
-- In Order Details, the Payment card is now shown right after the Products and Refunded Products cards.
-
 4.3
 -----
 - Products: now the Product details can be edited and saved outside Products tab (e.g. from Order details or Top Performers).
@@ -11,6 +7,7 @@
 - In Settings > Experimental Features, a Products switch is now available for turning Products M2 features on and off for simple products (default off for beta testing). Products M2 features: update product images, product settings, viewing and sharing a product.
 - The WIP banner on the Products tab is now collapsed by default for more vertical space.
 - Dropped iOS 11 support. From now we support iOS 12 and later.
+- In Order Details, the Payment card is now shown right after the Products and Refunded Products cards.
 
 
 4.2

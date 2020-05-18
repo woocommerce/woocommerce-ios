@@ -1,15 +1,17 @@
 import Foundation
 import Yosemite
+import protocol Storage.StorageManagerType
 
 /// Results controllers used to render the Order Details view
 ///
 final class OrderDetailsResultsControllers {
+    private let storageManager: StorageManagerType
+
     private let order: Order
 
     /// Shipment Tracking ResultsController.
     ///
     private lazy var trackingResultsController: ResultsController<StorageShipmentTracking> = {
-        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld",
                                     self.order.siteID,
                                     self.order.orderID)
@@ -21,7 +23,6 @@ final class OrderDetailsResultsControllers {
     /// Product ResultsController.
     ///
     private lazy var productResultsController: ResultsController<StorageProduct> = {
-        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
         let descriptor = NSSortDescriptor(key: "name", ascending: true)
 
@@ -31,7 +32,6 @@ final class OrderDetailsResultsControllers {
     /// Status Results Controller.
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
-        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
         let descriptor = NSSortDescriptor(key: "slug", ascending: true)
 
@@ -41,7 +41,6 @@ final class OrderDetailsResultsControllers {
     /// Refund Results Controller.
     ///
     private lazy var refundResultsController: ResultsController<StorageRefund> = {
-        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld",
                                     self.order.siteID,
                                     self.order.orderID)
@@ -74,8 +73,10 @@ final class OrderDetailsResultsControllers {
         return refundResultsController.fetchedObjects
     }
 
-    init(order: Order) {
+    init(order: Order,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.order = order
+        self.storageManager = storageManager
     }
 
     func configureResultsControllers(onReload: @escaping () -> Void) {

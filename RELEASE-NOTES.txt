@@ -1,3 +1,7 @@
+4.4
+-----
+- In Order Details, the Payment card is now shown right after the Products and Refunded Products cards.
+
 4.3
 -----
 - Products: now the Product details can be edited and saved outside Products tab (e.g. from Order details or Top Performers).

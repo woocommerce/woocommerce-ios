@@ -81,6 +81,7 @@ public typealias StorageAccount = Storage.Account
 public typealias StorageAttribute = Storage.Attribute
 public typealias StorageNote = Storage.Note
 public typealias StorageOrder = Storage.Order
+public typealias StorageOrderItemRefund = Storage.OrderItemRefund
 public typealias StorageOrderNote = Storage.OrderNote
 public typealias StorageOrderRefund = Storage.OrderRefundCondensed
 public typealias StorageOrderStats = Storage.OrderStats

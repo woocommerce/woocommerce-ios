@@ -15,7 +15,7 @@ final class StorageManagerConcurrencyTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        // Using the real Sqlite-based StorageManagerType to be closer to the production operations
+        // Use the Sqlite-based StorageManagerType to be closer to the production operations
         storageManager = CoreDataManager(name: "WooCommerce")
         storageManager.reset()
     }
@@ -77,6 +77,37 @@ final class StorageManagerConcurrencyTests: XCTestCase {
             }
 
             derivedStorage.perform {
+                self.storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+                    exp.fulfill()
+                }
+            }
+        }
+
+        wait(for: [exp], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatus.self), 2)
+    }
+
+    func testGivenConcurrentSavingInASinglePerformBlockTheArchitectureCanAllowSavingOfDuplicates() {
+        // Given
+        let firstDerivedStorage = storageManager.newDerivedStorage()
+        let secondDerivedStorage = storageManager.newDerivedStorage()
+
+        let orderStatus = Networking.OrderStatus(name: "In Space", siteID: 1_998, slug: "in-space", total: 9)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatus.self), 0)
+
+        // When
+        let exp = expectation(description: "concurrent-saving")
+        exp.expectedFulfillmentCount = 2
+
+        [firstDerivedStorage, secondDerivedStorage].forEach { derivedStorage in
+            derivedStorage.perform {
+                let storageOrderStatus = derivedStorage.loadOrderStatus(siteID: orderStatus.siteID, slug: orderStatus.slug) ??
+                    derivedStorage.insertNewObject(ofType: Storage.OrderStatus.self)
+                storageOrderStatus.update(with: orderStatus)
+
                 self.storageManager.saveDerivedType(derivedStorage: derivedStorage) {
                     exp.fulfill()
                 }

@@ -16,6 +16,10 @@ final class StorePickerCoordinator: Coordinator {
     ///
     var onDismiss: (() -> Void)?
 
+    /// The switchStoreUseCase object initialized with the ServiceLocator stores and noticePresenter
+    ///
+    let switchStoreUseCase = SwitchStoreUseCase(stores: ServiceLocator.stores, noticePresenter: ServiceLocator.noticePresenter)
+
     /// Site Picker VC
     ///
     private lazy var storePicker: StorePickerViewController = {
@@ -50,7 +54,7 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
             return
         }
 
-        SwitchStoreUseCase(stores: ServiceLocator.stores, noticePresenter: ServiceLocator.noticePresenter).logOutOfCurrentStore(onCompletion: onCompletion)
+        switchStoreUseCase.logOutOfCurrentStore(onCompletion: onCompletion)
     }
 
     func didSelectStore(with storeID: Int64) {
@@ -58,12 +62,11 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
             return
         }
 
-        SwitchStoreUseCase(stores: ServiceLocator.stores, noticePresenter: ServiceLocator.noticePresenter).finalizeStoreSelection(storeID)
+        switchStoreUseCase.finalizeStoreSelection(storeID)
         if selectedConfiguration == .login {
             MainTabBarController.switchToMyStoreTab(animated: true)
         }
-        SwitchStoreUseCase(stores: ServiceLocator.stores, noticePresenter: ServiceLocator.noticePresenter)
-            .presentStoreSwitchedNotice(configuration: selectedConfiguration)
+        switchStoreUseCase.presentStoreSwitchedNotice(configuration: selectedConfiguration)
 
         // Reload orders badge
         NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)

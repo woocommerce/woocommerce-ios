@@ -268,4 +268,3 @@ private extension StorageManagerConcurrencyTests {
         storageOrderStatus.update(with: orderStatus)
     }
 }
-

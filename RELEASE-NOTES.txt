@@ -4,7 +4,7 @@
 - [internal] Refactored some API calls for fetching a Note, Product, and Product Review. 
 - Products: we improved our VoiceOver support in Product Price settings
 - In Settings > Experimental Features, a Products switch is now available for turning Products M2 features on and off for simple products (default off for beta testing). Products M2 features: update product images, product settings, viewing and sharing a product.
-- The WIP banner on the Products tab is now collapsed by default.
+- The WIP banner on the Products tab is now collapsed by default for more vertical space.
 
 
 4.2

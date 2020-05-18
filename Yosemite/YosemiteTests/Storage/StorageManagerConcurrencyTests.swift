@@ -119,4 +119,30 @@ final class StorageManagerConcurrencyTests: XCTestCase {
         // Then
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatus.self), 2)
     }
+
+    func testWhenSequentiallySavingAndWaitingThenNoDuplicatesAreSaved() {
+        // Given
+        let firstDerivedStorage = storageManager.newDerivedStorage()
+        let secondDerivedStorage = storageManager.newDerivedStorage()
+
+        let orderStatus = Networking.OrderStatus(name: "In Space", siteID: 1_998, slug: "in-space", total: 9)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatus.self), 0)
+
+        // When
+        [firstDerivedStorage, secondDerivedStorage].forEach { derivedStorage in
+            waitForExpectation { exp in
+                let storageOrderStatus = derivedStorage.loadOrderStatus(siteID: orderStatus.siteID, slug: orderStatus.slug) ??
+                    derivedStorage.insertNewObject(ofType: Storage.OrderStatus.self)
+                storageOrderStatus.update(with: orderStatus)
+
+                self.storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+                    exp.fulfill()
+                }
+            }
+        }
+
+        // Then
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatus.self), 1)
+    }
 }

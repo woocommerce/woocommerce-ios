@@ -5,7 +5,7 @@ import Yosemite
 /// Displays Product images with edit functionality.
 ///
 final class ProductImagesViewController: UIViewController {
-    typealias Completion = (_ images: [ProductImage]) -> Void
+    typealias Completion = (_ images: [ProductImage], _ hasChangedData: Bool) -> Void
 
     @IBOutlet private weak var addButton: UIButton!
     @IBOutlet private weak var addButtonBottomBorderView: UIView!
@@ -148,15 +148,16 @@ private extension ProductImagesViewController {
 private extension ProductImagesViewController {
 
     @objc func addTapped() {
+        ServiceLocator.analytics.track(.productImageSettingsAddImagesButtonTapped)
         showOptionsMenu()
     }
 
     @objc func doneButtonTapped() {
-        commitAndDismiss()
+        commitAndDismiss(hasOutstandingChanges())
     }
 
-    func commitAndDismiss() {
-        onCompletion(productImages)
+    func commitAndDismiss(_ hasChangedData: Bool) {
+        onCompletion(productImages, hasChangedData)
     }
 
     func showOptionsMenu() {
@@ -220,7 +221,7 @@ private extension ProductImagesViewController {
             return
         }
         uploadMediaAssetToSiteMediaLibrary(asset: asset)
-        commitAndDismiss()
+        commitAndDismiss(true)
     }
 }
 
@@ -237,7 +238,7 @@ private extension ProductImagesViewController {
             assets.forEach { asset in
                 self.uploadMediaAssetToSiteMediaLibrary(asset: asset)
             }
-            self.commitAndDismiss()
+            self.commitAndDismiss(true)
         }
     }
 }
@@ -253,7 +254,7 @@ private extension ProductImagesViewController {
             }
 
             self.productImageActionHandler.addSiteMediaLibraryImagesToProduct(mediaItems: mediaItems)
-            self.commitAndDismiss()
+            self.commitAndDismiss(true)
         }
     }
 }

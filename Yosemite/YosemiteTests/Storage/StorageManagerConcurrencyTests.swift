@@ -38,9 +38,7 @@ final class StorageManagerConcurrencyTests: XCTestCase {
         // When
         [firstDerivedStorage, secondDerivedStorage].forEach { derivedStorage in
             derivedStorage.perform {
-                let storageOrderStatus = derivedStorage.loadOrderStatus(siteID: orderStatus.siteID, slug: orderStatus.slug) ??
-                    derivedStorage.insertNewObject(ofType: Storage.OrderStatus.self)
-                storageOrderStatus.update(with: orderStatus)
+                self.upsert(orderStatus: orderStatus, using: derivedStorage)
             }
         }
 
@@ -71,9 +69,7 @@ final class StorageManagerConcurrencyTests: XCTestCase {
 
         [firstDerivedStorage, secondDerivedStorage].forEach { derivedStorage in
             derivedStorage.perform {
-                let storageOrderStatus = derivedStorage.loadOrderStatus(siteID: orderStatus.siteID, slug: orderStatus.slug) ??
-                    derivedStorage.insertNewObject(ofType: Storage.OrderStatus.self)
-                storageOrderStatus.update(with: orderStatus)
+                self.upsert(orderStatus: orderStatus, using: derivedStorage)
             }
 
             derivedStorage.perform {
@@ -104,9 +100,7 @@ final class StorageManagerConcurrencyTests: XCTestCase {
 
         [firstDerivedStorage, secondDerivedStorage].forEach { derivedStorage in
             derivedStorage.perform {
-                let storageOrderStatus = derivedStorage.loadOrderStatus(siteID: orderStatus.siteID, slug: orderStatus.slug) ??
-                    derivedStorage.insertNewObject(ofType: Storage.OrderStatus.self)
-                storageOrderStatus.update(with: orderStatus)
+                self.upsert(orderStatus: orderStatus, using: derivedStorage)
 
                 self.storageManager.saveDerivedType(derivedStorage: derivedStorage) {
                     exp.fulfill()
@@ -132,12 +126,12 @@ final class StorageManagerConcurrencyTests: XCTestCase {
         // When
         [firstDerivedStorage, secondDerivedStorage].forEach { derivedStorage in
             waitForExpectation { exp in
-                let storageOrderStatus = derivedStorage.loadOrderStatus(siteID: orderStatus.siteID, slug: orderStatus.slug) ??
-                    derivedStorage.insertNewObject(ofType: Storage.OrderStatus.self)
-                storageOrderStatus.update(with: orderStatus)
+                derivedStorage.perform {
+                    self.upsert(orderStatus: orderStatus, using: derivedStorage)
 
-                self.storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-                    exp.fulfill()
+                    self.storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+                        exp.fulfill()
+                    }
                 }
             }
         }
@@ -146,3 +140,14 @@ final class StorageManagerConcurrencyTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatus.self), 1)
     }
 }
+
+// MARK: - Utils
+
+private extension StorageManagerConcurrencyTests {
+    func upsert(orderStatus: Networking.OrderStatus, using storage: StorageType) {
+        let storageOrderStatus = storage.loadOrderStatus(siteID: orderStatus.siteID, slug: orderStatus.slug) ??
+            storage.insertNewObject(ofType: Storage.OrderStatus.self)
+        storageOrderStatus.update(with: orderStatus)
+    }
+}
+

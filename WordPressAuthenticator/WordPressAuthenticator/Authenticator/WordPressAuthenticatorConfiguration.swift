@@ -51,12 +51,6 @@ public struct WordPressAuthenticatorConfiguration {
     ///
     let showLoginOptions: Bool
 
-    /// Flag indicating if the login options button view should be displayed in the site address flow.
-    /// If enabled, the options button view will be displayed after the site address has been entered
-    /// and verified.
-    ///
-    let showLoginOptionsFromSiteAddress: Bool
-    
     /// Flag indicating if the Sign In With Apple option should be displayed.
     ///
     let enableSignInWithApple: Bool
@@ -78,7 +72,6 @@ public struct WordPressAuthenticatorConfiguration {
                  googleLoginScheme: String,
                  userAgent: String,
                  showLoginOptions: Bool = false,
-                 showLoginOptionsFromSiteAddress: Bool = false,
                  enableSignInWithApple: Bool = false,
                  enableUnifiedAuth: Bool = false) {
 
@@ -93,7 +86,6 @@ public struct WordPressAuthenticatorConfiguration {
         self.googleLoginScheme = googleLoginScheme
         self.userAgent = userAgent
         self.showLoginOptions = showLoginOptions
-        self.showLoginOptionsFromSiteAddress = showLoginOptionsFromSiteAddress
         self.enableSignInWithApple = enableSignInWithApple
         self.enableUnifiedAuth = enableUnifiedAuth
     }

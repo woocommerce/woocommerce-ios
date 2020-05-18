@@ -6,6 +6,7 @@ IB_DESIGNABLE
 @property (nonatomic) IBInspectable BOOL showTopLineSeparator;
 @property (nonatomic) IBInspectable BOOL showSecureTextEntryToggle;
 @property (nonatomic) IBInspectable UIImage *leftViewImage;
+@property (nonatomic) IBInspectable UIColor *secureTextEntryImageColor;
 
 /// Width for the left view. Set to 0 to use the given frame in the view.
 /// Default is: 30

@@ -45,29 +45,6 @@ class LoginPrologueViewController: LoginViewController {
         if let vc = segue.destination as? NUXButtonViewController {
             buttonViewController = vc
         }
-        else if let vc = segue.destination as? LoginPrologueLoginMethodViewController {
-            vc.transitioningDelegate = self
-            
-            vc.emailTapped = { [weak self] in
-                guard let vc = LoginEmailViewController.instantiate(from: .login) else {
-                    DDLogError("Failed to navigate to LoginEmailViewController")
-                    return
-                }
-
-                self?.navigationController?.pushViewController(vc, animated: true)
-            }
-            vc.googleTapped = { [weak self] in
-                self?.googleLoginTapped(withDelegate: self)
-            }
-            vc.selfHostedTapped = { [weak self] in
-                self?.loginToSelfHostedSite()
-            }
-            vc.appleTapped = { [weak self] in
-                self?.appleTapped()
-            }
-
-            vc.modalPresentationStyle = .custom
-        }
     }
 
     private func configureButtonVC() {
@@ -97,7 +74,40 @@ class LoginPrologueViewController: LoginViewController {
 
     private func loginTapped() {
         if WordPressAuthenticator.shared.configuration.showLoginOptions {
-            performSegue(withIdentifier: .showLoginMethod, sender: self)
+            guard let vc = LoginPrologueLoginMethodViewController.instantiate(from: .login) else {
+                DDLogError("Failed to navigate to LoginPrologueLoginMethodViewController from LoginPrologueViewController")
+                return
+            }
+
+            vc.transitioningDelegate = self
+
+            // Continue with WordPress.com button action
+            vc.emailTapped = { [weak self] in
+                guard let toVC = LoginEmailViewController.instantiate(from: .login) else {
+                    DDLogError("Failed to navigate to LoginEmailVC from LoginPrologueVC")
+                    return
+                }
+
+                self?.navigationController?.pushViewController(toVC, animated: true)
+            }
+
+            // Continue with Google button action
+            vc.googleTapped = { [weak self] in
+                self?.googleLoginTapped(withDelegate: self)
+            }
+
+            // Site address text link button action
+            vc.selfHostedTapped = { [weak self] in
+                self?.loginToSelfHostedSite()
+            }
+
+            // Sign In With Apple (SIWA) button action
+            vc.appleTapped = { [weak self] in
+                self?.appleTapped()
+            }
+
+            vc.modalPresentationStyle = .custom
+            navigationController?.present(vc, animated: true, completion: nil)
         } else {
             guard let vc = LoginEmailViewController.instantiate(from: .login) else {
                 DDLogError("Failed to navigate to LoginEmailViewController from LoginPrologueViewController")
@@ -161,7 +171,16 @@ extension LoginPrologueViewController: AppleAuthenticatorDelegate {
 
     func showWPComLogin(loginFields: LoginFields) {
         self.loginFields = loginFields
-         performSegue(withIdentifier: .showWPComLogin, sender: self)
+        guard let vc = LoginWPComViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from Prologue > Sign in with Apple to LoginWPComViewController")
+            return
+        }
+
+        vc.loginFields = self.loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     func showApple2FA(loginFields: LoginFields) {

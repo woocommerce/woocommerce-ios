@@ -107,10 +107,6 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="42E-2e-kOq"/>
-                    <connections>
-                        <segue destination="hed-vB-osh" kind="presentation" identifier="showLoginMethod" id="N3P-wt-Rn3"/>
-                        <segue destination="lmD-c6-SLs" kind="show" identifier="showWPComLogin" id="UV4-XI-c0q"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ieq-Ar-5OF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -139,14 +135,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2gc-Kt-f0P" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="451" y="714"/>
-        </scene>
-        <!--Signup Email Entry-->
-        <scene sceneID="gjg-iE-qSx">
-            <objects>
-                <viewControllerPlaceholder storyboardName="Signup" referencedIdentifier="SignupEmailViewController" id="klu-4U-PyL" userLabel="Signup Email Entry" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="OWM-SL-SwW" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2387" y="-231"/>
         </scene>
         <!--Login Email View Controller-->
         <scene sceneID="w6Y-pB-a3f">
@@ -346,8 +334,6 @@
                         <outlet property="inputStack" destination="JdU-yW-tzf" id="99m-CN-GKR"/>
                         <outlet property="instructionLabel" destination="DKR-9c-zZQ" id="2Rj-ad-hnL"/>
                         <outlet property="submitButton" destination="OZC-xf-OAn" id="k1c-SJ-qiK"/>
-                        <segue destination="lmD-c6-SLs" kind="show" identifier="showWPComLogin" id="ySQ-EM-6JI"/>
-                        <segue destination="klu-4U-PyL" kind="show" identifier="showSignupEmail" id="dh4-9P-l8W"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wWl-qb-1Yp" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -561,10 +547,10 @@
             </objects>
             <point key="canvasLocation" x="768.79999999999995" y="1946.6266866566718"/>
         </scene>
-        <!--LoginWP Com View Controller-->
+        <!--LoginWPComViewController-->
         <scene sceneID="brQ-1M-iPT">
             <objects>
-                <viewController storyboardIdentifier="LoginWPcomPassword" useStoryboardIdentifierAsRestorationIdentifier="YES" id="lmD-c6-SLs" customClass="LoginWPComViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginWPComViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="lmD-c6-SLs" userLabel="LoginWPComViewController" customClass="LoginWPComViewController" customModule="WordPressAuthenticator" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="dAs-4b-ACP"/>
                         <viewControllerLayoutGuide type="bottom" id="kOH-fr-1L0"/>
@@ -965,7 +951,6 @@
                                 <state key="normal" title="Enter your password instead"/>
                                 <connections>
                                     <action selector="handleUsePasswordTapped:" destination="Kvo-Y2-yhG" eventType="touchUpInside" id="T8m-o8-zic"/>
-                                    <segue destination="lmD-c6-SLs" kind="show" id="0ao-yi-yZI"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -1141,8 +1126,6 @@
                         <outlet property="siteAddressHelpButton" destination="roL-ID-k8n" id="QB2-ri-X5V"/>
                         <outlet property="siteURLField" destination="ZrT-CY-qD7" id="561-Zw-Ja9"/>
                         <outlet property="submitButton" destination="ltO-hW-mbe" id="wwr-D5-5kK"/>
-                        <segue destination="hed-vB-osh" kind="presentation" identifier="showLoginMethod" id="5hL-j3-eMs"/>
-                        <segue destination="lmD-c6-SLs" kind="show" identifier="showWPComLogin" id="8p6-rS-9Ml"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WlT-Oa-AoS" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1244,6 +1227,9 @@
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cCX-uI-ruO" userLabel="Title">
                                                                         <rect key="frame" x="0.0" y="0.0" width="281" height="18"/>
+                                                                        <constraints>
+                                                                            <constraint firstAttribute="height" constant="18" id="Coh-Dn-nk1"/>
+                                                                        </constraints>
                                                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                                         <color key="textColor" red="0.18039215689999999" green="0.2666666667" blue="0.32549019610000002" alpha="1" colorSpace="calibratedRGB"/>
                                                                         <nil key="highlightedColor"/>
@@ -1261,6 +1247,12 @@
                                                                 </subviews>
                                                             </stackView>
                                                         </subviews>
+                                                        <constraints>
+                                                            <constraint firstItem="DWy-yy-er4" firstAttribute="bottom" secondItem="IMk-aA-1GF" secondAttribute="bottomMargin" id="I9F-s9-a8t"/>
+                                                            <constraint firstItem="DWy-yy-er4" firstAttribute="trailing" secondItem="IMk-aA-1GF" secondAttribute="trailingMargin" id="gca-Ce-u6f"/>
+                                                            <constraint firstItem="DWy-yy-er4" firstAttribute="leading" secondItem="Gak-2q-wul" secondAttribute="trailing" constant="10" id="h93-X9-jIc"/>
+                                                            <constraint firstItem="DWy-yy-er4" firstAttribute="top" secondItem="IMk-aA-1GF" secondAttribute="topMargin" id="sNI-Q9-kLs"/>
+                                                        </constraints>
                                                     </stackView>
                                                 </subviews>
                                             </stackView>
@@ -1374,7 +1366,7 @@
         <!--Login Prologue Login Method View Controller-->
         <scene sceneID="4ov-Vw-tga">
             <objects>
-                <viewController id="hed-vB-osh" customClass="LoginPrologueLoginMethodViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginPrologueLoginMethodViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="hed-vB-osh" customClass="LoginPrologueLoginMethodViewController" customModule="WordPressAuthenticator" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="EBT-D5-afP"/>
                         <viewControllerLayoutGuide type="bottom" id="wML-ff-0Cg"/>
@@ -1420,8 +1412,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="5hL-j3-eMs"/>
-        <segue reference="0ao-yi-yZI"/>
         <segue reference="JN3-Ck-2w7"/>
     </inferredMetricsTieBreakers>
     <resources>

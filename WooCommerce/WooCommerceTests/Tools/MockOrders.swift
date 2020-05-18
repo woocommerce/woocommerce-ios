@@ -4,7 +4,7 @@ final class MockOrders {
     let siteID: Int64 = 1234
     let orderID: Int64 = 5678
 
-    func sampleOrder() -> Order {
+    func makeOrder(items: [OrderItem] = []) -> Order {
         return Order(siteID: siteID,
                      orderID: orderID,
                      parentID: 0,
@@ -23,12 +23,16 @@ final class MockOrders {
                      total: "31.20",
                      totalTax: "1.20",
                      paymentMethodTitle: "Credit Card (Stripe)",
-                     items: [],
+                     items: items,
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),
                      shippingLines: sampleShippingLines(),
                      coupons: [],
                      refunds: [])
+    }
+
+    func sampleOrder() -> Order {
+        makeOrder()
     }
 
     func sampleOrderCreatedInCurrentYear() -> Order {

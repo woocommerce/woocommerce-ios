@@ -62,30 +62,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
 private extension OrderDetailsDataSourceTests {
     func makeOrder() -> Order {
-        Order(siteID: 1_000,
-              orderID: 2_000,
-              parentID: 0,
-              customerID: 11,
-              number: "963",
-              statusKey: "processing",
-              currency: "USD",
-              customerNote: "",
-              dateCreated: Date(),
-              dateModified: Date(),
-              datePaid: Date(),
-              discountTotal: "30.00",
-              discountTax: "1.20",
-              shippingTotal: "0.00",
-              shippingTax: "0.00",
-              total: "31.20",
-              totalTax: "1.20",
-              paymentMethodTitle: "Credit Card (Stripe)",
-              items: [makeOrderItem(), makeOrderItem()],
-              billingAddress: nil,
-              shippingAddress: nil,
-              shippingLines: [],
-              coupons: [],
-              refunds: [])
+        MockOrders().makeOrder(items: [makeOrderItem(), makeOrderItem()])
     }
 
     func makeOrderItem() -> OrderItem {

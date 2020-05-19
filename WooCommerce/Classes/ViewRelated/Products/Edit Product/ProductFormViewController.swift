@@ -229,11 +229,6 @@ private extension ProductFormViewController {
     }
 
     func configureMoreDetailsContainerView() {
-        guard isEditProductsRelease2Enabled else {
-            moreDetailsContainerView.isHidden = true
-            return
-        }
-
         let title = NSLocalizedString("Add more details", comment: "Title of the button at the bottom of the product form to add more product details.")
         let viewModel = BottomButtonContainerView.ViewModel(style: .link,
                                                             title: title,
@@ -258,8 +253,8 @@ private extension ProductFormViewController {
         let title = NSLocalizedString("Add more details",
                                       comment: "Title of the bottom sheet from the product form to add more product details.")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
-        let dataSource = ProductFormBottomSheetListSelectorCommand(product: product,
-                                                                   isEditProductsRelease3Enabled: isEditProductsRelease3Enabled) { [weak self] action in
+        let actions = createBottomSheetActions()
+        let dataSource = ProductFormBottomSheetListSelectorCommand(actions: actions) { [weak self] action in
                                                                     self?.dismiss(animated: true) { [weak self] in
                                                                         switch action {
                                                                         case .editInventorySettings:
@@ -282,16 +277,8 @@ private extension ProductFormViewController {
     }
 
     func updateMoreDetailsButtonVisibility(product: Product) {
-        guard isEditProductsRelease2Enabled else {
-            moreDetailsContainerView.isHidden = true
-            return
-        }
-
-        let moreDetailsActions: [ProductFormBottomSheetAction] = isEditProductsRelease3Enabled ?
-            [.editInventorySettings, .editShippingSettings, .editCategories, .editBriefDescription]:
-            [.editInventorySettings, .editShippingSettings, .editBriefDescription]
-        let hasVisibleActions = moreDetailsActions.map({ $0.isVisible(product: product) }).contains(true)
-        moreDetailsContainerView.isHidden = hasVisibleActions == false
+        let moreDetailsActions = createBottomSheetActions()
+        moreDetailsContainerView.isHidden = moreDetailsActions.isEmpty
     }
 }
 
@@ -476,6 +463,12 @@ private extension ProductFormViewController {
         moreButton.accessibilityLabel = NSLocalizedString("More options", comment: "Accessibility label for the Edit Product More Options action sheet")
         moreButton.accessibilityIdentifier = "edit-product-more-options-button"
         return moreButton
+    }
+
+    private func createBottomSheetActions() -> [ProductFormBottomSheetAction] {
+        ProductFormBottomSheetActionsFactory(product: product,
+                                             isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                             isEditProductsRelease3Enabled: isEditProductsRelease3Enabled).actions()
     }
 }
 

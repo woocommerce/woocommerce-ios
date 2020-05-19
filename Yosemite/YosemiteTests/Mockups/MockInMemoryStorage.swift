@@ -22,7 +22,7 @@ final class MockInMemoryStorage: FileStorage {
         return data
     }
 
-    func write<T>(_ data: T, to fileURL: URL) throws where T : Encodable {
+    func write<T>(_ data: T, to fileURL: URL) throws where T: Encodable {
         self.data = data as? Codable
         dataWriteIsHit = true
     }

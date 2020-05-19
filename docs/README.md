@@ -8,6 +8,7 @@
     - [Choosing Between Structures and Classes](#choosing-between-structures-and-classes)
 - [Design Patterns](#design-patterns)
     - [Copiable](#copiable)
+- [Testing](#testing)
 
 ## Architecture
 
@@ -143,3 +144,8 @@ let lukeWithNoAddress = luke.copy(address: .some(nil))
 ### Code Generation
 
 These `copy()` methods will be automatically generated in the future.
+
+## Testing
+
+- [UI Tests](UI-TESTS.md)
+- [Beta Testing](https://woocommercehalo.wordpress.com/setup/join-ios-beta/)

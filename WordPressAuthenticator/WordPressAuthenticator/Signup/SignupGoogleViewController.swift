@@ -51,7 +51,7 @@ class SignupGoogleViewController: LoginViewController {
         }
 
         googleSSO.delegate = self
-        googleSSO.uiDelegate = self
+        googleSSO.presentingViewController = self
         googleSSO.clientID = WordPressAuthenticator.shared.configuration.googleLoginClientId
         googleSSO.serverClientID = WordPressAuthenticator.shared.configuration.googleLoginServerClientId
 

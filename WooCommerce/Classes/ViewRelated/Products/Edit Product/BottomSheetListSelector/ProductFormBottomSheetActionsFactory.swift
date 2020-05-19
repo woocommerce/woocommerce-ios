@@ -1,5 +1,6 @@
 import Yosemite
 
+/// Creates actions for product form bottom sheet.
 struct ProductFormBottomSheetActionsFactory {
     /// Retruns an array of actions that are visible in the product form bottom sheet.
     static func actions(product: Product, isEditProductsRelease2Enabled: Bool, isEditProductsRelease3Enabled: Bool) -> [ProductFormBottomSheetAction] {

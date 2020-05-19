@@ -466,9 +466,9 @@ private extension ProductFormViewController {
     }
 
     private func createBottomSheetActions() -> [ProductFormBottomSheetAction] {
-        ProductFormBottomSheetActionsFactory.actions(product: product,
-                                                     isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
-                                                     isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+        ProductFormBottomSheetActionsFactory(product: product,
+                                             isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                             isEditProductsRelease3Enabled: isEditProductsRelease3Enabled).actions()
     }
 }
 

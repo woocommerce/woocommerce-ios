@@ -10,9 +10,9 @@ final class ProductFormBottomSheetActionsFactoryTests: XCTestCase {
         let product = Fixtures.physicalProduct
         let isEditProductsRelease2Enabled = false
         let isEditProductsRelease3Enabled = false
-        let actions = ProductFormBottomSheetActionsFactory.actions(product: product,
-                                                                   isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
-                                                                   isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+        let actions = ProductFormBottomSheetActionsFactory(product: product,
+                                                           isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                                           isEditProductsRelease3Enabled: isEditProductsRelease3Enabled).actions()
 
         let expectedActions: [ProductFormBottomSheetAction] = [
             .editInventorySettings,
@@ -25,9 +25,9 @@ final class ProductFormBottomSheetActionsFactoryTests: XCTestCase {
         let product = Fixtures.virtualProduct
         let isEditProductsRelease2Enabled = false
         let isEditProductsRelease3Enabled = false
-        let actions = ProductFormBottomSheetActionsFactory.actions(product: product,
-                                                                   isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
-                                                                   isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+        let actions = ProductFormBottomSheetActionsFactory(product: product,
+                                                           isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                                           isEditProductsRelease3Enabled: isEditProductsRelease3Enabled).actions()
 
         let expectedActions: [ProductFormBottomSheetAction] = [
             .editInventorySettings
@@ -39,9 +39,9 @@ final class ProductFormBottomSheetActionsFactoryTests: XCTestCase {
         let product = Fixtures.downloadableProduct
         let isEditProductsRelease2Enabled = false
         let isEditProductsRelease3Enabled = false
-        let actions = ProductFormBottomSheetActionsFactory.actions(product: product,
-                                                                   isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
-                                                                   isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+        let actions = ProductFormBottomSheetActionsFactory(product: product,
+                                                           isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                                           isEditProductsRelease3Enabled: isEditProductsRelease3Enabled).actions()
 
         let expectedActions: [ProductFormBottomSheetAction] = [
             .editInventorySettings
@@ -55,9 +55,9 @@ final class ProductFormBottomSheetActionsFactoryTests: XCTestCase {
         let product = Fixtures.physicalProduct
         let isEditProductsRelease2Enabled = true
         let isEditProductsRelease3Enabled = false
-        let actions = ProductFormBottomSheetActionsFactory.actions(product: product,
-                                                                   isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
-                                                                   isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+        let actions = ProductFormBottomSheetActionsFactory(product: product,
+                                                           isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                                           isEditProductsRelease3Enabled: isEditProductsRelease3Enabled).actions()
 
         let expectedActions: [ProductFormBottomSheetAction] = [
             .editInventorySettings,
@@ -71,9 +71,9 @@ final class ProductFormBottomSheetActionsFactoryTests: XCTestCase {
         let product = Fixtures.virtualProduct
         let isEditProductsRelease2Enabled = true
         let isEditProductsRelease3Enabled = false
-        let actions = ProductFormBottomSheetActionsFactory.actions(product: product,
-                                                                   isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
-                                                                   isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+        let actions = ProductFormBottomSheetActionsFactory(product: product,
+                                                           isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                                           isEditProductsRelease3Enabled: isEditProductsRelease3Enabled).actions()
 
         let expectedActions: [ProductFormBottomSheetAction] = [
             .editInventorySettings,
@@ -86,9 +86,9 @@ final class ProductFormBottomSheetActionsFactoryTests: XCTestCase {
         let product = Fixtures.downloadableProduct
         let isEditProductsRelease2Enabled = true
         let isEditProductsRelease3Enabled = false
-        let actions = ProductFormBottomSheetActionsFactory.actions(product: product,
-                                                                   isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
-                                                                   isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+        let actions = ProductFormBottomSheetActionsFactory(product: product,
+                                                           isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                                           isEditProductsRelease3Enabled: isEditProductsRelease3Enabled).actions()
 
         let expectedActions: [ProductFormBottomSheetAction] = [
             .editInventorySettings,
@@ -103,9 +103,9 @@ final class ProductFormBottomSheetActionsFactoryTests: XCTestCase {
         let product = Fixtures.physicalProduct
         let isEditProductsRelease2Enabled = true
         let isEditProductsRelease3Enabled = true
-        let actions = ProductFormBottomSheetActionsFactory.actions(product: product,
-                                                                   isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
-                                                                   isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+        let actions = ProductFormBottomSheetActionsFactory(product: product,
+                                                           isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                                           isEditProductsRelease3Enabled: isEditProductsRelease3Enabled).actions()
 
         let expectedActions: [ProductFormBottomSheetAction] = [
             .editInventorySettings,
@@ -120,9 +120,9 @@ final class ProductFormBottomSheetActionsFactoryTests: XCTestCase {
         let product = Fixtures.virtualProduct
         let isEditProductsRelease2Enabled = true
         let isEditProductsRelease3Enabled = true
-        let actions = ProductFormBottomSheetActionsFactory.actions(product: product,
-                                                                   isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
-                                                                   isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+        let actions = ProductFormBottomSheetActionsFactory(product: product,
+                                                           isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                                           isEditProductsRelease3Enabled: isEditProductsRelease3Enabled).actions()
 
         let expectedActions: [ProductFormBottomSheetAction] = [
             .editInventorySettings,
@@ -136,9 +136,9 @@ final class ProductFormBottomSheetActionsFactoryTests: XCTestCase {
         let product = Fixtures.downloadableProduct
         let isEditProductsRelease2Enabled = true
         let isEditProductsRelease3Enabled = true
-        let actions = ProductFormBottomSheetActionsFactory.actions(product: product,
-                                                                   isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
-                                                                   isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+        let actions = ProductFormBottomSheetActionsFactory(product: product,
+                                                           isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                                           isEditProductsRelease3Enabled: isEditProductsRelease3Enabled).actions()
 
         let expectedActions: [ProductFormBottomSheetAction] = [
             .editInventorySettings,

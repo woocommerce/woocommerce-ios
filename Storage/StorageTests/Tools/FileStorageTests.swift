@@ -19,13 +19,17 @@ final class FileStorageTests: XCTestCase {
     }
 
     func testFileIsLoaded() {
-        XCTAssertNoThrow(try subject?.data(for: fileURL!))
+        var data: [PreselectedProvider]?
+        XCTAssertNoThrow(data = try subject?.data(for: fileURL!))
+        XCTAssertNotNil(data)
     }
 
     func testErrorIsTriggeredWhenFileFailsToLoad() {
         let url = URL(string: "http://somewhere.on.the.internet")
 
-        XCTAssertThrowsError(try subject?.data(for: url!))
+        var data: Data?
+        XCTAssertThrowsError(data = try subject?.data(for: url!))
+        XCTAssertNil(data)
     }
 
     func testErrorIsTriggeredWhenWritingFails() {

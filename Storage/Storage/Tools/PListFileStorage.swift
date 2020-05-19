@@ -6,19 +6,22 @@ import Foundation
 public final class PListFileStorage: FileStorage {
     public init() { }
 
-    public func data(for fileURL: URL) throws -> Data {
+    public func data<T: Decodable>(for fileURL: URL) throws -> T {
         do {
             let data = try Data(contentsOf: fileURL)
-            return data
+            let decoder = PropertyListDecoder()
+            return try decoder.decode(T.self, from: data)
         } catch {
-            let error = PListFileStorageErrors.fileReadFailed
-            throw error
+            throw PListFileStorageErrors.fileReadFailed
         }
     }
 
-    public func write(_ data: Data, to fileURL: URL) throws {
+    public func write<T: Encodable>(_ data: T, to fileURL: URL) throws {
+        let encoder = PropertyListEncoder()
+        encoder.outputFormat = .xml
         do {
-            try data.write(to: fileURL)
+            let encodedData = try encoder.encode(data)
+            try encodedData.write(to: fileURL)
         } catch {
             let error = PListFileStorageErrors.fileWriteFailed
             throw error

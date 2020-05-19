@@ -253,9 +253,7 @@ private extension ProductFormViewController {
         let title = NSLocalizedString("Add more details",
                                       comment: "Title of the bottom sheet from the product form to add more product details.")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
-        let actions = ProductFormBottomSheetActionsFactory.actions(product: product,
-                                                                   isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
-                                                                   isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+        let actions = createBottomSheetActions()
         let dataSource = ProductFormBottomSheetListSelectorCommand(actions: actions) { [weak self] action in
                                                                     self?.dismiss(animated: true) { [weak self] in
                                                                         switch action {
@@ -279,9 +277,7 @@ private extension ProductFormViewController {
     }
 
     func updateMoreDetailsButtonVisibility(product: Product) {
-        let moreDetailsActions = ProductFormBottomSheetActionsFactory.actions(product: product,
-                                                                              isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
-                                                                              isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+        let moreDetailsActions = createBottomSheetActions()
         moreDetailsContainerView.isHidden = moreDetailsActions.isEmpty
     }
 }
@@ -467,6 +463,12 @@ private extension ProductFormViewController {
         moreButton.accessibilityLabel = NSLocalizedString("More options", comment: "Accessibility label for the Edit Product More Options action sheet")
         moreButton.accessibilityIdentifier = "edit-product-more-options-button"
         return moreButton
+    }
+
+    private func createBottomSheetActions() -> [ProductFormBottomSheetAction] {
+        ProductFormBottomSheetActionsFactory.actions(product: product,
+                                                     isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                                     isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
     }
 }
 

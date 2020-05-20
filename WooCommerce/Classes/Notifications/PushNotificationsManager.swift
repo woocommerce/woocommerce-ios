@@ -199,11 +199,10 @@ extension PushNotificationsManager {
         DDLogVerbose("📱 Push Notification Received: \n\(userInfo)\n")
 
         // Badge: Update
-        if let badgeNumber = userInfo.dictionary(forKey: APNSKey.aps)?.integer(forKey: APNSKey.badge),
-            let typeString = userInfo.string(forKey: APNSKey.type),
+        if let typeString = userInfo.string(forKey: APNSKey.type),
             let type = Note.Kind(rawValue: typeString),
             let siteID = siteID {
-            incrementNotificationCount(siteID: siteID, type: type, incrementCount: badgeNumber) { [weak self] in
+            incrementNotificationCount(siteID: siteID, type: type, incrementCount: 1) { [weak self] in
                 self?.loadNotificationCountAndUpdateApplicationBadgeNumberAndPostNotifications(siteID: siteID, type: type)
                 onBadgeUpdateCompletion()
             }

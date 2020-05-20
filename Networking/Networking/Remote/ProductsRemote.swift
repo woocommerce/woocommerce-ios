@@ -2,7 +2,7 @@ import Foundation
 
 /// Product: Remote Endpoints
 ///
-public class ProductsRemote: Remote {
+public final class ProductsRemote: Remote {
 
     // MARK: - Products
 

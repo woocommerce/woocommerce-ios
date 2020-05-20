@@ -358,10 +358,6 @@ extension LoginViewController {
 
 // MARK: - Google Sign In Handling
 
-// This is needed to set self as uiDelegate, even though none of the methods are called
-extension LoginViewController: GIDSignInUIDelegate {
-}
-
 extension LoginViewController {
 
     @objc func googleLoginTapped(withDelegate delegate: GIDSignInDelegate?) {
@@ -375,7 +371,7 @@ extension LoginViewController {
 
         // Configure all the things and sign in.
         GIDSignIn.sharedInstance().delegate = delegate
-        GIDSignIn.sharedInstance().uiDelegate = self
+        GIDSignIn.sharedInstance()?.presentingViewController = self
         GIDSignIn.sharedInstance().clientID = WordPressAuthenticator.shared.configuration.googleLoginClientId
         GIDSignIn.sharedInstance().serverClientID = WordPressAuthenticator.shared.configuration.googleLoginServerClientId
         GIDSignIn.sharedInstance().signIn()

@@ -129,6 +129,8 @@ class OrdersViewController: UIViewController {
         // Fix any _incomplete_ animation if the orders were deleted and refetched from
         // a different location (or Orders tab).
         tableView.reloadData()
+
+        ServiceLocator.pushNotesManager.resetBadgeCount(type: .storeOrder)
     }
 }
 

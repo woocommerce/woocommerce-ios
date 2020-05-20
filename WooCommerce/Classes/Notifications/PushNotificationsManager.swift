@@ -51,6 +51,9 @@ final class PushNotificationsManager: PushNotesManager {
         }
     }
 
+    private var siteID: Int64? {
+        ServiceLocator.stores.sessionManager.defaultStoreID
+    }
 
     /// Initializes the PushNotificationsManager.
     ///
@@ -121,10 +124,30 @@ extension PushNotificationsManager {
 
     /// Resets the Badge Count.
     ///
-    func resetBadgeCount() {
-        configuration.application.applicationIconBadgeNumber = 0
+    func resetBadgeCount(type: Note.Kind) {
+        guard let siteID = siteID else {
+            return
+        }
+        let action = NotificationCountAction.resetNotificationCount(siteID: siteID, type: type) { [weak self] in
+            self?.loadNotificationCountAndUpdateApplicationBadgeNumberAndPostNotifications(siteID: siteID, type: type)
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 
+    func resetBadgeCountForAllStores(onCompletion: @escaping () -> Void) {
+        let action = NotificationCountAction.resetNotificationCountForAllSites() { [weak self] in
+            self?.configuration.application.applicationIconBadgeNumber = 0
+            onCompletion()
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    func reloadBadgeCount() {
+        guard let siteID = siteID else {
+            return
+        }
+        loadNotificationCountAndUpdateApplicationBadgeNumberAndPostNotifications(siteID: siteID, type: nil)
+    }
 
     /// Registers the Device Token agains WordPress.com backend, if there's a default account.
     ///
@@ -172,20 +195,17 @@ extension PushNotificationsManager {
 
     /// Handles a Remote Push Notifican Payload. On completion the `completionHandler` will be executed.
     ///
-    func handleNotification(_ userInfo: [AnyHashable: Any], completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+    func handleNotification(_ userInfo: [AnyHashable : Any], onBadgeUpdateCompletion: @escaping () -> Void, completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         DDLogVerbose("📱 Push Notification Received: \n\(userInfo)\n")
 
         // Badge: Update
         if let badgeNumber = userInfo.dictionary(forKey: APNSKey.aps)?.integer(forKey: APNSKey.badge),
             let typeString = userInfo.string(forKey: APNSKey.type),
-            let type = Note.Kind(rawValue: typeString) {
-            switch type {
-            case .comment:
-                configuration.application.applicationIconBadgeNumber = badgeNumber
-            case .storeOrder:
-                NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
-            default:
-                break
+            let type = Note.Kind(rawValue: typeString),
+            let siteID = siteID {
+            incrementNotificationCount(siteID: siteID, type: type, incrementCount: badgeNumber) { [weak self] in
+                self?.loadNotificationCountAndUpdateApplicationBadgeNumberAndPostNotifications(siteID: siteID, type: type)
+                onBadgeUpdateCompletion()
             }
         }
 
@@ -213,6 +233,46 @@ extension PushNotificationsManager {
     }
 }
 
+// MARK: - Notification count & app badge number update
+//
+private extension PushNotificationsManager {
+    func incrementNotificationCount(siteID: Int64, type: Note.Kind, incrementCount: Int, onCompletion: @escaping () -> Void) {
+        let action = NotificationCountAction.incrementNotificationCount(siteID: siteID, type: type, incrementCount: incrementCount, onCompletion: onCompletion)
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    func loadNotificationCountAndUpdateApplicationBadgeNumberAndPostNotifications(siteID: Int64, type: Note.Kind?) {
+        loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: siteID)
+        postBadgeReloadNotifications(type: type)
+    }
+
+    func loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: Int64) {
+        let action = NotificationCountAction.loadNotificationCount(siteID: siteID, type: nil) { [weak self] count in
+            self?.configuration.application.applicationIconBadgeNumber = count
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    func postBadgeReloadNotifications(type: Note.Kind?) {
+        guard let type = type else {
+            postBadgeReloadNotification(type: .comment)
+            postBadgeReloadNotification(type: .storeOrder)
+            return
+        }
+        postBadgeReloadNotification(type: type)
+    }
+
+    func postBadgeReloadNotification(type: Note.Kind) {
+        switch type {
+        case .comment:
+            NotificationCenter.default.post(name: .reviewsBadgeReloadRequired, object: nil)
+        case .storeOrder:
+            NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
+        default:
+            break
+        }
+    }
+}
 
 // MARK: - Push Handlers
 //

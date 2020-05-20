@@ -102,7 +102,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didReceiveRemoteNotification userInfo: [AnyHashable: Any],
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        ServiceLocator.pushNotesManager.handleNotification(userInfo, completionHandler: completionHandler)
+        ServiceLocator.pushNotesManager.handleNotification(userInfo, onBadgeUpdateCompletion: {}, completionHandler: completionHandler)
     }
 
     func applicationWillResignActive(_ application: UIApplication) {

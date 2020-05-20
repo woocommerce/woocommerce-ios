@@ -72,10 +72,6 @@ final class MainTabBarController: UITabBarController {
         return StyleManager.statusBarLight
     }
 
-    /// KVO Token
-    ///
-    private var observationToken: NSKeyValueObservation?
-
     /// Notifications badge
     ///
     private let notificationsBadge = NotificationsBadgeController()
@@ -128,6 +124,8 @@ final class MainTabBarController: UITabBarController {
 
             return controllers
         }()
+
+        loadReviewsTabNotificationCountAndUpdateBadge()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -137,7 +135,7 @@ final class MainTabBarController: UITabBarController {
         /// We hook up KVO in this spot... because at the point in which `viewDidLoad` fires, we haven't really fully
         /// loaded the childViewControllers, and the tabBar isn't fully initialized.
         ///
-        startListeningToBadgeUpdatesIfNeeded()
+        startListeningToReviewsTabBadgeUpdates()
         startListeningToOrdersBadge()
     }
 
@@ -333,28 +331,36 @@ extension MainTabBarController {
 }
 
 
-// MARK: - Tab dot madness!
+// MARK: - Reviews Tab Badge Updates
 //
 private extension MainTabBarController {
 
     /// Setup: KVO Hooks.
     ///
-    func startListeningToBadgeUpdatesIfNeeded() {
-        guard observationToken == nil else {
+    func startListeningToReviewsTabBadgeUpdates() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(loadReviewsTabNotificationCountAndUpdateBadge),
+                                               name: .reviewsBadgeReloadRequired,
+                                               object: nil)
+    }
+
+    @objc func loadReviewsTabNotificationCountAndUpdateBadge() {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
 
-        observationToken = UIApplication.shared.observe(\.applicationIconBadgeNumber, options: [.initial, .new]) {  (application, _) in
-            self.badgeCountWasUpdated(newValue: application.applicationIconBadgeNumber)
+        let action = NotificationCountAction.loadNotificationCount(siteID: siteID, type: .comment) { [weak self] count in
+            self?.updateReviewsTabBadge(count: count)
         }
+        ServiceLocator.stores.dispatch(action)
     }
 
-    /// Displays or Hides the Dot, depending on the new Badge Value
+    /// Displays or Hides the Dot on the Reviews tab, depending on the notification count
     ///
-    func badgeCountWasUpdated(newValue: Int) {
+    func updateReviewsTabBadge(count: Int) {
         let tab = WooTab.reviews
         let tabIndex = tab.visibleIndex()
-        notificationsBadge.badgeCountWasUpdated(newValue: newValue, tab: tab, in: tabBar, tabIndex: tabIndex)
+        notificationsBadge.badgeCountWasUpdated(newValue: count, tab: tab, in: tabBar, tabIndex: tabIndex)
     }
 }
 

@@ -82,8 +82,17 @@ final class PushNotificationsManagerTests: XCTestCase {
     /// Verifies that `resetBadgeCount` sets the badgeNumber to zero
     ///
     func testResetBadgeCountEffectivelyDropsTheBadgeNumberToZero() {
+        // Arrange
         application.applicationIconBadgeNumber = 90
-        manager.resetBadgeCount()
+
+        // Action
+        let expectation = self.expectation(description: "Wait for badge count reset for all stores")
+        manager.resetBadgeCountForAllStores {
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+
+        // Assert
         XCTAssertEqual(application.applicationIconBadgeNumber, 0)
     }
 
@@ -251,12 +260,19 @@ final class PushNotificationsManagerTests: XCTestCase {
     /// Verifies that `handleNotification` effectively updates the App's Badge Number.
     ///
     func testHandleNotificationUpdatesApplicationsBadgeNumber() {
+        // Arrange
         let updatedBadgeNumber = 10
         let userInfo = notificationPayload(badgeCount: updatedBadgeNumber, type: .comment)
-
         XCTAssertEqual(application.applicationIconBadgeNumber, Int.min)
 
-        manager.handleNotification(userInfo) { _ in }
+        // Action
+        let expectation = self.expectation(description: "Wait for badge update from handling notification")
+        manager.handleNotification(userInfo, onBadgeUpdateCompletion: {
+            expectation.fulfill()
+        }) { _ in }
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+
+        // Assert
         XCTAssertEqual(application.applicationIconBadgeNumber, updatedBadgeNumber)
     }
 
@@ -269,7 +285,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         var handleNotificationCallbackWasExecuted = false
 
         application.applicationState = .background
-        manager.handleNotification(payload) { result in
+        manager.handleNotification(payload, onBadgeUpdateCompletion: {}) { result in
             XCTAssertEqual(result, .newData)
             handleNotificationCallbackWasExecuted = true
         }
@@ -293,7 +309,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         var handleNotificationCallbackWasExecuted = false
 
         application.applicationState = .background
-        manager.handleNotification(payload) { result in
+        manager.handleNotification(payload, onBadgeUpdateCompletion: {}) { result in
             XCTAssertEqual(result, .noData)
             handleNotificationCallbackWasExecuted = true
         }
@@ -317,7 +333,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         var handleNotificationCallbackWasExecuted = false
 
         application.applicationState = .inactive
-        manager.handleNotification(payload) { result in
+        manager.handleNotification(payload, onBadgeUpdateCompletion: {}) { result in
             XCTAssertEqual(result, .newData)
             handleNotificationCallbackWasExecuted = true
         }
@@ -333,7 +349,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         let payload = notificationPayload()
 
         application.applicationState = .active
-        manager.handleNotification(payload) { _ in
+        manager.handleNotification(payload, onBadgeUpdateCompletion: {}) { _ in
             // NO-OP
         }
 
@@ -354,7 +370,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         let userinfo = notificationPayload(noteID: 9_981, type: .storeOrder)
 
         // When
-        manager.handleNotification(userinfo) { _ in
+        manager.handleNotification(userinfo, onBadgeUpdateCompletion: {}) { _ in
             // noop
         }
 
@@ -379,7 +395,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         let userinfo = notificationPayload(noteID: 9_981, type: .storeOrder)
 
         // When
-        manager.handleNotification(userinfo) { _ in
+        manager.handleNotification(userinfo, onBadgeUpdateCompletion: {}) { _ in
             // noop
         }
 

@@ -58,6 +58,7 @@ final class PushNotificationsManagerTests: XCTestCase {
     }
 
     override func tearDown() {
+        manager.resetBadgeCountForAllStores {}
         manager = nil
         userNotificationCenter = nil
         supportManager = nil
@@ -273,7 +274,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
 
         // Assert
-        XCTAssertEqual(application.applicationIconBadgeNumber, updatedBadgeNumber)
+        XCTAssertEqual(application.applicationIconBadgeNumber, 1)
     }
 
 

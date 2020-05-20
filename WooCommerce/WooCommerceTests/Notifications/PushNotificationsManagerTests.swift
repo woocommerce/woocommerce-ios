@@ -42,7 +42,11 @@ final class PushNotificationsManagerTests: XCTestCase {
         defaults = UserDefaults(suiteName: Sample.defaultSuiteName)
         defaults.removePersistentDomain(forName: Sample.defaultSuiteName)
 
+        // Most of the test cases expect a nil site ID, otherwise the dispatched actions would not match.
         storesManager = MockupStoresManager(sessionManager: .testingInstance)
+        storesManager.sessionManager.setStoreId(nil)
+        ServiceLocator.setStores(storesManager)
+
         supportManager = MockupSupportManager()
         userNotificationCenter = MockupUserNotificationsCenterAdapter()
 
@@ -84,6 +88,10 @@ final class PushNotificationsManagerTests: XCTestCase {
     ///
     func testResetBadgeCountEffectivelyDropsTheBadgeNumberToZero() {
         // Arrange
+        // The default stores are required to update the application badge number.
+        let stores = DefaultStoresManager.testingInstance
+        ServiceLocator.setStores(stores)
+
         application.applicationIconBadgeNumber = 90
 
         // Action
@@ -262,6 +270,11 @@ final class PushNotificationsManagerTests: XCTestCase {
     ///
     func testHandleNotificationUpdatesApplicationsBadgeNumber() {
         // Arrange
+        // A site ID and the default stores are required to update the application badge number.
+        let stores = DefaultStoresManager.testingInstance
+        stores.updateDefaultStore(storeID: 123)
+        ServiceLocator.setStores(stores)
+
         let updatedBadgeNumber = 10
         let userInfo = notificationPayload(badgeCount: updatedBadgeNumber, type: .comment)
         XCTAssertEqual(application.applicationIconBadgeNumber, Int.min)

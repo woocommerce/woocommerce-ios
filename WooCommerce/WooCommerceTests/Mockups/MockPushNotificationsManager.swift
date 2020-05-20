@@ -44,7 +44,9 @@ final class MockPushNotificationsManager: PushNotesManager {
 
     }
 
-    func handleNotification(_ userInfo: [AnyHashable: Any], onBadgeUpdateCompletion: @escaping () -> Void, completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+    func handleNotification(_ userInfo: [AnyHashable: Any],
+                            onBadgeUpdateCompletion: @escaping () -> Void,
+                            completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
 
     }
 }

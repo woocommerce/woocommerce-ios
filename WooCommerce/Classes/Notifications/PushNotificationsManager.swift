@@ -195,7 +195,9 @@ extension PushNotificationsManager {
 
     /// Handles a Remote Push Notifican Payload. On completion the `completionHandler` will be executed.
     ///
-    func handleNotification(_ userInfo: [AnyHashable : Any], onBadgeUpdateCompletion: @escaping () -> Void, completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+    func handleNotification(_ userInfo: [AnyHashable: Any],
+                            onBadgeUpdateCompletion: @escaping () -> Void,
+                            completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         DDLogVerbose("📱 Push Notification Received: \n\(userInfo)\n")
 
         // Badge: Update

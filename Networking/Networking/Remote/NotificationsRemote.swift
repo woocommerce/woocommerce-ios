@@ -10,7 +10,7 @@ public protocol NotificationsEndpointsProviding {
 
 /// Notifications: Remote Endpoints
 ///
-public class NotificationsRemote: Remote, NotificationsEndpointsProviding {
+public final class NotificationsRemote: Remote, NotificationsEndpointsProviding {
 
     /// Retrieves latest Notifications (OR collection of specified Notifications, whenever the NoteIds is present).
     ///

@@ -53,7 +53,7 @@ PODS:
   - WordPress-Aztec-iOS (1.11.0)
   - WordPress-Editor-iOS (1.11.0):
     - WordPress-Aztec-iOS (= 1.11.0)
-  - WordPressAuthenticator (1.17.0-beta.2):
+  - WordPressAuthenticator (1.17.0-beta.3):
     - 1PasswordExtension (= 1.8.6)
     - Alamofire (= 4.8)
     - CocoaLumberjack (~> 3.5)
@@ -64,7 +64,7 @@ PODS:
     - SVProgressHUD (= 2.2.5)
     - WordPressKit (~> 4.8.0)
     - WordPressShared (~> 1.8.16)
-    - WordPressUI (~> 1.6.0)
+    - WordPressUI (~> 1.7.0)
   - WordPressKit (4.8.0):
     - Alamofire (~> 4.8.0)
     - CocoaLumberjack (~> 3.4)
@@ -75,7 +75,7 @@ PODS:
   - WordPressShared (1.8.16):
     - CocoaLumberjack (~> 3.4)
     - FormatterKit/TimeIntervalFormatter (= 1.8.2)
-  - WordPressUI (1.6.0)
+  - WordPressUI (1.7.0)
   - Wormholy (1.6.0)
   - WPMediaPicker (1.6.0)
   - wpxmlrpc (0.8.5)
@@ -105,9 +105,9 @@ DEPENDENCIES:
   - KeychainAccess (~> 3.2)
   - Kingfisher (~> 5.11.0)
   - WordPress-Editor-iOS (~> 1.11.0)
-  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, commit `5c0aecd804ae8fd42d1bb5c1de3e42da95c3e57b`, branch `update_google_sign-in-v-5`)
+  - WordPressAuthenticator (= 1.17.0-beta.3)
   - WordPressShared (~> 1.8.16)
-  - WordPressUI (~> 1.6.0)
+  - WordPressUI (~> 1.7.0)
   - Wormholy (~> 1.6.0)
   - WPMediaPicker (~> 1.6.0)
   - XLPagerTabStrip (~> 9.0)
@@ -138,6 +138,7 @@ SPEC REPOS:
     - UIDeviceIdentifier
     - WordPress-Aztec-iOS
     - WordPress-Editor-iOS
+    - WordPressAuthenticator
     - WordPressKit
     - WordPressShared
     - WordPressUI
@@ -152,17 +153,6 @@ SPEC REPOS:
     - ZendeskSDKConfigurationsSDK
     - ZendeskSupportProvidersSDK
     - ZendeskSupportSDK
-
-EXTERNAL SOURCES:
-  WordPressAuthenticator:
-    :branch: update_google_sign-in-v-5
-    :commit: 5c0aecd804ae8fd42d1bb5c1de3e42da95c3e57b
-    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
-
-CHECKOUT OPTIONS:
-  WordPressAuthenticator:
-    :commit: 5c0aecd804ae8fd42d1bb5c1de3e42da95c3e57b
-    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 SPEC CHECKSUMS:
   1PasswordExtension: f97cc80ae58053c331b2b6dc8843ba7103b33794
@@ -188,10 +178,10 @@ SPEC CHECKSUMS:
   UIDeviceIdentifier: 44f805037d21b94394821828f4fcaba34b38c2d0
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
-  WordPressAuthenticator: b93b087b7f9ece790e65d847c7bfb99d72a04343
+  WordPressAuthenticator: 9c95b0da802f047ec99349da51fccc150afdd0e4
   WordPressKit: 84045e236949248632a2c644149e5657733011bb
   WordPressShared: 1bc316ed162f42af4e0fa2869437e9e28b532b01
-  WordPressUI: cbe8cce4bd529caf5969750c34ba2d2026a342a9
+  WordPressUI: 1cf47a3b78154faf69caa18569ee7ece1e510fa0
   Wormholy: f52cd3c384fb49ae3e8fdb2b1398b66746a65104
   WPMediaPicker: e5d28197da6b467d4e5975d64a49255977e39455
   wpxmlrpc: 6a9bdd6ab9d1b159b384b0df0f3f39de9af4fecf
@@ -204,6 +194,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: 931f19ebc5258045b7eee8c109adce35e821425f
+PODFILE CHECKSUM: 682d871417754c95c57da69f0f247cad66f4ecdc
 
 COCOAPODS: 1.9.1

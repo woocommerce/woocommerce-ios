@@ -6,7 +6,7 @@ import XCTest
 
 /// Mock for `ProductReviewsRemote`.
 ///
-final class MockProductReviewsRemote: ProductReviewsEndpointsProviding {
+final class MockProductReviewsRemote {
     private struct ResultKey: Hashable {
         let siteID: Int64
         let reviewID: Int64
@@ -21,7 +21,11 @@ final class MockProductReviewsRemote: ProductReviewsEndpointsProviding {
         let key = ResultKey(siteID: siteID, reviewID: reviewID)
         productReviewLoadingResults[key] = result
     }
+}
 
+// MARK: - ProductReviewsEndpointsProviding
+
+extension MockProductReviewsRemote: ProductReviewsEndpointsProviding {
     func loadProductReview(for siteID: Int64,
                            reviewID: Int64,
                            completion: @escaping (Result<ProductReview, Error>) -> Void) {

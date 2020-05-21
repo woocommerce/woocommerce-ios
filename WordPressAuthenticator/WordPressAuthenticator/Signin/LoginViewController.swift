@@ -360,6 +360,7 @@ extension LoginViewController {
 
 extension LoginViewController {
 
+    // TODO: remove when LoginEmailViewController updated to use GoogleAuthenticator
     @objc func googleLoginTapped(withDelegate delegate: GIDSignInDelegate?) {
         awaitingGoogle = true
         configureViewLoading(true)
@@ -379,6 +380,7 @@ extension LoginViewController {
         WordPressAuthenticator.track(.loginSocialButtonClick, properties: ["source": "google"])
     }
 
+    // TODO: remove when LoginEmailViewController updated to use GoogleAuthenticator
     func displayRemoteErrorForGoogle(_ error: Error) {
 
         if awaitingGoogle {
@@ -417,6 +419,7 @@ extension LoginViewController {
         }
     }
     
+    // TODO: remove when LoginEmailViewController updated to use GoogleAuthenticator
     func googleFinishedLogin(withGoogleIDToken googleIDToken: String, authToken: String) {
         let wpcom = WordPressComCredentials(authToken: authToken, isJetpackLogin: isJetpackLogin, multifactor: false, siteURL: loginFields.siteAddress)
         let credentials = AuthenticatorCredentials(wpcom: wpcom)
@@ -428,6 +431,7 @@ extension LoginViewController {
         WordPressAuthenticator.track(.loginSocialSuccess, properties: ["source": "google"])
     }
 
+    // TODO: remove when LoginEmailViewController updated to use GoogleAuthenticator
     func googleExistingUserNeedsConnection(_ email: String) {
         // Disconnect now that we're done with Google.
         GIDSignIn.sharedInstance().disconnect()
@@ -450,6 +454,7 @@ extension LoginViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
 
+    // TODO: remove when LoginEmailViewController updated to use GoogleAuthenticator
     func socialNeedsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
         loginFields.nonceInfo = nonceInfo
         loginFields.nonceUserID = userID
@@ -483,6 +488,7 @@ extension LoginViewController {
         loginFacade.loginToWordPressDotCom(withSocialIDToken: token, service: SocialServiceName.apple.rawValue)
     }
 
+    // TODO: remove when LoginEmailViewController updated to use GoogleAuthenticator
     func signInGoogleAccount(_ signIn: GIDSignIn?, didSignInFor user: GIDGoogleUser?, withError error: Error?) {
         guard let user = user,
             let token = user.authentication.idToken,
@@ -501,6 +507,7 @@ extension LoginViewController {
         loginFacade.loginToWordPressDotCom(withSocialIDToken: token, service: SocialServiceName.google.rawValue)
     }
     
+    // TODO: remove when LoginEmailViewController updated to use GoogleAuthenticator
     /// Updates the LoginFields structure, with the specified Google User + Token + Email.
     ///
     func updateLoginFields(googleUser: GIDGoogleUser, googleToken: String, googleEmail: String) {

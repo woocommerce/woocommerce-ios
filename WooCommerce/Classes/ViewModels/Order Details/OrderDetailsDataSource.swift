@@ -492,7 +492,7 @@ private extension OrderDetailsDataSource {
     private func configureShippingMethod(cell: CustomerNoteTableViewCell) {
         cell.headline = NSLocalizedString("Shipping Method",
                                           comment: "Shipping method title for customer info cell")
-        cell.body = shippingMethod
+        cell.body = shippingMethod.strippedHTML
         cell.selectionStyle = .none
     }
 

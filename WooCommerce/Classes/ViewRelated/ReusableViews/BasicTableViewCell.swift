@@ -14,6 +14,7 @@ class BasicTableViewCell: UITableViewCell {
 
         textLabel?.applyBodyStyle()
         textLabel?.textAlignment = .natural
+        accessibilityIdentifier = nil
     }
 }
 

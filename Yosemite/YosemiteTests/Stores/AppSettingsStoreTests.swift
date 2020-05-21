@@ -33,7 +33,7 @@ final class AppSettingsStoreTests: XCTestCase {
 
     /// Mockup File Storage: Load a plist in the test bundle
     ///
-    private var fileStorage: MockFileLoader?
+    private var fileStorage: MockInMemoryStorage?
 
     /// Test subject
     ///
@@ -43,7 +43,7 @@ final class AppSettingsStoreTests: XCTestCase {
         super.setUp()
         dispatcher = Dispatcher()
         storageManager = MockupStorageManager()
-        fileStorage = MockFileLoader()
+        fileStorage = MockInMemoryStorage()
         subject = AppSettingsStore(dispatcher: dispatcher!, storageManager: storageManager!, fileStorage: fileStorage!)
         subject?.selectedProvidersURL = TestConstants.fileURL!
         subject?.customSelectedProvidersURL = TestConstants.customFileURL!
@@ -134,7 +134,7 @@ final class AppSettingsStoreTests: XCTestCase {
             .addTrackingProvider(siteID: TestConstants.siteID,
                                  providerName: TestConstants.newProviderName) { error in
                                     XCTAssertNil(error)
-                                    let fileData = self.fileStorage?.fileData
+                                    let fileData = self.fileStorage?.data as? [PreselectedProvider]
                                     let updatedProvider = fileData?.filter({ $0.siteID == TestConstants.siteID}).first
 
                                     if updatedProvider?.providerName == TestConstants.newProviderName {
@@ -156,7 +156,7 @@ final class AppSettingsStoreTests: XCTestCase {
                                  providerName: TestConstants.newProviderName,
                                  providerURL: TestConstants.newProviderURL) { error in
                                     XCTAssertNil(error)
-                                    let fileData = self.fileStorage?.fileData
+                                    let fileData = self.fileStorage?.data as? [PreselectedProvider]
                                     let updatedProvider = fileData?.filter({ $0.siteID == TestConstants.siteID}).first
 
                                     if updatedProvider?.providerName == TestConstants.newProviderName {
@@ -185,47 +185,4 @@ final class AppSettingsStoreTests: XCTestCase {
 
         waitForExpectations(timeout: 2, handler: nil)
     }
-}
-
-// MARK: - Mock data
-
-/// Mock implementation of the FileStorage protocol.
-/// It loads the contents of a file in the test bundle
-/// and simulates writes to the same file
-///
-private final class MockFileLoader: FileStorage {
-    private let loader = PListFileStorage()
-
-    /// A boolean value to test if a write to disk is requested
-    ///
-    var dataWriteIsHit: Bool = false
-
-    /// A boolean value to test if a file deletion is requested
-    ///
-    var deleteIsHit: Bool = false
-
-    /// List of `PreselectedProvider` materialised from the data passed
-    /// tpo `write()`
-    ///
-    var fileData = [PreselectedProvider]()
-
-    func data(for fileURL: URL) throws -> Data {
-        let result = try loader.data(for: TestConstants.fileURL!)
-        return result
-    }
-
-    func write(_ data: Data, to fileURL: URL) throws {
-        dataWriteIsHit = true
-        decode(data)
-    }
-
-    private func decode(_ data: Data) {
-        let decoder = PropertyListDecoder()
-        fileData = try! decoder.decode([PreselectedProvider].self, from: data)
-    }
-
-    func deleteFile(at fileURL: URL) throws {
-        deleteIsHit = true
-    }
-
 }

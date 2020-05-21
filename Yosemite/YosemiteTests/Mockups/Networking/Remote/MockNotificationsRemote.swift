@@ -6,7 +6,7 @@ import XCTest
 
 /// Mock for `NotificationsRemote`.
 ///
-final class MockNotificationsRemote: NotificationsEndpointsProviding {
+final class MockNotificationsRemote {
     private typealias ResultKey = [Int64]
 
     /// The results to pass to the `completion` block if `loadNotes()` is called.
@@ -16,6 +16,11 @@ final class MockNotificationsRemote: NotificationsEndpointsProviding {
         let key: ResultKey = noteIDs
         notesLoadingResults[key] = result
     }
+}
+
+// MARK: NotificationsEndpointsProviding
+
+extension MockNotificationsRemote: NotificationsEndpointsProviding {
 
     func loadNotes(noteIDs: [Int64]?, pageSize: Int?, completion: @escaping (Result<[Note], Error>) -> Void) {
         guard let noteIDs = noteIDs else {

@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 
+/// View model for displaying a collection of product images in the header.
 final class ProductImagesHeaderViewModel {
 
     let productImageStatuses: [ProductImageStatus]

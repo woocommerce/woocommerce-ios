@@ -92,6 +92,7 @@
 		573B448B2424082B00E71ADC /* OrderStoreTests+FetchFilteredAndAllOrders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 573B448A2424082B00E71ADC /* OrderStoreTests+FetchFilteredAndAllOrders.swift */; };
 		578CE78C2475E7A500492EBF /* MockNotificationsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578CE78B2475E7A500492EBF /* MockNotificationsRemote.swift */; };
 		578CE7902475EBAB00492EBF /* MockProductReviewsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578CE78F2475EBAB00492EBF /* MockProductReviewsRemote.swift */; };
+		578CE7922475EC9200492EBF /* MockProductsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578CE7912475EC9200492EBF /* MockProductsRemote.swift */; };
 		57FDD6BB246B583200B8344B /* XCTestCase+Wait.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57FDD6BA246B583200B8344B /* XCTestCase+Wait.swift */; };
 		741F34802195EA62005F5BD9 /* CommentAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741F347F2195EA62005F5BD9 /* CommentAction.swift */; };
 		741F34822195EA71005F5BD9 /* CommentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741F34812195EA71005F5BD9 /* CommentStore.swift */; };
@@ -316,6 +317,7 @@
 		573B448A2424082B00E71ADC /* OrderStoreTests+FetchFilteredAndAllOrders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStoreTests+FetchFilteredAndAllOrders.swift"; sourceTree = "<group>"; };
 		578CE78B2475E7A500492EBF /* MockNotificationsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNotificationsRemote.swift; sourceTree = "<group>"; };
 		578CE78F2475EBAB00492EBF /* MockProductReviewsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductReviewsRemote.swift; sourceTree = "<group>"; };
+		578CE7912475EC9200492EBF /* MockProductsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductsRemote.swift; sourceTree = "<group>"; };
 		57FDD6BA246B583200B8344B /* XCTestCase+Wait.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+Wait.swift"; sourceTree = "<group>"; };
 		585B973F61632665297738A3 /* Pods-Yosemite.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yosemite.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-Yosemite/Pods-Yosemite.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		741F347F2195EA62005F5BD9 /* CommentAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentAction.swift; sourceTree = "<group>"; };
@@ -646,6 +648,7 @@
 			children = (
 				578CE78B2475E7A500492EBF /* MockNotificationsRemote.swift */,
 				578CE78F2475EBAB00492EBF /* MockProductReviewsRemote.swift */,
+				578CE7912475EC9200492EBF /* MockProductsRemote.swift */,
 			);
 			path = Remote;
 			sourceTree = "<group>";
@@ -1360,6 +1363,7 @@
 				0218B4F2242E09E80083A847 /* MediaTypeTests.swift in Sources */,
 				578CE78C2475E7A500492EBF /* MockNotificationsRemote.swift in Sources */,
 				B5A01CA120D19C4700E3207E /* MockupStorage.swift in Sources */,
+				578CE7922475EC9200492EBF /* MockProductsRemote.swift in Sources */,
 				7455263022305F88003F8932 /* OrderStatusStoreTests.swift in Sources */,
 				B5C9DE242087FF20006B910A /* StoreTests.swift in Sources */,
 				02FF055C23D9846A0058E6E7 /* MediaFileManagerTests.swift in Sources */,
@@ -1392,6 +1396,7 @@
 				02FF055D23D9846A0058E6E7 /* FileManager+URLTests.swift in Sources */,
 				748525AC218A45360036DF75 /* NotificationStoreTests.swift in Sources */,
 				7499936820EFC0ED00CF01CD /* OrderNoteStoreTests.swift in Sources */,
+				578CE7972475FD8200492EBF /* MockProductReview.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

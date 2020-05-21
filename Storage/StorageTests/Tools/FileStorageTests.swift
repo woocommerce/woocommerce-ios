@@ -25,23 +25,23 @@ final class FileStorageTests: XCTestCase {
     }
 
     func testErrorIsTriggeredWhenFileFailsToLoad() {
-        let url = URL(string: "http://somewhere.on.the.internet")
+        let url = URL(fileURLWithPath: "/non-existing-file")
 
         var data: Data?
-        XCTAssertThrowsError(data = try subject?.data(for: url!))
+        XCTAssertThrowsError(data = try subject?.data(for: url))
         XCTAssertNil(data)
     }
 
     func testErrorIsTriggeredWhenWritingFails() {
-        let url = URL(string: "http://somewhere.on.the.internet")
+        let url = URL(fileURLWithPath: "/non-existing-file")
         let data = Data(count: 0)
 
-        XCTAssertThrowsError(try subject?.write(data, to: url!))
+        XCTAssertThrowsError(try subject?.write(data, to: url))
     }
 
     func testErrorIsTriggeredWhenFileFailsToDelete() {
-        let url = URL(string: "http://somewhere.on.the.internet")
+        let url = URL(fileURLWithPath: "/non-existing-file")
 
-        XCTAssertThrowsError(try subject?.deleteFile(at: url!))
+        XCTAssertThrowsError(try subject?.deleteFile(at: url))
     }
 }

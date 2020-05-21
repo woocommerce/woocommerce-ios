@@ -125,7 +125,7 @@ import AuthenticationServices
     /// Attempts to process the specified URL as a Google Authentication Link. Returns *true* on success.
     ///
     @objc public func handleGoogleAuthUrl(_ url: URL, sourceApplication: String?, annotation: Any?) -> Bool {
-        return GIDSignIn.sharedInstance().handle(url, sourceApplication: sourceApplication, annotation: annotation)
+        return GIDSignIn.sharedInstance().handle(url)
     }
 
     /// Attempts to process the specified URL as a WordPress Authentication Link. Returns *true* on success.

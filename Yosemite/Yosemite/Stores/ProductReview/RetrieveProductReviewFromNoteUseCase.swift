@@ -30,21 +30,6 @@ public struct ProductReviewFromNoteParcel {
 /// currently exist in the database. Both would end up saving the same `Product` and we'll
 /// show duplicate products to the user.
 ///
-/// Perhaps in the future we can make it possible to _share_ these `StorageType` instances
-/// behind a well-protected abstraction so we can safely persist these objects. Something like:
-///
-/// ```
-/// // Hopefully not a singleton!
-/// let productDAO = storageManager.productDAO
-/// // The saveProduct can do the performBlock() on the correct NSManagedObjectContext
-/// productDAO.saveProduct(aProduct) {
-///     // do something after
-/// }
-/// ```
-///
-/// Note that this is only based on my understanding of how child `NSManagedObjectContexts` work
-/// and I could be wrong. ¯\_(ツ)_/¯
-///
 /// ## Site ID
 ///
 /// The `siteID` is automatically determined from the fetched `Note` (`noteID`).
@@ -53,13 +38,17 @@ final class RetrieveProductReviewFromNoteUseCase {
     typealias CompletionBlock = (Result<ProductReviewFromNoteParcel, Error>) -> Void
     private typealias AbortBlock = (Error) -> Void
 
+    /// Custom errors raised by self. Networking `Errors` are re-raised.
+    ///
     enum ProductReviewFromNoteRetrieveError: Error {
         case notificationNotFound
         case reviewNotFound
         case storageNoLongerAvailable
     }
 
-    private let network: Network
+    private let notificationsRemote: NotificationsEndpointsProviding
+    private let productReviewsRemote: ProductReviewsEndpointsProviding
+    private let productsRemote: ProductsEndpointsProviding
 
     /// The derived `StorageType` used by the `ProductReviewStore`.
     ///
@@ -72,9 +61,25 @@ final class RetrieveProductReviewFromNoteUseCase {
     ///
     /// - Parameters:
     ///   - derivedStorage: The derived (background) `StorageType` of `ProductReviewStore`.
-    init(network: Network, derivedStorage: StorageType) {
-        self.network = network
+    init(derivedStorage: StorageType,
+         notificationsRemote: NotificationsEndpointsProviding,
+         productReviewsRemote: ProductReviewsEndpointsProviding,
+         productsRemote: ProductsEndpointsProviding) {
         self.derivedStorage = derivedStorage
+        self.notificationsRemote = notificationsRemote
+        self.productReviewsRemote = productReviewsRemote
+        self.productsRemote = productsRemote
+    }
+
+    /// Create an instance of self.
+    ///
+    /// - Parameters:
+    ///   - derivedStorage: The derived (background) `StorageType` of `ProductReviewStore`.
+    convenience init(network: Network, derivedStorage: StorageType) {
+        self.init(derivedStorage: derivedStorage,
+                  notificationsRemote: NotificationsRemote(network: network),
+                  productReviewsRemote: ProductReviewsRemote(network: network),
+                  productsRemote: ProductsRemote(network: network))
     }
 
     /// Retrieve the `Note`, `ProductReview`, and `Product` based on the given `noteID`.
@@ -101,9 +106,7 @@ final class RetrieveProductReviewFromNoteUseCase {
     private func fetchNote(noteID: Int64,
                            abort: @escaping AbortBlock,
                            next: @escaping (Note) -> Void) {
-        let remote = NotificationsRemote(network: network)
-
-        remote.loadNotes(noteIDs: [noteID]) { result in
+        notificationsRemote.loadNotes(noteIDs: [noteID], pageSize: nil) { result in
             switch result {
             case .failure(let error):
                 abort(error)
@@ -127,9 +130,7 @@ final class RetrieveProductReviewFromNoteUseCase {
                 return abort(ProductReviewFromNoteRetrieveError.reviewNotFound)
         }
 
-        let remote = ProductReviewsRemote(network: network)
-
-        remote.loadProductReview(for: Int64(siteID), reviewID: Int64(reviewID)) { result in
+        productReviewsRemote.loadProductReview(for: Int64(siteID), reviewID: Int64(reviewID)) { result in
             switch result {
             case .failure(let error):
                 abort(error)
@@ -163,9 +164,7 @@ final class RetrieveProductReviewFromNoteUseCase {
                               productID: Int64,
                               abort: @escaping AbortBlock,
                               next: @escaping (Product) -> Void) {
-        let remote = ProductsRemote(network: network)
-
-        remote.loadProduct(for: siteID, productID: productID) { result in
+        productsRemote.loadProduct(for: siteID, productID: productID) { result in
             switch result {
             case .failure(let error):
                 abort(error)

@@ -6,7 +6,7 @@ final class FileStorageTests: XCTestCase {
     private var subject: PListFileStorage?
 
     private let nonExistingFileURL = URL(fileURLWithPath: "/non-existing-file")
-    
+
     override func setUp() {
         super.setUp()
         subject = PListFileStorage()

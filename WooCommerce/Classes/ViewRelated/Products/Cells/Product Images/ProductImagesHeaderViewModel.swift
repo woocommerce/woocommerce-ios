@@ -1,7 +1,7 @@
 import UIKit
 import Yosemite
 
-final class ProductImagesViewModel {
+final class ProductImagesHeaderViewModel {
 
     let productImageStatuses: [ProductImageStatus]
 
@@ -42,7 +42,7 @@ final class ProductImagesViewModel {
 
 // MARK: - Register collection view cells
 //
-extension ProductImagesViewModel {
+extension ProductImagesHeaderViewModel {
     /// Registers all of the available CollectionViewCells
     ///
     func registerCollectionViewCells(_ collectionView: UICollectionView) {

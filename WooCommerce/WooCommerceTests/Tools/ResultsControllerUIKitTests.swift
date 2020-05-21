@@ -1,5 +1,7 @@
 import XCTest
 import Yosemite
+import protocol Storage.StorageType
+
 @testable import WooCommerce
 
 
@@ -18,6 +20,10 @@ class ResultsControllerUIKitTests: XCTestCase {
     /// Sample ResultsController
     ///
     private var resultsController: ResultsController<StorageAccount>!
+
+    private var viewStorage: StorageType {
+        storageManager.viewStorage
+    }
 
 
     // MARK: - Overridden Methods
@@ -189,5 +195,106 @@ class ResultsControllerUIKitTests: XCTestCase {
         storageManager.viewStorage.deleteObject(first)
         storageManager.viewStorage.saveIfNeeded()
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+    }
+
+    func testSomething() {
+//        for _ in 0..<100 {
+            runScenario()
+//        }
+    }
+
+    private func runScenario() {
+        tableView.dataSource = self
+
+        var expectation = self.expectation(description: "SectionKeyPath Update Results in New Section")
+        tableView.onEndUpdates = {
+            expectation.fulfill()
+        }
+
+        let alphaSection = [
+            insertAccount(section: "Alpha", userID: 3),
+            insertAccount(section: "Alpha", userID: 2),
+            insertAccount(section: "Alpha", userID: 1)
+        ]
+
+        let betaSection = [
+            insertAccount(section: "Beta", userID: 3),
+            insertAccount(section: "Beta", userID: 2),
+            insertAccount(section: "Beta", userID: 1)
+        ]
+
+        let charlieSection = [
+            insertAccount(section: "Charlie", userID: 4),
+            insertAccount(section: "Charlie", userID: 2),
+            insertAccount(section: "Charlie", userID: 1)
+        ]
+
+        viewStorage.saveIfNeeded()
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+//        XCTAssertEqual(tableView.numberOfSections, 3)
+
+        ///
+
+        expectation = self.expectation(description: "SectionKeyPath Update Results in New Section")
+        tableView.onEndUpdates = {
+            expectation.fulfill()
+        }
+
+        // --
+
+        insertAccount(section: "Alpha", userID: 2)
+
+        betaSection[1].displayName = "woot"
+        betaSection.forEach(viewStorage.deleteObject)
+
+        insertAccount(section: "Charlie", userID: 3)
+
+        alphaSection.forEach {
+            $0.displayName = "fake"
+        }
+        alphaSection[1].userID = 4
+//
+//        charlieSection[1].userID = 99
+
+        // --
+
+        viewStorage.saveIfNeeded()
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+//        XCTAssertEqual(tableView.numberOfSections, 2)
+//        XCTAssertEqual(tableView.numberOfRows(inSection: 0), 4)
+//        XCTAssertEqual(tableView.numberOfRows(inSection: 1), 3)
+    }
+}
+
+// MARK: - UITableViewDataSource
+
+extension ResultsControllerUIKitTests: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        resultsController.sections.count
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        resultsController.sections[section].numberOfObjects
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        UITableViewCell()
+    }
+}
+
+// MARK: - Utils
+
+private extension ResultsControllerUIKitTests {
+
+    @discardableResult
+    func insertAccount(section username: String, userID: Int64) -> StorageAccount {
+        let account = storageManager.insertSampleAccount()
+        account.username = username
+        account.userID = userID
+        return account
     }
 }

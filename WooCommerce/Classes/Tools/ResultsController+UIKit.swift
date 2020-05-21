@@ -79,6 +79,8 @@ private extension ResultsController {
                 return
             }
 
+            print("shiki: OBJ \(type.debugText), \(indexPath) \(newIndexPath)")
+
             // Seriously, Apple?
             // https://developer.apple.com/library/archive/releasenotes/iPhone/NSFetchedResultsChangeMoveReportedAsNSFetchedResultsChangeUpdate/index.html
             //
@@ -124,6 +126,8 @@ private extension ResultsController {
             guard let `tableView` = tableView else {
                 return
             }
+
+            print("shiki: SECTION \(type.debugText), \(sectionIndex)")
 
             let sectionIndexSet = IndexSet(integer: sectionIndex)
 

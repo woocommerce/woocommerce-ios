@@ -1,6 +1,5 @@
 import XCTest
 
-@testable import Storage
 @testable import Yosemite
 
 final class NotificationCountStoreTests: XCTestCase {

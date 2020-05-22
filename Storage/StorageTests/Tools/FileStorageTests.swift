@@ -5,6 +5,8 @@ final class FileStorageTests: XCTestCase {
     private var fileURL: URL?
     private var subject: PListFileStorage?
 
+    private let nonExistingFileURL = URL(fileURLWithPath: "/non-existing-file")
+
     override func setUp() {
         super.setUp()
         subject = PListFileStorage()
@@ -25,23 +27,18 @@ final class FileStorageTests: XCTestCase {
     }
 
     func testErrorIsTriggeredWhenFileFailsToLoad() {
-        let url = URL(string: "http://somewhere.on.the.internet")
-
         var data: Data?
-        XCTAssertThrowsError(data = try subject?.data(for: url!))
+        XCTAssertThrowsError(data = try subject?.data(for: nonExistingFileURL))
         XCTAssertNil(data)
     }
 
     func testErrorIsTriggeredWhenWritingFails() {
-        let url = URL(string: "http://somewhere.on.the.internet")
         let data = Data(count: 0)
 
-        XCTAssertThrowsError(try subject?.write(data, to: url!))
+        XCTAssertThrowsError(try subject?.write(data, to: nonExistingFileURL))
     }
 
     func testErrorIsTriggeredWhenFileFailsToDelete() {
-        let url = URL(string: "http://somewhere.on.the.internet")
-
-        XCTAssertThrowsError(try subject?.deleteFile(at: url!))
+        XCTAssertThrowsError(try subject?.deleteFile(at: nonExistingFileURL))
     }
 }

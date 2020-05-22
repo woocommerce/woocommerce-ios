@@ -135,23 +135,19 @@ final class NotificationCountStoreTests: XCTestCase {
         // Action
         var notificationCountOfDefaultSite: Int?
         var notificationCountOfAnotherSite: Int?
-        waitForExpectation { expectation in
+        waitForExpectation(count: 2) { expectation in
             let action = NotificationCountAction.resetForAllSites {
                 let loadDefaultSiteCountAction = NotificationCountAction.load(siteID: self.defaultSiteID, type: .allKinds) { count in
                     notificationCountOfDefaultSite = count
 
-                    if notificationCountOfDefaultSite != nil && notificationCountOfAnotherSite != nil {
-                        expectation.fulfill()
-                    }
+                    expectation.fulfill()
                 }
                 self.subject.onAction(loadDefaultSiteCountAction)
 
                 let loadAnotherSiteCountAction = NotificationCountAction.load(siteID: anotherSiteID, type: .allKinds) { count in
                     notificationCountOfAnotherSite = count
 
-                    if notificationCountOfDefaultSite != nil && notificationCountOfAnotherSite != nil {
-                        expectation.fulfill()
-                    }
+                    expectation.fulfill()
                 }
                 self.subject.onAction(loadAnotherSiteCountAction)
             }

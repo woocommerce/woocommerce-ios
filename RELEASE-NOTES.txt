@@ -1,5 +1,6 @@
 4.4
 -----
+ 
 - Order Detail: the HTML shipping method is now showed correctly
 
 

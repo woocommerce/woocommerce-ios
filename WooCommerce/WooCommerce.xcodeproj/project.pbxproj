@@ -92,6 +92,8 @@
 		0235595B24496E88004BE2B8 /* BottomSheetListSelectorViewController+DrawerPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0235595A24496E88004BE2B8 /* BottomSheetListSelectorViewController+DrawerPresentable.swift */; };
 		02357B2A23CDB3E300147C2B /* ProductImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02357B2823CDB3E300147C2B /* ProductImageViewController.swift */; };
 		02357B2B23CDB3E300147C2B /* ProductImageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02357B2923CDB3E300147C2B /* ProductImageViewController.xib */; };
+		0235BFD9246E959500778909 /* ProductFormBottomSheetActionsFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0235BFD8246E959500778909 /* ProductFormBottomSheetActionsFactory.swift */; };
+		0235BFDB246E99A700778909 /* ProductFormBottomSheetActionsFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0235BFDA246E99A700778909 /* ProductFormBottomSheetActionsFactoryTests.swift */; };
 		02396251239948470096F34C /* UIImage+TintColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02396250239948470096F34C /* UIImage+TintColor.swift */; };
 		023A059A24135F2600E3FC99 /* ReviewsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023A059824135F2600E3FC99 /* ReviewsViewController.swift */; };
 		023A059B24135F2600E3FC99 /* ReviewsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 023A059924135F2600E3FC99 /* ReviewsViewController.xib */; };
@@ -940,6 +942,8 @@
 		0235595A24496E88004BE2B8 /* BottomSheetListSelectorViewController+DrawerPresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BottomSheetListSelectorViewController+DrawerPresentable.swift"; sourceTree = "<group>"; };
 		02357B2823CDB3E300147C2B /* ProductImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageViewController.swift; sourceTree = "<group>"; };
 		02357B2923CDB3E300147C2B /* ProductImageViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductImageViewController.xib; sourceTree = "<group>"; };
+		0235BFD8246E959500778909 /* ProductFormBottomSheetActionsFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormBottomSheetActionsFactory.swift; sourceTree = "<group>"; };
+		0235BFDA246E99A700778909 /* ProductFormBottomSheetActionsFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormBottomSheetActionsFactoryTests.swift; sourceTree = "<group>"; };
 		02396250239948470096F34C /* UIImage+TintColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+TintColor.swift"; sourceTree = "<group>"; };
 		023A059824135F2600E3FC99 /* ReviewsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsViewController.swift; sourceTree = "<group>"; };
 		023A059924135F2600E3FC99 /* ReviewsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReviewsViewController.xib; sourceTree = "<group>"; };
@@ -1768,6 +1772,7 @@
 			children = (
 				0212276024498A270042161F /* ProductFormBottomSheetListSelectorCommand.swift */,
 				0212276224498CDC0042161F /* ProductFormBottomSheetAction.swift */,
+				0235BFD8246E959500778909 /* ProductFormBottomSheetActionsFactory.swift */,
 			);
 			path = BottomSheetListSelector;
 			sourceTree = "<group>";
@@ -2203,6 +2208,7 @@
 			children = (
 				02A9A495244D84AB00757B99 /* ProductsSortOrderBottomSheetListSelectorCommandTests.swift */,
 				02E493EE245C1087000AEA9E /* ProductFormBottomSheetListSelectorCommandTests.swift */,
+				0235BFDA246E99A700778909 /* ProductFormBottomSheetActionsFactoryTests.swift */,
 			);
 			path = BottomSheetListSelector;
 			sourceTree = "<group>";
@@ -4759,6 +4765,7 @@
 				D8C251DB230D288A00F49782 /* PushNotesManager.swift in Sources */,
 				748D34E12148291E00E21A2F /* TopPerformerDataViewController.swift in Sources */,
 				02C887712450285100E4470F /* BottomButtonContainerView.swift in Sources */,
+				0235BFD9246E959500778909 /* ProductFormBottomSheetActionsFactory.swift in Sources */,
 				024EFA6923FCC10B00F36918 /* Product+Media.swift in Sources */,
 				5795F23023E26B5300F6707C /* OrderSearchStarterViewModel.swift in Sources */,
 				0202B68D23876BC100F3EBE0 /* ProductsTabProductViewModel+ProductVariation.swift in Sources */,
@@ -4982,6 +4989,7 @@
 				02BA23C022EE9DAF009539E7 /* AsyncDictionaryTests.swift in Sources */,
 				B555531121B57E6F00449E71 /* MockupApplicationAdapter.swift in Sources */,
 				021E2A2023AA274700B1DE07 /* ProductBackordersSettingListSelectorCommandTests.swift in Sources */,
+				0235BFDB246E99A700778909 /* ProductFormBottomSheetActionsFactoryTests.swift in Sources */,
 				020BE76723B49FE9007FE54C /* AztecBoldFormatBarCommandTests.swift in Sources */,
 				CE4DA5C821DD759400074607 /* CurrencyFormatterTests.swift in Sources */,
 				B57C745120F56EE900EEFC87 /* UITableViewCellHelpersTests.swift in Sources */,

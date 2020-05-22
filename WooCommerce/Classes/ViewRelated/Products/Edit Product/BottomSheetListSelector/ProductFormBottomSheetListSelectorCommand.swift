@@ -12,20 +12,10 @@ final class ProductFormBottomSheetListSelectorCommand: BottomSheetListSelectorCo
 
     private let onSelection: (ProductFormBottomSheetAction) -> Void
 
-    init(product: Product,
-         isEditProductsRelease3Enabled: Bool,
+    init(actions: [ProductFormBottomSheetAction],
          onSelection: @escaping (ProductFormBottomSheetAction) -> Void) {
         self.onSelection = onSelection
-
-        let shouldShowShippingSettingsRow = product.isShippingEnabled
-        let shouldShowCategoriesRow = isEditProductsRelease3Enabled
-        let actions: [ProductFormBottomSheetAction?] = [
-            .editInventorySettings,
-            shouldShowShippingSettingsRow ? .editShippingSettings: nil,
-            shouldShowCategoriesRow ? .editCategories: nil,
-            .editBriefDescription
-        ]
-        self.data = actions.compactMap({ $0 }).filter({ $0.isVisible(product: product) })
+        self.data = actions
     }
 
     func configureCell(cell: ImageAndTitleAndTextTableViewCell, model: ProductFormBottomSheetAction) {

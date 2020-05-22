@@ -66,14 +66,8 @@ private extension NotificationCountStore {
             return
         }
 
-        var notificationCountBySite = existingData.countBySite
-        if let existingNotificationCountByType = notificationCountBySite[siteID] {
-            let newCount = (existingNotificationCountByType[type] ?? 0) + incrementCount
-            notificationCountBySite[siteID]?[type] = newCount
-        } else {
-            notificationCountBySite[siteID] = [type: incrementCount]
-        }
-        try? fileStorage.write(SiteNotificationCountFileContents(countBySite: notificationCountBySite), to: fileURL)
+        let data = existingData.incrementing(siteID: siteID, type: type, incrementCount: incrementCount)
+        try? fileStorage.write(data, to: fileURL)
         onCompletion()
     }
 
@@ -92,9 +86,8 @@ private extension NotificationCountStore {
             return
         }
 
-        var notificationCountBySite = existingData.countBySite
-        notificationCountBySite[siteID]?[type] = 0
-        try? fileStorage.write(SiteNotificationCountFileContents(countBySite: notificationCountBySite), to: fileURL)
+        let data = existingData.resetting(siteID: siteID, type: type)
+        try? fileStorage.write(data, to: fileURL)
         onCompletion()
     }
 

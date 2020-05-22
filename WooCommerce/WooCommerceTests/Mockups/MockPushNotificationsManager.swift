@@ -2,7 +2,7 @@
 import Foundation
 import UIKit
 @testable import WooCommerce
-@testable import Yosemite
+import Yosemite
 
 final class MockPushNotificationsManager: PushNotesManager {
 

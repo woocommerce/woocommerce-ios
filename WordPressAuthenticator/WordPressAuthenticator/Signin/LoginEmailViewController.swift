@@ -1,5 +1,4 @@
 import UIKit
-import GoogleSignIn
 import WordPressShared
 import WordPressKit
 
@@ -145,7 +144,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
         let button = WPStyleGuide.googleLoginButton()
         stackView.addArrangedSubview(button)
-        button.addTarget(self, action: #selector(handleGoogleLoginTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(googleTapped), for: .touchUpInside)
 
         stackView.addConstraints([
             button.leadingAnchor.constraint(equalTo: instructionLabel.leadingAnchor),
@@ -441,12 +440,6 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         navigationController?.pushViewController(vc, animated: true)
     }
 
-    override open func displayRemoteError(_ error: Error) {
-        configureViewLoading(false)
-        displayRemoteErrorForGoogle(error)
-    }
-
-
     /// Whether the form can be submitted.
     ///
     func canSubmit() -> Bool {
@@ -477,10 +470,6 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         }
     }
 
-    @objc func handleGoogleLoginTapped() {
-        googleLoginTapped(withDelegate: self)
-    }
-
     @IBAction func handleSelfHostedButtonTapped(_ sender: UIButton) {
         loginToSelfHostedSite()
     }
@@ -490,6 +479,10 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         AppleAuthenticator.sharedInstance.showFrom(viewController: self)
     }
 
+    @objc func googleTapped() {
+        GoogleAuthenticator.sharedInstance.delegate = self
+        GoogleAuthenticator.sharedInstance.showFrom(viewController: self, loginFields: loginFields)
+    }
 
     @IBAction func handleTextFieldDidChange(_ sender: UITextField) {
         switch sender {
@@ -547,36 +540,6 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
 }
 
-// MARK: - Google Sign In
-
-/// Make Google Sign In conform to the LoginFacade protocol.
-/// The delegate calls these methods from LoginFacade.m.
-///
-extension LoginEmailViewController {
-    func finishedLogin(withGoogleIDToken googleIDToken: String, authToken: String) {
-        googleFinishedLogin(withGoogleIDToken: googleIDToken, authToken: authToken)
-    }
-
-    func existingUserNeedsConnection(_ email: String) {
-        configureViewLoading(false)
-        googleExistingUserNeedsConnection(email)
-    }
-
-    /// After a successful Google Sign In, this method gets called when the user
-    /// has enabled 2-factor authentication for their WordPress.com account.
-    ///
-    func needsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
-        configureViewLoading(false)
-        socialNeedsMultifactorCode(forUserID: userID, andNonceInfo: nonceInfo)
-    }
-}
-
-extension LoginEmailViewController: GIDSignInDelegate {
-    open func sign(_ signIn: GIDSignIn?, didSignInFor user: GIDGoogleUser?, withError error: Error?) {
-        signInGoogleAccount(signIn, didSignInFor: user, withError: error)
-    }
-}
-
 // MARK: - AppleAuthenticatorDelegate
 
 extension LoginEmailViewController: AppleAuthenticatorDelegate {
@@ -604,4 +567,60 @@ extension LoginEmailViewController: AppleAuthenticatorDelegate {
     func authFailedWithError(message: String) {
         displayErrorAlert(message, sourceTag: .loginApple)
     }
+
+}
+
+// MARK: - GoogleAuthenticatorDelegate
+
+extension LoginEmailViewController: GoogleAuthenticatorDelegate {
+
+    func googleFinishedLogin(credentials: AuthenticatorCredentials, loginFields: LoginFields) {
+        self.loginFields = loginFields
+        syncWPComAndPresentEpilogue(credentials: credentials)
+    }
+
+    func googleNeedsMultifactorCode(loginFields: LoginFields) {
+        self.loginFields = loginFields
+        configureViewLoading(false)
+        
+        guard let vc = Login2FAViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from LoginViewController to Login2FAViewController")
+            return
+        }
+
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
+    func googleExistingUserNeedsConnection(loginFields: LoginFields) {
+        self.loginFields = loginFields
+        configureViewLoading(false)
+        
+        guard let vc = LoginWPComViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from Google Login to LoginWPComViewController (password VC)")
+            return
+        }
+
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
+    func googleRemoteError(errorTitle: String, errorDescription: String, loginFields: LoginFields) {
+        self.loginFields = loginFields
+        configureViewLoading(false)
+
+        let socialErrorVC = LoginSocialErrorViewController(title: errorTitle, description: errorDescription)
+        let socialErrorNav = LoginNavigationController(rootViewController: socialErrorVC)
+        socialErrorVC.delegate = self
+        socialErrorVC.loginFields = loginFields
+        socialErrorVC.modalPresentationStyle = .fullScreen
+        present(socialErrorNav, animated: true)
+    }
+
 }

@@ -56,9 +56,8 @@ class GoogleAuthenticator: NSObject {
 // MARK: - Private Extension
 
 private extension GoogleAuthenticator {
-    
-    
-    /// Initiates the Google authenication flow.
+
+    /// Initiates the Google authentication flow.
     ///   - viewController: The UIViewController that Google is being presented from.
     ///                     Required by Google SDK.
     func requestAuthorization(from viewController: UIViewController) {

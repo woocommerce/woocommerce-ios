@@ -2,7 +2,6 @@ import UIKit
 import Lottie
 import WordPressShared
 import WordPressUI
-import GoogleSignIn
 import WordPressKit
 
 class LoginPrologueViewController: LoginViewController {

@@ -51,9 +51,9 @@ final class NotificationCountStoreTests: XCTestCase {
                     notificationCount = count
                     expectation.fulfill()
                 }
-                self.subject.dispatcher.dispatch(loadAction)
+                self.subject.onAction(loadAction)
             }
-            subject.dispatcher.dispatch(action)
+            subject.onAction(action)
         }
 
         XCTAssertEqual(notificationCount, 12)
@@ -68,7 +68,7 @@ final class NotificationCountStoreTests: XCTestCase {
                 notificationCount = count
                 expectation.fulfill()
             }
-            subject.dispatcher.dispatch(action)
+            subject.onAction(action)
         }
 
         XCTAssertEqual(notificationCount, 0)
@@ -87,9 +87,9 @@ final class NotificationCountStoreTests: XCTestCase {
                     notificationCount = count
                     expectation.fulfill()
                 }
-                self.subject.dispatcher.dispatch(loadAction)
+                self.subject.onAction(loadAction)
             }
-            subject.dispatcher.dispatch(action)
+            subject.onAction(action)
         }
 
         XCTAssertEqual(notificationCount, 0)
@@ -112,9 +112,9 @@ final class NotificationCountStoreTests: XCTestCase {
                     notificationCount = count
                     expectation.fulfill()
                 }
-                self.subject.dispatcher.dispatch(loadAction)
+                self.subject.onAction(loadAction)
             }
-            subject.dispatcher.dispatch(action)
+            subject.onAction(action)
         }
 
         // Assert
@@ -144,7 +144,7 @@ final class NotificationCountStoreTests: XCTestCase {
                         expectation.fulfill()
                     }
                 }
-                self.subject.dispatcher.dispatch(loadDefaultSiteCountAction)
+                self.subject.onAction(loadDefaultSiteCountAction)
 
                 let loadAnotherSiteCountAction = NotificationCountAction.loadNotificationCount(siteID: anotherSiteID, type: .allKinds) { count in
                     notificationCountOfAnotherSite = count
@@ -153,9 +153,9 @@ final class NotificationCountStoreTests: XCTestCase {
                         expectation.fulfill()
                     }
                 }
-                self.subject.dispatcher.dispatch(loadAnotherSiteCountAction)
+                self.subject.onAction(loadAnotherSiteCountAction)
             }
-            subject.dispatcher.dispatch(action)
+            subject.onAction(action)
         }
 
         // Assert

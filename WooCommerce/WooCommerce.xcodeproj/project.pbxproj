@@ -271,7 +271,7 @@
 		451750B224470CD5004FDA65 /* EnhancedTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451750B124470CD5004FDA65 /* EnhancedTextView.swift */; };
 		451A04E62386CE8700E368C9 /* ProductImagesHeaderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451A04E42386CE8700E368C9 /* ProductImagesHeaderTableViewCell.swift */; };
 		451A04E72386CE8700E368C9 /* ProductImagesHeaderTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 451A04E52386CE8700E368C9 /* ProductImagesHeaderTableViewCell.xib */; };
-		451A04EA2386D28300E368C9 /* ProductImagesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451A04E92386D28300E368C9 /* ProductImagesViewModel.swift */; };
+		451A04EA2386D28300E368C9 /* ProductImagesHeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451A04E92386D28300E368C9 /* ProductImagesHeaderViewModel.swift */; };
 		451A04EC2386D2B300E368C9 /* ProductImagesCollectionViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451A04EB2386D2B300E368C9 /* ProductImagesCollectionViewDataSource.swift */; };
 		451A04F02386F7B500E368C9 /* ProductImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451A04EE2386F7B500E368C9 /* ProductImageCollectionViewCell.swift */; };
 		451A04F12386F7B500E368C9 /* ProductImageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 451A04EF2386F7B500E368C9 /* ProductImageCollectionViewCell.xib */; };
@@ -1124,7 +1124,7 @@
 		451750B124470CD5004FDA65 /* EnhancedTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedTextView.swift; sourceTree = "<group>"; };
 		451A04E42386CE8700E368C9 /* ProductImagesHeaderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesHeaderTableViewCell.swift; sourceTree = "<group>"; };
 		451A04E52386CE8700E368C9 /* ProductImagesHeaderTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductImagesHeaderTableViewCell.xib; sourceTree = "<group>"; };
-		451A04E92386D28300E368C9 /* ProductImagesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesViewModel.swift; sourceTree = "<group>"; };
+		451A04E92386D28300E368C9 /* ProductImagesHeaderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesHeaderViewModel.swift; sourceTree = "<group>"; };
 		451A04EB2386D2B300E368C9 /* ProductImagesCollectionViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesCollectionViewDataSource.swift; sourceTree = "<group>"; };
 		451A04EE2386F7B500E368C9 /* ProductImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		451A04EF2386F7B500E368C9 /* ProductImageCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductImageCollectionViewCell.xib; sourceTree = "<group>"; };
@@ -2340,7 +2340,7 @@
 				451A04E42386CE8700E368C9 /* ProductImagesHeaderTableViewCell.swift */,
 				451A04E52386CE8700E368C9 /* ProductImagesHeaderTableViewCell.xib */,
 				451A04EB2386D2B300E368C9 /* ProductImagesCollectionViewDataSource.swift */,
-				451A04E92386D28300E368C9 /* ProductImagesViewModel.swift */,
+				451A04E92386D28300E368C9 /* ProductImagesHeaderViewModel.swift */,
 				453DBF8F23882814006762A5 /* ProductImagesFlowLayout.swift */,
 				451A04ED2386F79600E368C9 /* Collection View Cells */,
 			);
@@ -4633,7 +4633,7 @@
 				4512055224655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.swift in Sources */,
 				57448D28242E775000A56A74 /* EmptyStateViewController.swift in Sources */,
 				CE21B3D720FE669A00A259D5 /* BasicTableViewCell.swift in Sources */,
-				451A04EA2386D28300E368C9 /* ProductImagesViewModel.swift in Sources */,
+				451A04EA2386D28300E368C9 /* ProductImagesHeaderViewModel.swift in Sources */,
 				D843D5D92248EE91001BFA55 /* ManualTrackingViewModel.swift in Sources */,
 				B57B678A2107546E00AF8905 /* Address+Woo.swift in Sources */,
 				0235595524496B6D004BE2B8 /* BottomSheetListSelectorCommand.swift in Sources */,

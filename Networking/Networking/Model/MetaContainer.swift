@@ -38,7 +38,7 @@ extension MetaContainer {
 
     /// Known Meta Containers
     ///
-    enum Containers: String {
+    public enum Containers: String {
         case ids
         case links
         case titles

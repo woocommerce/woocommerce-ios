@@ -272,6 +272,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Arrange
         // A site ID and the default stores are required to update the application badge number.
         let stores = DefaultStoresManager.testingInstance
+        stores.authenticate(credentials: SessionSettings.credentials)
         stores.updateDefaultStore(storeID: 123)
         ServiceLocator.setStores(stores)
 

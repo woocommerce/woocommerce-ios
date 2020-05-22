@@ -58,21 +58,20 @@ public final class NotificationCountStore: Store {
 
 private extension NotificationCountStore {
     func incrementNotificationCount(siteID: Int64, type: Note.Kind, incrementCount: Int, onCompletion: () -> Void) {
-        let fileURL = self.fileURL
-        guard let existingData: SiteNotificationCountFileContents = try? fileStorage.data(for: fileURL) else {
+        guard let existingData = readContents() else {
             let notificationTypeBySite: SiteNotificationCountFileContents = SiteNotificationCountFileContents(countBySite: [siteID: [type: incrementCount]])
-            try? fileStorage.write(notificationTypeBySite, to: fileURL)
+            writeContents(notificationTypeBySite)
             onCompletion()
             return
         }
 
         let data = existingData.incrementing(siteID: siteID, type: type, incrementCount: incrementCount)
-        try? fileStorage.write(data, to: fileURL)
+        writeContents(data)
         onCompletion()
     }
 
     func loadNotificationCount(siteID: Int64, type: SiteNotificationCountType, onCompletion: (_ count: Int) -> Void) {
-        guard let existingData: SiteNotificationCountFileContents = try? fileStorage.data(for: fileURL) else {
+        guard let existingData = readContents() else {
             onCompletion(0)
             return
         }
@@ -80,14 +79,13 @@ private extension NotificationCountStore {
     }
 
     func resetNotificationCount(siteID: Int64, type: Note.Kind, onCompletion: () -> Void) {
-        let fileURL = self.fileURL
-        guard let existingData: SiteNotificationCountFileContents = try? fileStorage.data(for: fileURL) else {
+        guard let existingData = readContents() else {
             onCompletion()
             return
         }
 
         let data = existingData.resetting(siteID: siteID, type: type)
-        try? fileStorage.write(data, to: fileURL)
+        writeContents(data)
         onCompletion()
     }
 
@@ -102,6 +100,18 @@ private extension NotificationCountStore {
     }
 }
 
+private extension NotificationCountStore {
+    func readContents() -> SiteNotificationCountFileContents? {
+        guard let existingData: SiteNotificationCountFileContents = try? fileStorage.data(for: fileURL) else {
+            return nil
+        }
+        return existingData
+    }
+
+    func writeContents(_ data: SiteNotificationCountFileContents) {
+        try? fileStorage.write(data, to: fileURL)
+    }
+}
 
 // MARK: - Constants
 

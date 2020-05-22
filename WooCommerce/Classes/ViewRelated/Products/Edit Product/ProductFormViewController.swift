@@ -34,11 +34,11 @@ final class ProductFormViewController: UIViewController {
 
             updateMoreDetailsButtonVisibility(product: product)
 
-            viewModel = DefaultProductFormTableViewModel(product: product,
+            tableViewModel = DefaultProductFormTableViewModel(product: product,
                                                          currency: currency,
                                                          isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
                                                          isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
-            tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel,
+            tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                                  productImageStatuses: productImageActionHandler.productImageStatuses,
                                                                  productUIImageLoader: productUIImageLoader,
                                                                  canEditImages: isEditProductsRelease2Enabled)
@@ -69,7 +69,7 @@ final class ProductFormViewController: UIViewController {
         return product
     }
 
-    private var viewModel: ProductFormTableViewModel
+    private var tableViewModel: ProductFormTableViewModel
     private var tableViewDataSource: ProductFormTableViewDataSource
 
     private let productImageActionHandler: ProductImageActionHandler
@@ -101,15 +101,15 @@ final class ProductFormViewController: UIViewController {
         self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
         self.originalProduct = product
         self.product = product
-        self.viewModel = DefaultProductFormTableViewModel(product: product,
-                                                          currency: currency,
-                                                          isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
-                                                          isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+        self.tableViewModel = DefaultProductFormTableViewModel(product: product,
+                                                               currency: currency,
+                                                               isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                                               isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
         self.productImageActionHandler = ProductImageActionHandler(siteID: product.siteID,
                                                                    product: product)
         self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler,
                                                                 phAssetImageLoaderProvider: { PHImageManager.default() })
-        self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel,
+        self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
                                                                   productUIImageLoader: productUIImageLoader,
                                                                   canEditImages: isEditProductsRelease2Enabled)
@@ -192,7 +192,7 @@ private extension ProductFormViewController {
     /// Registers all of the available TableViewCells
     ///
     func registerTableViewCells() {
-        viewModel.sections.forEach { section in
+        tableViewModel.sections.forEach { section in
             switch section {
             case .primaryFields(let rows):
                 rows.forEach { row in
@@ -486,7 +486,7 @@ extension ProductFormViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        let section = viewModel.sections[indexPath.section]
+        let section = tableViewModel.sections[indexPath.section]
         switch section {
         case .primaryFields(let rows):
             let row = rows[indexPath.row]
@@ -520,7 +520,7 @@ extension ProductFormViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        let section = viewModel.sections[section]
+        let section = tableViewModel.sections[section]
         switch section {
         case .settings:
             return Constants.settingsHeaderHeight
@@ -530,7 +530,7 @@ extension ProductFormViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let section = viewModel.sections[section]
+        let section = tableViewModel.sections[section]
         switch section {
         case .settings:
             let clearView = UIView(frame: .zero)

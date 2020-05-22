@@ -3,16 +3,16 @@ extension Note.Kind: Codable {}
 /// A wrapper of a dictionary that maps from a site ID to a dictionary from notification type to count.
 ///
 struct NotificationCountPListWrapper: Codable, Equatable {
-    let notificationCountBySite: [Int64: [Note.Kind: Int]]
+    let countBySite: [Int64: [Note.Kind: Int]]
 
-    public init(notificationCountBySite: [Int64: [Note.Kind: Int]]) {
-        self.notificationCountBySite = notificationCountBySite
+    public init(countBySite: [Int64: [Note.Kind: Int]]) {
+        self.countBySite = countBySite
     }
 }
 
 extension NotificationCountPListWrapper {
     func notificationCount(siteID: Int64, type: Note.Kind?) -> Int {
-        guard let notificationCountByType = notificationCountBySite[siteID] else {
+        guard let notificationCountByType = countBySite[siteID] else {
             return 0
         }
 

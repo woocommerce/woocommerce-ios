@@ -58,20 +58,20 @@ private extension NotificationCountStore {
     func incrementNotificationCount(siteID: Int64, type: Note.Kind, incrementCount: Int, onCompletion: () -> Void) {
         let fileURL = notificationCountURL
         guard let existingData: NotificationCountPListWrapper = try? fileStorage.data(for: fileURL) else {
-            let notificationTypeBySite: NotificationCountPListWrapper = NotificationCountPListWrapper(notificationCountBySite: [siteID: [type: incrementCount]])
+            let notificationTypeBySite: NotificationCountPListWrapper = NotificationCountPListWrapper(countBySite: [siteID: [type: incrementCount]])
             try? fileStorage.write(notificationTypeBySite, to: fileURL)
             onCompletion()
             return
         }
 
-        var notificationCountBySite = existingData.notificationCountBySite
+        var notificationCountBySite = existingData.countBySite
         if let existingNotificationCountByType = notificationCountBySite[siteID] {
             let newCount = (existingNotificationCountByType[type] ?? 0) + incrementCount
             notificationCountBySite[siteID]?[type] = newCount
         } else {
             notificationCountBySite[siteID] = [type: incrementCount]
         }
-        try? fileStorage.write(NotificationCountPListWrapper(notificationCountBySite: notificationCountBySite), to: fileURL)
+        try? fileStorage.write(NotificationCountPListWrapper(countBySite: notificationCountBySite), to: fileURL)
         onCompletion()
     }
 
@@ -90,9 +90,9 @@ private extension NotificationCountStore {
             return
         }
 
-        var notificationCountBySite = existingData.notificationCountBySite
+        var notificationCountBySite = existingData.countBySite
         notificationCountBySite[siteID]?[type] = 0
-        try? fileStorage.write(NotificationCountPListWrapper(notificationCountBySite: notificationCountBySite), to: fileURL)
+        try? fileStorage.write(NotificationCountPListWrapper(countBySite: notificationCountBySite), to: fileURL)
         onCompletion()
     }
 

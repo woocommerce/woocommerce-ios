@@ -32,8 +32,6 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
 
         return delegate
     }
-
-    private var awaitingGoogle = false
     
     // MARK: Lifecycle Methods
 
@@ -356,128 +354,9 @@ extension LoginViewController {
 }
 
 
-// MARK: - Google Sign In Handling
+// MARK: - Social Sign In Handling
 
 extension LoginViewController {
-
-    // TODO: remove when LoginEmailViewController updated to use GoogleAuthenticator
-    @objc func googleLoginTapped(withDelegate delegate: GIDSignInDelegate?) {
-        awaitingGoogle = true
-        configureViewLoading(true)
-
-        GIDSignIn.sharedInstance().disconnect()
-
-        // Flag this as a social sign in.
-        loginFields.meta.socialService = SocialServiceName.google
-
-        // Configure all the things and sign in.
-        GIDSignIn.sharedInstance().delegate = delegate
-        GIDSignIn.sharedInstance()?.presentingViewController = self
-        GIDSignIn.sharedInstance().clientID = WordPressAuthenticator.shared.configuration.googleLoginClientId
-        GIDSignIn.sharedInstance().serverClientID = WordPressAuthenticator.shared.configuration.googleLoginServerClientId
-        GIDSignIn.sharedInstance().signIn()
-
-        WordPressAuthenticator.track(.loginSocialButtonClick, properties: ["source": "google"])
-    }
-
-    // TODO: remove when LoginEmailViewController updated to use GoogleAuthenticator
-    func displayRemoteErrorForGoogle(_ error: Error) {
-
-        if awaitingGoogle {
-            awaitingGoogle = false
-            GIDSignIn.sharedInstance().disconnect()
-
-            let errorTitle: String
-            let errorDescription: String
-            if (error as NSError).code == WordPressComOAuthError.unknownUser.rawValue {
-                errorTitle = LocalizedText.googleConnected
-                errorDescription = String(format: LocalizedText.googleConnectedError, loginFields.username)
-                WordPressAuthenticator.track(.loginSocialErrorUnknownUser)
-            } else {
-                errorTitle = LocalizedText.googleUnableToConnect
-                errorDescription = error.localizedDescription
-            }
-
-            let socialErrorVC = LoginSocialErrorViewController(title: errorTitle, description: errorDescription)
-            let socialErrorNav = LoginNavigationController(rootViewController: socialErrorVC)
-            socialErrorVC.delegate = self
-            socialErrorVC.loginFields = loginFields
-            socialErrorVC.modalPresentationStyle = .fullScreen
-            present(socialErrorNav, animated: true) {}
-        } else {
-            errorToPresent = error
-            guard let vc = LoginWPComViewController.instantiate(from: .login) else {
-                DDLogError("Failed to navigate from Google Login to LoginWPComViewController (password VC)")
-                return
-            }
-
-            vc.loginFields = loginFields
-            vc.dismissBlock = dismissBlock
-            vc.errorToPresent = errorToPresent
-
-            navigationController?.pushViewController(vc, animated: true)
-        }
-    }
-    
-    // TODO: remove when LoginEmailViewController updated to use GoogleAuthenticator
-    func googleFinishedLogin(withGoogleIDToken googleIDToken: String, authToken: String) {
-        let wpcom = WordPressComCredentials(authToken: authToken, isJetpackLogin: isJetpackLogin, multifactor: false, siteURL: loginFields.siteAddress)
-        let credentials = AuthenticatorCredentials(wpcom: wpcom)
-        syncWPComAndPresentEpilogue(credentials: credentials)
-
-        // Disconnect now that we're done with Google.
-        GIDSignIn.sharedInstance().disconnect()
-        WordPressAuthenticator.track(.signedIn, properties: ["source": "google"])
-        WordPressAuthenticator.track(.loginSocialSuccess, properties: ["source": "google"])
-    }
-
-    // TODO: remove when LoginEmailViewController updated to use GoogleAuthenticator
-    func googleExistingUserNeedsConnection(_ email: String) {
-        // Disconnect now that we're done with Google.
-        GIDSignIn.sharedInstance().disconnect()
-
-        loginFields.username = email
-        loginFields.emailAddress = email
-
-        WordPressAuthenticator.track(.loginSocialAccountsNeedConnecting, properties: ["source": "google"])
-        configureViewLoading(false)
-
-        guard let vc = LoginWPComViewController.instantiate(from: .login) else {
-            DDLogError("Failed to navigate from Google Login to LoginWPComViewController (password VC)")
-            return
-        }
-
-        vc.loginFields = loginFields
-        vc.dismissBlock = dismissBlock
-        vc.errorToPresent = errorToPresent
-
-        navigationController?.pushViewController(vc, animated: true)
-    }
-
-    // TODO: remove when LoginEmailViewController updated to use GoogleAuthenticator
-    func socialNeedsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
-        loginFields.nonceInfo = nonceInfo
-        loginFields.nonceUserID = userID
-
-        var properties = [AnyHashable:Any]()
-        if let service = loginFields.meta.socialService?.rawValue {
-            properties["source"] = service
-        }
-
-        WordPressAuthenticator.track(.loginSocial2faNeeded, properties: properties)
-
-        guard let vc = Login2FAViewController.instantiate(from: .login) else {
-            DDLogError("Failed to navigate from LoginViewController to Login2FAViewController")
-            return
-        }
-
-        vc.loginFields = loginFields
-        vc.dismissBlock = dismissBlock
-        vc.errorToPresent = errorToPresent
-
-        navigationController?.pushViewController(vc, animated: true)
-    }
-
     func signInAppleAccount() {
         guard let token = loginFields.meta.socialServiceIDToken else {
             WordPressAuthenticator.track(.loginSocialButtonFailure, properties: ["source": SocialServiceName.apple.rawValue])
@@ -487,27 +366,7 @@ extension LoginViewController {
 
         loginFacade.loginToWordPressDotCom(withSocialIDToken: token, service: SocialServiceName.apple.rawValue)
     }
-
-    // TODO: remove when LoginEmailViewController updated to use GoogleAuthenticator
-    func signInGoogleAccount(_ signIn: GIDSignIn?, didSignInFor user: GIDGoogleUser?, withError error: Error?) {
-        guard let user = user,
-            let token = user.authentication.idToken,
-            let email = user.profile.email else {
-                // The Google SignIn for may have been canceled.
-
-                let properties = ["error": error?.localizedDescription,
-                                  "source": SocialServiceName.google.rawValue]
-
-                WordPressAuthenticator.track(.loginSocialButtonFailure, properties: properties as [AnyHashable : Any])
-                configureViewLoading(false)
-                return
-        }
-
-        updateLoginFields(googleUser: user, googleToken: token, googleEmail: email)
-        loginFacade.loginToWordPressDotCom(withSocialIDToken: token, service: SocialServiceName.google.rawValue)
-    }
     
-    // TODO: remove when LoginEmailViewController updated to use GoogleAuthenticator
     /// Updates the LoginFields structure, with the specified Google User + Token + Email.
     ///
     func updateLoginFields(googleUser: GIDGoogleUser, googleToken: String, googleEmail: String) {

@@ -3,7 +3,7 @@ import Networking
 
 // MARK: - NotificationCountStore
 //
-public class NotificationCountStore: Store {
+public final class NotificationCountStore: Store {
     /// Loads a plist file at a given URL
     ///
     private let fileStorage: FileStorage
@@ -21,9 +21,11 @@ public class NotificationCountStore: Store {
 
     /// URL to the plist file that we use to determine the notification count.
     ///
-    private lazy var notificationCountURL: URL = {
-        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        return documents!.appendingPathComponent(Constants.notificationCountFileName)
+    private lazy var fileURL: URL = {
+        guard let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            fatalError()
+        }
+        return documents.appendingPathComponent(Constants.notificationCountFileName)
     }()
 
     /// Registers for supported Actions.
@@ -56,7 +58,7 @@ public class NotificationCountStore: Store {
 
 private extension NotificationCountStore {
     func incrementNotificationCount(siteID: Int64, type: Note.Kind, incrementCount: Int, onCompletion: () -> Void) {
-        let fileURL = notificationCountURL
+        let fileURL = self.fileURL
         guard let existingData: SiteNotificationCountFileContents = try? fileStorage.data(for: fileURL) else {
             let notificationTypeBySite: SiteNotificationCountFileContents = SiteNotificationCountFileContents(countBySite: [siteID: [type: incrementCount]])
             try? fileStorage.write(notificationTypeBySite, to: fileURL)
@@ -76,7 +78,7 @@ private extension NotificationCountStore {
     }
 
     func loadNotificationCount(siteID: Int64, type: SiteNotificationCountType, onCompletion: (_ count: Int) -> Void) {
-        guard let existingData: SiteNotificationCountFileContents = try? fileStorage.data(for: notificationCountURL) else {
+        guard let existingData: SiteNotificationCountFileContents = try? fileStorage.data(for: fileURL) else {
             onCompletion(0)
             return
         }
@@ -84,7 +86,7 @@ private extension NotificationCountStore {
     }
 
     func resetNotificationCount(siteID: Int64, type: Note.Kind, onCompletion: () -> Void) {
-        let fileURL = notificationCountURL
+        let fileURL = self.fileURL
         guard let existingData: SiteNotificationCountFileContents = try? fileStorage.data(for: fileURL) else {
             onCompletion()
             return
@@ -98,7 +100,7 @@ private extension NotificationCountStore {
 
     func resetNotificationCountForAllSites(onCompletion: () -> Void) {
         do {
-            try fileStorage.deleteFile(at: notificationCountURL)
+            try fileStorage.deleteFile(at: fileURL)
             onCompletion()
         } catch {
             DDLogError("⛔️ Deleting the notification count file failed. Error: \(error)")

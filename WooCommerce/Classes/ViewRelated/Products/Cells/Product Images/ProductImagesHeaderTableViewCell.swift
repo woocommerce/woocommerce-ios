@@ -7,7 +7,7 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
 
     /// View Model
     ///
-    private var viewModel: ProductImagesViewModel?
+    private var viewModel: ProductImagesHeaderViewModel?
 
     /// Collection View Datasource
     ///
@@ -37,7 +37,7 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
     func configure(with productImageStatuses: [ProductImageStatus],
                    config: ProductImagesCellConfig,
                    productUIImageLoader: ProductUIImageLoader) {
-        let viewModel = ProductImagesViewModel(productImageStatuses: productImageStatuses,
+        let viewModel = ProductImagesHeaderViewModel(productImageStatuses: productImageStatuses,
                                                config: config)
         self.viewModel = viewModel
         dataSource = ProductImagesCollectionViewDataSource(viewModel: viewModel,
@@ -90,7 +90,7 @@ extension ProductImagesHeaderTableViewCell: UICollectionViewDelegateFlowLayout {
         case .extendedAddImage:
             return frame.size
         default:
-            return ProductImagesViewModel.defaultCollectionViewCellSize
+            return ProductImagesHeaderViewModel.defaultCollectionViewCellSize
         }
     }
 }
@@ -135,7 +135,7 @@ private extension ProductImagesHeaderTableViewCell {
         case .extendedAddImages:
             collectionView.collectionViewLayout = ProductImagesFlowLayout(itemSize: frame.size, config: config)
         default:
-            collectionView.collectionViewLayout = ProductImagesFlowLayout(itemSize: ProductImagesViewModel.defaultCollectionViewCellSize, config: config)
+            collectionView.collectionViewLayout = ProductImagesFlowLayout(itemSize: ProductImagesHeaderViewModel.defaultCollectionViewCellSize, config: config)
         }
     }
 }

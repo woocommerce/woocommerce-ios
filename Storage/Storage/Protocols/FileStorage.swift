@@ -7,13 +7,13 @@ import Foundation
 /// Reads and writes are not expected to be thread safe.
 ///
 public protocol FileStorage {
-    /// Reads a file at a given URL and returns is representation as `Data`
+    /// Reads a file at a given URL and returns the expected type if possible
     ///
-    func data(for fileURL: URL) throws -> Data
+    func data<T: Decodable>(for fileURL: URL) throws -> T
 
-    /// Reads a `Data` blob to a file at `fileURL`
+    /// Writes data of a given type to a file at `fileURL`
     ///
-    func write(_ data: Data, to fileURL: URL) throws
+    func write<T: Encodable>(_ data: T, to fileURL: URL) throws
 
     /// Deletes a file at `fileURL`
     func deleteFile(at fileURL: URL) throws

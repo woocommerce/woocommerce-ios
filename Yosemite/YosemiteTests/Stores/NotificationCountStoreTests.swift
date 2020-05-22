@@ -41,7 +41,7 @@ final class NotificationCountStoreTests: XCTestCase {
     // MARK: `incrementNotificationCount`
 
     func testIncrementingAndLoadingNotificationCountReturnsTheCorrectCount() {
-        let data = NotificationCountPListWrapper(countBySite: [defaultSiteID: [.comment: 2, .storeOrder: 6]])
+        let data = SiteNotificationCountFileContents(countBySite: [defaultSiteID: [.comment: 2, .storeOrder: 6]])
         try! fileStorage.write(data, to: URL(fileURLWithPath: ""))
 
         var notificationCount: Int?
@@ -77,7 +77,7 @@ final class NotificationCountStoreTests: XCTestCase {
     // MARK: `resetNotificationCount`
 
     func testResettingNotificationCountOfAGivenTypeReturns0() {
-        let data = NotificationCountPListWrapper(countBySite: [defaultSiteID: [.comment: 2, .storeOrder: 6]])
+        let data = SiteNotificationCountFileContents(countBySite: [defaultSiteID: [.comment: 2, .storeOrder: 6]])
         try! fileStorage.write(data, to: URL(fileURLWithPath: ""))
 
         var notificationCount: Int?
@@ -98,7 +98,7 @@ final class NotificationCountStoreTests: XCTestCase {
     func testResettingNotificationCountForASiteDoesNotAffectAnotherSite() {
         // Arrange
         let anotherSiteID: Int64 = 999
-        let data = NotificationCountPListWrapper(countBySite: [
+        let data = SiteNotificationCountFileContents(countBySite: [
             defaultSiteID: [.comment: 2, .storeOrder: 6],
             anotherSiteID: [.comment: 3]
         ])
@@ -126,7 +126,7 @@ final class NotificationCountStoreTests: XCTestCase {
     func testResettingNotificationCountForTwoSites() {
         // Arrange
         let anotherSiteID: Int64 = 999
-        let data = NotificationCountPListWrapper(countBySite: [
+        let data = SiteNotificationCountFileContents(countBySite: [
             defaultSiteID: [.comment: 2, .storeOrder: 6],
             anotherSiteID: [.comment: 3]
         ])

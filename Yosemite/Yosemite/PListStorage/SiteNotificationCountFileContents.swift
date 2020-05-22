@@ -2,7 +2,7 @@ extension Note.Kind: Codable {}
 
 /// A wrapper of a dictionary that maps from a site ID to a dictionary from notification type to count.
 ///
-struct NotificationCountPListWrapper: Codable, Equatable {
+struct SiteNotificationCountFileContents: Codable, Equatable {
     let countBySite: [Int64: [Note.Kind: Int]]
 
     public init(countBySite: [Int64: [Note.Kind: Int]]) {
@@ -10,7 +10,7 @@ struct NotificationCountPListWrapper: Codable, Equatable {
     }
 }
 
-extension NotificationCountPListWrapper {
+extension SiteNotificationCountFileContents {
     func notificationCount(siteID: Int64, type: Note.Kind?) -> Int {
         guard let notificationCountByType = countBySite[siteID] else {
             return 0

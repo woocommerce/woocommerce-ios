@@ -28,8 +28,8 @@
 		0225512522FC312400D98613 /* OrderStatsV4Interval+DateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0225512422FC312400D98613 /* OrderStatsV4Interval+DateTests.swift */; };
 		022F00BE24725BAF008CD97F /* NotificationCountStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022F00BD24725BAF008CD97F /* NotificationCountStore.swift */; };
 		022F00C024725BC6008CD97F /* NotificationCountAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022F00BF24725BC6008CD97F /* NotificationCountAction.swift */; };
-		022F00C224726090008CD97F /* NotificationCountPListWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022F00C124726090008CD97F /* NotificationCountPListWrapper.swift */; };
-		022F00C524728B0C008CD97F /* NotificationCountPListWrapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022F00C424728B0C008CD97F /* NotificationCountPListWrapperTests.swift */; };
+		022F00C224726090008CD97F /* SiteNotificationCountFileContents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022F00C124726090008CD97F /* SiteNotificationCountFileContents.swift */; };
+		022F00C524728B0C008CD97F /* SiteNotificationCountFileContents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022F00C424728B0C008CD97F /* SiteNotificationCountFileContents.swift */; };
 		022F00C72472963E008CD97F /* NotificationCountStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022F00C62472963E008CD97F /* NotificationCountStoreTests.swift */; };
 		0232372922F7DA6E00715FAB /* StatsTimeRangeV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0232372822F7DA6E00715FAB /* StatsTimeRangeV4.swift */; };
 		0248B3652459018100A271A4 /* ResultsController+FilterProducts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0248B3642459018100A271A4 /* ResultsController+FilterProducts.swift */; };
@@ -261,8 +261,8 @@
 		0225512422FC312400D98613 /* OrderStatsV4Interval+DateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Interval+DateTests.swift"; sourceTree = "<group>"; };
 		022F00BD24725BAF008CD97F /* NotificationCountStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCountStore.swift; sourceTree = "<group>"; };
 		022F00BF24725BC6008CD97F /* NotificationCountAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCountAction.swift; sourceTree = "<group>"; };
-		022F00C124726090008CD97F /* NotificationCountPListWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCountPListWrapper.swift; sourceTree = "<group>"; };
-		022F00C424728B0C008CD97F /* NotificationCountPListWrapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCountPListWrapperTests.swift; sourceTree = "<group>"; };
+		022F00C124726090008CD97F /* SiteNotificationCountFileContents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteNotificationCountFileContents.swift; sourceTree = "<group>"; };
+		022F00C424728B0C008CD97F /* SiteNotificationCountFileContents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteNotificationCountFileContents.swift; sourceTree = "<group>"; };
 		022F00C62472963E008CD97F /* NotificationCountStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCountStoreTests.swift; sourceTree = "<group>"; };
 		0232372822F7DA6E00715FAB /* StatsTimeRangeV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsTimeRangeV4.swift; sourceTree = "<group>"; };
 		0248B3642459018100A271A4 /* ResultsController+FilterProducts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ResultsController+FilterProducts.swift"; sourceTree = "<group>"; };
@@ -498,7 +498,7 @@
 			isa = PBXGroup;
 			children = (
 				0202B68F238790E200F3EBE0 /* ProductsFeatureSwitchPListWrapper.swift */,
-				022F00C124726090008CD97F /* NotificationCountPListWrapper.swift */,
+				022F00C124726090008CD97F /* SiteNotificationCountFileContents.swift */,
 			);
 			path = PListStorage;
 			sourceTree = "<group>";
@@ -577,7 +577,7 @@
 		022F00C324728AFB008CD97F /* PListStorage */ = {
 			isa = PBXGroup;
 			children = (
-				022F00C424728B0C008CD97F /* NotificationCountPListWrapperTests.swift */,
+				022F00C424728B0C008CD97F /* SiteNotificationCountFileContents.swift */,
 			);
 			path = PListStorage;
 			sourceTree = "<group>";
@@ -1342,7 +1342,7 @@
 				B5F2AE9720EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift in Sources */,
 				7492FADF217FB11D00ED2C69 /* SettingAction.swift in Sources */,
 				450106872399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift in Sources */,
-				022F00C224726090008CD97F /* NotificationCountPListWrapper.swift in Sources */,
+				022F00C224726090008CD97F /* SiteNotificationCountFileContents.swift in Sources */,
 				D87F614C22657B150031A13B /* AppSettingsStore.swift in Sources */,
 				D8C11A5422DFAE9500D4A88D /* OrderStatsV4+ReadOnlyConvertible.swift in Sources */,
 				02E4F5E423CD5628003B0010 /* NSOrderedSet+Array.swift in Sources */,
@@ -1373,7 +1373,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7495C5292114979D00CDD33B /* StatsStoreTests.swift in Sources */,
-				022F00C524728B0C008CD97F /* NotificationCountPListWrapperTests.swift in Sources */,
+				022F00C524728B0C008CD97F /* SiteNotificationCountFileContents.swift in Sources */,
 				7499A9ED2220527500D8FDFA /* ShipmentStoreTests.swift in Sources */,
 				0212AC64242C6FC300C51F6C /* ProductStore+ProductsSortOrderTests.swift in Sources */,
 				578CE7942475F52F00492EBF /* MockNote.swift in Sources */,

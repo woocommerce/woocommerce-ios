@@ -57,8 +57,8 @@ public class NotificationCountStore: Store {
 private extension NotificationCountStore {
     func incrementNotificationCount(siteID: Int64, type: Note.Kind, incrementCount: Int, onCompletion: () -> Void) {
         let fileURL = notificationCountURL
-        guard let existingData: NotificationCountPListWrapper = try? fileStorage.data(for: fileURL) else {
-            let notificationTypeBySite: NotificationCountPListWrapper = NotificationCountPListWrapper(countBySite: [siteID: [type: incrementCount]])
+        guard let existingData: SiteNotificationCountFileContents = try? fileStorage.data(for: fileURL) else {
+            let notificationTypeBySite: SiteNotificationCountFileContents = SiteNotificationCountFileContents(countBySite: [siteID: [type: incrementCount]])
             try? fileStorage.write(notificationTypeBySite, to: fileURL)
             onCompletion()
             return
@@ -71,12 +71,12 @@ private extension NotificationCountStore {
         } else {
             notificationCountBySite[siteID] = [type: incrementCount]
         }
-        try? fileStorage.write(NotificationCountPListWrapper(countBySite: notificationCountBySite), to: fileURL)
+        try? fileStorage.write(SiteNotificationCountFileContents(countBySite: notificationCountBySite), to: fileURL)
         onCompletion()
     }
 
     func loadNotificationCount(siteID: Int64, type: Note.Kind?, onCompletion: (_ count: Int) -> Void) {
-        guard let existingData: NotificationCountPListWrapper = try? fileStorage.data(for: notificationCountURL) else {
+        guard let existingData: SiteNotificationCountFileContents = try? fileStorage.data(for: notificationCountURL) else {
             onCompletion(0)
             return
         }
@@ -85,14 +85,14 @@ private extension NotificationCountStore {
 
     func resetNotificationCount(siteID: Int64, type: Note.Kind, onCompletion: () -> Void) {
         let fileURL = notificationCountURL
-        guard let existingData: NotificationCountPListWrapper = try? fileStorage.data(for: fileURL) else {
+        guard let existingData: SiteNotificationCountFileContents = try? fileStorage.data(for: fileURL) else {
             onCompletion()
             return
         }
 
         var notificationCountBySite = existingData.countBySite
         notificationCountBySite[siteID]?[type] = 0
-        try? fileStorage.write(NotificationCountPListWrapper(countBySite: notificationCountBySite), to: fileURL)
+        try? fileStorage.write(SiteNotificationCountFileContents(countBySite: notificationCountBySite), to: fileURL)
         onCompletion()
     }
 

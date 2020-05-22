@@ -1,7 +1,6 @@
 4.4
 -----
 - [**] Fix bugs related to push notifications: after receiving a new order push notification, the Reviews tab does not show a badge anymore. The application icon badge number is now cleared by navigating to the Orders tab and/or the Reviews tab, depending on the types of notifications received.
- 
 - Order Detail: the HTML shipping method is now showed correctly
 
 

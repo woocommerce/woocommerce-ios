@@ -7,6 +7,9 @@ import Networking
 
 /// Proofs and documentation for **possible** concurrency issues that we may run into in the future.
 ///
+/// In the future, these tests are **supposed to fail**. We want to fix these concurrency
+/// issues soon.
+///
 /// Currently, every Yosemite `Store` creates their own `StorageType` for background saving.
 /// For example, in `OrderStore` and `ProductStore`, we declare them like this:
 ///

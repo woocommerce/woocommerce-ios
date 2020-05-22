@@ -128,14 +128,14 @@ extension PushNotificationsManager {
         guard let siteID = siteID else {
             return
         }
-        let action = NotificationCountAction.resetNotificationCount(siteID: siteID, type: type) { [weak self] in
+        let action = NotificationCountAction.reset(siteID: siteID, type: type) { [weak self] in
             self?.loadNotificationCountAndUpdateApplicationBadgeNumberAndPostNotifications(siteID: siteID, type: type)
         }
         ServiceLocator.stores.dispatch(action)
     }
 
     func resetBadgeCountForAllStores(onCompletion: @escaping () -> Void) {
-        let action = NotificationCountAction.resetNotificationCountForAllSites() { [weak self] in
+        let action = NotificationCountAction.resetForAllSites() { [weak self] in
             self?.configuration.application.applicationIconBadgeNumber = 0
             onCompletion()
         }
@@ -238,7 +238,7 @@ extension PushNotificationsManager {
 //
 private extension PushNotificationsManager {
     func incrementNotificationCount(siteID: Int64, type: Note.Kind, incrementCount: Int, onCompletion: @escaping () -> Void) {
-        let action = NotificationCountAction.incrementNotificationCount(siteID: siteID, type: type, incrementCount: incrementCount, onCompletion: onCompletion)
+        let action = NotificationCountAction.increment(siteID: siteID, type: type, incrementCount: incrementCount, onCompletion: onCompletion)
         ServiceLocator.stores.dispatch(action)
     }
 
@@ -248,7 +248,7 @@ private extension PushNotificationsManager {
     }
 
     func loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: Int64) {
-        let action = NotificationCountAction.loadNotificationCount(siteID: siteID, type: .allKinds) { [weak self] count in
+        let action = NotificationCountAction.load(siteID: siteID, type: .allKinds) { [weak self] count in
             self?.configuration.application.applicationIconBadgeNumber = count
         }
         ServiceLocator.stores.dispatch(action)

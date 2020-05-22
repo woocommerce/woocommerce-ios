@@ -46,8 +46,8 @@ final class NotificationCountStoreTests: XCTestCase {
 
         var notificationCount: Int?
         waitForExpectation { expectation in
-            let action = NotificationCountAction.incrementNotificationCount(siteID: defaultSiteID, type: .comment, incrementCount: 10) {
-                let loadAction = NotificationCountAction.loadNotificationCount(siteID: self.defaultSiteID, type: .kind(.comment)) { count in
+            let action = NotificationCountAction.increment(siteID: defaultSiteID, type: .comment, incrementCount: 10) {
+                let loadAction = NotificationCountAction.load(siteID: self.defaultSiteID, type: .kind(.comment)) { count in
                     notificationCount = count
                     expectation.fulfill()
                 }
@@ -64,7 +64,7 @@ final class NotificationCountStoreTests: XCTestCase {
     func testLoadingNotificationCountWithoutPreviousDataReturns0() {
         var notificationCount: Int?
         waitForExpectation { expectation in
-            let action = NotificationCountAction.loadNotificationCount(siteID: defaultSiteID, type: .kind(.comment)) { count in
+            let action = NotificationCountAction.load(siteID: defaultSiteID, type: .kind(.comment)) { count in
                 notificationCount = count
                 expectation.fulfill()
             }
@@ -82,8 +82,8 @@ final class NotificationCountStoreTests: XCTestCase {
 
         var notificationCount: Int?
         waitForExpectation { expectation in
-            let action = NotificationCountAction.resetNotificationCount(siteID: defaultSiteID, type: .comment) {
-                let loadAction = NotificationCountAction.loadNotificationCount(siteID: self.defaultSiteID, type: .kind(.comment)) { count in
+            let action = NotificationCountAction.reset(siteID: defaultSiteID, type: .comment) {
+                let loadAction = NotificationCountAction.load(siteID: self.defaultSiteID, type: .kind(.comment)) { count in
                     notificationCount = count
                     expectation.fulfill()
                 }
@@ -107,8 +107,8 @@ final class NotificationCountStoreTests: XCTestCase {
         // Action
         var notificationCount: Int?
         waitForExpectation { expectation in
-            let action = NotificationCountAction.resetNotificationCount(siteID: defaultSiteID, type: .comment) {
-                let loadAction = NotificationCountAction.loadNotificationCount(siteID: anotherSiteID, type: .kind(.comment)) { count in
+            let action = NotificationCountAction.reset(siteID: defaultSiteID, type: .comment) {
+                let loadAction = NotificationCountAction.load(siteID: anotherSiteID, type: .kind(.comment)) { count in
                     notificationCount = count
                     expectation.fulfill()
                 }
@@ -136,8 +136,8 @@ final class NotificationCountStoreTests: XCTestCase {
         var notificationCountOfDefaultSite: Int?
         var notificationCountOfAnotherSite: Int?
         waitForExpectation { expectation in
-            let action = NotificationCountAction.resetNotificationCountForAllSites {
-                let loadDefaultSiteCountAction = NotificationCountAction.loadNotificationCount(siteID: self.defaultSiteID, type: .allKinds) { count in
+            let action = NotificationCountAction.resetForAllSites {
+                let loadDefaultSiteCountAction = NotificationCountAction.load(siteID: self.defaultSiteID, type: .allKinds) { count in
                     notificationCountOfDefaultSite = count
 
                     if notificationCountOfDefaultSite != nil && notificationCountOfAnotherSite != nil {
@@ -146,7 +146,7 @@ final class NotificationCountStoreTests: XCTestCase {
                 }
                 self.subject.onAction(loadDefaultSiteCountAction)
 
-                let loadAnotherSiteCountAction = NotificationCountAction.loadNotificationCount(siteID: anotherSiteID, type: .allKinds) { count in
+                let loadAnotherSiteCountAction = NotificationCountAction.load(siteID: anotherSiteID, type: .allKinds) { count in
                     notificationCountOfAnotherSite = count
 
                     if notificationCountOfDefaultSite != nil && notificationCountOfAnotherSite != nil {

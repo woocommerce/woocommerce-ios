@@ -43,13 +43,13 @@ public final class NotificationCountStore: Store {
         }
 
         switch action {
-        case .incrementNotificationCount(let siteID, let type, let incrementCount, let onCompletion):
+        case .increment(let siteID, let type, let incrementCount, let onCompletion):
             incrementNotificationCount(siteID: siteID, type: type, incrementCount: incrementCount, onCompletion: onCompletion)
-        case .loadNotificationCount(let siteID, let type, let onCompletion):
+        case .load(let siteID, let type, let onCompletion):
             loadNotificationCount(siteID: siteID, type: type, onCompletion: onCompletion)
-        case .resetNotificationCount(let siteID, let type, let onCompletion):
+        case .reset(let siteID, let type, let onCompletion):
             resetNotificationCount(siteID: siteID, type: type, onCompletion: onCompletion)
-        case .resetNotificationCountForAllSites(let onCompletion):
+        case .resetForAllSites(let onCompletion):
             resetNotificationCountForAllSites(onCompletion: onCompletion)
         }
     }

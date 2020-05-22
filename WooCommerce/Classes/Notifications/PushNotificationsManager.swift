@@ -248,7 +248,7 @@ private extension PushNotificationsManager {
     }
 
     func loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: Int64) {
-        let action = NotificationCountAction.loadNotificationCount(siteID: siteID, type: nil) { [weak self] count in
+        let action = NotificationCountAction.loadNotificationCount(siteID: siteID, type: .allKinds) { [weak self] count in
             self?.configuration.application.applicationIconBadgeNumber = count
         }
         ServiceLocator.stores.dispatch(action)

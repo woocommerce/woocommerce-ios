@@ -349,7 +349,7 @@ private extension MainTabBarController {
             return
         }
 
-        let action = NotificationCountAction.loadNotificationCount(siteID: siteID, type: .comment) { [weak self] count in
+        let action = NotificationCountAction.loadNotificationCount(siteID: siteID, type: .kind(.comment)) { [weak self] count in
             self?.updateReviewsTabBadge(count: count)
         }
         ServiceLocator.stores.dispatch(action)

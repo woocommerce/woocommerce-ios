@@ -11,7 +11,7 @@ public enum NotificationCountAction: Action {
     /// Loads the notification count of a given type for a site of the given ID.
     /// If type is nil, the count of all notification types is returned.
     ///
-    case loadNotificationCount(siteID: Int64, type: Note.Kind?, onCompletion: (_ count: Int) -> Void)
+    case loadNotificationCount(siteID: Int64, type: SiteNotificationCountType, onCompletion: (_ count: Int) -> Void)
 
     /// Resets the notification count of a given type for a site of the given ID.
     ///

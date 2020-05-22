@@ -75,7 +75,7 @@ private extension NotificationCountStore {
         onCompletion()
     }
 
-    func loadNotificationCount(siteID: Int64, type: Note.Kind?, onCompletion: (_ count: Int) -> Void) {
+    func loadNotificationCount(siteID: Int64, type: SiteNotificationCountType, onCompletion: (_ count: Int) -> Void) {
         guard let existingData: SiteNotificationCountFileContents = try? fileStorage.data(for: notificationCountURL) else {
             onCompletion(0)
             return

@@ -45,7 +45,6 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Most of the test cases expect a nil site ID, otherwise the dispatched actions would not match.
         storesManager = MockupStoresManager(sessionManager: .testingInstance)
         storesManager.sessionManager.setStoreId(nil)
-        ServiceLocator.setStores(storesManager)
 
         supportManager = MockupSupportManager()
         userNotificationCenter = MockupUserNotificationsCenterAdapter()
@@ -90,7 +89,15 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Arrange
         // The default stores are required to update the application badge number.
         let stores = DefaultStoresManager.testingInstance
-        ServiceLocator.setStores(stores)
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: stores,
+                                                               supportManager: self.supportManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+
+            return PushNotificationsManager(configuration: configuration)
+        }()
 
         application.applicationIconBadgeNumber = 90
 
@@ -274,7 +281,15 @@ final class PushNotificationsManagerTests: XCTestCase {
         let stores = DefaultStoresManager.testingInstance
         stores.authenticate(credentials: SessionSettings.credentials)
         stores.updateDefaultStore(storeID: 123)
-        ServiceLocator.setStores(stores)
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: stores,
+                                                               supportManager: self.supportManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+
+            return PushNotificationsManager(configuration: configuration)
+        }()
 
         let updatedBadgeNumber = 10
         let userInfo = notificationPayload(badgeCount: updatedBadgeNumber, type: .comment)

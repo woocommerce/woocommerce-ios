@@ -52,7 +52,11 @@ final class PushNotificationsManager: PushNotesManager {
     }
 
     private var siteID: Int64? {
-        ServiceLocator.stores.sessionManager.defaultStoreID
+        stores.sessionManager.defaultStoreID
+    }
+
+    private var stores: StoresManager {
+        configuration.storesManager
     }
 
     /// Initializes the PushNotificationsManager.
@@ -131,7 +135,7 @@ extension PushNotificationsManager {
         let action = NotificationCountAction.reset(siteID: siteID, type: type) { [weak self] in
             self?.loadNotificationCountAndUpdateApplicationBadgeNumberAndPostNotifications(siteID: siteID, type: type)
         }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     func resetBadgeCountForAllStores(onCompletion: @escaping () -> Void) {
@@ -139,7 +143,7 @@ extension PushNotificationsManager {
             self?.configuration.application.applicationIconBadgeNumber = 0
             onCompletion()
         }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     func reloadBadgeCount() {
@@ -239,7 +243,7 @@ extension PushNotificationsManager {
 private extension PushNotificationsManager {
     func incrementNotificationCount(siteID: Int64, type: Note.Kind, incrementCount: Int, onCompletion: @escaping () -> Void) {
         let action = NotificationCountAction.increment(siteID: siteID, type: type, incrementCount: incrementCount, onCompletion: onCompletion)
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     func loadNotificationCountAndUpdateApplicationBadgeNumberAndPostNotifications(siteID: Int64, type: Note.Kind?) {
@@ -251,7 +255,7 @@ private extension PushNotificationsManager {
         let action = NotificationCountAction.load(siteID: siteID, type: .allKinds) { [weak self] count in
             self?.configuration.application.applicationIconBadgeNumber = count
         }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     func postBadgeReloadNotifications(type: Note.Kind?) {
@@ -388,7 +392,7 @@ private extension PushNotificationsManager {
                                                        applicationVersion: Bundle.main.version,
                                                        defaultStoreID: defaultStoreID,
                                                        onCompletion: onCompletion)
-        configuration.storesManager.dispatch(action)
+        stores.dispatch(action)
     }
 
     /// Unregisters the known DeviceID (if any) from the Push Notifications Backend.

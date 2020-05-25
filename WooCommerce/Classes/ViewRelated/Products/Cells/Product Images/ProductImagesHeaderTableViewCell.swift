@@ -46,6 +46,10 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
         configureCollectionView(config: config)
 
         viewModel.registerCollectionViewCells(collectionView)
+
+        if viewModel.shouldScrollToStart {
+            collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .centeredHorizontally, animated: false)
+        }
     }
 
     /// Rotation management

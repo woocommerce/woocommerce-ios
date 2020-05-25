@@ -95,7 +95,7 @@ extension UIViewController: NavigationSwipeBackHandler {
 extension UIViewController: UIGestureRecognizerDelegate {
 
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        if gestureRecognizer.isEqual(navigationController?.interactivePopGestureRecognizer) {
+        if gestureRecognizer.isEqual(navigationController?.interactivePopGestureRecognizer) && navigationController?.topViewController == self {
             return shouldPopOnSwipeBack()
         }
 

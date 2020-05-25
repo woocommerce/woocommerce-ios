@@ -6,7 +6,7 @@ final class FilterProductListViewModel: FilterListViewModel {
     typealias Criteria = Filters
 
     /// Aggregates the filter values that can be updated in the Filter Products UI.
-    struct Filters {
+    struct Filters: Equatable {
         let stockStatus: ProductStockStatus?
         let productStatus: ProductStatus?
         let productType: ProductType?
@@ -118,13 +118,5 @@ extension FilterProductListViewModel.ProductListFilter {
                                        listSelectorConfig: .staticOptions(options: options),
                                        selectedValue: filters.productType)
         }
-    }
-}
-
-extension FilterProductListViewModel.Filters: Equatable {
-    static func == (lhs: FilterProductListViewModel.Filters, rhs: FilterProductListViewModel.Filters) -> Bool {
-        return lhs.stockStatus == rhs.stockStatus &&
-            lhs.productStatus == rhs.productStatus &&
-            lhs.productType == rhs.productType
     }
 }

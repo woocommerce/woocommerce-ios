@@ -19,7 +19,8 @@ public class AlamofireNetwork: Network {
     ///
     public required init(credentials: Credentials) {
         self.credentials = credentials
-        let configuration = URLSessionConfiguration.background(withIdentifier: "com.automattic.woocommerce.backgroundsession")
+        let uniqueID = UUID().uuidString
+        let configuration = URLSessionConfiguration.background(withIdentifier: "com.automattic.woocommerce.backgroundsession.\(uniqueID)")
         self.backgroundSessionManager = Alamofire.SessionManager(configuration: configuration)
     }
 

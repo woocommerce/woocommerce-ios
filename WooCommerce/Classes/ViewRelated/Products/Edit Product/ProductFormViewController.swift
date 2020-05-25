@@ -25,6 +25,7 @@ final class ProductFormViewController: UIViewController {
             defer {
                 let isUpdateEnabled = hasUnsavedChanges(product: product, password: password)
                 updateNavigationBar(isUpdateEnabled: isUpdateEnabled)
+                updateNavigationBarTitle(product: product)
             }
 
             if isNameTheOnlyChange(oldProduct: oldValue, newProduct: product) {
@@ -165,6 +166,7 @@ final class ProductFormViewController: UIViewController {
 private extension ProductFormViewController {
     func configureNavigationBar() {
         updateNavigationBar(isUpdateEnabled: originalProduct != product)
+        updateNavigationBarTitle(product: product)
         removeNavigationBackBarButtonText()
     }
 
@@ -243,6 +245,14 @@ private extension ProductFormViewController {
         moreDetailsContainerView.setContentHuggingPriority(.required, for: .vertical)
 
         updateMoreDetailsButtonVisibility(product: product)
+    }
+}
+
+// MARK: UI updates from product changes
+//
+private extension ProductFormViewController {
+    func updateNavigationBarTitle(product: Product) {
+        navigationItem.title = product.name
     }
 }
 

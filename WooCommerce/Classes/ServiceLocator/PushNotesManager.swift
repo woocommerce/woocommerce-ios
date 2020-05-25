@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import Yosemite
 
 protocol PushNotesManager {
 
@@ -10,7 +11,15 @@ protocol PushNotesManager {
 
     /// Resets the Badge Count.
     ///
-    func resetBadgeCount()
+    func resetBadgeCount(type: Note.Kind)
+
+    /// Resets the Badge Count for all stores.
+    ///
+    func resetBadgeCountForAllStores(onCompletion: @escaping () -> Void)
+
+    /// Reloads the Badge Count for the site.
+    ///
+    func reloadBadgeCount()
 
     /// Registers the Application for Remote Notifgications.
     ///
@@ -43,5 +52,7 @@ protocol PushNotesManager {
 
     /// Handles a Remote Push Notifican Payload. On completion the `completionHandler` will be executed.
     ///
-    func handleNotification(_ userInfo: [AnyHashable: Any], completionHandler: @escaping (UIBackgroundFetchResult) -> Void)
+    func handleNotification(_ userInfo: [AnyHashable: Any],
+                            onBadgeUpdateCompletion: @escaping () -> Void,
+                            completionHandler: @escaping (UIBackgroundFetchResult) -> Void)
 }

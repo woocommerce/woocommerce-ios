@@ -48,8 +48,18 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         viewModel.updateDescription(product.fullDescription ?? "")
         viewModel.updateBriefDescription(product.briefDescription ?? "")
         viewModel.updateProductSettings(ProductSettings(from: product, password: nil))
-        viewModel.updatePriceSettings(regularPrice: product.regularPrice, salePrice: product.salePrice, dateOnSaleStart: product.dateOnSaleStart, dateOnSaleEnd: product.dateOnSaleEnd, taxStatus: product.productTaxStatus, taxClass: taxClass)
-        viewModel.updateInventorySettings(sku: product.sku, manageStock: product.manageStock, soldIndividually: product.soldIndividually, stockQuantity: product.stockQuantity, backordersSetting: product.backordersSetting, stockStatus: product.productStockStatus)
+        viewModel.updatePriceSettings(regularPrice: product.regularPrice,
+                                      salePrice: product.salePrice,
+                                      dateOnSaleStart: product.dateOnSaleStart,
+                                      dateOnSaleEnd: product.dateOnSaleEnd,
+                                      taxStatus: product.productTaxStatus,
+                                      taxClass: taxClass)
+        viewModel.updateInventorySettings(sku: product.sku,
+                                          manageStock: product.manageStock,
+                                          soldIndividually: product.soldIndividually,
+                                          stockQuantity: product.stockQuantity,
+                                          backordersSetting: product.backordersSetting,
+                                          stockStatus: product.productStockStatus)
         viewModel.updateShippingSettings(weight: product.weight, dimensions: product.dimensions, shippingClass: product.productShippingClass)
     }
 

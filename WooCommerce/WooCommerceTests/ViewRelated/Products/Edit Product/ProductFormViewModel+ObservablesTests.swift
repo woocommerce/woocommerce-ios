@@ -3,7 +3,7 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 
-/// MARK: tests for observables (`observableProduct`, `productName`, `isUpdateEnabled`)
+/// Unit tests for observables (`observableProduct`, `productName`, `isUpdateEnabled`)
 final class ProductFormViewModel_ObservablesTests: XCTestCase {
     private let defaultSiteID: Int64 = 134
     private var cancellableProduct: ObservationToken?

@@ -4,7 +4,7 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 
-/// MARK: tests for unsaved changes (`hasUnsavedChanges`, `hasProductChanged`, `hasPasswordChanged`)
+/// Unit tests for unsaved changes (`hasUnsavedChanges`, `hasProductChanged`, `hasPasswordChanged`)
 final class ProductFormViewModelTests_Changes: XCTestCase {
     private let defaultSiteID: Int64 = 134
 

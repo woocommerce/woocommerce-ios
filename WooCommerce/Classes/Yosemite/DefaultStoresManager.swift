@@ -132,7 +132,6 @@ class DefaultStoresManager: StoresManager {
         ServiceLocator.analytics.refreshUserData()
         ZendeskManager.shared.reset()
         ServiceLocator.pushNotesManager.unregisterForRemoteNotifications()
-        ServiceLocator.pushNotesManager.resetBadgeCount()
     }
 
     /// Switches the state to a Deauthenticated one.
@@ -156,6 +155,7 @@ class DefaultStoresManager: StoresManager {
     func updateDefaultStore(storeID: Int64) {
         sessionManager.defaultStoreID = storeID
         restoreSessionSiteIfPossible()
+        ServiceLocator.pushNotesManager.reloadBadgeCount()
 
         NotificationCenter.default.post(name: .StoresManagerDidUpdateDefaultSite, object: nil)
     }

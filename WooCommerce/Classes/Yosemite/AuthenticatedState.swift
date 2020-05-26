@@ -35,6 +35,7 @@ class AuthenticatedState: StoresManagerState {
             CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             MediaStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            NotificationCountStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: PListFileStorage()),
             OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -71,7 +72,7 @@ class AuthenticatedState: StoresManagerState {
         let pushNotesManager = ServiceLocator.pushNotesManager
 
         pushNotesManager.unregisterForRemoteNotifications()
-        pushNotesManager.resetBadgeCount()
+        pushNotesManager.resetBadgeCountForAllStores(onCompletion: {})
 
         resetServices()
     }

@@ -8,7 +8,7 @@ final class UITableView_HelpersTests: XCTestCase {
     let tableView = UITableView()
     let emptyTableView = UITableView()
     let tableViewWithoutRows = UITableView()
-    
+
     override func setUp() {
         super.setUp()
         tableView.dataSource = self
@@ -16,23 +16,22 @@ final class UITableView_HelpersTests: XCTestCase {
         tableViewWithoutRows.dataSource = self
         tableView.reloadData()
     }
-    
+
     func testLastIndexPathWorksLikeExpected() {
         let lastIndexPath = tableView.lastIndexPath()
         XCTAssertEqual(lastIndexPath, IndexPath(row: 7, section: 1))
     }
-    
+
     func testLastIndexPathWithNoSectionsAndRowsReturnNil() {
         let lastIndexPath = emptyTableView.lastIndexPath()
         XCTAssertNil(lastIndexPath)
     }
-    
+
     func testLastIndexPathWithOnlyNoRowsReturnNil() {
         let lastIndexPath = tableViewWithoutRows.lastIndexPath()
         XCTAssertNil(lastIndexPath)
     }
 
-    
 }
 
 

@@ -7,12 +7,12 @@ extension UITableView {
         guard numberOfSections > 0 else {
             return nil
         }
-        let section = max(numberOfSections - 1, 0)
+        let section = numberOfSections - 1
         
         guard numberOfRows(inSection: section) > 0 else {
             return nil
         }
-        let row = max(numberOfRows(inSection: section) - 1, 0)
+        let row = numberOfRows(inSection: section) - 1
         
         return IndexPath(row: row, section: section)
     }

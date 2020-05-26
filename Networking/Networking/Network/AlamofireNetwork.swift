@@ -19,6 +19,9 @@ public class AlamofireNetwork: Network {
     ///
     public required init(credentials: Credentials) {
         self.credentials = credentials
+
+        // A unique ID is included in the background session identifier so that the session does not get invalidated when the initializer is called multiple
+        // times (e.g. when logging in).
         let uniqueID = UUID().uuidString
         let configuration = URLSessionConfiguration.background(withIdentifier: "com.automattic.woocommerce.backgroundsession.\(uniqueID)")
         self.backgroundSessionManager = Alamofire.SessionManager(configuration: configuration)

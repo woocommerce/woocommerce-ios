@@ -3,6 +3,7 @@
 - Order Detail: the HTML shipping method is now showed correctly
 - [**] Fix bugs related to push notifications: after receiving a new order push notification, the Reviews tab does not show a badge anymore. The application icon badge number is now cleared by navigating to the Orders tab and/or the Reviews tab, depending on the types of notifications received.
 - [*] Fix the issue where product details screen cannot be scrolled to the bottom in landscape after keyboard is dismissed (e.g. from editing product title).
+- [*] The product name is now shown in the product details navigation bar so that the name is always visible.
 
 
 4.3

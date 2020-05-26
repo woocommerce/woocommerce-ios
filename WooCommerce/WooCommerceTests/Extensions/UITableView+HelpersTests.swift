@@ -17,23 +17,24 @@ final class UITableView_HelpersTests: XCTestCase {
         tableView.reloadData()
     }
     
-    func testReturnLastIndexPathWorksLikeExpected() {
+    func testLastIndexPathWorksLikeExpected() {
         let lastIndexPath = tableView.lastIndexPath()
         XCTAssertEqual(lastIndexPath, IndexPath(row: 7, section: 1))
     }
     
-    func testReturnLastIndexPathWithNoSectionsAndRows() {
+    func testLastIndexPathWithNoSectionsAndRowsReturnNil() {
         let lastIndexPath = emptyTableView.lastIndexPath()
         XCTAssertNil(lastIndexPath)
     }
     
-    func testReturnLastIndexPathWithNoRows() {
+    func testLastIndexPathWithOnlyNoRowsReturnNil() {
         let lastIndexPath = tableViewWithoutRows.lastIndexPath()
         XCTAssertNil(lastIndexPath)
     }
 
     
 }
+
 
 extension UITableView_HelpersTests: UITableViewDataSource {
 

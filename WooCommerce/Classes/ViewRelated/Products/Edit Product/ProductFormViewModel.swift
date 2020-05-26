@@ -1,5 +1,6 @@
 import Yosemite
 
+/// Provides data for product form UI, and handles product editing actions.
 final class ProductFormViewModel {
     /// Emits product on change, except when the product name is the only change (`productName` is emitted for this case).
     var observableProduct: Observable<Product> {
@@ -32,6 +33,10 @@ final class ProductFormViewModel {
     /// The product model with potential edits; reset after a remote update.
     private(set) var product: Product {
         didSet {
+            guard product != oldValue else {
+                return
+            }
+
             defer {
                 isUpdateEnabledSubject.send(hasUnsavedChanges())
             }
@@ -55,7 +60,13 @@ final class ProductFormViewModel {
         }
     }
 
-    private(set) var password: String?
+    private(set) var password: String? {
+        didSet {
+            if password != oldValue {
+                isUpdateEnabledSubject.send(hasUnsavedChanges())
+            }
+        }
+    }
 
     private var productUpdater: ProductUpdater {
         return product
@@ -63,21 +74,15 @@ final class ProductFormViewModel {
 
     private let isUpdateEnabledSubject: PublishSubject<Bool>
 
-    private let currency: String
     private let productImageActionHandler: ProductImageActionHandler
-    private let productUIImageLoader: ProductUIImageLoader
     private let isEditProductsRelease2Enabled: Bool
     private let isEditProductsRelease3Enabled: Bool
 
     init(product: Product,
-         currency: String,
          productImageActionHandler: ProductImageActionHandler,
-         productUIImageLoader: ProductUIImageLoader,
          isEditProductsRelease2Enabled: Bool,
          isEditProductsRelease3Enabled: Bool) {
-        self.currency = currency
         self.productImageActionHandler = productImageActionHandler
-        self.productUIImageLoader = productUIImageLoader
         self.isEditProductsRelease2Enabled = isEditProductsRelease2Enabled
         self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
         self.originalProduct = product
@@ -106,11 +111,6 @@ final class ProductFormViewModel {
 extension ProductFormViewModel {
     func updateName(_ name: String) {
         product = productUpdater.nameUpdated(name: name)
-    }
-
-    func updatePassword(_ password: String?) {
-        originalPassword = password
-        isUpdateEnabledSubject.send(hasUnsavedChanges())
     }
 
     func updateImages(_ images: [ProductImage]) {
@@ -159,6 +159,7 @@ extension ProductFormViewModel {
 
     func updateProductSettings(_ settings: ProductSettings) {
         product = productUpdater.productSettingsUpdated(settings: settings)
+        password = settings.password
     }
 }
 

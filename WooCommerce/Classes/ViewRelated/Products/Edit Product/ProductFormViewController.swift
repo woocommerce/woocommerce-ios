@@ -64,9 +64,7 @@ final class ProductFormViewController: UIViewController {
         self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler,
                                                                 phAssetImageLoaderProvider: { PHImageManager.default() })
         self.viewModel = ProductFormViewModel(product: product,
-                                              currency: currency,
                                               productImageActionHandler: productImageActionHandler,
-                                              productUIImageLoader: productUIImageLoader,
                                               isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
                                               isEditProductsRelease3Enabled: isEditProductsRelease2Enabled)
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
@@ -440,7 +438,6 @@ private extension ProductFormViewController {
                 return
             }
             self.viewModel.updateProductSettings(productSettings)
-            self.viewModel.updatePassword(productSettings.password)
         }, onPasswordRetrieved: { [weak self] (originalPassword) in
             self?.viewModel.resetPassword(originalPassword)
         })

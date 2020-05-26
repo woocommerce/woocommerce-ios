@@ -55,9 +55,15 @@ public struct WordPressAuthenticatorConfiguration {
     ///
     let enableSignInWithApple: Bool
 
-    /// Flag indicating if the unified login/signup flow should be displayed.
+    /// Flag for the unified login/signup flows.
+    /// If disabled, none of the unified flows will display.
+    /// If enabled, allows selected unified flows to display.
     ///
     let enableUnifiedAuth: Bool
+
+    /// Flag indicating if the unified login by Site Address flow should display.
+    ///
+    let enableUnifiedSiteAddress: Bool
     
     /// Designated Initializer
     ///
@@ -73,7 +79,8 @@ public struct WordPressAuthenticatorConfiguration {
                  userAgent: String,
                  showLoginOptions: Bool = false,
                  enableSignInWithApple: Bool = false,
-                 enableUnifiedAuth: Bool = false) {
+                 enableUnifiedAuth: Bool = false,
+                 enableUnifiedSiteAddress: Bool = false) {
 
         self.wpcomClientId = wpcomClientId
         self.wpcomSecret = wpcomSecret
@@ -88,5 +95,6 @@ public struct WordPressAuthenticatorConfiguration {
         self.showLoginOptions = showLoginOptions
         self.enableSignInWithApple = enableSignInWithApple
         self.enableUnifiedAuth = enableUnifiedAuth
+        self.enableUnifiedSiteAddress = enableUnifiedAuth && enableUnifiedSiteAddress
     }
 }

@@ -27,6 +27,7 @@ class GoogleAuthenticator: NSObject {
 
     private var loginFields = LoginFields()
     private let authConfig = WordPressAuthenticator.shared.configuration
+    private let trackSource: [AnyHashable: Any] = ["source": "google"]
     
     private lazy var loginFacade: LoginFacade = {
         let facade = LoginFacade(dotcomClientID: authConfig.wpcomClientId,
@@ -79,7 +80,7 @@ private extension GoogleAuthenticator {
         // Start the Google auth process. This presents the Google account selection view.
         googleInstance.signIn()
 
-        WordPressAuthenticator.track(.loginSocialButtonClick, properties: ["source": "google"])
+        WordPressAuthenticator.track(.loginSocialButtonClick, properties: trackSource)
     }
 
     enum LocalizedText {
@@ -103,7 +104,7 @@ extension GoogleAuthenticator: GIDSignInDelegate {
                 
                 // The Google SignIn may have been canceled.
                 let properties = ["error": error?.localizedDescription,
-                                  "source": SocialServiceName.google.rawValue]
+                                  "source": "google"]
                 
                 WordPressAuthenticator.track(.loginSocialButtonFailure, properties: properties as [AnyHashable : Any])
                 return
@@ -129,8 +130,8 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
     func finishedLogin(withGoogleIDToken googleIDToken: String, authToken: String) {
         GIDSignIn.sharedInstance().disconnect()
         
-        WordPressAuthenticator.track(.signedIn, properties: ["source": "google"])
-        WordPressAuthenticator.track(.loginSocialSuccess, properties: ["source": "google"])
+        WordPressAuthenticator.track(.signedIn, properties: trackSource)
+        WordPressAuthenticator.track(.loginSocialSuccess, properties: trackSource)
         
         let wpcom = WordPressComCredentials(authToken: authToken,
                                             isJetpackLogin: loginFields.meta.jetpackLogin,
@@ -147,13 +148,8 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
 
         loginFields.nonceInfo = nonceInfo
         loginFields.nonceUserID = userID
-        
-        var properties = [AnyHashable:Any]()
-        if let service = loginFields.meta.socialService?.rawValue {
-            properties["source"] = service
-        }
-        
-        WordPressAuthenticator.track(.loginSocial2faNeeded, properties: properties)
+
+        WordPressAuthenticator.track(.loginSocial2faNeeded, properties: trackSource)
         delegate?.googleNeedsMultifactorCode(loginFields: loginFields)
     }
 
@@ -164,7 +160,7 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
         loginFields.username = email
         loginFields.emailAddress = email
         
-        WordPressAuthenticator.track(.loginSocialAccountsNeedConnecting, properties: ["source": "google"])
+        WordPressAuthenticator.track(.loginSocialAccountsNeedConnecting, properties: trackSource)
         delegate?.googleExistingUserNeedsConnection(loginFields: loginFields)
     }
 

@@ -41,7 +41,7 @@ class ProductTableViewCell: UITableViewCell {
             priceLabel.text = newValue
         }
     }
-    
+
     var hideBottomBorder: Bool = false {
         didSet {
             bottomBorderView.isHidden = hideBottomBorder

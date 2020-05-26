@@ -95,6 +95,6 @@ public struct WordPressAuthenticatorConfiguration {
         self.showLoginOptions = showLoginOptions
         self.enableSignInWithApple = enableSignInWithApple
         self.enableUnifiedAuth = enableUnifiedAuth
-        self.enableUnifiedSiteAddress = enableUnifiedSiteAddress
+        self.enableUnifiedSiteAddress = enableUnifiedAuth && enableUnifiedSiteAddress
     }
 }

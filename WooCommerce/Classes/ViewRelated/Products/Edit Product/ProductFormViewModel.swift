@@ -1,35 +1,50 @@
 import Yosemite
 
 final class ProductFormViewModel {
+    /// Emits product on change, except when the product name is the only change (`productName` is emitted for this case).
     var observableProduct: Observable<Product> {
         productSubject
     }
 
+    /// Emits product name on change.
+    var productName: Observable<String> {
+        productNameSubject
+    }
+
+    /// Emits a boolean of whether the product has unsaved changes for remote update.
     var isUpdateEnabled: Observable<Bool> {
         isUpdateEnabledSubject
     }
 
+    /// Creates actions available on the bottom sheet.
     private(set) var bottomSheetActionsFactory: ProductFormBottomSheetActionsFactory
 
-    private let productSubject: PublishSubject<Product>
+    private let productSubject: PublishSubject<Product> = PublishSubject<Product>()
+    private let productNameSubject: PublishSubject<String> = PublishSubject<String>()
 
     /// The product model before any potential edits; reset after a remote update.
-    private var originalProduct: Product
+    private var originalProduct: Product {
+        didSet {
+            product = originalProduct
+        }
+    }
 
     /// The product model with potential edits; reset after a remote update.
     private(set) var product: Product {
         didSet {
             defer {
                 isUpdateEnabledSubject.send(hasUnsavedChanges())
-                productSubject.send(product)
             }
 
             if isNameTheOnlyChange(oldProduct: oldValue, newProduct: product) {
+                productNameSubject.send(product.name)
                 return
             }
+
             bottomSheetActionsFactory = ProductFormBottomSheetActionsFactory(product: product,
                                                                              isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
                                                                              isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+            productSubject.send(product)
         }
     }
 
@@ -67,7 +82,6 @@ final class ProductFormViewModel {
         self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
         self.originalProduct = product
         self.product = product
-        self.productSubject = PublishSubject<Product>()
         self.bottomSheetActionsFactory = ProductFormBottomSheetActionsFactory(product: product,
                                                                               isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
                                                                               isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
@@ -148,10 +162,11 @@ extension ProductFormViewModel {
     }
 }
 
+// MARK: Reset actions
+//
 extension ProductFormViewModel {
     func resetProduct(_ product: Product) {
         originalProduct = product
-        self.product = product
     }
 
     func resetPassword(_ password: String?) {

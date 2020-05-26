@@ -102,6 +102,7 @@ final class ProductFormViewController: UIViewController {
         configurePresentationStyle()
 
         observeProduct()
+        observeProductName()
         observeUpdateCTAVisibility()
 
         productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
@@ -129,7 +130,7 @@ final class ProductFormViewController: UIViewController {
 private extension ProductFormViewController {
     func configureNavigationBar() {
         updateNavigationBar(isUpdateEnabled: false)
-        updateNavigationBarTitle(product: product)
+        updateNavigationBarTitle(productName: product.name)
         removeNavigationBackBarButtonText()
     }
 
@@ -218,6 +219,12 @@ private extension ProductFormViewController {
         }
     }
 
+    func observeProductName() {
+        cancellable = viewModel.productName.subscribe { [weak self] name in
+            self?.updateNavigationBarTitle(productName: name)
+        }
+    }
+
     func observeUpdateCTAVisibility() {
         cancellable = viewModel.isUpdateEnabled.subscribe { [weak self] isUpdateEnabled in
             self?.updateNavigationBar(isUpdateEnabled: isUpdateEnabled)
@@ -226,7 +233,6 @@ private extension ProductFormViewController {
 
     func onProductUpdated(product: Product) {
         updateMoreDetailsButtonVisibility()
-        updateNavigationBarTitle(product: product)
 
         tableViewModel = DefaultProductFormTableViewModel(product: product,
                                                           currency: currency,
@@ -249,8 +255,8 @@ private extension ProductFormViewController {
 // MARK: UI updates from product changes
 //
 private extension ProductFormViewController {
-    func updateNavigationBarTitle(product: Product) {
-        navigationItem.title = product.name
+    func updateNavigationBarTitle(productName: String) {
+        navigationItem.title = productName
     }
 }
 

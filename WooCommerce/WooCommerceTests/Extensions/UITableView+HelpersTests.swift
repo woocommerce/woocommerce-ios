@@ -1,7 +1,8 @@
 import XCTest
 @testable import WooCommerce
 
-// UITableViewCell+Helpers: Unit Tests
+
+// UITableView+Helpers: Unit Tests
 //
 final class UITableView_HelpersTests: XCTestCase {
 
@@ -31,7 +32,6 @@ final class UITableView_HelpersTests: XCTestCase {
         let lastIndexPath = tableViewWithoutRows.lastIndexPath()
         XCTAssertNil(lastIndexPath)
     }
-
 }
 
 

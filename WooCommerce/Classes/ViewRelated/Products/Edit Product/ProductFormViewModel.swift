@@ -78,6 +78,8 @@ final class ProductFormViewModel {
     private let isEditProductsRelease2Enabled: Bool
     private let isEditProductsRelease3Enabled: Bool
 
+    private var cancellable: ObservationToken?
+
     init(product: Product,
          productImageActionHandler: ProductImageActionHandler,
          isEditProductsRelease2Enabled: Bool,
@@ -91,6 +93,16 @@ final class ProductFormViewModel {
                                                                               isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
                                                                               isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
         self.isUpdateEnabledSubject = PublishSubject<Bool>()
+
+        self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
+            if allStatuses.productImageStatuses.hasPendingUpload {
+                self?.isUpdateEnabledSubject.send(true)
+            }
+        }
+    }
+
+    deinit {
+        cancellable?.cancel()
     }
 
     func hasUnsavedChanges() -> Bool {

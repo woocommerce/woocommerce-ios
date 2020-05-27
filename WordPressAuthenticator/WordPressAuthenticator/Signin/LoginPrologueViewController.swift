@@ -163,7 +163,7 @@ class LoginPrologueViewController: LoginViewController {
     }
 
     private func googleTapped() {
-        GoogleAuthenticator.sharedInstance.delegate = self
+        GoogleAuthenticator.sharedInstance.loginDelegate = self
         GoogleAuthenticator.sharedInstance.showFrom(viewController: self, loginFields: loginFields)
     }
 
@@ -200,7 +200,7 @@ extension LoginPrologueViewController: AppleAuthenticatorDelegate {
 
 // MARK: - GoogleAuthenticatorDelegate
 
-extension LoginPrologueViewController: GoogleAuthenticatorDelegate {
+extension LoginPrologueViewController: GoogleAuthenticatorLoginDelegate {
 
     func googleFinishedLogin(credentials: AuthenticatorCredentials, loginFields: LoginFields) {
         self.loginFields = loginFields
@@ -237,7 +237,7 @@ extension LoginPrologueViewController: GoogleAuthenticatorDelegate {
         navigationController?.pushViewController(vc, animated: true)
     }
 
-    func googleRemoteError(errorTitle: String, errorDescription: String, loginFields: LoginFields) {
+    func googleLoginFailed(errorTitle: String, errorDescription: String, loginFields: LoginFields) {
         self.loginFields = loginFields
 
         let socialErrorVC = LoginSocialErrorViewController(title: errorTitle, description: errorDescription)

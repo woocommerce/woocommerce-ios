@@ -4,17 +4,32 @@ import WordPressKit
 
 protocol GoogleAuthenticatorDelegate {
     
-    // Logging in with a Google account was successful.
+
+protocol GoogleAuthenticatorLoginDelegate {
+    // Google account login was successful.
     func googleFinishedLogin(credentials: AuthenticatorCredentials, loginFields: LoginFields)
-    
+
     // Google account login was successful, but a WP 2FA code is required.
     func googleNeedsMultifactorCode(loginFields: LoginFields)
-    
+
     // Google account login was successful, but a WP password is required.
     func googleExistingUserNeedsConnection(loginFields: LoginFields)
     
     // Google account login failed.
-    func googleRemoteError(errorTitle: String, errorDescription: String, loginFields: LoginFields)
+    func googleLoginFailed(errorTitle: String, errorDescription: String, loginFields: LoginFields)
+}
+
+protocol GoogleAuthenticatorSignupDelegate {
+
+    // Google account signup was successful.
+    func googleFinishedSignup(credentials: AuthenticatorCredentials, loginFields: LoginFields)
+
+    // Google account login was successful.
+    func googleLoggedInInstead(credentials: AuthenticatorCredentials, loginFields: LoginFields)
+
+    // Google account signup failed.
+    func googleSignupFailed(error: Error, loginFields: LoginFields)
+
 }
 
 class GoogleAuthenticator: NSObject {
@@ -23,7 +38,8 @@ class GoogleAuthenticator: NSObject {
 
     static var sharedInstance: GoogleAuthenticator = GoogleAuthenticator()
     private override init() {}
-    var delegate: GoogleAuthenticatorDelegate?
+    var loginDelegate: GoogleAuthenticatorLoginDelegate?
+    var signupDelegate: GoogleAuthenticatorSignupDelegate?
 
     private var loginFields = LoginFields()
     private let authConfig = WordPressAuthenticator.shared.configuration
@@ -126,7 +142,7 @@ extension GoogleAuthenticator: GIDSignInDelegate {
 
 extension GoogleAuthenticator: LoginFacadeDelegate {
 
-    // Logging in with a Google account was successful.
+    // Google account login was successful.
     func finishedLogin(withGoogleIDToken googleIDToken: String, authToken: String) {
         GIDSignIn.sharedInstance().disconnect()
         
@@ -139,7 +155,7 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
                                             siteURL: loginFields.siteAddress)
         let credentials = AuthenticatorCredentials(wpcom: wpcom)
 
-        delegate?.googleFinishedLogin(credentials: credentials, loginFields: loginFields)
+        loginDelegate?.googleFinishedLogin(credentials: credentials, loginFields: loginFields)
     }
 
     // Google account login was successful, but a WP 2FA code is required.
@@ -150,7 +166,7 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
         loginFields.nonceUserID = userID
 
         WordPressAuthenticator.track(.loginSocial2faNeeded, properties: trackSource)
-        delegate?.googleNeedsMultifactorCode(loginFields: loginFields)
+        loginDelegate?.googleNeedsMultifactorCode(loginFields: loginFields)
     }
 
     // Google account login was successful, but a WP password is required.
@@ -161,7 +177,7 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
         loginFields.emailAddress = email
         
         WordPressAuthenticator.track(.loginSocialAccountsNeedConnecting, properties: trackSource)
-        delegate?.googleExistingUserNeedsConnection(loginFields: loginFields)
+        loginDelegate?.googleExistingUserNeedsConnection(loginFields: loginFields)
     }
 
     // Google account login failed.
@@ -179,7 +195,7 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
             errorDescription = error.localizedDescription
         }
         
-        delegate?.googleRemoteError(errorTitle: errorTitle, errorDescription: errorDescription, loginFields: loginFields)
+        loginDelegate?.googleLoginFailed(errorTitle: errorTitle, errorDescription: errorDescription, loginFields: loginFields)
     }
     
 }

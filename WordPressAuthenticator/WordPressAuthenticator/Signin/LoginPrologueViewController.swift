@@ -198,7 +198,7 @@ extension LoginPrologueViewController: AppleAuthenticatorDelegate {
 
 }
 
-// MARK: - GoogleAuthenticatorDelegate
+// MARK: - GoogleAuthenticatorLoginDelegate
 
 extension LoginPrologueViewController: GoogleAuthenticatorLoginDelegate {
 

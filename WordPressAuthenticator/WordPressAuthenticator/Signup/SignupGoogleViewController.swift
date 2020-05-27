@@ -53,7 +53,7 @@ private extension SignupGoogleViewController {
 
 }
 
-// MARK: - GoogleAuthenticatorDelegate
+// MARK: - GoogleAuthenticatorSignupDelegate
 
 extension SignupGoogleViewController: GoogleAuthenticatorSignupDelegate {
 
@@ -72,6 +72,10 @@ extension SignupGoogleViewController: GoogleAuthenticatorSignupDelegate {
         titleLabel?.textColor = WPStyleGuide.errorRed()
         titleLabel?.text = LocalizedText.signupFailed
         displayError(error as NSError, sourceTag: .wpComSignup)
+    }
+
+    func googleSignupCancelled() {
+        navigationController?.popViewController(animated: true)
     }
 
 }

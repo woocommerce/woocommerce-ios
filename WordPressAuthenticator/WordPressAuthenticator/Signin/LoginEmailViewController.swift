@@ -570,7 +570,7 @@ extension LoginEmailViewController: AppleAuthenticatorDelegate {
 
 }
 
-// MARK: - GoogleAuthenticatorDelegate
+// MARK: - GoogleAuthenticatorLoginDelegate
 
 extension LoginEmailViewController: GoogleAuthenticatorLoginDelegate {
 

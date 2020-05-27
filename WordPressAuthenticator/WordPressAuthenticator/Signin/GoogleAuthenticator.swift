@@ -29,12 +29,14 @@ protocol GoogleAuthenticatorSignupDelegate {
     // Google account signup was successful.
     func googleFinishedSignup(credentials: AuthenticatorCredentials, loginFields: LoginFields)
 
-    // Google account login was successful.
+    // Google account signup redirected to login was successful.
     func googleLoggedInInstead(credentials: AuthenticatorCredentials, loginFields: LoginFields)
 
     // Google account signup failed.
     func googleSignupFailed(error: Error, loginFields: LoginFields)
 
+    // Google account signup cancelled by user.
+    func googleSignupCancelled()
 }
 
 class GoogleAuthenticator: NSObject {
@@ -145,7 +147,7 @@ extension GoogleAuthenticator: GIDSignInDelegate {
             let token = user.authentication.idToken,
             let email = user.profile.email else {
                 
-                // The Google SignIn may have been canceled.
+                // The Google SignIn may have been cancelled.
                 let properties = ["error": error?.localizedDescription ?? ""]
 
                 switch authType {
@@ -155,6 +157,8 @@ extension GoogleAuthenticator: GIDSignInDelegate {
                     track(.signupSocialButtonFailure, properties: properties)
                 }
 
+                // Notify the signupDelegate so the Google Signup view can be dismissed.
+                signupDelegate?.googleSignupCancelled()
                 return
         }
         

@@ -7,6 +7,7 @@
 - [*] The product name is now shown in the product details navigation bar so that the name is always visible.
 - [*] The images pending upload should be visible after editing product images from product details.
 - [*] The discard changes prompt does not appear when navigating from product settings detail screens with a text field (slug, purchase note, and menu order) anymore.
+- [*] The "View product in store" action will be shown only if the product is published.
 
 
 4.3

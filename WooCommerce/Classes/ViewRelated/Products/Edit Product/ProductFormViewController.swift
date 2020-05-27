@@ -813,9 +813,12 @@ private extension ProductFormViewController {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
 
-        actionSheet.addDefaultActionWithTitle(ActionSheetStrings.viewProduct) { [weak self] _ in
-            ServiceLocator.analytics.track(.productDetailViewProductButtonTapped)
-            self?.displayWebViewForProductInStore()
+        /// The "View product in store" action will be shown only if the product is published.
+        if originalProduct.productStatus == .publish {
+            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.viewProduct) { [weak self] _ in
+                ServiceLocator.analytics.track(.productDetailViewProductButtonTapped)
+                self?.displayWebViewForProductInStore()
+            }
         }
 
         actionSheet.addDefaultActionWithTitle(ActionSheetStrings.share) { [weak self] _ in

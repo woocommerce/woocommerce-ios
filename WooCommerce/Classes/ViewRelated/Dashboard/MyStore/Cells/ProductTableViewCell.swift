@@ -42,9 +42,9 @@ class ProductTableViewCell: UITableViewCell {
         }
     }
 
-    var hideBottomBorder: Bool = false {
+    var hidesBottomBorder: Bool = false {
         didSet {
-            bottomBorderView.isHidden = hideBottomBorder
+            bottomBorderView.isHidden = hidesBottomBorder
         }
     }
 

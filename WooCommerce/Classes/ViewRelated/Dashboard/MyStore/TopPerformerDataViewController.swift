@@ -244,7 +244,7 @@ extension TopPerformerDataViewController: UITableViewDataSource {
         }
 
         cell.configure(statsItem, imageService: imageService)
-        cell.hideBottomBorder = tableView.lastIndexPath() == indexPath ? true : false
+        cell.hidesBottomBorder = tableView.lastIndexPath() == indexPath ? true : false
         return cell
     }
 }

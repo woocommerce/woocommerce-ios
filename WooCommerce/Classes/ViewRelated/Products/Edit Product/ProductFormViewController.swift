@@ -116,6 +116,10 @@ final class ProductFormViewController: UIViewController {
                 self.displayErrorAlert(title: title, message: message)
             }
 
+            if productImageStatuses.hasPendingUpload {
+                self.onImageStatusesUpdated(statuses: productImageStatuses)
+            }
+
             self.viewModel.updateImages(productImageStatuses.images)
         }
     }
@@ -240,6 +244,20 @@ private extension ProductFormViewController {
                                                           isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
         tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                              productImageStatuses: productImageActionHandler.productImageStatuses,
+                                                             productUIImageLoader: productUIImageLoader,
+                                                             canEditImages: isEditProductsRelease2Enabled)
+        tableViewDataSource.configureActions(onNameChange: { [weak self] name in
+            self?.onEditProductNameCompletion(newName: name ?? "")
+        }, onAddImage: { [weak self] in
+            self?.showProductImages()
+        })
+        tableView.dataSource = tableViewDataSource
+        tableView.reloadData()
+    }
+
+    func onImageStatusesUpdated(statuses: [ProductImageStatus]) {
+        tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
+                                                             productImageStatuses: statuses,
                                                              productUIImageLoader: productUIImageLoader,
                                                              canEditImages: isEditProductsRelease2Enabled)
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in

@@ -18,7 +18,7 @@ final class ProductFormViewModel {
     }
 
     /// Creates actions available on the bottom sheet.
-    private(set) var bottomSheetActionsFactory: ProductFormBottomSheetActionsFactory
+    private(set) var bottomSheetActionsFactory: ProductFormActionsFactory
 
     private let productSubject: PublishSubject<Product> = PublishSubject<Product>()
     private let productNameSubject: PublishSubject<String> = PublishSubject<String>()
@@ -46,9 +46,9 @@ final class ProductFormViewModel {
                 return
             }
 
-            bottomSheetActionsFactory = ProductFormBottomSheetActionsFactory(product: product,
-                                                                             isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
-                                                                             isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+            bottomSheetActionsFactory = ProductFormActionsFactory(product: product,
+                                                                  isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                                                  isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
             productSubject.send(product)
         }
     }
@@ -89,9 +89,9 @@ final class ProductFormViewModel {
         self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
         self.originalProduct = product
         self.product = product
-        self.bottomSheetActionsFactory = ProductFormBottomSheetActionsFactory(product: product,
-                                                                              isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
-                                                                              isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+        self.bottomSheetActionsFactory = ProductFormActionsFactory(product: product,
+                                                                   isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                                                   isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
         self.isUpdateEnabledSubject = PublishSubject<Bool>()
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in

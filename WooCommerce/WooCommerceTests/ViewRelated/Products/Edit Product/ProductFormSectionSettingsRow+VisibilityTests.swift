@@ -2,79 +2,159 @@ import XCTest
 @testable import WooCommerce
 @testable import Yosemite
 
-final class ProductFormSectionSettingsRow_VisibilityTests: XCTestCase {
+final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
     // MARK: - Price
 
     func testPriceRowIsVisibleForProductWithPriceData() {
+        // Arrange
         let product = Fixtures.productWithPriceData
-        let viewModel = ProductFormSection.SettingsRow.ViewModel(icon: .plusImage, title: nil, details: nil)
-        XCTAssertTrue(ProductFormSection.SettingsRow.price(viewModel: viewModel).isVisible(product: product))
+
+        // Action
+        let factory = ProductFormActionsFactory(product: product,
+                                                isEditProductsRelease2Enabled: true,
+                                                isEditProductsRelease3Enabled: true)
+
+        // Assert
+        XCTAssertTrue(factory.settingsSectionActions().contains(.editPriceSettings))
+        XCTAssertFalse(factory.bottomSheetActions().contains(.editPriceSettings))
     }
 
     func testPriceRowIsVisibleForProductWithoutPriceData() {
+        // Arrange
         let product = Fixtures.productWithoutPriceData
-        let viewModel = ProductFormSection.SettingsRow.ViewModel(icon: .plusImage, title: nil, details: nil)
-        XCTAssertTrue(ProductFormSection.SettingsRow.price(viewModel: viewModel).isVisible(product: product))
+
+        // Action
+        let factory = ProductFormActionsFactory(product: product,
+                                                isEditProductsRelease2Enabled: true,
+                                                isEditProductsRelease3Enabled: true)
+
+        // Assert
+        XCTAssertTrue(factory.settingsSectionActions().contains(.editPriceSettings))
+        XCTAssertFalse(factory.bottomSheetActions().contains(.editPriceSettings))
     }
 
     // MARK: - Inventory
 
     func testInventoryRowIsVisibleForProductWithInventoryData() {
+        // Arrange
         let product = Fixtures.productWithInventoryData
-        let viewModel = ProductFormSection.SettingsRow.ViewModel(icon: .plusImage, title: nil, details: nil)
-        XCTAssertTrue(ProductFormSection.SettingsRow.inventory(viewModel: viewModel).isVisible(product: product))
+
+        // Action
+        let factory = ProductFormActionsFactory(product: product,
+                                                isEditProductsRelease2Enabled: true,
+                                                isEditProductsRelease3Enabled: true)
+
+        // Assert
+        XCTAssertTrue(factory.settingsSectionActions().contains(.editInventorySettings))
+        XCTAssertFalse(factory.bottomSheetActions().contains(.editInventorySettings))
     }
 
     func testInventoryRowIsInvisibleForProductWithMissingInventoryData() {
+        // Arrange
         let product = Fixtures.productWithMissingInventoryData
-        let viewModel = ProductFormSection.SettingsRow.ViewModel(icon: .plusImage, title: nil, details: nil)
-        XCTAssertFalse(ProductFormSection.SettingsRow.inventory(viewModel: viewModel).isVisible(product: product))
+
+        // Action
+        let factory = ProductFormActionsFactory(product: product,
+                                                isEditProductsRelease2Enabled: true,
+                                                isEditProductsRelease3Enabled: true)
+
+        // Assert
+        XCTAssertFalse(factory.settingsSectionActions().contains(.editInventorySettings))
+        XCTAssertTrue(factory.bottomSheetActions().contains(.editInventorySettings))
     }
 
     // MARK: - Shipping
 
     func testShippingRowIsVisibleForProductWithShippingData() {
+        // Arrange
         let product = Fixtures.productWithShippingData
-        let viewModel = ProductFormSection.SettingsRow.ViewModel(icon: .plusImage, title: nil, details: nil)
-        XCTAssertTrue(ProductFormSection.SettingsRow.shipping(viewModel: viewModel).isVisible(product: product))
+
+        // Action
+        let factory = ProductFormActionsFactory(product: product,
+                                                isEditProductsRelease2Enabled: true,
+                                                isEditProductsRelease3Enabled: true)
+
+        // Assert
+        XCTAssertTrue(factory.settingsSectionActions().contains(.editShippingSettings))
+        XCTAssertFalse(factory.bottomSheetActions().contains(.editShippingSettings))
     }
 
     func testShippingRowIsInvisibleForProductWithMissingShippingData() {
+        // Arrange
         let product = Fixtures.productWithMissingShippingData
-        let viewModel = ProductFormSection.SettingsRow.ViewModel(icon: .plusImage, title: nil, details: nil)
-        XCTAssertFalse(ProductFormSection.SettingsRow.shipping(viewModel: viewModel).isVisible(product: product))
+
+        // Action
+        let factory = ProductFormActionsFactory(product: product,
+                                                isEditProductsRelease2Enabled: true,
+                                                isEditProductsRelease3Enabled: true)
+
+        // Assert
+        XCTAssertFalse(factory.settingsSectionActions().contains(.editShippingSettings))
+        XCTAssertTrue(factory.bottomSheetActions().contains(.editShippingSettings))
     }
 
     // MARK: - Categories
 
     func testCategoriesRowIsVisibleForProductWithACategory() {
+        // Arrange
         let product = Fixtures.productWithOneCategory
-        let viewModel = ProductFormSection.SettingsRow.ViewModel(icon: .plusImage, title: nil, details: nil)
-        XCTAssertTrue(ProductFormSection.SettingsRow.categories(viewModel: viewModel).isVisible(product: product))
+
+        // Action
+        let factory = ProductFormActionsFactory(product: product,
+                                                isEditProductsRelease2Enabled: true,
+                                                isEditProductsRelease3Enabled: true)
+
+        // Assert
+        XCTAssertTrue(factory.settingsSectionActions().contains(.editCategories))
+        XCTAssertFalse(factory.bottomSheetActions().contains(.editCategories))
     }
 
     func testCategoriesRowIsInvisibleForProductWithoutCategories() {
+        // Arrange
         let product = Fixtures.productWithoutCategories
-        let viewModel = ProductFormSection.SettingsRow.ViewModel(icon: .plusImage, title: nil, details: nil)
-        XCTAssertFalse(ProductFormSection.SettingsRow.categories(viewModel: viewModel).isVisible(product: product))
+
+        // Action
+        let factory = ProductFormActionsFactory(product: product,
+                                                isEditProductsRelease2Enabled: true,
+                                                isEditProductsRelease3Enabled: true)
+
+        // Assert
+        XCTAssertFalse(factory.settingsSectionActions().contains(.editCategories))
+        XCTAssertTrue(factory.bottomSheetActions().contains(.editCategories))
     }
 
     // MARK: - Brief description
 
     func testBriefDescriptionRowIsVisibleForProductWithNonEmptyBriefDescription() {
+        // Arrange
         let product = Fixtures.productWithNonEmptyBriefDescription
-        let viewModel = ProductFormSection.SettingsRow.ViewModel(icon: .plusImage, title: nil, details: nil)
-        XCTAssertTrue(ProductFormSection.SettingsRow.briefDescription(viewModel: viewModel).isVisible(product: product))
+
+        // Action
+        let factory = ProductFormActionsFactory(product: product,
+                                                isEditProductsRelease2Enabled: true,
+                                                isEditProductsRelease3Enabled: true)
+
+        // Assert
+        XCTAssertTrue(factory.settingsSectionActions().contains(.editBriefDescription))
+        XCTAssertFalse(factory.bottomSheetActions().contains(.editBriefDescription))
     }
 
     func testBriefDescriptionRowIsInvisibleForProductWithoutBriefDescription() {
+        // Arrange
         let product = Fixtures.productWithEmptyBriefDescription
-        let viewModel = ProductFormSection.SettingsRow.ViewModel(icon: .plusImage, title: nil, details: nil)
-        XCTAssertFalse(ProductFormSection.SettingsRow.briefDescription(viewModel: viewModel).isVisible(product: product))
+
+        // Action
+        let factory = ProductFormActionsFactory(product: product,
+                                                isEditProductsRelease2Enabled: true,
+                                                isEditProductsRelease3Enabled: true)
+
+        // Assert
+        XCTAssertFalse(factory.settingsSectionActions().contains(.editBriefDescription))
+        XCTAssertTrue(factory.bottomSheetActions().contains(.editBriefDescription))
     }
 }
 
-private extension ProductFormSectionSettingsRow_VisibilityTests {
+private extension ProductFormActionsFactory_VisibilityTests {
     enum Fixtures {
         // Price
         static let productWithPriceData = MockProduct().product(productType: .simple, regularPrice: "17")

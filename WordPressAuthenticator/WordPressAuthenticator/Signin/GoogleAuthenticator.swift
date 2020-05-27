@@ -125,7 +125,7 @@ private extension GoogleAuthenticator {
         static let googleConnected = NSLocalizedString("Connected But…", comment: "Title shown when a user logs in with Google but no matching WordPress.com account is found")
         static let googleConnectedError = NSLocalizedString("The Google account \"%@\" doesn't match any account on WordPress.com", comment: "Description shown when a user logs in with Google but no matching WordPress.com account is found")
         static let googleUnableToConnect = NSLocalizedString("Unable To Connect", comment: "Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com")
-        static let completingSignup = NSLocalizedString("Completing Signup", comment: "Shown while the app waits for the site creation process to complete.")
+        static let processing = NSLocalizedString("Processing Account", comment: "Shown while the app waits for the account process to complete.")
         static let signupFailed = NSLocalizedString("Google sign up failed.", comment: "Message shown on screen after the Google sign up process failed.")
     }
 
@@ -150,12 +150,9 @@ extension GoogleAuthenticator: GIDSignInDelegate {
                 case .login:
                     WordPressAuthenticator.track(.loginSocialButtonFailure, properties: properties as [AnyHashable : Any])
                 case .signup:
-                    // add source?
                     WordPressAuthenticator.track(.signupSocialButtonFailure, error: error)
                 }
 
-                // need to return to delegate. Signup pops the VC.
-                
                 return
         }
         
@@ -245,8 +242,10 @@ private extension GoogleAuthenticator {
     /// Creates a WordPress.com account with the associated Google User + Google Token + Google Email.
     ///
     func createWordPressComUser(user: GIDGoogleUser, token: String, email: String) {
-        // TODO: fix this message
-        SVProgressHUD.show(withStatus: LocalizedText.completingSignup)
+
+        // At this point, we don't know if we're logging in or signing up.
+        // So we'll show a generic message in the HUD.
+        SVProgressHUD.show(withStatus: LocalizedText.processing)
 
         let service = SignupService()
 

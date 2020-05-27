@@ -44,7 +44,10 @@ final class ProductFormViewController: UIViewController {
     private var navigationRightBarButtonItems: Observable<[UIBarButtonItem]> {
         navigationRightBarButtonItemsSubject
     }
-    private var cancellable: ObservationToken?
+    private var cancellableProduct: ObservationToken?
+    private var cancellableProductName: ObservationToken?
+    private var cancellableUpdateEnabled: ObservationToken?
+    private var cancellableNavigationRightBarButtonItems: ObservationToken?
 
     init(product: Product,
          currency: String = CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode),
@@ -84,7 +87,10 @@ final class ProductFormViewController: UIViewController {
     }
 
     deinit {
-        cancellable?.cancel()
+        cancellableProduct?.cancel()
+        cancellableProductName?.cancel()
+        cancellableUpdateEnabled?.cancel()
+        cancellableNavigationRightBarButtonItems?.cancel()
     }
 
     override func viewDidLoad() {
@@ -193,7 +199,7 @@ private extension ProductFormViewController {
     }
 
     func observeNavigationRightBarButtonItems(viewControllerWithNavigationItem: UIViewController) {
-        cancellable = navigationRightBarButtonItems.subscribe { [weak viewControllerWithNavigationItem] rightBarButtonItems in
+        cancellableNavigationRightBarButtonItems = navigationRightBarButtonItems.subscribe { [weak viewControllerWithNavigationItem] rightBarButtonItems in
             viewControllerWithNavigationItem?.navigationItem.rightBarButtonItems = rightBarButtonItems
         }
     }
@@ -218,19 +224,19 @@ private extension ProductFormViewController {
 
 private extension ProductFormViewController {
     func observeProduct() {
-        cancellable = viewModel.observableProduct.subscribe { [weak self] product in
+        cancellableProduct = viewModel.observableProduct.subscribe { [weak self] product in
             self?.onProductUpdated(product: product)
         }
     }
 
     func observeProductName() {
-        cancellable = viewModel.productName.subscribe { [weak self] name in
+        cancellableProductName = viewModel.productName.subscribe { [weak self] name in
             self?.updateNavigationBarTitle(productName: name)
         }
     }
 
     func observeUpdateCTAVisibility() {
-        cancellable = viewModel.isUpdateEnabled.subscribe { [weak self] isUpdateEnabled in
+        cancellableUpdateEnabled = viewModel.isUpdateEnabled.subscribe { [weak self] isUpdateEnabled in
             self?.updateNavigationBar(isUpdateEnabled: isUpdateEnabled)
         }
     }

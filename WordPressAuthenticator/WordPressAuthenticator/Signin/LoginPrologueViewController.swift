@@ -164,7 +164,7 @@ class LoginPrologueViewController: LoginViewController {
 
     private func googleTapped() {
         GoogleAuthenticator.sharedInstance.loginDelegate = self
-        GoogleAuthenticator.sharedInstance.showFrom(viewController: self, loginFields: loginFields)
+        GoogleAuthenticator.sharedInstance.showFrom(viewController: self, loginFields: loginFields, for: .login)
     }
 
 }

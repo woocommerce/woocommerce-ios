@@ -1,9 +1,14 @@
 import Foundation
 import GoogleSignIn
 import WordPressKit
+import SVProgressHUD
 
-protocol GoogleAuthenticatorDelegate {
-    
+// Indicate which type of authentication is initiated.
+// TODO: remove when Google auth flows are unified.
+enum GoogleAuthType {
+    case login
+    case signup
+}
 
 protocol GoogleAuthenticatorLoginDelegate {
     // Google account login was successful.
@@ -44,6 +49,7 @@ class GoogleAuthenticator: NSObject {
     private var loginFields = LoginFields()
     private let authConfig = WordPressAuthenticator.shared.configuration
     private let trackSource: [AnyHashable: Any] = ["source": "google"]
+    private var authType: GoogleAuthType = .login
     
     private lazy var loginFacade: LoginFacade = {
         let facade = LoginFacade(dotcomClientID: authConfig.wpcomClientId,
@@ -62,9 +68,11 @@ class GoogleAuthenticator: NSObject {
     ///   - loginFields: LoginFields from the calling view controller.
     ///                  The values are updated during the Google process,
     ///                  and returned to the calling view controller via delegate methods.
-    func showFrom(viewController: UIViewController, loginFields: LoginFields) {
+    ///   - authType: Indicates the type of authentication (login or signup)
+    func showFrom(viewController: UIViewController, loginFields: LoginFields, for authType: GoogleAuthType) {
         self.loginFields = loginFields
         self.loginFields.meta.socialService = SocialServiceName.google
+        self.authType = authType
         requestAuthorization(from: viewController)
     }
     

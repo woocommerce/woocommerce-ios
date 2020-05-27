@@ -481,7 +481,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
     @objc func googleTapped() {
         GoogleAuthenticator.sharedInstance.loginDelegate = self
-        GoogleAuthenticator.sharedInstance.showFrom(viewController: self, loginFields: loginFields)
+        GoogleAuthenticator.sharedInstance.showFrom(viewController: self, loginFields: loginFields, for: .login)
     }
 
     @IBAction func handleTextFieldDidChange(_ sender: UITextField) {

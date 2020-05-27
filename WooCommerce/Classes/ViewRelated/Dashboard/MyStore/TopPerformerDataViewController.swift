@@ -244,6 +244,7 @@ extension TopPerformerDataViewController: UITableViewDataSource {
         }
 
         cell.configure(statsItem, imageService: imageService)
+        cell.hidesBottomBorder = tableView.lastIndexPathOfTheLastSection() == indexPath ? true : false
         return cell
     }
 }
@@ -266,11 +267,6 @@ extension TopPerformerDataViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return UITableView.automaticDimension
-    }
-
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section headers.
-        return .leastNonzeroMagnitude
     }
 }
 

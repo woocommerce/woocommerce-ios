@@ -1,12 +1,14 @@
 4.4
 -----
 - Order Detail: the HTML shipping method is now showed correctly
+- [internal] Logging in via 'Log in with Google' has changes that can cause regressions. See https://git.io/Jf2Fs for full testing details.
 - [**] Fix bugs related to push notifications: after receiving a new order push notification, the Reviews tab does not show a badge anymore. The application icon badge number is now cleared by navigating to the Orders tab and/or the Reviews tab, depending on the types of notifications received.
 - [*] Fix the issue where product details screen cannot be scrolled to the bottom in landscape after keyboard is dismissed (e.g. from editing product title).
 - [*] The product name is now shown in the product details navigation bar so that the name is always visible.
 - [*] The images pending upload should be visible after editing product images from product details.
 - [*] The discard changes prompt does not appear when navigating from product settings detail screens with a text field (slug, purchase note, and menu order) anymore.
 - [*] Fix the wrong cell appearance in the order status list.
+- [*] The "View product in store" action will be shown only if the product is published.
 
 
 4.3

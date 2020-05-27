@@ -480,8 +480,8 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     }
 
     @objc func googleTapped() {
-        GoogleAuthenticator.sharedInstance.delegate = self
-        GoogleAuthenticator.sharedInstance.showFrom(viewController: self, loginFields: loginFields)
+        GoogleAuthenticator.sharedInstance.loginDelegate = self
+        GoogleAuthenticator.sharedInstance.showFrom(viewController: self, loginFields: loginFields, for: .login)
     }
 
     @IBAction func handleTextFieldDidChange(_ sender: UITextField) {
@@ -570,9 +570,9 @@ extension LoginEmailViewController: AppleAuthenticatorDelegate {
 
 }
 
-// MARK: - GoogleAuthenticatorDelegate
+// MARK: - GoogleAuthenticatorLoginDelegate
 
-extension LoginEmailViewController: GoogleAuthenticatorDelegate {
+extension LoginEmailViewController: GoogleAuthenticatorLoginDelegate {
 
     func googleFinishedLogin(credentials: AuthenticatorCredentials, loginFields: LoginFields) {
         self.loginFields = loginFields
@@ -611,7 +611,7 @@ extension LoginEmailViewController: GoogleAuthenticatorDelegate {
         navigationController?.pushViewController(vc, animated: true)
     }
 
-    func googleRemoteError(errorTitle: String, errorDescription: String, loginFields: LoginFields) {
+    func googleLoginFailed(errorTitle: String, errorDescription: String, loginFields: LoginFields) {
         self.loginFields = loginFields
         configureViewLoading(false)
 

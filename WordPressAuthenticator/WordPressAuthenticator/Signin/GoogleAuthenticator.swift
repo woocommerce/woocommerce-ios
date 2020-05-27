@@ -48,7 +48,6 @@ class GoogleAuthenticator: NSObject {
 
     private var loginFields = LoginFields()
     private let authConfig = WordPressAuthenticator.shared.configuration
-    private let trackSource: [AnyHashable: Any] = ["source": "google"]
     private var authType: GoogleAuthType = .login
     
     private lazy var loginFacade: LoginFacade = {
@@ -94,6 +93,13 @@ private extension GoogleAuthenticator {
     ///                     Required by Google SDK.
     func requestAuthorization(from viewController: UIViewController) {
 
+        switch authType {
+        case .login:
+            track(.loginSocialButtonClick)
+        case .signup:
+            track(.createAccountInitiated)
+        }
+
         guard let googleInstance = GIDSignIn.sharedInstance() else {
             DDLogError("GoogleAuthenticator: Failed to get `GIDSignIn.sharedInstance()`.")
             return
@@ -110,17 +116,14 @@ private extension GoogleAuthenticator {
 
         // Start the Google auth process. This presents the Google account selection view.
         googleInstance.signIn()
-
-        
-        switch authType {
-        case .login:
-            WordPressAuthenticator.track(.loginSocialButtonClick, properties: trackSource)
-        case .signup:
-            WordPressAuthenticator.track(.createAccountInitiated, properties: trackSource)
-        }
-        
     }
 
+    func track(_ event: WPAnalyticsStat, properties: [AnyHashable: Any] = [:]) {
+        var trackProperties = properties
+        trackProperties["source"] = "google"
+        WordPressAuthenticator.track(event, properties: trackProperties)
+    }
+    
     enum LocalizedText {
         static let googleConnected = NSLocalizedString("Connected But…", comment: "Title shown when a user logs in with Google but no matching WordPress.com account is found")
         static let googleConnectedError = NSLocalizedString("The Google account \"%@\" doesn't match any account on WordPress.com", comment: "Description shown when a user logs in with Google but no matching WordPress.com account is found")
@@ -143,14 +146,13 @@ extension GoogleAuthenticator: GIDSignInDelegate {
             let email = user.profile.email else {
                 
                 // The Google SignIn may have been canceled.
-                let properties = ["error": error?.localizedDescription,
-                                  "source": "google"]
+                let properties = ["error": error?.localizedDescription ?? ""]
 
                 switch authType {
                 case .login:
-                    WordPressAuthenticator.track(.loginSocialButtonFailure, properties: properties as [AnyHashable : Any])
+                    track(.loginSocialButtonFailure, properties: properties)
                 case .signup:
-                    WordPressAuthenticator.track(.signupSocialButtonFailure, error: error)
+                    track(.signupSocialButtonFailure, properties: properties)
                 }
 
                 return
@@ -180,9 +182,9 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
     // Google account login was successful.
     func finishedLogin(withGoogleIDToken googleIDToken: String, authToken: String) {
         GIDSignIn.sharedInstance().disconnect()
-        
-        WordPressAuthenticator.track(.signedIn, properties: trackSource)
-        WordPressAuthenticator.track(.loginSocialSuccess, properties: trackSource)
+
+        track(.signedIn)
+        track(.loginSocialSuccess)
         
         let wpcom = WordPressComCredentials(authToken: authToken,
                                             isJetpackLogin: loginFields.meta.jetpackLogin,
@@ -200,7 +202,7 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
         loginFields.nonceInfo = nonceInfo
         loginFields.nonceUserID = userID
 
-        WordPressAuthenticator.track(.loginSocial2faNeeded, properties: trackSource)
+        track(.loginSocial2faNeeded)
         loginDelegate?.googleNeedsMultifactorCode(loginFields: loginFields)
     }
 
@@ -211,7 +213,7 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
         loginFields.username = email
         loginFields.emailAddress = email
         
-        WordPressAuthenticator.track(.loginSocialAccountsNeedConnecting, properties: trackSource)
+        track(.loginSocialAccountsNeedConnecting)
         loginDelegate?.googleExistingUserNeedsConnection(loginFields: loginFields)
     }
 
@@ -224,7 +226,7 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
         if (error as NSError).code == WordPressComOAuthError.unknownUser.rawValue {
             errorTitle = LocalizedText.googleConnected
             errorDescription = String(format: LocalizedText.googleConnectedError, loginFields.username)
-            WordPressAuthenticator.track(.loginSocialErrorUnknownUser)
+            track(.loginSocialErrorUnknownUser)
         } else {
             errorTitle = LocalizedText.googleUnableToConnect
             errorDescription = error.localizedDescription
@@ -283,25 +285,23 @@ private extension GoogleAuthenticator {
     func accountCreated(credentials: AuthenticatorCredentials) {
         // This stat is part of a funnel that provides critical information.  Before
         // making ANY modification to this stat please refer to: p4qSXL-35X-p2
-        WordPressAuthenticator.track(.createdAccount, properties: self.trackSource)
-        WordPressAuthenticator.track(.signedIn, properties: self.trackSource)
-        WordPressAuthenticator.track(.signupSocialSuccess, properties: self.trackSource)
+        track(.createdAccount)
+        track(.signedIn)
+        track(.signupSocialSuccess)
 
         self.signupDelegate?.googleFinishedSignup(credentials: credentials, loginFields: loginFields)
     }
     
     func logInInstead(credentials: AuthenticatorCredentials) {
-        WordPressAuthenticator.track(.signedIn, properties: self.trackSource)
-        WordPressAuthenticator.track(.signupSocialToLogin, properties: self.trackSource)
-        WordPressAuthenticator.track(.loginSocialSuccess, properties: self.trackSource)
+        track(.signedIn)
+        track(.signupSocialToLogin)
+        track(.loginSocialSuccess)
 
         self.signupDelegate?.googleLoggedInInstead(credentials: credentials, loginFields: loginFields)
     }
     
     func signupFailed(error: Error) {
-        let properties = [ "source": "google", "error": error.localizedDescription]
-        WordPressAuthenticator.track(.signupSocialFailure, properties: properties)
-
+        track(.signupSocialFailure, properties: ["error": error.localizedDescription])
         self.signupDelegate?.googleSignupFailed(error: error, loginFields: loginFields)
     }
     

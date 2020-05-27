@@ -90,6 +90,9 @@ final class ProductFormViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // Presentation style is configured before navigation bar updates below because the subscriber for the navigation bar updates is different.
+        configurePresentationStyle()
+
         configureNavigationBar()
         configureMainView()
         configureTableView()
@@ -97,7 +100,6 @@ final class ProductFormViewController: UIViewController {
 
         startListeningToNotifications()
         handleSwipeBackGesture()
-        configurePresentationStyle()
 
         observeProduct()
         observeProductName()

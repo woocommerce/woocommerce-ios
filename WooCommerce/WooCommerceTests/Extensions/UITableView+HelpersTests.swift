@@ -16,6 +16,8 @@ final class UITableView_HelpersTests: XCTestCase {
         emptyTableView.dataSource = self
         tableViewWithoutRows.dataSource = self
         tableView.reloadData()
+        emptyTableView.reloadData()
+        tableViewWithoutRows.reloadData()
     }
 
     func testLastIndexPathWorksLikeExpected() {

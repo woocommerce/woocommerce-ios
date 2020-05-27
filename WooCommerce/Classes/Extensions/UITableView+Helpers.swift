@@ -3,7 +3,7 @@ import UIKit
 extension UITableView {
 
     /// Return the last Index Path (the last row of the last section) if available
-    func lastIndexPath() -> IndexPath? {
+    func lastIndexPathOfTheLastSection() -> IndexPath? {
         guard numberOfSections > 0 else {
             return nil
         }

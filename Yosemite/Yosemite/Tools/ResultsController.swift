@@ -280,21 +280,21 @@ public extension ResultsController {
         /// Returns the array of (ReadOnly) objects in the section.
         ///
         private(set) public lazy var objects: [T.ReadOnlyType] = {
-            return mutableObjects.map { $0.toReadOnly() }
+            guard let objects = mutableSectionInfo.objects else {
+                return []
+            }
+            guard let castedObjects = objects as? [T] else {
+                assertionFailure("Failed to cast objects into an array of \(T.self)")
+                return []
+            }
+
+            return castedObjects.map { $0.toReadOnly() }
         }()
-
-
-        /// Array of Mutable Objects!
-        ///
-        private let mutableObjects: [T]
-
 
         /// Designated Initializer
         ///
         init(mutableSection: NSFetchedResultsSectionInfo) {
             mutableSectionInfo = mutableSection
-
-            mutableObjects = mutableSection.objects as? [T] ?? []
         }
     }
 }

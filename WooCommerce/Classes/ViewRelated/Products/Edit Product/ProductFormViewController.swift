@@ -67,7 +67,7 @@ final class ProductFormViewController: UIViewController {
                                               isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
                                               isEditProductsRelease3Enabled: isEditProductsRelease2Enabled)
         self.tableViewModel = DefaultProductFormTableViewModel(product: product,
-                                                               actionsFactory: viewModel.bottomSheetActionsFactory,
+                                                               actionsFactory: viewModel.actionsFactory,
                                                                currency: currency)
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
@@ -246,7 +246,7 @@ private extension ProductFormViewController {
         updateMoreDetailsButtonVisibility()
 
         tableViewModel = DefaultProductFormTableViewModel(product: product,
-                                                          actionsFactory: viewModel.bottomSheetActionsFactory,
+                                                          actionsFactory: viewModel.actionsFactory,
                                                           currency: currency)
         tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                              productImageStatuses: productImageActionHandler.productImageStatuses,
@@ -283,7 +283,7 @@ private extension ProductFormViewController {
         let title = NSLocalizedString("Add more details",
                                       comment: "Title of the bottom sheet from the product form to add more product details.")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
-        let actions = viewModel.bottomSheetActionsFactory.bottomSheetActions()
+        let actions = viewModel.actionsFactory.bottomSheetActions()
         let dataSource = ProductFormBottomSheetListSelectorCommand(actions: actions) { [weak self] action in
                                                                     self?.dismiss(animated: true) { [weak self] in
                                                                         switch action {
@@ -307,7 +307,7 @@ private extension ProductFormViewController {
     }
 
     func updateMoreDetailsButtonVisibility() {
-        let moreDetailsActions = viewModel.bottomSheetActionsFactory.bottomSheetActions()
+        let moreDetailsActions = viewModel.actionsFactory.bottomSheetActions()
         moreDetailsContainerView.isHidden = moreDetailsActions.isEmpty
     }
 }

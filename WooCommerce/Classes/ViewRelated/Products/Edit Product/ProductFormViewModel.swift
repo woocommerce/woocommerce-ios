@@ -18,7 +18,7 @@ final class ProductFormViewModel {
     }
 
     /// Creates actions available on the bottom sheet.
-    private(set) var bottomSheetActionsFactory: ProductFormActionsFactory
+    private(set) var actionsFactory: ProductFormActionsFactory
 
     private let productSubject: PublishSubject<Product> = PublishSubject<Product>()
     private let productNameSubject: PublishSubject<String> = PublishSubject<String>()
@@ -47,7 +47,7 @@ final class ProductFormViewModel {
                 return
             }
 
-            bottomSheetActionsFactory = ProductFormActionsFactory(product: product,
+            actionsFactory = ProductFormActionsFactory(product: product,
                                                                   isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
                                                                   isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
             productSubject.send(product)
@@ -88,7 +88,7 @@ final class ProductFormViewModel {
         self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
         self.originalProduct = product
         self.product = product
-        self.bottomSheetActionsFactory = ProductFormActionsFactory(product: product,
+        self.actionsFactory = ProductFormActionsFactory(product: product,
                                                                    isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
                                                                    isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
         self.isUpdateEnabledSubject = PublishSubject<Bool>()

@@ -1,5 +1,8 @@
 import XCTest
 import Yosemite
+
+import protocol Storage.StorageType
+
 @testable import WooCommerce
 
 
@@ -19,6 +22,9 @@ final class ResultsControllerUIKitTests: XCTestCase {
     ///
     private var resultsController: ResultsController<StorageAccount>!
 
+    private var viewStorage: StorageType {
+        storageManager.viewStorage
+    }
 
     // MARK: - Overridden Methods
 
@@ -208,4 +214,21 @@ extension ResultsControllerUIKitTests: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         UITableViewCell()
     }
+}
+
+// MARK: - Utils
+
+private extension ResultsControllerUIKitTests {
+    /// Create an account belonging to a section.
+    ///
+    /// The `section` is really just the `username`. This is just how we configured it in `setUp()`.
+    ///
+    @discardableResult
+    func insertAccount(section username: String, userID: Int64) -> StorageAccount {
+        let account = storageManager.insertSampleAccount()
+        account.username = username
+        account.userID = userID
+        return account
+    }
+
 }

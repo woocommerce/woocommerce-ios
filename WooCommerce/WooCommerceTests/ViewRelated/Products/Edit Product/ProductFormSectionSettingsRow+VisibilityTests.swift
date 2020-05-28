@@ -16,7 +16,6 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(factory.settingsSectionActions().contains(.priceSettings))
-        XCTAssertFalse(factory.bottomSheetActions().contains(.priceSettings))
     }
 
     func testPriceRowIsVisibleForProductWithoutPriceData() {
@@ -30,7 +29,6 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(factory.settingsSectionActions().contains(.priceSettings))
-        XCTAssertFalse(factory.bottomSheetActions().contains(.priceSettings))
     }
 
     // MARK: - Inventory
@@ -46,7 +44,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(factory.settingsSectionActions().contains(.inventorySettings))
-        XCTAssertFalse(factory.bottomSheetActions().contains(.inventorySettings))
+        XCTAssertFalse(factory.bottomSheetActions().contains(.editInventorySettings))
     }
 
     func testInventoryRowIsInvisibleForProductWithMissingInventoryData() {
@@ -60,7 +58,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
 
         // Assert
         XCTAssertFalse(factory.settingsSectionActions().contains(.inventorySettings))
-        XCTAssertTrue(factory.bottomSheetActions().contains(.inventorySettings))
+        XCTAssertTrue(factory.bottomSheetActions().contains(.editInventorySettings))
     }
 
     // MARK: - Shipping
@@ -76,7 +74,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(factory.settingsSectionActions().contains(.shippingSettings))
-        XCTAssertFalse(factory.bottomSheetActions().contains(.shippingSettings))
+        XCTAssertFalse(factory.bottomSheetActions().contains(.editShippingSettings))
     }
 
     func testShippingRowIsInvisibleForProductWithMissingShippingData() {
@@ -90,7 +88,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
 
         // Assert
         XCTAssertFalse(factory.settingsSectionActions().contains(.shippingSettings))
-        XCTAssertTrue(factory.bottomSheetActions().contains(.shippingSettings))
+        XCTAssertTrue(factory.bottomSheetActions().contains(.editShippingSettings))
     }
 
     // MARK: - Categories
@@ -106,7 +104,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(factory.settingsSectionActions().contains(.categories))
-        XCTAssertFalse(factory.bottomSheetActions().contains(.categories))
+        XCTAssertFalse(factory.bottomSheetActions().contains(.editCategories))
     }
 
     func testCategoriesRowIsInvisibleForProductWithoutCategories() {
@@ -120,7 +118,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
 
         // Assert
         XCTAssertFalse(factory.settingsSectionActions().contains(.categories))
-        XCTAssertTrue(factory.bottomSheetActions().contains(.categories))
+        XCTAssertTrue(factory.bottomSheetActions().contains(.editCategories))
     }
 
     // MARK: - Brief description
@@ -136,7 +134,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(factory.settingsSectionActions().contains(.briefDescription))
-        XCTAssertFalse(factory.bottomSheetActions().contains(.briefDescription))
+        XCTAssertFalse(factory.bottomSheetActions().contains(.editBriefDescription))
     }
 
     func testBriefDescriptionRowIsInvisibleForProductWithoutBriefDescription() {
@@ -150,7 +148,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
 
         // Assert
         XCTAssertFalse(factory.settingsSectionActions().contains(.briefDescription))
-        XCTAssertTrue(factory.bottomSheetActions().contains(.briefDescription))
+        XCTAssertTrue(factory.bottomSheetActions().contains(.editBriefDescription))
     }
 }
 

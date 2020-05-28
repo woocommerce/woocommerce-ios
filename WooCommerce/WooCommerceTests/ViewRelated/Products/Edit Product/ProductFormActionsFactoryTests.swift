@@ -23,7 +23,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .shippingSettings, .inventorySettings]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormEditAction] = []
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -47,7 +47,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .inventorySettings]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormEditAction] = []
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -69,7 +69,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .inventorySettings]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormEditAction] = []
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -92,7 +92,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .inventorySettings]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormEditAction] = []
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 }

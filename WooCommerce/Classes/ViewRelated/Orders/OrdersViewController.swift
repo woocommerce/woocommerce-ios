@@ -18,7 +18,7 @@ protocol OrdersViewControllerDelegate: class {
 
 /// OrdersViewController: Displays the list of Orders associated to the active Store / Account.
 ///
-class OrdersViewController: UIViewController {
+final class OrdersViewController: UIViewController {
 
     weak var delegate: OrdersViewControllerDelegate?
 

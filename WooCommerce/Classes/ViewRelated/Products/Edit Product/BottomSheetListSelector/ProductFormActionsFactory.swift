@@ -1,6 +1,6 @@
 import Yosemite
 
-/// Edit actions in the product form.
+/// Edit actions in the product form. Each action allows the user to edit a subset of product properties.
 enum ProductFormEditAction {
     case images
     case name
@@ -12,12 +12,13 @@ enum ProductFormEditAction {
     case briefDescription
 }
 
-/// Creates actions for product form bottom sheet.
+/// Creates actions for different sections/UI on the product form.
 struct ProductFormActionsFactory {
     private let product: Product
     private let isEditProductsRelease2Enabled: Bool
     private let isEditProductsRelease3Enabled: Bool
 
+    /// All the editable actions in the settings section given the product and feature switches.
     private var allSettingsSectionActions: [ProductFormEditAction] {
         let shouldShowShippingSettingsRow = product.isShippingEnabled
         let shouldShowBriefDescriptionRow = isEditProductsRelease2Enabled
@@ -77,7 +78,7 @@ private extension ProductFormActionsFactory {
     func isVisibleInSettingsSection(action: ProductFormEditAction) -> Bool {
         switch action {
         case .priceSettings:
-            // The price settings action is always visible.
+            // The price settings action is always visible in the settings section.
             return true
         case .inventorySettings:
             let hasStockData = product.manageStock ? product.stockQuantity != nil: true

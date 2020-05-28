@@ -190,4 +190,18 @@ final class ResultsControllerUIKitTests: XCTestCase {
         storageManager.viewStorage.saveIfNeeded()
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
+// MARK: - UITableViewDataSource
+
+extension ResultsControllerUIKitTests: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        resultsController.sections.count
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        resultsController.sections[section].numberOfObjects
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        UITableViewCell()
+    }
 }

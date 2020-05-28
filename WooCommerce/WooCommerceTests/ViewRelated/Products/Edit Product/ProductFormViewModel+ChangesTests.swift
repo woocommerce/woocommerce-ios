@@ -5,7 +5,7 @@ import XCTest
 import Yosemite
 
 /// Unit tests for unsaved changes (`hasUnsavedChanges`, `hasProductChanged`, `hasPasswordChanged`)
-final class ProductFormViewModelTests_Changes: XCTestCase {
+final class ProductFormViewModel_ChangesTests: XCTestCase {
     private let defaultSiteID: Int64 = 134
 
     func testProductHasNoChangesFromEditActionsOfTheSameData() {

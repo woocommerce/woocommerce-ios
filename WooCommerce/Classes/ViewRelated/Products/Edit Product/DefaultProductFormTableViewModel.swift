@@ -28,14 +28,14 @@ private extension DefaultProductFormTableViewModel {
                     .settings(rows: settingsRows(product: product, actions: actionsFactory.settingsSectionActions()))]
     }
 
-    func primaryFieldRows(product: Product, actions: [ProductFormAction]) -> [ProductFormSection.PrimaryFieldRow] {
+    func primaryFieldRows(product: Product, actions: [ProductFormEditAction]) -> [ProductFormSection.PrimaryFieldRow] {
         return actions.map { action in
             switch action {
-            case .editImages:
+            case .images:
                 return .images(product: product)
-            case .editName:
+            case .name:
                 return .name(name: product.name)
-            case .editDescription:
+            case .description:
                 return .description(description: product.trimmedFullDescription)
             default:
                 fatalError("Unexpected action in the primary section: \(action)")
@@ -43,18 +43,18 @@ private extension DefaultProductFormTableViewModel {
         }
     }
 
-    func settingsRows(product: Product, actions: [ProductFormAction]) -> [ProductFormSection.SettingsRow] {
+    func settingsRows(product: Product, actions: [ProductFormEditAction]) -> [ProductFormSection.SettingsRow] {
         return actions.map { action in
             switch action {
-            case .editPriceSettings:
+            case .priceSettings:
                 return .price(viewModel: priceSettingsRow(product: product))
-            case .editShippingSettings:
+            case .shippingSettings:
                 return .shipping(viewModel: shippingSettingsRow(product: product))
-            case .editInventorySettings:
+            case .inventorySettings:
                 return .inventory(viewModel: inventorySettingsRow(product: product))
-            case .editCategories:
+            case .categories:
                 return .categories(viewModel: categoriesRow(product: product))
-            case .editBriefDescription:
+            case .briefDescription:
                 return .briefDescription(viewModel: briefDescriptionRow(product: product))
             default:
                 fatalError("Unexpected action in the settings section: \(action)")

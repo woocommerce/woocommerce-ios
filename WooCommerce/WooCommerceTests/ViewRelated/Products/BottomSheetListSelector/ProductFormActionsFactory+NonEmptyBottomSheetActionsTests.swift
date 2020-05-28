@@ -2,7 +2,7 @@ import XCTest
 @testable import WooCommerce
 @testable import Yosemite
 
-final class ProductFormBottomActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCase {
+final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCase {
 
     // M3 feature flag off & M2 feature flag off
 
@@ -16,10 +16,10 @@ final class ProductFormBottomActionsFactory_NonEmptyBottomSheetActionsTests: XCT
                                                 isEditProductsRelease3Enabled: false)
 
         // Assert
-        let expectedSettingsSectionActions: [ProductFormAction] = [.editPriceSettings]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormAction] = [.editShippingSettings, .editInventorySettings]
+        let expectedBottomSheetActions: [ProductFormEditAction] = [.shippingSettings, .inventorySettings]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -33,10 +33,10 @@ final class ProductFormBottomActionsFactory_NonEmptyBottomSheetActionsTests: XCT
                                                 isEditProductsRelease3Enabled: false)
 
         // Assert
-        let expectedSettingsSectionActions: [ProductFormAction] = [.editPriceSettings]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormAction] = [.editInventorySettings]
+        let expectedBottomSheetActions: [ProductFormEditAction] = [.inventorySettings]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -50,10 +50,10 @@ final class ProductFormBottomActionsFactory_NonEmptyBottomSheetActionsTests: XCT
                                                 isEditProductsRelease3Enabled: false)
 
         // Assert
-        let expectedSettingsSectionActions: [ProductFormAction] = [.editPriceSettings]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormAction] = [.editInventorySettings]
+        let expectedBottomSheetActions: [ProductFormEditAction] = [.inventorySettings]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -69,10 +69,10 @@ final class ProductFormBottomActionsFactory_NonEmptyBottomSheetActionsTests: XCT
                                                 isEditProductsRelease3Enabled: false)
 
         // Assert
-        let expectedSettingsSectionActions: [ProductFormAction] = [.editPriceSettings]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormAction] = [.editShippingSettings, .editInventorySettings, .editBriefDescription]
+        let expectedBottomSheetActions: [ProductFormEditAction] = [.shippingSettings, .inventorySettings, .briefDescription]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -86,10 +86,10 @@ final class ProductFormBottomActionsFactory_NonEmptyBottomSheetActionsTests: XCT
                                                 isEditProductsRelease3Enabled: false)
 
         // Assert
-        let expectedSettingsSectionActions: [ProductFormAction] = [.editPriceSettings]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormAction] = [.editInventorySettings, .editBriefDescription]
+        let expectedBottomSheetActions: [ProductFormEditAction] = [.inventorySettings, .briefDescription]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -103,10 +103,10 @@ final class ProductFormBottomActionsFactory_NonEmptyBottomSheetActionsTests: XCT
                                                 isEditProductsRelease3Enabled: false)
 
         // Assert
-        let expectedSettingsSectionActions: [ProductFormAction] = [.editPriceSettings]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormAction] = [.editInventorySettings, .editBriefDescription]
+        let expectedBottomSheetActions: [ProductFormEditAction] = [.inventorySettings, .briefDescription]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -122,10 +122,10 @@ final class ProductFormBottomActionsFactory_NonEmptyBottomSheetActionsTests: XCT
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
-        let expectedSettingsSectionActions: [ProductFormAction] = [.editPriceSettings]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormAction] = [.editShippingSettings, .editInventorySettings, .editCategories, .editBriefDescription]
+        let expectedBottomSheetActions: [ProductFormEditAction] = [.shippingSettings, .inventorySettings, .categories, .briefDescription]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -139,10 +139,10 @@ final class ProductFormBottomActionsFactory_NonEmptyBottomSheetActionsTests: XCT
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
-        let expectedSettingsSectionActions: [ProductFormAction] = [.editPriceSettings]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormAction] = [.editInventorySettings, .editCategories, .editBriefDescription]
+        let expectedBottomSheetActions: [ProductFormEditAction] = [.inventorySettings, .categories, .briefDescription]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -156,16 +156,16 @@ final class ProductFormBottomActionsFactory_NonEmptyBottomSheetActionsTests: XCT
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
-        let expectedSettingsSectionActions: [ProductFormAction] = [.editPriceSettings]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormAction] = [.editInventorySettings, .editCategories, .editBriefDescription]
+        let expectedBottomSheetActions: [ProductFormEditAction] = [.inventorySettings, .categories, .briefDescription]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
 }
 
-private extension ProductFormBottomActionsFactory_NonEmptyBottomSheetActionsTests {
+private extension ProductFormActionsFactory_NonEmptyBottomSheetActionsTests {
     enum Fixtures {
         // downloadable: false, virtual: false, missing inventory/shipping/categories/brief description
         static let physicalProduct = MockProduct().product(downloadable: false, briefDescription: "", manageStock: true, sku: nil, stockQuantity: nil,

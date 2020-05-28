@@ -8,15 +8,15 @@ enum ProductFormBottomSheetAction {
     case editCategories
     case editBriefDescription
 
-    init?(productFormAction: ProductFormAction) {
+    init?(productFormAction: ProductFormEditAction) {
         switch productFormAction {
-        case .editInventorySettings:
+        case .inventorySettings:
             self = .editInventorySettings
-        case .editShippingSettings:
+        case .shippingSettings:
             self = .editShippingSettings
-        case .editCategories:
+        case .categories:
             self = .editCategories
-        case .editBriefDescription:
+        case .briefDescription:
             self = .editBriefDescription
         default:
             return nil

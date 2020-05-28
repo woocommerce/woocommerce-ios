@@ -1,15 +1,15 @@
 import Yosemite
 
-/// Actions in the product form bottom sheet to add more product details.
-enum ProductFormAction {
-    case editImages
-    case editName
-    case editDescription
-    case editPriceSettings
-    case editInventorySettings
-    case editShippingSettings
-    case editCategories
-    case editBriefDescription
+/// Edit actions in the product form.
+enum ProductFormEditAction {
+    case images
+    case name
+    case description
+    case priceSettings
+    case inventorySettings
+    case shippingSettings
+    case categories
+    case briefDescription
 }
 
 /// Creates actions for product form bottom sheet.
@@ -18,17 +18,17 @@ struct ProductFormActionsFactory {
     private let isEditProductsRelease2Enabled: Bool
     private let isEditProductsRelease3Enabled: Bool
 
-    private var allSettingsSectionActions: [ProductFormAction] {
+    private var allSettingsSectionActions: [ProductFormEditAction] {
         let shouldShowShippingSettingsRow = product.isShippingEnabled
         let shouldShowBriefDescriptionRow = isEditProductsRelease2Enabled
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
 
-        let actions: [ProductFormAction?] = [
-            .editPriceSettings,
-            shouldShowShippingSettingsRow ? .editShippingSettings: nil,
-            .editInventorySettings,
-            shouldShowCategoriesRow ? .editCategories: nil,
-            shouldShowBriefDescriptionRow ? .editBriefDescription: nil
+        let actions: [ProductFormEditAction?] = [
+            .priceSettings,
+            shouldShowShippingSettingsRow ? .shippingSettings: nil,
+            .inventorySettings,
+            shouldShowCategoriesRow ? .categories: nil,
+            shouldShowBriefDescriptionRow ? .briefDescription: nil
         ]
         return actions.compactMap { $0 }
     }
@@ -42,51 +42,51 @@ struct ProductFormActionsFactory {
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
-    func primarySectionActions() -> [ProductFormAction] {
+    func primarySectionActions() -> [ProductFormEditAction] {
         guard isEditProductsRelease2Enabled || product.images.isEmpty == false else {
             return [
-                .editName,
-                .editDescription
+                .name,
+                .description
             ]
         }
 
         return [
-            .editImages,
-            .editName,
-            .editDescription
+            .images,
+            .name,
+            .description
         ]
     }
 
     /// Returns an array of actions that are visible in the product form settings section.
-    func settingsSectionActions() -> [ProductFormAction] {
+    func settingsSectionActions() -> [ProductFormEditAction] {
         return visibleSettingsSectionActions()
     }
 
     /// Retruns an array of actions that are visible in the product form bottom sheet.
-    func bottomSheetActions() -> [ProductFormAction] {
+    func bottomSheetActions() -> [ProductFormEditAction] {
         return allSettingsSectionActions.filter { settingsSectionActions().contains($0) == false }
     }
 }
 
 private extension ProductFormActionsFactory {
-    func visibleSettingsSectionActions() -> [ProductFormAction] {
+    func visibleSettingsSectionActions() -> [ProductFormEditAction] {
         return allSettingsSectionActions.compactMap({ $0 }).filter({ isVisibleInSettingsSection(action: $0) })
     }
 
-    func isVisibleInSettingsSection(action: ProductFormAction) -> Bool {
+    func isVisibleInSettingsSection(action: ProductFormEditAction) -> Bool {
         switch action {
-        case .editPriceSettings:
+        case .priceSettings:
             // The price settings action is always visible.
             return true
-        case .editInventorySettings:
+        case .inventorySettings:
             let hasStockData = product.manageStock ? product.stockQuantity != nil: true
             return product.sku != nil || hasStockData
-        case .editShippingSettings:
+        case .shippingSettings:
             return product.weight.isNilOrEmpty == false ||
                 product.dimensions.height.isNotEmpty || product.dimensions.width.isNotEmpty || product.dimensions.length.isNotEmpty
-        case .editCategories:
+        case .categories:
             return product.categories.isNotEmpty
-        case .editBriefDescription:
+        case .briefDescription:
             return product.briefDescription.isNilOrEmpty == false
         default:
             return false

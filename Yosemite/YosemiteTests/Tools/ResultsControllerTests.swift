@@ -7,7 +7,7 @@ import CoreData
 
 // MARK: - ResultsController Unit Tests
 //
-class ResultsControllerTests: XCTestCase {
+final class ResultsControllerTests: XCTestCase {
 
     /// InMemory Storage!
     ///

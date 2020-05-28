@@ -114,8 +114,8 @@ final class OrdersViewController: UIViewController {
         configureSyncingCoordinator()
         configureTableView()
         configureGhostableTableView()
-        configureResultsControllers()
 
+        configureStatusResultsController()
         configureViewModel()
 
         startListeningToNotifications()
@@ -169,10 +169,9 @@ private extension OrdersViewController {
         statusResultsController.predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
     }
 
-    /// Setup: Results Controller
+    /// Setup: Status Results Controller
     ///
-    func configureResultsControllers() {
-        // Order status FRC
+    func configureStatusResultsController() {
         try? statusResultsController.performFetch()
     }
 

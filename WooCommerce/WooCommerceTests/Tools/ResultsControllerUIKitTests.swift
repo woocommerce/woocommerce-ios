@@ -210,14 +210,6 @@ final class ResultsControllerUIKitTests: XCTestCase {
     func testItCanHandleSimultaneousSectionAndRowDeletionAndInsertion() {
         // Given
 
-        // Add the tableview to a window to avoid a logged warning
-        let window = makeWindow(containing: tableView)
-        window.makeKeyAndVisible()
-
-        defer {
-            window.resignKey()
-        }
-
         // Set up initial rows and sections.
         let expectOnEndUpdates = self.expectation(description: "wait for onEndUpdates")
         tableView.onEndUpdates = {
@@ -304,17 +296,5 @@ private extension ResultsControllerUIKitTests {
         account.username = username
         account.userID = userID
         return account
-    }
-
-    /// Create a `UIWindow` with the `tableView` as the child.
-    ///
-    func makeWindow(containing tableView: UITableView) -> UIWindow {
-        let viewController = UIViewController()
-        viewController.view.addSubview(tableView)
-
-        let window = UIWindow(frame: .zero)
-        window.rootViewController = viewController
-
-        return window
     }
 }

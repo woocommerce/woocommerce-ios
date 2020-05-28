@@ -39,7 +39,7 @@ final class TextFieldTableViewCell: UITableViewCell {
         textField.addTarget(self, action: #selector(textFieldDidChange(textField:)), for: .editingChanged)
         textField.addTarget(self, action: #selector(textFieldDidBegin(textField:)), for: .editingDidBegin)
     }
-    
+
     @discardableResult
     override func becomeFirstResponder() -> Bool {
         textField.becomeFirstResponder()
@@ -55,12 +55,12 @@ private extension TextFieldTableViewCell {
 
 // Styles
 extension TextFieldTableViewCell {
-    
+
     enum Style {
         case body
         case headline
     }
-    
+
     func applyStyle(style: Style) {
         switch style {
         case .headline:

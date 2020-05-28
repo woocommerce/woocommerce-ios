@@ -23,8 +23,8 @@ final class ResultsControllerUIKitTests: XCTestCase {
     // MARK: - Overridden Methods
 
     override func setUp() {
+        super.setUp()
         storageManager = MockupStorageManager()
-        tableView = MockupTableView()
 
         resultsController = {
             let viewStorage = storageManager.viewStorage
@@ -38,13 +38,17 @@ final class ResultsControllerUIKitTests: XCTestCase {
             )
         }()
 
+        tableView = MockupTableView()
+        tableView.dataSource = self
+
         resultsController.startForwardingEvents(to: tableView)
         try? resultsController.performFetch()
     }
 
     override func tearDown() {
-        resultsController = nil
+        tableView.dataSource = nil
         tableView = nil
+        resultsController = nil
         storageManager = nil
         super.tearDown()
     }

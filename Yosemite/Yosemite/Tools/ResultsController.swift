@@ -257,7 +257,7 @@ public extension ResultsController {
 
     // MARK: - ResultsController.SectionInfo
     //
-    class SectionInfo {
+    final class SectionInfo {
 
         /// Name of the section
         ///

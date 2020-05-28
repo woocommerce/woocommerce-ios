@@ -200,6 +200,81 @@ final class ResultsControllerUIKitTests: XCTestCase {
         storageManager.viewStorage.saveIfNeeded()
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
+
+    /// Tests that `ResultsController` can handle a simultataneous section deletion, row deletion,
+    /// and row insertion.
+    ///
+    /// This scenario is based on the Ordering of Operations and Index Paths section in
+    /// [this Apple Doc](https://tinyurl.com/yc3379jb)
+    ///
+    func testItCanHandleSimultaneousSectionAndRowDeletionAndInsertion() {
+        // Given
+
+        // Add the tableview to a window to avoid a logged warning
+        let window = makeWindow(containing: tableView)
+        window.makeKeyAndVisible()
+
+        defer {
+            window.resignKey()
+        }
+
+        // Set up initial rows and sections.
+        let expectOnEndUpdates = self.expectation(description: "wait for onEndUpdates")
+        tableView.onEndUpdates = {
+            expectOnEndUpdates.fulfill()
+        }
+
+        let firstSection = [
+            insertAccount(section: "Alpha", userID: 9_900),
+            insertAccount(section: "Alpha", userID: 9_800),
+            insertAccount(section: "Alpha", userID: 9_700)
+        ]
+
+        let secondSection = [
+            insertAccount(section: "Beta", userID: 8_900),
+            insertAccount(section: "Beta", userID: 8_800),
+            insertAccount(section: "Beta", userID: 8_700)
+        ]
+
+        let _ = [
+            insertAccount(section: "Charlie", userID: 7_900),
+            insertAccount(section: "Charlie", userID: 7_800),
+            insertAccount(section: "Charlie", userID: 7_700)
+        ]
+
+        viewStorage.saveIfNeeded()
+
+        wait(for: [expectOnEndUpdates], timeout: Constants.expectationTimeout)
+
+        XCTAssertEqual(tableView.numberOfSections, 3)
+        XCTAssertEqual(tableView.numberOfRows(inSection: 0), 3)
+        XCTAssertEqual(tableView.numberOfRows(inSection: 1), 3)
+        XCTAssertEqual(tableView.numberOfRows(inSection: 2), 3)
+
+        // When
+        let expectSecondOnEndUpdates = self.expectation(description: "second wait for onEndUpdates")
+        tableView.onEndUpdates = {
+            expectSecondOnEndUpdates.fulfill()
+        }
+
+        // Delete row at index 1 of section at index 0.
+        viewStorage.deleteObject(firstSection[1])
+        // Delete section at index 1
+        secondSection.forEach(viewStorage.deleteObject)
+        // Insert row at index 1 of section at index 1.
+        insertAccount(section: "Charlie", userID: 7_801)
+
+        viewStorage.saveIfNeeded()
+
+        wait(for: [expectSecondOnEndUpdates], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertEqual(tableView.numberOfSections, 2)
+        XCTAssertEqual(tableView.numberOfRows(inSection: 0), 2)
+        XCTAssertEqual(tableView.numberOfRows(inSection: 1), 4)
+    }
+}
+
 // MARK: - UITableViewDataSource
 
 extension ResultsControllerUIKitTests: UITableViewDataSource {
@@ -231,4 +306,15 @@ private extension ResultsControllerUIKitTests {
         return account
     }
 
+    /// Create a `UIWindow` with the `tableView` as the child.
+    ///
+    func makeWindow(containing tableView: UITableView) -> UIWindow {
+        let viewController = UIViewController()
+        viewController.view.addSubview(tableView)
+
+        let window = UIWindow(frame: .zero)
+        window.rootViewController = viewController
+
+        return window
+    }
 }

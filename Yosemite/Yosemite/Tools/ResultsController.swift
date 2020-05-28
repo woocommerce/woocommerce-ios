@@ -274,7 +274,7 @@ public extension ResultsController {
         /// Number of objects in the current section
         ///
         public var numberOfObjects: Int {
-            return mutableObjects.count
+            mutableSectionInfo.numberOfObjects
         }
 
         /// Returns the array of (ReadOnly) objects in the section.

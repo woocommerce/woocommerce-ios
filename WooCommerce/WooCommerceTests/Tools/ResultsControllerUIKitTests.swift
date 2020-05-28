@@ -42,7 +42,7 @@ final class ResultsControllerUIKitTests: XCTestCase {
         tableView.dataSource = self
 
         resultsController.startForwardingEvents(to: tableView)
-        try? resultsController.performFetch()
+        try! resultsController.performFetch()
     }
 
     override func tearDown() {

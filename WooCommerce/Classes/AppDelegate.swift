@@ -44,7 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // As first thing, setup the crash logging
         setupCrashLogging()
-        
+
         // Setup the Interface!
         setupMainWindow()
         setupComponentsAppearance()

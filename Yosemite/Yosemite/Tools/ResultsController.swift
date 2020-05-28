@@ -256,7 +256,9 @@ public extension ResultsController {
     typealias ChangeType = NSFetchedResultsChangeType
 
     // MARK: - ResultsController.SectionInfo
-    //
+
+    /// An interface to `NSFetchedResultsSectionInfo` which enforces readonly usage.
+    ///
     final class SectionInfo {
 
         /// The real SectionInfo that we're hiding.

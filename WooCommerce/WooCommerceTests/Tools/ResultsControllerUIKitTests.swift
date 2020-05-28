@@ -5,7 +5,7 @@ import Yosemite
 
 /// StoresManager Unit Tests
 ///
-class ResultsControllerUIKitTests: XCTestCase {
+final class ResultsControllerUIKitTests: XCTestCase {
 
     /// Mockup StorageManager
     ///

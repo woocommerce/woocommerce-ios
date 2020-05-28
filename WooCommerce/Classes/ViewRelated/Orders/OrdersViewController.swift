@@ -26,7 +26,7 @@ final class OrdersViewController: UIViewController {
 
     /// Main TableView.
     ///
-    @IBOutlet private var tableView: UITableView!
+    private lazy var tableView = UITableView(frame: .zero, style: .grouped)
 
     /// Ghostable TableView.
     ///
@@ -96,7 +96,7 @@ final class OrdersViewController: UIViewController {
         self.viewModel = viewModel
         self.emptyStateConfig = emptyStateConfig
 
-        super.init(nibName: Self.nibName, bundle: nil)
+        super.init(nibName: nil, bundle: nil)
 
         self.title = title
     }
@@ -185,6 +185,9 @@ private extension OrdersViewController {
     /// Setup: TableView
     ///
     func configureTableView() {
+        tableView.delegate = self
+        tableView.dataSource = self
+
         view.backgroundColor = .listBackground
         tableView.backgroundColor = .listBackground
         tableView.refreshControl = refreshControl
@@ -194,6 +197,10 @@ private extension OrdersViewController {
         tableView.sectionFooterHeight = .leastNonzeroMagnitude
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = UITableView.automaticDimension
+
+        view.addSubview(tableView)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToSafeArea(tableView)
     }
 
     /// Setup: Ghostable TableView

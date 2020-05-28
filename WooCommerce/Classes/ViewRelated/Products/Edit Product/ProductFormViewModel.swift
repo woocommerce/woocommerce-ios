@@ -183,6 +183,7 @@ extension ProductFormViewModel {
 
     func resetPassword(_ password: String?) {
         originalPassword = password
+        isUpdateEnabledSubject.send(hasUnsavedChanges())
     }
 }
 

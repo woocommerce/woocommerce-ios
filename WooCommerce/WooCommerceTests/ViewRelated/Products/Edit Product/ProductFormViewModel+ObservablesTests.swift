@@ -143,6 +143,50 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         XCTAssertEqual(updatedUpdateEnabled, true)
     }
 
+    func testObservablesFromUpdatingProductPasswordRemotely() {
+        // Arrange
+        let product = MockProduct().product()
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: product)
+        let viewModel = ProductFormViewModel(product: product,
+                                             productImageActionHandler: productImageActionHandler,
+                                             isEditProductsRelease2Enabled: true,
+                                             isEditProductsRelease3Enabled: false)
+        // The password is set from a separate DotCom API.
+        viewModel.resetPassword("134")
+
+        var isProductUpdated: Bool?
+        cancellableProduct = viewModel.observableProduct.subscribe { product in
+            isProductUpdated = true
+        }
+
+        var updatedProductName: String?
+        cancellableProductName = viewModel.productName.subscribe { productName in
+            updatedProductName = productName
+        }
+
+        var updatedUpdateEnabled: Bool?
+        let expectationForUpdateEnabled = self.expectation(description: "Update enabled updates")
+        expectationForUpdateEnabled.expectedFulfillmentCount = 2
+        // The update enabled boolean should be set to true from the password change, and then back to false after resetting with
+        // the same password after remote update.
+        cancellableUpdateEnabled = viewModel.isUpdateEnabled.subscribe { isUpdateEnabled in
+            updatedUpdateEnabled = isUpdateEnabled
+            expectationForUpdateEnabled.fulfill()
+        }
+
+        // Action
+        let newPassword = "secret secret"
+        let settings = ProductSettings(from: product, password: newPassword)
+        viewModel.updateProductSettings(settings)
+        viewModel.resetPassword(newPassword)
+
+        // Assert
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+        XCTAssertNil(isProductUpdated)
+        XCTAssertNil(updatedProductName)
+        XCTAssertEqual(updatedUpdateEnabled, false)
+    }
+
     func testObservablesFromUploadingAnImage() {
         // Arrange
         let product = MockProduct().product()

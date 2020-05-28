@@ -265,7 +265,9 @@ public extension ResultsController {
 
         /// Name of the section
         ///
-        public let name: String
+        public var name: String {
+            mutableSectionInfo.name
+        }
 
         /// Number of objects in the current section
         ///
@@ -290,7 +292,6 @@ public extension ResultsController {
         init(mutableSection: NSFetchedResultsSectionInfo) {
             mutableSectionInfo = mutableSection
 
-            name = mutableSection.name
             mutableObjects = mutableSection.objects as? [T] ?? []
         }
     }

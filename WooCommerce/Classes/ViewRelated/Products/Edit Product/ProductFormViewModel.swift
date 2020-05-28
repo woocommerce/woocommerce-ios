@@ -22,6 +22,7 @@ final class ProductFormViewModel {
 
     private let productSubject: PublishSubject<Product> = PublishSubject<Product>()
     private let productNameSubject: PublishSubject<String> = PublishSubject<String>()
+    private let isUpdateEnabledSubject: PublishSubject<Bool>
 
     /// The product model before any potential edits; reset after a remote update.
     private var originalProduct: Product {
@@ -71,8 +72,6 @@ final class ProductFormViewModel {
     private var productUpdater: ProductUpdater {
         return product
     }
-
-    private let isUpdateEnabledSubject: PublishSubject<Bool>
 
     private let productImageActionHandler: ProductImageActionHandler
     private let isEditProductsRelease2Enabled: Bool

@@ -222,6 +222,8 @@ private extension ProductFormViewController {
     }
 }
 
+// MARK: - Observations & responding to changes
+//
 private extension ProductFormViewController {
     func observeProduct() {
         cancellableProduct = viewModel.observableProduct.subscribe { [weak self] product in
@@ -273,14 +275,6 @@ private extension ProductFormViewController {
         })
         tableView.dataSource = tableViewDataSource
         tableView.reloadData()
-    }
-}
-
-// MARK: UI updates from product changes
-//
-private extension ProductFormViewController {
-    func updateNavigationBarTitle(productName: String) {
-        navigationItem.title = productName
     }
 }
 
@@ -474,6 +468,10 @@ private extension ProductFormViewController {
 // MARK: Navigation Bar Items
 //
 private extension ProductFormViewController {
+    func updateNavigationBarTitle(productName: String) {
+        navigationItem.title = productName
+    }
+
     func updateNavigationBar(isUpdateEnabled: Bool) {
         var rightBarButtonItems = [UIBarButtonItem]()
 

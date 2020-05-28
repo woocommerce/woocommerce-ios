@@ -109,8 +109,6 @@ final class OrdersViewController: UIViewController {
         super.viewDidLoad()
 
         registerTableViewHeadersAndCells()
-
-        configureSyncingCoordinator()
         configureTableView()
         configureGhostableTableView()
 
@@ -118,6 +116,7 @@ final class OrdersViewController: UIViewController {
         configureStatusResultsController()
 
         configureViewModel()
+        configureSyncingCoordinator()
 
         startListeningToNotifications()
     }

@@ -108,14 +108,15 @@ final class OrdersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        refreshStatusPredicate()
         registerTableViewHeadersAndCells()
 
         configureSyncingCoordinator()
         configureTableView()
         configureGhostableTableView()
 
+        refreshStatusPredicate()
         configureStatusResultsController()
+
         configureViewModel()
 
         startListeningToNotifications()

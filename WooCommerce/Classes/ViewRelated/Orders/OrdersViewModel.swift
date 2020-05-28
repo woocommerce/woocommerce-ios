@@ -58,10 +58,7 @@ final class OrdersViewModel {
         let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
 
         let sectionNameKeyPath = #selector(StorageOrder.normalizedAgeAsString)
-        let resultsController = ResultsController<StorageOrder>(storageManager: storageManager,
-                                                                sectionNameKeyPath: "\(sectionNameKeyPath)",
-                                                                sortedBy: [descriptor])
-        resultsController.predicate = {
+        let predicate: NSPredicate = {
             let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
             let excludeNonMatchingStatus = statusFilter.map { NSPredicate(format: "statusKey = %@", $0.slug) }
 
@@ -75,7 +72,10 @@ final class OrdersViewModel {
             return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         }()
 
-        return resultsController
+        return ResultsController<StorageOrder>(storageManager: storageManager,
+                                               sectionNameKeyPath: "\(sectionNameKeyPath)",
+                                               matching: predicate,
+                                               sortedBy: [descriptor])
     }()
 
     /// Indicates if there are no results.

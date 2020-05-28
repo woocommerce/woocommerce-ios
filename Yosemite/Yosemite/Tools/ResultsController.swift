@@ -259,6 +259,10 @@ public extension ResultsController {
     //
     final class SectionInfo {
 
+        /// The real SectionInfo that we're hiding.
+        ///
+        private let mutableSectionInfo: NSFetchedResultsSectionInfo
+
         /// Name of the section
         ///
         public let name: String
@@ -284,6 +288,8 @@ public extension ResultsController {
         /// Designated Initializer
         ///
         init(mutableSection: NSFetchedResultsSectionInfo) {
+            mutableSectionInfo = mutableSection
+
             name = mutableSection.name
             mutableObjects = mutableSection.objects as? [T] ?? []
         }

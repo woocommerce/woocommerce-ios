@@ -358,6 +358,14 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		98655A56247F2AEA005EF9CC /* Unified Auth */ = {
+			isa = PBXGroup;
+			children = (
+				98D9A4B02474A526002E491C /* GoogleAuthenticator.swift */,
+			);
+			path = "Unified Auth";
+			sourceTree = "<group>";
+		};
 		B501C03B208FC52400D1E58F /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -399,7 +407,6 @@
 			isa = PBXGroup;
 			children = (
 				98C9195A2308E3D900A90E12 /* AppleAuthenticator.swift */,
-				98D9A4B02474A526002E491C /* GoogleAuthenticator.swift */,
 				B5609126208A563600399AE4 /* EmailMagicLink.storyboard */,
 				B560912E208A563700399AE4 /* Login.storyboard */,
 				B5609125208A563600399AE4 /* Login2FAViewController.swift */,
@@ -582,6 +589,7 @@
 				B5609095208A4EAF00399AE4 /* Signin */,
 				B5609096208A4EAF00399AE4 /* Signup */,
 				B5609094208A4EAF00399AE4 /* UI */,
+				98655A56247F2AEA005EF9CC /* Unified Auth */,
 				B5A5273F20B477F70065BE81 /* Resources */,
 				B5ED78F7207E976500A8FD8C /* WordPressAuthenticator.h */,
 				B5ED78F8207E976500A8FD8C /* Info.plist */,

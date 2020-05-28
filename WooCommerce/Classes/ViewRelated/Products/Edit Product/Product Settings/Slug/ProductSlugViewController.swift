@@ -76,7 +76,7 @@ private extension ProductSlugViewController {
     func configureTextFieldFirstResponder() {
         if let indexPath = sections.indexPathForRow(.slug) {
             let cell = tableView.cellForRow(at: indexPath) as? TextFieldTableViewCell
-            cell?.textField.becomeFirstResponder()
+            cell?.becomeFirstResponder()
         }
     }
 }
@@ -148,9 +148,9 @@ private extension ProductSlugViewController {
             }
             }, onTextDidBeginEditing: {
                 //TODO: Add analytics track
-        }, inputFormatter: nil)
+        }, inputFormatter: nil, keyboardType: .default)
         cell.configure(viewModel: viewModel)
-        cell.textField.applyBodyStyle()
+        cell.applyStyle(style: .body)
     }
 }
 

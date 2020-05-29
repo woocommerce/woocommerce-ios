@@ -47,7 +47,6 @@ public class CoreDataManager: StorageManagerType {
 
         container.loadPersistentStores { [weak self] (storeDescription, error) in
             guard let `self` = self, let errorLoadingPersistentStores = error else {
-                fatalError("Testing before loading persistent stores")
                 return
             }
 

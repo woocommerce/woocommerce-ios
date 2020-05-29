@@ -115,6 +115,10 @@ final class ProductFormViewModel {
     func hasPasswordChanged() -> Bool {
         return password != nil && password != originalPassword
     }
+
+    func canViewProductInStore() -> Bool {
+        return originalProduct.productStatus == .publish
+    }
 }
 
 // MARK: Action handling

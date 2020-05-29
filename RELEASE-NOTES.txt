@@ -10,6 +10,7 @@
 - [*] The discard changes prompt does not appear when navigating from product settings detail screens with a text field (slug, purchase note, and menu order) anymore.
 - [*] Fix the wrong cell appearance in the order status list.
 - [*] The "View product in store" action will be shown only if the product is published.
+- [internal] Modified the component used for fetching data from the database. Please watch out for crashes in lists.
 
 
 4.3

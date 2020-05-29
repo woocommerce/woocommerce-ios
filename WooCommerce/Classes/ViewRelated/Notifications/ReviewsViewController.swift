@@ -1,3 +1,4 @@
+import AutomatticTracks
 import UIKit
 
 
@@ -135,9 +136,12 @@ final class ReviewsViewController: UIViewController {
         let error = NSError(domain: "Testing crash logging in Sentry on Reviews tab launch", code: 100, userInfo: [
             "reason": "Testing only"
         ])
-        DefaultCrashLogger().logMessage("Testing!",
-                                        properties: ["testError": error],
-                                        level: .fatal)
+        CrashLogging.logMessage("Testing!",
+                                properties: ["testError": error],
+                                level: .error)
+        CrashLogging.logMessage("Testing!",
+                                properties: ["testError": error],
+                                level: .fatal)
         fatalError("Testing crash logging in Sentry on Reviews tab launch")
     }
 

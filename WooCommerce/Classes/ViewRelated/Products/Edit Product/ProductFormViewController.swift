@@ -830,7 +830,7 @@ private extension ProductFormViewController {
         actionSheet.view.tintColor = .text
 
         /// The "View product in store" action will be shown only if the product is published.
-        if originalProduct.productStatus == .publish {
+        if viewModel.canViewProductInStore() {
             actionSheet.addDefaultActionWithTitle(ActionSheetStrings.viewProduct) { [weak self] _ in
                 ServiceLocator.analytics.track(.productDetailViewProductButtonTapped)
                 self?.displayWebViewForProductInStore()

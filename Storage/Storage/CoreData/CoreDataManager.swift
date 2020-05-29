@@ -58,12 +58,24 @@ public class CoreDataManager: StorageManagerType {
                 let sourceURL = self.storeURL
                 let backupURL = sourceURL.appendingPathExtension("~")
                 try FileManager.default.copyItem(at: sourceURL, to: backupURL)
-                try FileManager.default.removeItem(at: sourceURL)
             } catch {
                 let message = "☠️ [CoreDataManager] Cannot backup Store: \(error)"
                 self.crashLogger.logMessage(message,
                                             properties: ["loadPersistentStoresError": errorLoadingPersistentStores,
                                                          "backupError": error],
+                                            level: .fatal)
+                fatalError(message)
+            }
+
+            /// Remove the old Store
+            ///
+            do {
+                try FileManager.default.removeItem(at: self.storeURL)
+            } catch {
+                let message = "☠️ [CoreDataManager] Cannot remove Store: \(error)"
+                self.crashLogger.logMessage(message,
+                                            properties: ["loadPersistentStoresError": errorLoadingPersistentStores,
+                                                         "removeStoreError": error],
                                             level: .fatal)
                 fatalError(message)
             }

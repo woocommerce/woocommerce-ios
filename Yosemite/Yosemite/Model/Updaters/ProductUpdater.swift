@@ -190,7 +190,7 @@ extension Product: ProductUpdater {
                        dimensions: dimensions,
                        shippingRequired: shippingRequired,
                        shippingTaxable: shippingTaxable,
-                       shippingClass: shippingClass?.slug,
+                       shippingClass: shippingClass?.slug ?? "",
                        shippingClassID: shippingClass?.shippingClassID ?? 0,
                        productShippingClass: shippingClass,
                        reviewsAllowed: reviewsAllowed,

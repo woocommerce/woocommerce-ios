@@ -96,7 +96,9 @@ private extension TopBannerView {
         } else {
             updateExpandCollapseState(isExpanded: isExpanded)
             expandCollapseButton.tintColor = .textSubtle
-            expandCollapseButton.addTarget(self, action: #selector(onExpandCollapseButtonTapped), for: .touchUpInside)
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(onExpandCollapseButtonTapped))
+            tapGesture.cancelsTouchesInView = false
+            contentView.addGestureRecognizer(tapGesture)
         }
     }
 

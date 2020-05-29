@@ -8,6 +8,9 @@ final class ProductImagesHeaderViewModel {
 
     let config: ProductImagesCellConfig
 
+    /// Whether we should scroll to the beginning of the collection view.
+    let shouldScrollToStart: Bool
+
     // Fixed width/height of collection view cell
     static let defaultCollectionViewCellSize = CGSize(width: 128.0, height: 128.0)
 
@@ -16,6 +19,7 @@ final class ProductImagesHeaderViewModel {
     init(productImageStatuses: [ProductImageStatus], config: ProductImagesCellConfig) {
         self.productImageStatuses = productImageStatuses
         self.config = config
+        self.shouldScrollToStart = productImageStatuses.hasPendingUpload
 
         configureItems()
     }

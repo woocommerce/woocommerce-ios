@@ -9,9 +9,10 @@ final class TextFieldTableViewCell: UITableViewCell {
         let onTextChange: ((_ text: String?) -> Void)?
         let onTextDidBeginEditing: (() -> Void)?
         let inputFormatter: UnitInputFormatter?
+        let keyboardType: UIKeyboardType
     }
 
-    @IBOutlet weak var textField: UITextField!
+    @IBOutlet private weak var textField: UITextField!
 
     private var viewModel: ViewModel?
     private var onTextChange: ((_ text: String?) -> Void)?
@@ -22,6 +23,7 @@ final class TextFieldTableViewCell: UITableViewCell {
 
         configureTextField()
         applyDefaultBackgroundStyle()
+        applyStyle(style: .headline)
         selectionStyle = .none
     }
 
@@ -33,16 +35,39 @@ final class TextFieldTableViewCell: UITableViewCell {
         textField.text = viewModel.text
         textField.placeholder = viewModel.placeholder
         textField.borderStyle = .none
+        textField.keyboardType = viewModel.keyboardType
         textField.addTarget(self, action: #selector(textFieldDidChange(textField:)), for: .editingChanged)
         textField.addTarget(self, action: #selector(textFieldDidBegin(textField:)), for: .editingDidBegin)
+    }
+
+    @discardableResult
+    override func becomeFirstResponder() -> Bool {
+        textField.becomeFirstResponder()
     }
 }
 
 private extension TextFieldTableViewCell {
     func configureTextField() {
         textField.clearButtonMode = .whileEditing
-        textField.applyHeadlineStyle()
         textField.delegate = self
+    }
+}
+
+// Styles
+extension TextFieldTableViewCell {
+
+    enum Style {
+        case body
+        case headline
+    }
+
+    func applyStyle(style: Style) {
+        switch style {
+        case .headline:
+            textField.applyHeadlineStyle()
+        case .body:
+            textField.applyBodyStyle()
+        }
     }
 }
 

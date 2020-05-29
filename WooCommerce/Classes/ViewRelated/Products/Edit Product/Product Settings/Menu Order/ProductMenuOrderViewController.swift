@@ -83,7 +83,7 @@ private extension ProductMenuOrderViewController {
     func configureFirstTextFieldAsFirstResponder() {
         if let indexPath = sections.indexPathForRow(.menuOrder) {
             let cell = tableView.cellForRow(at: indexPath) as? TextFieldTableViewCell
-            cell?.textField.becomeFirstResponder()
+            cell?.becomeFirstResponder()
         }
     }
 }
@@ -146,10 +146,9 @@ private extension ProductMenuOrderViewController {
             }
             }, onTextDidBeginEditing: {
                 //TODO: Add analytics track
-        }, inputFormatter: IntegerInputFormatter(defaultValue: ""))
+        }, inputFormatter: IntegerInputFormatter(defaultValue: ""), keyboardType: .numbersAndPunctuation)
         cell.configure(viewModel: viewModel)
-        cell.textField.applyBodyStyle()
-        cell.textField.keyboardType = .numbersAndPunctuation
+        cell.applyStyle(style: .body)
     }
 }
 

@@ -146,7 +146,7 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
 
     // MARK: - Navigation
     //
-    @objc func filterActionButtonTapped() {
+    @objc private func filterActionButtonTapped() {
         dismiss(animated: true) { [weak self] in
             guard let self = self else {
                 return
@@ -156,7 +156,7 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
         }
     }
 
-    @objc func dismissButtonTapped() {
+    @objc private func dismissButtonTapped() {
         if hasFilterChanges() {
             UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
                 self?.dismiss(animated: true) {}
@@ -169,7 +169,7 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
         }
     }
 
-    @objc func clearAllButtonTapped() {
+    @objc private func clearAllButtonTapped() {
         viewModel.clearAll()
         listSelectorCommand.data = viewModel.filterTypeViewModels
         updateUI(numberOfActiveFilters: viewModel.filterTypeViewModels.numberOfActiveFilters)

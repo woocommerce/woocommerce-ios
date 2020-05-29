@@ -233,6 +233,7 @@ extension OrderStatusListViewController: UITableViewDataSource {
 
         let status = statusResultsController.object(at: indexPath)
         cell.textLabel?.text = status.name
+        cell.selectionStyle = .none
 
         return cell
     }

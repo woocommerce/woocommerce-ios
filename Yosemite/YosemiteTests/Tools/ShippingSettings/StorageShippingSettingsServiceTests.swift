@@ -10,7 +10,7 @@ final class StorageShippingSettingsServiceTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        storage = CoreDataManager(name: "WooCommerce")
+        storage = CoreDataManager(name: "WooCommerce", crashLogger: MockCrashLogger())
     }
 
     func testInitialShippingSettings() {

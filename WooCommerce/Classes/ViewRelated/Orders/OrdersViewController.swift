@@ -18,7 +18,7 @@ protocol OrdersViewControllerDelegate: class {
 
 /// OrdersViewController: Displays the list of Orders associated to the active Store / Account.
 ///
-class OrdersViewController: UIViewController {
+final class OrdersViewController: UIViewController {
 
     weak var delegate: OrdersViewControllerDelegate?
 
@@ -26,7 +26,7 @@ class OrdersViewController: UIViewController {
 
     /// Main TableView.
     ///
-    @IBOutlet private var tableView: UITableView!
+    private lazy var tableView = UITableView(frame: .zero, style: .grouped)
 
     /// Ghostable TableView.
     ///
@@ -96,7 +96,7 @@ class OrdersViewController: UIViewController {
         self.viewModel = viewModel
         self.emptyStateConfig = emptyStateConfig
 
-        super.init(nibName: Self.nibName, bundle: nil)
+        super.init(nibName: nil, bundle: nil)
 
         self.title = title
     }
@@ -108,15 +108,15 @@ class OrdersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        refreshStatusPredicate()
         registerTableViewHeadersAndCells()
-
-        configureSyncingCoordinator()
         configureTableView()
         configureGhostableTableView()
-        configureResultsControllers()
+
+        refreshStatusPredicate()
+        configureStatusResultsController()
 
         configureViewModel()
+        configureSyncingCoordinator()
 
         startListeningToNotifications()
     }
@@ -169,10 +169,9 @@ private extension OrdersViewController {
         statusResultsController.predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
     }
 
-    /// Setup: Results Controller
+    /// Setup: Status Results Controller
     ///
-    func configureResultsControllers() {
-        // Order status FRC
+    func configureStatusResultsController() {
         try? statusResultsController.performFetch()
     }
 
@@ -185,6 +184,9 @@ private extension OrdersViewController {
     /// Setup: TableView
     ///
     func configureTableView() {
+        tableView.delegate = self
+        tableView.dataSource = self
+
         view.backgroundColor = .listBackground
         tableView.backgroundColor = .listBackground
         tableView.refreshControl = refreshControl
@@ -194,6 +196,10 @@ private extension OrdersViewController {
         tableView.sectionFooterHeight = .leastNonzeroMagnitude
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = UITableView.automaticDimension
+
+        view.addSubview(tableView)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToSafeArea(tableView)
     }
 
     /// Setup: Ghostable TableView

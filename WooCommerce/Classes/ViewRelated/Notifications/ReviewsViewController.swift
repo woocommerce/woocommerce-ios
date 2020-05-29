@@ -132,13 +132,13 @@ final class ReviewsViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        fatalError("Testing crash logging in Sentry on Reviews tab launch")
         let error = NSError(domain: "Testing crash logging in Sentry on Reviews tab launch", code: 100, userInfo: [
             "reason": "Testing only"
         ])
-        self.crashLogger.logMessage("Testing!",
-                                    properties: ["testError": error],
-                                    level: .fatal)
+        DefaultCrashLogger().logMessage("Testing!",
+                                        properties: ["testError": error],
+                                        level: .fatal)
+        fatalError("Testing crash logging in Sentry on Reviews tab launch")
     }
 
     func presentDetails(for noteID: Int64) {

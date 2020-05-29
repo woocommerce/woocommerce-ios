@@ -38,6 +38,13 @@ public class CoreDataManager: StorageManagerType {
         let container = NSPersistentContainer(name: name, managedObjectModel: managedModel)
         container.persistentStoreDescriptions = [storeDescription]
 
+        let testError = NSError(domain: "testing", code: 100, userInfo: [
+            "reason": "Testing only"
+        ])
+        self.crashLogger.logMessage("Testing!",
+                                    properties: ["testError": testError],
+                                    level: .fatal)
+
         container.loadPersistentStores { [weak self] (storeDescription, error) in
             guard let `self` = self, let errorLoadingPersistentStores = error else {
                 return

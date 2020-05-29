@@ -43,7 +43,7 @@ final class ServiceLocator {
 
     /// CoreData Stack
     ///
-    private static var _storageManager = CoreDataManager(name: WooConstants.databaseStackName)
+    private static var _storageManager = CoreDataManager(name: WooConstants.databaseStackName, crashLogger: DefaultCrashLogger())
 
     /// Cocoalumberjack DDLog
     ///

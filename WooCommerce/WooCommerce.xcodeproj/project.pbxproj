@@ -242,6 +242,7 @@
 		02EA6BF82435E80600FFF90A /* ImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EA6BF72435E80600FFF90A /* ImageDownloader.swift */; };
 		02EA6BFA2435E92600FFF90A /* KingfisherImageDownloader+ImageDownloadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EA6BF92435E92600FFF90A /* KingfisherImageDownloader+ImageDownloadable.swift */; };
 		02EA6BFC2435EC3500FFF90A /* MockImageDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EA6BFB2435EC3500FFF90A /* MockImageDownloader.swift */; };
+		02EAB6D92480AA4900FD873C /* DefaultCrashLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EAB6D82480AA4900FD873C /* DefaultCrashLogger.swift */; };
 		02EEB5C42424AFAA00B8A701 /* TextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EEB5C22424AFAA00B8A701 /* TextFieldTableViewCell.swift */; };
 		02EEB5C52424AFAA00B8A701 /* TextFieldTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02EEB5C32424AFAA00B8A701 /* TextFieldTableViewCell.xib */; };
 		02F49ADA23BF356E00FA0BFA /* TitleAndTextFieldTableViewCell.ViewModel+State.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F49AD923BF356E00FA0BFA /* TitleAndTextFieldTableViewCell.ViewModel+State.swift */; };
@@ -1096,6 +1097,7 @@
 		02EA6BF72435E80600FFF90A /* ImageDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownloader.swift; sourceTree = "<group>"; };
 		02EA6BF92435E92600FFF90A /* KingfisherImageDownloader+ImageDownloadable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KingfisherImageDownloader+ImageDownloadable.swift"; sourceTree = "<group>"; };
 		02EA6BFB2435EC3500FFF90A /* MockImageDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockImageDownloader.swift; sourceTree = "<group>"; };
+		02EAB6D82480AA4900FD873C /* DefaultCrashLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultCrashLogger.swift; sourceTree = "<group>"; };
 		02EEB5C22424AFAA00B8A701 /* TextFieldTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldTableViewCell.swift; sourceTree = "<group>"; };
 		02EEB5C32424AFAA00B8A701 /* TextFieldTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TextFieldTableViewCell.xib; sourceTree = "<group>"; };
 		02F49AD923BF356E00FA0BFA /* TitleAndTextFieldTableViewCell.ViewModel+State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TitleAndTextFieldTableViewCell.ViewModel+State.swift"; sourceTree = "<group>"; };
@@ -3102,6 +3104,7 @@
 			children = (
 				933A27362222354600C2143A /* Logging.swift */,
 				B5DB01B42114AB2D00A4F797 /* CrashLogging.swift */,
+				02EAB6D82480AA4900FD873C /* DefaultCrashLogger.swift */,
 			);
 			path = Logging;
 			sourceTree = "<group>";
@@ -4748,6 +4751,7 @@
 				B517EA1D218B41F200730EC4 /* String+Woo.swift in Sources */,
 				02564A8C246CE38E00D6DB2A /* SwappableSubviewContainerView.swift in Sources */,
 				024DF31223742B18006658FE /* AztecItalicFormatBarCommand.swift in Sources */,
+				02EAB6D92480AA4900FD873C /* DefaultCrashLogger.swift in Sources */,
 				D83F5933225B2EB900626E75 /* ManualTrackingViewController.swift in Sources */,
 				B57C744A20F5649300EEFC87 /* EmptyStoresTableViewCell.swift in Sources */,
 				027D67D1245ADDF40036B8DB /* FilterTypeViewModel+Helpers.swift in Sources */,

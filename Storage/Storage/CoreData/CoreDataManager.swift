@@ -84,6 +84,13 @@ public class CoreDataManager: StorageManagerType {
             }
         }
 
+        let error = NSError(domain: "testing after loading persistent stores", code: 100, userInfo: [
+            "reason": "Testing only"
+        ])
+        self.crashLogger.logMessage("Testing!",
+                                    properties: ["testError": error],
+                                    level: .fatal)
+
         return container
     }()
 

@@ -45,6 +45,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // As first thing, setup the crash logging
         setupCrashLogging()
 
+        let error = NSError(domain: "testing after setting up crash logging", code: 100, userInfo: [
+            "reason": "Testing only"
+        ])
+        CrashLogging.logMessage("Testing!",
+                                properties: ["testError": error],
+                                level: .fatal)
+
         // Setup the Interface!
         setupMainWindow()
         setupComponentsAppearance()

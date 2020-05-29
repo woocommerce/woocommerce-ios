@@ -3,7 +3,7 @@ import Sentry
 import Storage
 
 final class DefaultCrashLogger: CrashLogger {
-    func logMessage(_ message: String, properties: [String : Any]?, level: SeverityLevel) {
+    func logMessage(_ message: String, properties: [String: Any]?, level: SeverityLevel) {
         CrashLogging.logMessage(message, properties: properties, level: SentrySeverity(level: level))
     }
 }

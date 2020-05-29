@@ -18,5 +18,5 @@ public protocol CrashLogger {
      - properties: A dictionary containing additional information about this message
      - level: The level of severity to report
     */
-    func logMessage(_ message: String, properties: [String : Any]?, level: SeverityLevel)
+    func logMessage(_ message: String, properties: [String: Any]?, level: SeverityLevel)
 }

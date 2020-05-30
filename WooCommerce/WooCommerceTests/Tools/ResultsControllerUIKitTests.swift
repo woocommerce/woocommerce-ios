@@ -265,6 +265,74 @@ final class ResultsControllerUIKitTests: XCTestCase {
         XCTAssertEqual(tableView.numberOfRows(inSection: 0), 2)
         XCTAssertEqual(tableView.numberOfRows(inSection: 1), 4)
     }
+
+    /// Test that `ResultsController` will emit a `move` `ChangeType` if a
+    ///
+    /// This proves that the bug discussed in [here](https://forums.developer.apple.com/thread/61282)
+    /// was already fixed by Apple. The bug was that a `move` was being emitted as an `update`.
+    ///
+    func testWhenARowIsMovedToANewSectionThenAMoveChangeTypeEventIsEmitted() {
+        // Given
+
+        // Set up initial rows and sections.
+        let expectOnEndUpdates = self.expectation(description: "wait for onEndUpdates")
+        tableView.onEndUpdates = {
+            expectOnEndUpdates.fulfill()
+        }
+
+        let _ = [
+            insertAccount(section: "Alpha", userID: 9_900),
+            insertAccount(section: "Alpha", userID: 9_800),
+            insertAccount(section: "Alpha", userID: 9_700)
+        ]
+
+        let secondSection = [
+            insertAccount(section: "Beta", userID: 8_900),
+            insertAccount(section: "Beta", userID: 8_800),
+            insertAccount(section: "Beta", userID: 8_700)
+        ]
+
+        viewStorage.saveIfNeeded()
+
+        wait(for: [expectOnEndUpdates], timeout: Constants.expectationTimeout)
+
+        // When
+        let expectSecondOnEndUpdates = self.expectation(description: "second wait for onEndUpdates")
+        tableView.onEndUpdates = {
+            expectSecondOnEndUpdates.fulfill()
+        }
+
+        var insertedRows = [IndexPath]()
+        var deletedRows = [IndexPath]()
+        var reloadedRows = [IndexPath]()
+        tableView.onInsertedRows = {
+            insertedRows.append(contentsOf: $0)
+        }
+        tableView.onDeletedRows = {
+            deletedRows.append(contentsOf: $0)
+        }
+        tableView.onReloadRows = {
+            reloadedRows.append(contentsOf: $0)
+        }
+
+        // Move a row to a new section
+        secondSection[1].username = "Foxtrot"
+
+        viewStorage.saveIfNeeded()
+
+        wait(for: [expectSecondOnEndUpdates], timeout: Constants.expectationTimeout)
+
+        // Then
+        // A `.move` change type is handled as both a delete and then an insert
+        XCTAssertEqual(deletedRows, [IndexPath(row: 1, section: 1)])
+        XCTAssertEqual(insertedRows, [IndexPath(row: 0, section: 2)])
+        assertEmpty(reloadedRows)
+
+        XCTAssertEqual(tableView.numberOfSections, 3)
+        XCTAssertEqual(tableView.numberOfRows(inSection: 0), 3)
+        XCTAssertEqual(tableView.numberOfRows(inSection: 1), 2)
+        XCTAssertEqual(tableView.numberOfRows(inSection: 2), 1)
+    }
 }
 
 // MARK: - UITableViewDataSource

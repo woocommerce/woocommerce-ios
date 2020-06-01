@@ -13,6 +13,11 @@ final class StorageShippingSettingsServiceTests: XCTestCase {
         storage = CoreDataManager(name: "WooCommerce", crashLogger: MockCrashLogger())
     }
 
+    override func tearDown() {
+        storage = nil
+        super.tearDown()
+    }
+
     func testInitialShippingSettings() {
         let service = StorageShippingSettingsService(siteID: sampleSiteID, storageManager: storage)
         XCTAssertNil(service.dimensionUnit)

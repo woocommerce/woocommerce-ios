@@ -488,7 +488,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     ///
     private func loginToSelfHostedSite() {
         guard let vc = LoginSiteAddressViewController.instantiate(from: .login) else {
-            DDLogError("Failed to navigate from LoginViewController to LoginSiteAddressViewController")
+            DDLogError("Failed to navigate from LoginEmailViewController to LoginSiteAddressViewController")
             return
         }
 

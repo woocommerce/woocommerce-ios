@@ -1,2 +1,4 @@
-* Fácil edição da descrição do produto: Toque em qualquer lugar da célula de produto para editar. Precisa de um teclado? Ele aparece automaticamente. E consertamos alguns bugs.
-* Relatórios de pedido atualizados: A lista de pedidos é atualizada sempre que você abre o app ou recebe um pedido e a lista de processamento de pedidos agora mostra os próximos pedidos.
+* Ative ou desative funcionalidades M2 de produtos simples em Configurações > Recursos experimentais. Elas permitem atualizar imagens, descrição breve, exibição, compartilhamento e configurações do produto (incluindo status, visibilidade do produto e do catálogo, slug, observação de compra e ordem do menu).
+* Edite e salve detalhes nas guias Detalhes do pedido ou Melhores desempenhos. Aprimoramos a acessibilidade com melhor suporte do VoiceOver para configurações de preço.
+* Refinamentos visuais: Em Detalhes do pedido, o cartão Pagamento é exibido logo após Produtos e Produtos reembolsados. O banner WIP na guia Produtos é recolhido por padrão. Mais espaço vertical!
+* Desativamos o suporte para iOS 11 e anteriores.

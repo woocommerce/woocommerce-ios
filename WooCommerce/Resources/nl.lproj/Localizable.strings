@@ -1,9 +1,18 @@
-/* Translation-Revision-Date: 2020-05-13 11:54:05+0000 */
+/* Translation-Revision-Date: 2020-05-27 15:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
 
 /* No comment provided by engineer. */
+"#%1$@ %2$@ %3$@" = "#%1$@ %2$@ %3$@";
+
+/* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
+"#%@" = "#%@";
+
+/* In Order Details, the pattern to show the billed person's full name. For example, “John Doe”. The %1$@ is the first name. The %2$@ is the last name. */
+"%1$@ %2$@" = "%1$@ %2$@";
+
+/* Format for each Product attribute */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld opties)";
 
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
@@ -57,6 +66,9 @@
 /* Placeholder of the Product Short Description row on Product main screen */
 "A brief excerpt about the product" = "Een korte samenvatting van het product";
 
+/* Subtitle of the product form bottom sheet action for editing short description. */
+"A brief excerpt about your product" = "Een korte samenvatting van je product.";
+
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "Er is een geldig e-mailadres vereist om een verificatielink te mailen. Ga terug naar het vorige scherm en voer een geldig e-mailadres in.";
 
@@ -102,6 +114,13 @@
 /* Accessibility label for the 'Add a tracking' button */
 "Add a tracking" = "Tracking toevoegen";
 
+/* Title of the bottom sheet from the product form to add more product details.
+   Title of the button at the bottom of the product form to add more product details. */
+"Add more details" = "Meer gegevens toevoegen";
+
+/* Subtitle of the product form bottom sheet action for editing shipping settings. */
+"Add weight and dimensions" = "Gewicht en afmetingen toevoegen";
+
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "Voegt tracking toe aan een bestelling.";
 
@@ -113,6 +132,9 @@
 
 /* Title for the second page in the Orders tab. */
 "All Orders" = "Alle bestellingen";
+
+/* The message shown in the Orders → Processing tab if the list is empty. */
+"All orders have been fulfilled" = "Alle bestellingen zijn voltooid";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "Alle beoordelingen zijn gemarkeerd als gelezen";
@@ -171,6 +193,9 @@
 
 /* Message title for Discard Changes Action Sheet */
 "Are you sure you want to discard these changes?" = "Weet je zeker dat je deze wijzigingen wilt annuleren?";
+
+/* Alert title to confirm the user wants to discard changes in Product Visibility */
+"Are you sure you want to discard your changes?" = "Weet je zeker dat je je wijzigingen wilt verwerpen?";
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "Weet je zeker dat je wilt uitloggen bij het account %@?";
@@ -260,7 +285,7 @@
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "Volg je favoriete sites en neem altijd en overal deel aan het gesprek.";
 
 /* Edit product categories screen - Screen title
-   Title of the Categories row on Product main screen */
+   Title of the Categories row on Product main screen - Title of the product form bottom sheet action for editing categories. */
 "Categories" = "Categorieën";
 
 /* Popup title for wrong SSL certificate. */
@@ -429,6 +454,9 @@
 /* Format of one dimension on the Shipping Settings row - dimension[unit] */
 "Dimensions: %1$@%2$@" = "Afmetingen: %1$@%2$@";
 
+/* Alert button title - dismisses alert, which discard changes on Product Visibility screen */
+"Discard" = "Verwijderen";
+
 /* Button title Discard Changes in Discard Changes Action Sheet */
 "Discard changes" = "Wijzigingen annuleren";
 
@@ -499,11 +527,17 @@
 /* Accessibility label that lets the user know the billing customer's email address */
 "Email: %@" = "E-mail: %@";
 
+/* Accessibility text for Unit Input cell */
+"Empty" = "Leegmaken";
+
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "Lege URL";
 
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "Voer naam van bezorgservice in";
+
+/* Enter password placeholder in Product Visibility */
+"Enter password" = "Voer wachtwoord in";
 
 /* Instruction text on the login's site addresss screen.
    Label for button to log in using your site address. */
@@ -553,8 +587,12 @@
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "Invullen met wachtwoordmanager";
 
-/* Title of the toolbar button to filter products by different attributes. */
+/* Title of the toolbar button to filter products by different attributes.
+   Title of the toolbar button to filter products without any filters applied. */
 "Filter" = "Filteren";
+
+/* Title of the toolbar button to filter products with filters applied. */
+"Filter (%ld)" = "Filter (%ld)";
 
 /* Navigation bar title format for filtering a list of products without filters applied. */
 "Filters" = "Filters";
@@ -708,7 +746,7 @@
 "Invalid username" = "Verkeerde gebruikersnaam";
 
 /* Product Details - inventory section title
-   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Product Inventory Settings navigation title - Title of the Inventory Settings row on Product main screen */
+   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Product Inventory Settings navigation title - Title of the Inventory Settings row on Product main screen - Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "Inventaris";
 
 /* An error message shown during log in when the username or password is incorrect. */
@@ -720,6 +758,9 @@
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "Cursief";
 
+/* Alert button title - which keeps the user on the Product Visibility screen */
+"Keep Editing" = "Doorgaan met bewerken";
+
 /* Last 24 hours section header */
 "Last 24 hours" = "Afgelopen 24 uur";
 
@@ -730,7 +771,7 @@
 "Launch Wormholy debug" = "Wormholy-debug starten";
 
 /* Settings > Privacy Settings. A text link to the cookie policy.
-   The action of the top banner on Dashboard that indicates new stats is unavailable */
+   The action of the top banner on Dashboard that indicates new stats is unavailable - Title of button shown in the Orders → All Orders tab if the list is empty. */
 "Learn more" = "Meer informatie";
 
 /* Title of the cell in Product Shipping Settings > Length */
@@ -751,7 +792,7 @@
 /* 'Limit: 2 downloads', for example. */
 "Limit: %ld downloads" = "Limiet: %ld downloads";
 
-/* The title of the Work In Progress top banner on the Products tab */
+/* The title of the Work In Progress top banner on the Products tab when the Products release 2 feature switch is off. */
 "Limited editing available" = "Beperkte bewerkingsmogelijkheden beschikbaar";
 
 /* Title for screen in editor that allows to configure link options */
@@ -892,6 +933,9 @@
 /* The title for the net amount paid cell */
 "Net" = "Netto";
 
+/* The title of the Work In Progress top banner on the Products tab when the Products release 2 feature switch is on. */
+"New editing options available" = "Nieuwe bewerkingsopties beschikbaar";
+
 /* Title of a button.
    Title of a button. The text should be capitalized. */
 "Next" = "Volgende";
@@ -917,9 +961,6 @@
 
 /* The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "Nog geen producten";
-
-/* Orders List (Empty State + Filters) */
-"No results for the selected criteria" = "Geen resultaten voor de geselecteerde criteria";
 
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier' */
 "No results found for (term)\nAdd a custom carrier" = "No results found for (term)\nAdd a custom carrier";
@@ -1024,6 +1065,9 @@
    Orders stat label on dashboard - should be plural. - The title of the Orders tab. */
 "Orders" = "Bestellingen";
 
+/* Subtitle of the product form bottom sheet action for editing categories. */
+"Organise your products into related groups" = "Organiseer je producten in gerelateerde groepen";
+
 /* My Store > Settings > Other app section */
 "Other" = "Overige";
 
@@ -1037,8 +1081,11 @@
 "Paid By Customer" = "Betaald door klant";
 
 /* Accessibility label for the password text field in the self-hosted login page.
-   Login dialog password placeholder - Password placeholder */
+   Login dialog password placeholder - Password field title in Product Visibility - Password placeholder */
 "Password" = "Wachtwoord";
+
+/* One of the possible options in Product Visibility */
+"Password Protected" = "Beschermd met wachtwoord";
 
 /* Paste without Formatting Menu Item */
 "Paste without Formatting" = "Plakken zonder formatteren";
@@ -1124,11 +1171,14 @@
    Privacy settings screen title */
 "Privacy Settings" = "Privacy instellingen";
 
-/* Display label for the product's private status */
+/* One of the possible options in Product Visibility */
 "Private" = "Privé";
 
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Privébericht";
+
+/* Display label for the product's private status */
+"Privately published" = "Gepubliceerd als privé";
 
 /* Title for the first page in the Orders tab. */
 "Processing" = "Bezig met verwerken";
@@ -1147,17 +1197,17 @@
    Product Settings navigation title */
 "Product Settings" = "Productinstellingen";
 
+/* Row title for filtering products by product status. */
+"Product Status" = "Productstatus";
+
 /* Product Total label for payment view */
 "Product Total" = "Totaalaantal producten";
 
+/* Row title for filtering products by product type. */
+"Product Type" = "Producttype";
+
 /* My Store > Settings > Experimental features > Product editing */
 "Product editing" = "Productbewerking";
-
-/* Row title for filtering products by product status. */
-"Product status" = "Productstatus";
-
-/* Row title for filtering products by product type. */
-"Product type" = "Producttype";
 
 /* My Store > Settings > Experimental features > Switch Products
    Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
@@ -1168,6 +1218,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "Dialoogvenster met de optie om de gefactureerde klant te bellen of een bericht te sturen.";
+
+/* One of the possible options in Product Visibility */
+"Public" = "Openbaar";
 
 /* Title of the Publish Settings section on Product Settings screen */
 "Publish Settings" = "Publicatie-instellingen";
@@ -1389,7 +1442,7 @@
 "Shipped %@" = "Verzonden op %@";
 
 /* Product Details > Purchase Details > Shipping cell title
-   Product Shipping Settings navigation title - Shipping label for payment view - Title of the Shipping Settings row on Product main screen */
+   Product Shipping Settings navigation title - Shipping label for payment view - Title of the product form bottom sheet action for editing shipping settings. - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "Verzending";
 
 /* Title of view displaying all available Shipment Tracking Carriers */
@@ -1426,7 +1479,7 @@
 "Shop only" = "Alleen winkel";
 
 /* The navigation bar title of the edit short description screen.
-   Title of the Short Description row on Product main screen */
+   Title of the product form bottom sheet action for editing short description. - Title of the Short Description row on Product main screen */
 "Short description" = "Korte beschrijving";
 
 /* Button title for applying filters to a list of products. */
@@ -1551,18 +1604,18 @@
    Status label in Product Settings */
 "Status" = "Status";
 
+/* Row title for filtering products by stock status. */
+"Stock Status" = "Voorraadstatus";
+
 /* A descriptive label prefix. Example: 'Stock quantity: 19' */
 "Stock quantity:" = "Aantal op voorraad:";
 
 /* Product stock status list selector navigation title
-   Row title for filtering products by stock status. - Title of the cell in Product Inventory Settings > Stock status */
+   Title of the cell in Product Inventory Settings > Stock status */
 "Stock status" = "Voorraadstatus";
 
 /* A descriptive label prefix. Example: 'Stock status: In stock' */
 "Stock status:" = "Voorraadstatus:";
-
-/* Format of the stock status on the Inventory Settings row */
-"Stock status: %@" = "Voorraadstatus: %@";
 
 /* VoiceOver accessibility label for the store revenue chart. */
 "Store revenue chart" = "Inkomstengrafiek opslaan";
@@ -1694,7 +1747,7 @@
 "Terms of Service" = "Servicevoorwaarden";
 
 /* My Store > Settings > Experimental features > Product editing */
-"Test out the new product editing functionality as we get ready to launch" = "Vergeet niet de nieuwe functies voor productbewerking te proberen terwijl we ons klaarmaken voor de lancering";
+"Test out new product editing functionalities as we get ready to launch them" = "Vergeet niet de nieuwe functies voor productbewerking te proberen terwijl we ons klaarmaken om ze te lanceren";
 
 /* My Store > Settings > Experimental features > Switch Products */
 "Test out the new products section as we get ready to launch" = "Vergeet niet het nieuwe productgedeelte te proberen terwijl we ons klaarmaken voor de lancering";
@@ -1735,17 +1788,35 @@
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Het certificaat voor deze server is ongeldig. Je maakt mogelijk verbinding met een server die zich voordoet als “%@”, wat je vertrouwelijke informatie in gevaar kan brengen.\n\nWil je het certificaat toch vertrouwen?";
 
+/* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
+"The price for this product. Editable." = "De prijs van dit product. Bewerkbaar.";
+
 /* Displayed whenever a review that was onscreen got deleted. */
 "The review has been removed" = "De beoordeling is verwijderd";
 
 /* Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "De verkoopprijs kan niet worden toegevoegd zonder de reguliere prijs.";
 
+/* VoiceOver accessibility hint, informing the user that the cell shows the sale price information for this product. */
+"The sale price for this product. Editable." = "De aanbiedingsprijs van dit product. Bewerkbaar.";
+
 /* Product price error notice message, when the sale price is higher than the regular price */
 "The sale price should be lower than the regular price." = "De verkoopprijs moet lager zijn dan de reguliere prijs.";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "De server heeft een lege respons teruggestuurd. Dat betekent meestal dat je de geheugenlimiet voor je site moet verhogen.";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the shipping height information for this product. */
+"The shipping height for this product. Editable." = "De verpakkingshoogte van dit product. Bewerkbaar.";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the shipping length information for this product. */
+"The shipping length for this product. Editable." = "De verpakkingslengte van dit product. Bewerkbaar.";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the shipping weight information for this product. */
+"The shipping weight for this product. Editable." = "Het verzendgewicht van dit product. Bewerkbaar.";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the shipping width information for this product. */
+"The shipping width for this product. Editable." = "De verpakkingsbreedte van dit product. Bewerkbaar.";
 
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "De site-adres moet korter zijn dan 64 karakters.";
@@ -1758,6 +1829,9 @@
 
 /* Message shown when site export API failed */
 "The site could not be exported." = "De site kon niet geëxporteerd worden.";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the stock quantity information for this product. */
+"The stock quantity for this product. Editable." = "De voorraad van dit product. Bewerkbaar.";
 
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "Er is een probleem opgetreden bij het blokkeren van berichten van de opgegeven site.";
@@ -1998,6 +2072,9 @@
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "Bestelstatus bijwerken";
 
+/* Subtitle of the product form bottom sheet action for editing inventory settings. */
+"Update product inventory and SKU" = "Productvoorraad en SKU bijwerken";
+
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "Werk WooCommerce bij naar 3.5 om deze app te blijven gebruiken";
 
@@ -2072,17 +2149,21 @@
 /* User role badge */
 "Viewer" = "Lezer";
 
+/* Product Visibility navigation title
+   Visibility label in Product Settings */
+"Visibility" = "Zichtbaarheid";
+
 /* Visitors stat label on dashboard - should be plural. */
 "Visitors" = "Bezoekers";
 
 /* Add a note screen - Write Note section title */
 "WRITE NOTE" = "BERICHT SCHRIJVEN";
 
-/* Orders List (Empty State / No Filters) */
-"Waiting for Customers" = "Wachten op klanten";
-
 /* Message shown on screen while waiting for Google to finish its signup process. */
 "Waiting for Google to complete…" = "Wachten tot Google klaar is...";
+
+/* The message shown in the Orders → All Orders tab if the list is empty. */
+"Waiting for your first order" = "Wachten op je eerste bestelling";
 
 /* shown in promotional screens during first launch */
 "Watch readers from around the world read and interact with your site — in real time." = "Kijk in realtime hoe lezers overal ter wereld je site lezen en bekijken.";
@@ -2102,12 +2183,27 @@
 /* Instructional text for the magic link login flow. */
 "We'll email you a magic link that'll log you in instantly, no password needed. Hunt and peck no more!" = "We sturen je een e-mail met een magische link waarmee je onmiddellijk kunt inloggen, zonder wachtwoord. Nooit meer moeite doen!";
 
+/* The detailed message shown in the Orders → All Orders tab if the list is empty. */
+"We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales." = "We laten het je weten als je een nieuwe bestelling krijgt. Bekijk ondertussen hoe je de verkoop van je winkel kunt verhogen.";
+
 /* Error message shown when having trouble connecting to a Jetpack site. */
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "We kunnen geen verbinding maken met de Jetpack-site via die URL. Neem contact op voor hulp.";
+
+/* Default message to show if a filtered Orders list is empty. */
+"We're sorry, we couldn't find any orders." = "Helaas kunnen we geen bestellingen vinden.";
+
+/* Message shown if a filtered Orders list is empty. The %@ is a placeholder for the order status. */
+"We're sorry, we couldn't find any “%@” orders" = "Helaas kunnen we geen bestellingen met '%@' vinden.";
 
 /* Message for empty Orders search results. The %@ is a placeholder for the text entered by the user.
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
 "We're sorry, we couldn't find results for “%@”" = "Sorry, we kunnen geen resultaten vinden voor '%@'";
+
+/* The info of the Work In Progress top banner on the Products tab when the Products release 2 feature switch is off. */
+"We've added editing functionality to simple products. Keep an eye out for more options soon!" = "We hebben bewerkingsfuncties toegevoegd aan simpele producten. Houd de nieuwe functies in de gaten!";
+
+/* The info of the Work In Progress top banner on the Products tab when the Products release 2 feature switch is on. */
+"We've added more editing functionalities to products. You can now update images, see previews and sort, filter & share products!" = "We hebben meer bewerkingsfuncties aan producten toegevoegd. Je kunt nu afbeeldingen bijwerken, voorbeeldweergaven bekijken en producten filteren en delen!";
 
 /* Statistical unit - a single week */
 "Week" = "Week";
@@ -2126,9 +2222,6 @@
 
 /* The info of the top banner on Dashboard that indicates new stats is available */
 "We’re rolling out improvements to stats for stores using the WooCommerce Admin plugin" = "We voeren verbeteringen aan statistieken voor winkels door, via de WooCommerce Admin-plugin";
-
-/* The info of the Work In Progress top banner on the Products tab */
-"We’ve added editing functionality to simple products. Keep an eye out for more options soon!" = "We hebben bewerkingsfuncties toegevoegd aan simpele producten. Houd de nieuwe functies in de gaten!";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "Wat is het adres van mijn site?";
@@ -2169,6 +2262,9 @@
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "Je kan dat e-mailadres niet gebruiken om je aan te melden. We hebben problemen met het blokkeren van sommige e-mailadressen. Probeer een andere e-mail provider.";
+
+/* Alert message to confirm the user wants to discard changes in Product Visibility */
+"You need to add a password to make your product password-protected" = "Je moet een wachtwoord toevoegen om je product met een wachtwoord te beschermen";
 
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Het lijkt erop dat je een mobiele plugin van DudaMobile hebt geïnstalleerd die voorkomt dat de app zich kan verbinden met je blog";

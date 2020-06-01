@@ -1,5 +1,3 @@
-//import Foundation
-
 /// The level of severity, that is currently based on `SentrySeverity`.
 public enum SeverityLevel {
     case fatal

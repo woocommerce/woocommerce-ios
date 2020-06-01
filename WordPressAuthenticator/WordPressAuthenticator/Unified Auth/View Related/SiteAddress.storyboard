@@ -46,7 +46,7 @@
                         <viewLayoutGuide key="safeArea" id="ihD-pY-rg9"/>
                     </view>
                     <connections>
-                        <outlet property="primaryButton" destination="ClH-Cn-49d" id="kda-Wg-JrS"/>
+                        <outlet property="submitButton" destination="ClH-Cn-49d" id="kBa-QN-0oH"/>
                         <outlet property="tableView" destination="KLl-Uz-wEP" id="ntt-cX-m20"/>
                     </connections>
                 </viewController>

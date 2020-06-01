@@ -3,15 +3,24 @@ import UIKit
 
 /// SiteAddressViewController: log in by Site Address.
 ///
-final class SiteAddressViewController: UIViewController {
+final class SiteAddressViewController: LoginViewController {
 
     @IBOutlet private weak var tableView: UITableView!
-    @IBOutlet private weak var primaryButton: NUXButton!
 
-    @IBOutlet private weak var continueButton: NUXButton!
+    var displayStrings: WordPressAuthenticatorDisplayStrings {
+        return WordPressAuthenticator.shared.displayStrings
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        localizePrimaryButton()
+    }
+
+    func localizePrimaryButton() {
+        let primaryTitle = displayStrings.siteAddressPrimaryButton
+        submitButton?.setTitle(primaryTitle, for: .normal)
+        submitButton?.setTitle(primaryTitle, for: .highlighted)
     }
 }
 

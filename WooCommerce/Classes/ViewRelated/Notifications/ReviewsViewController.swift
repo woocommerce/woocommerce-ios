@@ -143,7 +143,7 @@ final class ReviewsViewController: UIViewController {
                                 properties: ["testError": error],
                                 level: .fatal)
 
-        DDLogInfo("Testing: has user opted out from crash logging: \(CrashLogging.userHasOptedOut)")
+        DDLogInfo("Testing: has user opted in from crash logging: \(CrashLoggingSettings.didOptIn)")
 //        fatalError("Testing crash logging in Sentry on Reviews tab launch")
     }
 

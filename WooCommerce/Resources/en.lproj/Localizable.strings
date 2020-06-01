@@ -310,9 +310,6 @@
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Collect Information";
 
-/* Shown while the app waits for the site creation process to complete. */
-"Completing Signup" = "Completing Signup";
-
 /* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
 "Composes a new email message to the billing customer." = "Composes a new email message to the billing customer.";
 
@@ -1201,6 +1198,9 @@
 
 /* Title for the first page in the Orders tab. */
 "Processing" = "Processing";
+
+/* Shown while the app waits for the account process to complete. */
+"Processing Account" = "Processing Account";
 
 /* Description for Top Performers left column header
    Product section title - Section header title for the product */

@@ -34,3 +34,19 @@ extension ProductsSortOrder {
         }
     }
 }
+
+// MARK: Analytics properties
+public extension ProductsSortOrder {
+    var analyticsDescription: String {
+        switch self {
+        case .dateAscending:
+            return "date,ascending"
+        case .dateDescending:
+            return "date,descending"
+        case .nameAscending:
+            return "name,ascending"
+        case .nameDescending:
+            return "name,descending"
+        }
+    }
+}

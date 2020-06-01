@@ -10,6 +10,28 @@ final class FilterProductListViewModel: FilterListViewModel {
         let stockStatus: ProductStockStatus?
         let productStatus: ProductStatus?
         let productType: ProductType?
+
+        let numberOfActiveFilters: Int
+
+        init() {
+            stockStatus = nil
+            productStatus = nil
+            productType = nil
+            numberOfActiveFilters = 0
+        }
+
+        init(stockStatus: ProductStockStatus?, productStatus: ProductStatus?, productType: ProductType?, numberOfActiveFilters: Int) {
+            self.stockStatus = stockStatus
+            self.productStatus = productStatus
+            self.productType = productType
+            self.numberOfActiveFilters = numberOfActiveFilters
+        }
+
+        // Generate a string based on populated filters, like "instock,publish,simple"
+        var analyticsDescription: String {
+            let elements: [String?] = [stockStatus?.rawValue, productStatus?.rawValue, productType?.rawValue]
+            return elements.compactMap { $0 }.joined(separator: ",")
+        }
     }
 
     let filterActionTitle = NSLocalizedString("Show Products", comment: "Button title for applying filters to a list of products.")
@@ -38,7 +60,8 @@ final class FilterProductListViewModel: FilterListViewModel {
         let stockStatus = stockStatusFilterViewModel.selectedValue as? ProductStockStatus ?? nil
         let productStatus = productStatusFilterViewModel.selectedValue as? ProductStatus ?? nil
         let productType = productTypeFilterViewModel.selectedValue as? ProductType ?? nil
-        return Filters(stockStatus: stockStatus, productStatus: productStatus, productType: productType)
+        let numberOfActiveFilters = filterTypeViewModels.numberOfActiveFilters
+        return Filters(stockStatus: stockStatus, productStatus: productStatus, productType: productType, numberOfActiveFilters: numberOfActiveFilters)
     }
 
     func clearAll() {
@@ -67,11 +90,11 @@ private extension FilterProductListViewModel.ProductListFilter {
     var title: String {
         switch self {
         case .stockStatus:
-            return NSLocalizedString("Stock status", comment: "Row title for filtering products by stock status.")
+            return NSLocalizedString("Stock Status", comment: "Row title for filtering products by stock status.")
         case .productStatus:
-            return NSLocalizedString("Product status", comment: "Row title for filtering products by product status.")
+            return NSLocalizedString("Product Status", comment: "Row title for filtering products by product status.")
         case .productType:
-            return NSLocalizedString("Product type", comment: "Row title for filtering products by product type.")
+            return NSLocalizedString("Product Type", comment: "Row title for filtering products by product type.")
         }
     }
 }

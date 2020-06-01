@@ -1,11 +1,16 @@
 import Foundation
 import UIKit
 import Yosemite
+import protocol Storage.StorageManagerType
 
 
 /// The main file for Order Details data.
 ///
 final class OrderDetailsDataSource: NSObject {
+
+    /// This is only used to pass as a dependency to `OrderDetailsResultsControllers`.
+    private let storageManager: StorageManagerType
+
     private(set) var order: Order
     private let couponLines: [OrderCouponLine]?
 
@@ -32,21 +37,6 @@ final class OrderDetailsDataSource: NSObject {
     /// Is the shipment tracking plugin available?
     ///
     var trackingIsReachable: Bool = false
-
-    /// For example, #560 Pamela Nguyen
-    ///
-    var summaryTitle: String? {
-        if let billingAddress = order.billingAddress {
-            return "#\(order.number) \(billingAddress.firstName) \(billingAddress.lastName)"
-        }
-        return "#\(order.number)"
-    }
-
-    /// For example, Oct 1, 2019 at 2:31 PM
-    ///
-    private var summaryDateCreated: String {
-        return order.dateModified.relativelyFormattedUpdateString
-    }
 
     /// Closure to be executed when the cell was tapped.
     ///
@@ -142,7 +132,7 @@ final class OrderDetailsDataSource: NSObject {
     private var orderNotesSections: [NoteSection] = []
 
     private lazy var resultsControllers: OrderDetailsResultsControllers = {
-        return OrderDetailsResultsControllers(order: self.order)
+        return OrderDetailsResultsControllers(order: self.order, storageManager: self.storageManager)
     }()
 
     private lazy var orderNoteAsyncDictionary: AsyncDictionary<Int64, String> = {
@@ -151,7 +141,8 @@ final class OrderDetailsDataSource: NSObject {
 
     private let imageService: ImageService = ServiceLocator.imageService
 
-    init(order: Order) {
+    init(order: Order, storageManager: StorageManagerType = ServiceLocator.storageManager) {
+        self.storageManager = storageManager
         self.order = order
         self.couponLines = order.coupons
 
@@ -506,18 +497,16 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureSummary(cell: SummaryTableViewCell) {
-        cell.title = summaryTitle
-        cell.dateCreated = summaryDateCreated
+        let cellViewModel = SummaryTableViewCellViewModel(
+            order: order,
+            status: lookUpOrderStatus(for: order)
+        )
+
+        cell.configure(cellViewModel)
+
         cell.onEditTouchUp = { [weak self] in
             self?.onCellAction?(.summary, nil)
         }
-
-
-        let status = lookUpOrderStatus(for: order)?.status ?? OrderStatusEnum(rawValue: order.statusKey)
-        let statusName = lookUpOrderStatus(for: order)?.name ?? order.statusKey
-        let presentation = SummaryTableViewCellPresentation(status: status, statusName: statusName)
-
-        cell.display(presentation: presentation)
     }
 }
 
@@ -686,8 +675,8 @@ extension OrderDetailsDataSource {
                     shippingNotice,
                     products,
                     refundedProducts,
-                    customerInformation,
                     payment,
+                    customerInformation,
                     tracking,
                     addTracking,
                     notes].compactMap { $0 }

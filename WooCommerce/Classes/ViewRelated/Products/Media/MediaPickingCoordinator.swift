@@ -56,6 +56,7 @@ private extension MediaPickingCoordinator {
         let title = NSLocalizedString("Take a photo",
                                       comment: "Menu option for taking an image or video with the device's camera.")
         return UIAlertAction(title: title, style: .default) { [weak self] action in
+            ServiceLocator.analytics.track(.productImageSettingsAddImagesSourceTapped, withProperties: ["source": "camera"])
             self?.showCameraCapture(origin: origin)
         }
     }
@@ -64,6 +65,7 @@ private extension MediaPickingCoordinator {
         let title = NSLocalizedString("Choose from device",
                                       comment: "Menu option for selecting media from the device's photo library.")
         return UIAlertAction(title: title, style: .default) { [weak self] action in
+            ServiceLocator.analytics.track(.productImageSettingsAddImagesSourceTapped, withProperties: ["source": "device"])
             self?.showDeviceMediaLibraryPicker(origin: origin)
         }
     }
@@ -72,6 +74,7 @@ private extension MediaPickingCoordinator {
         let title = NSLocalizedString("WordPress Media Library",
                                       comment: "Menu option for selecting media from the site's media library.")
         return UIAlertAction(title: title, style: .default) { [weak self] action in
+            ServiceLocator.analytics.track(.productImageSettingsAddImagesSourceTapped, withProperties: ["source": "wpmedia"])
             self?.showSiteMediaPicker(origin: origin)
         }
     }

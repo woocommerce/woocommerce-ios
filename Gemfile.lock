@@ -73,6 +73,7 @@ GEM
     cocoapods-try (1.1.0)
     colored (1.2)
     colored2 (3.1.2)
+    colorize (0.8.1)
     commander-fastlane (4.4.6)
       highline (~> 1.7.2)
     concurrent-ruby (1.1.5)
@@ -135,6 +136,12 @@ GEM
       xcpretty-travis-formatter (>= 0.0.3)
     fastlane-plugin-appcenter (1.6.0)
     fastlane-plugin-sentry (1.6.0)
+    fastlane-plugin-test_center (3.10.2)
+      colorize
+      json
+      plist
+      xcodeproj
+      xctest_list (>= 1.1.8)
     ffi (1.12.2)
     fourflusher (2.3.1)
     fuzzy_match (2.0.4)
@@ -262,6 +269,7 @@ GEM
       rouge (~> 2.0.7)
     xcpretty-travis-formatter (1.0.0)
       xcpretty (~> 0.2, >= 0.0.7)
+    xctest_list (1.1.8)
 
 PLATFORMS
   ruby
@@ -272,6 +280,7 @@ DEPENDENCIES
   fastlane (~> 2)!
   fastlane-plugin-appcenter (= 1.6.0)
   fastlane-plugin-sentry
+  fastlane-plugin-test_center
   fastlane-plugin-wpmreleasetoolkit!
   rake!
   rmagick (~> 3.2.0)

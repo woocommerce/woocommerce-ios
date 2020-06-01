@@ -50,6 +50,9 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
         let action = ProductAction.synchronizeProducts(siteID: sampleSiteID,
                                                        pageNumber: defaultPageNumber,
                                                        pageSize: defaultPageSize,
+                                                       stockStatus: nil,
+                                                       productStatus: nil,
+                                                       productType: nil,
                                                        sortOrder: .nameAscending) { [weak self] error in
                                                         guard let self = self else {
                                                             XCTFail()
@@ -71,6 +74,9 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
         let action = ProductAction.synchronizeProducts(siteID: sampleSiteID,
                                                        pageNumber: defaultPageNumber,
                                                        pageSize: defaultPageSize,
+                                                       stockStatus: nil,
+                                                       productStatus: nil,
+                                                       productType: nil,
                                                        sortOrder: .nameDescending) { [weak self] error in
                                                         guard let self = self else {
                                                             XCTFail()
@@ -92,6 +98,9 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
         let action = ProductAction.synchronizeProducts(siteID: sampleSiteID,
                                                        pageNumber: defaultPageNumber,
                                                        pageSize: defaultPageSize,
+                                                       stockStatus: nil,
+                                                       productStatus: nil,
+                                                       productType: nil,
                                                        sortOrder: .dateAscending) { [weak self] error in
                                                         guard let self = self else {
                                                             XCTFail()
@@ -113,6 +122,9 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
         let action = ProductAction.synchronizeProducts(siteID: sampleSiteID,
                                                        pageNumber: defaultPageNumber,
                                                        pageSize: defaultPageSize,
+                                                       stockStatus: nil,
+                                                       productStatus: nil,
+                                                       productType: nil,
                                                        sortOrder: .dateDescending) { [weak self] error in
                                                         guard let self = self else {
                                                             XCTFail()
@@ -130,25 +142,10 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
 
 private extension ProductStore_ProductsSortOrderTests {
     func assertSortOrderParamValues(orderByValue: String, orderValue: String) {
-        guard let request = network.requestsForResponseData.first,
-            let urlRequest = try? request.asURLRequest(),
-            let url = urlRequest.url,
-            self.network.requestsForResponseData.count == 1 else {
-                XCTFail()
-                return
-        }
-        guard let urlComponents = URLComponents(string: url.absoluteString) else {
-            XCTFail()
+        guard let pathComponents = network.pathComponents else {
+            XCTFail("Cannot parse path from the API request")
             return
         }
-        let parameters = urlComponents.queryItems
-
-        guard let path = parameters?.first(where: { $0.name == "path" })?.value else {
-            XCTFail()
-            return
-        }
-
-        let pathComponents = path.components(separatedBy: "&")
 
         let expectedOrderbyParam = "orderby=\(orderByValue)"
         XCTAssertTrue(pathComponents.contains(expectedOrderbyParam), "Expected to have param: \(expectedOrderbyParam)")

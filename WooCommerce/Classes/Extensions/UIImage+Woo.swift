@@ -144,6 +144,12 @@ extension UIImage {
         UIImage(named: "woo-empty-search-results")!
     }
 
+    /// An image showing a bar chart. This is used to show an empty All Orders tab.
+    ///
+    static var emptyOrdersImage: UIImage {
+        UIImage(named: "woo-empty-orders")!
+    }
+
     /// Error State Image
     ///
     static var errorStateImage: UIImage {
@@ -300,6 +306,12 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Plus Icon
+    ///
+    static var plusImage: UIImage {
+        return UIImage.gridicon(.plus)
+    }
+
     /// Search Icon
     ///
     static var searchImage: UIImage {
@@ -383,6 +395,12 @@ extension UIImage {
         }
 
         return im2.imageWithTintColor(tintColor)
+    }
+
+    /// Password Field Image
+    ///
+    static var passwordFieldImage: UIImage {
+        return UIImage.gridicon(.visible)
     }
 
     /// Waiting for Customers Image

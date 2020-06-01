@@ -80,17 +80,21 @@ private extension ProductReviewStore {
     func retrieveProductReview(siteID: Int64, reviewID: Int64, onCompletion: @escaping (Networking.ProductReview?, Error?) -> Void) {
         let remote = ProductReviewsRemote(network: network)
 
-        remote.loadProductReview(for: siteID, reviewID: reviewID) { [weak self] (productReview, error) in
-            guard let productReview = productReview else {
-                if case NetworkError.notFound? = error {
-                    self?.deleteStoredProductReview(siteID: siteID, reviewID: reviewID)
-                }
-                onCompletion(nil, error)
+        remote.loadProductReview(for: siteID, reviewID: reviewID) { [weak self] result in
+            guard let self = self else {
                 return
             }
 
-            self?.upsertStoredProductReviewsInBackground(readOnlyProductReviews: [productReview], siteID: siteID) {
-                onCompletion(productReview, nil)
+            switch result {
+            case .failure(let error):
+                if case NetworkError.notFound = error {
+                    self.deleteStoredProductReview(siteID: siteID, reviewID: reviewID)
+                }
+                onCompletion(nil, error)
+            case .success(let productReview):
+                self.upsertStoredProductReviewsInBackground(readOnlyProductReviews: [productReview], siteID: siteID) {
+                    onCompletion(productReview, nil)
+                }
             }
         }
     }

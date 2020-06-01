@@ -49,6 +49,7 @@ final class OrdersViewModel {
     private let includesFutureOrders: Bool
 
     /// Used for tracking whether the app was _previously_ in the background.
+    ///
     private var isAppActive: Bool = true
 
     /// Should be bound to the UITableView to auto-update the list of Orders.
@@ -81,12 +82,6 @@ final class OrdersViewModel {
     ///
     var isEmpty: Bool {
         resultsController.isEmpty
-    }
-
-    /// Indicates if there's a filter being applied.
-    ///
-    var isFiltered: Bool {
-        statusFilter != nil
     }
 
     init(storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -271,6 +266,9 @@ private extension OrdersViewModel {
 
 extension OrdersViewModel {
     /// Returns an `OrdersViewModel` instance for the `StorageOrder` at the given `indexPath`.
+    ///
+    /// TODO Ideally we should have a very tiny ViewModel for the cell instead of
+    /// `OrderDetailsViewModel` which is used in `OrderDetailsViewController` too.
     ///
     func detailsViewModel(at indexPath: IndexPath) -> OrderDetailsViewModel {
         let order = resultsController.object(at: indexPath)

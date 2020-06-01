@@ -4,7 +4,7 @@ import UIKit
 ///
 protocol FilterListViewModel {
     /// The type of the final value returned to the caller of `FilterListViewController`.
-    associatedtype Criteria
+    associatedtype Criteria: Equatable
 
     // Filter Action UI configuration
 
@@ -82,11 +82,12 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
     @IBOutlet private weak var filterActionContainerView: UIView!
 
     private let viewModel: ViewModel
+    private let originalCriteria: ViewModel.Criteria
     private let listSelectorCommand: FilterListSelectorCommand
 
     private lazy var listSelector: ListSelectorViewController
         <FilterListSelectorCommand, FilterListSelectorCommand.Model, FilterListSelectorCommand.Cell> = {
-            return ListSelectorViewController(command: listSelectorCommand) { [weak self] _ in }
+            return ListSelectorViewController(command: listSelectorCommand, tableViewStyle: .plain) { [weak self] _ in }
     }()
 
     private var clearAllBarButtonItem: UIBarButtonItem?
@@ -95,6 +96,8 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
     private var cancellableSelectedFilterValue: ObservationToken?
 
     private let onFilterAction: (ViewModel.Criteria) -> Void
+    private let onClearAction: () -> Void
+    private let onDismissAction: () -> Void
 
     // Strings.
 
@@ -106,9 +109,17 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
     /// - Parameters:
     ///   - viewModel: Used to render the filter list selector and the selected filter value list selector.
     ///   - onFilterAction: Called when the user taps on the Filter CTA.
-    init(viewModel: ViewModel, onFilterAction: @escaping (ViewModel.Criteria) -> Void) {
+    ///   - onClearAction: Called when the user taps on the Clear CTA.
+    ///   - onDismissAction: Called when the user taps on the Dismiss CTA.
+    init(viewModel: ViewModel,
+         onFilterAction: @escaping (ViewModel.Criteria) -> Void,
+         onClearAction: @escaping () -> Void,
+         onDismissAction: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.originalCriteria = viewModel.criteria
         self.onFilterAction = onFilterAction
+        self.onClearAction = onClearAction
+        self.onDismissAction = onDismissAction
         self.listSelectorCommand = FilterListSelectorCommand(data: viewModel.filterTypeViewModels)
         super.init(nibName: "FilterListViewController", bundle: nil)
     }
@@ -146,7 +157,16 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
     }
 
     @objc func dismissButtonTapped() {
-        dismiss(animated: true) {}
+        if hasFilterChanges() {
+            UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+                self?.dismiss(animated: true) {}
+            })
+            return
+        }
+
+        dismiss(animated: true) { [weak self] in
+            self?.onDismissAction()
+        }
     }
 
     @objc func clearAllButtonTapped() {
@@ -154,6 +174,7 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
         listSelectorCommand.data = viewModel.filterTypeViewModels
         updateUI(numberOfActiveFilters: viewModel.filterTypeViewModels.numberOfActiveFilters)
         listSelector.reloadData()
+        onClearAction()
     }
 }
 
@@ -179,7 +200,7 @@ private extension FilterListViewController {
     }
 
     func configureMainView() {
-        view.backgroundColor = .listBackground
+        view.backgroundColor = .basicBackground
     }
 
     func observeListSelectorCommandItemSelection() {
@@ -205,7 +226,7 @@ private extension FilterListViewController {
                         self.listSelector.reloadData()
                     }
                 }
-                let staticListSelector = ListSelectorViewController(command: command) { _ in }
+                let staticListSelector = ListSelectorViewController(command: command, tableViewStyle: .plain) { _ in }
                 self.listSelector.navigationController?.pushViewController(staticListSelector, animated: true)
             case .custom:
                 break
@@ -224,8 +245,9 @@ private extension FilterListViewController {
     }
 
     func configureBottomFilterButtonContainerView() {
-        let buttonContainerViewModel = BottomButtonContainerView.ViewModel(buttonTitle: viewModel.filterActionTitle) { [weak self] in
-            self?.filterActionButtonTapped()
+        let buttonContainerViewModel = BottomButtonContainerView.ViewModel(style: .primary,
+                                                                           title: viewModel.filterActionTitle) { [weak self] _ in
+                                                                            self?.filterActionButtonTapped()
         }
         let buttonContainerView = BottomButtonContainerView(viewModel: buttonContainerViewModel)
         filterActionContainerView.addSubview(buttonContainerView)
@@ -251,6 +273,14 @@ private extension FilterListViewController {
 
     func updateClearAllActionVisibility(numberOfActiveFilters: Int) {
         listSelector.navigationItem.rightBarButtonItem = numberOfActiveFilters > 0 ? clearAllBarButtonItem: nil
+    }
+}
+
+// MARK: Private helpers
+//
+private extension FilterListViewController {
+    func hasFilterChanges() -> Bool {
+        return viewModel.criteria != originalCriteria
     }
 }
 

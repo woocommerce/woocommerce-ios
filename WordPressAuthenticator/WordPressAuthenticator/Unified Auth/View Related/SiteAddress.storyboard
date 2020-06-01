@@ -8,10 +8,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--SiteAddressViewController-->
+        <!--Site Address View Controller-->
         <scene sceneID="7Rf-Qz-qsw">
             <objects>
-                <viewController title="SiteAddressViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="aQT-Gx-U3x" customClass="SiteAddressViewController" customModule="WordPressAuthenticator" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SiteAddressViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="aQT-Gx-U3x" customClass="SiteAddressViewController" customModule="WordPressAuthenticator" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ljV-kF-TaY">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

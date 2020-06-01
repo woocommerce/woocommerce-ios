@@ -167,6 +167,21 @@ class LoginPrologueViewController: LoginViewController {
         GoogleAuthenticator.sharedInstance.showFrom(viewController: self, loginFields: loginFields, for: .login)
     }
 
+    /// Displays the self-hosted login form.
+    ///
+    private func loginToSelfHostedSite() {
+        // Navigate to the self-hosted flow.
+        guard let vc = LoginSiteAddressViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from LoginViewController to LoginSiteAddressViewController")
+            return
+        }
+
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
+    }
 }
 
 // MARK: - AppleAuthenticatorDelegate

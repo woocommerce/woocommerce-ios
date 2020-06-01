@@ -170,9 +170,20 @@ class LoginPrologueViewController: LoginViewController {
     /// Displays the self-hosted login form.
     ///
     private func loginToSelfHostedSite() {
+        // Navigate to the unified auth site address flow.
+        if WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress {
+            guard let vc = SiteAddressViewController.instantiate(from: .siteAddress) else {
+                DDLogError("Failed to navigate from LoginPrologueViewController to SiteAddressViewController")
+                return
+            }
+
+            navigationController?.pushViewController(vc, animated: true)
+            return
+        }
+
         // Navigate to the self-hosted flow.
         guard let vc = LoginSiteAddressViewController.instantiate(from: .login) else {
-            DDLogError("Failed to navigate from LoginViewController to LoginSiteAddressViewController")
+            DDLogError("Failed to navigate from LoginPrologueViewController to LoginSiteAddressViewController")
             return
         }
 

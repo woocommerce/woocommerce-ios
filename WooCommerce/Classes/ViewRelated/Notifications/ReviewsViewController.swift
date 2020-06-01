@@ -142,7 +142,9 @@ final class ReviewsViewController: UIViewController {
         CrashLogging.logMessage("Testing!",
                                 properties: ["testError": error],
                                 level: .fatal)
-        fatalError("Testing crash logging in Sentry on Reviews tab launch")
+
+        DDLogInfo("Testing: has user opted out from crash logging: \(CrashLogging.userHasOptedOut)")
+//        fatalError("Testing crash logging in Sentry on Reviews tab launch")
     }
 
     func presentDetails(for noteID: Int64) {

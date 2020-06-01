@@ -135,11 +135,11 @@ private extension SettingsViewController {
             [.selectedStore, .switchStore] : [.selectedStore]
 
         let otherSection: Section
-        #if DEBUG
+//        #if DEBUG
         otherSection = Section(title: otherTitle, rows: [.appSettings, .wormholy], footerHeight: CGFloat.leastNonzeroMagnitude)
-        #else
-        otherSection = Section(title: otherTitle, rows: [.appSettings], footerHeight: CGFloat.leastNonzeroMagnitude)
-        #endif
+//        #else
+//        otherSection = Section(title: otherTitle, rows: [.appSettings], footerHeight: CGFloat.leastNonzeroMagnitude)
+//        #endif
 
         if couldShowBetaFeaturesRow() {
             sections = [

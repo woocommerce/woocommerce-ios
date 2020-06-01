@@ -2,7 +2,6 @@ import UIKit
 import Lottie
 import WordPressShared
 import WordPressUI
-import GoogleSignIn
 import WordPressKit
 
 class LoginPrologueViewController: LoginViewController {
@@ -93,7 +92,7 @@ class LoginPrologueViewController: LoginViewController {
 
             // Continue with Google button action
             vc.googleTapped = { [weak self] in
-                self?.googleLoginTapped(withDelegate: self)
+                self?.googleTapped()
             }
 
             // Site address text link button action
@@ -163,6 +162,11 @@ class LoginPrologueViewController: LoginViewController {
         AppleAuthenticator.sharedInstance.showFrom(viewController: self)
     }
 
+    private func googleTapped() {
+        GoogleAuthenticator.sharedInstance.loginDelegate = self
+        GoogleAuthenticator.sharedInstance.showFrom(viewController: self, loginFields: loginFields, for: .login)
+    }
+
 }
 
 // MARK: - AppleAuthenticatorDelegate
@@ -194,35 +198,54 @@ extension LoginPrologueViewController: AppleAuthenticatorDelegate {
 
 }
 
-// MARK: - Social LoginFacadeDelegate Methods
+// MARK: - GoogleAuthenticatorLoginDelegate
 
-extension LoginPrologueViewController {
-    
-    override open func displayRemoteError(_ error: Error) {
-        configureViewLoading(false)
-        displayRemoteErrorForGoogle(error)
-    }
-    
-    func finishedLogin(withGoogleIDToken googleIDToken: String, authToken: String) {
-        googleFinishedLogin(withGoogleIDToken: googleIDToken, authToken: authToken)
+extension LoginPrologueViewController: GoogleAuthenticatorLoginDelegate {
+
+    func googleFinishedLogin(credentials: AuthenticatorCredentials, loginFields: LoginFields) {
+        self.loginFields = loginFields
+        syncWPComAndPresentEpilogue(credentials: credentials)
     }
 
-    func existingUserNeedsConnection(_ email: String) {
-        configureViewLoading(false)
-        googleExistingUserNeedsConnection(email)
+    func googleNeedsMultifactorCode(loginFields: LoginFields) {
+        self.loginFields = loginFields
+
+        guard let vc = Login2FAViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from LoginViewController to Login2FAViewController")
+            return
+        }
+
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
     }
 
-    func needsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
-        configureViewLoading(false)
-        socialNeedsMultifactorCode(forUserID: userID, andNonceInfo: nonceInfo)
+    func googleExistingUserNeedsConnection(loginFields: LoginFields) {
+        self.loginFields = loginFields
+
+        guard let vc = LoginWPComViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from Google Login to LoginWPComViewController (password VC)")
+            return
+        }
+
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
     }
 
-}
+    func googleLoginFailed(errorTitle: String, errorDescription: String, loginFields: LoginFields) {
+        self.loginFields = loginFields
 
-// MARK: - GIDSignInDelegate
-
-extension LoginPrologueViewController: GIDSignInDelegate {
-    open func sign(_ signIn: GIDSignIn?, didSignInFor user: GIDGoogleUser?, withError error: Error?) {
-        signInGoogleAccount(signIn, didSignInFor: user, withError: error)
+        let socialErrorVC = LoginSocialErrorViewController(title: errorTitle, description: errorDescription)
+        let socialErrorNav = LoginNavigationController(rootViewController: socialErrorVC)
+        socialErrorVC.delegate = self
+        socialErrorVC.loginFields = loginFields
+        socialErrorVC.modalPresentationStyle = .fullScreen
+        present(socialErrorNav, animated: true)
     }
+
 }

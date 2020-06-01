@@ -80,8 +80,6 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
     }
 
     @objc func handleGoogleButtonTapped() {
-        WordPressAuthenticator.track(.loginSocialButtonClick, properties: ["source": "google"])
-
         dismiss(animated: true)
         googleTapped?()
     }

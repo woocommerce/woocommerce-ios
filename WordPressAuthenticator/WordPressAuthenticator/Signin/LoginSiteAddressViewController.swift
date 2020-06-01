@@ -233,15 +233,8 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
                     self.showSelfHostedUsernamePassword()
                     return
                 }
-                
-                if WordPressAuthenticator.shared.configuration.showLoginOptionsFromSiteAddress {
-                    // If WCiOS has enabled the configuration, display
-                    // the "3 button view" on receiving a valid site address.
-                    self.showLoginMethods()
-                } else {
-                    self.showWPUsernamePassword()
-                }
 
+                self.showWPUsernamePassword()
                 return
             }
 
@@ -288,49 +281,6 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         vc.errorToPresent = errorToPresent
 
         navigationController?.pushViewController(vc, animated: true)
-    }
-
-    /// Ref. https://git.io/JfJ4s - settings for Woo.
-    /// After a site address has been validated,
-    /// display the 3 button view login options.
-    ///
-    @objc func showLoginMethods() {
-        configureViewLoading(false)
-
-        guard let vc = LoginPrologueLoginMethodViewController.instantiate(from: .login) else {
-            DDLogError("Failed to navigate to LoginPrologueLoginMethodViewController from LoginSiteAddressViewController")
-            return
-        }
-
-        vc.transitioningDelegate = self
-
-        // Continue with WordPress.com button action
-        vc.emailTapped = { [weak self] in
-            self?.showWPUsernamePassword()
-        }
-
-        // Continue with Google button action
-        vc.googleTapped = { [weak self] in
-            guard let toVC = SignupGoogleViewController.instantiate(from: .signup) else {
-                DDLogError("Failed to navigate to SignupGoogleViewController")
-                return
-            }
-
-            self?.navigationController?.pushViewController(toVC, animated: true)
-        }
-
-        // Sign In With Apple (SIWA) button action
-        vc.appleTapped = { [weak self] in
-            self?.appleTapped()
-        }
-
-        vc.modalPresentationStyle = .custom
-        navigationController?.present(vc, animated: true, completion: nil)
-    }
-
-    private func appleTapped() {
-        AppleAuthenticator.sharedInstance.delegate = self
-        AppleAuthenticator.sharedInstance.showFrom(viewController: self)
     }
 
     /// Whether the form can be submitted.
@@ -406,35 +356,5 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
 
     @objc func handleKeyboardWillHide(_ notification: Foundation.Notification) {
         keyboardWillHide(notification)
-    }
-}
-
-/// The Site Address VC conforms to the AppleAuth delegate so that the 3 button view
-/// can be presented after a successful Site Address was submitted.
-/// See also: WordPressAuthenticatorConfiguration.showLoginOptionsFromSiteAddress.
-///
-extension LoginSiteAddressViewController: AppleAuthenticatorDelegate {
-
-    func showWPComLogin(loginFields: LoginFields) {
-        self.loginFields = loginFields
-        guard let vc = LoginWPComViewController.instantiate(from: .login) else {
-            DDLogError("Failed to navigate from Sign in with Apple to LoginWPComViewController")
-            return
-        }
-
-        vc.loginFields = self.loginFields
-        vc.dismissBlock = dismissBlock
-        vc.errorToPresent = errorToPresent
-
-        navigationController?.pushViewController(vc, animated: true)
-    }
-
-    func showApple2FA(loginFields: LoginFields) {
-        self.loginFields = loginFields
-        signInAppleAccount()
-    }
-    
-    func authFailedWithError(message: String) {
-        displayErrorAlert(message, sourceTag: .loginApple)
     }
 }

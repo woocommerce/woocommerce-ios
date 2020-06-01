@@ -25,7 +25,7 @@
                                     <outlet property="delegate" destination="aQT-Gx-U3x" id="2xB-Wr-Hdh"/>
                                 </connections>
                             </tableView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ClH-Cn-49d" customClass="NUXButton" customModule="WordPressAuthenticator" customModuleProvider="target">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ClH-Cn-49d" userLabel="Primary Button" customClass="NUXButton" customModule="WordPressAuthenticator" customModuleProvider="target">
                                 <rect key="frame" x="20" y="617" width="335" height="30"/>
                                 <state key="normal" title="Button"/>
                                 <userDefinedRuntimeAttributes>
@@ -46,7 +46,7 @@
                         <viewLayoutGuide key="safeArea" id="ihD-pY-rg9"/>
                     </view>
                     <connections>
-                        <outlet property="continueButton" destination="ClH-Cn-49d" id="MQY-BY-P8D"/>
+                        <outlet property="primaryButton" destination="ClH-Cn-49d" id="kda-Wg-JrS"/>
                         <outlet property="tableView" destination="KLl-Uz-wEP" id="ntt-cX-m20"/>
                     </connections>
                 </viewController>

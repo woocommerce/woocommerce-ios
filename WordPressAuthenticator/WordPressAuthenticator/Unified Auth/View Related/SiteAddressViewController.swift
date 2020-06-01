@@ -6,6 +6,7 @@ import UIKit
 final class SiteAddressViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var primaryButton: NUXButton!
 
     @IBOutlet private weak var continueButton: NUXButton!
 

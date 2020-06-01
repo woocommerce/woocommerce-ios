@@ -484,6 +484,21 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         GoogleAuthenticator.sharedInstance.showFrom(viewController: self, loginFields: loginFields, for: .login)
     }
 
+    /// Displays the self-hosted login form.
+    ///
+    private func loginToSelfHostedSite() {
+        guard let vc = LoginSiteAddressViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from LoginViewController to LoginSiteAddressViewController")
+            return
+        }
+
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
     @IBAction func handleTextFieldDidChange(_ sender: UITextField) {
         switch sender {
         case emailTextField:

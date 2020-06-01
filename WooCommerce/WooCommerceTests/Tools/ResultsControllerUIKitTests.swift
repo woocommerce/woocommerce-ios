@@ -209,6 +209,10 @@ final class ResultsControllerUIKitTests: XCTestCase {
     ///
     func testItCanHandleSimultaneousSectionAndRowDeletionAndInsertion() {
         // Given
+        // Add the table to a UIWindow so that it will crash in case an invalid number of rows
+        // is detected.
+        let window = makeWindow(containing: tableView)
+        window.isHidden = false
 
         // Set up initial rows and sections.
         let firstSection = [
@@ -259,6 +263,10 @@ final class ResultsControllerUIKitTests: XCTestCase {
     ///
     func testWhenARowIsMovedToANewSectionThenAMoveChangeTypeEventIsEmitted() {
         // Given
+        // Add the table to a UIWindow so that it will crash in case an invalid number of rows
+        // is detected.
+        let window = makeWindow(containing: tableView)
+        window.isHidden = false
 
         // Set up initial rows and sections.
         let _ = [
@@ -350,5 +358,17 @@ private extension ResultsControllerUIKitTests {
         viewStorage.saveIfNeeded()
 
         wait(for: [expectOnEndUpdates], timeout: Constants.expectationTimeout)
+    }
+
+    /// Create a UIWindow containing the given `tableView`.
+    ///
+    func makeWindow(containing tableView: UITableView) -> UIWindow {
+        let rootViewController = UIViewController()
+        rootViewController.view.addSubview(tableView)
+
+        let window = UIWindow(frame: .zero)
+        window.rootViewController = rootViewController
+
+        return window
     }
 }

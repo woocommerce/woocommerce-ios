@@ -256,7 +256,8 @@ final class ResultsControllerUIKitTests: XCTestCase {
         XCTAssertEqual(tableView.numberOfRows(inSection: 1), 4)
     }
 
-    /// Test that `ResultsController` will emit a `move` `ChangeType` if a
+    /// Test that `ResultsController` will emit a `move` `ChangeType` if a row is moved to
+    /// a new section because of an update to a property used as the `sectionNameKeyPath`.
     ///
     /// This proves that the bug discussed in [here](https://forums.developer.apple.com/thread/61282)
     /// was already fixed by Apple. The bug was that a `move` was being emitted as an `update`.

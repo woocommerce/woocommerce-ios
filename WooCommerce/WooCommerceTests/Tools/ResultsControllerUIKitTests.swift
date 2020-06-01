@@ -211,11 +211,6 @@ final class ResultsControllerUIKitTests: XCTestCase {
         // Given
 
         // Set up initial rows and sections.
-        let expectOnEndUpdates = self.expectation(description: "wait for onEndUpdates")
-        tableView.onEndUpdates = {
-            expectOnEndUpdates.fulfill()
-        }
-
         let firstSection = [
             insertAccount(section: "Alpha", userID: 9_900),
             insertAccount(section: "Alpha", userID: 9_800),
@@ -234,9 +229,7 @@ final class ResultsControllerUIKitTests: XCTestCase {
             insertAccount(section: "Charlie", userID: 7_700)
         ]
 
-        viewStorage.saveIfNeeded()
-
-        wait(for: [expectOnEndUpdates], timeout: Constants.expectationTimeout)
+        saveAndWaitForTableViewOnEndUpdates()
 
         XCTAssertEqual(tableView.numberOfSections, 3)
         XCTAssertEqual(tableView.numberOfRows(inSection: 0), 3)
@@ -244,11 +237,6 @@ final class ResultsControllerUIKitTests: XCTestCase {
         XCTAssertEqual(tableView.numberOfRows(inSection: 2), 3)
 
         // When
-        let expectSecondOnEndUpdates = self.expectation(description: "second wait for onEndUpdates")
-        tableView.onEndUpdates = {
-            expectSecondOnEndUpdates.fulfill()
-        }
-
         // Delete row at index 1 of section at index 0.
         viewStorage.deleteObject(firstSection[1])
         // Delete section at index 1
@@ -256,9 +244,7 @@ final class ResultsControllerUIKitTests: XCTestCase {
         // Insert row at index 1 of section at index 1.
         insertAccount(section: "Charlie", userID: 7_801)
 
-        viewStorage.saveIfNeeded()
-
-        wait(for: [expectSecondOnEndUpdates], timeout: Constants.expectationTimeout)
+        saveAndWaitForTableViewOnEndUpdates()
 
         // Then
         XCTAssertEqual(tableView.numberOfSections, 2)
@@ -275,11 +261,6 @@ final class ResultsControllerUIKitTests: XCTestCase {
         // Given
 
         // Set up initial rows and sections.
-        let expectOnEndUpdates = self.expectation(description: "wait for onEndUpdates")
-        tableView.onEndUpdates = {
-            expectOnEndUpdates.fulfill()
-        }
-
         let _ = [
             insertAccount(section: "Alpha", userID: 9_900),
             insertAccount(section: "Alpha", userID: 9_800),
@@ -292,16 +273,9 @@ final class ResultsControllerUIKitTests: XCTestCase {
             insertAccount(section: "Beta", userID: 8_700)
         ]
 
-        viewStorage.saveIfNeeded()
-
-        wait(for: [expectOnEndUpdates], timeout: Constants.expectationTimeout)
+        saveAndWaitForTableViewOnEndUpdates()
 
         // When
-        let expectSecondOnEndUpdates = self.expectation(description: "second wait for onEndUpdates")
-        tableView.onEndUpdates = {
-            expectSecondOnEndUpdates.fulfill()
-        }
-
         var insertedRows = [IndexPath]()
         var deletedRows = [IndexPath]()
         var reloadedRows = [IndexPath]()
@@ -318,9 +292,7 @@ final class ResultsControllerUIKitTests: XCTestCase {
         // Move a row to a new section
         secondSection[1].username = "Foxtrot"
 
-        viewStorage.saveIfNeeded()
-
-        wait(for: [expectSecondOnEndUpdates], timeout: Constants.expectationTimeout)
+        saveAndWaitForTableViewOnEndUpdates()
 
         // Then
         // A `.move` change type is handled as both a delete and then an insert
@@ -364,5 +336,19 @@ private extension ResultsControllerUIKitTests {
         account.username = username
         account.userID = userID
         return account
+    }
+
+    /// Save the `viewStorage` and wait for `self.tableView`'s `onEndUpdates` (cell animations)
+    /// to be called.
+    ///
+    func saveAndWaitForTableViewOnEndUpdates() {
+        let expectOnEndUpdates = self.expectation(description: "wait for onEndUpdates")
+        tableView.onEndUpdates = {
+            expectOnEndUpdates.fulfill()
+        }
+
+        viewStorage.saveIfNeeded()
+
+        wait(for: [expectOnEndUpdates], timeout: Constants.expectationTimeout)
     }
 }

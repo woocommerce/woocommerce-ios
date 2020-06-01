@@ -7,6 +7,7 @@ enum Storyboard: String {
     case signup = "Signup"
     case emailMagicLink = "EmailMagicLink"
     case googleAuth = "GoogleAuthViewController"
+    case siteAddress = "SiteAddress"
 
     var instance: UIStoryboard {
         return UIStoryboard(name: self.rawValue, bundle: WordPressAuthenticator.bundle)

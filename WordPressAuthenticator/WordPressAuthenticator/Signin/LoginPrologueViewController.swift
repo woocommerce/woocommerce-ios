@@ -172,6 +172,17 @@ class LoginPrologueViewController: LoginViewController {
         presentUnifiedGoogleView()
     }
 
+    /// Determines which view to present for the site address form.
+    ///
+    private func loginToSelfHostedSite() {
+        guard WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress else {
+            presentSelfHostedView()
+            return
+        }
+
+        presentUnifiedSiteAddressView()
+    }
+
     // Shows the VC that handles both Google login & signup.
     private func presentUnifiedGoogleView() {
         guard let toVC = GoogleAuthViewController.instantiate(from: .googleAuth) else {
@@ -190,6 +201,32 @@ class LoginPrologueViewController: LoginViewController {
         }
 
         navigationController?.pushViewController(toVC, animated: true)
+    }
+
+    /// Navigates to the unified site address login flow.
+    ///
+    private func presentUnifiedSiteAddressView() {
+        guard let vc = SiteAddressViewController.instantiate(from: .siteAddress) else {
+            DDLogError("Failed to navigate from LoginPrologueViewController to SiteAddressViewController")
+            return
+        }
+
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
+    /// Navigates to the old self-hosted login flow.
+    ///
+    private func presentSelfHostedView() {
+        guard let vc = LoginSiteAddressViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from LoginPrologueViewController to LoginSiteAddressViewController")
+            return
+        }
+
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
     }
     
 }

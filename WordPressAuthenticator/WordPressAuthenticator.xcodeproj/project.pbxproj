@@ -118,6 +118,8 @@
 		CE30A2A722579F4100DF3CDA /* LoginUsernamePasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE30A2A622579F4100DF3CDA /* LoginUsernamePasswordViewController.swift */; };
 		CE30A2A92257C60500DF3CDA /* WordPressOrgCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE30A2A82257C60500DF3CDA /* WordPressOrgCredentials.swift */; };
 		CE30A2AD2257CECC00DF3CDA /* AuthenticatorCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE30A2AC2257CECC00DF3CDA /* AuthenticatorCredentials.swift */; };
+		CEC77C6624854F2E00FB9050 /* SiteAddressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC77C6524854F2E00FB9050 /* SiteAddressViewController.swift */; };
+		CEC77C6824854F3E00FB9050 /* SiteAddress.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEC77C6724854F3E00FB9050 /* SiteAddress.storyboard */; };
 		CEDE0D93242011E000CB3345 /* NSObject+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDE0D92242011E000CB3345 /* NSObject+Helpers.swift */; };
 		CEDE0D952420121D00CB3345 /* UIStoryboard+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDE0D942420121D00CB3345 /* UIStoryboard+Helpers.swift */; };
 		CEDE0D972420126900CB3345 /* UIViewController+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDE0D962420126900CB3345 /* UIViewController+Helpers.swift */; };
@@ -277,6 +279,8 @@
 		CE30A2A622579F4100DF3CDA /* LoginUsernamePasswordViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginUsernamePasswordViewController.swift; sourceTree = "<group>"; };
 		CE30A2A82257C60500DF3CDA /* WordPressOrgCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressOrgCredentials.swift; sourceTree = "<group>"; };
 		CE30A2AC2257CECC00DF3CDA /* AuthenticatorCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatorCredentials.swift; sourceTree = "<group>"; };
+		CEC77C6524854F2E00FB9050 /* SiteAddressViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteAddressViewController.swift; sourceTree = "<group>"; };
+		CEC77C6724854F3E00FB9050 /* SiteAddress.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SiteAddress.storyboard; sourceTree = "<group>"; };
 		CEDE0D92242011E000CB3345 /* NSObject+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+Helpers.swift"; sourceTree = "<group>"; };
 		CEDE0D942420121D00CB3345 /* UIStoryboard+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStoryboard+Helpers.swift"; sourceTree = "<group>"; };
 		CEDE0D962420126900CB3345 /* UIViewController+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Helpers.swift"; sourceTree = "<group>"; };
@@ -368,6 +372,7 @@
 				98D9A4B02474A526002E491C /* GoogleAuthenticator.swift */,
 				98ED483424802F8F00992B2D /* GoogleAuthViewController.swift */,
 				98ED48382480300500992B2D /* GoogleAuthViewController.storyboard */,
+				CEC77C6424854EE400FB9050 /* View Related */,
 			);
 			path = "Unified Auth";
 			sourceTree = "<group>";
@@ -650,6 +655,15 @@
 			path = Credentials;
 			sourceTree = "<group>";
 		};
+		CEC77C6424854EE400FB9050 /* View Related */ = {
+			isa = PBXGroup;
+			children = (
+				CEC77C6524854F2E00FB9050 /* SiteAddressViewController.swift */,
+				CEC77C6724854F3E00FB9050 /* SiteAddress.storyboard */,
+			);
+			path = "View Related";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -766,6 +780,7 @@
 				B5E07FF4208FD13800657A9A /* Assets.xcassets in Resources */,
 				B56090CA208A4F5400399AE4 /* NUXButtonView.storyboard in Resources */,
 				B560911E208A555E00399AE4 /* Signup.storyboard in Resources */,
+				CEC77C6824854F3E00FB9050 /* SiteAddress.storyboard in Resources */,
 				B5609118208A555600399AE4 /* SearchTableViewCell.xib in Resources */,
 				98ED48392480300500992B2D /* GoogleAuthViewController.storyboard in Resources */,
 				B560913F208A563800399AE4 /* Login.storyboard in Resources */,
@@ -949,6 +964,7 @@
 				B560913E208A563800399AE4 /* SigninEditingState.swift in Sources */,
 				B56090CF208A4F5400399AE4 /* NUXCollectionViewController.swift in Sources */,
 				1A21EE9822832BC300C940C6 /* WordPressComOAuthClientFacade+Swift.swift in Sources */,
+				CEC77C6624854F2E00FB9050 /* SiteAddressViewController.swift in Sources */,
 				CEDE0D952420121D00CB3345 /* UIStoryboard+Helpers.swift in Sources */,
 				B5ED7920207E993E00A8FD8C /* WPAuthenticatorLogging.m in Sources */,
 				B5609138208A563800399AE4 /* LoginSiteAddressViewController.swift in Sources */,

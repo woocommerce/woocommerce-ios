@@ -313,6 +313,74 @@ final class ResultsControllerUIKitTests: XCTestCase {
         XCTAssertEqual(tableView.numberOfRows(inSection: 1), 2)
         XCTAssertEqual(tableView.numberOfRows(inSection: 2), 1)
     }
+
+    /// Test that when a row is updated and, at the same time, was moved because of an update
+    /// from a different row, then we consider that as a `.move` instead of a `.update`.
+    ///
+    /// FRC emits a `.update` for this with `indexPath` and `newIndexPath` having different values.
+    /// When this happens, we change it to `.move`. See the `fixedType` variable in
+    /// `ResultsController.startForwardingObjectEvents` for more info.
+    ///
+    /// Something to note, if we just use `reloadRows`, `UITableView` actually considers that
+    /// as both a delete and insert operation. Without the `fixedType`, iOS will crash with
+    /// an error like this:
+    ///
+    /// ```
+    /// attempt to delete row 0 from section 2, but there are only 2 sections before the
+    /// update with userInfo...
+    /// ```
+    ///
+    func testWhenARowIsUpdatedAndMovedBecauseOfANewSectionThenAMoveChangeTypeEventIsEmitted() {
+        // Given
+        // Add the table to a UIWindow so that it will crash in case an invalid number of rows
+        // is detected.
+        let window = makeWindow(containing: tableView)
+        window.isHidden = false
+
+        // Set up initial rows and sections.
+        let _ = [
+            insertAccount(section: "Alpha", userID: 9_900),
+        ]
+
+        let charlieSection = [
+            insertAccount(section: "Charlie", userID: 7_900),
+        ]
+
+        saveAndWaitForTableViewOnEndUpdates()
+
+        // When
+        var insertedRows = [IndexPath]()
+        var deletedRows = [IndexPath]()
+        var reloadedRows = [IndexPath]()
+        tableView.onInsertedRows = {
+            insertedRows.append(contentsOf: $0)
+        }
+        tableView.onDeletedRows = {
+            deletedRows.append(contentsOf: $0)
+        }
+        tableView.onReloadRows = {
+            reloadedRows.append(contentsOf: $0)
+        }
+
+        // Insert a section above `charlieSection`.
+        insertAccount(section: "Beta", userID: 8_900)
+        // Update the charlieSection row. This will emit an `.update` change type which we
+        // will fix by changing to a `.move`. See ResultsController.startForwardObjectEvents.
+        charlieSection[0].displayName = "Updated DisplayName"
+
+        saveAndWaitForTableViewOnEndUpdates()
+
+        // Then
+        // A `.move` change type is handled as both a delete and then an insert
+        XCTAssertEqual(deletedRows, [IndexPath(row: 0, section: 1)])
+        XCTAssertEqual(insertedRows, [IndexPath(row: 0, section: 1), IndexPath(row: 0, section: 2)])
+        assertEmpty(reloadedRows)
+
+        XCTAssertEqual(tableView.numberOfSections, 3)
+        XCTAssertEqual(tableView.numberOfRows(inSection: 0), 1)
+        XCTAssertEqual(tableView.numberOfRows(inSection: 1), 1)
+        XCTAssertEqual(tableView.numberOfRows(inSection: 2), 1)
+    }
 }
 
 // MARK: - UITableViewDataSource

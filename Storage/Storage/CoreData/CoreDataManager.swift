@@ -46,11 +46,11 @@ public class CoreDataManager: StorageManagerType {
                                     level: .fatal)
 
         container.loadPersistentStores { [weak self] (storeDescription, error) in
-            guard let `self` = self, let errorLoadingPersistentStores = error else {
+            guard let `self` = self, let persistentStoreLoadingError = error else {
                 return
             }
 
-            DDLogError("⛔️ [CoreDataManager] loadPersistentStore failed. Attempting to recover... \(errorLoadingPersistentStores)")
+            DDLogError("⛔️ [CoreDataManager] loadPersistentStore failed. Attempting to recover... \(persistentStoreLoadingError)")
 
             /// Backup the old Store
             ///
@@ -61,7 +61,7 @@ public class CoreDataManager: StorageManagerType {
             } catch {
                 let message = "☠️ [CoreDataManager] Cannot backup Store: \(error)"
                 self.crashLogger.logMessage(message,
-                                            properties: ["loadPersistentStoresError": errorLoadingPersistentStores,
+                                            properties: ["persistentStoreLoadingError": persistentStoreLoadingError,
                                                          "backupError": error],
                                             level: .fatal)
                 fatalError(message)
@@ -74,7 +74,7 @@ public class CoreDataManager: StorageManagerType {
             } catch {
                 let message = "☠️ [CoreDataManager] Cannot remove Store: \(error)"
                 self.crashLogger.logMessage(message,
-                                            properties: ["loadPersistentStoresError": errorLoadingPersistentStores,
+                                            properties: ["persistentStoreLoadingError": persistentStoreLoadingError,
                                                          "removeStoreError": error],
                                             level: .fatal)
                 fatalError(message)
@@ -89,7 +89,7 @@ public class CoreDataManager: StorageManagerType {
 
                 let message = "☠️ [CoreDataManager] Recovery Failed! \(error) [\(error.userInfo)]"
                 self?.crashLogger.logMessage(message,
-                                             properties: ["loadPersistentStoresError": errorLoadingPersistentStores,
+                                             properties: ["persistentStoreLoadingError": persistentStoreLoadingError,
                                                           "retryError": error],
                                              level: .fatal)
                 fatalError(message)

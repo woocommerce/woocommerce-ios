@@ -12,19 +12,34 @@ public struct WordPressAuthenticatorDisplayStrings {
 
     public let siteLoginInstructions: String
 
+    /// Strings: primary call-to-action button titles.
+    ///
+    public let continueButtonTitle: String
+
     /// Designated initializer.
     ///
-    public init(emailLoginInstructions: String, jetpackLoginInstructions: String, siteLoginInstructions: String) {
+    public init(emailLoginInstructions: String,
+                jetpackLoginInstructions: String,
+                siteLoginInstructions: String,
+                continueButtonTitle: String) {
         self.emailLoginInstructions = emailLoginInstructions
         self.jetpackLoginInstructions = jetpackLoginInstructions
         self.siteLoginInstructions = siteLoginInstructions
+        self.continueButtonTitle = continueButtonTitle
     }
 }
 
 public extension WordPressAuthenticatorDisplayStrings {
     static var defaultStrings: WordPressAuthenticatorDisplayStrings {
-        return WordPressAuthenticatorDisplayStrings(emailLoginInstructions: NSLocalizedString("Log in to your WordPress.com account with your email address.", comment: "Instruction text on the login's email address screen."),
-                                                    jetpackLoginInstructions: NSLocalizedString("Log in to the WordPress.com account you used to connect Jetpack.", comment: "Instruction text on the login's email address screen."),
-                                                    siteLoginInstructions: NSLocalizedString("Enter the address of the WordPress site you'd like to connect.", comment: "Instruction text on the login's site addresss screen."))
+        return WordPressAuthenticatorDisplayStrings(
+            emailLoginInstructions: NSLocalizedString("Log in to your WordPress.com account with your email address.",
+                                                      comment: "Instruction text on the login's email address screen."),
+            jetpackLoginInstructions: NSLocalizedString("Log in to the WordPress.com account you used to connect Jetpack.",
+                                                        comment: "Instruction text on the login's email address screen."),
+            siteLoginInstructions: NSLocalizedString("Enter the address of the WordPress site you'd like to connect.",
+                                                     comment: "Instruction text on the login's site addresss screen."),
+            continueButtonTitle: NSLocalizedString("Continue",
+                                                    comment: "The button title text when there is a next step for logging in or signing up.")
+        )
     }
 }

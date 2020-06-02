@@ -3,13 +3,48 @@ import GoogleSignIn
 import WordPressKit
 import SVProgressHUD
 
-// Indicate which type of authentication is initiated.
-// TODO: remove when Google auth flows are unified.
+
+/// Contains delegate methods for Google authentication unified auth flow.
+/// Both Login and Signup are handled via this delegate.
+///
+protocol GoogleAuthenticatorDelegate {
+    // Google account login was successful.
+    func googleFinishedLogin(credentials: AuthenticatorCredentials, loginFields: LoginFields)
+
+    // Google account login was successful, but a WP 2FA code is required.
+    func googleNeedsMultifactorCode(loginFields: LoginFields)
+
+    // Google account login was successful, but a WP password is required.
+    func googleExistingUserNeedsConnection(loginFields: LoginFields)
+    
+    // Google account login failed.
+    func googleLoginFailed(errorTitle: String, errorDescription: String, loginFields: LoginFields)
+    
+    // Google account signup was successful.
+    func googleFinishedSignup(credentials: AuthenticatorCredentials, loginFields: LoginFields)
+
+    // Google account signup failed.
+    func googleSignupFailed(error: Error, loginFields: LoginFields)
+
+    // Google account selection cancelled by user.
+    func googleAuthCancelled()
+}
+
+/// Indicate which type of authentication is initiated.
+/// Utilized by ViewControllers that handle separate Google Login and Signup flows.
+/// This is needed as long as:
+///     Separate Google Login and Signup flows are utilized.
+///     Tracking is specific to separate Login and Signup flows.
+/// When separate Google Login and Signup flows are no longer used, this no longer needed.
+///
 enum GoogleAuthType {
     case login
     case signup
 }
 
+/// Contains delegate methods for Google login specific flow.
+/// When separate Google Login and Signup flows are no longer used, this no longer needed.
+///
 protocol GoogleAuthenticatorLoginDelegate {
     // Google account login was successful.
     func googleFinishedLogin(credentials: AuthenticatorCredentials, loginFields: LoginFields)
@@ -24,8 +59,10 @@ protocol GoogleAuthenticatorLoginDelegate {
     func googleLoginFailed(errorTitle: String, errorDescription: String, loginFields: LoginFields)
 }
 
+/// Contains delegate methods for Google signup specific flow.
+/// When separate Google Login and Signup flows are no longer used, this no longer needed.
+///
 protocol GoogleAuthenticatorSignupDelegate {
-
     // Google account signup was successful.
     func googleFinishedSignup(credentials: AuthenticatorCredentials, loginFields: LoginFields)
 
@@ -47,6 +84,7 @@ class GoogleAuthenticator: NSObject {
     private override init() {}
     var loginDelegate: GoogleAuthenticatorLoginDelegate?
     var signupDelegate: GoogleAuthenticatorSignupDelegate?
+    var delegate: GoogleAuthenticatorDelegate?
 
     private var loginFields = LoginFields()
     private let authConfig = WordPressAuthenticator.shared.configuration
@@ -60,12 +98,12 @@ class GoogleAuthenticator: NSObject {
         return facade
     }()
 
-    private var authenticationDelegate: WordPressAuthenticatorDelegate {
+    private lazy var authenticationDelegate: WordPressAuthenticatorDelegate = {
         guard let delegate = WordPressAuthenticator.shared.delegate else {
             fatalError()
         }
         return delegate
-    }
+    }()
 
     // MARK: - Start Authentication
     

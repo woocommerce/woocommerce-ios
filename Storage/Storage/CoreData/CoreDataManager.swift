@@ -55,7 +55,8 @@ public class CoreDataManager: StorageManagerType {
                 let message = "☠️ [CoreDataManager] Cannot backup Store: \(error)"
                 self.crashLogger.logMessageAndWait(message,
                                                    properties: ["persistentStoreLoadingError": persistentStoreLoadingError,
-                                                                "backupError": error],
+                                                                "backupError": error,
+                                                                "appState": UIApplication.shared.applicationState.rawValue],
                                                    level: .fatal)
                 fatalError(message)
             }
@@ -68,7 +69,8 @@ public class CoreDataManager: StorageManagerType {
                 let message = "☠️ [CoreDataManager] Cannot remove Store: \(error)"
                 self.crashLogger.logMessageAndWait(message,
                                                    properties: ["persistentStoreLoadingError": persistentStoreLoadingError,
-                                                                "removeStoreError": error],
+                                                                "removeStoreError": error,
+                                                                "appState": UIApplication.shared.applicationState.rawValue],
                                                    level: .fatal)
                 fatalError(message)
             }
@@ -83,7 +85,8 @@ public class CoreDataManager: StorageManagerType {
                 let message = "☠️ [CoreDataManager] Recovery Failed! \(error) [\(error.userInfo)]"
                 self?.crashLogger.logMessageAndWait(message,
                                                     properties: ["persistentStoreLoadingError": persistentStoreLoadingError,
-                                                                 "retryError": error],
+                                                                 "retryError": error,
+                                                                 "appState": UIApplication.shared.applicationState.rawValue],
                                                     level: .fatal)
                 fatalError(message)
             }

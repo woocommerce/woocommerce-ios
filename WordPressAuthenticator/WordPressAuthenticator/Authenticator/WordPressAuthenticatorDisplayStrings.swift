@@ -39,7 +39,7 @@ public extension WordPressAuthenticatorDisplayStrings {
             siteLoginInstructions: NSLocalizedString("Enter the address of the WordPress site you'd like to connect.",
                                                      comment: "Instruction text on the login's site addresss screen."),
             continueButtonTitle: NSLocalizedString("Continue",
-                                                    comment: "The primary call-to-action button text on the unified site address screen.")
+                                                    comment: "The button title text when there is a next step for logging in or signing up.")
         )
     }
 }

@@ -40,15 +40,82 @@ private extension GoogleAuthViewController {
         // Flag this as a social sign in.
         loginFields.meta.socialService = .google
 
-        // TODO: kick off GoogleAuthenticator here
-        // GoogleAuthenticator.sharedInstance.signupDelegate = self
-        // GoogleAuthenticator.sharedInstance.showFrom(viewController: self, loginFields: loginFields, for: .signup)
-        // hasShownGoogle = true
+        GoogleAuthenticator.sharedInstance.delegate = self
+        GoogleAuthenticator.sharedInstance.showFrom(viewController: self, loginFields: loginFields)
+        hasShownGoogle = true
     }
 
     enum LocalizedText {
-        // TODO: use real message
-        static let waitingForGoogle = NSLocalizedString("I AM LEGEND!!!", comment: "Message shown on screen while waiting for Google to finish its process.")
+        static let waitingForGoogle = NSLocalizedString("Waiting for Google to complete…", comment: "Message shown on screen while waiting for Google to finish its signup process.")
+        static let signupFailed = NSLocalizedString("Google sign up failed.", comment: "Message shown on screen after the Google sign up process failed.")
+    }
+
+}
+
+// MARK: - GoogleAuthenticatorDelegate
+
+extension GoogleAuthViewController: GoogleAuthenticatorDelegate {
+
+    func googleFinishedLogin(credentials: AuthenticatorCredentials, loginFields: LoginFields) {
+        self.loginFields = loginFields
+        syncWPComAndPresentEpilogue(credentials: credentials)
+    }
+
+    func googleNeedsMultifactorCode(loginFields: LoginFields) {
+        self.loginFields = loginFields
+
+        guard let vc = Login2FAViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from LoginViewController to Login2FAViewController")
+            return
+        }
+
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
+    func googleExistingUserNeedsConnection(loginFields: LoginFields) {
+        self.loginFields = loginFields
+
+        guard let vc = LoginWPComViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from Google Login to LoginWPComViewController (password VC)")
+            return
+        }
+
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
+    func googleLoginFailed(errorTitle: String, errorDescription: String, loginFields: LoginFields) {
+        self.loginFields = loginFields
+
+        let socialErrorVC = LoginSocialErrorViewController(title: errorTitle, description: errorDescription)
+        let socialErrorNav = LoginNavigationController(rootViewController: socialErrorVC)
+        socialErrorVC.delegate = self
+        socialErrorVC.loginFields = loginFields
+        socialErrorVC.modalPresentationStyle = .fullScreen
+        present(socialErrorNav, animated: true)
+    }
+
+    func googleFinishedSignup(credentials: AuthenticatorCredentials, loginFields: LoginFields) {
+        self.loginFields = loginFields
+        showSignupEpilogue(for: credentials)
+    }
+    
+    func googleSignupFailed(error: Error, loginFields: LoginFields) {
+        self.loginFields = loginFields
+        titleLabel?.textColor = WPStyleGuide.errorRed()
+        titleLabel?.text = LocalizedText.signupFailed
+        displayError(error as NSError, sourceTag: .wpComSignup)
+    }
+
+    func googleAuthCancelled() {
+        navigationController?.popViewController(animated: true)
     }
 
 }

@@ -195,8 +195,10 @@ extension GoogleAuthenticator: GIDSignInDelegate {
                     track(.signupSocialButtonFailure, properties: properties)
                 }
 
-                // Notify the signupDelegate so the Google Signup view can be dismissed.
+                // Notify the delegates so the Google Auth view can be dismissed.
                 signupDelegate?.googleSignupCancelled()
+                delegate?.googleAuthCancelled()
+                
                 return
         }
         
@@ -245,6 +247,7 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
         let credentials = AuthenticatorCredentials(wpcom: wpcom)
 
         loginDelegate?.googleFinishedLogin(credentials: credentials, loginFields: loginFields)
+        delegate?.googleFinishedLogin(credentials: credentials, loginFields: loginFields)
     }
 
     // Google account login was successful, but a WP 2FA code is required.
@@ -257,37 +260,38 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
 
         track(.loginSocial2faNeeded)
         loginDelegate?.googleNeedsMultifactorCode(loginFields: loginFields)
+        delegate?.googleNeedsMultifactorCode(loginFields: loginFields)
     }
 
     // Google account login was successful, but a WP password is required.
     func existingUserNeedsConnection(_ email: String) {
         SVProgressHUD.dismiss()
         GIDSignIn.sharedInstance().disconnect()
-        
+
         loginFields.username = email
         loginFields.emailAddress = email
         
         track(.loginSocialAccountsNeedConnecting)
         loginDelegate?.googleExistingUserNeedsConnection(loginFields: loginFields)
+        delegate?.googleExistingUserNeedsConnection(loginFields: loginFields)
     }
 
     // Google account login failed.
     func displayRemoteError(_ error: Error) {
         SVProgressHUD.dismiss()
         GIDSignIn.sharedInstance().disconnect()
-        
-        let errorTitle: String
-        let errorDescription: String
+
+        var errorTitle = LocalizedText.googleUnableToConnect
+        var errorDescription = error.localizedDescription
+
         if (error as NSError).code == WordPressComOAuthError.unknownUser.rawValue {
             errorTitle = LocalizedText.googleConnected
             errorDescription = String(format: LocalizedText.googleConnectedError, loginFields.username)
             track(.loginSocialErrorUnknownUser)
-        } else {
-            errorTitle = LocalizedText.googleUnableToConnect
-            errorDescription = error.localizedDescription
         }
         
         loginDelegate?.googleLoginFailed(errorTitle: errorTitle, errorDescription: errorDescription, loginFields: loginFields)
+        delegate?.googleLoginFailed(errorTitle: errorTitle, errorDescription: errorDescription, loginFields: loginFields)
     }
     
 }
@@ -318,6 +322,10 @@ private extension GoogleAuthenticator {
             }
 
             // Existing Account
+            // When separate Google Login and Signup flows are no longer used,
+            // this 'Existing Account' handling is no longer needed since
+            // login is attempted before signup.
+
             // Sync host app
             self?.authenticationDelegate.sync(credentials: credentials) {
                 SVProgressHUD.dismiss()
@@ -339,7 +347,8 @@ private extension GoogleAuthenticator {
         track(.signedIn)
         track(.signupSocialSuccess)
 
-        self.signupDelegate?.googleFinishedSignup(credentials: credentials, loginFields: loginFields)
+        signupDelegate?.googleFinishedSignup(credentials: credentials, loginFields: loginFields)
+        delegate?.googleFinishedSignup(credentials: credentials, loginFields: loginFields)
     }
     
     func logInInstead(credentials: AuthenticatorCredentials) {
@@ -347,12 +356,14 @@ private extension GoogleAuthenticator {
         track(.signupSocialToLogin)
         track(.loginSocialSuccess)
 
-        self.signupDelegate?.googleLoggedInInstead(credentials: credentials, loginFields: loginFields)
+        signupDelegate?.googleLoggedInInstead(credentials: credentials, loginFields: loginFields)
     }
     
     func signupFailed(error: Error) {
         track(.signupSocialFailure, properties: ["error": error.localizedDescription])
-        self.signupDelegate?.googleSignupFailed(error: error, loginFields: loginFields)
+
+        signupDelegate?.googleSignupFailed(error: error, loginFields: loginFields)
+        delegate?.googleSignupFailed(error: error, loginFields: loginFields)
     }
-    
+
 }

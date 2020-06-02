@@ -4,6 +4,10 @@ import Storage
 
 /// Logs crashes/messages to Sentry.
 final class SentryCrashLogger: CrashLogger {
+    func logMessage(_ message: String, properties: [String: Any]?, level: SeverityLevel) {
+        CrashLogging.logMessage(message, properties: properties?.serializeValuesForLoggingIfNeeded(), level: SentrySeverity(level: level))
+    }
+
     func logMessageAndWait(_ message: String, properties: [String: Any]?, level: SeverityLevel) {
         CrashLogging.logMessageAndWait(message, properties: properties?.serializeValuesForLoggingIfNeeded(), level: SentrySeverity(level: level))
     }

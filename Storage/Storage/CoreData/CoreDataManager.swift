@@ -87,6 +87,11 @@ public class CoreDataManager: StorageManagerType {
                                                     level: .fatal)
                 fatalError(message)
             }
+
+            self.crashLogger.logMessage("[CoreDataManager] Recovered from persistent store loading error",
+                                        properties: ["persistentStoreLoadingError": persistentStoreLoadingError,
+                                                     "appState": UIApplication.shared.applicationState.rawValue],
+                                        level: .info)
         }
 
         return container

@@ -18,7 +18,7 @@ final class SiteAddressViewController: LoginViewController {
     }
 
     func localizePrimaryButton() {
-        let primaryTitle = displayStrings.siteAddressPrimaryButton
+        let primaryTitle = displayStrings.continueButtonTitle
         submitButton?.setTitle(primaryTitle, for: .normal)
         submitButton?.setTitle(primaryTitle, for: .highlighted)
     }

@@ -14,18 +14,18 @@ public struct WordPressAuthenticatorDisplayStrings {
 
     /// Strings: primary call-to-action button titles.
     ///
-    public let siteAddressPrimaryButton: String
+    public let continueButtonTitle: String
 
     /// Designated initializer.
     ///
     public init(emailLoginInstructions: String,
                 jetpackLoginInstructions: String,
                 siteLoginInstructions: String,
-                siteAddressPrimaryButton: String) {
+                continueButtonTitle: String) {
         self.emailLoginInstructions = emailLoginInstructions
         self.jetpackLoginInstructions = jetpackLoginInstructions
         self.siteLoginInstructions = siteLoginInstructions
-        self.siteAddressPrimaryButton = siteAddressPrimaryButton
+        self.continueButtonTitle = continueButtonTitle
     }
 }
 
@@ -38,8 +38,8 @@ public extension WordPressAuthenticatorDisplayStrings {
                                                         comment: "Instruction text on the login's email address screen."),
             siteLoginInstructions: NSLocalizedString("Enter the address of the WordPress site you'd like to connect.",
                                                      comment: "Instruction text on the login's site addresss screen."),
-            siteAddressPrimaryButton: NSLocalizedString("Continue",
-                                                        comment: "The primary call-to-action button on the unified site address screen.")
+            continueButtonTitle: NSLocalizedString("Continue",
+                                                    comment: "The primary call-to-action button text on the unified site address screen.")
         )
     }
 }

@@ -209,13 +209,12 @@ final class ResultsControllerUIKitTests: XCTestCase {
     ///
     func testItCanHandleSimultaneousSectionAndRowDeletionAndInsertion() {
         // Given
+        // Add the table to a UIWindow so that it will crash in case an invalid number of rows
+        // is detected.
+        let window = makeWindow(containing: tableView)
+        window.isHidden = false
 
         // Set up initial rows and sections.
-        let expectOnEndUpdates = self.expectation(description: "wait for onEndUpdates")
-        tableView.onEndUpdates = {
-            expectOnEndUpdates.fulfill()
-        }
-
         let firstSection = [
             insertAccount(section: "Alpha", userID: 9_900),
             insertAccount(section: "Alpha", userID: 9_800),
@@ -234,9 +233,7 @@ final class ResultsControllerUIKitTests: XCTestCase {
             insertAccount(section: "Charlie", userID: 7_700)
         ]
 
-        viewStorage.saveIfNeeded()
-
-        wait(for: [expectOnEndUpdates], timeout: Constants.expectationTimeout)
+        saveAndWaitForTableViewOnEndUpdates()
 
         XCTAssertEqual(tableView.numberOfSections, 3)
         XCTAssertEqual(tableView.numberOfRows(inSection: 0), 3)
@@ -244,11 +241,6 @@ final class ResultsControllerUIKitTests: XCTestCase {
         XCTAssertEqual(tableView.numberOfRows(inSection: 2), 3)
 
         // When
-        let expectSecondOnEndUpdates = self.expectation(description: "second wait for onEndUpdates")
-        tableView.onEndUpdates = {
-            expectSecondOnEndUpdates.fulfill()
-        }
-
         // Delete row at index 1 of section at index 0.
         viewStorage.deleteObject(firstSection[1])
         // Delete section at index 1
@@ -256,14 +248,139 @@ final class ResultsControllerUIKitTests: XCTestCase {
         // Insert row at index 1 of section at index 1.
         insertAccount(section: "Charlie", userID: 7_801)
 
-        viewStorage.saveIfNeeded()
-
-        wait(for: [expectSecondOnEndUpdates], timeout: Constants.expectationTimeout)
+        saveAndWaitForTableViewOnEndUpdates()
 
         // Then
         XCTAssertEqual(tableView.numberOfSections, 2)
         XCTAssertEqual(tableView.numberOfRows(inSection: 0), 2)
         XCTAssertEqual(tableView.numberOfRows(inSection: 1), 4)
+    }
+
+    /// Test that `ResultsController` will emit a `move` `ChangeType` if a row is moved to
+    /// a new section because of an update to a property used as the `sectionNameKeyPath`.
+    ///
+    /// This proves that the bug discussed in [here](https://forums.developer.apple.com/thread/61282)
+    /// was already fixed by Apple. The bug was that a `move` was being emitted as an `update`.
+    ///
+    func testWhenARowIsMovedToANewSectionThenAMoveChangeTypeEventIsEmitted() {
+        // Given
+        // Add the table to a UIWindow so that it will crash in case an invalid number of rows
+        // is detected.
+        let window = makeWindow(containing: tableView)
+        window.isHidden = false
+
+        // Set up initial rows and sections.
+        let _ = [
+            insertAccount(section: "Alpha", userID: 9_900),
+            insertAccount(section: "Alpha", userID: 9_800),
+            insertAccount(section: "Alpha", userID: 9_700)
+        ]
+
+        let secondSection = [
+            insertAccount(section: "Beta", userID: 8_900),
+            insertAccount(section: "Beta", userID: 8_800),
+            insertAccount(section: "Beta", userID: 8_700)
+        ]
+
+        saveAndWaitForTableViewOnEndUpdates()
+
+        // When
+        var insertedRows = [IndexPath]()
+        var deletedRows = [IndexPath]()
+        var reloadedRows = [IndexPath]()
+        tableView.onInsertedRows = {
+            insertedRows.append(contentsOf: $0)
+        }
+        tableView.onDeletedRows = {
+            deletedRows.append(contentsOf: $0)
+        }
+        tableView.onReloadRows = {
+            reloadedRows.append(contentsOf: $0)
+        }
+
+        // Move a row to a new section
+        secondSection[1].username = "Foxtrot"
+
+        saveAndWaitForTableViewOnEndUpdates()
+
+        // Then
+        // A `.move` change type is handled as both a delete and then an insert
+        XCTAssertEqual(deletedRows, [IndexPath(row: 1, section: 1)])
+        XCTAssertEqual(insertedRows, [IndexPath(row: 0, section: 2)])
+        assertEmpty(reloadedRows)
+
+        XCTAssertEqual(tableView.numberOfSections, 3)
+        XCTAssertEqual(tableView.numberOfRows(inSection: 0), 3)
+        XCTAssertEqual(tableView.numberOfRows(inSection: 1), 2)
+        XCTAssertEqual(tableView.numberOfRows(inSection: 2), 1)
+    }
+
+    /// Test that when a row is updated and, at the same time, was moved because of an update
+    /// from a different row, then we consider that as a `.move` instead of a `.update`.
+    ///
+    /// FRC emits a `.update` for this with `indexPath` and `newIndexPath` having different values.
+    /// When this happens, we change it to `.move`. See the `fixedType` variable in
+    /// `ResultsController.startForwardingObjectEvents` for more info.
+    ///
+    /// Something to note, if we just use `reloadRows`, `UITableView` actually considers that
+    /// as both a delete and insert operation. Without the `fixedType`, iOS will crash with
+    /// an error like this:
+    ///
+    /// ```
+    /// attempt to delete row 0 from section 2, but there are only 2 sections before the
+    /// update with userInfo...
+    /// ```
+    ///
+    func testWhenARowIsUpdatedAndMovedBecauseOfANewSectionThenAMoveChangeTypeEventIsEmitted() {
+        // Given
+        // Add the table to a UIWindow so that it will crash in case an invalid number of rows
+        // is detected.
+        let window = makeWindow(containing: tableView)
+        window.isHidden = false
+
+        // Set up initial rows and sections.
+        let _ = [
+            insertAccount(section: "Alpha", userID: 9_900),
+        ]
+
+        let charlieSection = [
+            insertAccount(section: "Charlie", userID: 7_900),
+        ]
+
+        saveAndWaitForTableViewOnEndUpdates()
+
+        // When
+        var insertedRows = [IndexPath]()
+        var deletedRows = [IndexPath]()
+        var reloadedRows = [IndexPath]()
+        tableView.onInsertedRows = {
+            insertedRows.append(contentsOf: $0)
+        }
+        tableView.onDeletedRows = {
+            deletedRows.append(contentsOf: $0)
+        }
+        tableView.onReloadRows = {
+            reloadedRows.append(contentsOf: $0)
+        }
+
+        // Insert a section above `charlieSection`.
+        insertAccount(section: "Beta", userID: 8_900)
+        // Update the charlieSection row. This will emit an `.update` change type which we
+        // will fix by changing to a `.move`. See ResultsController.startForwardObjectEvents.
+        charlieSection[0].displayName = "Updated DisplayName"
+
+        saveAndWaitForTableViewOnEndUpdates()
+
+        // Then
+        // A `.move` change type is handled as both a delete and then an insert
+        XCTAssertEqual(deletedRows, [IndexPath(row: 0, section: 1)])
+        XCTAssertEqual(insertedRows, [IndexPath(row: 0, section: 1), IndexPath(row: 0, section: 2)])
+        assertEmpty(reloadedRows)
+
+        XCTAssertEqual(tableView.numberOfSections, 3)
+        XCTAssertEqual(tableView.numberOfRows(inSection: 0), 1)
+        XCTAssertEqual(tableView.numberOfRows(inSection: 1), 1)
+        XCTAssertEqual(tableView.numberOfRows(inSection: 2), 1)
     }
 }
 
@@ -296,5 +413,31 @@ private extension ResultsControllerUIKitTests {
         account.username = username
         account.userID = userID
         return account
+    }
+
+    /// Save the `viewStorage` and wait for `self.tableView`'s `onEndUpdates` (cell animations)
+    /// to be called.
+    ///
+    func saveAndWaitForTableViewOnEndUpdates() {
+        let expectOnEndUpdates = self.expectation(description: "wait for onEndUpdates")
+        tableView.onEndUpdates = {
+            expectOnEndUpdates.fulfill()
+        }
+
+        viewStorage.saveIfNeeded()
+
+        wait(for: [expectOnEndUpdates], timeout: Constants.expectationTimeout)
+    }
+
+    /// Create a UIWindow containing the given `tableView`.
+    ///
+    func makeWindow(containing tableView: UITableView) -> UIWindow {
+        let rootViewController = UIViewController()
+        rootViewController.view.addSubview(tableView)
+
+        let window = UIWindow(frame: .zero)
+        window.rootViewController = rootViewController
+
+        return window
     }
 }

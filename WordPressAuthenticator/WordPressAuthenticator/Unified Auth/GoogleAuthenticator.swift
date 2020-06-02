@@ -115,7 +115,7 @@ class GoogleAuthenticator: NSObject {
     ///                  The values are updated during the Google process,
     ///                  and returned to the calling view controller via delegate methods.
     ///   - authType: Indicates the type of authentication (login or signup)
-    func showFrom(viewController: UIViewController, loginFields: LoginFields, for authType: GoogleAuthType) {
+    func showFrom(viewController: UIViewController, loginFields: LoginFields, for authType: GoogleAuthType = .login) {
         self.loginFields = loginFields
         self.loginFields.meta.socialService = SocialServiceName.google
         self.authType = authType
@@ -179,7 +179,7 @@ private extension GoogleAuthenticator {
 extension GoogleAuthenticator: GIDSignInDelegate {
 
     func sign(_ signIn: GIDSignIn?, didSignInFor user: GIDGoogleUser?, withError error: Error?) {
-        
+
         // Get account information
         guard let user = user,
             let token = user.authentication.idToken,
@@ -205,14 +205,23 @@ extension GoogleAuthenticator: GIDSignInDelegate {
         loginFields.username = email
         loginFields.meta.socialServiceIDToken = token
         loginFields.meta.googleUser = user
-        
-        // Initiate WP login / signup.
-        switch authType {
-        case .login:
-            loginFacade.loginToWordPressDotCom(withSocialIDToken: token, service: SocialServiceName.google.rawValue)
-        case .signup:
-            createWordPressComUser(user: user, token: token, email: email)
+
+        SVProgressHUD.show(withStatus: LocalizedText.processing)
+
+        guard authConfig.enableUnifiedGoogle else {
+            // Initiate separate WP login / signup paths.
+            switch authType {
+            case .login:
+                loginFacade.loginToWordPressDotCom(withSocialIDToken: token, service: SocialServiceName.google.rawValue)
+            case .signup:
+                createWordPressComUser(user: user, token: token, email: email)
+            }
+
+            return
         }
+
+        // Initiate unified path by attempting to login first.
+        loginFacade.loginToWordPressDotCom(withSocialIDToken: token, service: SocialServiceName.google.rawValue)
     }
     
 }
@@ -223,6 +232,7 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
 
     // Google account login was successful.
     func finishedLogin(withGoogleIDToken googleIDToken: String, authToken: String) {
+        SVProgressHUD.dismiss()
         GIDSignIn.sharedInstance().disconnect()
 
         track(.signedIn)
@@ -239,6 +249,7 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
 
     // Google account login was successful, but a WP 2FA code is required.
     func needsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
+        SVProgressHUD.dismiss()
         GIDSignIn.sharedInstance().disconnect()
 
         loginFields.nonceInfo = nonceInfo
@@ -250,6 +261,7 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
 
     // Google account login was successful, but a WP password is required.
     func existingUserNeedsConnection(_ email: String) {
+        SVProgressHUD.dismiss()
         GIDSignIn.sharedInstance().disconnect()
         
         loginFields.username = email
@@ -261,6 +273,7 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
 
     // Google account login failed.
     func displayRemoteError(_ error: Error) {
+        SVProgressHUD.dismiss()
         GIDSignIn.sharedInstance().disconnect()
         
         let errorTitle: String
@@ -286,11 +299,6 @@ private extension GoogleAuthenticator {
     /// Creates a WordPress.com account with the associated Google User + Google Token + Google Email.
     ///
     func createWordPressComUser(user: GIDGoogleUser, token: String, email: String) {
-
-        // At this point, we don't know if we're logging in or signing up.
-        // So we'll show a generic message in the HUD.
-        SVProgressHUD.show(withStatus: LocalizedText.processing)
-
         let service = SignupService()
 
         service.createWPComUserWithGoogle(token: token, success: { [weak self] accountCreated, wpcomUsername, wpcomToken in

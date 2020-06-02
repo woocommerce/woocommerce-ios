@@ -7,21 +7,19 @@ enum ProductFormBottomSheetAction {
     case editShippingSettings
     case editCategories
     case editBriefDescription
-}
 
-extension ProductFormBottomSheetAction {
-    func isVisible(product: Product) -> Bool {
-        switch self {
-        case .editInventorySettings:
-            let hasStockData = product.manageStock ? product.stockQuantity != nil: true
-            return product.sku == nil && hasStockData == false
-        case .editShippingSettings:
-            return product.weight.isNilOrEmpty &&
-                product.dimensions.height.isEmpty && product.dimensions.width.isEmpty && product.dimensions.length.isEmpty
-        case .editCategories:
-            return product.categories.isEmpty
-        case .editBriefDescription:
-            return product.briefDescription.isNilOrEmpty
+    init?(productFormAction: ProductFormEditAction) {
+        switch productFormAction {
+        case .inventorySettings:
+            self = .editInventorySettings
+        case .shippingSettings:
+            self = .editShippingSettings
+        case .categories:
+            self = .editCategories
+        case .briefDescription:
+            self = .editBriefDescription
+        default:
+            return nil
         }
     }
 }

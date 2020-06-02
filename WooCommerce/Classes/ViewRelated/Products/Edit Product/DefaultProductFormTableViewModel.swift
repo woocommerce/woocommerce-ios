@@ -12,57 +12,54 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
     //
     var siteTimezone: TimeZone = TimeZone.siteTimezone
 
-    private let isEditProductsRelease2Enabled: Bool
-    private let isEditProductsRelease3Enabled: Bool
-
     init(product: Product,
+         actionsFactory: ProductFormActionsFactory,
          currency: String,
-         currencyFormatter: CurrencyFormatter = CurrencyFormatter(),
-         isEditProductsRelease2Enabled: Bool,
-         isEditProductsRelease3Enabled: Bool) {
+         currencyFormatter: CurrencyFormatter = CurrencyFormatter()) {
         self.currency = currency
         self.currencyFormatter = currencyFormatter
-        self.isEditProductsRelease2Enabled = isEditProductsRelease2Enabled
-        self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
-        configureSections(product: product)
+        configureSections(product: product, actionsFactory: actionsFactory)
     }
 }
 
 private extension DefaultProductFormTableViewModel {
-    mutating func configureSections(product: Product) {
-        sections = [.primaryFields(rows: primaryFieldRows(product: product)),
-                    .settings(rows: settingsRows(product: product))]
+    mutating func configureSections(product: Product, actionsFactory: ProductFormActionsFactory) {
+        sections = [.primaryFields(rows: primaryFieldRows(product: product, actions: actionsFactory.primarySectionActions())),
+                    .settings(rows: settingsRows(product: product, actions: actionsFactory.settingsSectionActions()))]
     }
 
-    func primaryFieldRows(product: Product) -> [ProductFormSection.PrimaryFieldRow] {
-        guard isEditProductsRelease2Enabled || product.images.isEmpty == false else {
-            return [
-                .name(name: product.name),
-                .description(description: product.trimmedFullDescription)
-            ]
+    func primaryFieldRows(product: Product, actions: [ProductFormEditAction]) -> [ProductFormSection.PrimaryFieldRow] {
+        return actions.map { action in
+            switch action {
+            case .images:
+                return .images(product: product)
+            case .name:
+                return .name(name: product.name)
+            case .description:
+                return .description(description: product.trimmedFullDescription)
+            default:
+                fatalError("Unexpected action in the primary section: \(action)")
+            }
         }
-
-        return [
-            .images(product: product),
-            .name(name: product.name),
-            .description(description: product.trimmedFullDescription)
-        ]
     }
 
-    func settingsRows(product: Product) -> [ProductFormSection.SettingsRow] {
-        let shouldShowShippingSettingsRow = product.isShippingEnabled
-        let shouldShowBriefDescriptionRow = isEditProductsRelease2Enabled
-        let shouldShowCategoriesRow = isEditProductsRelease3Enabled
-
-        let rows: [ProductFormSection.SettingsRow?] = [
-            .price(viewModel: priceSettingsRow(product: product)),
-            shouldShowShippingSettingsRow ? .shipping(viewModel: shippingSettingsRow(product: product)): nil,
-            .inventory(viewModel: inventorySettingsRow(product: product)),
-            shouldShowCategoriesRow ? .categories(viewModel: categoriesRow(product: product)): nil,
-            shouldShowBriefDescriptionRow ? .briefDescription(viewModel: briefDescriptionRow(product: product)): nil
-        ]
-
-        return rows.compactMap { $0 }.filter { $0.isVisible(product: product) }
+    func settingsRows(product: Product, actions: [ProductFormEditAction]) -> [ProductFormSection.SettingsRow] {
+        return actions.map { action in
+            switch action {
+            case .priceSettings:
+                return .price(viewModel: priceSettingsRow(product: product))
+            case .shippingSettings:
+                return .shipping(viewModel: shippingSettingsRow(product: product))
+            case .inventorySettings:
+                return .inventory(viewModel: inventorySettingsRow(product: product))
+            case .categories:
+                return .categories(viewModel: categoriesRow(product: product))
+            case .briefDescription:
+                return .briefDescription(viewModel: briefDescriptionRow(product: product))
+            default:
+                fatalError("Unexpected action in the settings section: \(action)")
+            }
+        }
     }
 }
 

@@ -46,8 +46,19 @@ public class CoreDataManager: StorageManagerType {
                                     level: .fatal)
 
         container.loadPersistentStores { [weak self] (storeDescription, error) in
-            guard let `self` = self, let persistentStoreLoadingError = error else {
+            guard let `self` = self else {
                 return
+            }
+
+            guard let persistentStoreLoadingError = error else {
+                let error = NSError(domain: "Testing crash logging in Sentry on Reviews tab launch", code: 100, userInfo: [
+                    "reason": "Testing only"
+                ])
+
+                self.crashLogger.logMessage("Testing!",
+                                            properties: ["testError": error, "appState": UIApplication.shared.applicationState.rawValue],
+                                            level: .fatal)
+                fatalError("Testing!")
             }
 
             DDLogError("⛔️ [CoreDataManager] loadPersistentStore failed. Attempting to recover... \(persistentStoreLoadingError)")

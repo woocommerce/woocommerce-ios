@@ -10,11 +10,11 @@ public enum SeverityLevel {
 /// Logs crashes or messages at a given severity level.
 public protocol CrashLogger {
     /**
-     Writes a message to the Crash Logging system.
+     Writes a message to the Crash Logging system and waits until the message is sent.
      - Parameters:
      - message: The message
      - properties: A dictionary containing additional information about this message
      - level: The level of severity to report
     */
-    func logMessage(_ message: String, properties: [String: Any]?, level: SeverityLevel)
+    func logMessageAndWait(_ message: String, properties: [String: Any]?, level: SeverityLevel)
 }

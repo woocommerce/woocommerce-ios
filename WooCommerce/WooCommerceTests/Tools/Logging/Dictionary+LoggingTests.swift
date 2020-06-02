@@ -43,6 +43,6 @@ final class Dictionary_LoggingTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(JSONSerialization.isValidJSONObject(serializableDictionary))
-        XCTAssertEqual(serializableDictionary.count, 0)
+        XCTAssertEqual(serializableDictionary.count, 1)
     }
 }

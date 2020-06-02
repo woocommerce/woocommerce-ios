@@ -25,6 +25,7 @@ extension Dictionary where Key == String {
                 return formattedProperties
             }
 
+            formattedProperties[key] = "\(value)"
             return formattedProperties
         }
     }

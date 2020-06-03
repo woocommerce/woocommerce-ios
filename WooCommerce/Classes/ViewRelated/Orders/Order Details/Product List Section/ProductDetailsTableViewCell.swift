@@ -27,50 +27,6 @@ final class ProductDetailsTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var skuLabel: UILabel!
 
-    /// Product Name
-    ///
-    var name: String? {
-        get {
-            return nameLabel?.text
-        }
-        set {
-            nameLabel?.text = newValue
-        }
-    }
-
-    /// Number of Items
-    ///
-    var quantity: String? {
-        get {
-            return quantityLabel?.text
-        }
-        set {
-            quantityLabel?.text = newValue
-        }
-    }
-
-    /// Item's Price
-    ///
-    var price: String? {
-        get {
-            return priceLabel?.text
-        }
-        set {
-            priceLabel?.text = newValue
-        }
-    }
-
-    /// Item's SKU
-    ///
-    var sku: String? {
-        get {
-            return skuLabel?.text
-        }
-        set {
-            skuLabel?.text = newValue
-        }
-    }
-
     // MARK: - Overridden Methods
 
     required init?(coder aDecoder: NSCoder) {
@@ -146,9 +102,9 @@ extension ProductDetailsTableViewCell {
                                                        progressBlock: nil,
                                                        completion: nil)
 
-        name = item.name
-        quantity = item.quantity
-        price = item.price
-        sku = item.sku
+        nameLabel.text = item.name
+        quantityLabel.text = item.quantity
+        priceLabel.text = item.price
+        skuLabel.text = item.sku
     }
 }

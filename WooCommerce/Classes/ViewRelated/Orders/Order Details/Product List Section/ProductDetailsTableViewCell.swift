@@ -5,7 +5,7 @@ import Yosemite
 
 /// Product Details: Renders a row that displays a single Product.
 ///
-class ProductDetailsTableViewCell: UITableViewCell {
+final class ProductDetailsTableViewCell: UITableViewCell {
 
     /// ImageView
     ///

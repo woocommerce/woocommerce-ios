@@ -32,6 +32,8 @@ final class SurveyViewController: UIViewController {
 extension SurveyViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         switch navigationAction.navigationType {
+        // The condition for the POST HTTP method is necessary, since the `formSubmitted` callback is triggered when showing the Crowdsignal completion screen
+        // (a GET request).
         case .formSubmitted where navigationAction.request.httpMethod == "POST":
             decisionHandler(.allow)
 

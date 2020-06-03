@@ -50,6 +50,12 @@ struct ProductDetailsCellViewModel {
         return NumberFormatter.localizedString(from: positiveQuantity as NSDecimalNumber, number: .decimal)
     }
 
+    /// The localized total value of this line item. This is the quantity x price.
+    ///
+    var total: String {
+        currencyFormatter.formatAmount(positiveTotal, with: currency) ?? String()
+    }
+
     /// Returns the localized "quantity x price" to use for the subtitle.
     ///
     var subtitle: String {

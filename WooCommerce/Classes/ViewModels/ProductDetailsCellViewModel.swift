@@ -27,7 +27,7 @@ struct ProductDetailsCellViewModel {
     /// Item Total
     /// represented as a positive value
     ///
-    private let total: NSDecimalNumber
+    private let positiveTotal: NSDecimalNumber
 
     /// Item Price
     /// represented as a positive value
@@ -94,7 +94,7 @@ struct ProductDetailsCellViewModel {
         self.product = product
         self.name = item.name
         self.positiveQuantity = abs(item.quantity)
-        self.total = currencyFormatter.convertToDecimal(from: item.total)?.abs() ?? NSDecimalNumber.zero
+        self.positiveTotal = currencyFormatter.convertToDecimal(from: item.total)?.abs() ?? NSDecimalNumber.zero
         self.positivePrice = item.price.abs()
         self.skuText = item.sku
     }
@@ -110,7 +110,7 @@ struct ProductDetailsCellViewModel {
         self.product = product
         self.name = aggregateItem.name
         self.positiveQuantity = abs(aggregateItem.quantity)
-        self.total = aggregateItem.total.abs()
+        self.positiveTotal = aggregateItem.total.abs()
         self.positivePrice = aggregateItem.price.abs()
         self.skuText = aggregateItem.sku
     }
@@ -126,7 +126,7 @@ struct ProductDetailsCellViewModel {
         self.product = product
         self.name = refundedItem.name
         self.positiveQuantity = abs(refundedItem.quantity)
-        self.total = currencyFormatter.convertToDecimal(from: refundedItem.total)?.abs() ?? NSDecimalNumber.zero
+        self.positiveTotal = currencyFormatter.convertToDecimal(from: refundedItem.total)?.abs() ?? NSDecimalNumber.zero
         self.positivePrice = refundedItem.price.abs()
         self.skuText = refundedItem.sku
     }

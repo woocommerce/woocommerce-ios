@@ -96,6 +96,9 @@ private extension DashboardViewController {
         rightBarButton.accessibilityIdentifier = "dashboard-settings-button"
         navigationItem.setRightBarButton(rightBarButton, animated: false)
 
+        let leftBarButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(showSurvey))
+        navigationItem.leftBarButtonItem = leftBarButton
+
         // Don't show the Dashboard title in the next-view's back button
         let backButton = UIBarButtonItem(title: String(),
                                          style: .plain,
@@ -103,6 +106,25 @@ private extension DashboardViewController {
                                          action: nil)
 
         navigationItem.backBarButtonItem = backButton
+    }
+
+    @objc private func showSurvey() {
+        let surveyVC = SurveyViewController { [weak self] viewController in
+            let completionViewController = SurveyCompletionViewController(onContactUsAction: {
+                self?.dismiss(animated: true, completion: { [weak self] in
+                    guard let navController = self?.navigationController else {
+                        return
+                    }
+
+                    ZendeskManager.shared.showNewRequestIfPossible(from: navController)
+                })
+            }, onBackToStoreAction: {
+                self?.dismiss(animated: true, completion: nil)
+            })
+            viewController.navigationController?.pushViewController(completionViewController, animated: true)
+        }
+        let navigationController = WooNavigationController(rootViewController: surveyVC)
+        present(navigationController, animated: true, completion: nil)
     }
 
     func configureDashboardUIContainer() {

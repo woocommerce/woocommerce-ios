@@ -64,10 +64,6 @@ final class PickListTableViewCell: UITableViewCell {
         super.init(coder: aDecoder)
     }
 
-    class func makeFromNib() -> PickListTableViewCell {
-        return Bundle.main.loadNibNamed("ProductDetailsTableViewCell", owner: self, options: nil)?.first as! PickListTableViewCell
-    }
-
     override func awakeFromNib() {
         super.awakeFromNib()
 

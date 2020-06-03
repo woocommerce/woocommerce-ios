@@ -46,7 +46,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let actualTitles = dataSource.sections.map(\.title)
         let expectedTitles = [
             nil,
-            Title.product,
+            Title.products,
             Title.refundedProducts,
             Title.payment,
             Title.information,

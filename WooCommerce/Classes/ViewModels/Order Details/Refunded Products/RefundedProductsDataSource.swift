@@ -141,7 +141,7 @@ extension RefundedProductsDataSource {
         let refundedProductsSection: Section? = {
             let rows: [Row] = Array(repeating: .orderItemRefunded, count: refundedProducts.count)
 
-            return Section(title: SectionTitle.product, rightTitle: SectionTitle.quantity, rows: rows)
+            return Section(title: SectionTitle.product, rightTitle: nil, rows: rows)
         }()
 
         sections = [refundedProductsSection].compactMap { $0 }
@@ -156,7 +156,6 @@ extension RefundedProductsDataSource {
     ///
     enum SectionTitle {
         static let product = NSLocalizedString("Refunded Products", comment: "Refunded Products section title")
-        static let quantity = NSLocalizedString("Qty", comment: "Quantity abbreviation for section title")
     }
 
     /// Table Rows

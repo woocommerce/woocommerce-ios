@@ -21,6 +21,8 @@ final class SurveyViewController: UIViewController {
         // TODO-jc: localization comment
         title = NSLocalizedString("How can we improve?", comment: "")
 
+        addCloseNavigationBarButton()
+
         let request = URLRequest(url: URL(string: "https://wasseryi.survey.fm/woo-mobile-app-test-survey")!)
         webView.load(request)
         webView.navigationDelegate = self

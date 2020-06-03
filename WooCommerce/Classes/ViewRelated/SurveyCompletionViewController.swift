@@ -21,12 +21,17 @@ final class SurveyCompletionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        navigationItem.hidesBackButton = true
+
         // TODO-jc: localize
+        headerLabel.setContentHuggingPriority(.defaultLow, for: .vertical)
+        headerLabel.textAlignment = .center
+        headerLabel.numberOfLines = 0
         headerLabel.text = "Thank you for sharing your thoughts with us"
         headerLabel.applyHeadlineStyle()
 
         // TODO-jc: localize
-        backToStoreButton.applyLinkButtonStyle()
+        contactUsButton.applyLinkButtonStyle()
         contactUsButton.setTitle("Contact us here", for: .normal)
         contactUsButton.addTarget(self, action: #selector(contactUsButtonTapped), for: .touchUpInside)
 

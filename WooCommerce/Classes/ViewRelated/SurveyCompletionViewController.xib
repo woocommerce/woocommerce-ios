@@ -22,20 +22,20 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="xBd-Ft-ZDQ">
-                    <rect key="frame" x="0.0" y="44" width="414" height="818"/>
+                    <rect key="frame" x="16" y="60" width="382" height="786"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rNu-Vr-yzg">
-                            <rect key="frame" x="0.0" y="0.0" width="414" height="20.5"/>
+                            <rect key="frame" x="0.0" y="0.0" width="382" height="20.5"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sD7-IW-L44">
-                            <rect key="frame" x="0.0" y="20.5" width="414" height="767.5"/>
+                            <rect key="frame" x="0.0" y="20.5" width="382" height="735.5"/>
                             <state key="normal" title="Button"/>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a6F-PD-iVb">
-                            <rect key="frame" x="0.0" y="788" width="414" height="30"/>
+                            <rect key="frame" x="0.0" y="756" width="382" height="30"/>
                             <state key="normal" title="Button"/>
                         </button>
                     </subviews>
@@ -43,10 +43,10 @@
             </subviews>
             <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
             <constraints>
-                <constraint firstItem="xBd-Ft-ZDQ" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="O6o-oJ-69S"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="xBd-Ft-ZDQ" secondAttribute="trailing" id="auX-DW-cHi"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="xBd-Ft-ZDQ" secondAttribute="bottom" id="jat-3s-DvU"/>
-                <constraint firstItem="xBd-Ft-ZDQ" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="o0N-Uj-rtj"/>
+                <constraint firstItem="xBd-Ft-ZDQ" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="O6o-oJ-69S"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="xBd-Ft-ZDQ" secondAttribute="trailing" constant="16" id="auX-DW-cHi"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="xBd-Ft-ZDQ" secondAttribute="bottom" constant="16" id="jat-3s-DvU"/>
+                <constraint firstItem="xBd-Ft-ZDQ" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="16" id="o0N-Uj-rtj"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <point key="canvasLocation" x="132" y="79"/>

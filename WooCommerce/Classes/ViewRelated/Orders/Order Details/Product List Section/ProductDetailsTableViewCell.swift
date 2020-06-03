@@ -21,7 +21,7 @@ final class ProductDetailsTableViewCell: UITableViewCell {
 
     /// Label: Price
     ///
-    @IBOutlet private var priceLabel: UILabel!
+    @IBOutlet private var subtitleLabel: UILabel!
 
     /// Label: SKU
     ///
@@ -75,8 +75,8 @@ private extension ProductDetailsTableViewCell {
     }
 
     func configurePriceLabel() {
-        priceLabel.applySecondaryFootnoteStyle()
-        priceLabel?.text = ""
+        subtitleLabel.applySecondaryFootnoteStyle()
+        subtitleLabel?.text = ""
     }
 
     func configureSKULabel() {
@@ -104,7 +104,7 @@ extension ProductDetailsTableViewCell {
 
         nameLabel.text = item.name
         quantityLabel.text = item.quantity
-        priceLabel.text = item.price
+        subtitleLabel.text = item.price
         skuLabel.text = item.sku
     }
 }

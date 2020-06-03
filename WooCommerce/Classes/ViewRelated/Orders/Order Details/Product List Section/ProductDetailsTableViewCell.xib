@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -81,10 +80,10 @@
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="nameLabel" destination="14R-zK-tgC" id="LmK-XT-zbU"/>
-                <outlet property="priceLabel" destination="IBM-H2-zE2" id="acc-K8-vmg"/>
                 <outlet property="productImageView" destination="p6h-Fq-FjW" id="bIw-1F-5GW"/>
                 <outlet property="quantityLabel" destination="pPE-SE-pY7" id="ir4-Ou-SuU"/>
                 <outlet property="skuLabel" destination="7JH-rt-n9v" id="U07-2n-W3b"/>
+                <outlet property="subtitleLabel" destination="IBM-H2-zE2" id="acc-K8-vmg"/>
             </connections>
             <point key="canvasLocation" x="62" y="96.5"/>
         </tableViewCell>

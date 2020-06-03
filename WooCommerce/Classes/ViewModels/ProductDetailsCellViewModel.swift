@@ -42,7 +42,7 @@ struct ProductDetailsCellViewModel {
 
     /// Item Name
     ///
-    var name: String
+    let name: String
 
     /// Item Quantity as a String
     ///

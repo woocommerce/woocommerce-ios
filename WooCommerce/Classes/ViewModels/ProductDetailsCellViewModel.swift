@@ -50,22 +50,12 @@ struct ProductDetailsCellViewModel {
         return NumberFormatter.localizedString(from: positiveQuantity as NSDecimalNumber, number: .decimal)
     }
 
-    /// Refunded Product Price
-    /// Always return a string, even for zero amounts.
+    /// Returns the localized "quantity x price" to use for the subtitle.
     ///
-    var price: String {
-        guard positiveQuantity > 1 else {
-            return currencyFormatter.formatAmount(total, with: currency) ?? String()
-        }
+    var subtitle: String {
+        let itemPrice = currencyFormatter.formatAmount(positivePrice, with: currency) ?? String()
 
-        let itemTotal = currencyFormatter.formatAmount(total, with: currency) ?? String()
-        let itemSubtotal = currencyFormatter.formatAmount(positivePrice, with: currency) ?? String()
-
-        let priceTemplate = NSLocalizedString("%@ (%@ x %@)",
-                                              comment: "<item total> (<item individual price> multipled by <quantity>)")
-        let priceText = String.localizedStringWithFormat(priceTemplate, itemTotal, itemSubtotal, quantity)
-
-        return priceText
+        return Localization.subtitle(quantity: quantity, price: itemPrice)
     }
 
     /// Item SKU
@@ -139,5 +129,18 @@ struct ProductDetailsCellViewModel {
         self.total = currencyFormatter.convertToDecimal(from: refundedItem.total)?.abs() ?? NSDecimalNumber.zero
         self.positivePrice = refundedItem.price.abs()
         self.skuText = refundedItem.sku
+    }
+}
+
+// MARK: - Localization
+
+private extension ProductDetailsCellViewModel {
+    enum Localization {
+        static func subtitle(quantity: String, price: String) -> String {
+            let format = NSLocalizedString("%1$@ x %2$@", comment: "In Order Details,"
+                + " the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”."
+                + " The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00).")
+            return String.localizedStringWithFormat(format, quantity, price)
+        }
     }
 }

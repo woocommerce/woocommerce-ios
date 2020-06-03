@@ -104,7 +104,7 @@ extension ProductDetailsTableViewCell {
 
         nameLabel.text = item.name
         priceLabel.text = item.quantity
-        subtitleLabel.text = item.price
+        subtitleLabel.text = item.subtitle
         skuLabel.text = item.sku
     }
 }

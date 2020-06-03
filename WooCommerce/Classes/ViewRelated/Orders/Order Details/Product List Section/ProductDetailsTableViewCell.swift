@@ -17,7 +17,7 @@ final class ProductDetailsTableViewCell: UITableViewCell {
 
     /// Label: Quantity
     ///
-    @IBOutlet private var quantityLabel: UILabel!
+    @IBOutlet private var priceLabel: UILabel!
 
     /// Label: Price
     ///
@@ -70,8 +70,8 @@ private extension ProductDetailsTableViewCell {
     }
 
     func configureQuantityLabel() {
-        quantityLabel.applyBodyStyle()
-        quantityLabel?.text = ""
+        priceLabel.applyBodyStyle()
+        priceLabel?.text = ""
     }
 
     func configurePriceLabel() {
@@ -103,7 +103,7 @@ extension ProductDetailsTableViewCell {
                                                        completion: nil)
 
         nameLabel.text = item.name
-        quantityLabel.text = item.quantity
+        priceLabel.text = item.quantity
         subtitleLabel.text = item.price
         skuLabel.text = item.sku
     }

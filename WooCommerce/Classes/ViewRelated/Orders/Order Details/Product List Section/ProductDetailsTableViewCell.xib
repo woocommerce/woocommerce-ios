@@ -80,8 +80,8 @@
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="nameLabel" destination="14R-zK-tgC" id="LmK-XT-zbU"/>
+                <outlet property="priceLabel" destination="pPE-SE-pY7" id="ir4-Ou-SuU"/>
                 <outlet property="productImageView" destination="p6h-Fq-FjW" id="bIw-1F-5GW"/>
-                <outlet property="quantityLabel" destination="pPE-SE-pY7" id="ir4-Ou-SuU"/>
                 <outlet property="skuLabel" destination="7JH-rt-n9v" id="U07-2n-W3b"/>
                 <outlet property="subtitleLabel" destination="IBM-H2-zE2" id="acc-K8-vmg"/>
             </connections>

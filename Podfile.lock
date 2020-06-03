@@ -6,7 +6,7 @@ PODS:
     - AppAuth/ExternalUserAgent (= 1.3.1)
   - AppAuth/Core (1.3.1)
   - AppAuth/ExternalUserAgent (1.3.1)
-  - Automattic-Tracks-iOS (0.4.4):
+  - Automattic-Tracks-iOS (0.4.5-beta.1):
     - CocoaLumberjack (~> 3)
     - Reachability (~> 3)
     - Sentry (~> 4)
@@ -97,7 +97,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.8)
-  - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, branch `add/application-state-tag`)
+  - Automattic-Tracks-iOS (~> 0.4.5-beta.1)
   - Charts (~> 3.3.0)
   - CocoaLumberjack (~> 3.5)
   - CocoaLumberjack/Swift (~> 3.5)
@@ -118,6 +118,7 @@ SPEC REPOS:
     - 1PasswordExtension
     - Alamofire
     - AppAuth
+    - Automattic-Tracks-iOS
     - Charts
     - CocoaLumberjack
     - FormatterKit
@@ -153,21 +154,11 @@ SPEC REPOS:
     - ZendeskSupportProvidersSDK
     - ZendeskSupportSDK
 
-EXTERNAL SOURCES:
-  Automattic-Tracks-iOS:
-    :branch: add/application-state-tag
-    :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
-
-CHECKOUT OPTIONS:
-  Automattic-Tracks-iOS:
-    :commit: 9d540115624f6f081ba1dbafc4085b6ff8108116
-    :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
-
 SPEC CHECKSUMS:
   1PasswordExtension: f97cc80ae58053c331b2b6dc8843ba7103b33794
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
   AppAuth: 8803ba1aec6d00d9afd30093f82e600307eaa6ea
-  Automattic-Tracks-iOS: f455dd08413bd44bf821b9b8b36f2a820c00f754
+  Automattic-Tracks-iOS: e2775ba445ad7753dd3939e1056e9fd98cf56f6b
   Charts: e0dd4cd8f257bccf98407b58183ddca8e8d5b578
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
   FormatterKit: 4b8f29acc9b872d5d12a63efb560661e8f2e1b98
@@ -203,6 +194,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: 89f967d7b7e543a9844bb14620b83df2a2b16763
+PODFILE CHECKSUM: c1706c8d1938a41942876d004ed25b490470c977
 
 COCOAPODS: 1.9.1

@@ -79,10 +79,6 @@ class ProductDetailsTableViewCell: UITableViewCell {
         super.init(coder: aDecoder)
     }
 
-    class func makeFromNib() -> ProductDetailsTableViewCell {
-        return Bundle.main.loadNibNamed("ProductDetailsTableViewCell", owner: self, options: nil)?.first as! ProductDetailsTableViewCell
-    }
-
     override func awakeFromNib() {
         super.awakeFromNib()
         configureBackground()

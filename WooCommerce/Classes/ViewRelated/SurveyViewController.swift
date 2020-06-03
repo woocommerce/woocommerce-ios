@@ -30,7 +30,7 @@ final class SurveyViewController: UIViewController {
 extension SurveyViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         switch navigationAction.navigationType {
-        case .formSubmitted:
+        case .formSubmitted where navigationAction.request.httpMethod == "POST":
             decisionHandler(.allow)
 
             onSurveySubmission(self)

@@ -1,4 +1,3 @@
-
 /// View controller that handles the google authentication flow
 ///
 class GoogleAuthViewController: LoginViewController {
@@ -43,6 +42,28 @@ private extension GoogleAuthViewController {
         GoogleAuthenticator.sharedInstance.delegate = self
         GoogleAuthenticator.sharedInstance.showFrom(viewController: self, loginFields: loginFields)
         hasShownGoogle = true
+    }
+
+    func showLoginErrorView(errorTitle: String, errorDescription: String) {
+        let socialErrorVC = LoginSocialErrorViewController(title: errorTitle, description: errorDescription)
+        let socialErrorNav = LoginNavigationController(rootViewController: socialErrorVC)
+        socialErrorVC.delegate = self
+        socialErrorVC.loginFields = loginFields
+        socialErrorVC.modalPresentationStyle = .fullScreen
+        present(socialErrorNav, animated: true)
+    }
+
+    func showSignupConfirmationView() {
+        guard let vc = GoogleSignupConfirmationViewController.instantiate(from: .googleSignupConfirmation) else {
+            DDLogError("Failed to navigate from GoogleAuthViewController to GoogleSignupConfirmationViewController")
+            return
+        }
+
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     enum LocalizedText {
@@ -91,17 +112,17 @@ extension GoogleAuthViewController: GoogleAuthenticatorDelegate {
         navigationController?.pushViewController(vc, animated: true)
     }
 
-    func googleLoginFailed(errorTitle: String, errorDescription: String, loginFields: LoginFields) {
+    func googleLoginFailed(errorTitle: String, errorDescription: String, loginFields: LoginFields, unknownUser: Bool) {
         self.loginFields = loginFields
 
-        let socialErrorVC = LoginSocialErrorViewController(title: errorTitle, description: errorDescription)
-        let socialErrorNav = LoginNavigationController(rootViewController: socialErrorVC)
-        socialErrorVC.delegate = self
-        socialErrorVC.loginFields = loginFields
-        socialErrorVC.modalPresentationStyle = .fullScreen
-        present(socialErrorNav, animated: true)
-    }
+        // If login failed because there is no existing account, redirect to signup.
+        // Otherwise, display the error.
+        let redirectToSignup = unknownUser && WordPressAuthenticator.shared.configuration.enableSignupWithGoogle
 
+        redirectToSignup ? showSignupConfirmationView() :
+                           showLoginErrorView(errorTitle: errorTitle, errorDescription: errorDescription)
+    }
+    
     func googleFinishedSignup(credentials: AuthenticatorCredentials, loginFields: LoginFields) {
         self.loginFields = loginFields
         showSignupEpilogue(for: credentials)

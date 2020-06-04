@@ -7,7 +7,7 @@ import SVProgressHUD
 /// Contains delegate methods for Google authentication unified auth flow.
 /// Both Login and Signup are handled via this delegate.
 ///
-protocol GoogleAuthenticatorDelegate {
+protocol GoogleAuthenticatorDelegate: class {
     // Google account login was successful.
     func googleFinishedLogin(credentials: AuthenticatorCredentials, loginFields: LoginFields)
 
@@ -18,7 +18,7 @@ protocol GoogleAuthenticatorDelegate {
     func googleExistingUserNeedsConnection(loginFields: LoginFields)
     
     // Google account login failed.
-    func googleLoginFailed(errorTitle: String, errorDescription: String, loginFields: LoginFields)
+    func googleLoginFailed(errorTitle: String, errorDescription: String, loginFields: LoginFields, unknownUser: Bool)
     
     // Google account signup was successful.
     func googleFinishedSignup(credentials: AuthenticatorCredentials, loginFields: LoginFields)
@@ -45,7 +45,7 @@ enum GoogleAuthType {
 /// Contains delegate methods for Google login specific flow.
 /// When separate Google Login and Signup flows are no longer used, this no longer needed.
 ///
-protocol GoogleAuthenticatorLoginDelegate {
+protocol GoogleAuthenticatorLoginDelegate: class {
     // Google account login was successful.
     func googleFinishedLogin(credentials: AuthenticatorCredentials, loginFields: LoginFields)
 
@@ -62,7 +62,7 @@ protocol GoogleAuthenticatorLoginDelegate {
 /// Contains delegate methods for Google signup specific flow.
 /// When separate Google Login and Signup flows are no longer used, this no longer needed.
 ///
-protocol GoogleAuthenticatorSignupDelegate {
+protocol GoogleAuthenticatorSignupDelegate: class {
     // Google account signup was successful.
     func googleFinishedSignup(credentials: AuthenticatorCredentials, loginFields: LoginFields)
 
@@ -82,9 +82,9 @@ class GoogleAuthenticator: NSObject {
 
     static var sharedInstance: GoogleAuthenticator = GoogleAuthenticator()
     private override init() {}
-    var loginDelegate: GoogleAuthenticatorLoginDelegate?
-    var signupDelegate: GoogleAuthenticatorSignupDelegate?
-    var delegate: GoogleAuthenticatorDelegate?
+    weak var loginDelegate: GoogleAuthenticatorLoginDelegate?
+    weak var signupDelegate: GoogleAuthenticatorSignupDelegate?
+    weak var delegate: GoogleAuthenticatorDelegate?
 
     private var loginFields = LoginFields()
     private let authConfig = WordPressAuthenticator.shared.configuration
@@ -283,15 +283,16 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
 
         var errorTitle = LocalizedText.googleUnableToConnect
         var errorDescription = error.localizedDescription
+        let unknownUser = (error as NSError).code == WordPressComOAuthError.unknownUser.rawValue
 
-        if (error as NSError).code == WordPressComOAuthError.unknownUser.rawValue {
+        if unknownUser {
             errorTitle = LocalizedText.googleConnected
             errorDescription = String(format: LocalizedText.googleConnectedError, loginFields.username)
             track(.loginSocialErrorUnknownUser)
         }
-        
+
         loginDelegate?.googleLoginFailed(errorTitle: errorTitle, errorDescription: errorDescription, loginFields: loginFields)
-        delegate?.googleLoginFailed(errorTitle: errorTitle, errorDescription: errorDescription, loginFields: loginFields)
+        delegate?.googleLoginFailed(errorTitle: errorTitle, errorDescription: errorDescription, loginFields: loginFields, unknownUser: unknownUser)
     }
     
 }

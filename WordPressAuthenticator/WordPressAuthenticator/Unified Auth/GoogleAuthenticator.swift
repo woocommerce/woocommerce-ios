@@ -18,7 +18,7 @@ protocol GoogleAuthenticatorDelegate {
     func googleExistingUserNeedsConnection(loginFields: LoginFields)
     
     // Google account login failed.
-    func googleLoginFailed(errorTitle: String, errorDescription: String, loginFields: LoginFields)
+    func googleLoginFailed(errorTitle: String, errorDescription: String, loginFields: LoginFields, unknownUser: Bool)
     
     // Google account signup was successful.
     func googleFinishedSignup(credentials: AuthenticatorCredentials, loginFields: LoginFields)
@@ -283,15 +283,16 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
 
         var errorTitle = LocalizedText.googleUnableToConnect
         var errorDescription = error.localizedDescription
+        let unknownUser = (error as NSError).code == WordPressComOAuthError.unknownUser.rawValue
 
-        if (error as NSError).code == WordPressComOAuthError.unknownUser.rawValue {
+        if  unknownUser {
             errorTitle = LocalizedText.googleConnected
             errorDescription = String(format: LocalizedText.googleConnectedError, loginFields.username)
             track(.loginSocialErrorUnknownUser)
         }
-        
+
         loginDelegate?.googleLoginFailed(errorTitle: errorTitle, errorDescription: errorDescription, loginFields: loginFields)
-        delegate?.googleLoginFailed(errorTitle: errorTitle, errorDescription: errorDescription, loginFields: loginFields)
+        delegate?.googleLoginFailed(errorTitle: errorTitle, errorDescription: errorDescription, loginFields: loginFields, unknownUser: unknownUser)
     }
     
 }

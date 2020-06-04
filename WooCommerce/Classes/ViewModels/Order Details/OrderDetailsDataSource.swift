@@ -567,7 +567,7 @@ extension OrderDetailsDataSource {
                     rows.append(.details)
                 }
 
-                return Section(title: Title.products, rightTitle: nil, rows: rows)
+                return Section(title: Title.products, rightTitle: nil, rows: rows, headerStyle: .primary)
             }
 
             var rows = [Row]()
@@ -589,7 +589,7 @@ extension OrderDetailsDataSource {
                 return nil
             }
 
-            return Section(title: Title.products, rightTitle: nil, rows: rows)
+            return Section(title: Title.products, rightTitle: nil, rows: rows, headerStyle: .primary)
         }()
 
         let refundedProducts: Section? = {
@@ -866,20 +866,50 @@ extension OrderDetailsDataSource {
     }
 
     struct Section {
+        /// The table header style of a `Section`.
+        ///
+        enum HeaderStyle {
+            /// Uses the PrimarySectionHeaderView
+            case primary
+            /// Uses the TwoColumnSectionHeaderView
+            case twoColumn
+
+            /// The type of `UITableViewHeaderFooterView` to use for this style.
+            ///
+            var viewType: UITableViewHeaderFooterView.Type {
+                switch self {
+                case .primary:
+                    return PrimarySectionHeaderView.self
+                case .twoColumn:
+                    return TwoColumnSectionHeaderView.self
+                }
+            }
+        }
+
         let title: String?
         let rightTitle: String?
         let footer: String?
         let rows: [Row]
+        let headerStyle: HeaderStyle
 
-        init(title: String? = nil, rightTitle: String? = nil, footer: String? = nil, rows: [Row]) {
+        init(title: String? = nil,
+             rightTitle: String? = nil,
+             footer: String? = nil,
+             rows: [Row],
+             headerStyle: HeaderStyle = .twoColumn) {
             self.title = title
             self.rightTitle = rightTitle
             self.footer = footer
             self.rows = rows
+            self.headerStyle = headerStyle
         }
 
-        init(title: String? = nil, rightTitle: String? = nil, footer: String? = nil, row: Row) {
-            self.init(title: title, rightTitle: rightTitle, footer: footer, rows: [row])
+        init(title: String? = nil,
+             rightTitle: String? = nil,
+             footer: String? = nil,
+             row: Row,
+             headerStyle: HeaderStyle = .twoColumn) {
+            self.init(title: title, rightTitle: rightTitle, footer: footer, rows: [row], headerStyle: headerStyle)
         }
     }
 

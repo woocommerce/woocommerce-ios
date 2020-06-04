@@ -285,7 +285,7 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
         var errorDescription = error.localizedDescription
         let unknownUser = (error as NSError).code == WordPressComOAuthError.unknownUser.rawValue
 
-        if  unknownUser {
+        if unknownUser {
             errorTitle = LocalizedText.googleConnected
             errorDescription = String(format: LocalizedText.googleConnectedError, loginFields.username)
             track(.loginSocialErrorUnknownUser)

@@ -120,9 +120,10 @@ extension GoogleAuthViewController: GoogleAuthenticatorDelegate {
 
         // If login failed because there is no existing account, redirect to signup.
         // Otherwise, display the error.
+        let redirectToSignup = unknownUser && WordPressAuthenticator.shared.configuration.enableSignupWithGoogle
 
-        unknownUser ? showSignupConfirmationView() :
-                      showLoginErrorView(errorTitle: errorTitle, errorDescription: errorDescription)
+        redirectToSignup ? showSignupConfirmationView() :
+                           showLoginErrorView(errorTitle: errorTitle, errorDescription: errorDescription)
     }
     
     func googleFinishedSignup(credentials: AuthenticatorCredentials, loginFields: LoginFields) {

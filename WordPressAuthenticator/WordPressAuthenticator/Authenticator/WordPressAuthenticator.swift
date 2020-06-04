@@ -40,6 +40,10 @@ import AuthenticationServices
     ///
     public let style: WordPressAuthenticatorStyle
 
+    /// Authenticator's Styles for unified flows.
+    ///
+    public let unifiedStyle: WordPressAuthenticatorUnifiedStyle?
+    
     /// Authenticator's Display Images.
     ///
     public let displayImages: WordPressAuthenticatorDisplayImages
@@ -69,10 +73,12 @@ import AuthenticationServices
     ///
     private init(configuration: WordPressAuthenticatorConfiguration,
                  style: WordPressAuthenticatorStyle,
+                 unifiedStyle: WordPressAuthenticatorUnifiedStyle?,
                  displayImages: WordPressAuthenticatorDisplayImages,
                  displayStrings: WordPressAuthenticatorDisplayStrings) {
         self.configuration = configuration
         self.style = style
+        self.unifiedStyle = unifiedStyle
         self.displayImages = displayImages
         self.displayStrings = displayStrings
     }
@@ -81,6 +87,7 @@ import AuthenticationServices
     ///
     public static func initialize(configuration: WordPressAuthenticatorConfiguration,
                                   style: WordPressAuthenticatorStyle,
+                                  unifiedStyle: WordPressAuthenticatorUnifiedStyle?,
                                   displayImages: WordPressAuthenticatorDisplayImages = .defaultImages,
                                   displayStrings: WordPressAuthenticatorDisplayStrings = .defaultStrings) {
         guard privateInstance == nil else {
@@ -89,6 +96,7 @@ import AuthenticationServices
 
         privateInstance = WordPressAuthenticator(configuration: configuration,
                                                  style: style,
+                                                 unifiedStyle: unifiedStyle,
                                                  displayImages: displayImages,
                                                  displayStrings: displayStrings)
     }

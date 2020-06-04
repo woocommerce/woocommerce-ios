@@ -22,7 +22,7 @@ final class ProductCategoryMapperTests: XCTestCase {
         XCTAssertEqual(productCategory?.name, "Dress")
         XCTAssertEqual(productCategory?.slug, "Shirt")
     }
-    
+
 }
 
 
@@ -46,4 +46,3 @@ private extension ProductCategoryMapperTests {
         return try mapProductCategory(from: "category")
     }
 }
-

@@ -27,6 +27,8 @@ public final class ProductCategoryStore: Store {
         switch action {
         case let .synchronizeProductCategories(siteID, fromPageNumber, onCompletion):
             synchronizeAllProductCategories(siteID: siteID, fromPageNumber: fromPageNumber, onCompletion: onCompletion)
+        case .addProductCategory(siteID: let siteID, name: let name, parentID: let parentID, onCompletion: let onCompletion):
+            addProductCategory(siteID: siteID, name: name, parentID: parentID, onCompletion: onCompletion)
         }
     }
 }
@@ -85,6 +87,23 @@ private extension ProductCategoryStore {
 
             self?.upsertStoredProductCategoriesInBackground(productCategories, siteID: siteID) {
                 onCompletion(productCategories, nil)
+            }
+        }
+    }
+
+    /// Create a new product category associated with a given Site ID.
+    ///
+    func addProductCategory(siteID: Int64, name: String, parentID: Int64?, onCompletion: @escaping (ProductCategory?, Error?) -> Void) {
+        let remote = ProductCategoriesRemote(network: network)
+
+        remote.createProductCategory(for: siteID, name: name, parentID: parentID) { [weak self] (productCategory, error) in
+            guard let productCategory = productCategory else {
+                onCompletion(nil, error)
+                return
+            }
+
+            self?.upsertStoredProductCategoriesInBackground([productCategory], siteID: siteID) {
+                onCompletion(productCategory, nil)
             }
         }
     }

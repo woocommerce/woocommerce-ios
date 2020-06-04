@@ -31,12 +31,12 @@ public final class ProductCategoriesRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    /// Create a new `ProducCategory`.
+    /// Create a new `ProductCategory`.
     ///
     /// - Parameters:
     ///     - siteID: Site for which we'll add a new product categories.
-    ///     - pageNumber: Number of page that should be retrieved.
-    ///     - pageSize: Number of categories to be retrieved per page.
+    ///     - name: Category name.
+    ///     - parentID: The ID for the parent of the category.
     ///     - completion: Closure to be executed upon completion.
     ///
     public func createProductCategory(for siteID: Int64,

@@ -115,7 +115,8 @@ private extension ProductCategoryListViewController {
         let options = GhostOptions(displaysSectionHeader: false,
                                    reuseIdentifier: ProductCategoryTableViewCell.reuseIdentifier,
                                    rowsPerSection: placeholderCategoriesPerSection)
-        ghostTableView.displayGhostContent(options: options)
+        ghostTableView.displayGhostContent(options: options,
+                                           style: .wooDefaultGhostStyle)
         ghostTableView.isHidden = false
     }
 

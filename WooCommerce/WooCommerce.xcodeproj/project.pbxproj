@@ -1800,7 +1800,7 @@
 				02E262CA238D0D0500B79588 /* List Selector Data Source */,
 				0262DA5523A23AA40029AF30 /* Shipping Settings */,
 				45B9C63B23A8E4DB007FC4C5 /* Edit Price */,
-				265BCA032430E5EA004E53EE /* EditCategories */,
+				265BCA032430E5EA004E53EE /* Edit Categories */,
 				02162724237963AF000208D2 /* ProductFormViewController.swift */,
 				02162725237963AF000208D2 /* ProductFormViewController.xib */,
 				02F5F80F24613C930000613A /* ProductFormViewController+PresentationStyle.swift */,
@@ -2318,7 +2318,7 @@
 			path = Categories;
 			sourceTree = "<group>";
 		};
-		265BCA032430E5EA004E53EE /* EditCategories */ = {
+		265BCA032430E5EA004E53EE /* Edit Categories */ = {
 			isa = PBXGroup;
 			children = (
 				265BCA042430E611004E53EE /* ProductCategoryListViewController.swift */,
@@ -2328,7 +2328,7 @@
 				265D909A2446657A00D66F0F /* ProductCategoryViewModelBuilder.swift */,
 				265BCA0A2430E719004E53EE /* Cell */,
 			);
-			path = EditCategories;
+			path = "Edit Categories";
 			sourceTree = "<group>";
 		};
 		265BCA0A2430E719004E53EE /* Cell */ = {

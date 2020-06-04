@@ -152,7 +152,6 @@ final class ProductCategoryStoreTests: XCTestCase {
         case .none:
             XCTFail("errorResponse should not be nil")
         }
-
     }
 
     func testSynchronizeProductCategoriesReturnsErrorUponReponseError() {

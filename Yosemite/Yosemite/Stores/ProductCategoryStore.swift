@@ -93,17 +93,17 @@ private extension ProductCategoryStore {
 
     /// Create a new product category associated with a given Site ID.
     ///
-    func addProductCategory(siteID: Int64, name: String, parentID: Int64?, onCompletion: @escaping (ProductCategory?, Error?) -> Void) {
+    func addProductCategory(siteID: Int64, name: String, parentID: Int64?, onCompletion: @escaping (Result<ProductCategory, Error>) -> Void) {
         let remote = ProductCategoriesRemote(network: network)
 
-        remote.createProductCategory(for: siteID, name: name, parentID: parentID) { [weak self] (productCategory, error) in
-            guard let productCategory = productCategory else {
-                onCompletion(nil, error)
-                return
-            }
-
-            self?.upsertStoredProductCategoriesInBackground([productCategory], siteID: siteID) {
-                onCompletion(productCategory, nil)
+        remote.createProductCategory(for: siteID, name: name, parentID: parentID) { [weak self] result in
+            switch result {
+            case .success(let productCategory):
+                self?.upsertStoredProductCategoriesInBackground([productCategory], siteID: siteID) {
+                    onCompletion(.success(productCategory))
+                }
+            case .failure(let error):
+                onCompletion(.failure(error))
             }
         }
     }

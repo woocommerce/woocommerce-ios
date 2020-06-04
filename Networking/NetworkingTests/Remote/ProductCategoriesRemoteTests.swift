@@ -77,23 +77,22 @@ final class ProductCategoriesRemoteTests: XCTestCase {
     func testCreateProductCategoryProperlyReturnsParsedProductCategory() {
         // Given
         let remote = ProductCategoriesRemote(network: network)
-        let expectation = self.expectation(description: "Create a new Product Category")
 
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "category")
 
         // When
-        var result: (category: ProductCategory?, error: Error?)
-        remote.createProductCategory(for: sampleSiteID, name: "Dress", parentID: 0) { category, error in
-            result = (category, error)
-            expectation.fulfill()
+        var result: Result<ProductCategory, Error>?
+        waitForExpectation { exp in
+            remote.createProductCategory(for: sampleSiteID, name: "Dress", parentID: 0) { aResult in
+                result = aResult
+                exp.fulfill()
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
-
         // Then
-        XCTAssertNil(result.error)
-        XCTAssertNotNil(result.category)
-        XCTAssertEqual(result.category?.name, "Dress")
+        XCTAssertNil(result?.failure)
+        XCTAssertNotNil(try result?.get())
+        XCTAssertEqual(try result?.get().name, "Dress")
     }
 
     /// Verifies that createProductCategory properly relays Networking Layer errors.
@@ -104,17 +103,17 @@ final class ProductCategoriesRemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Create Product Category returns error")
 
         // When
-        var result: (category: ProductCategory?, error: Error?)
-        remote.createProductCategory(for: sampleSiteID, name: "Dress", parentID: 0) { category, error in
-            result = (category, error)
+        var result: Result<ProductCategory, Error>?
+        remote.createProductCategory(for: sampleSiteID, name: "Dress", parentID: 0) { aResult in
+            result = aResult
             expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
 
         // Then
-        XCTAssertNil(result.category)
-        XCTAssertNotNil(result.error)
+        XCTAssertNil(try? result?.get())
+        XCTAssertNotNil(result?.failure)
     }
 
 }

@@ -13,14 +13,13 @@ final class ProductCategoryMapperTests: XCTestCase {
     /// Verifies that all of the ProductCategory Fields are parsed correctly.
     ///
     func testProductCategoryFieldsAreProperlyParsed() throws {
-        let productCategory = try mapProductCategoryResponse()
-        XCTAssertNotNil(productCategory)
+        let productCategory = try XCTUnwrap(mapProductCategoryResponse())
 
-        XCTAssertEqual(productCategory?.categoryID, 104)
-        XCTAssertEqual(productCategory?.parentID, 0)
-        XCTAssertEqual(productCategory?.siteID, dummySiteID)
-        XCTAssertEqual(productCategory?.name, "Dress")
-        XCTAssertEqual(productCategory?.slug, "Shirt")
+        XCTAssertEqual(productCategory.categoryID, 104)
+        XCTAssertEqual(productCategory.parentID, 0)
+        XCTAssertEqual(productCategory.siteID, dummySiteID)
+        XCTAssertEqual(productCategory.name, "Dress")
+        XCTAssertEqual(productCategory.slug, "Shirt")
     }
 
 }

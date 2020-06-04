@@ -42,7 +42,7 @@ public final class ProductCategoriesRemote: Remote {
     public func createProductCategory(for siteID: Int64,
                                       name: String,
                                       parentID: Int64?,
-                                      completion: @escaping (ProductCategory?, Error?) -> Void) {
+                                      completion: @escaping (Result<ProductCategory, Error>) -> Void) {
         var parameters = [
             ParameterKey.name: name
         ]

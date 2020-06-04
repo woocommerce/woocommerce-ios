@@ -23,7 +23,7 @@
 		98CF18F9248725620047B66C /* GoogleSignupConfirmation.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 98CF18F8248725620047B66C /* GoogleSignupConfirmation.storyboard */; };
 		98D9A4B12474A526002E491C /* GoogleAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D9A4B02474A526002E491C /* GoogleAuthenticator.swift */; };
 		98ED483624802F8F00992B2D /* GoogleAuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98ED483424802F8F00992B2D /* GoogleAuthViewController.swift */; };
-		98ED48392480300500992B2D /* GoogleAuthViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 98ED48382480300500992B2D /* GoogleAuthViewController.storyboard */; };
+		98ED48392480300500992B2D /* GoogleAuth.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 98ED48382480300500992B2D /* GoogleAuth.storyboard */; };
 		B501C045208FC68700D1E58F /* LoginFieldsValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B501C03C208FC52400D1E58F /* LoginFieldsValidationTests.swift */; };
 		B501C046208FC6A700D1E58F /* WordPressAuthenticatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B501C03E208FC52500D1E58F /* WordPressAuthenticatorTests.swift */; };
 		B501C048208FC79C00D1E58F /* LoginFacadeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B501C040208FC52500D1E58F /* LoginFacadeTests.m */; };
@@ -177,7 +177,7 @@
 		98CF18F8248725620047B66C /* GoogleSignupConfirmation.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = GoogleSignupConfirmation.storyboard; sourceTree = "<group>"; };
 		98D9A4B02474A526002E491C /* GoogleAuthenticator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoogleAuthenticator.swift; sourceTree = "<group>"; };
 		98ED483424802F8F00992B2D /* GoogleAuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAuthViewController.swift; sourceTree = "<group>"; };
-		98ED48382480300500992B2D /* GoogleAuthViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = GoogleAuthViewController.storyboard; sourceTree = "<group>"; };
+		98ED48382480300500992B2D /* GoogleAuth.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = GoogleAuth.storyboard; sourceTree = "<group>"; };
 		AE612958059F9E80B54138B3 /* Pods-WordPressAuthenticatorTests.release-internal.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticatorTests.release-internal.xcconfig"; path = "Pods/Target Support Files/Pods-WordPressAuthenticatorTests/Pods-WordPressAuthenticatorTests.release-internal.xcconfig"; sourceTree = "<group>"; };
 		B0D7D40BC1DE2D367761AD86 /* Pods-WordPressAuthenticatorTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticatorTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WordPressAuthenticatorTests/Pods-WordPressAuthenticatorTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B501C03C208FC52400D1E58F /* LoginFieldsValidationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginFieldsValidationTests.swift; sourceTree = "<group>"; };
@@ -374,8 +374,6 @@
 			isa = PBXGroup;
 			children = (
 				98D9A4B02474A526002E491C /* GoogleAuthenticator.swift */,
-				98ED483424802F8F00992B2D /* GoogleAuthViewController.swift */,
-				98ED48382480300500992B2D /* GoogleAuthViewController.storyboard */,
 				CEC77C6424854EE400FB9050 /* View Related */,
 			);
 			path = "Unified Auth";
@@ -384,6 +382,8 @@
 		98CF18F5248725130047B66C /* Google */ = {
 			isa = PBXGroup;
 			children = (
+				98ED483424802F8F00992B2D /* GoogleAuthViewController.swift */,
+				98ED48382480300500992B2D /* GoogleAuth.storyboard */,
 				98CF18F6248725370047B66C /* GoogleSignupConfirmationViewController.swift */,
 				98CF18F8248725620047B66C /* GoogleSignupConfirmation.storyboard */,
 			);
@@ -796,7 +796,7 @@
 				B560911E208A555E00399AE4 /* Signup.storyboard in Resources */,
 				CEC77C6824854F3E00FB9050 /* SiteAddress.storyboard in Resources */,
 				B5609118208A555600399AE4 /* SearchTableViewCell.xib in Resources */,
-				98ED48392480300500992B2D /* GoogleAuthViewController.storyboard in Resources */,
+				98ED48392480300500992B2D /* GoogleAuth.storyboard in Resources */,
 				B560913F208A563800399AE4 /* Login.storyboard in Resources */,
 				98CF18F9248725620047B66C /* GoogleSignupConfirmation.storyboard in Resources */,
 				B5609137208A563800399AE4 /* EmailMagicLink.storyboard in Resources */,

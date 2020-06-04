@@ -7,7 +7,7 @@ enum Storyboard: String {
     case signup = "Signup"
     case emailMagicLink = "EmailMagicLink"
     case siteAddress = "SiteAddress"
-    case googleAuth = "GoogleAuthViewController"
+    case googleAuth = "GoogleAuth"
     case googleSignupConfirmation = "GoogleSignupConfirmation"
 
     var instance: UIStoryboard {

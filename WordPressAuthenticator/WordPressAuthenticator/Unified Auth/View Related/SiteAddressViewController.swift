@@ -22,6 +22,16 @@ final class SiteAddressViewController: LoginViewController {
         submitButton?.setTitle(primaryTitle, for: .normal)
         submitButton?.setTitle(primaryTitle, for: .highlighted)
     }
+    
+    override func styleBackground() {
+        guard let unifiedBackgroundColor = WordPressAuthenticator.shared.unifiedStyle?.viewControllerBackgroundColor else {
+                super.styleBackground()
+                return
+        }
+
+        view.backgroundColor = unifiedBackgroundColor
+    }
+    
 }
 
 

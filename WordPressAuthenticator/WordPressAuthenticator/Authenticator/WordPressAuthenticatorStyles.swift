@@ -111,3 +111,20 @@ public struct WordPressAuthenticatorStyle {
         self.statusBarStyle = statusBarStyle
     }
 }
+
+// MARK: - WordPress Unified Authenticator Styles
+//
+// Styles specifically for the unified auth flows.
+//
+public struct WordPressAuthenticatorUnifiedStyle {
+
+    /// Style: Auth view background colors
+    ///
+    public let viewControllerBackgroundColor: UIColor
+
+    /// Designated initializer
+    ///
+    public init(viewControllerBackgroundColor: UIColor) {
+        self.viewControllerBackgroundColor = viewControllerBackgroundColor
+    }
+}

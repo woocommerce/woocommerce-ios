@@ -1,6 +1,3 @@
-import WordPressKit
-
-
 /// View controller that handles the google authentication flow
 ///
 class GoogleAuthViewController: LoginViewController {

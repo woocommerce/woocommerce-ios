@@ -181,23 +181,33 @@ extension OrderDetailsDataSource: UITableViewDataSource {
 // MARK: - Support for UITableViewDelegate
 extension OrderDetailsDataSource {
     func viewForHeaderInSection(_ section: Int, tableView: UITableView) -> UIView? {
-        guard let leftText = sections[section].title else {
+        guard let section = sections[safe: section] else {
             return nil
         }
 
-        let headerID = TwoColumnSectionHeaderView.reuseIdentifier
-        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerID) as? TwoColumnSectionHeaderView else {
-            fatalError()
+        let reuseIdentifier = section.headerStyle.viewType.reuseIdentifier
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: reuseIdentifier) else {
+            assertionFailure("Could not find section header view for reuseIdentifier \(reuseIdentifier)")
+            return nil
         }
 
-        headerView.leftText = leftText
-        headerView.rightText = sections[section].rightTitle
+        switch headerView {
+        case let headerView as PrimarySectionHeaderView:
+            headerView.configure(title: section.title)
+        case let headerView as TwoColumnSectionHeaderView:
+            headerView.leftText = section.title
+            headerView.rightText = section.rightTitle
+        default:
+            assertionFailure("Unexpected headerView type \(headerView.self)")
+            return nil
+        }
 
         return headerView
     }
 }
 
 // MARK: - Support for UITableViewDataSource
+
 private extension OrderDetailsDataSource {
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {

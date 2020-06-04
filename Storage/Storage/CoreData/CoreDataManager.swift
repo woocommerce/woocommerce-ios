@@ -15,6 +15,7 @@ public class CoreDataManager: StorageManagerType {
     /// Designated Initializer.
     ///
     /// - Parameter name: Identifier to be used for: [database, data model, container].
+    /// - Parameter crashLogger: allows logging a message of any severity level
     ///
     /// - Important: This should *match* with your actual Data Model file!.
     ///

@@ -63,7 +63,7 @@ final class StorageManagerConcurrencyTests: XCTestCase {
     override func setUp() {
         super.setUp()
         // Use the Sqlite-based StorageManagerType to be closer to the production operations
-        storageManager = CoreDataManager(name: "WooCommerce")
+        storageManager = CoreDataManager(name: "WooCommerce", crashLogger: MockCrashLogger())
         storageManager.reset()
     }
 

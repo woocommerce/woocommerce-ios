@@ -17,7 +17,7 @@ class GoogleAuthViewController: LoginViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        titleLabel?.text = LocalizedText.waitingForGoogle
+        titleLabel?.text = NSLocalizedString("Waiting for Google to complete…", comment: "Message shown on screen while waiting for Google to finish its signup process.")
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -66,16 +66,13 @@ private extension GoogleAuthViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
 
-    enum LocalizedText {
-        static let waitingForGoogle = NSLocalizedString("Waiting for Google to complete…", comment: "Message shown on screen while waiting for Google to finish its signup process.")
-        static let signupFailed = NSLocalizedString("Google sign up failed.", comment: "Message shown on screen after the Google sign up process failed.")
-    }
-
 }
 
 // MARK: - GoogleAuthenticatorDelegate
 
 extension GoogleAuthViewController: GoogleAuthenticatorDelegate {
+
+    // MARK: - Login
 
     func googleFinishedLogin(credentials: AuthenticatorCredentials, loginFields: LoginFields) {
         self.loginFields = loginFields
@@ -86,7 +83,7 @@ extension GoogleAuthViewController: GoogleAuthenticatorDelegate {
         self.loginFields = loginFields
 
         guard let vc = Login2FAViewController.instantiate(from: .login) else {
-            DDLogError("Failed to navigate from LoginViewController to Login2FAViewController")
+            DDLogError("Failed to navigate from GoogleAuthViewController to Login2FAViewController")
             return
         }
 
@@ -101,7 +98,7 @@ extension GoogleAuthViewController: GoogleAuthenticatorDelegate {
         self.loginFields = loginFields
 
         guard let vc = LoginWPComViewController.instantiate(from: .login) else {
-            DDLogError("Failed to navigate from Google Login to LoginWPComViewController (password VC)")
+            DDLogError("Failed to navigate from GoogleAuthViewController to LoginWPComViewController")
             return
         }
 
@@ -122,21 +119,23 @@ extension GoogleAuthViewController: GoogleAuthenticatorDelegate {
         redirectToSignup ? showSignupConfirmationView() :
                            showLoginErrorView(errorTitle: errorTitle, errorDescription: errorDescription)
     }
-    
-    func googleFinishedSignup(credentials: AuthenticatorCredentials, loginFields: LoginFields) {
-        self.loginFields = loginFields
-        showSignupEpilogue(for: credentials)
-    }
-    
-    func googleSignupFailed(error: Error, loginFields: LoginFields) {
-        self.loginFields = loginFields
-        titleLabel?.textColor = WPStyleGuide.errorRed()
-        titleLabel?.text = LocalizedText.signupFailed
-        displayError(error as NSError, sourceTag: .wpComSignup)
-    }
 
     func googleAuthCancelled() {
         navigationController?.popViewController(animated: true)
+    }
+
+    // MARK: - Signup
+
+    func googleFinishedSignup(credentials: AuthenticatorCredentials, loginFields: LoginFields) {
+        // Here for protocol compliance.
+    }
+
+    func googleLoggedInInstead(credentials: AuthenticatorCredentials, loginFields: LoginFields) {
+        // Here for protocol compliance.
+    }
+
+    func googleSignupFailed(error: Error, loginFields: LoginFields) {
+        // Here for protocol compliance.
     }
 
 }

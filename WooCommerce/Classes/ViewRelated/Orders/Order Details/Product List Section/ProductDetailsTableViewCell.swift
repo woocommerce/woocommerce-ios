@@ -40,7 +40,7 @@ final class ProductDetailsTableViewCell: UITableViewCell {
         configureBackground()
         configureProductImageView()
         configureNameLabel()
-        configureQuantityLabel()
+        configurePriceLabel()
         configureSKULabel()
         configureSubtitleLabel()
         configureSelectionStyle()
@@ -69,7 +69,7 @@ private extension ProductDetailsTableViewCell {
         nameLabel?.text = ""
     }
 
-    func configureQuantityLabel() {
+    func configurePriceLabel() {
         priceLabel.applyBodyStyle()
         priceLabel?.text = ""
     }

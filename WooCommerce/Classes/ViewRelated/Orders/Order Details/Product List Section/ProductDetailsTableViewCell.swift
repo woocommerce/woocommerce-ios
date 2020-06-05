@@ -42,7 +42,7 @@ final class ProductDetailsTableViewCell: UITableViewCell {
         configureNameLabel()
         configureQuantityLabel()
         configureSKULabel()
-        configurePriceLabel()
+        configureSubtitleLabel()
         configureSelectionStyle()
     }
 }
@@ -74,7 +74,7 @@ private extension ProductDetailsTableViewCell {
         priceLabel?.text = ""
     }
 
-    func configurePriceLabel() {
+    func configureSubtitleLabel() {
         subtitleLabel.applySecondaryFootnoteStyle()
         subtitleLabel?.text = ""
     }

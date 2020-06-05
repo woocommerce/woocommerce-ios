@@ -20,10 +20,6 @@ final class ProductLoaderViewController: UIViewController {
     ///
     private let siteID: Int64
 
-    /// The Target Product's Currency
-    ///
-    private let currency: String
-
     /// UI Active State
     ///
     private var state: State = .loading {
@@ -35,10 +31,9 @@ final class ProductLoaderViewController: UIViewController {
 
     // MARK: - Initializers
 
-    init(productID: Int64, siteID: Int64, currency: String) {
+    init(productID: Int64, siteID: Int64) {
         self.productID = productID
         self.siteID = siteID
-        self.currency = currency
 
         super.init(nibName: nil, bundle: nil)
     }

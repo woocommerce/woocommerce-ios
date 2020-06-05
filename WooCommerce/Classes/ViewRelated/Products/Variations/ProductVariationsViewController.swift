@@ -251,7 +251,7 @@ private extension ProductVariationsViewController {
     ///
     func displayPlaceholderProducts() {
         let options = GhostOptions(reuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options)
+        tableView.displayGhostContent(options: options, style: .wooDefaultGhostStyle)
 
         resultsController.stopForwardingEvents()
     }

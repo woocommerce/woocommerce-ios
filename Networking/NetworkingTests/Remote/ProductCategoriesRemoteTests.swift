@@ -69,4 +69,51 @@ final class ProductCategoriesRemoteTests: XCTestCase {
         XCTAssertNil(result.categories)
         XCTAssertNotNil(result.error)
     }
+
+    // MARK: - Create a product category tests
+
+    /// Verifies that createProductCategory properly parses the `category` sample response.
+    ///
+    func testCreateProductCategoryProperlyReturnsParsedProductCategory() {
+        // Given
+        let remote = ProductCategoriesRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "products/categories", filename: "category")
+
+        // When
+        var result: Result<ProductCategory, Error>?
+        waitForExpectation { exp in
+            remote.createProductCategory(for: sampleSiteID, name: "Dress", parentID: 0) { aResult in
+                result = aResult
+                exp.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertNil(result?.failure)
+        XCTAssertNotNil(try result?.get())
+        XCTAssertEqual(try result?.get().name, "Dress")
+    }
+
+    /// Verifies that createProductCategory properly relays Networking Layer errors.
+    ///
+    func testCreateProductCategoryProperlyRelaysNetwokingErrors() {
+        // Given
+        let remote = ProductCategoriesRemote(network: network)
+        let expectation = self.expectation(description: "Create Product Category returns error")
+
+        // When
+        var result: Result<ProductCategory, Error>?
+        remote.createProductCategory(for: sampleSiteID, name: "Dress", parentID: 0) { aResult in
+            result = aResult
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertNil(try? result?.get())
+        XCTAssertNotNil(result?.failure)
+    }
+
 }

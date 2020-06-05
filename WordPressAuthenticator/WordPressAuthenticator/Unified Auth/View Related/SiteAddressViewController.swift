@@ -70,7 +70,12 @@ extension SiteAddressViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return tableView.dequeueReusableCell(withIdentifier: InstructionTableViewCell.reuseIdentifier) ?? UITableViewCell()
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: InstructionTableViewCell.reuseIdentifier, for: indexPath) as? InstructionTableViewCell else {
+            fatalError()
+        }
+        cell.instructionLabel?.text = "This sentence here."
+
+        return cell
     }
 }
 

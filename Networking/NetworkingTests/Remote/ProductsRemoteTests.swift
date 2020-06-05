@@ -89,6 +89,34 @@ class ProductsRemoteTests: XCTestCase {
         XCTAssertEqual(product.productID, sampleProductID)
     }
 
+    /// Verifies that loadProduct properly parses the `product-external` sample response.
+    ///
+    func testLoadSingleExternalProductProperlyReturnsParsedProduct() throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        let expectation = self.expectation(description: "Load single external product")
+
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product-external")
+
+        // When
+        var resultMaybe: Result<Product, Error>?
+        remote.loadProduct(for: sampleSiteID, productID: sampleProductID) { aResult in
+            resultMaybe = aResult
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        // Then
+        let result = try XCTUnwrap(resultMaybe)
+        XCTAssertTrue(result.isSuccess)
+
+        let product = try result.get()
+        XCTAssertEqual(product.productID, sampleProductID)
+        XCTAssertEqual(product.buttonText, "Hit the slopes")
+        XCTAssertEqual(product.externalURL, "https://snowboarding.com/product/rentals/")
+    }
+
     /// Verifies that loadProduct properly relays any Networking Layer errors.
     ///
     func testLoadSingleProductProperlyRelaysNetwokingErrors() throws {
@@ -270,6 +298,7 @@ private extension ProductsRemoteTests {
                        downloads: [],
                        downloadLimit: -1,
                        downloadExpiry: -1,
+                       buttonText: "",
                        externalURL: "http://somewhere.com",
                        taxStatusKey: "taxable",
                        taxClass: "",

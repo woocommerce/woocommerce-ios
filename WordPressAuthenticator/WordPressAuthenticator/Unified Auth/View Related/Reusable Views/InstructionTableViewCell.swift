@@ -3,16 +3,16 @@ import UIKit
 
 /// InstructionTableViewCell: a text label in a UITableViewCell.
 ///
-class InstructionTableViewCell: UITableViewCell {
+public class InstructionTableViewCell: UITableViewCell {
 
-    @IBOutlet private weak var instructionLabel: UILabel!
+    @IBOutlet public var instructionLabel: UILabel!
 
-    override func awakeFromNib() {
+    public override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
     }
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
+    public override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state

@@ -17,12 +17,38 @@ final class PrimarySectionHeaderView: UITableViewHeaderFooterView {
         titleLabel.text = ""
         titleLabel.applyHeadlineStyle()
 
-        containerView.backgroundColor = .basicBackground
+        containerView.backgroundColor = Colors.containerViewBackgroundColor
+
+        addDummyViewToHideSectionSeparator()
     }
 
     /// Change the configurable properties of this header.
     ///
     func configure(title: String?) {
         titleLabel.text = title
+    }
+
+    /// Creates a dummy border which will cover the grouped section separator that is normally
+    /// shown below this header view.
+    ///
+    private func addDummyViewToHideSectionSeparator() {
+        // The separator has to be the same color as the container
+        let separator = UIView.createBorderView(color: Colors.containerViewBackgroundColor)
+
+        containerView.addSubview(separator)
+
+        NSLayoutConstraint.activate([
+            containerView.leadingAnchor.constraint(equalTo: separator.leadingAnchor),
+            containerView.trailingAnchor.constraint(equalTo: separator.trailingAnchor),
+            containerView.bottomAnchor.constraint(equalTo: separator.topAnchor)
+        ])
+    }
+}
+
+// MARK: - Constants
+
+private extension PrimarySectionHeaderView {
+    enum Colors {
+        static let containerViewBackgroundColor = UIColor.basicBackground
     }
 }

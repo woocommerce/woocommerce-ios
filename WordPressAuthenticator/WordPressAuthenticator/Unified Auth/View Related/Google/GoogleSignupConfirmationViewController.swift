@@ -46,13 +46,62 @@ private extension GoogleSignupConfirmationViewController {
         submitButton?.accessibilityIdentifier = "Google Signup Email Next Button"
     }
     
-    // MARK: - Button Action Handling
+    // MARK: - Button Handling
 
     @IBAction func handleSubmit() {
-        displayError(message: "Cheers!")
-        // TODO: create account.
-        // TODO: re-enable this when handling added.
-        // configureSubmitButton(animating: true)
+        configureSubmitButton(animating: true)
+        GoogleAuthenticator.sharedInstance.delegate = self
+        GoogleAuthenticator.sharedInstance.createGoogleAccount(loginFields: loginFields)
+    }
+
+}
+
+// MARK: - GoogleAuthenticatorDelegate
+
+extension GoogleSignupConfirmationViewController: GoogleAuthenticatorDelegate {
+    
+    // MARK: - Signup
+    
+    func googleFinishedSignup(credentials: AuthenticatorCredentials, loginFields: LoginFields) {
+        self.loginFields = loginFields
+        showSignupEpilogue(for: credentials)
+    }
+
+    func googleLoggedInInstead(credentials: AuthenticatorCredentials, loginFields: LoginFields) {
+        self.loginFields = loginFields
+        showLoginEpilogue(for: credentials)
+    }
+    
+    func googleSignupFailed(error: Error, loginFields: LoginFields) {
+        configureSubmitButton(animating: false)
+        self.loginFields = loginFields
+
+        // Display generic inline error.
+        displayError(message: NSLocalizedString("Google sign up failed.", comment: "Message shown on screen after the Google sign up process failed."))
+        // Display the API error in a Fancy Alert.
+        displayError(error as NSError, sourceTag: .wpComSignup)
+    }
+    
+    // MARK: - Login
+
+    func googleFinishedLogin(credentials: AuthenticatorCredentials, loginFields: LoginFields) {
+        // Here for protocol compliance.
+    }
+    
+    func googleNeedsMultifactorCode(loginFields: LoginFields) {
+        // Here for protocol compliance.
+    }
+    
+    func googleExistingUserNeedsConnection(loginFields: LoginFields) {
+        // Here for protocol compliance.
+    }
+    
+    func googleLoginFailed(errorTitle: String, errorDescription: String, loginFields: LoginFields, unknownUser: Bool) {
+        // Here for protocol compliance.
+    }
+
+    func googleAuthCancelled() {
+        // Here for protocol compliance.
     }
 
 }

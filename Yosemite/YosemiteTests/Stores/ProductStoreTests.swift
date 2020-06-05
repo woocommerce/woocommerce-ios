@@ -340,6 +340,29 @@ class ProductStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that `ProductAction.retrieveProduct` returns the expected `Product` of external product type.
+    ///
+    func testRetrieveSingleExternalProductReturnsExpectedFields() {
+        // Arrange
+        let expectation = self.expectation(description: "Retrieve single external product")
+        let remote = MockProductsRemote()
+        let expectedProduct = MockProduct().product(siteID: sampleSiteID, productID: sampleProductID, buttonText: "Deal", externalURL: "https://goodeals.com")
+        remote.whenLoadingProduct(siteID: sampleSiteID, productID: sampleProductID, thenReturn: .success(expectedProduct))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // Action
+        let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleProductID) { (product, error) in
+            // Assert
+            XCTAssertNil(error)
+            XCTAssertEqual(product, expectedProduct)
+
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
     /// Verifies that `ProductAction.retrieveProduct` returns the expected `Product` for `variation` product types.
     ///
     func testRetrieveSingleVariationTypeProductReturnsExpectedFields() {

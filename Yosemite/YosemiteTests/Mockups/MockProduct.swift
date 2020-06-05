@@ -17,7 +17,10 @@ final class MockProduct {
                  virtual: Bool = true,
                  images: [ProductImage] = [],
                  shippingClassID: Int64 = 0,
-                 categories: [ProductCategory] = []) -> Product {
+                 categories: [ProductCategory] = [],
+                 // External products only
+                 buttonText: String = "",
+                 externalURL: String? = "http://somewhere.com") -> Product {
 
         return Product(siteID: siteID,
                        productID: productID,
@@ -51,8 +54,8 @@ final class MockProduct {
                        downloads: [],
                        downloadLimit: -1,
                        downloadExpiry: -1,
-                       buttonText: "",
-                       externalURL: "http://somewhere.com",
+                       buttonText: buttonText,
+                       externalURL: externalURL,
                        taxStatusKey: "taxable",
                        taxClass: "standard",
                        manageStock: false,

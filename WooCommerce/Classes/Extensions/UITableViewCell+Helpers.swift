@@ -33,8 +33,8 @@ extension UITableViewCell {
         subviews.first {
             let subviewFrame = $0.frame
 
-            // We use `height < 1` since we assume that the separator is always `0.5` and using
-            // `< 1` seems like a safer predicate to use.
+            // We use `height <= 1` since after some manual testing, the separator was found to
+            // have a height from `0.5` up to `1.0` on the largest font size.
             //
             // This is going to blow up in our face if:
             //
@@ -43,7 +43,7 @@ extension UITableViewCell {
             //
             return subviewFrame.origin == .zero
                 && subviewFrame.width == bounds.width
-                && subviewFrame.height < 1
+                && subviewFrame.height <= 1
         }
     }
 }

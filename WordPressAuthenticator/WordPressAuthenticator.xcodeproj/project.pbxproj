@@ -123,6 +123,7 @@
 		CEC77C6624854F2E00FB9050 /* SiteAddressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC77C6524854F2E00FB9050 /* SiteAddressViewController.swift */; };
 		CEC77C6824854F3E00FB9050 /* SiteAddress.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEC77C6724854F3E00FB9050 /* SiteAddress.storyboard */; };
 		CEC77C72248AB10300FB9050 /* LargeTitleHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC77C71248AB10300FB9050 /* LargeTitleHeaderView.swift */; };
+		CEC77C79248AB6D100FB9050 /* LargeTitleHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEC77C78248AB6D100FB9050 /* LargeTitleHeaderView.xib */; };
 		CEDE0D93242011E000CB3345 /* NSObject+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDE0D92242011E000CB3345 /* NSObject+Helpers.swift */; };
 		CEDE0D952420121D00CB3345 /* UIStoryboard+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDE0D942420121D00CB3345 /* UIStoryboard+Helpers.swift */; };
 		CEDE0D972420126900CB3345 /* UIViewController+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDE0D962420126900CB3345 /* UIViewController+Helpers.swift */; };
@@ -287,6 +288,7 @@
 		CEC77C6524854F2E00FB9050 /* SiteAddressViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteAddressViewController.swift; sourceTree = "<group>"; };
 		CEC77C6724854F3E00FB9050 /* SiteAddress.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SiteAddress.storyboard; sourceTree = "<group>"; };
 		CEC77C71248AB10300FB9050 /* LargeTitleHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeTitleHeaderView.swift; sourceTree = "<group>"; };
+		CEC77C78248AB6D100FB9050 /* LargeTitleHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LargeTitleHeaderView.xib; sourceTree = "<group>"; };
 		CEDE0D92242011E000CB3345 /* NSObject+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+Helpers.swift"; sourceTree = "<group>"; };
 		CEDE0D942420121D00CB3345 /* UIStoryboard+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStoryboard+Helpers.swift"; sourceTree = "<group>"; };
 		CEDE0D962420126900CB3345 /* UIViewController+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Helpers.swift"; sourceTree = "<group>"; };
@@ -686,6 +688,7 @@
 			isa = PBXGroup;
 			children = (
 				CEC77C71248AB10300FB9050 /* LargeTitleHeaderView.swift */,
+				CEC77C78248AB6D100FB9050 /* LargeTitleHeaderView.xib */,
 			);
 			path = "Reusable Views";
 			sourceTree = "<group>";
@@ -812,6 +815,7 @@
 			files = (
 				B5E07FF4208FD13800657A9A /* Assets.xcassets in Resources */,
 				B56090CA208A4F5400399AE4 /* NUXButtonView.storyboard in Resources */,
+				CEC77C79248AB6D100FB9050 /* LargeTitleHeaderView.xib in Resources */,
 				B560911E208A555E00399AE4 /* Signup.storyboard in Resources */,
 				CEC77C6824854F3E00FB9050 /* SiteAddress.storyboard in Resources */,
 				B5609118208A555600399AE4 /* SearchTableViewCell.xib in Resources */,

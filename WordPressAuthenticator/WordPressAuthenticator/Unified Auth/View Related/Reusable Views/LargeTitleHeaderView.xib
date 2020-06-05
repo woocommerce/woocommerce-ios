@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" userLabel="LargeTitleHeaderView" customClass="LargeTitleHeaderView" customModule="WordPressAuthenticator" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="124"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rva-d6-2FR">
+                    <rect key="frame" x="0.0" y="44" width="414" height="80"/>
+                    <fontDescription key="fontDescription" style="UICTFontTextStyleTitle0"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+            <constraints>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="rva-d6-2FR" secondAttribute="bottom" id="Qss-Bm-JDV"/>
+                <constraint firstItem="rva-d6-2FR" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="V7g-oA-yN8"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="rva-d6-2FR" secondAttribute="trailing" id="WRE-tY-h4O"/>
+                <constraint firstItem="rva-d6-2FR" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="cna-P8-V7b"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <connections>
+                <outlet property="titleLabel" destination="rva-d6-2FR" id="pia-X2-aRd"/>
+            </connections>
+            <point key="canvasLocation" x="131.8840579710145" y="-119.86607142857142"/>
+        </view>
+    </objects>
+</document>

@@ -376,6 +376,7 @@
 			isa = PBXGroup;
 			children = (
 				98D9A4B02474A526002E491C /* GoogleAuthenticator.swift */,
+				CEC77C75248AB57600FB9050 /* Utilities */,
 				CEC77C6424854EE400FB9050 /* View Related */,
 			);
 			path = "Unified Auth";
@@ -687,6 +688,13 @@
 				CEC77C71248AB10300FB9050 /* LargeTitleHeaderView.swift */,
 			);
 			path = "Reusable Views";
+			sourceTree = "<group>";
+		};
+		CEC77C75248AB57600FB9050 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -47,7 +47,6 @@ final class ProductFormViewController: UIViewController {
     private var cancellableProduct: ObservationToken?
     private var cancellableProductName: ObservationToken?
     private var cancellableUpdateEnabled: ObservationToken?
-    private var cancellableNavigationRightBarButtonItems: ObservationToken?
 
     init(product: Product,
          currency: String = CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode),
@@ -89,15 +88,12 @@ final class ProductFormViewController: UIViewController {
         cancellableProduct?.cancel()
         cancellableProductName?.cancel()
         cancellableUpdateEnabled?.cancel()
-        cancellableNavigationRightBarButtonItems?.cancel()
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Presentation style is configured before navigation bar updates below because the subscriber for the navigation bar updates is different.
         configurePresentationStyle()
-
         configureNavigationBar()
         configureMainView()
         configureTableView()
@@ -183,9 +179,8 @@ private extension ProductFormViewController {
         switch presentationStyle {
         case .contained(let containerViewController):
             containerViewController.addCloseNavigationBarButton(target: self, action: #selector(closeNavigationBarButtonTapped))
-            observeNavigationRightBarButtonItems(viewControllerWithNavigationItem: containerViewController)
         case .navigationStack:
-            observeNavigationRightBarButtonItems(viewControllerWithNavigationItem: self)
+            break
         }
     }
 
@@ -195,12 +190,6 @@ private extension ProductFormViewController {
             return
         }
         exitForm()
-    }
-
-    func observeNavigationRightBarButtonItems(viewControllerWithNavigationItem: UIViewController) {
-        cancellableNavigationRightBarButtonItems = navigationRightBarButtonItems.subscribe { [weak viewControllerWithNavigationItem] rightBarButtonItems in
-            viewControllerWithNavigationItem?.navigationItem.rightBarButtonItems = rightBarButtonItems
-        }
     }
 
     func configureMoreDetailsContainerView() {
@@ -487,7 +476,13 @@ private extension ProductFormViewController {
             rightBarButtonItems.insert(createMoreOptionsBarButtonItem(), at: 0)
         }
 
-        navigationRightBarButtonItemsSubject.send(rightBarButtonItems)
+        navigationItem.rightBarButtonItems = rightBarButtonItems
+        switch presentationStyle {
+        case .contained(let containerViewController):
+            containerViewController.navigationItem.rightBarButtonItems = rightBarButtonItems
+        default:
+            break
+        }
     }
 
     func createUpdateBarButtonItem() -> UIBarButtonItem {

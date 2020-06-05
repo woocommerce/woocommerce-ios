@@ -20,6 +20,7 @@ final class SiteAddressViewController: LoginViewController {
         super.viewDidLoad()
 
         localizePrimaryButton()
+        registerCells()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -35,6 +36,18 @@ final class SiteAddressViewController: LoginViewController {
         let primaryTitle = displayStrings.continueButtonTitle
         submitButton?.setTitle(primaryTitle, for: .normal)
         submitButton?.setTitle(primaryTitle, for: .highlighted)
+    }
+
+    /// Registers all of the available TableViewCells
+    ///
+    func registerTableViewCells(_ tableView: UITableView) {
+        let cells = [
+            InstructionTableViewCell.self
+        ]
+
+        for cell in cells {
+            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
+        }
     }
 
     /// Style individual ViewController backgrounds, for now.
@@ -57,7 +70,7 @@ extension SiteAddressViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return tableView.dequeueReusableCell(withIdentifier: "TextFieldCell") ?? UITableViewCell()
+        return tableView.dequeueReusableCell(withIdentifier: InstructionTableViewCell.reuseIdentifier) ?? UITableViewCell()
     }
 }
 

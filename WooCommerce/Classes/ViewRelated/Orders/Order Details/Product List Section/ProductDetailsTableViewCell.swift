@@ -7,23 +7,23 @@ import Yosemite
 ///
 final class ProductDetailsTableViewCell: UITableViewCell {
 
-    /// ImageView
+    /// Shows the product's image.
     ///
     @IBOutlet private var productImageView: UIImageView!
 
-    /// Label: Name
+    /// The label for the product's name.
     ///
     @IBOutlet private var nameLabel: UILabel!
 
-    /// Label: Quantity
+    /// The label for the subtotal (quantity x item price).
     ///
     @IBOutlet private var priceLabel: UILabel!
 
-    /// Label: Price
+    /// The label showing the pattern "{qty} x {item_price}".
     ///
     @IBOutlet private var subtitleLabel: UILabel!
 
-    /// Label: SKU
+    /// The label showing the SKU.
     ///
     @IBOutlet private var skuLabel: UILabel!
 

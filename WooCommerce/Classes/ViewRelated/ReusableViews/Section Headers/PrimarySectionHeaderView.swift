@@ -60,17 +60,14 @@ private extension PrimarySectionHeaderView {
 import SwiftUI
 
 private struct PrimarySectionHeaderViewRepresentable: UIViewRepresentable {
-
     let title: String
 
-    func makeUIView(context: Context) -> UIView {
-        let headerView: PrimarySectionHeaderView = .instantiateFromNib()
-        headerView.configure(title: title)
-        return headerView
+    func makeUIView(context: Context) -> PrimarySectionHeaderView {
+        .instantiateFromNib()
     }
 
-    func updateUIView(_ view: UIView, context: Context) {
-        // noop
+    func updateUIView(_ view: PrimarySectionHeaderView, context: Context) {
+        view.configure(title: title)
     }
 }
 
@@ -79,18 +76,26 @@ struct PrimarySectionHeaderView_Previews: PreviewProvider {
 
     private static func makeStack() -> some View {
         VStack {
-            PrimarySectionHeaderViewRepresentable(title: "Products")
+            PrimarySectionHeaderViewRepresentable(title: "Products Eos omnis eius")
         }
         .background(Color(UIColor.listBackground))
     }
 
-    private static var fixedLayout: PreviewLayout {
-        .fixed(width: 320, height: 80)
-    }
-
     static var previews: some View {
         Group {
-            makeStack().previewLayout(fixedLayout)
+            makeStack()
+                .previewLayout(.fixed(width: 320, height: 60))
+                .previewDisplayName("Light")
+
+            makeStack()
+                .previewLayout(.fixed(width: 320, height: 60))
+                .environment(\.colorScheme, .dark)
+                .previewDisplayName("Dark")
+
+            makeStack()
+                .previewLayout(.fixed(width: 320, height: 160))
+                .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+                .previewDisplayName("Large Font")
         }
     }
 }

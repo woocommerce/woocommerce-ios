@@ -567,7 +567,7 @@ extension OrderDetailsDataSource {
                     rows.append(.details)
                 }
 
-                return Section(title: Title.product, rightTitle: Title.quantity, rows: rows)
+                return Section(title: Title.products, rightTitle: nil, rows: rows)
             }
 
             var rows = [Row]()
@@ -589,7 +589,7 @@ extension OrderDetailsDataSource {
                 return nil
             }
 
-            return Section(title: Title.product, rightTitle: Title.quantity, rows: rows)
+            return Section(title: Title.products, rightTitle: nil, rows: rows)
         }()
 
         let refundedProducts: Section? = {
@@ -851,8 +851,7 @@ extension OrderDetailsDataSource {
     }
 
     enum Title {
-        static let product = NSLocalizedString("Product", comment: "Product section title")
-        static let quantity = NSLocalizedString("Qty", comment: "Quantity abbreviation for section title")
+        static let products = NSLocalizedString("Products", comment: "Product section title")
         static let refundedProducts = NSLocalizedString("Refunded Products", comment: "Section title")
         static let tracking = NSLocalizedString("Tracking", comment: "Order tracking section title")
         static let customerNote = NSLocalizedString("Customer Provided Note", comment: "Customer note section title")

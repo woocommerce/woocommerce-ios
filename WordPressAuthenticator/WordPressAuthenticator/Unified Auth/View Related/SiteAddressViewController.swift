@@ -20,7 +20,7 @@ final class SiteAddressViewController: LoginViewController {
         super.viewDidLoad()
 
         localizePrimaryButton()
-        registerCells()
+        registerTableViewCells()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -40,7 +40,7 @@ final class SiteAddressViewController: LoginViewController {
 
     /// Registers all of the available TableViewCells
     ///
-    func registerTableViewCells(_ tableView: UITableView) {
+    func registerTableViewCells() {
         let cells = [
             InstructionTableViewCell.self
         ]

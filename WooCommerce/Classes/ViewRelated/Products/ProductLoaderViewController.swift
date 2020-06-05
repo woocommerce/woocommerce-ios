@@ -169,7 +169,7 @@ private extension ProductLoaderViewController {
         viewController.didMove(toParent: self)
 
         // And, of course, borrow the Child's Title + right nav bar items
-        title = viewController.title
+        title = viewController.navigationItem.title
         navigationItem.rightBarButtonItems = viewController.navigationItem.rightBarButtonItems
     }
 

@@ -19,15 +19,18 @@ protocol GoogleAuthenticatorDelegate: class {
     
     // Google account login failed.
     func googleLoginFailed(errorTitle: String, errorDescription: String, loginFields: LoginFields, unknownUser: Bool)
-    
-    // Google account signup was successful.
-    func googleFinishedSignup(credentials: AuthenticatorCredentials, loginFields: LoginFields)
-
-    // Google account signup failed.
-    func googleSignupFailed(error: Error, loginFields: LoginFields)
 
     // Google account selection cancelled by user.
     func googleAuthCancelled()
+
+    // Google account signup was successful.
+    func googleFinishedSignup(credentials: AuthenticatorCredentials, loginFields: LoginFields)
+
+    // Google account signup redirected to login was successful.
+    func googleLoggedInInstead(credentials: AuthenticatorCredentials, loginFields: LoginFields)
+
+    // Google account signup failed.
+    func googleSignupFailed(error: Error, loginFields: LoginFields)
 }
 
 /// Indicate which type of authentication is initiated.
@@ -122,6 +125,23 @@ class GoogleAuthenticator: NSObject {
         requestAuthorization(from: viewController)
     }
     
+    /// Public method to create a WP account with a Google account.
+    /// - Parameters:
+    ///   - loginFields: LoginFields from the calling view controller.
+    ///                  The values are updated during the Google process,
+    ///                  and returned to the calling view controller via delegate methods.
+    func createGoogleAccount(loginFields: LoginFields) {
+        self.loginFields = loginFields
+
+        guard let user = loginFields.meta.googleUser,
+            let token = loginFields.meta.socialServiceIDToken else {
+                DDLogError("GoogleAuthenticator - createGoogleAccount: Failed to get Google account information.")
+                return
+        }
+
+        createWordPressComUser(user: user, token: token, email: loginFields.emailAddress)
+    }
+
 }
 
 // MARK: - Private Extension
@@ -169,7 +189,6 @@ private extension GoogleAuthenticator {
         static let googleConnectedError = NSLocalizedString("The Google account \"%@\" doesn't match any account on WordPress.com", comment: "Description shown when a user logs in with Google but no matching WordPress.com account is found")
         static let googleUnableToConnect = NSLocalizedString("Unable To Connect", comment: "Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com")
         static let processing = NSLocalizedString("Processing Account", comment: "Shown while the app waits for the account process to complete.")
-        static let signupFailed = NSLocalizedString("Google sign up failed.", comment: "Message shown on screen after the Google sign up process failed.")
     }
 
 }
@@ -208,12 +227,11 @@ extension GoogleAuthenticator: GIDSignInDelegate {
         loginFields.meta.socialServiceIDToken = token
         loginFields.meta.googleUser = user
 
-        SVProgressHUD.show(withStatus: LocalizedText.processing)
-
         guard authConfig.enableUnifiedGoogle else {
             // Initiate separate WP login / signup paths.
             switch authType {
             case .login:
+                SVProgressHUD.show(withStatus: LocalizedText.processing)
                 loginFacade.loginToWordPressDotCom(withSocialIDToken: token, service: SocialServiceName.google.rawValue)
             case .signup:
                 createWordPressComUser(user: user, token: token, email: email)
@@ -223,6 +241,7 @@ extension GoogleAuthenticator: GIDSignInDelegate {
         }
 
         // Initiate unified path by attempting to login first.
+        SVProgressHUD.show(withStatus: LocalizedText.processing)
         loginFacade.loginToWordPressDotCom(withSocialIDToken: token, service: SocialServiceName.google.rawValue)
     }
     
@@ -304,6 +323,7 @@ private extension GoogleAuthenticator {
     /// Creates a WordPress.com account with the associated Google User + Google Token + Google Email.
     ///
     func createWordPressComUser(user: GIDGoogleUser, token: String, email: String) {
+        SVProgressHUD.show(withStatus: LocalizedText.processing)
         let service = SignupService()
 
         service.createWPComUserWithGoogle(token: token, success: { [weak self] accountCreated, wpcomUsername, wpcomToken in
@@ -323,10 +343,6 @@ private extension GoogleAuthenticator {
             }
 
             // Existing Account
-            // When separate Google Login and Signup flows are no longer used,
-            // this 'Existing Account' handling is no longer needed since
-            // login is attempted before signup.
-
             // Sync host app
             self?.authenticationDelegate.sync(credentials: credentials) {
                 SVProgressHUD.dismiss()
@@ -334,10 +350,10 @@ private extension GoogleAuthenticator {
                 self?.logInInstead(credentials: credentials)
             }
 
-        }, failure: { [weak self] error in
-            SVProgressHUD.dismiss()
-            // Notify delegate
-            self?.signupFailed(error: error)
+            }, failure: { [weak self] error in
+                SVProgressHUD.dismiss()
+                // Notify delegate
+                self?.signupFailed(error: error)
         })
     }
     
@@ -358,6 +374,7 @@ private extension GoogleAuthenticator {
         track(.loginSocialSuccess)
 
         signupDelegate?.googleLoggedInInstead(credentials: credentials, loginFields: loginFields)
+        delegate?.googleLoggedInInstead(credentials: credentials, loginFields: loginFields)
     }
     
     func signupFailed(error: Error) {

@@ -577,7 +577,7 @@ extension OrderDetailsDataSource {
                     rows.append(.details)
                 }
 
-                return Section(title: Title.products, rightTitle: nil, rows: rows, headerStyle: .primary)
+                return Section(title: Localization.pluralizedProducts(count: items.count), rightTitle: nil, rows: rows, headerStyle: .primary)
             }
 
             var rows = [Row]()
@@ -599,7 +599,7 @@ extension OrderDetailsDataSource {
                 return nil
             }
 
-            return Section(title: Title.products, rightTitle: nil, rows: rows, headerStyle: .primary)
+            return Section(title: Localization.pluralizedProducts(count: items.count), rightTitle: nil, rows: rows, headerStyle: .primary)
         }()
 
         let refundedProducts: Section? = {
@@ -861,7 +861,8 @@ extension OrderDetailsDataSource {
     }
 
     enum Title {
-        static let products = NSLocalizedString("Products", comment: "Product section title")
+        static let products = NSLocalizedString("Products", comment: "Product section title if there is more than one product.")
+        static let product = NSLocalizedString("Product", comment: "Product section title if there is only one product.")
         static let refundedProducts = NSLocalizedString("Refunded Products", comment: "Section title")
         static let tracking = NSLocalizedString("Tracking", comment: "Order tracking section title")
         static let customerNote = NSLocalizedString("Customer Provided Note", comment: "Customer note section title")
@@ -1015,5 +1016,15 @@ extension OrderDetailsDataSource {
         static let addOrderCell = 1
         static let paymentCell = 1
         static let paidByCustomerCell = 1
+    }
+}
+
+// MARK: - Private Utils
+
+private extension OrderDetailsDataSource {
+    enum Localization {
+        static func pluralizedProducts(count: Int) -> String {
+            count > 1 ? Title.products : Title.product
+        }
     }
 }

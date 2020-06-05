@@ -68,7 +68,7 @@
                                         <rect key="frame" x="0.0" y="591" width="375" height="76"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ClH-Cn-49d" userLabel="Primary Button" customClass="NUXButton" customModule="WordPressAuthenticator" customModuleProvider="target">
-                                                <rect key="frame" x="16" y="16" width="351" height="44"/>
+                                                <rect key="frame" x="16" y="16" width="343" height="44"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="44" id="iBk-Pi-8cv"/>
                                                 </constraints>
@@ -82,8 +82,8 @@
                                         <constraints>
                                             <constraint firstAttribute="bottomMargin" secondItem="ClH-Cn-49d" secondAttribute="bottom" constant="8" id="3Ba-yg-JKx"/>
                                             <constraint firstItem="ClH-Cn-49d" firstAttribute="top" secondItem="xwA-rd-6jO" secondAttribute="topMargin" constant="8" id="GgD-0x-Aud"/>
-                                            <constraint firstItem="ClH-Cn-49d" firstAttribute="leading" secondItem="xwA-rd-6jO" secondAttribute="leadingMargin" constant="8" id="q3B-0e-EHY"/>
-                                            <constraint firstAttribute="trailingMargin" secondItem="ClH-Cn-49d" secondAttribute="trailingMargin" constant="8" id="vza-SG-HSE"/>
+                                            <constraint firstItem="ClH-Cn-49d" firstAttribute="leading" secondItem="VfW-kE-aWC" secondAttribute="leading" constant="16" id="Gkk-b0-7jz"/>
+                                            <constraint firstItem="VfW-kE-aWC" firstAttribute="trailing" secondItem="ClH-Cn-49d" secondAttribute="trailing" constant="16" id="hy1-OF-2TN"/>
                                         </constraints>
                                         <viewLayoutGuide key="safeArea" id="VfW-kE-aWC"/>
                                     </view>

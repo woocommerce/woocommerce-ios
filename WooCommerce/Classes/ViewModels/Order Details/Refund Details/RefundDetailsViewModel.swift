@@ -25,11 +25,6 @@ final class RefundDetailsViewModel {
         self.refund = refund
     }
 
-    /// Section Titles
-    ///
-    let productLeftTitle = NSLocalizedString("PRODUCT", comment: "Product section title")
-    let productRightTitle = NSLocalizedString("QTY", comment: "Quantity abbreviation for section title")
-
     /// Products from a Refund
     ///
     var products: [Product] {

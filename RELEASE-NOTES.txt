@@ -1,6 +1,7 @@
 4.5
 -----
 - [*] In Order Details, the item subtotal is now shown on the right side instead of the quantity. The quantity can still be viewed underneath the product name.
+- [*] When opening a simple product from outside of the Products tab (e.g. from Top Performers section or an order), the product name and ellipsis menu (if the Products feature switch is enabled) should be visible in the navigation bar.
  
 4.4
 -----

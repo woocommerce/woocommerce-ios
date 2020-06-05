@@ -52,3 +52,47 @@ private extension PrimarySectionHeaderView {
         static let containerViewBackgroundColor = UIColor.basicBackground
     }
 }
+
+// MARK: - Previews
+
+#if canImport(SwiftUI) && DEBUG
+
+import SwiftUI
+
+private struct PrimarySectionHeaderViewRepresentable: UIViewRepresentable {
+
+    let title: String
+
+    func makeUIView(context: Context) -> UIView {
+        let headerView: PrimarySectionHeaderView = .instantiateFromNib()
+        headerView.configure(title: title)
+        return headerView
+    }
+
+    func updateUIView(_ view: UIView, context: Context) {
+        // noop
+    }
+}
+
+@available(iOS 13.0, *)
+struct PrimarySectionHeaderView_Previews: PreviewProvider {
+
+    private static func makeStack() -> some View {
+        VStack {
+            PrimarySectionHeaderViewRepresentable(title: "Products")
+        }
+        .background(Color(UIColor.listBackground))
+    }
+
+    private static var fixedLayout: PreviewLayout {
+        .fixed(width: 320, height: 80)
+    }
+
+    static var previews: some View {
+        Group {
+            makeStack().previewLayout(fixedLayout)
+        }
+    }
+}
+
+#endif

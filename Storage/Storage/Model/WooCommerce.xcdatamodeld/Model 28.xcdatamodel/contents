@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="15702" systemVersion="19E266" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19D76" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
@@ -238,6 +238,7 @@
         <attribute name="backordersAllowed" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="backordersKey" attributeType="String"/>
         <attribute name="briefDescription" optional="YES" attributeType="String"/>
+        <attribute name="buttonText" attributeType="String" defaultValueString=""/>
         <attribute name="catalogVisibilityKey" attributeType="String"/>
         <attribute name="crossSellIDs" optional="YES" attributeType="Transformable" customClassName="[Int64]"/>
         <attribute name="dateCreated" attributeType="Date" usesScalarValueType="NO"/>
@@ -526,7 +527,7 @@
         <element name="OrderStatsV4Interval" positionX="-675" positionY="54" width="128" height="120"/>
         <element name="OrderStatsV4Totals" positionX="-519.01171875" positionY="96.5546875" width="128" height="225"/>
         <element name="OrderStatus" positionX="-675" positionY="27" width="128" height="103"/>
-        <element name="Product" positionX="-669.6796875" positionY="1015.5859375" width="128" height="973"/>
+        <element name="Product" positionX="-669.6796875" positionY="1015.5859375" width="128" height="988"/>
         <element name="ProductAttribute" positionX="-733.52734375" positionY="-73.046875" width="128" height="148"/>
         <element name="ProductCategory" positionX="-885.69921875" positionY="65.46484375" width="128" height="133"/>
         <element name="ProductDefaultAttribute" positionX="-819.42578125" positionY="224.1171875" width="145.12109375" height="103"/>

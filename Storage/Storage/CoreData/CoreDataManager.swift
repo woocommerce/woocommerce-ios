@@ -10,15 +10,18 @@ public class CoreDataManager: StorageManagerType {
     ///
     public let name: String
 
+    private let crashLogger: CrashLogger
 
     /// Designated Initializer.
     ///
     /// - Parameter name: Identifier to be used for: [database, data model, container].
+    /// - Parameter crashLogger: allows logging a message of any severity level
     ///
     /// - Important: This should *match* with your actual Data Model file!.
     ///
-    public init(name: String) {
+    public init(name: String, crashLogger: CrashLogger) {
         self.name = name
+        self.crashLogger = crashLogger
     }
 
 
@@ -37,11 +40,11 @@ public class CoreDataManager: StorageManagerType {
         container.persistentStoreDescriptions = [storeDescription]
 
         container.loadPersistentStores { [weak self] (storeDescription, error) in
-            guard let `self` = self, let error = error else {
+            guard let `self` = self, let persistentStoreLoadingError = error else {
                 return
             }
 
-            DDLogError("⛔️ [CoreDataManager] loadPersistentStore failed. Attempting to recover... \(error)")
+            DDLogError("⛔️ [CoreDataManager] loadPersistentStore failed. Attempting to recover... \(persistentStoreLoadingError)")
 
             /// Backup the old Store
             ///
@@ -49,9 +52,28 @@ public class CoreDataManager: StorageManagerType {
                 let sourceURL = self.storeURL
                 let backupURL = sourceURL.appendingPathExtension("~")
                 try FileManager.default.copyItem(at: sourceURL, to: backupURL)
-                try FileManager.default.removeItem(at: sourceURL)
             } catch {
-                fatalError("☠️ [CoreDataManager] Cannot backup Store: \(error)")
+                let message = "☠️ [CoreDataManager] Cannot backup Store: \(error)"
+                self.crashLogger.logMessageAndWait(message,
+                                                   properties: ["persistentStoreLoadingError": persistentStoreLoadingError,
+                                                                "backupError": error,
+                                                                "appState": UIApplication.shared.applicationState.rawValue],
+                                                   level: .fatal)
+                fatalError(message)
+            }
+
+            /// Remove the old Store
+            ///
+            do {
+                try FileManager.default.removeItem(at: self.storeURL)
+            } catch {
+                let message = "☠️ [CoreDataManager] Cannot remove Store: \(error)"
+                self.crashLogger.logMessageAndWait(message,
+                                                   properties: ["persistentStoreLoadingError": persistentStoreLoadingError,
+                                                                "removeStoreError": error,
+                                                                "appState": UIApplication.shared.applicationState.rawValue],
+                                                   level: .fatal)
+                fatalError(message)
             }
 
             /// Retry!
@@ -61,8 +83,19 @@ public class CoreDataManager: StorageManagerType {
                     return
                 }
 
-                fatalError("☠️ [CoreDataManager] Recovery Failed! \(error) [\(error.userInfo)]")
+                let message = "☠️ [CoreDataManager] Recovery Failed! \(error) [\(error.userInfo)]"
+                self?.crashLogger.logMessageAndWait(message,
+                                                    properties: ["persistentStoreLoadingError": persistentStoreLoadingError,
+                                                                 "retryError": error,
+                                                                 "appState": UIApplication.shared.applicationState.rawValue],
+                                                    level: .fatal)
+                fatalError(message)
             }
+
+            self.crashLogger.logMessage("[CoreDataManager] Recovered from persistent store loading error",
+                                        properties: ["persistentStoreLoadingError": persistentStoreLoadingError,
+                                                     "appState": UIApplication.shared.applicationState.rawValue],
+                                        level: .info)
         }
 
         return container

@@ -672,10 +672,18 @@
 			isa = PBXGroup;
 			children = (
 				98CF18F5248725130047B66C /* Google */,
+				CEC77C70248AB0C700FB9050 /* Reusable Views */,
 				CEC77C6524854F2E00FB9050 /* SiteAddressViewController.swift */,
 				CEC77C6724854F3E00FB9050 /* SiteAddress.storyboard */,
 			);
 			path = "View Related";
+			sourceTree = "<group>";
+		};
+		CEC77C70248AB0C700FB9050 /* Reusable Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "Reusable Views";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

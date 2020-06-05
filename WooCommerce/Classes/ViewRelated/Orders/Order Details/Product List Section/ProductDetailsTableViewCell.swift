@@ -45,6 +45,12 @@ final class ProductDetailsTableViewCell: UITableViewCell {
         configureSubtitleLabel()
         configureSelectionStyle()
     }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        findSectionTopSeparator()?.isHidden = true
+    }
 }
 
 

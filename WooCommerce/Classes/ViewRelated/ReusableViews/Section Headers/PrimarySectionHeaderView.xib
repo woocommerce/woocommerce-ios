@@ -17,7 +17,7 @@
                     <rect key="frame" x="0.0" y="14" width="433" height="104"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Iste Nihil Occaecati" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LhT-W3-uWF">
-                            <rect key="frame" x="16" y="38" width="401" height="24"/>
+                            <rect key="frame" x="16" y="16" width="401" height="88"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
@@ -25,9 +25,9 @@
                     </subviews>
                     <constraints>
                         <constraint firstAttribute="trailing" secondItem="LhT-W3-uWF" secondAttribute="trailing" constant="16" id="L9N-Cc-ugv"/>
-                        <constraint firstItem="LhT-W3-uWF" firstAttribute="top" secondItem="95D-6l-YMn" secondAttribute="topMargin" id="a7P-6Q-hnP"/>
+                        <constraint firstItem="LhT-W3-uWF" firstAttribute="top" secondItem="95D-6l-YMn" secondAttribute="top" constant="16" id="a7P-6Q-hnP"/>
                         <constraint firstItem="LhT-W3-uWF" firstAttribute="leading" secondItem="95D-6l-YMn" secondAttribute="leading" constant="16" id="yWp-Om-JcY"/>
-                        <constraint firstAttribute="bottomMargin" secondItem="LhT-W3-uWF" secondAttribute="bottom" id="zaM-cs-of8"/>
+                        <constraint firstAttribute="bottom" secondItem="LhT-W3-uWF" secondAttribute="bottom" id="zaM-cs-of8"/>
                     </constraints>
                 </view>
             </subviews>

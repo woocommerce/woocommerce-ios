@@ -29,12 +29,16 @@ final class SiteAddressViewController: LoginViewController {
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
     }
 
+    /// Localize the "Continue" button
+    ///
     func localizePrimaryButton() {
         let primaryTitle = displayStrings.continueButtonTitle
         submitButton?.setTitle(primaryTitle, for: .normal)
         submitButton?.setTitle(primaryTitle, for: .highlighted)
     }
 
+    /// Style individual ViewController backgrounds, for now.
+    ///
     override func styleBackground() {
         guard let unifiedBackgroundColor = WordPressAuthenticator.shared.unifiedStyle?.viewControllerBackgroundColor else {
             super.styleBackground()

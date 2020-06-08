@@ -136,8 +136,7 @@ extension RefundDetailsViewModel {
             let item = refund.items[indexPath.row]
             let productID = item.variationID == 0 ? item.productID : item.variationID
             let loaderViewController = ProductLoaderViewController(productID: productID,
-                                                                   siteID: refund.siteID,
-                                                                   currency: order.currency)
+                                                                   siteID: refund.siteID)
             let navController = WooNavigationController(rootViewController: loaderViewController)
             viewController.present(navController, animated: true, completion: nil)
 

@@ -177,7 +177,14 @@ end
 
 desc "Run all code generation tasks"
 task :generate do 
-  sh "./Pods/Sourcery/bin/sourcery --config CodeGeneration/Networking-Copiable.sourcery.yaml"
+  ["Networking", "Yosemite"].each { |prefix| 
+    puts "\n\nGenerating Copiable for #{prefix}..."
+    puts "=" * 100
+
+    sh "./Pods/Sourcery/bin/sourcery --config CodeGeneration/#{prefix}-Copiable.sourcery.yaml"
+  }
+
+  puts "\n\nDONE. Generated Copiable for all projects."
 end
 
 def fold(label, &block)

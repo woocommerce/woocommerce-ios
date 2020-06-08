@@ -2,6 +2,13 @@ import Aztec
 
 /// Implements Aztec's `TextViewAttachmentDelegate` without media support.
 final class AztecTextViewAttachmentHandler: TextViewAttachmentDelegate {
+    private var activeImageTasks = [ImageDownloadTask]()
+
+    deinit {
+        activeImageTasks.forEach { $0.cancel() }
+        activeImageTasks.removeAll()
+    }
+
     func textView(_ textView: TextView,
                   attachment: NSTextAttachment,
                   imageAt url: URL,
@@ -17,12 +24,15 @@ final class AztecTextViewAttachmentHandler: TextViewAttachmentDelegate {
                 }
             }
 
-            imageService.downloadImage(with: url, shouldCacheImage: true) { image, error in
+            let task = imageService.downloadImage(with: url, shouldCacheImage: true) { image, error in
                 guard let image = image else {
                     failure()
                     return
                 }
                 success(image)
+            }
+            if let task = task {
+                activeImageTasks.append(task)
             }
         default:
             return

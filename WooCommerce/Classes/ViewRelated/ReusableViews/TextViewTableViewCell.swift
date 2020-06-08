@@ -3,9 +3,10 @@ import Gridicons
 
 class TextViewTableViewCell: UITableViewCell {
 
+    @IBOutlet private weak var noteIconView: UIView!
     @IBOutlet var noteIconButton: UIButton!
 
-    @IBOutlet var noteTextView: UITextView!
+    @IBOutlet var noteTextView: EnhancedTextView!
 
     var iconImage: UIImage? {
         get {
@@ -15,6 +16,7 @@ class TextViewTableViewCell: UITableViewCell {
             noteIconButton.setImage(newValue, for: .normal)
             noteIconButton.tintColor = .listForeground
             noteIconButton.layer.cornerRadius = noteIconButton.frame.width / 2
+            noteIconView.isHidden = newValue == nil
         }
     }
 
@@ -27,8 +29,6 @@ class TextViewTableViewCell: UITableViewCell {
         }
     }
 
-    var onTextChange: ((String) -> Void)?
-
     override func awakeFromNib() {
         super.awakeFromNib()
 
@@ -39,20 +39,12 @@ class TextViewTableViewCell: UITableViewCell {
     }
 }
 
-
-extension TextViewTableViewCell: UITextViewDelegate {
-    func textViewDidChange(_ textView: UITextView) {
-        onTextChange?(noteTextView.text)
-    }
-}
-
 private extension TextViewTableViewCell {
     func configureBackground() {
         applyDefaultBackgroundStyle()
     }
 
     func configureTextView() {
-        noteTextView.delegate = self
         noteTextView.backgroundColor = .listForeground
     }
 }

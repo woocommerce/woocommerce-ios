@@ -13,4 +13,24 @@ extension NSMutableAttributedString {
             addAttributes(attributes, range: range)
         }
     }
+
+    /// Replaces the first found occurrence of `target` with the `replacement`.
+    ///
+    /// Example usage:
+    ///
+    /// ```
+    /// let attributedString = NSMutableAttributedString(string: "Hello, #{person}")
+    /// let replacement = NSAttributedString(string: "Slim Shady",
+    ///                                      attributes: [.font: UIFont.boldSystemFont(ofSize: 32)])
+    /// attributedString.replaceFirstOccurrence(of: "#{person}", with: replacement)
+    /// ```
+    ///
+    func replaceFirstOccurrence(of target: String, with replacement: NSAttributedString) {
+        guard let range = string.range(of: target) else {
+            return
+        }
+        let nsRange = NSRange(range, in: string)
+
+        replaceCharacters(in: nsRange, with: replacement)
+    }
 }

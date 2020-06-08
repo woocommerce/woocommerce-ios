@@ -19,7 +19,11 @@ public class AlamofireNetwork: Network {
     ///
     public required init(credentials: Credentials) {
         self.credentials = credentials
-        let configuration = URLSessionConfiguration.background(withIdentifier: "com.automattic.woocommerce.backgroundsession")
+
+        // A unique ID is included in the background session identifier so that the session does not get invalidated when the initializer is called multiple
+        // times (e.g. when logging in).
+        let uniqueID = UUID().uuidString
+        let configuration = URLSessionConfiguration.background(withIdentifier: "com.automattic.woocommerce.backgroundsession.\(uniqueID)")
         self.backgroundSessionManager = Alamofire.SessionManager(configuration: configuration)
     }
 
@@ -45,6 +49,23 @@ public class AlamofireNetwork: Network {
             .responseData { response in
                 completion(response.value, response.networkingError)
             }
+    }
+
+    /// Executes the specified Network Request. Upon completion, the payload will be sent back to the caller as a Data instance.
+    ///
+    /// - Important:
+    ///     - Authentication Headers will be injected, based on the Network's Credentials.
+    ///
+    /// - Parameters:
+    ///     - request: Request that should be performed.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
+        let authenticated = AuthenticatedRequest(credentials: credentials, request: request)
+
+        Alamofire.request(authenticated).responseData { response in
+            completion(response.result.toSwiftResult())
+        }
     }
 
     public func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
@@ -90,6 +111,21 @@ private extension Alamofire.DataResponse {
 
         return response.flatMap { response in
             NetworkError(from: response.statusCode)
+        }
+    }
+}
+
+// MARK: - Swift.Result Conversion
+
+private extension Alamofire.Result {
+    /// Convert this `Alamofire.Result` to a `Swift.Result`.
+    ///
+    func toSwiftResult() -> Swift.Result<Value, Error> {
+        switch self {
+        case .success(let value):
+            return .success(value)
+        case .failure(let error):
+            return .failure(error)
         }
     }
 }

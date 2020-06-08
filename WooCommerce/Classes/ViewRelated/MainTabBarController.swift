@@ -29,16 +29,14 @@ extension WooTab {
     ///
     /// - Parameters:
     ///   - visibleIndex: the index of visible tabs on the tab bar
-    ///   - isProductListFeatureOn: whether the product list feature is enabled
-    init(visibleIndex: Int,
-         isProductListFeatureOn: Bool) {
-        let tabs = WooTab.visibleTabs(isProductListFeatureOn: isProductListFeatureOn)
+    init(visibleIndex: Int) {
+        let tabs = WooTab.visibleTabs()
         self = tabs[visibleIndex]
     }
 
     /// Returns the visible tab index.
-    func visibleIndex(isProductListFeatureOn: Bool) -> Int {
-        let tabs = WooTab.visibleTabs(isProductListFeatureOn: isProductListFeatureOn)
+    func visibleIndex() -> Int {
+        let tabs = WooTab.visibleTabs()
         guard let tabIndex = tabs.firstIndex(where: { $0 == self }) else {
             assertionFailure("Trying to get the visible tab index for tab \(self) while the visible tabs are: \(tabs)")
             return 0
@@ -46,13 +44,9 @@ extension WooTab {
         return tabIndex
     }
 
-    // Note: currently all tab view controllers except for Products tab are set up in Main.storyboard.
-    private static func visibleTabs(isProductListFeatureOn: Bool) -> [WooTab] {
-        if isProductListFeatureOn {
+    // Note: currently only the Dashboard tab (My Store) view controller is set up in Main.storyboard.
+    private static func visibleTabs() -> [WooTab] {
             return [.myStore, .orders, .products, .reviews]
-        } else {
-            return [.myStore, .orders, .reviews]
-        }
     }
 }
 
@@ -78,10 +72,6 @@ final class MainTabBarController: UITabBarController {
         return StyleManager.statusBarLight
     }
 
-    /// KVO Token
-    ///
-    private var observationToken: NSKeyValueObservation?
-
     /// Notifications badge
     ///
     private let notificationsBadge = NotificationsBadgeController()
@@ -90,9 +80,10 @@ final class MainTabBarController: UITabBarController {
     ///
     private let viewModel = MainTabViewModel()
 
-    /// Products visibility
-    ///
-    private var isProductsTabVisible: Bool = false
+    private lazy var ordersTabViewController: UIViewController = {
+        let rootViewController = OrdersRootViewController()
+        return WooNavigationController(rootViewController: rootViewController)
+    }()
 
     private lazy var productsTabViewController: UIViewController = {
         let productsViewController = ProductsViewController(nibName: nil, bundle: nil)
@@ -107,11 +98,6 @@ final class MainTabBarController: UITabBarController {
         return navController
     }()
 
-    private lazy var ordersTabViewController: UIViewController = {
-        let rootViewController = OrdersRootViewController()
-        return WooNavigationController(rootViewController: rootViewController)
-    }()
-
     private lazy var reviewsTabViewController: UIViewController = {
         let rootViewController = ReviewsViewController()
         return WooNavigationController(rootViewController: rootViewController)
@@ -123,18 +109,23 @@ final class MainTabBarController: UITabBarController {
         super.viewDidLoad()
         setNeedsStatusBarAppearanceUpdate() // call this to refresh status bar changes happening at runtime
 
-        // Add the Orders and Reviews tab
+        // Add the Orders, Products and Reviews tab
         viewControllers = {
             var controllers = viewControllers ?? []
 
-            let ordersTabIndex = WooTab.orders.visibleIndex(isProductListFeatureOn: isProductsTabVisible)
+            let ordersTabIndex = WooTab.orders.visibleIndex()
             controllers.insert(ordersTabViewController, at: ordersTabIndex)
 
-            let reviewsTabIndex = WooTab.reviews.visibleIndex(isProductListFeatureOn: isProductsTabVisible)
+            let productsTabIndex = WooTab.products.visibleIndex()
+            controllers.insert(productsTabViewController, at: productsTabIndex)
+
+            let reviewsTabIndex = WooTab.reviews.visibleIndex()
             controllers.insert(reviewsTabViewController, at: reviewsTabIndex)
 
             return controllers
         }()
+
+        loadReviewsTabNotificationCountAndUpdateBadge()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -144,19 +135,16 @@ final class MainTabBarController: UITabBarController {
         /// We hook up KVO in this spot... because at the point in which `viewDidLoad` fires, we haven't really fully
         /// loaded the childViewControllers, and the tabBar isn't fully initialized.
         ///
-        startListeningToBadgeUpdatesIfNeeded()
+        startListeningToReviewsTabBadgeUpdates()
         startListeningToOrdersBadge()
-        startListeningToProductsVisibilityChanges()
-
-        reloadProductListVisibility()
     }
 
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
-        let currentlySelectedTab = WooTab(visibleIndex: selectedIndex, isProductListFeatureOn: isProductsTabVisible)
+        let currentlySelectedTab = WooTab(visibleIndex: selectedIndex)
         guard let userSelectedIndex = tabBar.items?.firstIndex(of: item) else {
                 return
         }
-        let userSelectedTab = WooTab(visibleIndex: userSelectedIndex, isProductListFeatureOn: isProductsTabVisible)
+        let userSelectedTab = WooTab(visibleIndex: userSelectedIndex)
 
         // Did we reselect the already-selected tab?
         if currentlySelectedTab == userSelectedTab {
@@ -172,7 +160,7 @@ final class MainTabBarController: UITabBarController {
     /// Switches the TabBarcController to the specified Tab
     ///
     func navigateTo(_ tab: WooTab, animated: Bool = false, completion: (() -> Void)? = nil) {
-        selectedIndex = tab.visibleIndex(isProductListFeatureOn: isProductsTabVisible)
+        selectedIndex = tab.visibleIndex()
         if let navController = selectedViewController as? UINavigationController {
             navController.popToRootViewController(animated: animated) {
                 completion?()
@@ -193,34 +181,6 @@ extension MainTabBarController: UIViewControllerTransitioningDelegate {
         }
 
         return FancyAlertPresentationController(presentedViewController: presented, presenting: presenting)
-    }
-}
-
-// MARK: - Products tab
-//
-private extension MainTabBarController {
-    func updateProductsTabVisibility(isVisible: Bool) {
-        guard let existingViewControllers = viewControllers else {
-            return
-        }
-
-        var tabViewControllers = existingViewControllers
-
-        if isVisible {
-            if !tabViewControllers.contains(productsTabViewController) {
-                let productsTabIndex = WooTab.products.visibleIndex(isProductListFeatureOn: isVisible)
-                tabViewControllers.insert(productsTabViewController, at: productsTabIndex)
-            }
-        } else {
-            if tabViewControllers.contains(productsTabViewController) {
-                let productsTabIndex = WooTab.products.visibleIndex(isProductListFeatureOn: isProductsTabVisible)
-                tabViewControllers.remove(at: productsTabIndex)
-            }
-        }
-
-        isProductsTabVisible = isVisible
-
-        viewControllers = tabViewControllers
     }
 }
 
@@ -371,28 +331,36 @@ extension MainTabBarController {
 }
 
 
-// MARK: - Tab dot madness!
+// MARK: - Reviews Tab Badge Updates
 //
 private extension MainTabBarController {
 
     /// Setup: KVO Hooks.
     ///
-    func startListeningToBadgeUpdatesIfNeeded() {
-        guard observationToken == nil else {
+    func startListeningToReviewsTabBadgeUpdates() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(loadReviewsTabNotificationCountAndUpdateBadge),
+                                               name: .reviewsBadgeReloadRequired,
+                                               object: nil)
+    }
+
+    @objc func loadReviewsTabNotificationCountAndUpdateBadge() {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
 
-        observationToken = UIApplication.shared.observe(\.applicationIconBadgeNumber, options: [.initial, .new]) {  (application, _) in
-            self.badgeCountWasUpdated(newValue: application.applicationIconBadgeNumber)
+        let action = NotificationCountAction.load(siteID: siteID, type: .kind(.comment)) { [weak self] count in
+            self?.updateReviewsTabBadge(count: count)
         }
+        ServiceLocator.stores.dispatch(action)
     }
 
-    /// Displays or Hides the Dot, depending on the new Badge Value
+    /// Displays or Hides the Dot on the Reviews tab, depending on the notification count
     ///
-    func badgeCountWasUpdated(newValue: Int) {
+    func updateReviewsTabBadge(count: Int) {
         let tab = WooTab.reviews
-        let tabIndex = tab.visibleIndex(isProductListFeatureOn: isProductsTabVisible)
-        notificationsBadge.badgeCountWasUpdated(newValue: newValue, tab: tab, in: tabBar, tabIndex: tabIndex)
+        let tabIndex = tab.visibleIndex()
+        notificationsBadge.badgeCountWasUpdated(newValue: count, tab: tab, in: tabBar, tabIndex: tabIndex)
     }
 }
 
@@ -406,7 +374,7 @@ private extension MainTabBarController {
             }
 
             let tab = WooTab.orders
-            let tabIndex = tab.visibleIndex(isProductListFeatureOn: self.isProductsTabVisible)
+            let tabIndex = tab.visibleIndex()
 
             guard let orderTab: UITabBarItem = self.tabBar.items?[tabIndex] else {
                 return
@@ -417,32 +385,5 @@ private extension MainTabBarController {
         }
 
         viewModel.startObservingOrdersCount()
-    }
-}
-
-// MARK: Products Visibility Observation
-//
-private extension MainTabBarController {
-    func startListeningToProductsVisibilityChanges() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productList) else {
-            return
-        }
-
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(reloadProductListVisibility),
-                                               name: .ProductsVisibilityDidChange,
-                                               object: nil)
-    }
-
-    @objc func reloadProductListVisibility() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productList) else {
-            updateProductsTabVisibility(isVisible: false)
-            return
-        }
-
-        let action = AppSettingsAction.loadProductsVisibility { [weak self] isVisible in
-            self?.updateProductsTabVisibility(isVisible: isVisible)
-        }
-        ServiceLocator.stores.dispatch(action)
     }
 }

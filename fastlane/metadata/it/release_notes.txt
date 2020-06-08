@@ -1,2 +1,4 @@
-- Nella bacheca, toccando un prodotto nella sezione di quelli con il migliore andamento si aprono i dettagli del prodotto.
-- La scheda degli ordini ora localizza sia le quantità degli articoli sia il badge dell'ordine.
+*Ora puoi attivare e disattivare Products M2 Features per prodotti semplici in Impostazioni > Funzionalità in fase sperimentale. Products M2 comprende la possibilità di aggiornare le immagini, la descrizione breve e la visualizzazione, la condivisione e le impostazioni del prodotto (le impostazioni del prodotto includono stato, visibilità, visibilità del catalogo, abbreviazione, nota di acquisto e ordine menu).
+*Ora puoi modificare e salvare i dettagli nella scheda Dettagli dell'ordine o I migliori esecutori. Abbiamo anche migliorato l'accessibilità con un miglior supporto VoiceOver per le impostazioni Prezzo prodotto.
+*Abbiamo fatto qualche miglioramento visivo: In Dettagli ordine, la scheda Pagamento viene ora visualizzata dopo le schede Prodotti e Prodotti rimborsati. Il banner WIP sulla scheda Prodotti è ora compresso per impostazione predefinita. Si ha più spazio verticale.
+*Abbiamo rimosso il supporto per iOS 11 e versioni precedenti.

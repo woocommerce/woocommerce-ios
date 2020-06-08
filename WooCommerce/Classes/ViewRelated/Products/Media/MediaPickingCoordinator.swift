@@ -11,13 +11,19 @@ final class MediaPickingCoordinator {
         return DeviceMediaLibraryPicker(onCompletion: onDeviceMediaLibraryPickerCompletion)
     }()
 
+    private let siteID: Int64
     private let onCameraCaptureCompletion: CameraCaptureCoordinator.Completion
     private let onDeviceMediaLibraryPickerCompletion: DeviceMediaLibraryPicker.Completion
+    private let onWPMediaPickerCompletion: WordPressMediaLibraryImagePickerViewController.Completion
 
-    init(onCameraCaptureCompletion: @escaping CameraCaptureCoordinator.Completion,
-         onDeviceMediaLibraryPickerCompletion: @escaping DeviceMediaLibraryPicker.Completion) {
+    init(siteID: Int64,
+         onCameraCaptureCompletion: @escaping CameraCaptureCoordinator.Completion,
+         onDeviceMediaLibraryPickerCompletion: @escaping DeviceMediaLibraryPicker.Completion,
+         onWPMediaPickerCompletion: @escaping WordPressMediaLibraryImagePickerViewController.Completion) {
+        self.siteID = siteID
         self.onCameraCaptureCompletion = onCameraCaptureCompletion
         self.onDeviceMediaLibraryPickerCompletion = onDeviceMediaLibraryPickerCompletion
+        self.onWPMediaPickerCompletion = onWPMediaPickerCompletion
     }
 
     func present(context: MediaPickingContext) {
@@ -50,6 +56,7 @@ private extension MediaPickingCoordinator {
         let title = NSLocalizedString("Take a photo",
                                       comment: "Menu option for taking an image or video with the device's camera.")
         return UIAlertAction(title: title, style: .default) { [weak self] action in
+            ServiceLocator.analytics.track(.productImageSettingsAddImagesSourceTapped, withProperties: ["source": "camera"])
             self?.showCameraCapture(origin: origin)
         }
     }
@@ -58,6 +65,7 @@ private extension MediaPickingCoordinator {
         let title = NSLocalizedString("Choose from device",
                                       comment: "Menu option for selecting media from the device's photo library.")
         return UIAlertAction(title: title, style: .default) { [weak self] action in
+            ServiceLocator.analytics.track(.productImageSettingsAddImagesSourceTapped, withProperties: ["source": "device"])
             self?.showDeviceMediaLibraryPicker(origin: origin)
         }
     }
@@ -66,6 +74,7 @@ private extension MediaPickingCoordinator {
         let title = NSLocalizedString("WordPress Media Library",
                                       comment: "Menu option for selecting media from the site's media library.")
         return UIAlertAction(title: title, style: .default) { [weak self] action in
+            ServiceLocator.analytics.track(.productImageSettingsAddImagesSourceTapped, withProperties: ["source": "wpmedia"])
             self?.showSiteMediaPicker(origin: origin)
         }
     }
@@ -87,6 +96,8 @@ private extension MediaPickingCoordinator {
     }
 
     func showSiteMediaPicker(origin: UIViewController) {
-        // TODO-1713: WordPress media library picker implementation
+        let wordPressMediaPickerViewController = WordPressMediaLibraryImagePickerViewController(siteID: siteID,
+                                                                                                onCompletion: onWPMediaPickerCompletion)
+        origin.present(wordPressMediaPickerViewController, animated: true)
     }
 }

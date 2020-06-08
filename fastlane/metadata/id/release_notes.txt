@@ -1,2 +1,4 @@
-- Ketuk produk di “Performa Tertinggi” di dasbor untuk detail.
-- Pelokalan jumlah item dan lencana pesanan di tab pesanan.
+* Anda kini dapat mengaktifkan/menonaktifkan Fitur Products M2 untuk produk sederhana di Pengaturan > Fitur Eksperimental. Products M2 menampilkan kemampuan untuk memperbarui gambar produk, deskripsi singkat produk, penampilan, pembagian, dan pengaturan produk (Pengaturan produk meliputi status, visibilitas, visibilitas katalog, slug, catatan pembelian, dan urutan menu.)
+* Anda kini dapat menyunting dan menyimpan detail di tab Detail pesanan atau Produk Paling Laku. Kami juga meningkatkan aksesibilitas dengan dukungan VoiceOver yang lebih baik untuk pengaturan Harga Produk.
+* Kami membuat beberapa penyempurnaan visual: Pada Detail Pesanan, kartu Pembayaran kini muncul langsung setelah kartu Produk dan Produk yang Dikembalikan. Pada pengaturan asal yang terkini, spanduk WIP di tab Produk dilenyapkan. Yey, ruang vertikalnya semakin luas!
+* Kami meniadakan dukungan untuk iOS 11 ke bawah.

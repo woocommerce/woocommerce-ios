@@ -5,7 +5,7 @@ import Yosemite
 // MARK: - BetaFeaturesViewController's Notifications
 //
 extension Notification.Name {
-    static let ProductsVisibilityDidChange = Notification.Name(rawValue: "ProductsVisibilityDidChange")
+    static let ProductsFeatureSwitchDidChange = Notification.Name(rawValue: "ProductsFeatureSwitchDidChange")
 }
 
 
@@ -194,7 +194,7 @@ private extension BetaFeaturesViewController {
 
         cell.title = title
 
-        let action = AppSettingsAction.loadProductsVisibility() { isVisible in
+        let action = AppSettingsAction.loadProductsFeatureSwitch() { isVisible in
             cell.isOn = isVisible
         }
         ServiceLocator.stores.dispatch(action)
@@ -202,8 +202,8 @@ private extension BetaFeaturesViewController {
         cell.onChange = { isSwitchOn in
             ServiceLocator.analytics.track(.settingsBetaFeaturesProductsToggled)
 
-            let action = AppSettingsAction.setProductsVisibility(isVisible: isSwitchOn) {
-                NotificationCenter.default.post(name: .ProductsVisibilityDidChange, object: self)
+            let action = AppSettingsAction.setProductsFeatureSwitch(isEnabled: isSwitchOn) {
+                NotificationCenter.default.post(name: .ProductsFeatureSwitchDidChange, object: self)
             }
             ServiceLocator.stores.dispatch(action)
         }
@@ -215,7 +215,7 @@ private extension BetaFeaturesViewController {
 
         let description: String
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts) {
-            description = NSLocalizedString("Test out the new product editing functionality as we get ready to launch",
+            description = NSLocalizedString("Test out new product editing functionalities as we get ready to launch them",
                                             comment: "My Store > Settings > Experimental features > Product editing")
         } else {
             description = NSLocalizedString("Test out the new products section as we get ready to launch",

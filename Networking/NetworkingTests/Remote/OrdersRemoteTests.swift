@@ -36,42 +36,48 @@ final class OrdersRemoteTests: XCTestCase {
         network.removeAllSimulatedResponses()
     }
 
-
     // MARK: - Load All Orders Tests
 
     /// Verifies that loadAllOrders properly parses the `orders-load-all` sample response.
     ///
-    func testLoadAllOrdersProperlyReturnsParsedOrders() {
+    func testLoadAllOrdersProperlyReturnsParsedOrders() throws {
+        // Given
         let remote = OrdersRemote(network: network)
-        let expectation = self.expectation(description: "Load All Orders")
 
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
 
-        remote.loadAllOrders(for: sampleSiteID) { orders, error in
-            XCTAssertNil(error)
-            XCTAssertNotNil(orders)
-            XCTAssert(orders!.count == 4)
-            expectation.fulfill()
+        // When
+        var result: Result<[Order], Error>?
+        waitForExpectation { expectation in
+            remote.loadAllOrders(for: sampleSiteID) { aResult in
+                result = aResult
+                expectation.fulfill()
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        let orders = try XCTUnwrap(result?.get())
+        XCTAssert(orders.count == 4)
     }
 
     /// Verifies that loadAllOrders properly relays Networking Layer errors.
     ///
-    func testLoadAllOrdersProperlyRelaysNetwokingErrors() {
+    func testLoadAllOrdersProperlyRelaysNetwokingErrors() throws {
+        // Given
         let remote = OrdersRemote(network: network)
-        let expectation = self.expectation(description: "Load All Orders")
 
-        remote.loadAllOrders(for: sampleSiteID) { orders, error in
-            XCTAssertNil(orders)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        // When
+        var result: Result<[Order], Error>?
+        waitForExpectation { expectation in
+            remote.loadAllOrders(for: sampleSiteID) { aResult in
+                result = aResult
+                expectation.fulfill()
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(try XCTUnwrap(result).isFailure)
     }
-
 
     // MARK: - Load Order Tests
 

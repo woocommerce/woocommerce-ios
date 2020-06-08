@@ -46,7 +46,7 @@ final class TopBannerView: UIView {
 
     private let isActionEnabled: Bool
 
-    private var isExpanded: Bool = true
+    private(set) var isExpanded: Bool
 
     private let onDismiss: (() -> Void)?
     private let onAction: (() -> Void)?
@@ -54,6 +54,7 @@ final class TopBannerView: UIView {
 
     init(viewModel: TopBannerViewModel) {
         isActionEnabled = viewModel.actionHandler != nil
+        isExpanded = viewModel.isExpanded
         onDismiss = viewModel.dismissHandler
         onAction = viewModel.actionHandler
         onExpandedStateChange = viewModel.expandedStateChangeHandler
@@ -86,7 +87,7 @@ private extension TopBannerView {
         infoLabel.numberOfLines = 0
 
         if isActionEnabled {
-            dismissButton.setImage(Gridicon.iconOfType(.cross, withSize: CGSize(width: 24, height: 24)), for: .normal)
+            dismissButton.setImage(UIImage.gridicon(.cross, size: CGSize(width: 24, height: 24)), for: .normal)
             dismissButton.tintColor = .textSubtle
             dismissButton.addTarget(self, action: #selector(onDismissButtonTapped), for: .touchUpInside)
 
@@ -95,7 +96,9 @@ private extension TopBannerView {
         } else {
             updateExpandCollapseState(isExpanded: isExpanded)
             expandCollapseButton.tintColor = .textSubtle
-            expandCollapseButton.addTarget(self, action: #selector(onExpandCollapseButtonTapped), for: .touchUpInside)
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(onExpandCollapseButtonTapped))
+            tapGesture.cancelsTouchesInView = false
+            contentView.addGestureRecognizer(tapGesture)
         }
     }
 

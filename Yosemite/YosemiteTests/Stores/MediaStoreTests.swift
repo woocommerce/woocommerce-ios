@@ -20,6 +20,10 @@ final class MediaStoreTests: XCTestCase {
     ///
     private let sampleSiteID: Int64 = 123
 
+    /// Testing Product ID
+    ///
+    private let sampleProductID: Int64 = 586
+
     // MARK: - Overridden Methods
 
     override func setUp() {
@@ -140,7 +144,7 @@ final class MediaStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: path, filename: "media-upload")
 
         let asset = PHAsset()
-        let action = MediaAction.uploadMedia(siteID: sampleSiteID, mediaAsset: asset) { (uploadedMedia, error) in
+        let action = MediaAction.uploadMedia(siteID: sampleSiteID, productID: sampleProductID, mediaAsset: asset) { (uploadedMedia, error) in
             XCTAssertNotNil(uploadedMedia)
             XCTAssertNil(error)
 
@@ -184,7 +188,7 @@ final class MediaStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: path, filename: "generic_error")
 
         let asset = PHAsset()
-        let action = MediaAction.uploadMedia(siteID: sampleSiteID, mediaAsset: asset) { (uploadedMedia, error) in
+        let action = MediaAction.uploadMedia(siteID: sampleSiteID, productID: sampleProductID, mediaAsset: asset) { (uploadedMedia, error) in
             XCTAssertNil(uploadedMedia)
             XCTAssertNotNil(error)
 

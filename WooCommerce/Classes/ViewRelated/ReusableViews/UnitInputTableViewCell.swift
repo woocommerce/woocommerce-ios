@@ -1,10 +1,20 @@
 import UIKit
 
 struct UnitInputViewModel {
+    enum UnitPosition {
+        case afterInput
+        case afterInputWithoutSpace
+        case beforeInput
+        case beforeInputWithoutSpace
+        case none
+    }
+
     let title: String
     let unit: String
     let value: String?
     let placeholder: String?
+    let accessibilityHint: String?
+    let unitPosition: UnitPosition
     let keyboardType: UIKeyboardType
     let inputFormatter: UnitInputFormatter
     let onInputChange: ((_ input: String?) -> Void)?
@@ -30,6 +40,7 @@ final class UnitInputTableViewCell: UITableViewCell {
         configureInputTextField()
         configureUnitLabel()
         applyDefaultBackgroundStyle()
+        configureTapGestureRecognizer()
     }
 
     func configure(viewModel: UnitInputViewModel) {
@@ -39,11 +50,42 @@ final class UnitInputTableViewCell: UITableViewCell {
         inputTextField.text = viewModel.value
         inputTextField.placeholder = viewModel.placeholder
         inputTextField.keyboardType = viewModel.keyboardType
+        accessibilityHint = viewModel.accessibilityHint
         inputFormatter = viewModel.inputFormatter
         onInputChange = viewModel.onInputChange
+
+        rearrangeInputAndUnitStackViewSubviews(using: viewModel.unitPosition)
     }
 }
 
+// MARK: - UI Updates
+//
+private extension UnitInputTableViewCell {
+    func rearrangeInputAndUnitStackViewSubviews(using position: UnitInputViewModel.UnitPosition) {
+        inputAndUnitStackView.removeAllArrangedSubviews()
+
+        switch position {
+        case .beforeInput, .beforeInputWithoutSpace:
+            inputAndUnitStackView.addArrangedSubviews([unitLabel, inputTextField])
+        case .afterInput, .afterInputWithoutSpace:
+            inputAndUnitStackView.addArrangedSubviews([inputTextField, unitLabel])
+        case .none:
+            inputAndUnitStackView.addArrangedSubviews([inputTextField])
+        }
+
+        switch position {
+        case .beforeInput, .afterInput:
+            inputAndUnitStackView.spacing = Constants.stackViewSpacing
+        case .afterInputWithoutSpace, .beforeInputWithoutSpace:
+            inputAndUnitStackView.spacing = 0
+        default:
+            break
+        }
+    }
+}
+
+// MARK: - Configurations
+//
 private extension UnitInputTableViewCell {
     func configureSelectionStyle() {
         selectionStyle = .none
@@ -51,10 +93,12 @@ private extension UnitInputTableViewCell {
 
     func configureTitleLabel() {
         titleLabel.applyBodyStyle()
+        titleLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
     }
 
     func configureInputAndUnitStackView() {
-        inputAndUnitStackView.spacing = 6
+        inputAndUnitStackView.spacing = Constants.stackViewSpacing
+        inputAndUnitStackView.distribution = .fill
     }
 
     func configureInputTextField() {
@@ -71,10 +115,31 @@ private extension UnitInputTableViewCell {
         }
         inputTextField.delegate = self
         inputTextField.addTarget(self, action: #selector(textFieldDidChange(textField:)), for: .editingChanged)
+
+        inputTextField.setContentHuggingPriority(.required, for: .horizontal)
+
+        // If auto font size adjustment is enabled, the text field does not know the appropriate width and the font size shrinks even though space is available.
+        inputTextField.adjustsFontSizeToFitWidth = false
     }
 
     func configureUnitLabel() {
         unitLabel.applyBodyStyle()
+        unitLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+        unitLabel.setContentHuggingPriority(.required, for: .horizontal)
+    }
+
+    func configureTapGestureRecognizer() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(cellTapped))
+        tapGesture.cancelsTouchesInView = false
+        addGestureRecognizer(tapGesture)
+    }
+}
+
+private extension UnitInputTableViewCell {
+    /// When the cell is tapped, the text field become the first responder
+    ///
+    @objc func cellTapped(sender: UIView) {
+        inputTextField.becomeFirstResponder()
     }
 }
 
@@ -95,5 +160,42 @@ private extension UnitInputTableViewCell {
         let formattedText = inputFormatter?.format(input: textField.text)
         textField.text = inputFormatter?.format(input: formattedText)
         onInputChange?(formattedText)
+    }
+}
+
+private extension UnitInputTableViewCell {
+    enum Constants {
+        static let stackViewSpacing: CGFloat = 6
+    }
+}
+
+// MARK: - Accessibility config
+//
+extension UnitInputTableViewCell {
+
+    /// Make this the accessibile element. Do not allow text field to be accessible right away.
+    override  var isAccessibilityElement: Bool {
+        get {
+            true
+        }
+        set { }
+    }
+
+    override var accessibilityLabel: String? {
+        get {
+            titleLabel.text
+        }
+        set { }
+    }
+
+    override var accessibilityValue: String? {
+        get {
+            if inputTextField.text?.isEmpty ?? true {
+                return NSLocalizedString("Empty", comment: "Accessibility text for Unit Input cell")
+            } else {
+                return (inputTextField.text ?? "") + " " + (unitLabel.text ?? "")
+            }
+        }
+        set { }
     }
 }

@@ -9,7 +9,10 @@ protocol SyncingCoordinatorDelegate: class {
     /// The receiver is expected to synchronize the pageNumber. On completion, it should indicate if the sync was
     /// successful or not.
     ///
-    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?)
+    /// - Parameter reason: A value passed from `resynchronize` or `synchronizeFirstPage`. This can
+    ///                     be used to decide how to perform the sync.
+    ///
+    func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: ((Bool) -> Void)?)
 }
 
 
@@ -92,15 +95,23 @@ class SyncingCoordinator {
 
     /// Resets Internal State + (RE)synchronizes the first page in the collection.
     ///
-    func resynchronize(onCompletion: (() -> Void)? = nil) {
+    /// - Parameter reason: A value passed back to the `delegate`. This can be used to provide
+    ///                     additional information for the `delegate` and is not used internally
+    ///                     by `SyncCoordinator`.
+    ///
+    func resynchronize(reason: String? = nil, onCompletion: (() -> Void)? = nil) {
         resetInternalState()
-        synchronizeFirstPage(onCompletion: onCompletion)
+        synchronizeFirstPage(reason: reason, onCompletion: onCompletion)
     }
 
     /// Synchronizes the First Page in the collection.
     ///
-    func synchronizeFirstPage(onCompletion: (() -> Void)? = nil) {
-        synchronize(pageNumber: pageFirstIndex, onCompletion: onCompletion)
+    /// - Parameter reason: A value passed back to the `delegate`. This can be used to provide
+    ///                     additional information for the `delegate` and is not used internally
+    ///                     by `SyncCoordinator`.
+    ///
+    func synchronizeFirstPage(reason: String? = nil, onCompletion: (() -> Void)? = nil) {
+        synchronize(pageNumber: pageFirstIndex, reason: reason, onCompletion: onCompletion)
     }
 }
 
@@ -111,14 +122,14 @@ private extension SyncingCoordinator {
 
     /// Synchronizes a given Page Number
     ///
-    func synchronize(pageNumber: Int, onCompletion: (() -> Void)? = nil) {
+    func synchronize(pageNumber: Int, reason: String? = nil, onCompletion: (() -> Void)? = nil) {
         guard let delegate = delegate else {
             fatalError()
         }
 
         markAsBeingSynced(pageNumber: pageNumber)
 
-        delegate.sync(pageNumber: pageNumber, pageSize: pageSize) { success in
+        delegate.sync(pageNumber: pageNumber, pageSize: pageSize, reason: reason) { success in
             if success {
                 self.markAsUpdated(pageNumber: pageNumber)
             }

@@ -1,8 +1,14 @@
 import UIKit
 
 /// Observes the keyboard frame and notifies its subscriber.
-struct KeyboardFrameObserver {
+final class KeyboardFrameObserver {
     private let onKeyboardFrameUpdate: OnKeyboardFrameUpdate
+
+    /// Provides the last known keyboard state.
+    ///
+    /// This will only be used for sending an initial event.
+    ///
+    private let keyboardStateProvider: KeyboardStateProviding
 
     /// Notifies the closure owner about any keyboard frame change.
     /// Note that the frame is based on the keyboard window coordinate.
@@ -19,36 +25,43 @@ struct KeyboardFrameObserver {
     }
 
     init(notificationCenter: NotificationCenter = NotificationCenter.default,
+         keyboardStateProvider: KeyboardStateProviding = ServiceLocator.keyboardStateProvider,
          onKeyboardFrameUpdate: @escaping OnKeyboardFrameUpdate) {
         self.notificationCenter = notificationCenter
+        self.keyboardStateProvider = keyboardStateProvider
         self.onKeyboardFrameUpdate = onKeyboardFrameUpdate
     }
 
-    mutating func startObservingKeyboardFrame() {
-        var observer = self
-        notificationCenter.addObserver(forName: UIResponder.keyboardWillShowNotification,
-                                       object: nil,
-                                       queue: nil) { notification in
-                                        observer.keyboardWillShow(notification)
-        }
+    /// Start observing for keyboard notifications and notify subscribers when they arrive.
+    ///
+    /// - Parameter sendInitialEvent: If true, the subscriber will be immediately notified
+    ///                               using the last known keyboard frame.
+    func startObservingKeyboardFrame(sendInitialEvent: Bool = false) {
+        notificationCenter.addObserver(self,
+                                       selector: #selector(keyboardWillShow(_:)),
+                                       name: UIResponder.keyboardWillShowNotification,
+                                       object: nil)
 
-        notificationCenter.addObserver(forName: UIResponder.keyboardWillHideNotification,
-                                       object: nil,
-                                       queue: nil) { notification in
-                                        observer.keyboardWillHide(notification)
+        notificationCenter.addObserver(self,
+                                       selector: #selector(keyboardWillHide(_:)),
+                                       name: UIResponder.keyboardWillHideNotification,
+                                       object: nil)
+
+        if sendInitialEvent {
+            keyboardFrame = keyboardStateProvider.state.frameEnd
         }
     }
 }
 
 private extension KeyboardFrameObserver {
-    mutating func keyboardWillShow(_ notification: Foundation.Notification) {
+    @objc func keyboardWillShow(_ notification: Foundation.Notification) {
         guard let keyboardFrame = keyboardRect(from: notification) else {
             return
         }
         self.keyboardFrame = keyboardFrame
     }
 
-    mutating func keyboardWillHide(_ notification: Foundation.Notification) {
+    @objc func keyboardWillHide(_ notification: Foundation.Notification) {
         self.keyboardFrame = .zero
     }
 }

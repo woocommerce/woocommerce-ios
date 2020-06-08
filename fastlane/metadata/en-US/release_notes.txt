@@ -1,2 +1,4 @@
-- In the dashboard, tapping on a product in the “Top Performers” section opens the product detail.
-- The orders tab now localizes both item quantities and the order badge.
+* You can now turn Products M2 Features on and off for simple products in Settings > Experimental Features. Products M2 features the ability to update product images, product short description, product viewing, sharing, and settings (Product settings include status, visibility, catalog visibility, slug, purchase note, and menu order.)
+* You can now edit and save details on the Order details or Top Performers tabs. We’ve also improved accessibility with better VoiceOver support for Product Price settings.
+* We’ve made some visual refinements: In Order Details, the Payment card now appears right after the Products and Refunded Products cards. The WIP banner on the Products tab is now collapsed by default. Yay for more vertical space!
+* We’ve dropped support for iOS 11 and lower.

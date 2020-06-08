@@ -16,7 +16,14 @@ public enum ProductAction: Action {
 
     /// Synchronizes the Products matching the specified criteria.
     ///
-    case synchronizeProducts(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)
+    case synchronizeProducts(siteID: Int64,
+        pageNumber: Int,
+        pageSize: Int,
+        stockStatus: ProductStockStatus?,
+        productStatus: ProductStatus?,
+        productType: ProductType?,
+        sortOrder: ProductsSortOrder,
+        onCompletion: (Error?) -> Void)
 
     /// Retrieves the specified Product.
     ///

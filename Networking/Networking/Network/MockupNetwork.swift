@@ -52,19 +52,33 @@ class MockupNetwork: Network {
     /// Otherwise, an error will be relayed back (.notFound!).
     ///
     func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
+        responseData(for: request) { result in
+            switch result {
+            case .success(let data):
+                completion(data, nil)
+            case .failure(let error):
+                completion(nil, error)
+            }
+        }
+    }
+
+    /// Whenever the Request's URL matches any of the "Mocked Up Patterns", we'll return the
+    /// specified response file, loaded as *Data*. Otherwise, an error will be relayed back (.notFound!).
+    ///
+    func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
         requestsForResponseData.append(request)
 
         if let error = error(for: request) {
-            completion(nil, error)
+            completion(.failure(error))
             return
         }
 
         guard let name = filename(for: request), let data = Loader.contentsOf(name) else {
-            completion(nil, NetworkError.notFound)
+            completion(.failure(NetworkError.notFound))
             return
         }
 
-        completion(data, nil)
+        completion(.success(data))
     }
 
     func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
@@ -132,8 +146,8 @@ private extension MockupNetwork {
     func filename(for request: URLRequestConvertible) -> String? {
         let searchPath = path(for: request)
         if useResponseQueue {
-            if var queue = responseQueue.filter({ searchPath.hasSuffix($0.key) }).first?.value {
-                return queue.dequeue()
+            if let keyAndQueue = responseQueue.first(where: { searchPath.hasSuffix($0.key) }) {
+                return responseQueue[keyAndQueue.key]?.dequeue()
             }
         } else {
             if let filename = responseMap.filter({ searchPath.hasSuffix($0.key) }).first?.value {

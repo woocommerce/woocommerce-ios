@@ -5,8 +5,6 @@
 /// It reads and writes the data from and to an object in memory.
 ///
 final class MockInMemoryStorage: FileStorage {
-    private let loader = PListFileStorage()
-
     /// A boolean value to test if a write to disk is requested
     ///
     var dataWriteIsHit: Bool = false
@@ -15,21 +13,28 @@ final class MockInMemoryStorage: FileStorage {
     ///
     var deleteIsHit: Bool = false
 
-    private var data: Data?
+    private(set) var data: Codable?
 
-    func data(for fileURL: URL) throws -> Data {
-        guard let data = data else {
-            throw AppSettingsStoreErrors.deletePreselectedProvider
+    func data<T>(for fileURL: URL) throws -> T where T: Decodable {
+        guard let data = data as? T else {
+            throw Error.readFailed
         }
         return data
     }
 
-    func write(_ data: Data, to fileURL: URL) throws {
-        self.data = data
+    func write<T>(_ data: T, to fileURL: URL) throws where T: Encodable {
+        self.data = data as? Codable
+        dataWriteIsHit = true
     }
 
     func deleteFile(at fileURL: URL) throws {
         data = nil
         deleteIsHit = true
+    }
+}
+
+extension MockInMemoryStorage {
+    enum Error: Swift.Error {
+        case readFailed
     }
 }

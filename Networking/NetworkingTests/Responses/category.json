@@ -1,0 +1,35 @@
+{
+    "data":
+    {
+        "id": 104,
+        "name": "Dress",
+        "slug": "Shirt",
+        "parent": 0,
+        "description": "",
+        "display": "default",
+        "image": {
+            "id": 1310,
+            "date_created": "2018-08-28T13:09:22",
+            "date_created_gmt": "2018-08-28T17:09:22",
+            "date_modified": "2018-08-28T13:09:22",
+            "date_modified_gmt": "2018-08-28T17:09:22",
+            "src": "https://some-website.com/2018.jpg",
+            "name": "2018",
+            "alt": ""
+        },
+        "menu_order": 0,
+        "count": 1,
+        "_links": {
+            "self": [
+                {
+                    "href": "https://some-website.com/products/categories/104"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://some-website.com/products/categories"
+                }
+            ]
+        }
+    }
+}

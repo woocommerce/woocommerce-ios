@@ -1,6 +1,4 @@
 import Foundation
-import Alamofire
-
 
 /// Order: Remote Endpoints
 ///
@@ -11,21 +9,34 @@ public class OrdersRemote: Remote {
     /// - Parameters:
     ///     - siteID: Site for which we'll fetch remote orders.
     ///     - status: Filters the Orders by the specified Status, if any.
+    ///     - before: If given, exclude orders created before this date/time. Passing a local date is fine. This
+    ///               method will convert it to UTC ISO 8601 before calling the REST API.
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of Orders to be retrieved per page.
     ///     - completion: Closure to be executed upon completion.
     ///
     public func loadAllOrders(for siteID: Int64,
                               statusKey: String? = nil,
+                              before: Date? = nil,
                               pageNumber: Int = Defaults.pageNumber,
                               pageSize: Int = Defaults.pageSize,
-                              completion: @escaping ([Order]?, Error?) -> Void) {
-        let parameters = [
-            ParameterKeys.page: String(pageNumber),
-            ParameterKeys.perPage: String(pageSize),
-            ParameterKeys.statusKey: statusKey ?? Defaults.statusAny,
-            ParameterKeys.fields: ParameterValues.fieldValues
-        ]
+                              completion: @escaping (Result<[Order], Error>) -> Void) {
+        let utcDateFormatter = DateFormatter.Defaults.iso8601
+
+        let parameters: [String: Any] = {
+            var parameters = [
+                ParameterKeys.page: String(pageNumber),
+                ParameterKeys.perPage: String(pageSize),
+                ParameterKeys.statusKey: statusKey ?? Defaults.statusAny,
+                ParameterKeys.fields: ParameterValues.fieldValues,
+            ]
+
+            if let before = before {
+                parameters[ParameterKeys.before] = utcDateFormatter.string(from: before)
+            }
+
+            return parameters
+        }()
 
         let path = Constants.ordersPath
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
@@ -177,6 +188,7 @@ public extension OrdersRemote {
         static let perPage: String          = "per_page"
         static let statusKey: String        = "status"
         static let fields: String           = "_fields"
+        static let before: String           = "before"
     }
 
     enum ParameterValues {

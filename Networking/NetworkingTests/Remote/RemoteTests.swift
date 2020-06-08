@@ -1,5 +1,5 @@
 import XCTest
-import Alamofire
+
 @testable import Networking
 
 
@@ -40,6 +40,32 @@ class RemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that `enqueue:mapper:` with `Result` callback properly wraps up the received
+    /// request within an AuthenticatedRequest, with the remote credentials.
+    ///
+    func testEnqueueWithResultProperlyWrapsUpDataRequestsIntoAuthenticatedRequestWithCredentials() throws {
+        // Given
+        let network = MockupNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+
+        // When
+        var result: Result<Any, Error>?
+        waitForExpectation { expectation in
+            remote.enqueue(request, mapper: mapper) { aResult in
+                result = aResult
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        let receivedRequest = try XCTUnwrap(network.requestsForResponseData.first as? JetpackRequest)
+
+        XCTAssertTrue(try XCTUnwrap(result).isFailure)
+        XCTAssert(network.requestsForResponseData.count == 1)
+        XCTAssertEqual(receivedRequest.method, request.method)
+        XCTAssertEqual(receivedRequest.path, request.path)
+    }
 
     /// Verifies that `enqueue:mapper:` relays any received payload over to the Mapper.
     ///
@@ -61,6 +87,27 @@ class RemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that `enqueue:mapper:` with `Result` callback relays any received payload over to the Mapper.
+    ///
+    func testEnqueueWithMapperAndResultCallbackProperlyRelaysReceivedPayloadToMapper() {
+        // Given
+        let network = MockupNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "something", filename: "order")
+
+        // When
+        waitForExpectation { expectation in
+            remote.enqueue(request, mapper: mapper) { _ in
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertEqual(mapper.input, Loader.contentsOf("order"))
+        XCTAssertNotNil(mapper.input)
+    }
 
     /// Verifies that `enqueue:` posts a `RemoteDidReceiveJetpackTimeoutError` Notification whenever the backend returns a
     /// Request Timeout error.
@@ -83,7 +130,6 @@ class RemoteTests: XCTestCase {
         wait(for: [expectationForNotification, expectationForRequest], timeout: Constants.expectationTimeout)
     }
 
-
     /// Verifies that `enqueue:mapper:` posts a `RemoteDidReceiveJetpackTimeoutError` Notification whenever the backend returns a
     /// Request Timeout error.
     ///
@@ -104,7 +150,34 @@ class RemoteTests: XCTestCase {
         }
 
         wait(for: [expectationForNotification, expectationForRequest], timeout: Constants.expectationTimeout)
+    }
 
+    /// Verifies that `enqueue:mapper:` (with `Result`) posts a `RemoteDidReceiveJetpackTimeoutError`
+    /// Notification whenever the backend returns a Request Timeout error.
+    ///
+    func testEnqueueRequestWithResultWithMapperPostsJetpackTimeoutNotificationWhenTheResponseContainsTimeoutError() throws {
+        // Given
+        let network = MockupNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "something", filename: "timeout_error")
+
+        // When
+        let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJetpackTimeoutError, object: nil, handler: nil)
+        let expectationForRequest = expectation(description: "Request")
+
+        var result: Result<Any, Error>?
+        remote.enqueue(request, mapper: mapper) { aResult in
+            result = aResult
+            expectationForRequest.fulfill()
+        }
+
+        wait(for: [expectationForNotification, expectationForRequest], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(result).isFailure)
+        XCTAssertTrue(try XCTUnwrap(result?.failure) is DotcomError)
     }
 }
 

@@ -7,7 +7,7 @@ private extension ProductFormSection.SettingsRow.ViewModel {
                                                            text: details,
                                                            image: icon,
                                                            imageTintColor: .textSubtle,
-                                                           numberOfLinesForText: 0)
+                                                           numberOfLinesForText: numberOfLinesForDetails)
     }
 }
 
@@ -16,6 +16,7 @@ private extension ProductFormSection.SettingsRow.ViewModel {
 final class ProductFormTableViewDataSource: NSObject {
     private let viewModel: ProductFormTableViewModel
     private let canEditImages: Bool
+    private var onNameChange: ((_ name: String?) -> Void)?
     private var onAddImage: (() -> Void)?
 
     private let productImageStatuses: [ProductImageStatus]
@@ -24,7 +25,7 @@ final class ProductFormTableViewDataSource: NSObject {
     init(viewModel: ProductFormTableViewModel,
          productImageStatuses: [ProductImageStatus],
          productUIImageLoader: ProductUIImageLoader,
-         canEditImages: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease2)) {
+         canEditImages: Bool) {
         self.viewModel = viewModel
         self.canEditImages = canEditImages
         self.productImageStatuses = productImageStatuses
@@ -32,7 +33,8 @@ final class ProductFormTableViewDataSource: NSObject {
         super.init()
     }
 
-    func configureActions(onAddImage: @escaping () -> Void) {
+    func configureActions(onNameChange: ((_ name: String?) -> Void)?, onAddImage: @escaping () -> Void) {
+        self.onNameChange = onNameChange
         self.onAddImage = onAddImage
     }
 }
@@ -109,29 +111,26 @@ private extension ProductFormTableViewDataSource {
             // TODO: open image detail
         }
         cell.onAddImage = { [weak self] in
+            ServiceLocator.analytics.track(.productDetailAddImageTapped)
             self?.onAddImage?()
         }
     }
 
     func configureName(cell: UITableViewCell, name: String?) {
-        if let name = name, name.isEmpty == false {
-            guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {
-                fatalError()
-            }
-            let title = NSLocalizedString("Title",
-                                          comment: "Title in the Product Title row on Product form screen when the description is non-empty.")
-            let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: title, text: name)
-            cell.updateUI(viewModel: viewModel)
-        } else {
-            guard let cell = cell as? BasicTableViewCell else {
-                fatalError()
-            }
-            let placeholder = NSLocalizedString("Title (required)", comment: "Placeholder in the Product Title row on Product form screen.")
-            cell.textLabel?.text = placeholder
-            cell.textLabel?.applyBodyStyle()
-            cell.textLabel?.textColor = .textSubtle
+        guard let cell = cell as? TextFieldTableViewCell else {
+            fatalError()
         }
-        cell.accessoryType = .disclosureIndicator
+
+        cell.accessoryType = .none
+
+        let placeholder = NSLocalizedString("Title", comment: "Placeholder in the Product Title row on Product form screen.")
+
+        let viewModel = TextFieldTableViewCell.ViewModel(text: name, placeholder: placeholder, onTextChange: { [weak self] newName in
+            self?.onNameChange?(newName)
+            }, onTextDidBeginEditing: {
+                ServiceLocator.analytics.track(.productDetailViewProductNameTapped)
+        }, inputFormatter: nil, keyboardType: .default)
+        cell.configure(viewModel: viewModel)
     }
 
     func configureDescription(cell: UITableViewCell, description: String?) {
@@ -164,7 +163,8 @@ private extension ProductFormTableViewDataSource {
             fatalError()
         }
         switch row {
-        case .price(let viewModel), .inventory(let viewModel), .shipping(let viewModel), .briefDescription(let viewModel):
+        case .price(let viewModel), .inventory(let viewModel), .shipping(let viewModel), .categories(let viewModel),
+             .briefDescription(let viewModel):
             configureSettings(cell: cell, viewModel: viewModel)
         }
     }

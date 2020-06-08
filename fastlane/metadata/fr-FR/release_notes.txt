@@ -1,2 +1,4 @@
-- Dans le tableau de bord, taper sur un produit dans la section « Meilleures performances » ouvre le détail du produit.
-- L’onglet Commandes localise désormais les quantités d’éléments et le badge de commande.
+* Vous pouvez désormais activer/désactiver les fonctionnalités Produits M2 des produits simples sous Réglages > Fonctionnalités expérimentales. Produits M2 permet de mettre à jour divers éléments : images, description courte, affichage, partage et réglages des produits (état, visibilité, visibilité du catalogue, identifiant, note d'achat et ordre du menu.)
+* Vous pouvez désormais modifier et enregistrer les détails dans l'onglet Détails de la commande ou Produits les plus performants. Nous avons également optimisé l'accessibilité grâce à une meilleure prise en charge de VoiceOver dans les réglages du prix du produit.
+* Nous avons apporté des améliorations visuelles : Dans Détails de la commande, la carte de paiement apparaît désormais à droite après les cartes Produits et Produits remboursés. La bannière WIP de l'onglet Produits est désormais réduite par défaut. Vous disposez ainsi de davantage d'espace vertical !
+* Nous avons abandonné la prise en charge d'iOS 11 et versions inférieures.

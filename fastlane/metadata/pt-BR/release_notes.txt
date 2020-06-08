@@ -1,2 +1,4 @@
-- Tocar em um produto na seção “Melhores desempenhos” no painel abre os detalhes do produto.
-- A guia Pedidos agora localiza tanto a quantidade de itens quanto o selo do pedido.
+* Ative ou desative funcionalidades M2 de produtos simples em Configurações > Recursos experimentais. Elas permitem atualizar imagens, descrição breve, exibição, compartilhamento e configurações do produto (incluindo status, visibilidade do produto e do catálogo, slug, observação de compra e ordem do menu).
+* Edite e salve detalhes nas guias Detalhes do pedido ou Melhores desempenhos. Aprimoramos a acessibilidade com melhor suporte do VoiceOver para configurações de preço.
+* Refinamentos visuais: Em Detalhes do pedido, o cartão Pagamento é exibido logo após Produtos e Produtos reembolsados. O banner WIP na guia Produtos é recolhido por padrão. Mais espaço vertical!
+* Desativamos o suporte para iOS 11 e anteriores.

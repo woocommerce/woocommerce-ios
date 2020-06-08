@@ -141,6 +141,19 @@ extension NSManagedObjectContext: StorageType {
         }
     }
 
+    /// Create an `NSFetchedResultsController` using this `NSManagedObjectContext`.
+    ///
+    public func createFetchedResultsController<ResultType>(fetchRequest: NSFetchRequest<ResultType>,
+                                                           sectionNameKeyPath: String?,
+                                                           cacheName: String?) -> NSFetchedResultsController<ResultType> {
+        NSFetchedResultsController(
+                fetchRequest: fetchRequest,
+                managedObjectContext: self,
+                sectionNameKeyPath: sectionNameKeyPath,
+                cacheName: cacheName
+        )
+    }
+
     /// Loads the collection of entities that match with a given Fetch Request
     ///
     private func loadObjects<T: Object>(ofType type: T.Type, with request: NSFetchRequest<NSFetchRequestResult>) -> [T] {

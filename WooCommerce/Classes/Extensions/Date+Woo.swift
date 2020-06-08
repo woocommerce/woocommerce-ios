@@ -57,15 +57,42 @@ extension Date {
         return Strings.presentDeicticExpression
     }
 
-    /// Gets today's date and returns tomorrow's date, starting at midnight.
+    /// Returns the next midnight starting from `self`.
     ///
-    static func tomorrow() -> Date? {
-        var dayComponent = DateComponents()
-        dayComponent.day = 1
-        let calendar = Calendar.current
-        let today = Date()
+    /// For example, if `self` is 2020-01-03 00:41:09, the returned value will be 2020-01-04 00:00:00.
+    ///
+    /// Returns `nil` if `self` (Date) could not be calculated for some reason. ¯\_(ツ)_/¯
+    ///
+    func nextMidnight(using calendar: Calendar = .current) -> Date? {
+        guard let tomorrowWithTime = calendar.date(byAdding: .day, value: 1, to: self) else {
+            return nil
+        }
 
-        return calendar.date(byAdding: dayComponent, to: today)
+        let components = DateComponents(
+            calendar: calendar,
+            year: calendar.component(.year, from: tomorrowWithTime),
+            month: calendar.component(.month, from: tomorrowWithTime),
+            day: calendar.component(.day, from: tomorrowWithTime),
+            hour: 0,
+            minute: 0,
+            second: 0
+        )
+
+        return calendar.date(from: components)
+    }
+
+    /// Returns `self` plus the given `days` and `seconds` arguments.
+    ///
+    /// This is generally used for testing. Feel free to add more arguments if needed.
+    ///
+    func adding(days: Int = 0, seconds: Int = 0, using calendar: Calendar = .current) -> Date? {
+        let components = DateComponents(
+            calendar: calendar,
+            day: days,
+            second: seconds
+        )
+
+        return calendar.date(byAdding: components, to: self)
     }
 
     /// Returns `true` if `self` is in the same year as `other`.
@@ -78,6 +105,12 @@ extension Date {
         }
 
         return selfYear == otherYear
+    }
+
+    /// Returns `true` if `self` is in the same day as `other`.
+    ///
+    func isSameDay(as other: Date, using calendar: Calendar = .current) -> Bool {
+        calendar.isDate(self, inSameDayAs: other)
     }
 }
 

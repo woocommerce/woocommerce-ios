@@ -1,2 +1,4 @@
-- Panoda "En İyiler" bölümündeki bir ürüne dokunulduğunda ürün ayrıntıları açılır.
-- Siparişler sekmesinde artık hem öğe adedi hem sipariş rozeti yerelleştirilmiştir.
+* Artık Ayarlar > Deneysel Özellikler’de basit ürünler için Ürünler M2 Özelliklerini açıp kapatabilirsiniz. Ürünler M2; ürün görüntülerini, ürün kısa açıklamasını, ürün görüntülemeyi, paylaşmayı ve ayarları (Ürün ayarları durum, görünürlük, katalog görünürlüğü, kısaltma, satın alma notu ve menü sırasını içerir) güncelleme imkanı sunar.
+* Artık Sipariş ayrıntıları veya En İyiler sekmelerinde ayrıntıları düzenleyebilir ve kaydedebilirsiniz. Ayrıca Ürün Fiyatı ayarları için daha iyi VoiceOver desteğiyle erişilebilirliği güncelledik.
+* Bazı görsel iyileştirmeler yaptık: Sipariş Ayrıntıları ekranında Ödeme kartı artık Ürünler ve İade Edilen Ürünler kartlarının hemen ardından görünüyor. Ürünler sekmesindeki Çalışma Devam Ediyor banner’ı artık varsayılan olarak daraltılmış durumda. Yaşasın daha fazla dikey alan!
+* iOS 11 ve daha düşük sürümler için desteği bıraktık.

@@ -13,7 +13,10 @@ def get_required_env(key)
   ENV[key]
 end
 
-before_all do
+before_all do |lane|
+  # Skip these checks/steps for test lane (not needed for testing)
+  next if lane == :test_without_building
+
   # Check that the env files exist
   unless is_ci || File.file?(USER_ENV_FILE_PATH)
     UI.user_error!("~/.wcios-env.default not found: Please copy env/user.env-example to #{USER_ENV_FILE_PATH} and fill in the values")
@@ -67,7 +70,7 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
     setfrozentag(repository:GHHELPER_REPO, milestone: new_version)
 
     ios_localize_project()
-    ios_tag_build()
+    
     get_prs_list(repository:GHHELPER_REPO, start_tag:"#{old_version}", report_path:"#{File.expand_path('~')}/wcios_prs_list_#{old_version}_#{new_version}.txt")
   end
 
@@ -132,7 +135,7 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
   #####################################################################################
   # new_hotfix_release
   # -----------------------------------------------------------------------------------
-  # This lane updates the release branch for a new hotix release. 
+  # This lane creates the release branch for a new hotfix release. 
   # -----------------------------------------------------------------------------------
   # Usage:
   # bundle exec fastlane new_hotfix_release [skip_confirm:<skip confirm>] [version:<version>]
@@ -145,6 +148,22 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
   lane :new_hotfix_release do | options |
     prev_ver = ios_hotfix_prechecks(options)
     ios_bump_version_hotfix(previous_version: prev_ver, version: options[:version])
+  end
+
+  #####################################################################################
+  # finalize_hotfix_release
+  # -----------------------------------------------------------------------------------
+  # This lane finalizes the hotfix branch. 
+  # -----------------------------------------------------------------------------------
+  # Usage:
+  # bundle exec fastlane finalize_hotfix_release [skip_confirm:<skip confirm>]
+  #
+  # Example:
+  # bundle exec fastlane finalize_hotfix_release skip_confirm:true  
+  #####################################################################################
+  desc "Creates a new hotfix branch from the given tag"
+  lane :finalize_hotfix_release do | options |
+    ios_finalize_prechecks(options)
     ios_tag_build()
   end
 
@@ -182,7 +201,7 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
   # This lane builds the app and upload it for distribution 
   # -----------------------------------------------------------------------------------
   # Usage:
-  # bundle exec fastlane build_and_upload_release [skip_confirm:<skip confirm>]
+  # bundle exec fastlane build_and_upload_release [skip_confirm:<skip confirm>] [create_gh_release:<create release on GH>]
   #
   # Example:
   # bundle exec fastlane build_and_upload_release 
@@ -190,11 +209,14 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
   #####################################################################################
   desc "Builds and updates for distribution"
   lane :build_and_upload_release do | options |
+    final_tag = (is_ci() == true) ? ios_validate_ci_build() : false
+    create_release = (final_tag && is_ci()) || options[:create_gh_release]
+
     ios_build_prechecks(skip_confirm: options[:skip_confirm], 
       internal: false,
       external: true)
     ios_build_preflight()
-    build_and_upload_itc(skip_prechecks: true, skip_confirm: options[:skip_confirm])
+    build_and_upload_itc(skip_prechecks: true, skip_confirm: options[:skip_confirm], create_release: create_release)
   end
 
   #####################################################################################
@@ -203,13 +225,14 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
   # This lane builds the app and upload it for external distribution  
   # -----------------------------------------------------------------------------------
   # Usage:
-  # bundle exec fastlane build_and_upload_itc [skip_confirm:<skip confirm>]
+  # bundle exec fastlane build_and_upload_itc [skip_confirm:<skip confirm>] [create_release:<Create release on GH> ]
   #
   # Example:
   # bundle exec fastlane build_and_upload_itc 
   # bundle exec fastlane build_and_upload_itc skip_confirm:true 
+  # bundle exec fastlane build_and_upload_itc create_release:true 
   #####################################################################################
-  desc "Builds and updates for distribution"
+  desc "Builds and uploads for distribution"
   lane :build_and_upload_itc do | options |
     ios_build_prechecks(skip_confirm: options[:skip_confirm], external: true) unless (options[:skip_prechecks])
     ios_build_preflight() unless (options[:skip_prechecks])
@@ -233,6 +256,20 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
       dsym_path: "./WooCommerce.app.dSYM.zip",
     )
     sh("cd .. && rm WooCommerce.app.dSYM.zip")
+
+    if (options[:create_release])
+      archive_zip_path = File.dirname(Dir.pwd) + "/WooCommerce.xarchive.zip"
+      zip(path: lane_context[SharedValues::XCODEBUILD_ARCHIVE], output_path: archive_zip_path)
+
+      version = ios_get_app_version()
+      create_release(repository:GHHELPER_REPO, 
+        version: version, 
+        release_notes_file_path:'./WooCommerce/Resources/release_notes.txt',
+        release_assets:"#{archive_zip_path}"
+      )
+
+      sh("rm #{archive_zip_path}") 
+    end
   end
 
   #####################################################################################
@@ -562,6 +599,11 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
       configure_validate()
   end
 
+  desc "Run localization only"
+  lane :update_localization do | options |
+    ios_localize_project()
+  end
+
   def write_file(path, contents)
     begin
       FileUtils.rm_f(path)
@@ -607,4 +649,33 @@ end
 
   def simulator_version()
     return '13.3'
+  end
+
+########################################################################
+# Test Lanes
+########################################################################
+  #####################################################################################
+  # test_without_building
+  # -----------------------------------------------------------------------------------
+  # This lane runs tests without building the app.
+  # It requires a prebuilt xctestrun file and simulator destination where the tests will be run.
+  # -----------------------------------------------------------------------------------
+  # Usage:
+  # bundle exec fastlane test_without_building [xctestrun:<Path to xctestrun file>] [destination:<Simulator>] [try_count:<Number of times to try tests>]
+  #
+  # Example:
+  # bundle exec fastlane test_without_building xctestrun:WooCommerce_UITests_iphonesimulator13.2-x86_64.xctestrun destination:"platform=iOS Simulator,id=$SIMULATOR_UDID" try_count:3
+  #####################################################################################
+  desc "Run tests without building"
+  lane :test_without_building do | options |
+    multi_scan(
+      workspace: "WooCommerce.xcworkspace",
+      scheme: "WooCommerce",
+      test_without_building: true,
+      xctestrun: "#{options[:xctestrun]}",
+      destination: options[:destination],
+      try_count: options[:try_count],
+      output_directory: "build/results",
+      result_bundle: true
+    )
   end

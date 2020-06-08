@@ -22,6 +22,15 @@ final class ScannedProductsViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    /// Used for calculating the full content height in `DrawerPresentable` implementation.
+    var contentSize: CGSize {
+        guard let tableView = tableView else {
+            return .zero
+        }
+        tableView.layoutIfNeeded()
+        return tableView.contentSize
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 

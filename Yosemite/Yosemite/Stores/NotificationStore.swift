@@ -102,15 +102,18 @@ private extension NotificationStore {
                         return
                     }
 
-                    remote.loadNotes(noteIDs: outdatedIDs, pageSize: Constants.maximumPageSize) { [weak self] (notes, error) in
-
-                        guard let notes = notes else {
-                            onCompletion(error)
+                    remote.loadNotes(noteIDs: outdatedIDs, pageSize: Constants.maximumPageSize) { [weak self] result in
+                        guard let self = self else {
                             return
                         }
 
-                        self?.updateLocalNotes(with: notes) {
-                            onCompletion(nil)
+                        switch result {
+                        case .failure(let error):
+                            onCompletion(error)
+                        case .success(let notes):
+                            self.updateLocalNotes(with: notes) {
+                                onCompletion(nil)
+                            }
                         }
                     }
                 }
@@ -128,14 +131,14 @@ private extension NotificationStore {
     func synchronizeNotification(with noteID: Int64, onCompletion: @escaping (Note?, Error?) -> Void) {
         let remote = NotificationsRemote(network: network)
 
-        remote.loadNotes(noteIDs: [noteID]) { notes, error in
-            guard let notes = notes else {
+        remote.loadNotes(noteIDs: [noteID]) { result in
+            switch result {
+            case .failure(let error):
                 onCompletion(nil, error)
-                return
-            }
-
-            self.updateLocalNotes(with: notes) {
-                onCompletion(notes.first, nil)
+            case .success(let notes):
+                self.updateLocalNotes(with: notes) {
+                    onCompletion(notes.first, nil)
+                }
             }
         }
     }

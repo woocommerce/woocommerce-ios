@@ -1,2 +1,4 @@
-- Wenn du im Dashboard im Abschnitt „Bestseller“ auf ein Produkt tippst, werden die Produktdetails geöffnet.
-- Auf dem Tab „Bestellungen“ werden jetzt sowohl die Artikelmenge als auch das Bestell-Badge lokalisiert.
+* Ab sofort kannst du M2-Produktfunktionen für einfache Produkte unter „Einstellungen“ > „Experimentelle Funktionen“ aktivieren oder deaktivieren. Mit M2-Produktfunktionen kannst du Produktbilder, Kurzbeschreibungen zu Produkten, die Anzeige von Produkten, das Teilen und die Einstellungen aktualisieren (Produkteinstellungen umfassen den Status, die Sichtbarkeit, die Katalogsichtbarkeit, die Titelform, die Kaufbestätigung und die Menüreihenfolge).
+* Du kannst Details in den Auftragsdetails oder den Topseller-Tabs ändern und speichern. Außerdem haben wir die Zugänglichkeit mit VoiceOver-Unterstützung für Produktpreiseinstellungen verbessert.
+* Wir haben ein paar visuelle Verbesserungen vorgenommen: In den Auftragsdetails wird die Zahlungskarte jetzt direkt nach den Karten der Produkte und Erstatteten Produkte angezeigt. Das WIP-Banner auf dem Produkttab wird jetzt automatisch ausgeblendet. Hurra! Mehr Platz in der Vertikale.
+* iOS 11 und ältere Versionen werden nicht mehr unterstützt.

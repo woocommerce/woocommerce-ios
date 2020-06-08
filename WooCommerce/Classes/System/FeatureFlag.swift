@@ -6,10 +6,6 @@ enum FeatureFlag: Int {
     /// `An enum with no cases cannot declare a raw type`
     case null
 
-    /// Product list
-    ///
-    case productList
-
     /// Edit products
     ///
     case editProducts
@@ -18,13 +14,13 @@ enum FeatureFlag: Int {
     ///
     case editProductsRelease2
 
+    /// Edit products - release 3
+    ///
+    case editProductsRelease3
+
     /// Readonly Product variants
     ///
     case readonlyProductVariants
-
-    /// Store stats
-    ///
-    case stats
 
     /// Product Reviews
     ///

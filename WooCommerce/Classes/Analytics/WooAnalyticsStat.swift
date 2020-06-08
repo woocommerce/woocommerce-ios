@@ -262,11 +262,45 @@ public enum WooAnalyticsStat: String {
     case productDetailViewPriceSettingsTapped   = "product_detail_view_price_settings_tapped"
     case productDetailViewShippingSettingsTapped = "product_detail_view_shipping_settings_tapped"
     case productDetailViewInventorySettingsTapped = "product_detail_view_inventory_settings_tapped"
-    case productNameDoneButtonTapped            = "product_name_done_button_tapped"
     case productDescriptionDoneButtonTapped     = "product_description_done_button_tapped"
     case productPriceSettingsDoneButtonTapped   = "product_price_settings_done_button_tapped"
     case productShippingSettingsDoneButtonTapped = "product_shipping_settings_done_button_tapped"
     case productInventorySettingsDoneButtonTapped = "product_inventory_settings_done_button_tapped"
+
+    // Product Images Events
+    //
+    case productImageSettingsDoneButtonTapped = "product_image_settings_done_button_tapped"
+    case productDetailAddImageTapped = "product_detail_add_image_tapped"
+    case productImageSettingsAddImagesButtonTapped = "product_image_settings_add_images_button_tapped"
+    case productImageSettingsAddImagesSourceTapped = "product_image_settings_add_images_source_tapped"
+    case productImageSettingsDeleteImageButtonTapped = "product_image_settings_delete_image_button_tapped"
+
+    // Product More Menu
+    //
+    case productDetailViewProductButtonTapped = "product_detail_view_external_tapped"
+    case productDetailShareButtonTapped = "product_detail_share_button_tapped"
+
+    // Product Settings
+    //
+    case productDetailViewSettingsButtonTapped = "product_detail_view_settings_button_tapped"
+    case productSettingsDoneButtonTapped = "product_settings_done_button_tapped"
+    case productSettingsStatusTapped = "product_settings_status_tapped"
+    case productSettingsVisibilityTapped = "product_settings_visibility_tapped"
+    case productSettingsCatalogVisibilityTapped = "product_settings_catalog_visibility_tapped"
+    case productDetailViewShortDescriptionTapped = "product_detail_view_short_description_tapped"
+    case productShortDescriptionDoneButtonTapped = "product_short_description_done_button_tapped"
+    case productSettingsSlugTapped = "product_settings_slug_tapped"
+    case productSettingsPurchaseNoteTapped = "product_settings_purchase_note_tapped"
+    case productSettingsMenuOrderTapped = "product_settings_menu_order_tapped"
+
+    // Product List Sorting/Filtering
+    //
+    case productListViewSortingOptionsTapped = "product_list_view_sorting_options_tapped"
+    case productSortingListOptionSelected = "product_sorting_list_option_selected"
+    case productListViewFilterOptionsTapped = "product_list_view_filter_options_tapped"
+    case productFilterListShowProductsButtonTapped = "product_filter_list_show_products_button_tapped"
+    case productFilterListClearMenuButtonTapped = "product_filter_list_clear_menu_button_tapped"
+    case productFilterListDismissButtonTapped = "product_filter_list_dismiss_button_tapped"
 
     // Readonly Product Variations Events
     //

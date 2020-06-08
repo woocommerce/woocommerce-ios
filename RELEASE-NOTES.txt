@@ -1,8 +1,78 @@
+4.5
+-----
+- [*] In Order Details, the item subtotal is now shown on the right side instead of the quantity. The quantity can still be viewed underneath the product name.
+- [*] Polish the loading state on the product variations screen.
+- [*] When opening a simple product from outside of the Products tab (e.g. from Top Performers section or an order), the product name and ellipsis menu (if the Products feature switch is enabled) should be visible in the navigation bar.
+ 
+4.4
+-----
+- Order Detail: the HTML shipping method is now showed correctly
+- [internal] Logging in via 'Log in with Google' has changes that can cause regressions. See https://git.io/Jf2Fs for full testing details.
+- [**] Fix bugs related to push notifications: after receiving a new order push notification, the Reviews tab does not show a badge anymore. The application icon badge number is now cleared by navigating to the Orders tab and/or the Reviews tab, depending on the types of notifications received.
+- [*] The discard changes prompt now only appears when navigating from product images screen if any images have been deleted.
+- [*] Fix the issue where product details screen cannot be scrolled to the bottom in landscape after keyboard is dismissed (e.g. from editing product title).
+- [*] The product name is now shown in the product details navigation bar so that the name is always visible.
+- [*] The images pending upload should be visible after editing product images from product details.
+- [*] The discard changes prompt does not appear when navigating from product settings detail screens with a text field (slug, purchase note, and menu order) anymore.
+- [*] Fix the wrong cell appearance in the order status list.
+- [*] The "View product in store" action will be shown only if the product is published.
+- [internal] Modified the component used for fetching data from the database. Please watch out for crashes in lists.
+
+
+4.3
+-----
+- Products: now the Product details can be edited and saved outside Products tab (e.g. from Order details or Top Performers).
+- [internal]: the navigation to the password entry screen has changed and can cause regressions. See https://git.io/JflDW for testing details.
+- [internal] Refactored some API calls for fetching a Note, Product, and Product Review. 
+- Products: we improved our VoiceOver support in Product Price settings
+- In Settings > Experimental Features, a Products switch is now available for turning Products M2 features on and off for simple products (default off for beta testing). Products M2 features: update product images, product settings, viewing and sharing a product.
+- The WIP banner on the Products tab is now collapsed by default for more vertical space.
+- Dropped iOS 11 support. From now we support iOS 12 and later.
+- In Order Details, the Payment card is now shown right after the Products and Refunded Products cards.
+
+
+4.2
+-----
+- Products: now tapping anywhere on a product cell where you need to insert data, like in Product Price and Product Shipping settings, you start to edit the text field.
+- Products: now the keyboard pop up automatically in Edit Description
+- The Processing orders list will now show upcoming (future) orders.
+- Improved stats: fixed the incorrect time range on "This Week" tab when loading improved stats on a day when daily saving time changes.
+- [internal]: the "send magic link" screen has navigation changes that can cause regressions. See https://git.io/Jfqio for testing details.
+- The Orders list is now automatically refreshed when reopening the app. 
+- The Orders list is automatically refreshed if a new order (push notification) comes in.
+- Orders -> Search: The statuses now shows the total number of orders with that status.
+
+
+4.1
+-----
+- Fix an intermittent crash when downloading Orders
+- The Photo Library permission alert shouldn't be prompted when opening the readonly product details or edit product for simple products, which is reproducible on iOS 11 or 12 devices. (The permission is only triggered when uploading images in Zendesk support or in debug builds with Products M2 enabled.)
+- [internal] Updated the empty search result views for Products and Orders. https://git.io/Jvdap
+
+ 
+4.0
+-----
+- Products is now available with limited editing for simple products!
+- Fix pulling to refresh on the Processing tab sometimes will not show the up-to-date orders.
+- Edit Product > Price Settings: schedule sale is now available even when either the start or end date is not set, and the sale end date can be removed now.
+- Improved stats: fixed a crash when loading improved stats on a day when daily saving time changes.
+- [internal] Changed the Shipping and Tax classes list loading so that any cached data is shown right away
+- [internal] Edit Products M2: added an image upload source for product images - WordPress Media Library.
+- [internal] Slightly changed the dependency graph of the database fetching component. Please watch out for data loading regressions.
+- [internal] the signup and login Magic Link flows have code changes. See https://git.io/JvyB3 for testing details.
+- [internal] the login via Magic Link flows have code changes. See https://git.io/JvyB3 for testing details.
+- [internal] the login via Continue with Google flows have code changes that can cause regressions. See https://git.io/Jvyjg for testing details.
+- [internal] the signup and login Magic Link flows have code changes. See https://git.io/JvyB3 for testing details.
+- [internal] under Edit Products M2 feature flag, there are 4 ways to sort the products on the products tab.
+- [internal] the login flow has changes to the 2-factor authentication navigation. See https://git.io/JvdKP for testing details.
+
 3.9
 -----
 - bugfix: now in the Order List the order status label is no more clipped
 - bugfix: now the launch screen is no more stretched
-
+- The Shipping Provider flow, will be called now Shipping Carrier.
+- Edit Products: in price settings, the order of currency and price field follows the store currency options under wp-admin > WooCommerce > Settings > General.
+- [internal] The signup and login flows have code changes. See https://git.io/Jv1Me for testing details.
  
 3.8
 -----

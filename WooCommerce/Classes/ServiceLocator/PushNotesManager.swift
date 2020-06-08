@@ -1,11 +1,25 @@
 import Foundation
 import UIKit
+import Yosemite
 
 protocol PushNotesManager {
 
+    /// An observable that emits values when the Remote Notifications are received while the app is
+    /// in the foreground.
+    ///
+    var foregroundNotifications: Observable<ForegroundNotification> { get }
+
     /// Resets the Badge Count.
     ///
-    func resetBadgeCount()
+    func resetBadgeCount(type: Note.Kind)
+
+    /// Resets the Badge Count for all stores.
+    ///
+    func resetBadgeCountForAllStores(onCompletion: @escaping () -> Void)
+
+    /// Reloads the Badge Count for the site.
+    ///
+    func reloadBadgeCount()
 
     /// Registers the Application for Remote Notifgications.
     ///
@@ -38,5 +52,7 @@ protocol PushNotesManager {
 
     /// Handles a Remote Push Notifican Payload. On completion the `completionHandler` will be executed.
     ///
-    func handleNotification(_ userInfo: [AnyHashable: Any], completionHandler: @escaping (UIBackgroundFetchResult) -> Void)
+    func handleNotification(_ userInfo: [AnyHashable: Any],
+                            onBadgeUpdateCompletion: @escaping () -> Void,
+                            completionHandler: @escaping (UIBackgroundFetchResult) -> Void)
 }

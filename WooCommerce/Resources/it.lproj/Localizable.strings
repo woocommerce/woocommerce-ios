@@ -1,9 +1,18 @@
-/* Translation-Revision-Date: 2020-03-05 00:54:04+0000 */
+/* Translation-Revision-Date: 2020-05-26 15:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
 
 /* No comment provided by engineer. */
+"#%1$@ %2$@ %3$@" = "N. %1$@ %2$@ %3$@";
+
+/* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
+"#%@" = "N. %@";
+
+/* In Order Details, the pattern to show the billed person's full name. For example, “John Doe”. The %1$@ is the first name. The %2$@ is the last name. */
+"%1$@ %2$@" = "%1$@ %2$@";
+
+/* Format for each Product attribute */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld opzioni)";
 
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
@@ -28,7 +37,7 @@
 "%1$@-%2$@" = "%1$@-%2$@";
 
 /* <item total> (<item individual price> multipled by <quantity>) */
-"%1$@ (%2$@ x %3$@)" = "%1$@ (%2$@ x %3$@)";
+"%@ (%@ x %@)" = "%1$@ (%2$@ x %3$@)";
 
 /* 1 Item */
 "%@ Item" = "%@ elemento";
@@ -37,10 +46,10 @@
 "%@ Items" = "%@ elementi";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
-"%1$@ left a review on %2$@" = "%1$@ ha lasciato una recensione su %2$@";
+"%@ left a review on %@" = "%1$@ ha lasciato una recensione su %2$@";
 
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
-"%1$@ via %2$@" = "%1$@ tramite %2$@";
+"%@ via %@" = "%1$@ tramite %2$@";
 
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld in magazzino";
@@ -51,8 +60,14 @@
 /* Label about number of variations shown on Products tab */
 "%ld variants" = "%ld varianti";
 
-/* Content of the badge presented over the Orders icon when there are more than 99 orders processing */
+/* Shown when there are more than 99 items of something (e.g. Processing Orders). */
 "99+" = "Più di 99";
+
+/* Placeholder of the Product Short Description row on Product main screen */
+"A brief excerpt about the product" = "Un breve estratto sul prodotto";
+
+/* Subtitle of the product form bottom sheet action for editing short description. */
+"A brief excerpt about your product" = "Un breve estratto sul tuo prodotto";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "Per inviare tramite e-mail un link di autenticazione, è necessario un indirizzo e-mail valido. Torna alla schermata precedente e fornisci un indirizzo e-mail valido.";
@@ -93,8 +108,18 @@
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Aggiungi un'immagine del prodotto";
 
+/* Placeholder text in Product Purchase Note screen */
+"Add a purchase note..." = "Aggiungi una nota di acquisto...";
+
 /* Accessibility label for the 'Add a tracking' button */
 "Add a tracking" = "Aggiungi tracciabilità";
+
+/* Title of the bottom sheet from the product form to add more product details.
+   Title of the button at the bottom of the product form to add more product details. */
+"Add more details" = "Aggiungi altri dettagli";
+
+/* Subtitle of the product form bottom sheet action for editing shipping settings. */
+"Add weight and dimensions" = "Aggiungi peso e dimensioni";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "Aggiungi tracciabilità a un ordine.";
@@ -102,8 +127,14 @@
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "Strumento avanzato per la revisione dello stato dell'app";
 
-/* Name of the All filter on the Order List screen - it means all orders will be displayed. */
-"All" = "Tutti";
+/* Option to select the Airmail app when logging in with magic links */
+"Airmail" = "Airmail";
+
+/* Title for the second page in the Orders tab. */
+"All Orders" = "Tutti gli ordini";
+
+/* The message shown in the Orders → Processing tab if the list is empty. */
+"All orders have been fulfilled" = "Tutti gli ordini sono stati evasi";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "Tutte le recensioni contrassegnate come lette";
@@ -135,6 +166,12 @@
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "Si è verificato un errore durante l’elaborazione della richiesta: ";
 
+/* Footer text in Product Purchase Note screen */
+"An optional note to send the customer after purchase" = "Una nota opzionale da inviare al cliente dopo l'acquisto";
+
+/* Title when there is no filter set. */
+"Any" = "Nessuno";
+
 /* Message shown when Apple authentication fails. */
 "Apple authentication failed." = "Autenticazione Apple non riuscita.";
 
@@ -156,6 +193,9 @@
 
 /* Message title for Discard Changes Action Sheet */
 "Are you sure you want to discard these changes?" = "Desideri eliminare queste modifiche?";
+
+/* Alert title to confirm the user wants to discard changes in Product Visibility */
+"Are you sure you want to discard your changes?" = "Desideri eliminare le modifiche?";
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "Vuoi davvero disconnetterti dal tuo account %@?";
@@ -194,7 +234,7 @@
 
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}.
    VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
-"Bar number %1$i, %2$@, " = "Numero della barra %1$i, %2$@, ";
+"Bar number %i, %@, " = "Numero della barra %1$i, %2$@, ";
 
 /* Begin fulfill order button title */
 "Begin Fulfillment" = "Inizia evasione";
@@ -224,26 +264,44 @@
 "Can Not Request Link" = "Può non essere necessario il collegamento";
 
 /* Button title Cancel in Discard Changes Action Sheet
-   Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image */
+   Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links */
 "Cancel" = "Annulla";
 
 /* The title of the alert when there is an error updating the product */
-"Cannot update Product" = "Impossibile aggiornare il prodotto";
+"Cannot update product" = "Impossibile aggiornare il prodotto";
 
-/* Title of the alert when there is an error uploading image(s) */
+/* The title of the alert when there is an error uploading an image
+   Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "Impossibile caricare l'immagine";
 
-/* Catalog Visibility label in Product Settings */
+/* Add Custom shipping carrier. Title of cell presenting the carrier name */
+"Carrier name" = "Nome del corriere";
+
+/* Catalog Visibility label in Product Settings
+   Product Catalog Visibility navigation title */
 "Catalog Visibility" = "Visibilità  del catalogo";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "Tieni il passo con i tuoi siti preferiti e partecipa a una conversazione ovunque e in qualsiasi momento.";
 
+/* Edit product categories screen - Screen title
+   Title of the Categories row on Product main screen - Title of the product form bottom sheet action for editing categories. */
+"Categories" = "Categorie";
+
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "Errore di certificato";
 
+/* Instructional text on how to open the email containing a magic link. */
+"Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder." = "Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder.";
+
+/* Alert title for check your email during logIn/signUp. */
+"Check your email!" = "Controlla l'e-mail.";
+
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "Scegli da dispositivo";
+
+/* Button title for clearing all filters for the list. */
+"Clear all" = "Cancella tutto";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Raccogli informazioni";
@@ -280,6 +338,9 @@
 
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "Continua a leggere";
+
+/* Button title. Tapping begins log in using Apple. */
+"Continue with Apple" = "Continua con Apple";
 
 /* Button title. Tapping begins log in using Google. */
 "Continue with Google" = "Continua con Google";
@@ -323,12 +384,12 @@
 /* Cell title: the current date. */
 "Current" = "Attuale";
 
-/* Name of the section for custom shipment tracking providers */
+/* Name of the section for custom shipment tracking carriers */
 "Custom" = "Clientela";
 
-/* Add custom shipping provider. Content of cell titled Shipping Provider
-   Placeholder name of a custom shipment tracking provider - Title of button to add a custom tracking provider if filtering the list yields no results. */
-"Custom Provider" = "Fornitore personalizzato";
+/* Add custom shipping carrier. Content of cell titled Shipping Carrier
+   Placeholder name of a custom shipment tracking carrier - Title of button to add a custom tracking carrier if filtering the list yields no results. */
+"Custom Carrier" = "Corriere personalizzato";
 
 /* Customer info section title */
 "Customer" = "Cliente";
@@ -340,8 +401,14 @@
    Section title for a note from the customer */
 "Customer Provided Note" = "Nota fornita dai clienti";
 
-/* Add / Edit shipping provider. Title of cell date shipped */
+/* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "Data di spedizione";
+
+/* Action sheet option to sort products from the newest to the oldest */
+"Date: Newest to Oldest" = "Data: dal più recente al più vecchio";
+
+/* Action sheet option to sort products from the oldest to the newest */
+"Date: Oldest to Newest" = "Data: dal più vecchio al più recente";
 
 /* Statistical unit - a single day */
 "Day" = "Giorno";
@@ -375,6 +442,9 @@
 /* Screen title: Details Order number (number) */
 "Details Order #(viewModel.order.number)" = "Dettagli ordine n. (viewModel.order.number)";
 
+/* Footer text in Product Menu order screen */
+"Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "Determina la posizione dei prodotti nel catalogo. Minore è il valore del numero, più in alto si troverà l'articolo nell'elenco di prodotti. Puoi usare anche valori negativi";
+
 /* Format of all 3 dimensions on the Shipping Settings row - L x W x H[unit] */
 "Dimensions: %1$@ x %2$@ x %3$@%4$@" = "Dimensioni: %1$@ x %2$@ x %3$@%4$@";
 
@@ -384,6 +454,9 @@
 /* Format of one dimension on the Shipping Settings row - dimension[unit] */
 "Dimensions: %1$@%2$@" = "Dimensioni: %1$@%2$@";
 
+/* Alert button title - dismisses alert, which discard changes on Product Visibility screen */
+"Discard" = "Annulla";
+
 /* Button title Discard Changes in Discard Changes Action Sheet */
 "Discard changes" = "Annulla le modifiche";
 
@@ -391,7 +464,7 @@
 "Discount" = "Sconto";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet */
 "Dismiss" = "Chiudi";
 
 /* Display label for the product's inventory backorders setting option */
@@ -399,6 +472,9 @@
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Non hai un account? _Registrati_";
+
+/* Edit product categories screen - button title to apply categories selection */
+"Done" = "Fatto";
 
 /* WordPress.com (unmapped!) error */
 "Dotcom Error: [(code)] (theMessage)" = "Errore Dotcom: [(code)] (theMessage)";
@@ -451,14 +527,17 @@
 /* Accessibility label that lets the user know the billing customer's email address */
 "Email: %@" = "E-mail: %@";
 
+/* Accessibility text for Unit Input cell */
+"Empty" = "Svuota";
+
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "URL vuota";
 
-/* The text placeholder for the Text Editor screen */
-"Enter a title..." = "Inserisci un titolo...";
+/* Add custom shipping carrier. Placeholder of cell presenting carrier name */
+"Enter carrier name" = "Inserisci il nome del corriere";
 
-/* Add custom shipping provider. Placeholder of cell presenting provider name */
-"Enter provider name" = "Inserisci nome del fornitore";
+/* Enter password placeholder in Product Visibility */
+"Enter password" = "Inserisci una password";
 
 /* Instruction text on the login's site addresss screen.
    Label for button to log in using your site address. */
@@ -470,10 +549,10 @@
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "Digita la password per il tuo account WordPress.com.";
 
-/* Add custom shipping provider. Placeholder of cell presenting tracking link */
+/* Add custom shipping carrier. Placeholder of cell presenting carrier link */
 "Enter tracking link" = "Inserisci link di tracciabilità";
 
-/* Add custom shipping provider. Placeholder of cell presenting tracking number */
+/* Add custom shipping carrier. Placeholder of cell presenting tracking number */
 "Enter tracking number" = "Inserisci numero di tracciabilità";
 
 /* Title of a button on the magic link screen.
@@ -490,25 +569,41 @@
 /* For example: 'Expiry: 30 days' */
 "Expiry: %ld days" = "Scadenza: %ld giorni";
 
+/* Display label for affiliate product type. */
+"External\/Affiliate" = "Esterno\/Affiliato";
+
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "Tentativo di richiesta di serializzazione all'API REST non riuscito.";
+
+/* Option to select the Fastmail app when logging in with magic links */
+"Fastmail" = "Fastmail";
 
 /* Navigates to the feature request screen */
 "Feature Request" = "Richiesta di funzionalità";
 
+/* Featured Product switch in Product Catalog Visibility */
+"Featured Product" = "Prodotto in evidenza";
+
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "Inserisci il programma di gestione delle password";
 
-/* Filter the orders list. */
-"Filter orders" = "Filtra ordini";
+/* Title of the toolbar button to filter products by different attributes.
+   Title of the toolbar button to filter products without any filters applied. */
+"Filter" = "Filtro";
 
-/* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
-"Filters the order list by payment status." = "Filtra l'elenco degli ordini per stato di pagamento.";
+/* Title of the toolbar button to filter products with filters applied. */
+"Filter (%ld)" = "Filtra (%ld)";
+
+/* Navigation bar title format for filtering a list of products without filters applied. */
+"Filters" = "Filtri";
+
+/* Navigation bar title format for filtering a list of products with filters applied. */
+"Filters (%ld)" = "Filtri (%ld)";
 
 /* User role badge */
 "Follower" = "Follower";
 
-/* Title of the cell in Product Price Settings > Schedule sale From a certain date */
+/* Title of the cell in Product Price Settings > Schedule sale from a certain date */
 "From" = "Da";
 
 /* Order Fulfillment Title */
@@ -523,8 +618,14 @@
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "Recupero informazioni account";
 
+/* Option to select the Gmail app when logging in with magic links */
+"Gmail" = "Gmail";
+
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Accesso a Google non riuscito.";
+
+/* Display label for grouped product type. */
+"Grouped" = "Raggruppato";
 
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "COME POSSIAMO AIUTARTI?";
@@ -589,7 +690,7 @@
 "Help Improve The App" = "Aiutaci a migliorare l'app";
 
 /* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
-   Shown in a Product Variation cell if the variation is not visible (purchasable is false) */
+   Display label for the product's catalog visibility - Shown in a Product Variation cell if the variation is not visible (purchasable is false) */
 "Hidden" = "Nascosto";
 
 /* Detail label for yes/no switch. */
@@ -645,7 +746,7 @@
 "Invalid username" = "Nome utente non valido";
 
 /* Product Details - inventory section title
-   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Product Inventory Settings navigation title - Title of the Inventory Settings row on Product main screen */
+   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Product Inventory Settings navigation title - Title of the Inventory Settings row on Product main screen - Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "Inventario";
 
 /* An error message shown during log in when the username or password is incorrect. */
@@ -657,6 +758,9 @@
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "Corsivo";
 
+/* Alert button title - which keeps the user on the Product Visibility screen */
+"Keep Editing" = "Continua a modificare";
+
 /* Last 24 hours section header */
 "Last 24 hours" = "Ultime 24 ore";
 
@@ -667,7 +771,7 @@
 "Launch Wormholy debug" = "Avvia il debug di Wormholy";
 
 /* Settings > Privacy Settings. A text link to the cookie policy.
-   The action of the top banner on Dashboard that indicates new stats is unavailable */
+   The action of the top banner on Dashboard that indicates new stats is unavailable - Title of button shown in the Orders → All Orders tab if the list is empty. */
 "Learn more" = "Per saperne di più";
 
 /* Title of the cell in Product Shipping Settings > Length */
@@ -688,7 +792,7 @@
 /* 'Limit: 2 downloads', for example. */
 "Limit: %ld downloads" = "Limite: %ld download";
 
-/* The title of the Work In Progress top banner on the Products tab */
+/* The title of the Work In Progress top banner on the Products tab when the Products release 2 feature switch is off. */
 "Limited editing available" = "Modifica limitata disponibile";
 
 /* Title for screen in editor that allows to configure link options */
@@ -704,8 +808,8 @@
 /* Displayed when an Product is being retrieved */
 "Loading Product" = "Caricamento prodotto";
 
-/* Button title.  Tapping takes the user to the login form.
-   Log In button label. */
+/* Authentication Login Button
+   Button title.  Tapping takes the user to the login form. - Log In button label. */
 "Log In" = "Accedi";
 
 /* Alert button title - confirms and logs out the user
@@ -724,9 +828,6 @@
 /* Instruction text on the login's email address screen. */
 "Log in to your WordPress.com account with your email address." = "Accedi al tuo account WordPress.com con il tuo indirizzo e-mail.";
 
-/* Authentication Login Button */
-"Log in with Jetpack" = "Accedi con Jetpack";
-
 /* Sign in instructions on the 'log in using email' screen. */
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "Accedi con l'indirizzo e-mail dell'account WordPress.com per gestire i negozi WooCommerce.";
 
@@ -739,6 +840,9 @@
 /* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
 "Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "Creato con amore da Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">Stiamo assumendo.<\/a>";
 
+/* Option to select the Apple Mail app when logging in with magic links */
+"Mail (Default)" = "Mail (Impostazione predefinita)";
+
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "Gestisci gli ordini, traccia le vendite e monitora le attività del negozio con avvisi in tempo reale.";
 
@@ -746,7 +850,7 @@
 "Manage stock" = "Gestisci magazzino";
 
 /* shown in promotional screens during first launch */
-"Manage your Jetpack-powered site on the go — you‘ve got WordPress in your pocket." = "Gestisci il tuo sito con Jetpack mentre sei in movimento: hai WordPress in tasca.";
+"Manage your Jetpack-powered site on the go — you've got WordPress in your pocket." = "Gestisci il tuo sito con Jetpack mentre sei in movimento: hai WordPress in tasca.";
 
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "Offset manuale";
@@ -766,11 +870,21 @@
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "Gli elementi multimediali non sono associati a un file da caricare.";
 
+/* Menu order label in Product Settings
+   Product Menu Order navigation title */
+"Menu Order" = "Ordinamento menu";
+
+/* Placeholder in the Product Menu Order row on Edit Product Menu Order screen. */
+"Menu order" = "Ordinamento menu";
+
 /* Message phone number button title */
 "Message" = "Messaggio";
 
+/* Option to select the Microsft Outlook app when logging in with magic links */
+"Microsoft Outlook" = "Microsoft Outlook";
+
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
-"Minimum value %1$@, maximum value %2$@" = "Valore minimo %1$@, valore massimo %2$@";
+"Minimum value %@, maximum value %@" = "Valore minimo %1$@, valore massimo %2$@";
 
 /* Statistical unit - a single week */
 "Month" = "Mese";
@@ -819,15 +933,15 @@
 /* The title for the net amount paid cell */
 "Net" = "Netto";
 
+/* The title of the Work In Progress top banner on the Products tab when the Products release 2 feature switch is on. */
+"New editing options available" = "Nuove opzioni di modifica disponibili";
+
 /* Title of a button.
    Title of a button. The text should be capitalized. */
 "Next" = "Successivo";
 
-/* Search Orders (Empty State) */
-"No Orders found" = "Nessun ordine trovato";
-
 /* Empty Reviews List Message */
-"No Reviews Yet!" = "No Reviews Yet!";
+"No Reviews Yet!" = "Ancora nessuna recensione.";
 
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Nessuna attività per questo periodo";
@@ -839,20 +953,17 @@
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Nessun dato disponibile";
 
+/* Placeholder text shown when there are no images for the WordPress Media Library yet */
+"No images yet" = "Nessuna immagine ancora presente";
+
 /* The text on the placeholder overlay when there are no product variations on the Products tab */
 "No product variations yet" = "Ancora nessuna variante del prodotto";
-
-/* Search Products (Empty State) */
-"No products found" = "Nessun prodotto trovato";
 
 /* The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "Ancora nessun prodotto";
 
-/* Orders List (Empty State + Filters) */
-"No results for the selected criteria" = "Nessun risultato per i criteri selezionati";
-
-/* Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider' */
-"No results found for (term)\nAdd a custom provider" = "No results found for (term)\nAdd a custom provider";
+/* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier' */
+"No results found for (term)\nAdd a custom carrier" = "No results found for (term)\nAdd a custom carrier";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "Nessuna entrata per questo periodo";
@@ -951,11 +1062,11 @@
 "Ordered List" = "Elenco ordinato";
 
 /* Default title for Orders List shown when tapping on the Search filter.
-   Orders stat label on dashboard - should be plural. - The title of the Orders tab. - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+   Orders stat label on dashboard - should be plural. - The title of the Orders tab. */
 "Orders" = "Ordini";
 
-/* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
-"Orders: %@" = "Ordini: %@";
+/* Subtitle of the product form bottom sheet action for editing categories. */
+"Organise your products into related groups" = "Organizza i tuoi prodotti in gruppi correlati";
 
 /* My Store > Settings > Other app section */
 "Other" = "Altro";
@@ -970,8 +1081,11 @@
 "Paid By Customer" = "Pagato dal cliente";
 
 /* Accessibility label for the password text field in the self-hosted login page.
-   Login dialog password placeholder - Password placeholder */
+   Login dialog password placeholder - Password field title in Product Visibility - Password placeholder */
 "Password" = "Password";
+
+/* One of the possible options in Product Visibility */
+"Password Protected" = "Protetto da password";
 
 /* Paste without Formatting Menu Item */
 "Paste without Formatting" = "Incolla senza formattazione";
@@ -979,13 +1093,15 @@
 /* Payment section title */
 "Payment" = "Pagamento";
 
-/* Display label for the product's pending status
-   Display label for the review's pending status */
+/* Display label for the review's pending status */
 "Pending" = "In sospeso";
 
 /* A unit test string, appended before the title of a review.
    Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
 "Pending Review" = "In attesa di revisione";
+
+/* Display label for the product's pending status */
+"Pending review" = "In attesa di revisione";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "Numero di telefono: %@";
@@ -995,12 +1111,6 @@
 
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "Scegli un negozio da collegare";
-
-/* Product title error notice message, when the title is empty */
-"Please add a title" = "Aggiungi un titolo";
-
-/* Alert title for check your email during logIn/signUp. */
-"Please check your email" = "Controlla la tua e-mail";
 
 /* Placeholder for editing the URL of a text link */
 "Please enter a URL" = "Inserisci un URL";
@@ -1041,8 +1151,8 @@
 /* Error message when an image captured by camera cannot be saved to the device Photos library */
 "Please make sure the app can access Photos in device settings" = "Assicurati che l'app possa accedere a Foto nelle impostazioni del dispositivo";
 
-/* Message to ask the user to check their email and look for a WordPress.com email. */
-"Please open your email app and look for an email from WordPress.com." = "Apri la tua app per le e-mail e controlla un'e-mail da WordPress.com.";
+/* The message of the alert when there is an error uploading an image */
+"Please try again." = "Riprova.";
 
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "Attendi mentre pubblichiamo questo prodotto nel tuo negozio";
@@ -1061,11 +1171,17 @@
    Privacy settings screen title */
 "Privacy Settings" = "Impostazioni privacy";
 
-/* Display label for the product's private status */
+/* One of the possible options in Product Visibility */
 "Private" = "Privato";
 
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Nota privata";
+
+/* Display label for the product's private status */
+"Privately published" = "Pubblicato privatamente";
+
+/* Title for the first page in the Orders tab. */
+"Processing" = "In elaborazione";
 
 /* Description for Top Performers left column header
    Product section title - Section header title for the product */
@@ -1081,8 +1197,14 @@
    Product Settings navigation title */
 "Product Settings" = "Impostazioni del prodotto";
 
+/* Row title for filtering products by product status. */
+"Product Status" = "Stato del prodotto";
+
 /* Product Total label for payment view */
 "Product Total" = "Totale prodotti";
+
+/* Row title for filtering products by product type. */
+"Product Type" = "Tipo di prodotto";
 
 /* My Store > Settings > Experimental features > Product editing */
 "Product editing" = "Modifica del prodotto";
@@ -1097,11 +1219,8 @@
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "Richiede l'opzione per chiamare o inviare messaggi al cliente della fatturazione.";
 
-/* Add Custom shipping provider. Title of cell presenting the provider name */
-"Provider name" = "Nome del fornitore";
-
-/* Display label for the product's published status */
-"Publish" = "Pubblica";
+/* One of the possible options in Product Visibility */
+"Public" = "Pubblico";
 
 /* Title of the Publish Settings section on Product Settings screen */
 "Publish Settings" = "Impostazioni di pubblicazione";
@@ -1109,11 +1228,18 @@
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "Pubblica dal parco. Lavora al blog sull'autobus. Commenta dal bar. WordPress si sposta con te.";
 
+/* Display label for the product's published status */
+"Published" = "Pubblicata";
+
 /* Title of the in-progress UI while updating the Product remotely */
 "Publishing your product..." = "Pubblicazione del tuo prodotto...";
 
 /* Product Details - purchase details section title */
 "Purchase Details" = "Dettagli dell'acquisto";
+
+/* Product Note navigation title
+   Purchase note label in Product Settings */
+"Purchase Note" = "Nota di acquisto";
 
 /* Product Details > Purchase Details > Purchase note cell title
    Title for purchase note alert. */
@@ -1178,14 +1304,14 @@
 /* Confirm button on the alert when the user taps to delete a Product image */
 "Remove" = "Rimuovi";
 
-/* Action: Opens the Store in a browser */
-"Remove Filters" = "Rimuovi filtri";
-
 /* Title on the alert when the user taps to delete a Product image */
 "Remove Image" = "Rimuovi immagine";
 
 /* Label action for removing a link from the editor */
 "Remove Link" = "Rimuovi link";
+
+/* Label action for removing a link from the editor */
+"Remove end date" = "Rimuovi data di fine";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "Segnala arresti anomali";
@@ -1267,11 +1393,23 @@
 /* Search Products */
 "Search products" = "Cerca prodotti";
 
+/* Display label for the product's catalog visibility */
+"Search results only" = "Soltanto risultati della ricerca";
+
 /* Page title for the select a different store screen */
 "Select Store" = "Seleziona negozio";
 
+/* Add the shipping carrier. Placeholder of cell presenting carrier name */
+"Select carrier" = "Seleziona il corriere";
+
+/* Placeholder value of the cell in Product Price Settings > Schedule sale to a certain date */
+"Select end date" = "Seleziona la data di fine";
+
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "Seleziona lo stile del paragrafo";
+
+/* Placeholder value of the cell in Product Price Settings > Schedule sale from a certain date */
+"Select start date" = "Seleziona la data di inizio";
 
 /* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
 "Selected Store" = "Negozio selezionato";
@@ -1304,14 +1442,17 @@
 "Shipped %@" = "Spedito %@";
 
 /* Product Details > Purchase Details > Shipping cell title
-   Product Shipping Settings navigation title - Shipping label for payment view - Title of the Shipping Settings row on Product main screen */
+   Product Shipping Settings navigation title - Shipping label for payment view - Title of the product form bottom sheet action for editing shipping settings. - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "Spedizione";
+
+/* Title of view displaying all available Shipment Tracking Carriers */
+"Shipping Carriers" = "Corrieri della spedizione";
 
 /* Shipping method title for customer info cell */
 "Shipping Method" = "Metodo di spedizione";
 
-/* Title of view displaying all available Shipment Tracking Providers */
-"Shipping Providers" = "Spedizionieri";
+/* Add / Edit shipping carrier. Title of cell presenting name */
+"Shipping carrier" = "Corriere della spedizione";
 
 /* Title of the cell in Product Shipping Settings > Shipping class */
 "Shipping class" = "Classe di spedizione";
@@ -1331,8 +1472,18 @@
 /* Display label for the product's tax status setting option */
 "Shipping only" = "Solo spedizione";
 
-/* Add / Edit shipping provider. Title of cell presenting name */
-"Shipping provider" = "Corriere";
+/* Display label for the product's catalog visibility */
+"Shop and search results" = "Negozio e risultati della ricerca";
+
+/* Display label for the product's catalog visibility */
+"Shop only" = "Soltanto negozio";
+
+/* The navigation bar title of the edit short description screen.
+   Title of the product form bottom sheet action for editing short description. - Title of the Short Description row on Product main screen */
+"Short description" = "Breve descrizione";
+
+/* Button title for applying filters to a list of products. */
+"Show Products" = "Mostra prodotti";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show a list of refunded order items for this order." = "Mostra un elenco degli elementi dell'ordine rimborsati per questo ordine.";
@@ -1361,8 +1512,8 @@
 /* Button title. Tapping begins our normal sign up process. */
 "Sign up with Email" = "Registrati con l'e-mail";
 
-/* Button title. Tapping begins sign up using Google. */
-"Sign up with Google" = "Registrati con Google";
+/* Display label for simple product type. */
+"Simple" = "Semplice";
 
 /* Describes a site redirect domain */
 "Site Redirect" = "Redirect del sito";
@@ -1376,7 +1527,8 @@
 /* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
 "Size:" = "Dimensione:";
 
-/* Slug label in Product Settings */
+/* Placeholder in the Product Slug row on Edit Product Slug screen.
+   Product Slug navigation title - Slug label in Product Settings */
 "Slug" = "Abbreviazione";
 
 /* A unit test for reviews, checking that anonymous users are added as the author named `someone`
@@ -1428,9 +1580,16 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "Spiacenti, non puoi usare quell'indirizzo per il tuo sito.";
 
+/* Message title for sort products action bottom sheet
+   Title of the toolbar button to sort products in different ways. */
+"Sort by" = "Ordina per";
+
 /* Display label for the review's spam status
    Verb, spam a comment */
 "Spam" = "Spam";
+
+/* Option to select the Spark email app when logging in with magic links */
+"Spark" = "Spark";
 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "Tariffa standard";
@@ -1439,7 +1598,14 @@
 "Start writing..." = "Inizia a scrivere...";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
-"Starting period %1$@, ending period %2$@" = "Periodo di inizio %1$@, periodo di fine %2$@";
+"Starting period %@, ending period %@" = "Periodo di inizio %1$@, periodo di fine %2$@";
+
+/* Product status setting list selector navigation title
+   Status label in Product Settings */
+"Status" = "Stato";
+
+/* Row title for filtering products by stock status. */
+"Stock Status" = "Stato del magazzino";
 
 /* A descriptive label prefix. Example: 'Stock quantity: 19' */
 "Stock quantity:" = "Quantità in magazzino:";
@@ -1450,9 +1616,6 @@
 
 /* A descriptive label prefix. Example: 'Stock status: In stock' */
 "Stock status:" = "Stato del magazzino:";
-
-/* Format of the stock status on the Inventory Settings row */
-"Stock status: %@" = "Stato del magazzino: %@";
 
 /* VoiceOver accessibility label for the store revenue chart. */
 "Store revenue chart" = "Grafico del fatturato del negozio";
@@ -1584,7 +1747,7 @@
 "Terms of Service" = "Termini di Servizio";
 
 /* My Store > Settings > Experimental features > Product editing */
-"Test out the new product editing functionality as we get ready to launch" = "Testa la nuova funzionalità di modifica del prodotto mentre ci prepariamo a lanciarla";
+"Test out new product editing functionalities as we get ready to launch them" = "Testa le nuove funzionalità di modifica del prodotto mentre ci prepariamo a lanciarle";
 
 /* My Store > Settings > Experimental features > Switch Products */
 "Test out the new products section as we get ready to launch" = "Prova la nuova sezione dei prodotti mentre ci prepariamo al lancio";
@@ -1625,17 +1788,35 @@
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Il certificato per questo server non è valido. Continuando, corri il rischio di connetterti ad un server che finge di essere  “%@”, il che potrebbe compromettere la sicurezza di informazioni riservate che ti appartengono.\n\nVuoi accettare comunque il certificato?";
 
+/* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
+"The price for this product. Editable." = "Prezzo per questo prodotto. Modificabile.";
+
 /* Displayed whenever a review that was onscreen got deleted. */
 "The review has been removed" = "La recensione è stata rimossa";
 
 /* Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "Il prezzo di vendita non può essere aggiunto senza un prezzo standard.";
 
+/* VoiceOver accessibility hint, informing the user that the cell shows the sale price information for this product. */
+"The sale price for this product. Editable." = "Prezzo di vendita per questo prodotto. Modificabile.";
+
 /* Product price error notice message, when the sale price is higher than the regular price */
 "The sale price should be lower than the regular price." = "Il prezzo di vendita dovrebbe essere più basso del prezzo standard.";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "Il server ha restituito una risposta vuota. Questo di solito significa che è necessario aumentare il limite di memoria per il tuo sito.";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the shipping height information for this product. */
+"The shipping height for this product. Editable." = "Altezza della spedizione per questo prodotto. Modificabile.";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the shipping length information for this product. */
+"The shipping length for this product. Editable." = "Lunghezza della spedizione per questo prodotto. Modificabile.";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the shipping weight information for this product. */
+"The shipping weight for this product. Editable." = "Peso della spedizione per questo prodotto. Modificabile.";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the shipping width information for this product. */
+"The shipping width for this product. Editable." = "Larghezza della spedizione per questo prodotto. Modificabile.";
 
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "L'indirizzo del sito deve essere più corto di 64 caratteri.";
@@ -1648,6 +1829,9 @@
 
 /* Message shown when site export API failed */
 "The site could not be exported." = "Non è stato possibile esportare il sito.";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the stock quantity information for this product. */
+"The stock quantity for this product. Editable." = "Quantità in magazzino per questo prodotto. Modificabile.";
 
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "Si è verificato un problema bloccando gli articoli dal sito specificato";
@@ -1682,6 +1866,9 @@
 /* Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect. */
 "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy." = "Queste informazioni ci aiutano a migliorare i prodotti, offrire proposte di marketing più pertinenti, personalizzare l’esperienza WordPress.com e molto altro, come indicato nel dettaglio nella nostra politica sulla privacy.";
 
+/* Footer text in Product Slug screen */
+"This is the URL-friendly version of the product title" = "Questa è la versione URL friendly del titolo del prodotto";
+
 /* Accessibility label for the Shipping notice
    Shipping notice row label when there is more than one shipping method */
 "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete." = "Questo ordine sta usando estensioni per calcolare la spedizione. I metodi di spedizione mostrati potrebbero essere non completi.";
@@ -1689,14 +1876,20 @@
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "Non è stato possibile caricare questo prodotto";
 
-/* Product details screen — product title descriptive label
-   The navigation bar title of the Text editor screen. - Title in the Product Title row on Product form screen when the description is non-empty. */
+/* Footer text in Product Catalog Visibility */
+"This setting determines which shop pages products will be listed on." = "Questa impostazione determina le pagine del negozio sulle quali vengono elencati i prodotti.";
+
+/* Placeholder in the Product Title row on Product form screen.
+   Product details screen — product title descriptive label */
 "Title" = "Titolo";
 
-/* Placeholder in the Product Title row on Product form screen. */
-"Title (required)" = "Titolo (richiesto)";
+/* Action sheet option to sort products by ascending product name */
+"Title: A to Z" = "Titolo: dalla A alla Z";
 
-/* Title of the cell in Product Price Settings > Schedule sale To a certain date */
+/* Action sheet option to sort products by descending product name */
+"Title: Z to A" = "Titolo: dalla Z alla A";
+
+/* Title of the cell in Product Price Settings > Schedule sale to a certain date */
 "To" = "A";
 
 /* Text instructing the user to enter their email address. */
@@ -1739,10 +1932,10 @@
 /* Order tracking section title */
 "Tracking" = "Tracciabilità";
 
-/* Add custom shipping provider. Title of cell presenting tracking link */
+/* Add custom shipping carrier. Title of cell presenting carrier link */
 "Tracking link (optional)" = "Link di tracciabilità (opzionale)";
 
-/* Add / Edit shipping provider. Title of cell presenting tracking number */
+/* Add / Edit shipping carrier. Title of cell presenting tracking number */
 "Tracking number" = "Numero di tracciabilità";
 
 /* A unit test string. Reads as: 'Trackin number XXX_YYY_ZZZ'
@@ -1802,8 +1995,11 @@
 /* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number} */
 "Unable to fulfill order #(orderID)" = "Impossibile evadere l'ordine #(orderID)";
 
-/* Content of error presented when loading the list of shipment providers failed. It reads: Unable to load Shipment Providers */
-"Unable to load Shipment Providers" = "Impossibile caricare gli spedizionieri";
+/* Content of error presented when loading the list of shipment carriers failed. It reads: Unable to load Shipment Carriers */
+"Unable to load Shipment Carriers" = "Impossibile caricare i corrieri della spedizione";
+
+/* Load Product Categories Action Failed */
+"Unable to load categories" = "Impossibile caricare le categorie";
 
 /* Load Action Failed */
 "Unable to load content" = "Impossibile caricare i contenuti";
@@ -1828,6 +2024,9 @@
 
 /* Unapproves a comment. Spoken Hint. */
 "Unapproves the comment" = "Non approva il commento";
+
+/* Placeholder of the Product Categories row on Product main screen */
+"Uncategorized" = "Senza categoria";
 
 /* Accessibility label for underline button on formatting toolbar. */
 "Underline" = "Sottolinea";
@@ -1857,6 +2056,9 @@
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "I file di log vengono salvati per massimo sette giorni.";
 
+/* Upcoming Section Header */
+"Upcoming" = "In arrivo";
+
 /* Action for updating a Product remotely
    Label action for updating a link on the editor */
 "Update" = "Aggiorna";
@@ -1869,6 +2071,9 @@
 
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "Aggiorna stato dell'ordine";
+
+/* Subtitle of the product form bottom sheet action for editing inventory settings. */
+"Update product inventory and SKU" = "Aggiorna inventario dei prodotti e SKU";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "Aggiorna a WooCommerce 3.5 per continuare utilizzare questa app";
@@ -1903,6 +2108,9 @@
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "Il nome utente deve contenere almeno 4 caratteri.";
 
+/* Display label for variable product type. */
+"Variable" = "Variabile";
+
 /* Product Details > descriptive label for the Product Variants cell.
    Title that appears on top of the Product Variation List screen. */
 "Variations" = "Varianti";
@@ -1919,6 +2127,9 @@
 /* Accessibility label for the 'View Billing Information' button
    Button on bottom of Customer's information to show the billing details */
 "View Billing Information" = "Visualizza informazioni di fatturazione";
+
+/* Button title View product in store in Edit Product More Options Action Sheet */
+"View Product in Store" = "Visualizza il prodotto in negozio";
 
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "Visualizza il prodotto affiliato";
@@ -1938,17 +2149,21 @@
 /* User role badge */
 "Viewer" = "Visitatore";
 
+/* Product Visibility navigation title
+   Visibility label in Product Settings */
+"Visibility" = "Visibilità";
+
 /* Visitors stat label on dashboard - should be plural. */
 "Visitors" = "Visitatori";
 
 /* Add a note screen - Write Note section title */
 "WRITE NOTE" = "SCRIVI UNA NOTA";
 
-/* Orders List (Empty State / No Filters) */
-"Waiting for Customers" = "In attesa dei clienti";
-
 /* Message shown on screen while waiting for Google to finish its signup process. */
 "Waiting for Google to complete…" = "In attesa di Google per il completamento…";
+
+/* The message shown in the Orders → All Orders tab if the list is empty. */
+"Waiting for your first order" = "In attesa del tuo primo ordine";
 
 /* shown in promotional screens during first launch */
 "Watch readers from around the world read and interact with your site — in real time." = "Guarda i lettori da tutto il mondo leggere e interagire con il tuo sito, in tempo reale.";
@@ -1956,8 +2171,8 @@
 /* The info of the top banner on Dashboard that indicates new stats is unavailable */
 "We have reverted to the old stats. To use the beta stats, please activate the WooCommerce Admin plugin with version 0.23 or higher" = "Abbiamo ripristinato le vecchie statistiche. Per usare le statistiche beta, attiva il plugin WooCommerce Admin versione 0.23 o successiva";
 
-/* Instructional text on how to open the email containing a magic link. */
-"We sent you a magic signup link! Check your email on this device, and tap the link in the email to finish signing up." = "Ti abbiamo inviato un link per l'accesso. Controlla la tua e-mail su questo dispositivo e premi il link per terminare l'iscrizione.";
+/* message to ask a user to check their email for a WordPress.com email */
+"We just emailed a link to %@. Please check your mail app and tap the link to log in." = "Abbiamo appena inviato un link tramite e-mail a %@. Controlla la tua app di posta e tocca il link per accedere.";
 
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "Utilizziamo altri strumenti di tracciamento, inclusi alcuni di terze parti. Leggi le informazioni sugli strumenti e come utilizzarli.";
@@ -1968,8 +2183,27 @@
 /* Instructional text for the magic link login flow. */
 "We'll email you a magic link that'll log you in instantly, no password needed. Hunt and peck no more!" = "Ti invieremo per e-mail un link per accedere subito, senza password. Non ci sarà più bisogno di digitare la password!";
 
+/* The detailed message shown in the Orders → All Orders tab if the list is empty. */
+"We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales." = "Ti invieremo una notifica non appena riceverai un nuovo ordine. Nel frattempo, esplora come puoi aumentare le vendite del tuo negozio.";
+
 /* Error message shown when having trouble connecting to a Jetpack site. */
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "Impossibile connettere il sito Jetpack associato a questo URL. Contattaci per assistenza.";
+
+/* Default message to show if a filtered Orders list is empty. */
+"We're sorry, we couldn't find any orders." = "Siamo spiacenti, non siamo riusciti a trovare alcun ordine.";
+
+/* Message shown if a filtered Orders list is empty. The %@ is a placeholder for the order status. */
+"We're sorry, we couldn't find any “%@” orders" = "Siamo spiacenti, non siamo riusciti a trovare alcun ordine \"%@\"";
+
+/* Message for empty Orders search results. The %@ is a placeholder for the text entered by the user.
+   Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
+"We're sorry, we couldn't find results for “%@”" = "Siamo spiacenti, non è stato possibile trovare risultati per \"%@\"";
+
+/* The info of the Work In Progress top banner on the Products tab when the Products release 2 feature switch is off. */
+"We've added editing functionality to simple products. Keep an eye out for more options soon!" = "Abbiamo aggiunto funzionalità di modifica a prodotti semplici. Tieni d'occhio le ulteriori opzioni che saranno presto disponibili.";
+
+/* The info of the Work In Progress top banner on the Products tab when the Products release 2 feature switch is on. */
+"We've added more editing functionalities to products. You can now update images, see previews and sort, filter & share products!" = "Abbiamo aggiunto più funzionalità di modifica ai prodotti. Ora puoi aggiungere immagini, vedere anteprime e ordinare, filtrare e condividere i prodotti.";
 
 /* Statistical unit - a single week */
 "Week" = "Settimana";
@@ -1986,14 +2220,8 @@
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "Peso: %1$@%2$@";
 
-/* The info of the Work In Progress top banner on the Products tab */
-"We’re hard at work on this new Products section, so you may see some changes as we get ready for launch 🚀" = "Stiamo lavorando sodo su questa nuova sezione Products (Prodotti), quindi potresti vedere alcune modifiche mentre ci prepariamo al lancio 🚀";
-
 /* The info of the top banner on Dashboard that indicates new stats is available */
 "We’re rolling out improvements to stats for stores using the WooCommerce Admin plugin" = "Stiamo distribuendo miglioramenti alle statistiche per i negozi che utilizzano il plugin WooCommerce Admin";
-
-/* The info of the Work In Progress top banner on the Products tab */
-"We’ve added editing functionality to simple products. Keep an eye out for editing on other product types soon" = "Abbiamo aggiunto funzionalità di modifica a prodotti semplici. Tieni d'occhio la funzione di modifica su altri tipi di prodotti perché sarà presto disponibile";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "Qual'è l'indirizzo del mio sito?";
@@ -2013,14 +2241,15 @@
 /* Subject of new Zendesk ticket. */
 "WooCommerce for iOS Support" = "Supporto WooCommerce per iOS";
 
-/* Menu option for selecting media from the site's media library. */
+/* Menu option for selecting media from the site's media library.
+   Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "Libreria multimediale WordPress";
 
 /* No comment provided by engineer. */
-"WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "La versione di WordPress è troppo vecchia Il sito %1$@ usa WordPress %2$@. Ti suggeriamo di aggiornare all'ultima versione, o, almeno, alla versione %3$@";
+"WordPress version too old. The site at %@ uses WordPress %@. We recommend to update to the latest version, or at least %@" = "La versione di WordPress è troppo vecchia Il sito %1$@ usa WordPress %2$@. Ti suggeriamo di aggiornare all'ultima versione, o, almeno, alla versione %3$@";
 
-/* The title of the Work In Progress top banner on the Products tab */
-"Work in progress!" = "Lavori in corso!";
+/* Option to select the Yahoo Mail app when logging in with magic links */
+"Yahoo Mail" = "Yahoo Mail";
 
 /* Statistical unit - a single year */
 "Year" = "Anno";
@@ -2034,11 +2263,11 @@
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "L'indirizzo email che hai inserito non può essere usato per creare l'account. Stiamo avendo problemi con il tuo provider di posta elettronica che blocca le nostre email di attivazione. Si prega di riprovare con un altro indirizzo email.";
 
+/* Alert message to confirm the user wants to discard changes in Product Visibility */
+"You need to add a password to make your product password-protected" = "Devi aggiungere una password per fare in modo che il tuo prodotto sia protetto da password";
+
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Sembra che tu abbia installato un plugin per mobile di DudaMobile che impedisce all'applicazione di stabilire una connessione con il tuo blog";
-
-/* Instructional text on how to open the email containing a magic link. */
-"Your magic link is on its way! Check your email on this device, and tap the link in the email you receive from WordPress.com" = "Il tuo link sta arrivando! Controlla la tua e-mail su questo dispositivo e premi il link nell'e-mail ricevuta da WordPress.com";
 
 /* shown in promotional screens during first launch */
 "Your notifications travel with you — see comments and likes as they happen." = "Le tue notifiche viaggiano con te: vedi i commenti e i mi piace in tempo reale.";

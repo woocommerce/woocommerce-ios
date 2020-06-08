@@ -11,7 +11,7 @@ extension Product {
 
     static func createRegularPriceViewModel(regularPrice: String?,
                                             using currencySettings: CurrencySettings,
-                                       onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
+                                            onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
         let title = NSLocalizedString("Price", comment: "Title of the cell in Product Price Settings > Price")
 
         let currencyFormatter = CurrencyFormatter()
@@ -25,6 +25,10 @@ extension Product {
                                   unit: unit,
                                   value: value,
                                   placeholder: placeholder,
+                                  accessibilityHint: NSLocalizedString(
+                                  "The price for this product. Editable.",
+                                  comment: "VoiceOver accessibility hint, informing the user that the cell shows the price information for this product."),
+                                  unitPosition: currencySettings.currencyUnitPosition,
                                   keyboardType: .decimalPad,
                                   inputFormatter: PriceInputFormatter(),
                                   onInputChange: onInputChange)
@@ -32,7 +36,7 @@ extension Product {
 
     static func createSalePriceViewModel(salePrice: String?,
                                          using currencySettings: CurrencySettings,
-                                       onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
+                                         onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
         let title = NSLocalizedString("Sale price", comment: "Title of the cell in Product Price Settings > Sale price")
 
         let currencyFormatter = CurrencyFormatter()
@@ -46,8 +50,27 @@ extension Product {
                                   unit: unit,
                                   value: value,
                                   placeholder: placeholder,
+                                  accessibilityHint: NSLocalizedString(
+                                  "The sale price for this product. Editable.",
+                                  comment: "VoiceOver accessibility hint, informing the user that the cell shows the sale price information for this product."),
+                                  unitPosition: currencySettings.currencyUnitPosition,
                                   keyboardType: .decimalPad,
                                   inputFormatter: PriceInputFormatter(),
                                   onInputChange: onInputChange)
+    }
+}
+
+private extension CurrencySettings {
+    var currencyUnitPosition: UnitInputViewModel.UnitPosition {
+        switch currencyPosition {
+        case .left:
+            return .beforeInputWithoutSpace
+        case .leftSpace:
+            return .beforeInput
+        case .right:
+            return .afterInputWithoutSpace
+        case .rightSpace:
+            return .afterInput
+        }
     }
 }

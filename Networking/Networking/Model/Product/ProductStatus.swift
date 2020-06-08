@@ -50,13 +50,13 @@ extension ProductStatus: RawRepresentable {
     public var description: String {
         switch self {
         case .publish:
-            return NSLocalizedString("Publish", comment: "Display label for the product's published status")
+            return NSLocalizedString("Published", comment: "Display label for the product's published status")
         case .draft:
             return NSLocalizedString("Draft", comment: "Display label for the product's draft status")
         case .pending:
-            return NSLocalizedString("Pending", comment: "Display label for the product's pending status")
+            return NSLocalizedString("Pending review", comment: "Display label for the product's pending status")
         case .privateStatus:
-            return NSLocalizedString("Private", comment: "Display label for the product's private status")
+            return NSLocalizedString("Privately published", comment: "Display label for the product's private status")
         case .custom(let payload):
             return payload // unable to localize at runtime.
         }

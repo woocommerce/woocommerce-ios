@@ -149,6 +149,13 @@ extension UIColor {
         return UIColor(light: .accent,
                        dark: .systemColor(.label))
     }
+
+    /// Text. WooCommercePurple-60 (< iOS 13 and Light Mode) and WooCommercePurple-30 (Dark Mode)
+    ///
+    static var textBrand: UIColor {
+        return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60),
+        dark: .withColorStudio(.wooCommercePurple, shade: .shade30))
+    }
 }
 
 
@@ -448,6 +455,38 @@ extension UIColor {
                 return UIColor(light: .withColorStudio(.gray, shade: .shade90), dark: .withColorStudio(.gray, shade: .shade5))
             case .shade100:
                 return UIColor(light: .withColorStudio(.gray, shade: .shade100), dark: .withColorStudio(.gray, shade: .shade0))
+        }
+    }
+}
+
+// MARK: - Woo Purples
+extension UIColor {
+    class func wooCommercePurple(_ shade: ColorStudioShade) -> UIColor {
+        switch shade {
+        case .shade0:
+            return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade0), dark: .withColorStudio(.wooCommercePurple, shade: .shade100))
+            case .shade5:
+                return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade5), dark: .withColorStudio(.wooCommercePurple, shade: .shade90))
+            case .shade10:
+                return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade10), dark: .withColorStudio(.wooCommercePurple, shade: .shade80))
+            case .shade20:
+                return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade20), dark: .withColorStudio(.wooCommercePurple, shade: .shade70))
+            case .shade30:
+                return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade30), dark: .withColorStudio(.wooCommercePurple, shade: .shade60))
+            case .shade40:
+                return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade40), dark: .withColorStudio(.wooCommercePurple, shade: .shade50))
+            case .shade50:
+                return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade50), dark: .withColorStudio(.wooCommercePurple, shade: .shade40))
+            case .shade60:
+                return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60), dark: .withColorStudio(.wooCommercePurple, shade: .shade30))
+            case .shade70:
+                return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade70), dark: .withColorStudio(.wooCommercePurple, shade: .shade20))
+            case .shade80:
+                return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade80), dark: .withColorStudio(.wooCommercePurple, shade: .shade10))
+            case .shade90:
+                return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade90), dark: .withColorStudio(.wooCommercePurple, shade: .shade5))
+            case .shade100:
+                return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade100), dark: .withColorStudio(.wooCommercePurple, shade: .shade0))
         }
     }
 }

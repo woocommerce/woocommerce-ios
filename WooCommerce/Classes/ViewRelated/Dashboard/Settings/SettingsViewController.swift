@@ -142,16 +142,14 @@ private extension SettingsViewController {
         #endif
 
         if couldShowBetaFeaturesRow() {
-            rowsForImproveTheAppSection { [weak self] improveTheAppRows in
-                self?.sections = [
-                    Section(title: selectedStoreTitle, rows: storeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
-                    Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
-                    Section(title: improveTheAppTitle, rows: improveTheAppRows, footerHeight: UITableView.automaticDimension),
-                    Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
-                    otherSection,
-                    Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
-                ]
-            }
+            sections = [
+                Section(title: selectedStoreTitle, rows: storeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
+                Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
+                Section(title: improveTheAppTitle, rows: [.privacy, .betaFeatures, .featureRequest], footerHeight: UITableView.automaticDimension),
+                Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
+                otherSection,
+                Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
+            ]
         } else {
             sections = [
                 Section(title: selectedStoreTitle, rows: storeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
@@ -162,26 +160,6 @@ private extension SettingsViewController {
                 Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
             ]
         }
-    }
-
-    func rowsForImproveTheAppSection(onCompletion: @escaping (_ rows: [Row]) -> Void) {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productList) {
-            onCompletion([.privacy, .betaFeatures, .featureRequest])
-            return
-        }
-
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            assertionFailure("Cannot find store ID")
-            return
-        }
-        let action = AppSettingsAction.loadStatsVersionEligible(siteID: siteID) { eligibleStatsVersion in
-            guard eligibleStatsVersion == .v4 else {
-                onCompletion([.privacy, .featureRequest])
-                return
-            }
-            onCompletion([.privacy, .betaFeatures, .featureRequest])
-        }
-        ServiceLocator.stores.dispatch(action)
     }
 
     func registerTableViewCells() {
@@ -304,8 +282,7 @@ private extension SettingsViewController {
     }
 
     func couldShowBetaFeaturesRow() -> Bool {
-        let featureFlagService = ServiceLocator.featureFlagService
-        return featureFlagService.isFeatureFlagEnabled(.stats) || featureFlagService.isFeatureFlagEnabled(.productList)
+        return true
     }
 }
 

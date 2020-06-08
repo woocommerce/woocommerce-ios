@@ -40,4 +40,18 @@ public extension StorageType {
             deleteObject(shippingClass)
         }
     }
+
+    /// Deletes all of the stored Product Categories that don't have an active product relationship
+    ///
+    func deleteUnusedProductCategories(siteID: Int64) {
+        let categoriesWithNoAssociatedProducts = loadProductCategories(siteID: siteID).filter { category in
+            guard let products = category.products else {
+                return true
+            }
+            return products.isEmpty
+        }
+        categoriesWithNoAssociatedProducts.forEach { category in
+            deleteObject(category)
+        }
+    }
 }

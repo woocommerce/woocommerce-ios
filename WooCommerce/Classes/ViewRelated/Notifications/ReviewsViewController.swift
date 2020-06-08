@@ -156,7 +156,7 @@ private extension ReviewsViewController {
     ///
     func configureTabBarItem() {
         tabBarItem.title = NSLocalizedString("Reviews", comment: "Title of the Reviews tab — plural form of Review")
-        tabBarItem.image = .commentImage
+        tabBarItem.image = .starOutlineImage()
         tabBarItem.accessibilityIdentifier = "tab-bar-reviews-item"
     }
 
@@ -286,7 +286,7 @@ private extension ReviewsViewController {
     /// Nukes the BadgeCount
     ///
     func resetApplicationBadge() {
-        ServiceLocator.pushNotesManager.resetBadgeCount()
+        ServiceLocator.pushNotesManager.resetBadgeCount(type: .comment)
     }
 }
 
@@ -491,7 +491,7 @@ extension ReviewsViewController: SyncingCoordinatorDelegate {
 
     /// Synchronizes the Orders for the Default Store (if any).
     ///
-    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)? = nil) {
+    func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)? = nil) {
         transitionToSyncingState()
         viewModel.synchronizeReviews(pageNumber: pageNumber, pageSize: pageSize) { [weak self] in
             self?.transitionToResultsUpdatedState()

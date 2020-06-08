@@ -1,5 +1,5 @@
 import Foundation
-import ZendeskSDK
+import SupportSDK
 import ZendeskCoreSDK
 import CommonUISDK // Zendesk UI SDK
 import WordPressShared
@@ -83,7 +83,7 @@ class ZendeskManager: NSObject {
         Zendesk.initialize(appId: ApiCredentials.zendeskAppId,
                            clientId: ApiCredentials.zendeskClientId,
                            zendeskUrl: ApiCredentials.zendeskUrl)
-        SupportUI.initialize(withZendesk: Zendesk.instance)
+        Support.initialize(withZendesk: Zendesk.instance)
         CommonTheme.currentTheme.primaryColor = UIColor.primary
 
         haveUserIdentity = getUserProfile()
@@ -578,7 +578,7 @@ private extension ZendeskManager {
             }
         }()
 
-        let networkCarrier = CTTelephonyNetworkInfo().subscriberCellularProvider
+        let networkCarrier = CTTelephonyNetworkInfo().serviceSubscriberCellularProviders?.first?.value
         let carrierName = networkCarrier?.carrierName ?? Constants.unknownValue
         let carrierCountryCode = networkCarrier?.isoCountryCode ?? Constants.unknownValue
 

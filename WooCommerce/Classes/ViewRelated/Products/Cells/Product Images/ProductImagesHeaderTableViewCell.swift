@@ -7,7 +7,7 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
 
     /// View Model
     ///
-    private var viewModel: ProductImagesViewModel?
+    private var viewModel: ProductImagesHeaderViewModel?
 
     /// Collection View Datasource
     ///
@@ -21,6 +21,10 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
     ///
     var onAddImage: (() -> Void)?
 
+    /// Keeps track of the cell config to update collection view layout on change.
+    ///
+    private var config: ProductImagesCellConfig?
+
     override func awakeFromNib() {
         super.awakeFromNib()
 
@@ -33,7 +37,7 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
     func configure(with productImageStatuses: [ProductImageStatus],
                    config: ProductImagesCellConfig,
                    productUIImageLoader: ProductUIImageLoader) {
-        let viewModel = ProductImagesViewModel(productImageStatuses: productImageStatuses,
+        let viewModel = ProductImagesHeaderViewModel(productImageStatuses: productImageStatuses,
                                                config: config)
         self.viewModel = viewModel
         dataSource = ProductImagesCollectionViewDataSource(viewModel: viewModel,
@@ -42,6 +46,10 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
         configureCollectionView(config: config)
 
         viewModel.registerCollectionViewCells(collectionView)
+
+        if viewModel.shouldScrollToStart {
+            collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .centeredHorizontally, animated: false)
+        }
     }
 
     /// Rotation management
@@ -86,7 +94,7 @@ extension ProductImagesHeaderTableViewCell: UICollectionViewDelegateFlowLayout {
         case .extendedAddImage:
             return frame.size
         default:
-            return ProductImagesViewModel.defaultCollectionViewCellSize
+            return ProductImagesHeaderViewModel.defaultCollectionViewCellSize
         }
     }
 }
@@ -120,11 +128,18 @@ private extension ProductImagesHeaderTableViewCell {
         collectionView.dataSource = dataSource
         collectionView.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
         collectionView.showsHorizontalScrollIndicator = false
+
+        guard config != self.config else {
+            return
+        }
+
+        self.config = config
+
         switch config {
         case .extendedAddImages:
             collectionView.collectionViewLayout = ProductImagesFlowLayout(itemSize: frame.size, config: config)
         default:
-            collectionView.collectionViewLayout = ProductImagesFlowLayout(itemSize: ProductImagesViewModel.defaultCollectionViewCellSize, config: config)
+            collectionView.collectionViewLayout = ProductImagesFlowLayout(itemSize: ProductImagesHeaderViewModel.defaultCollectionViewCellSize, config: config)
         }
     }
 }

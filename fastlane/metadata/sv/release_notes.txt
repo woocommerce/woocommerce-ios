@@ -1,2 +1,4 @@
-– På instrumentpanelen öppnar du produktinformationen genom att trycka lätt på en produkt i avsnittet för ”toppresterare”.
-– Beställningsfliken visar nu både artikelantalet och beställningsikonen.
+* Du kan nu aktivera och inaktivera Products M2 Features för enkla produkter i Inställningar > Experimentella funktioner. Products M2 ger möjligheten att uppdatera produktbilder, korta beskrivningar av produkter samt visning, delning och inställningar för produkter (produktinställningarna omfattar status, synlighet, katalogsynlighet, dynamiska datafält, inköpsnota och menyordning).
+* Du kan nu redigera och spara detaljer på flikarna Orderdetaljer och Bäst presterande. Vi har också förbättrat tillgängligheten med bättre VoiceOver-support för produktprisinställningar.
+* Vi har gjort några visuella förbättringar: I Orderdetaljer visas nu betalkortet direkt efter korten för produkter och återbetalade produkter. WIP-banderollen på fliken Produkter är nu komprimerad som standard. Hurra för mer vertikalt utrymme!
+* Vi har avslutat supporten för iOS 11 och tidigare versioner.

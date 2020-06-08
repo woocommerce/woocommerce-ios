@@ -1,2 +1,4 @@
-- Door in het dashboard op een product te tikken in het gedeelte 'Toppresteerders' worden de productgegevens geopend.
-- Het tabblad Bestellingen lokaliseert nu zowel het aantal artikelen en de bestellingsbadge.
+* Je kunt Products M2-functies nu in- en uitschakelen voor eenvoudige producten in Instellingen > Experimentele functies. Products M2 bevat de mogelijkheid om productafbeeldingen bij te werken, producten een korte beschrijving te geven, producten weer te geven, delen en instellen (tot productinstellingen behoren de status, zichtbaarheid, catalogus-zichtbaarheid, slug, aankoopbon en menubestelling.)
+* Je kunt nu ook gegevens bewerken en opslaan in de tabbladen Bestelgegevens en Toppresteerders. We hebben ook de toegankelijkheid verbeterd met betere VoiceOver-ondersteuning voor Productprijs-instellingen.
+* We hebben wat visuele verbeteringen aangebracht: In Bestelgegevens wordt de kaart Betalingen nu weergegeven naast de kaarten Producten en Geretourneerde producten. De WIP-banner op het tabblad Producten is nu standaard ingeklapt. Hoera, meer verticale ruimte!
+* We hebben ondersteuning voor iOS 11 en lager stopgezet.

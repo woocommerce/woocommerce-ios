@@ -20,10 +20,6 @@ final class ProductLoaderViewController: UIViewController {
     ///
     private let siteID: Int64
 
-    /// The Target Product's Currency
-    ///
-    private let currency: String
-
     /// UI Active State
     ///
     private var state: State = .loading {
@@ -35,10 +31,9 @@ final class ProductLoaderViewController: UIViewController {
 
     // MARK: - Initializers
 
-    init(productID: Int64, siteID: Int64, currency: String) {
+    init(productID: Int64, siteID: Int64) {
         self.productID = productID
         self.siteID = siteID
-        self.currency = currency
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -158,34 +153,23 @@ private extension ProductLoaderViewController {
     ///
     func presentProductDetails(for product: Product) {
         let isEditProductsFeatureFlagOn = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts)
-        guard isEditProductsFeatureFlagOn else {
-            presentProductDetails(for: product, isEditProductsEnabled: false)
-            return
-        }
-
-        let action = AppSettingsAction.loadProductsVisibility { [weak self] isEditProductsEnabled in
-            self?.presentProductDetails(for: product, isEditProductsEnabled: isEditProductsEnabled)
-        }
-        ServiceLocator.stores.dispatch(action)
+        presentProductDetails(for: product, isEditProductsEnabled: isEditProductsFeatureFlagOn)
     }
 
     func presentProductDetails(for product: Product, isEditProductsEnabled: Bool) {
-        let viewController: UIViewController
-        if product.productType == .simple && isEditProductsEnabled {
-            viewController = ProductFormViewController(product: product, currency: currency)
-        } else {
-            let viewModel = ProductDetailsViewModel(product: product, currency: currency)
-            viewController = ProductDetailsViewController(viewModel: viewModel)
+        ProductDetailsFactory.productDetails(product: product, presentationStyle: .contained(containerViewController: self)) { [weak self] viewController in
+            self?.attachProductDetailsChildViewController(viewController)
         }
+    }
 
+    func attachProductDetailsChildViewController(_ viewController: UIViewController) {
         // Attach
         addChild(viewController)
         attachSubview(viewController.view)
         viewController.didMove(toParent: self)
 
-
         // And, of course, borrow the Child's Title + right nav bar items
-        title = viewController.title
+        title = viewController.navigationItem.title
         navigationItem.rightBarButtonItems = viewController.navigationItem.rightBarButtonItems
     }
 

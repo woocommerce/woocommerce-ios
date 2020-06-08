@@ -15,12 +15,21 @@ enum ProductFormSection {
         case price(viewModel: ViewModel)
         case shipping(viewModel: ViewModel)
         case inventory(viewModel: ViewModel)
+        case categories(viewModel: ViewModel)
         case briefDescription(viewModel: ViewModel)
 
         struct ViewModel {
             let icon: UIImage
             let title: String?
             let details: String?
+            let numberOfLinesForDetails: Int
+
+            init(icon: UIImage, title: String?, details: String?, numberOfLinesForDetails: Int = 0) {
+                self.icon = icon
+                self.title = title
+                self.details = details
+                self.numberOfLinesForDetails = numberOfLinesForDetails
+            }
         }
     }
 }

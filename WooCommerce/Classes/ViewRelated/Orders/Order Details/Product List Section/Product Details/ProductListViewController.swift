@@ -126,8 +126,7 @@ private extension ProductListViewController {
     ///
     func productWasPressed(for productID: Int64) {
         let loaderViewController = ProductLoaderViewController(productID: productID,
-                                                               siteID: viewModel.order.siteID,
-                                                               currency: viewModel.order.currency)
+                                                               siteID: viewModel.order.siteID)
         let navController = WooNavigationController(rootViewController: loaderViewController)
         present(navController, animated: true, completion: nil)
     }

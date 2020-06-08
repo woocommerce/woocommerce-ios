@@ -6,7 +6,7 @@ import Yosemite
 protocol ProductUIImageLoader {
     /// Requests an image given a remote Product image asynchronously.
     ///
-    func requestImage(productImage: ProductImage, completion: @escaping (UIImage) -> Void)
+    func requestImage(productImage: ProductImage, completion: @escaping (UIImage) -> Void) -> Cancellable?
 
     /// Requests an image given a `PHAsset` asynchronously, with a target size for optimization.
     ///

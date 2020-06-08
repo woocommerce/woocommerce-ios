@@ -1,4 +1,5 @@
 import XCTest
+import Gridicons
 @testable import WooCommerce
 
 final class IconsTests: XCTestCase {
@@ -78,6 +79,14 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.emptyReviewsImage)
     }
 
+    func testEmptySearchResultsImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.emptySearchResultsImage)
+    }
+
+    func testEmptyOrdersImageIsNotNil() {
+        XCTAssertNotNil(UIImage.emptyOrdersImage)
+    }
+
     func testErrorStateImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.errorStateImage)
     }
@@ -132,6 +141,10 @@ final class IconsTests: XCTestCase {
 
     func testMoreImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.moreImage)
+    }
+
+    func testPlusImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.plusImage)
     }
 
     func testPriceImageIconIsNotNil() {
@@ -194,6 +207,11 @@ final class IconsTests: XCTestCase {
         XCTAssertEqual(starOutlineImage.size, CGSize(width: size, height: size))
     }
 
+    func testStarOutlineImageDefaultSize() {
+        let starOutlineImage = UIImage.starOutlineImage()
+        XCTAssertEqual(starOutlineImage.size, Gridicon.defaultSize)
+    }
+
     func testStatsImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.statsImage)
     }
@@ -216,7 +234,20 @@ final class IconsTests: XCTestCase {
         XCTAssertEqual(size, image!.size)
     }
 
+    func testPasswordFieldImageIsNotNil() {
+        XCTAssertNotNil(UIImage.passwordFieldImage)
+    }
+
     func testWaitingForCustomersImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.waitingForCustomersImage)
+    }
+
+    func testCategoriesIconIsNotNil() {
+        XCTAssertNotNil(UIImage.categoriesIcon)
+    }
+
+    func testCategoriesIconHasDefaultSize() {
+        let categoriesIcon = UIImage.categoriesIcon
+        XCTAssertEqual(categoriesIcon.size, Gridicon.defaultSize)
     }
 }

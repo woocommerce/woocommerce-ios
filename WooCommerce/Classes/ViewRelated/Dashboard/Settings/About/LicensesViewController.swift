@@ -54,6 +54,8 @@ private extension LicensesViewController {
     ///
     func configureWebView() {
         webView.navigationDelegate = self
+        webView.backgroundColor = .clear
+        webView.isOpaque = false
         webView.loadFileURL(licenseURL, allowingReadAccessTo: licenseURL)
     }
 }

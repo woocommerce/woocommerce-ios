@@ -31,11 +31,33 @@ final class ProductsViewController: UIViewController {
         return UIView(frame: .zero)
     }()
 
+    /// Top stack view that is shown above the table view as the table header view.
+    ///
+    private lazy var topStackView: UIStackView = {
+        let subviews = [topBannerContainerView, toolbar]
+        let stackView = UIStackView(arrangedSubviews: subviews)
+        stackView.axis = .vertical
+        stackView.spacing = 8
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+
+    /// Top toolbar that shows the sort and filter CTAs.
+    ///
+    private lazy var toolbar: UIView = {
+        return createToolbar()
+    }()
+
+    /// The filter CTA in the top toolbar.
+    private lazy var filterButton: UIButton = UIButton(frame: .zero)
+
+    /// Container of the top banner that shows that the Products feature is still work in progress.
+    ///
+    private lazy var topBannerContainerView: SwappableSubviewContainerView = SwappableSubviewContainerView()
+
     /// Top banner that shows that the Products feature is still work in progress.
     ///
-    private lazy var topBannerView: UIView = {
-        return createTopBannerView()
-    }()
+    private var topBannerView: TopBannerView?
 
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Products in sync.
     ///
@@ -47,6 +69,15 @@ final class ProductsViewController: UIViewController {
         }
         return resultsController
     }()
+
+    private var sortOrder: ProductsSortOrder = .nameAscending {
+        didSet {
+            if sortOrder != oldValue {
+                resultsController.updateSortOrder(sortOrder)
+                syncingCoordinator.resynchronize {}
+            }
+        }
+    }
 
     /// Keep track of the (Autosizing Cell's) Height. This helps us prevent UI flickers, due to sizing recalculations.
     ///
@@ -73,6 +104,28 @@ final class ProductsViewController: UIViewController {
 
     private let imageService: ImageService = ServiceLocator.imageService
 
+    private var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters() {
+        didSet {
+            if filters != oldValue {
+                updateFilterButtonTitle(filters: filters)
+
+                guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+                    assertionFailure("No valid site ID for Products tab")
+                    return
+                }
+                resultsController.updatePredicate(siteID: siteID,
+                                                  stockStatus: filters.stockStatus,
+                                                  productStatus: filters.productStatus,
+                                                  productType: filters.productType)
+                syncingCoordinator.resynchronize {}
+            }
+        }
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
@@ -83,6 +136,9 @@ final class ProductsViewController: UIViewController {
         configureTableView()
         configureSyncingCoordinator()
         registerTableViewCells()
+
+        updateTopBannerView()
+        observeProductsFeatureSwitchChange()
 
         startListeningToNotifications()
         syncingCoordinator.resynchronize()
@@ -215,10 +271,11 @@ private extension ProductsViewController {
         tableView.backgroundColor = .listBackground
         tableView.refreshControl = refreshControl
         tableView.tableFooterView = footerSpinnerView
+        tableView.separatorStyle = .none
 
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
-        headerContainer.addSubview(topBannerView)
-        headerContainer.pinSubviewToAllEdges(topBannerView, insets: Constants.headerContainerInsets)
+        headerContainer.addSubview(topStackView)
+        headerContainer.pinSubviewToSafeArea(topStackView, insets: Constants.headerContainerInsets)
         let bottomBorderView = UIView.createBorderView()
         headerContainer.addSubview(bottomBorderView)
         NSLayoutConstraint.activate([
@@ -229,40 +286,26 @@ private extension ProductsViewController {
         tableView.tableHeaderView = headerContainer
     }
 
-    func createTopBannerView() -> UIView {
-        let title: String
-        let infoText: String
+    func createToolbar() -> ToolbarView {
+        let sortTitle = NSLocalizedString("Sort by", comment: "Title of the toolbar button to sort products in different ways.")
+        let sortButton = UIButton(frame: .zero)
+        sortButton.setTitle(sortTitle, for: .normal)
+        sortButton.addTarget(self, action: #selector(sortButtonTapped(sender:)), for: .touchUpInside)
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts) {
-            title = NSLocalizedString("Limited editing available",
-                                      comment: "The title of the Work In Progress top banner on the Products tab")
-            infoText = NSLocalizedString("We’ve added editing functionality to simple products. Keep an eye out for editing on other product types soon",
-                                         comment: "The info of the Work In Progress top banner on the Products tab")
-        } else {
-            title = NSLocalizedString("Work in progress!",
-                                      comment: "The title of the Work In Progress top banner on the Products tab")
-            infoText = NSLocalizedString("We’re hard at work on this new Products section, so you may see some changes as we get ready for launch 🚀",
-                                         comment: "The info of the Work In Progress top banner on the Products tab")
+        let filterTitle = NSLocalizedString("Filter", comment: "Title of the toolbar button to filter products by different attributes.")
+        filterButton.setTitle(filterTitle, for: .normal)
+        filterButton.addTarget(self, action: #selector(filterButtonTapped), for: .touchUpInside)
+
+        [sortButton, filterButton].forEach {
+            $0.applyLinkButtonStyle()
+            $0.contentEdgeInsets = Constants.toolbarButtonInsets
         }
 
-        let viewModel = TopBannerViewModel(title: title,
-                                           infoText: infoText,
-                                           icon: .workInProgressBanner) { [weak self] in
-                                            self?.tableView.updateHeaderHeight()
-        }
-        let topBannerView = TopBannerView(viewModel: viewModel)
-        topBannerView.translatesAutoresizingMaskIntoConstraints = false
+        let toolbar = ToolbarView()
+        toolbar.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
+        toolbar.setSubviews(leftViews: [sortButton], rightViews: [filterButton])
 
-        let inventoryScannerButton = UIButton(frame: .zero)
-        inventoryScannerButton.setTitle(NSLocalizedString("📷 Scan barcodes", comment: ""), for: .normal)
-        inventoryScannerButton.applyLinkButtonStyle()
-        inventoryScannerButton.addTarget(self, action: #selector(inventoryScannerButtonTapped), for: .touchUpInside)
-
-        let stackView = UIStackView(arrangedSubviews: [topBannerView, inventoryScannerButton])
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .vertical
-
-        return stackView
+        return toolbar
     }
 
     /// Setup: Sync'ing Coordinator
@@ -296,6 +339,23 @@ private extension ProductsViewController {
 // MARK: - Updates
 //
 private extension ProductsViewController {
+    func observeProductsFeatureSwitchChange() {
+        NotificationCenter.default.addObserver(forName: .ProductsFeatureSwitchDidChange, object: nil, queue: nil) { [weak self] _ in
+            self?.updateTopBannerView()
+        }
+    }
+
+    func updateTopBannerView() {
+        let isExpanded = topBannerView?.isExpanded ?? false
+        ProductsTopBannerFactory.topBanner(isExpanded: isExpanded, expandedStateChangeHandler: { [weak self] in
+            self?.tableView.updateHeaderHeight()
+        }, onCompletion: { [weak self] topBannerView in
+            self?.topBannerContainerView.updateSubview(topBannerView)
+            self?.topBannerView = topBannerView
+            self?.tableView.updateHeaderHeight()
+        })
+    }
+
     func updateResultsController(siteID: Int64) {
         resultsController = createResultsController(siteID: siteID)
         configureResultsController(resultsController) { [weak self] in
@@ -305,10 +365,14 @@ private extension ProductsViewController {
 
     func createResultsController(siteID: Int64) -> ResultsController<StorageProduct> {
         let storageManager = ServiceLocator.storageManager
-        let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let descriptor = NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.localizedCompare(_:)))
+        let predicate = NSPredicate.createProductPredicate(siteID: siteID,
+                                                           stockStatus: filters.stockStatus,
+                                                           productStatus: filters.productStatus,
+                                                           productType: filters.productType)
 
-        return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+        return ResultsController<StorageProduct>(storageManager: storageManager,
+                                                 matching: predicate,
+                                                 sortOrder: sortOrder)
     }
 
     func configureResultsController(_ resultsController: ResultsController<StorageProduct>, onReload: @escaping () -> Void) {
@@ -371,15 +435,7 @@ extension ProductsViewController: UITableViewDelegate {
         let product = resultsController.object(at: indexPath)
 
         let isEditProductsFeatureFlagOn = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts)
-        guard isEditProductsFeatureFlagOn else {
-            didSelectProduct(product: product, isEditProductsEnabled: false)
-            return
-        }
-
-        let action = AppSettingsAction.loadProductsVisibility { [weak self] isEditProductsEnabled in
-            self?.didSelectProduct(product: product, isEditProductsEnabled: isEditProductsEnabled)
-        }
-        ServiceLocator.stores.dispatch(action)
+        didSelectProduct(product: product, isEditProductsEnabled: isEditProductsFeatureFlagOn)
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -397,21 +453,14 @@ extension ProductsViewController: UITableViewDelegate {
 
 private extension ProductsViewController {
     func didSelectProduct(product: Product, isEditProductsEnabled: Bool) {
-        let currencyCode = CurrencySettings.shared.currencyCode
-        let currency = CurrencySettings.shared.symbol(from: currencyCode)
-        let viewController: UIViewController
-        if product.productType == .simple && isEditProductsEnabled {
-            viewController = ProductFormViewController(product: product, currency: currency)
-            // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
-            viewController.hidesBottomBarWhenPushed = true
-        } else {
-            let viewModel = ProductDetailsViewModel(product: product, currency: currency)
-            viewController = ProductDetailsViewController(viewModel: viewModel)
+        ProductDetailsFactory.productDetails(product: product, presentationStyle: .navigationStack) { [weak self] viewController in
+            self?.navigationController?.pushViewController(viewController, animated: true)
         }
-        navigationController?.pushViewController(viewController, animated: true)
     }
 }
 
+// MARK: - Actions
+//
 private extension ProductsViewController {
     @objc private func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.productListPulledToRefresh)
@@ -419,6 +468,41 @@ private extension ProductsViewController {
         syncingCoordinator.resynchronize {
             sender.endRefreshing()
         }
+    }
+
+    @objc func sortButtonTapped(sender: UIButton) {
+        ServiceLocator.analytics.track(.productListViewSortingOptionsTapped)
+        let title = NSLocalizedString("Sort by",
+                                      comment: "Message title for sort products action bottom sheet")
+        let viewProperties = BottomSheetListSelectorViewProperties(title: title)
+        let command = ProductsSortOrderBottomSheetListSelectorCommand(selected: sortOrder)
+        let sortOrderListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties,
+                                                                      command: command) { [weak self] selectedSortOrder in
+                                                                        defer {
+                                                                            self?.dismiss(animated: true, completion: nil)
+                                                                        }
+
+                                                                        guard let selectedSortOrder = selectedSortOrder else {
+                                                                            return
+                                                                        }
+                                                                        self?.sortOrder = selectedSortOrder
+         ServiceLocator.analytics.track(.productSortingListOptionSelected, withProperties: ["order": selectedSortOrder.analyticsDescription])
+        }
+        sortOrderListPresenter.show(from: self, sourceView: sender, arrowDirections: .up)
+    }
+
+    @objc func filterButtonTapped() {
+        ServiceLocator.analytics.track(.productListViewFilterOptionsTapped)
+        let viewModel = FilterProductListViewModel(filters: filters)
+        let filterProductListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
+            ServiceLocator.analytics.track(.productFilterListShowProductsButtonTapped, withProperties: ["filters": filters.analyticsDescription])
+            self?.filters = filters
+        }, onClearAction: {
+            ServiceLocator.analytics.track(.productFilterListClearMenuButtonTapped)
+        }, onDismissAction: {
+            ServiceLocator.analytics.track(.productFilterListDismissButtonTapped)
+        })
+        present(filterProductListViewController, animated: true, completion: nil)
     }
 }
 
@@ -471,7 +555,7 @@ private extension ProductsViewController {
         NSLayoutConstraint.activate([
             overlayView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             overlayView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            overlayView.topAnchor.constraint(equalTo: topBannerView.bottomAnchor),
+            overlayView.topAnchor.constraint(equalTo: topStackView.bottomAnchor),
             overlayView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
@@ -491,7 +575,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
 
     /// Synchronizes the Products for the Default Store (if any).
     ///
-    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)? = nil) {
+    func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)? = nil) {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             onCompletion?(false)
             return
@@ -502,7 +586,11 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
         let action = ProductAction
             .synchronizeProducts(siteID: siteID,
                                  pageNumber: pageNumber,
-                                 pageSize: pageSize) { [weak self] error in
+                                 pageSize: pageSize,
+                                 stockStatus: filters.stockStatus,
+                                 productStatus: filters.productStatus,
+                                 productType: filters.productType,
+                                 sortOrder: sortOrder) { [weak self] error in
                                     guard let self = self else {
                                         return
                                     }
@@ -563,6 +651,24 @@ private extension ProductsViewController {
     }
 }
 
+// MARK: - Filter UI Helpers
+//
+private extension ProductsViewController {
+    func updateFilterButtonTitle(filters: FilterProductListViewModel.Filters) {
+        let activeFilterCount = filters.numberOfActiveFilters
+
+        let titleWithoutActiveFilters =
+            NSLocalizedString("Filter", comment: "Title of the toolbar button to filter products without any filters applied.")
+        let titleFormatWithActiveFilters =
+            NSLocalizedString("Filter (%ld)", comment: "Title of the toolbar button to filter products with filters applied.")
+
+        let title = activeFilterCount > 0 ?
+            String.localizedStringWithFormat(titleFormatWithActiveFilters, activeFilterCount): titleWithoutActiveFilters
+
+        filterButton.setTitle(title, for: .normal)
+    }
+}
+
 // MARK: - Spinner Helpers
 //
 extension ProductsViewController {
@@ -604,6 +710,7 @@ private extension ProductsViewController {
         static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
         static let headerDefaultHeight = CGFloat(130)
-        static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 16, right: 0)
+        static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        static let toolbarButtonInsets = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
     }
 }

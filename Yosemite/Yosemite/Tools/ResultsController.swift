@@ -13,9 +13,9 @@ public typealias ResultsControllerMutableType = NSManagedObject & ReadOnlyConver
 //
 public class ResultsController<T: ResultsControllerMutableType> {
 
-    /// Managed Object Context used to fetch objects.
+    /// The `StorageType` used to fetch objects.
     ///
-    private let viewContext: NSManagedObjectContext
+    private let viewStorage: StorageType
 
     /// keyPath on resulting objects that returns the section name.
     ///
@@ -31,7 +31,11 @@ public class ResultsController<T: ResultsControllerMutableType> {
 
     /// Results's Sort Descriptor.
     ///
-    private let sortDescriptors: [NSSortDescriptor]?
+    public var sortDescriptors: [NSSortDescriptor]? {
+        didSet {
+            refreshFetchedObjects(sortDescriptors: sortDescriptors)
+        }
+    }
 
     /// NSFetchRequest instance used to do the fetching.
     ///
@@ -45,10 +49,11 @@ public class ResultsController<T: ResultsControllerMutableType> {
     /// Internal NSFetchedResultsController Instance.
     ///
     private lazy var controller: NSFetchedResultsController<T> = {
-        return NSFetchedResultsController(fetchRequest: fetchRequest,
-                                          managedObjectContext: viewContext,
-                                          sectionNameKeyPath: sectionNameKeyPath,
-                                          cacheName: nil)
+        viewStorage.createFetchedResultsController(
+                fetchRequest: fetchRequest,
+                sectionNameKeyPath: sectionNameKeyPath,
+                cacheName: nil
+        )
     }()
 
     /// FetchedResultsController Delegate Wrapper.
@@ -83,12 +88,12 @@ public class ResultsController<T: ResultsControllerMutableType> {
 
     /// Designated Initializer.
     ///
-    public init(viewContext: NSManagedObjectContext,
+    public init(viewStorage: StorageType,
                 sectionNameKeyPath: String? = nil,
                 matching predicate: NSPredicate? = nil,
                 sortedBy descriptors: [NSSortDescriptor]) {
 
-        self.viewContext = viewContext
+        self.viewStorage = viewStorage
         self.sectionNameKeyPath = sectionNameKeyPath
         self.predicate = predicate
         self.sortDescriptors = descriptors
@@ -100,12 +105,12 @@ public class ResultsController<T: ResultsControllerMutableType> {
 
     /// Convenience Initializer.
     ///
-    public convenience init(storageManager: CoreDataManager,
+    public convenience init(storageManager: StorageManagerType,
                             sectionNameKeyPath: String? = nil,
                             matching predicate: NSPredicate? = nil,
                             sortedBy descriptors: [NSSortDescriptor]) {
 
-        self.init(viewContext: storageManager.persistentContainer.viewContext,
+        self.init(viewStorage: storageManager.viewStorage,
                   sectionNameKeyPath: sectionNameKeyPath,
                   matching: predicate,
                   sortedBy: descriptors)
@@ -181,6 +186,13 @@ public class ResultsController<T: ResultsControllerMutableType> {
         try? controller.performFetch()
     }
 
+    /// Refreshes all of the Fetched Objects, so that the new sort descriptors are applied.
+    ///
+    private func refreshFetchedObjects(sortDescriptors: [NSSortDescriptor]?) {
+        controller.fetchRequest.sortDescriptors = sortDescriptors
+        try? controller.performFetch()
+    }
+
     /// Initializes the FetchedResultsController
     ///
     private func setupResultsController() {
@@ -244,36 +256,45 @@ public extension ResultsController {
     typealias ChangeType = NSFetchedResultsChangeType
 
     // MARK: - ResultsController.SectionInfo
-    //
-    class SectionInfo {
+
+    /// An interface to `NSFetchedResultsSectionInfo` which enforces readonly usage.
+    ///
+    final class SectionInfo {
+
+        /// The real SectionInfo that we're hiding.
+        ///
+        private let mutableSectionInfo: NSFetchedResultsSectionInfo
 
         /// Name of the section
         ///
-        public let name: String
+        public var name: String {
+            mutableSectionInfo.name
+        }
 
         /// Number of objects in the current section
         ///
         public var numberOfObjects: Int {
-            return mutableObjects.count
+            mutableSectionInfo.numberOfObjects
         }
 
         /// Returns the array of (ReadOnly) objects in the section.
         ///
         private(set) public lazy var objects: [T.ReadOnlyType] = {
-            return mutableObjects.map { $0.toReadOnly() }
+            guard let objects = mutableSectionInfo.objects else {
+                return []
+            }
+            guard let castedObjects = objects as? [T] else {
+                assertionFailure("Failed to cast objects into an array of \(T.self)")
+                return []
+            }
+
+            return castedObjects.map { $0.toReadOnly() }
         }()
-
-
-        /// Array of Mutable Objects!
-        ///
-        private let mutableObjects: [T]
-
 
         /// Designated Initializer
         ///
         init(mutableSection: NSFetchedResultsSectionInfo) {
-            name = mutableSection.name
-            mutableObjects = mutableSection.objects as? [T] ?? []
+            mutableSectionInfo = mutableSection
         }
     }
 }

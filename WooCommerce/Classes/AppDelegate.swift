@@ -42,12 +42,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
 
+        // As first thing, setup the crash logging
+        setupCrashLogging()
+
         // Setup the Interface!
         setupMainWindow()
         setupComponentsAppearance()
 
         // Setup Components
-        setupCrashLogging()
         setupAnalytics()
         setupAuthenticationManager()
         setupCocoaLumberjack()
@@ -56,6 +58,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupPushNotificationsManagerIfPossible()
         setupAppRatingManager()
         setupWormholy()
+        setupKeyboardStateProvider()
         handleLaunchArguments()
 
         // Display the Authentication UI
@@ -101,7 +104,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didReceiveRemoteNotification userInfo: [AnyHashable: Any],
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        ServiceLocator.pushNotesManager.handleNotification(userInfo, completionHandler: completionHandler)
+        ServiceLocator.pushNotesManager.handleNotification(userInfo, onBadgeUpdateCompletion: {}, completionHandler: completionHandler)
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
@@ -291,6 +294,14 @@ private extension AppDelegate {
         /// We want to activate it programmatically, not using the shake.
         Wormholy.shakeEnabled = false
         #endif
+    }
+
+    /// Set up `KeyboardStateProvider`
+    ///
+    func setupKeyboardStateProvider() {
+        // Simply _accessing_ it is enough. We only want the object to be initialized right away
+        // so it can start observing keyboard changes.
+        _ = ServiceLocator.keyboardStateProvider
     }
 
     func handleLaunchArguments() {

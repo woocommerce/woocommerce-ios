@@ -1,5 +1,5 @@
-import FloatingPanel
 import UIKit
+import WordPressUI
 import Yosemite
 
 final class ProductStockScannerViewController: UIViewController {
@@ -19,23 +19,21 @@ final class ProductStockScannerViewController: UIViewController {
         }
     }()
 
-    private lazy var floatingPanelController: FloatingPanelController = {
-        let fpc = FloatingPanelController(delegate: nil)
-        fpc.set(contentViewController: resultsNavigationController)
-        fpc.surfaceView.cornerRadius = 9.0
-        fpc.surfaceView.grabberTopPadding = -12.0
-        return fpc
+    private lazy var floatingPanelController: BottomSheetViewController = {
+        let bottomSheet = BottomSheetViewController(childViewController: resultsNavigationController)
+        return bottomSheet
     }()
 
     private var areSearchResultsPresented: Bool = false
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
         let keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: { [weak self] keyboardFrame in
-            if keyboardFrame.height > 0 {
-                self?.floatingPanelController.move(to: .full, animated: true)
-            } else {
-                self?.floatingPanelController.move(to: .half, animated: true)
-            }
+            // TODO-jc: bottom sheet
+//            if keyboardFrame.height > 0 {
+//                self?.floatingPanelController.move(to: .full, animated: true)
+//            } else {
+//                self?.floatingPanelController.move(to: .half, animated: true)
+//            }
         })
         return keyboardFrameObserver
     }()
@@ -116,20 +114,21 @@ private extension ProductStockScannerViewController {
     }
 
     func presentSearchResults() {
-        guard areSearchResultsPresented == false else {
-            switch traitCollection.verticalSizeClass {
-            case .compact:
-                floatingPanelController.move(to: .tip, animated: true)
-            case .regular:
-                floatingPanelController.move(to: .half, animated: true)
-            default:
-                break
-            }
-            return
-        }
-
-        present(floatingPanelController, animated: true, completion: nil)
-        areSearchResultsPresented = true
+        // TODO-jc: bottom sheet
+//        guard areSearchResultsPresented == false else {
+//            switch traitCollection.verticalSizeClass {
+//            case .compact:
+//                floatingPanelController.move(to: .tip, animated: true)
+//            case .regular:
+//                floatingPanelController.move(to: .half, animated: true)
+//            default:
+//                break
+//            }
+//            return
+//        }
+//
+//        present(floatingPanelController, animated: true, completion: nil)
+//        areSearchResultsPresented = true
     }
 }
 

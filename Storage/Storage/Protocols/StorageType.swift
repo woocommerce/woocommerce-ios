@@ -1,5 +1,7 @@
 import Foundation
 
+import CoreData.NSFetchedResultsController
+import CoreData.NSFetchRequest
 
 /// Defines all of the methods made available by the Storage.
 ///
@@ -51,4 +53,16 @@ public protocol StorageType {
     /// Asynchronously performs a given block on the StorageType's queue.
     ///
     func perform(_ closure: @escaping () -> Void)
+
+    /// Create an `NSFetchedResultsController` using this `StorageType`.
+    ///
+    /// We generally do not allow direct access to `NSManagedObjectContext` as that is hidden
+    /// behind `StorageType`. However, `NSFetchedResultsController` requires an
+    /// `NSManagedObjectContext` to be instantiated. This method solves that problem. Consumers can
+    /// create an `NSFetchedResultsController` without illegally referencing an
+    /// `NSManagedObjectContext`.
+    ///
+    func createFetchedResultsController<ResultType>(fetchRequest: NSFetchRequest<ResultType>,
+                                                    sectionNameKeyPath: String?,
+                                                    cacheName: String?) -> NSFetchedResultsController<ResultType>
 }

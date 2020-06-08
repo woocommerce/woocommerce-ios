@@ -25,7 +25,9 @@ final class ManualTrackingViewController: UIViewController {
     }()
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
-        let keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: handleKeyboardFrameUpdate(keyboardFrame:))
+        let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
+            self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
+        }
         return keyboardFrameObserver
     }()
 
@@ -228,16 +230,17 @@ extension ManualTrackingViewController: UITableViewDataSource {
     }
 
     private func configureShippingProvider(cell: TitleAndEditableValueTableViewCell) {
-        cell.title.text = NSLocalizedString("Shipping provider", comment: "Add / Edit shipping provider. Title of cell presenting name")
+        cell.title.text = NSLocalizedString("Shipping carrier", comment: "Add / Edit shipping carrier. Title of cell presenting name")
         cell.value.text = viewModel.providerCellName
+        cell.value.placeholder = NSLocalizedString("Select carrier", comment: "Add the shipping carrier. Placeholder of cell presenting carrier name")
 
         cell.value.isEnabled = false
         cell.accessoryType = viewModel.providerCellAccessoryType
     }
 
     private func configureProviderName(cell: TitleAndEditableValueTableViewCell) {
-        cell.title.text = NSLocalizedString("Provider name", comment: "Add Custom shipping provider. Title of cell presenting the provider name")
-        cell.value.placeholder = NSLocalizedString("Enter provider name", comment: "Add custom shipping provider. Placeholder of cell presenting provider name")
+        cell.title.text = NSLocalizedString("Carrier name", comment: "Add Custom shipping carrier. Title of cell presenting the carrier name")
+        cell.value.placeholder = NSLocalizedString("Enter carrier name", comment: "Add custom shipping carrier. Placeholder of cell presenting carrier name")
 
         cell.value.text = viewModel.providerName
         cell.value.isEnabled = true
@@ -247,10 +250,10 @@ extension ManualTrackingViewController: UITableViewDataSource {
     }
 
     private func configureTrackingNumber(cell: TitleAndEditableValueTableViewCell) {
-        cell.title.text = NSLocalizedString("Tracking number", comment: "Add / Edit shipping provider. Title of cell presenting tracking number")
+        cell.title.text = NSLocalizedString("Tracking number", comment: "Add / Edit shipping carrier. Title of cell presenting tracking number")
 
         cell.value.placeholder = NSLocalizedString("Enter tracking number",
-                                                   comment: "Add custom shipping provider. Placeholder of cell presenting tracking number")
+                                                   comment: "Add custom shipping carrier. Placeholder of cell presenting tracking number")
         cell.value.text = viewModel.trackingNumber
         cell.value.isEnabled = true
 
@@ -259,9 +262,9 @@ extension ManualTrackingViewController: UITableViewDataSource {
     }
 
     private func configureTrackingLink(cell: TitleAndEditableValueTableViewCell) {
-        cell.title.text = NSLocalizedString("Tracking link (optional)", comment: "Add custom shipping provider. Title of cell presenting tracking link")
+        cell.title.text = NSLocalizedString("Tracking link (optional)", comment: "Add custom shipping carrier. Title of cell presenting carrier link")
 
-        cell.value.placeholder = NSLocalizedString("Enter tracking link", comment: "Add custom shipping provider. Placeholder of cell presenting tracking link")
+        cell.value.placeholder = NSLocalizedString("Enter tracking link", comment: "Add custom shipping carrier. Placeholder of cell presenting carrier link")
 
         cell.value.text = viewModel.trackingLink
 
@@ -272,7 +275,7 @@ extension ManualTrackingViewController: UITableViewDataSource {
     }
 
     private func configureDateShipped(cell: TitleAndEditableValueTableViewCell) {
-        cell.title.text = NSLocalizedString("Date shipped", comment: "Add / Edit shipping provider. Title of cell date shipped")
+        cell.title.text = NSLocalizedString("Date shipped", comment: "Add / Edit shipping carrier. Title of cell date shipped")
 
         cell.value.text = viewModel.shipmentDate.toString(dateStyle: .medium, timeStyle: .none)
 

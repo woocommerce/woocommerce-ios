@@ -10,8 +10,6 @@ final class OrderSearchUICommand: SearchUICommand {
 
     let searchBarPlaceholder = NSLocalizedString("Search all orders", comment: "Orders Search Placeholder")
 
-    let emptyStateText = NSLocalizedString("No Orders found", comment: "Search Orders (Empty State)")
-
     let searchBarAccessibilityIdentifier = "order-search-screen-search-field"
 
     let cancelButtonAccessibilityIdentifier = "order-search-screen-cancel-button"
@@ -36,6 +34,19 @@ final class OrderSearchUICommand: SearchUICommand {
 
     func createStarterViewController() -> UIViewController? {
         OrderSearchStarterViewController()
+    }
+
+    func configureEmptyStateViewControllerBeforeDisplay(viewController: EmptyStateViewController,
+                                                        searchKeyword: String) {
+        let boldSearchKeyword = NSAttributedString(string: searchKeyword,
+                                                   attributes: [.font: EmptyStateViewController.Config.messageFont.bold])
+
+        let format = NSLocalizedString("We're sorry, we couldn't find results for “%@”",
+                                       comment: "Message for empty Orders search results. The %@ is a placeholder for the text entered by the user.")
+        let message = NSMutableAttributedString(string: format)
+        message.replaceFirstOccurrence(of: "%@", with: boldSearchKeyword)
+
+        viewController.configure(.simple(message: message, image: .emptySearchResultsImage))
     }
 
     func createCellViewModel(model: Order) -> OrderSearchCellViewModel {

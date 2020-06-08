@@ -1,10 +1,16 @@
 import Foundation
-import Alamofire
 
+/// Protocol for `NotificationsRemote` mainly used for mocking.
+///
+/// The required methods are intentionally incomplete. Feel free to add the other ones.
+///
+public protocol NotificationsEndpointsProviding {
+    func loadNotes(noteIDs: [Int64]?, pageSize: Int?, completion: @escaping (Result<[Note], Error>) -> Void)
+}
 
 /// Notifications: Remote Endpoints
 ///
-public class NotificationsRemote: Remote {
+public final class NotificationsRemote: Remote, NotificationsEndpointsProviding {
 
     /// Retrieves latest Notifications (OR collection of specified Notifications, whenever the NoteIds is present).
     ///
@@ -13,7 +19,7 @@ public class NotificationsRemote: Remote {
     ///     - pageSize: Number of hashes to retrieve.
     ///     - completion: callback to be executed on completion.
     ///
-    public func loadNotes(noteIDs: [Int64]? = nil, pageSize: Int? = nil, completion: @escaping ([Note]?, Error?) -> Void) {
+    public func loadNotes(noteIDs: [Int64]? = nil, pageSize: Int? = nil, completion: @escaping (Result<[Note], Error>) -> Void) {
         let request = requestForNotifications(fields: .all, noteIDs: noteIDs, pageSize: pageSize)
         let mapper = NoteListMapper()
 

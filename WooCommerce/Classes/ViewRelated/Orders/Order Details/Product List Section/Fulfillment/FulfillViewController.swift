@@ -266,8 +266,7 @@ private extension FulfillViewController {
     ///
     func productWasPressed(for productID: Int64) {
         let loaderViewController = ProductLoaderViewController(productID: productID,
-                                                               siteID: order.siteID,
-                                                               currency: order.currency)
+                                                               siteID: order.siteID)
         let navController = WooNavigationController(rootViewController: loaderViewController)
         present(navController, animated: true, completion: nil)
     }
@@ -390,7 +389,7 @@ private extension FulfillViewController {
 
         cell.headline = NSLocalizedString("Shipping Method",
                                           comment: "Shipping method title for customer info cell")
-        cell.body = shippingMethod
+        cell.body = shippingMethod.strippedHTML
         cell.selectionStyle = .none
     }
 

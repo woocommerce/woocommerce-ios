@@ -2,6 +2,16 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 28 (Release 4.5.0.0)
+- @jaclync 2020-06-05
+- Add `buttonText` attribute to `Product` entity
+
+## Model 27 (Release 3.9.0.1)
+- @ecarrion 2020-03-30
+- Update `ProductCategory`'s `product` relationship to `products`
+- Add `siteID` and `parentID` to  `ProductCategory` entity 
+- Used mapping model: `WooCommerceModelV26toV27.xcmappingmodel` to remove product categories without `siteID`
+
 ## Model 26 (Release 3.5.0.0)
 - @jaclync 2019-01-14
 - Update `Product`'s `images` relationship to be ordered

@@ -291,10 +291,17 @@ public extension StorageType {
         return firstObject(ofType: ProductImage.self, matching: predicate)
     }
 
+    /// Retrieves the all of the stored Product Categories for a `siteID`.
+    ///
+    func loadProductCategories(siteID: Int64) -> [ProductCategory] {
+        let predicate = NSPredicate(format: "siteID = %ld", siteID)
+        return allObjects(ofType: ProductCategory.self, matching: predicate, sortedBy: nil)
+    }
+
     /// Retrieves the Stored Product Category.
     ///
-    func loadProductCategory(siteID: Int64, productID: Int64, categoryID: Int64) -> ProductCategory? {
-        let predicate = NSPredicate(format: "product.siteID = %ld AND product.productID = %ld AND categoryID = %ld", siteID, productID, categoryID)
+    func loadProductCategory(siteID: Int64, categoryID: Int64) -> ProductCategory? {
+        let predicate = NSPredicate(format: "siteID = %ld AND categoryID = %ld", siteID, categoryID)
         return firstObject(ofType: ProductCategory.self, matching: predicate)
     }
 

@@ -20,8 +20,6 @@ final class TodayViewController: UIViewController, NCWidgetProviding {
     override func viewDidLoad() {
         super.viewDidLoad()
         registerTableViewCells()
-        sections = [Section(rows: [.example])]
-        tableView.reloadData()
     }
         
     func widgetPerformUpdate(completionHandler: (@escaping (NCUpdateResult) -> Void)) {
@@ -31,6 +29,8 @@ final class TodayViewController: UIViewController, NCWidgetProviding {
         // If there's no update required, use NCUpdateResult.NoData
         // If there's an update, use NCUpdateResult.NewData
         
+        sections = [Section(rows: [.example])]
+        tableView.reloadData()
         completionHandler(NCUpdateResult.newData)
     }
  
@@ -58,7 +58,9 @@ extension TodayViewController: UITableViewDataSource {
 }
 
 extension TodayViewController: UITableViewDelegate {
-    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.reloadData()
+    }
 }
 
 // MARK: - Cell configuration

@@ -4,10 +4,22 @@
 //
 -%>
 <%
-// Create our own data structure to clarify what we need in the template code below. 
-// This also makes the template more simpler because we don't need to do a lot of loops.
+
+// The module where the CopiableProp and NullableCopiableProp typealiases belong.
+let copiablePropModule = "Networking"
+
+// The matching types that we're going to generate code for.
+let typesToGenerate = types.based["GeneratedCopiable"].filter { 
+    $0.kind == "struct" || $0.kind == "class"
+}
+
+let shouldImportCopiableProp = typesToGenerate.contains(where: { $0.module != copiablePropModule })
 
 /// A Copiable struct type that should be generated.
+///
+/// We create our own data structure to clarify what we need in the template code below. 
+/// This also makes the template more simpler because we don't need to do a lot of loops.
+///
 struct CopiableSpec {
     struct Property {
         let name: String
@@ -25,9 +37,8 @@ struct CopiableSpec {
     let properties: [Property]
 }
 
-let specsToGenerate: [CopiableSpec] = types.implementing["GeneratedCopiable"].filter {
-    $0.kind == "struct"
-}.map { type in
+// The collection of CopiableSpec that the template below will use. 
+let specsToGenerate: [CopiableSpec] = typesToGenerate.map { type in
     let validVariables = type.variables.filter {
         $0.readAccess == type.accessLevel &&
             !$0.isComputed &&
@@ -51,8 +62,12 @@ let specsToGenerate: [CopiableSpec] = types.implementing["GeneratedCopiable"].fi
 /// Template
 ///
 -%>
-<% for copiableSpec in specsToGenerate { -%>
+<% if shouldImportCopiableProp { -%>
+import typealias <%= copiablePropModule %>.CopiableProp
+import typealias <%= copiablePropModule %>.NullableCopiableProp
 
+<% } -%>
+<% for copiableSpec in specsToGenerate { -%>
 extension <%= copiableSpec.name %> {
     <%= copiableSpec.accessLevel %> func copy(
 <% for propertySpec in copiableSpec.properties { -%>

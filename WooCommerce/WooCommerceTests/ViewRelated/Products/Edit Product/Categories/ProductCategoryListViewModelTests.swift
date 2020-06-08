@@ -103,6 +103,8 @@ private final class MockProductCategoryStoresManager: DefaultStoresManager {
         case let .synchronizeProductCategories(_, _, onCompletion):
             numberOfResponsesConsumed = numberOfResponsesConsumed + 1
             onCompletion(productCategoryResponse)
+        default:
+            return
         }
     }
 }

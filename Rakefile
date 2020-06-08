@@ -177,7 +177,7 @@ end
 
 desc "Run all code generation tasks"
 task :generate do 
-  ["Networking", "Yosemite"].each { |prefix| 
+  ["Networking", "Yosemite", "WooCommerce"].each { |prefix| 
     puts "\n\nGenerating Copiable for #{prefix}..."
     puts "=" * 100
 

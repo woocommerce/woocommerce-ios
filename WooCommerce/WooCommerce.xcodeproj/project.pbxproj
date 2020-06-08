@@ -309,6 +309,17 @@
 		458DCEC0248E6BF6003F0626 /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458DCEBF248E6BF6003F0626 /* TodayViewController.swift */; };
 		458DCEC3248E6BF6003F0626 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 458DCEC1248E6BF6003F0626 /* MainInterface.storyboard */; };
 		458DCEC8248E6BF6003F0626 /* TodayStatsWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 458DCEBB248E6BF6003F0626 /* TodayStatsWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		458DCECD248E724A003F0626 /* UITableViewCell+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C744D20F56E3800EEFC87 /* UITableViewCell+Helpers.swift */; };
+		458DCECE248E726D003F0626 /* BasicTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE21B3D620FE669A00A259D5 /* BasicTableViewCell.xib */; };
+		458DCECF248E7273003F0626 /* BasicTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE21B3D520FE669A00A259D5 /* BasicTableViewCell.swift */; };
+		458DCED0248E729E003F0626 /* NSObject+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C744420F55BA600EEFC87 /* NSObject+Helpers.swift */; };
+		458DCED1248E72AE003F0626 /* UIColor+SemanticColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CD710E237A49DB007148B9 /* UIColor+SemanticColors.swift */; };
+		458DCED2248E72BB003F0626 /* UILabel+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1F51242064179A00C6C810 /* UILabel+Helpers.swift */; };
+		458DCED3248E72C7003F0626 /* UIFont+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1F512820697F0100C6C810 /* UIFont+Helpers.swift */; };
+		458DCED4248E72D1003F0626 /* UIColor+SystemColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02ADC7CF2398C8EB008D4BED /* UIColor+SystemColors.swift */; };
+		458DCED5248E72DE003F0626 /* UIColor+ColorStudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8915DC22372C9EF00F63762 /* UIColor+ColorStudio.swift */; };
+		458DCED6248E72EB003F0626 /* ColorStudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8915DC02372C8AC00F63762 /* ColorStudio.swift */; };
+		458DCED7248E7493003F0626 /* UIView+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C744620F55BC800EEFC87 /* UIView+Helpers.swift */; };
 		459097F823CDE47F00DEA9E0 /* UIAlertController+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459097F723CDE47F00DEA9E0 /* UIAlertController+Helpers.swift */; };
 		45A24E5F2451DF1A0050606B /* ProductMenuOrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A24E5D2451DF1A0050606B /* ProductMenuOrderViewController.swift */; };
 		45A24E602451DF1A0050606B /* ProductMenuOrderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45A24E5E2451DF1A0050606B /* ProductMenuOrderViewController.xib */; };
@@ -4260,6 +4271,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				458DCECE248E726D003F0626 /* BasicTableViewCell.xib in Resources */,
 				458DCEC3248E6BF6003F0626 /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4634,7 +4646,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				458DCED2248E72BB003F0626 /* UILabel+Helpers.swift in Sources */,
 				458DCEC0248E6BF6003F0626 /* TodayViewController.swift in Sources */,
+				458DCECD248E724A003F0626 /* UITableViewCell+Helpers.swift in Sources */,
+				458DCECF248E7273003F0626 /* BasicTableViewCell.swift in Sources */,
+				458DCED4248E72D1003F0626 /* UIColor+SystemColors.swift in Sources */,
+				458DCED6248E72EB003F0626 /* ColorStudio.swift in Sources */,
+				458DCED7248E7493003F0626 /* UIView+Helpers.swift in Sources */,
+				458DCED5248E72DE003F0626 /* UIColor+ColorStudio.swift in Sources */,
+				458DCED0248E729E003F0626 /* NSObject+Helpers.swift in Sources */,
+				458DCED3248E72C7003F0626 /* UIFont+Helpers.swift in Sources */,
+				458DCED1248E72AE003F0626 /* UIColor+SemanticColors.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

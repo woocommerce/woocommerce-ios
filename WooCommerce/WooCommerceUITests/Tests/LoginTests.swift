@@ -30,4 +30,22 @@ class LoginTests: XCTestCase {
 
         XCTAssert(WelcomeScreen.isLoaded())
     }
+
+    func testLoginOptionsArePresent() {
+        //verify tapping "Log in" will show options to enter a WordPress.com email, log in with Google, or enter your site address.
+        WelcomeScreen()
+        .selectLogin()
+        .openHelpMenu()
+        //will add .sendEmailToSupport once I have some questions answered about that
+        .closeHelpMenu()
+
+        //verify all login options exist
+        .emailLoginOption()
+        .siteAddressLoginOption()
+        .googleLoginOption()
+        .backToWelcomeScreen()
+
+        XCTAssert(WelcomeScreen.isLoaded())
+
+    }
 }

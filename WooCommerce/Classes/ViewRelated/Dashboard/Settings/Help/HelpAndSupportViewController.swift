@@ -169,6 +169,10 @@ private extension HelpAndSupportViewController {
             "Reach our happiness engineers who can help answer tough questions",
             comment: "Subtitle for Contact Support"
         )
+        cell.textLabel?.isAccessibilityElement = true
+        cell.textLabel?.accessibilityIdentifier = "contact-support-label"
+        cell.textLabel?.accessibilityLabel = "Contact Support"
+        cell.textLabel?.accessibilityHint = "Reach our happiness engineers who can help answer tough questions"
     }
 
     /// My Tickets cell.

@@ -94,18 +94,16 @@ class ProductsRemoteTests: XCTestCase {
     func testLoadSingleExternalProductProperlyReturnsParsedProduct() throws {
         // Given
         let remote = ProductsRemote(network: network)
-        let expectation = self.expectation(description: "Load single external product")
-
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product-external")
 
         // When
         var resultMaybe: Result<Product, Error>?
-        remote.loadProduct(for: sampleSiteID, productID: sampleProductID) { aResult in
-            resultMaybe = aResult
-            expectation.fulfill()
+        waitForExpectation { expectation in
+            remote.loadProduct(for: sampleSiteID, productID: sampleProductID) { aResult in
+                resultMaybe = aResult
+                expectation.fulfill()
+            }
         }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
 
         // Then
         let result = try XCTUnwrap(resultMaybe)

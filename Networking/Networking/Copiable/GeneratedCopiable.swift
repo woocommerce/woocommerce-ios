@@ -4,6 +4,6 @@
 /// The method is generated using Sourcery. The code generator uses this `protocol` to determine
 /// for which symbols it will generate a `.copy()` method for.
 ///
-protocol GeneratedCopiable {
+public protocol GeneratedCopiable {
 
 }

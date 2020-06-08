@@ -48,6 +48,7 @@ PODS:
     - Sentry/Core (= 4.5.0)
   - Sentry/Core (4.5.0)
   - Sodium (0.8.0)
+  - Sourcery (0.18.0)
   - SVProgressHUD (2.2.5)
   - UIDeviceIdentifier (1.4.0)
   - WordPress-Aztec-iOS (1.11.0)
@@ -104,6 +105,7 @@ DEPENDENCIES:
   - Gridicons (~> 1.0)
   - KeychainAccess (~> 3.2)
   - Kingfisher (~> 5.11.0)
+  - Sourcery (~> 0.18)
   - WordPress-Editor-iOS (~> 1.11.0)
   - WordPressAuthenticator (= 1.17.0)
   - WordPressShared (~> 1.8.16)
@@ -134,6 +136,7 @@ SPEC REPOS:
     - Reachability
     - Sentry
     - Sodium
+    - Sourcery
     - SVProgressHUD
     - UIDeviceIdentifier
     - WordPress-Aztec-iOS
@@ -174,6 +177,7 @@ SPEC CHECKSUMS:
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   Sentry: ab6c209f23700d1460691dbc90e19ed0a05d496b
   Sodium: 63c0ca312a932e6da481689537d4b35568841bdc
+  Sourcery: e0e8658a1ce6d9f475156ad3ffce4c68f1261b3e
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: 44f805037d21b94394821828f4fcaba34b38c2d0
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
@@ -194,6 +198,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: c1706c8d1938a41942876d004ed25b490470c977
+PODFILE CHECKSUM: 9ba67d76907dac41b87359bf78f2f83c065c047b
 
 COCOAPODS: 1.9.1

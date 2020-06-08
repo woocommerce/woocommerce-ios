@@ -60,10 +60,11 @@ let modulesToGenerateImports: [String] = {
     }
 }()
 
-/// A Copiable struct type that should be generated.
+/// Defines the properties that the template will need to generate the copy() method for a single type.
 ///
 /// We create our own data structure to clarify what we need in the template code below. 
-/// This also makes the template more simpler because we don't need to do a lot of loops.
+/// This also makes the template more simpler to read because the complexity are all encapsulated
+/// by this struct.
 ///
 struct CopiableSpec {
     struct Property {

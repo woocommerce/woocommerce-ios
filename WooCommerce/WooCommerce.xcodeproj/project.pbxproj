@@ -305,6 +305,10 @@
 		4580BA7423F192D400B5F764 /* ProductSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4580BA7223F192D400B5F764 /* ProductSettingsViewController.swift */; };
 		4580BA7523F192D400B5F764 /* ProductSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4580BA7323F192D400B5F764 /* ProductSettingsViewController.xib */; };
 		4580BA7723F19D4A00B5F764 /* ProductSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4580BA7623F19D4A00B5F764 /* ProductSettingsViewModel.swift */; };
+		458DCEBD248E6BF6003F0626 /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 458DCEBC248E6BF6003F0626 /* NotificationCenter.framework */; };
+		458DCEC0248E6BF6003F0626 /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458DCEBF248E6BF6003F0626 /* TodayViewController.swift */; };
+		458DCEC3248E6BF6003F0626 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 458DCEC1248E6BF6003F0626 /* MainInterface.storyboard */; };
+		458DCEC8248E6BF6003F0626 /* TodayStatsWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 458DCEBB248E6BF6003F0626 /* TodayStatsWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		459097F823CDE47F00DEA9E0 /* UIAlertController+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459097F723CDE47F00DEA9E0 /* UIAlertController+Helpers.swift */; };
 		45A24E5F2451DF1A0050606B /* ProductMenuOrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A24E5D2451DF1A0050606B /* ProductMenuOrderViewController.swift */; };
 		45A24E602451DF1A0050606B /* ProductMenuOrderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45A24E5E2451DF1A0050606B /* ProductMenuOrderViewController.xib */; };
@@ -824,6 +828,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		458DCEC5248E6BF6003F0626 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B56DB3BE2049BFAA00D4AA8E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 458DCEBA248E6BF6003F0626;
+			remoteInfo = TodayStatsWidget;
+		};
 		B55D4C1420B6131400D7A50F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B56DB3BE2049BFAA00D4AA8E /* Project object */;
@@ -862,6 +873,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		458DCEC7248E6BF6003F0626 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				458DCEC8248E6BF6003F0626 /* TodayStatsWidget.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B5650B1020A4CD7F009702D0 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1165,6 +1187,11 @@
 		4580BA7223F192D400B5F764 /* ProductSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSettingsViewController.swift; sourceTree = "<group>"; };
 		4580BA7323F192D400B5F764 /* ProductSettingsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductSettingsViewController.xib; sourceTree = "<group>"; };
 		4580BA7623F19D4A00B5F764 /* ProductSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSettingsViewModel.swift; sourceTree = "<group>"; };
+		458DCEBB248E6BF6003F0626 /* TodayStatsWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TodayStatsWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		458DCEBC248E6BF6003F0626 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
+		458DCEBF248E6BF6003F0626 /* TodayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
+		458DCEC2248E6BF6003F0626 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		458DCEC4248E6BF6003F0626 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		459097F723CDE47F00DEA9E0 /* UIAlertController+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertController+Helpers.swift"; sourceTree = "<group>"; };
 		45A24E5D2451DF1A0050606B /* ProductMenuOrderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductMenuOrderViewController.swift; sourceTree = "<group>"; };
 		45A24E5E2451DF1A0050606B /* ProductMenuOrderViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductMenuOrderViewController.xib; sourceTree = "<group>"; };
@@ -1697,6 +1724,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		458DCEB8248E6BF6003F0626 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				458DCEBD248E6BF6003F0626 /* NotificationCenter.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B56DB3C32049BFAA00D4AA8E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -2449,6 +2484,16 @@
 			path = "Product Settings";
 			sourceTree = "<group>";
 		};
+		458DCEBE248E6BF6003F0626 /* TodayStatsWidget */ = {
+			isa = PBXGroup;
+			children = (
+				458DCEBF248E6BF6003F0626 /* TodayViewController.swift */,
+				458DCEC1248E6BF6003F0626 /* MainInterface.storyboard */,
+				458DCEC4248E6BF6003F0626 /* Info.plist */,
+			);
+			path = TodayStatsWidget;
+			sourceTree = "<group>";
+		};
 		45A24E5C2451DB710050606B /* Menu Order */ = {
 			isa = PBXGroup;
 			children = (
@@ -2739,6 +2784,7 @@
 				B5C3B5E220D189E60072CB9D /* Networking.framework */,
 				BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */,
 				6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */,
+				458DCEBC248E6BF6003F0626 /* NotificationCenter.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -2893,6 +2939,7 @@
 				B56DB3E02049BFAA00D4AA8E /* WooCommerceTests */,
 				F997170323DBB97500592D8E /* WooCommerceScreenshots */,
 				CCDC49CB23FFFFF4003166BA /* WooCommerceUITests */,
+				458DCEBE248E6BF6003F0626 /* TodayStatsWidget */,
 				88A44ABE866401E6DB03AC60 /* Frameworks */,
 				B56DB3C72049BFAA00D4AA8E /* Products */,
 				8CD41D4921F8A7E300CF3C2B /* RELEASE-NOTES.txt */,
@@ -2909,6 +2956,7 @@
 				B56DB3DD2049BFAA00D4AA8E /* WooCommerceTests.xctest */,
 				F997170223DBB97500592D8E /* WooCommerceScreenshots.xctest */,
 				CCDC49CA23FFFFF4003166BA /* WooCommerceUITests.xctest */,
+				458DCEBB248E6BF6003F0626 /* TodayStatsWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -4015,6 +4063,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		458DCEBA248E6BF6003F0626 /* TodayStatsWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 458DCEC9248E6BF6003F0626 /* Build configuration list for PBXNativeTarget "TodayStatsWidget" */;
+			buildPhases = (
+				458DCEB7248E6BF6003F0626 /* Sources */,
+				458DCEB8248E6BF6003F0626 /* Frameworks */,
+				458DCEB9248E6BF6003F0626 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TodayStatsWidget;
+			productName = TodayStatsWidget;
+			productReference = 458DCEBB248E6BF6003F0626 /* TodayStatsWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		B56DB3C52049BFAA00D4AA8E /* WooCommerce */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B56DB3E62049BFAA00D4AA8E /* Build configuration list for PBXNativeTarget "WooCommerce" */;
@@ -4027,11 +4092,13 @@
 				B7A94351C1ADC31EA528B895 /* [CP] Embed Pods Frameworks */,
 				CE1445302188ED0300A991D8 /* Zendesk Strip Frameworks */,
 				8D8E4AE002344B3131D3EB29 /* [CP] Copy Pods Resources */,
+				458DCEC7248E6BF6003F0626 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				B55D4C1520B6131400D7A50F /* PBXTargetDependency */,
+				458DCEC6248E6BF6003F0626 /* PBXTargetDependency */,
 			);
 			name = WooCommerce;
 			productName = WooCommerce;
@@ -4100,10 +4167,14 @@
 		B56DB3BE2049BFAA00D4AA8E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1130;
+				LastSwiftUpdateCheck = 1150;
 				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = Automattic;
 				TargetAttributes = {
+					458DCEBA248E6BF6003F0626 = {
+						CreatedOnToolsVersion = 11.5;
+						ProvisioningStyle = Automatic;
+					};
 					B55D4C0F20B612F300D7A50F = {
 						CreatedOnToolsVersion = 9.3.1;
 						ProvisioningStyle = Automatic;
@@ -4179,11 +4250,20 @@
 				B55D4C0F20B612F300D7A50F /* GenerateCredentials */,
 				F997170123DBB97500592D8E /* WooCommerceScreenshots */,
 				CCDC49C923FFFFF4003166BA /* WooCommerceUITests */,
+				458DCEBA248E6BF6003F0626 /* TodayStatsWidget */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		458DCEB9248E6BF6003F0626 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				458DCEC3248E6BF6003F0626 /* MainInterface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B56DB3C42049BFAA00D4AA8E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -4550,6 +4630,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		458DCEB7248E6BF6003F0626 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				458DCEC0248E6BF6003F0626 /* TodayViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B56DB3C22049BFAA00D4AA8E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -5220,6 +5308,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		458DCEC6248E6BF6003F0626 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 458DCEBA248E6BF6003F0626 /* TodayStatsWidget */;
+			targetProxy = 458DCEC5248E6BF6003F0626 /* PBXContainerItemProxy */;
+		};
 		B55D4C1520B6131400D7A50F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = B55D4C0F20B612F300D7A50F /* GenerateCredentials */;
@@ -5248,6 +5341,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		458DCEC1248E6BF6003F0626 /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				458DCEC2248E6BF6003F0626 /* Base */,
+			);
+			name = MainInterface.storyboard;
+			sourceTree = "<group>";
+		};
 		B56DB3CD2049BFAA00D4AA8E /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -5353,6 +5454,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 25D00C97936D2C6589F8ECE9 /* Pods-WooCommerce.release-alpha.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "Resources/Woo-Release.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
@@ -5403,6 +5505,63 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SECRETS_PATH = "$(SRCROOT)/../.configure-files/woo_app_credentials.json";
 				VALID_ARCHS = "$(inherited)";
+			};
+			name = "Release-Alpha";
+		};
+		458DCECA248E6BF6003F0626 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = PZYM8XX95Q;
+				INFOPLIST_FILE = TodayStatsWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce.TodayStatsWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		458DCECB248E6BF6003F0626 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = PZYM8XX95Q;
+				INFOPLIST_FILE = TodayStatsWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce.TodayStatsWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		458DCECC248E6BF6003F0626 /* Release-Alpha */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 99KV9Z6BKV;
+				INFOPLIST_FILE = TodayStatsWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce.TodayStatsWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = "Release-Alpha";
 		};
@@ -5551,6 +5710,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 90AC1C0B391E04A837BDC64E /* Pods-WooCommerce.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "Resources/Woo-Debug.entitlements";
 				CODE_SIGN_STYLE = Manual;
@@ -5577,6 +5737,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 33035144757869DE5E4DC88A /* Pods-WooCommerce.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "Resources/Woo-Release.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
@@ -5759,6 +5920,16 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		458DCEC9248E6BF6003F0626 /* Build configuration list for PBXNativeTarget "TodayStatsWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				458DCECA248E6BF6003F0626 /* Debug */,
+				458DCECB248E6BF6003F0626 /* Release */,
+				458DCECC248E6BF6003F0626 /* Release-Alpha */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		B55D4C1020B612F300D7A50F /* Build configuration list for PBXAggregateTarget "GenerateCredentials" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -1,0 +1,78 @@
+<%# 
+//
+// Generates .copy methods for all structs conforming to the `GeneratedCopiable` protocol
+//
+-%>
+<%
+// Create our own data structure to clarify what we need in the template code below. 
+// This also makes the template more simpler because we don't need to do a lot of loops.
+
+/// A Copiable struct type that should be generated.
+struct CopiableSpec {
+    struct Property {
+        let name: String
+        /// String, Int, etc 
+        let typeName: String
+        /// NullableCopiableProp or CopiableProp
+        let copiablePropTypeName: String
+        /// If this is not the last, this will be a literal comma (",")
+        let commaOrNothing: String
+    }
+
+    let name: String
+    /// "public", "private", etc.
+    let accessLevel: String
+    let properties: [Property]
+}
+
+let specsToGenerate: [CopiableSpec] = types.implementing["GeneratedCopiable"].filter {
+    $0.kind == "struct"
+}.map { type in
+    let validVariables = type.variables.filter {
+        $0.readAccess == type.accessLevel &&
+            !$0.isComputed &&
+            !$0.isStatic
+    }
+    let propSpecs: [CopiableSpec.Property] = validVariables.map { variable in 
+        CopiableSpec.Property(
+            name: variable.name, 
+            typeName: variable.typeName.unwrappedTypeName,
+            copiablePropTypeName: variable.isOptional ? "NullableCopiableProp" : "CopiableProp",
+            commaOrNothing: variable == validVariables.last  ? "" : ","
+        )
+    }
+
+    return CopiableSpec(name: type.name, accessLevel: type.accessLevel, properties: propSpecs)
+}
+
+-%>
+<%#
+///
+/// Template
+///
+-%>
+<% for copiableSpec in specsToGenerate { -%>
+extension <%= copiableSpec.name %> {
+    <%= copiableSpec.accessLevel %> func copy(
+<% for propertySpec in copiableSpec.properties { -%>
+        <%= propertySpec.name %>: <%= propertySpec.copiablePropTypeName %><<%= propertySpec.typeName %>> = .copy<%= propertySpec.commaOrNothing %>
+<% } -%>
+    ) -> Self {
+<%# 
+// Generate `let propName = propName ?? self.propName` lines
+// 
+// We declare local variables first because if if we immediately call the initializer,
+// Swift will fail to compile because of _code complexity_.
+-%>
+<% for propertySpec in copiableSpec.properties { -%>
+        let <%= propertySpec.name %> = <%= propertySpec.name %> ?? self.<%= propertySpec.name %>
+<% } -%>
+
+        return <%= copiableSpec.name %>(
+<% for propertySpec in copiableSpec.properties { -%>
+            <%= propertySpec.name %>: <%= propertySpec.name %><%= propertySpec.commaOrNothing %>
+<% } -%>
+        )
+    }
+}
+<% } -%>

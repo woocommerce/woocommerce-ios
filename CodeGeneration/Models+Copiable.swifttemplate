@@ -1,6 +1,6 @@
 <%# 
 //
-// Generates .copy methods for all structs conforming to the `GeneratedCopiable` protocol
+// Generates .copy methods for all structs and classes conforming to the `GeneratedCopiable` protocol
 //
 -%>
 <% 
@@ -8,7 +8,7 @@
 // Utils
 // -------------------------------------------------------------------------------- 
 
-/// Guess the `moduleName` of a `Type` given by Sourcery.
+/// Guess the `moduleName` of a `TypeName` given by Sourcery.
 ///
 /// Based on some experiments, built-in types like `UINotificationFeedbackGenerator.FeedbackType` are 
 /// not given a `.module` property value by Sourcery. Which makes sense, I guess?
@@ -33,13 +33,13 @@ func guessModuleOf(typeName: TypeName) -> String? {
 let copiablePropModule = "Networking"
 
 // The matching types that we're going to generate code for.
-let typesToGenerate = types.based["GeneratedCopiable"].filter { 
+let matchingTypes = types.based["GeneratedCopiable"].filter { 
     $0.kind == "struct" || $0.kind == "class"
 }
 
 // The names of modules that we should generate "import MODULE_NAME" lines for.
 let modulesToGenerateImports: [String] = { 
-    let modulesFromProperties: [String] = typesToGenerate.flatMap { type in 
+    let modulesFromProperties: [String] = matchingTypes.flatMap { type in 
         type.variables.compactMap { variable in 
             if let variableModule = variable.type?.module {
                 return variableModule
@@ -50,13 +50,13 @@ let modulesToGenerateImports: [String] = {
     }
 
     let modulesRequiredByTemplate: [String] = {
-        let shouldImportCopiablePropModule = typesToGenerate.contains(where: { $0.module != copiablePropModule })
+        let shouldImportCopiablePropModule = matchingTypes.contains(where: { $0.module != copiablePropModule })
         return shouldImportCopiablePropModule ? [copiablePropModule] : []
     }()
 
     return Array(Set(modulesFromProperties + modulesRequiredByTemplate)).sorted().filter {
         // Ignore modules that belong to the current types we're generating for.
-        $0 != typesToGenerate.first?.module
+        $0 != matchingTypes.first?.module
     }
 }()
 
@@ -84,7 +84,7 @@ struct CopiableSpec {
 }
 
 // The collection of CopiableSpec that the template below will use. 
-let specsToGenerate: [CopiableSpec] = typesToGenerate.map { type in
+let specsToGenerate: [CopiableSpec] = matchingTypes.map { type in
     let validVariables = type.variables.filter {
         $0.readAccess == type.accessLevel &&
             !$0.isComputed &&

@@ -345,7 +345,7 @@ class ProductStoreTests: XCTestCase {
     func testRetrieveSingleExternalProductReturnsExpectedFields() {
         // Arrange
         let remote = MockProductsRemote()
-        let expectedProduct = MockProduct().product(siteID: sampleSiteID, productID: sampleProductID, buttonText: "Deal", externalURL: "https://goodeals.com")
+        let expectedProduct = MockProduct().product(siteID: sampleSiteID, productID: sampleProductID, buttonText: "Deal", externalURL: "https://example.com")
         remote.whenLoadingProduct(siteID: sampleSiteID, productID: sampleProductID, thenReturn: .success(expectedProduct))
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 

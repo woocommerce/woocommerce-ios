@@ -52,6 +52,7 @@ let specsToGenerate: [CopiableSpec] = types.implementing["GeneratedCopiable"].fi
 ///
 -%>
 <% for copiableSpec in specsToGenerate { -%>
+
 extension <%= copiableSpec.name %> {
     <%= copiableSpec.accessLevel %> func copy(
 <% for propertySpec in copiableSpec.properties { -%>

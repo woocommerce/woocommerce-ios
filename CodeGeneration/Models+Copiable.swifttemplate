@@ -3,7 +3,31 @@
 // Generates .copy methods for all structs conforming to the `GeneratedCopiable` protocol
 //
 -%>
+<% 
+// -------------------------------------------------------------------------------- 
+// Utils
+// -------------------------------------------------------------------------------- 
+
+/// Guess the `moduleName` of a `Type` given by Sourcery.
+///
+/// Based on some experiments, built-in types like `UINotificationFeedbackGenerator.FeedbackType` are 
+/// not given a `.module` property value by Sourcery. Which makes sense, I guess?
+///
+/// - SeeAlso: https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/Classes/Type.html
+///
+func guessModuleOf(typeName: TypeName) -> String? {
+    if (typeName.name.hasPrefix("UI")) {
+        return "UIKit"
+    } else {
+        return nil
+    }
+}
+
+-%>
 <%
+// -------------------------------------------------------------------------------- 
+// Gather Information
+// -------------------------------------------------------------------------------- 
 
 // The module where the CopiableProp and NullableCopiableProp typealiases belong.
 let copiablePropModule = "Networking"
@@ -13,7 +37,28 @@ let typesToGenerate = types.based["GeneratedCopiable"].filter {
     $0.kind == "struct" || $0.kind == "class"
 }
 
-let shouldImportCopiableProp = typesToGenerate.contains(where: { $0.module != copiablePropModule })
+// The names of modules that we should generate "import MODULE_NAME" lines for.
+let modulesToGenerateImports: [String] = { 
+    let modulesFromProperties: [String] = typesToGenerate.flatMap { type in 
+        type.variables.compactMap { variable in 
+            if let variableModule = variable.type?.module {
+                return variableModule
+            }
+
+            return guessModuleOf(typeName: variable.typeName)
+        }
+    }
+
+    let modulesRequiredByTemplate: [String] = {
+        let shouldImportCopiablePropModule = typesToGenerate.contains(where: { $0.module != copiablePropModule })
+        return shouldImportCopiablePropModule ? [copiablePropModule] : []
+    }()
+
+    return Array(Set(modulesFromProperties + modulesRequiredByTemplate)).sorted().filter {
+        // Ignore modules that belong to the current types we're generating for.
+        $0 != typesToGenerate.first?.module
+    }
+}()
 
 /// A Copiable struct type that should be generated.
 ///
@@ -58,15 +103,14 @@ let specsToGenerate: [CopiableSpec] = typesToGenerate.map { type in
 
 -%>
 <%#
-///
-/// Template
-///
+// -------------------------------------------------------------------------------- 
+// Template
+// -------------------------------------------------------------------------------- 
 -%>
-<% if shouldImportCopiableProp { -%>
-import typealias <%= copiablePropModule %>.CopiableProp
-import typealias <%= copiablePropModule %>.NullableCopiableProp
-
+<% for module in modulesToGenerateImports { -%>
+import <%= module %>
 <% } -%>
+
 <% for copiableSpec in specsToGenerate { -%>
 extension <%= copiableSpec.name %> {
     <%= copiableSpec.accessLevel %> func copy(

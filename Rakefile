@@ -177,7 +177,7 @@ end
 
 desc "Run all code generation tasks"
 task :generate => [:dependencies] do 
-  sh "./Pods/Sourcery/bin/sourcery --config CodeGeneration/Copiable.sourcery.yaml"
+  sh "./Pods/Sourcery/bin/sourcery --config CodeGeneration/Networking-Copiable.sourcery.yaml"
 end
 
 def fold(label, &block)

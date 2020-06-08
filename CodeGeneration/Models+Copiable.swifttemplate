@@ -61,7 +61,7 @@ extension <%= copiableSpec.name %> {
 <%# 
 // Generate `let propName = propName ?? self.propName` lines
 // 
-// We declare local variables first because if if we immediately call the initializer,
+// We declare local variables first because if we immediately call the initializer,
 // Swift will fail to compile because of _code complexity_.
 -%>
 <% for propertySpec in copiableSpec.properties { -%>

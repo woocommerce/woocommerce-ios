@@ -176,7 +176,7 @@ task :xcode => [:dependencies] do
 end
 
 desc "Run all code generation tasks"
-task :generate => [:dependencies] do 
+task :generate do 
   sh "./Pods/Sourcery/bin/sourcery --config CodeGeneration/Networking-Copiable.sourcery.yaml"
 end
 

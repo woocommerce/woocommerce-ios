@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -27,16 +28,16 @@
                         <rect key="frame" x="75" y="19" width="230" height="85"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HX7-V5-bhX">
-                                <rect key="frame" x="0.0" y="0.0" width="230" height="45"/>
+                                <rect key="frame" x="0.0" y="0.0" width="230" height="50"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The Title Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="14R-zK-tgC">
-                                        <rect key="frame" x="0.0" y="0.0" width="190.5" height="45"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="190.5" height="50"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" horizontalCompressionResistancePriority="1000" text="893" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pPE-SE-pY7">
-                                        <rect key="frame" x="198.5" y="0.0" width="31.5" height="45"/>
+                                        <rect key="frame" x="198.5" y="0.0" width="31.5" height="50"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -53,12 +54,6 @@
                                     <constraint firstItem="pPE-SE-pY7" firstAttribute="leading" secondItem="14R-zK-tgC" secondAttribute="trailing" constant="8" id="lJh-P7-t92"/>
                                 </constraints>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SKU" textAlignment="natural" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7JH-rt-n9v">
-                                <rect key="frame" x="0.0" y="49" width="230" height="16"/>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Total price (item price x qty)" textAlignment="natural" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IBM-H2-zE2">
                                 <rect key="frame" x="0.0" y="69" width="230" height="16"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
@@ -82,7 +77,6 @@
                 <outlet property="nameLabel" destination="14R-zK-tgC" id="LmK-XT-zbU"/>
                 <outlet property="priceLabel" destination="pPE-SE-pY7" id="ir4-Ou-SuU"/>
                 <outlet property="productImageView" destination="p6h-Fq-FjW" id="bIw-1F-5GW"/>
-                <outlet property="skuLabel" destination="7JH-rt-n9v" id="U07-2n-W3b"/>
                 <outlet property="subtitleLabel" destination="IBM-H2-zE2" id="acc-K8-vmg"/>
             </connections>
             <point key="canvasLocation" x="62" y="96.5"/>

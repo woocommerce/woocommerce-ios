@@ -18,6 +18,12 @@ final class TodayStatsTableViewCell: UITableViewCell {
         configureHeaderLabels()
         configureBodyLabels()
     }
+    
+    func configure(visitors: String, orders: String, revenue: String) {
+        visitorsBodyLabel.text = visitors
+        ordersBodyLabel.text = orders
+        revenueBodyLabel.text = revenue
+    }
 }
 
 private extension TodayStatsTableViewCell {
@@ -36,11 +42,15 @@ private extension TodayStatsTableViewCell {
         ordersBodyLabel.applyTitleStyle()
         revenueBodyLabel.applyTitleStyle()
     }
-    
+
+}
+
+// Constants
+//
+private extension TodayStatsTableViewCell {
     enum LocalizedText {
         static let visitors = NSLocalizedString("Visitors", comment: "Visitors label in Today Stats Widget")
         static let orders = NSLocalizedString("Orders", comment: "Orders label in Today Stats Widget")
         static let revenue = NSLocalizedString("Revenue", comment: "Revenue label in Today Stats Widget")
     }
-
 }

@@ -1,11 +1,3 @@
-//
-//  TodayViewController.swift
-//  TodayStatsWidget
-//
-//  Created by Paolo Musolino on 08/06/2020.
-//  Copyright © 2020 Automattic. All rights reserved.
-//
-
 import UIKit
 import NotificationCenter
 

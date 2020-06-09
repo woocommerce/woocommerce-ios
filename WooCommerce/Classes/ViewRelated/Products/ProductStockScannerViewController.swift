@@ -2,6 +2,47 @@ import UIKit
 import WordPressUI
 import Yosemite
 
+struct ScannedProductsBottomSheetListSelectorCommand: BottomSheetListSelectorCommand {
+    typealias Model = Product
+    typealias Cell = ProductDetailsTableViewCell
+
+    let data: [Product]
+
+    let selected: Product? = nil
+
+    private let imageService: ImageService
+    private let onSelection: (Product) -> Void
+
+    init(products: [Product],
+         imageService: ImageService = ServiceLocator.imageService,
+         onSelection: @escaping (Product) -> Void) {
+        self.onSelection = onSelection
+        self.imageService = imageService
+        self.data = products
+    }
+
+    func configureCell(cell: ProductDetailsTableViewCell, model: Product) {
+        cell.selectionStyle = .none
+        cell.accessoryType = .disclosureIndicator
+
+        // TODO-jc: stock quantity tracking
+        cell.configureForInventoryScannerResult(product: model, updatedQuantity: model.stockQuantity, imageService: imageService)
+    }
+
+    func handleSelectedChange(selected: Product) {
+        onSelection(selected)
+    }
+
+    func isSelected(model: Product) -> Bool {
+        return model == selected
+    }
+}
+
+enum ProductSKUScannerResult {
+    case matched(product: Product)
+    case noMatch(sku: String)
+}
+
 final class ProductStockScannerViewController: UIViewController {
 
     private lazy var barcodeScannerChildViewController : BarcodeScannerViewController = {
@@ -13,30 +54,7 @@ final class ProductStockScannerViewController: UIViewController {
         }
     }()
 
-    private lazy var resultsNavigationController: InventoryScannerResultsNavigationController = {
-        return InventoryScannerResultsNavigationController { [weak self] in
-            self?.cancelButtonTapped()
-        }
-    }()
-
-    private lazy var floatingPanelController: BottomSheetViewController = {
-        let bottomSheet = BottomSheetViewController(childViewController: resultsNavigationController)
-        return bottomSheet
-    }()
-
-    private var areSearchResultsPresented: Bool = false
-
-    private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
-        let keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: { [weak self] keyboardFrame in
-            // TODO-jc: bottom sheet
-//            if keyboardFrame.height > 0 {
-//                self?.floatingPanelController.move(to: .full, animated: true)
-//            } else {
-//                self?.floatingPanelController.move(to: .half, animated: true)
-//            }
-        })
-        return keyboardFrameObserver
-    }()
+    private var scannedProducts: [Product] = []
 
     private lazy var statusLabel: PaddedLabel = {
         let label = PaddedLabel()
@@ -61,7 +79,6 @@ final class ProductStockScannerViewController: UIViewController {
         super.viewDidLoad()
 
         view.backgroundColor = .basicBackground
-        keyboardFrameObserver.startObservingKeyboardFrame()
         configureNavigation()
         configureBarcodeScannerChildViewController()
         configureStatusLabel()
@@ -71,7 +88,7 @@ final class ProductStockScannerViewController: UIViewController {
         super.viewDidAppear(animated)
 
         // TODO-jc: remove. this is just for testing
-//        searchProductBySKU(barcode: "9789863210887")
+        searchProductBySKU(barcode: "9789863210887")
     }
 }
 
@@ -97,8 +114,8 @@ private extension ProductStockScannerViewController {
                     self.statusLabel.text = NSLocalizedString("Product found!", comment: "")
                     self.showStatusLabel()
 
+                    self.scannedProducts.append(product)
                     self.presentSearchResults()
-                    self.resultsNavigationController.productScanned(product: product)
                 case .failure(let error):
                     let generator = UINotificationFeedbackGenerator()
                     generator.notificationOccurred(.error)
@@ -114,43 +131,37 @@ private extension ProductStockScannerViewController {
     }
 
     func presentSearchResults() {
-        // TODO-jc: bottom sheet
-//        guard areSearchResultsPresented == false else {
-//            switch traitCollection.verticalSizeClass {
-//            case .compact:
-//                floatingPanelController.move(to: .tip, animated: true)
-//            case .regular:
-//                floatingPanelController.move(to: .half, animated: true)
-//            default:
-//                break
-//            }
-//            return
-//        }
-//
-//        present(floatingPanelController, animated: true, completion: nil)
-//        areSearchResultsPresented = true
+        // TODO-jc: singular vs. plural
+        let title = NSLocalizedString("Scanned products",
+                                      comment: "Title of the bottom sheet that shows a list of scanned products via the barcode scanner.")
+        let viewProperties = BottomSheetListSelectorViewProperties(title: title)
+        let dataSource = ScannedProductsBottomSheetListSelectorCommand(products: scannedProducts) { [weak self] action in
+                                                                    self?.dismiss(animated: true) { [weak self] in
+
+                                                                    }
+        }
+        let listSelectorViewController = BottomSheetListSelectorViewController(viewProperties: viewProperties,
+                                                                               command: dataSource) { [weak self] selectedSortOrder in
+                                                                                self?.dismiss(animated: true, completion: nil)
+        }
+        let bottomSheet = BottomSheetViewController(childViewController: listSelectorViewController)
+        bottomSheet.show(from: self, sourceView: nil, arrowDirections: .any)
     }
 }
 
 // MARK: Navigation
 //
 private extension ProductStockScannerViewController {
-    @objc func cancelButtonTapped() {
-        if areSearchResultsPresented {
-            resultsNavigationController.dismiss(animated: true) {
-                self.dismiss(animated: true, completion: nil)
-            }
-        } else {
-            dismiss(animated: true, completion: nil)
-        }
+    @objc func doneButtonTapped() {
+        // TODO-jc
     }
 }
 
 private extension ProductStockScannerViewController {
     func configureNavigation() {
-        title = NSLocalizedString("SKU scanner", comment: "")
+        title = NSLocalizedString("Update inventory", comment: "Navigation bar title on the barcode scanner screen.")
 
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelButtonTapped))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
     }
 
     func configureBarcodeScannerChildViewController() {

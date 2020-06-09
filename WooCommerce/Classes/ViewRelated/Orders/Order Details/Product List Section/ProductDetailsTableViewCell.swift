@@ -108,7 +108,7 @@ extension ProductDetailsTableViewCell {
 
         nameLabel.text = product.name
         // TODO-jc: update
-        skuLabel.text = product.sku
+//        skuLabel.text = product.sku
 
         guard product.manageStock else {
             priceLabel.text = NSLocalizedString("⚠️ Stock management is disabled", comment: "")

@@ -215,7 +215,13 @@ private extension ProductsViewController {
     }
 
     @objc func scanProducts() {
-        // TODO-2407: scan barcodes for products
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            assertionFailure("No valid site ID for Products tab")
+            return
+        }
+        let viewController = ProductStockScannerViewController(siteID: siteID)
+        let navigationController = WooNavigationController(rootViewController: viewController)
+        present(navigationController, animated: true, completion: nil)
     }
 }
 
@@ -339,21 +345,6 @@ private extension ProductsViewController {
     ///
     func registerTableViewCells() {
         tableView.register(ProductsTabProductTableViewCell.self, forCellReuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier)
-    }
-}
-
-// MARL: - Inventory scanner
-//
-private extension ProductsViewController {
-    @objc func inventoryScannerButtonTapped() {
-        // TODO-jc
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            assertionFailure("No valid site ID for Products tab")
-            return
-        }
-        let viewController = ProductStockScannerViewController(siteID: siteID)
-        let navigationController = WooNavigationController(rootViewController: viewController)
-        present(navigationController, animated: true, completion: nil)
     }
 }
 

@@ -15,7 +15,6 @@ final class TodayStatsTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        configureBackground()
         configureHeaderLabels()
         configureBodyLabels()
     }

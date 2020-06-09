@@ -20,6 +20,8 @@ final class TodayViewController: UIViewController, NCWidgetProviding {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTableView()
+        sections = [Section(rows: [.example])]
+        tableView.reloadData()
     }
         
     func widgetPerformUpdate(completionHandler: (@escaping (NCUpdateResult) -> Void)) {
@@ -29,8 +31,6 @@ final class TodayViewController: UIViewController, NCWidgetProviding {
         // If there's no update required, use NCUpdateResult.NoData
         // If there's an update, use NCUpdateResult.NewData
         
-        sections = [Section(rows: [.example])]
-        tableView.reloadData()
         completionHandler(NCUpdateResult.newData)
     }
  

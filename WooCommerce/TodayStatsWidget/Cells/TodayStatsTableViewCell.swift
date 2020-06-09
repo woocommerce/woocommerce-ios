@@ -23,14 +23,14 @@ final class TodayStatsTableViewCell: UITableViewCell {
 private extension TodayStatsTableViewCell {
     
     func configureHeaderLabels() {
-        visitorsHeaderLabel.applyHeadlineStyle()
-        ordersHeaderLabel.applyHeadlineStyle()
-        revenueHeaderLabel.applyHeadlineStyle()
+        visitorsHeaderLabel.applySubheadlineStyle()
+        ordersHeaderLabel.applySubheadlineStyle()
+        revenueHeaderLabel.applySubheadlineStyle()
     }
     
     func configureBodyLabels() {
-        visitorsBodyLabel.applySecondaryBodyStyle()
-        ordersBodyLabel.applySecondaryBodyStyle()
-        revenueBodyLabel.applySecondaryBodyStyle()
+        visitorsBodyLabel.applyTitleStyle()
+        ordersBodyLabel.applyTitleStyle()
+        revenueBodyLabel.applyTitleStyle()
     }
 }

@@ -15,6 +15,6 @@ final class SelectedWebsiteInTodayWidgetTableViewCell: UITableViewCell {
 private extension SelectedWebsiteInTodayWidgetTableViewCell {
     
     func configureLabels() {
-        textLabel?.applyBodyStyle()
+        textLabel?.applyFootnoteStyle()
     }
 }

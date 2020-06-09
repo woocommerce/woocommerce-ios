@@ -26,6 +26,9 @@ private extension TodayStatsTableViewCell {
         visitorsHeaderLabel.applySubheadlineStyle()
         ordersHeaderLabel.applySubheadlineStyle()
         revenueHeaderLabel.applySubheadlineStyle()
+        visitorsHeaderLabel.text = LocalizedText.visitors
+        ordersHeaderLabel.text = LocalizedText.orders
+        revenueHeaderLabel.text = LocalizedText.revenue
     }
     
     func configureBodyLabels() {
@@ -33,4 +36,11 @@ private extension TodayStatsTableViewCell {
         ordersBodyLabel.applyTitleStyle()
         revenueBodyLabel.applyTitleStyle()
     }
+    
+    enum LocalizedText {
+        static let visitors = NSLocalizedString("Visitors", comment: "Visitors label in Today Stats Widget")
+        static let orders = NSLocalizedString("Orders", comment: "Orders label in Today Stats Widget")
+        static let revenue = NSLocalizedString("Revenue", comment: "Revenue label in Today Stats Widget")
+    }
+
 }

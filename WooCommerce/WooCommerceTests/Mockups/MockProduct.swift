@@ -67,6 +67,7 @@ final class MockProduct {
                    downloads: [],
                    downloadLimit: -1,
                    downloadExpiry: -1,
+                   buttonText: "",
                    externalURL: "http://somewhere.com",
                    taxStatusKey: taxStatus.rawValue,
                    taxClass: taxClass,

@@ -181,23 +181,33 @@ extension OrderDetailsDataSource: UITableViewDataSource {
 // MARK: - Support for UITableViewDelegate
 extension OrderDetailsDataSource {
     func viewForHeaderInSection(_ section: Int, tableView: UITableView) -> UIView? {
-        guard let leftText = sections[section].title else {
+        guard let section = sections[safe: section] else {
             return nil
         }
 
-        let headerID = TwoColumnSectionHeaderView.reuseIdentifier
-        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerID) as? TwoColumnSectionHeaderView else {
-            fatalError()
+        let reuseIdentifier = section.headerStyle.viewType.reuseIdentifier
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: reuseIdentifier) else {
+            assertionFailure("Could not find section header view for reuseIdentifier \(reuseIdentifier)")
+            return nil
         }
 
-        headerView.leftText = leftText
-        headerView.rightText = sections[section].rightTitle
+        switch headerView {
+        case let headerView as PrimarySectionHeaderView:
+            headerView.configure(title: section.title)
+        case let headerView as TwoColumnSectionHeaderView:
+            headerView.leftText = section.title
+            headerView.rightText = section.rightTitle
+        default:
+            assertionFailure("Unexpected headerView type \(headerView.self)")
+            return nil
+        }
 
         return headerView
     }
 }
 
 // MARK: - Support for UITableViewDataSource
+
 private extension OrderDetailsDataSource {
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
@@ -567,7 +577,7 @@ extension OrderDetailsDataSource {
                     rows.append(.details)
                 }
 
-                return Section(title: Title.products, rightTitle: nil, rows: rows)
+                return Section(title: Localization.pluralizedProducts(count: items.count), rightTitle: nil, rows: rows, headerStyle: .primary)
             }
 
             var rows = [Row]()
@@ -589,7 +599,7 @@ extension OrderDetailsDataSource {
                 return nil
             }
 
-            return Section(title: Title.products, rightTitle: nil, rows: rows)
+            return Section(title: Localization.pluralizedProducts(count: items.count), rightTitle: nil, rows: rows, headerStyle: .primary)
         }()
 
         let refundedProducts: Section? = {
@@ -851,7 +861,8 @@ extension OrderDetailsDataSource {
     }
 
     enum Title {
-        static let products = NSLocalizedString("Products", comment: "Product section title")
+        static let products = NSLocalizedString("Products", comment: "Product section title if there is more than one product.")
+        static let product = NSLocalizedString("Product", comment: "Product section title if there is only one product.")
         static let refundedProducts = NSLocalizedString("Refunded Products", comment: "Section title")
         static let tracking = NSLocalizedString("Tracking", comment: "Order tracking section title")
         static let customerNote = NSLocalizedString("Customer Provided Note", comment: "Customer note section title")
@@ -866,20 +877,50 @@ extension OrderDetailsDataSource {
     }
 
     struct Section {
+        /// The table header style of a `Section`.
+        ///
+        enum HeaderStyle {
+            /// Uses the PrimarySectionHeaderView
+            case primary
+            /// Uses the TwoColumnSectionHeaderView
+            case twoColumn
+
+            /// The type of `UITableViewHeaderFooterView` to use for this style.
+            ///
+            var viewType: UITableViewHeaderFooterView.Type {
+                switch self {
+                case .primary:
+                    return PrimarySectionHeaderView.self
+                case .twoColumn:
+                    return TwoColumnSectionHeaderView.self
+                }
+            }
+        }
+
         let title: String?
         let rightTitle: String?
         let footer: String?
         let rows: [Row]
+        let headerStyle: HeaderStyle
 
-        init(title: String? = nil, rightTitle: String? = nil, footer: String? = nil, rows: [Row]) {
+        init(title: String? = nil,
+             rightTitle: String? = nil,
+             footer: String? = nil,
+             rows: [Row],
+             headerStyle: HeaderStyle = .twoColumn) {
             self.title = title
             self.rightTitle = rightTitle
             self.footer = footer
             self.rows = rows
+            self.headerStyle = headerStyle
         }
 
-        init(title: String? = nil, rightTitle: String? = nil, footer: String? = nil, row: Row) {
-            self.init(title: title, rightTitle: rightTitle, footer: footer, rows: [row])
+        init(title: String? = nil,
+             rightTitle: String? = nil,
+             footer: String? = nil,
+             row: Row,
+             headerStyle: HeaderStyle = .twoColumn) {
+            self.init(title: title, rightTitle: rightTitle, footer: footer, rows: [row], headerStyle: headerStyle)
         }
     }
 
@@ -975,5 +1016,15 @@ extension OrderDetailsDataSource {
         static let addOrderCell = 1
         static let paymentCell = 1
         static let paidByCustomerCell = 1
+    }
+}
+
+// MARK: - Private Utils
+
+private extension OrderDetailsDataSource {
+    enum Localization {
+        static func pluralizedProducts(count: Int) -> String {
+            count > 1 ? Title.products : Title.product
+        }
     }
 }

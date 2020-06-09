@@ -4,7 +4,7 @@ import XCTest
 
 // UITableViewCell+Helpers: Unit Tests
 //
-class UITableViewCellHelpersTests: XCTestCase {
+final class UITableViewCellHelpersTests: XCTestCase {
 
     /// Verifies that `reuseIdentifier` class method effectively returns a string that doesn't contain the class's module.
     ///

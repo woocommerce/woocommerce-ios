@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="iN0-l3-epB" customClass="PrimarySectionHeaderView" customModule="WooCommerce" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="433" height="118"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="95D-6l-YMn">
+                    <rect key="frame" x="0.0" y="14" width="433" height="104"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Iste Nihil Occaecati" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LhT-W3-uWF">
+                            <rect key="frame" x="16" y="16" width="401" height="88"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="LhT-W3-uWF" secondAttribute="trailing" constant="16" id="L9N-Cc-ugv"/>
+                        <constraint firstItem="LhT-W3-uWF" firstAttribute="top" secondItem="95D-6l-YMn" secondAttribute="top" constant="16" id="a7P-6Q-hnP"/>
+                        <constraint firstItem="LhT-W3-uWF" firstAttribute="leading" secondItem="95D-6l-YMn" secondAttribute="leading" constant="16" id="yWp-Om-JcY"/>
+                        <constraint firstAttribute="bottom" secondItem="LhT-W3-uWF" secondAttribute="bottom" id="zaM-cs-of8"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <constraints>
+                <constraint firstItem="95D-6l-YMn" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="fQC-Gr-dyw"/>
+                <constraint firstAttribute="trailing" secondItem="95D-6l-YMn" secondAttribute="trailing" id="j7m-qU-6tg"/>
+                <constraint firstAttribute="bottom" secondItem="95D-6l-YMn" secondAttribute="bottom" id="qKW-TO-CAd"/>
+                <constraint firstItem="95D-6l-YMn" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="14" id="wG5-Uv-WXA"/>
+            </constraints>
+            <nil key="simulatedTopBarMetrics"/>
+            <nil key="simulatedBottomBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="containerView" destination="95D-6l-YMn" id="VNy-Mm-tf1"/>
+                <outlet property="titleLabel" destination="LhT-W3-uWF" id="WpX-KO-aCd"/>
+            </connections>
+            <point key="canvasLocation" x="-247" y="-737"/>
+        </view>
+    </objects>
+</document>

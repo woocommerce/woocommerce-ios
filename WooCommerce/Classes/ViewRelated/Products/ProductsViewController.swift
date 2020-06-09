@@ -213,6 +213,10 @@ private extension ProductsViewController {
 
         present(navigationController, animated: true, completion: nil)
     }
+
+    @objc func scanProducts() {
+        // TODO-2407: scan barcodes for products
+    }
 }
 
 // MARK: - View Configuration
@@ -242,6 +246,23 @@ private extension ProductsViewController {
 
             return button
         }()
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.barcodeScanner) {
+            navigationItem.rightBarButtonItem = {
+                let button = UIBarButtonItem(image: .scanImage,
+                                             style: .plain,
+                                             target: self,
+                                             action: #selector(scanProducts))
+                button.accessibilityTraits = .button
+                button.accessibilityLabel = NSLocalizedString("Scan products", comment: "Scan Products")
+                button.accessibilityHint = NSLocalizedString(
+                    "Scans barcodes that are associated with a product SKU for stock management.",
+                    comment: "VoiceOver accessibility hint, informing the user the button can be used to scan products."
+                )
+
+                return button
+            }()
+        }
     }
 
     /// Apply Woo styles.

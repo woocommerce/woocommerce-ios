@@ -6,6 +6,10 @@ enum FeatureFlag: Int {
     /// `An enum with no cases cannot declare a raw type`
     case null
 
+    /// Barcode scanner for product inventory management
+    ///
+    case barcodeScanner
+
     /// Edit products
     ///
     case editProducts

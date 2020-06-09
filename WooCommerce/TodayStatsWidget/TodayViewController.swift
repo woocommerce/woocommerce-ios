@@ -20,7 +20,7 @@ final class TodayViewController: UIViewController, NCWidgetProviding {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTableView()
-        sections = [Section(rows: [.example])]
+        sections = [Section(rows: [.todayStats])]
         tableView.reloadData()
     }
         
@@ -43,7 +43,7 @@ private extension TodayViewController {
 
     func configureTableView() {
         tableView.rowHeight = UITableView.automaticDimension
-        //tableView.backgroundColor = .listBackground
+        tableView.backgroundColor = .clear
 
         registerTableViewCells()
 
@@ -90,17 +90,17 @@ private extension TodayViewController {
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as BasicTableViewCell where row == .example:
-            configureExample(cell: cell)
+        case let cell as TodayStatsTableViewCell where row == .todayStats:
+            configureTodayStats(cell: cell)
         default:
             fatalError()
             break
         }
     }
     
-    func configureExample(cell: BasicTableViewCell) {
-        cell.textLabel?.text = NSLocalizedString("This is a sample cell", comment: "Label action for removing a link from the editor")
-        cell.textLabel?.applyLinkBodyStyle()
+    func configureTodayStats(cell: TodayStatsTableViewCell) {
+        //cell.textLabel?.text = NSLocalizedString("This is a sample cell", comment: "Label action for removing a link from the editor")
+        //cell.textLabel?.applyLinkBodyStyle()
     }
 }
 // MARK: - Private Types
@@ -112,12 +112,12 @@ private extension TodayViewController {
     }
 
     enum Row: CaseIterable {
-        case example
+        case todayStats
 
         var type: UITableViewCell.Type {
             switch self {
-            case .example:
-                return BasicTableViewCell.self
+            case .todayStats:
+                return TodayStatsTableViewCell.self
             }
         }
 

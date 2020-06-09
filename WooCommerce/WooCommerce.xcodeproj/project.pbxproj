@@ -294,6 +294,8 @@
 		453904F523BB8BD5007C4956 /* ProductTaxClassListSelectorDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453904F423BB8BD5007C4956 /* ProductTaxClassListSelectorDataSourceTests.swift */; };
 		453DBF8E2387F34A006762A5 /* UICollectionViewCell+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453DBF8D2387F34A006762A5 /* UICollectionViewCell+Helpers.swift */; };
 		453DBF9023882814006762A5 /* ProductImagesFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453DBF8F23882814006762A5 /* ProductImagesFlowLayout.swift */; };
+		45406E4F248F9A2700101CE5 /* TodayStatsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45406E4D248F9A2700101CE5 /* TodayStatsTableViewCell.swift */; };
+		45406E50248F9A2700101CE5 /* TodayStatsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45406E4E248F9A2700101CE5 /* TodayStatsTableViewCell.xib */; };
 		454B28BE23BF63C600CD2091 /* DateIntervalFormatter+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454B28BD23BF63C600CD2091 /* DateIntervalFormatter+Helpers.swift */; };
 		455A2FDB246B1349000CA72C /* ProductVisibilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455A2FDA246B1349000CA72C /* ProductVisibilityTests.swift */; };
 		456417F4247D5434001203F6 /* UITableView+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456417F3247D5434001203F6 /* UITableView+Helpers.swift */; };
@@ -1187,6 +1189,8 @@
 		453904F423BB8BD5007C4956 /* ProductTaxClassListSelectorDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTaxClassListSelectorDataSourceTests.swift; sourceTree = "<group>"; };
 		453DBF8D2387F34A006762A5 /* UICollectionViewCell+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionViewCell+Helpers.swift"; sourceTree = "<group>"; };
 		453DBF8F23882814006762A5 /* ProductImagesFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesFlowLayout.swift; sourceTree = "<group>"; };
+		45406E4D248F9A2700101CE5 /* TodayStatsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayStatsTableViewCell.swift; sourceTree = "<group>"; };
+		45406E4E248F9A2700101CE5 /* TodayStatsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TodayStatsTableViewCell.xib; sourceTree = "<group>"; };
 		454B28BD23BF63C600CD2091 /* DateIntervalFormatter+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateIntervalFormatter+Helpers.swift"; sourceTree = "<group>"; };
 		455A2FDA246B1349000CA72C /* ProductVisibilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVisibilityTests.swift; sourceTree = "<group>"; };
 		456417F3247D5434001203F6 /* UITableView+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Helpers.swift"; sourceTree = "<group>"; };
@@ -2500,6 +2504,8 @@
 			children = (
 				458DCEBF248E6BF6003F0626 /* TodayViewController.swift */,
 				458DCEC1248E6BF6003F0626 /* MainInterface.storyboard */,
+				45406E4D248F9A2700101CE5 /* TodayStatsTableViewCell.swift */,
+				45406E4E248F9A2700101CE5 /* TodayStatsTableViewCell.xib */,
 				458DCEC4248E6BF6003F0626 /* Info.plist */,
 			);
 			path = TodayStatsWidget;
@@ -4271,6 +4277,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45406E50248F9A2700101CE5 /* TodayStatsTableViewCell.xib in Resources */,
 				458DCECE248E726D003F0626 /* BasicTableViewCell.xib in Resources */,
 				458DCEC3248E6BF6003F0626 /* MainInterface.storyboard in Resources */,
 			);
@@ -4657,6 +4664,7 @@
 				458DCED0248E729E003F0626 /* NSObject+Helpers.swift in Sources */,
 				458DCED3248E72C7003F0626 /* UIFont+Helpers.swift in Sources */,
 				458DCED1248E72AE003F0626 /* UIColor+SemanticColors.swift in Sources */,
+				45406E4F248F9A2700101CE5 /* TodayStatsTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

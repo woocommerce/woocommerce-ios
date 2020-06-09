@@ -293,7 +293,7 @@ public struct Product: Codable {
         let downloadLimit = try container.decode(Int.self, forKey: .downloadLimit)
         let downloadExpiry = try container.decode(Int.self, forKey: .downloadExpiry)
 
-        let buttonText = try container.decodeIfPresent(String.self, forKey: .buttonText) ?? ""
+        let buttonText = try container.decode(String.self, forKey: .buttonText)
         let externalURL = try container.decodeIfPresent(String.self, forKey: .externalURL)
         let taxStatusKey = try container.decode(String.self, forKey: .taxStatusKey)
         let taxClass = try container.decodeIfPresent(String.self, forKey: .taxClass)

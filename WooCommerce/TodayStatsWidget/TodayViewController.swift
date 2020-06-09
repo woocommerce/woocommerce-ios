@@ -19,7 +19,7 @@ final class TodayViewController: UIViewController, NCWidgetProviding {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        registerTableViewCells()
+        configureTableView()
     }
         
     func widgetPerformUpdate(completionHandler: (@escaping (NCUpdateResult) -> Void)) {
@@ -34,6 +34,23 @@ final class TodayViewController: UIViewController, NCWidgetProviding {
         completionHandler(NCUpdateResult.newData)
     }
  
+    
+}
+
+// MARK: - View Configuration
+//
+private extension TodayViewController {
+
+    func configureTableView() {
+        tableView.rowHeight = UITableView.automaticDimension
+        //tableView.backgroundColor = .listBackground
+
+        registerTableViewCells()
+
+        tableView.dataSource = self
+        tableView.delegate = self
+    }
+
     func registerTableViewCells() {
         for row in Row.allCases {
             tableView.register(row.type.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
@@ -41,6 +58,8 @@ final class TodayViewController: UIViewController, NCWidgetProviding {
     }
 }
 
+// MARK: - UITableViewDataSource Conformance
+//
 extension TodayViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return sections.count
@@ -54,9 +73,10 @@ extension TodayViewController: UITableViewDataSource {
         return cell
     }
     
-
 }
 
+// MARK: - UITableViewDelegate Conformance
+//
 extension TodayViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.reloadData()

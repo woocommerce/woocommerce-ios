@@ -2,26 +2,19 @@ import UIKit
 
 // MARK: - SelectedWebsiteInTodayWidgetTableViewCell
 //
-class SelectedWebsiteInTodayWidgetTableViewCell: UITableViewCell {
-
+final class SelectedWebsiteInTodayWidgetTableViewCell: UITableViewCell {
+    
     override func awakeFromNib() {
         super.awakeFromNib()
+        
+        configureLabels()
     }
-
     
 }
 
 private extension SelectedWebsiteInTodayWidgetTableViewCell {
     
-//    func configureHeaderLabels() {
-//        visitorsHeaderLabel.applyHeadlineStyle()
-//        ordersHeaderLabel.applyHeadlineStyle()
-//        revenueHeaderLabel.applyHeadlineStyle()
-//    }
-//
-//    func configureBodyLabels() {
-//        visitorsBodyLabel.applySecondaryBodyStyle()
-//        ordersBodyLabel.applySecondaryBodyStyle()
-//        revenueBodyLabel.applySecondaryBodyStyle()
-//    }
+    func configureLabels() {
+        textLabel?.applyBodyStyle()
+    }
 }

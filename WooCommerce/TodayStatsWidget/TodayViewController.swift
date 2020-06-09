@@ -12,8 +12,7 @@ final class TodayViewController: UIViewController, NCWidgetProviding {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTableView()
-        sections = [Section(rows: [.todayStats])]
-        tableView.reloadData()
+        sections = [Section(rows: [.todayStats, .selectedWebsite])]
     }
         
     func widgetPerformUpdate(completionHandler: (@escaping (NCUpdateResult) -> Void)) {
@@ -36,7 +35,8 @@ private extension TodayViewController {
     func configureTableView() {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .clear
-
+        tableView.removeLastCellSeparator()
+        
         registerTableViewCells()
 
         tableView.dataSource = self
@@ -54,7 +54,7 @@ private extension TodayViewController {
 //
 extension TodayViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sections.count
+        return sections[section].rows.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -70,9 +70,6 @@ extension TodayViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate Conformance
 //
 extension TodayViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.reloadData()
-    }
 }
 
 // MARK: - Cell configuration
@@ -84,6 +81,8 @@ private extension TodayViewController {
         switch cell {
         case let cell as TodayStatsTableViewCell where row == .todayStats:
             configureTodayStats(cell: cell)
+        case let cell as SelectedWebsiteInTodayWidgetTableViewCell where row == .selectedWebsite:
+            configureSelectedWebsite(cell: cell)
         default:
             fatalError()
             break
@@ -91,8 +90,10 @@ private extension TodayViewController {
     }
     
     func configureTodayStats(cell: TodayStatsTableViewCell) {
-        //cell.textLabel?.text = NSLocalizedString("This is a sample cell", comment: "Label action for removing a link from the editor")
-        //cell.textLabel?.applyLinkBodyStyle()
+    }
+    
+    func configureSelectedWebsite(cell: SelectedWebsiteInTodayWidgetTableViewCell) {
+        cell.textLabel?.text = "woocommerce.com"
     }
 }
 // MARK: - Private Types
@@ -105,11 +106,14 @@ private extension TodayViewController {
 
     enum Row: CaseIterable {
         case todayStats
+        case selectedWebsite
 
         var type: UITableViewCell.Type {
             switch self {
             case .todayStats:
                 return TodayStatsTableViewCell.self
+            case .selectedWebsite:
+                return SelectedWebsiteInTodayWidgetTableViewCell.self
             }
         }
 

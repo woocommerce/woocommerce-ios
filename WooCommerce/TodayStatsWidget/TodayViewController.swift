@@ -1,7 +1,7 @@
 import UIKit
 import NotificationCenter
 
-final class TodayViewController: UIViewController, NCWidgetProviding {
+final class TodayViewController: UIViewController {
         
     @IBOutlet private weak var tableView: UITableView!
     
@@ -13,8 +13,16 @@ final class TodayViewController: UIViewController, NCWidgetProviding {
         super.viewDidLoad()
         configureTableView()
         sections = [Section(rows: [.todayStats, .selectedWebsite])]
+        
     }
         
+    
+ 
+}
+
+// MARK: - Widget Updating
+extension TodayViewController: NCWidgetProviding {
+    
     func widgetPerformUpdate(completionHandler: (@escaping (NCUpdateResult) -> Void)) {
         // Perform any setup necessary in order to update the view.
         
@@ -24,8 +32,6 @@ final class TodayViewController: UIViewController, NCWidgetProviding {
         
         completionHandler(NCUpdateResult.newData)
     }
- 
-    
 }
 
 // MARK: - View Configuration

@@ -1,9 +1,12 @@
 import UIKit
 import NotificationCenter
+import KeychainAccess
 
 final class TodayViewController: UIViewController {
         
     @IBOutlet private weak var tableView: UITableView!
+    
+    private let keychain: Keychain = Keychain(service: WooConstants.keychainServiceName).accessibility(.afterFirstUnlock)
     
     /// Table Sections to be rendered
     ///
@@ -17,7 +20,6 @@ final class TodayViewController: UIViewController {
     }
         
     
- 
 }
 
 // MARK: - Widget Updating
@@ -96,12 +98,14 @@ private extension TodayViewController {
     }
     
     func configureTodayStats(cell: TodayStatsTableViewCell) {
+        cell.configure(visitors: "-", orders: "-", revenue: "-")
     }
     
     func configureSelectedWebsite(cell: SelectedWebsiteInTodayWidgetTableViewCell) {
         cell.textLabel?.text = "woocommerce.com"
     }
 }
+
 // MARK: - Private Types
 //
 private extension TodayViewController {

@@ -65,6 +65,10 @@ target 'WooCommerce' do
     inherit! :search_paths
   end
 
+  target 'TodayStatsWidget' do
+    inherit! :search_paths
+  end  
+
 end
 
 # Yosemite Layer:

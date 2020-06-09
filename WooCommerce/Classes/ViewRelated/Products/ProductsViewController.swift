@@ -220,6 +220,8 @@ private extension ProductsViewController {
             return
         }
         let viewController = ProductStockScannerViewController(siteID: siteID)
+        // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
+        viewController.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(viewController, animated: true)
     }
 }

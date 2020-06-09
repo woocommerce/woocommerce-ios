@@ -231,18 +231,21 @@ private extension ProductStore {
 
     /// Updates the product.
     ///
-    func updateProduct(product: Product, onCompletion: @escaping (Product?, ProductUpdateError?) -> Void) {
+    func updateProduct(product: Product, onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
         let remote = ProductsRemote(network: network)
 
         remote.updateProduct(product: product) { [weak self] (product, error) in
             guard let product = product else {
-                onCompletion(nil, error.map({ ProductUpdateError(error: $0) }))
+                onCompletion(.failure(error.map { ProductUpdateError(error: $0) } ?? ProductUpdateError.unknown))
                 return
             }
 
             self?.upsertStoredProductsInBackground(readOnlyProducts: [product]) { [weak self] in
-                let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: product.siteID, productID: product.productID)
-                onCompletion(storageProduct?.toReadOnly(), nil)
+                guard let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: product.siteID, productID: product.productID) else {
+                    onCompletion(.failure(.notFoundInStorage))
+                    return
+                }
+                onCompletion(.success(storageProduct.toReadOnly()))
             }
         }
     }
@@ -537,6 +540,7 @@ extension ProductStore {
 public enum ProductUpdateError: Error {
     case duplicatedSKU
     case invalidSKU
+    case notFoundInStorage
     case unknown
 
     init(error: Error) {

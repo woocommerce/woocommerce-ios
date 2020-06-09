@@ -359,21 +359,20 @@ private extension ProductFormViewController {
         // Updated Product
         if viewModel.hasProductChanged() {
             group.enter()
-            let updateProductAction = ProductAction.updateProduct(product: product) { [weak self] (product, error) in
-                guard let product = product, error == nil else {
-                    let errorDescription = error?.localizedDescription ?? "No error specified"
+            let updateProductAction = ProductAction.updateProduct(product: product) { [weak self] result in
+                switch result {
+                case .success(let product):
+                    self?.viewModel.resetProduct(product)
+                    ServiceLocator.analytics.track(.productDetailUpdateSuccess)
+                case .failure(let error):
+                    let errorDescription = error.localizedDescription
                     DDLogError("⛔️ Error updating Product: \(errorDescription)")
                     ServiceLocator.analytics.track(.productDetailUpdateError)
                     // Dismisses the in-progress UI then presents the error alert.
                     self?.navigationController?.dismiss(animated: true) {
                         self?.displayError(error: error)
                     }
-                    group.leave()
-                    return
                 }
-                self?.viewModel.resetProduct(product)
-
-                ServiceLocator.analytics.track(.productDetailUpdateSuccess)
                 group.leave()
             }
             ServiceLocator.stores.dispatch(updateProductAction)

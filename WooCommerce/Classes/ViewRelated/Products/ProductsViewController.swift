@@ -220,8 +220,7 @@ private extension ProductsViewController {
             return
         }
         let viewController = ProductStockScannerViewController(siteID: siteID)
-        let navigationController = WooNavigationController(rootViewController: viewController)
-        present(navigationController, animated: true, completion: nil)
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }
 

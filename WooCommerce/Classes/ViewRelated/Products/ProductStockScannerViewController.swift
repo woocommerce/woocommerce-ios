@@ -3,37 +3,44 @@ import WordPressUI
 import Yosemite
 
 struct ScannedProductsBottomSheetListSelectorCommand: BottomSheetListSelectorCommand {
-    typealias Model = Product
+    typealias Model = ProductSKUScannerResult
     typealias Cell = ProductDetailsTableViewCell
 
-    let data: [Product]
+    let data: [ProductSKUScannerResult]
 
-    let selected: Product? = nil
+    let selected: ProductSKUScannerResult? = nil
 
     private let imageService: ImageService
-    private let onSelection: (Product) -> Void
+    private let onSelection: (ProductSKUScannerResult) -> Void
 
-    init(products: [Product],
+    init(results: [ProductSKUScannerResult],
          imageService: ImageService = ServiceLocator.imageService,
-         onSelection: @escaping (Product) -> Void) {
+         onSelection: @escaping (ProductSKUScannerResult) -> Void) {
         self.onSelection = onSelection
         self.imageService = imageService
-        self.data = products
+        self.data = results
     }
 
-    func configureCell(cell: ProductDetailsTableViewCell, model: Product) {
+    func configureCell(cell: ProductDetailsTableViewCell, model: ProductSKUScannerResult) {
         cell.selectionStyle = .none
         cell.accessoryType = .disclosureIndicator
 
         // TODO-jc: stock quantity tracking
-        cell.configureForInventoryScannerResult(product: model, updatedQuantity: model.stockQuantity, imageService: imageService)
+        switch model {
+        case .matched(let product):
+            cell.configureForInventoryScannerResult(product: product, updatedQuantity: product.stockQuantity, imageService: imageService)
+        default:
+            break
+            //            let vm = ProductDetailsCellViewModel(
+            //            cell.configure(item: <#T##ProductDetailsCellViewModel#>, imageService: <#T##ImageService#>)
+        }
     }
 
-    func handleSelectedChange(selected: Product) {
+    func handleSelectedChange(selected: ProductSKUScannerResult) {
         onSelection(selected)
     }
 
-    func isSelected(model: Product) -> Bool {
+    func isSelected(model: ProductSKUScannerResult) -> Bool {
         return model == selected
     }
 }
@@ -41,6 +48,19 @@ struct ScannedProductsBottomSheetListSelectorCommand: BottomSheetListSelectorCom
 enum ProductSKUScannerResult {
     case matched(product: Product)
     case noMatch(sku: String)
+}
+
+extension ProductSKUScannerResult: Equatable {
+    static func ==(lhs: ProductSKUScannerResult, rhs: ProductSKUScannerResult) -> Bool {
+        switch (lhs, rhs) {
+        case (let .matched(product1), let .matched(product2)):
+            return product1 == product2
+        case (let .noMatch(sku1), let .noMatch(sku2)):
+            return sku1 == sku2
+        default:
+            return false
+        }
+    }
 }
 
 final class ProductStockScannerViewController: UIViewController {
@@ -54,7 +74,7 @@ final class ProductStockScannerViewController: UIViewController {
         }
     }()
 
-    private var scannedProducts: [Product] = []
+    private var results: [ProductSKUScannerResult] = []
 
     private lazy var statusLabel: PaddedLabel = {
         let label = PaddedLabel()
@@ -114,7 +134,7 @@ private extension ProductStockScannerViewController {
                     self.statusLabel.text = NSLocalizedString("Product found!", comment: "")
                     self.showStatusLabel()
 
-                    self.scannedProducts.append(product)
+                    self.results.append(.matched(product: product))
                     self.presentSearchResults()
                 case .failure(let error):
                     let generator = UINotificationFeedbackGenerator()
@@ -135,10 +155,15 @@ private extension ProductStockScannerViewController {
         let title = NSLocalizedString("Scanned products",
                                       comment: "Title of the bottom sheet that shows a list of scanned products via the barcode scanner.")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
-        let dataSource = ScannedProductsBottomSheetListSelectorCommand(products: scannedProducts) { [weak self] action in
-                                                                    self?.dismiss(animated: true) { [weak self] in
-
-                                                                    }
+        let dataSource = ScannedProductsBottomSheetListSelectorCommand(results: results) { [weak self] result in
+            self?.dismiss(animated: true, completion: { [weak self] in
+                switch result {
+                case .matched(let product):
+                    self?.editInventorySettings(for: product)
+                case .noMatch(let sku):
+                    print("TODO: \(sku)")
+                }
+            })
         }
         let listSelectorViewController = BottomSheetListSelectorViewController(viewProperties: viewProperties,
                                                                                command: dataSource) { [weak self] selectedSortOrder in
@@ -154,6 +179,60 @@ private extension ProductStockScannerViewController {
 private extension ProductStockScannerViewController {
     @objc func doneButtonTapped() {
         // TODO-jc
+    }
+
+    func editInventorySettings(for product: Product) {
+        let inventorySettingsViewController = ProductInventorySettingsViewController(product: product) { [weak self] data in
+            self?.updateProductInventorySettings(product, inventoryData: data)
+        }
+        navigationController?.pushViewController(inventorySettingsViewController, animated: true)
+    }
+
+    func updateProductInventorySettings(_ product: Product, inventoryData: ProductInventoryEditableData) {
+        // TODO-jc: analytics
+//        ServiceLocator.analytics.track(.productDetailUpdateButtonTapped)
+        let title = NSLocalizedString("Updating inventory", comment: "Title of the in-progress UI while updating the Product inventory settings remotely")
+        let message = NSLocalizedString("Please wait while we update inventory for your products",
+                                        comment: "Message of the in-progress UI while updating the Product inventory settings remotely")
+        let viewProperties = InProgressViewProperties(title: title, message: message)
+        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
+
+        // Before iOS 13, a modal with transparent background requires certain
+        // `modalPresentationStyle` to prevent the view from turning dark after being presented.
+        if #available(iOS 13.0, *) {} else {
+            inProgressViewController.modalPresentationStyle = .overCurrentContext
+        }
+
+        navigationController?.present(inProgressViewController, animated: true, completion: nil)
+
+        let productWithUpdatedInventory = product.inventorySettingsUpdated(sku: inventoryData.sku,
+                                                                           manageStock: inventoryData.manageStock,
+                                                                           soldIndividually: inventoryData.soldIndividually,
+                                                                           stockQuantity: inventoryData.stockQuantity,
+                                                                           backordersSetting: inventoryData.backordersSetting,
+                                                                           stockStatus: inventoryData.stockStatus)
+        let updateProductAction = ProductAction.updateProduct(product: productWithUpdatedInventory) { [weak self] updateResult in
+            guard let self = self else {
+                return
+            }
+
+            switch updateResult {
+            case .success(let product):
+                // TODO-jc: analytics
+                print("Updated \(product.name)!")
+//                ServiceLocator.analytics.track(.productDetailUpdateSuccess)
+            case .failure(let error):
+                let errorDescription = error.localizedDescription
+                DDLogError("⛔️ Error updating Product: \(errorDescription)")
+                // TODO-jc: display error
+                // TODO-jc: analytics
+//                ServiceLocator.analytics.track(.productDetailUpdateError)
+                // Dismisses the in-progress UI then presents the error alert.
+            }
+            self.navigationController?.popToViewController(self, animated: true)
+            self.navigationController?.dismiss(animated: true, completion: nil)
+        }
+        ServiceLocator.stores.dispatch(updateProductAction)
     }
 }
 

@@ -84,8 +84,9 @@ struct CopiableSpec {
 
     /// The name of the struct/class that conforms to GeneratedCopiable.
     let name: String
-    /// "public", "private", etc.
-    let accessLevel: String
+    /// The access level "public", "private", etc with a space at the end. This is just an empty
+    /// string if the true accessLevel is "internal".
+    let accessLevelWithSpacePostfix: String
     /// The properties that we're going to generate as part of the copy() arguments.
     let properties: [Property]
 }
@@ -113,7 +114,11 @@ let specsToGenerate: [CopiableSpec] = matchingTypes.map { type in
         )
     }
 
-    return CopiableSpec(name: type.name, accessLevel: type.accessLevel, properties: propSpecs)
+    return CopiableSpec(
+        name: type.name,
+        accessLevelWithSpacePostfix: type.accessLevel == "internal" ? "" : "\(type.accessLevel) ",
+        properties: propSpecs
+    )
 }
 
 -%>
@@ -128,7 +133,7 @@ import <%= module %>
 
 <% for copiableSpec in specsToGenerate { -%>
 extension <%= copiableSpec.name %> {
-    <%= copiableSpec.accessLevel %> func copy(
+    <%= copiableSpec.accessLevelWithSpacePostfix %>func copy(
 <% for propertySpec in copiableSpec.properties { -%>
         <%= propertySpec.name %>: <%= propertySpec.copiablePropTypeName %><<%= propertySpec.typeName %>> = .copy<%= propertySpec.commaOrNothing %>
 <% } -%>

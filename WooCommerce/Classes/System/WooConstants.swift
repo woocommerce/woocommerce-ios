@@ -20,6 +20,10 @@ enum WooConstants {
 #else
     static let pushApplicationID = "com.automattic.woocommerce"
 #endif
+    
+    /// App Group
+    ///
+    static let wooAppsGroup = "group.com.automattic.woocommerce"
 
     /// Jetpack Setup URL
     ///

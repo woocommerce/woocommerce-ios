@@ -19,7 +19,7 @@ final class TodayViewController: UIViewController {
         configureTableView()
         sections = [Section(rows: [.todayStats, .selectedWebsite])]
         
-        value = UserDefaults(suiteName: "group.com.automattic.woocommerce")?[UserDefaults.Key.defaultUsername] as? String
+        value = UserDefaults(suiteName: WooConstants.wooAppsGroup)?[UserDefaults.Key.defaultUsername] as? String
     }
         
     

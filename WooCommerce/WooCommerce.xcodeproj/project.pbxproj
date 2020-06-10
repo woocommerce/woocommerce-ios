@@ -328,6 +328,7 @@
 		458DCED7248E7493003F0626 /* UIView+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C744620F55BC800EEFC87 /* UIView+Helpers.swift */; };
 		459097F823CDE47F00DEA9E0 /* UIAlertController+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459097F723CDE47F00DEA9E0 /* UIAlertController+Helpers.swift */; };
 		4596F38D248FDD35002FD08F /* WooConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFBF20BC67C200DB0E8C /* WooConstants.swift */; };
+		4596F38E248FE4D0002FD08F /* UserDefaults+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5AA7B3E20ED81C2004DA14F /* UserDefaults+Woo.swift */; };
 		45A24E5F2451DF1A0050606B /* ProductMenuOrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A24E5D2451DF1A0050606B /* ProductMenuOrderViewController.swift */; };
 		45A24E602451DF1A0050606B /* ProductMenuOrderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45A24E5E2451DF1A0050606B /* ProductMenuOrderViewController.xib */; };
 		45AE1B9C2417C10C00A9E8BD /* UserAgentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE1B9B2417C10C00A9E8BD /* UserAgentTests.swift */; };
@@ -4719,6 +4720,7 @@
 				458DCECF248E7273003F0626 /* BasicTableViewCell.swift in Sources */,
 				458DCED4248E72D1003F0626 /* UIColor+SystemColors.swift in Sources */,
 				458DCED6248E72EB003F0626 /* ColorStudio.swift in Sources */,
+				4596F38E248FE4D0002FD08F /* UserDefaults+Woo.swift in Sources */,
 				458DCED7248E7493003F0626 /* UIView+Helpers.swift in Sources */,
 				458DCED5248E72DE003F0626 /* UIColor+ColorStudio.swift in Sources */,
 				458DCED0248E729E003F0626 /* NSObject+Helpers.swift in Sources */,

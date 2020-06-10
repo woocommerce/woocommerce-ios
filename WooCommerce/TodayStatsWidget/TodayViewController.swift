@@ -12,11 +12,14 @@ final class TodayViewController: UIViewController {
     ///
     private var sections: [Section] = []
     
+    var value: String?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTableView()
         sections = [Section(rows: [.todayStats, .selectedWebsite])]
         
+        value = UserDefaults(suiteName: "group.com.automattic.woocommerce")?[UserDefaults.Key.defaultUsername] as? String
     }
         
     
@@ -98,7 +101,7 @@ private extension TodayViewController {
     }
     
     func configureTodayStats(cell: TodayStatsTableViewCell) {
-        cell.configure(visitors: "-", orders: "-", revenue: "-")
+        cell.configure(visitors: value ?? "null", orders: "-", revenue: "-")
     }
     
     func configureSelectedWebsite(cell: SelectedWebsiteInTodayWidgetTableViewCell) {

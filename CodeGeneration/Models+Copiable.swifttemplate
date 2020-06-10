@@ -2,6 +2,20 @@
 //
 // Generates .copy methods for all structs and classes conforming to the `GeneratedCopiable` protocol
 //
+// -------------------------------------------------------------------------------- 
+// Testing
+// -------------------------------------------------------------------------------- 
+//
+// There's no unit test for this unfortunately. For now, you can test this by:
+//
+// 1. Adding the `testdata.swift` file in [this gist](https://git.io/JfS5q) to one of 
+//    the WooCommerce files.
+// 2. Build and run `rake generate`
+// 3. Confirm that the resulting code still compiles. If it doesn't, compare it with the 
+//    [expected-output.swift](https://git.io/JfS5O) and check for anomalies.
+//
+// Please feel free to update the example test data and result if necessary.
+//
 -%>
 <% 
 // -------------------------------------------------------------------------------- 
@@ -21,6 +35,54 @@ func guessModuleOf(typeName: TypeName) -> String? {
     } else {
         return nil
     }
+}
+
+/// Converts a variable/property's type to it's fully qualified name so that the 
+/// generated file will compile. 
+///
+/// Consider this example:
+///
+/// ````
+/// struct Alpha: GeneratedCopiable {
+///     struct Bravo {
+///         struct Charlie {
+///         }
+///     }
+/// 
+///     let charlie: Bravo.Charlie
+/// }
+/// ```
+/// 
+/// We want to declare the generated `charlie` argument with a type that has the complete 
+/// name, `Alpha.Bravo.Charlie`. Using what is declared, `Bravo.Charlie`, is not enough 
+/// because the Swift compiler cannot find it and will fail to build. 
+///
+/// TODO Support for closures needs to be added if we eventually need it.
+///
+func fullyQualifiedName(of typeName: TypeName, type: Type?) -> String {
+    if let arrayType = typeName.array {
+        let elementName = fullyQualifiedName(of: arrayType.elementTypeName, type: arrayType.elementType)
+        return "[\(elementName)]"
+    } else if let dictionaryType = typeName.dictionary {
+        let keyName = fullyQualifiedName(of: dictionaryType.keyTypeName, type: dictionaryType.keyType)
+        let valueName = fullyQualifiedName(of: dictionaryType.valueTypeName, type: dictionaryType.valueType)
+        return "[\(keyName): \(valueName)]"
+    } else if let tupleType = typeName.tuple {
+        let joinedNames = tupleType.elements.map {
+            fullyQualifiedName(of: $0.typeName, type: $0.type)
+        }.joined(separator: ", ")
+        return "(\(joinedNames))"
+    } else if typeName.isClosure {
+        // TODO Add support for closures if needed
+        return typeName.unwrappedTypeName
+    } else {
+        if let type = type {
+            // Always try to use the `type.name` because it is fully qualified
+            return type.name
+        } else {
+            return typeName.unwrappedTypeName
+        }
+    } 
 }
 
 -%>
@@ -106,9 +168,11 @@ let specsToGenerate: [CopiableSpec] = matchingTypes.map { type in
 
     // Convert validVariables to CopiableSpec.Property instances that the template will be able to use.
     let propSpecs: [CopiableSpec.Property] = validVariables.map { variable in 
-        CopiableSpec.Property(
+        let typeName = fullyQualifiedName(of: variable.typeName, type: variable.type)
+
+        return CopiableSpec.Property(
             name: variable.name, 
-            typeName: variable.typeName.unwrappedTypeName,
+            typeName: typeName,
             copiablePropTypeName: variable.isOptional ? "NullableCopiableProp" : "CopiableProp",
             commaOrNothing: variable == validVariables.last  ? "" : ","
         )
@@ -132,6 +196,7 @@ import <%= module %>
 <% } -%>
 
 <% for copiableSpec in specsToGenerate { -%>
+
 extension <%= copiableSpec.name %> {
     <%= copiableSpec.accessLevelWithSpacePostfix %>func copy(
 <% for propertySpec in copiableSpec.properties { -%>

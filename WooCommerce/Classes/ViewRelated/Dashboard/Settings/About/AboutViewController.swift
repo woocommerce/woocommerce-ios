@@ -124,7 +124,7 @@ private extension AboutViewController {
     /// Setup the sections in this table view
     ///
     func configureSections() {
-        sections = [Section(title: nil, rows: [.terms, .privacy])]
+        sections = [Section(title: nil, rows: [.terms, .privacy, .californiaPrivacy])]
     }
 
     /// Register table cells.
@@ -139,6 +139,8 @@ private extension AboutViewController {
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
+        case let cell as BasicTableViewCell where row == .californiaPrivacy:
+            configureCaliforniaPrivacy(cell: cell)
         case let cell as BasicTableViewCell where row == .terms:
             configureTerms(cell: cell)
         case let cell as BasicTableViewCell where row == .privacy:
@@ -155,13 +157,21 @@ private extension AboutViewController {
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Terms of Service", comment: "Opens the Terms of Service web page")
     }
-
-    /// Privacy polocy cell.
+    
+    /// Privacy policy cell.
     ///
     func configurePrivacy(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Privacy Policy", comment: "Opens the Privacy Policy web page")
+    }
+    
+    /// California Privacy policy cell.
+    ///
+    func configureCaliforniaPrivacy(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("Privacy Notice for California Users", comment: "Opens the California Privacy Policy web page")
     }
 }
 
@@ -185,13 +195,20 @@ private extension AboutViewController {
 //
 private extension AboutViewController {
 
-    /// Terms of Service action
+    
+    /// California Privacy Policy action
+    ///
+    func californiaPrivacyWasPressed() {
+        displayWebView(url: WooConstants.californiaPrivacyURL)
+    }
+    
+    /// Privacy Policy action
     ///
     func privacyWasPressed() {
         displayWebView(url: WooConstants.privacyURL)
     }
 
-    /// Privacy Policy action
+    /// Terms of Service action
     ///
     func termsWasPressed() {
         displayWebView(url: WooConstants.termsOfServiceUrl)
@@ -241,6 +258,8 @@ extension AboutViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         switch rowAtIndexPath(indexPath) {
+        case .californiaPrivacy:
+            californiaPrivacyWasPressed()
         case .privacy:
             privacyWasPressed()
         case .terms:
@@ -267,9 +286,12 @@ private struct Section {
 private enum Row: CaseIterable {
     case terms
     case privacy
+    case californiaPrivacy
 
     var type: UITableViewCell.Type {
         switch self {
+        case .californiaPrivacy:
+            return BasicTableViewCell.self
         case .terms:
             return BasicTableViewCell.self
         case .privacy:

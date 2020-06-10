@@ -42,7 +42,7 @@ enum WooConstants {
     static var privacyURL: URL {
         trustedURL("https://automattic.com/privacy/")
     }
-    
+
     /// Privacy policy for California users URL
     ///
     static var californiaPrivacyURL: URL {

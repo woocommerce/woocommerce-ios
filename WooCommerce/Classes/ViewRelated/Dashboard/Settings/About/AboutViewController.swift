@@ -157,7 +157,7 @@ private extension AboutViewController {
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Terms of Service", comment: "Opens the Terms of Service web page")
     }
-    
+
     /// Privacy policy cell.
     ///
     func configurePrivacy(cell: BasicTableViewCell) {
@@ -165,7 +165,7 @@ private extension AboutViewController {
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Privacy Policy", comment: "Opens the Privacy Policy web page")
     }
-    
+
     /// California Privacy policy cell.
     ///
     func configureCaliforniaPrivacy(cell: BasicTableViewCell) {
@@ -195,13 +195,12 @@ private extension AboutViewController {
 //
 private extension AboutViewController {
 
-    
     /// California Privacy Policy action
     ///
     func californiaPrivacyWasPressed() {
         displayWebView(url: WooConstants.californiaPrivacyURL)
     }
-    
+
     /// Privacy Policy action
     ///
     func privacyWasPressed() {

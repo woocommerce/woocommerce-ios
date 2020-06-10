@@ -136,7 +136,9 @@ private extension SessionManager {
             return nil
         }
 
-        return Credentials(username: username, authToken: authToken, siteAddress: siteAddress)
+        let credentials = Credentials(username: username, authToken: authToken, siteAddress: siteAddress)
+        WidgetExtensionService.saveCredentials(credentials)
+        return credentials
     }
 
     /// Persists the Credentials's authToken in the keychain, and username in User Settings.

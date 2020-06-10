@@ -332,6 +332,9 @@
 		4596F3902490E8CB002FD08F /* Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4596F38F2490E8CB002FD08F /* Yosemite.framework */; };
 		4596F3922490E8D3002FD08F /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4596F3912490E8D3002FD08F /* Networking.framework */; };
 		4596F3942490E8DA002FD08F /* Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4596F3932490E8DA002FD08F /* Storage.framework */; };
+		4596F39A249126D8002FD08F /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5AA7B3C20ED5D15004DA14F /* SessionManager.swift */; };
+		4596F39C2491298E002FD08F /* WidgetExtensionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4596F39B2491298E002FD08F /* WidgetExtensionService.swift */; };
+		4596F39D24912992002FD08F /* WidgetExtensionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4596F39B2491298E002FD08F /* WidgetExtensionService.swift */; };
 		45A24E5F2451DF1A0050606B /* ProductMenuOrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A24E5D2451DF1A0050606B /* ProductMenuOrderViewController.swift */; };
 		45A24E602451DF1A0050606B /* ProductMenuOrderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45A24E5E2451DF1A0050606B /* ProductMenuOrderViewController.xib */; };
 		45AE1B9C2417C10C00A9E8BD /* UserAgentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE1B9B2417C10C00A9E8BD /* UserAgentTests.swift */; };
@@ -1225,6 +1228,7 @@
 		4596F38F2490E8CB002FD08F /* Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4596F3912490E8D3002FD08F /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4596F3932490E8DA002FD08F /* Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4596F39B2491298E002FD08F /* WidgetExtensionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetExtensionService.swift; sourceTree = "<group>"; };
 		45A24E5D2451DF1A0050606B /* ProductMenuOrderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductMenuOrderViewController.swift; sourceTree = "<group>"; };
 		45A24E5E2451DF1A0050606B /* ProductMenuOrderViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductMenuOrderViewController.xib; sourceTree = "<group>"; };
 		45AE1B9B2417C10C00A9E8BD /* UserAgentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAgentTests.swift; sourceTree = "<group>"; };
@@ -3273,6 +3277,7 @@
 				B5D1AFBF20BC67C200DB0E8C /* WooConstants.swift */,
 				CE2409F0215D12D30091F887 /* WooNavigationController.swift */,
 				02FE89CA231FB36600E85EF8 /* DefaultFeatureFlagService.swift */,
+				4596F39B2491298E002FD08F /* WidgetExtensionService.swift */,
 			);
 			path = System;
 			sourceTree = "<group>";
@@ -4733,6 +4738,7 @@
 				458DCED4248E72D1003F0626 /* UIColor+SystemColors.swift in Sources */,
 				458DCED6248E72EB003F0626 /* ColorStudio.swift in Sources */,
 				4596F38E248FE4D0002FD08F /* UserDefaults+Woo.swift in Sources */,
+				4596F39D24912992002FD08F /* WidgetExtensionService.swift in Sources */,
 				458DCED7248E7493003F0626 /* UIView+Helpers.swift in Sources */,
 				458DCED5248E72DE003F0626 /* UIColor+ColorStudio.swift in Sources */,
 				458DCED0248E729E003F0626 /* NSObject+Helpers.swift in Sources */,
@@ -4740,6 +4746,7 @@
 				458DCED1248E72AE003F0626 /* UIColor+SemanticColors.swift in Sources */,
 				45406E4F248F9A2700101CE5 /* TodayStatsTableViewCell.swift in Sources */,
 				4596F38D248FDD35002FD08F /* WooConstants.swift in Sources */,
+				4596F39A249126D8002FD08F /* SessionManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4762,6 +4769,7 @@
 				CE1D5A55228A0AD200DF3715 /* TwoColumnTableViewCell.swift in Sources */,
 				74460D4222289C7A00D7316A /* StorePickerCoordinator.swift in Sources */,
 				CE15524A21FFB10100EAA690 /* ApplicationLogViewController.swift in Sources */,
+				4596F39C2491298E002FD08F /* WidgetExtensionService.swift in Sources */,
 				57C503DC23E8C70C00EC0790 /* OrdersMasterViewController.swift in Sources */,
 				02E8B17A23E2C4BD00A43403 /* CircleSpinnerView.swift in Sources */,
 				02CA63DD23D1ADD100BBF148 /* MediaPickingContext.swift in Sources */,

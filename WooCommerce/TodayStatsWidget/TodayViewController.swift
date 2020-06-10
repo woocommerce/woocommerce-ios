@@ -1,25 +1,24 @@
 import UIKit
 import NotificationCenter
-import KeychainAccess
+import Networking
 
 final class TodayViewController: UIViewController {
         
     @IBOutlet private weak var tableView: UITableView!
     
-    private let keychain: Keychain = Keychain(service: WooConstants.keychainServiceName).accessibility(.afterFirstUnlock)
-    
     /// Table Sections to be rendered
     ///
     private var sections: [Section] = []
     
-    var value: String?
+    /// Credentials of the app choosen for showing the stats
+    ///
+    private var credentials: Credentials?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTableView()
         sections = [Section(rows: [.todayStats, .selectedWebsite])]
-        
-        value = UserDefaults(suiteName: WooConstants.wooAppsGroup)?[UserDefaults.Key.defaultUsername] as? String
+        credentials = WidgetExtensionService.loadCredentials()
     }
         
     
@@ -101,7 +100,8 @@ private extension TodayViewController {
     }
     
     func configureTodayStats(cell: TodayStatsTableViewCell) {
-        cell.configure(visitors: value ?? "null", orders: "-", revenue: "-")
+        
+        cell.configure(visitors: "-", orders: "-", revenue: "-")
     }
     
     func configureSelectedWebsite(cell: SelectedWebsiteInTodayWidgetTableViewCell) {

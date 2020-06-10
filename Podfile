@@ -102,7 +102,7 @@ def networking_pods
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
 
-  pod 'Sourcery', '~> 0.18'
+  pod 'Sourcery', '~> 0.18', :configuration => 'Debug'
 
   # Used for HTML parsing
   aztec

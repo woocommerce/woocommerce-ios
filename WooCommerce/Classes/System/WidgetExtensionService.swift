@@ -6,7 +6,7 @@ import Networking
 // Save, Load and Remove credentials used by Extensions of the Woo app, like the TodayStatsWidget
 //
 final class WidgetExtensionService: NSObject {
-    
+
     /// Returns the Credentials, if any, under the related App Groups.
     ///
     static func loadCredentials() -> Credentials? {

@@ -3,37 +3,37 @@ import NotificationCenter
 import Networking
 
 final class TodayViewController: UIViewController {
-        
+
     @IBOutlet private weak var tableView: UITableView!
-    
+
     /// Table Sections to be rendered
     ///
     private var sections: [Section] = []
-    
+
     /// Credentials of the app choosen for showing the stats
     ///
     private var credentials: Credentials?
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTableView()
         sections = [Section(rows: [.todayStats, .selectedWebsite])]
         credentials = WidgetExtensionService.loadCredentials()
     }
-        
-    
+
+
 }
 
 // MARK: - Widget Updating
 extension TodayViewController: NCWidgetProviding {
-    
+
     func widgetPerformUpdate(completionHandler: (@escaping (NCUpdateResult) -> Void)) {
         // Perform any setup necessary in order to update the view.
-        
+
         // If an error is encountered, use NCUpdateResult.Failed
         // If there's no update required, use NCUpdateResult.NoData
         // If there's an update, use NCUpdateResult.NewData
-        
+
         completionHandler(NCUpdateResult.newData)
     }
 }
@@ -46,7 +46,7 @@ private extension TodayViewController {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .clear
         tableView.removeLastCellSeparator()
-        
+
         registerTableViewCells()
 
         tableView.dataSource = self
@@ -66,7 +66,7 @@ extension TodayViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return sections[section].rows.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = sections[indexPath.section].rows[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
@@ -74,7 +74,7 @@ extension TodayViewController: UITableViewDataSource {
 
         return cell
     }
-    
+
 }
 
 // MARK: - UITableViewDelegate Conformance
@@ -98,12 +98,12 @@ private extension TodayViewController {
             break
         }
     }
-    
+
     func configureTodayStats(cell: TodayStatsTableViewCell) {
-        
+
         cell.configure(visitors: "-", orders: "-", revenue: "-")
     }
-    
+
     func configureSelectedWebsite(cell: SelectedWebsiteInTodayWidgetTableViewCell) {
         cell.textLabel?.text = "woocommerce.com"
     }

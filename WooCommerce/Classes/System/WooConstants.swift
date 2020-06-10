@@ -16,7 +16,7 @@ enum WooConstants {
     /// Keychain Access's Service Name for App Extensions, like the Today Stats Widget
     ///
     static let keychainServiceNameAppExtensions = "com.automattic.woocommerce.appextensions"
-    
+
     /// Push Notifications ApplicationID
     ///
 #if DEBUG
@@ -24,7 +24,7 @@ enum WooConstants {
 #else
     static let pushApplicationID = "com.automattic.woocommerce"
 #endif
-    
+
     /// App Group
     ///
     static let wooAppsGroup = "group.com.automattic.woocommerce"

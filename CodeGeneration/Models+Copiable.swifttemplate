@@ -60,14 +60,19 @@ let modulesToGenerateImports: [String] = {
     }
 }()
 
-/// Defines the properties that the template will need to generate the copy() method for a single type.
+/// A representation of the struct/class that conforms to GeneratedCopiable. This defines the 
+/// properties that the template will need to generate the copy() method.
 ///
 /// We create our own data structure to clarify what we need in the template code below. 
-/// This also makes the template more simpler to read because the complexity are all encapsulated
+/// This also makes the template simpler to read because the complexity are all encapsulated
 /// by this struct.
 ///
 struct CopiableSpec {
+
+    /// A representation of a property that will be part of the copy() arguments.
+    ///
     struct Property {
+        /// The name of the property
         let name: String
         /// String, Int, etc 
         let typeName: String
@@ -77,19 +82,28 @@ struct CopiableSpec {
         let commaOrNothing: String
     }
 
+    /// The name of the struct/class that conforms to GeneratedCopiable.
     let name: String
     /// "public", "private", etc.
     let accessLevel: String
+    /// The properties that we're going to generate as part of the copy() arguments.
     let properties: [Property]
 }
 
 // The collection of CopiableSpec that the template below will use. 
 let specsToGenerate: [CopiableSpec] = matchingTypes.map { type in
+
+    // Grab the properties that should be part of the copy() arguments. A possible future enhancement would be 
+    // to actually match this with the class/struct's constructor arguments.
     let validVariables = type.variables.filter {
-        $0.readAccess == type.accessLevel &&
+        // Exclude properties that do not have the same access level as the class/struct. For example,
+        // properties that are internal or private should not be included.
+        $0.readAccess == type.accessLevel && 
             !$0.isComputed &&
             !$0.isStatic
     }
+
+    // Convert validVariables to CopiableSpec.Property instances that the template will be able to use.
     let propSpecs: [CopiableSpec.Property] = validVariables.map { variable in 
         CopiableSpec.Property(
             name: variable.name, 

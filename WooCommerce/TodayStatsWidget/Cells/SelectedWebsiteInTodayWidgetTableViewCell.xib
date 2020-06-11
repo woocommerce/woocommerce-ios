@@ -16,8 +16,28 @@
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
                 <rect key="frame" x="0.0" y="0.0" width="320" height="30"/>
                 <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QZQ-SS-x5j">
+                        <rect key="frame" x="16" y="0.0" width="288" height="30"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="30" id="5nm-hp-Sjd"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="QZQ-SS-x5j" secondAttribute="bottom" id="6Rq-Ls-Xsq"/>
+                    <constraint firstItem="QZQ-SS-x5j" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="fX4-Q4-y4a"/>
+                    <constraint firstAttribute="trailing" secondItem="QZQ-SS-x5j" secondAttribute="trailing" constant="16" id="jtb-hq-J5X"/>
+                    <constraint firstItem="QZQ-SS-x5j" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="tGc-H6-AQH"/>
+                </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="siteLabel" destination="QZQ-SS-x5j" id="eDh-ZY-y4Q"/>
+            </connections>
             <point key="canvasLocation" x="132" y="120"/>
         </tableViewCell>
     </objects>

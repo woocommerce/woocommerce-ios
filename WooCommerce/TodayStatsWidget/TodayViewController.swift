@@ -81,7 +81,9 @@ extension TodayViewController: NCWidgetProviding {
                 self?.totalRevenue = String("\(totalRevenueUnwrapped)")
             }
 
-            self?.tableView.reloadData()
+            DispatchQueue.main.async { [weak self] in
+                self?.tableView.reloadData()
+            }
         }
 
         let remoteVisitStats = SiteVisitStatsRemote(network: network)
@@ -93,7 +95,9 @@ extension TodayViewController: NCWidgetProviding {
                                         if let totalVisitorsUnwrapped = siteVisitStats?.totalVisitors {
                                             self?.totalVisitors = Double(totalVisitorsUnwrapped).humanReadableString()
                                         }
-                                        self?.tableView.reloadData()
+                                        DispatchQueue.main.async { [weak self] in
+                                            self?.tableView.reloadData()
+                                        }
         }
     }
 }
@@ -164,7 +168,7 @@ private extension TodayViewController {
     }
 
     func configureSelectedWebsite(cell: SelectedWebsiteInTodayWidgetTableViewCell) {
-        cell.textLabel?.text = credentials?.siteAddress ?? "-"
+        cell.configure(site: credentials?.siteAddress ?? "-")
     }
 }
 

@@ -18,6 +18,7 @@ final class TodayViewController: UIViewController {
     /// Site choosed for shoing the stats
     private var site: Site?
 
+    private var totalVisitors: String?
     private var totalOrders: String?
     private var totalRevenue: String?
 
@@ -57,7 +58,7 @@ extension TodayViewController: NCWidgetProviding {
         }
 
         let network = AlamofireNetwork(credentials: credentials)
-        let remote = OrderStatsRemoteV4(network: network)
+        
         let quantity = timeRange.siteVisitStatsQuantity(date: Date(), siteTimezone: site.siteTimezone)
         let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
         let earliestDate = dateFormatter.string(from: Date().startOfDay(timezone: TimeZone(secondsFromGMT: 0)!))
@@ -65,9 +66,8 @@ extension TodayViewController: NCWidgetProviding {
         print(earliestDate)
         print(latestDate)
         //dateFormatter.string(from: timeRange.latestDate(currentDate: Date(), siteTimezone: site.siteTimezone))
-        remote.loadOrderStats(for: site.siteID, unit: timeRange.intervalGranularity, earliestDateToInclude: earliestDate, latestDateToInclude: latestDate, quantity: quantity) { [weak self] (orderStatsV4, error) in
-
-
+        let remoteOrderStats = OrderStatsRemoteV4(network: network)
+        remoteOrderStats.loadOrderStats(for: site.siteID, unit: timeRange.intervalGranularity, earliestDateToInclude: earliestDate, latestDateToInclude: latestDate, quantity: quantity) { [weak self] (orderStatsV4, error) in
 
             if let totalOrdersUnwrapped = orderStatsV4?.totals.totalOrders {
                 self?.totalOrders = Double(totalOrdersUnwrapped).humanReadableString()
@@ -79,6 +79,18 @@ extension TodayViewController: NCWidgetProviding {
             //totalRevenueText = CurrencyFormatter().formatHumanReadableAmount(String("\(orderStats.totals.grossRevenue)"), with: currencyCode) ?? String()
 
             self?.tableView.reloadData()
+        }
+        
+        let remoteVisitStats = SiteVisitStatsRemote(network: network)
+        remoteVisitStats.loadSiteVisitorStats(for: site.siteID,
+                                              siteTimezone: site.siteTimezone,
+                                    unit: timeRange.siteVisitStatsGranularity,
+                                    latestDateToInclude: Date().endOfDay(timezone: site.siteTimezone),
+                                    quantity: quantity) { [weak self] (siteVisitStats, error) in
+                                        if let totalVisitorsUnwrapped = siteVisitStats?.totalVisitors {
+                                            self?.totalVisitors = Double(totalVisitorsUnwrapped).humanReadableString()
+                                        }
+                                        self?.tableView.reloadData()
         }
     }
 }
@@ -145,7 +157,7 @@ private extension TodayViewController {
     }
 
     func configureTodayStats(cell: TodayStatsTableViewCell) {
-        cell.configure(visitors: "-", orders: totalOrders ?? "-", revenue: totalRevenue ?? "-")
+        cell.configure(visitors: totalVisitors ?? "-", orders: totalOrders ?? "-", revenue: totalRevenue ?? "-")
     }
 
     func configureSelectedWebsite(cell: SelectedWebsiteInTodayWidgetTableViewCell) {

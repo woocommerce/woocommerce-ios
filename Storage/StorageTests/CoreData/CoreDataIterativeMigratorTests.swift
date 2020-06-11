@@ -57,7 +57,7 @@ class CoreDataIterativeMigratorTests: XCTestCase {
 
         do {
             let modelNames = ["Model", "Model 2", "Model 3", "Model 4", "Model 5", "Model 6", "Model 7", "Model 8", "Model 9", "Model 10"]
-            let result = try CoreDataIterativeMigrator.iterativeMigrate(sourceStore: storeURL, storeType: NSSQLiteStoreType, to: model!, using: modelNames)
+            let (result, _) = try CoreDataIterativeMigrator.iterativeMigrate(sourceStore: storeURL, storeType: NSSQLiteStoreType, to: model!, using: modelNames)
             XCTAssertTrue(result)
         } catch {
             XCTFail("Error when attempting to migrate: \(error)")

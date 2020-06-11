@@ -202,8 +202,8 @@
 		02A275C823FEA102005C560F /* ProductFormActionsFactory+EditProductsM2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A275C723FEA102005C560F /* ProductFormActionsFactory+EditProductsM2Tests.swift */; };
 		02A652FF246A908D00755A01 /* BottomSheetListSelectorPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A652FE246A908D00755A01 /* BottomSheetListSelectorPresenter.swift */; };
 		02A65301246AA63600755A01 /* ProductDetailsFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A65300246AA63600755A01 /* ProductDetailsFactory.swift */; };
-		02A685402418A94200B7E79E /* ProductStockScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A6853E2418A94200B7E79E /* ProductStockScannerViewController.swift */; };
-		02A685412418A94200B7E79E /* ProductStockScannerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02A6853F2418A94200B7E79E /* ProductStockScannerViewController.xib */; };
+		02A685402418A94200B7E79E /* ProductInventoryScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A6853E2418A94200B7E79E /* ProductInventoryScannerViewController.swift */; };
+		02A685412418A94200B7E79E /* ProductInventoryScannerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02A6853F2418A94200B7E79E /* ProductInventoryScannerViewController.xib */; };
 		02A685442418AEAB00B7E79E /* ProductSKUInputScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A685422418AEAB00B7E79E /* ProductSKUInputScannerViewController.swift */; };
 		02A685452418AEAB00B7E79E /* ProductSKUInputScannerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02A685432418AEAB00B7E79E /* ProductSKUInputScannerViewController.xib */; };
 		02A685472418C77C00B7E79E /* PresenceThresholdFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A685462418C77C00B7E79E /* PresenceThresholdFilter.swift */; };
@@ -1071,8 +1071,8 @@
 		02A275C723FEA102005C560F /* ProductFormActionsFactory+EditProductsM2Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormActionsFactory+EditProductsM2Tests.swift"; sourceTree = "<group>"; };
 		02A652FE246A908D00755A01 /* BottomSheetListSelectorPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetListSelectorPresenter.swift; sourceTree = "<group>"; };
 		02A65300246AA63600755A01 /* ProductDetailsFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailsFactory.swift; sourceTree = "<group>"; };
-		02A6853E2418A94200B7E79E /* ProductStockScannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockScannerViewController.swift; sourceTree = "<group>"; };
-		02A6853F2418A94200B7E79E /* ProductStockScannerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductStockScannerViewController.xib; sourceTree = "<group>"; };
+		02A6853E2418A94200B7E79E /* ProductInventoryScannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInventoryScannerViewController.swift; sourceTree = "<group>"; };
+		02A6853F2418A94200B7E79E /* ProductInventoryScannerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductInventoryScannerViewController.xib; sourceTree = "<group>"; };
 		02A685422418AEAB00B7E79E /* ProductSKUInputScannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSKUInputScannerViewController.swift; sourceTree = "<group>"; };
 		02A685432418AEAB00B7E79E /* ProductSKUInputScannerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductSKUInputScannerViewController.xib; sourceTree = "<group>"; };
 		02A685462418C77C00B7E79E /* PresenceThresholdFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresenceThresholdFilter.swift; sourceTree = "<group>"; };
@@ -2759,8 +2759,8 @@
 				02D960A024161E7C00B46CBB /* BarcodeScannerViewController.xib */,
 				02BC0BEA2417694A00B4EDC7 /* ProductStockSettingsViewController.swift */,
 				02BC0BEB2417694A00B4EDC7 /* ProductStockSettingsViewController.xib */,
-				02A6853E2418A94200B7E79E /* ProductStockScannerViewController.swift */,
-				02A6853F2418A94200B7E79E /* ProductStockScannerViewController.xib */,
+				02A6853E2418A94200B7E79E /* ProductInventoryScannerViewController.swift */,
+				02A6853F2418A94200B7E79E /* ProductInventoryScannerViewController.xib */,
 				02A685422418AEAB00B7E79E /* ProductSKUInputScannerViewController.swift */,
 				02A685432418AEAB00B7E79E /* ProductSKUInputScannerViewController.xib */,
 				02A685462418C77C00B7E79E /* PresenceThresholdFilter.swift */,
@@ -4258,7 +4258,7 @@
 				B5D1AFC820BC7B9600DB0E8C /* StorePickerViewController.xib in Resources */,
 				45CDAFAF2434CFCA00F83C22 /* ProductCatalogVisibilityViewController.xib in Resources */,
 				CE1D5A56228A0AD200DF3715 /* TwoColumnTableViewCell.xib in Resources */,
-				02A685412418A94200B7E79E /* ProductStockScannerViewController.xib in Resources */,
+				02A685412418A94200B7E79E /* ProductInventoryScannerViewController.xib in Resources */,
 				B57C744320F54F1C00EEFC87 /* AccountHeaderView.xib in Resources */,
 				4506BD722461965300FE6377 /* ProductVisibilityViewController.xib in Resources */,
 				D843D5D422485009001BFA55 /* ShipmentProvidersViewController.xib in Resources */,
@@ -4971,7 +4971,7 @@
 				02F49ADA23BF356E00FA0BFA /* TitleAndTextFieldTableViewCell.ViewModel+State.swift in Sources */,
 				74036CC0211B882100E462C2 /* PeriodDataViewController.swift in Sources */,
 				740382DB2267D94100A627F4 /* LargeImageTableViewCell.swift in Sources */,
-				02A685402418A94200B7E79E /* ProductStockScannerViewController.swift in Sources */,
+				02A685402418A94200B7E79E /* ProductInventoryScannerViewController.swift in Sources */,
 				CE22709F2293052700C0626C /* WebviewHelper.swift in Sources */,
 				02BA12852461674B008D8325 /* Optional+String.swift in Sources */,
 				744F00D221B582A9007EFA93 /* StarRatingView.swift in Sources */,

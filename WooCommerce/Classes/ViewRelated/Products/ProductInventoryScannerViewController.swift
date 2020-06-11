@@ -63,7 +63,7 @@ extension ProductSKUScannerResult: Equatable {
     }
 }
 
-final class ProductStockScannerViewController: UIViewController {
+final class ProductInventoryScannerViewController: UIViewController {
 
     private lazy var barcodeScannerChildViewController : BarcodeScannerViewController = {
         return BarcodeScannerViewController { [weak self] (barcodes, error) in
@@ -75,6 +75,8 @@ final class ProductStockScannerViewController: UIViewController {
     }()
 
     private var results: [ProductSKUScannerResult] = []
+
+    private var bottomSheetViewController: BottomSheetViewController?
 
     private lazy var statusLabel: PaddedLabel = {
         let label = PaddedLabel()
@@ -110,11 +112,18 @@ final class ProductStockScannerViewController: UIViewController {
         // TODO-jc: remove. this is just for testing
         searchProductBySKU(barcode: "9789863210887")
     }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        // Dismisses the bottom sheet if it is presented.
+        bottomSheetViewController?.dismiss(animated: true, completion: nil)
+
+        super.viewWillDisappear(animated)
+    }
 }
 
 // MARK: Search
 //
-private extension ProductStockScannerViewController {
+private extension ProductInventoryScannerViewController {
     func searchProductBySKU(barcode: String) {
         DispatchQueue.main.async {
             self.statusLabel.applyStyle(for: .refunded)
@@ -170,13 +179,16 @@ private extension ProductStockScannerViewController {
                                                                                 self?.dismiss(animated: true, completion: nil)
         }
         let bottomSheet = BottomSheetViewController(childViewController: listSelectorViewController)
+        bottomSheetViewController?.dismiss(animated: false, completion: {
+        })
+        self.bottomSheetViewController = bottomSheet
         bottomSheet.show(from: self, sourceView: nil, arrowDirections: .any)
     }
 }
 
 // MARK: Navigation
 //
-private extension ProductStockScannerViewController {
+private extension ProductInventoryScannerViewController {
     @objc func doneButtonTapped() {
         // TODO-jc
     }
@@ -236,7 +248,7 @@ private extension ProductStockScannerViewController {
     }
 }
 
-private extension ProductStockScannerViewController {
+private extension ProductInventoryScannerViewController {
     func configureNavigation() {
         title = NSLocalizedString("Update inventory", comment: "Navigation bar title on the barcode scanner screen.")
 
@@ -267,7 +279,7 @@ private extension ProductStockScannerViewController {
 
 // MARK: Status UI
 //
-private extension ProductStockScannerViewController {
+private extension ProductInventoryScannerViewController {
     func showStatusLabel() {
         statusLabel.isHidden = false
         Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false) { [weak self] _ in

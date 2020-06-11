@@ -58,7 +58,7 @@ extension TodayViewController: NCWidgetProviding {
         }
 
         let network = AlamofireNetwork(credentials: credentials)
-        
+
         let quantity = timeRange.siteVisitStatsQuantity(date: Date(), siteTimezone: site.siteTimezone)
         let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
         let earliestDate = dateFormatter.string(from: Date().startOfDay(timezone: TimeZone(secondsFromGMT: 0)!))
@@ -73,14 +73,17 @@ extension TodayViewController: NCWidgetProviding {
                 self?.totalOrders = Double(totalOrdersUnwrapped).humanReadableString()
             }
 
+            // TODO: implement currency formatter
+            //let currencyCode = CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode)
+            //totalRevenueText = CurrencyFormatter().formatHumanReadableAmount(String("\(orderStats.totals.grossRevenue)"), with: currencyCode) ?? String()
+
             if let totalRevenueUnwrapped = orderStatsV4?.totals.grossRevenue {
                 self?.totalRevenue = String("\(totalRevenueUnwrapped)")
             }
 
-
             self?.tableView.reloadData()
         }
-        
+
         let remoteVisitStats = SiteVisitStatsRemote(network: network)
         remoteVisitStats.loadSiteVisitorStats(for: site.siteID,
                                               siteTimezone: site.siteTimezone,

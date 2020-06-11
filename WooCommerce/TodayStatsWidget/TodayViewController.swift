@@ -164,7 +164,7 @@ private extension TodayViewController {
     }
 
     func configureSelectedWebsite(cell: SelectedWebsiteInTodayWidgetTableViewCell) {
-        cell.textLabel?.text = "woocommerce.com"
+        cell.textLabel?.text = credentials?.siteAddress ?? "-"
     }
 }
 

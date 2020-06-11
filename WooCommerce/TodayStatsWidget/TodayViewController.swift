@@ -73,9 +73,10 @@ extension TodayViewController: NCWidgetProviding {
                 self?.totalOrders = Double(totalOrdersUnwrapped).humanReadableString()
             }
 
-            if let totalRevenueUnwrapped = orderStatsV4!.totals.grossRevenue {
+            if let totalRevenueUnwrapped = orderStatsV4?.totals.grossRevenue {
                 self?.totalRevenue = String("\(totalRevenueUnwrapped)")
             }
+
 
             self?.tableView.reloadData()
         }

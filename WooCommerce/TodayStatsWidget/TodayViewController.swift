@@ -73,10 +73,9 @@ extension TodayViewController: NCWidgetProviding {
                 self?.totalOrders = Double(totalOrdersUnwrapped).humanReadableString()
             }
 
-            self?.totalRevenue = String("\(orderStatsV4!.totals.grossRevenue)")
-
-            //let currencyCode = CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode)
-            //totalRevenueText = CurrencyFormatter().formatHumanReadableAmount(String("\(orderStats.totals.grossRevenue)"), with: currencyCode) ?? String()
+            if let totalRevenueUnwrapped = orderStatsV4!.totals.grossRevenue {
+                self?.totalRevenue = String("\(totalRevenueUnwrapped)")
+            }
 
             self?.tableView.reloadData()
         }

@@ -53,7 +53,7 @@ extension StatsTimeRangeV4 {
 
     /// The number of intervals for site visit stats to fetch given a time range.
     /// The interval unit is in `siteVisitStatsGranularity`.
-    func siteVisitStatsQuantity(date: Date, siteTimezone: TimeZone) -> Int {
+    public func siteVisitStatsQuantity(date: Date, siteTimezone: TimeZone) -> Int {
         switch self {
         case .today:
             return 1

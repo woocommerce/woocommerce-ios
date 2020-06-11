@@ -21,6 +21,7 @@ extension UserDefaults {
         case notificationsMarkAsReadCount
         case widgetExtensionUsername
         case widgetExtensionSiteAddress
+        case widgetExtensionSite
     }
 }
 

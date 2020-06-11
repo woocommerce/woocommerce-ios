@@ -50,5 +50,37 @@ final class WidgetExtensionService: NSObject {
         let keychain = Keychain(service: WooConstants.keychainServiceNameAppExtensions).accessibility(.afterFirstUnlock)
         keychain[username] = nil
         defaults?[.widgetExtensionUsername] = nil
+        defaults?[.widgetExtensionSiteAddress] = nil
+    }
+}
+
+// WidgetExtensionService extension
+// Save, Load and Remove the Site model used by Extensions of the Woo app, like the TodayStatsWidget
+//
+extension WidgetExtensionService {
+    
+    static func loadSite() -> Site? {
+        let defaults = UserDefaults(suiteName: WooConstants.wooAppsGroup)
+        
+        if let savedSite = defaults?[.widgetExtensionSite] as? Data {
+            let decoder = JSONDecoder()
+            if let loadedSite = try? decoder.decode(Site.self, from: savedSite){
+                return loadedSite
+            }
+        }
+        return nil
+    }
+    
+    static func saveSite(site: Site) {
+        let encoder = JSONEncoder()
+        if let encoded = try? encoder.encode(site) {
+            let defaults = UserDefaults(suiteName: WooConstants.wooAppsGroup)
+            defaults?[.widgetExtensionSite] = encoded
+        }
+    }
+
+    static func removeSite() {
+        let defaults = UserDefaults(suiteName: WooConstants.wooAppsGroup)
+        defaults?[.widgetExtensionSite] = nil
     }
 }

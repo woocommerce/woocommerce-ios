@@ -146,7 +146,7 @@ class DefaultStoresManager: StoresManager {
         ServiceLocator.storageManager.reset()
         WidgetExtensionService.removeCredentials()
         WidgetExtensionService.removeSite()
-        
+
         NotificationCenter.default.post(name: .logOutEventReceived, object: nil)
 
         return self

@@ -76,14 +76,14 @@ public struct Site: Codable {
         try container.encode(name, forKey: .name)
         try container.encode(description, forKey: .description)
         try container.encode(url, forKey: .url)
-        
+
         var optionsContainer = container.nestedContainer(keyedBy: OptionKeys.self, forKey: .options)
         try optionsContainer.encode(isWordPressStore, forKey: .isWordPressStore)
         try optionsContainer.encode(isWooCommerceActive, forKey: .isWooCommerceActive)
         try optionsContainer.encode(timezone, forKey: .timezone)
         try optionsContainer.encode(gmtOffset, forKey: .gmtOffset)
     }
-    
+
     /// Designated Initializer.
     ///
     public init(siteID: Int64,

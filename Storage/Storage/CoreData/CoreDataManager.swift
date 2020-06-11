@@ -58,7 +58,7 @@ public class CoreDataManager: StorageManagerType {
                                                    properties: ["persistentStoreLoadingError": persistentStoreLoadingError,
                                                                 "backupError": error,
                                                                 "appState": UIApplication.shared.applicationState.rawValue,
-                                                                "migrationMessages": "\(migrationDebugMessages)"],
+                                                                "migrationMessages": migrationDebugMessages],
                                                    level: .fatal)
                 fatalError(message)
             }
@@ -73,7 +73,7 @@ public class CoreDataManager: StorageManagerType {
                                                    properties: ["persistentStoreLoadingError": persistentStoreLoadingError,
                                                                 "removeStoreError": error,
                                                                 "appState": UIApplication.shared.applicationState.rawValue,
-                                                                "migrationMessages": "\(migrationDebugMessages)"],
+                                                                "migrationMessages": migrationDebugMessages],
                                                    level: .fatal)
                 fatalError(message)
             }
@@ -90,7 +90,7 @@ public class CoreDataManager: StorageManagerType {
                                                     properties: ["persistentStoreLoadingError": persistentStoreLoadingError,
                                                                  "retryError": error,
                                                                  "appState": UIApplication.shared.applicationState.rawValue,
-                                                                 "migrationMessages": "\(migrationDebugMessages)"],
+                                                                 "migrationMessages": migrationDebugMessages],
                                                     level: .fatal)
                 fatalError(message)
             }
@@ -98,7 +98,7 @@ public class CoreDataManager: StorageManagerType {
             self.crashLogger.logMessage("[CoreDataManager] Recovered from persistent store loading error",
                                         properties: ["persistentStoreLoadingError": persistentStoreLoadingError,
                                                      "appState": UIApplication.shared.applicationState.rawValue,
-                                                     "migrationMessages": "\(migrationDebugMessages)"],
+                                                     "migrationMessages": migrationDebugMessages],
                                         level: .info)
         }
 

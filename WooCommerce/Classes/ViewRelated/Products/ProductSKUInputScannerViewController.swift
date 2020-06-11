@@ -11,8 +11,6 @@ final class ProductSKUInputScannerViewController: UIViewController {
         }
     }()
 
-    private lazy var throttler: Throttler = Throttler(seconds: 1)
-
     private let onBarcodeScanned: (String) -> Void
     private let onCancelled: () -> Void
 
@@ -45,7 +43,7 @@ private extension ProductSKUInputScannerViewController {
 
 private extension ProductSKUInputScannerViewController {
     func configureNavigation() {
-        title = NSLocalizedString("Scan barcode for SKU", comment: "")
+        title = NSLocalizedString("Scan barcode to update SKU", comment: "Navigation bar title for scanning a barcode to use as a product's SKU.")
 
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelButtonTapped))
     }

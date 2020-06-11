@@ -43,6 +43,12 @@ enum WooConstants {
         trustedURL("https://automattic.com/privacy/")
     }
 
+    /// Privacy policy for California users URL
+    ///
+    static var californiaPrivacyURL: URL {
+        trustedURL("https://automattic.com/privacy/#california-consumer-privacy-act-ccpa")
+    }
+
     /// Help Center URL
     ///
     static var helpCenterURL: URL {

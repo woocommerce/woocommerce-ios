@@ -1,6 +1,7 @@
 import UIKit
 import NotificationCenter
 import Networking
+import Yosemite
 
 final class TodayViewController: UIViewController {
 
@@ -10,17 +11,25 @@ final class TodayViewController: UIViewController {
     ///
     private var sections: [Section] = []
 
-    /// Credentials of the app choosen for showing the stats
+    /// Credentials of the site choosen for showing the stats
     ///
     private var credentials: Credentials?
+
+    /// Site choosed for shoing the stats
+    private var site: Site?
+
+    private var totalOrders: String?
+    private var totalRevenue: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTableView()
         sections = [Section(rows: [.todayStats, .selectedWebsite])]
         credentials = WidgetExtensionService.loadCredentials()
-    }
+        site = WidgetExtensionService.loadSite()
 
+        syncSiteStats(timeRange: .today)
+    }
 
 }
 
@@ -35,6 +44,42 @@ extension TodayViewController: NCWidgetProviding {
         // If there's an update, use NCUpdateResult.NewData
 
         completionHandler(NCUpdateResult.newData)
+    }
+
+    func syncSiteStats(timeRange: StatsTimeRangeV4,
+                            onCompletion: ((Error?) -> Void)? = nil) {
+
+        guard let credentials = credentials else {
+            return
+        }
+        guard let site = site else {
+            return
+        }
+
+        let network = AlamofireNetwork(credentials: credentials)
+        let remote = OrderStatsRemoteV4(network: network)
+        let quantity = timeRange.siteVisitStatsQuantity(date: Date(), siteTimezone: site.siteTimezone)
+        let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
+        let earliestDate = dateFormatter.string(from: Date().startOfDay(timezone: TimeZone(secondsFromGMT: 0)!))
+        let latestDate = dateFormatter.string(from: Date().endOfDay(timezone: TimeZone(secondsFromGMT: 0)!))
+        print(earliestDate)
+        print(latestDate)
+        //dateFormatter.string(from: timeRange.latestDate(currentDate: Date(), siteTimezone: site.siteTimezone))
+        remote.loadOrderStats(for: site.siteID, unit: timeRange.intervalGranularity, earliestDateToInclude: earliestDate, latestDateToInclude: latestDate, quantity: quantity) { [weak self] (orderStatsV4, error) in
+
+
+
+            if let totalOrdersUnwrapped = orderStatsV4?.totals.totalOrders {
+                self?.totalOrders = Double(totalOrdersUnwrapped).humanReadableString()
+            }
+
+            self?.totalRevenue = String("\(orderStatsV4!.totals.grossRevenue)")
+
+            //let currencyCode = CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode)
+            //totalRevenueText = CurrencyFormatter().formatHumanReadableAmount(String("\(orderStats.totals.grossRevenue)"), with: currencyCode) ?? String()
+
+            self?.tableView.reloadData()
+        }
     }
 }
 
@@ -100,8 +145,7 @@ private extension TodayViewController {
     }
 
     func configureTodayStats(cell: TodayStatsTableViewCell) {
-
-        cell.configure(visitors: "-", orders: "-", revenue: "-")
+        cell.configure(visitors: "-", orders: totalOrders ?? "-", revenue: totalRevenue ?? "-")
     }
 
     func configureSelectedWebsite(cell: SelectedWebsiteInTodayWidgetTableViewCell) {

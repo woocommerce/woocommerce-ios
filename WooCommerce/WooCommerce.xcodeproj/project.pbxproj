@@ -335,6 +335,11 @@
 		4596F39A249126D8002FD08F /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5AA7B3C20ED5D15004DA14F /* SessionManager.swift */; };
 		4596F39C2491298E002FD08F /* WidgetExtensionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4596F39B2491298E002FD08F /* WidgetExtensionService.swift */; };
 		4596F39D24912992002FD08F /* WidgetExtensionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4596F39B2491298E002FD08F /* WidgetExtensionService.swift */; };
+		4596F39E24913630002FD08F /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A27362222354600C2143A /* Logging.swift */; };
+		4596F3A12492792C002FD08F /* StatsTimeRangeV4+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028BAC4622F3B550008BB4AF /* StatsTimeRangeV4+UI.swift */; };
+		4596F3A224927ACD002FD08F /* Date+StartAndEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B296A622FA6DB500FD7A4C /* Date+StartAndEnd.swift */; };
+		4596F3A324927AE3002FD08F /* DateFormatter+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4DDB7A20DD312400D32EC8 /* DateFormatter+Helpers.swift */; };
+		4596F3A424927F89002FD08F /* Double+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748C7781211E294000814F2C /* Double+Woo.swift */; };
 		45A24E5F2451DF1A0050606B /* ProductMenuOrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A24E5D2451DF1A0050606B /* ProductMenuOrderViewController.swift */; };
 		45A24E602451DF1A0050606B /* ProductMenuOrderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45A24E5E2451DF1A0050606B /* ProductMenuOrderViewController.xib */; };
 		45AE1B9C2417C10C00A9E8BD /* UserAgentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE1B9B2417C10C00A9E8BD /* UserAgentTests.swift */; };
@@ -4731,6 +4736,8 @@
 			files = (
 				458DCED2248E72BB003F0626 /* UILabel+Helpers.swift in Sources */,
 				458DCEC0248E6BF6003F0626 /* TodayViewController.swift in Sources */,
+				4596F3A12492792C002FD08F /* StatsTimeRangeV4+UI.swift in Sources */,
+				4596F39E24913630002FD08F /* Logging.swift in Sources */,
 				45406E54248FA09C00101CE5 /* SelectedWebsiteInTodayWidgetTableViewCell.swift in Sources */,
 				45406E56248FA4F700101CE5 /* UITableView+HeaderFooterHelpers.swift in Sources */,
 				458DCECD248E724A003F0626 /* UITableViewCell+Helpers.swift in Sources */,
@@ -4738,6 +4745,9 @@
 				458DCED4248E72D1003F0626 /* UIColor+SystemColors.swift in Sources */,
 				458DCED6248E72EB003F0626 /* ColorStudio.swift in Sources */,
 				4596F38E248FE4D0002FD08F /* UserDefaults+Woo.swift in Sources */,
+				4596F3A224927ACD002FD08F /* Date+StartAndEnd.swift in Sources */,
+				4596F3A424927F89002FD08F /* Double+Woo.swift in Sources */,
+				4596F3A324927AE3002FD08F /* DateFormatter+Helpers.swift in Sources */,
 				4596F39D24912992002FD08F /* WidgetExtensionService.swift in Sources */,
 				458DCED7248E7493003F0626 /* UIView+Helpers.swift in Sources */,
 				458DCED5248E72DE003F0626 /* UIColor+ColorStudio.swift in Sources */,

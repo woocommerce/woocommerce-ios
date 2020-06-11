@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a WordPress.com Site.
 ///
-public struct Site: Decodable {
+public struct Site: Codable {
 
     /// WordPress.com Site Identifier.
     ///
@@ -68,6 +68,22 @@ public struct Site: Decodable {
                   gmtOffset: gmtOffset)
     }
 
+    /// Encodable Conformance
+    ///
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: SiteKeys.self)
+        try container.encode(siteID, forKey: .siteID)
+        try container.encode(name, forKey: .name)
+        try container.encode(description, forKey: .description)
+        try container.encode(url, forKey: .url)
+        
+        var optionsContainer = container.nestedContainer(keyedBy: OptionKeys.self, forKey: .options)
+        try optionsContainer.encode(isWordPressStore, forKey: .isWordPressStore)
+        try optionsContainer.encode(isWooCommerceActive, forKey: .isWooCommerceActive)
+        try optionsContainer.encode(timezone, forKey: .timezone)
+        try optionsContainer.encode(gmtOffset, forKey: .gmtOffset)
+    }
+    
     /// Designated Initializer.
     ///
     public init(siteID: Int64,

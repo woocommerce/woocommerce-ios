@@ -119,6 +119,7 @@ private extension ShipmentProvidersViewController {
 
     func configureSearchController() {
         searchController.searchBar.textField?.backgroundColor = .listBackground
+        searchController.searchBar.accessibilityIdentifier = "shipping-carriers-search-field"
 
         guard table.tableHeaderView == nil else {
             return
@@ -136,6 +137,7 @@ private extension ShipmentProvidersViewController {
 
         table.dataSource = self
         table.delegate = self
+        table.accessibilityIdentifier = "shipping-carriers-table"
     }
 
     /// Registers all of the available TableViewCells

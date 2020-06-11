@@ -316,6 +316,7 @@ private extension OrderDetailsDataSource {
             "Composes a new order note.",
             comment: "VoiceOver accessibility hint, informing the user that the button can be used to create a new order note."
         )
+        cell.accessibilityIdentifier = "add-order-note-button"
     }
 
     private func configureOrderNoteHeader(cell: OrderNoteHeaderTableViewCell, at indexPath: IndexPath) {
@@ -441,6 +442,7 @@ private extension OrderDetailsDataSource {
         cell.onFullfillTouchUp = { [weak self] in
             self?.onCellAction?(.fulfill, nil)
         }
+        cell.fulfillButton.accessibilityIdentifier = "begin-fulfillment-button"
     }
 
     private func configureTracking(cell: OrderTrackingTableViewCell, at indexPath: IndexPath) {
@@ -483,6 +485,7 @@ private extension OrderDetailsDataSource {
             "Adds tracking to an order.",
             comment: "VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period."
         )
+        cell.accessibilityIdentifier = "order-details-add-tracking-button"
     }
 
     private func configureShippingAddress(cell: CustomerInfoTableViewCell) {

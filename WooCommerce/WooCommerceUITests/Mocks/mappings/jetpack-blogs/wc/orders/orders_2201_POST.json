@@ -1,0 +1,96 @@
+{
+    "request": {
+        "method": "POST",
+        "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
+        "bodyPatterns": [ {
+            "matches": "(.*&|^)body=%7B%22status%22%3A%22completed%22%7D($|&.*)",
+            "matches": "(.*&|^)path=/wc/v3/orders/2201%26_method%3Dpost($|&.*)"
+        } ]
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+            "data": {
+                "id": 2201,
+                "parent_id": 0,
+                "number": "2201",
+                "status": "completed",
+                "currency": "USD",
+                "date_created_gmt": "{{#assign 'customformat'}}yyyy-MM-dd'T'HH:mm:ss{{/assign}}{{now format=customformat}}",
+                "date_modified_gmt": "{{now format=customformat}}",
+                "discount_total": "0.00",
+                "discount_tax": "0.00",
+                "shipping_total": "0.00",
+                "shipping_tax": "0.00",
+                "total": "1310.00",
+                "total_tax": "0.00",
+                "customer_id": 0,
+                "customer_note": "",
+                "billing": {
+                    "first_name": "Mira",
+                    "last_name": "Workman",
+                    "company": "",
+                    "address_1": "",
+                    "address_2": "",
+                    "city": "",
+                    "state": "",
+                    "postcode": "",
+                    "country": "FR",
+                    "email": "",
+                    "phone": ""
+                },
+                "shipping": {
+                    "first_name": "Mira",
+                    "last_name": "Workman",
+                    "company": "",
+                    "address_1": "123 Main Street",
+                    "address_2": "",
+                    "city": "San Francisco",
+                    "state": "CA",
+                    "postcode": "94119",
+                    "country": "US"
+                },
+                "payment_method_title": "",
+                "date_paid_gmt": "{{now format=customformat}}",
+                "line_items": [{
+                    "id": 34,
+                    "name": "Black Coral shades",
+                    "product_id": 2130,
+                    "variation_id": 0,
+                    "quantity": 5,
+                    "tax_class": "",
+                    "subtotal": "750.00",
+                    "subtotal_tax": "0.00",
+                    "total": "750.00",
+                    "total_tax": "0.00",
+                    "taxes": [],
+                    "meta_data": [],
+                    "sku": "",
+                    "price": 150
+                }, {
+                    "id": 35,
+                    "name": "Malaya shades",
+                    "product_id": 2123,
+                    "variation_id": 0,
+                    "quantity": 4,
+                    "tax_class": "",
+                    "subtotal": "560.00",
+                    "subtotal_tax": "0.00",
+                    "total": "560.00",
+                    "total_tax": "0.00",
+                    "taxes": [],
+                    "meta_data": [],
+                    "sku": "",
+                    "price": 140
+                }],
+                "shipping_lines": [],
+                "coupon_lines": [],
+                "refunds": []
+            },
+            "headers": {
+                "Content-Type": "application/json",
+                "Connection": "keep-alive"
+            }
+        }
+    }
+}

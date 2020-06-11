@@ -1,0 +1,22 @@
+{
+    "request": {
+        "urlPath": "/rest/v1.1/me/settings",
+        "method": "GET",
+        "queryParameters": {
+          "fields": {
+            "equalTo": "tracks_opt_out"
+          }
+        }
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+            "tracks_opt_out": true
+        },
+        "headers": {
+            "Content-Type": "application/json",
+            "Connection": "keep-alive",
+            "Cache-Control": "no-cache, must-revalidate, max-age=0"
+        }
+    }
+}

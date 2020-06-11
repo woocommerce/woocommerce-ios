@@ -144,6 +144,7 @@ private extension NewNoteViewController {
             self?.navigationItem.rightBarButtonItem?.isEnabled = !text.isEmpty
             self?.noteText = text
         }
+        cell.noteTextView.accessibilityIdentifier = "order-note-text-field"
     }
 
     private func setupEmailCustomerCell(_ cell: UITableViewCell) {
@@ -164,6 +165,7 @@ private extension NewNoteViewController {
             "Double tap to toggle setting.",
             comment: "VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on."
         )
+        cell.accessibilityIdentifier = "order-note-email-switch"
 
         cell.onChange = { [weak self] newValue in
             guard let `self` = self else {

@@ -1,0 +1,36 @@
+{
+    "request": {
+        "method": "POST",
+        "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
+        "bodyPatterns": [ {
+            "matches": "(.*&|^)path=/wc/v2/orders/2201/shipment-trackings/%26_method%3Dpost($|&.*)"
+        } ]
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+            "data": {
+                "tracking_id": "8a1f3816dc96003ca61bdbc3d0bde63e",
+                "tracking_provider": "USPS",
+                "tracking_link": "https:\/\/tools.usps.com\/go\/TrackConfirmAction_input?qtc_tLabels1=tracking123",
+                "tracking_number": "tracking123",
+                "date_shipped": "{{now format='yyyy-MM-dd'}}",
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v2\/orders\/2201\/shipment-trackings\/8a1f3816dc96003ca61bdbc3d0bde63e"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v2\/orders\/2201\/shipment-trackings"
+                    }],
+                    "up": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v2\/orders\/2201"
+                    }]
+                }
+            }
+        },
+        "headers": {
+            "Content-Type": "application/json",
+            "Connection": "keep-alive"
+        }
+    }
+}

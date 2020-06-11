@@ -567,6 +567,18 @@
 		B5FD111221D3CE7700560344 /* NewNoteViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5FD111121D3CE7700560344 /* NewNoteViewController.xib */; };
 		B5FD111621D3F13700560344 /* BordersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5FD111521D3F13700560344 /* BordersView.swift */; };
 		B873E8F8E103966D2182EE67 /* Pods_WooCommerceTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */; };
+		CC52315E248FEDAF007B128F /* OrderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC52315D248FEDAF007B128F /* OrderTests.swift */; };
+		CC523160248FEE81007B128F /* Flows.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC52315F248FEE81007B128F /* Flows.swift */; };
+		CC5231622490F7BC007B128F /* FulfillOrderScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5231612490F7BC007B128F /* FulfillOrderScreen.swift */; };
+		CC52316424910476007B128F /* AddTrackingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC52316324910476007B128F /* AddTrackingScreen.swift */; };
+		CC5231662491082D007B128F /* ShippingCarriersScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5231652491082D007B128F /* ShippingCarriersScreen.swift */; };
+		CC523168249131B9007B128F /* orders_2201_shipment_trackings_providers.json in Resources */ = {isa = PBXBuildFile; fileRef = CC523167249131B9007B128F /* orders_2201_shipment_trackings_providers.json */; };
+		CC52316B249133F3007B128F /* rest_v11_sites.json in Resources */ = {isa = PBXBuildFile; fileRef = CC52316A249133F3007B128F /* rest_v11_sites.json */; };
+		CC52316D249135E6007B128F /* rest_v11_me_settings.json in Resources */ = {isa = PBXBuildFile; fileRef = CC52316C249135E6007B128F /* rest_v11_me_settings.json */; };
+		CC52316F24913CB4007B128F /* orders_2201_shipment_trackings_POST.json in Resources */ = {isa = PBXBuildFile; fileRef = CC52316E24913CB4007B128F /* orders_2201_shipment_trackings_POST.json */; };
+		CC52317124915068007B128F /* orders_2201_POST.json in Resources */ = {isa = PBXBuildFile; fileRef = CC52317024915068007B128F /* orders_2201_POST.json */; };
+		CC523175249268FA007B128F /* OrderNoteScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC523174249268FA007B128F /* OrderNoteScreen.swift */; };
+		CC523177249277D9007B128F /* orders_2201_notes_POST.json in Resources */ = {isa = PBXBuildFile; fileRef = CC523176249277D9007B128F /* orders_2201_notes_POST.json */; };
 		CC8413E423F5C48E00EFC277 /* stop.sh in Resources */ = {isa = PBXBuildFile; fileRef = CCFC011123E9E40B00157A78 /* stop.sh */; };
 		CC8413E523F5C49100EFC277 /* start.sh in Resources */ = {isa = PBXBuildFile; fileRef = CCFC011023E9E3F400157A78 /* start.sh */; };
 		CCDC49CD23FFFFF4003166BA /* LoginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDC49CC23FFFFF4003166BA /* LoginTests.swift */; };
@@ -1458,6 +1470,18 @@
 		B5FD111121D3CE7700560344 /* NewNoteViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NewNoteViewController.xib; sourceTree = "<group>"; };
 		B5FD111521D3F13700560344 /* BordersView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BordersView.swift; sourceTree = "<group>"; };
 		BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerce.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC52315D248FEDAF007B128F /* OrderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderTests.swift; sourceTree = "<group>"; };
+		CC52315F248FEE81007B128F /* Flows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flows.swift; sourceTree = "<group>"; };
+		CC5231612490F7BC007B128F /* FulfillOrderScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FulfillOrderScreen.swift; sourceTree = "<group>"; };
+		CC52316324910476007B128F /* AddTrackingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTrackingScreen.swift; sourceTree = "<group>"; };
+		CC5231652491082D007B128F /* ShippingCarriersScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingCarriersScreen.swift; sourceTree = "<group>"; };
+		CC523167249131B9007B128F /* orders_2201_shipment_trackings_providers.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = orders_2201_shipment_trackings_providers.json; sourceTree = "<group>"; };
+		CC52316A249133F3007B128F /* rest_v11_sites.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = rest_v11_sites.json; sourceTree = "<group>"; };
+		CC52316C249135E6007B128F /* rest_v11_me_settings.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = rest_v11_me_settings.json; sourceTree = "<group>"; };
+		CC52316E24913CB4007B128F /* orders_2201_shipment_trackings_POST.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = orders_2201_shipment_trackings_POST.json; sourceTree = "<group>"; };
+		CC52317024915068007B128F /* orders_2201_POST.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = orders_2201_POST.json; sourceTree = "<group>"; };
+		CC523174249268FA007B128F /* OrderNoteScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderNoteScreen.swift; sourceTree = "<group>"; };
+		CC523176249277D9007B128F /* orders_2201_notes_POST.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = orders_2201_notes_POST.json; sourceTree = "<group>"; };
 		CCDC49CA23FFFFF4003166BA /* WooCommerceUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WooCommerceUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCDC49CC23FFFFF4003166BA /* LoginTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginTests.swift; sourceTree = "<group>"; };
 		CCDC49CE23FFFFF4003166BA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -3235,6 +3259,14 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		CC523169249133B8007B128F /* sites */ = {
+			isa = PBXGroup;
+			children = (
+				CC52316A249133F3007B128F /* rest_v11_sites.json */,
+			);
+			path = sites;
+			sourceTree = "<group>";
+		};
 		CCDC49CB23FFFFF4003166BA /* WooCommerceUITests */ = {
 			isa = PBXGroup;
 			children = (
@@ -3253,6 +3285,7 @@
 			children = (
 				F997173223DBCF2800592D8E /* XCTest+Extensions.swift */,
 				CCDC49EC24000533003166BA /* TestCredentials.swift */,
+				CC52315F248FEE81007B128F /* Flows.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -3261,6 +3294,7 @@
 			isa = PBXGroup;
 			children = (
 				CCDC49CC23FFFFF4003166BA /* LoginTests.swift */,
+				CC52315D248FEDAF007B128F /* OrderTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -3299,6 +3333,7 @@
 				CCFC00C023E9BD5500157A78 /* jetpack-blogs */,
 				CCFC00D623E9BD5500157A78 /* me */,
 				CCFC00D923E9BD5500157A78 /* notifications */,
+				CC523169249133B8007B128F /* sites */,
 				CCFC00DC23E9BD5500157A78 /* stats */,
 			);
 			path = mappings;
@@ -3364,9 +3399,13 @@
 			isa = PBXGroup;
 			children = (
 				CCFC00CB23E9BD5500157A78 /* orders_2201_shipment_trackings.json */,
+				CC52316E24913CB4007B128F /* orders_2201_shipment_trackings_POST.json */,
+				CC523167249131B9007B128F /* orders_2201_shipment_trackings_providers.json */,
 				CCFC00CC23E9BD5500157A78 /* orders_totals.json */,
 				CCFC00CD23E9BD5500157A78 /* orders.json */,
 				CCFC00CE23E9BD5500157A78 /* orders_2201_notes.json */,
+				CC523176249277D9007B128F /* orders_2201_notes_POST.json */,
+				CC52317024915068007B128F /* orders_2201_POST.json */,
 				CCFC00CF23E9BD5500157A78 /* orders_2201_refunds.json */,
 			);
 			path = orders;
@@ -3394,6 +3433,7 @@
 			children = (
 				CCFC00D723E9BD5500157A78 /* rest_v11_me.json */,
 				CCFC00D823E9BD5500157A78 /* rest_v11_me_sites.json */,
+				CC52316C249135E6007B128F /* rest_v11_me_settings.json */,
 			);
 			path = me;
 			sourceTree = "<group>";
@@ -4003,6 +4043,10 @@
 				F997173423DBEB1900592D8E /* OrdersScreen.swift */,
 				F997173623DBF02400592D8E /* SingleOrderScreen.swift */,
 				F997173C23DBFBBF00592D8E /* OrderSearchScreen.swift */,
+				CC5231612490F7BC007B128F /* FulfillOrderScreen.swift */,
+				CC52316324910476007B128F /* AddTrackingScreen.swift */,
+				CC5231652491082D007B128F /* ShippingCarriersScreen.swift */,
+				CC523174249268FA007B128F /* OrderNoteScreen.swift */,
 			);
 			path = Orders;
 			sourceTree = "<group>";
@@ -4345,6 +4389,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CC52316F24913CB4007B128F /* orders_2201_shipment_trackings_POST.json in Resources */,
+				CC52316B249133F3007B128F /* rest_v11_sites.json in Resources */,
+				CC52316D249135E6007B128F /* rest_v11_me_settings.json in Resources */,
+				CC523177249277D9007B128F /* orders_2201_notes_POST.json in Resources */,
+				CC52317124915068007B128F /* orders_2201_POST.json in Resources */,
+				CC523168249131B9007B128F /* orders_2201_shipment_trackings_providers.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5181,11 +5231,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CC52315E248FEDAF007B128F /* OrderTests.swift in Sources */,
 				CCDC49DA2400011F003166BA /* MyStoreScreen.swift in Sources */,
 				CCDC49DB2400011F003166BA /* OrdersScreen.swift in Sources */,
 				F93E8E5C24087FE10057FF21 /* SingleProductScreen.swift in Sources */,
 				F93E8E5A24087FE10057FF21 /* ProductsScreen.swift in Sources */,
 				CCDC49DC2400011F003166BA /* SingleOrderScreen.swift in Sources */,
+				CC52316424910476007B128F /* AddTrackingScreen.swift in Sources */,
 				F93E8E5424087FDA0057FF21 /* BetaFeaturesScreen.swift in Sources */,
 				F93E8E5624087FDA0057FF21 /* SettingsScreen.swift in Sources */,
 				CCDC49DD2400011F003166BA /* OrderSearchScreen.swift in Sources */,
@@ -5194,14 +5246,18 @@
 				CCDC49E02400011F003166BA /* LinkOrPasswordScreen.swift in Sources */,
 				CCDC49E12400011F003166BA /* LoginCheckMagicLinkScreen.swift in Sources */,
 				CCDC49E22400011F003166BA /* LoginEmailScreen.swift in Sources */,
+				CC5231622490F7BC007B128F /* FulfillOrderScreen.swift in Sources */,
 				CCDC49E32400011F003166BA /* LoginEpilogueScreen.swift in Sources */,
 				CCDC49E42400011F003166BA /* LoginPasswordScreen.swift in Sources */,
 				CCDC49E52400011F003166BA /* LoginSiteAddressScreen.swift in Sources */,
 				CCDC49E62400011F003166BA /* LoginUsernamePasswordScreen.swift in Sources */,
+				CC523175249268FA007B128F /* OrderNoteScreen.swift in Sources */,
 				CCDC49E72400011F003166BA /* WelcomeScreen.swift in Sources */,
 				CCDC49E92400011F003166BA /* BaseScreen.swift in Sources */,
 				CCDC49EA2400011F003166BA /* PeriodStatsTable.swift in Sources */,
+				CC523160248FEE81007B128F /* Flows.swift in Sources */,
 				CCDC49EB2400011F003166BA /* TabNavComponent.swift in Sources */,
+				CC5231662491082D007B128F /* ShippingCarriersScreen.swift in Sources */,
 				CCDC49ED24000533003166BA /* TestCredentials.swift in Sources */,
 				CCDC49D724000095003166BA /* XCTest+Extensions.swift in Sources */,
 				CCDC49CD23FFFFF4003166BA /* LoginTests.swift in Sources */,

@@ -1,0 +1,51 @@
+{
+    "request": {
+        "urlPath": "/rest/v1.1/sites/161477129",
+        "method": "GET",
+        "queryParameters": {
+          "fields": {
+            "equalTo": "ID,plan"
+          }
+        }
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+            "ID": 161477129,
+            "plan": {
+                "product_id": 1008,
+                "product_slug": "business-bundle",
+                "product_name": "WordPress.com Business",
+                "product_name_short": "Business",
+                "expired": false,
+                "user_is_owner": false,
+                "is_free": false,
+                "features": {
+                    "active": ["free-blog", "custom-domain", "space", "no-adverts\/no-adverts.php", "custom-design", "videopress", "unlimited_themes", "live_support", "private_whois", "premium-themes", "google-analytics", "simple-payments", "calendly", "opentable", "support", "wordads-jetpack"],
+                    "available": {
+                        "free-blog": ["free_plan", "personal-bundle", "value_bundle", "ecommerce-bundle", "personal-bundle-2y", "value_bundle-2y", "business-bundle-2y", "blogger-bundle", "blogger-bundle-2y", "ecommerce-bundle-2y"],
+                        "space": ["free_plan", "personal-bundle", "value_bundle", "ecommerce-bundle", "personal-bundle-2y", "value_bundle-2y", "business-bundle-2y", "blogger-bundle", "blogger-bundle-2y", "ecommerce-bundle-2y"],
+                        "support": ["free_plan", "personal-bundle", "value_bundle", "ecommerce-bundle", "personal-bundle-2y", "value_bundle-2y", "business-bundle-2y", "blogger-bundle", "blogger-bundle-2y", "ecommerce-bundle-2y"],
+                        "custom-domain": ["personal-bundle", "value_bundle", "ecommerce-bundle", "personal-bundle-2y", "value_bundle-2y", "business-bundle-2y", "blogger-bundle", "blogger-bundle-2y", "ecommerce-bundle-2y"],
+                        "no-adverts\/no-adverts.php": ["value_bundle", "ecommerce-bundle", "value_bundle-2y", "business-bundle-2y", "ecommerce-bundle-2y"],
+                        "custom-design": ["value_bundle", "ecommerce-bundle", "value_bundle-2y", "business-bundle-2y", "ecommerce-bundle-2y"],
+                        "videopress": ["value_bundle", "ecommerce-bundle", "value_bundle-2y", "business-bundle-2y", "ecommerce-bundle-2y"],
+                        "unlimited_themes": ["value_bundle", "ecommerce-bundle", "value_bundle-2y", "business-bundle-2y", "ecommerce-bundle-2y"],
+                        "live_support": ["value_bundle", "ecommerce-bundle", "value_bundle-2y", "business-bundle-2y", "ecommerce-bundle-2y"],
+                        "private_whois": ["value_bundle", "ecommerce-bundle", "value_bundle-2y", "business-bundle-2y", "ecommerce-bundle-2y"],
+                        "simple-payments": ["value_bundle", "ecommerce-bundle", "value_bundle-2y", "business-bundle-2y", "ecommerce-bundle-2y"],
+                        "calendly": ["value_bundle", "ecommerce-bundle", "value_bundle-2y", "business-bundle-2y", "ecommerce-bundle-2y"],
+                        "opentable": ["value_bundle", "ecommerce-bundle", "value_bundle-2y", "business-bundle-2y", "ecommerce-bundle-2y"],
+                        "premium-themes": ["ecommerce-bundle", "business-bundle-2y", "ecommerce-bundle-2y"],
+                        "google-analytics": ["ecommerce-bundle", "business-bundle-2y", "ecommerce-bundle-2y"]
+                    }
+                }
+            }
+        },
+        "headers": {
+            "Content-Type": "application/json",
+            "Connection": "keep-alive",
+            "Cache-Control": "no-cache, must-revalidate, max-age=0"
+        }
+    }
+}

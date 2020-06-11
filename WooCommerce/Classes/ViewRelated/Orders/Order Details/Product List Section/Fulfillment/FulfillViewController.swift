@@ -155,6 +155,7 @@ private extension FulfillViewController {
         actionButton.setTitle(title, for: .normal)
         actionButton.applyPrimaryButtonStyle()
         actionButton.addTarget(self, action: #selector(fulfillWasPressed), for: .touchUpInside)
+        actionButton.accessibilityIdentifier = "mark-order-complete-button"
     }
 
     /// Registers all of the available TableViewCells
@@ -442,6 +443,7 @@ private extension FulfillViewController {
             "Adds tracking to an order.",
             comment: "VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period."
         )
+        cell.accessibilityIdentifier = "fulfill-order-add-tracking-button"
     }
 }
 

@@ -236,6 +236,8 @@ extension ManualTrackingViewController: UITableViewDataSource {
 
         cell.value.isEnabled = false
         cell.accessoryType = viewModel.providerCellAccessoryType
+
+        cell.accessibilityIdentifier = "add-tracking-shipping-carrier-cell"
     }
 
     private func configureProviderName(cell: TitleAndEditableValueTableViewCell) {
@@ -259,6 +261,8 @@ extension ManualTrackingViewController: UITableViewDataSource {
 
         cell.value.addTarget(self, action: #selector(didChangeTrackingNumber), for: .editingChanged)
         cell.accessoryType = .none
+
+        cell.value.accessibilityIdentifier = "add-tracking-enter-tracking-number-field"
     }
 
     private func configureTrackingLink(cell: TitleAndEditableValueTableViewCell) {
@@ -283,6 +287,8 @@ extension ManualTrackingViewController: UITableViewDataSource {
         cell.accessoryType = .none
 
         cell.separatorInset = datePickerVisible ? Constants.cellSeparatorInset : .zero
+
+        cell.accessibilityIdentifier = "add-tracking-date-shipped-cell"
     }
 
     private func configureSecondaryAction(cell: BasicTableViewCell) {

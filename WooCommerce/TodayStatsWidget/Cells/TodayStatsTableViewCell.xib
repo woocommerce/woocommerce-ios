@@ -100,7 +100,7 @@
                             </view>
                         </subviews>
                         <constraints>
-                            <constraint firstAttribute="height" constant="62" id="icf-WJ-MFb"/>
+                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="62" id="icf-WJ-MFb"/>
                         </constraints>
                     </stackView>
                 </subviews>

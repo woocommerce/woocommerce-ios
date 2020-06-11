@@ -145,7 +145,8 @@ class DefaultStoresManager: StoresManager {
         ZendeskManager.shared.reset()
         ServiceLocator.storageManager.reset()
         WidgetExtensionService.removeCredentials()
-
+        WidgetExtensionService.removeSite()
+        
         NotificationCenter.default.post(name: .logOutEventReceived, object: nil)
 
         return self
@@ -341,6 +342,7 @@ private extension DefaultStoresManager {
             }
 
             self.sessionManager.defaultSite = site
+            WidgetExtensionService.saveSite(site: site)
         }
 
         dispatch(action)

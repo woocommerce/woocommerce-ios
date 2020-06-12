@@ -88,14 +88,12 @@ private extension BetaFeaturesViewController {
             }
             guard eligibleStatsVersion == .v4 else {
                 self.sections = [
-                    self.productsSection()
                 ]
 
                 return
             }
             self.sections = [
-                self.statsSection(),
-                self.productsSection()
+                self.statsSection()
             ]
         }
         ServiceLocator.stores.dispatch(action)

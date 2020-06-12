@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-05-26 15:54:04+0000 */
+/* Translation-Revision-Date: 2020-06-10 14:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -305,9 +305,6 @@
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Raccogli informazioni";
-
-/* Shown while the app waits for the site creation process to complete. */
-"Completing Signup" = "Completamento della registrazione";
 
 /* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
 "Composes a new email message to the billing customer." = "Scrive un nuovo messaggio e-mail per il cliente della fatturazione.";
@@ -1182,6 +1179,9 @@
 
 /* Title for the first page in the Orders tab. */
 "Processing" = "In elaborazione";
+
+/* Shown while the app waits for the account process to complete. */
+"Processing Account" = "Account in elaborazione";
 
 /* Description for Top Performers left column header
    Product section title - Section header title for the product */

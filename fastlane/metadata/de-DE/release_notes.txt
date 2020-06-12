@@ -1,4 +1,12 @@
-* Ab sofort kannst du M2-Produktfunktionen für einfache Produkte unter „Einstellungen“ > „Experimentelle Funktionen“ aktivieren oder deaktivieren. Mit M2-Produktfunktionen kannst du Produktbilder, Kurzbeschreibungen zu Produkten, die Anzeige von Produkten, das Teilen und die Einstellungen aktualisieren (Produkteinstellungen umfassen den Status, die Sichtbarkeit, die Katalogsichtbarkeit, die Titelform, die Kaufbestätigung und die Menüreihenfolge).
-* Du kannst Details in den Auftragsdetails oder den Topseller-Tabs ändern und speichern. Außerdem haben wir die Zugänglichkeit mit VoiceOver-Unterstützung für Produktpreiseinstellungen verbessert.
-* Wir haben ein paar visuelle Verbesserungen vorgenommen: In den Auftragsdetails wird die Zahlungskarte jetzt direkt nach den Karten der Produkte und Erstatteten Produkte angezeigt. Das WIP-Banner auf dem Produkttab wird jetzt automatisch ausgeblendet. Hurra! Mehr Platz in der Vertikale.
-* iOS 11 und ältere Versionen werden nicht mehr unterstützt.
+Funktionen zur Produktbearbeitung werden weiterhin hinzugefügt. Halte Ausschau nach Verbesserungen am Bild- und Produktmanagement. Gehe im Tab „Mein Shop“ zu „Einstellungen“, um mehr zu erfahren und die neuen Funktionen zu aktivieren.
+
+Push-Benachrichtigungen und Badge-Updates arbeiten besser zusammen. Im Tab „Rezensionen“ wird kein Badge mehr angezeigt, wenn du eine Push-Benachrichtigung zu einer neuen Bestellung erhältst; durch die Navigation zum Tab „Bestellungen“ und/oder „Rezensionen“ wird die Badge-Nummer ab sofort gelöscht (abhängig von den Benachrichtigungsarten).
+
+Anstupser wurden optimiert. Bei der Bearbeitung von Produkten wird die Aufforderung „Änderungen verwerfen“ nur angezeigt, wenn du Bilder gelöscht hast, und nicht mehr beim Verlassen der Detailansichten zu Produkteinstellungen mit einem Textfeld (Titelform, Kaufbenachrichtigung und Menüreihenfolge).
+
+Kleinere UI-Schwachstellen wurden behoben:
+– Der Produktname wird in der Navigationsleiste „Produktdetails“ angezeigt und ist daher stets sichtbar.
+– Ein Problem, wodurch man im Querformat nach Schließen der Tastatur in den Produktdetails nicht bis ganz nach unten scrollen konnte, wurde behoben.
+– Bilder mit ausstehendem Upload werden sichtbar, nachdem Produktbilder unter den Produktdetails bearbeitet wurden.
+– Die Aktion „Produkt im Shop anzeigen“ wird nur angezeigt, wenn das Produkt veröffentlicht wird.
+– HTML-Codes in der Versandmethode werden nun korrekt angezeigt.

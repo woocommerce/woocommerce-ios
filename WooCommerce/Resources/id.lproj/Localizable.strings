@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-05-26 15:54:04+0000 */
+/* Translation-Revision-Date: 2020-06-10 18:54:47+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -305,9 +305,6 @@
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Kumpulkan informasi";
-
-/* Shown while the app waits for the site creation process to complete. */
-"Completing Signup" = "Menyelesaikan Pendaftaran";
 
 /* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
 "Composes a new email message to the billing customer." = "Menulis pesan email baru kepada pelanggan tertagih.";
@@ -1182,6 +1179,9 @@
 
 /* Title for the first page in the Orders tab. */
 "Processing" = "Memproses";
+
+/* Shown while the app waits for the account process to complete. */
+"Processing Account" = "Memproses Akun";
 
 /* Description for Top Performers left column header
    Product section title - Section header title for the product */

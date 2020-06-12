@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-05-27 14:54:05+0000 */
+/* Translation-Revision-Date: 2020-06-09 16:54:03+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -305,9 +305,6 @@
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "جمع المعلومات";
-
-/* Shown while the app waits for the site creation process to complete. */
-"Completing Signup" = "اكتمال تسجيل الدخول";
 
 /* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
 "Composes a new email message to the billing customer." = "إنشاء رسالة بريد إلكتروني جديدة إلى عميل الفوترة.";
@@ -1182,6 +1179,9 @@
 
 /* Title for the first page in the Orders tab. */
 "Processing" = "قيد المعالجة";
+
+/* Shown while the app waits for the account process to complete. */
+"Processing Account" = "معالجة الحساب";
 
 /* Description for Top Performers left column header
    Product section title - Section header title for the product */

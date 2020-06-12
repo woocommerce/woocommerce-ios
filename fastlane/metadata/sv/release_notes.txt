@@ -1,4 +1,12 @@
-* Du kan nu aktivera och inaktivera Products M2 Features för enkla produkter i Inställningar > Experimentella funktioner. Products M2 ger möjligheten att uppdatera produktbilder, korta beskrivningar av produkter samt visning, delning och inställningar för produkter (produktinställningarna omfattar status, synlighet, katalogsynlighet, dynamiska datafält, inköpsnota och menyordning).
-* Du kan nu redigera och spara detaljer på flikarna Orderdetaljer och Bäst presterande. Vi har också förbättrat tillgängligheten med bättre VoiceOver-support för produktprisinställningar.
-* Vi har gjort några visuella förbättringar: I Orderdetaljer visas nu betalkortet direkt efter korten för produkter och återbetalade produkter. WIP-banderollen på fliken Produkter är nu komprimerad som standard. Hurra för mer vertikalt utrymme!
-* Vi har avslutat supporten för iOS 11 och tidigare versioner.
+Vi fortsätter att lägga till funktioner för produktredigering. Håll utkik efter förbättringar av bild- och produkthantering. Gå till ”Inställningar” i fliken Min butik för att läsa mer och aktivera de nya funktionerna!
+
+Pushnotifieringar och uppdateringsmärken fungerar bättre tillsammans. Fliken Omdömen visar inte längre ett märke efter att du tagit emot en pushnotifiering för en ny order. Om du navigerar till fliken Ordrar och/eller Omdömen rensas nu märkesnumret (beroende på notifieringstyper).
+
+Puffar är lite mindre påträngande. När du redigerar produkter visas dialogrutan ”släng ändringar” nu bara om du har raderat bilder och inte när du lämnar en produktdetaljsida med ett textfält (permalänk, beställningsinformation och menyordning).
+
+Vi har även ordnat en del små svagheter i vår UI:
+- Produktnamnet visas i navigeringsfältet för produktdetaljer, så att det alltid är synligt.
+- Vi löste ett problem som förhindrade produktdetaljerna från att bläddra hela vägen ned till botten i landskapsläget efter att tangentbordet trycktes bort.
+- Bilder som väntar på att laddas upp blir synliga efter att produktbilder redigeras från produktdetaljer.
+- ”Visa produkt i butiken” visas bara om produkten är publiceras.
+- HTML-koder i fraktsättet visas nu korrekt.

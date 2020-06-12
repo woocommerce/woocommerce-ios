@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-05-26 09:54:04+0000 */
+/* Translation-Revision-Date: 2020-06-10 08:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -25,7 +25,7 @@
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (向顧客顯示)";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
-"%1$@ left a review on %2$@" = "%1$@ left a review on %2$@";
+"%1$@ left a review on %2$@" = "%1$@ 在 %2$@ 上留下了評論";
 
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "已在 %1$@ 收到 %2$@ 付款";
@@ -46,7 +46,7 @@
 "%@ Items" = "%@ 個品項";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
-"%@ left a review on %@" = "%@ left a review on %@";
+"%@ left a review on %@" = "%1$@ 在 %2$@ 上留下了評論";
 
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
 "%@ via %@" = "已在 %1$@ 收到 %2$@ 付款";
@@ -305,9 +305,6 @@
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "收集資訊";
-
-/* Shown while the app waits for the site creation process to complete. */
-"Completing Signup" = "正在完成註冊程序";
 
 /* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
 "Composes a new email message to the billing customer." = "撰寫新的電子郵件訊息給帳單客戶。";
@@ -1182,6 +1179,9 @@
 
 /* Title for the first page in the Orders tab. */
 "Processing" = "處理中";
+
+/* Shown while the app waits for the account process to complete. */
+"Processing Account" = "正在處理帳號";
 
 /* Description for Top Performers left column header
    Product section title - Section header title for the product */

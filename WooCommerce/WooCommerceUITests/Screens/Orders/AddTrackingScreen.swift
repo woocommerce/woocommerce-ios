@@ -5,12 +5,14 @@ final class AddTrackingScreen: BaseScreen {
 
     struct ElementStringIDs {
         static let addButton = "add-tracking-add-button"
+        static let dismissButton = "add-tracking-dismiss-button"
         static let shippingCarrierField = "add-tracking-shipping-carrier-cell"
         static let trackingNumberField = "add-tracking-enter-tracking-number-field"
         static let shippingDateField = "add-tracking-date-shipped-cell"
     }
 
     private let addButton: XCUIElement
+    private let dismissButton: XCUIElement
     private let shippingCarrierField: XCUIElement
     private let trackingNumberField: XCUIElement
     private let shippingDateField: XCUIElement
@@ -22,6 +24,7 @@ final class AddTrackingScreen: BaseScreen {
 
     init() {
         addButton = XCUIApplication().navigationBars.buttons[ElementStringIDs.addButton]
+        dismissButton = XCUIApplication().navigationBars.buttons[ElementStringIDs.dismissButton]
         shippingCarrierField = XCUIApplication().cells[ElementStringIDs.shippingCarrierField]
         trackingNumberField = XCUIApplication().textFields[ElementStringIDs.trackingNumberField]
         shippingDateField = XCUIApplication().cells[ElementStringIDs.shippingDateField]
@@ -38,6 +41,10 @@ final class AddTrackingScreen: BaseScreen {
         XCTAssert(addButton.isEnabled, "Add button should be enabled after adding tracking info")
         canSetDateShipped()
         addButton.tap()
+    }
+
+    override func pop() {
+        dismissButton.tap()
     }
 
     @discardableResult

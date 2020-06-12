@@ -82,6 +82,7 @@ private extension ManualTrackingViewController {
                                             target: self,
                                             action: #selector(dismissButtonTapped))
         navigationItem.setLeftBarButton(leftBarButton, animated: false)
+        navigationItem.leftBarButtonItem?.accessibilityIdentifier = "add-tracking-dismiss-button"
     }
 
     func configureBackButton() {

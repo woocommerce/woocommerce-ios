@@ -272,6 +272,7 @@ private extension NewNoteViewController {
                                             target: self,
                                             action: #selector(dismissButtonTapped))
         navigationItem.setLeftBarButton(leftBarButton, animated: false)
+        navigationItem.leftBarButtonItem?.accessibilityIdentifier = "order-note-dismiss-button"
     }
 
     func configureRightButtonItemAsAdd() {

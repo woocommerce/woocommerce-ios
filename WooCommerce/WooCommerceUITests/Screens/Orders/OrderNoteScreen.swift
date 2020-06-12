@@ -5,6 +5,7 @@ final class OrderNoteScreen: BaseScreen {
 
     struct ElementStringIDs {
         static let addButton = "order-note-add-button"
+        static let dismissButton = "order-note-dismiss-button"
         static let noteField = "order-note-text-field"
         static let emailNoteToggle = "order-note-email-switch"
     }
@@ -14,6 +15,7 @@ final class OrderNoteScreen: BaseScreen {
     }
 
     private let addButton: XCUIElement
+    private let dismissButton: XCUIElement
     private let noteField: XCUIElement
     private let emailNoteToggle: XCUIElement
 
@@ -24,6 +26,7 @@ final class OrderNoteScreen: BaseScreen {
 
     init() {
         addButton = XCUIApplication().navigationBars.buttons[ElementStringIDs.addButton]
+        dismissButton = XCUIApplication().navigationBars.buttons[ElementStringIDs.dismissButton]
         noteField = XCUIApplication().textViews[ElementStringIDs.noteField]
         emailNoteToggle = XCUIApplication().cells[ElementStringIDs.emailNoteToggle]
         super.init(element: noteField)
@@ -37,6 +40,10 @@ final class OrderNoteScreen: BaseScreen {
         toggleEmailOption(to: state)
         addButton.tap()
         return SingleOrderScreen()
+    }
+
+    override func pop() {
+        dismissButton.tap()
     }
 
     private func writeNote(withText text: String) {

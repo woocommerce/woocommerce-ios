@@ -8,6 +8,10 @@ The following user flows are covered with UI tests:
 
 * [Login](../WooCommerce/WooCommerceUITests/Tests/LoginTests.swift):
 	* Log in with email/password and log out
+* [Orders](../WooCommerce/WooCommerceUITests/Tests/OrderTests.swift):
+	* Fulfill an order
+	* Add an order note
+	* Add order tracking
 
 ## Running tests
 

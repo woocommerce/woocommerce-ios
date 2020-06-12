@@ -17,11 +17,11 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="134"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="2ey-d7-1ps">
-                        <rect key="frame" x="16" y="0.0" width="288" height="78"/>
+                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="2ey-d7-1ps">
+                        <rect key="frame" x="16" y="0.0" width="288" height="103.5"/>
                         <subviews>
-                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bad-Lk-T6q">
-                                <rect key="frame" x="0.0" y="0.0" width="96" height="78"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bad-Lk-T6q">
+                                <rect key="frame" x="0.0" y="0.0" width="96" height="103.5"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Visitors" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FW9-U7-shK">
                                         <rect key="frame" x="0.0" y="4" width="96" height="20.5"/>
@@ -46,8 +46,8 @@
                                     <constraint firstItem="W6h-re-Fvv" firstAttribute="top" secondItem="FW9-U7-shK" secondAttribute="bottom" constant="4" id="kmM-jA-owJ"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="D06-iq-NGD">
-                                <rect key="frame" x="96" y="0.0" width="96" height="78"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="D06-iq-NGD">
+                                <rect key="frame" x="96" y="0.0" width="96" height="103.5"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Orders" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IzA-qr-UtH">
                                         <rect key="frame" x="0.0" y="4" width="96" height="20.5"/>
@@ -72,8 +72,8 @@
                                     <constraint firstAttribute="trailing" secondItem="IzA-qr-UtH" secondAttribute="trailing" id="loR-oE-FeA"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zX9-ZM-EjU">
-                                <rect key="frame" x="192" y="0.0" width="96" height="78"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zX9-ZM-EjU">
+                                <rect key="frame" x="192" y="0.0" width="96" height="103.5"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Revenue" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6Cd-2f-xlU">
                                         <rect key="frame" x="0.0" y="4" width="96" height="20.5"/>
@@ -130,6 +130,7 @@
                     <constraint firstAttribute="bottom" secondItem="ljb-t0-6N4" secondAttribute="bottom" id="ZSi-Kt-2G4"/>
                     <constraint firstItem="flV-wv-RYb" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="bAV-az-Bz5"/>
                     <constraint firstItem="2ey-d7-1ps" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="czM-zf-Dm3"/>
+                    <constraint firstItem="flV-wv-RYb" firstAttribute="top" secondItem="2ey-d7-1ps" secondAttribute="bottom" id="pcb-9X-BVM"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

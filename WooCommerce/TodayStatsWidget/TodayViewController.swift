@@ -9,7 +9,11 @@ final class TodayViewController: UIViewController {
 
     /// Table Sections to be rendered
     ///
-    private var sections: [Section] = []
+    private var sections: [Section] = [] {
+           didSet {
+               tableView.reloadData()
+           }
+    }
 
     /// Credentials of the site choosen for showing the stats
     ///
@@ -17,20 +21,16 @@ final class TodayViewController: UIViewController {
 
     /// Site choosed for shoing the stats
     private var site: Site?
-    
+
     private var isConfigured: Bool {
         return credentials != nil && site != nil
     }
-    
-    /// Stats data
-    private var totalVisitors: String?
-    private var totalOrders: String?
-    private var totalRevenue: String?
+
+    private var statsData: StatsData?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTableView()
-        sections = [Section(rows: [.todayStats])]
     }
 
 }
@@ -46,11 +46,7 @@ extension TodayViewController: NCWidgetProviding {
         // If there's an update, use NCUpdateResult.NewData
 
         retrieveSiteConfiguration()
-        
-        
-        
-
-        completionHandler(NCUpdateResult.newData)
+        fetchData(completionHandler: completionHandler)
     }
 }
 
@@ -63,26 +59,31 @@ private extension TodayViewController {
         credentials = WidgetExtensionService.loadCredentials()
         site = WidgetExtensionService.loadSite()
     }
-    
+
     func fetchData(completionHandler: (@escaping (NCUpdateResult) -> Void)) {
         guard isConfigured else {
             DDLogError("Today Widget: unable to update because is not configured.")
-            
+
             DispatchQueue.main.async { [weak self] in
                 self?.tableView.reloadData()
             }
             completionHandler(.failed)
             return
         }
-        
-        syncSiteStats(timeRange: .today) { (result) in
-            let updateResult = try? result.get()
-            switch updateResult {
+
+        syncSiteStats(timeRange: .today) { [weak self] (result) in
+            switch result {
             case .failed:
+                self?.sections = []
+                completionHandler(.failed)
                 return
             case .newData:
+                self?.sections = [Section(rows: [.todayStats])]
+                completionHandler(.newData)
                 return
             case .noData:
+                self?.sections = [Section(rows: [.todayStats])]
+                completionHandler(.noData)
                 return
             default:
                 return
@@ -92,53 +93,31 @@ private extension TodayViewController {
 
     // Sync remotely all the stats showed in the widget
     func syncSiteStats(timeRange: StatsTimeRangeV4,
-                            onCompletion: (Result<NCUpdateResult, Error>) -> Void) {
+                            onCompletion: @escaping (NCUpdateResult) -> Void) {
 
         guard let credentials = credentials else {
+            onCompletion(.failed)
             return
         }
         guard let site = site else {
+            onCompletion(.failed)
             return
         }
 
+        var tempStats = StatsData()
+
         let network = AlamofireNetwork(credentials: credentials)
 
-        let quantity = timeRange.siteVisitStatsQuantity(date: Date(), siteTimezone: site.siteTimezone)
 
         /// Calculation of dates
         let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
         dateFormatter.timeZone = site.siteTimezone
         let earliestDate = dateFormatter.string(from: Date().startOfDay(timezone: site.siteTimezone))
         let latestDate = dateFormatter.string(from: Date().endOfDay(timezone: site.siteTimezone))
-        
-        var isOrderStatsFetched = false
-        var isVisitStatsFetched = false
-        
+
+        let quantity = timeRange.siteVisitStatsQuantity(date: Date(), siteTimezone: site.siteTimezone)
+
         let group = DispatchGroup()
-        
-        /// Load Order Stats
-        group.enter()
-        let remoteOrderStats = OrderStatsRemoteV4(network: network)
-        remoteOrderStats.loadOrderStats(for: site.siteID, unit: timeRange.intervalGranularity, earliestDateToInclude: earliestDate, latestDateToInclude: latestDate, quantity: quantity) { [weak self] (orderStatsV4, error) in
-
-            guard error != nil else{
-                group.leave()
-                return
-            }
-            if let totalOrdersUnwrapped = orderStatsV4?.totals.totalOrders {
-                self?.totalOrders = Double(totalOrdersUnwrapped).humanReadableString()
-            }
-
-            // TODO: implement currency formatter
-            //let currencyCode = CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode)
-            //totalRevenueText = CurrencyFormatter().formatHumanReadableAmount(String("\(orderStats.totals.grossRevenue)"), with: currencyCode) ?? String()
-
-            if let totalRevenueUnwrapped = orderStatsV4?.totals.grossRevenue {
-                self?.totalRevenue = String("\(totalRevenueUnwrapped)")
-            }
-            isOrderStatsFetched = true
-            group.leave()
-        }
 
         /// Load Visit Stats
         group.enter()
@@ -147,23 +126,48 @@ private extension TodayViewController {
                                               siteTimezone: site.siteTimezone,
                                     unit: timeRange.siteVisitStatsGranularity,
                                     latestDateToInclude: Date().endOfDay(timezone: site.siteTimezone),
-                                    quantity: quantity) { [weak self] (siteVisitStats, error) in
-                                        guard error != nil else{
+                                    quantity: quantity) { (siteVisitStats, error) in
+                                        guard error == nil else {
                                             group.leave()
                                             return
                                         }
-                                        if let totalVisitorsUnwrapped = siteVisitStats?.totalVisitors {
-                                            self?.totalVisitors = Double(totalVisitorsUnwrapped).humanReadableString()
-                                        }
-                                        isVisitStatsFetched = true
+
+                                        tempStats.totalVisitors = siteVisitStats?.totalVisitors
                                         group.leave()
         }
-        
-        group.notify(queue: .main) {
-            guard isOrderStatsFetched && isVisitStatsFetched else {
-               // completionHandler(.success(NCUpdateResult))
+
+        /// Load Order Stats
+        group.enter()
+        let remoteOrderStats = OrderStatsRemoteV4(network: network)
+        remoteOrderStats.loadOrderStats(for: site.siteID, unit: timeRange.intervalGranularity, earliestDateToInclude: earliestDate, latestDateToInclude: latestDate, quantity: quantity) { (orderStatsV4, error) in
+
+            guard error == nil else {
+                group.leave()
+                return
             }
-           // completionHandler(.success(NCUpdateResult.newData))
+            tempStats.totalOrders = orderStatsV4?.totals.totalOrders
+
+            // TODO: implement currency formatter
+            // let currencyCode = CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode)
+            // totalRevenueText = CurrencyFormatter().formatHumanReadableAmount(String("\(orderStats.totals.grossRevenue)"), with: currencyCode) ?? String()
+
+            tempStats.totalRevenue = orderStatsV4?.totals.grossRevenue
+            group.leave()
+        }
+
+        group.notify(queue: .main) { [weak self] in
+            if tempStats.isVisitStatsEmpty() || tempStats.isOrderStatsEmpty() {
+                onCompletion(.failed)
+                return
+            }
+
+            if tempStats == self?.statsData {
+                onCompletion(.noData)
+            }
+            else {
+                self?.statsData = tempStats
+                onCompletion(.newData)
+            }
         }
     }
 }
@@ -233,7 +237,7 @@ private extension TodayViewController {
 
     func configureTodayStats(cell: TodayStatsTableViewCell) {
         if let siteURL = site?.url {
-            cell.configure(visitors: totalVisitors ?? "-", orders: totalOrders ?? "-", revenue: totalRevenue ?? "-", site: siteURL)
+            cell.configure(visitors: statsData?.totalVisitorsReadable(), orders: statsData?.totalOrdersReadable(), revenue: statsData?.totalRevenueReadable(), site: siteURL)
         }
     }
 }
@@ -259,5 +263,42 @@ private extension TodayViewController {
         var reuseIdentifier: String {
             return type.reuseIdentifier
         }
+    }
+}
+
+// Stats Data struct
+//
+struct StatsData: Equatable {
+    var totalVisitors: Int?
+    var totalOrders: Int?
+    var totalRevenue: Decimal?
+
+    func totalVisitorsReadable() -> String {
+        guard let totalVisitors = totalVisitors else {
+            return "-"
+        }
+        return Double(totalVisitors).humanReadableString()
+    }
+
+    func totalOrdersReadable() -> String {
+        guard let totalOrders = totalOrders else {
+            return "-"
+        }
+        return Double(totalOrders).humanReadableString()
+    }
+
+    func totalRevenueReadable() -> String {
+        guard let totalRevenue = totalRevenue else {
+            return "-"
+        }
+        return String("\(totalRevenue)")
+    }
+
+    func isVisitStatsEmpty() -> Bool {
+        return totalVisitors == nil
+    }
+
+    func isOrderStatsEmpty() -> Bool {
+        return totalOrders == nil && totalRevenue == nil
     }
 }

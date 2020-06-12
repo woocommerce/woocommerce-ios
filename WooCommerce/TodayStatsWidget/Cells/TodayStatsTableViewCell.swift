@@ -24,7 +24,7 @@ final class TodayStatsTableViewCell: UITableViewCell {
         configureSiteLabel()
     }
 
-    func configure(visitors: String, orders: String, revenue: String, site: String) {
+    func configure(visitors: String?, orders: String?, revenue: String?, site: String?) {
         visitorsBodyLabel.text = visitors
         ordersBodyLabel.text = orders
         revenueBodyLabel.text = revenue

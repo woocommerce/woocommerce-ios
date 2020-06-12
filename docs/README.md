@@ -9,7 +9,7 @@
 - [Design Patterns](#design-patterns)
     - [Copiable](#copiable)
         - [Generating Copiable Methods](#generating-copiable-methods)
-        - [Modifying The Copiable Code Generation](modifying-the-copiable-code-generation)
+        - [Modifying The Copiable Code Generation](#modifying-the-copiable-code-generation)
 - [Testing](#testing)
 
 ## Architecture
@@ -152,7 +152,7 @@ The `copy()` methods are generated using [Sourcery](https://github.com/krzysztof
 
 To generate a `copy()` method for a `class` or `struct`:
 
-1. Make it conform to [`GeneratedCopiable`](../Networking/Networking/Copiable/GeneratedCopiable.swift). Consider importaing the `protocol` only.
+1. Make it conform to [`GeneratedCopiable`](../Networking/Networking/Copiable/GeneratedCopiable.swift). Consider importing the `protocol` only.
 
     ```swift
     import protocol Networking.GeneratedCopiable

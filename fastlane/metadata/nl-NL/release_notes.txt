@@ -1,4 +1,12 @@
-* Je kunt Products M2-functies nu in- en uitschakelen voor eenvoudige producten in Instellingen > Experimentele functies. Products M2 bevat de mogelijkheid om productafbeeldingen bij te werken, producten een korte beschrijving te geven, producten weer te geven, delen en instellen (tot productinstellingen behoren de status, zichtbaarheid, catalogus-zichtbaarheid, slug, aankoopbon en menubestelling.)
-* Je kunt nu ook gegevens bewerken en opslaan in de tabbladen Bestelgegevens en Toppresteerders. We hebben ook de toegankelijkheid verbeterd met betere VoiceOver-ondersteuning voor Productprijs-instellingen.
-* We hebben wat visuele verbeteringen aangebracht: In Bestelgegevens wordt de kaart Betalingen nu weergegeven naast de kaarten Producten en Geretourneerde producten. De WIP-banner op het tabblad Producten is nu standaard ingeklapt. Hoera, meer verticale ruimte!
-* We hebben ondersteuning voor iOS 11 en lager stopgezet.
+We blijven functies toevoegen aan productbewerking. Bereid je maar voor op verbeteringen aan afbeelding- en productbeheer. Ga naar 'Instellingen' op het tabblad Mijn winkel voor meer informatie en om de nieuwe functies in te schakelen!
+
+Push-meldingen en update-badges werken beter samen. Op het tabblad Beoordelingen wordt geen badge meer weergegeven nadat je een push-melding voor een nieuwe bestelling hebt ontvangen, en wanneer je naar het tabblad Bestellingen en/of Beoordelingen gaat, wordt het badgenummer nu gewist (afhankelijk van de soorten meldingen).
+
+Meldingen is nu iets minder dwingend. Wanneer je producten bewerkt, wordt de melding 'wijzigingen verwerpen' nu alleen weergegeven als je afbeeldingen hebt verwijderd en niet wanneer je schermen met productinstellingen met een tekstveld verlaad (slug, aankoopbon en menu-volgorde).
+
+We hebben ook een paar gekke UI-problemen opgelost:
+- De productnaam wordt weergegeven in de navigatiebalk met productgegevens, zodat deze altijd zichtbaar is.
+- We hebben een probleem opgelost dat ervoor zorgde dat productgegevens niet helemaal onderaan werden weergegeven in de liggende stand nadat het toetsenbord werd weggehaald.
+- Afbeeldingen die op het punt staan om geüpload te worden, worden zichtbaar nadat productafbeeldingen van productgegevens zijn bewerkt.
+- De actie 'Product weergeven in winkel' wordt alleen weergegeven als het product gepubliceerd is.
+- HTML-codes worden nu op de juiste manier weergegeven in de verzendmethode.

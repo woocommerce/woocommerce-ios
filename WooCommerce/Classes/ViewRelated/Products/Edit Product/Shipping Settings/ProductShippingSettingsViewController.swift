@@ -36,12 +36,14 @@ final class ProductShippingSettingsViewController: UIViewController {
     private let onCompletion: Completion
 
     private let product: Product
+    private var originalShippingClass: ProductShippingClass?
     private let shippingSettingsService: ShippingSettingsService
 
     init(product: Product,
          shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService,
          completion: @escaping Completion) {
         self.product = product
+        self.originalShippingClass = product.productShippingClass
         self.shippingSettingsService = shippingSettingsService
         self.onCompletion = completion
 
@@ -111,6 +113,7 @@ private extension ProductShippingSettingsViewController {
             .retrieveProductShippingClass(siteID: product.siteID,
                                           remoteID: product.shippingClassID) { [weak self] (shippingClass, error) in
                                             self?.shippingClass = shippingClass
+                                            self?.originalShippingClass = shippingClass
                                             self?.hasRetrievedShippingClassIfNeeded = true
                                             self?.tableView.reloadData()
         }
@@ -124,7 +127,7 @@ extension ProductShippingSettingsViewController {
 
     override func shouldPopOnBackButton() -> Bool {
         if weight != product.weight || length != product.dimensions.length || width != product.dimensions.width || height != product.dimensions.height ||
-            shippingClass != product.productShippingClass {
+            shippingClass != originalShippingClass {
             presentBackNavigationActionSheet()
             return false
         }

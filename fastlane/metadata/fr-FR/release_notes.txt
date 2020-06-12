@@ -1,4 +1,12 @@
-* Vous pouvez désormais activer/désactiver les fonctionnalités Produits M2 des produits simples sous Réglages > Fonctionnalités expérimentales. Produits M2 permet de mettre à jour divers éléments : images, description courte, affichage, partage et réglages des produits (état, visibilité, visibilité du catalogue, identifiant, note d'achat et ordre du menu.)
-* Vous pouvez désormais modifier et enregistrer les détails dans l'onglet Détails de la commande ou Produits les plus performants. Nous avons également optimisé l'accessibilité grâce à une meilleure prise en charge de VoiceOver dans les réglages du prix du produit.
-* Nous avons apporté des améliorations visuelles : Dans Détails de la commande, la carte de paiement apparaît désormais à droite après les cartes Produits et Produits remboursés. La bannière WIP de l'onglet Produits est désormais réduite par défaut. Vous disposez ainsi de davantage d'espace vertical !
-* Nous avons abandonné la prise en charge d'iOS 11 et versions inférieures.
+Nous continuons d'’ajouter des fonctions à la modification de produits. Pour voir les améliorations de la gestion des images et des produits, accédez aux « Réglages » dans l’onglet Ma boutique et activez les nouvelles fonctionnalités !
+
+Les notifications push et les badges de mise à jour fonctionnent mieux ensemble. L’onglet Avis n’affiche plus de badge lorsque vous recevez une nouvelle notification push de commande et la navigation vers l’onglet Commandes et/ou Avis efface désormais le nombre de badges (en fonction du type de notification).
+
+Les affichages sont un peu moins systématiques. Lors de la modification de produits, l’invite « ignorer les modifications » s’affiche désormais uniquement si vous avez supprimé des images, et pas lorsque vous quittez l’écran des détails de réglages du produit avec un champ texte (identifiant, note d’achat et ordre de menu).
+
+Nous avons résolu des petits défauts de l’interface utilisateur :
+- Le nom du produit s’affiche dans la barre de navigation des détails du produit, il est donc toujours visible.
+- Nous avons résolu un problème qui empêchait de faire défiler jusqu'en bas les détails du produit en mode paysage, avec le clavier masqué.
+- Les images en attente de chargement seront visibles après la modification des images produit dans les détails du produit.
+- L’action « Voir le produit dans la boutique » s’affiche uniquement si le produit est publié.
+- Les codes HTML dans la méthode d’expédition s’affichent désormais correctement.

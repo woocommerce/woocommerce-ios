@@ -1,9 +1,16 @@
 import Foundation
 
+/// Protocol for `NotificationsRemote` mainly used for mocking.
+///
+/// The required methods are intentionally incomplete. Feel free to add the other ones.
+///
+public protocol NotificationsEndpointsProviding {
+    func loadNotes(noteIDs: [Int64]?, pageSize: Int?, completion: @escaping (Result<[Note], Error>) -> Void)
+}
 
 /// Notifications: Remote Endpoints
 ///
-public class NotificationsRemote: Remote {
+public final class NotificationsRemote: Remote, NotificationsEndpointsProviding {
 
     /// Retrieves latest Notifications (OR collection of specified Notifications, whenever the NoteIds is present).
     ///

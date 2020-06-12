@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-05-27 08:54:05+0000 */
+/* Translation-Revision-Date: 2020-06-10 08:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -305,9 +305,6 @@
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "정보 수집";
-
-/* Shown while the app waits for the site creation process to complete. */
-"Completing Signup" = "가입 완료 중";
 
 /* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
 "Composes a new email message to the billing customer." = "청구 고객에게 보낼 새 이메일 메시지를 작성합니다.";
@@ -1182,6 +1179,9 @@
 
 /* Title for the first page in the Orders tab. */
 "Processing" = "처리 중";
+
+/* Shown while the app waits for the account process to complete. */
+"Processing Account" = "계정 처리 중";
 
 /* Description for Top Performers left column header
    Product section title - Section header title for the product */

@@ -42,6 +42,12 @@ class ProductTableViewCell: UITableViewCell {
         }
     }
 
+    var hidesBottomBorder: Bool = false {
+        didSet {
+            bottomBorderView.isHidden = hidesBottomBorder
+        }
+    }
+
     override func awakeFromNib() {
         super.awakeFromNib()
         nameLabel.applyBodyStyle()

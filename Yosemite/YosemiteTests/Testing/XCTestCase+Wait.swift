@@ -15,9 +15,11 @@ extension XCTestCase {
     /// ```
     ///
     func waitForExpectation(description: String? = nil,
+                            count: Int = 1,
                             timeout: TimeInterval = Constants.expectationTimeout,
                             _ block: (XCTestExpectation) -> ()) {
         let exp = expectation(description: description ?? "")
+        exp.expectedFulfillmentCount = count
         block(exp)
         wait(for: [exp], timeout: timeout)
     }

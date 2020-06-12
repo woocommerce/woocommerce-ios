@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-05-27 13:54:04+0000 */
+/* Translation-Revision-Date: 2020-06-10 12:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -305,9 +305,6 @@
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "收集信息";
-
-/* Shown while the app waits for the site creation process to complete. */
-"Completing Signup" = "正在完成注册";
 
 /* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
 "Composes a new email message to the billing customer." = "撰写一封新电子邮件发给账单付款客户。";
@@ -1182,6 +1179,9 @@
 
 /* Title for the first page in the Orders tab. */
 "Processing" = "正在处理";
+
+/* Shown while the app waits for the account process to complete. */
+"Processing Account" = "正在处理帐户";
 
 /* Description for Top Performers left column header
    Product section title - Section header title for the product */

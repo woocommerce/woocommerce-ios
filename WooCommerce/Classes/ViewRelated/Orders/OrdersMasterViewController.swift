@@ -39,6 +39,8 @@ final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
         if AppRatingManager.shared.shouldPromptForAppReview() {
             displayRatingPrompt()
         }
+
+        ServiceLocator.pushNotesManager.resetBadgeCount(type: .storeOrder)
     }
 
     /// Presents the Details for the Notification with the specified Identifier.

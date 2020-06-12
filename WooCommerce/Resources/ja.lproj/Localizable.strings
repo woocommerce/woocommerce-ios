@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-05-28 08:54:04+0000 */
+/* Translation-Revision-Date: 2020-06-11 08:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -305,9 +305,6 @@
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "情報を収集";
-
-/* Shown while the app waits for the site creation process to complete. */
-"Completing Signup" = "登録を完了しています";
 
 /* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
 "Composes a new email message to the billing customer." = "請求対象の顧客に送信する新しいメールメッセージを作成します。";
@@ -1182,6 +1179,9 @@
 
 /* Title for the first page in the Orders tab. */
 "Processing" = "処理中";
+
+/* Shown while the app waits for the account process to complete. */
+"Processing Account" = "アカウント処理中";
 
 /* Description for Top Performers left column header
    Product section title - Section header title for the product */

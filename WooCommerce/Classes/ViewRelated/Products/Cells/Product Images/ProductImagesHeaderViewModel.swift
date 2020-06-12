@@ -1,11 +1,15 @@
 import UIKit
 import Yosemite
 
-final class ProductImagesViewModel {
+/// View model for displaying a collection of product images in the header.
+final class ProductImagesHeaderViewModel {
 
     let productImageStatuses: [ProductImageStatus]
 
     let config: ProductImagesCellConfig
+
+    /// Whether we should scroll to the beginning of the collection view.
+    let shouldScrollToStart: Bool
 
     // Fixed width/height of collection view cell
     static let defaultCollectionViewCellSize = CGSize(width: 128.0, height: 128.0)
@@ -15,6 +19,7 @@ final class ProductImagesViewModel {
     init(productImageStatuses: [ProductImageStatus], config: ProductImagesCellConfig) {
         self.productImageStatuses = productImageStatuses
         self.config = config
+        self.shouldScrollToStart = productImageStatuses.hasPendingUpload
 
         configureItems()
     }
@@ -42,7 +47,7 @@ final class ProductImagesViewModel {
 
 // MARK: - Register collection view cells
 //
-extension ProductImagesViewModel {
+extension ProductImagesHeaderViewModel {
     /// Registers all of the available CollectionViewCells
     ///
     func registerCollectionViewCells(_ collectionView: UICollectionView) {

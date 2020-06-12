@@ -53,6 +53,8 @@ final class ProductImagesViewController: UIViewController {
         })
     }()
 
+    private var hasDeletedAnyImages: Bool = false
+
     private let onCompletion: Completion
 
     init(product: Product,
@@ -166,6 +168,7 @@ private extension ProductImagesViewController {
     }
 
     func onDeletion(productImage: ProductImage) {
+        hasDeletedAnyImages = true
         productImageActionHandler.deleteProductImage(productImage)
         navigationController?.popViewController(animated: true)
     }
@@ -179,7 +182,6 @@ extension ProductImagesViewController {
             presentDiscardChangesActionSheet()
             return false
         }
-        resetProductImages()
         return true
     }
 
@@ -199,8 +201,7 @@ extension ProductImagesViewController {
     }
 
     private func hasOutstandingChanges() -> Bool {
-        return originalProductImages != productImages
-            || productImageStatuses.hasPendingUpload
+        return hasDeletedAnyImages
     }
 }
 

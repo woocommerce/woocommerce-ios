@@ -175,6 +175,18 @@ task :xcode => [:dependencies] do
   sh "open #{XCODE_WORKSPACE}"
 end
 
+desc "Run all code generation tasks"
+task :generate do 
+  ["Networking", "Yosemite", "WooCommerce"].each { |prefix| 
+    puts "\n\nGenerating Copiable for #{prefix}..."
+    puts "=" * 100
+
+    sh "./Pods/Sourcery/bin/sourcery --config CodeGeneration/#{prefix}-Copiable.sourcery.yaml"
+  }
+
+  puts "\n\nDONE. Generated Copiable for all projects."
+end
+
 def fold(label, &block)
   puts "travis_fold:start:#{label}" if is_travis?
   yield

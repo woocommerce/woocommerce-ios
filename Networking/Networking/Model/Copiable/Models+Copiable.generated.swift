@@ -1,6 +1,7 @@
-import Foundation
+// Generated using Sourcery 0.18.0 — https://github.com/krzysztofzablocki/Sourcery
+// DO NOT EDIT
 
-/// TODO This will soon be generated instead.
+
 
 extension ProductImage {
     public func copy(
@@ -11,8 +12,6 @@ extension ProductImage {
         name: NullableCopiableProp<String> = .copy,
         alt: NullableCopiableProp<String> = .copy
     ) -> ProductImage {
-        /// Declare local variables because the Swift compiler will sometimes choke if there are
-        /// too many arguments with default values.
         let imageID = imageID ?? self.imageID
         let dateCreated = dateCreated ?? self.dateCreated
         let dateModified = dateModified ?? self.dateModified

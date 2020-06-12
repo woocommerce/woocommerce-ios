@@ -18,28 +18,29 @@ public struct CoreDataIterativeMigrator {
     ///
     /// - Throws: A whole bunch of crap is possible to be thrown between Core Data and FileManager.
     ///
-    static func iterativeMigrate(sourceStore: URL, storeType: String, to targetModel: NSManagedObjectModel, using modelNames: [String]) throws -> Bool {
+    static func iterativeMigrate(sourceStore: URL, storeType: String, to targetModel: NSManagedObjectModel, using modelNames: [String])
+        throws -> (success: Bool, debugMessages: [String]) {
         // If the persistent store does not exist at the given URL,
         // assume that it hasn't yet been created and return success immediately.
         guard FileManager.default.fileExists(atPath: sourceStore.path) == true else {
-            return true
+            return (true, [])
         }
 
         // Get the persistent store's metadata.  The metadata is used to
         // get information about the store's managed object model.
         guard let sourceMetadata = try metadataForPersistentStore(storeType: storeType, at: sourceStore) else {
-            return false
+            return (false, [])
         }
 
         // Check whether the final model is already compatible with the store.
         // If it is, no migration is necessary.
         guard targetModel.isConfiguration(withName: nil, compatibleWithStoreMetadata: sourceMetadata) == false else {
-            return true
+            return (true, [])
         }
 
         // Find the current model used by the store.
         guard let sourceModel = try model(for: sourceMetadata) else {
-            return false
+            return (false, [])
         }
 
         // Get NSManagedObjectModels for each of the model names given.
@@ -76,6 +77,8 @@ public struct CoreDataIterativeMigrator {
             modelsToMigrate = modelsToMigrate.reversed()
         }
 
+        var debugMessages = [String]()
+
         // Migrate between each model. Count - 2 because of zero-based index and we want
         // to stop at the last pair (you can't migrate the last model to nothingness).
         let upperBound = modelsToMigrate.count - 2
@@ -86,18 +89,20 @@ public struct CoreDataIterativeMigrator {
             // Check whether a custom mapping model exists.
             guard let migrateWithModel = NSMappingModel(from: nil, forSourceModel: modelFrom, destinationModel: modelTo) ??
                 (try? NSMappingModel.inferredMappingModel(forSourceModel: modelFrom, destinationModel: modelTo)) else {
-                    return false
+                    return (false, debugMessages)
             }
 
             // Migrate the model to the next step
-            DDLogWarn("⚠️ Attempting migration from \(modelNames[index]) to \(modelNames[index + 1])")
+            let migrationAttemptMessage = "⚠️ Attempting migration from \(modelNames[index]) to \(modelNames[index + 1])"
+            debugMessages.append(migrationAttemptMessage)
+            DDLogWarn(migrationAttemptMessage)
 
             guard migrateStore(at: sourceStore, storeType: storeType, fromModel: modelFrom, toModel: modelTo, with: migrateWithModel) == true else {
-                return false
+                return (false, debugMessages)
             }
         }
 
-        return true
+        return (true, debugMessages)
     }
 }
 

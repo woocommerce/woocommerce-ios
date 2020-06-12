@@ -283,6 +283,7 @@ private extension NewNoteViewController {
                                              action: #selector(addButtonTapped))
         navigationItem.setRightBarButton(rightBarButton, animated: false)
         navigationItem.rightBarButtonItem?.isEnabled = false
+        navigationItem.rightBarButtonItem?.accessibilityIdentifier = "order-note-add-button"
     }
 
     func configureForCommittingNote() {

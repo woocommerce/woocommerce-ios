@@ -4,6 +4,7 @@ import XCTest
 final class OrderNoteScreen: BaseScreen {
 
     struct ElementStringIDs {
+        static let addButton = "order-note-add-button"
         static let noteField = "order-note-text-field"
         static let emailNoteToggle = "order-note-email-switch"
     }
@@ -22,7 +23,7 @@ final class OrderNoteScreen: BaseScreen {
     }
 
     init() {
-        addButton = XCUIApplication().navigationBars.element(boundBy: 0).buttons.element(boundBy: 1)
+        addButton = XCUIApplication().navigationBars.buttons[ElementStringIDs.addButton]
         noteField = XCUIApplication().textViews[ElementStringIDs.noteField]
         emailNoteToggle = XCUIApplication().cells[ElementStringIDs.emailNoteToggle]
         super.init(element: noteField)

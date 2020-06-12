@@ -109,6 +109,7 @@ private extension ManualTrackingViewController {
                                              action: #selector(primaryButtonTapped))
         navigationItem.setRightBarButton(rightBarButton, animated: false)
         navigationItem.rightBarButtonItem?.isEnabled = false
+        navigationItem.rightBarButtonItem?.accessibilityIdentifier = "add-tracking-add-button"
     }
 
     func configureForCommittingTracking() {

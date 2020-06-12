@@ -4,6 +4,7 @@ import XCTest
 final class AddTrackingScreen: BaseScreen {
 
     struct ElementStringIDs {
+        static let addButton = "add-tracking-add-button"
         static let shippingCarrierField = "add-tracking-shipping-carrier-cell"
         static let trackingNumberField = "add-tracking-enter-tracking-number-field"
         static let shippingDateField = "add-tracking-date-shipped-cell"
@@ -20,7 +21,7 @@ final class AddTrackingScreen: BaseScreen {
     }
 
     init() {
-        addButton = XCUIApplication().navigationBars.element(boundBy: 0).buttons.element(boundBy: 1)
+        addButton = XCUIApplication().navigationBars.buttons[ElementStringIDs.addButton]
         shippingCarrierField = XCUIApplication().cells[ElementStringIDs.shippingCarrierField]
         trackingNumberField = XCUIApplication().textFields[ElementStringIDs.trackingNumberField]
         shippingDateField = XCUIApplication().cells[ElementStringIDs.shippingDateField]

@@ -16,16 +16,13 @@ struct ProductDetailsFactory {
                                onCompletion: @escaping (UIViewController) -> Void) {
         let isEditProductsEnabled = featureFlagService.isFeatureFlagEnabled(.editProducts)
         if product.productType == .simple && isEditProductsEnabled {
-            let action = AppSettingsAction.loadProductsFeatureSwitch { isEditProductsRelease2Enabled in
                 let vc = productDetails(product: product,
                                         presentationStyle: presentationStyle,
                                         currencySettings: currencySettings,
                                         isEditProductsEnabled: isEditProductsEnabled,
-                                        isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                        isEditProductsRelease2Enabled: featureFlagService.isFeatureFlagEnabled(.editProductsRelease2),
                                         isEditProductsRelease3Enabled: featureFlagService.isFeatureFlagEnabled(.editProductsRelease3))
                 onCompletion(vc)
-            }
-            ServiceLocator.stores.dispatch(action)
         } else {
             let vc = productDetails(product: product,
                                     presentationStyle: presentationStyle,

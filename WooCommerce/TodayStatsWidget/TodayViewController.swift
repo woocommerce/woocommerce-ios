@@ -25,7 +25,7 @@ final class TodayViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTableView()
-        sections = [Section(rows: [.todayStats, .selectedWebsite])]
+        sections = [Section(rows: [.todayStats])]
         credentials = WidgetExtensionService.loadCredentials()
         site = WidgetExtensionService.loadSite()
 
@@ -158,8 +158,6 @@ private extension TodayViewController {
         switch cell {
         case let cell as TodayStatsTableViewCell where row == .todayStats:
             configureTodayStats(cell: cell)
-        case let cell as SelectedWebsiteInTodayWidgetTableViewCell where row == .selectedWebsite:
-            configureSelectedWebsite(cell: cell)
         default:
             fatalError()
             break
@@ -167,11 +165,9 @@ private extension TodayViewController {
     }
 
     func configureTodayStats(cell: TodayStatsTableViewCell) {
-        cell.configure(visitors: totalVisitors ?? "-", orders: totalOrders ?? "-", revenue: totalRevenue ?? "-")
-    }
-
-    func configureSelectedWebsite(cell: SelectedWebsiteInTodayWidgetTableViewCell) {
-        cell.configure(site: credentials?.siteAddress ?? "-")
+        if let siteURL = site?.url {
+            cell.configure(visitors: totalVisitors ?? "-", orders: totalOrders ?? "-", revenue: totalRevenue ?? "-", site: siteURL)
+        }
     }
 }
 
@@ -185,14 +181,11 @@ private extension TodayViewController {
 
     enum Row: CaseIterable {
         case todayStats
-        case selectedWebsite
 
         var type: UITableViewCell.Type {
             switch self {
             case .todayStats:
                 return TodayStatsTableViewCell.self
-            case .selectedWebsite:
-                return SelectedWebsiteInTodayWidgetTableViewCell.self
             }
         }
 

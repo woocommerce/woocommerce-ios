@@ -10,19 +10,25 @@ final class TodayStatsTableViewCell: UITableViewCell {
     @IBOutlet private weak var ordersBodyLabel: UILabel!
     @IBOutlet private weak var revenueHeaderLabel: UILabel!
     @IBOutlet private weak var revenueBodyLabel: UILabel!
-
+    @IBOutlet private weak var separator: UIImageView!
+    @IBOutlet private weak var siteLabel: UILabel!
+    
 
     override func awakeFromNib() {
         super.awakeFromNib()
 
+        selectionStyle = .none
         configureHeaderLabels()
         configureBodyLabels()
+        configureSeparator()
+        configureSiteLabel()
     }
 
-    func configure(visitors: String, orders: String, revenue: String) {
+    func configure(visitors: String, orders: String, revenue: String, site: String) {
         visitorsBodyLabel.text = visitors
         ordersBodyLabel.text = orders
         revenueBodyLabel.text = revenue
+        siteLabel.text = site
     }
 }
 
@@ -42,7 +48,14 @@ private extension TodayStatsTableViewCell {
         ordersBodyLabel.applyTitleStyle()
         revenueBodyLabel.applyTitleStyle()
     }
+    
+    func configureSeparator() {
+        separator.backgroundColor = .systemColor(.separator)
+    }
 
+    func configureSiteLabel() {
+        siteLabel.applyFootnoteStyle()
+    }
 }
 
 // Constants

@@ -60,12 +60,14 @@ extension TodayViewController: NCWidgetProviding {
         let network = AlamofireNetwork(credentials: credentials)
 
         let quantity = timeRange.siteVisitStatsQuantity(date: Date(), siteTimezone: site.siteTimezone)
+        
+        /// Calculation of dates
         let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
-        let earliestDate = dateFormatter.string(from: Date().startOfDay(timezone: TimeZone(secondsFromGMT: 0)!))
-        let latestDate = dateFormatter.string(from: Date().endOfDay(timezone: TimeZone(secondsFromGMT: 0)!))
-        print(earliestDate)
-        print(latestDate)
-        //dateFormatter.string(from: timeRange.latestDate(currentDate: Date(), siteTimezone: site.siteTimezone))
+        dateFormatter.timeZone = site.siteTimezone
+        let earliestDate = dateFormatter.string(from: Date().startOfDay(timezone: site.siteTimezone))
+        let latestDate = dateFormatter.string(from: Date().endOfDay(timezone: site.siteTimezone))
+        
+        /// Load Order Stats
         let remoteOrderStats = OrderStatsRemoteV4(network: network)
         remoteOrderStats.loadOrderStats(for: site.siteID, unit: timeRange.intervalGranularity, earliestDateToInclude: earliestDate, latestDateToInclude: latestDate, quantity: quantity) { [weak self] (orderStatsV4, error) in
 
@@ -86,6 +88,7 @@ extension TodayViewController: NCWidgetProviding {
             }
         }
 
+        /// Load Visit Stats
         let remoteVisitStats = SiteVisitStatsRemote(network: network)
         remoteVisitStats.loadSiteVisitorStats(for: site.siteID,
                                               siteTimezone: site.siteTimezone,

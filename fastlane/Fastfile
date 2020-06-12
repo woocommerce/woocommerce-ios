@@ -68,10 +68,27 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
     ios_update_release_notes(new_version: new_version)
     setbranchprotection(repository:GHHELPER_REPO, branch: "release/#{new_version}")
     setfrozentag(repository:GHHELPER_REPO, milestone: new_version)
-
-    ios_localize_project()
-    
     get_prs_list(repository:GHHELPER_REPO, start_tag:"#{old_version}", report_path:"#{File.expand_path('~')}/wcios_prs_list_#{old_version}_#{new_version}.txt")
+    ios_check_beta_deps(podfile:"#{ENV["PROJECT_ROOT_FOLDER"]}Podfile")
+  end
+
+  #####################################################################################
+  # complete_code_freeze
+  # -----------------------------------------------------------------------------------
+  # This lane executes the initial steps planned on code freeze
+  # -----------------------------------------------------------------------------------
+  # Usage:
+  # bundle exec fastlane complete_code_freeze [skip_confirm:<skip confirm>]
+  #
+  # Example:
+  # bundle exec fastlane complete_code_freeze
+  # bundle exec fastlane complete_code_freeze skip_confirm:true
+  #####################################################################################
+  desc "Creates a new release branch from the current develop"
+  lane :complete_code_freeze do | options |
+    ios_completecodefreeze_prechecks(options)
+    ios_localize_project()
+    ios_tag_build()
   end
 
   #####################################################################################

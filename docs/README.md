@@ -66,7 +66,7 @@ store.dispatch(action)
 
 This is quite cumbersome, especially since `Product` has more than 50 properties. 
 
-To help with this, we create `copy()` methods for these objects. These `copy()` methods follow a specific pattern and will make use of the [`CopiableProp` and `NullableCopiableProp` typealiases](../Networking/Networking/Copiable/Copiable.swift).
+To help with this, we generate `copy()` methods for these objects. These `copy()` methods follow a specific pattern and will make use of the [`CopiableProp` and `NullableCopiableProp` typealiases](../Networking/Networking/Copiable/Copiable.swift).
 
 Here is an example implementation on a `Person` `struct`:
 
@@ -75,7 +75,10 @@ struct Person {
     let id: Int
     let name: String
     let address: String?
+}
 
+/// This will be automatically generated
+extension Person {
     func copy(
         id: CopiableProp<Int> = .copy,
         name: CopiableProp<String> = .copy,

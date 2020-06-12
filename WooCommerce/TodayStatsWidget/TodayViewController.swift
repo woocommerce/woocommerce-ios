@@ -144,6 +144,9 @@ extension TodayViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate Conformance
 //
 extension TodayViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return tableView.bounds.size.height
+    }
 }
 
 // MARK: - Cell configuration

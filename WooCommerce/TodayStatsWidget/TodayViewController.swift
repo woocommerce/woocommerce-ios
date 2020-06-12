@@ -47,7 +47,7 @@ extension TodayViewController: NCWidgetProviding {
         completionHandler(NCUpdateResult.newData)
     }
 
-    func syncSiteStats(timeRange: StatsTimeRangeV4,
+    private func syncSiteStats(timeRange: StatsTimeRangeV4,
                             onCompletion: ((Error?) -> Void)? = nil) {
 
         guard let credentials = credentials else {

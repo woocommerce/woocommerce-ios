@@ -1,5 +1,7 @@
 4.5
 -----
+- [**] Products: now you can update product images, product settings, viewing and sharing a product.
+- The WIP banner on the Products tab is now collapsed by default for more vertical space.
 - [*] In Order Details, the item subtotal is now shown on the right side instead of the quantity. The quantity can still be viewed underneath the product name.
 - [*] In Order Details, SKU was removed from the Products List. It is still shown when fulfilling the order or viewing the product details.
 - [*] Polish the loading state on the product variations screen.

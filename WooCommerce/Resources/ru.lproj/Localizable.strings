@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-05-26 12:54:05+0000 */
+/* Translation-Revision-Date: 2020-06-09 14:54:03+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -305,9 +305,6 @@
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Сбор информации";
-
-/* Shown while the app waits for the site creation process to complete. */
-"Completing Signup" = "Завершение регистрации";
 
 /* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
 "Composes a new email message to the billing customer." = "Составить новое электронное письмо для плательщика.";
@@ -1183,6 +1180,9 @@
 /* Title for the first page in the Orders tab. */
 "Processing" = "В обработке";
 
+/* Shown while the app waits for the account process to complete. */
+"Processing Account" = "Обработка учетной записи";
+
 /* Description for Top Performers left column header
    Product section title - Section header title for the product */
 "Product" = "Товар";
@@ -1747,7 +1747,7 @@
 "Terms of Service" = "Условия предоставления услуг";
 
 /* My Store > Settings > Experimental features > Product editing */
-"Test out new product editing functionalities as we get ready to launch them" = "Оцените новые возможности редактирования, пока мы готовим их к запуску";
+"Test out new product editing functionalities as we get ready to launch them" = "Опробуйте новые функции редактирования товаров, перед тем как они станут доступны всем";
 
 /* My Store > Settings > Experimental features > Switch Products */
 "Test out the new products section as we get ready to launch" = "Оцените новый раздел продуктов, который готовится к запуску";
@@ -2200,7 +2200,7 @@
 "We're sorry, we couldn't find results for “%@”" = "Результаты по запросу \"%@\" не найдены.";
 
 /* The info of the Work In Progress top banner on the Products tab when the Products release 2 feature switch is off. */
-"We've added editing functionality to simple products. Keep an eye out for more options soon!" = "Теперь обычные продукты можно редактировать. Следите за новостями, планируется дополнительное расширение возможностей!";
+"We've added editing functionality to simple products. Keep an eye out for more options soon!" = "Мы добавили функцию редактирования обычных товаров. Следите за новостями: планируется дополнительное расширение возможностей.";
 
 /* The info of the Work In Progress top banner on the Products tab when the Products release 2 feature switch is on. */
 "We've added more editing functionalities to products. You can now update images, see previews and sort, filter & share products!" = "Мы добавили дополнительные функции редактирования. Теперь вы можете загружать изображения, фильтровать, сортировать и делиться информацией о товарах! И не забудьте о новой функции предпросмотра.";

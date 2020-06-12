@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-05-27 18:54:07+0000 */
+/* Translation-Revision-Date: 2020-06-11 16:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -305,9 +305,6 @@
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Bilgi topla";
-
-/* Shown while the app waits for the site creation process to complete. */
-"Completing Signup" = "Kayıt tamamlanıyor";
 
 /* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
 "Composes a new email message to the billing customer." = "Müşteriye yeni bir e-posta mesajı oluşturur.";
@@ -1182,6 +1179,9 @@
 
 /* Title for the first page in the Orders tab. */
 "Processing" = "İşlemde";
+
+/* Shown while the app waits for the account process to complete. */
+"Processing Account" = "Hesap İşleniyor";
 
 /* Description for Top Performers left column header
    Product section title - Section header title for the product */

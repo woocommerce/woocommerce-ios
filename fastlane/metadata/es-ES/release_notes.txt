@@ -1,4 +1,12 @@
-* Puedes activar y desactivar Products M2 Features para productos simples en Ajustes > Funciones experimentales. Con Products M2 Features, puedes modificar las imágenes, las descripciones cortas, la visualización, el uso compartido y la configuración del producto. En la configuración del producto se incluyen el estado, la visibilidad, la visibilidad del catálogo, el slug, el recibo de compra y el menú del pedido.
-* Ahora, puedes editar y guardar información en las pestañas Detalles del pedido o Más destacados. También hemos mejorado la accesibilidad optimizando la compatibilidad con VoiceOver en la configuración del precio del producto.
-* Hemos implementado algunas mejoras visuales: En Detalles del pedido, la tarjeta de pago ahora se muestra después de las tarjetas de Productos y Productos reembolsados. El banner WIP de la pestaña Productos ahora está oculto por defecto. ¡Por fin tenemos más espacio vertical!
-* Ya no ofrecemos soporte para iOS 11 y las versiones anteriores.
+Seguimos añadiendo funciones a la edición de productos. Busca mejoras de imagen y gestión de proyectos, dirígete a "Ajustes", en la pestaña Mi tienda, para consultar más información y activar nuevas funciones.
+
+Las notificaciones push y las insignias de actualización funcionan mejor juntas. La pestaña Reseñas ya no muestra una insignia tras recibir una notificación push de nuevo pedido. Además, al dirigirte a la pestaña Pedidos y Reseñas, ahora se borra el número de la insignia (en función de los tipos de notificaciones).
+
+Ahora, los avisos son un poco menos llamativos. Ahora, al editar productos, el aviso "descartar cambios" solo aparece si has eliminado imágenes, y no cuando sales de las pantallas de detalles de ajustes de producto con un campo de texto (slug, recibo de compra y pedido de menú).
+
+También hemos corregido pequeños errores de la interfaz de usuario:
+- El nombre de producto se muestra en la barra de navegación de detalles de producto, así que está siempre visible.
+- Hemos solucionado un problema que provocaba que los detalles de producto se desplazaran hacia la parte inferior en modo horizontal tras descartar el teclado.
+- La carga pendiente de imágenes será visible tras editar imágenes del producto en los detalles del producto.
+- La acción "Ver producto en tienda" solo se muestra si se publica el producto.
+- Ahora se muestran correctamente los códigos HTML en el método de envío.

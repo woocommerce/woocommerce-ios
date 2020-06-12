@@ -1,4 +1,12 @@
-* Anda kini dapat mengaktifkan/menonaktifkan Fitur Products M2 untuk produk sederhana di Pengaturan > Fitur Eksperimental. Products M2 menampilkan kemampuan untuk memperbarui gambar produk, deskripsi singkat produk, penampilan, pembagian, dan pengaturan produk (Pengaturan produk meliputi status, visibilitas, visibilitas katalog, slug, catatan pembelian, dan urutan menu.)
-* Anda kini dapat menyunting dan menyimpan detail di tab Detail pesanan atau Produk Paling Laku. Kami juga meningkatkan aksesibilitas dengan dukungan VoiceOver yang lebih baik untuk pengaturan Harga Produk.
-* Kami membuat beberapa penyempurnaan visual: Pada Detail Pesanan, kartu Pembayaran kini muncul langsung setelah kartu Produk dan Produk yang Dikembalikan. Pada pengaturan asal yang terkini, spanduk WIP di tab Produk dilenyapkan. Yey, ruang vertikalnya semakin luas!
-* Kami meniadakan dukungan untuk iOS 11 ke bawah.
+Kami terus menambahkan fungsi pada proses penyuntingan produk. Perhatikan peningkatan pada manajemen gambar dan produk — buka “Pengaturan” pada tab My Store untuk mempelajari lebih lanjut dan mengaktifkan fitur baru!
+
+Pemberitahuan otomatis dan badge pembaruan akan bekerja lebih baik jika dipadukan. Tab Tinjauan tidak lagi menampilkan badge setelah Anda menerima pemberitahuan otomatis untuk pesanan baru dan apabila Anda menuju tab Pesanan dan/atau Tinjauan, jumlah badge akan kembali menjadi nol (tergantung jenis pemberitahuan).
+
+Pesan prompt kini menjadi tidak terlalu mengganggu. Ketika menyunting produk, pesan prompt "hapus perubahan" kini hanya akan muncul apabila Anda sudah menghapus gambar dan bukan ketika Anda meninggalkan layar detail pengaturan produk yang memiliki bidang teks (slug, nota pembelian, dan pesanan menu).
+
+Kami juga memperbaiki beberapa kekurangan pada UI:
+- Nama produk ditampilkan pada bar navigasi detail produk, sehingga akan selalu terlihat.
+- Kami memperbaiki masalah yang menyebabkan detail produk tidak bisa digulirkan sampai ke bawah pada mode lanskap setelah keyboard ditutup.
+- Gambar yang menunggu untuk diunggah akan terlihat setelah penyuntingan gambar produk dari detail produk.
+- Tindakan “Lihat produk di toko” ditampilkan hanya jika produk diterbitkan.
+- Kode HTML pada metode pengiriman kini telah ditampilkan dengan benar.

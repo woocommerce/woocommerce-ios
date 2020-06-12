@@ -1,4 +1,12 @@
-* Artık Ayarlar > Deneysel Özellikler’de basit ürünler için Ürünler M2 Özelliklerini açıp kapatabilirsiniz. Ürünler M2; ürün görüntülerini, ürün kısa açıklamasını, ürün görüntülemeyi, paylaşmayı ve ayarları (Ürün ayarları durum, görünürlük, katalog görünürlüğü, kısaltma, satın alma notu ve menü sırasını içerir) güncelleme imkanı sunar.
-* Artık Sipariş ayrıntıları veya En İyiler sekmelerinde ayrıntıları düzenleyebilir ve kaydedebilirsiniz. Ayrıca Ürün Fiyatı ayarları için daha iyi VoiceOver desteğiyle erişilebilirliği güncelledik.
-* Bazı görsel iyileştirmeler yaptık: Sipariş Ayrıntıları ekranında Ödeme kartı artık Ürünler ve İade Edilen Ürünler kartlarının hemen ardından görünüyor. Ürünler sekmesindeki Çalışma Devam Ediyor banner’ı artık varsayılan olarak daraltılmış durumda. Yaşasın daha fazla dikey alan!
-* iOS 11 ve daha düşük sürümler için desteği bıraktık.
+Ürün düzenlemeye işlev eklemeye devam ediyoruz. Görsel ve ürün yönetimindeki iyileştirmelere bakın: Daha fazla bilgi edinmek ve yeni özellikleri açmak için Mağazam sekmesindeki “Ayarlar” bölümüne gidin.
+
+Anında bildirimler ve güncelleme rozetleri birlikte daha iyi çalışıyor. Artık yeni bir sipariş anında bildirimi aldığınızda Yorumlar sekmesinde rozet gösterilmiyor ve Siparişler ve/veya Yorumlar sekmesine gidildiğinde rozet numarası temizleniyor (bildirim sayısına bağlı olarak).
+
+Titreşimler daha az titreşiyor. Ürünleri düzenlerken “değişiklikleri iptal et” istemi artık metin alanı (kısaltma, satın alma notu ve menü sıralaması) olan ürün ayarları ayrıntı ekranlarından çıkarken değil, yalnızca görselleri sildiyseniz görüntüleniyor.
+
+Ayrıca bazı kullanıcı arayüzü kusurlarını da giderdik:
+- Ürün adı, ürün ayrıntıları gezinme çubuğunda görüntüleniyor, dolayısıyla her zaman görünür halde.
+- Yatay modda klavye kapatıldıktan sonra ürün ayrıntılarının en alta kadar kaydırılmasını önleyen bir sorunu düzelttik.
+- Yüklenmeyi bekleyen görseller, ürün ayrıntılarında ürün görselleri düzenlendikten sonra görünür olacak.
+- “Ürünü mağazada görüntüle” eylemi yalnızca ürün yayımlandıysa görüntüleniyor.
+- Gönderim yöntemindeki HTML kodları artık düzgün bir biçimde görüntüleniyor.

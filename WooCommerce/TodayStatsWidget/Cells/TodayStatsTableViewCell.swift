@@ -12,7 +12,7 @@ final class TodayStatsTableViewCell: UITableViewCell {
     @IBOutlet private weak var revenueBodyLabel: UILabel!
     @IBOutlet private weak var separator: UIImageView!
     @IBOutlet private weak var siteLabel: UILabel!
-    
+
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -48,7 +48,7 @@ private extension TodayStatsTableViewCell {
         ordersBodyLabel.applyTitleStyle()
         revenueBodyLabel.applyTitleStyle()
     }
-    
+
     func configureSeparator() {
         separator.backgroundColor = .systemColor(.separator)
     }

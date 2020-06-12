@@ -26,8 +26,7 @@ final class TodayViewController: UIViewController {
         super.viewDidLoad()
         configureTableView()
         sections = [Section(rows: [.todayStats])]
-        credentials = WidgetExtensionService.loadCredentials()
-        site = WidgetExtensionService.loadSite()
+        retrieveSiteConfiguration()
 
         syncSiteStats(timeRange: .today)
     }
@@ -46,8 +45,20 @@ extension TodayViewController: NCWidgetProviding {
 
         completionHandler(NCUpdateResult.newData)
     }
+}
 
-    private func syncSiteStats(timeRange: StatsTimeRangeV4,
+
+// MARK: - Private Extension
+//
+private extension TodayViewController {
+
+    func retrieveSiteConfiguration() {
+        credentials = WidgetExtensionService.loadCredentials()
+        site = WidgetExtensionService.loadSite()
+    }
+
+    // Sync remotely all the stats showed in the widget
+    func syncSiteStats(timeRange: StatsTimeRangeV4,
                             onCompletion: ((Error?) -> Void)? = nil) {
 
         guard let credentials = credentials else {
@@ -60,13 +71,13 @@ extension TodayViewController: NCWidgetProviding {
         let network = AlamofireNetwork(credentials: credentials)
 
         let quantity = timeRange.siteVisitStatsQuantity(date: Date(), siteTimezone: site.siteTimezone)
-        
+
         /// Calculation of dates
         let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
         dateFormatter.timeZone = site.siteTimezone
         let earliestDate = dateFormatter.string(from: Date().startOfDay(timezone: site.siteTimezone))
         let latestDate = dateFormatter.string(from: Date().endOfDay(timezone: site.siteTimezone))
-        
+
         /// Load Order Stats
         let remoteOrderStats = OrderStatsRemoteV4(network: network)
         remoteOrderStats.loadOrderStats(for: site.siteID, unit: timeRange.intervalGranularity, earliestDateToInclude: earliestDate, latestDateToInclude: latestDate, quantity: quantity) { [weak self] (orderStatsV4, error) in
@@ -104,6 +115,7 @@ extension TodayViewController: NCWidgetProviding {
         }
     }
 }
+
 
 // MARK: - View Configuration
 //

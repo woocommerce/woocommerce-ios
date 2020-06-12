@@ -9,7 +9,7 @@ final class TodayViewController: UIViewController {
 
     /// Table Sections to be rendered
     ///
-    private var sections: [Section] = [] {
+    private var sections: [Section] = [Section(rows: [])] {
            didSet {
                tableView.reloadData()
            }
@@ -63,10 +63,7 @@ private extension TodayViewController {
     func fetchData(completionHandler: (@escaping (NCUpdateResult) -> Void)) {
         guard isConfigured else {
             DDLogError("Today Widget: unable to update because is not configured.")
-
-            DispatchQueue.main.async { [weak self] in
-                self?.tableView.reloadData()
-            }
+            sections = [Section(rows: [.genericMessage])]
             completionHandler(.failed)
             return
         }
@@ -74,7 +71,7 @@ private extension TodayViewController {
         syncSiteStats(timeRange: .today) { [weak self] (result) in
             switch result {
             case .failed:
-                self?.sections = []
+                self?.sections = [Section(rows: [.genericMessage])]
                 completionHandler(.failed)
                 return
             case .newData:
@@ -140,8 +137,10 @@ private extension TodayViewController {
         group.enter()
         let remoteOrderStats = OrderStatsRemoteV4(network: network)
         remoteOrderStats.loadOrderStats(for: site.siteID, unit: timeRange.intervalGranularity, earliestDateToInclude: earliestDate, latestDateToInclude: latestDate, quantity: quantity) { (orderStatsV4, error) in
-
             guard error == nil else {
+                if let error = error as? DotcomError, error == .noRestRoute {
+
+                }
                 group.leave()
                 return
             }
@@ -229,6 +228,8 @@ private extension TodayViewController {
         switch cell {
         case let cell as TodayStatsTableViewCell where row == .todayStats:
             configureTodayStats(cell: cell)
+        case let cell as BasicTableViewCell where row == .genericMessage:
+            configureGenericMessage(cell: cell)
         default:
             fatalError()
             break
@@ -239,6 +240,12 @@ private extension TodayViewController {
         if let siteURL = site?.url {
             cell.configure(visitors: statsData?.totalVisitorsReadable(), orders: statsData?.totalOrdersReadable(), revenue: statsData?.totalRevenueReadable(), site: siteURL)
         }
+    }
+
+    func configureGenericMessage(cell: BasicTableViewCell) {
+        cell.textLabel?.numberOfLines = 0
+        cell.backgroundColor = .clear
+        cell.textLabel?.text = LocalizedText.analyticsNotAvailable
     }
 }
 
@@ -252,11 +259,14 @@ private extension TodayViewController {
 
     enum Row: CaseIterable {
         case todayStats
+        case genericMessage
 
         var type: UITableViewCell.Type {
             switch self {
             case .todayStats:
                 return TodayStatsTableViewCell.self
+            case .genericMessage:
+                return BasicTableViewCell.self
             }
         }
 
@@ -265,6 +275,22 @@ private extension TodayViewController {
         }
     }
 }
+
+// MARK: - Constants
+//
+private extension TodayViewController {
+    enum LocalizedText {
+        static let analyticsNotAvailable = NSLocalizedString("Store analytics not available! Please upgrade to the latest version of WooCommerce to view your store analytics.",
+                                                             comment: "Store analytics error in Today Stats Widget")
+        static let login = NSLocalizedString("Please log in to the WooCommerce app to add a widget.", comment: "Login error in Today Stats Widget")
+    }
+    enum Errors {
+        case statsV4NotAvailable
+        case userNotLogged
+        case genericError
+    }
+}
+
 
 // Stats Data struct
 //

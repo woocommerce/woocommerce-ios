@@ -7,9 +7,7 @@ private struct ElementStringIDs {
     static let nextButton = "Login Email Next Button"
     static let siteAddressButton = "Self Hosted Login Button"
     static let helpButton = "Help Button"
-    static let contactSupport = "Contact Support"
     static let googleLoginButton = "Log in with Google"
-    static let dismissButton = "Dismiss"
     static let backToWelcomeScreenButton = "Back Button"
 }
 
@@ -19,10 +17,8 @@ final class LoginEmailScreen: BaseScreen {
     private let nextButton: XCUIElement
     private let siteAddressButton: XCUIElement
     private let helpButton: XCUIElement
-    private let contactSupport: XCUIElement
     private let googleLoginButton: XCUIElement
     private let backToWelcomeScreenButton: XCUIElement
-    private let dismissButton: XCUIElement
 
     init() {
         let app = XCUIApplication()
@@ -31,12 +27,13 @@ final class LoginEmailScreen: BaseScreen {
         nextButton = app.buttons[ElementStringIDs.nextButton]
         siteAddressButton = app.buttons[ElementStringIDs.siteAddressButton]
         helpButton = app.buttons[ElementStringIDs.helpButton]
-        contactSupport = app.cells[ElementStringIDs.contactSupport]
         googleLoginButton = app.buttons[ElementStringIDs.googleLoginButton]
         backToWelcomeScreenButton = app.buttons[ElementStringIDs.backToWelcomeScreenButton]
-        dismissButton = app.buttons[ElementStringIDs.dismissButton]
 
         super.init(element: emailTextField)
+        XCTAssert(emailTextField.waitForExistence(timeout:3))
+        XCTAssert(googleLoginButton.waitForExistence(timeout: 3))
+        XCTAssert(emailTextField.waitForExistence(timeout: 3))
     }
 
     func proceedWith(email: String) -> LinkOrPasswordScreen {
@@ -62,34 +59,13 @@ final class LoginEmailScreen: BaseScreen {
         let emailTextField = XCUIApplication().textFields[ElementStringIDs.emailTextField]
         return emailTextField.value != nil
     }
-
-    func openHelpMenu() -> Bool {
+    
+    func openHelpMenu() -> HelpScreen {
         helpButton.tap()
-        let contactSupport = XCUIApplication().cells[ElementStringIDs.contactSupport]
-        return contactSupport.exists && contactSupport.isHittable
+        return HelpScreen()
     }
 
-    func closeHelpMenu() -> LoginEmailScreen {
-        dismissButton.tap()
-        return LoginEmailScreen()
-
-    }
-    func emailLoginOption() ->Bool {
-        let emailLogin = XCUIApplication().textFields[ElementStringIDs.emailTextField]
-        return emailLogin.exists && emailLogin.isHittable
-    }
-
-    func siteAddressLoginOption() -> Bool {
-        let siteAddressLogin = XCUIApplication().buttons[ElementStringIDs.siteAddressButton]
-        return siteAddressLogin.exists && siteAddressLogin.isHittable
-    }
-
-    func googleLoginOption() -> Bool {
-        let googleLogin = XCUIApplication().buttons[ElementStringIDs.googleLoginButton]
-        return googleLogin.exists && googleLoginButton.isHittable
-    }
-
-    func BackToWelcomeScreen() -> WelcomeScreen {
+    func goBackToWelcomeScreen() -> WelcomeScreen {
         backToWelcomeScreenButton.tap()
         return WelcomeScreen()
     }

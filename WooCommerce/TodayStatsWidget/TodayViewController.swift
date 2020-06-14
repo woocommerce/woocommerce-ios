@@ -26,7 +26,13 @@ final class TodayViewController: UIViewController {
         return credentials != nil && site != nil
     }
 
+    /// Stats data, downloaded every time the widget appear
+    ///
     private var statsData: StatsData?
+    
+    /// Errors. It will be restored every time the widget appear
+    ///
+    private var error: Errors? = nil
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,7 +51,6 @@ extension TodayViewController: NCWidgetProviding {
         // If there's no update required, use NCUpdateResult.NoData
         // If there's an update, use NCUpdateResult.NewData
 
-        retrieveSiteConfiguration()
         fetchData(completionHandler: completionHandler)
     }
 }
@@ -61,9 +66,11 @@ private extension TodayViewController {
     }
 
     func fetchData(completionHandler: (@escaping (NCUpdateResult) -> Void)) {
+        retrieveSiteConfiguration()
         guard isConfigured else {
             DDLogError("Today Widget: unable to update because is not configured.")
-            sections = [Section(rows: [.genericMessage])]
+            error = .userNotLogged
+            sections = [Section(rows: [.errorMessage])]
             completionHandler(.failed)
             return
         }
@@ -71,7 +78,7 @@ private extension TodayViewController {
         syncSiteStats(timeRange: .today) { [weak self] (result) in
             switch result {
             case .failed:
-                self?.sections = [Section(rows: [.genericMessage])]
+                self?.sections = [Section(rows: [.errorMessage])]
                 completionHandler(.failed)
                 return
             case .newData:
@@ -113,33 +120,19 @@ private extension TodayViewController {
         let latestDate = dateFormatter.string(from: Date().endOfDay(timezone: site.siteTimezone))
 
         let quantity = timeRange.siteVisitStatsQuantity(date: Date(), siteTimezone: site.siteTimezone)
-
+        
         let group = DispatchGroup()
-
-        /// Load Visit Stats
-        group.enter()
-        let remoteVisitStats = SiteVisitStatsRemote(network: network)
-        remoteVisitStats.loadSiteVisitorStats(for: site.siteID,
-                                              siteTimezone: site.siteTimezone,
-                                    unit: timeRange.siteVisitStatsGranularity,
-                                    latestDateToInclude: Date().endOfDay(timezone: site.siteTimezone),
-                                    quantity: quantity) { (siteVisitStats, error) in
-                                        guard error == nil else {
-                                            group.leave()
-                                            return
-                                        }
-
-                                        tempStats.totalVisitors = siteVisitStats?.totalVisitors
-                                        group.leave()
-        }
 
         /// Load Order Stats
         group.enter()
         let remoteOrderStats = OrderStatsRemoteV4(network: network)
-        remoteOrderStats.loadOrderStats(for: site.siteID, unit: timeRange.intervalGranularity, earliestDateToInclude: earliestDate, latestDateToInclude: latestDate, quantity: quantity) { (orderStatsV4, error) in
+        remoteOrderStats.loadOrderStats(for: site.siteID, unit: timeRange.intervalGranularity, earliestDateToInclude: earliestDate, latestDateToInclude: latestDate, quantity: quantity) { [weak self] (orderStatsV4, error) in
             guard error == nil else {
                 if let error = error as? DotcomError, error == .noRestRoute {
-
+                    self?.error = .statsV4NotAvailable
+                }
+                else {
+                    self?.error = .errorFetchingStats
                 }
                 group.leave()
                 return
@@ -152,6 +145,24 @@ private extension TodayViewController {
 
             tempStats.totalRevenue = orderStatsV4?.totals.grossRevenue
             group.leave()
+        }
+        
+        /// Load Visit Stats
+        group.enter()
+        let remoteVisitStats = SiteVisitStatsRemote(network: network)
+        remoteVisitStats.loadSiteVisitorStats(for: site.siteID,
+                                              siteTimezone: site.siteTimezone,
+                                    unit: timeRange.siteVisitStatsGranularity,
+                                    latestDateToInclude: Date().endOfDay(timezone: site.siteTimezone),
+                                    quantity: quantity) { [weak self] (siteVisitStats, error) in
+                                        guard error == nil else {
+                                            self?.error = .errorFetchingStats
+                                            group.leave()
+                                            return
+                                        }
+
+                                        tempStats.totalVisitors = siteVisitStats?.totalVisitors
+                                        group.leave()
         }
 
         group.notify(queue: .main) { [weak self] in
@@ -228,7 +239,7 @@ private extension TodayViewController {
         switch cell {
         case let cell as TodayStatsTableViewCell where row == .todayStats:
             configureTodayStats(cell: cell)
-        case let cell as BasicTableViewCell where row == .genericMessage:
+        case let cell as BasicTableViewCell where row == .errorMessage:
             configureGenericMessage(cell: cell)
         default:
             fatalError()
@@ -245,7 +256,17 @@ private extension TodayViewController {
     func configureGenericMessage(cell: BasicTableViewCell) {
         cell.textLabel?.numberOfLines = 0
         cell.backgroundColor = .clear
-        cell.textLabel?.text = LocalizedText.analyticsNotAvailable
+        
+        switch error {
+        case .statsV4NotAvailable:
+            cell.textLabel?.text = LocalizedText.analyticsNotAvailable
+        case .errorFetchingStats:
+            cell.textLabel?.text = LocalizedText.errorFetchingStats
+        case .userNotLogged:
+            cell.textLabel?.text = LocalizedText.missingCredentials
+        case .none:
+            cell.textLabel?.text = LocalizedText.genericError
+        }
     }
 }
 
@@ -259,13 +280,13 @@ private extension TodayViewController {
 
     enum Row: CaseIterable {
         case todayStats
-        case genericMessage
+        case errorMessage
 
         var type: UITableViewCell.Type {
             switch self {
             case .todayStats:
                 return TodayStatsTableViewCell.self
-            case .genericMessage:
+            case .errorMessage:
                 return BasicTableViewCell.self
             }
         }
@@ -279,22 +300,27 @@ private extension TodayViewController {
 // MARK: - Constants
 //
 private extension TodayViewController {
+    
     enum LocalizedText {
         static let analyticsNotAvailable = NSLocalizedString("Store analytics not available! Please upgrade to the latest version of WooCommerce to view your store analytics.",
                                                              comment: "Store analytics error in Today Stats Widget")
-        static let login = NSLocalizedString("Please log in to the WooCommerce app to add a widget.", comment: "Login error in Today Stats Widget")
+        static let errorFetchingStats = NSLocalizedString("There was an error trying to fetch stats.", comment: "Error while fetching stats in Today Stats Widget")
+        static let missingCredentials = NSLocalizedString("Please log in to the WooCommerce app to add a widget.", comment: "Login error in Today Stats Widget")
+        static let genericError = NSLocalizedString("Something goes wrong.", comment: "Generic error in Today Stats Widget")
     }
+    
     enum Errors {
         case statsV4NotAvailable
+        case errorFetchingStats
         case userNotLogged
-        case genericError
     }
 }
 
 
-// Stats Data struct
+// Stats Data struct, which needs to be stored in the future.
+// Useful for loading cached data when the widget is loading new stats.
 //
-struct StatsData: Equatable {
+struct StatsData: Equatable, Codable {
     var totalVisitors: Int?
     var totalOrders: Int?
     var totalRevenue: Decimal?

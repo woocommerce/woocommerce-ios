@@ -15,7 +15,13 @@ assignees: ""
 ### Steps to reproduce the behavior
 
 
-##### Tested on [device], iOS [version], WooCommerce app [version]
+#### Mobile Environment
+
+Please include:
+
+- Device: 
+- iOS version: 
+- WooCommerce app version:
 
 
 ##### If you have tried any of the following troubleshooting steps already, please mark completed items with an [x]):**

@@ -31,7 +31,7 @@ final class LoginEmailScreen: BaseScreen {
         backToWelcomeScreenButton = app.buttons[ElementStringIDs.backToWelcomeScreenButton]
 
         super.init(element: emailTextField)
-        XCTAssert(emailTextField.waitForExistence(timeout:3))
+        XCTAssert(emailTextField.waitForExistence(timeout: 3))
         XCTAssert(googleLoginButton.waitForExistence(timeout: 3))
         XCTAssert(emailTextField.waitForExistence(timeout: 3))
     }
@@ -59,7 +59,7 @@ final class LoginEmailScreen: BaseScreen {
         let emailTextField = XCUIApplication().textFields[ElementStringIDs.emailTextField]
         return emailTextField.value != nil
     }
-    
+
     func openHelpMenu() -> HelpScreen {
         helpButton.tap()
         return HelpScreen()

@@ -126,7 +126,11 @@ private extension TodayViewController {
         /// Load Order Stats
         group.enter()
         let remoteOrderStats = OrderStatsRemoteV4(network: network)
-        remoteOrderStats.loadOrderStats(for: site.siteID, unit: timeRange.intervalGranularity, earliestDateToInclude: earliestDate, latestDateToInclude: latestDate, quantity: quantity) { [weak self] (orderStatsV4, error) in
+        remoteOrderStats.loadOrderStats(for: site.siteID,
+                                        unit: timeRange.intervalGranularity,
+                                        earliestDateToInclude: earliestDate,
+                                        latestDateToInclude: latestDate,
+                                        quantity: quantity) { [weak self] (orderStatsV4, error) in
             guard error == nil else {
                 if let error = error as? DotcomError, error == .noRestRoute {
                     self?.error = .statsV4NotAvailable
@@ -249,7 +253,10 @@ private extension TodayViewController {
 
     func configureTodayStats(cell: TodayStatsTableViewCell) {
         if let siteURL = site?.url {
-            cell.configure(visitors: statsData?.totalVisitorsReadable(), orders: statsData?.totalOrdersReadable(), revenue: statsData?.totalRevenueReadable(), site: siteURL)
+            cell.configure(visitors: statsData?.totalVisitorsReadable(),
+                           orders: statsData?.totalOrdersReadable(),
+                           revenue: statsData?.totalRevenueReadable(),
+                           site: siteURL)
         }
     }
 
@@ -302,10 +309,13 @@ private extension TodayViewController {
 private extension TodayViewController {
 
     enum LocalizedText {
-        static let analyticsNotAvailable = NSLocalizedString("Store analytics not available! Please upgrade to the latest version of WooCommerce to view your store analytics.",
-                                                             comment: "Store analytics error in Today Stats Widget")
-        static let errorFetchingStats = NSLocalizedString("There was an error trying to fetch stats.", comment: "Error while fetching stats in Today Stats Widget")
-        static let missingCredentials = NSLocalizedString("Please log in to the WooCommerce app to add a widget.", comment: "Login error in Today Stats Widget")
+        static let analyticsNotAvailable = NSLocalizedString(
+            "Store analytics not available! Please upgrade to the latest version of WooCommerce to view your store analytics.",
+            comment: "Store analytics error in Today Stats Widget")
+        static let errorFetchingStats = NSLocalizedString("There was an error trying to fetch stats.",
+                                                          comment: "Error while fetching stats in Today Stats Widget")
+        static let missingCredentials = NSLocalizedString("Please log in to the WooCommerce app to add a widget.",
+                                                          comment: "Login error in Today Stats Widget")
         static let genericError = NSLocalizedString("Something goes wrong.", comment: "Generic error in Today Stats Widget")
     }
 

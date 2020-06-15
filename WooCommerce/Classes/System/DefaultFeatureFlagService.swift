@@ -1,6 +1,8 @@
 struct DefaultFeatureFlagService: FeatureFlagService {
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
         switch featureFlag {
+        case .barcodeScanner:
+            return BuildConfiguration.current == .localDeveloper || BuildConfiguration.current == .alpha
         case .editProducts:
             return true
         case .editProductsRelease2:

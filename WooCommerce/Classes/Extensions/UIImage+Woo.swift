@@ -337,6 +337,12 @@ extension UIImage {
         return UIImage.gridicon(.spam)
     }
 
+    /// Scan Icon
+    ///
+    static var scanImage: UIImage {
+        return UIImage(named: "icon-scan")!
+    }
+
     /// Returns a star icon with the given size
     ///
     /// - Parameters:

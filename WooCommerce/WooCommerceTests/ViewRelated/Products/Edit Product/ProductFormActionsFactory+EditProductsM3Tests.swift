@@ -86,6 +86,26 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
+
+    func testViewModelForAffiliateProduct() {
+        // Arrange
+        let product = Fixtures.affiliateProduct
+
+        // Action
+        let factory = ProductFormActionsFactory(product: product,
+                                                isEditProductsRelease2Enabled: true,
+                                                isEditProductsRelease3Enabled: true)
+
+        // Assert
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
+        XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
+
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .externalURL]
+        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
+
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editSKU, .editCategories, .editBriefDescription]
+        XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
+    }
 }
 
 private extension ProductFormActionsFactory_EditProductsM3Tests {
@@ -121,5 +141,11 @@ private extension ProductFormActionsFactory_EditProductsM3Tests {
                                                                      dimensions: ProductDimensions(length: "", width: "", height: ""), weight: "3",
                                                                      virtual: true,
                                                                      categories: [category])
+        // Affiliate product, missing external URL/sku/inventory/brief description/categories
+        static let affiliateProduct = MockProduct().product(briefDescription: "",
+                                                            externalURL: "",
+                                                            productType: .affiliate,
+                                                            sku: "",
+                                                            categories: [])
     }
 }

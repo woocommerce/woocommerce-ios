@@ -6,6 +6,9 @@ private struct ElementStringIDs {
     static let emailTextField = "Login Email Address"
     static let nextButton = "Login Email Next Button"
     static let siteAddressButton = "Self Hosted Login Button"
+    static let helpButton = "Help Button"
+    static let googleLoginButton = "Log in with Google"
+    static let backToWelcomeScreenButton = "Back Button"
 }
 
 final class LoginEmailScreen: BaseScreen {
@@ -13,6 +16,9 @@ final class LoginEmailScreen: BaseScreen {
     private let emailTextField: XCUIElement
     private let nextButton: XCUIElement
     private let siteAddressButton: XCUIElement
+    private let helpButton: XCUIElement
+    private let googleLoginButton: XCUIElement
+    private let backToWelcomeScreenButton: XCUIElement
 
     init() {
         let app = XCUIApplication()
@@ -20,8 +26,14 @@ final class LoginEmailScreen: BaseScreen {
         emailTextField = app.textFields[ElementStringIDs.emailTextField]
         nextButton = app.buttons[ElementStringIDs.nextButton]
         siteAddressButton = app.buttons[ElementStringIDs.siteAddressButton]
+        helpButton = app.buttons[ElementStringIDs.helpButton]
+        googleLoginButton = app.buttons[ElementStringIDs.googleLoginButton]
+        backToWelcomeScreenButton = app.buttons[ElementStringIDs.backToWelcomeScreenButton]
 
         super.init(element: emailTextField)
+        XCTAssert(emailTextField.waitForExistence(timeout: 3))
+        XCTAssert(googleLoginButton.waitForExistence(timeout: 3))
+        XCTAssert(emailTextField.waitForExistence(timeout: 3))
     }
 
     func proceedWith(email: String) -> LinkOrPasswordScreen {
@@ -46,5 +58,15 @@ final class LoginEmailScreen: BaseScreen {
     static func isEmailEntered() -> Bool {
         let emailTextField = XCUIApplication().textFields[ElementStringIDs.emailTextField]
         return emailTextField.value != nil
+    }
+
+    func openHelpMenu() -> HelpScreen {
+        helpButton.tap()
+        return HelpScreen()
+    }
+
+    func goBackToWelcomeScreen() -> WelcomeScreen {
+        backToWelcomeScreenButton.tap()
+        return WelcomeScreen()
     }
 }

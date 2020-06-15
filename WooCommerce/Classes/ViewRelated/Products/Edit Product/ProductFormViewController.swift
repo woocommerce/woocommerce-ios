@@ -284,6 +284,9 @@ private extension ProductFormViewController {
                                                                             self?.editCategories()
                                                                         case .editBriefDescription:
                                                                             self?.editBriefDescription()
+                                                                        case .editSKU:
+                                                                            // TODO-2200: implement SKU editing action
+                                                                            break
                                                                         }
                                                                     }
         }
@@ -534,6 +537,14 @@ extension ProductFormViewController: UITableViewDelegate {
             case .briefDescription:
                 ServiceLocator.analytics.track(.productDetailViewShortDescriptionTapped)
                 editBriefDescription()
+            case .externalURL:
+                // TODO-2000 Edit Product M3 analytics
+                // TODO-2200: implement external URL editing action
+                break
+            case .sku:
+                // TODO-2000 Edit Product M3 analytics
+                // TODO-2200: implement SKU editing action
+                break
             }
         }
     }

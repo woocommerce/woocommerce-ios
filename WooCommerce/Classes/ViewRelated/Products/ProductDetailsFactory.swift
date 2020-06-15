@@ -15,7 +15,8 @@ struct ProductDetailsFactory {
                                featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
                                onCompletion: @escaping (UIViewController) -> Void) {
         let isEditProductsEnabled = featureFlagService.isFeatureFlagEnabled(.editProducts)
-        if product.productType == .simple && isEditProductsEnabled {
+        let isProductTypeEditable = product.productType == .simple || product.productType == .affiliate
+        if isProductTypeEditable && isEditProductsEnabled {
                 let vc = productDetails(product: product,
                                         presentationStyle: presentationStyle,
                                         currencySettings: currencySettings,

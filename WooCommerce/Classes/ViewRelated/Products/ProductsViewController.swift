@@ -219,7 +219,7 @@ private extension ProductsViewController {
             assertionFailure("No valid site ID for Products tab")
             return
         }
-        let viewController = ProductStockScannerViewController(siteID: siteID)
+        let viewController = ProductInventoryScannerViewController(siteID: siteID)
         // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
         viewController.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(viewController, animated: true)
@@ -266,6 +266,8 @@ private extension ProductsViewController {
                     "Scans barcodes that are associated with a product SKU for stock management.",
                     comment: "VoiceOver accessibility hint, informing the user the button can be used to scan products."
                 )
+
+//                button.imageInsets = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: -5)
 
                 return button
             }()

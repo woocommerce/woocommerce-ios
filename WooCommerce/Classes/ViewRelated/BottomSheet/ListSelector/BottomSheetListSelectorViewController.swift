@@ -6,14 +6,14 @@ import WordPressUI
 final class BottomSheetListSelectorViewController<Command: BottomSheetListSelectorCommand, Model, Cell>:
 UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model == Model, Command.Cell == Cell {
     private let viewProperties: BottomSheetListSelectorViewProperties
-    private let command: Command
+    private var command: Command
     private let onDismiss: (_ selected: Model?) -> Void
 
     private let rowType = Cell.self
 
     private let estimatedSectionHeight = CGFloat(44)
 
-    @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private(set) weak var tableView: UITableView!
 
     /// Used for calculating the full content height in `DrawerPresentable` implementation.
     var contentSize: CGSize {
@@ -48,6 +48,11 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
     override func viewWillDisappear(_ animated: Bool) {
         onDismiss(command.selected)
         super.viewWillDisappear(animated)
+    }
+
+    func update(command: Command) {
+        self.command = command
+        tableView.reloadData()
     }
 
     // MARK: UITableViewDataSource

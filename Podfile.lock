@@ -75,7 +75,7 @@ PODS:
   - WordPressShared (1.8.16):
     - CocoaLumberjack (~> 3.4)
     - FormatterKit/TimeIntervalFormatter (= 1.8.2)
-  - WordPressUI (1.7.0)
+  - WordPressUI (1.7.1)
   - Wormholy (1.6.0)
   - WPMediaPicker (1.6.0)
   - wpxmlrpc (0.8.5)
@@ -107,7 +107,7 @@ DEPENDENCIES:
   - WordPress-Editor-iOS (~> 1.11.0)
   - WordPressAuthenticator (= 1.17.0)
   - WordPressShared (~> 1.8.16)
-  - WordPressUI (~> 1.7.0)
+  - WordPressUI (from `../WordPressUI-iOS`)
   - Wormholy (~> 1.6.0)
   - WPMediaPicker (~> 1.6.0)
   - XLPagerTabStrip (~> 9.0)
@@ -141,7 +141,6 @@ SPEC REPOS:
     - WordPressAuthenticator
     - WordPressKit
     - WordPressShared
-    - WordPressUI
     - Wormholy
     - WPMediaPicker
     - wpxmlrpc
@@ -153,6 +152,10 @@ SPEC REPOS:
     - ZendeskSDKConfigurationsSDK
     - ZendeskSupportProvidersSDK
     - ZendeskSupportSDK
+
+EXTERNAL SOURCES:
+  WordPressUI:
+    :path: "../WordPressUI-iOS"
 
 SPEC CHECKSUMS:
   1PasswordExtension: f97cc80ae58053c331b2b6dc8843ba7103b33794
@@ -181,7 +184,7 @@ SPEC CHECKSUMS:
   WordPressAuthenticator: 4b133a708d585c0e7ce374985051c5f40bcc157c
   WordPressKit: 2e707edd1b28e8dd0f74a40469ca6e7be7b20a70
   WordPressShared: 1bc316ed162f42af4e0fa2869437e9e28b532b01
-  WordPressUI: 1cf47a3b78154faf69caa18569ee7ece1e510fa0
+  WordPressUI: 9da5d966b8beb091950cd96880db398d7f30e246
   Wormholy: f52cd3c384fb49ae3e8fdb2b1398b66746a65104
   WPMediaPicker: e5d28197da6b467d4e5975d64a49255977e39455
   wpxmlrpc: 6a9bdd6ab9d1b159b384b0df0f3f39de9af4fecf
@@ -194,6 +197,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: c1706c8d1938a41942876d004ed25b490470c977
+PODFILE CHECKSUM: a2d86ecd75c9484965c14bf168b0aecbd1218079
 
 COCOAPODS: 1.9.1

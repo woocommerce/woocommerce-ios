@@ -77,6 +77,7 @@ final class ProductInventoryScannerViewController: UIViewController {
     private var results: [ProductSKUScannerResult] = []
 
     private var bottomSheetViewController: BottomSheetViewController?
+    private var listSelectorViewController: BottomSheetListSelectorViewController<ScannedProductsBottomSheetListSelectorCommand, ProductSKUScannerResult, ProductDetailsTableViewCell>?
 
     private lazy var statusLabel: PaddedLabel = {
         let label = PaddedLabel()
@@ -104,6 +105,12 @@ final class ProductInventoryScannerViewController: UIViewController {
         configureNavigation()
         configureBarcodeScannerChildViewController()
         configureStatusLabel()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        bottomSheetViewController?.show(from: self)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -143,8 +150,7 @@ private extension ProductInventoryScannerViewController {
                     self.statusLabel.text = NSLocalizedString("Product found!", comment: "")
                     self.showStatusLabel()
 
-                    self.results.append(.matched(product: product))
-                    self.presentSearchResults()
+                    self.updateResults(scannedProduct: product)
                 case .failure(let error):
                     let generator = UINotificationFeedbackGenerator()
                     generator.notificationOccurred(.error)
@@ -159,12 +165,17 @@ private extension ProductInventoryScannerViewController {
         }
     }
 
+    func updateResults(scannedProduct: Product) {
+        results.append(.matched(product: scannedProduct))
+        presentSearchResults()
+    }
+
     func presentSearchResults() {
         // TODO-jc: singular vs. plural
         let title = NSLocalizedString("Scanned products",
                                       comment: "Title of the bottom sheet that shows a list of scanned products via the barcode scanner.")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
-        let dataSource = ScannedProductsBottomSheetListSelectorCommand(results: results) { [weak self] result in
+        let command = ScannedProductsBottomSheetListSelectorCommand(results: results) { [weak self] result in
             self?.dismiss(animated: true, completion: { [weak self] in
                 switch result {
                 case .matched(let product):
@@ -174,15 +185,21 @@ private extension ProductInventoryScannerViewController {
                 }
             })
         }
+
+        if let listSelectorViewController = listSelectorViewController {
+            listSelectorViewController.update(command: command)
+            bottomSheetViewController?.view.layoutIfNeeded()
+            return
+        }
+
         let listSelectorViewController = BottomSheetListSelectorViewController(viewProperties: viewProperties,
-                                                                               command: dataSource) { [weak self] selectedSortOrder in
+                                                                               command: command) { [weak self] selectedSortOrder in
                                                                                 self?.dismiss(animated: true, completion: nil)
         }
+        self.listSelectorViewController = listSelectorViewController
         let bottomSheet = BottomSheetViewController(childViewController: listSelectorViewController)
-        bottomSheetViewController?.dismiss(animated: false, completion: {
-        })
         self.bottomSheetViewController = bottomSheet
-        bottomSheet.show(from: self, sourceView: nil, arrowDirections: .any)
+        bottomSheet.show(from: self)
     }
 }
 

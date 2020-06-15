@@ -39,7 +39,8 @@ target 'WooCommerce' do
 
   pod 'WordPressShared', '~> 1.8.16'
 
-  pod 'WordPressUI', '~> 1.7.0'
+#  pod 'WordPressUI', '~> 1.7.0'
+  pod 'WordPressUI', :path => '../WordPressUI-iOS'
 
   aztec
 

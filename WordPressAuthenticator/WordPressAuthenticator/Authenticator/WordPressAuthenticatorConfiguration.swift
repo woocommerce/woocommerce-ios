@@ -55,6 +55,14 @@ public struct WordPressAuthenticatorConfiguration {
     ///
     let enableSignInWithApple: Bool
 
+    /// Flag indicating if signing up via Google is enabled.
+    /// This only applies to the unified Google flow.
+    /// When a user attempts to log in with a nonexistent account:
+    ///     If enabled, the user will be redirected to Google signup.
+    ///     If disabled, a view is displayed providing the user with other options.
+    ///
+    let enableSignupWithGoogle: Bool
+    
     /// Flag for the unified login/signup flows.
     /// If disabled, none of the unified flows will display.
     /// If enabled, allows selected unified flows to display.
@@ -64,7 +72,11 @@ public struct WordPressAuthenticatorConfiguration {
     /// Flag indicating if the unified login by Site Address flow should display.
     ///
     let enableUnifiedSiteAddress: Bool
-    
+
+    /// Flag indicating if the unified Google flow should display.
+    ///
+    let enableUnifiedGoogle: Bool
+
     /// Designated Initializer
     ///
     public init (wpcomClientId: String,
@@ -79,8 +91,10 @@ public struct WordPressAuthenticatorConfiguration {
                  userAgent: String,
                  showLoginOptions: Bool = false,
                  enableSignInWithApple: Bool = false,
+                 enableSignupWithGoogle: Bool = false,
                  enableUnifiedAuth: Bool = false,
-                 enableUnifiedSiteAddress: Bool = false) {
+                 enableUnifiedSiteAddress: Bool = false,
+                 enableUnifiedGoogle: Bool = false) {
 
         self.wpcomClientId = wpcomClientId
         self.wpcomSecret = wpcomSecret
@@ -96,5 +110,7 @@ public struct WordPressAuthenticatorConfiguration {
         self.enableSignInWithApple = enableSignInWithApple
         self.enableUnifiedAuth = enableUnifiedAuth
         self.enableUnifiedSiteAddress = enableUnifiedAuth && enableUnifiedSiteAddress
+        self.enableUnifiedGoogle = enableUnifiedAuth && enableUnifiedGoogle
+        self.enableSignupWithGoogle = enableSignupWithGoogle
     }
 }

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="aQT-Gx-U3x">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Site Address View Controller-->
+        <scene sceneID="7Rf-Qz-qsw">
+            <objects>
+                <viewController storyboardIdentifier="SiteAddressViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="aQT-Gx-U3x" customClass="SiteAddressViewController" customModule="WordPressAuthenticator" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="ljV-kF-TaY">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dFS-Ic-byk" userLabel="Containing View">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <subviews>
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="KLl-Uz-wEP">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="591"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                        <prototypes>
+                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="TextFieldCell" id="nQV-pd-ZNP">
+                                                <rect key="frame" x="0.0" y="28" width="375" height="62"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="nQV-pd-ZNP" id="Ka8-LK-RxQ">
+                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="62"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <subviews>
+                                                        <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="example.com" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ApH-uX-bpN">
+                                                            <rect key="frame" x="15" y="11" width="360" height="34"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="34" id="gIz-F0-hO6"/>
+                                                            </constraints>
+                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                            <textInputTraits key="textInputTraits" autocorrectionType="no" textContentType="url"/>
+                                                        </textField>
+                                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9sF-5w-sdP">
+                                                            <rect key="frame" x="15" y="51" width="360" height="1"/>
+                                                            <color key="backgroundColor" systemColor="opaqueSeparatorColor" red="0.77647058820000003" green="0.77647058820000003" blue="0.7843137255" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="1" id="dwQ-nC-oaQ"/>
+                                                            </constraints>
+                                                        </view>
+                                                    </subviews>
+                                                    <constraints>
+                                                        <constraint firstItem="ApH-uX-bpN" firstAttribute="top" secondItem="Ka8-LK-RxQ" secondAttribute="topMargin" id="Dac-rP-yOu"/>
+                                                        <constraint firstItem="ApH-uX-bpN" firstAttribute="leading" secondItem="Ka8-LK-RxQ" secondAttribute="leadingMargin" id="Ps4-Wf-RKT"/>
+                                                        <constraint firstItem="9sF-5w-sdP" firstAttribute="leading" secondItem="Ka8-LK-RxQ" secondAttribute="leadingMargin" id="RbO-Fw-7DN"/>
+                                                        <constraint firstAttribute="bottomMargin" secondItem="ApH-uX-bpN" secondAttribute="bottom" constant="6" id="a8P-P0-NAa"/>
+                                                        <constraint firstItem="9sF-5w-sdP" firstAttribute="top" secondItem="ApH-uX-bpN" secondAttribute="bottom" constant="6" id="bkX-YF-yHX"/>
+                                                        <constraint firstAttribute="trailing" secondItem="ApH-uX-bpN" secondAttribute="trailing" id="oM3-57-drC"/>
+                                                        <constraint firstAttribute="trailing" secondItem="9sF-5w-sdP" secondAttribute="trailing" id="yWJ-hj-Szv"/>
+                                                    </constraints>
+                                                </tableViewCellContentView>
+                                            </tableViewCell>
+                                        </prototypes>
+                                        <sections/>
+                                        <connections>
+                                            <outlet property="dataSource" destination="aQT-Gx-U3x" id="Sct-0G-HTk"/>
+                                            <outlet property="delegate" destination="aQT-Gx-U3x" id="2xB-Wr-Hdh"/>
+                                        </connections>
+                                    </tableView>
+                                    <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xwA-rd-6jO" userLabel="Button background view">
+                                        <rect key="frame" x="0.0" y="591" width="375" height="76"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ClH-Cn-49d" userLabel="Primary Button" customClass="NUXButton" customModule="WordPressAuthenticator" customModuleProvider="target">
+                                                <rect key="frame" x="16" y="16" width="343" height="44"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="44" id="iBk-Pi-8cv"/>
+                                                </constraints>
+                                                <state key="normal" title="Button"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="isPrimary" value="YES"/>
+                                                </userDefinedRuntimeAttributes>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                        <constraints>
+                                            <constraint firstAttribute="bottomMargin" secondItem="ClH-Cn-49d" secondAttribute="bottom" constant="8" id="3Ba-yg-JKx"/>
+                                            <constraint firstItem="ClH-Cn-49d" firstAttribute="top" secondItem="xwA-rd-6jO" secondAttribute="topMargin" constant="8" id="GgD-0x-Aud"/>
+                                            <constraint firstItem="ClH-Cn-49d" firstAttribute="leading" secondItem="VfW-kE-aWC" secondAttribute="leading" constant="16" id="Gkk-b0-7jz"/>
+                                            <constraint firstItem="VfW-kE-aWC" firstAttribute="trailing" secondItem="ClH-Cn-49d" secondAttribute="trailing" constant="16" id="hy1-OF-2TN"/>
+                                        </constraints>
+                                        <viewLayoutGuide key="safeArea" id="VfW-kE-aWC"/>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <constraints>
+                                    <constraint firstItem="KLl-Uz-wEP" firstAttribute="top" secondItem="dFS-Ic-byk" secondAttribute="top" id="1r4-f4-2JD"/>
+                                    <constraint firstItem="xwA-rd-6jO" firstAttribute="bottom" secondItem="dFS-Ic-byk" secondAttribute="bottomMargin" constant="8" id="85d-XY-Mr8"/>
+                                    <constraint firstItem="xwA-rd-6jO" firstAttribute="trailing" secondItem="dFS-Ic-byk" secondAttribute="trailing" id="Bkw-QJ-Tbe"/>
+                                    <constraint firstAttribute="trailing" secondItem="KLl-Uz-wEP" secondAttribute="trailing" id="K3l-1m-yA1"/>
+                                    <constraint firstItem="KLl-Uz-wEP" firstAttribute="leading" secondItem="dFS-Ic-byk" secondAttribute="leading" id="Tbb-lk-1Cg"/>
+                                    <constraint firstItem="xwA-rd-6jO" firstAttribute="top" secondItem="KLl-Uz-wEP" secondAttribute="bottom" id="gkZ-OV-HMi"/>
+                                    <constraint firstItem="xwA-rd-6jO" firstAttribute="leading" secondItem="dFS-Ic-byk" secondAttribute="leading" id="wBE-xi-42q"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="ihD-pY-rg9" firstAttribute="bottom" secondItem="dFS-Ic-byk" secondAttribute="bottom" id="Dva-c1-u2U"/>
+                            <constraint firstItem="dFS-Ic-byk" firstAttribute="top" secondItem="ihD-pY-rg9" secondAttribute="top" id="YEy-EW-XmD"/>
+                            <constraint firstItem="dFS-Ic-byk" firstAttribute="leading" secondItem="ljV-kF-TaY" secondAttribute="leading" id="msS-7X-Za9"/>
+                            <constraint firstItem="dFS-Ic-byk" firstAttribute="trailing" secondItem="ljV-kF-TaY" secondAttribute="trailing" id="zY1-Yz-kTf"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="ihD-pY-rg9"/>
+                    </view>
+                    <connections>
+                        <outlet property="bottomContentConstraint" destination="Dva-c1-u2U" id="cA6-Wt-5oj"/>
+                        <outlet property="submitButton" destination="ClH-Cn-49d" id="kBa-QN-0oH"/>
+                        <outlet property="tableView" destination="KLl-Uz-wEP" id="ntt-cX-m20"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ipm-G3-kY7" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-162.40000000000001" y="20.239880059970016"/>
+        </scene>
+    </scenes>
+</document>

@@ -142,12 +142,12 @@ class LoginPrologueViewController: LoginViewController {
         }
 
         vc.googleTapped = { [weak self] in
-            guard let toVC = SignupGoogleViewController.instantiate(from: .signup) else {
-                DDLogError("Failed to navigate to SignupGoogleViewController")
+            guard WordPressAuthenticator.shared.configuration.enableUnifiedGoogle else {
+                self?.presentGoogleSignupView()
                 return
             }
 
-            self?.navigationController?.pushViewController(toVC, animated: true)
+            self?.presentUnifiedGoogleView()
         }
 
         vc.appleTapped = { [weak self] in
@@ -163,10 +163,72 @@ class LoginPrologueViewController: LoginViewController {
     }
 
     private func googleTapped() {
-        GoogleAuthenticator.sharedInstance.loginDelegate = self
-        GoogleAuthenticator.sharedInstance.showFrom(viewController: self, loginFields: loginFields, for: .login)
+        guard WordPressAuthenticator.shared.configuration.enableUnifiedGoogle else {
+            GoogleAuthenticator.sharedInstance.loginDelegate = self
+            GoogleAuthenticator.sharedInstance.showFrom(viewController: self, loginFields: loginFields, for: .login)
+            return
+        }
+
+        presentUnifiedGoogleView()
     }
 
+    /// Determines which view to present for the site address form.
+    ///
+    private func loginToSelfHostedSite() {
+        guard WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress else {
+            presentSelfHostedView()
+            return
+        }
+
+        presentUnifiedSiteAddressView()
+    }
+
+    // Shows the VC that handles both Google login & signup.
+    private func presentUnifiedGoogleView() {
+        guard let toVC = GoogleAuthViewController.instantiate(from: .googleAuth) else {
+            DDLogError("Failed to navigate to GoogleAuthViewController from LoginPrologueVC")
+            return
+        }
+        
+        navigationController?.pushViewController(toVC, animated: true)
+    }
+
+    // Shows the VC that handles only Google signup.
+    private func presentGoogleSignupView() {
+        guard let toVC = SignupGoogleViewController.instantiate(from: .signup) else {
+            DDLogError("Failed to navigate to SignupGoogleViewController from LoginPrologueVC")
+            return
+        }
+
+        navigationController?.pushViewController(toVC, animated: true)
+    }
+
+    /// Navigates to the unified site address login flow.
+    ///
+    private func presentUnifiedSiteAddressView() {
+        guard let vc = SiteAddressViewController.instantiate(from: .siteAddress) else {
+            DDLogError("Failed to navigate from LoginPrologueViewController to SiteAddressViewController")
+            return
+        }
+
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
+    /// Navigates to the old self-hosted login flow.
+    ///
+    private func presentSelfHostedView() {
+        guard let vc = LoginSiteAddressViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from LoginPrologueViewController to LoginSiteAddressViewController")
+            return
+        }
+
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
 }
 
 // MARK: - AppleAuthenticatorDelegate

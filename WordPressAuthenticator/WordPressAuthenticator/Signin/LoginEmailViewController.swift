@@ -213,12 +213,12 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
             }
 
             vc.googleTapped = { [weak self] in
-                guard let toVC = SignupGoogleViewController.instantiate(from: .signup) else {
-                    DDLogError("Failed to navigate to SignupGoogleViewController")
+                guard WordPressAuthenticator.shared.configuration.enableUnifiedGoogle else {
+                    self?.presentGoogleSignupView()
                     return
                 }
 
-                self?.navigationController?.pushViewController(toVC, animated: true)
+                self?.presentUnifiedGoogleView()
             }
 
             vc.appleTapped = { [weak self] in
@@ -480,8 +480,48 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     }
 
     @objc func googleTapped() {
-        GoogleAuthenticator.sharedInstance.loginDelegate = self
-        GoogleAuthenticator.sharedInstance.showFrom(viewController: self, loginFields: loginFields, for: .login)
+        guard WordPressAuthenticator.shared.configuration.enableUnifiedGoogle else {
+            GoogleAuthenticator.sharedInstance.loginDelegate = self
+            GoogleAuthenticator.sharedInstance.showFrom(viewController: self, loginFields: loginFields, for: .login)
+            return
+        }
+
+        presentUnifiedGoogleView()
+    }
+
+    // Shows the VC that handles both Google login & signup.
+    private func presentUnifiedGoogleView() {
+        guard let toVC = GoogleAuthViewController.instantiate(from: .googleAuth) else {
+            DDLogError("Failed to navigate to GoogleAuthViewController from LoginPrologueVC")
+            return
+        }
+        
+        navigationController?.pushViewController(toVC, animated: true)
+    }
+
+    // Shows the VC that handles only Google signup.
+    private func presentGoogleSignupView() {
+        guard let toVC = SignupGoogleViewController.instantiate(from: .signup) else {
+            DDLogError("Failed to navigate to SignupGoogleViewController from LoginEmailVC")
+            return
+        }
+
+        navigationController?.pushViewController(toVC, animated: true)
+    }
+
+    /// Displays the self-hosted login form.
+    ///
+    private func loginToSelfHostedSite() {
+        guard let vc = LoginSiteAddressViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from LoginEmailViewController to LoginSiteAddressViewController")
+            return
+        }
+
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     @IBAction func handleTextFieldDidChange(_ sender: UITextField) {

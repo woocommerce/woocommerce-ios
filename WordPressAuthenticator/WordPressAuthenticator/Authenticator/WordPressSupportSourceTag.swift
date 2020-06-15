@@ -57,6 +57,12 @@ extension WordPressSupportSourceTag {
     public static var wpComSignupWaitingForGoogle: WordPressSupportSourceTag {
         return WordPressSupportSourceTag(name: "wpComSignupWaitingForGoogle", origin: "origin:signup-waiting-for-google")
     }
+    public static var wpComAuthWaitingForGoogle: WordPressSupportSourceTag {
+        return WordPressSupportSourceTag(name: "wpComAuthWaitingForGoogle", origin: "origin:auth-waiting-for-google")
+    }
+    public static var wpComAuthGoogleSignupConfirmation: WordPressSupportSourceTag {
+        return WordPressSupportSourceTag(name: "wpComAuthGoogleSignupConfirmation", origin: "origin:auth-google-signup-confirmation")
+    }
     public static var wpComSignupMagicLink: WordPressSupportSourceTag {
         return WordPressSupportSourceTag(name: "wpComSignupMagicLink", origin: "origin:signup-magic-link")
     }

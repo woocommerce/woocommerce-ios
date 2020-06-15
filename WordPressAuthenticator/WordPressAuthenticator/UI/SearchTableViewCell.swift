@@ -13,6 +13,10 @@ public protocol SearchTableViewCellDelegate: class {
 //
 open class SearchTableViewCell: UITableViewCell {
 
+    /// UITableView's Reuse Identifier
+    ///
+    public static let reuseIdentifier = "SearchTableViewCell"
+
     /// Search 'UITextField's reference!
     ///
     @IBOutlet public var textField: LoginTextField!

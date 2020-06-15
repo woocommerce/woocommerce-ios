@@ -25,14 +25,14 @@
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%1$@ via %2$@";
 
+/* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). */
+"%1$@ x %2$@" = "%1$@ x %2$@";
+
 /* Displays a time range followed by a specific date/time */
 "%1$@ › %2$@" = "%1$@ › %2$@";
 
 /* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@-%2$@";
-
-/* <item total> (<item individual price> multipled by <quantity>) */
-"%@ (%@ x %@)" = "%1$@ (%2$@ x %3$@)";
 
 /* 1 Item */
 "%@ Item" = "%@ Item";
@@ -799,7 +799,7 @@
 /* 'Limit: 2 downloads', for example. */
 "Limit: %ld downloads" = "Limit: %ld downloads";
 
-/* The title of the Work In Progress top banner on the Products tab when the Products release 2 feature switch is off. */
+/* The title of the Work In Progress top banner on the Products tab. */
 "Limited editing available" = "Limited editing available";
 
 /* Title for screen in editor that allows to configure link options */
@@ -942,9 +942,6 @@
 
 /* The title for the net amount paid cell */
 "Net" = "Net";
-
-/* The title of the Work In Progress top banner on the Products tab when the Products release 2 feature switch is on. */
-"New editing options available" = "New editing options available";
 
 /* Title of a button.
    Title of a button. The text should be capitalized. */
@@ -1180,6 +1177,9 @@
 /* Product Details - pricing and inventory section title */
 "Pricing and Inventory" = "Pricing and Inventory";
 
+/* Opens the California Privacy Policy web page */
+"Privacy Notice for California Users" = "Privacy Notice for California Users";
+
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "Privacy Policy";
 
@@ -1203,7 +1203,7 @@
 "Processing Account" = "Processing Account";
 
 /* Description for Top Performers left column header
-   Product section title - Section header title for the product */
+   Product section title - Product section title if there is only one product. - Section header title for the product */
 "Product" = "Product";
 
 /* Product section title */
@@ -1232,7 +1232,7 @@
 "Product Type" = "Product Type";
 
 /* My Store > Settings > Experimental features > Switch Products
-   Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
+   Product section title if there is more than one product. - Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "Products";
 
 /* Label for computed value `product refunds + taxes = subtotal`. */
@@ -1381,6 +1381,12 @@
 
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "Sale price: %@";
+
+/* Scan Products */
+"Scan products" = "Scan products";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
+"Scans barcodes that are associated with a product SKU for stock management." = "Scans barcodes that are associated with a product SKU for stock management.";
 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "Schedule sale";
@@ -2233,11 +2239,8 @@
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
 "We're sorry, we couldn't find results for “%@”" = "We're sorry, we couldn't find results for “%@”";
 
-/* The info of the Work In Progress top banner on the Products tab when the Products release 2 feature switch is off. */
+/* The info of the Work In Progress top banner on the Products tab. */
 "We've added editing functionality to simple products. Keep an eye out for more options soon!" = "We've added editing functionality to simple products. Keep an eye out for more options soon!";
-
-/* The info of the Work In Progress top banner on the Products tab when the Products release 2 feature switch is on. */
-"We've added more editing functionalities to products. You can now update images, see previews and sort, filter & share products!" = "We've added more editing functionalities to products. You can now update images, see previews and sort, filter & share products!";
 
 /* Statistical unit - a single week */
 "Week" = "Week";

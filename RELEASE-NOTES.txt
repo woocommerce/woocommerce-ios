@@ -1,3 +1,6 @@
+4.6
+-----
+ 
 4.5
 -----
 - [**] Products: now you can update product images, product settings, viewing and sharing a product.

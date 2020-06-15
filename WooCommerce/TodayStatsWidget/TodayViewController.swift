@@ -29,7 +29,7 @@ final class TodayViewController: UIViewController {
     /// Stats data, downloaded every time the widget appear
     ///
     private var statsData: StatsData?
-    
+
     /// Errors. It will be restored every time the widget appear
     ///
     private var error: Errors? = nil
@@ -120,7 +120,7 @@ private extension TodayViewController {
         let latestDate = dateFormatter.string(from: Date().endOfDay(timezone: site.siteTimezone))
 
         let quantity = timeRange.siteVisitStatsQuantity(date: Date(), siteTimezone: site.siteTimezone)
-        
+
         let group = DispatchGroup()
 
         /// Load Order Stats
@@ -146,7 +146,7 @@ private extension TodayViewController {
             tempStats.totalRevenue = orderStatsV4?.totals.grossRevenue
             group.leave()
         }
-        
+
         /// Load Visit Stats
         group.enter()
         let remoteVisitStats = SiteVisitStatsRemote(network: network)
@@ -256,7 +256,7 @@ private extension TodayViewController {
     func configureGenericMessage(cell: BasicTableViewCell) {
         cell.textLabel?.numberOfLines = 0
         cell.backgroundColor = .clear
-        
+
         switch error {
         case .statsV4NotAvailable:
             cell.textLabel?.text = LocalizedText.analyticsNotAvailable
@@ -300,7 +300,7 @@ private extension TodayViewController {
 // MARK: - Constants
 //
 private extension TodayViewController {
-    
+
     enum LocalizedText {
         static let analyticsNotAvailable = NSLocalizedString("Store analytics not available! Please upgrade to the latest version of WooCommerce to view your store analytics.",
                                                              comment: "Store analytics error in Today Stats Widget")
@@ -308,7 +308,7 @@ private extension TodayViewController {
         static let missingCredentials = NSLocalizedString("Please log in to the WooCommerce app to add a widget.", comment: "Login error in Today Stats Widget")
         static let genericError = NSLocalizedString("Something goes wrong.", comment: "Generic error in Today Stats Widget")
     }
-    
+
     enum Errors {
         case statsV4NotAvailable
         case errorFetchingStats

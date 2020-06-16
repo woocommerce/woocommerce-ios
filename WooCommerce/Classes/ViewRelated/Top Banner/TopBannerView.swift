@@ -157,7 +157,7 @@ private extension TopBannerView {
         let contentContainerView = UIView(frame: .zero)
         contentContainerView.translatesAutoresizingMaskIntoConstraints = false
         contentContainerView.addSubview(contentView)
-        contentContainerView.pinSubviewToAllEdges(contentView, insets: UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 10))
+        contentContainerView.pinSubviewToAllEdges(contentView, insets: UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16))
         return contentContainerView
     }
 

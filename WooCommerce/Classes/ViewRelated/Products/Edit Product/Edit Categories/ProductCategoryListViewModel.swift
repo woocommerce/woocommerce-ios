@@ -29,7 +29,7 @@ final class ProductCategoryListViewModel {
     /// Product categories that will be eventually modified by the user
     ///
     private var newSelectedCategories: [ProductCategory]
-    
+
     /// Array of view models to be rendered by the View Controller.
     ///
     private(set) var categoryViewModels: [ProductCategoryCellViewModel] = []
@@ -85,23 +85,22 @@ final class ProductCategoryListViewModel {
         onSyncStateChange = onStateChanges
         onSyncStateChange?(syncCategoriesState)
     }
-    
+
     /// Select or Deselect a category
     ///
     func selectOrDeselectCategory(index: Int) {
-        guard let categoryViewModel = categoryViewModels[safe: index] else{
+        guard let categoryViewModel = categoryViewModels[safe: index] else {
             return
         }
-        
+
         // If the category selected exist, remove it, otherwise, add it to `newSelectedCategories`.
         if let indexCategory = newSelectedCategories.firstIndex(where: { $0.categoryID == categoryViewModel.categoryID}) {
             newSelectedCategories.remove(at: indexCategory)
         }
-        else if let category = resultController.fetchedObjects.first(where: { $0.categoryID == categoryViewModel.categoryID }){
+        else if let category = resultController.fetchedObjects.first(where: { $0.categoryID == categoryViewModel.categoryID }) {
             newSelectedCategories.append(category)
         }
-        
-        
+
         updateViewModelsArray()
     }
 

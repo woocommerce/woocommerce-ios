@@ -40,7 +40,7 @@ private extension ProductCategoryTableViewCell {
     private func styleSelection() {
         self.selectionStyle = .none
     }
-    
+
     private func styleLabels() {
         nameLabel.applyBodyStyle()
     }

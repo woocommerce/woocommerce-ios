@@ -6,7 +6,7 @@ struct ProductCategoryCellViewModel {
     /// Category ID
     ///
     let categoryID: Int64
-    
+
     /// Category name
     ///
     let name: String

@@ -69,10 +69,6 @@ final class ProductFormViewModel {
         }
     }
 
-    private var productUpdater: ProductUpdater {
-        return product
-    }
-
     private let productImageActionHandler: ProductImageActionHandler
     private let isEditProductsRelease2Enabled: Bool
     private let isEditProductsRelease3Enabled: Bool
@@ -125,15 +121,15 @@ final class ProductFormViewModel {
 //
 extension ProductFormViewModel {
     func updateName(_ name: String) {
-        product = productUpdater.nameUpdated(name: name)
+        product = product.copy(name: name)
     }
 
     func updateImages(_ images: [ProductImage]) {
-        product = productUpdater.imagesUpdated(images: images)
+        product = product.copy(images: images)
     }
 
     func updateDescription(_ newDescription: String) {
-        product = productUpdater.descriptionUpdated(description: newDescription)
+        product = product.copy(fullDescription: newDescription)
     }
 
     func updatePriceSettings(regularPrice: String?,
@@ -142,12 +138,12 @@ extension ProductFormViewModel {
                              dateOnSaleEnd: Date?,
                              taxStatus: ProductTaxStatus,
                              taxClass: TaxClass?) {
-        product = productUpdater.priceSettingsUpdated(regularPrice: regularPrice,
-                                                      salePrice: salePrice,
-                                                      dateOnSaleStart: dateOnSaleStart,
-                                                      dateOnSaleEnd: dateOnSaleEnd,
-                                                      taxStatus: taxStatus,
-                                                      taxClass: taxClass)
+        product = product.copy(dateOnSaleStart: dateOnSaleStart,
+                               dateOnSaleEnd: dateOnSaleEnd,
+                               regularPrice: regularPrice,
+                               salePrice: salePrice,
+                               taxStatusKey: taxStatus.rawValue,
+                               taxClass: taxClass?.slug)
     }
 
     func updateInventorySettings(sku: String?,
@@ -156,24 +152,33 @@ extension ProductFormViewModel {
                                  stockQuantity: Int?,
                                  backordersSetting: ProductBackordersSetting?,
                                  stockStatus: ProductStockStatus?) {
-        product = productUpdater.inventorySettingsUpdated(sku: sku,
-                                                          manageStock: manageStock,
-                                                          soldIndividually: soldIndividually,
-                                                          stockQuantity: stockQuantity,
-                                                          backordersSetting: backordersSetting,
-                                                          stockStatus: stockStatus)
+        product = product.copy(sku: sku,
+                               manageStock: manageStock,
+                               stockQuantity: stockQuantity,
+                               stockStatusKey: stockStatus?.rawValue,
+                               backordersKey: backordersSetting?.rawValue,
+                               soldIndividually: soldIndividually)
     }
 
     func updateShippingSettings(weight: String?, dimensions: ProductDimensions, shippingClass: ProductShippingClass?) {
-        product = productUpdater.shippingSettingsUpdated(weight: weight, dimensions: dimensions, shippingClass: shippingClass)
+        product = product.copy(weight: weight,
+                               dimensions: dimensions,
+                               shippingClass: shippingClass?.slug ?? "",
+                               shippingClassID: shippingClass?.shippingClassID ?? 0,
+                               productShippingClass: shippingClass)
     }
 
     func updateBriefDescription(_ briefDescription: String) {
-        product = productUpdater.briefDescriptionUpdated(briefDescription: briefDescription)
+        product = product.copy(briefDescription: briefDescription)
     }
 
     func updateProductSettings(_ settings: ProductSettings) {
-        product = productUpdater.productSettingsUpdated(settings: settings)
+        product = product.copy(slug: settings.slug,
+                               statusKey: settings.status.rawValue,
+                               featured: settings.featured,
+                               catalogVisibilityKey: settings.catalogVisibility.rawValue,
+                               purchaseNote: settings.purchaseNote,
+                               menuOrder: settings.menuOrder)
         password = settings.password
     }
 }

@@ -23,6 +23,7 @@ final class SiteAddressViewController: LoginViewController {
 
         localizePrimaryButton()
         registerTableViewCells()
+        loadRows()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -50,6 +51,12 @@ final class SiteAddressViewController: LoginViewController {
         for cell in cells {
             tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
         }
+    }
+
+    /// Describes how the tableView rows should be rendered.
+    ///
+    func loadRows() {
+        rows = [.instructions, .siteAddress]
     }
 
     /// Style individual ViewController backgrounds, for now.

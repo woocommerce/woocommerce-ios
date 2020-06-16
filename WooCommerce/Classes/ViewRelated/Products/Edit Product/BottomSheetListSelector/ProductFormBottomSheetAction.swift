@@ -63,7 +63,7 @@ extension ProductFormBottomSheetAction {
             return NSLocalizedString("A brief excerpt about your product",
                                      comment: "Subtitle of the product form bottom sheet action for editing short description.")
         case .editSKU:
-            return NSLocalizedString("Easily identify your products with unque code",
+            return NSLocalizedString("Easily identify your products with unique codes",
                                      comment: "Subtitle of the product form bottom sheet action for editing SKU.")
 
         }

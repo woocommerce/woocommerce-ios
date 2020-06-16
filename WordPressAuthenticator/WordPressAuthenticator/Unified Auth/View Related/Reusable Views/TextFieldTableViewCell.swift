@@ -12,7 +12,8 @@ class TextFieldTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+
+        borderView.backgroundColor = WordPressAuthenticator.shared.unifiedStyle?.borderColor
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

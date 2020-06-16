@@ -7,7 +7,7 @@ private struct ElementStringIDs {
     static let nextButton = "Login Email Next Button"
     static let siteAddressButton = "Self Hosted Login Button"
     static let helpButton = "Help Button"
-    static let googleLoginButton = "Log in with Google"
+    static let googleLoginButton = "Log in with Google."
     static let backToWelcomeScreenButton = "Back Button"
 }
 

@@ -31,16 +31,13 @@ class LoginTests: XCTestCase {
         XCTAssert(WelcomeScreen.isLoaded())
     }
 
-    func testLoginOptionsArePresent() {
-        //verify tapping "Log in" will show options to enter a WordPress.com email, log in with Google, or enter your site address.
-        WelcomeScreen()
+    func testEnterEmailAndSendLinkOrEnterPassword() {
+        //enter email and click next to verify presence of send link and password option
+        _ = WelcomeScreen()
         .selectLogin()
-
-        //verify all login options exist
-        .doAllLoginOptionsExist()
-        .goBackToWelcomeScreen()
+        .proceedWith(email: TestCredentials.emailAddress)
+        .goBack()
 
         XCTAssert(WelcomeScreen.isLoaded())
-
     }
 }

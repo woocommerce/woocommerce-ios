@@ -118,13 +118,18 @@ public struct WordPressAuthenticatorStyle {
 //
 public struct WordPressAuthenticatorUnifiedStyle {
 
+    /// Style: Auth view border colors
+    ///
+    public let borderColor: UIColor
+
     /// Style: Auth view background colors
     ///
     public let viewControllerBackgroundColor: UIColor
 
     /// Designated initializer
     ///
-    public init(viewControllerBackgroundColor: UIColor) {
+    public init(borderColor: UIColor, viewControllerBackgroundColor: UIColor) {
+        self.borderColor = borderColor
         self.viewControllerBackgroundColor = viewControllerBackgroundColor
     }
 }

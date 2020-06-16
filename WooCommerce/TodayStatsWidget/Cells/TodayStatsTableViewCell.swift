@@ -41,12 +41,18 @@ private extension TodayStatsTableViewCell {
         visitorsHeaderLabel.text = LocalizedText.visitors
         ordersHeaderLabel.text = LocalizedText.orders
         revenueHeaderLabel.text = LocalizedText.revenue
+        visitorsHeaderLabel.textAlignment = .center
+        ordersHeaderLabel.textAlignment = .center
+        revenueHeaderLabel.textAlignment = .center
     }
 
     func configureBodyLabels() {
         visitorsBodyLabel.applyTitleStyle()
         ordersBodyLabel.applyTitleStyle()
         revenueBodyLabel.applyTitleStyle()
+        visitorsBodyLabel.textAlignment = .center
+        ordersBodyLabel.textAlignment = .center
+        revenueBodyLabel.textAlignment = .center
     }
 
     func configureSeparator() {
@@ -55,6 +61,7 @@ private extension TodayStatsTableViewCell {
 
     func configureSiteLabel() {
         siteLabel.applyFootnoteStyle()
+        siteLabel.textAlignment = .center
     }
 }
 

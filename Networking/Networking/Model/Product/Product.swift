@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a Product Entity.
 ///
-public struct Product: Codable {
+public struct Product: Codable, GeneratedCopiable {
     public let siteID: Int64
     public let productID: Int64
     public let name: String

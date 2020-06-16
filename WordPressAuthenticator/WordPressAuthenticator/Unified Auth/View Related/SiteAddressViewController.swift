@@ -97,3 +97,23 @@ extension SiteAddressViewController: NUXKeyboardResponder {
         keyboardWillHide(notification)
     }
 }
+
+
+// MARK: - Constants
+extension SiteAddressViewController {
+    /// Rows listed in the order they were created
+    ///
+    enum Row {
+        case instructions
+        case siteAddress
+
+        var reuseIdentifier: String {
+            switch self {
+            case .instructions:
+                return InstructionTableViewCell.reuseIdentifier
+            case .siteAddress:
+                return TextFieldTableViewCell.reuseIdentifier
+            }
+        }
+    }
+}

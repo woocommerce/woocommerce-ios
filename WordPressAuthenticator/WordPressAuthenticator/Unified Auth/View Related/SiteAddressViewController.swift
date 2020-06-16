@@ -15,6 +15,8 @@ final class SiteAddressViewController: LoginViewController {
         return WordPressAuthenticator.shared.displayStrings
     }
 
+    private(set) var rows = [Row]()
+
     // MARK: - View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()

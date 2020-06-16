@@ -26,6 +26,10 @@ final class ProductCategoryListViewModel {
     ///
     private let product: Product
 
+    /// Product categories that will be eventually modified by the user
+    ///
+    private var newSelectedCategories: [ProductCategory]
+    
     /// Array of view models to be rendered by the View Controller.
     ///
     private(set) var categoryViewModels: [ProductCategoryCellViewModel] = []
@@ -55,6 +59,7 @@ final class ProductCategoryListViewModel {
     init(storesManager: StoresManager = ServiceLocator.stores, product: Product) {
         self.storesManager = storesManager
         self.product = product
+        newSelectedCategories = product.categories
     }
 
     /// Load existing categories from storage and fire the synchronize all categories action.
@@ -80,6 +85,26 @@ final class ProductCategoryListViewModel {
         onSyncStateChange = onStateChanges
         onSyncStateChange?(syncCategoriesState)
     }
+    
+    /// Select or Deselect a category
+    ///
+    func selectOrDeselectCategory(index: Int) {
+        guard let categoryViewModel = categoryViewModels[safe: index] else{
+            return
+        }
+        
+        // If the category selected exist, remove it, otherwise, add it to `newSelectedCategories`.
+        if let indexCategory = newSelectedCategories.firstIndex(where: { $0.categoryID == categoryViewModel.categoryID}) {
+            newSelectedCategories.remove(at: indexCategory)
+        }
+        else if let category = resultController.fetchedObjects.first(where: { $0.categoryID == categoryViewModel.categoryID }){
+            newSelectedCategories.append(category)
+        }
+        
+        
+        updateViewModelsArray()
+    }
+
 }
 
 // MARK: - Synchronize Categories
@@ -117,7 +142,7 @@ private extension ProductCategoryListViewModel {
     ///
     func updateViewModelsArray() {
         let fetchedCategories = resultController.fetchedObjects
-        categoryViewModels = CellViewModelBuilder.viewModels(from: fetchedCategories, selectedCategories: product.categories)
+        categoryViewModels = CellViewModelBuilder.viewModels(from: fetchedCategories, selectedCategories: newSelectedCategories)
     }
 }
 

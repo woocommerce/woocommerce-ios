@@ -74,18 +74,45 @@ final class SiteAddressViewController: LoginViewController {
 
 // MARK: - UITableViewDataSource
 extension SiteAddressViewController: UITableViewDataSource {
+    /// Returns the number of rows in a section
+    ///
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return rows.count
     }
 
+    /// Configure cells delegate method
+    ///
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: InstructionTableViewCell.reuseIdentifier, for: indexPath) as? InstructionTableViewCell else {
-            fatalError()
-        }
-
-        cell.instructionLabel?.text = displayStrings.siteLoginInstructions
+        let row = rows[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
+        configure(cell, for: row, at: indexPath)
 
         return cell
+    }
+
+    /// Configure cells
+    ///
+    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+        switch cell {
+        case let cell as InstructionTableViewCell:
+            configureInstruction(cell)
+        case let cell as TextFieldTableViewCell:
+            configureTextField(cell)
+        default:
+            fatalError("Error: Did you forget to configure a custom cell?")
+        }
+    }
+
+    /// Configure the instruction cell
+    ///
+    func configureInstruction(_ cell: InstructionTableViewCell) {
+        cell.instructionLabel?.text = displayStrings.siteLoginInstructions
+    }
+
+    /// Configure the textfield cell
+    ///
+    func configureTextField(_ cell: TextFieldTableViewCell) {
+        cell.textField.placeholder = "Ummm hi"
     }
 }
 

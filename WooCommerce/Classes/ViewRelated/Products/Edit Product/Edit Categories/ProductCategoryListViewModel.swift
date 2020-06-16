@@ -105,6 +105,9 @@ final class ProductCategoryListViewModel {
         updateViewModelsArray()
     }
 
+    func hasCategoriesChanges() -> Bool {
+        return product.categories.sorted() != newSelectedCategories.sorted()
+    }
 }
 
 // MARK: - Synchronize Categories

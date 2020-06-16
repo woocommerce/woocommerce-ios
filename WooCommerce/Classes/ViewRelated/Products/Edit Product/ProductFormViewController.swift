@@ -285,7 +285,7 @@ private extension ProductFormViewController {
                                                                         case .editBriefDescription:
                                                                             self?.editBriefDescription()
                                                                         case .editSKU:
-                                                                            // TODO-2200: implement SKU editing action
+                                                                            self?.editSKU()
                                                                             break
                                                                         }
                                                                     }
@@ -543,7 +543,7 @@ extension ProductFormViewController: UITableViewDelegate {
                 break
             case .sku:
                 // TODO-2000 Edit Product M3 analytics
-                // TODO-2200: implement SKU editing action
+                editSKU()
                 break
             }
         }
@@ -814,6 +814,29 @@ private extension ProductFormViewController {
     func editCategories() {
         let categoryListViewController = ProductCategoryListViewController(product: product)
         show(categoryListViewController, sender: self)
+    }
+}
+
+// MARK: Action - Edit Product SKU
+//
+private extension ProductFormViewController {
+    func editSKU() {
+        let viewController = ProductSKUViewController(sku: product.sku) { [weak self] sku in
+            self?.onEditSKUCompletion(sku: sku)
+        }
+        show(viewController, sender: self)
+    }
+
+    func onEditSKUCompletion(sku: String?) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+        // TODO-2020: Product M3 analytics
+        let hasChangedData = sku != product.sku
+        guard hasChangedData else {
+            return
+        }
+        viewModel.updateSKU(sku)
     }
 }
 

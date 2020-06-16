@@ -172,6 +172,12 @@ extension ProductFormViewModel {
         product = productUpdater.briefDescriptionUpdated(briefDescription: briefDescription)
     }
 
+    func updateSKU(_ sku: String?) {
+        // TODO: Copiable
+        product = productUpdater.inventorySettingsUpdated(sku: sku,
+                                                          manageStock: product.manageStock, soldIndividually: product.soldIndividually, stockQuantity: product.stockQuantity, backordersSetting: product.backordersSetting, stockStatus: product.productStockStatus)
+    }
+
     func updateProductSettings(_ settings: ProductSettings) {
         product = productUpdater.productSettingsUpdated(settings: settings)
         password = settings.password

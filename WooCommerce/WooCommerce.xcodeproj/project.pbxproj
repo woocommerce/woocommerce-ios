@@ -203,6 +203,8 @@
 		02A652FF246A908D00755A01 /* BottomSheetListSelectorPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A652FE246A908D00755A01 /* BottomSheetListSelectorPresenter.swift */; };
 		02A65301246AA63600755A01 /* ProductDetailsFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A65300246AA63600755A01 /* ProductDetailsFactory.swift */; };
 		02A9A496244D84AB00757B99 /* ProductsSortOrderBottomSheetListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A9A495244D84AB00757B99 /* ProductsSortOrderBottomSheetListSelectorCommandTests.swift */; };
+		02AC8229249896A100A615FB /* ProductSKUViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AC8227249896A100A615FB /* ProductSKUViewController.swift */; };
+		02AC822A249896A100A615FB /* ProductSKUViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02AC8228249896A100A615FB /* ProductSKUViewController.xib */; };
 		02ADC7CC239762E0008D4BED /* PaginatedListSelectorViewProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02ADC7CB239762E0008D4BED /* PaginatedListSelectorViewProperties.swift */; };
 		02ADC7CE23978EAA008D4BED /* PaginatedProductShippingClassListSelectorDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02ADC7CD23978EAA008D4BED /* PaginatedProductShippingClassListSelectorDataSourceTests.swift */; };
 		02ADC7D02398C8EB008D4BED /* UIColor+SystemColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02ADC7CF2398C8EB008D4BED /* UIColor+SystemColors.swift */; };
@@ -1063,6 +1065,8 @@
 		02A652FE246A908D00755A01 /* BottomSheetListSelectorPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetListSelectorPresenter.swift; sourceTree = "<group>"; };
 		02A65300246AA63600755A01 /* ProductDetailsFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailsFactory.swift; sourceTree = "<group>"; };
 		02A9A495244D84AB00757B99 /* ProductsSortOrderBottomSheetListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsSortOrderBottomSheetListSelectorCommandTests.swift; sourceTree = "<group>"; };
+		02AC8227249896A100A615FB /* ProductSKUViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSKUViewController.swift; sourceTree = "<group>"; };
+		02AC8228249896A100A615FB /* ProductSKUViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductSKUViewController.xib; sourceTree = "<group>"; };
 		02ADC7CB239762E0008D4BED /* PaginatedListSelectorViewProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedListSelectorViewProperties.swift; sourceTree = "<group>"; };
 		02ADC7CD23978EAA008D4BED /* PaginatedProductShippingClassListSelectorDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedProductShippingClassListSelectorDataSourceTests.swift; sourceTree = "<group>"; };
 		02ADC7CF2398C8EB008D4BED /* UIColor+SystemColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+SystemColors.swift"; sourceTree = "<group>"; };
@@ -1810,6 +1814,7 @@
 				0262DA5523A23AA40029AF30 /* Shipping Settings */,
 				45B9C63B23A8E4DB007FC4C5 /* Edit Price */,
 				265BCA032430E5EA004E53EE /* Edit Categories */,
+				02AC82262498967000A615FB /* Edit SKU */,
 				02162724237963AF000208D2 /* ProductFormViewController.swift */,
 				02162725237963AF000208D2 /* ProductFormViewController.xib */,
 				02F5F80F24613C930000613A /* ProductFormViewController+PresentationStyle.swift */,
@@ -2244,6 +2249,15 @@
 				0235BFDA246E99A700778909 /* ProductFormActionsFactory+NonEmptyBottomSheetActionsTests.swift */,
 			);
 			path = BottomSheetListSelector;
+			sourceTree = "<group>";
+		};
+		02AC82262498967000A615FB /* Edit SKU */ = {
+			isa = PBXGroup;
+			children = (
+				02AC8227249896A100A615FB /* ProductSKUViewController.swift */,
+				02AC8228249896A100A615FB /* ProductSKUViewController.xib */,
+			);
+			path = "Edit SKU";
 			sourceTree = "<group>";
 		};
 		02C0CD2823B5BAFB00F880B1 /* ImageService */ = {
@@ -4222,6 +4236,7 @@
 				CE0F17D022A8105800964A63 /* ReadMoreTableViewCell.xib in Resources */,
 				CE1D5A5A228A1C2C00DF3715 /* ProductReviewsTableViewCell.xib in Resources */,
 				B5A8F8AF20B88DCC00D211DE /* LoginPrologueViewController.xib in Resources */,
+				02AC822A249896A100A615FB /* ProductSKUViewController.xib in Resources */,
 				265BCA072430E62E004E53EE /* ProductCategoryListViewController.xib in Resources */,
 				0262DA5923A23AC80029AF30 /* ProductShippingSettingsViewController.xib in Resources */,
 				74E0F441211C9AE600A79CCE /* PeriodDataViewController.xib in Resources */,
@@ -4622,6 +4637,7 @@
 				B557652B20F681E800185843 /* StoreTableViewCell.swift in Sources */,
 				D8C11A4E22DD235F00D4A88D /* OrderDetailsResultsControllers.swift in Sources */,
 				D8C251D9230D256F00F49782 /* NoticePresenter.swift in Sources */,
+				02AC8229249896A100A615FB /* ProductSKUViewController.swift in Sources */,
 				74460D4022289B7600D7316A /* Coordinator.swift in Sources */,
 				B57C743D20F5493300EEFC87 /* AccountHeaderView.swift in Sources */,
 				D8C251D2230CA90200F49782 /* StoresManager.swift in Sources */,

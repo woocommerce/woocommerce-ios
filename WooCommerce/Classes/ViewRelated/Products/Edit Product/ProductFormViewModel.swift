@@ -198,7 +198,7 @@ extension ProductFormViewModel {
 
 private extension ProductFormViewModel {
     func isNameTheOnlyChange(oldProduct: Product, newProduct: Product) -> Bool {
-        let oldProductWithNewName = oldProduct.nameUpdated(name: newProduct.name)
+        let oldProductWithNewName = oldProduct.copy(name: newProduct.name)
         return oldProductWithNewName == newProduct && newProduct.name != oldProduct.name
     }
 }

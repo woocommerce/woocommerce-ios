@@ -41,7 +41,7 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
-                <outlet property="borderView" destination="40b-u3-ydU" id="cy8-5K-zlR"/>
+                <outlet property="borderView" destination="40b-u3-ydU" id="r5S-yD-GjJ"/>
                 <outlet property="textField" destination="Kgt-SJ-dhF" id="jbD-ye-JU3"/>
             </connections>
             <point key="canvasLocation" x="131.8840579710145" y="126.5625"/>

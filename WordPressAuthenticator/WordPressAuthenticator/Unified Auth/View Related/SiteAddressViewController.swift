@@ -45,11 +45,12 @@ final class SiteAddressViewController: LoginViewController {
     ///
     func registerTableViewCells() {
         let cells = [
-            InstructionTableViewCell.self
+            InstructionTableViewCell.reuseIdentifier: InstructionTableViewCell.loadNib(),
+            TextFieldTableViewCell.reuseIdentifier: TextFieldTableViewCell.loadNib()
         ]
 
-        for cell in cells {
-            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
+        for (reuseIdentifier, nib) in cells {
+            tableView.register(nib, forCellReuseIdentifier: reuseIdentifier)
         }
     }
 

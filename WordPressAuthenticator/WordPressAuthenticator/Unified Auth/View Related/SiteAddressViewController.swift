@@ -113,7 +113,7 @@ extension SiteAddressViewController: UITableViewDataSource {
     /// Configure the textfield cell
     ///
     func configureTextField(_ cell: TextFieldTableViewCell) {
-        cell.textField.placeholder = "Ummm hi"
+        cell.textField.placeholder = NSLocalizedString("example.com", comment: "Site Address placeholder")
     }
 }
 

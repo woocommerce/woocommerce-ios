@@ -17,13 +17,13 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Kgt-SJ-dhF">
-                        <rect key="frame" x="16" y="5" width="288" height="34"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Kgt-SJ-dhF">
+                        <rect key="frame" x="16" y="11" width="288" height="22"/>
+                        <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                         <textInputTraits key="textInputTraits"/>
                     </textField>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="40b-u3-ydU" userLabel="border view">
-                        <rect key="frame" x="0.0" y="43" width="320" height="1"/>
+                        <rect key="frame" x="16" y="37" width="304" height="1"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="1" id="CX4-ly-vLV"/>
@@ -32,8 +32,8 @@
                 </subviews>
                 <constraints>
                     <constraint firstItem="40b-u3-ydU" firstAttribute="top" secondItem="Kgt-SJ-dhF" secondAttribute="bottom" constant="4" id="KTF-m0-E4R"/>
+                    <constraint firstItem="40b-u3-ydU" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="N4M-XD-61a"/>
                     <constraint firstItem="Kgt-SJ-dhF" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="PEL-zz-m9F"/>
-                    <constraint firstItem="40b-u3-ydU" firstAttribute="centerX" secondItem="Kgt-SJ-dhF" secondAttribute="centerX" id="R4K-8z-Via"/>
                     <constraint firstItem="Kgt-SJ-dhF" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="YOF-RY-McU"/>
                     <constraint firstItem="Kgt-SJ-dhF" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="hwS-yc-5fF"/>
                     <constraint firstAttribute="trailing" secondItem="40b-u3-ydU" secondAttribute="trailing" id="ksv-Oh-C77"/>

@@ -73,7 +73,8 @@ extension SiteAddressViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: InstructionTableViewCell.reuseIdentifier, for: indexPath) as? InstructionTableViewCell else {
             fatalError()
         }
-        cell.instructionLabel?.text = "This sentence here."
+
+        cell.instructionLabel?.text = displayStrings.siteLoginInstructions
 
         return cell
     }

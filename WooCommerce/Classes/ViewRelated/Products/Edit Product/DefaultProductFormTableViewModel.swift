@@ -215,7 +215,7 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func skuRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.briefDescriptionImage
+        let icon = UIImage.inventoryImage
         let title = Constants.skuTitle
         let details = product.sku
 

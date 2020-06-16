@@ -821,8 +821,8 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func editSKU() {
-        let viewController = ProductSKUViewController(sku: product.sku) { [weak self] sku in
-            self?.onEditSKUCompletion(sku: sku)
+        let viewController = ProductInventorySettingsViewController(product: product, formType: .sku) { [weak self] data in
+            self?.onEditSKUCompletion(sku: data.sku)
         }
         show(viewController, sender: self)
     }

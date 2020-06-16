@@ -3,6 +3,16 @@ import Yosemite
 
 final class ProductInventorySettingsViewController: UIViewController {
 
+    /// The type of form with different inventory settings.
+    enum FormType {
+        /// Allows editing all inventory settings.
+        case inventory
+        /// Only SKU is editable.
+        case sku
+    }
+
+    private let formType: FormType
+
     @IBOutlet private weak var tableView: UITableView!
 
     private let product: Product
@@ -43,7 +53,8 @@ final class ProductInventorySettingsViewController: UIViewController {
     typealias Completion = (_ data: ProductInventoryEditableData) -> Void
     private let onCompletion: Completion
 
-    init(product: Product, completion: @escaping Completion) {
+    init(product: Product, formType: FormType = .inventory, completion: @escaping Completion) {
+        self.formType = formType
         self.onCompletion = completion
 
         self.product = product
@@ -75,6 +86,14 @@ final class ProductInventorySettingsViewController: UIViewController {
         reloadSections()
         handleSwipeBackGesture()
     }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        if formType == .sku {
+            configureSKUFormTextFieldAsFirstResponder()
+        }
+    }
 }
 
 // MARK: - Keyboard management
@@ -97,28 +116,41 @@ private extension ProductInventorySettingsViewController {
 //
 private extension ProductInventorySettingsViewController {
     func reloadSections() {
-        let stockSection: Section
-        if manageStockEnabled {
-            stockSection = Section(rows: [.manageStock, .stockQuantity, .backorders])
-        } else {
-            stockSection = Section(rows: [.manageStock, .stockStatus])
+        let sections: [Section]
+        switch formType {
+        case .inventory:
+            let stockSection: Section
+            if manageStockEnabled {
+                stockSection = Section(rows: [.manageStock, .stockQuantity, .backorders])
+            } else {
+                stockSection = Section(rows: [.manageStock, .stockStatus])
+            }
+
+            sections = [
+                createSKUSection(),
+                stockSection,
+                Section(rows: [.limitOnePerOrder])
+            ]
+        case .sku:
+            let footerText = NSLocalizedString("Helps to easily identify this product", comment: "Footer text in Edit Product SKU screen")
+            sections = [
+                createSKUSection(footer: footerText)
+            ]
         }
 
-        let skuSection: Section
-        if let error = error {
-            skuSection = Section(errorTitle: error.alertMessage,
-                                 rows: [.sku])
-        } else {
-            skuSection = Section(rows: [.sku])
-        }
-
-        sections = [
-            skuSection,
-            stockSection,
-            Section(rows: [.limitOnePerOrder])
-        ]
+        self.sections = sections
 
         tableView.reloadData()
+    }
+
+    func createSKUSection(footer: String? = nil) -> Section {
+        if let error = error {
+            return Section(errorTitle: error.alertMessage,
+                           rows: [.sku],
+                           footer: footer)
+        } else {
+            return Section(rows: [.sku], footer: footer)
+        }
     }
 }
 
@@ -127,7 +159,12 @@ private extension ProductInventorySettingsViewController {
 private extension ProductInventorySettingsViewController {
 
     func configureNavigationBar() {
-        title = NSLocalizedString("Inventory", comment: "Product Inventory Settings navigation title")
+        switch formType {
+        case .inventory:
+            title = NSLocalizedString("Inventory", comment: "Product Inventory Settings navigation title")
+        case .sku:
+            title = NSLocalizedString("SKU", comment: "Edit Product SKU navigation title")
+        }
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(completeUpdating))
     }
@@ -143,8 +180,19 @@ private extension ProductInventorySettingsViewController {
         registerTableViewCells()
         registerTableViewHeaderFooters()
 
+        tableView.sectionFooterHeight = UITableView.automaticDimension
+
         tableView.dataSource = self
         tableView.delegate = self
+    }
+
+    /// Since there is only a text field in this view for Product SKU form, the text field become the first responder immediately when the view did appear
+    ///
+    func configureSKUFormTextFieldAsFirstResponder() {
+        if let indexPath = sections.indexPathForRow(.sku) {
+            let cell = tableView.cellForRow(at: indexPath) as? TitleAndTextFieldTableViewCell
+            cell?.textFieldBecomeFirstResponder()
+        }
     }
 
     func registerTableViewCells() {
@@ -364,6 +412,10 @@ extension ProductInventorySettingsViewController: UITableViewDelegate {
         }
         return Constants.estimatedSectionHeaderHeight
     }
+
+    func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        return sections[section].footer
+    }
 }
 
 // MARK: - Cell configuration
@@ -391,7 +443,15 @@ private extension ProductInventorySettingsViewController {
     }
 
     func configureSKU(cell: TitleAndTextFieldTableViewCell) {
-        var viewModel = Product.createSKUViewModel(sku: sku) { [weak self] value in
+        let placeholder: String?
+        switch formType {
+        case .inventory:
+            placeholder = NSLocalizedString("Optional",
+                                            comment: "Placeholder of the cell text field in Product Inventory Settings > SKU")
+        case .sku:
+            placeholder = NSLocalizedString("Enter SKU", comment: "Placeholder of the cell text field in Edit Product SKU screen")
+        }
+        var viewModel = Product.createSKUViewModel(sku: sku, placeholder: placeholder) { [weak self] value in
             self?.handleSKUChange(value)
         }
         switch error {
@@ -469,11 +529,14 @@ private extension ProductInventorySettingsViewController {
     struct Section: RowIterable {
         let errorTitle: String?
         let rows: [Row]
+        let footer: String?
 
         init(errorTitle: String? = nil,
-             rows: [Row]) {
+             rows: [Row],
+             footer: String? = nil) {
             self.errorTitle = errorTitle
             self.rows = rows
+            self.footer = footer
         }
     }
 

@@ -1,6 +1,7 @@
 4.6
 -----
- 
+- [*] Fix an issue in the y-axis values on the dashboard charts where a negative value could show two minus signs.
+
 4.5
 -----
 - [**] Products: now you can update product images, product settings, viewing and sharing a product.

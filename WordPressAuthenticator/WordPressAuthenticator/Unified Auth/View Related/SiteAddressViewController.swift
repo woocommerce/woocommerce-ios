@@ -15,7 +15,7 @@ final class SiteAddressViewController: LoginViewController {
         return WordPressAuthenticator.shared.displayStrings
     }
 
-    private(set) var rows = [Row]()
+    private var rows = [Row]()
 
     // MARK: - View lifecycle
     override func viewDidLoad() {
@@ -32,6 +32,22 @@ final class SiteAddressViewController: LoginViewController {
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
     }
+
+    /// Style individual ViewController backgrounds, for now.
+    ///
+    override func styleBackground() {
+        guard let unifiedBackgroundColor = WordPressAuthenticator.shared.unifiedStyle?.viewControllerBackgroundColor else {
+            super.styleBackground()
+            return
+        }
+
+        view.backgroundColor = unifiedBackgroundColor
+    }
+}
+
+
+// MARK: - Private methods
+private extension SiteAddressViewController {
 
     /// Localize the "Continue" button
     ///
@@ -58,17 +74,6 @@ final class SiteAddressViewController: LoginViewController {
     ///
     func loadRows() {
         rows = [.instructions, .siteAddress]
-    }
-
-    /// Style individual ViewController backgrounds, for now.
-    ///
-    override func styleBackground() {
-        guard let unifiedBackgroundColor = WordPressAuthenticator.shared.unifiedStyle?.viewControllerBackgroundColor else {
-            super.styleBackground()
-            return
-        }
-
-        view.backgroundColor = unifiedBackgroundColor
     }
 }
 

@@ -118,13 +118,11 @@ extension WooAnalytics {
         userHasOptedIn = !optedOut
 
         if optedOut {
-            stopObservingNotifications()
             analyticsProvider.clearEvents()
             analyticsProvider.clearUsers()
             DDLogInfo("🔴 Tracking opt-out complete.")
         } else {
             refreshUserData()
-            startObservingNotifications()
             DDLogInfo("🔵 Tracking started.")
         }
     }
@@ -140,7 +138,6 @@ private extension WooAnalytics {
             return
         }
 
-        stopObservingNotifications()
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(trackApplicationOpened),
                                                name: UIApplication.didBecomeActiveNotification,
@@ -150,16 +147,6 @@ private extension WooAnalytics {
                                                selector: #selector(trackApplicationClosed),
                                                name: UIApplication.didEnterBackgroundNotification,
                                                object: nil)
-    }
-
-    func stopObservingNotifications() {
-        NotificationCenter.default.removeObserver(self,
-                                                  name: UIApplication.didBecomeActiveNotification,
-                                                  object: nil)
-
-        NotificationCenter.default.removeObserver(self,
-                                                  name: UIApplication.didEnterBackgroundNotification,
-                                                  object: nil)
     }
 
     @objc func trackApplicationOpened() {

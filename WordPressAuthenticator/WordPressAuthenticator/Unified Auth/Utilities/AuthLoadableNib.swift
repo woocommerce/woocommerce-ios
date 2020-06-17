@@ -11,9 +11,6 @@ public protocol AuthLoadableNib {
 
     /// Default bundle to load from.
     static var defaultBundle: Bundle { get }
-
-    /// Default nib created using nib name and bundle.
-    static var defaultNib: UINib { get }
 }
 
 
@@ -27,18 +24,10 @@ public extension AuthLoadableNib {
         return WordPressAuthenticator.bundle
     }
 
-    static var defaultNib: UINib {
-        return UINib(nibName: defaultNibName, bundle: defaultBundle)
-    }
-
-    /// Loads view from the default nib.
+    /// Loads the default nib.
     ///
-    /// - Returns: Loaded view.
-    static func loadNib() -> Self {
-        guard let result = defaultBundle.loadNibNamed(defaultNibName, owner: nil, options: nil)?.first as? Self else {
-            fatalError("[NibLoadable] Cannot load view from nib.")
-        }
-
-        return result
+    /// - Returns: the loaded nib.
+    static func loadNib() -> UINib {
+        return UINib(nibName: defaultNibName, bundle: defaultBundle)
     }
 }

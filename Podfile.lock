@@ -6,7 +6,7 @@ PODS:
     - AppAuth/ExternalUserAgent (= 1.3.1)
   - AppAuth/Core (1.3.1)
   - AppAuth/ExternalUserAgent (1.3.1)
-  - Automattic-Tracks-iOS (0.4.5-beta.1):
+  - Automattic-Tracks-iOS (0.4.5):
     - CocoaLumberjack (~> 3)
     - Reachability (~> 3)
     - Sentry (~> 4)
@@ -98,7 +98,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.8)
-  - Automattic-Tracks-iOS (~> 0.4.5-beta.1)
+  - Automattic-Tracks-iOS (~> 0.4.5)
   - Charts (~> 3.3.0)
   - CocoaLumberjack (~> 3.5)
   - CocoaLumberjack/Swift (~> 3.5)
@@ -161,7 +161,7 @@ SPEC CHECKSUMS:
   1PasswordExtension: f97cc80ae58053c331b2b6dc8843ba7103b33794
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
   AppAuth: 8803ba1aec6d00d9afd30093f82e600307eaa6ea
-  Automattic-Tracks-iOS: e2775ba445ad7753dd3939e1056e9fd98cf56f6b
+  Automattic-Tracks-iOS: 7475e8e77cd142ddd1d10c0a3a7a04ac39a8cdb3
   Charts: e0dd4cd8f257bccf98407b58183ddca8e8d5b578
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
   FormatterKit: 4b8f29acc9b872d5d12a63efb560661e8f2e1b98
@@ -198,6 +198,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: 3c414a7adb95dc559179b5ba50a67a83a3250bfe
+PODFILE CHECKSUM: c266e08211b58bd5f678df487b47b59bfb513599
 
 COCOAPODS: 1.9.1

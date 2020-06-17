@@ -100,6 +100,7 @@ extension SiteAddressViewController: UITableViewDataSource {
         case let cell as TextFieldTableViewCell:
             configureTextField(cell)
         default:
+            // TODO: return a blank cell when this is ready for review
             fatalError("Error: Did you forget to configure a custom cell?")
         }
     }

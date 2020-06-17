@@ -33,6 +33,9 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // TODO: remove before merging
+        setLargeTitleDisplayMode(.never)
+
         localizeControls()
         setupOnePasswordButtonIfNeeded()
     }

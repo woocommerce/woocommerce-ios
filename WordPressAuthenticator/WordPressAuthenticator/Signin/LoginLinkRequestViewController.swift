@@ -24,6 +24,10 @@ class LoginLinkRequestViewController: LoginViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // TODO: remove before merging
+        navigationItem.title = WordPressAuthenticator.shared.displayStrings.logInTitle
+        setLargeTitleDisplayMode(.automatic)
+
         localizeControls()
         configureUsePasswordButton()
 

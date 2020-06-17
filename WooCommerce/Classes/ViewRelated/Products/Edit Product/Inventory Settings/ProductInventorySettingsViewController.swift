@@ -182,7 +182,7 @@ private extension ProductInventorySettingsViewController {
         tableView.delegate = self
     }
 
-    /// Since there is only a text field in this view for Product SKU form, the text field become the first responder immediately when the view did appear
+    /// Since there is only a text field in this view for Product SKU form, the text field becomes the first responder immediately when the view did appear
     ///
     func configureSKUFormTextFieldAsFirstResponder() {
         if let indexPath = sections.indexPathForRow(.sku) {

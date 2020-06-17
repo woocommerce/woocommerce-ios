@@ -826,7 +826,7 @@ private extension ProductFormViewController {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        // TODO-2020: Product M3 analytics
+        // TODO-2000: Edit Product M3 analytics
         let hasChangedData = sku != product.sku
         guard hasChangedData else {
             return

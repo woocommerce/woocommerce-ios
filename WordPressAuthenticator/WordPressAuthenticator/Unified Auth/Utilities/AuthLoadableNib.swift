@@ -11,6 +11,9 @@ public protocol AuthLoadableNib {
 
     /// Default bundle to load from.
     static var defaultBundle: Bundle { get }
+
+    /// The UITableViewCell reuseIdentifier
+    static var reuseIdentifier: String { get }
 }
 
 
@@ -22,6 +25,10 @@ public extension AuthLoadableNib {
 
     static var defaultBundle: Bundle {
         return WordPressAuthenticator.bundle
+    }
+
+    static var reuseIdentifier: String {
+        return String(describing: self)
     }
 
     /// Loads the default nib.

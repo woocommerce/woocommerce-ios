@@ -5,8 +5,6 @@ import UIKit
 ///
 public class InstructionTableViewCell: UITableViewCell, AuthLoadableNib {
 
-    public static let reuseIdentifier = "InstructionTableViewCell"
-
     @IBOutlet public var instructionLabel: UILabel!
 
     public override func awakeFromNib() {

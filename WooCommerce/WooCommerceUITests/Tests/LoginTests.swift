@@ -31,13 +31,13 @@ class LoginTests: XCTestCase {
         XCTAssert(WelcomeScreen.isLoaded())
     }
 
-    func testEnterEmailAndSendLinkOrEnterPassword() {
+    func testEnterEmailToVerifySendLinkOrEnterPassword() {
         //enter email and click next to verify presence of send link and password option
         _ = WelcomeScreen()
         .selectLogin()
         .proceedWith(email: TestCredentials.emailAddress)
         .goBack()
-
+        .goBackToWelcomeScreen()
         XCTAssert(WelcomeScreen.isLoaded())
     }
 }

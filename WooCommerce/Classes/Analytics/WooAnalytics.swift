@@ -139,7 +139,8 @@ private extension WooAnalytics {
         guard userHasOptedIn == true else {
             return
         }
-
+        
+        stopObservingNotifications()
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(trackApplicationOpened),
                                                name: UIApplication.didBecomeActiveNotification,

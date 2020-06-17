@@ -13,6 +13,7 @@ class TextFieldTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        borderView.backgroundColor = WordPressAuthenticator.shared.unifiedStyle?.borderColor
+        let borderColor = WordPressAuthenticator.shared.unifiedStyle?.borderColor ?? WordPressAuthenticator.shared.style.primaryNormalBorderColor
+        borderView.backgroundColor = borderColor
     }
 }

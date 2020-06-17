@@ -467,6 +467,10 @@ public struct Product: Codable, GeneratedCopiable {
         try container.encode(slug, forKey: .slug)
         try container.encode(purchaseNote, forKey: .purchaseNote)
         try container.encode(menuOrder, forKey: .menuOrder)
+
+        // External link for external/affiliate products.
+        try container.encode(externalURL, forKey: .externalURL)
+        try container.encode(buttonText, forKey: .buttonText)
     }
 }
 

@@ -42,6 +42,7 @@
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="borderView" destination="40b-u3-ydU" id="nPo-29-w14"/>
+                <outlet property="borderWidth" destination="CX4-ly-vLV" id="B0f-nK-stu"/>
                 <outlet property="textField" destination="Kgt-SJ-dhF" id="jbD-ye-JU3"/>
             </connections>
             <point key="canvasLocation" x="131.8840579710145" y="126.5625"/>

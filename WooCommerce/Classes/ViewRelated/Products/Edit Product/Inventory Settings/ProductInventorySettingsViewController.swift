@@ -132,9 +132,8 @@ private extension ProductInventorySettingsViewController {
                 Section(rows: [.limitOnePerOrder])
             ]
         case .sku:
-            let footerText = NSLocalizedString("Helps to easily identify this product", comment: "Footer text in Edit Product SKU screen")
             sections = [
-                createSKUSection(footer: footerText)
+                createSKUSection()
             ]
         }
 
@@ -143,13 +142,12 @@ private extension ProductInventorySettingsViewController {
         tableView.reloadData()
     }
 
-    func createSKUSection(footer: String? = nil) -> Section {
+    func createSKUSection() -> Section {
         if let error = error {
             return Section(errorTitle: error.alertMessage,
-                           rows: [.sku],
-                           footer: footer)
+                           rows: [.sku])
         } else {
-            return Section(rows: [.sku], footer: footer)
+            return Section(rows: [.sku])
         }
     }
 }
@@ -179,8 +177,6 @@ private extension ProductInventorySettingsViewController {
 
         registerTableViewCells()
         registerTableViewHeaderFooters()
-
-        tableView.sectionFooterHeight = UITableView.automaticDimension
 
         tableView.dataSource = self
         tableView.delegate = self
@@ -412,10 +408,6 @@ extension ProductInventorySettingsViewController: UITableViewDelegate {
         }
         return Constants.estimatedSectionHeaderHeight
     }
-
-    func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        return sections[section].footer
-    }
 }
 
 // MARK: - Cell configuration
@@ -443,15 +435,7 @@ private extension ProductInventorySettingsViewController {
     }
 
     func configureSKU(cell: TitleAndTextFieldTableViewCell) {
-        let placeholder: String?
-        switch formType {
-        case .inventory:
-            placeholder = NSLocalizedString("Optional",
-                                            comment: "Placeholder of the cell text field in Product Inventory Settings > SKU")
-        case .sku:
-            placeholder = NSLocalizedString("Enter SKU", comment: "Placeholder of the cell text field in Edit Product SKU screen")
-        }
-        var viewModel = Product.createSKUViewModel(sku: sku, placeholder: placeholder) { [weak self] value in
+        var viewModel = Product.createSKUViewModel(sku: sku) { [weak self] value in
             self?.handleSKUChange(value)
         }
         switch error {
@@ -529,14 +513,11 @@ private extension ProductInventorySettingsViewController {
     struct Section: RowIterable {
         let errorTitle: String?
         let rows: [Row]
-        let footer: String?
 
         init(errorTitle: String? = nil,
-             rows: [Row],
-             footer: String? = nil) {
+             rows: [Row]) {
             self.errorTitle = errorTitle
             self.rows = rows
-            self.footer = footer
         }
     }
 

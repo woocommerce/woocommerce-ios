@@ -15,6 +15,7 @@ final class MockProduct {
                  know and we&#8217;ll send you our large group rate.</p>\n<p>GROUP RATES</p>\n<p>Reserve your event for up to 30 guests \
                  for $100.</p>\n
                  """,
+                 fullDescription: String? = "<p>This is the party room!</p>\n",
                  productShippingClass: ProductShippingClass? = nil,
                  backordersSetting: ProductBackordersSetting = .notAllowed,
                  productType: ProductType = .simple,
@@ -53,7 +54,7 @@ final class MockProduct {
                    statusKey: status.rawValue,
                    featured: featured,
                    catalogVisibilityKey: catalogVisibility.rawValue,
-                   fullDescription: "<p>This is the party room!</p>\n",
+                   fullDescription: fullDescription,
                    briefDescription: briefDescription,
                    sku: sku,
                    price: "0",

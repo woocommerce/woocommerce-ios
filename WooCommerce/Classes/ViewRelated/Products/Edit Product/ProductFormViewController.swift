@@ -607,11 +607,6 @@ private extension ProductFormViewController {
     func onEditProductNameCompletion(newName: String) {
         viewModel.updateName(newName)
     }
-
-    func isNameTheOnlyChange(oldProduct: Product, newProduct: Product) -> Bool {
-        let oldProductWithNewName = oldProduct.nameUpdated(name: newProduct.name)
-        return oldProductWithNewName == newProduct && newProduct.name != oldProduct.name
-    }
 }
 
 

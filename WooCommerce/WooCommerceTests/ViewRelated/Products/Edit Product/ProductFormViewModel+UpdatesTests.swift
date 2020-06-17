@@ -208,6 +208,23 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         XCTAssertEqual(viewModel.product.purchaseNote, purchaseNote)
         XCTAssertEqual(viewModel.product.menuOrder, menuOrder)
     }
+
+    func testUpdatingSKU() {
+        // Arrange
+        let product = MockProduct().product(sku: "")
+        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: product)
+        let viewModel = ProductFormViewModel(product: product,
+                                             productImageActionHandler: productImageActionHandler,
+                                             isEditProductsRelease2Enabled: true,
+                                             isEditProductsRelease3Enabled: false)
+
+        // Action
+        let sku = "woooo"
+        viewModel.updateSKU(sku)
+
+        // Assert
+        XCTAssertEqual(viewModel.product.sku, sku)
+    }
 }
 
 private extension ProductFormViewModel_UpdatesTests {

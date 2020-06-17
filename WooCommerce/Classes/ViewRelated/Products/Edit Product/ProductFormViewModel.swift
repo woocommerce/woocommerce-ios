@@ -173,9 +173,7 @@ extension ProductFormViewModel {
     }
 
     func updateSKU(_ sku: String?) {
-        // TODO: Copiable
-        product = productUpdater.inventorySettingsUpdated(sku: sku,
-                                                          manageStock: product.manageStock, soldIndividually: product.soldIndividually, stockQuantity: product.stockQuantity, backordersSetting: product.backordersSetting, stockStatus: product.productStockStatus)
+        product = product.copy(sku: sku)
     }
 
     func updateProductSettings(_ settings: ProductSettings) {

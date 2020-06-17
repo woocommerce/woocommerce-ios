@@ -3,7 +3,7 @@ import UIKit
 
 /// InstructionTableViewCell: a text label in a UITableViewCell.
 ///
-public class InstructionTableViewCell: UITableViewCell {
+public class InstructionTableViewCell: UITableViewCell, AuthLoadableNib {
 
     public static let reuseIdentifier = "InstructionTableViewCell"
 

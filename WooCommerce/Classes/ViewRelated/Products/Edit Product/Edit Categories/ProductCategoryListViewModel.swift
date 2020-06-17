@@ -28,7 +28,7 @@ final class ProductCategoryListViewModel {
 
     /// Product categories that will be eventually modified by the user
     ///
-    private var newSelectedCategories: [ProductCategory]
+    private var selectedCategories: [ProductCategory]
 
     /// Array of view models to be rendered by the View Controller.
     ///
@@ -59,7 +59,7 @@ final class ProductCategoryListViewModel {
     init(storesManager: StoresManager = ServiceLocator.stores, product: Product) {
         self.storesManager = storesManager
         self.product = product
-        newSelectedCategories = product.categories
+        selectedCategories = product.categories
     }
 
     /// Load existing categories from storage and fire the synchronize all categories action.
@@ -93,19 +93,19 @@ final class ProductCategoryListViewModel {
             return
         }
 
-        // If the category selected exist, remove it, otherwise, add it to `newSelectedCategories`.
-        if let indexCategory = newSelectedCategories.firstIndex(where: { $0.categoryID == categoryViewModel.categoryID}) {
-            newSelectedCategories.remove(at: indexCategory)
+        // If the category selected exist, remove it, otherwise, add it to `selectedCategories`.
+        if let indexCategory = selectedCategories.firstIndex(where: { $0.categoryID == categoryViewModel.categoryID}) {
+            selectedCategories.remove(at: indexCategory)
         }
         else if let category = resultController.fetchedObjects.first(where: { $0.categoryID == categoryViewModel.categoryID }) {
-            newSelectedCategories.append(category)
+            selectedCategories.append(category)
         }
 
         updateViewModelsArray()
     }
 
-    func hasCategoriesChanges() -> Bool {
-        return product.categories.sorted() != newSelectedCategories.sorted()
+    func hasUnsavedChanges() -> Bool {
+        return product.categories.sorted() != selectedCategories.sorted()
     }
 }
 
@@ -144,7 +144,7 @@ private extension ProductCategoryListViewModel {
     ///
     func updateViewModelsArray() {
         let fetchedCategories = resultController.fetchedObjects
-        categoryViewModels = CellViewModelBuilder.viewModels(from: fetchedCategories, selectedCategories: newSelectedCategories)
+        categoryViewModels = CellViewModelBuilder.viewModels(from: fetchedCategories, selectedCategories: selectedCategories)
     }
 }
 

@@ -37,15 +37,15 @@ final class ProductCategoryTableViewCell: UITableViewCell {
 }
 
 private extension ProductCategoryTableViewCell {
-    private func styleSelection() {
-        self.selectionStyle = .none
+    func styleSelection() {
+        selectionStyle = .none
     }
 
-    private func styleLabels() {
+    func styleLabels() {
         nameLabel.applyBodyStyle()
     }
 
-    private func styleCheckmark() {
+    func styleCheckmark() {
         tintColor = .primary
     }
 }

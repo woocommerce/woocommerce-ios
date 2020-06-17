@@ -13,10 +13,11 @@ final class LinkOrPasswordScreen: BaseScreen {
     private let backToWelcomeScreenButton: XCUIElement
 
     init() {
-        passwordOption = XCUIApplication().buttons[ElementStringIDs.passwordOption]
-        linkButton = XCUIApplication().buttons[ElementStringIDs.linkButton]
+        let app = XCUIApplication()
         backToWelcomeScreenButton = app.buttons[ElementStringIDs.backToWelcomeScreenButton]
-
+        passwordOption = app.buttons[ElementStringIDs.passwordOption]
+        linkButton = app.buttons[ElementStringIDs.linkButton]
+        
         super.init(element: passwordOption)
         XCTAssert(passwordOption.waitForExistence(timeout: 3))
         XCTAssert(linkButton.waitForExistence(timeout: 3))

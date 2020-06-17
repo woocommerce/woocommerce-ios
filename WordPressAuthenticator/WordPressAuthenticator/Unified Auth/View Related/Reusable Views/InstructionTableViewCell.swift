@@ -3,7 +3,9 @@ import UIKit
 
 /// InstructionTableViewCell: a text label in a UITableViewCell.
 ///
-public class InstructionTableViewCell: UITableViewCell, AuthLoadableNib {
+public class InstructionTableViewCell: UITableViewCell {
+
+    public static let reuseIdentifier = "InstructionTableViewCell"
 
     @IBOutlet public var instructionLabel: UILabel!
 

@@ -15,11 +15,4 @@ class TextFieldTableViewCell: UITableViewCell {
 
         borderView.backgroundColor = WordPressAuthenticator.shared.unifiedStyle?.borderColor
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
-    
 }

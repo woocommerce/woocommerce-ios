@@ -100,7 +100,7 @@ extension SiteAddressViewController: UITableViewDataSource {
         case let cell as TextFieldTableViewCell:
             configureTextField(cell)
         default:
-            UITableViewCell()
+            DDLogError("Error: Unidentified tableViewCell type found.")
         }
     }
 

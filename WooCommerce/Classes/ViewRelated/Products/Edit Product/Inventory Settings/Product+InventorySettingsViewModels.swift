@@ -8,6 +8,7 @@ extension Product {
         return TitleAndTextFieldTableViewCell.ViewModel(title: title,
                                                         text: sku,
                                                         placeholder: placeholder,
+                                                        textFieldAlignment: .leading,
                                                         onTextChange: onTextChange)
     }
 

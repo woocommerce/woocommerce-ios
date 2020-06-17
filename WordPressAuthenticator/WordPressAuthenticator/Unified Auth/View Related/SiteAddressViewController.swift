@@ -46,8 +46,47 @@ final class SiteAddressViewController: LoginViewController {
 }
 
 
-// MARK: - Private methods
+// MARK: - UITableViewDataSource
+extension SiteAddressViewController: UITableViewDataSource {
+    /// Returns the number of rows in a section
+    ///
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return rows.count
+    }
+
+    /// Configure cells delegate method
+    ///
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let row = rows[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
+        configure(cell, for: row, at: indexPath)
+
+        return cell
+    }
+}
+
+
+// MARK: - UITableViewDelegate conformance
+extension SiteAddressViewController: UITableViewDelegate {
+
+}
+
+
+// MARK: - Keyboard Notifications
+extension SiteAddressViewController: NUXKeyboardResponder {
+    @objc func handleKeyboardWillShow(_ notification: Foundation.Notification) {
+        keyboardWillShow(notification)
+    }
+
+    @objc func handleKeyboardWillHide(_ notification: Foundation.Notification) {
+        keyboardWillHide(notification)
+    }
+}
+
+
+
 private extension SiteAddressViewController {
+    // MARK: - Private methods
 
     /// Localize the "Continue" button
     ///
@@ -75,26 +114,6 @@ private extension SiteAddressViewController {
     func loadRows() {
         rows = [.instructions, .siteAddress]
     }
-}
-
-
-// MARK: - UITableViewDataSource
-extension SiteAddressViewController: UITableViewDataSource {
-    /// Returns the number of rows in a section
-    ///
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return rows.count
-    }
-
-    /// Configure cells delegate method
-    ///
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let row = rows[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
-        configure(cell, for: row, at: indexPath)
-
-        return cell
-    }
 
     /// Configure cells
     ///
@@ -120,29 +139,9 @@ extension SiteAddressViewController: UITableViewDataSource {
     func configureTextField(_ cell: TextFieldTableViewCell) {
         cell.textField.placeholder = NSLocalizedString("example.com", comment: "Site Address placeholder")
     }
-}
 
+    // MARK: - Private Constants
 
-// MARK: - UITableViewDelegate conformance
-extension SiteAddressViewController: UITableViewDelegate {
-
-}
-
-
-// MARK: - Keyboard Notifications
-extension SiteAddressViewController: NUXKeyboardResponder {
-    @objc func handleKeyboardWillShow(_ notification: Foundation.Notification) {
-        keyboardWillShow(notification)
-    }
-
-    @objc func handleKeyboardWillHide(_ notification: Foundation.Notification) {
-        keyboardWillHide(notification)
-    }
-}
-
-
-// MARK: - Constants
-extension SiteAddressViewController {
     /// Rows listed in the order they were created
     ///
     enum Row {

@@ -76,6 +76,10 @@ final class ProductsViewController: UIViewController {
         didSet {
             if sortOrder != oldValue {
                 resultsController.updateSortOrder(sortOrder)
+                
+                /// Reload data because `updateSortOrder` generates a new `predicate` which calls `performFetch`
+                tableView.reloadData()
+                
                 syncingCoordinator.resynchronize {}
             }
         }

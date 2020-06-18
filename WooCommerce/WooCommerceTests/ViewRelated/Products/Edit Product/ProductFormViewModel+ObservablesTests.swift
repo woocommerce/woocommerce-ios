@@ -62,6 +62,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
                                           backordersSetting: product.backordersSetting,
                                           stockStatus: product.productStockStatus)
         viewModel.updateShippingSettings(weight: product.weight, dimensions: product.dimensions, shippingClass: product.productShippingClass)
+        viewModel.updateProductCategories(product.categories)
     }
 
     /// When only product name is updated, the product name observable should be triggered but no the product observable.

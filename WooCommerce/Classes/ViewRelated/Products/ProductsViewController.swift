@@ -397,6 +397,8 @@ private extension ProductsViewController {
         } catch  {
             CrashLogging.logError(error)
         }
+        
+        tableView.reloadData()
     }
 }
 

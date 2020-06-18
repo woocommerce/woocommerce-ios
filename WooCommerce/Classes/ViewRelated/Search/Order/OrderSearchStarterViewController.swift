@@ -37,6 +37,9 @@ final class OrderSearchStarterViewController: UIViewController, KeyboardFrameAdj
         configureTableView()
 
         viewModel.activateAndForwardUpdates(to: tableView)
+
+        // Reload because viewModel.activate executes performFetch
+        tableView.reloadData()
     }
 
     private func configureTableView() {

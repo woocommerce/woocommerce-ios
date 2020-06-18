@@ -138,7 +138,8 @@ extension ProductCategoryListViewController {
     }
 
     @objc private func addButtonTapped() {
-        //TODO: open add category screen
+        let addCategoryViewController = AddProductCategoryViewController()
+        present(addCategoryViewController, animated: true, completion: nil)
     }
 
     private func presentBackNavigationActionSheet() {

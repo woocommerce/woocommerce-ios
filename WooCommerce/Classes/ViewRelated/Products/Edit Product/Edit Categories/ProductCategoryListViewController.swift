@@ -13,7 +13,7 @@ final class ProductCategoryListViewController: UIViewController {
 
     // Completion callback
     //
-    typealias Completion = (_ productCategories: [ProductCategory]) -> Void
+    typealias Completion = (_ categories: [ProductCategory]) -> Void
     private let onCompletion: Completion
 
     init(product: Product, completion: @escaping Completion) {

@@ -290,6 +290,8 @@ private extension SearchViewController {
         } catch  {
             CrashLogging.logError(error)
         }
+        
+        tableView.reloadData()
     }
 
     /// Create and add `starterViewController` to the `view.`

@@ -64,7 +64,7 @@ final class ProductFormViewController: UIViewController {
         self.viewModel = ProductFormViewModel(product: product,
                                               productImageActionHandler: productImageActionHandler,
                                               isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
-                                              isEditProductsRelease3Enabled: isEditProductsRelease2Enabled)
+                                              isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
         self.tableViewModel = DefaultProductFormTableViewModel(product: product,
                                                                actionsFactory: viewModel.actionsFactory,
                                                                currency: currency)

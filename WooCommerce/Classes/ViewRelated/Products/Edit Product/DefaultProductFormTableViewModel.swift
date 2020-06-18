@@ -70,7 +70,6 @@ private extension DefaultProductFormTableViewModel {
 private extension DefaultProductFormTableViewModel {
     func priceSettingsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.priceImage
-        let title = Constants.priceSettingsTitle
 
         var priceDetails = [String]()
 
@@ -102,11 +101,9 @@ private extension DefaultProductFormTableViewModel {
                 let formattedDate = dateFormatter.string(from: dateOnSaleEnd)
                 priceDetails.append(String.localizedStringWithFormat(Constants.saleDateFormatTo, formattedDate))
             }
-        } else if product.price.isEmpty == false {
-            let formattedPrice = currencyFormatter.formatAmount(product.regularPrice ?? product.price, with: currency) ?? ""
-            priceDetails.append(String.localizedStringWithFormat(Constants.regularPriceFormat, formattedPrice))
         }
 
+        let title = priceDetails.isEmpty ? Constants.addPriceSettingsTitle: Constants.priceSettingsTitle
         let details = priceDetails.isEmpty ? nil: priceDetails.joined(separator: "\n")
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
@@ -228,8 +225,10 @@ private extension DefaultProductFormTableViewModel {
 
 private extension DefaultProductFormTableViewModel {
     enum Constants {
+        static let addPriceSettingsTitle = NSLocalizedString("Add Price",
+                                                             comment: "Title for adding the price settings row on Product main screen")
         static let priceSettingsTitle = NSLocalizedString("Price",
-                                                          comment: "Title of the Price Settings row on Product main screen")
+                                                          comment: "Title for editing the price settings row on Product main screen")
         static let inventorySettingsTitle = NSLocalizedString("Inventory",
                                                               comment: "Title of the Inventory Settings row on Product main screen")
         static let shippingSettingsTitle = NSLocalizedString("Shipping",

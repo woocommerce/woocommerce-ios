@@ -20,6 +20,7 @@ final class SiteAddressViewController: LoginViewController {
         super.viewDidLoad()
 
         localizePrimaryButton()
+        registerTableViewCells()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -29,12 +30,28 @@ final class SiteAddressViewController: LoginViewController {
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
     }
 
+    /// Localize the "Continue" button
+    ///
     func localizePrimaryButton() {
         let primaryTitle = displayStrings.continueButtonTitle
         submitButton?.setTitle(primaryTitle, for: .normal)
         submitButton?.setTitle(primaryTitle, for: .highlighted)
     }
 
+    /// Registers all of the available TableViewCells
+    ///
+    func registerTableViewCells() {
+        let cells = [
+            InstructionTableViewCell.reuseIdentifier: InstructionTableViewCell.loadNib(),
+        ]
+
+        for (reuseIdentifier, nib) in cells {
+            tableView.register(nib, forCellReuseIdentifier: reuseIdentifier)
+        }
+    }
+
+    /// Style individual ViewController backgrounds, for now.
+    ///
     override func styleBackground() {
         guard let unifiedBackgroundColor = WordPressAuthenticator.shared.unifiedStyle?.viewControllerBackgroundColor else {
             super.styleBackground()
@@ -53,7 +70,13 @@ extension SiteAddressViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return tableView.dequeueReusableCell(withIdentifier: "TextFieldCell") ?? UITableViewCell()
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: InstructionTableViewCell.reuseIdentifier, for: indexPath) as? InstructionTableViewCell else {
+            return UITableViewCell()
+        }
+
+        cell.instructionLabel?.text = displayStrings.siteLoginInstructions
+
+        return cell
     }
 }
 

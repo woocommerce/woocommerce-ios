@@ -172,6 +172,10 @@ extension ProductFormViewModel {
         product = product.copy(briefDescription: briefDescription)
     }
 
+    func updateSKU(_ sku: String?) {
+        product = product.copy(sku: sku)
+    }
+
     func updateProductSettings(_ settings: ProductSettings) {
         product = product.copy(slug: settings.slug,
                                statusKey: settings.status.rawValue,

@@ -808,7 +808,7 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     func editCategories() {
         let categoryListViewController = ProductCategoryListViewController(product: product) { (productCategories) in
-            
+
         }
         show(categoryListViewController, sender: self)
     }

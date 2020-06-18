@@ -120,20 +120,8 @@ extension ProductCategoryListViewController {
     }
 
     @objc private func doneButtonTapped() {
-        // TODO-2020: Submit category changes
+        onCompletion(viewModel.selectedCategories)
     }
-//    @objc private func completeUpdating() {
-//        viewModel.completeUpdating(onCompletion: { [weak self] (regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass) in
-//            self?.onCompletion(regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass)
-//            }, onError: { [weak self] error in
-//                switch error {
-//                case .salePriceWithoutRegularPrice:
-//                    self?.displaySalePriceWithoutRegularPriceErrorNotice()
-//                case .salePriceHigherThanRegularPrice:
-//                    self?.displaySalePriceErrorNotice()
-//                }
-//        })
-//    }
 
     private func presentBackNavigationActionSheet() {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in

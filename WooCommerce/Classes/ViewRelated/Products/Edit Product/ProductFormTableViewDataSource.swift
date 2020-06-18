@@ -164,7 +164,7 @@ private extension ProductFormTableViewDataSource {
         }
         switch row {
         case .price(let viewModel), .inventory(let viewModel), .shipping(let viewModel), .categories(let viewModel),
-             .briefDescription(let viewModel):
+             .briefDescription(let viewModel), .externalURL(let viewModel), .sku(let viewModel):
             configureSettings(cell: cell, viewModel: viewModel)
         }
     }

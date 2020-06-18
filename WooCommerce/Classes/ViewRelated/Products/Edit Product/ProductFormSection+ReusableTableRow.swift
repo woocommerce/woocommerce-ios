@@ -52,7 +52,7 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
 extension ProductFormSection.SettingsRow: ReusableTableRow {
     var cellTypes: [UITableViewCell.Type] {
         switch self {
-        case .price, .inventory, .shipping, .categories, .briefDescription:
+        case .price, .inventory, .shipping, .categories, .briefDescription, .externalURL, .sku:
             return [ImageAndTitleAndTextTableViewCell.self]
         }
     }
@@ -63,7 +63,7 @@ extension ProductFormSection.SettingsRow: ReusableTableRow {
 
     private var cellType: UITableViewCell.Type {
         switch self {
-        case .price, .inventory, .shipping, .categories, .briefDescription:
+        case .price, .inventory, .shipping, .categories, .briefDescription, .externalURL, .sku:
             return ImageAndTitleAndTextTableViewCell.self
         }
     }

@@ -127,6 +127,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.inventoryImage)
     }
 
+    func testLinkImageIsNotNil() {
+        XCTAssertNotNil(UIImage.linkImage)
+    }
+
     func testLoginMagicLinkImageIsNotNil() {
         XCTAssertNotNil(UIImage.loginMagicLinkImage)
     }

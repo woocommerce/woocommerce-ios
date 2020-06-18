@@ -10,6 +10,9 @@ enum ProductFormEditAction {
     case shippingSettings
     case categories
     case briefDescription
+    // Affiliate products only
+    case sku
+    case externalURL
 }
 
 /// Creates actions for different sections/UI on the product form.
@@ -17,22 +20,6 @@ struct ProductFormActionsFactory {
     private let product: Product
     private let isEditProductsRelease2Enabled: Bool
     private let isEditProductsRelease3Enabled: Bool
-
-    /// All the editable actions in the settings section given the product and feature switches.
-    private var allSettingsSectionActions: [ProductFormEditAction] {
-        let shouldShowShippingSettingsRow = product.isShippingEnabled
-        let shouldShowBriefDescriptionRow = isEditProductsRelease2Enabled
-        let shouldShowCategoriesRow = isEditProductsRelease3Enabled
-
-        let actions: [ProductFormEditAction?] = [
-            .priceSettings,
-            shouldShowShippingSettingsRow ? .shippingSettings: nil,
-            .inventorySettings,
-            shouldShowCategoriesRow ? .categories: nil,
-            shouldShowBriefDescriptionRow ? .briefDescription: nil
-        ]
-        return actions.compactMap { $0 }
-    }
 
     init(product: Product,
          isEditProductsRelease2Enabled: Bool,
@@ -63,16 +50,60 @@ struct ProductFormActionsFactory {
         return visibleSettingsSectionActions()
     }
 
-    /// Retruns an array of actions that are visible in the product form bottom sheet.
+    /// Returns an array of actions that are visible in the product form bottom sheet.
     func bottomSheetActions() -> [ProductFormBottomSheetAction] {
-        return allSettingsSectionActions.filter { settingsSectionActions().contains($0) == false }
+        return allSettingsSectionActions().filter { settingsSectionActions().contains($0) == false }
             .compactMap { ProductFormBottomSheetAction(productFormAction: $0) }
     }
 }
 
 private extension ProductFormActionsFactory {
+    /// All the editable actions in the settings section given the product and feature switches.
+    func allSettingsSectionActions() -> [ProductFormEditAction] {
+        switch product.productType {
+        case .simple:
+            return allSettingsSectionActionsForSimpleProduct()
+        case .affiliate:
+            return allSettingsSectionActionsForAffiliateProduct()
+        default:
+            assertionFailure("Product of type \(product.productType) should not be editable.")
+            return []
+        }
+    }
+
+    func allSettingsSectionActionsForSimpleProduct() -> [ProductFormEditAction] {
+        let shouldShowShippingSettingsRow = product.isShippingEnabled
+        let shouldShowBriefDescriptionRow = isEditProductsRelease2Enabled
+        let shouldShowCategoriesRow = isEditProductsRelease3Enabled
+
+        let actions: [ProductFormEditAction?] = [
+            .priceSettings,
+            shouldShowShippingSettingsRow ? .shippingSettings: nil,
+            .inventorySettings,
+            shouldShowCategoriesRow ? .categories: nil,
+            shouldShowBriefDescriptionRow ? .briefDescription: nil
+        ]
+        return actions.compactMap { $0 }
+    }
+
+    func allSettingsSectionActionsForAffiliateProduct() -> [ProductFormEditAction] {
+        let shouldShowBriefDescriptionRow = isEditProductsRelease2Enabled
+        let shouldShowCategoriesRow = isEditProductsRelease3Enabled
+
+        let actions: [ProductFormEditAction?] = [
+            .priceSettings,
+            .externalURL,
+            .sku,
+            shouldShowCategoriesRow ? .categories: nil,
+            shouldShowBriefDescriptionRow ? .briefDescription: nil
+        ]
+        return actions.compactMap { $0 }
+    }
+}
+
+private extension ProductFormActionsFactory {
     func visibleSettingsSectionActions() -> [ProductFormEditAction] {
-        return allSettingsSectionActions.compactMap({ $0 }).filter({ isVisibleInSettingsSection(action: $0) })
+        return allSettingsSectionActions().compactMap({ $0 }).filter({ isVisibleInSettingsSection(action: $0) })
     }
 
     func isVisibleInSettingsSection(action: ProductFormEditAction) -> Bool {
@@ -90,6 +121,12 @@ private extension ProductFormActionsFactory {
             return product.categories.isNotEmpty
         case .briefDescription:
             return product.briefDescription.isNilOrEmpty == false
+        // Affiliate products only.
+        case .externalURL:
+            // The external URL action is always visible in the settings section for an affiliate product.
+            return true
+        case .sku:
+            return product.sku?.isNotEmpty == true
         default:
             return false
         }

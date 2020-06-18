@@ -74,7 +74,7 @@ extension AddProductCategoryViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = sections[indexPath.section].rows[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
-        //configure(cell, for: row, at: indexPath)
+        configure(cell, for: row, at: indexPath)
 
         return cell
     }
@@ -84,6 +84,32 @@ extension AddProductCategoryViewController: UITableViewDataSource {
 //
 extension AddProductCategoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+
+    }
+}
+
+// MARK: - Cell configuration
+//
+private extension AddProductCategoryViewController {
+    /// Cells currently configured in the order they appear on screen
+    ///
+    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+        switch cell {
+        case let cell as TitleAndTextFieldTableViewCell where row == .title:
+            configureTitle(cell: cell)
+        case let cell as SettingTitleAndValueTableViewCell where row == .parentCategory:
+            configureParentCategory(cell: cell)
+        default:
+            fatalError()
+            break
+        }
+    }
+
+    func configureTitle(cell: TitleAndTextFieldTableViewCell) {
+
+    }
+
+    func configureParentCategory(cell: SettingTitleAndValueTableViewCell) {
 
     }
 }

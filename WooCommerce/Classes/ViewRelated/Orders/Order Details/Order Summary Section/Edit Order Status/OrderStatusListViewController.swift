@@ -71,6 +71,8 @@ final class OrderStatusListViewController: UIViewController {
         } catch {
             CrashLogging.logError(error)
         }
+
+        tableView.reloadData()
     }
 
     private func preselectStatusIfPossible() {

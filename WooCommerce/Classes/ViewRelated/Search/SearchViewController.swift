@@ -3,6 +3,8 @@ import UIKit
 import Yosemite
 import WordPressUI
 
+import class AutomatticTracks.CrashLogging
+
 
 /// SearchViewController: Displays the Search Interface for A Generic Model
 ///
@@ -282,7 +284,12 @@ private extension SearchViewController {
     ///
     func configureResultsController() {
         resultsController.startForwardingEvents(to: tableView)
-        try? resultsController.performFetch()
+        
+        do {
+            try resultsController.performFetch()
+        } catch  {
+            CrashLogging.logError(error)
+        }
     }
 
     /// Create and add `starterViewController` to the `view.`

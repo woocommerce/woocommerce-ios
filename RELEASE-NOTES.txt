@@ -1,6 +1,7 @@
 4.6
 -----
 - [*] Fix an issue in the y-axis values on the dashboard charts where a negative value could show two minus signs.
+- [*] When a simple product doesn't have a price set, the price row on the product details screen now shows "Add Price" placeholder instead of an empty regular price.
 
 4.5
 -----

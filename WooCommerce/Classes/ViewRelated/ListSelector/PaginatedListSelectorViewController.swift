@@ -2,6 +2,8 @@ import UIKit
 import WordPressUI
 import Yosemite
 
+import class AutomatticTracks.CrashLogging
+
 /// A generic data source for the paginated list selector UI `PaginatedListSelectorViewController`.
 ///
 protocol PaginatedListSelectorDataSource {
@@ -387,6 +389,10 @@ private extension PaginatedListSelectorViewController {
             onReload()
         }
 
-        try? resultsController.performFetch()
+        do {
+            try resultsController.performFetch()
+        } catch  {
+            CrashLogging.logError(error)
+        }
     }
 }

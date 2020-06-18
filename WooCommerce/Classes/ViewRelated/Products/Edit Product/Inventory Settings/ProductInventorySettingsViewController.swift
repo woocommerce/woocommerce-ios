@@ -144,8 +144,7 @@ private extension ProductInventorySettingsViewController {
 
     func createSKUSection() -> Section {
         if let error = error {
-            return Section(errorTitle: error.alertMessage,
-                           rows: [.sku])
+            return Section(errorTitle: error.alertMessage, rows: [.sku])
         } else {
             return Section(rows: [.sku])
         }

@@ -18,7 +18,7 @@ final class MockProduct {
                  fullDescription: String? = "<p>This is the party room!</p>\n",
                  productShippingClass: ProductShippingClass? = nil,
                  backordersSetting: ProductBackordersSetting = .notAllowed,
-                 externalURL: String? = "http://somewhere.com",
+                 externalURL: String? = "https://example.com",
                  productType: ProductType = .simple,
                  manageStock: Bool = false,
                  sku: String? = "",

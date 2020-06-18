@@ -15,6 +15,7 @@ final class ProductCategoryTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         applyDefaultBackgroundStyle()
+        styleSelection()
         styleLabels()
         styleCheckmark()
     }
@@ -26,20 +27,26 @@ final class ProductCategoryTableViewCell: UITableViewCell {
         leadingNameLabelConstraint.constant = Constants.baseNameLabelMargin
     }
 
-    private func styleLabels() {
-        nameLabel.applyBodyStyle()
-    }
-
-    private func styleCheckmark() {
-        tintColor = .primary
-    }
-
     /// Configure the cell with the given ViewModel
     ///
     func configure(with viewModel: ProductCategoryCellViewModel) {
         nameLabel.text = viewModel.name
         accessoryType = viewModel.isSelected ? .checkmark : .none
         leadingNameLabelConstraint.constant = Constants.baseNameLabelMargin + (Constants.nameLabelIndentationFactor * CGFloat(viewModel.indentationLevel))
+    }
+}
+
+private extension ProductCategoryTableViewCell {
+    func styleSelection() {
+        selectionStyle = .none
+    }
+
+    func styleLabels() {
+        nameLabel.applyBodyStyle()
+    }
+
+    func styleCheckmark() {
+        tintColor = .primary
     }
 }
 

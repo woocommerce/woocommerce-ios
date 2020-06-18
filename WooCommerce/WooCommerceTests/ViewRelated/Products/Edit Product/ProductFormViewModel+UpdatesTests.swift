@@ -225,6 +225,25 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         // Assert
         XCTAssertEqual(viewModel.product.sku, sku)
     }
+
+    func testUpdatingExternalLink() {
+        // Arrange
+        let product = MockProduct().product(sku: "")
+        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: product)
+        let viewModel = ProductFormViewModel(product: product,
+                                             productImageActionHandler: productImageActionHandler,
+                                             isEditProductsRelease2Enabled: true,
+                                             isEditProductsRelease3Enabled: false)
+
+        // Action
+        let externalURL = "woo.com"
+        let buttonText = "Try!"
+        viewModel.updateExternalLink(externalURL: externalURL, buttonText: buttonText)
+
+        // Assert
+        XCTAssertEqual(viewModel.product.externalURL, externalURL)
+        XCTAssertEqual(viewModel.product.buttonText, buttonText)
+    }
 }
 
 private extension ProductFormViewModel_UpdatesTests {

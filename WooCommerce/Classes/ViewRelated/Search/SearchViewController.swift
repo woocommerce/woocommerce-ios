@@ -284,13 +284,13 @@ private extension SearchViewController {
     ///
     func configureResultsController() {
         resultsController.startForwardingEvents(to: tableView)
-        
+
         do {
             try resultsController.performFetch()
-        } catch  {
+        } catch {
             CrashLogging.logError(error)
         }
-        
+
         tableView.reloadData()
     }
 

@@ -391,10 +391,10 @@ private extension PaginatedListSelectorViewController {
 
         do {
             try resultsController.performFetch()
-        } catch  {
+        } catch {
             CrashLogging.logError(error)
         }
-        
+
         tableView.reloadData()
     }
 }

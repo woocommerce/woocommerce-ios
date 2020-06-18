@@ -174,7 +174,7 @@ private extension ProductVariationsViewController {
         } catch {
             CrashLogging.logError(error)
         }
-        
+
         tableView.reloadData()
     }
 }

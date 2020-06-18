@@ -76,10 +76,10 @@ final class ProductsViewController: UIViewController {
         didSet {
             if sortOrder != oldValue {
                 resultsController.updateSortOrder(sortOrder)
-                
+
                 /// Reload data because `updateSortOrder` generates a new `predicate` which calls `performFetch`
                 tableView.reloadData()
-                
+
                 syncingCoordinator.resynchronize {}
             }
         }
@@ -126,7 +126,7 @@ final class ProductsViewController: UIViewController {
 
                 /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
                 tableView.reloadData()
-                
+
                 syncingCoordinator.resynchronize {}
             }
         }
@@ -402,10 +402,10 @@ private extension ProductsViewController {
 
         do {
             try resultsController.performFetch()
-        } catch  {
+        } catch {
             CrashLogging.logError(error)
         }
-        
+
         tableView.reloadData()
     }
 }

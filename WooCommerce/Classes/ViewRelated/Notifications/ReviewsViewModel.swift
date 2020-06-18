@@ -56,6 +56,9 @@ final class ReviewsViewModel {
         } catch {
             CrashLogging.logError(error)
         }
+
+        // Reload table because observeReviews() executes performFetch()
+        tableView.reloadData()
     }
 
     func refreshResults() {

@@ -119,6 +119,10 @@ final class ProductsViewController: UIViewController {
                                                   stockStatus: filters.stockStatus,
                                                   productStatus: filters.productStatus,
                                                   productType: filters.productType)
+
+                /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
+                tableView.reloadData()
+                
                 syncingCoordinator.resynchronize {}
             }
         }

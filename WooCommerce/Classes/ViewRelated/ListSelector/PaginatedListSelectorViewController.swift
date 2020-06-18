@@ -394,5 +394,7 @@ private extension PaginatedListSelectorViewController {
         } catch  {
             CrashLogging.logError(error)
         }
+        
+        tableView.reloadData()
     }
 }

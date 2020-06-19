@@ -3,7 +3,7 @@ import UIKit
 
 /// TextButtonTableViewCell: a plain text button with default styles.
 ///
-class TextButtonTableViewCell: UITableViewCell {
+final class TextButtonTableViewCell: UITableViewCell {
 
     public static let reuseIdentifier = "TextButtonTableViewCell"
 

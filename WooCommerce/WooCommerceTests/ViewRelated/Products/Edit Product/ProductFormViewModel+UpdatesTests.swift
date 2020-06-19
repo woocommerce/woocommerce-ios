@@ -228,7 +228,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
 
     func testUpdatingExternalLink() {
         // Arrange
-        let product = MockProduct().product(sku: "")
+        let product = MockProduct().product()
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: product)
         let viewModel = ProductFormViewModel(product: product,
                                              productImageActionHandler: productImageActionHandler,

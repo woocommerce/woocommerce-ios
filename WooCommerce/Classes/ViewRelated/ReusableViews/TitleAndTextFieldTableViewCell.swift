@@ -9,7 +9,7 @@ final class TitleAndTextFieldTableViewCell: UITableViewCell {
         let placeholder: String?
         let state: State
         let keyboardType: UIKeyboardType
-        let textFieldAlignment: TextFieldContentAlignment
+        let textFieldAlignment: TextFieldTextAlignment
         let onTextChange: ((_ text: String?) -> Void)?
 
         enum State {
@@ -22,7 +22,7 @@ final class TitleAndTextFieldTableViewCell: UITableViewCell {
              placeholder: String?,
              state: State = .normal,
              keyboardType: UIKeyboardType = .default,
-             textFieldAlignment: TextFieldContentAlignment,
+             textFieldAlignment: TextFieldTextAlignment,
              onTextChange: ((_ text: String?) -> Void)?) {
             self.title = title
             self.text = text

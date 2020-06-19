@@ -168,6 +168,10 @@ extension ProductFormViewModel {
                                productShippingClass: shippingClass)
     }
 
+    func updateProductCategories(_ categories: [ProductCategory]) {
+        product = product.copy(categories: categories)
+    }
+
     func updateBriefDescription(_ briefDescription: String) {
         product = product.copy(briefDescription: briefDescription)
     }

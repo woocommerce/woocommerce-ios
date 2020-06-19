@@ -28,7 +28,7 @@ final class ProductCategoryListViewModel {
 
     /// Product categories that will be eventually modified by the user
     ///
-    private var selectedCategories: [ProductCategory]
+    private(set) var selectedCategories: [ProductCategory]
 
     /// Array of view models to be rendered by the View Controller.
     ///

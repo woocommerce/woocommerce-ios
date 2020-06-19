@@ -807,8 +807,22 @@ private extension ProductFormViewController {
 
 private extension ProductFormViewController {
     func editCategories() {
-        let categoryListViewController = ProductCategoryListViewController(product: product)
+        let categoryListViewController = ProductCategoryListViewController(product: product) { [weak self] (categories) in
+            self?.onEditCategoriesCompletion(categories: categories)
+        }
         show(categoryListViewController, sender: self)
+    }
+
+    func onEditCategoriesCompletion(categories: [ProductCategory]) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+        //TODO: Edit Product M3 analytics
+        let hasChangedData = categories.sorted() != product.categories.sorted()
+        guard hasChangedData else {
+            return
+        }
+        viewModel.updateProductCategories(categories)
     }
 }
 

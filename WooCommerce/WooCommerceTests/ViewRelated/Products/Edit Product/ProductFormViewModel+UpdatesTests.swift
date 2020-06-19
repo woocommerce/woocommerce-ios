@@ -157,6 +157,27 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         XCTAssertEqual(viewModel.product.images, newImages)
     }
 
+    func testUpdatingProductCategories() {
+        // Arrange
+        let product = MockProduct().product()
+        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: product)
+        let viewModel = ProductFormViewModel(product: product,
+                                             productImageActionHandler: productImageActionHandler,
+                                             isEditProductsRelease2Enabled: true,
+                                             isEditProductsRelease3Enabled: true)
+
+        // Action
+        let categoryID = Int64(1234)
+        let parentID = Int64(1)
+        let name = "Test category"
+        let slug = "test-category"
+        let newCategories = [ProductCategory(categoryID: categoryID, siteID: product.siteID, parentID: parentID, name: name, slug: slug)]
+        viewModel.updateProductCategories(newCategories)
+
+        // Assert
+        XCTAssertEqual(viewModel.product.categories, newCategories)
+    }
+
     func testUpdatingBriefDescription() {
         // Arrange
         let product = MockProduct().product()

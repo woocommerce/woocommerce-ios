@@ -21,7 +21,7 @@ final class TextButtonTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        button.setTitleColor(WordPressAuthenticator.shared.unifiedStyle?.plainTextButtonColor, for: .normal)
-        button.setTitleColor(WordPressAuthenticator.shared.unifiedStyle?.plainTextButtonHighlightColor, for: .highlighted)
+        button.setTitleColor(WordPressAuthenticator.shared.unifiedStyle?.textButtonColor, for: .normal)
+        button.setTitleColor(WordPressAuthenticator.shared.unifiedStyle?.textButtonHighlightColor, for: .highlighted)
     }
 }

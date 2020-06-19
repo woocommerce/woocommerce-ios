@@ -42,10 +42,6 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     override open func viewDidLoad() {
         super.viewDidLoad()
 
-        // TODO: remove before merging
-        navigationItem.title = WordPressAuthenticator.shared.displayStrings.logInTitle
-        setLargeTitleDisplayMode(.always)
-
         localizeControls()
         setupOnePasswordButtonIfNeeded()
 

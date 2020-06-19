@@ -13,12 +13,9 @@ final class ProductExternalLinkViewController: UIViewController {
     private var externalURL: String?
     private var buttonText: String
 
-    private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
-        let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
-            self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
-        }
-        return keyboardFrameObserver
-    }()
+    private lazy var keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
+        self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
+    }
 
     typealias Completion = (_ externalURL: String?, _ buttonText: String) -> Void
     private let onCompletion: Completion
@@ -51,7 +48,7 @@ final class ProductExternalLinkViewController: UIViewController {
         configureNavigation()
         configureMainView()
         configureTableView()
-        startListeningToNotifications()
+        startObservingKeyboardNotifications()
     }
 }
 
@@ -191,7 +188,7 @@ private extension ProductExternalLinkViewController {
 private extension ProductExternalLinkViewController {
     /// Registers for all of the related Notifications
     ///
-    func startListeningToNotifications() {
+    func startObservingKeyboardNotifications() {
         keyboardFrameObserver.startObservingKeyboardFrame()
     }
 }

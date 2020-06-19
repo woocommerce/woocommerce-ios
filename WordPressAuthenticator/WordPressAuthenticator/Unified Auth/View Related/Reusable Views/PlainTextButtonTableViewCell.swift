@@ -5,6 +5,8 @@ import UIKit
 ///
 class PlainTextButtonTableViewCell: UITableViewCell {
 
+    public static let reuseIdentifier = "PlainTextButtonTableViewCell"
+
     @IBOutlet private weak var button: UIButton!
 
     public var buttonText: String? {

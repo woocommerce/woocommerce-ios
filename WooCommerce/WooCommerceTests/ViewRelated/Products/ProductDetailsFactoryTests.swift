@@ -76,6 +76,42 @@ final class ProductDetailsFactoryTests: XCTestCase {
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
 
+    // MARK: Grouped product type
+
+    func testFactoryCreatesProductFormForGroupedProductWhenProductsRelease3IsOn() {
+        // Arrange
+        let featureFlagService = MockFeatureFlagService(isEditProductsRelease2On: true, isEditProductsRelease3On: true)
+        let product = MockProduct().product(productType: .grouped)
+        let expectation = self.expectation(description: "Wait for loading Products feature switch from app settings")
+
+        // Action
+        ProductDetailsFactory.productDetails(product: product,
+                                             presentationStyle: .navigationStack,
+                                             featureFlagService: featureFlagService) { viewController in
+                                                // Assert
+                                                XCTAssertTrue(viewController is ProductFormViewController)
+                                                expectation.fulfill()
+        }
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+    }
+
+    func testFactoryCreatesReadonlyProductDetailsForGroupedProductWhenProductsRelease3IsOff() {
+        // Arrange
+        let featureFlagService = MockFeatureFlagService(isEditProductsRelease2On: true, isEditProductsRelease3On: false)
+        let product = MockProduct().product(productType: .grouped)
+        let expectation = self.expectation(description: "Wait for loading Products feature switch from app settings")
+
+        // Action
+        ProductDetailsFactory.productDetails(product: product,
+                                             presentationStyle: .navigationStack,
+                                             featureFlagService: featureFlagService) { viewController in
+                                                // Assert
+                                                XCTAssertTrue(viewController is ProductDetailsViewController)
+                                                expectation.fulfill()
+        }
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+    }
+
     // MARK: Non-editable product types
 
     func testFactoryCreatesReadonlyProductDetailsForNonEditableProductWhenProductsFeatureSwitchIsOn() {

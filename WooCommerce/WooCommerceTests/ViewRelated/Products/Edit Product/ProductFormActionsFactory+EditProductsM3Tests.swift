@@ -106,6 +106,26 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editSKU, .editCategories, .editBriefDescription]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
+
+    func testViewModelForGroupedProduct() {
+        // Arrange
+        let product = Fixtures.groupedProduct
+
+        // Action
+        let factory = ProductFormActionsFactory(product: product,
+                                                isEditProductsRelease2Enabled: true,
+                                                isEditProductsRelease3Enabled: true)
+
+        // Assert
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
+        XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
+
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.groupedProducts]
+        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
+
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editSKU, .editCategories, .editBriefDescription]
+        XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
+    }
 }
 
 private extension ProductFormActionsFactory_EditProductsM3Tests {
@@ -147,5 +167,9 @@ private extension ProductFormActionsFactory_EditProductsM3Tests {
                                                             productType: .affiliate,
                                                             sku: "",
                                                             categories: [])
+        // Grouped product, missing grouped products/sku/brief description/categories
+        static let groupedProduct = MockProduct().product(briefDescription: "",
+                                                          productType: .grouped,
+                                                          sku: "")
     }
 }

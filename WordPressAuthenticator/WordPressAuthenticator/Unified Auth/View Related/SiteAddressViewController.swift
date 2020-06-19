@@ -101,7 +101,8 @@ private extension SiteAddressViewController {
     func registerTableViewCells() {
         let cells = [
             InstructionTableViewCell.reuseIdentifier: InstructionTableViewCell.loadNib(),
-            TextFieldTableViewCell.reuseIdentifier: TextFieldTableViewCell.loadNib()
+            TextFieldTableViewCell.reuseIdentifier: TextFieldTableViewCell.loadNib(),
+            TextButtonTableViewCell.reuseIdentifier: TextButtonTableViewCell.loadNib()
         ]
 
         for (reuseIdentifier, nib) in cells {
@@ -123,6 +124,8 @@ private extension SiteAddressViewController {
             configureInstruction(cell)
         case let cell as TextFieldTableViewCell:
             configureTextField(cell)
+        case let cell as TextButtonTableViewCell:
+            configureTextButton(cell)
         default:
             DDLogError("Error: Unidentified tableViewCell type found.")
         }
@@ -140,6 +143,12 @@ private extension SiteAddressViewController {
         cell.textField.placeholder = NSLocalizedString("example.com", comment: "Site Address placeholder")
     }
 
+    /// Configure the plain text button cell
+    ///
+    func configureTextButton(_ cell: TextButtonTableViewCell) {
+        cell.buttonText = displayStrings.resetPasswordButtonTitle
+    }
+
     // MARK: - Private Constants
 
     /// Rows listed in the order they were created
@@ -147,6 +156,7 @@ private extension SiteAddressViewController {
     enum Row {
         case instructions
         case siteAddress
+        case resetPassword
 
         var reuseIdentifier: String {
             switch self {
@@ -154,6 +164,8 @@ private extension SiteAddressViewController {
                 return InstructionTableViewCell.reuseIdentifier
             case .siteAddress:
                 return TextFieldTableViewCell.reuseIdentifier
+            case .resetPassword:
+                return TextButtonTableViewCell.reuseIdentifier
             }
         }
     }

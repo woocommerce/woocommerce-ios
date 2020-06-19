@@ -221,20 +221,19 @@ private extension DefaultProductFormTableViewModel {
         let title = Constants.skuTitle
         let details = product.sku
 
-        
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
                                                         details: details,
                                                         numberOfLinesForDetails: 1)
     }
-    
+
     // MARK: Grouped products only
-    
+
     func groupedProductsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.widgetsImage
         let title = product.groupedProducts.isEmpty ? Constants.addGroupedProductsTitle: Constants.groupedProductsTitle
         let details: String
-        
+
         switch product.groupedProducts.count {
         case 1:
             details = String.localizedStringWithFormat(Constants.singularGroupedProductFormat, product.groupedProducts.count)
@@ -243,7 +242,7 @@ private extension DefaultProductFormTableViewModel {
         default:
             details = ""
         }
-        
+
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
                                                         details: details,
@@ -275,7 +274,7 @@ private extension DefaultProductFormTableViewModel {
                               comment: "Title for adding grouped products row on Product main screen for a grouped product")
         static let groupedProductsTitle = NSLocalizedString("Grouped products",
                                                             comment: "Title for editing grouped products row on Product main screen for a grouped product")
-        
+
         // Price
         static let regularPriceFormat = NSLocalizedString("Regular price: %@",
                                                           comment: "Format of the regular price on the Price Settings row")
@@ -311,7 +310,7 @@ private extension DefaultProductFormTableViewModel {
         // Categories
         static let categoriesPlaceholder = NSLocalizedString("Uncategorized",
                                                              comment: "Placeholder of the Product Categories row on Product main screen")
-        
+
         // Grouped products
         static let singularGroupedProductFormat = NSLocalizedString("%ld product",
                                                                     comment: "Format of the number of grouped products in singular form")

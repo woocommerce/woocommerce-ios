@@ -545,6 +545,9 @@ extension ProductFormViewController: UITableViewDelegate {
                 // TODO-2000 Edit Product M3 analytics
                 editSKU()
                 break
+            case .groupedProducts:
+                // TODO-2199: implement grouped products editing action
+                break
             }
         }
     }

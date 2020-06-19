@@ -4,31 +4,11 @@ import Yosemite
 /// Reflects the UI state associated with a stats version.
 ///
 /// - initial: UI with the initial stats version from preferences in storage
-/// - eligible: when reaching an eligible stats version without any other potential state changes
-/// - v3ShownV4Eligible: when v3 is currently shown, and the site is also eligible for v4
-/// - v4RevertedToV3: when v4 is currently shown, and the UI is reverted to v3
-enum StatsVersionState {
+#warning("Delete since we can just use StatsVersion")
+enum StatsVersionState: Equatable {
+    /// if initial(v3) = then show banner “Upgrade to keep seeing your stats”
+    /// if initial(v4) = then default to stats
     case initial(statsVersion: StatsVersion)
-    case eligible(statsVersion: StatsVersion)
-    case v3ShownV4Eligible
-    case v4RevertedToV3
-}
-
-extension StatsVersionState: Equatable {
-    static func == (lhs: StatsVersionState, rhs: StatsVersionState) -> Bool {
-        switch (lhs, rhs) {
-        case let (.initial(lhsStatsVersion), .initial(rhsStatsVersion)):
-            return lhsStatsVersion == rhsStatsVersion
-        case let (.eligible(lhsStatsVersion), .eligible(rhsStatsVersion)):
-            return lhsStatsVersion == rhsStatsVersion
-        case (.v3ShownV4Eligible, .v3ShownV4Eligible):
-            return true
-        case (.v4RevertedToV3, .v4RevertedToV3):
-            return true
-        default:
-            return false
-        }
-    }
 }
 
 /// Coordinates the stats version state changes from app settings and availability stores, and v3/v4 banner actions.
@@ -89,22 +69,20 @@ final class StatsVersionStateCoordinator {
     }
 }
 
+#warning("Delete these methods later")
 extension StatsVersionStateCoordinator: StatsV3ToV4BannerActionHandler {
     func dismissV3ToV4Banner() {
-        let visibilityAction = AppSettingsAction.setStatsVersionBannerVisibility(banner: .v3ToV4, shouldShowBanner: false)
-        ServiceLocator.stores.dispatch(visibilityAction)
-        state = .eligible(statsVersion: .v3)
+
     }
 
     func statsV4ButtonPressed() {
-        state = .eligible(statsVersion: .v4)
+
     }
 }
 
+#warning("Delete these methods later")
 extension StatsVersionStateCoordinator: StatsV4ToV3BannerActionHandler {
     func dismissV4ToV3Banner() {
-        let visibilityAction = AppSettingsAction.setStatsVersionBannerVisibility(banner: .v4ToV3, shouldShowBanner: false)
-        ServiceLocator.stores.dispatch(visibilityAction)
-        state = .eligible(statsVersion: .v3)
+
     }
 }

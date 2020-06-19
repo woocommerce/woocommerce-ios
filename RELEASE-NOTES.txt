@@ -1,6 +1,13 @@
+4.6
+-----
+- [*] Fix an issue in the y-axis values on the dashboard charts where a negative value could show two minus signs.
+- [*] When a simple product doesn't have a price set, the price row on the product details screen now shows "Add Price" placeholder instead of an empty regular price.
+
 4.5
 -----
+- [**] Products: now you can update product images, product settings, viewing and sharing a product.
 - [*] In Order Details, the item subtotal is now shown on the right side instead of the quantity. The quantity can still be viewed underneath the product name.
+- [*] In Order Details, SKU was removed from the Products List. It is still shown when fulfilling the order or viewing the product details.
 - [*] Polish the loading state on the product variations screen.
 - [*] When opening a simple product from outside of the Products tab (e.g. from Top Performers section or an order), the product name and ellipsis menu (if the Products feature switch is enabled) should be visible in the navigation bar.
  

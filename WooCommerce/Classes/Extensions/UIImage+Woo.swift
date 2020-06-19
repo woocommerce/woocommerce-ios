@@ -224,6 +224,12 @@ extension UIImage {
         return UIImage.gridicon(.image)
     }
 
+    /// Link Image
+    ///
+    static var linkImage: UIImage {
+        return UIImage.gridicon(.link)
+    }
+
     /// Login magic link
     ///
     static var loginMagicLinkImage: UIImage {
@@ -335,6 +341,12 @@ extension UIImage {
     ///
     static var spamImage: UIImage {
         return UIImage.gridicon(.spam)
+    }
+
+    /// Scan Icon
+    ///
+    static var scanImage: UIImage {
+        return UIImage(named: "icon-scan")!
     }
 
     /// Returns a star icon with the given size

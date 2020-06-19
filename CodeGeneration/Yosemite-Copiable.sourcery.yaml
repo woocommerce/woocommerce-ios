@@ -1,0 +1,7 @@
+project: 
+    file: ../Yosemite/Yosemite.xcodeproj
+    target: 
+        name: Yosemite
+templates:
+    - Models+Copiable.swifttemplate
+output: ../Yosemite/Yosemite/Model/Copiable/

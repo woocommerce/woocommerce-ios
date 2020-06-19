@@ -170,7 +170,8 @@ extension OrderDetailsViewModel {
     ///
     func registerTableViewHeaderFooters(_ tableView: UITableView) {
         let headersAndFooters = [
-            TwoColumnSectionHeaderView.self
+            TwoColumnSectionHeaderView.self,
+            PrimarySectionHeaderView.self
         ]
 
         for kind in headersAndFooters {

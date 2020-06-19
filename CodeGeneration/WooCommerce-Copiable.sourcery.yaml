@@ -1,0 +1,7 @@
+project: 
+    file: ../WooCommerce/WooCommerce.xcodeproj
+    target: 
+        name: WooCommerce
+templates:
+    - Models+Copiable.swifttemplate
+output: ../WooCommerce/Classes/Copiable/

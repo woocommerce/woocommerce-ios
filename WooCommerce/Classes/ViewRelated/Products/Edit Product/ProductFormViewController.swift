@@ -64,7 +64,7 @@ final class ProductFormViewController: UIViewController {
         self.viewModel = ProductFormViewModel(product: product,
                                               productImageActionHandler: productImageActionHandler,
                                               isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
-                                              isEditProductsRelease3Enabled: isEditProductsRelease2Enabled)
+                                              isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
         self.tableViewModel = DefaultProductFormTableViewModel(product: product,
                                                                actionsFactory: viewModel.actionsFactory,
                                                                currency: currency)
@@ -284,6 +284,9 @@ private extension ProductFormViewController {
                                                                             self?.editCategories()
                                                                         case .editBriefDescription:
                                                                             self?.editBriefDescription()
+                                                                        case .editSKU:
+                                                                            self?.editSKU()
+                                                                            break
                                                                         }
                                                                     }
         }
@@ -534,6 +537,14 @@ extension ProductFormViewController: UITableViewDelegate {
             case .briefDescription:
                 ServiceLocator.analytics.track(.productDetailViewShortDescriptionTapped)
                 editBriefDescription()
+            case .externalURL:
+                // TODO-2000 Edit Product M3 analytics
+                // TODO-2200: implement external URL editing action
+                break
+            case .sku:
+                // TODO-2000 Edit Product M3 analytics
+                editSKU()
+                break
             }
         }
     }
@@ -606,11 +617,6 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     func onEditProductNameCompletion(newName: String) {
         viewModel.updateName(newName)
-    }
-
-    func isNameTheOnlyChange(oldProduct: Product, newProduct: Product) -> Bool {
-        let oldProductWithNewName = oldProduct.nameUpdated(name: newProduct.name)
-        return oldProductWithNewName == newProduct && newProduct.name != oldProduct.name
     }
 }
 
@@ -801,8 +807,45 @@ private extension ProductFormViewController {
 
 private extension ProductFormViewController {
     func editCategories() {
-        let categoryListViewController = ProductCategoryListViewController(product: product)
+        let categoryListViewController = ProductCategoryListViewController(product: product) { [weak self] (categories) in
+            self?.onEditCategoriesCompletion(categories: categories)
+        }
         show(categoryListViewController, sender: self)
+    }
+
+    func onEditCategoriesCompletion(categories: [ProductCategory]) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+        //TODO: Edit Product M3 analytics
+        let hasChangedData = categories.sorted() != product.categories.sorted()
+        guard hasChangedData else {
+            return
+        }
+        viewModel.updateProductCategories(categories)
+    }
+}
+
+// MARK: Action - Edit Product SKU
+//
+private extension ProductFormViewController {
+    func editSKU() {
+        let viewController = ProductInventorySettingsViewController(product: product, formType: .sku) { [weak self] data in
+            self?.onEditSKUCompletion(sku: data.sku)
+        }
+        show(viewController, sender: self)
+    }
+
+    func onEditSKUCompletion(sku: String?) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+        // TODO-2000: Edit Product M3 analytics
+        let hasChangedData = sku != product.sku
+        guard hasChangedData else {
+            return
+        }
+        viewModel.updateSKU(sku)
     }
 }
 

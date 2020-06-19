@@ -6,10 +6,21 @@ import Storage
 // MARK: - ProductStore
 //
 public class ProductStore: Store {
+    private let remote: ProductsEndpointsProviding
 
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.newDerivedStorage()
     }()
+
+    public override convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+        let remote = ProductsRemote(network: network)
+        self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+    }
+
+    init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: ProductsEndpointsProviding) {
+        self.remote = remote
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
 
     /// Registers for supported Actions.
     ///
@@ -183,8 +194,6 @@ private extension ProductStore {
     /// Retrieves the product associated with a given siteID + productID (if any!).
     ///
     func retrieveProduct(siteID: Int64, productID: Int64, onCompletion: @escaping (Networking.Product?, Error?) -> Void) {
-        let remote = ProductsRemote(network: network)
-
         remote.loadProduct(for: siteID, productID: productID) { [weak self] result in
             guard let self = self else {
                 return

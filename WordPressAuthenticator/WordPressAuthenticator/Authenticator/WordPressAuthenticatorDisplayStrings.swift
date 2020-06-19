@@ -16,16 +16,22 @@ public struct WordPressAuthenticatorDisplayStrings {
     ///
     public let continueButtonTitle: String
 
+    /// Strings: secondary call-to-action button titles.
+    ///
+    public let resetPasswordButtonTitle: String
+
     /// Designated initializer.
     ///
     public init(emailLoginInstructions: String,
                 jetpackLoginInstructions: String,
                 siteLoginInstructions: String,
-                continueButtonTitle: String) {
+                continueButtonTitle: String,
+                resetPasswordButtonTitle: String) {
         self.emailLoginInstructions = emailLoginInstructions
         self.jetpackLoginInstructions = jetpackLoginInstructions
         self.siteLoginInstructions = siteLoginInstructions
         self.continueButtonTitle = continueButtonTitle
+        self.resetPasswordButtonTitle = resetPasswordButtonTitle
     }
 }
 
@@ -39,7 +45,9 @@ public extension WordPressAuthenticatorDisplayStrings {
             siteLoginInstructions: NSLocalizedString("Enter the address of the WordPress site you'd like to connect.",
                                                      comment: "Instruction text on the login's site addresss screen."),
             continueButtonTitle: NSLocalizedString("Continue",
-                                                    comment: "The button title text when there is a next step for logging in or signing up.")
+                                                    comment: "The button title text when there is a next step for logging in or signing up."),
+            resetPasswordButtonTitle: NSLocalizedString("Reset your password",
+                                                        comment: "The secondary call-to-action button title text, for when the user can't remember their password.")
         )
     }
 }

@@ -391,6 +391,12 @@ extension UIImage {
         return UIImage.gridicon(.trash)
     }
 
+    /// Widgets Icon
+    ///
+    static var widgetsImage: UIImage {
+        return UIImage(named: "icon-widgets")!.withRenderingMode(.alwaysTemplate)
+    }
+
     /// Creates a bitmap image of the Woo "bubble" logo based on a vector image in our asset catalog.
     ///
     /// - Parameters:

@@ -5,8 +5,21 @@ import UIKit
 ///
 class PlainTextButtonTableViewCell: UITableViewCell {
 
+    @IBOutlet private weak var button: UIButton!
+
+    public var buttonText: String? {
+        get {
+            return button.titleLabel?.text
+        }
+        set {
+            button.setTitle(newValue, for: .normal)
+        }
+    }
+
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+
+        button.setTitleColor(WordPressAuthenticator.shared.unifiedStyle?.plainTextButtonColor, for: .normal)
+        button.setTitleColor(WordPressAuthenticator.shared.unifiedStyle?.plainTextButtonHighlightColor, for: .highlighted)
     }
 }

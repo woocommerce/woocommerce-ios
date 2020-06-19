@@ -3,7 +3,7 @@ import UIKit
 
 /// TextFieldTableViewCell: a textfield with a custom border line in a UITableViewCell.
 ///
-class TextFieldTableViewCell: UITableViewCell {
+final class TextFieldTableViewCell: UITableViewCell {
 
     public static let reuseIdentifier = "TextFieldTableViewCell"
 
@@ -11,9 +11,9 @@ class TextFieldTableViewCell: UITableViewCell {
         return 1.0 / UIScreen.main.scale
     }
 
-    @IBOutlet var borderView: UIView!
-    @IBOutlet var borderWidth: NSLayoutConstraint!
-    @IBOutlet var textField: UITextField!
+    @IBOutlet private weak var borderView: UIView!
+    @IBOutlet private weak var borderWidth: NSLayoutConstraint!
+    @IBOutlet weak var textField: UITextField!
 
     override func awakeFromNib() {
         super.awakeFromNib()

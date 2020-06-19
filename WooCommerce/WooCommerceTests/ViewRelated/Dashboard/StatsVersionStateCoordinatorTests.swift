@@ -12,25 +12,29 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
     }
 
     func testWhenV4IsAvailableWhileNoStatsVersionWasShownBefore() {
+        // Given
         mockStoresManager = MockupStatsVersionStoresManager(sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = true
         ServiceLocator.setStores(mockStoresManager)
 
         let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3), .v3ShownV4Eligible]
-        let expectation = self.expectation(description: "Wait for states to match")
-        expectation.expectedFulfillmentCount = 1
 
+        // When
         var states: [StatsVersionState] = []
-        let stateCoordinator = StatsVersionStateCoordinator(siteID: 134)
-        stateCoordinator.onStateChange = { _, state in
-            states.append(state)
-            if states.count >= expectedStates.count {
-                XCTAssertEqual(states, expectedStates)
-                expectation.fulfill()
+        waitForExpectation { exp in
+            let stateCoordinator = StatsVersionStateCoordinator(siteID: 134)
+            stateCoordinator.onStateChange = { _, state in
+                states.append(state)
+                if states.count >= expectedStates.count {
+                    exp.fulfill()
+                }
             }
+
+            stateCoordinator.loadLastShownVersionAndCheckV4Eligibility()
         }
-        stateCoordinator.loadLastShownVersionAndCheckV4Eligibility()
-        waitForExpectations(timeout: 0.1, handler: nil)
+
+        // Then
+        XCTAssertEqual(states, expectedStates)
     }
 
     func testWhenV4IsUnavailableWhileNoStatsVersionWasShownBefore() {

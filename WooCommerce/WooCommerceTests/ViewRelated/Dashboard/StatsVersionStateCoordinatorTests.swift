@@ -123,7 +123,7 @@ private extension StatsVersionStateCoordinatorTests {
     func checkStatsVersionAndWait(expectedStatesCount: Int) -> [StatsVersionState] {
         var states: [StatsVersionState] = []
 
-        waitForExpectation { exp in
+        waitForExpectation(timeout: 1.0) { exp in
             let stateCoordinator = StatsVersionStateCoordinator(siteID: 134)
             stateCoordinator.onStateChange = { _, state in
                 states.append(state)

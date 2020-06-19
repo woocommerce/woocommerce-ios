@@ -1,11 +1,11 @@
 import UIKit
 
 
-/// PlainTextButtonTableViewCell: a plain text button with default styles.
+/// TextButtonTableViewCell: a plain text button with default styles.
 ///
-class PlainTextButtonTableViewCell: UITableViewCell {
+class TextButtonTableViewCell: UITableViewCell {
 
-    public static let reuseIdentifier = "PlainTextButtonTableViewCell"
+    public static let reuseIdentifier = "TextButtonTableViewCell"
 
     @IBOutlet private weak var button: UIButton!
 

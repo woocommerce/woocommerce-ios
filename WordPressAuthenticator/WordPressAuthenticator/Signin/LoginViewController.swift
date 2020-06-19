@@ -37,6 +37,9 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
 
     override open func viewDidLoad() {
         super.viewDidLoad()
+        
+        navigationController?.navigationBar.prefersLargeTitles = false
+        
         displayError(message: "")
         setupNavBarIcon()
         styleBackground()
@@ -215,9 +218,8 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
 }
 
 // MARK: - Sync Helpers
-//
-extension LoginViewController {
 
+extension LoginViewController {
 
     /// Signals the Main App to synchronize the specified WordPress.com account. On completion, the epilogue will be pushed (if needed).
     ///
@@ -335,7 +337,6 @@ extension LoginViewController {
     }
 }
 
-
 // MARK: - Social Sign In Handling
 
 extension LoginViewController {
@@ -360,8 +361,24 @@ extension LoginViewController {
     
 }
 
+// MARK: - Navigation Bar Large Titles
+
+extension LoginViewController {
+    func setLargeTitleDisplayMode(_ largeTitleDisplayMode: UINavigationItem.LargeTitleDisplayMode) {
+
+        // prefersLargeTitles needs to always be true if large titles are used anywhere.
+        // In order to show/hide large titles, toggle largeTitleDisplayMode instead of prefersLargeTitles.
+        // This allows the large titles to hide/show correctly, and animate properly when doing so,
+        // when going from a view with large titles to one without, and vice versa.
+        // Ref https://www.morningswiftui.com/blog/fix-large-title-animation-on-ios13
+
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = largeTitleDisplayMode
+    }
+}
 
 // MARK: - LoginSocialError delegate methods
+
 extension LoginViewController: LoginSocialErrorViewControllerDelegate {
     private func cleanupAfterSocialErrors() {
         dismiss(animated: true) {}

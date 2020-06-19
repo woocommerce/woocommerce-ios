@@ -125,8 +125,9 @@ private extension ProductExternalLinkViewController {
     }
 
     func configureExternalURL(cell: TitleAndTextFieldTableViewCell) {
-        let title = NSLocalizedString("Product URL", comment: "")
-        let placeholder = NSLocalizedString("Enter URL", comment: "")
+        let title = NSLocalizedString("Product URL", comment: "Title of the text field for editing the external URL for an external/affiliate product")
+        let placeholder = NSLocalizedString("Enter URL",
+                                            comment: "Placeholder of the text field for editing the external URL for an external/affiliate product")
         let viewModel = TitleAndTextFieldTableViewCell.ViewModel(title: title,
                                                                  text: externalURL,
                                                                  placeholder: placeholder,
@@ -139,8 +140,9 @@ private extension ProductExternalLinkViewController {
     }
 
     func configureButtonText(cell: TitleAndTextFieldTableViewCell) {
-        let title = NSLocalizedString("Button Text", comment: "")
-        let placeholder = NSLocalizedString("Enter button text", comment: "")
+        let title = NSLocalizedString("Button Text", comment: "Title of the text field for editing the button text for an external/affiliate product")
+        let placeholder = NSLocalizedString("Buy product",
+                                            comment: "Placeholder of the text field for editing the button text for an external/affiliate product")
         let viewModel = TitleAndTextFieldTableViewCell.ViewModel(title: title,
                                                                  text: buttonText,
                                                                  placeholder: placeholder,

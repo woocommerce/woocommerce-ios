@@ -18,8 +18,8 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         mockStoresManager.isStatsV4Available = true
         ServiceLocator.setStores(mockStoresManager)
 
-        let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3), .v3ShownV4Eligible]
         // V3 is returned because it is the default value if `statsVersionLastShown` is `nil`
+        let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3), .initial(statsVersion: .v4)]
 
         // When
         let actualStates = checkStatsVersionAndWait(expectedStatesCount: expectedStates.count)
@@ -36,7 +36,7 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         ServiceLocator.setStores(mockStoresManager)
 
         // V3 is returned because initially it is the default value if `statsVersionLastShown` is `nil`
-        let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3), .eligible(statsVersion: .v3)]
+        let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3), .initial(statsVersion: .v3)]
 
         // When
         let actualStates = checkStatsVersionAndWait(expectedStatesCount: expectedStates.count)
@@ -53,7 +53,7 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         mockStoresManager.isStatsV4Available = true
         ServiceLocator.setStores(mockStoresManager)
 
-        let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3), .v3ShownV4Eligible]
+        let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3), .initial(statsVersion: .v4)]
 
         // When
         let actualStates = checkStatsVersionAndWait(expectedStatesCount: expectedStates.count)
@@ -70,7 +70,7 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         mockStoresManager.isStatsV4Available = false
         ServiceLocator.setStores(mockStoresManager)
 
-        let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3), .eligible(statsVersion: .v3)]
+        let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3), .initial(statsVersion: .v4)]
 
         // When
         let actualStates = checkStatsVersionAndWait(expectedStatesCount: expectedStates.count)
@@ -87,7 +87,7 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         mockStoresManager.isStatsV4Available = false
         ServiceLocator.setStores(mockStoresManager)
 
-        let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v4), .v4RevertedToV3]
+        let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v4), .initial(statsVersion: .v3)]
 
         // When
         let actualStates = checkStatsVersionAndWait(expectedStatesCount: expectedStates.count)
@@ -104,7 +104,7 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         mockStoresManager.isStatsV4Available = true
         ServiceLocator.setStores(mockStoresManager)
 
-        let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v4), .eligible(statsVersion: .v4)]
+        let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v4), .initial(statsVersion: .v4)]
 
         // When
         let actualStates = checkStatsVersionAndWait(expectedStatesCount: expectedStates.count)

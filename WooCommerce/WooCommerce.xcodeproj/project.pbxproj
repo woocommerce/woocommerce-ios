@@ -312,7 +312,6 @@
 		458DCEBD248E6BF6003F0626 /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 458DCEBC248E6BF6003F0626 /* NotificationCenter.framework */; };
 		458DCEC0248E6BF6003F0626 /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458DCEBF248E6BF6003F0626 /* TodayViewController.swift */; };
 		458DCEC3248E6BF6003F0626 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 458DCEC1248E6BF6003F0626 /* MainInterface.storyboard */; };
-		458DCEC8248E6BF6003F0626 /* TodayStatsWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 458DCEBB248E6BF6003F0626 /* TodayStatsWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		458DCECD248E724A003F0626 /* UITableViewCell+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C744D20F56E3800EEFC87 /* UITableViewCell+Helpers.swift */; };
 		458DCECE248E726D003F0626 /* BasicTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE21B3D620FE669A00A259D5 /* BasicTableViewCell.xib */; };
 		458DCECF248E7273003F0626 /* BasicTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE21B3D520FE669A00A259D5 /* BasicTableViewCell.swift */; };
@@ -856,7 +855,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		458DCEC5248E6BF6003F0626 /* PBXContainerItemProxy */ = {
+		4590CEE6249CC23300949F05 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B56DB3BE2049BFAA00D4AA8E /* Project object */;
 			proxyType = 1;
@@ -907,7 +906,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				458DCEC8248E6BF6003F0626 /* TodayStatsWidget.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4167,7 +4165,7 @@
 			);
 			dependencies = (
 				B55D4C1520B6131400D7A50F /* PBXTargetDependency */,
-				458DCEC6248E6BF6003F0626 /* PBXTargetDependency */,
+				4590CEE7249CC23300949F05 /* PBXTargetDependency */,
 			);
 			name = WooCommerce;
 			productName = WooCommerce;
@@ -5423,10 +5421,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		458DCEC6248E6BF6003F0626 /* PBXTargetDependency */ = {
+		4590CEE7249CC23300949F05 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 458DCEBA248E6BF6003F0626 /* TodayStatsWidget */;
-			targetProxy = 458DCEC5248E6BF6003F0626 /* PBXContainerItemProxy */;
+			targetProxy = 4590CEE6249CC23300949F05 /* PBXContainerItemProxy */;
 		};
 		B55D4C1520B6131400D7A50F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

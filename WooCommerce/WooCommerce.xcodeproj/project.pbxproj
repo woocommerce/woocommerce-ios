@@ -2864,10 +2864,7 @@
 				4596F3932490E8DA002FD08F /* Storage.framework */,
 				4596F3912490E8D3002FD08F /* Networking.framework */,
 				4596F38F2490E8CB002FD08F /* Yosemite.framework */,
-				5744BEB0248FE44C000A6FE2 /* SwiftUI.framework */
-				B5C3B5E620D189ED0072CB9D /* Yosemite.framework */,
-				B5C3B5E420D189EA0072CB9D /* Storage.framework */,
-				B5C3B5E220D189E60072CB9D /* Networking.framework */,
+				5744BEB0248FE44C000A6FE2 /* SwiftUI.framework */,
 				BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */,
 				6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */,
 				458DCEBC248E6BF6003F0626 /* NotificationCenter.framework */,

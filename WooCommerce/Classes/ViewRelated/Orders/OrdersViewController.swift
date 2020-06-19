@@ -151,6 +151,9 @@ private extension OrdersViewController {
         }
 
         viewModel.activateAndForwardUpdates(to: tableView)
+
+        // Reload table because the activate call above executes a performFetch()
+        tableView.reloadData()
     }
 
     /// Setup: Order status predicate

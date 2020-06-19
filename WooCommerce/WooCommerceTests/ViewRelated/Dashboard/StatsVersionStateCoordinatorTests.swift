@@ -14,27 +14,18 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
     func testWhenV4IsAvailableWhileNoStatsVersionWasShownBefore() {
         // Given
         mockStoresManager = MockupStatsVersionStoresManager(sessionManager: SessionManager.testingInstance)
+        mockStoresManager.statsVersionLastShown = nil
         mockStoresManager.isStatsV4Available = true
         ServiceLocator.setStores(mockStoresManager)
 
         let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3), .v3ShownV4Eligible]
+        // V3 is returned because it is the default value if `statsVersionLastShown` is `nil`
 
         // When
-        var states: [StatsVersionState] = []
-        waitForExpectation { exp in
-            let stateCoordinator = StatsVersionStateCoordinator(siteID: 134)
-            stateCoordinator.onStateChange = { _, state in
-                states.append(state)
-                if states.count >= expectedStates.count {
-                    exp.fulfill()
-                }
-            }
-
-            stateCoordinator.loadLastShownVersionAndCheckV4Eligibility()
-        }
+        let actualStates = checkStatsVersionAndWait(expectedStatesCount: expectedStates.count)
 
         // Then
-        XCTAssertEqual(states, expectedStates)
+        XCTAssertEqual(actualStates, expectedStates)
     }
 
     func testWhenV4IsUnavailableWhileNoStatsVersionWasShownBefore() {
@@ -48,21 +39,10 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3), .eligible(statsVersion: .v3)]
 
         // When
-        var states: [StatsVersionState] = []
-        waitForExpectation { exp in
-            let stateCoordinator = StatsVersionStateCoordinator(siteID: 134)
-            stateCoordinator.onStateChange = { _, state in
-                states.append(state)
-                if states.count >= expectedStates.count {
-                    exp.fulfill()
-                }
-            }
-
-            stateCoordinator.loadLastShownVersionAndCheckV4Eligibility()
-        }
+        let actualStates = checkStatsVersionAndWait(expectedStatesCount: expectedStates.count)
 
         // Then
-        XCTAssertEqual(states, expectedStates)
+        XCTAssertEqual(actualStates, expectedStates)
     }
 
     /// Stats v3 --> v4
@@ -76,21 +56,10 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3), .v3ShownV4Eligible]
 
         // When
-        var states: [StatsVersionState] = []
-        waitForExpectation { exp in
-            let stateCoordinator = StatsVersionStateCoordinator(siteID: 134)
-            stateCoordinator.onStateChange = { _, state in
-                states.append(state)
-                if states.count >= expectedStates.count {
-                    exp.fulfill()
-                }
-            }
-
-            stateCoordinator.loadLastShownVersionAndCheckV4Eligibility()
-        }
+        let actualStates = checkStatsVersionAndWait(expectedStatesCount: expectedStates.count)
 
         // Then
-        XCTAssertEqual(states, expectedStates)
+        XCTAssertEqual(actualStates, expectedStates)
     }
 
     /// Stats v3 --> v3
@@ -104,21 +73,10 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3), .eligible(statsVersion: .v3)]
 
         // When
-        var states: [StatsVersionState] = []
-        waitForExpectation { exp in
-            let stateCoordinator = StatsVersionStateCoordinator(siteID: 134)
-            stateCoordinator.onStateChange = { _, state in
-                states.append(state)
-                if states.count >= expectedStates.count {
-                    exp.fulfill()
-                }
-            }
-
-            stateCoordinator.loadLastShownVersionAndCheckV4Eligibility()
-        }
+        let actualStates = checkStatsVersionAndWait(expectedStatesCount: expectedStates.count)
 
         // Then
-        XCTAssertEqual(states, expectedStates)
+        XCTAssertEqual(actualStates, expectedStates)
     }
 
     /// Stats v4 --> v3
@@ -132,21 +90,10 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v4), .v4RevertedToV3]
 
         // When
-        var states: [StatsVersionState] = []
-        waitForExpectation { exp in
-            let stateCoordinator = StatsVersionStateCoordinator(siteID: 134)
-            stateCoordinator.onStateChange = { _, state in
-                states.append(state)
-                if states.count >= expectedStates.count {
-                    exp.fulfill()
-                }
-            }
-
-            stateCoordinator.loadLastShownVersionAndCheckV4Eligibility()
-        }
+        let actualStates = checkStatsVersionAndWait(expectedStatesCount: expectedStates.count)
 
         // Then
-        XCTAssertEqual(states, expectedStates)
+        XCTAssertEqual(actualStates, expectedStates)
     }
 
     /// V4 --> v4
@@ -160,12 +107,25 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v4), .eligible(statsVersion: .v4)]
 
         // When
+        let actualStates = checkStatsVersionAndWait(expectedStatesCount: expectedStates.count)
+
+        // Then
+        XCTAssertEqual(actualStates, expectedStates)
+    }
+}
+
+private extension StatsVersionStateCoordinatorTests {
+    /// Execute `loadLastShownVersionAndCheckV4Eligibility` and wait for the results
+    /// until the number of states defined by `expectedStatesCount` is reached.
+    ///
+    func checkStatsVersionAndWait(expectedStatesCount: Int) -> [StatsVersionState] {
         var states: [StatsVersionState] = []
+
         waitForExpectation { exp in
             let stateCoordinator = StatsVersionStateCoordinator(siteID: 134)
             stateCoordinator.onStateChange = { _, state in
                 states.append(state)
-                if states.count >= expectedStates.count {
+                if states.count >= expectedStatesCount {
                     exp.fulfill()
                 }
             }
@@ -173,7 +133,6 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
             stateCoordinator.loadLastShownVersionAndCheckV4Eligibility()
         }
 
-        // Then
-        XCTAssertEqual(states, expectedStates)
+        return states
     }
 }

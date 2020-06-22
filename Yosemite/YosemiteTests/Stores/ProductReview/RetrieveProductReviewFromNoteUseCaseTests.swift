@@ -4,6 +4,8 @@ import Storage
 
 @testable import Yosemite
 
+private typealias ProductReviewFromNoteRetrieveError = RetrieveProductReviewFromNoteUseCase.ProductReviewFromNoteRetrieveError
+
 /// Test cases for `RetrieveProductReviewFromNoteUseCase`.
 ///
 final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
@@ -88,13 +90,37 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         XCTAssertNotNil(reviewFromStorage)
     }
 
+    /// Simulate a scenario where the StorageManager is no longer available, which may happen
+    /// if the user has logged out before the network call has finished.
+    ///
+    func testWhenSuccessfulButStorageIsNoLongerAvailableThenItReturnsAFailure() throws {
+        // Given
+        var storageManager: StorageManagerType? = MockupStorageManager()
+
+        let useCase = makeUseCase(storage: try XCTUnwrap(storageManager?.viewStorage))
+
+        let note = TestData.note
+        let productReview = TestData.productReview
+        let product = TestData.product
+
+        notificationsRemote.whenLoadingNotes(noteIDs: [note.noteID], thenReturn: .success([note]))
+        productReviewsRemote.whenLoadingProductReview(siteID: productReview.siteID,
+                                                      reviewID: productReview.reviewID,
+                                                      thenReturn: .success(productReview))
+        productsRemote.whenLoadingProduct(siteID: product.siteID,
+                                          productID: product.productID,
+                                          thenReturn: .success(product))
+
+        // When
+        // Force deallocation of StorageManager and Storage.
+        storageManager = nil
+
+        let result = try retrieveAndWait(using: useCase, noteID: note.noteID)
 
         // Then
-        XCTAssert(result.isSuccess)
-        XCTAssertEqual(storage.countObjects(ofType: StorageProductReview.self), 1)
-
-        let reviewFromStorage = storage.loadProductReview(siteID: productReview.siteID, reviewID: productReview.reviewID)
-        XCTAssertNotNil(reviewFromStorage)
+        XCTAssert(result.isFailure)
+        XCTAssertEqual(result.failure as? ProductReviewFromNoteRetrieveError,
+                       ProductReviewFromNoteRetrieveError.storageNoLongerAvailable)
     }
 
 }

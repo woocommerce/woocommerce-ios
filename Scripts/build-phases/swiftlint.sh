@@ -16,7 +16,7 @@ fi
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # Temporarily move to the root directory so that SwiftLint can correctly
-# determine the paths declared under the .swiftlint.yml `include` property.
+# find the paths returned from the `git` commands below.
 pushd $DIR/../../ > /dev/null
 
 # Paths relative to the root directory

@@ -1,4 +1,5 @@
 import UIKit
+import Networking
 
 /// AddProductCategoryViewController: Add a new category associated to the active Account.
 ///
@@ -11,7 +12,17 @@ final class AddProductCategoryViewController: UIViewController {
     ///
     private var sections: [Section] = [Section(rows: [.title]), Section(rows: [.parentCategory])]
 
-    init() {
+    /// Selected parent category
+    ///
+    private var selectedParentCategory: ProductCategory?
+
+    // Completion callback
+    //
+    typealias Completion = (_ category: ProductCategory) -> Void
+    private let onCompletion: Completion
+
+    init(completion: @escaping Completion) {
+        onCompletion = completion
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -34,8 +45,9 @@ private extension AddProductCategoryViewController {
     func configureNavigationBar() {
         title = NSLocalizedString("Add Category", comment: "Product Add Category navigation title")
 
-        //navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(completeUpdating))
-        //removeNavigationBackBarButtonText()
+        addCloseNavigationBarButton(title: Strings.cancelButton)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: Strings.saveButton, style: .done, target: self, action: #selector(saveNewCategory))
+        removeNavigationBackBarButtonText()
     }
 
     func configureMainView() {
@@ -56,6 +68,16 @@ private extension AddProductCategoryViewController {
         for row in Row.allCases {
             tableView.register(row.type.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
         }
+    }
+}
+
+// MARK: - Navigation actions handling
+//
+extension AddProductCategoryViewController {
+
+    @objc private func saveNewCategory() {
+        //TODO: add remotely new category
+        //onCompletion(newCategory)
     }
 }
 
@@ -106,11 +128,17 @@ private extension AddProductCategoryViewController {
     }
 
     func configureTitle(cell: TitleAndTextFieldTableViewCell) {
+        let viewModel = TitleAndTextFieldTableViewCell.ViewModel(title: nil,
+        text: nil,
+        placeholder: Strings.titleCellPlaceholder
+        ) { (text) in
 
+        }
+        cell.configure(viewModel: viewModel)
     }
 
     func configureParentCategory(cell: SettingTitleAndValueTableViewCell) {
-
+        cell.updateUI(title: Strings.parentCellTitle, value: Strings.parentCellPlaceholder)
     }
 }
 
@@ -138,5 +166,17 @@ private extension AddProductCategoryViewController {
         var reuseIdentifier: String {
             return type.reuseIdentifier
         }
+    }
+}
+
+// MARK: - Constants!
+//
+private extension AddProductCategoryViewController {
+    enum Strings {
+        static let cancelButton = NSLocalizedString("Cancel", comment: "Add Product Category. Cancel button title in navbar.")
+        static let saveButton = NSLocalizedString("Save", comment: "Add Product Category. Save button title in navbar.")
+        static let titleCellPlaceholder = NSLocalizedString("Title", comment: "Add Product Category. Placeholder of cell presenting the title of the category.")
+        static let parentCellTitle = NSLocalizedString("Parent Category", comment: "Add Product Category. Title of cell presenting the parent category.")
+        static let parentCellPlaceholder = NSLocalizedString("Optional", comment: "Add Product Category. Placeholder of cell presenting the parent category.")
     }
 }

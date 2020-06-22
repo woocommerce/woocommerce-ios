@@ -138,7 +138,9 @@ extension ProductCategoryListViewController {
     }
 
     @objc private func addButtonTapped() {
-        let addCategoryViewController = AddProductCategoryViewController()
+        let addCategoryViewController = AddProductCategoryViewController { (newCategory) in
+            //TODO: new category added
+        }
         let navController = WooNavigationController(rootViewController: addCategoryViewController)
         present(navController, animated: true, completion: nil)
     }

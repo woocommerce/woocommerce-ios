@@ -117,7 +117,7 @@ private extension AddProductCategoryViewController {
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as TitleAndTextFieldTableViewCell where row == .title:
+        case let cell as TextFieldTableViewCell where row == .title:
             configureTitle(cell: cell)
         case let cell as SettingTitleAndValueTableViewCell where row == .parentCategory:
             configureParentCategory(cell: cell)
@@ -127,14 +127,15 @@ private extension AddProductCategoryViewController {
         }
     }
 
-    func configureTitle(cell: TitleAndTextFieldTableViewCell) {
-        let viewModel = TitleAndTextFieldTableViewCell.ViewModel(title: nil,
-        text: nil,
-        placeholder: Strings.titleCellPlaceholder
-        ) { (text) in
+    func configureTitle(cell: TextFieldTableViewCell) {
+        let viewModel = TextFieldTableViewCell.ViewModel(text: nil, placeholder: Strings.titleCellPlaceholder, onTextChange: { [weak self] newCategoryName in
+            if let newCategoryName = newCategoryName {
 
-        }
+            }
+            }, onTextDidBeginEditing: {
+        }, inputFormatter: nil, keyboardType: .default)
         cell.configure(viewModel: viewModel)
+        cell.applyStyle(style: .body)
     }
 
     func configureParentCategory(cell: SettingTitleAndValueTableViewCell) {
@@ -157,7 +158,7 @@ private extension AddProductCategoryViewController {
         var type: UITableViewCell.Type {
             switch self {
             case .title:
-                return TitleAndTextFieldTableViewCell.self
+                return TextFieldTableViewCell.self
             case .parentCategory:
                 return SettingTitleAndValueTableViewCell.self
             }

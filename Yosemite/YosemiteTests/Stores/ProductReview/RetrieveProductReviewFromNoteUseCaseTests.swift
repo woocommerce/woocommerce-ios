@@ -171,6 +171,29 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         XCTAssertEqual(productReviewsRemote.invocationCountOfLoadProductReview, 1)
         XCTAssertEqual(productsRemote.invocationCountOfLoadProduct, 0)
     }
+
+    func testWhenNoteHasMissingMetaThenItReturnsAFailure() throws {
+        // Given
+        let storageManager = MockupStorageManager()
+        let useCase = makeUseCase(storage: storageManager.viewStorage)
+
+        // No `.comment` identifier. This can mean that we fetched the incorrect notification.
+        let note = MockNote().make(noteID: 9_135, metaSiteID: TestData.siteID)
+
+        notificationsRemote.whenLoadingNotes(noteIDs: [note.noteID], thenReturn: .success([note]))
+
+        // When
+        let result = try retrieveAndWait(using: useCase, noteID: note.noteID)
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? ProductReviewFromNoteRetrieveError,
+                       ProductReviewFromNoteRetrieveError.reviewNotFound)
+
+        XCTAssertEqual(notificationsRemote.invocationCountOfLoadNotes, 1)
+        XCTAssertEqual(productReviewsRemote.invocationCountOfLoadProductReview, 0)
+        XCTAssertEqual(productsRemote.invocationCountOfLoadProduct, 0)
+    }
 }
 
 // MARK: - Utils

@@ -18,10 +18,15 @@ extension UIViewController {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
 
-    /// Show the X close button on the left bar button item position
+    /// Show the X close button or a custom close button with title on the left bar button item position
     ///
-    func addCloseNavigationBarButton(target: Any? = self, action: Selector? = #selector(dismissVC)) {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: .closeButton, style: .plain, target: target, action: action)
+    func addCloseNavigationBarButton(title: String? = nil, target: Any? = self, action: Selector? = #selector(dismissVC)) {
+        if let title = title {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(title: title, style: .plain, target: target, action: action)
+        }
+        else {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(image: .closeButton, style: .plain, target: target, action: action)
+        }
     }
 
 }

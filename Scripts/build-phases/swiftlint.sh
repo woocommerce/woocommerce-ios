@@ -3,6 +3,14 @@
 #
 # Runs SwiftLint on the whole workspace
 #
+# This does not run in Continuous Integration.
+#
+
+# Abort if we are running in CI
+# See https://circleci.com/docs/2.0/env-vars/#built-in-environment-variables
+if [ "$CI" = true ] ; then
+  exit 0
+fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 

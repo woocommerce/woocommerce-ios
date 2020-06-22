@@ -8,12 +8,6 @@ import Storage
 ///
 final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
 
-    private var storageManager: StorageManagerType!
-
-    private var storage: StorageType {
-        storageManager.viewStorage
-    }
-
     private var notificationsRemote: MockNotificationsRemote!
     private var productReviewsRemote: MockProductReviewsRemote!
     private var productsRemote: MockProductsRemote!
@@ -21,12 +15,9 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        storageManager = MockupStorageManager()
-
         notificationsRemote = MockNotificationsRemote()
         productReviewsRemote = MockProductReviewsRemote()
         productsRemote = MockProductsRemote()
-
     }
 
     override func tearDown() {
@@ -34,14 +25,13 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         productReviewsRemote = nil
         notificationsRemote = nil
 
-        storageManager = nil
-
         super.tearDown()
     }
 
     func testItFetchesAllEntitiesAndReturnsTheParcel() throws {
         // Given
-        let useCase = makeUseCase()
+        let storageManager = MockupStorageManager()
+        let useCase = makeUseCase(storage: storageManager.viewStorage)
         let note = TestData.note
         let productReview = TestData.productReview
         let product = TestData.product
@@ -68,7 +58,11 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
 
     func testWhenSuccessfulThenItSavesTheProductReviewToStorage() throws {
         // Given
-        let useCase = makeUseCase()
+        let storageManager = MockupStorageManager()
+        let storage = storageManager.viewStorage
+
+        let useCase = makeUseCase(storage: storage)
+
         let note = TestData.note
         let productReview = TestData.productReview
         let product = TestData.product
@@ -111,7 +105,7 @@ private extension RetrieveProductReviewFromNoteUseCaseTests {
 
     /// Create a UseCase using the mocks
     ///
-    func makeUseCase() -> RetrieveProductReviewFromNoteUseCase {
+    func makeUseCase(storage: StorageType) -> RetrieveProductReviewFromNoteUseCase {
         RetrieveProductReviewFromNoteUseCase(derivedStorage: storage,
                                              notificationsRemote: notificationsRemote,
                                              productReviewsRemote: productReviewsRemote,

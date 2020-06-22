@@ -24,7 +24,7 @@ fi
 # The `|| true` at the end is to stop `grep` from returning a non-zero exit if there
 # are no matches. Xcode's build will fail if we don't do this.
 #
-MODIFIED_FILES=`git diff --name-only --diff-filter=d HEAD | grep -v Pods | grep -G "\.swift$" || true`
+MODIFIED_FILES=`git diff --name-only --diff-filter=d HEAD | grep -G "\.swift$" || true`
 echo $MODIFIED_FILES | xargs $SWIFTLINT --config $CONFIG_FILE --quiet
 MODIFIED_FILES_LINT_RESULT=$?
 

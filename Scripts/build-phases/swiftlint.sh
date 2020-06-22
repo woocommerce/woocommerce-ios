@@ -12,6 +12,7 @@ if [ "$CI" = true ] ; then
   exit 0
 fi
 
+# Get the directory of this file.
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # Temporarily move to the root directory so that SwiftLint can correctly

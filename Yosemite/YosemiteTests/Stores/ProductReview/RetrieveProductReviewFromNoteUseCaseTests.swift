@@ -18,10 +18,6 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
     private var productReviewsRemote: MockProductReviewsRemote!
     private var productsRemote: MockProductsRemote!
 
-    /// The system being tested
-    ///
-    private var useCase: RetrieveProductReviewFromNoteUseCase!
-
     override func setUp() {
         super.setUp()
 
@@ -31,15 +27,9 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         productReviewsRemote = MockProductReviewsRemote()
         productsRemote = MockProductsRemote()
 
-        useCase = RetrieveProductReviewFromNoteUseCase(derivedStorage: storage,
-                                                       notificationsRemote: notificationsRemote,
-                                                       productReviewsRemote: productReviewsRemote,
-                                                       productsRemote: productsRemote)
     }
 
     override func tearDown() {
-        useCase = nil
-
         productsRemote = nil
         productReviewsRemote = nil
         notificationsRemote = nil
@@ -51,6 +41,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
 
     func testItFetchesAllEntitiesAndReturnsTheParcel() throws {
         // Given
+        let useCase = makeUseCase()
         let note = TestData.note
         let productReview = TestData.productReview
         let product = TestData.product
@@ -64,7 +55,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
                                           thenReturn: .success(product))
 
         // When
-        let result = try retrieve(noteID: note.noteID)
+        let result = try retrieveAndWait(using: useCase, noteID: note.noteID)
 
         // Then
         XCTAssert(result.isSuccess)
@@ -77,6 +68,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
 
     func testWhenSuccessfulThenItSavesTheProductReviewToStorage() throws {
         // Given
+        let useCase = makeUseCase()
         let note = TestData.note
         let productReview = TestData.productReview
         let product = TestData.product
@@ -92,7 +84,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         XCTAssertEqual(storage.countObjects(ofType: StorageProductReview.self), 0)
 
         // When
-        let result = try retrieve(noteID: note.noteID)
+        let result = try retrieveAndWait(using: useCase, noteID: note.noteID)
 
         // Then
         XCTAssert(result.isSuccess)
@@ -101,12 +93,35 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         let reviewFromStorage = storage.loadProductReview(siteID: productReview.siteID, reviewID: productReview.reviewID)
         XCTAssertNotNil(reviewFromStorage)
     }
+
+
+        // Then
+        XCTAssert(result.isSuccess)
+        XCTAssertEqual(storage.countObjects(ofType: StorageProductReview.self), 1)
+
+        let reviewFromStorage = storage.loadProductReview(siteID: productReview.siteID, reviewID: productReview.reviewID)
+        XCTAssertNotNil(reviewFromStorage)
+    }
+
 }
 
 // MARK: - Utils
 
 private extension RetrieveProductReviewFromNoteUseCaseTests {
-    func retrieve(noteID: Int64) throws -> Result<ProductReviewFromNoteParcel, Error> {
+
+    /// Create a UseCase using the mocks
+    ///
+    func makeUseCase() -> RetrieveProductReviewFromNoteUseCase {
+        RetrieveProductReviewFromNoteUseCase(derivedStorage: storage,
+                                             notificationsRemote: notificationsRemote,
+                                             productReviewsRemote: productReviewsRemote,
+                                             productsRemote: productsRemote)
+    }
+
+    /// Retrieve the Parcel using the given UseCase
+    ///
+    func retrieveAndWait(using useCase: RetrieveProductReviewFromNoteUseCase,
+                         noteID: Int64) throws -> Result<ProductReviewFromNoteParcel, Error> {
         var result: Result<ProductReviewFromNoteParcel, Error>?
 
         waitForExpectation { exp in

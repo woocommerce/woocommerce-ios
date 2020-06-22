@@ -15,12 +15,16 @@ final class SiteAddressViewController: LoginViewController {
         return WordPressAuthenticator.shared.displayStrings
     }
 
+    private var rows = [Row]()
+
     // MARK: - View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
 
         localizePrimaryButton()
+        setRowHeight()
         registerTableViewCells()
+        loadRows()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -28,26 +32,6 @@ final class SiteAddressViewController: LoginViewController {
 
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
-    }
-
-    /// Localize the "Continue" button
-    ///
-    func localizePrimaryButton() {
-        let primaryTitle = displayStrings.continueButtonTitle
-        submitButton?.setTitle(primaryTitle, for: .normal)
-        submitButton?.setTitle(primaryTitle, for: .highlighted)
-    }
-
-    /// Registers all of the available TableViewCells
-    ///
-    func registerTableViewCells() {
-        let cells = [
-            InstructionTableViewCell.reuseIdentifier: InstructionTableViewCell.loadNib(),
-        ]
-
-        for (reuseIdentifier, nib) in cells {
-            tableView.register(nib, forCellReuseIdentifier: reuseIdentifier)
-        }
     }
 
     /// Style individual ViewController backgrounds, for now.
@@ -65,16 +49,18 @@ final class SiteAddressViewController: LoginViewController {
 
 // MARK: - UITableViewDataSource
 extension SiteAddressViewController: UITableViewDataSource {
+    /// Returns the number of rows in a section
+    ///
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return rows.count
     }
 
+    /// Configure cells delegate method
+    ///
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: InstructionTableViewCell.reuseIdentifier, for: indexPath) as? InstructionTableViewCell else {
-            return UITableViewCell()
-        }
-
-        cell.instructionLabel?.text = displayStrings.siteLoginInstructions
+        let row = rows[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
+        configure(cell, for: row, at: indexPath)
 
         return cell
     }
@@ -83,7 +69,9 @@ extension SiteAddressViewController: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate conformance
 extension SiteAddressViewController: UITableViewDelegate {
-
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
 }
 
 
@@ -95,5 +83,95 @@ extension SiteAddressViewController: NUXKeyboardResponder {
 
     @objc func handleKeyboardWillHide(_ notification: Foundation.Notification) {
         keyboardWillHide(notification)
+    }
+}
+
+
+
+private extension SiteAddressViewController {
+    // MARK: - Private methods
+
+    /// Localize the "Continue" button
+    ///
+    func localizePrimaryButton() {
+        let primaryTitle = displayStrings.continueButtonTitle
+        submitButton?.setTitle(primaryTitle, for: .normal)
+        submitButton?.setTitle(primaryTitle, for: .highlighted)
+    }
+
+    /// Sets the row height in the tableView
+    ///
+    func setRowHeight() {
+        tableView.estimatedRowHeight = Constants.rowHeight
+        tableView.rowHeight = UITableView.automaticDimension
+    }
+
+    /// Registers all of the available TableViewCells
+    ///
+    func registerTableViewCells() {
+        let cells = [
+            InstructionTableViewCell.reuseIdentifier: InstructionTableViewCell.loadNib(),
+            TextFieldTableViewCell.reuseIdentifier: TextFieldTableViewCell.loadNib()
+        ]
+
+        for (reuseIdentifier, nib) in cells {
+            tableView.register(nib, forCellReuseIdentifier: reuseIdentifier)
+        }
+    }
+
+    /// Describes how the tableView rows should be rendered.
+    ///
+    func loadRows() {
+        rows = [.instructions, .siteAddress]
+    }
+
+    /// Configure cells
+    ///
+    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+        switch cell {
+        case let cell as InstructionTableViewCell:
+            configureInstruction(cell)
+        case let cell as TextFieldTableViewCell:
+            configureTextField(cell)
+        default:
+            DDLogError("Error: Unidentified tableViewCell type found.")
+        }
+    }
+
+    /// Configure the instruction cell
+    ///
+    func configureInstruction(_ cell: InstructionTableViewCell) {
+        cell.instructionLabel?.text = displayStrings.siteLoginInstructions
+    }
+
+    /// Configure the textfield cell
+    ///
+    func configureTextField(_ cell: TextFieldTableViewCell) {
+        cell.textField.placeholder = NSLocalizedString("example.com", comment: "Site Address placeholder")
+    }
+
+    // MARK: - Private Constants
+
+    /// Rows listed in the order they were created
+    ///
+    enum Row {
+        case instructions
+        case siteAddress
+
+        var reuseIdentifier: String {
+            switch self {
+            case .instructions:
+                return InstructionTableViewCell.reuseIdentifier
+            case .siteAddress:
+                return TextFieldTableViewCell.reuseIdentifier
+            }
+        }
+    }
+
+    /// Constants
+    ///
+    struct Constants {
+        // Need a CGFloat not a plain Float
+        static let rowHeight: CGFloat = 44.0
     }
 }

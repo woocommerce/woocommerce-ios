@@ -12,6 +12,10 @@ final class AddProductCategoryViewController: UIViewController {
     ///
     private var sections: [Section] = [Section(rows: [.title]), Section(rows: [.parentCategory])]
 
+    /// New category title
+    ///
+    private var newCategoryTitle: String?
+
     /// Selected parent category
     ///
     private var selectedParentCategory: ProductCategory?
@@ -128,10 +132,8 @@ private extension AddProductCategoryViewController {
     }
 
     func configureTitle(cell: TextFieldTableViewCell) {
-        let viewModel = TextFieldTableViewCell.ViewModel(text: nil, placeholder: Strings.titleCellPlaceholder, onTextChange: { [weak self] newCategoryName in
-            if let newCategoryName = newCategoryName {
-
-            }
+        let viewModel = TextFieldTableViewCell.ViewModel(text: newCategoryTitle, placeholder: Strings.titleCellPlaceholder, onTextChange: { [weak self] newCategoryName in
+                self?.newCategoryTitle = newCategoryName
             }, onTextDidBeginEditing: {
         }, inputFormatter: nil, keyboardType: .default)
         cell.configure(viewModel: viewModel)
@@ -140,6 +142,7 @@ private extension AddProductCategoryViewController {
 
     func configureParentCategory(cell: SettingTitleAndValueTableViewCell) {
         cell.updateUI(title: Strings.parentCellTitle, value: Strings.parentCellPlaceholder)
+        cell.selectionStyle = .none
     }
 }
 

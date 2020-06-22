@@ -91,8 +91,8 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         XCTAssertNotNil(reviewFromStorage)
     }
 
-    /// Simulate a scenario where the StorageManager is no longer available, which may happen
-    /// if the user has logged out before the network call has finished.
+    /// Simulate a scenario where the StorageType is no longer available, which may happen
+    /// if the owning `ProductReviewStore` is deallocated during user log out.
     ///
     func testWhenSuccessfulButStorageIsNoLongerAvailableThenItReturnsAFailure() throws {
         // Given

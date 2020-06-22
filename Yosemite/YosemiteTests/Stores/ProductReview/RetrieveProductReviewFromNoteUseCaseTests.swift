@@ -4,6 +4,8 @@ import Storage
 
 @testable import Yosemite
 
+/// Test cases for `RetrieveProductReviewFromNoteUseCase`.
+///
 final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
 
     private var storageManager: StorageManagerType!
@@ -71,6 +73,33 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         XCTAssertEqual(parcel.note.noteID, note.noteID)
         XCTAssertEqual(parcel.review, productReview)
         XCTAssertEqual(parcel.product, product)
+    }
+
+    func testWhenSuccessfulThenItSavesTheProductReviewToStorage() throws {
+        // Given
+        let note = TestData.note
+        let productReview = TestData.productReview
+        let product = TestData.product
+
+        notificationsRemote.whenLoadingNotes(noteIDs: [note.noteID], thenReturn: .success([note]))
+        productReviewsRemote.whenLoadingProductReview(siteID: productReview.siteID,
+                                                      reviewID: productReview.reviewID,
+                                                      thenReturn: .success(productReview))
+        productsRemote.whenLoadingProduct(siteID: product.siteID,
+                                          productID: product.productID,
+                                          thenReturn: .success(product))
+
+        XCTAssertEqual(storage.countObjects(ofType: StorageProductReview.self), 0)
+
+        // When
+        let result = try retrieve(noteID: note.noteID)
+
+        // Then
+        XCTAssert(result.isSuccess)
+        XCTAssertEqual(storage.countObjects(ofType: StorageProductReview.self), 1)
+
+        let reviewFromStorage = storage.loadProductReview(siteID: productReview.siteID, reviewID: productReview.reviewID)
+        XCTAssertNotNil(reviewFromStorage)
     }
 }
 

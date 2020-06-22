@@ -50,7 +50,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         let result = try retrieveAndWait(using: useCase, noteID: note.noteID)
 
         // Then
-        XCTAssert(result.isSuccess)
+        XCTAssertTrue(result.isSuccess)
 
         let parcel = try XCTUnwrap(result.get())
         XCTAssertEqual(parcel.note.noteID, note.noteID)
@@ -83,7 +83,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         let result = try retrieveAndWait(using: useCase, noteID: note.noteID)
 
         // Then
-        XCTAssert(result.isSuccess)
+        XCTAssertTrue(result.isSuccess)
         XCTAssertEqual(storage.countObjects(ofType: StorageProductReview.self), 1)
 
         let reviewFromStorage = storage.loadProductReview(siteID: productReview.siteID, reviewID: productReview.reviewID)
@@ -118,7 +118,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         let result = try retrieveAndWait(using: useCase, noteID: note.noteID)
 
         // Then
-        XCTAssert(result.isFailure)
+        XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as? ProductReviewFromNoteRetrieveError,
                        ProductReviewFromNoteRetrieveError.storageNoLongerAvailable)
     }

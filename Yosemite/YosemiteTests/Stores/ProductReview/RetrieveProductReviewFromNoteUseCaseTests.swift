@@ -1,6 +1,7 @@
 import XCTest
 
 import Storage
+import enum Networking.NetworkError
 
 @testable import Yosemite
 
@@ -121,8 +122,55 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as? ProductReviewFromNoteRetrieveError,
                        ProductReviewFromNoteRetrieveError.storageNoLongerAvailable)
+
+        XCTAssertEqual(productsRemote.invocationCountOfLoadProduct, 0)
     }
 
+    func testWhenNoteFetchFailsThenAllOtherFetchesAreAborted() throws {
+        // Given
+        let storageManager = MockupStorageManager()
+        let useCase = makeUseCase(storage: storageManager.viewStorage)
+
+        let note = TestData.note
+
+        notificationsRemote.whenLoadingNotes(noteIDs: [note.noteID], thenReturn: .failure(NetworkError.notFound))
+
+        // When
+        let result = try retrieveAndWait(using: useCase, noteID: note.noteID)
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, NetworkError.notFound)
+
+        XCTAssertEqual(notificationsRemote.invocationCountOfLoadNotes, 1)
+        XCTAssertEqual(productReviewsRemote.invocationCountOfLoadProductReview, 0)
+        XCTAssertEqual(productsRemote.invocationCountOfLoadProduct, 0)
+    }
+
+    func testWhenProductReviewFetchFailsThenAllOtherFetchesAreAborted() throws {
+        // Given
+        let storageManager = MockupStorageManager()
+        let useCase = makeUseCase(storage: storageManager.viewStorage)
+
+        let note = TestData.note
+        let productReview = TestData.productReview
+
+        notificationsRemote.whenLoadingNotes(noteIDs: [note.noteID], thenReturn: .success([note]))
+        productReviewsRemote.whenLoadingProductReview(siteID: productReview.siteID,
+                                                      reviewID: productReview.reviewID,
+                                                      thenReturn: .failure(NetworkError.timeout))
+
+        // When
+        let result = try retrieveAndWait(using: useCase, noteID: note.noteID)
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, NetworkError.timeout)
+
+        XCTAssertEqual(notificationsRemote.invocationCountOfLoadNotes, 1)
+        XCTAssertEqual(productReviewsRemote.invocationCountOfLoadProductReview, 1)
+        XCTAssertEqual(productsRemote.invocationCountOfLoadProduct, 0)
+    }
 }
 
 // MARK: - Utils

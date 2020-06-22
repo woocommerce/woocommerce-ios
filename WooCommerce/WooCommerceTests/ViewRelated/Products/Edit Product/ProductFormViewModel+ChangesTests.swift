@@ -36,6 +36,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
                                           backordersSetting: product.backordersSetting,
                                           stockStatus: product.productStockStatus)
         viewModel.updateShippingSettings(weight: product.weight, dimensions: product.dimensions, shippingClass: product.productShippingClass)
+        viewModel.updateProductCategories(product.categories)
 
         // Assert
         XCTAssertFalse(viewModel.hasUnsavedChanges())
@@ -140,6 +141,29 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
         // Action
         viewModel.updateDescription("Another way to describe the product?")
+
+        // Assert
+        XCTAssertTrue(viewModel.hasUnsavedChanges())
+        XCTAssertTrue(viewModel.hasProductChanged())
+        XCTAssertFalse(viewModel.hasPasswordChanged())
+    }
+
+    func testProductHasUnsavedChangesFromEditingProductCategories() {
+        // Arrange
+        let product = MockProduct().product()
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: product)
+        let viewModel = ProductFormViewModel(product: product,
+                                             productImageActionHandler: productImageActionHandler,
+                                             isEditProductsRelease2Enabled: true,
+                                             isEditProductsRelease3Enabled: true)
+
+        // Action
+        let categoryID = Int64(1234)
+        let parentID = Int64(1)
+        let name = "Test category"
+        let slug = "test-category"
+        let newCategories = [ProductCategory(categoryID: categoryID, siteID: product.siteID, parentID: parentID, name: name, slug: slug)]
+        viewModel.updateProductCategories(newCategories)
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())

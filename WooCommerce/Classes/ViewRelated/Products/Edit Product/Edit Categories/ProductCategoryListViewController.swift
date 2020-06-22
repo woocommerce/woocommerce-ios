@@ -11,8 +11,14 @@ final class ProductCategoryListViewController: UIViewController {
 
     private let viewModel: ProductCategoryListViewModel
 
-    init(product: Product) {
+    // Completion callback
+    //
+    typealias Completion = (_ categories: [ProductCategory]) -> Void
+    private let onCompletion: Completion
+
+    init(product: Product, completion: @escaping Completion) {
         self.viewModel = ProductCategoryListViewModel(product: product)
+        onCompletion = completion
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -27,6 +33,7 @@ final class ProductCategoryListViewController: UIViewController {
         configureGhostTableView()
         configureNavigationBar()
         configureViewModel()
+        handleSwipeBackGesture()
     }
 }
 
@@ -96,11 +103,30 @@ private extension ProductCategoryListViewController {
     }
 }
 
-// MARK: - Actions
+// MARK: - Navigation actions handling
 //
-private extension ProductCategoryListViewController {
+extension ProductCategoryListViewController {
+
+    override func shouldPopOnBackButton() -> Bool {
+        if viewModel.hasUnsavedChanges() {
+            presentBackNavigationActionSheet()
+            return false
+        }
+        return true
+    }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        return shouldPopOnBackButton()
+    }
+
     @objc private func doneButtonTapped() {
-        // TODO-2020: Submit category changes
+        onCompletion(viewModel.selectedCategories)
+    }
+
+    private func presentBackNavigationActionSheet() {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        })
     }
 }
 

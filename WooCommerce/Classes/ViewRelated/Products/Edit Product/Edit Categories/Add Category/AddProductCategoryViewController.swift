@@ -1,5 +1,6 @@
 import UIKit
 import Networking
+import Yosemite
 
 /// AddProductCategoryViewController: Add a new category associated to the active Account.
 ///
@@ -82,6 +83,21 @@ extension AddProductCategoryViewController {
     @objc private func saveNewCategory() {
         //TODO: add remotely new category
         //onCompletion(newCategory)
+        
+        guard let categoryName = newCategoryTitle, let defaultStoreID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return
+        }
+        
+        let action = ProductCategoryAction.addProductCategory(siteID: defaultStoreID, name: categoryName, parentID: selectedParentCategory?.categoryID) { (result) in
+            //TODO: to be completed
+//            switch result {
+//            case .success(let category):
+//                //onCompletion?(.success(imageResult.image))
+//            case .failure(let error):
+//                //onCompletion?(.failure(kingfisherError))
+//            }
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 }
 

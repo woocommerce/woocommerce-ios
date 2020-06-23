@@ -20,7 +20,11 @@ final class AddProductCategoryViewController: UIViewController {
 
     /// Selected parent category
     ///
-    private var selectedParentCategory: ProductCategory?
+    private var selectedParentCategory: ProductCategory? {
+        didSet {
+            tableView.reloadData()
+        }
+    }
 
     // Completion callback
     //
@@ -50,7 +54,7 @@ final class AddProductCategoryViewController: UIViewController {
 private extension AddProductCategoryViewController {
 
     func configureNavigationBar() {
-        title = NSLocalizedString("Add Category", comment: "Product Add Category navigation title")
+        title = Strings.titleView
 
         addCloseNavigationBarButton(title: Strings.cancelButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: Strings.saveButton, style: .done, target: self, action: #selector(saveNewCategory))
@@ -130,8 +134,11 @@ extension AddProductCategoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch sections[indexPath.section].rows[indexPath.row] {
         case .parentCategory:
-            let parentCategoryViewController = ProductParentCategoriesViewController(siteID: siteID) { (parentCategory) in
-                //TODO: parent category selected
+            let parentCategoryViewController = ProductParentCategoriesViewController(siteID: siteID) { [weak self] (parentCategory) in
+                defer {
+                    self?.navigationController?.popViewController(animated: true)
+                }
+                self?.selectedParentCategory = parentCategory
             }
             navigationController?.pushViewController(parentCategoryViewController, animated: true)
         default:
@@ -167,7 +174,7 @@ private extension AddProductCategoryViewController {
     }
 
     func configureParentCategory(cell: SettingTitleAndValueTableViewCell) {
-        cell.updateUI(title: Strings.parentCellTitle, value: Strings.parentCellPlaceholder)
+        cell.updateUI(title: Strings.parentCellTitle, value: selectedParentCategory?.name ?? Strings.parentCellPlaceholder)
         cell.selectionStyle = .none
     }
 }
@@ -203,6 +210,7 @@ private extension AddProductCategoryViewController {
 //
 private extension AddProductCategoryViewController {
     enum Strings {
+        static let titleView = NSLocalizedString("Add Category", comment: "Product Add Category navigation title")
         static let cancelButton = NSLocalizedString("Cancel", comment: "Add Product Category. Cancel button title in navbar.")
         static let saveButton = NSLocalizedString("Save", comment: "Add Product Category. Save button title in navbar.")
         static let titleCellPlaceholder = NSLocalizedString("Title", comment: "Add Product Category. Placeholder of cell presenting the title of the category.")

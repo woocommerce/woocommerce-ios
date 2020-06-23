@@ -98,6 +98,8 @@ extension ProductParentCategoriesViewController: UITableViewDataSource {
 //
 extension ProductParentCategoriesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-
+        if let category = resultController.fetchedObjects.first(where: { $0.categoryID == categoryViewModels[indexPath.row].categoryID }) {
+            onCompletion(category)
+        }
     }
 }

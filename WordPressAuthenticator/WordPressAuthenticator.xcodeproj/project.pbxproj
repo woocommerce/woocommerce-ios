@@ -125,8 +125,8 @@
 		CE9091F72499549500AB50BD /* TextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9091F52499549500AB50BD /* TextFieldTableViewCell.swift */; };
 		CE9091F82499549500AB50BD /* TextFieldTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE9091F62499549500AB50BD /* TextFieldTableViewCell.xib */; };
 		CE9091FE249A720E00AB50BD /* UIView+AuthHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9091FD249A720E00AB50BD /* UIView+AuthHelpers.swift */; };
-		CE909209249D1FC900AB50BD /* TextButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE909207249D1FC900AB50BD /* TextButtonTableViewCell.swift */; };
-		CE90920A249D1FC900AB50BD /* TextButtonTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE909208249D1FC900AB50BD /* TextButtonTableViewCell.xib */; };
+		CE909209249D1FC900AB50BD /* TextLinkTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE909207249D1FC900AB50BD /* TextLinkTableViewCell.swift */; };
+		CE90920A249D1FC900AB50BD /* TextLinkTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE909208249D1FC900AB50BD /* TextLinkTableViewCell.xib */; };
 		CEC77C6624854F2E00FB9050 /* SiteAddressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC77C6524854F2E00FB9050 /* SiteAddressViewController.swift */; };
 		CEC77C6824854F3E00FB9050 /* SiteAddress.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEC77C6724854F3E00FB9050 /* SiteAddress.storyboard */; };
 		CEDE0D93242011E000CB3345 /* NSObject+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDE0D92242011E000CB3345 /* NSObject+Helpers.swift */; };
@@ -295,8 +295,8 @@
 		CE9091F52499549500AB50BD /* TextFieldTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldTableViewCell.swift; sourceTree = "<group>"; };
 		CE9091F62499549500AB50BD /* TextFieldTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TextFieldTableViewCell.xib; sourceTree = "<group>"; };
 		CE9091FD249A720E00AB50BD /* UIView+AuthHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+AuthHelpers.swift"; sourceTree = "<group>"; };
-		CE909207249D1FC900AB50BD /* TextButtonTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextButtonTableViewCell.swift; sourceTree = "<group>"; };
-		CE909208249D1FC900AB50BD /* TextButtonTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextButtonTableViewCell.xib; sourceTree = "<group>"; };
+		CE909207249D1FC900AB50BD /* TextLinkTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextLinkTableViewCell.swift; sourceTree = "<group>"; };
+		CE909208249D1FC900AB50BD /* TextLinkTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextLinkTableViewCell.xib; sourceTree = "<group>"; };
 		CEC77C6524854F2E00FB9050 /* SiteAddressViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteAddressViewController.swift; sourceTree = "<group>"; };
 		CEC77C6724854F3E00FB9050 /* SiteAddress.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SiteAddress.storyboard; sourceTree = "<group>"; };
 		CEDE0D92242011E000CB3345 /* NSObject+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+Helpers.swift"; sourceTree = "<group>"; };
@@ -697,8 +697,8 @@
 		CEC77C70248AB0C700FB9050 /* Reusable Views */ = {
 			isa = PBXGroup;
 			children = (
-				CE909207249D1FC900AB50BD /* TextButtonTableViewCell.swift */,
-				CE909208249D1FC900AB50BD /* TextButtonTableViewCell.xib */,
+				CE909207249D1FC900AB50BD /* TextLinkTableViewCell.swift */,
+				CE909208249D1FC900AB50BD /* TextLinkTableViewCell.xib */,
 				CE00B6E8248AD72E00A91173 /* InstructionTableViewCell.swift */,
 				CE00B6E9248AD72E00A91173 /* InstructionTableViewCell.xib */,
 				CE9091F52499549500AB50BD /* TextFieldTableViewCell.swift */,
@@ -822,7 +822,7 @@
 			files = (
 				B5E07FF4208FD13800657A9A /* Assets.xcassets in Resources */,
 				B56090CA208A4F5400399AE4 /* NUXButtonView.storyboard in Resources */,
-				CE90920A249D1FC900AB50BD /* TextButtonTableViewCell.xib in Resources */,
+				CE90920A249D1FC900AB50BD /* TextLinkTableViewCell.xib in Resources */,
 				B560911E208A555E00399AE4 /* Signup.storyboard in Resources */,
 				CE9091F82499549500AB50BD /* TextFieldTableViewCell.xib in Resources */,
 				CEC77C6824854F3E00FB9050 /* SiteAddress.storyboard in Resources */,
@@ -1060,7 +1060,7 @@
 				CE00B6EA248AD72E00A91173 /* InstructionTableViewCell.swift in Sources */,
 				B5609142208A563800399AE4 /* LoginNavigationController.swift in Sources */,
 				B56090E4208A4F9D00399AE4 /* WPNUXMainButton.m in Sources */,
-				CE909209249D1FC900AB50BD /* TextButtonTableViewCell.swift in Sources */,
+				CE909209249D1FC900AB50BD /* TextLinkTableViewCell.swift in Sources */,
 				3FFF2FC323D7F53200D38C77 /* AppSelector.swift in Sources */,
 				B560913B208A563800399AE4 /* LoginSelfHostedViewController.swift in Sources */,
 				B5609136208A563800399AE4 /* Login2FAViewController.swift in Sources */,

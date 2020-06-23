@@ -102,7 +102,7 @@ private extension SiteAddressViewController {
         let cells = [
             InstructionTableViewCell.reuseIdentifier: InstructionTableViewCell.loadNib(),
             TextFieldTableViewCell.reuseIdentifier: TextFieldTableViewCell.loadNib(),
-            TextButtonTableViewCell.reuseIdentifier: TextButtonTableViewCell.loadNib()
+            TextLinkTableViewCell.reuseIdentifier: TextLinkTableViewCell.loadNib()
         ]
 
         for (reuseIdentifier, nib) in cells {
@@ -124,7 +124,7 @@ private extension SiteAddressViewController {
             configureInstruction(cell)
         case let cell as TextFieldTableViewCell:
             configureTextField(cell)
-        case let cell as TextButtonTableViewCell:
+        case let cell as TextLinkTableViewCell:
             configureTextButton(cell)
         default:
             DDLogError("Error: Unidentified tableViewCell type found.")
@@ -146,7 +146,7 @@ private extension SiteAddressViewController {
 
     /// Configure the plain text button cell
     ///
-    func configureTextButton(_ cell: TextButtonTableViewCell) {
+    func configureTextButton(_ cell: TextLinkTableViewCell) {
         cell.buttonText = displayStrings.resetPasswordButtonTitle
     }
 
@@ -166,7 +166,7 @@ private extension SiteAddressViewController {
             case .siteAddress:
                 return TextFieldTableViewCell.reuseIdentifier
             case .resetPassword:
-                return TextButtonTableViewCell.reuseIdentifier
+                return TextLinkTableViewCell.reuseIdentifier
             }
         }
     }

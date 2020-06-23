@@ -114,6 +114,10 @@ private extension SiteAddressViewController {
     ///
     func loadRows() {
         rows = [.instructions, .siteAddress]
+        let displayHintButtons = WordPressAuthenticator.shared.configuration.displayHintButtons
+        if displayHintButtons {
+            rows.append(.resetPassword)
+        }
     }
 
     /// Configure cells

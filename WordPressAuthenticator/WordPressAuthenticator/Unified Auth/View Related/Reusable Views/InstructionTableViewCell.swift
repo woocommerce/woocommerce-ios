@@ -6,6 +6,7 @@ import UIKit
 public final class InstructionTableViewCell: UITableViewCell {
 
     public static let reuseIdentifier = "InstructionTableViewCell"
+
     @IBOutlet private weak var instructionLabel: UILabel!
 
     public var instructionText: String? {

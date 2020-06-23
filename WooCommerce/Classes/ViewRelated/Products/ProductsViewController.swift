@@ -2,6 +2,8 @@ import UIKit
 import WordPressUI
 import Yosemite
 
+import class AutomatticTracks.CrashLogging
+
 /// Shows a list of products with pull to refresh and infinite scroll
 ///
 final class ProductsViewController: UIViewController {
@@ -74,6 +76,10 @@ final class ProductsViewController: UIViewController {
         didSet {
             if sortOrder != oldValue {
                 resultsController.updateSortOrder(sortOrder)
+
+                /// Reload data because `updateSortOrder` generates a new `predicate` which calls `performFetch`
+                tableView.reloadData()
+
                 syncingCoordinator.resynchronize {}
             }
         }
@@ -117,6 +123,10 @@ final class ProductsViewController: UIViewController {
                                                   stockStatus: filters.stockStatus,
                                                   productStatus: filters.productStatus,
                                                   productType: filters.productType)
+
+                /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
+                tableView.reloadData()
+
                 syncingCoordinator.resynchronize {}
             }
         }
@@ -390,7 +400,13 @@ private extension ProductsViewController {
             onReload()
         }
 
-        try? resultsController.performFetch()
+        do {
+            try resultsController.performFetch()
+        } catch {
+            CrashLogging.logError(error)
+        }
+
+        tableView.reloadData()
     }
 }
 

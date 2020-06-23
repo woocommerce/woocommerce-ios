@@ -31,6 +31,7 @@ final class SiteAddressViewController: LoginViewController {
 
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
+        showKeyboard()
     }
 
     /// Style individual ViewController backgrounds, for now.
@@ -81,8 +82,15 @@ extension SiteAddressViewController: NUXKeyboardResponder {
     @objc func handleKeyboardWillHide(_ notification: Foundation.Notification) {
         keyboardWillHide(notification)
     }
-}
 
+    func showKeyboard() {
+        tableView.firstSubview(ofType: UITextField.self)?.becomeFirstResponder()
+    }
+
+    func hideKeyboard() {
+        tableView.firstSubview(ofType: UITextField.self)?.resignFirstResponder()
+    }
+}
 
 
 private extension SiteAddressViewController {

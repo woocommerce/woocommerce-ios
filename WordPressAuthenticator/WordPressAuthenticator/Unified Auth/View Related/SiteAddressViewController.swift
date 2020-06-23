@@ -134,7 +134,7 @@ private extension SiteAddressViewController {
     /// Configure the instruction cell
     ///
     func configureInstruction(_ cell: InstructionTableViewCell) {
-        cell.instructionLabel?.text = displayStrings.siteLoginInstructions
+        cell.instructionText = displayStrings.siteLoginInstructions
     }
 
     /// Configure the textfield cell

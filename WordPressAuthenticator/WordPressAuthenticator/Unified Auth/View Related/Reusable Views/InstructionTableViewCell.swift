@@ -6,6 +6,14 @@ import UIKit
 public final class InstructionTableViewCell: UITableViewCell {
 
     public static let reuseIdentifier = "InstructionTableViewCell"
-    @IBOutlet public weak var instructionLabel: UILabel!
+    @IBOutlet private weak var instructionLabel: UILabel!
 
+    public var instructionText: String? {
+        get {
+            return instructionLabel.text
+        }
+        set {
+            instructionLabel.text = newValue
+        }
+    }
 }

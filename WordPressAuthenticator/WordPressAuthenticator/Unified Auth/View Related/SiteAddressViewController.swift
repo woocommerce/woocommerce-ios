@@ -22,6 +22,7 @@ final class SiteAddressViewController: LoginViewController {
         super.viewDidLoad()
 
         localizePrimaryButton()
+        setRowHeight()
         registerTableViewCells()
         loadRows()
     }
@@ -68,7 +69,9 @@ extension SiteAddressViewController: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate conformance
 extension SiteAddressViewController: UITableViewDelegate {
-
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
 }
 
 
@@ -94,6 +97,13 @@ private extension SiteAddressViewController {
         let primaryTitle = displayStrings.continueButtonTitle
         submitButton?.setTitle(primaryTitle, for: .normal)
         submitButton?.setTitle(primaryTitle, for: .highlighted)
+    }
+
+    /// Sets the row height in the tableView
+    ///
+    func setRowHeight() {
+        tableView.estimatedRowHeight = Constants.rowHeight
+        tableView.rowHeight = UITableView.automaticDimension
     }
 
     /// Registers all of the available TableViewCells
@@ -168,5 +178,12 @@ private extension SiteAddressViewController {
                 return TextButtonTableViewCell.reuseIdentifier
             }
         }
+    }
+
+    /// Constants
+    ///
+    struct Constants {
+        // Need a CGFloat not a plain Float
+        static let rowHeight: CGFloat = 44.0
     }
 }

@@ -7,14 +7,18 @@ public struct WordPressAuthenticatorDisplayStrings {
     /// Strings: Login instructions.
     ///
     public let emailLoginInstructions: String
-
     public let jetpackLoginInstructions: String
-
     public let siteLoginInstructions: String
 
     /// Strings: primary call-to-action button titles.
     ///
     public let continueButtonTitle: String
+    
+    /// Large titles displayed in unified auth flows.
+    ///
+    public let gettingStartedTitle: String
+    public let logInTitle: String
+    public let signUpTitle: String
 
     /// Strings: secondary call-to-action button titles.
     ///
@@ -27,6 +31,9 @@ public struct WordPressAuthenticatorDisplayStrings {
                 siteLoginInstructions: String,
                 continueButtonTitle: String,
                 resetPasswordButtonTitle: String) {
+                gettingStartedTitle: String,
+                logInTitle: String,
+                signUpTitle: String) {
         self.emailLoginInstructions = emailLoginInstructions
         self.jetpackLoginInstructions = jetpackLoginInstructions
         self.siteLoginInstructions = siteLoginInstructions
@@ -48,6 +55,12 @@ public extension WordPressAuthenticatorDisplayStrings {
                                                     comment: "The button title text when there is a next step for logging in or signing up."),
             resetPasswordButtonTitle: NSLocalizedString("Reset your password",
                                                         comment: "The secondary call-to-action button title text, for when the user can't remember their password.")
+            gettingStartedTitle: NSLocalizedString("Getting Started",
+                                                   comment: "View title for initial auth views."),
+            logInTitle: NSLocalizedString("Log In",
+                                          comment: "View title during the log in process."),
+            signUpTitle: NSLocalizedString("Sign Up",
+                                           comment: "View title during the sign up process.")
         )
     }
 }

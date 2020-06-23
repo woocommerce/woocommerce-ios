@@ -390,6 +390,11 @@ extension UIImage {
     static var trashImage: UIImage {
         return UIImage.gridicon(.trash)
     }
+    
+    
+    static var syncImage: UIImage {
+        return UIImage.gridicon(.sync).imageFlippedForRightToLeftLayoutDirection()
+    }
 
     /// Creates a bitmap image of the Woo "bubble" logo based on a vector image in our asset catalog.
     ///

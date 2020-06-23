@@ -32,6 +32,8 @@ public final class ProductReviewStore: Store {
             synchronizeProductReviews(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .retrieveProductReview(let siteID, let reviewID, let onCompletion):
             retrieveProductReview(siteID: siteID, reviewID: reviewID, onCompletion: onCompletion)
+        case .retrieveProductReviewFromNote(let noteID, let onCompletion):
+            retrieveProductReviewFromNote(noteID: noteID, onCompletion: onCompletion)
         case .updateApprovalStatus(let siteID, let reviewID, let isApproved, let onCompletion):
             updateApprovalStatus(siteID: siteID, reviewID: reviewID, isApproved: isApproved, onCompletion: onCompletion)
         case .updateTrashStatus(let siteID, let reviewID, let isTrashed, let onCompletion):
@@ -97,6 +99,18 @@ private extension ProductReviewStore {
                 }
             }
         }
+    }
+
+    /// Retrieves the `Note`, `ProductReview`, and `Product` in sequence.
+    ///
+    /// Only the `ProductReview` is stored in the database. Please see
+    /// `RetrieveProductReviewFromNoteUseCase` for the reason why.
+    ///
+    func retrieveProductReviewFromNote(noteID: Int64,
+                                       onCompletion: @escaping (Result<ProductReviewFromNoteParcel, Error>) -> Void) {
+        let useCase = RetrieveProductReviewFromNoteUseCase(network: network,
+                                                           derivedStorage: sharedDerivedStorage)
+        useCase.retrieve(noteID: noteID, completion: onCompletion)
     }
 
     /// Updates the review's approval status

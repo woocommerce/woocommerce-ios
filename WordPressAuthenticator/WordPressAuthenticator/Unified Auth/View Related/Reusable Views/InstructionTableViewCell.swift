@@ -5,9 +5,13 @@ import UIKit
 ///
 public final class InstructionTableViewCell: UITableViewCell {
 
-    public static let reuseIdentifier = "InstructionTableViewCell"
-
+    /// Private properties
+    ///
     @IBOutlet private weak var instructionLabel: UILabel!
+
+    /// Public properties
+    ///
+    public static let reuseIdentifier = "InstructionTableViewCell"
 
     public var instructionText: String? {
         get {

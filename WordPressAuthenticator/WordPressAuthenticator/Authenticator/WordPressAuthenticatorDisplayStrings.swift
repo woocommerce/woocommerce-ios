@@ -30,7 +30,7 @@ public struct WordPressAuthenticatorDisplayStrings {
                 jetpackLoginInstructions: String,
                 siteLoginInstructions: String,
                 continueButtonTitle: String,
-                resetPasswordButtonTitle: String) {
+                resetPasswordButtonTitle: String,
                 gettingStartedTitle: String,
                 logInTitle: String,
                 signUpTitle: String) {
@@ -57,7 +57,7 @@ public extension WordPressAuthenticatorDisplayStrings {
             continueButtonTitle: NSLocalizedString("Continue",
                                                     comment: "The button title text when there is a next step for logging in or signing up."),
             resetPasswordButtonTitle: NSLocalizedString("Reset your password",
-                                                        comment: "The secondary call-to-action button title text, for when the user can't remember their password.")
+                                                        comment: "The secondary call-to-action button title text, for when the user can't remember their password."),
             gettingStartedTitle: NSLocalizedString("Getting Started",
                                                    comment: "View title for initial auth views."),
             logInTitle: NSLocalizedString("Log In",

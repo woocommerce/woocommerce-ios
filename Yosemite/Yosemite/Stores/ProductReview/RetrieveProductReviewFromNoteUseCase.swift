@@ -89,6 +89,8 @@ final class RetrieveProductReviewFromNoteUseCase {
             completion(.failure($0))
         }
 
+        // Do not use `weak self` because we want to retain this class
+        // until all the callbacks are finished.
         fetchNote(noteID: noteID, abort: abort) { note in
             self.fetchProductReview(from: note, abort: abort) { review in
                 self.saveProductReview(review, abort: abort) {

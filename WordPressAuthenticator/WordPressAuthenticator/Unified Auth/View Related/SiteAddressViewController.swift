@@ -157,6 +157,8 @@ private extension SiteAddressViewController {
     func configureTextField(_ cell: TextFieldTableViewCell) {
         let placeholderText = NSLocalizedString("example.com", comment: "Site Address placeholder")
         cell.configureTextFieldStyle(with: .url, and: placeholderText)
+        // Save a reference to the first textField so it can becomeFirstResponder.
+        firstTextField = cell.textField
     }
 
     /// Configure the plain text button cell

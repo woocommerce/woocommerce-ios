@@ -311,6 +311,8 @@
 		4590CEE5249BA46700949F05 /* AddProductCategoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4590CEE3249BA46700949F05 /* AddProductCategoryViewController.xib */; };
 		45A24E5F2451DF1A0050606B /* ProductMenuOrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A24E5D2451DF1A0050606B /* ProductMenuOrderViewController.swift */; };
 		45A24E602451DF1A0050606B /* ProductMenuOrderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45A24E5E2451DF1A0050606B /* ProductMenuOrderViewController.xib */; };
+		45AE150224A23F03005AA948 /* ProductParentCategoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE150024A23F03005AA948 /* ProductParentCategoriesViewController.swift */; };
+		45AE150324A23F03005AA948 /* ProductParentCategoriesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45AE150124A23F03005AA948 /* ProductParentCategoriesViewController.xib */; };
 		45AE1B9C2417C10C00A9E8BD /* UserAgentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE1B9B2417C10C00A9E8BD /* UserAgentTests.swift */; };
 		45AE582C230D9D35001901E3 /* OrderNoteHeaderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE582A230D9D35001901E3 /* OrderNoteHeaderTableViewCell.swift */; };
 		45AE582D230D9D35001901E3 /* OrderNoteHeaderTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45AE582B230D9D35001901E3 /* OrderNoteHeaderTableViewCell.xib */; };
@@ -1177,6 +1179,8 @@
 		4590CEE3249BA46700949F05 /* AddProductCategoryViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddProductCategoryViewController.xib; sourceTree = "<group>"; };
 		45A24E5D2451DF1A0050606B /* ProductMenuOrderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductMenuOrderViewController.swift; sourceTree = "<group>"; };
 		45A24E5E2451DF1A0050606B /* ProductMenuOrderViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductMenuOrderViewController.xib; sourceTree = "<group>"; };
+		45AE150024A23F03005AA948 /* ProductParentCategoriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductParentCategoriesViewController.swift; sourceTree = "<group>"; };
+		45AE150124A23F03005AA948 /* ProductParentCategoriesViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductParentCategoriesViewController.xib; sourceTree = "<group>"; };
 		45AE1B9B2417C10C00A9E8BD /* UserAgentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAgentTests.swift; sourceTree = "<group>"; };
 		45AE582A230D9D35001901E3 /* OrderNoteHeaderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderNoteHeaderTableViewCell.swift; sourceTree = "<group>"; };
 		45AE582B230D9D35001901E3 /* OrderNoteHeaderTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderNoteHeaderTableViewCell.xib; sourceTree = "<group>"; };
@@ -2469,6 +2473,8 @@
 			children = (
 				4590CEE2249BA46700949F05 /* AddProductCategoryViewController.swift */,
 				4590CEE3249BA46700949F05 /* AddProductCategoryViewController.xib */,
+				45AE150024A23F03005AA948 /* ProductParentCategoriesViewController.swift */,
+				45AE150124A23F03005AA948 /* ProductParentCategoriesViewController.xib */,
 			);
 			path = "Add Category";
 			sourceTree = "<group>";
@@ -4297,6 +4303,7 @@
 				B5BE75DD213F1D3D00909A14 /* OverlayMessageView.xib in Resources */,
 				57C503DE23E8CE0D00EC0790 /* OrdersMasterViewController.xib in Resources */,
 				02F4F510237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.xib in Resources */,
+				45AE150324A23F03005AA948 /* ProductParentCategoriesViewController.xib in Resources */,
 				45FBDF39238D3F8800127F77 /* ExtendedAddProductImageCollectionViewCell.xib in Resources */,
 				D8149F542251CFE60006A245 /* EditableOrderTrackingTableViewCell.xib in Resources */,
 				D81D9229222E7F0800FFA585 /* OrderStatusListViewController.xib in Resources */,
@@ -4637,6 +4644,7 @@
 				B541B220218A007C008FE7C1 /* NSMutableParagraphStyle+Helpers.swift in Sources */,
 				45AE582C230D9D35001901E3 /* OrderNoteHeaderTableViewCell.swift in Sources */,
 				CE583A0B2107937F00D73C1C /* TextViewTableViewCell.swift in Sources */,
+				45AE150224A23F03005AA948 /* ProductParentCategoriesViewController.swift in Sources */,
 				B557652B20F681E800185843 /* StoreTableViewCell.swift in Sources */,
 				D8C11A4E22DD235F00D4A88D /* OrderDetailsResultsControllers.swift in Sources */,
 				D8C251D9230D256F00F49782 /* NoticePresenter.swift in Sources */,

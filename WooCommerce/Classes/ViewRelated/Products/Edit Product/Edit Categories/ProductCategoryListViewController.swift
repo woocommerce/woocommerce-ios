@@ -12,7 +12,7 @@ final class ProductCategoryListViewController: UIViewController {
     private let ghostTableView = UITableView()
 
     private let viewModel: ProductCategoryListViewModel
-    
+
     private let siteID: Int64
 
     // Completion callback

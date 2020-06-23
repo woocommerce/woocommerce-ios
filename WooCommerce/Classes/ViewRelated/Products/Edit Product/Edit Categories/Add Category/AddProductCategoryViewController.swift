@@ -128,7 +128,15 @@ extension AddProductCategoryViewController: UITableViewDataSource {
 //
 extension AddProductCategoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-
+        switch sections[indexPath.section].rows[indexPath.row] {
+        case .parentCategory:
+            let parentCategoryViewController = ProductParentCategoriesViewController(siteID: siteID) { (parentCategory) in
+                //TODO: parent category selected
+            }
+            navigationController?.pushViewController(parentCategoryViewController, animated: true)
+        default:
+            return
+        }
     }
 }
 

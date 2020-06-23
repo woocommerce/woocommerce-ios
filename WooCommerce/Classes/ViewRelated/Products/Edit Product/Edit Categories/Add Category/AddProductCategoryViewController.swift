@@ -125,6 +125,7 @@ private extension AddProductCategoryViewController {
 extension AddProductCategoryViewController {
 
     @objc private func saveNewCategory() {
+        titleCategoryTextFieldResignFirstResponder()
         configureRightButtonItemAsSpinner()
 
         guard let categoryName = newCategoryTitle, let defaultStoreID = ServiceLocator.stores.sessionManager.defaultStoreID else {
@@ -196,6 +197,15 @@ extension AddProductCategoryViewController: UITableViewDelegate {
             return
         }
     }
+
+    /// Dismiss keyboard on Title Category Text Field
+    ///
+    func titleCategoryTextFieldResignFirstResponder() {
+        if let indexPath = sections.indexPathForRow(.title) {
+            let cell = tableView.cellForRow(at: indexPath) as? TextFieldTableViewCell
+            cell?.resignFirstResponder()
+        }
+    }
 }
 
 // MARK: - Keyboard management
@@ -250,7 +260,7 @@ private extension AddProductCategoryViewController {
 //
 private extension AddProductCategoryViewController {
 
-    struct Section {
+    struct Section: RowIterable {
         let rows: [Row]
     }
 

@@ -39,6 +39,9 @@ public struct WordPressAuthenticatorDisplayStrings {
         self.siteLoginInstructions = siteLoginInstructions
         self.continueButtonTitle = continueButtonTitle
         self.resetPasswordButtonTitle = resetPasswordButtonTitle
+        self.gettingStartedTitle = gettingStartedTitle
+        self.logInTitle = logInTitle
+        self.signUpTitle = signUpTitle
     }
 }
 

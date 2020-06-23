@@ -4,7 +4,6 @@ import Yosemite
 /// Reflects the UI state associated with a stats version.
 ///
 /// - initial: UI with the initial stats version from preferences in storage
-#warning("Delete since we can just use StatsVersion")
 enum StatsVersionState: Equatable {
     /// if initial(v3) = then show banner “Upgrade to keep seeing your stats”
     /// if initial(v4) = then default to stats
@@ -66,23 +65,5 @@ final class StatsVersionStateCoordinator {
             ServiceLocator.stores.dispatch(action)
         }
         ServiceLocator.stores.dispatch(lastShownStatsVersionAction)
-    }
-}
-
-#warning("Delete these methods later")
-extension StatsVersionStateCoordinator: StatsV3ToV4BannerActionHandler {
-    func dismissV3ToV4Banner() {
-
-    }
-
-    func statsV4ButtonPressed() {
-
-    }
-}
-
-#warning("Delete these methods later")
-extension StatsVersionStateCoordinator: StatsV4ToV3BannerActionHandler {
-    func dismissV4ToV3Banner() {
-
     }
 }

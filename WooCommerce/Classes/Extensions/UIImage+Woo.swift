@@ -119,6 +119,12 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Delete cell image shown in a cell's accessory view
+    ///
+    static var deleteCellImage: UIImage {
+        return UIImage.gridicon(.cross, size: CGSize(width: 22, height: 22))
+    }
+
     /// Ellipsis Icon
     ///
     static var ellipsisImage: UIImage {

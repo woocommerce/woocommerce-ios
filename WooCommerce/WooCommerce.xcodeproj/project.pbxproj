@@ -83,6 +83,8 @@
 		022A45EE237BADA6001417F0 /* Product+ProductFormTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022A45ED237BADA6001417F0 /* Product+ProductFormTests.swift */; };
 		022BF7FD23B9D708000A1DFB /* InProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022BF7FB23B9D708000A1DFB /* InProgressViewController.swift */; };
 		022BF7FE23B9D708000A1DFB /* InProgressViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 022BF7FC23B9D708000A1DFB /* InProgressViewController.xib */; };
+		022F7A0324A05F6400012601 /* GroupedProductsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022F7A0124A05F6400012601 /* GroupedProductsViewController.swift */; };
+		022F7A0424A05F6400012601 /* GroupedProductsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 022F7A0224A05F6400012601 /* GroupedProductsViewController.xib */; };
 		023053492374528A00487A64 /* AztecBlockquoteFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023053482374528A00487A64 /* AztecBlockquoteFormatBarCommand.swift */; };
 		02305352237454C700487A64 /* AztecHorizontalRulerFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0230534F237454C700487A64 /* AztecHorizontalRulerFormatBarCommand.swift */; };
 		02305353237454C700487A64 /* AztecInsertMoreFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02305350237454C700487A64 /* AztecInsertMoreFormatBarCommand.swift */; };
@@ -944,6 +946,8 @@
 		022A45ED237BADA6001417F0 /* Product+ProductFormTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+ProductFormTests.swift"; sourceTree = "<group>"; };
 		022BF7FB23B9D708000A1DFB /* InProgressViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InProgressViewController.swift; sourceTree = "<group>"; };
 		022BF7FC23B9D708000A1DFB /* InProgressViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InProgressViewController.xib; sourceTree = "<group>"; };
+		022F7A0124A05F6400012601 /* GroupedProductsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedProductsViewController.swift; sourceTree = "<group>"; };
+		022F7A0224A05F6400012601 /* GroupedProductsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupedProductsViewController.xib; sourceTree = "<group>"; };
 		023053482374528A00487A64 /* AztecBlockquoteFormatBarCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecBlockquoteFormatBarCommand.swift; sourceTree = "<group>"; };
 		0230534F237454C700487A64 /* AztecHorizontalRulerFormatBarCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AztecHorizontalRulerFormatBarCommand.swift; sourceTree = "<group>"; };
 		02305350237454C700487A64 /* AztecInsertMoreFormatBarCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AztecInsertMoreFormatBarCommand.swift; sourceTree = "<group>"; };
@@ -1811,6 +1815,7 @@
 				021E2A1223A9FBF200B1DE07 /* Inventory Settings */,
 				02E262CA238D0D0500B79588 /* List Selector Data Source */,
 				0262DA5523A23AA40029AF30 /* Shipping Settings */,
+				022F7A0024A05F3700012601 /* Edit Grouped Products */,
 				45B9C63B23A8E4DB007FC4C5 /* Edit Price */,
 				265BCA032430E5EA004E53EE /* Edit Categories */,
 				02162724237963AF000208D2 /* ProductFormViewController.swift */,
@@ -1879,6 +1884,15 @@
 				022BF7FC23B9D708000A1DFB /* InProgressViewController.xib */,
 			);
 			path = Progress;
+			sourceTree = "<group>";
+		};
+		022F7A0024A05F3700012601 /* Edit Grouped Products */ = {
+			isa = PBXGroup;
+			children = (
+				022F7A0124A05F6400012601 /* GroupedProductsViewController.swift */,
+				022F7A0224A05F6400012601 /* GroupedProductsViewController.xib */,
+			);
+			path = "Edit Grouped Products";
 			sourceTree = "<group>";
 		};
 		023053602374FEF000487A64 /* Implementation */ = {
@@ -4303,6 +4317,7 @@
 				4512055324655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.xib in Resources */,
 				B59D1EE821908A08009D1978 /* Noticons.ttf in Resources */,
 				D81F2D35225F0CF70084BF9C /* EmptyListMessageWithActionView.xib in Resources */,
+				022F7A0424A05F6400012601 /* GroupedProductsViewController.xib in Resources */,
 				0290E276238E4F8100B5C466 /* PaginatedListSelectorViewController.xib in Resources */,
 				456CB50E2444BFAC00992A05 /* ProductPurchaseNoteViewController.xib in Resources */,
 				023A059B24135F2600E3FC99 /* ReviewsViewController.xib in Resources */,
@@ -4659,6 +4674,7 @@
 				024DF31623742BB6006658FE /* AztecStrikethroughFormatBarCommand.swift in Sources */,
 				02817B39242B34560050AD8B /* ToolbarView.swift in Sources */,
 				D817586222BB64C300289CFE /* OrderDetailsNotices.swift in Sources */,
+				022F7A0324A05F6400012601 /* GroupedProductsViewController.swift in Sources */,
 				456417F4247D5434001203F6 /* UITableView+Helpers.swift in Sources */,
 				0282DD94233C9465006A5FDB /* SearchUICommand.swift in Sources */,
 				028BAC4722F3B550008BB4AF /* StatsTimeRangeV4+UI.swift in Sources */,

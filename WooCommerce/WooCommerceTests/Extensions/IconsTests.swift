@@ -67,6 +67,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.deleteImage)
     }
 
+    func testDeleteCellImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.deleteCellImage)
+    }
+
     func testEllipsisImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.ellipsisImage)
     }

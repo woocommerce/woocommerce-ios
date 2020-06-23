@@ -217,7 +217,6 @@ private extension RetrieveProductReviewFromNoteUseCaseTests {
 
         waitForExpectation { exp in
             useCase.retrieve(noteID: noteID) { aResult in
-                print(aResult)
                 result = aResult
                 exp.fulfill()
             }

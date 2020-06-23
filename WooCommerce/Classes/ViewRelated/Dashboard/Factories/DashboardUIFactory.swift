@@ -88,17 +88,7 @@ private extension DashboardUIFactory {
             if let topBannerPresenter = updatedDashboardUI as? TopBannerPresenter {
                 switch statsVersion {
                 case .v3:
-                    #warning("Replace with new banner!!!")
-                    let topBannerView = DashboardTopBannerFactory.v4ToV3BannerView(actionHandler: {
-                        guard let url = URL(string: "https://wordpress.org/plugins/woocommerce-admin/") else {
-                            return
-                        }
-                        ServiceLocator.analytics.track(.dashboardNewStatsRevertedBannerLearnMoreTapped)
-                        WebviewHelper.launch(url, with: updatedDashboardUI)
-                    }, dismissHandler: { [weak self] in
-                        ServiceLocator.analytics.track(.dashboardNewStatsRevertedBannerDismissTapped)
-                        self?.stateCoordinator.dismissV4ToV3Banner()
-                    })
+                    let topBannerView = DashboardTopBannerFactory.deprecatedStatsBannerView()
                     topBannerPresenter.hideTopBanner(animated: false)
                     topBannerPresenter.showTopBanner(topBannerView)
                 case .v4:

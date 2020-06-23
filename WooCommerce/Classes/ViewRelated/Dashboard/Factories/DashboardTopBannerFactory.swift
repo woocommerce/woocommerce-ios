@@ -25,6 +25,15 @@ final class DashboardTopBannerFactory {
                                            dismissHandler: dismissHandler)
         return TopBannerView(viewModel: viewModel)
     }
+    
+    static func deprecatedStatsBannerView() -> TopBannerView {
+        let viewModel = TopBannerViewModel(title: DeprecatedStatsConstants.title,
+                                           infoText: DeprecatedStatsConstants.info,
+                                           icon: DeprecatedStatsConstants.icon,
+                                           isExpanded: true,
+                                           expandedStateChangeHandler: nil)
+        return TopBannerView(viewModel: viewModel)
+    }
 }
 
 private extension DashboardTopBannerFactory {
@@ -46,5 +55,13 @@ private extension DashboardTopBannerFactory {
         static let icon = UIImage.infoImage
         static let actionTitle = NSLocalizedString("Learn more",
                                                    comment: "The action of the top banner on Dashboard that indicates new stats is unavailable")
+    }
+    
+    enum DeprecatedStatsConstants {
+        static let title = NSLocalizedString("Upgrade to keep seeing your stats", comment: "Banner title in my store when stats will be deprecated")
+        static let info = NSLocalizedString(
+            "We’ve rolled out improvements to our analytics. Upgrade to WooCommerce 4.0 or above or install WooCommerce Admin plugin to keep seeing your stats after September 1, 2020.",
+            comment: "Banner caption in my store when the stats will be deprecated")
+        static let icon = UIImage.syncImage
     }
 }

@@ -13,6 +13,8 @@ enum ProductFormEditAction {
     // Affiliate products only
     case sku
     case externalURL
+    // Grouped products only
+    case groupedProducts
 }
 
 /// Creates actions for different sections/UI on the product form.
@@ -65,6 +67,8 @@ private extension ProductFormActionsFactory {
             return allSettingsSectionActionsForSimpleProduct()
         case .affiliate:
             return allSettingsSectionActionsForAffiliateProduct()
+        case .grouped:
+            return allSettingsSectionActionsForGroupedProduct()
         default:
             assertionFailure("Product of type \(product.productType) should not be editable.")
             return []
@@ -99,6 +103,19 @@ private extension ProductFormActionsFactory {
         ]
         return actions.compactMap { $0 }
     }
+
+    func allSettingsSectionActionsForGroupedProduct() -> [ProductFormEditAction] {
+        let shouldShowBriefDescriptionRow = isEditProductsRelease2Enabled
+        let shouldShowCategoriesRow = isEditProductsRelease3Enabled
+
+        let actions: [ProductFormEditAction?] = [
+            .groupedProducts,
+            .sku,
+            shouldShowCategoriesRow ? .categories: nil,
+            shouldShowBriefDescriptionRow ? .briefDescription: nil
+        ]
+        return actions.compactMap { $0 }
+    }
 }
 
 private extension ProductFormActionsFactory {
@@ -127,6 +144,10 @@ private extension ProductFormActionsFactory {
             return true
         case .sku:
             return product.sku?.isNotEmpty == true
+        // Grouped products only.
+        case .groupedProducts:
+            // The grouped products action is always visible in the settings section for a grouped product.
+            return true
         default:
             return false
         }

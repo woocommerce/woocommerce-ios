@@ -16,7 +16,11 @@ final class AddProductCategoryViewController: UIViewController {
 
     /// New category title
     ///
-    private var newCategoryTitle: String?
+    private var newCategoryTitle: String? {
+        didSet {
+            navigationItem.rightBarButtonItem?.isEnabled = newCategoryTitle != nil || newCategoryTitle?.isEmpty == true
+        }
+    }
 
     /// Selected parent category
     ///
@@ -25,6 +29,23 @@ final class AddProductCategoryViewController: UIViewController {
             tableView.reloadData()
         }
     }
+
+    /// Keyboard management
+    ///
+    private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
+        let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
+            self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
+        }
+        return keyboardFrameObserver
+    }()
+
+    /// Dedicated NoticePresenter (use this here instead of ServiceLocator.noticePresenter)
+    ///
+    private lazy var noticePresenter: DefaultNoticePresenter = {
+        let noticePresenter = DefaultNoticePresenter()
+        noticePresenter.presentingViewController = self
+        return noticePresenter
+    }()
 
     // Completion callback
     //
@@ -46,6 +67,7 @@ final class AddProductCategoryViewController: UIViewController {
         configureNavigationBar()
         configureMainView()
         configureTableView()
+        startListeningToNotifications()
     }
 }
 
@@ -63,7 +85,7 @@ private extension AddProductCategoryViewController {
 
     func configureRightBarButtomitemAsSave() {
         navigationItem.setRightBarButton(UIBarButtonItem(title: Strings.saveButton, style: .done, target: self, action: #selector(saveNewCategory)), animated: true)
-        navigationItem.rightBarButtonItem?.isEnabled = newCategoryTitle == nil
+        navigationItem.rightBarButtonItem?.isEnabled = newCategoryTitle != nil
     }
 
     func configureRightButtonItemAsSpinner() {
@@ -132,7 +154,7 @@ extension AddProductCategoryViewController {
                             actionTitle: Strings.retryErrorAction) {
                                 onAction()
         }
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
+        noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -173,6 +195,22 @@ extension AddProductCategoryViewController: UITableViewDelegate {
         default:
             return
         }
+    }
+}
+
+// MARK: - Keyboard management
+//
+private extension AddProductCategoryViewController {
+    /// Registers for all of the related Notifications
+    ///
+    func startListeningToNotifications() {
+        keyboardFrameObserver.startObservingKeyboardFrame()
+    }
+}
+
+extension AddProductCategoryViewController: KeyboardScrollable {
+    var scrollable: UIScrollView {
+        return tableView
     }
 }
 

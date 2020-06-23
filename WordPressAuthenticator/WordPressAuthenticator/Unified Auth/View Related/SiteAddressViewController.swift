@@ -6,13 +6,15 @@ import WordPressUI
 ///
 final class SiteAddressViewController: LoginViewController {
 
+    /// Private properties
+    ///
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
 
     // Required property declaration for `NUXKeyboardResponder` but unused here.
     var verticalCenterConstraint: NSLayoutConstraint?
 
-    var displayStrings: WordPressAuthenticatorDisplayStrings {
+    private var displayStrings: WordPressAuthenticatorDisplayStrings {
         return WordPressAuthenticator.shared.displayStrings
     }
 

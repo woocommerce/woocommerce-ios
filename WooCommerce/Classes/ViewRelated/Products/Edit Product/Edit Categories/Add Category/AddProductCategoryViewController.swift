@@ -8,6 +8,7 @@ final class AddProductCategoryViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
 
+    private let siteID: Int64
 
     /// Table Sections to be rendered
     ///
@@ -26,7 +27,8 @@ final class AddProductCategoryViewController: UIViewController {
     typealias Completion = (_ category: ProductCategory) -> Void
     private let onCompletion: Completion
 
-    init(completion: @escaping Completion) {
+    init(siteID: Int64, completion: @escaping Completion) {
+        self.siteID = siteID
         onCompletion = completion
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }

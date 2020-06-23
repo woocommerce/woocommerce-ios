@@ -12,6 +12,8 @@ final class ProductCategoryListViewController: UIViewController {
     private let ghostTableView = UITableView()
 
     private let viewModel: ProductCategoryListViewModel
+    
+    private let siteID: Int64
 
     // Completion callback
     //
@@ -20,6 +22,7 @@ final class ProductCategoryListViewController: UIViewController {
 
     init(product: Product, completion: @escaping Completion) {
         self.viewModel = ProductCategoryListViewModel(product: product)
+        self.siteID = product.siteID
         onCompletion = completion
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
@@ -138,7 +141,7 @@ extension ProductCategoryListViewController {
     }
 
     @objc private func addButtonTapped() {
-        let addCategoryViewController = AddProductCategoryViewController { (newCategory) in
+        let addCategoryViewController = AddProductCategoryViewController(siteID: siteID) { (newCategory) in
             //TODO: new category added
         }
         let navController = WooNavigationController(rootViewController: addCategoryViewController)

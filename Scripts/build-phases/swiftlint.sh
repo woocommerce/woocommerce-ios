@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# Runs SwiftLint on the whole workspace
+# Runs SwiftLint on the whole workspace.
 #
 # This does not run in Continuous Integration.
 #
@@ -9,6 +9,7 @@
 # Abort if we are running in CI
 # See https://circleci.com/docs/2.0/env-vars/#built-in-environment-variables
 if [ "$CI" = true ] ; then
+  echo "warning: skipping SwiftLint build phase because running on CI."
   exit 0
 fi
 

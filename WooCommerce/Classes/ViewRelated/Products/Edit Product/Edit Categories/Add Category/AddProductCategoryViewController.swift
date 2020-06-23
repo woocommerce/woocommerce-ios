@@ -57,8 +57,24 @@ private extension AddProductCategoryViewController {
         title = Strings.titleView
 
         addCloseNavigationBarButton(title: Strings.cancelButton)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: Strings.saveButton, style: .done, target: self, action: #selector(saveNewCategory))
+        configureRightBarButtomitemAsSave()
         removeNavigationBackBarButtonText()
+    }
+
+    func configureRightBarButtomitemAsSave() {
+        navigationItem.setRightBarButton(UIBarButtonItem(title: Strings.saveButton, style: .done, target: self, action: #selector(saveNewCategory)), animated: true)
+        navigationItem.rightBarButtonItem?.isEnabled = newCategoryTitle == nil
+    }
+
+    func configureRightButtonItemAsSpinner() {
+        let activityIndicator = UIActivityIndicatorView(style: .white)
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.startAnimating()
+
+        let rightBarButton = UIBarButtonItem(customView: activityIndicator)
+
+        navigationItem.setRightBarButton(rightBarButton, animated: true)
+        navigationItem.rightBarButtonItem?.isEnabled = false
     }
 
     func configureMainView() {
@@ -82,28 +98,41 @@ private extension AddProductCategoryViewController {
     }
 }
 
-// MARK: - Navigation actions handling
+// MARK: - Remote Update actions
 //
 extension AddProductCategoryViewController {
 
     @objc private func saveNewCategory() {
-        //TODO: add remotely new category
-        //onCompletion(newCategory)
+        configureRightButtonItemAsSpinner()
 
         guard let categoryName = newCategoryTitle, let defaultStoreID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
 
-        let action = ProductCategoryAction.addProductCategory(siteID: defaultStoreID, name: categoryName, parentID: selectedParentCategory?.categoryID) { (result) in
-            //TODO: to be completed
-//            switch result {
-//            case .success(let category):
-//                //onCompletion?(.success(imageResult.image))
-//            case .failure(let error):
-//                //onCompletion?(.failure(kingfisherError))
-//            }
+        let action = ProductCategoryAction.addProductCategory(siteID: defaultStoreID, name: categoryName, parentID: selectedParentCategory?.categoryID) { [weak self] (result) in
+            self?.configureRightBarButtomitemAsSave()
+            switch result {
+            case .success(let category):
+                self?.onCompletion(category)
+            case .failure:
+                self?.displayAddCategoryErrorNotice { [weak self] in
+                    self?.saveNewCategory()
+                }
+            }
         }
         ServiceLocator.stores.dispatch(action)
+    }
+
+    /// Displays the `Unable to create category` Notice.
+    ///
+    func displayAddCategoryErrorNotice(onAction: @escaping () -> Void) {
+        let notice = Notice(title: Strings.addCategoryErrorNotice,
+                            message: nil,
+                            feedbackType: .error,
+                            actionTitle: Strings.retryErrorAction) {
+                                onAction()
+        }
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -216,5 +245,7 @@ private extension AddProductCategoryViewController {
         static let titleCellPlaceholder = NSLocalizedString("Title", comment: "Add Product Category. Placeholder of cell presenting the title of the category.")
         static let parentCellTitle = NSLocalizedString("Parent Category", comment: "Add Product Category. Title of cell presenting the parent category.")
         static let parentCellPlaceholder = NSLocalizedString("Optional", comment: "Add Product Category. Placeholder of cell presenting the parent category.")
+        static let addCategoryErrorNotice = NSLocalizedString("Unable to create the new category", comment: "Content of error presented when Create New Category Action Failed.")
+        static let retryErrorAction = NSLocalizedString("Retry", comment: "Retry Action")
     }
 }

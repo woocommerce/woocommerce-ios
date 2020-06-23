@@ -50,11 +50,9 @@ private extension TextFieldTableViewCell {
             textField.keyboardType = .URL
             textField.returnKeyType = .continue
             textField.autocorrectionType = .no
-            textField.becomeFirstResponder()
         default:
             textField.returnKeyType = .continue
             textField.autocorrectionType = .no
-            textField.becomeFirstResponder()
         }
     }
 }

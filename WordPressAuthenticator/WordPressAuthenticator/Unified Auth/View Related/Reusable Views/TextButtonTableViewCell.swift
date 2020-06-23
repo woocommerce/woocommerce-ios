@@ -5,9 +5,13 @@ import UIKit
 ///
 final class TextButtonTableViewCell: UITableViewCell {
 
-    public static let reuseIdentifier = "TextButtonTableViewCell"
-
+    /// Private properties
+    ///
     @IBOutlet private weak var button: UIButton!
+
+    /// Public properties
+    ///
+    public static let reuseIdentifier = "TextButtonTableViewCell"
 
     public var buttonText: String? {
         get {

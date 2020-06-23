@@ -8,6 +8,7 @@ extension TitleAndTextFieldTableViewCell.ViewModel {
                                                         text: text,
                                                         placeholder: placeholder,
                                                         state: state,
+                                                        textFieldAlignment: .leading,
                                                         onTextChange: onTextChange)
     }
 }

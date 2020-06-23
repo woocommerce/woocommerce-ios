@@ -8,6 +8,8 @@ final class TitleAndTextFieldTableViewCell: UITableViewCell {
         let text: String?
         let placeholder: String?
         let state: State
+        let keyboardType: UIKeyboardType
+        let textFieldAlignment: TextFieldTextAlignment
         let onTextChange: ((_ text: String?) -> Void)?
 
         enum State {
@@ -19,11 +21,15 @@ final class TitleAndTextFieldTableViewCell: UITableViewCell {
              text: String?,
              placeholder: String?,
              state: State = .normal,
+             keyboardType: UIKeyboardType = .default,
+             textFieldAlignment: TextFieldTextAlignment,
              onTextChange: ((_ text: String?) -> Void)?) {
             self.title = title
             self.text = text
             self.placeholder = placeholder
             self.state = state
+            self.keyboardType = keyboardType
+            self.textFieldAlignment = textFieldAlignment
             self.onTextChange = onTextChange
         }
     }
@@ -51,6 +57,8 @@ final class TitleAndTextFieldTableViewCell: UITableViewCell {
         textField.text = viewModel.text
         textField.placeholder = viewModel.placeholder
         textField.textColor = viewModel.state.textColor
+        textField.keyboardType = viewModel.keyboardType
+        textField.textAlignment = viewModel.textFieldAlignment.toTextAlignment()
         onTextChange = viewModel.onTextChange
     }
 

@@ -56,7 +56,7 @@ final class ProductParentCategoriesViewController: UIViewController {
 private extension ProductParentCategoriesViewController {
 
     func configureTitle() {
-        title = NSLocalizedString("Categories", comment: "Edit product categories screen - Screen title")
+        title = NSLocalizedString("Select Parent Category", comment: "Select parent category screen - Screen title")
     }
 
     func registerTableViewCells() {

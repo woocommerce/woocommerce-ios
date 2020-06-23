@@ -8,10 +8,15 @@ final class TextLinkTableViewCell: UITableViewCell {
     /// Private properties
     ///
     @IBOutlet private weak var button: UIButton!
+    @IBAction private func textLinkButtonTapped(_ sender: UIButton) {
+        actionHandler?()
+    }
 
     /// Public properties
     ///
     public static let reuseIdentifier = "TextLinkTableViewCell"
+
+    public var actionHandler: (() -> Void)?
 
     public var buttonText: String? {
         get {

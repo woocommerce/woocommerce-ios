@@ -9,15 +9,16 @@ final class TextFieldTableViewCell: UITableViewCell {
     ///
     @IBOutlet private weak var borderView: UIView!
     @IBOutlet private weak var borderWidth: NSLayoutConstraint!
-    @IBOutlet private weak var textField: UITextField!
-
-    /// Public properties
-    ///
-    public static let reuseIdentifier = "TextFieldTableViewCell"
 
     private var hairlineBorderWidth: CGFloat {
         return 1.0 / UIScreen.main.scale
     }
+
+    /// Public properties
+    ///
+    @IBOutlet public weak var textField: UITextField! // public so it can be the first responder
+
+    public static let reuseIdentifier = "TextFieldTableViewCell"
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -43,6 +44,7 @@ private extension TextFieldTableViewCell {
     }
 
     /// Style the textField.
+    /// - note: Don't assign first responder here. It's too early in the view lifecycle.
     ///
     func applyTextFieldStyle(_ style: TextFieldStyle) {
         switch style {

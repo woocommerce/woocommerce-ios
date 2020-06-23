@@ -497,7 +497,11 @@ extension OrdersViewController: UITableViewDelegate {
             assertionFailure("Expected OrderDetailsViewController to be instantiated")
             return
         }
-        orderDetailsVC.viewModel = viewModel.detailsViewModel(at: indexPath)
+        let orderDetailsViewModel = viewModel.detailsViewModel(at: indexPath)
+        orderDetailsVC.viewModel = orderDetailsViewModel
+
+        ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": orderDetailsViewModel.order.orderID,
+        "status": orderDetailsViewModel.order.statusKey])
 
         navigationController?.pushViewController(orderDetailsVC, animated: true)
     }
@@ -507,23 +511,6 @@ extension OrdersViewController: UITableViewDelegate {
         syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: orderIndex)
     }
 }
-
-
-// MARK: - Segues
-//
-extension OrdersViewController {
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let singleOrderViewController = segue.destination as? OrderDetailsViewController, let viewModel = sender as? OrderDetailsViewModel else {
-            return
-        }
-
-        ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": viewModel.order.orderID,
-                                                               "status": viewModel.order.statusKey])
-        singleOrderViewController.viewModel = viewModel
-    }
-}
-
 
 // MARK: - Finite State Machine Management
 //

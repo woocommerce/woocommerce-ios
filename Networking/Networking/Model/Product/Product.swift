@@ -463,6 +463,9 @@ public struct Product: Codable, GeneratedCopiable {
         // Brief description (short description).
         try container.encode(briefDescription, forKey: .briefDescription)
 
+        // Grouped products.
+        try container.encode(groupedProducts, forKey: .groupedProducts)
+
         // Product Settings
         try container.encode(statusKey, forKey: .statusKey)
         try container.encode(featured, forKey: .featured)

@@ -9,10 +9,12 @@ final class GroupedProductsViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
 
     private let imageService: ImageService
+    private let viewModel: GroupedProductsViewModel
+    private let siteID: Int64
 
-    private let product: Product
     private var groupedProducts: [Product] = []
-    private var groupedProductIDs: [Int64]
+
+    private var cancellable: ObservationToken?
 
     /// UI Active State
     ///
@@ -23,10 +25,16 @@ final class GroupedProductsViewController: UIViewController {
         }
     }
 
-    init(product: Product, imageService: ImageService = ServiceLocator.imageService) {
-        self.product = product
-        self.groupedProductIDs = product.groupedProducts
+    // Completion callback
+    //
+    typealias Completion = (_ groupedProductIDs: [Int64]) -> Void
+    private let onCompletion: Completion
+
+    init(product: Product, imageService: ImageService = ServiceLocator.imageService, completion: @escaping Completion) {
+        self.viewModel = GroupedProductsViewModel(product: product)
+        self.siteID = product.siteID
         self.imageService = imageService
+        self.onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -43,7 +51,9 @@ final class GroupedProductsViewController: UIViewController {
         configureAddButtonBottomBorderView()
         configureTableView()
 
-        loadGroupedProducts(from: groupedProductIDs)
+        observeGroupedProductsResult()
+
+        loadGroupedProducts(from: viewModel.groupedProductIDs)
     }
 }
 
@@ -51,17 +61,41 @@ final class GroupedProductsViewController: UIViewController {
 //
 private extension GroupedProductsViewController {
     @objc func addTapped() {
-        // TODO-JC
+        // TODO-2199: add products action
     }
 
     @objc func doneButtonTapped() {
-        // TODO-JC
+        completeUpdating()
     }
 
     func deleteTapped(product: Product) {
-        // TODO-JC
-        groupedProducts.removeAll(where: { $0.productID == product.productID })
-        tableView.reloadData()
+        viewModel.deleteProduct(product)
+    }
+}
+
+// MARK: - Navigation actions handling
+//
+extension GroupedProductsViewController {
+    override func shouldPopOnBackButton() -> Bool {
+        if viewModel.hasUnsavedChanges() {
+            presentBackNavigationActionSheet()
+            return false
+        }
+        return true
+    }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        return shouldPopOnBackButton()
+    }
+
+    private func completeUpdating() {
+        onCompletion(viewModel.groupedProductIDs)
+    }
+
+    private func presentBackNavigationActionSheet() {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        })
     }
 }
 
@@ -81,7 +115,8 @@ private extension GroupedProductsViewController {
     }
 
     func configureAddButton() {
-        addButton.setTitle(NSLocalizedString("Add Product", comment: "Action to add products to a grouped product on the Grouped Products screen"), for: .normal)
+        addButton.setTitle(NSLocalizedString("Add Product", comment: "Action to add products to a grouped product on the Grouped Products screen"),
+                           for: .normal)
         addButton.addTarget(self, action: #selector(addTapped), for: .touchUpInside)
         addButton.applySecondaryButtonStyle()
     }
@@ -106,6 +141,19 @@ private extension GroupedProductsViewController {
         tableView.separatorStyle = .none
         tableView.allowsSelection = false
     }
+
+    func observeGroupedProductsResult() {
+        cancellable = viewModel.products.subscribe { [weak self] result in
+            switch result {
+            case .failure(let error):
+                self?.displayLoadingErrorNotice(error: error)
+            case .success(let products):
+                self?.groupedProducts = products
+                self?.transitionToResultsUpdatedState()
+                self?.tableView.reloadData()
+            }
+        }
+    }
 }
 
 // MARK: Networking
@@ -113,11 +161,10 @@ private extension GroupedProductsViewController {
 private extension GroupedProductsViewController {
     func loadGroupedProducts(from ids: [Int64]) {
         transitionToLoadingState()
-        let action = ProductAction.retrieveProducts(siteID: product.siteID, productIDs: ids) { [weak self] result in
+        let action = ProductAction.retrieveProducts(siteID: siteID, productIDs: viewModel.groupedProductIDs) { [weak self] result in
             switch result {
             case .success(let products):
-                self?.groupedProducts = products
-                self?.tableView.reloadData()
+                self?.viewModel.onProductsLoaded(products: products)
                 self?.transitionToResultsUpdatedState()
             case .failure(let error):
                 self?.displayLoadingErrorNotice(error: error)
@@ -144,10 +191,7 @@ extension GroupedProductsViewController: UITableViewDataSource {
             fatalError()
         }
 
-        let productID = groupedProductIDs[indexPath.row]
-        guard let product = groupedProducts.first(where: { $0.productID == productID }) else {
-            fatalError("Expected product of ID \(productID) from: \(groupedProducts)")
-        }
+        let product = groupedProducts[indexPath.row]
         let viewModel = ProductsTabProductViewModel(product: product)
         cell.update(viewModel: viewModel, imageService: imageService)
 
@@ -172,9 +216,7 @@ private extension GroupedProductsViewController {
             displayNoResultsOverlay()
         case .loading:
             displayPlaceholderProducts()
-        case .failure:
-            break
-        case .success:
+        default:
             break
         }
     }
@@ -185,9 +227,7 @@ private extension GroupedProductsViewController {
             removeAllOverlays()
         case .loading:
             removePlaceholderProducts()
-        case .failure:
-            break
-        case .success:
+        default:
             break
         }
     }
@@ -221,7 +261,7 @@ private extension GroupedProductsViewController {
     /// Displays the Error Notice.
     ///
     func displayLoadingErrorNotice(error: Error) {
-        DDLogError("⛔️ Error loading grouped products for IDs (\(groupedProductIDs)): \(error.localizedDescription)")
+        DDLogError("⛔️ Error loading grouped products for IDs (\(viewModel.groupedProductIDs)): \(error.localizedDescription)")
 
         let message = NSLocalizedString("Unable to load products",
                                         comment: "Error notice message when the app cannot load the linked products for a grouped product")
@@ -230,7 +270,7 @@ private extension GroupedProductsViewController {
             guard let self = self else {
                 return
             }
-            self.loadGroupedProducts(from: self.groupedProductIDs)
+            self.loadGroupedProducts(from: self.viewModel.groupedProductIDs)
         }
 
         ServiceLocator.noticePresenter.enqueue(notice: notice)

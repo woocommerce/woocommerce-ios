@@ -180,6 +180,10 @@ extension ProductFormViewModel {
         product = product.copy(sku: sku)
     }
 
+    func updateGroupedProductIDs(_ groupedProductIDs: [Int64]) {
+        product = product.copy(groupedProducts: groupedProductIDs)
+    }
+
     func updateProductSettings(_ settings: ProductSettings) {
         product = product.copy(slug: settings.slug,
                                statusKey: settings.status.rawValue,

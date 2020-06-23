@@ -18,7 +18,7 @@ final class AddProductCategoryViewController: UIViewController {
     ///
     private var newCategoryTitle: String? {
         didSet {
-            navigationItem.rightBarButtonItem?.isEnabled = newCategoryTitle != nil || newCategoryTitle?.isEmpty == true
+            navigationItem.rightBarButtonItem?.isEnabled = newCategoryTitle?.isNotEmpty == true
         }
     }
 
@@ -85,7 +85,7 @@ private extension AddProductCategoryViewController {
 
     func configureRightBarButtomitemAsSave() {
         navigationItem.setRightBarButton(UIBarButtonItem(title: Strings.saveButton, style: .done, target: self, action: #selector(saveNewCategory)), animated: true)
-        navigationItem.rightBarButtonItem?.isEnabled = newCategoryTitle != nil
+        navigationItem.rightBarButtonItem?.isEnabled = newCategoryTitle?.isNotEmpty == true
     }
 
     func configureRightButtonItemAsSpinner() {

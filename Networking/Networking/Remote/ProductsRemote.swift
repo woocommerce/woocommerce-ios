@@ -70,7 +70,12 @@ public final class ProductsRemote: Remote, ProductsEndpointsProviding {
     ///     - productIDs: The array of product IDs that are requested.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadProducts(for siteID: Int64, by productIDs: [Int64], completion: @escaping ([Product]?, Error?) -> Void) {
+    public func loadProducts(for siteID: Int64, by productIDs: [Int64], completion: @escaping (Result<[Product], Error>) -> Void) {
+        guard productIDs.isEmpty == false else {
+            completion(.success([]))
+            return
+        }
+
         let stringOfProductIDs = productIDs.map { String($0) }
             .filter { !$0.isEmpty }
             .joined(separator: ",")

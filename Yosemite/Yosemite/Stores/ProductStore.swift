@@ -159,15 +159,15 @@ private extension ProductStore {
         }
 
         let remote = ProductsRemote(network: network)
-        remote.loadProducts(for: order.siteID, by: missingIDs) { [weak self] (products, error) in
-            guard let products = products else {
+        remote.loadProducts(for: order.siteID, by: missingIDs) { [weak self] result in
+            switch result {
+            case .success(let products):
+                self?.upsertStoredProductsInBackground(readOnlyProducts: products, onCompletion: {
+                    onCompletion(nil)
+                })
+            case .failure(let error):
                 onCompletion(error)
-                return
             }
-
-            self?.upsertStoredProductsInBackground(readOnlyProducts: products, onCompletion: {
-                onCompletion(nil)
-            })
         }
     }
 
@@ -176,18 +176,18 @@ private extension ProductStore {
     ///
     func retrieveProducts(siteID: Int64,
                           productIDs: [Int64],
-                          onCompletion: @escaping (Error?) -> Void) {
+                          onCompletion: @escaping (Result<[Product], Error>) -> Void) {
         let remote = ProductsRemote(network: network)
 
-        remote.loadProducts(for: siteID, by: productIDs) { [weak self] (products, error) in
-            guard let products = products else {
-                onCompletion(error)
-                return
+        remote.loadProducts(for: siteID, by: productIDs) { [weak self] result in
+            switch result {
+            case .success(let products):
+                self?.upsertStoredProductsInBackground(readOnlyProducts: products, onCompletion: {
+                    onCompletion(result)
+                })
+            case .failure:
+                onCompletion(result)
             }
-
-            self?.upsertStoredProductsInBackground(readOnlyProducts: products, onCompletion: {
-                onCompletion(nil)
-            })
         }
     }
 

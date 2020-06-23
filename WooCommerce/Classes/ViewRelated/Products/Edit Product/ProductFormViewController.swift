@@ -539,11 +539,14 @@ extension ProductFormViewController: UITableViewDelegate {
                 editBriefDescription()
             case .externalURL:
                 // TODO-2000 Edit Product M3 analytics
-                // TODO-2200: implement external URL editing action
+                editExternalLink()
                 break
             case .sku:
                 // TODO-2000 Edit Product M3 analytics
                 editSKU()
+                break
+            case .groupedProducts:
+                // TODO-2199: implement grouped products editing action
                 break
             }
         }
@@ -846,6 +849,29 @@ private extension ProductFormViewController {
             return
         }
         viewModel.updateSKU(sku)
+    }
+}
+
+// MARK: Action - Edit Product External Link
+//
+private extension ProductFormViewController {
+    func editExternalLink() {
+        let viewController = ProductExternalLinkViewController(product: product) { [weak self] externalURL, buttonText in
+            self?.onEditExternalLinkCompletion(externalURL: externalURL, buttonText: buttonText)
+        }
+        show(viewController, sender: self)
+    }
+
+    func onEditExternalLinkCompletion(externalURL: String?, buttonText: String) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+        // TODO-2000: Edit Product M3 analytics
+        let hasChangedData = externalURL != product.externalURL || buttonText != product.buttonText
+        guard hasChangedData else {
+            return
+        }
+        viewModel.updateExternalLink(externalURL: externalURL, buttonText: buttonText)
     }
 }
 

@@ -3,6 +3,7 @@
 - [*] Fix an issue in the y-axis values on the dashboard charts where a negative value could show two minus signs.
 - [*] When a simple product doesn't have a price set, the price row on the product details screen now shows "Add Price" placeholder instead of an empty regular price.
 - [*] If WooCommerce 4.0 is available the app will show the new stats dashboard, otherwise will show a banner indicating the user to upgrade.
+- [*] The total orders row is removed from the readonly product details (products that are not a simple product) to avoid confusion since it's not shown on the editable form for simple products.
 
 4.5
 -----

@@ -239,8 +239,6 @@ extension ProductDetailsViewModel {
             configureProductImages(cell)
         case let cell as TitleBodyTableViewCell where row == .productName:
             configureProductName(cell)
-        case let cell as TwoColumnTableViewCell where row == .totalOrders:
-            configureTotalOrders(cell)
         case let cell as ProductReviewsTableViewCell:
             configureReviews(cell)
         case let cell as WooBasicTableViewCell where row == .permalink:
@@ -286,17 +284,6 @@ extension ProductDetailsViewModel {
         cell.titleLabel?.text = NSLocalizedString("Title",
                                                   comment: "Product details screen — product title descriptive label")
         cell.bodyLabel?.text = product.name
-    }
-
-    /// Total Orders cell.
-    ///
-    func configureTotalOrders(_ cell: TwoColumnTableViewCell) {
-        cell.selectionStyle = .none
-        cell.leftLabel?.text = NSLocalizedString("Total Orders",
-                                                 comment: "Product details screen - total orders descriptive label")
-        cell.rightLabel?.applySecondaryBodyStyle()
-        cell.rightLabel.textInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 0)
-        cell.rightLabel?.text = String(product.totalSales)
     }
 
     /// Reviews cell.
@@ -598,9 +585,9 @@ extension ProductDetailsViewModel {
         }
 
         if shouldShowProductVariantsInfo() {
-            rows += [.productName, .totalOrders, .reviews, .productVariants, .permalink]
+            rows += [.productName, .reviews, .productVariants, .permalink]
         } else {
-            rows += [.productName, .totalOrders, .reviews, .permalink]
+            rows += [.productName, .reviews, .permalink]
         }
 
         return Section(rows: rows)
@@ -793,7 +780,6 @@ extension ProductDetailsViewModel {
     enum Row {
         case productImages
         case productName
-        case totalOrders
         case reviews
         case productVariants
         case permalink
@@ -812,8 +798,6 @@ extension ProductDetailsViewModel {
                 return ProductImagesHeaderTableViewCell.reuseIdentifier
             case .productName:
                 return TitleBodyTableViewCell.reuseIdentifier
-            case .totalOrders:
-                return TwoColumnTableViewCell.reuseIdentifier
             case .reviews:
                 return ProductReviewsTableViewCell.reuseIdentifier
             case .productVariants:

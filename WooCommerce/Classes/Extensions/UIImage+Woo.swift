@@ -391,6 +391,12 @@ extension UIImage {
         return UIImage.gridicon(.trash)
     }
 
+    /// Widgets Icon
+    ///
+    static var widgetsImage: UIImage {
+        return UIImage(named: "icon-widgets")!.withRenderingMode(.alwaysTemplate)
+    }
+
 
     static var syncImage: UIImage {
         return UIImage.gridicon(.sync).imageFlippedForRightToLeftLayoutDirection()

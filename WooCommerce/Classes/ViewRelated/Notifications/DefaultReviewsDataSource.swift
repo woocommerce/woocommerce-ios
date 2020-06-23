@@ -127,7 +127,7 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
     /// Initializes observers for incoming reviews
     ///
     func observeReviews() throws {
-        try? reviewsResultsController.performFetch()
+        try reviewsResultsController.performFetch()
     }
 
     func stopForwardingEvents() {

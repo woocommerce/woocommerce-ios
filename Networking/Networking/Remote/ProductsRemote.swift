@@ -6,6 +6,8 @@ import Foundation
 ///
 public protocol ProductsEndpointsProviding {
     func loadProduct(for siteID: Int64, productID: Int64, completion: @escaping (Result<Product, Error>) -> Void)
+
+    func loadProducts(for siteID: Int64, by productIDs: [Int64], completion: @escaping (Result<[Product], Error>) -> Void)
 }
 
 /// Product: Remote Endpoints

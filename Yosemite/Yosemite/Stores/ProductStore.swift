@@ -177,7 +177,10 @@ private extension ProductStore {
     func retrieveProducts(siteID: Int64,
                           productIDs: [Int64],
                           onCompletion: @escaping (Result<[Product], Error>) -> Void) {
-        let remote = ProductsRemote(network: network)
+        guard productIDs.isEmpty == false else {
+            onCompletion(.success([]))
+            return
+        }
 
         remote.loadProducts(for: siteID, by: productIDs) { [weak self] result in
             switch result {

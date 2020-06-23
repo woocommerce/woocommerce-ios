@@ -390,8 +390,8 @@ extension UIImage {
     static var trashImage: UIImage {
         return UIImage.gridicon(.trash)
     }
-    
-    
+
+
     static var syncImage: UIImage {
         return UIImage.gridicon(.sync).imageFlippedForRightToLeftLayoutDirection()
     }

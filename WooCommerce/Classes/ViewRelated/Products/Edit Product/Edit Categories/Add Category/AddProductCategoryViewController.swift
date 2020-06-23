@@ -83,11 +83,11 @@ extension AddProductCategoryViewController {
     @objc private func saveNewCategory() {
         //TODO: add remotely new category
         //onCompletion(newCategory)
-        
+
         guard let categoryName = newCategoryTitle, let defaultStoreID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
-        
+
         let action = ProductCategoryAction.addProductCategory(siteID: defaultStoreID, name: categoryName, parentID: selectedParentCategory?.categoryID) { (result) in
             //TODO: to be completed
 //            switch result {

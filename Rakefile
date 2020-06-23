@@ -176,8 +176,8 @@ task :xcode => [:dependencies] do
 end
 
 desc "Run all code generation tasks"
-task :generate do 
-  ["Networking", "Yosemite", "WooCommerce"].each { |prefix| 
+task :generate do
+  ["Networking", "Yosemite", "WooCommerce"].each { |prefix|
     puts "\n\nGenerating Copiable for #{prefix}..."
     puts "=" * 100
 

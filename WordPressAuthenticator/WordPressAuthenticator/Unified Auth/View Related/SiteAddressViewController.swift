@@ -160,7 +160,7 @@ private extension SiteAddressViewController {
     /// Configure the plain text button cell
     ///
     func configureTextButton(_ cell: TextLinkTableViewCell) {
-        cell.buttonText = displayStrings.resetPasswordButtonTitle
+        cell.buttonText = displayStrings.findSiteButtonTitle
         cell.actionHandler = { [weak self] in
             guard let self = self else {
                 return

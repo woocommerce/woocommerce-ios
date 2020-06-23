@@ -18,6 +18,8 @@ final class SiteAddressViewController: LoginViewController {
 
     private var rows = [Row]()
 
+    private weak var firstTextField: UITextField?
+
     // MARK: - View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -85,11 +87,11 @@ extension SiteAddressViewController: NUXKeyboardResponder {
     }
 
     func showKeyboard() {
-        tableView.firstSubview(ofType: UITextField.self)?.becomeFirstResponder()
+        firstTextField?.becomeFirstResponder()
     }
 
     func hideKeyboard() {
-        tableView.firstSubview(ofType: UITextField.self)?.resignFirstResponder()
+        firstTextField?.resignFirstResponder()
     }
 }
 

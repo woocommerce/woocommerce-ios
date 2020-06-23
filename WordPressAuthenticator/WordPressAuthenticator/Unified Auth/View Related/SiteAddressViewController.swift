@@ -1,4 +1,5 @@
 import UIKit
+import WordPressUI
 
 
 /// SiteAddressViewController: log in by Site Address.
@@ -160,6 +161,17 @@ private extension SiteAddressViewController {
     ///
     func configureTextButton(_ cell: TextLinkTableViewCell) {
         cell.buttonText = displayStrings.resetPasswordButtonTitle
+        cell.actionHandler = { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            let alert = FancyAlertViewController.siteAddressHelpController(loginFields: self.loginFields, sourceTag: self.sourceTag)
+            alert.modalPresentationStyle = .custom
+            alert.transitioningDelegate = self
+            self.present(alert, animated: true, completion: nil)
+            WordPressAuthenticator.track(.loginURLHelpScreenViewed)
+        }
     }
 
     // MARK: - Private Constants

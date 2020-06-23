@@ -169,11 +169,4 @@ private extension SiteAddressViewController {
             }
         }
     }
-
-    /// Constants
-    ///
-    struct Constants {
-        // Need a CGFloat not a plain Float
-        static let rowHeight: CGFloat = 44.0
-    }
 }

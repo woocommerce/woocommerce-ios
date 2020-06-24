@@ -17,6 +17,8 @@ final class SiteAddressViewController: LoginViewController {
 
     private var rows = [Row]()
     private weak var siteURLField: UITextField?
+    private var errorMessage: String?
+    private var shouldChangeVoiceOverFocus: Bool = false
 
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {

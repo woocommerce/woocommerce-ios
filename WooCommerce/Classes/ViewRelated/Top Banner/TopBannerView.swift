@@ -131,7 +131,7 @@ private extension TopBannerView {
         let titleStackView = UIStackView(arrangedSubviews: [titleLabel, actionButon])
         titleStackView.axis = .horizontal
         titleStackView.spacing = 16
-        
+
         let textStackView = UIStackView(arrangedSubviews: [titleStackView, infoLabel])
         textStackView.axis = .vertical
         textStackView.spacing = 9

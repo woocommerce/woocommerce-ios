@@ -23,6 +23,7 @@ final class TextFieldTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         styleBorder()
+        setCommonTextFieldStyles()
     }
 
     public func configureTextFieldStyle(with style: TextFieldStyle = .url, and placeholder: String?) {
@@ -43,6 +44,14 @@ private extension TextFieldTableViewCell {
         borderWidth.constant = hairlineBorderWidth
     }
 
+    /// Style the font inside the textField.
+    ///
+    func setCommonTextFieldStyles() {
+        textField.font = UIFont.preferredFont(forTextStyle: .body)
+        textField.autocorrectionType = .no
+        textField.returnKeyType = .continue
+    }
+
     /// Style the textField.
     /// - note: Don't assign first responder here. It's too early in the view lifecycle.
     ///
@@ -50,11 +59,8 @@ private extension TextFieldTableViewCell {
         switch style {
         case .url:
             textField.keyboardType = .URL
-            textField.returnKeyType = .continue
-            textField.autocorrectionType = .no
         default:
-            textField.returnKeyType = .continue
-            textField.autocorrectionType = .no
+            setCommonTextFieldStyles()
         }
     }
 }

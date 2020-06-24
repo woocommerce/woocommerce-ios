@@ -17,6 +17,12 @@ final class SiteAddressViewController: LoginViewController {
     private var rows = [Row]()
     private weak var siteURLField: UITextField?
 
+    // MARK: - Actions
+    @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
+        validateForm()
+    }
+
+
     // MARK: - URL Validation
 
     private lazy var urlErrorDebouncer = Debouncer(delay: 2) { [weak self] in
@@ -32,6 +38,13 @@ final class SiteAddressViewController: LoginViewController {
         localizePrimaryButton()
         registerTableViewCells()
         loadRows()
+        configureSubmitButton(animating: false)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        configureSubmitButton(animating: false)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -39,7 +52,7 @@ final class SiteAddressViewController: LoginViewController {
 
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
-        showKeyboard()
+        configureViewForEditingIfNeeded()
     }
 
 
@@ -118,7 +131,7 @@ extension SiteAddressViewController: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate conformance
 extension SiteAddressViewController: UITableViewDelegate {
-
+    // no-op
 }
 
 
@@ -141,10 +154,8 @@ extension SiteAddressViewController: NUXKeyboardResponder {
     }
 }
 
-
+// MARK: - Private methods
 private extension SiteAddressViewController {
-    // MARK: - Private methods
-
     /// Localize the "Continue" button
     ///
     func localizePrimaryButton() {

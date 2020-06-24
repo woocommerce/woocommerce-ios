@@ -110,8 +110,7 @@ private extension SiteAddressViewController {
     func registerTableViewCells() {
         let cells = [
             TextLabelTableViewCell.reuseIdentifier: TextLabelTableViewCell.loadNib(),
-            TextFieldTableViewCell.reuseIdentifier: TextFieldTableViewCell.loadNib(),
-            TextLinkTableViewCell.reuseIdentifier: TextLinkTableViewCell.loadNib()
+            TextFieldTableViewCell.reuseIdentifier: TextFieldTableViewCell.loadNib()
         ]
 
         for (reuseIdentifier, nib) in cells {
@@ -133,12 +132,12 @@ private extension SiteAddressViewController {
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as TextLabelTableViewCell:
+        case let cell as TextLabelTableViewCell where row == .instructions:
             configureTextLabel(cell)
         case let cell as TextFieldTableViewCell:
             configureTextField(cell)
-        case let cell as TextLinkTableViewCell:
-            configureTextButton(cell)
+        case let cell as TextLabelTableViewCell where row == .findSiteAddress:
+            configureTextLabelAsButton(cell)
         default:
             DDLogError("Error: Unidentified tableViewCell type found.")
         }
@@ -159,21 +158,10 @@ private extension SiteAddressViewController {
         firstTextField = cell.textField
     }
 
-    /// Configure the plain text button cell
+    /// Configure the "Find your site address" cell
     ///
-    func configureTextButton(_ cell: TextLinkTableViewCell) {
-        cell.buttonText = WordPressAuthenticator.shared.displayStrings.findSiteButtonTitle
-        cell.actionHandler = { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            let alert = FancyAlertViewController.siteAddressHelpController(loginFields: self.loginFields, sourceTag: self.sourceTag)
-            alert.modalPresentationStyle = .custom
-            alert.transitioningDelegate = self
-            self.present(alert, animated: true, completion: nil)
-            WordPressAuthenticator.track(.loginURLHelpScreenViewed)
-        }
+    func configureTextLabelAsButton(_ cell: TextLabelTableViewCell) {
+        cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.findSiteButtonTitle, style: .button)
     }
 
     // MARK: - Private Constants
@@ -192,7 +180,7 @@ private extension SiteAddressViewController {
             case .siteAddress:
                 return TextFieldTableViewCell.reuseIdentifier
             case .findSiteAddress:
-                return TextLinkTableViewCell.reuseIdentifier
+                return TextLabelTableViewCell.reuseIdentifier
             }
         }
     }

@@ -14,10 +14,6 @@ final class SiteAddressViewController: LoginViewController {
     // Required property declaration for `NUXKeyboardResponder` but unused here.
     var verticalCenterConstraint: NSLayoutConstraint?
 
-    private var displayStrings: WordPressAuthenticatorDisplayStrings {
-        return WordPressAuthenticator.shared.displayStrings
-    }
-
     private var rows = [Row]()
 
     private weak var firstTextField: UITextField?
@@ -104,7 +100,7 @@ private extension SiteAddressViewController {
     /// Localize the "Continue" button
     ///
     func localizePrimaryButton() {
-        let primaryTitle = displayStrings.continueButtonTitle
+        let primaryTitle = WordPressAuthenticator.shared.displayStrings.continueButtonTitle
         submitButton?.setTitle(primaryTitle, for: .normal)
         submitButton?.setTitle(primaryTitle, for: .highlighted)
     }
@@ -150,8 +146,8 @@ private extension SiteAddressViewController {
 
     /// Configure the instruction cell
     ///
-    func configureInstruction(_ cell: InstructionTableViewCell) {
-        cell.instructionText = displayStrings.siteLoginInstructions
+    func configureTextLabel(_ cell: TextLabelTableViewCell) {
+        cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.siteLoginInstructions, style: .body)
     }
 
     /// Configure the textfield cell
@@ -166,7 +162,7 @@ private extension SiteAddressViewController {
     /// Configure the plain text button cell
     ///
     func configureTextButton(_ cell: TextLinkTableViewCell) {
-        cell.buttonText = displayStrings.findSiteButtonTitle
+        cell.buttonText = WordPressAuthenticator.shared.displayStrings.findSiteButtonTitle
         cell.actionHandler = { [weak self] in
             guard let self = self else {
                 return

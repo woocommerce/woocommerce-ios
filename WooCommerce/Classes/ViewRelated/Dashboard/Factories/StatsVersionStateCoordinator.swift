@@ -51,7 +51,8 @@ final class StatsVersionStateCoordinator {
                 guard let self = self else {
                     return
                 }
-                let statsVersion: StatsVersion = isStatsV4Available ? .v4: .v3
+                let statsVersion = StatsVersion.v3
+                //let statsVersion: StatsVersion = isStatsV4Available ? .v4: .v3
 
                 let nextState = StatsVersionState.initial(statsVersion: statsVersion)
                 if nextState != self.state {

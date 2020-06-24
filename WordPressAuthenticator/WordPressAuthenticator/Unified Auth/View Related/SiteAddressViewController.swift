@@ -70,7 +70,16 @@ extension SiteAddressViewController: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate conformance
 extension SiteAddressViewController: UITableViewDelegate {
-
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let row = rows[safe: indexPath.row]
+        if row == .findSiteAddress {
+            let alert = FancyAlertViewController.siteAddressHelpController(loginFields: loginFields, sourceTag: sourceTag)
+            alert.modalPresentationStyle = .custom
+            alert.transitioningDelegate = self
+            present(alert, animated: true, completion: nil)
+            WordPressAuthenticator.track(.loginURLHelpScreenViewed)
+        }
+    }
 }
 
 

@@ -211,7 +211,30 @@ private extension SiteAddressViewController {
         let placeholderText = NSLocalizedString("example.com", comment: "Site Address placeholder")
         cell.configureTextFieldStyle(with: .url, and: placeholderText)
         // Save a reference to the first textField so it can becomeFirstResponder.
-        firstTextField = cell.textField
+        siteURLField = cell.textField
+        cell.handleTextFieldDidChange = { [weak self] textField in
+            self?.displayError(message: "")
+            self?.loginFields.siteAddress = textField.nonNilTrimmedText()
+            self?.configureSubmitButton(animating: false)
+            self?.refreshSiteAddressError(immediate: false)
+        }
+
+        cell.handleEditingDidEnd = { [weak self] textField in
+            self?.refreshSiteAddressError(immediate: true)
+        }
+
+        cell.handleTextFieldShouldReturn = { [weak self] textField in
+            guard let self = self else {
+                return false
+            }
+
+            if self.canSubmit() {
+                self.validateForm()
+                return true
+            }
+
+            return false
+        }
     }
 
     /// Configure the "Find your site address" cell

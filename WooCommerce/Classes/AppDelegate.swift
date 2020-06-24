@@ -331,7 +331,7 @@ private extension AppDelegate {
             ServiceLocator.analytics.track(.applicationInstalled)
         } else if versionOfLastRun != currentVersion {
             // App was upgraded
-            ServiceLocator.analytics.track(.applicationInstalled, withProperties: ["previous_version": versionOfLastRun ?? String()])
+            ServiceLocator.analytics.track(.applicationUpgraded, withProperties: ["previous_version": versionOfLastRun ?? String()])
         }
 
         UserDefaults.standard[.versionOfLastRun] = currentVersion

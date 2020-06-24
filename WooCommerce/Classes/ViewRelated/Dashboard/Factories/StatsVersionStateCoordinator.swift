@@ -51,7 +51,8 @@ final class StatsVersionStateCoordinator {
                 guard let self = self else {
                     return
                 }
-                let statsVersion: StatsVersion = isStatsV4Available ? .v4: .v3
+                let statsVersion = StatsVersion.v3
+                //let statsVersion: StatsVersion = isStatsV4Available ? .v4: .v3
 
                 // Sets eligible stats version to app settings.
                 let setEligibleStatsVersionAction = AppSettingsAction.setStatsVersionEligible(siteID: self.siteID, statsVersion: statsVersion)

@@ -127,8 +127,12 @@ private extension TopBannerView {
     }
 
     func createContentView() -> UIView {
-        let textStackView = UIStackView(arrangedSubviews: [titleLabel, infoLabel])
-        textStackView.translatesAutoresizingMaskIntoConstraints = false
+        let actionButon = isActionEnabled ? dismissButton : expandCollapseButton
+        let titleStackView = UIStackView(arrangedSubviews: [titleLabel, actionButon])
+        titleStackView.axis = .horizontal
+        titleStackView.spacing = 16
+        
+        let textStackView = UIStackView(arrangedSubviews: [titleStackView, infoLabel])
         textStackView.axis = .vertical
         textStackView.spacing = 9
 
@@ -139,13 +143,7 @@ private extension TopBannerView {
         expandCollapseButton.setContentHuggingPriority(.required, for: .horizontal)
         expandCollapseButton.setContentCompressionResistancePriority(.required, for: .horizontal)
 
-        let subviews: [UIView]
-        if isActionEnabled {
-            subviews = [iconImageView, textStackView, dismissButton]
-        } else {
-            subviews = [iconImageView, textStackView, expandCollapseButton]
-        }
-        let contentStackView = UIStackView(arrangedSubviews: subviews)
+        let contentStackView = UIStackView(arrangedSubviews: [iconImageView, textStackView])
         contentStackView.translatesAutoresizingMaskIntoConstraints = false
         contentStackView.axis = .horizontal
         contentStackView.spacing = 16

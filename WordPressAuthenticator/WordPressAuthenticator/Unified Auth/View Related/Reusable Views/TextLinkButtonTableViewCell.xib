@@ -32,10 +32,6 @@
                     <constraint firstItem="ofe-LL-CbC" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="wDk-4b-EYN"/>
                 </constraints>
             </tableViewCellContentView>
-            <accessibility key="accessibilityConfiguration">
-                <accessibilityTraits key="traits" button="YES"/>
-                <bool key="isElement" value="YES"/>
-            </accessibility>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="button" destination="ofe-LL-CbC" id="lDp-3a-YIR"/>

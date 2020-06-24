@@ -19,7 +19,7 @@ public final class TextLabelTableViewCell: UITableViewCell {
         switch style {
         case .body:
             label.textColor = WordPressAuthenticator.shared.unifiedStyle?.textColor ?? WordPressAuthenticator.shared.style.instructionColor
-            label.font = UIFont.preferredFontForTextStyle(.body)
+            label.font = UIFont.preferredFont(forTextStyle: .body)
         }
     }
 }

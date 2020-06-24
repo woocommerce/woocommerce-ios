@@ -212,6 +212,8 @@ private extension SiteAddressViewController {
         cell.configureTextFieldStyle(with: .url, and: placeholderText)
         // Save a reference to the first textField so it can becomeFirstResponder.
         siteURLField = cell.textField
+        SigninEditingState.signinEditingStateActive = true
+
         cell.handleTextFieldDidChange = { [weak self] textField in
             self?.displayError(message: "")
             self?.loginFields.siteAddress = textField.nonNilTrimmedText()

@@ -109,7 +109,7 @@ private extension SiteAddressViewController {
     ///
     func registerTableViewCells() {
         let cells = [
-            InstructionTableViewCell.reuseIdentifier: InstructionTableViewCell.loadNib(),
+            TextLabelTableViewCell.reuseIdentifier: TextLabelTableViewCell.loadNib(),
             TextFieldTableViewCell.reuseIdentifier: TextFieldTableViewCell.loadNib(),
             TextLinkTableViewCell.reuseIdentifier: TextLinkTableViewCell.loadNib()
         ]
@@ -133,8 +133,8 @@ private extension SiteAddressViewController {
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as InstructionTableViewCell:
-            configureInstruction(cell)
+        case let cell as TextLabelTableViewCell:
+            configureTextLabel(cell)
         case let cell as TextFieldTableViewCell:
             configureTextField(cell)
         case let cell as TextLinkTableViewCell:
@@ -188,7 +188,7 @@ private extension SiteAddressViewController {
         var reuseIdentifier: String {
             switch self {
             case .instructions:
-                return InstructionTableViewCell.reuseIdentifier
+                return TextLabelTableViewCell.reuseIdentifier
             case .siteAddress:
                 return TextFieldTableViewCell.reuseIdentifier
             case .resetPassword:

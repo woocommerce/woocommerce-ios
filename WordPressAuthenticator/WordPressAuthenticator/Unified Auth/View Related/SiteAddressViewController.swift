@@ -125,7 +125,7 @@ private extension SiteAddressViewController {
         rows = [.instructions, .siteAddress]
         let displayHintButtons = WordPressAuthenticator.shared.configuration.displayHintButtons
         if displayHintButtons {
-            rows.append(.resetPassword)
+            rows.append(.findSiteAddress)
         }
     }
 
@@ -183,7 +183,7 @@ private extension SiteAddressViewController {
     enum Row {
         case instructions
         case siteAddress
-        case resetPassword
+        case findSiteAddress
 
         var reuseIdentifier: String {
             switch self {
@@ -191,7 +191,7 @@ private extension SiteAddressViewController {
                 return TextLabelTableViewCell.reuseIdentifier
             case .siteAddress:
                 return TextFieldTableViewCell.reuseIdentifier
-            case .resetPassword:
+            case .findSiteAddress:
                 return TextLinkTableViewCell.reuseIdentifier
             }
         }

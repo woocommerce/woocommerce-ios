@@ -130,7 +130,7 @@ private extension TopBannerView {
         let textStackView = UIStackView(arrangedSubviews: [titleLabel, infoLabel])
         textStackView.translatesAutoresizingMaskIntoConstraints = false
         textStackView.axis = .vertical
-        textStackView.spacing = 3
+        textStackView.spacing = 9
 
         iconImageView.setContentHuggingPriority(.required, for: .horizontal)
         iconImageView.setContentCompressionResistancePriority(.required, for: .horizontal)
@@ -148,7 +148,7 @@ private extension TopBannerView {
         let contentStackView = UIStackView(arrangedSubviews: subviews)
         contentStackView.translatesAutoresizingMaskIntoConstraints = false
         contentStackView.axis = .horizontal
-        contentStackView.spacing = 10
+        contentStackView.spacing = 16
         contentStackView.alignment = .leading
         return contentStackView
     }

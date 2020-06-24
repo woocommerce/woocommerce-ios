@@ -1,7 +1,7 @@
 import UIKit
 import Yosemite
 
-/// ProductParentCategoriesViewController: fetch all the stored category associated to the active Account.
+/// ProductParentCategoriesViewController: fetch all the stored categories associated to the active site.
 ///
 final class ProductParentCategoriesViewController: UIViewController {
 

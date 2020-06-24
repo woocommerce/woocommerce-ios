@@ -2,7 +2,7 @@ import UIKit
 import Networking
 import Yosemite
 
-/// AddProductCategoryViewController: Add a new category associated to the active Account.
+/// AddProductCategoryViewController: Add a new category associated to the active site.
 ///
 final class AddProductCategoryViewController: UIViewController {
 
@@ -12,7 +12,7 @@ final class AddProductCategoryViewController: UIViewController {
 
     /// Table Sections to be rendered
     ///
-    private var sections: [Section] = [Section(rows: [.title]), Section(rows: [.parentCategory])]
+    private let sections: [Section] = [Section(rows: [.title]), Section(rows: [.parentCategory])]
 
     /// New category title
     ///
@@ -32,12 +32,9 @@ final class AddProductCategoryViewController: UIViewController {
 
     /// Keyboard management
     ///
-    private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
-        let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
-            self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
-        }
-        return keyboardFrameObserver
-    }()
+    private lazy var keyboardFrameObserver: KeyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
+        self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
+    }
 
     /// Dedicated NoticePresenter (use this here instead of ServiceLocator.noticePresenter)
     ///
@@ -206,7 +203,7 @@ extension AddProductCategoryViewController: UITableViewDelegate {
 
     /// Dismiss keyboard on Title Category Text Field
     ///
-    func titleCategoryTextFieldResignFirstResponder() {
+    private func titleCategoryTextFieldResignFirstResponder() {
         if let indexPath = sections.indexPathForRow(.title) {
             let cell = tableView.cellForRow(at: indexPath) as? TextFieldTableViewCell
             cell?.resignFirstResponder()
@@ -262,6 +259,7 @@ private extension AddProductCategoryViewController {
     func configureParentCategory(cell: SettingTitleAndValueTableViewCell) {
         cell.updateUI(title: Strings.parentCellTitle, value: selectedParentCategory?.name ?? Strings.parentCellPlaceholder)
         cell.selectionStyle = .none
+        cell.accessoryType = .disclosureIndicator
     }
 }
 

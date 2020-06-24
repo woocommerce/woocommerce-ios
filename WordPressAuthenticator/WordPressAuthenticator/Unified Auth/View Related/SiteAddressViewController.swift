@@ -193,7 +193,7 @@ private extension SiteAddressViewController {
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as TextLabelTableViewCell where row == .instructions:
-            configureTextLabel(cell)
+            configureInstructionLabel(cell)
         case let cell as TextFieldTableViewCell:
             configureTextField(cell)
         case let cell as TextLinkButtonTableViewCell:
@@ -207,7 +207,7 @@ private extension SiteAddressViewController {
 
     /// Configure the instruction cell
     ///
-    func configureTextLabel(_ cell: TextLabelTableViewCell) {
+    func configureInstructionLabel(_ cell: TextLabelTableViewCell) {
         cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.siteLoginInstructions, style: .body)
     }
 

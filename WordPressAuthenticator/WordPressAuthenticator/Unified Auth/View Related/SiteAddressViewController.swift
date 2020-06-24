@@ -224,6 +224,25 @@ private extension SiteAddressViewController {
         }
     }
 
+    // MARK: - URL Validation
+
+      /// Does a local / quick Site Address validation and refreshes the UI with an error
+      /// if necessary.
+      ///
+      /// - Returns: `true` if the Site Address contains a valid URL.  `false` otherwise.
+      ///
+      private func refreshSiteAddressError(immediate: Bool) {
+          let showError = !loginFields.siteAddress.isEmpty && !loginFields.validateSiteForSignin()
+
+          if showError {
+              urlErrorDebouncer.call(immediate: immediate)
+          } else {
+              urlErrorDebouncer.cancel()
+              displayError(message: "")
+          }
+      }
+
+
     // MARK: - Private Constants
 
     /// Rows listed in the order they were created

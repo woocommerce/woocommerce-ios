@@ -20,6 +20,9 @@ public final class TextLabelTableViewCell: UITableViewCell {
         case .body:
             label.textColor = WordPressAuthenticator.shared.unifiedStyle?.textColor ?? WordPressAuthenticator.shared.style.instructionColor
             label.font = UIFont.preferredFont(forTextStyle: .body)
+        case .button:
+            label.textColor = WordPressAuthenticator.shared.unifiedStyle?.textButtonColor ?? WordPressAuthenticator.shared.style.textButtonColor
+            label.font = UIFont.preferredFont(forTextStyle: .callout)
         }
     }
 }
@@ -29,5 +32,6 @@ public extension TextLabelTableViewCell {
     ///
     enum TextLabelStyle {
         case body
+        case button
     }
 }

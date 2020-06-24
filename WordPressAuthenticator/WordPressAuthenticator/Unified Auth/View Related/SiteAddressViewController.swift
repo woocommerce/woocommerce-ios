@@ -105,9 +105,9 @@ final class SiteAddressViewController: LoginViewController {
     }
 
     override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
-//        errorMessage = message
-//        shouldChangeVoiceOverFocus = moveVoiceOverFocus
-//        tableView.reloadData()
+        errorMessage = message
+        shouldChangeVoiceOverFocus = moveVoiceOverFocus
+        tableView.reloadData()
     }
 }
 

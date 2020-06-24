@@ -198,6 +198,8 @@ private extension SiteAddressViewController {
             configureTextField(cell)
         case let cell as TextLinkButtonTableViewCell:
             configureTextLinkButton(cell)
+        case let cell as TextLabelTableViewCell where row == .errorMessage:
+            configureErrorLabel(cell)
         default:
             DDLogError("Error: Unidentified tableViewCell type found.")
         }
@@ -235,6 +237,13 @@ private extension SiteAddressViewController {
         }
     }
 
+    /// Configure the error message cell
+    ///
+    func configureErrorLabel(_ cell: TextLabelTableViewCell) {
+        cell.configureLabel(text: errorMessage, style: .error)
+    }
+
+
     // MARK: - URL Validation
 
       /// Does a local / quick Site Address validation and refreshes the UI with an error
@@ -262,6 +271,7 @@ private extension SiteAddressViewController {
         case instructions
         case siteAddress
         case findSiteAddress
+        case errorMessage
 
         var reuseIdentifier: String {
             switch self {
@@ -271,6 +281,14 @@ private extension SiteAddressViewController {
                 return TextFieldTableViewCell.reuseIdentifier
             case .findSiteAddress:
                 return TextLinkButtonTableViewCell.reuseIdentifier
+            case .errorMessage:
+                return TextLabelTableViewCell.reuseIdentifier
+            }
+        }
+    }
+}
+
+
 // MARK: - Instance Methods
 extension SiteAddressViewController {
 

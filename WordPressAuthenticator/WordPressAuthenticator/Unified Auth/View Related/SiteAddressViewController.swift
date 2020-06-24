@@ -15,6 +15,7 @@ final class SiteAddressViewController: LoginViewController {
     var verticalCenterConstraint: NSLayoutConstraint?
 
     private var rows = [Row]()
+    private weak var siteURLField: UITextField?
 
     private weak var firstTextField: UITextField?
 

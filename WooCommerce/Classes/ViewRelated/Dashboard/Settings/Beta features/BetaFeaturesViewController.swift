@@ -82,20 +82,8 @@ private extension BetaFeaturesViewController {
     /// Configure sections for table view.
     ///
     func configureSections() {
-        let action = AppSettingsAction.loadStatsVersionEligible(siteID: siteID) { [weak self] eligibleStatsVersion in
-            guard let self = self else {
-                return
-            }
-            guard eligibleStatsVersion == .v4 else {
-                self.sections = [
-                ]
-
-                return
-            }
-            // This is empty because there aren't any ongoing experiments
-            self.sections = []
-        }
-        ServiceLocator.stores.dispatch(action)
+        // This is empty because there aren't any ongoing experiments
+        self.sections = []
     }
 
     func productsSection() -> Section {

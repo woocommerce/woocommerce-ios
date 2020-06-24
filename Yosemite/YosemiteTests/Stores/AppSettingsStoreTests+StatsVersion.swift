@@ -76,25 +76,6 @@ final class AppSettingsStoreTests_StatsVersion: XCTestCase {
         subject.onAction(readActionForSite2)
     }
 
-    func testStatsVersionEligibleActions() {
-        let siteID: Int64 = 134
-
-        let initialReadAction = AppSettingsAction.loadStatsVersionEligible(siteID: siteID) { eligibleStatsVersion in
-            // Before any write actions, the stats version should be nil.
-            XCTAssertNil(eligibleStatsVersion)
-        }
-        subject.onAction(initialReadAction)
-
-        let statsVersionToWrite = StatsVersion.v4
-        let writeAction = AppSettingsAction.setStatsVersionEligible(siteID: siteID, statsVersion: statsVersionToWrite)
-        subject.onAction(writeAction)
-
-        let readAction = AppSettingsAction.loadStatsVersionEligible(siteID: siteID) { eligibleStatsVersion in
-            XCTAssertEqual(eligibleStatsVersion, statsVersionToWrite)
-        }
-        subject.onAction(readAction)
-    }
-
     func testStatsVersionBannerVisibilityActions() {
         let initialV3ToV4ReadAction = AppSettingsAction.loadStatsVersionBannerVisibility(banner: .v3ToV4, onCompletion: { shouldShowBanner in
             // Before any write actions, the default should be to show the banner.

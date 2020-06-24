@@ -69,7 +69,7 @@ public struct WordPressAuthenticatorConfiguration {
     ///
     let enableUnifiedAuth: Bool
 
-    /// Hint buttons help users complete a step in the unified auth flow.
+    /// Hint buttons help users complete a step in the unified auth flow. Enabled by default.
     /// If enabled, "Find your site address", "Reset your password", and others will be displayed.
     /// If disabled, none of the hint buttons will appear on the unified auth flows.
     let displayHintButtons: Bool
@@ -98,7 +98,7 @@ public struct WordPressAuthenticatorConfiguration {
                  enableSignInWithApple: Bool = false,
                  enableSignupWithGoogle: Bool = false,
                  enableUnifiedAuth: Bool = false,
-                 displayHintButtons: Bool = false,
+                 displayHintButtons: Bool = true,
                  enableUnifiedSiteAddress: Bool = false,
                  enableUnifiedGoogle: Bool = false) {
 

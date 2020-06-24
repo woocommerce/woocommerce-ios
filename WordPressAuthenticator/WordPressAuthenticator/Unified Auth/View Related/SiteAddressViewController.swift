@@ -17,7 +17,13 @@ final class SiteAddressViewController: LoginViewController {
     private var rows = [Row]()
     private weak var siteURLField: UITextField?
 
-    private weak var firstTextField: UITextField?
+    // MARK: - URL Validation
+
+    private lazy var urlErrorDebouncer = Debouncer(delay: 2) { [weak self] in
+        let errorMessage = NSLocalizedString("Please enter a complete website address, like example.com.", comment: "Error message shown when a URL is invalid.")
+
+        self?.displayError(message: errorMessage)
+    }
 
     // MARK: - View lifecycle
     override func viewDidLoad() {
@@ -36,6 +42,9 @@ final class SiteAddressViewController: LoginViewController {
         showKeyboard()
     }
 
+
+    // MARK: - Overrides
+
     /// Style individual ViewController backgrounds, for now.
     ///
     override func styleBackground() {
@@ -45,6 +54,44 @@ final class SiteAddressViewController: LoginViewController {
         }
 
         view.backgroundColor = unifiedBackgroundColor
+    }
+
+    /// Configures the appearance and state of the submit button.
+    ///
+    override func configureSubmitButton(animating: Bool) {
+        submitButton?.showActivityIndicator(animating)
+
+        submitButton?.isEnabled = (
+            !animating && canSubmit()
+        )
+    }
+
+    /// Sets the view's state to loading or not loading.
+    ///
+    /// - Parameter loading: True if the form should be configured to a "loading" state.
+    ///
+    override func configureViewLoading(_ loading: Bool) {
+       siteURLField?.isEnabled = !loading
+
+       configureSubmitButton(animating: loading)
+       navigationItem.hidesBackButton = loading
+    }
+
+    /// Configure the view for an editing state. Should only be called from viewWillAppear
+    /// as this method skips animating any change in height.
+    ///
+    @objc func configureViewForEditingIfNeeded() {
+       // Check the helper to determine whether an editing state should be assumed.
+       adjustViewForKeyboard(SigninEditingState.signinEditingStateActive)
+       if SigninEditingState.signinEditingStateActive {
+           siteURLField?.becomeFirstResponder()
+       }
+    }
+
+    override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
+//        errorMessage = message
+//        shouldChangeVoiceOverFocus = moveVoiceOverFocus
+//        tableView.reloadData()
     }
 }
 

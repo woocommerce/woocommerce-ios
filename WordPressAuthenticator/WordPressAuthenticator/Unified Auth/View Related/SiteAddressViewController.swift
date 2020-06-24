@@ -178,6 +178,11 @@ private extension SiteAddressViewController {
     ///
     func loadRows() {
         rows = [.instructions, .siteAddress]
+
+        if let errorMessage = errorMessage {
+             rows.append(.errorMessage)
+         }
+
         let displayHintButtons = WordPressAuthenticator.shared.configuration.displayHintButtons
         if displayHintButtons {
             rows.append(.findSiteAddress)

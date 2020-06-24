@@ -145,15 +145,8 @@ extension SiteAddressViewController: NUXKeyboardResponder {
     @objc func handleKeyboardWillHide(_ notification: Foundation.Notification) {
         keyboardWillHide(notification)
     }
-
-    func showKeyboard() {
-        firstTextField?.becomeFirstResponder()
-    }
-
-    func hideKeyboard() {
-        firstTextField?.resignFirstResponder()
-    }
 }
+
 
 // MARK: - Private methods
 private extension SiteAddressViewController {

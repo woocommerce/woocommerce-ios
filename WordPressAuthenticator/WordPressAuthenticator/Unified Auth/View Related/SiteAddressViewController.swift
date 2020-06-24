@@ -1,5 +1,6 @@
 import UIKit
 import WordPressUI
+import WordPressKit
 
 
 /// SiteAddressViewController: log in by Site Address.

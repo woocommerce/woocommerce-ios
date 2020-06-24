@@ -31,6 +31,9 @@
                     <constraint firstItem="i98-6g-rDP" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="kba-Qt-6Cl"/>
                 </constraints>
             </tableViewCellContentView>
+            <accessibility key="accessibilityConfiguration">
+                <bool key="isElement" value="YES"/>
+            </accessibility>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="label" destination="i98-6g-rDP" id="eha-Kk-GH0"/>

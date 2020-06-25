@@ -22,6 +22,9 @@ final class SiteAddressViewController: LoginViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        navigationItem.title = WordPressAuthenticator.shared.displayStrings.logInTitle
+        setLargeTitleDisplayMode(.always)
+
         localizePrimaryButton()
         registerTableViewCells()
         loadRows()

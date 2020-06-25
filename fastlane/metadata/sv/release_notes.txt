@@ -1,0 +1,3 @@
+– Produktförbättringar: uppdatera produktbilder, produktinställningar och dela produktlänkar direkt från appen utan att behöva använda datorn!
+– Visuella förbättringar: i beställningsinformationen visas inte SKU:n längre i produktlistan. Det enkla produktnamnet och ellips-menyn visas nu i navigeringsfältet när det öppnas utanför produktfliken (se till att aktivera växeln Produktfunktion). Sist men inte minst: tycker du inte laddningsstatus på produktvariationsskärmen ser fräsig ut nu?
+– Användare från Kalifornien kan visa sitt eget sekretessmeddelande.

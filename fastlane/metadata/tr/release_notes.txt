@@ -1,0 +1,3 @@
+- Ürün geliştirmeleri: Ürün görüntülerini, ürün ayarlarını güncelleyin ve ürün bağlantılarını doğrudan uygulamadan paylaşın. Artık sinir bozucu masaüstü bilgisayarı kullanmaya gerek yok.
+- Görsel geliştirmeler: Sipariş Ayrıntıları'nda SKU artık Ürün Listesinde görünmez. Ayrıca, Basit ürün adı ve üç nokta menüsü artık Ürünler sekmesinin dışında açıldığında gezinme çubuğunda görünür (Ürünler özellik anahtarını etkinleştirdiğinizden emin olun.) Son olarak, ürün varyasyonları ekranındaki yükleme durumu artık daha gösterişli. Buna ne dersiniz?
+- Kaliforniya'daki kullanıcılar kendi gizlilik bildirimlerini görebilirler.

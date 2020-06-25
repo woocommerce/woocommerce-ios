@@ -1,0 +1,3 @@
+Productverbeteringen: werk productafbeeldingen, productinstellingen en links voor het delen van producten rechtstreeks vanuit de app bij. Geen gedoe meer met die vervelende desktopcomputer!
+- Visuele verbeteringen: in Bestelgegevens wordt de SKU niet meer weergegeven in de productlijst. Ook worden de simpele productnaam en het ellips-menu nu weergegeven in de navigatiebalk wanneer ze buiten het tabblad Producten worden geopend. (Zorg dat je de Producten-functieschakelaar aanzet.) Tot slot ziet de laadstatus op het productvariatiescherm er nu strak uit, vind je niet?
+- Gebruikers uit Californië kunnen hun eigen privacyverklaring bekijken.

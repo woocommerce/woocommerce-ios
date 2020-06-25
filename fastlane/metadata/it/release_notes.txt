@@ -1,0 +1,3 @@
+- Miglioramenti del prodotto: aggiornamento di immagini e impostazioni del prodotto e condivisione dei link di prodotti direttamente dall'app. Nessuna necessità di quel fastidioso computer desktop!
+- Miglioramenti visivi: su Dettagli dell'ordine, lo SKU non compare più in Elenco dei prodotti. Inoltre, il menu del nome di prodotto semolice e dell'ellissi compare ora sulla barra di navigazione quando viene aperto fuori della scheda Prodotti. (Assicurati di abilitare l'interruttore della funzione Prodotti.) Ultimo, ma non meno importante, lo stato di caricamento nella schermata delle varianti del prodotto ora appare elegante, non credi?
+- Gli utenti in California possono vedere la propria nota sulla privacy.

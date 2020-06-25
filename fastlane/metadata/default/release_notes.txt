@@ -1,0 +1,3 @@
+- Product enhancements: Update product images, product settings, and share product links right from the app. No need to use that pesky desktop computer!
+- Visual enhancements: In Order Details, the SKU no longer appears on the Products List. Also, the Simple product name and ellipsis menu now appears in the nav bar when opened outside the Products tab.(Be sure to enable the Products feature switch.) Last but not least, the loading state on the product variations screen looks spiffy now, wouldn’t you agree?
+- California users can view their very own privacy notice.

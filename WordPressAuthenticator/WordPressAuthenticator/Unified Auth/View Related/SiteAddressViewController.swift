@@ -1,28 +1,28 @@
 import UIKit
+import WordPressUI
 
 
 /// SiteAddressViewController: log in by Site Address.
 ///
 final class SiteAddressViewController: LoginViewController {
 
+    /// Private properties
+    ///
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
 
     // Required property declaration for `NUXKeyboardResponder` but unused here.
     var verticalCenterConstraint: NSLayoutConstraint?
 
-    var displayStrings: WordPressAuthenticatorDisplayStrings {
-        return WordPressAuthenticator.shared.displayStrings
-    }
-
     private var rows = [Row]()
+
+    private weak var firstTextField: UITextField?
 
     // MARK: - View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
 
         localizePrimaryButton()
-        setRowHeight()
         registerTableViewCells()
         loadRows()
     }
@@ -32,6 +32,7 @@ final class SiteAddressViewController: LoginViewController {
 
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
+        showKeyboard()
     }
 
     /// Style individual ViewController backgrounds, for now.
@@ -69,9 +70,7 @@ extension SiteAddressViewController: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate conformance
 extension SiteAddressViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
+
 }
 
 
@@ -84,8 +83,15 @@ extension SiteAddressViewController: NUXKeyboardResponder {
     @objc func handleKeyboardWillHide(_ notification: Foundation.Notification) {
         keyboardWillHide(notification)
     }
-}
 
+    func showKeyboard() {
+        firstTextField?.becomeFirstResponder()
+    }
+
+    func hideKeyboard() {
+        firstTextField?.resignFirstResponder()
+    }
+}
 
 
 private extension SiteAddressViewController {
@@ -94,24 +100,18 @@ private extension SiteAddressViewController {
     /// Localize the "Continue" button
     ///
     func localizePrimaryButton() {
-        let primaryTitle = displayStrings.continueButtonTitle
+        let primaryTitle = WordPressAuthenticator.shared.displayStrings.continueButtonTitle
         submitButton?.setTitle(primaryTitle, for: .normal)
         submitButton?.setTitle(primaryTitle, for: .highlighted)
-    }
-
-    /// Sets the row height in the tableView
-    ///
-    func setRowHeight() {
-        tableView.estimatedRowHeight = Constants.rowHeight
-        tableView.rowHeight = UITableView.automaticDimension
     }
 
     /// Registers all of the available TableViewCells
     ///
     func registerTableViewCells() {
         let cells = [
-            InstructionTableViewCell.reuseIdentifier: InstructionTableViewCell.loadNib(),
-            TextFieldTableViewCell.reuseIdentifier: TextFieldTableViewCell.loadNib()
+            TextLabelTableViewCell.reuseIdentifier: TextLabelTableViewCell.loadNib(),
+            TextFieldTableViewCell.reuseIdentifier: TextFieldTableViewCell.loadNib(),
+            TextLinkButtonTableViewCell.reuseIdentifier: TextLinkButtonTableViewCell.loadNib()
         ]
 
         for (reuseIdentifier, nib) in cells {
@@ -123,16 +123,22 @@ private extension SiteAddressViewController {
     ///
     func loadRows() {
         rows = [.instructions, .siteAddress]
+
+        if WordPressAuthenticator.shared.configuration.displayHintButtons {
+            rows.append(.findSiteAddress)
+        }
     }
 
     /// Configure cells
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as InstructionTableViewCell:
-            configureInstruction(cell)
+        case let cell as TextLabelTableViewCell where row == .instructions:
+            configureTextLabel(cell)
         case let cell as TextFieldTableViewCell:
             configureTextField(cell)
+        case let cell as TextLinkButtonTableViewCell:
+            configureTextLinkButton(cell)
         default:
             DDLogError("Error: Unidentified tableViewCell type found.")
         }
@@ -140,14 +146,34 @@ private extension SiteAddressViewController {
 
     /// Configure the instruction cell
     ///
-    func configureInstruction(_ cell: InstructionTableViewCell) {
-        cell.instructionLabel?.text = displayStrings.siteLoginInstructions
+    func configureTextLabel(_ cell: TextLabelTableViewCell) {
+        cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.siteLoginInstructions, style: .body)
     }
 
     /// Configure the textfield cell
     ///
     func configureTextField(_ cell: TextFieldTableViewCell) {
-        cell.textField.placeholder = NSLocalizedString("example.com", comment: "Site Address placeholder")
+        let placeholderText = NSLocalizedString("example.com", comment: "Site Address placeholder")
+        cell.configureTextFieldStyle(with: .url, and: placeholderText)
+        // Save a reference to the first textField so it can becomeFirstResponder.
+        firstTextField = cell.textField
+    }
+
+    /// Configure the "Find your site address" cell
+    ///
+    func configureTextLinkButton(_ cell: TextLinkButtonTableViewCell) {
+        cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.findSiteButtonTitle)
+        cell.actionHandler = { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            let alert = FancyAlertViewController.siteAddressHelpController(loginFields: self.loginFields, sourceTag: self.sourceTag)
+            alert.modalPresentationStyle = .custom
+            alert.transitioningDelegate = self
+            self.present(alert, animated: true, completion: nil)
+            WordPressAuthenticator.track(.loginURLHelpScreenViewed)
+        }
     }
 
     // MARK: - Private Constants
@@ -157,21 +183,17 @@ private extension SiteAddressViewController {
     enum Row {
         case instructions
         case siteAddress
+        case findSiteAddress
 
         var reuseIdentifier: String {
             switch self {
             case .instructions:
-                return InstructionTableViewCell.reuseIdentifier
+                return TextLabelTableViewCell.reuseIdentifier
             case .siteAddress:
                 return TextFieldTableViewCell.reuseIdentifier
+            case .findSiteAddress:
+                return TextLinkButtonTableViewCell.reuseIdentifier
             }
         }
-    }
-
-    /// Constants
-    ///
-    struct Constants {
-        // Need a CGFloat not a plain Float
-        static let rowHeight: CGFloat = 44.0
     }
 }

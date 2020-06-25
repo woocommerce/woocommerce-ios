@@ -122,14 +122,29 @@ public struct WordPressAuthenticatorUnifiedStyle {
     ///
     public let borderColor: UIColor
 
+    /// Style: Auth default text color
+    ///
+    public let textColor: UIColor
+
+    /// Style: Auth plain text button normal state color
+    ///
+    public let textButtonColor: UIColor
+
+    /// Style: Auth plain text button highlight state color
+    ///
+    public let textButtonHighlightColor: UIColor
+
     /// Style: Auth view background colors
     ///
     public let viewControllerBackgroundColor: UIColor
 
     /// Designated initializer
     ///
-    public init(borderColor: UIColor, viewControllerBackgroundColor: UIColor) {
+    public init(borderColor: UIColor, textColor: UIColor, textButtonColor: UIColor, textButtonHighlightColor: UIColor, viewControllerBackgroundColor: UIColor) {
         self.borderColor = borderColor
+        self.textColor = textColor
+        self.textButtonColor = textButtonColor
+        self.textButtonHighlightColor = textButtonHighlightColor
         self.viewControllerBackgroundColor = viewControllerBackgroundColor
     }
 }

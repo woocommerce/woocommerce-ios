@@ -189,6 +189,10 @@ extension ProductFormViewModel {
                                menuOrder: settings.menuOrder)
         password = settings.password
     }
+
+    func updateExternalLink(externalURL: String?, buttonText: String) {
+        product = product.copy(buttonText: buttonText, externalURL: externalURL)
+    }
 }
 
 // MARK: Reset actions

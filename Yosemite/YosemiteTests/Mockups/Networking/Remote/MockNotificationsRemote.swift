@@ -12,6 +12,9 @@ final class MockNotificationsRemote {
     /// The results to pass to the `completion` block if `loadNotes()` is called.
     private var notesLoadingResults = [ResultKey: Result<[Note], Error>]()
 
+    /// The number of times that `loadNotes` was invoked.
+    private(set) var invocationCountOfLoadNotes: Int = 0
+
     func whenLoadingNotes(noteIDs: [Int64], thenReturn result: Result<[Note], Error>) {
         let key: ResultKey = noteIDs
         notesLoadingResults[key] = result
@@ -31,6 +34,8 @@ extension MockNotificationsRemote: NotificationsEndpointsProviding {
             guard let self = self else {
                 return
             }
+
+            self.invocationCountOfLoadNotes += 1
 
             let key: ResultKey = noteIDs
             if let result = self.notesLoadingResults[key] {

@@ -92,8 +92,13 @@ public struct CoreDataIterativeMigrator {
                     return (false, debugMessages)
             }
 
+            guard let modelFromIndex = objectModels.firstIndex(of: modelFrom),
+                let modelToIndex = objectModels.firstIndex(of: modelTo) else {
+                    return (false, debugMessages)
+            }
+
             // Migrate the model to the next step
-            let migrationAttemptMessage = "⚠️ Attempting migration from \(modelNames[index]) to \(modelNames[index + 1])"
+            let migrationAttemptMessage = "⚠️ Attempting migration from \(modelNames[modelFromIndex]) to \(modelNames[modelToIndex])"
             debugMessages.append(migrationAttemptMessage)
             DDLogWarn(migrationAttemptMessage)
 

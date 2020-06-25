@@ -3,6 +3,8 @@ import UIKit
 import WordPressUI
 import Yosemite
 
+import class AutomatticTracks.CrashLogging
+
 
 final class ReviewsViewModel {
     private let data: ReviewsDataSource
@@ -48,7 +50,15 @@ final class ReviewsViewModel {
 
     func configureResultsController(tableView: UITableView) {
         data.startForwardingEvents(to: tableView)
-        try? data.observeReviews()
+
+        do {
+            try data.observeReviews()
+        } catch {
+            CrashLogging.logError(error)
+        }
+
+        // Reload table because observeReviews() executes performFetch()
+        tableView.reloadData()
     }
 
     func refreshResults() {

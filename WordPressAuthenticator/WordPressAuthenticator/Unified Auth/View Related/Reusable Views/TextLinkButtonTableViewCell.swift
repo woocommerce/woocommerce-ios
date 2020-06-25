@@ -18,6 +18,14 @@ class TextLinkButtonTableViewCell: UITableViewCell {
 
     public var actionHandler: (() -> Void)?
 
+	override func awakeFromNib() {
+		super.awakeFromNib()
+
+		button.titleLabel?.font = UIFont.preferredFont(forTextStyle: .callout)
+		button.titleLabel?.adjustsFontForContentSizeCategory = true
+		button.titleLabel?.lineBreakMode = .byWordWrapping
+	}
+
     public func configureButton(text: String?) {
         button.setTitle(text, for: .normal)
 
@@ -25,8 +33,5 @@ class TextLinkButtonTableViewCell: UITableViewCell {
         let buttonHighlightColor = WordPressAuthenticator.shared.unifiedStyle?.textButtonHighlightColor ?? WordPressAuthenticator.shared.style.textButtonHighlightColor
         button.setTitleColor(buttonTitleColor, for: .normal)
         button.setTitleColor(buttonHighlightColor, for: .highlighted)
-
-        button.titleLabel?.font = UIFont.preferredFont(forTextStyle: .callout)
-        button.titleLabel?.adjustsFontForContentSizeCategory = true
     }
 }

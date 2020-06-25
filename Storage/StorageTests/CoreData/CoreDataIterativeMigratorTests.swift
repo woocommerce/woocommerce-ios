@@ -75,7 +75,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         XCTAssertNotNil(ps)
     }
 
-    func testModel26To27Passed() throws {
+    func testModel26To27MigrationPassed() throws {
         // Arrange
         let model26URL = urlForModel(name: "Model 26")
         let model26 = NSManagedObjectModel(contentsOf: model26URL)!
@@ -104,11 +104,12 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         // Assert - step 1
         XCTAssertNil(model26LoadingError, "Migration error: \(String(describing: model26LoadingError?.localizedDescription))")
 
-        guard let metadata = try? NSPersistentStoreCoordinator.metadataForPersistentStore(ofType: NSSQLiteStoreType,
-                                                                                          at: coreDataManager.storeURL,
-                                                                                          options: nil) else {
-                                                                                            XCTFail("Cannot get metadata for persistent store at URL \(coreDataManager.storeURL)")
-                                                                                            return
+        guard let metadata = try? NSPersistentStoreCoordinator
+            .metadataForPersistentStore(ofType: NSSQLiteStoreType,
+                                        at: coreDataManager.storeURL,
+                                        options: nil) else {
+                                            XCTFail("Cannot get metadata for persistent store at URL \(coreDataManager.storeURL)")
+                                            return
         }
 
         // The persistent store should be compatible with model 26 now and incompatible with model 27.
@@ -117,9 +118,9 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
 
         // Arrange - step 2: populating data, migrating persistent store from model 26 to 27, then loading with model 27.
         let context = model26Container.viewContext
-        _ = self.insertAccount(to: context)
-        let product = self.insertProduct(to: context)
-        let productCategory = self.insertProductCategory(to: context)
+        _ = insertAccount(to: context)
+        let product = insertProduct(to: context)
+        let productCategory = insertProductCategory(to: context)
         product.addToCategories([productCategory])
         context.saveIfNeeded()
 
@@ -134,7 +135,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         let (migrateResult, migrationDebugMessages) = try! CoreDataIterativeMigrator.iterativeMigrate(sourceStore: coreDataManager.storeURL,
                                                                                                       storeType: NSSQLiteStoreType,
                                                                                                       to: model27,
-                                                                                                      using: self.allModelNames)
+                                                                                                      using: allModelNames)
         XCTAssertTrue(migrateResult, "Failed to migrate to model version 27: \(migrationDebugMessages)")
 
         var model27LoadingError: Error?

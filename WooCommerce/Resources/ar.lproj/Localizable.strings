@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-06-09 16:54:03+0000 */
+/* Translation-Revision-Date: 2020-06-25 14:54:03+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -1159,7 +1159,7 @@
 "Pricing and Inventory" = "الأسعار والمخزون";
 
 /* Opens the California Privacy Policy web page */
-"Privacy Notice for California Users" = "Privacy Notice for California Users";
+"Privacy Notice for California Users" = "إشعار الخصوصية الخاص بالمستخدمين في كاليفورنيا";
 
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "سياسة الخصوصية";
@@ -1379,10 +1379,10 @@
 "Sale price: %@" = "سعر البيع: %@";
 
 /* Scan Products */
-"Scan products" = "Scan products";
+"Scan products" = "فحص المنتجات";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
-"Scans barcodes that are associated with a product SKU for stock management." = "Scans barcodes that are associated with a product SKU for stock management.";
+"Scans barcodes that are associated with a product SKU for stock management." = "يفحص الأكواد الشريطية المرتبطة بوحدة SKU الخاصة بالمنتج لإدارة المخزون.";
 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "جدولة البيع";

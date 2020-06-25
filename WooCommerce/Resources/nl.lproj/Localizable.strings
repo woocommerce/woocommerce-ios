@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-06-11 08:54:03+0000 */
+/* Translation-Revision-Date: 2020-06-25 11:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -1159,7 +1159,7 @@
 "Pricing and Inventory" = "Prijzen en inventaris";
 
 /* Opens the California Privacy Policy web page */
-"Privacy Notice for California Users" = "Privacy Notice for California Users";
+"Privacy Notice for California Users" = "Privacyverklaring voor gebruikers in Californië";
 
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "Privacybeleid";
@@ -1379,10 +1379,10 @@
 "Sale price: %@" = "Prijs tijdens de sale: %@";
 
 /* Scan Products */
-"Scan products" = "Scan products";
+"Scan products" = "Producten scannen";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
-"Scans barcodes that are associated with a product SKU for stock management." = "Scans barcodes that are associated with a product SKU for stock management.";
+"Scans barcodes that are associated with a product SKU for stock management." = "Scant barcodes die gekoppeld zijn aan een product-SKU voor voorraadbeheer.";
 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "Verkoop inplannen";

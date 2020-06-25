@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-06-10 12:54:03+0000 */
+/* Translation-Revision-Date: 2020-06-25 09:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -1159,7 +1159,7 @@
 "Pricing and Inventory" = "定价和库存";
 
 /* Opens the California Privacy Policy web page */
-"Privacy Notice for California Users" = "Privacy Notice for California Users";
+"Privacy Notice for California Users" = "面向加州用户的隐私声明";
 
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "隐私政策";
@@ -1379,10 +1379,10 @@
 "Sale price: %@" = "促销价格：%@";
 
 /* Scan Products */
-"Scan products" = "Scan products";
+"Scan products" = "扫描产品";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
-"Scans barcodes that are associated with a product SKU for stock management." = "Scans barcodes that are associated with a product SKU for stock management.";
+"Scans barcodes that are associated with a product SKU for stock management." = "扫描与产品 SKU 关联的条形码，进行库存管理。";
 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "安排促销";

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-06-20 08:29:31+0000 */
+/* Translation-Revision-Date: 2020-06-25 13:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -1382,7 +1382,7 @@
 "Scan products" = "Skanna produkter";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
-"Scans barcodes that are associated with a product SKU for stock management." = "Scans barcodes that are associated with a product SKU for stock management.";
+"Scans barcodes that are associated with a product SKU for stock management." = "Läser av streckkoder associerade med en produkts SKU för lagerhantering.";
 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "Schemalägg rea";

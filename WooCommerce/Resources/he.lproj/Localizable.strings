@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-06-10 13:54:03+0000 */
+/* Translation-Revision-Date: 2020-06-25 09:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -1159,7 +1159,7 @@
 "Pricing and Inventory" = "תמחור וספירת מלאי";
 
 /* Opens the California Privacy Policy web page */
-"Privacy Notice for California Users" = "Privacy Notice for California Users";
+"Privacy Notice for California Users" = "הצהרת פרטיות למשתמשים מקליפורניה";
 
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "מדיניות פרטיות";
@@ -1379,10 +1379,10 @@
 "Sale price: %@" = "מחיר מבצע: ‎%@";
 
 /* Scan Products */
-"Scan products" = "Scan products";
+"Scan products" = "לסרוק מוצרים";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
-"Scans barcodes that are associated with a product SKU for stock management." = "Scans barcodes that are associated with a product SKU for stock management.";
+"Scans barcodes that are associated with a product SKU for stock management." = "הפעולה סורקת את הברקודים שמשויכים ל-SKU של המוצר לצורך ניהול המלאי.";
 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "לקבוע תאריך למבצע";

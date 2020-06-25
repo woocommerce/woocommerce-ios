@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-06-10 12:54:03+0000 */
+/* Translation-Revision-Date: 2020-06-25 13:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -1159,7 +1159,7 @@
 "Pricing and Inventory" = "Precio e inventario";
 
 /* Opens the California Privacy Policy web page */
-"Privacy Notice for California Users" = "Privacy Notice for California Users";
+"Privacy Notice for California Users" = "Aviso de privacidad para usuarios de California";
 
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "Política de privacidad";
@@ -1379,10 +1379,10 @@
 "Sale price: %@" = "Precio rebajado: %@";
 
 /* Scan Products */
-"Scan products" = "Scan products";
+"Scan products" = "Escanear productos";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
-"Scans barcodes that are associated with a product SKU for stock management." = "Scans barcodes that are associated with a product SKU for stock management.";
+"Scans barcodes that are associated with a product SKU for stock management." = "Escanea los códigos de barras asociados con un SKU de producto para la gestión de inventario.";
 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "Programar oferta";

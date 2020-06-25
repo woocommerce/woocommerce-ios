@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-06-10 08:54:04+0000 */
+/* Translation-Revision-Date: 2020-06-25 08:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -1159,7 +1159,7 @@
 "Pricing and Inventory" = "가격 및 재고:";
 
 /* Opens the California Privacy Policy web page */
-"Privacy Notice for California Users" = "Privacy Notice for California Users";
+"Privacy Notice for California Users" = "캘리포니아 사용자를 위한 개인정보 공지";
 
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "개인정보 취급방침";
@@ -1379,10 +1379,10 @@
 "Sale price: %@" = "할인 가격: %@";
 
 /* Scan Products */
-"Scan products" = "Scan products";
+"Scan products" = "제품 스캔";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
-"Scans barcodes that are associated with a product SKU for stock management." = "Scans barcodes that are associated with a product SKU for stock management.";
+"Scans barcodes that are associated with a product SKU for stock management." = "제품 SKU에 연결된 바코드를 스캔하여 재고를 관리합니다.";
 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "판매 일정";

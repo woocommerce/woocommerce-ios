@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-06-11 16:54:04+0000 */
+/* Translation-Revision-Date: 2020-06-25 14:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -1159,7 +1159,7 @@
 "Pricing and Inventory" = "Fiyat ve Stok";
 
 /* Opens the California Privacy Policy web page */
-"Privacy Notice for California Users" = "Privacy Notice for California Users";
+"Privacy Notice for California Users" = "Kaliforniya'daki Kullanıcılar için Gizlilik Bildirimi";
 
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "Gizlilik Politikası";
@@ -1379,10 +1379,10 @@
 "Sale price: %@" = "İndirimli satış fiyatı: %@";
 
 /* Scan Products */
-"Scan products" = "Scan products";
+"Scan products" = "Ürünleri tara";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
-"Scans barcodes that are associated with a product SKU for stock management." = "Scans barcodes that are associated with a product SKU for stock management.";
+"Scans barcodes that are associated with a product SKU for stock management." = "Stok yönetimi için ürün SKU'su ile ilişkili barkodları tarar.";
 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "Programlı satış";

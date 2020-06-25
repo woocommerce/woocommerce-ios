@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-06-11 08:54:03+0000 */
+/* Translation-Revision-Date: 2020-06-25 13:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -1159,7 +1159,7 @@
 "Pricing and Inventory" = "価格設定と在庫";
 
 /* Opens the California Privacy Policy web page */
-"Privacy Notice for California Users" = "Privacy Notice for California Users";
+"Privacy Notice for California Users" = "カリフォルニア州のユーザーへのプライバシー通知";
 
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "個人情報保護方針";
@@ -1379,10 +1379,10 @@
 "Sale price: %@" = "セール価格 :%@";
 
 /* Scan Products */
-"Scan products" = "Scan products";
+"Scan products" = "商品をスキャン";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
-"Scans barcodes that are associated with a product SKU for stock management." = "Scans barcodes that are associated with a product SKU for stock management.";
+"Scans barcodes that are associated with a product SKU for stock management." = "在庫管理用に商品 SKU と関連付けられたバーコードをスキャンします。";
 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "セールの予定を設定";

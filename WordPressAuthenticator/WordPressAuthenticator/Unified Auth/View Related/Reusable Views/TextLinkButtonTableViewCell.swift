@@ -21,9 +21,7 @@ class TextLinkButtonTableViewCell: UITableViewCell {
 	override func awakeFromNib() {
 		super.awakeFromNib()
 
-		button.titleLabel?.font = UIFont.preferredFont(forTextStyle: .callout)
 		button.titleLabel?.adjustsFontForContentSizeCategory = true
-		button.titleLabel?.lineBreakMode = .byWordWrapping
 	}
 
     public func configureButton(text: String?) {

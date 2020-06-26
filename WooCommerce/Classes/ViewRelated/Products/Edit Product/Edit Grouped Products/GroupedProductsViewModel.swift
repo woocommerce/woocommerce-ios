@@ -1,17 +1,5 @@
 import Yosemite
 
-extension Sequence where Element: Equatable {
-    func removingDuplicates() -> [Element] {
-        var result = [Element]()
-        for value in self {
-            if result.contains(value) == false {
-                result.append(value)
-            }
-        }
-        return result
-    }
-}
-
 final class GroupedProductsViewModel {
     // Observable list of products
     var products: Observable<Result<[Product], Error>> {

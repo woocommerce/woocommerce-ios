@@ -39,6 +39,8 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         super.viewDidLoad()
         
         navigationController?.navigationBar.prefersLargeTitles = false
+        navigationItem.largeTitleDisplayMode = .never
+        styleNavigationBar()
         
         displayError(message: "")
         setupNavBarIcon()
@@ -75,6 +77,46 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         instructionLabel?.font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
         instructionLabel?.adjustsFontForContentSizeCategory = true
         instructionLabel?.textColor = WordPressAuthenticator.shared.style.instructionColor
+    }
+
+    private func styleNavigationBar() {
+        
+        let largeTitleTextColor = WordPressAuthenticator.shared.unifiedStyle?.largeTitleTextColor ?? WordPressAuthenticator.shared.style.instructionColor
+        
+        var navBarBackgroundColor: UIColor
+        var navButtonTextColor: UIColor
+        var hideBottomBorder: Bool
+        
+        switch navigationItem.largeTitleDisplayMode {
+        // Original nav bar style
+        case .never:
+            navButtonTextColor = WordPressAuthenticator.shared.style.navButtonTextColor
+            navBarBackgroundColor = WordPressAuthenticator.shared.style.navBarBackgroundColor
+            hideBottomBorder = false
+        // Unified nav bar style
+        default:
+            navButtonTextColor = WordPressAuthenticator.shared.unifiedStyle?.navButtonTextColor ?? WordPressAuthenticator.shared.style.navButtonTextColor
+            navBarBackgroundColor = WordPressAuthenticator.shared.unifiedStyle?.navBarBackgroundColor ?? WordPressAuthenticator.shared.style.navBarBackgroundColor
+            hideBottomBorder = true
+        }
+
+        if #available(iOS 13.0, *) {
+            let appearance = UINavigationBarAppearance()
+            appearance.shadowColor = hideBottomBorder ? .clear : .separator
+            appearance.backgroundColor = navBarBackgroundColor
+            appearance.largeTitleTextAttributes = [.foregroundColor: largeTitleTextColor]
+            UIBarButtonItem.appearance().tintColor = navButtonTextColor
+            
+            UINavigationBar.appearance().standardAppearance = appearance
+            UINavigationBar.appearance().compactAppearance = appearance
+            UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        } else {
+            let appearance = UINavigationBar.appearance()
+            appearance.barTintColor = navBarBackgroundColor
+            appearance.largeTitleTextAttributes = [.foregroundColor: largeTitleTextColor]
+            UIBarButtonItem.appearance().tintColor = navButtonTextColor
+        }
+
     }
 
     func configureViewLoading(_ loading: Bool) {
@@ -374,6 +416,7 @@ extension LoginViewController {
 
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = largeTitleDisplayMode
+        styleNavigationBar()
     }
 }
 

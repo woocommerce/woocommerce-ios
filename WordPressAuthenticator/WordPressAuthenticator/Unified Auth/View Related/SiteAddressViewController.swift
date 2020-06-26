@@ -38,6 +38,9 @@ final class SiteAddressViewController: LoginViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        navigationItem.title = WordPressAuthenticator.shared.displayStrings.logInTitle
+        setLargeTitleDisplayMode(.always)
+
         localizePrimaryButton()
         registerTableViewCells()
         loadRows()
@@ -183,8 +186,7 @@ private extension SiteAddressViewController {
              rows.append(.errorMessage)
          }
 
-        let displayHintButtons = WordPressAuthenticator.shared.configuration.displayHintButtons
-        if displayHintButtons {
+        if WordPressAuthenticator.shared.configuration.displayHintButtons {
             rows.append(.findSiteAddress)
         }
     }

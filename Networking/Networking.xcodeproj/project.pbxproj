@@ -58,6 +58,8 @@
 		4568E2242459D3230007E478 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4568E2232459D3230007E478 /* Post.swift */; };
 		457FC68C2382B2FD00B41B02 /* product-update.json in Resources */ = {isa = PBXBuildFile; fileRef = 457FC68B2382B2FD00B41B02 /* product-update.json */; };
 		4599FC5824A624BD0056157A /* ProductTagListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4599FC5724A624BD0056157A /* ProductTagListMapper.swift */; };
+		4599FC5A24A626B70056157A /* ProductTagListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4599FC5924A626B70056157A /* ProductTagListMapperTests.swift */; };
+		4599FC5C24A6276F0056157A /* product-tags-all.json in Resources */ = {isa = PBXBuildFile; fileRef = 4599FC5B24A6276F0056157A /* product-tags-all.json */; };
 		45B204B82489095100FE6526 /* ProductCategoryMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B204B72489095100FE6526 /* ProductCategoryMapper.swift */; };
 		45B204BA24890A8C00FE6526 /* ProductCategoryMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B204B924890A8C00FE6526 /* ProductCategoryMapperTests.swift */; };
 		45B204BC24890B1200FE6526 /* category.json in Resources */ = {isa = PBXBuildFile; fileRef = 45B204BB24890B1200FE6526 /* category.json */; };
@@ -396,6 +398,8 @@
 		4568E2232459D3230007E478 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		457FC68B2382B2FD00B41B02 /* product-update.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-update.json"; sourceTree = "<group>"; };
 		4599FC5724A624BD0056157A /* ProductTagListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagListMapper.swift; sourceTree = "<group>"; };
+		4599FC5924A626B70056157A /* ProductTagListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagListMapperTests.swift; sourceTree = "<group>"; };
+		4599FC5B24A6276F0056157A /* product-tags-all.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-tags-all.json"; sourceTree = "<group>"; };
 		45B204B72489095100FE6526 /* ProductCategoryMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryMapper.swift; sourceTree = "<group>"; };
 		45B204B924890A8C00FE6526 /* ProductCategoryMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryMapperTests.swift; sourceTree = "<group>"; };
 		45B204BB24890B1200FE6526 /* category.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = category.json; sourceTree = "<group>"; };
@@ -1090,6 +1094,7 @@
 				CE0A0F1E223998A00075ED8D /* products-load-all.json */,
 				0282DD90233A120A006A5FDB /* products-search-photo.json */,
 				45D685F923D0C3CF005F87D0 /* product-search-sku.json */,
+				4599FC5B24A6276F0056157A /* product-tags-all.json */,
 				CEC4BF90234E40B5008D9195 /* refund-single.json */,
 				CEC4BF92234E7EE0008D9195 /* refunds-all.json */,
 				7412A8EF21B6E415005D182A /* report-orders.json */,
@@ -1249,6 +1254,7 @@
 				D88D5A4E230BD276007B6E01 /* ProductReviewListMapperTests.swift */,
 				45B204B924890A8C00FE6526 /* ProductCategoryMapperTests.swift */,
 				26615478242DA54D00A31661 /* ProductCategoyListMapperTests.swift */,
+				4599FC5924A626B70056157A /* ProductTagListMapperTests.swift */,
 				45D685FB23D0C739005F87D0 /* ProductSkuMapperTests.swift */,
 				CEC4BF94234E7F34008D9195 /* RefundListMapperTests.swift */,
 				CEC4BF8E234E382F008D9195 /* RefundMapperTests.swift */,
@@ -1414,6 +1420,7 @@
 				45ED4F12239E8C57004F1BE3 /* taxes-classes.json in Resources */,
 				B5A2417B217F98FC00595DEF /* broken-notifications.json in Resources */,
 				D823D91422377EE600C90817 /* shipment_tracking_providers.json in Resources */,
+				4599FC5C24A6276F0056157A /* product-tags-all.json in Resources */,
 				74A7B4BE217A841400E85A8B /* broken-settings-general.json in Resources */,
 				026CF624237D839B009563D4 /* product-variations-load-all.json in Resources */,
 				B5A24179217F98F600595DEF /* notifications-load-all.json in Resources */,
@@ -1767,6 +1774,7 @@
 				B5C151C0217EE3FB00C7BDC1 /* NoteListMapperTests.swift in Sources */,
 				026CF622237D7E61009563D4 /* ProductVariationsRemoteTests.swift in Sources */,
 				020D07C023D8587700FD9580 /* MediaRemoteTests.swift in Sources */,
+				4599FC5A24A626B70056157A /* ProductTagListMapperTests.swift in Sources */,
 				D88D5A4F230BD276007B6E01 /* ProductReviewListMapperTests.swift in Sources */,
 				B567AF3120A0FB8F00AB6C62 /* JetpackRequestTests.swift in Sources */,
 				7412A8F221B6E47A005D182A /* ReportRemoteTests.swift in Sources */,

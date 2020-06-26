@@ -182,7 +182,7 @@ private extension SiteAddressViewController {
     func loadRows() {
         rows = [.instructions, .siteAddress]
 
-        if let errorMessage = errorMessage {
+        if errorMessage != nil {
              rows.append(.errorMessage)
          }
 

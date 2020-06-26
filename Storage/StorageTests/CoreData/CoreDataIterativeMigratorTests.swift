@@ -31,8 +31,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
 
         try psc.remove(ps!)
 
-        model = NSManagedObjectModel(contentsOf: model10URL)
-        XCTAssertNotNil(model)
+        model = try XCTUnwrap(NSManagedObjectModel(contentsOf: model10URL))
         psc = NSPersistentStoreCoordinator(managedObjectModel: model!)
 
         ps = try? psc.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: options)
@@ -55,8 +54,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
 
         try psc.remove(ps!)
 
-        model = NSManagedObjectModel(contentsOf: model10URL)
-        XCTAssertNotNil(model)
+        model = try XCTUnwrap(NSManagedObjectModel(contentsOf: model10URL))
 
         do {
             let (result, _) = try CoreDataIterativeMigrator.iterativeMigrate(sourceStore: storeURL,

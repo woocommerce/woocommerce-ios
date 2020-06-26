@@ -53,10 +53,6 @@ final class StatsVersionStateCoordinator {
                 }
                 let statsVersion: StatsVersion = isStatsV4Available ? .v4: .v3
 
-                // Sets eligible stats version to app settings.
-                let setEligibleStatsVersionAction = AppSettingsAction.setStatsVersionEligible(siteID: self.siteID, statsVersion: statsVersion)
-                ServiceLocator.stores.dispatch(setEligibleStatsVersionAction)
-
                 let nextState = StatsVersionState.initial(statsVersion: statsVersion)
                 if nextState != self.state {
                     self.state = nextState

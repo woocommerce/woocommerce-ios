@@ -18,7 +18,7 @@ public final class ProductTagsRemote: Remote {
     public func loadAllProductTags(for siteID: Int64,
                                          pageNumber: Int = Default.pageNumber,
                                          pageSize: Int = Default.pageSize,
-                                         completion: @escaping ([ProductTag]?, Error?) -> Void) {
+                                         completion: @escaping (Result<[ProductTag], Error>) -> Void) {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize)

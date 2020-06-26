@@ -6,6 +6,7 @@ import Yosemite
 final class GroupedProductsViewController: UIViewController {
     @IBOutlet private weak var addButton: UIButton!
     @IBOutlet private weak var addButtonBottomBorderView: UIView!
+    @IBOutlet private weak var topContainerView: UIView!
     @IBOutlet private weak var tableView: UITableView!
 
     private let imageService: ImageService
@@ -107,7 +108,7 @@ private extension GroupedProductsViewController {
     }
 
     func configureNavigation() {
-        title = NSLocalizedString("Grouped Products", comment: "The navigation bar title for editing linked products for a grouped product")
+        title = NSLocalizedString("Grouped Products", comment: "Navigation bar title for editing linked products for a grouped product")
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
 
@@ -244,18 +245,16 @@ private extension GroupedProductsViewController {
 // MARK: - Placeholders
 //
 private extension GroupedProductsViewController {
-    /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
-    ///
     func displayPlaceholderProducts() {
         let options = GhostOptions(reuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
         tableView.displayGhostContent(options: options, style: .wooDefaultGhostStyle)
+        topContainerView.isHidden = true
     }
 
-    /// Removes the Placeholder Products (and restores the ResultsController <> UITableView link).
-    ///
     func removePlaceholderProducts() {
         tableView.removeGhostContent()
         tableView.reloadData()
+        topContainerView.isHidden = false
     }
 
     /// Displays the Error Notice.

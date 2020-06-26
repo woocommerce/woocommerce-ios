@@ -26,14 +26,6 @@ final class SiteAddressViewController: LoginViewController {
     }
 
 
-    // MARK: - URL Validation
-
-    private lazy var urlErrorDebouncer = Debouncer(delay: 2) { [weak self] in
-        let errorMessage = NSLocalizedString("Please enter a complete website address, like example.com.", comment: "Error message shown when a URL is invalid.")
-
-        self?.displayError(message: errorMessage)
-    }
-
     // MARK: - View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -110,7 +102,10 @@ final class SiteAddressViewController: LoginViewController {
     override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
         errorMessage = message
         shouldChangeVoiceOverFocus = moveVoiceOverFocus
-        tableView.reloadData()
+
+		if errorMessage != nil {
+			tableView.reloadData()
+		}
     }
 }
 
@@ -224,14 +219,12 @@ private extension SiteAddressViewController {
         SigninEditingState.signinEditingStateActive = true
 
         cell.handleTextFieldDidChange = { [weak self] textField in
-            self?.displayError(message: "")
             self?.loginFields.siteAddress = textField.nonNilTrimmedText()
             self?.configureSubmitButton(animating: false)
-            self?.refreshSiteAddressError(immediate: false)
         }
 
         cell.handleEditingDidEnd = { [weak self] textField in
-            self?.refreshSiteAddressError(immediate: true)
+           // now a no-op
         }
 
         cell.handleTextFieldShouldReturn = { [weak self] textField in
@@ -270,25 +263,6 @@ private extension SiteAddressViewController {
     func configureErrorLabel(_ cell: TextLabelTableViewCell) {
         cell.configureLabel(text: errorMessage, style: .error)
     }
-
-
-    // MARK: - URL Validation
-
-      /// Does a local / quick Site Address validation and refreshes the UI with an error
-      /// if necessary.
-      ///
-      /// - Returns: `true` if the Site Address contains a valid URL.  `false` otherwise.
-      ///
-      private func refreshSiteAddressError(immediate: Bool) {
-          let showError = !loginFields.siteAddress.isEmpty && !loginFields.validateSiteForSignin()
-
-          if showError {
-              urlErrorDebouncer.call(immediate: immediate)
-          } else {
-              urlErrorDebouncer.cancel()
-              displayError(message: "")
-          }
-      }
 
 
     // MARK: - Private Constants

@@ -1,12 +1,3 @@
-Continuiamo ad aggiungere funzionalità per la modifica del prodotto. Guarda i miglioramenti della gestione di immagine e prodotto: vai su "Impostazioni" nella scheda Il mio negozio per saperne di più e attiva le nuove funzionalità!
-
-Le notifiche push e i badge di aggiornamento funzionano meglio insieme. Nella scheda Revisioni non verrà più mostrato un badge dopo che hai ricevuto una nuova notifica push dell'ordine e la navigazione alla scheda Ordini e/o a quella Recensioni elimina ora il numero del badge (in base ai tipi di notifiche).
-
-I suggerimenti sono un po' meno suggerimenti. Durante la modifica dei prodotti, la richiesta di "annullamento delle modifiche" ora viene visualizzata solo se hai eliminato le immagini e non quando lasci le schermate dei dettagli delle impostazioni del prodotto con un campo testo (abbreviazione, nota di acquisto e ordine menu).
-
-Abbiamo anche risolto alcuni piccoli problemi dell'interfaccia utente:
-- Il nome del prodotto viene visualizzato nella barra di navigazione dei dettagli del prodotto, così è sempre visibile.
-- Abbiamo risolto un problema che impediva ai dettagli del prodotto di scorrere fino alla parte inferiore in modalità orizzontale dopo aver chiuso la tastiera.
-- Le immagini in attesa di caricamento saranno visibili dopo aver modificato le immagini dei prodotti dai dettagli del prodotto.
-- L'azione "Visualizza il prodotto in negozio" viene visualizzata solamente se il prodotto è pubblicato.
-- I codici HTML nel metodo di spedizione vengono ora mostrati correttamente.
+- Miglioramenti del prodotto: aggiornamento di immagini e impostazioni del prodotto e condivisione dei link di prodotti direttamente dall'app. Nessuna necessità di quel fastidioso computer desktop!
+- Miglioramenti visivi: su Dettagli dell'ordine, lo SKU non compare più in Elenco dei prodotti. Inoltre, il menu del nome di prodotto semolice e dell'ellissi compare ora sulla barra di navigazione quando viene aperto fuori della scheda Prodotti. (Assicurati di abilitare l'interruttore della funzione Prodotti.) Ultimo, ma non meno importante, lo stato di caricamento nella schermata delle varianti del prodotto ora appare elegante, non credi?
+- Gli utenti in California possono vedere la propria nota sulla privacy.

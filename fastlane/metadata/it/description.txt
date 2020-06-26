@@ -1,5 +1,5 @@
 VISUALIZZA E GESTISCI GLI ORDINI
-Scorri, filtra o controlla un ordine specifico. Tocca per visualizzare le informazioni relative all'ordine, tra cui i prodotti, il valore, i dati del cliente, i dettagli della spedizione e le note.
+Scorri, filtra o controlla ordini specifici. Tocca per visualizzare le informazioni relative all'ordine, tra cui i prodotti, il valore, i dati del cliente, i dettagli della spedizione e le note.
 
 TRACCIA IL TUO NEGOZIO
 Guarda quali prodotti hanno maggior successo. Controlla il fatturato generale e visualizza l'ordine e i dati dei visitatori per settimana, mese e anno.
@@ -10,3 +10,5 @@ Ottieni notifiche sull'attività del negozio, tra cui i nuovi ordini e le recens
 WooCommerce è la piattaforma di eCommerce maggiormente personalizzabile per costruire il tuo business online. Costruito sulla base di WordPress, è integrato con i migliori strumenti al mondo per la gestione dei contenuti. L'abbonamento a un caffè, le lezioni di spagnolo, l'iscrizione a una palestra o il complesso eCommerce a livello aziendale: visita WooCommerce.com/start per aprire un nuovo negozio e sviluppare la tua idea.
 
 Requisiti: WooCommerce v3.5+, il plugin di Jetpack.
+
+Consulta la nota sulla privacy per utenti in California su https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

@@ -1,12 +1,14 @@
 VISUALIZE E GERENCIE PEDIDOS
-Role, filtre ou pesquise pedidos específicos. Toque para visualizar as informações do pedido, incluindo o(s) produto(s), o valor, os dados do cliente, detalhes de envio e observações.
+Role a página, use filtros ou pesquise pedidos específicos. Toque para visualizar as informações do pedido, incluindo o(s) produto(s), o valor, os dados do cliente, detalhes de envio e observações.
 
 MONITORE SUA LOJA
 Veja quais produtos têm o melhor desempenho. Verifique sua receita geral, visualize os dados semanais, mensais e anuais dos pedidos e visitantes.
 
-ALERTAS DE PEDIDOS EM TEMPO REAL
+RECEBA ALERTAS DE PEDIDOS EM TEMPO REAL
 Receba notificações sobre as atividades da loja, incluindo novos pedidos e avaliações de produtos.
 
 A WooCommerce é a melhor plataforma de e-commerce personalizável para a criação de seu negócio online. Criada no WordPress, ela é integrada às melhores ferramentas de gerenciamento de conteúdo do mundo. Acesse WooCommerce.com/start para iniciar uma nova loja e deslanchar sua ideia, que pode ser um café, aulas de Espanhol ou inscrições de academia, ou mesmo um e-commerce complexo e de nível empresarial.
 
-Requisitos: A partir da versão 3.5 da WooCommerce, o plugin do Jetpack.
+Requisitos: WooCommerce versão 3.5 ou posterior e o plugin do Jetpack.
+
+Veja o Aviso de privacidade para usuários residentes da Califórnia em https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

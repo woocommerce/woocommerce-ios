@@ -6,7 +6,7 @@ public final class ProductCategoriesRemote: Remote {
 
     // MARK: - Product Categories
 
-    /// Retrieves all of the `ProducCategory` available. We rely on the endpoint
+    /// Retrieves all of the `ProductCategory` available. We rely on the endpoint
     /// defaults for `context`, ` sorting` and `orderby`: `date_gmt` and `asc`
     ///
     /// - Parameters:

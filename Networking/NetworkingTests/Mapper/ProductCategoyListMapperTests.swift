@@ -6,7 +6,7 @@ final class ProductCategoryListMapperTests: XCTestCase {
     ///
     private let dummySiteID: Int64 = 33334444
 
-    /// Verifies that all of the ProductCatefory Fields are parsed correctly.
+    /// Verifies that all of the ProductCategory Fields are parsed correctly.
     ///
     func testProductCategoryFieldsAreProperlyParsed() throws {
         let productCategories = try mapLoadAllProductCategoriesResponse()

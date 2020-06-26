@@ -4,10 +4,10 @@ import XCTest
 final class PeriodStatsTable: BaseScreen {
 
     struct ElementStringIDs {
-        static let daysTab = "period-data-granularity-day-tab"
-        static let weeksTab = "period-data-granularity-week-tab"
-        static let monthsTab = "period-data-granularity-month-tab"
-        static let yearsTab = "period-data-granularity-year-tab"
+        static let daysTab = "period-data-today-tab"
+        static let weeksTab = "period-data-thisWeek-tab"
+        static let monthsTab = "period-data-thisMonth-tab"
+        static let yearsTab = "period-data-thisYear-tab"
     }
 
 

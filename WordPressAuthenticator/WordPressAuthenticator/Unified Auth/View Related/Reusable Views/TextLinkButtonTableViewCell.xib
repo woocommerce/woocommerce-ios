@@ -17,8 +17,9 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ofe-LL-CbC">
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="ofe-LL-CbC">
                         <rect key="frame" x="16" y="11" width="288" height="22"/>
+                        <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                         <state key="normal" title="Button"/>
                         <connections>
                             <action selector="textLinkButtonTapped:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="nY9-jd-WF5"/>

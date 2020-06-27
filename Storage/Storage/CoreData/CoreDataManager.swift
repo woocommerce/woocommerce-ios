@@ -59,8 +59,7 @@ public class CoreDataManager: StorageManagerType {
                                                                 "backupError": error,
                                                                 "appState": UIApplication.shared.applicationState.rawValue,
                                                                 "migrationMessages": migrationDebugMessages],
-                                                   level: .fatal)
-                fatalError(message)
+                                                   level: .error)
             }
 
             /// Remove the old Store
@@ -74,8 +73,7 @@ public class CoreDataManager: StorageManagerType {
                                                                 "removeStoreError": error,
                                                                 "appState": UIApplication.shared.applicationState.rawValue,
                                                                 "migrationMessages": migrationDebugMessages],
-                                                   level: .fatal)
-                fatalError(message)
+                                                   level: .error)
             }
 
             /// Retry!

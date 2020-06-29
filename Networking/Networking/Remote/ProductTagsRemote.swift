@@ -31,26 +31,28 @@ public final class ProductTagsRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    /// Create a new `ProductTag`.
+    /// Create new multiple `ProductTag` entities.
     ///
     /// - Parameters:
     ///     - siteID: Site for which we'll add a new product tag.
-    ///     - name: Tag name.
+    ///     - names: Tags names.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func createProductTag(for siteID: Int64,
-                                      name: String,
-                                      completion: @escaping (Result<ProductTag, Error>) -> Void) {
+    public func createProductTags(for siteID: Int64,
+                                      names: [String],
+                                      completion: @escaping (Result<[ProductTag], Error>) -> Void) {
+
         let parameters = [
-            ParameterKey.name: name
+            ParameterKey.create: names.map {[ParameterKey.name: $0]}.flatMap {$0}
         ]
 
-        let path = Path.tags
+        let path = Path.tagsBatchCreate
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
-        let mapper = ProductTagMapper(siteID: siteID)
+        let mapper = ProductTagListMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
 }
 
 
@@ -64,12 +66,13 @@ public extension ProductTagsRemote {
 
     private enum Path {
         static let tags = "products/tags"
+        static let tagsBatchCreate = "products/tags/batch"
     }
 
     private enum ParameterKey {
         static let page: String = "page"
         static let perPage: String = "per_page"
         static let name: String = "name"
-        static let parent: String = "parent"
+        static let create: String = "create"
     }
 }

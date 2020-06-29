@@ -70,19 +70,19 @@ final class ProductTagsRemoteTests: XCTestCase {
         XCTAssertNotNil(result?.failure)
     }
 
-    // MARK: - Create a product tag tests
+    // MARK: - Create product tags tests
 
-    /// Verifies that createProductTag properly parses the `product tag` sample response.
+    /// Verifies that createProductTags properly parses the `product tag` sample response.
     ///
-    func testCreateProductTagProperlyReturnsParsedProductTag() {
+    func testCreateProductTagsProperlyReturnsParsedProductTags() {
         // Given
         let remote = ProductTagsRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tag")
+        network.simulateResponse(requestUrlSuffix: "products/tags/batch", filename: "product-tags-created")
 
         // When
-        var result: Result<ProductTag, Error>?
+        var result: Result<[ProductTag], Error>?
         waitForExpectation { exp in
-            remote.createProductTag(for: sampleSiteID, name: "Leather Shoes") { (aResult) in
+            remote.createProductTags(for: sampleSiteID, names: ["Round toe", "Flat"]) { (aResult) in
                 result = aResult
                 exp.fulfill()
             }
@@ -91,19 +91,20 @@ final class ProductTagsRemoteTests: XCTestCase {
         // Then
         XCTAssertNil(result?.failure)
         XCTAssertNotNil(try result?.get())
-        XCTAssertEqual(try result?.get().name, "Leather Shoes")
+        XCTAssertEqual(try result?.get().count, 2)
+        XCTAssertEqual(try result?.get().first?.name, "Round toe")
     }
 
-    /// Verifies that createProductTag properly relays Networking Layer errors.
+    /// Verifies that createProductTags properly relays Networking Layer errors.
     ///
-    func testCreateProductTagProperlyRelaysNetwokingErrors() {
+    func testCreateProductTagsProperlyRelaysNetwokingErrors() {
         // Given
         let remote = ProductTagsRemote(network: network)
 
         // When
-        var result: Result<ProductTag, Error>?
+        var result: Result<[ProductTag], Error>?
         waitForExpectation { exp in
-            remote.createProductTag(for: sampleSiteID, name: "Leather Shoes") { (aResult) in
+            remote.createProductTags(for: sampleSiteID, names: ["Leather Shoes"]) { (aResult) in
                 result = aResult
                 exp.fulfill()
             }

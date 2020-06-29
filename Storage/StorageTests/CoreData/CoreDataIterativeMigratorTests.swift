@@ -9,11 +9,13 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
                                  "Model 21", "Model 22", "Model 23", "Model 24", "Model 25", "Model 26", "Model 27", "Model 28"]
 
     override func setUp() {
+        super.setUp()
         DDLog.add(DDOSLogger.sharedInstance)
     }
 
     override func tearDown() {
         DDLog.remove(DDOSLogger.sharedInstance)
+        super.tearDown()
     }
 
     func testModel0to10MigrationFails() throws {

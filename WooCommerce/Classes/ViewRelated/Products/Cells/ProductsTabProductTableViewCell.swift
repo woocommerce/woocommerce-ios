@@ -158,7 +158,7 @@ private extension ProductsTabProductTableViewCell {
         let view = UIView(frame: .zero)
         view.backgroundColor = .primary
         view.translatesAutoresizingMaskIntoConstraints = false
-        let checkmarkImage = UIImage.checkmarkImage.applyTintColor(.textInverted)
+        let checkmarkImage = UIImage.checkmarkInCellImageOverlay
         let checkmarkImageView = UIImageView(image: checkmarkImage)
         checkmarkImageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(checkmarkImageView)

@@ -209,7 +209,12 @@ private extension CoreDataIterativeMigratorTests {
 }
 
 /// Helpers for the Core Data migration tests
-extension CoreDataIterativeMigratorTests {
+private extension CoreDataIterativeMigratorTests {
+
+    var documentsDirectory: URL {
+        let path = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last!
+        return URL(fileURLWithPath: path)
+    }
     private func urlForModel(name: String) -> URL {
 
         let bundle = Bundle(for: CoreDataManager.self)
@@ -222,14 +227,13 @@ extension CoreDataIterativeMigratorTests {
     }
 
     private func urlForStore(withName: String, deleteIfExists: Bool = false) -> URL {
-        let documentsDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last!
-        let storeURL = URL(fileURLWithPath: documentsDirectory).appendingPathComponent(withName)
+        let storeURL = documentsDirectory.appendingPathComponent(withName)
 
         if deleteIfExists {
             try? FileManager.default.removeItem(at: storeURL)
         }
 
-        try? FileManager.default.createDirectory(at: URL(fileURLWithPath: documentsDirectory), withIntermediateDirectories: true, attributes: nil)
+        try? FileManager.default.createDirectory(at: documentsDirectory, withIntermediateDirectories: true, attributes: nil)
 
         return storeURL
     }

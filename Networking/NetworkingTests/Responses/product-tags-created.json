@@ -1,0 +1,86 @@
+{
+    "data": {
+      "create": [
+        {
+          "id": 36,
+          "name": "Round toe",
+          "slug": "round-toe",
+          "description": "",
+          "count": 0,
+          "_links": {
+            "self": [
+              {
+                "href": "https://example.com/wp-json/wc/v3/products/tags/36"
+              }
+            ],
+            "collection": [
+              {
+                "href": "https://example.com/wp-json/wc/v3/products/tags"
+              }
+            ]
+          }
+        },
+        {
+          "id": 37,
+          "name": "Flat",
+          "slug": "flat",
+          "description": "",
+          "count": 0,
+          "_links": {
+            "self": [
+              {
+                "href": "https://example.com/wp-json/wc/v3/products/tags/37"
+              }
+            ],
+            "collection": [
+              {
+                "href": "https://example.com/wp-json/wc/v3/products/tags"
+              }
+            ]
+          }
+        }
+      ],
+      "update": [
+        {
+          "id": 34,
+          "name": "Leather Shoes",
+          "slug": "leather-shoes",
+          "description": "Genuine leather.",
+          "count": 0,
+          "_links": {
+            "self": [
+              {
+                "href": "https://example.com/wp-json/wc/v3/products/tags/34"
+              }
+            ],
+            "collection": [
+              {
+                "href": "https://example.com/wp-json/wc/v3/products/tags"
+              }
+            ]
+          }
+        }
+      ],
+      "delete": [
+        {
+          "id": 35,
+          "name": "Oxford Shoes",
+          "slug": "oxford-shoes",
+          "description": "",
+          "count": 0,
+          "_links": {
+            "self": [
+              {
+                "href": "https://example.com/wp-json/wc/v3/products/tags/35"
+              }
+            ],
+            "collection": [
+              {
+                "href": "https://example.com/wp-json/wc/v3/products/tags"
+              }
+            ]
+          }
+        }
+      ]
+    }
+}

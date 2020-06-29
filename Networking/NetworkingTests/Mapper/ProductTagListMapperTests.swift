@@ -17,6 +17,18 @@ final class ProductTagListMapperTests: XCTestCase {
         XCTAssertEqual(secondTag.name, "Oxford Shoes")
         XCTAssertEqual(secondTag.slug, "oxford-shoes")
     }
+
+    /// Verifies that all of the ProductTag Fields under "create" field are parsed correctly.
+    ///
+    func testProductTagFieldsWhenCreatedAreProperlyParsed() throws {
+        let tags = try mapLoadProductTagsCreatedResponse()
+        XCTAssertEqual(tags.count, 2)
+
+        let firstTag = tags[0]
+        XCTAssertEqual(firstTag.tagID, 36)
+        XCTAssertEqual(firstTag.name, "Round toe")
+        XCTAssertEqual(firstTag.slug, "round-toe")
+    }
 }
 
 
@@ -38,5 +50,11 @@ private extension ProductTagListMapperTests {
     ///
     func mapLoadAllProductTagsResponse() throws -> [ProductTag] {
         return try mapProductTags(from: "product-tags-all")
+    }
+
+    /// Returns the ProductTagListMapper output upon receiving `product-tags-created`
+    ///
+    func mapLoadProductTagsCreatedResponse() throws -> [ProductTag] {
+        return try mapProductTags(from: "product-tags-created")
     }
 }

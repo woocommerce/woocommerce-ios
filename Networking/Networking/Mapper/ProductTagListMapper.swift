@@ -17,7 +17,10 @@ struct ProductTagListMapper: Mapper {
             .siteID: siteID
         ]
 
-        return try decoder.decode(ProductTagListEnvelope.self, from: response).tags
+        let decodedResponse = try? decoder.decode(ProductTagListEnvelope.self, from: response)
+        let decodedResponseTagsCreate = try? decoder.decode(ProductTagListCreateEnvelope.self, from: response)
+
+        return decodedResponse?.tags ?? decodedResponseTagsCreate?.createdTags ?? []
     }
 }
 
@@ -31,5 +34,26 @@ private struct ProductTagListEnvelope: Decodable {
 
     private enum CodingKeys: String, CodingKey {
         case tags = "data"
+    }
+}
+
+
+/// ProductTagListCreateEnvelope Disposable Entity:
+/// `Load Created Products Tags` endpoint returns the products tags under the `data`->`create` nested key.
+/// This entity allows us to do parse all the things with JSONDecoder.
+///
+private struct ProductTagListCreateEnvelope: Decodable {
+    let createdTags: [ProductTag]?
+
+    public init(from decoder: Decoder) throws {
+        let container = try? decoder.container(keyedBy: CodingKeys.self)
+        let nestedContainer = try? container?.nestedContainer(keyedBy: CodingKeys.self, forKey: .data)
+
+        createdTags = nestedContainer?.failsafeDecodeIfPresent(Array<ProductTag>.self, forKey: .create)
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case data
+        case create
     }
 }

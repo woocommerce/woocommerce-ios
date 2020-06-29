@@ -34,7 +34,7 @@ public final class ProductTagsRemote: Remote {
     /// Create new multiple `ProductTag` entities.
     ///
     /// - Parameters:
-    ///     - siteID: Site for which we'll add a new product tag.
+    ///     - siteID: Site for which we'll add new product tags.
     ///     - names: Tags names.
     ///     - completion: Closure to be executed upon completion.
     ///
@@ -46,7 +46,29 @@ public final class ProductTagsRemote: Remote {
             ParameterKey.create: names.map {[ParameterKey.name: $0]}.flatMap {$0}
         ]
 
-        let path = Path.tagsBatchCreate
+        let path = Path.tagsBatch
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+        let mapper = ProductTagListMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Delete multiple `ProductTag` entities.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site for which we'll delete product tags.
+    ///     - ids: Existing tags IDs.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func deleteProductTags(for siteID: Int64,
+                                      ids: [Int64],
+                                      completion: @escaping (Result<[ProductTag], Error>) -> Void) {
+
+        let parameters = [
+            ParameterKey.delete: ids
+        ]
+
+        let path = Path.tagsBatch
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
         let mapper = ProductTagListMapper(siteID: siteID)
 
@@ -66,7 +88,7 @@ public extension ProductTagsRemote {
 
     private enum Path {
         static let tags = "products/tags"
-        static let tagsBatchCreate = "products/tags/batch"
+        static let tagsBatch = "products/tags/batch"
     }
 
     private enum ParameterKey {
@@ -74,5 +96,6 @@ public extension ProductTagsRemote {
         static let perPage: String = "per_page"
         static let name: String = "name"
         static let create: String = "create"
+        static let delete: String = "delete"
     }
 }

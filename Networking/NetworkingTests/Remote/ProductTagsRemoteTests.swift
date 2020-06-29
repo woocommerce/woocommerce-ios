@@ -115,4 +115,49 @@ final class ProductTagsRemoteTests: XCTestCase {
         XCTAssertNotNil(result?.failure)
     }
 
+    // MARK: - Delete product tags tests
+
+    /// Verifies that deleteProductTags properly parses the `product tag` sample response.
+    ///
+    func testDeleteProductTagsProperlyReturnsParsedProductTags() {
+        // Given
+        let remote = ProductTagsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products/tags/batch", filename: "product-tags-deleted")
+
+        // When
+        var result: Result<[ProductTag], Error>?
+        waitForExpectation { exp in
+            remote.deleteProductTags(for: sampleSiteID, ids: [35]) { (aResult) in
+                result = aResult
+                exp.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertNil(result?.failure)
+        XCTAssertNotNil(try result?.get())
+        XCTAssertEqual(try result?.get().count, 1)
+        XCTAssertEqual(try result?.get().first?.name, "Oxford Shoes")
+    }
+
+    /// Verifies that deleteProductTags properly relays Networking Layer errors.
+    ///
+    func testDeleteProductTagsProperlyRelaysNetwokingErrors() {
+        // Given
+        let remote = ProductTagsRemote(network: network)
+
+        // When
+        var result: Result<[ProductTag], Error>?
+        waitForExpectation { exp in
+            remote.deleteProductTags(for: sampleSiteID, ids: [35]) { (aResult) in
+                result = aResult
+                exp.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertNil(try? result?.get())
+        XCTAssertNotNil(result?.failure)
+    }
+
 }

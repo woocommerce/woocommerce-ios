@@ -28,6 +28,7 @@
 		4501068B2399AC9B00E24722 /* TaxClass+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4501068A2399AC9B00E24722 /* TaxClass+CoreDataProperties.swift */; };
 		45E1862E2370450C009241F3 /* ShippingLine+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E1862D2370450C009241F3 /* ShippingLine+CoreDataClass.swift */; };
 		45E1863023704519009241F3 /* ShippingLine+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E1862F23704519009241F3 /* ShippingLine+CoreDataProperties.swift */; };
+		574B774C24AA87FA0042116F /* FileManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574B774B24AA87FA0042116F /* FileManagerProtocol.swift */; };
 		68BC97FB41770051C287D1A8 /* Pods_StorageTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47556EE256120BEE49FF5FD3 /* Pods_StorageTests.framework */; };
 		7028A41485A08AC748206184 /* Pods_Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF3D3B298350F68191CD1DAD /* Pods_Storage.framework */; };
 		7426A05020F69D00002A4E07 /* OrderCoupon+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7426A04E20F69D00002A4E07 /* OrderCoupon+CoreDataClass.swift */; };
@@ -177,6 +178,7 @@
 		45E1862D2370450C009241F3 /* ShippingLine+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLine+CoreDataClass.swift"; sourceTree = "<group>"; };
 		45E1862F23704519009241F3 /* ShippingLine+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLine+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		47556EE256120BEE49FF5FD3 /* Pods_StorageTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StorageTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		574B774B24AA87FA0042116F /* FileManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerProtocol.swift; sourceTree = "<group>"; };
 		5D12CAE2D0EA6AB66F162FF9 /* Pods-StorageTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StorageTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-StorageTests/Pods-StorageTests.debug.xcconfig"; sourceTree = "<group>"; };
 		74159626224D5644003C21CF /* Model 13.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 13.xcdatamodel"; sourceTree = "<group>"; };
 		7426A04E20F69D00002A4E07 /* OrderCoupon+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderCoupon+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -426,6 +428,7 @@
 				B505F6DF20BEEA8100BB1B69 /* StorageType.swift */,
 				D87F61522265AA230031A13B /* FileStorage.swift */,
 				02EAB6D62480A86D00FD873C /* CrashLogger.swift */,
+				574B774B24AA87FA0042116F /* FileManagerProtocol.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -804,6 +807,7 @@
 				74938EC9216FA9B200540BA1 /* OrderStatsItem+CoreDataProperties.swift in Sources */,
 				CE4FD44A2350EB7600A16B31 /* OrderItemTax+CoreDataProperties.swift in Sources */,
 				747453A02242C85E00E0B5EE /* ProductImage+CoreDataProperties.swift in Sources */,
+				574B774C24AA87FA0042116F /* FileManagerProtocol.swift in Sources */,
 				CE4FD44E2350EB7600A16B31 /* Refund+CoreDataProperties.swift in Sources */,
 				CE4FD44B2350EB7600A16B31 /* OrderItemTaxRefund+CoreDataClass.swift in Sources */,
 				B54CA5BB20A4BD2800F38CD1 /* NSManagedObject+Object.swift in Sources */,

@@ -5,7 +5,15 @@ import XCTest
 
 @testable import Storage
 
-final class MockFileManager: FileManagerProtocol {
+/// A mock of `FileManager` via `FileManagerProtocol`.
+///
+final class MockFileManager {
+
+}
+
+// MARK: - FileManagerProtocol Conformance
+
+extension MockFileManager: FileManagerProtocol {
 
     func fileExists(atPath path: String) -> Bool {
         XCTFail("There are no mocked return values for this method.")

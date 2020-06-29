@@ -42,6 +42,12 @@ final class ProductsTabProductTableViewCell: UITableViewCell {
         // Border color is not automatically updated on trait collection changes and thus manually updated here.
         productImageView.layer.borderColor = Colors.imageBorderColor.cgColor
     }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+
+        selectedProductImageOverlayView?.removeFromSuperview()
+    }
 }
 
 extension ProductsTabProductTableViewCell: SearchResultCell {

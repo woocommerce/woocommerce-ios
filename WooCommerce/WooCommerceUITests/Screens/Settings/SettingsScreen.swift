@@ -20,7 +20,7 @@ final class SettingsScreen: BaseScreen {
         super.init(element: betaFeaturesButton)
 
         XCTAssert(logOutButton.waitForExistence(timeout: 3))
-        XCTAssert(betaFeaturesButton.waitForExistence(timeout: 3))
+        // TODO-2482: add back `XCTAssert(betaFeaturesButton.waitForExistence(timeout: 3))` when we re-enable the Products feature switch.
     }
 
     @discardableResult

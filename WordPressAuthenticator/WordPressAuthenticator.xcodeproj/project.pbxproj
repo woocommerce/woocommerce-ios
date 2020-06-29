@@ -120,6 +120,13 @@
 		CE30A2A722579F4100DF3CDA /* LoginUsernamePasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE30A2A622579F4100DF3CDA /* LoginUsernamePasswordViewController.swift */; };
 		CE30A2A92257C60500DF3CDA /* WordPressOrgCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE30A2A82257C60500DF3CDA /* WordPressOrgCredentials.swift */; };
 		CE30A2AD2257CECC00DF3CDA /* AuthenticatorCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE30A2AC2257CECC00DF3CDA /* AuthenticatorCredentials.swift */; };
+		CE6BCD2E24A3A235001BCDC5 /* TextLabelTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6BCD2C24A3A235001BCDC5 /* TextLabelTableViewCell.swift */; };
+		CE6BCD2F24A3A235001BCDC5 /* TextLabelTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE6BCD2D24A3A235001BCDC5 /* TextLabelTableViewCell.xib */; };
+		CE6BCD3824A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6BCD3624A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.swift */; };
+		CE6BCD3924A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE6BCD3724A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.xib */; };
+		CE9091F72499549500AB50BD /* TextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9091F52499549500AB50BD /* TextFieldTableViewCell.swift */; };
+		CE9091F82499549500AB50BD /* TextFieldTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE9091F62499549500AB50BD /* TextFieldTableViewCell.xib */; };
+		CE9091FE249A720E00AB50BD /* UIView+AuthHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9091FD249A720E00AB50BD /* UIView+AuthHelpers.swift */; };
 		CEC77C6624854F2E00FB9050 /* SiteAddressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC77C6524854F2E00FB9050 /* SiteAddressViewController.swift */; };
 		CEC77C6824854F3E00FB9050 /* SiteAddress.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEC77C6724854F3E00FB9050 /* SiteAddress.storyboard */; };
 		CEDE0D93242011E000CB3345 /* NSObject+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDE0D92242011E000CB3345 /* NSObject+Helpers.swift */; };
@@ -283,6 +290,13 @@
 		CE30A2A622579F4100DF3CDA /* LoginUsernamePasswordViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginUsernamePasswordViewController.swift; sourceTree = "<group>"; };
 		CE30A2A82257C60500DF3CDA /* WordPressOrgCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressOrgCredentials.swift; sourceTree = "<group>"; };
 		CE30A2AC2257CECC00DF3CDA /* AuthenticatorCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatorCredentials.swift; sourceTree = "<group>"; };
+		CE6BCD2C24A3A235001BCDC5 /* TextLabelTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextLabelTableViewCell.swift; sourceTree = "<group>"; };
+		CE6BCD2D24A3A235001BCDC5 /* TextLabelTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextLabelTableViewCell.xib; sourceTree = "<group>"; };
+		CE6BCD3624A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextLinkButtonTableViewCell.swift; sourceTree = "<group>"; };
+		CE6BCD3724A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextLinkButtonTableViewCell.xib; sourceTree = "<group>"; };
+		CE9091F52499549500AB50BD /* TextFieldTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldTableViewCell.swift; sourceTree = "<group>"; };
+		CE9091F62499549500AB50BD /* TextFieldTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TextFieldTableViewCell.xib; sourceTree = "<group>"; };
+		CE9091FD249A720E00AB50BD /* UIView+AuthHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+AuthHelpers.swift"; sourceTree = "<group>"; };
 		CEC77C6524854F2E00FB9050 /* SiteAddressViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteAddressViewController.swift; sourceTree = "<group>"; };
 		CEC77C6724854F3E00FB9050 /* SiteAddress.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SiteAddress.storyboard; sourceTree = "<group>"; };
 		CEDE0D92242011E000CB3345 /* NSObject+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+Helpers.swift"; sourceTree = "<group>"; };
@@ -551,6 +565,7 @@
 				CEDE0D92242011E000CB3345 /* NSObject+Helpers.swift */,
 				CEDE0D942420121D00CB3345 /* UIStoryboard+Helpers.swift */,
 				CEDE0D962420126900CB3345 /* UIViewController+Helpers.swift */,
+				CE9091FD249A720E00AB50BD /* UIView+AuthHelpers.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -672,10 +687,24 @@
 			isa = PBXGroup;
 			children = (
 				98CF18F5248725130047B66C /* Google */,
+				CEC77C70248AB0C700FB9050 /* Reusable Views */,
 				CEC77C6524854F2E00FB9050 /* SiteAddressViewController.swift */,
 				CEC77C6724854F3E00FB9050 /* SiteAddress.storyboard */,
 			);
 			path = "View Related";
+			sourceTree = "<group>";
+		};
+		CEC77C70248AB0C700FB9050 /* Reusable Views */ = {
+			isa = PBXGroup;
+			children = (
+				CE6BCD3624A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.swift */,
+				CE6BCD3724A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.xib */,
+				CE6BCD2C24A3A235001BCDC5 /* TextLabelTableViewCell.swift */,
+				CE6BCD2D24A3A235001BCDC5 /* TextLabelTableViewCell.xib */,
+				CE9091F52499549500AB50BD /* TextFieldTableViewCell.swift */,
+				CE9091F62499549500AB50BD /* TextFieldTableViewCell.xib */,
+			);
+			path = "Reusable Views";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -794,10 +823,13 @@
 				B5E07FF4208FD13800657A9A /* Assets.xcassets in Resources */,
 				B56090CA208A4F5400399AE4 /* NUXButtonView.storyboard in Resources */,
 				B560911E208A555E00399AE4 /* Signup.storyboard in Resources */,
+				CE9091F82499549500AB50BD /* TextFieldTableViewCell.xib in Resources */,
 				CEC77C6824854F3E00FB9050 /* SiteAddress.storyboard in Resources */,
 				B5609118208A555600399AE4 /* SearchTableViewCell.xib in Resources */,
 				98ED48392480300500992B2D /* GoogleAuth.storyboard in Resources */,
 				B560913F208A563800399AE4 /* Login.storyboard in Resources */,
+				CE6BCD3924A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.xib in Resources */,
+				CE6BCD2F24A3A235001BCDC5 /* TextLabelTableViewCell.xib in Resources */,
 				98CF18F9248725620047B66C /* GoogleSignupConfirmation.storyboard in Resources */,
 				B5609137208A563800399AE4 /* EmailMagicLink.storyboard in Resources */,
 				3FFF2FC123D7ED7C00D38C77 /* EmailClients.plist in Resources */,
@@ -959,6 +991,7 @@
 				B56090F7208A533200399AE4 /* WordPressAuthenticator+Errors.swift in Sources */,
 				B56090D2208A4F5400399AE4 /* NUXButton.swift in Sources */,
 				CE1B18C920EEC2C200BECC3F /* SocialService.swift in Sources */,
+				CE6BCD2E24A3A235001BCDC5 /* TextLabelTableViewCell.swift in Sources */,
 				B56090D3208A4F5400399AE4 /* NUXLinkAuthViewController.swift in Sources */,
 				B5609120208A555E00399AE4 /* SignupNavigationController.swift in Sources */,
 				B5609143208A563800399AE4 /* LoginSocialErrorViewController.swift in Sources */,
@@ -973,6 +1006,7 @@
 				B5609116208A555600399AE4 /* LoginTextField.swift in Sources */,
 				B56090E2208A4F9D00399AE4 /* WPNUXSecondaryButton.m in Sources */,
 				B56090E6208A4F9D00399AE4 /* WPNUXPrimaryButton.m in Sources */,
+				CE9091F72499549500AB50BD /* TextFieldTableViewCell.swift in Sources */,
 				B5609135208A563800399AE4 /* LoginWPComViewController.swift in Sources */,
 				CEDE0D972420126900CB3345 /* UIViewController+Helpers.swift in Sources */,
 				B5609119208A555600399AE4 /* SiteInfoHeaderView.swift in Sources */,
@@ -998,8 +1032,10 @@
 				B55272C320B2FE4100E18BC5 /* WPAuthenticatorLoggingPrivate.m in Sources */,
 				B56090C7208A4F5400399AE4 /* NUXKeyboardResponder.swift in Sources */,
 				CE1B18D020EEC41600BECC3F /* WordPressAuthenticatorConfiguration.swift in Sources */,
+				CE9091FE249A720E00AB50BD /* UIView+AuthHelpers.swift in Sources */,
 				CE1B18D220EEC44400BECC3F /* WordPressAuthenticatorStyles.swift in Sources */,
 				B56090F0208A527000399AE4 /* FancyAlertViewController+LoginError.swift in Sources */,
+				CE6BCD3824A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.swift in Sources */,
 				CE16177521B6D82200B82A47 /* WordPressAuthenticatorDisplayStrings.swift in Sources */,
 				CE1B18CE20EEC3CB00BECC3F /* WordPressAuthenticatorDelegateProtocol.swift in Sources */,
 				B5609110208A54F800399AE4 /* OnePasswordFacade.swift in Sources */,

@@ -44,6 +44,7 @@ class AuthenticatedState: StoresManagerState {
             ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            ProductTagStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),

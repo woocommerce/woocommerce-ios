@@ -18,6 +18,29 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         super.tearDown()
     }
 
+    func testItWillNotMigrateIfTheDatabaseFileDoesNotExist() throws {
+        // Given
+        let targetModel = try managedObjectModel(for: "Model 28")
+        let databaseURL = documentsDirectory.appendingPathComponent("database-file-that-does-not-exist")
+        let fileManager = MockFileManager()
+
+        fileManager.whenCheckingIfFileExists(atPath: databaseURL.path, thenReturn: false)
+
+        let migrator = CoreDataIterativeMigrator(fileManager: fileManager)
+
+        // When
+        let result = try migrator.iterativeMigrate(sourceStore: databaseURL,
+                                                   storeType: NSSQLiteStoreType,
+                                                   to: targetModel,
+                                                   using: allModelNames)
+
+        // Then
+        XCTAssertTrue(result.success)
+        XCTAssertTrue(result.debugMessages.isEmpty)
+        XCTAssertEqual(fileManager.fileExistsInvocationCount, 1)
+        XCTAssertEqual(fileManager.allMethodsInvocationCount, 1)
+    }
+
     func testModel0to10MigrationFails() throws {
         let model0URL = urlForModel(name: "Model")
         let model10URL = urlForModel(name: "Model 10")
@@ -215,6 +238,11 @@ private extension CoreDataIterativeMigratorTests {
         let path = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last!
         return URL(fileURLWithPath: path)
     }
+
+    private func managedObjectModel(for modelName: String) throws -> NSManagedObjectModel {
+        try XCTUnwrap(NSManagedObjectModel(contentsOf: urlForModel(name: modelName)))
+    }
+
     private func urlForModel(name: String) -> URL {
 
         let bundle = Bundle(for: CoreDataManager.self)

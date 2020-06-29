@@ -6,6 +6,12 @@ import CoreData
 ///
 final class CoreDataIterativeMigrator {
 
+    private let fileManager: FileManagerProtocol
+
+    init(fileManager: FileManagerProtocol = FileManager.default) {
+        self.fileManager = fileManager
+    }
+
     /// Migrates a store to a particular model using the list of models to do it iteratively, if required.
     ///
     /// - Parameters:
@@ -24,7 +30,7 @@ final class CoreDataIterativeMigrator {
                           using modelNames: [String]) throws -> (success: Bool, debugMessages: [String]) {
         // If the persistent store does not exist at the given URL,
         // assume that it hasn't yet been created and return success immediately.
-        guard FileManager.default.fileExists(atPath: sourceStore.path) == true else {
+        guard fileManager.fileExists(atPath: sourceStore.path) == true else {
             return (true, [])
         }
 
@@ -130,7 +136,6 @@ private extension CoreDataIterativeMigrator {
     /// Build a temporary path to write the migrated store.
     ///
     func createTemporaryFolder(at storeURL: URL) -> URL {
-        let fileManager = FileManager.default
         let tempDestinationURL = storeURL.deletingLastPathComponent().appendingPathComponent("migration").appendingPathComponent(storeURL.lastPathComponent)
         try? fileManager.removeItem(at: tempDestinationURL.deletingLastPathComponent())
         try? fileManager.createDirectory(at: tempDestinationURL.deletingLastPathComponent(), withIntermediateDirectories: false, attributes: nil)
@@ -141,7 +146,6 @@ private extension CoreDataIterativeMigrator {
     /// Move the original source store to a backup location.
     ///
     func makeBackup(at storeURL: URL) throws -> URL {
-        let fileManager = FileManager.default
         let backupURL = storeURL.deletingLastPathComponent().appendingPathComponent("backup")
         try? fileManager.removeItem(at: backupURL)
         try? fileManager.createDirectory(atPath: backupURL.path, withIntermediateDirectories: false, attributes: nil)
@@ -166,7 +170,6 @@ private extension CoreDataIterativeMigrator {
     ///
     func copyMigratedOverOriginal(from tempDestinationURL: URL, to storeURL: URL) throws {
         do {
-            let fileManager = FileManager.default
             let files = try fileManager.contentsOfDirectory(atPath: tempDestinationURL.deletingLastPathComponent().path)
             try files.forEach { (file) in
                 if file.hasPrefix(tempDestinationURL.lastPathComponent) {
@@ -186,7 +189,6 @@ private extension CoreDataIterativeMigrator {
     ///
     func deleteBackupCopies(at backupURL: URL) throws {
         do {
-            let fileManager = FileManager.default
             let files = try fileManager.contentsOfDirectory(atPath: backupURL.path)
             try files.forEach { (file) in
                 let fullPath = URL(fileURLWithPath: backupURL.path).appendingPathComponent(file).path

@@ -29,6 +29,7 @@
 		45E1862E2370450C009241F3 /* ShippingLine+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E1862D2370450C009241F3 /* ShippingLine+CoreDataClass.swift */; };
 		45E1863023704519009241F3 /* ShippingLine+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E1862F23704519009241F3 /* ShippingLine+CoreDataProperties.swift */; };
 		574B774C24AA87FA0042116F /* FileManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574B774B24AA87FA0042116F /* FileManagerProtocol.swift */; };
+		574B774E24AA883D0042116F /* MockFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574B774D24AA883D0042116F /* MockFileManager.swift */; };
 		574B775024AA897E0042116F /* FileManager+FileManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574B774F24AA897E0042116F /* FileManager+FileManagerProtocol.swift */; };
 		68BC97FB41770051C287D1A8 /* Pods_StorageTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47556EE256120BEE49FF5FD3 /* Pods_StorageTests.framework */; };
 		7028A41485A08AC748206184 /* Pods_Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF3D3B298350F68191CD1DAD /* Pods_Storage.framework */; };
@@ -180,6 +181,7 @@
 		45E1862F23704519009241F3 /* ShippingLine+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLine+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		47556EE256120BEE49FF5FD3 /* Pods_StorageTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StorageTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		574B774B24AA87FA0042116F /* FileManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerProtocol.swift; sourceTree = "<group>"; };
+		574B774D24AA883D0042116F /* MockFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFileManager.swift; sourceTree = "<group>"; };
 		574B774F24AA897E0042116F /* FileManager+FileManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+FileManagerProtocol.swift"; sourceTree = "<group>"; };
 		5D12CAE2D0EA6AB66F162FF9 /* Pods-StorageTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StorageTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-StorageTests/Pods-StorageTests.debug.xcconfig"; sourceTree = "<group>"; };
 		74159626224D5644003C21CF /* Model 13.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 13.xcdatamodel"; sourceTree = "<group>"; };
@@ -341,6 +343,7 @@
 			isa = PBXGroup;
 			children = (
 				02A098262480D160002F8C7A /* MockCrashLogger.swift */,
+				574B774D24AA883D0042116F /* MockFileManager.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -929,6 +932,7 @@
 				B54CA5C320A4BF6900F38CD1 /* NSManagedObjectContextStorageTests.swift in Sources */,
 				02A098272480D160002F8C7A /* MockCrashLogger.swift in Sources */,
 				B54CA5C720A4BFDC00F38CD1 /* DummyStack.swift in Sources */,
+				574B774E24AA883D0042116F /* MockFileManager.swift in Sources */,
 				02F25AE024A446E700092B06 /* XCTestCase+Wait.swift in Sources */,
 				B54CA5C220A4BF6900F38CD1 /* NSManagedObjectStorageTests.swift in Sources */,
 				D87F61572265AD980031A13B /* FileStorageTests.swift in Sources */,

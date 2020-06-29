@@ -7,6 +7,8 @@ final class ProductsTabProductTableViewCell: UITableViewCell {
         return image
     }()
 
+    private var selectedProductImageOverlayView: UIView?
+
     private lazy var nameLabel: UILabel = {
         let label = UILabel(frame: .zero)
         return label
@@ -74,6 +76,14 @@ extension ProductsTabProductTableViewCell {
                                                             }
             }
         }
+
+        // Selected state.
+        let isSelected = viewModel.isSelected
+        if isSelected {
+            configureSelectedProductImageOverlayView()
+        }
+        let selectedBackgroundColor = isSelected ? UIColor.primary.withAlphaComponent(0.2): .listForeground
+        backgroundColor = selectedBackgroundColor
     }
 }
 
@@ -142,6 +152,21 @@ private extension ProductsTabProductTableViewCell {
 
     func configureBottomBorderView() {
         bottomBorderView.backgroundColor = .systemColor(.separator)
+    }
+
+    func configureSelectedProductImageOverlayView() {
+        let view = UIView(frame: .zero)
+        view.backgroundColor = .primary
+        view.translatesAutoresizingMaskIntoConstraints = false
+        let checkmarkImage = UIImage.checkmarkImage.applyTintColor(.textInverted)
+        let checkmarkImageView = UIImageView(image: checkmarkImage)
+        checkmarkImageView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(checkmarkImageView)
+        view.pinSubviewAtCenter(checkmarkImageView)
+        selectedProductImageOverlayView = view
+
+        productImageView.addSubview(view)
+        productImageView.pinSubviewToAllEdges(view)
     }
 }
 

@@ -57,10 +57,11 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         model = try XCTUnwrap(NSManagedObjectModel(contentsOf: model10URL))
 
         do {
-            let (result, _) = try CoreDataIterativeMigrator.iterativeMigrate(sourceStore: storeURL,
-                                                                             storeType: NSSQLiteStoreType,
-                                                                             to: model!,
-                                                                             using: allModelNames)
+            let iterativeMigrator = CoreDataIterativeMigrator()
+            let (result, _) = try iterativeMigrator.iterativeMigrate(sourceStore: storeURL,
+                                                                     storeType: NSSQLiteStoreType,
+                                                                     to: model!,
+                                                                     using: allModelNames)
             XCTAssertTrue(result)
         } catch {
             XCTFail("Error when attempting to migrate: \(error)")
@@ -130,10 +131,11 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         model27Container.persistentStoreDescriptions = [coreDataManager.storeDescription]
 
         // Action - step 2
-        let (migrateResult, migrationDebugMessages) = try! CoreDataIterativeMigrator.iterativeMigrate(sourceStore: coreDataManager.storeURL,
-                                                                                                      storeType: NSSQLiteStoreType,
-                                                                                                      to: model27,
-                                                                                                      using: allModelNames)
+        let iterativeMigrator = CoreDataIterativeMigrator()
+        let (migrateResult, migrationDebugMessages) = try iterativeMigrator.iterativeMigrate(sourceStore: coreDataManager.storeURL,
+                                                                                             storeType: NSSQLiteStoreType,
+                                                                                             to: model27,
+                                                                                             using: allModelNames)
         XCTAssertTrue(migrateResult, "Failed to migrate to model version 27: \(migrationDebugMessages)")
 
         var model27LoadingError: Error?

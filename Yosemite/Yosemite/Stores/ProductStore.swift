@@ -445,12 +445,10 @@ private extension ProductStore {
     ///
     func handleProductTags(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
         let siteID = readOnlyProduct.siteID
-        let productID = readOnlyProduct.productID
 
         // Upsert the tags from the read-only product
         for readOnlyTag in readOnlyProduct.tags {
             if let existingStorageTag = storage.loadProductTag(siteID: siteID,
-                                                               productID: productID,
                                                                tagID: readOnlyTag.tagID) {
                 existingStorageTag.update(with: readOnlyTag)
             } else {

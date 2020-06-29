@@ -18,7 +18,7 @@ final class ProductTagListMapperTests: XCTestCase {
         XCTAssertEqual(secondTag.slug, "oxford-shoes")
     }
 
-    /// Verifies that all of the ProductTag Fields under "create" field are parsed correctly.
+    /// Verifies that all of the ProductTag Fields under `create` field are parsed correctly.
     ///
     func testProductTagFieldsWhenCreatedAreProperlyParsed() throws {
         let tags = try mapLoadProductTagsCreatedResponse()
@@ -28,6 +28,18 @@ final class ProductTagListMapperTests: XCTestCase {
         XCTAssertEqual(firstTag.tagID, 36)
         XCTAssertEqual(firstTag.name, "Round toe")
         XCTAssertEqual(firstTag.slug, "round-toe")
+    }
+
+    /// Verifies that all of the ProductTag Fields under `delete` field are parsed correctly.
+    ///
+    func testProductTagFieldsWhenDeletedAreProperlyParsed() throws {
+        let tags = try mapLoadProductTagsDeletedResponse()
+        XCTAssertEqual(tags.count, 1)
+
+        let firstTag = tags[0]
+        XCTAssertEqual(firstTag.tagID, 35)
+        XCTAssertEqual(firstTag.name, "Oxford Shoes")
+        XCTAssertEqual(firstTag.slug, "oxford-shoes")
     }
 }
 
@@ -56,5 +68,11 @@ private extension ProductTagListMapperTests {
     ///
     func mapLoadProductTagsCreatedResponse() throws -> [ProductTag] {
         return try mapProductTags(from: "product-tags-created")
+    }
+
+    /// Returns the ProductTagListMapper output upon receiving `product-tags-deleted`
+    ///
+    func mapLoadProductTagsDeletedResponse() throws -> [ProductTag] {
+        return try mapProductTags(from: "product-tags-deleted")
     }
 }

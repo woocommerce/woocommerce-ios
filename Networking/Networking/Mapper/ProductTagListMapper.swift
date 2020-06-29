@@ -18,9 +18,11 @@ struct ProductTagListMapper: Mapper {
         ]
 
         let decodedResponse = try? decoder.decode(ProductTagListEnvelope.self, from: response)
-        let decodedResponseTagsCreate = try? decoder.decode(ProductTagListCreateEnvelope.self, from: response)
+        let decodedResponseBatchUpdatedTags = try? decoder.decode(ProductTagListBatchUpdateEnvelope.self, from: response)
 
-        return decodedResponse?.tags ?? decodedResponseTagsCreate?.createdTags ?? []
+        return decodedResponse?.tags ??
+            decodedResponseBatchUpdatedTags?.createdTags ??
+            decodedResponseBatchUpdatedTags?.deletedTags ?? []
     }
 }
 
@@ -38,22 +40,25 @@ private struct ProductTagListEnvelope: Decodable {
 }
 
 
-/// ProductTagListCreateEnvelope Disposable Entity:
-/// `Load Created Products Tags` endpoint returns the products tags under the `data`->`create` nested key.
+/// ProductTagListBatchUpdateEnvelope Disposable Entity:
+/// `Batch update Products Tags` endpoint returns the products tags under the `data` key, nested under `create` or `delete` keys.
 /// This entity allows us to do parse all the things with JSONDecoder.
 ///
-private struct ProductTagListCreateEnvelope: Decodable {
+private struct ProductTagListBatchUpdateEnvelope: Decodable {
     let createdTags: [ProductTag]?
+    let deletedTags: [ProductTag]?
 
     public init(from decoder: Decoder) throws {
         let container = try? decoder.container(keyedBy: CodingKeys.self)
         let nestedContainer = try? container?.nestedContainer(keyedBy: CodingKeys.self, forKey: .data)
 
         createdTags = nestedContainer?.failsafeDecodeIfPresent(Array<ProductTag>.self, forKey: .create)
+        deletedTags = nestedContainer?.failsafeDecodeIfPresent(Array<ProductTag>.self, forKey: .delete)
     }
 
     private enum CodingKeys: String, CodingKey {
         case data
         case create
+        case delete
     }
 }

@@ -4,7 +4,7 @@ import CoreData
 /// CoreDataIterativeMigrator: Migrates through a series of models to allow for users to skip app versions without risk.
 /// This was derived from ALIterativeMigrator originally used in the WordPress app.
 ///
-public class CoreDataIterativeMigrator {
+class CoreDataIterativeMigrator {
 
     /// Migrates a store to a particular model using the list of models to do it iteratively, if required.
     ///

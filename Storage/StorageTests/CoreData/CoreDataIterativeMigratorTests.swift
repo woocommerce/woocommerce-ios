@@ -240,10 +240,11 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         destinationModelContainer.persistentStoreDescriptions = [coreDataManager.storeDescription]
 
         // Action - step 2
-        let (migrateResult, migrationDebugMessages) = try CoreDataIterativeMigrator.iterativeMigrate(sourceStore: coreDataManager.storeURL,
-                                                                                                      storeType: NSSQLiteStoreType,
-                                                                                                      to: destinationModel,
-                                                                                                      using: allModelNames)
+        let iterativeMigrator = CoreDataIterativeMigrator()
+        let (migrateResult, migrationDebugMessages) = try iterativeMigrator.iterativeMigrate(sourceStore: coreDataManager.storeURL,
+                                                                                             storeType: NSSQLiteStoreType,
+                                                                                             to: destinationModel,
+                                                                                             using: allModelNames)
         XCTAssertTrue(migrateResult, "Failed to migrate to model version 28: \(migrationDebugMessages)")
 
         var destinationModelLoadingError: Error?

@@ -4,7 +4,7 @@ import CoreData
 
 /// CoreDataManager: Manages the entire CoreData Stack. Conforms to the StorageManager API.
 ///
-public class CoreDataManager: StorageManagerType {
+public final class CoreDataManager: StorageManagerType {
 
     /// Storage Identifier.
     ///

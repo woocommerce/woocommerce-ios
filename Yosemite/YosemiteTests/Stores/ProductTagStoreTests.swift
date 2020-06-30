@@ -188,7 +188,7 @@ final class ProductTagStoreTests: XCTestCase {
             store.onAction(action)
         }
 
-        // Then no categories should be stored
+        // Then no tags should be stored
         XCTAssertEqual(storedProductTagsCount, 0)
         XCTAssertNotNil(errorResponse)
     }
@@ -238,7 +238,7 @@ final class ProductTagStoreTests: XCTestCase {
     }
 
     func testAddProductTagReturnsErrorUponEmptyResponse() {
-        // Given a an empty network response
+        // Given an empty network response
         XCTAssertEqual(storedProductTagsCount, 0)
 
         // When dispatching a `addProductTags` action
@@ -251,7 +251,7 @@ final class ProductTagStoreTests: XCTestCase {
             store.onAction(action)
         }
 
-        // Then no categories should be stored
+        // Then no tags should be stored
         XCTAssertEqual(storedProductTagsCount, 0)
         XCTAssertNotNil(result?.failure)
     }
@@ -279,9 +279,72 @@ final class ProductTagStoreTests: XCTestCase {
             store.onAction(action)
         }
 
-        // Then new categories should be stored and old categories should be deleted
+        // Then new tag should be stored and old tags should be deleted
         XCTAssertEqual(storedProductTagsCount, 4)
         XCTAssertNil(errorResponse)
+    }
+
+    func testDeleteProductTagDeleteStoredTagSuccessfulResponse() {
+        // Given a stubed product tag network response and a product tag stored locally
+        network.simulateResponse(requestUrlSuffix: "products/tags/batch", filename: "product-tags-deleted")
+        storageManager.insertSampleProductTag(readOnlyProductTag: sampletag(tagID: 35))
+
+        XCTAssertEqual(storedProductTagsCount, 1)
+
+        // When dispatching a `deleteProductTags` action
+        var result: Result<[Yosemite.ProductTag], Error>?
+        waitForExpectation { (exp) in
+            let action = ProductTagAction.deleteProductTags(siteID: sampleSiteID, ids: [35]) { (aResult) in
+                result = aResult
+                exp.fulfill()
+            }
+            store.onAction(action)
+        }
+
+        // Then the tag should be removed
+        XCTAssertEqual(storedProductTagsCount, 0)
+        XCTAssertNil(result?.failure)
+    }
+
+    func testDeleteProductTagReturnsErrorUponResponseError() {
+        // Given a stubed generic-error network response
+        network.simulateResponse(requestUrlSuffix: "products/tags/batch", filename: "generic_error")
+        storageManager.insertSampleProductTag(readOnlyProductTag: sampletag(tagID: 35))
+        XCTAssertEqual(storedProductTagsCount, 1)
+
+        // When dispatching a `deleteProductTags` action
+        var result: Result<[Yosemite.ProductTag], Error>?
+        waitForExpectation { (exp) in
+            let action = ProductTagAction.deleteProductTags(siteID: sampleSiteID, ids: [35]) { (aResult) in
+                result = aResult
+                exp.fulfill()
+            }
+            store.onAction(action)
+        }
+
+        // Then one tags should be continue to be stored
+        XCTAssertEqual(storedProductTagsCount, 1)
+        XCTAssertNotNil(result?.failure)
+    }
+
+    func testDeleteProductTagReturnsErrorUponEmptyResponse() {
+        // Given an empty network response
+        storageManager.insertSampleProductTag(readOnlyProductTag: sampletag(tagID: 35))
+        XCTAssertEqual(storedProductTagsCount, 1)
+
+        // When dispatching a `deleteProductTags` action
+        var result: Result<[Yosemite.ProductTag], Error>?
+        waitForExpectation { (exp) in
+            let action = ProductTagAction.deleteProductTags(siteID: sampleSiteID, ids: [35]) { (aResult) in
+                result = aResult
+                exp.fulfill()
+            }
+            store.onAction(action)
+        }
+
+        // Then one tags should be continue to be stored
+        XCTAssertEqual(storedProductTagsCount, 1)
+        XCTAssertNotNil(result?.failure)
     }
 }
 

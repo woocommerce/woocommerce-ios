@@ -116,7 +116,7 @@ private extension Array where Element == ModelsInventory.ModelVersion {
     /// using the number in the `.xcdatamodel` name and migrations are run in sequence
     /// according to this order.
     ///
-    /// Consider this array:
+    /// Consider this array that we might receive from `modelVersions(from:)`:
     ///
     /// ```
     /// [
@@ -128,7 +128,7 @@ private extension Array where Element == ModelsInventory.ModelVersion {
     /// ]
     /// ```
     ///
-    /// The expected result would be:
+    /// When sorted, the expected result would be:
     ///
     /// ```
     /// [

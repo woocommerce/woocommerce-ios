@@ -42,49 +42,54 @@ private extension ProductTagStore {
     /// Synchronizes all product tags associated with a given Site ID, starting at a specific page number.
     ///
     func synchronizeAllProductTags(siteID: Int64, fromPageNumber: Int, onCompletion: @escaping (ProductTagActionError?) -> Void) {
-
         // Start fetching the provided initial page
-        synchronizeProductTags(siteID: siteID, pageNumber: fromPageNumber, pageSize: Constants.defaultMaxPageSize) { [weak self] (result) in
+        synchronizeProductTags(siteID: siteID, pageNumber: fromPageNumber, pageSize: Constants.defaultMaxPageSize) { [weak self] (productTags, error) in
             guard let self = self  else {
                 return
             }
 
-            switch result {
-            case .success(let tags):
-                // If tags is empty, end the recursion and call `onCompletion`
-                if tags.isEmpty {
-                    onCompletion(nil)
-                    return
-                }
-
-                // Request the next page recursively
-                self.synchronizeAllProductTags(siteID: siteID, fromPageNumber: fromPageNumber + 1, onCompletion: onCompletion)
-            case .failure(let error):
-                // If there is an error, end the recursion and call `onCompletion` with an `error`
+            // If there is an error, end the recursion and call `onCompletion` with an `error`
+            if let error = error {
                 let synchronizationError = ProductTagActionError.tagsSynchronization(pageNumber: fromPageNumber, rawError: error)
                 onCompletion(synchronizationError)
+                return
             }
+
+            // If tags is nil, end the recursion and call `onCompletion`
+            if productTags == nil {
+                onCompletion(nil)
+                return
+            }
+
+            // If tags is empty, end the recursion and call `onCompletion`
+            if let productTags = productTags, productTags.isEmpty {
+                onCompletion(nil)
+                return
+            }
+
+            // Request the next page recursively
+            self.synchronizeAllProductTags(siteID: siteID, fromPageNumber: fromPageNumber + 1, onCompletion: onCompletion)
         }
     }
 
     /// Synchronizes product tags associated with a given Site ID.
     ///
-    func synchronizeProductTags(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Result<[ProductTag], Error>) -> Void) {
+    func synchronizeProductTags(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping ([ProductTag]?, Error?) -> Void) {
         let remote = ProductTagsRemote(network: network)
 
-        remote.loadAllProductTags(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (result) in
+        remote.loadAllProductTags(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (productTags, error) in
 
-            switch result {
-            case .success(let productTags):
-                if pageNumber == Default.firstPageNumber {
-                    self?.deleteUnusedStoredProductTags(siteID: siteID)
-                }
+            guard let productTags = productTags else {
+                onCompletion(nil, error)
+                return
+            }
 
-                self?.upsertStoredProductTagsInBackground(productTags, siteID: siteID) {
-                    onCompletion(.success(productTags))
-                }
-            case .failure(let error):
-                onCompletion(.failure(error))
+            if pageNumber == Default.firstPageNumber {
+                self?.deleteUnusedStoredProductTags(siteID: siteID)
+            }
+
+            self?.upsertStoredProductTagsInBackground(productTags, siteID: siteID) {
+                onCompletion(productTags, nil)
             }
         }
     }

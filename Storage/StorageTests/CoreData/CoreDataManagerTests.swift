@@ -12,7 +12,6 @@ class CoreDataManagerTests: XCTestCase {
     func testModelUrlMapsToDataModelWithContextIdentifier() {
         let manager = CoreDataManager(name: "WooCommerce", crashLogger: MockCrashLogger())
         XCTAssertEqual(manager.modelURL.lastPathComponent, "WooCommerce.momd")
-        XCTAssertNoThrow(manager.managedModel)
     }
 
     /// Verifies that the Store URL contains the ContextIdentifier string.
@@ -25,11 +24,18 @@ class CoreDataManagerTests: XCTestCase {
 
     /// Verifies that the PersistentContainer properly loads the sqlite database.
     ///
-    func testPersistentContainerLoadsExpectedDataModelAndSqliteDatabase() {
+    func testPersistentContainerLoadsExpectedDataModelAndSqliteDatabase() throws {
+        // Given
+        let modelsInventory = try ManagedObjectModelsInventory.from(packageName: "WooCommerce",
+                                                                    bundle: Bundle(for: CoreDataManager.self))
+
         let manager = CoreDataManager(name: "WooCommerce", crashLogger: MockCrashLogger())
+
+        // When
         let container = manager.persistentContainer
 
-        XCTAssertEqual(container.managedObjectModel, manager.managedModel)
+        // Then
+        XCTAssertEqual(container.managedObjectModel, modelsInventory.currentModel)
         XCTAssertEqual(container.persistentStoreCoordinator.persistentStores.first?.url?.lastPathComponent, "WooCommerce.sqlite")
     }
 

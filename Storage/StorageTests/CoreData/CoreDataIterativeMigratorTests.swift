@@ -110,7 +110,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         let coreDataManager = CoreDataManager(name: name, crashLogger: crashLogger)
 
         // Destroys any pre-existing persistence store.
-        let psc = NSPersistentStoreCoordinator(managedObjectModel: coreDataManager.managedModel)
+        let psc = NSPersistentStoreCoordinator(managedObjectModel: modelsInventory.currentModel)
         try psc.destroyPersistentStore(at: coreDataManager.storeURL, ofType: NSSQLiteStoreType, options: nil)
 
         // Action - step 1: loading persistence store with model 26
@@ -191,7 +191,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         let coreDataManager = CoreDataManager(name: name, crashLogger: crashLogger)
 
         // Destroys any pre-existing persistence store.
-        let psc = NSPersistentStoreCoordinator(managedObjectModel: coreDataManager.managedModel)
+        let psc = NSPersistentStoreCoordinator(managedObjectModel: modelsInventory.currentModel)
         try psc.destroyPersistentStore(at: coreDataManager.storeURL, ofType: NSSQLiteStoreType, options: nil)
 
         // Action - step 1: loading persistence store with model 20

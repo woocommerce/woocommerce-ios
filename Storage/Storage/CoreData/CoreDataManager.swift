@@ -12,6 +12,8 @@ public final class CoreDataManager: StorageManagerType {
 
     private let crashLogger: CrashLogger
 
+    private let modelsInventory: ManagedObjectModelsInventory
+
     /// Designated Initializer.
     ///
     /// - Parameter name: Identifier to be used for: [database, data model, container].
@@ -22,8 +24,17 @@ public final class CoreDataManager: StorageManagerType {
     public init(name: String, crashLogger: CrashLogger) {
         self.name = name
         self.crashLogger = crashLogger
-    }
 
+        do {
+            self.modelsInventory = try .from(packageName: name, bundle: Bundle(for: type(of: self)))
+        } catch {
+            // We'll throw a fatalError() because we can't really proceed without a
+            // ManagedObjectModel.
+            let message = "Failed to load models inventory using packageName \(name). Error: \(error)"
+            crashLogger.logMessageAndWait(message, properties: nil, level: .fatal)
+            fatalError(message)
+        }
+    }
 
     /// Returns the Storage associated with the View Thread.
     ///
@@ -36,7 +47,7 @@ public final class CoreDataManager: StorageManagerType {
     public lazy var persistentContainer: NSPersistentContainer = {
         let migrationDebugMessages = migrateDataModelIfNecessary()
 
-        let container = NSPersistentContainer(name: name, managedObjectModel: managedModel)
+        let container = NSPersistentContainer(name: name, managedObjectModel: self.modelsInventory.currentModel)
         container.persistentStoreDescriptions = [storeDescription]
 
         container.loadPersistentStores { [weak self] (storeDescription, error) in
@@ -175,7 +186,7 @@ public final class CoreDataManager: StorageManagerType {
             return debugMessages
         }
 
-        guard managedModel.isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata) == false else {
+        guard modelsInventory.currentModel.isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata) == false else {
             // Configuration is compatible, no migration necessary.
             return debugMessages
         }
@@ -225,17 +236,6 @@ public final class CoreDataManager: StorageManagerType {
 // MARK: - Descriptors
 //
 extension CoreDataManager {
-
-    /// Returns the Application's ManagedObjectModel
-    ///
-    var managedModel: NSManagedObjectModel {
-        guard let mom = NSManagedObjectModel(contentsOf: modelURL) else {
-            fatalError("Could not load model")
-        }
-
-        return mom
-    }
-
     /// Returns the PersistentStore Descriptor
     ///
     var storeDescription: NSPersistentStoreDescription {

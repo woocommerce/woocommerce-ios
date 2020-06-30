@@ -196,8 +196,8 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
 
         // Arrange - step 2: populating data, migrating persistent store from model 28 to 29, then loading with model 29.
         let context = model28Container.viewContext
-        _ = insertAccount(to: context)
-        let product = insertProduct(to: context)
+        _ = insertAccountWithRequiredProperties(to: context)
+        let product = insertProductWithRequiredProperties(to: context)
         let productTag = insertProductTag(to: context)
         product.addToTags(productTag)
         context.saveIfNeeded()

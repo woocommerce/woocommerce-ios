@@ -32,6 +32,7 @@ public final class CoreDataManager: StorageManagerType {
             // ManagedObjectModel.
             let message = "Failed to load models inventory using packageName \(name). Error: \(error)"
             crashLogger.logMessageAndWait(message, properties: nil, level: .fatal)
+
             fatalError(message)
         }
     }
@@ -195,26 +196,11 @@ public final class CoreDataManager: StorageManagerType {
         debugMessages.append(migrationRequiredMessage)
         DDLogWarn(migrationRequiredMessage)
 
-        // Extract model names
-        let versionPath = modelURL.appendingPathComponent(Constants.versionInfoPlist).path
-        guard let versionInfo = NSDictionary(contentsOfFile: versionPath),
-            let modelNames = versionInfo[Constants.versionHashesKey] as? NSDictionary,
-            let allKeys = modelNames.allKeys as? [String],
-            let objectModel = NSManagedObjectModel(contentsOf: modelURL) else {
-                debugMessages.append("Cannot get all model version names and/or the destination model")
-                return debugMessages
-        }
-
-        let sortedKeys = allKeys.sorted { (string1, string2) -> Bool in
-            return string1.compare(string2, options: [.numeric], range: nil, locale: nil) == .orderedAscending
-        }
-
         do {
-            let iterativeMigrator = CoreDataIterativeMigrator()
+            let iterativeMigrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory)
             let (migrateResult, migrationDebugMessages) = try iterativeMigrator.iterativeMigrate(sourceStore: storeURL,
                                                                                                  storeType: NSSQLiteStoreType,
-                                                                                                 to: objectModel,
-                                                                                                 using: sortedKeys)
+                                                                                                 to: modelsInventory.currentModel)
             debugMessages += migrationDebugMessages
             if migrateResult == false {
                 let migrationFailureMessage = "☠️ [CoreDataManager] Unable to migrate store."
@@ -250,18 +236,6 @@ extension CoreDataManager {
 // MARK: - Stack URL's
 //
 extension CoreDataManager {
-
-    /// Returns the ManagedObjectModel's URL
-    ///
-    var modelURL: URL {
-        let bundle = Bundle(for: type(of: self))
-        guard let url = bundle.url(forResource: name, withExtension: "momd") else {
-            fatalError("Missing Model Resource")
-        }
-
-        return url
-    }
-
     /// Returns the Store URL (the actual sqlite file!)
     ///
     var storeURL: URL {
@@ -270,16 +244,5 @@ extension CoreDataManager {
         }
 
         return url.appendingPathComponent(name + ".sqlite")
-    }
-}
-
-
-// MARK: - Constants!
-//
-private extension CoreDataManager {
-
-    enum Constants {
-        static let versionInfoPlist = "VersionInfo.plist"
-        static let versionHashesKey = "NSManagedObjectModel_VersionHashes"
     }
 }

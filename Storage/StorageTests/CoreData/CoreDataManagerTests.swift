@@ -7,13 +7,6 @@ import CoreData
 ///
 class CoreDataManagerTests: XCTestCase {
 
-    /// Verifies that the Data Model URL contains the ContextIdentifier String.
-    ///
-    func testModelUrlMapsToDataModelWithContextIdentifier() {
-        let manager = CoreDataManager(name: "WooCommerce", crashLogger: MockCrashLogger())
-        XCTAssertEqual(manager.modelURL.lastPathComponent, "WooCommerce.momd")
-    }
-
     /// Verifies that the Store URL contains the ContextIdentifier string.
     ///
     func testStorageUrlMapsToSqliteFileWithContextIdentifier() {

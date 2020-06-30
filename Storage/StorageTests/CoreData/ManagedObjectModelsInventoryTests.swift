@@ -15,6 +15,17 @@ final class ManagedObjectModelsInventoryTests: XCTestCase {
     private let bundle = Bundle(for: CoreDataManager.self)
     private let packageName = "WooCommerce"
 
+    func testItLoadsTheMOMDUsingTheGivenPackageName() throws {
+        // Given
+        let inventory = try ManagedObjectModelsInventory.from(packageName: packageName, bundle: bundle)
+
+        // When
+        let packageURL = inventory.packageURL
+
+        // Then
+        XCTAssertEqual(packageURL.lastPathComponent, "\(packageName).momd")
+    }
+
     func testItCanLoadTheExpectedModelVersions() throws {
         // Given
         let expectedVersionNames = [

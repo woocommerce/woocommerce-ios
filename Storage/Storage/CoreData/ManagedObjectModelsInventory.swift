@@ -17,6 +17,8 @@ struct ManagedObjectModelsInventory {
         /// Failed to load the `NSManagedObjectModel_VersionHashes` and its contents from the
         /// `VersionInfo.plist` file.
         case failedToLoadVersionHashes
+        /// Failed to load the current `NSManagedObjectModel` version.
+        case failedToLoadCurrentModel
     }
 
     /// Represents a single `.xcdatamodel` file (or `.mom` if compiled).
@@ -40,11 +42,19 @@ struct ManagedObjectModelsInventory {
     ///
     let versions: [ModelVersion]
 
+    /// The `NSManagedObjectModel` of the current version.
+    ///
+    /// This should probably be in `ModelVersion.model` but I'm opting to not change the current
+    /// logic that was taken from `CoreDataManager`.
+    ///
+    let currentModel: NSManagedObjectModel
+
     /// Create an instance of `self`. The `modelVersions` will be sorted using the migration
     /// sequence convention.
     ///
-    init(packageURL: URL, versions: [ModelVersion]) {
+    init(packageURL: URL, currentModel: NSManagedObjectModel, versions: [ModelVersion]) {
         self.packageURL = packageURL
+        self.currentModel = currentModel
         self.versions = versions.sortedByConvention()
     }
 
@@ -60,10 +70,15 @@ struct ManagedObjectModelsInventory {
         guard let packageURL = bundle.url(forResource: packageName, withExtension: "momd") else {
             throw IntrospectionError.cannotFindMomd
         }
+
+        let currentModel = try self.currentModel(from: packageURL)
+
         let versionInfoFileURL = self.versionInfoFileURL(from: packageURL)
         let modelVersions = try self.modelVersions(from: versionInfoFileURL)
 
-        return ManagedObjectModelsInventory(packageURL: packageURL, versions: modelVersions)
+        return ManagedObjectModelsInventory(packageURL: packageURL,
+                                            currentModel: currentModel,
+                                            versions: modelVersions)
     }
 }
 
@@ -75,6 +90,20 @@ private extension ManagedObjectModelsInventory {
     ///
     static func versionInfoFileURL(from packageURL: URL) -> URL {
         packageURL.appendingPathComponent(Constants.versionInfoPlist)
+    }
+
+    /// Load the current `NSManagedObjectModel` version from the `VersionInfo.plist` inside
+    /// the `packageURL` bundle.
+    ///
+    static func currentModel(from packageURL: URL) throws -> NSManagedObjectModel {
+        // Using the `packageURL` for `NSManagedObjectModel(contentsOf:)` will inform it to
+        // automatically load the current model version using the
+        // `NSManagedObjectModel_CurrentVersionName` key defined in the plist.
+        if let currentModel = NSManagedObjectModel(contentsOf: packageURL) {
+            return currentModel
+        } else {
+            throw IntrospectionError.failedToLoadCurrentModel
+        }
     }
 
     /// Get all the `ModelVersions` using the data from the `versionInfoFileURL`

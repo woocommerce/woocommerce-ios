@@ -1,6 +1,7 @@
 
 import Foundation
 import XCTest
+import class CoreData.NSManagedObjectModel
 
 @testable import Storage
 
@@ -82,7 +83,10 @@ final class ManagedObjectModelsInventoryTests: XCTestCase {
 
         // When
         let dummyURL = try XCTUnwrap(URL(string: "https://example.com"))
-        let sortedModelVersions = ManagedObjectModelsInventory(packageURL: dummyURL, versions: modelVersions).versions
+        let dummyMOM = NSManagedObjectModel()
+        let sortedModelVersions = ManagedObjectModelsInventory(packageURL: dummyURL,
+                                                               currentModel: dummyMOM,
+                                                               versions: modelVersions).versions
 
         // Then
         let expectedSortedNames = [
@@ -110,5 +114,29 @@ final class ManagedObjectModelsInventoryTests: XCTestCase {
         XCTAssertThrowsError(try ManagedObjectModelsInventory.from(packageName: packageName, bundle: bundle)) { error in
             XCTAssertEqual(error as? IntrospectionError, IntrospectionError.cannotFindMomd)
         }
+    }
+
+    func testItCanLoadTheCurrentManagedObjectModel() throws {
+        // Given
+        let inventory = try ManagedObjectModelsInventory.from(packageName: packageName, bundle: bundle)
+
+        // By our convention, the version with the highest number should have been configured
+        // as the current version. For example, if we have 35 model versions inside
+        // `WooCommerce.xcdatamodeld` then there should be a model version named "Model 35" and
+        // that should be the configured "current" model version.
+        let expectedModelVersionName = try XCTUnwrap(inventory.versions.last?.name)
+        let expectedCurrentModel: NSManagedObjectModel = try {
+            let urlOfLastVersion = try XCTUnwrap(bundle.url(forResource: expectedModelVersionName,
+                                                            withExtension: "mom",
+                                                            subdirectory: inventory.packageURL.lastPathComponent))
+            return try XCTUnwrap(NSManagedObjectModel(contentsOf: urlOfLastVersion))
+        }()
+
+        // When
+        let actualCurrentModel = inventory.currentModel
+
+        // Then
+        XCTAssertEqual(actualCurrentModel, expectedCurrentModel,
+                       "The configured model version should be “\(expectedModelVersionName)”.")
     }
 }

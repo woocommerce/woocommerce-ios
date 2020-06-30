@@ -28,6 +28,8 @@
 		4501068B2399AC9B00E24722 /* TaxClass+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4501068A2399AC9B00E24722 /* TaxClass+CoreDataProperties.swift */; };
 		45E1862E2370450C009241F3 /* ShippingLine+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E1862D2370450C009241F3 /* ShippingLine+CoreDataClass.swift */; };
 		45E1863023704519009241F3 /* ShippingLine+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E1862F23704519009241F3 /* ShippingLine+CoreDataProperties.swift */; };
+		5736878E24AAADAE00B528FE /* ModelsInventory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5736878D24AAADAE00B528FE /* ModelsInventory.swift */; };
+		5736879024AABE4D00B528FE /* ModelsInventoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5736878F24AABE4D00B528FE /* ModelsInventoryTests.swift */; };
 		574B774C24AA87FA0042116F /* FileManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574B774B24AA87FA0042116F /* FileManagerProtocol.swift */; };
 		574B774E24AA883D0042116F /* MockFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574B774D24AA883D0042116F /* MockFileManager.swift */; };
 		574B775024AA897E0042116F /* FileManager+FileManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574B774F24AA897E0042116F /* FileManager+FileManagerProtocol.swift */; };
@@ -180,6 +182,8 @@
 		45E1862D2370450C009241F3 /* ShippingLine+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLine+CoreDataClass.swift"; sourceTree = "<group>"; };
 		45E1862F23704519009241F3 /* ShippingLine+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLine+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		47556EE256120BEE49FF5FD3 /* Pods_StorageTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StorageTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5736878D24AAADAE00B528FE /* ModelsInventory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelsInventory.swift; sourceTree = "<group>"; };
+		5736878F24AABE4D00B528FE /* ModelsInventoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelsInventoryTests.swift; sourceTree = "<group>"; };
 		574B774B24AA87FA0042116F /* FileManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerProtocol.swift; sourceTree = "<group>"; };
 		574B774D24AA883D0042116F /* MockFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFileManager.swift; sourceTree = "<group>"; };
 		574B774F24AA897E0042116F /* FileManager+FileManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+FileManagerProtocol.swift"; sourceTree = "<group>"; };
@@ -421,6 +425,7 @@
 			children = (
 				B505F6DD20BEEA4F00BB1B69 /* CoreDataManager.swift */,
 				9302E3A5220DC3AE00DA5018 /* CoreDataIterativeMigrator.swift */,
+				5736878D24AAADAE00B528FE /* ModelsInventory.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -616,6 +621,7 @@
 				D87F61562265AD980031A13B /* FileStorageTests.swift */,
 				9302E3AB220E1CE900DA5018 /* CoreDataIterativeMigratorTests.swift */,
 				B59E11DD20A9F1FB004121A4 /* CoreDataManagerTests.swift */,
+				5736878F24AABE4D00B528FE /* ModelsInventoryTests.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -871,6 +877,7 @@
 				023FA29523316A4D008C1769 /* Product+CoreDataProperties.swift in Sources */,
 				937D6C48226E1D1F004FB8A5 /* AccountSettings+CoreDataProperties.swift in Sources */,
 				74F009C12183B99B002B4566 /* Note+CoreDataProperties.swift in Sources */,
+				5736878E24AAADAE00B528FE /* ModelsInventory.swift in Sources */,
 				CE12FBE32220515600C59248 /* WooCommerceModelV9toV10.xcmappingmodel in Sources */,
 				747453A62242C85E00E0B5EE /* ProductDefaultAttribute+CoreDataProperties.swift in Sources */,
 				028296F3237D404F00E84012 /* ProductVariation+CoreDataProperties.swift in Sources */,
@@ -935,6 +942,7 @@
 				574B774E24AA883D0042116F /* MockFileManager.swift in Sources */,
 				02F25AE024A446E700092B06 /* XCTestCase+Wait.swift in Sources */,
 				B54CA5C220A4BF6900F38CD1 /* NSManagedObjectStorageTests.swift in Sources */,
+				5736879024AABE4D00B528FE /* ModelsInventoryTests.swift in Sources */,
 				D87F61572265AD980031A13B /* FileStorageTests.swift in Sources */,
 				B59E11DE20A9F1FB004121A4 /* CoreDataManagerTests.swift in Sources */,
 			);

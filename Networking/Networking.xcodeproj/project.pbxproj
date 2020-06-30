@@ -65,6 +65,7 @@
 		45AB8B0F24AA29DC00B5B36E /* product-tags-created.json in Resources */ = {isa = PBXBuildFile; fileRef = 45AB8B0E24AA29DC00B5B36E /* product-tags-created.json */; };
 		45AB8B1324AA34CB00B5B36E /* product-tags-deleted.json in Resources */ = {isa = PBXBuildFile; fileRef = 45AB8B1224AA34CB00B5B36E /* product-tags-deleted.json */; };
 		45AB8B2024AB3E1F00B5B36E /* product-tags-empty.json in Resources */ = {isa = PBXBuildFile; fileRef = 45AB8B1F24AB3E1F00B5B36E /* product-tags-empty.json */; };
+		45AF57A924AB42CD0088E2F7 /* product-tags-extra.json in Resources */ = {isa = PBXBuildFile; fileRef = 45AF57A824AB42CD0088E2F7 /* product-tags-extra.json */; };
 		45B204B82489095100FE6526 /* ProductCategoryMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B204B72489095100FE6526 /* ProductCategoryMapper.swift */; };
 		45B204BA24890A8C00FE6526 /* ProductCategoryMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B204B924890A8C00FE6526 /* ProductCategoryMapperTests.swift */; };
 		45B204BC24890B1200FE6526 /* category.json in Resources */ = {isa = PBXBuildFile; fileRef = 45B204BB24890B1200FE6526 /* category.json */; };
@@ -410,6 +411,7 @@
 		45AB8B0E24AA29DC00B5B36E /* product-tags-created.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-tags-created.json"; sourceTree = "<group>"; };
 		45AB8B1224AA34CB00B5B36E /* product-tags-deleted.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-tags-deleted.json"; sourceTree = "<group>"; };
 		45AB8B1F24AB3E1F00B5B36E /* product-tags-empty.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-tags-empty.json"; sourceTree = "<group>"; };
+		45AF57A824AB42CD0088E2F7 /* product-tags-extra.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-tags-extra.json"; sourceTree = "<group>"; };
 		45B204B72489095100FE6526 /* ProductCategoryMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryMapper.swift; sourceTree = "<group>"; };
 		45B204B924890A8C00FE6526 /* ProductCategoryMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryMapperTests.swift; sourceTree = "<group>"; };
 		45B204BB24890B1200FE6526 /* category.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = category.json; sourceTree = "<group>"; };
@@ -1107,6 +1109,7 @@
 				0282DD90233A120A006A5FDB /* products-search-photo.json */,
 				45D685F923D0C3CF005F87D0 /* product-search-sku.json */,
 				4599FC5B24A6276F0056157A /* product-tags-all.json */,
+				45AF57A824AB42CD0088E2F7 /* product-tags-extra.json */,
 				45AB8B0E24AA29DC00B5B36E /* product-tags-created.json */,
 				45AB8B1224AA34CB00B5B36E /* product-tags-deleted.json */,
 				45AB8B1F24AB3E1F00B5B36E /* product-tags-empty.json */,
@@ -1454,6 +1457,7 @@
 				02BA23C922EEF62C009539E7 /* order-stats-v4-wcadmin-deactivated.json in Resources */,
 				743E84F422172D0A00FAC9D7 /* shipment_tracking_multiple.json in Resources */,
 				57BE08D82409B63800F6DCED /* reviews-missing-avatar-urls.json in Resources */,
+				45AF57A924AB42CD0088E2F7 /* product-tags-extra.json in Resources */,
 				74AB5B4F21AF3F0E00859C12 /* site-api-no-woo.json in Resources */,
 				265BCA02243056E3004E53EE /* categories-all.json in Resources */,
 				D8FBFF2422D52815006E3336 /* order-stats-v4-daily.json in Resources */,

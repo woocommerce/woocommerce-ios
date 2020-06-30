@@ -59,7 +59,7 @@ extension MockupStorageManager {
 
         return newProductCategory
     }
-    
+
     /// Inserts a new (Sample) ProductTag into the specified context.
     ///
     @discardableResult

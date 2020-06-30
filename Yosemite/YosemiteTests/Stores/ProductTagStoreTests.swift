@@ -74,7 +74,7 @@ final class ProductTagStoreTests: XCTestCase {
             store.onAction(action)
         }
 
-        // Then a valid set of categories should be stored
+        // Then a valid set of tags should be stored
         XCTAssertEqual(storedProductTagsCount, 4)
         XCTAssertNil(errorResponse)
     }

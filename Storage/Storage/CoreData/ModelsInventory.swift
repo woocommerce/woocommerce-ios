@@ -36,11 +36,19 @@ struct ModelsInventory {
     ///
     let packageURL: URL
 
-    /// The list of `ModelVersion` objects ordered by the migration sequence.
+    /// The list of `ModelVersion` objects ordered by the migration sequence convention.
     ///
     let modelVersions: [ModelVersion]
 
-    /// Instantiate and parse all the model versions.
+    /// Create an instance of `self`. The `modelVersions` will be sorted using the migration
+    /// sequence convention.
+    ///
+    init(packageURL: URL, modelVersions: [ModelVersion]) {
+        self.packageURL = packageURL
+        self.modelVersions = modelVersions.sortedByConvention()
+    }
+
+    /// Create and parse all the model versions.
     ///
     /// Parameters:
     /// - packageName: The name of the `.xcdatamodeld` bundle which contains the individual
@@ -54,9 +62,8 @@ struct ModelsInventory {
         }
         let versionInfoFileURL = self.versionInfoFileURL(from: packageURL)
         let modelVersions = try self.modelVersions(from: versionInfoFileURL)
-        let sortedModelVersions = modelVersionsSortedByConvention(modelVersions)
 
-        return ModelsInventory(packageURL: packageURL, modelVersions: sortedModelVersions)
+        return ModelsInventory(packageURL: packageURL, modelVersions: modelVersions)
     }
 }
 
@@ -96,6 +103,15 @@ private extension ModelsInventory {
         }
     }
 
+    enum Constants {
+        static let versionInfoPlist = "VersionInfo.plist"
+        static let versionHashesKey = "NSManagedObjectModel_VersionHashes"
+    }
+}
+
+/// MARK: - Sorting
+
+private extension Array where Element == ModelsInventory.ModelVersion {
     /// Sort the `ModelVersion` based on the convention that model versions are incremented
     /// using the number in the `.xcdatamodel` name and migrations are run in sequence
     /// according to this order.
@@ -124,14 +140,9 @@ private extension ModelsInventory {
     /// ]
     /// ```
     ///
-    static func modelVersionsSortedByConvention(_ modelVersions: [ModelVersion]) -> [ModelVersion] {
-        modelVersions.sorted { left, right -> Bool in
+    func sortedByConvention() -> [Element] {
+        sorted { left, right -> Bool in
             left.name.compare(right.name, options: [.numeric], range: nil, locale: nil) == .orderedAscending
         }
-    }
-
-    enum Constants {
-        static let versionInfoPlist = "VersionInfo.plist"
-        static let versionHashesKey = "NSManagedObjectModel_VersionHashes"
     }
 }

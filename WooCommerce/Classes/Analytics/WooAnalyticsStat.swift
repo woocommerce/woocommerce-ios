@@ -114,7 +114,6 @@ public enum WooAnalyticsStat: String {
     case settingsContactSupportTapped           = "main_menu_contact_support_tapped"
 
     case settingsBetaFeaturesButtonTapped       = "settings_beta_features_button_tapped"
-    case settingsBetaFeaturesNewStatsUIToggled  = "settings_beta_features_new_stats_ui_toggled"
     case settingsBetaFeaturesProductsToggled    = "settings_beta_features_products_toggled"
 
     case settingsPrivacySettingsTapped          = "settings_privacy_settings_button_tapped"

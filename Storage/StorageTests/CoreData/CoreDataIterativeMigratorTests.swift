@@ -85,7 +85,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
 
         // Destroys any pre-existing persistence store.
         let psc = NSPersistentStoreCoordinator(managedObjectModel: coreDataManager.managedModel)
-        try? psc.destroyPersistentStore(at: coreDataManager.storeURL, ofType: NSSQLiteStoreType, options: nil)
+        try psc.destroyPersistentStore(at: coreDataManager.storeURL, ofType: NSSQLiteStoreType, options: nil)
 
         // Action - step 1: loading persistence store with model 26
         let model26Container = NSPersistentContainer(name: name, managedObjectModel: model26)
@@ -116,9 +116,9 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
 
         // Arrange - step 2: populating data, migrating persistent store from model 26 to 27, then loading with model 27.
         let context = model26Container.viewContext
-        _ = insertAccount(to: context)
-        let product = insertProduct(to: context)
-        let productCategory = insertProductCategory(to: context)
+        _ = insertAccountWithRequiredProperties(to: context)
+        let product = insertProductWithRequiredProperties(to: context)
+        let productCategory = insertProductCategoryWithRequiredProperties(to: context)
         product.addToCategories([productCategory])
         context.saveIfNeeded()
 
@@ -152,8 +152,8 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         // Product categories should be deleted.
         XCTAssertEqual(model27Container.viewContext.countObjects(ofType: ProductCategory.self), 0)
     }
-
-    func testModel28To29MigrationPassed() throws {
+  
+  func testModel28To29MigrationPassed() throws {
         // Arrange
         let model28URL = urlForModel(name: "Model 28")
         let model28 = NSManagedObjectModel(contentsOf: model28URL)!
@@ -232,11 +232,99 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         // Product tags should be deleted.
         XCTAssertEqual(model29Container.viewContext.countObjects(ofType: ProductTag.self), 0)
     }
+  
+    func testModel20To28MigrationWithTransformableAttributesPassed() throws {
+        // Arrange
+        let sourceModelURL = urlForModel(name: "Model 20")
+        let sourceModel = NSManagedObjectModel(contentsOf: sourceModelURL)!
+        let destinationModelURL = urlForModel(name: "Model 28")
+        let destinationModel = NSManagedObjectModel(contentsOf: destinationModelURL)!
+        let name = "WooCommerce"
+        let crashLogger = MockCrashLogger()
+        let coreDataManager = CoreDataManager(name: name, crashLogger: crashLogger)
+
+        // Destroys any pre-existing persistence store.
+        let psc = NSPersistentStoreCoordinator(managedObjectModel: coreDataManager.managedModel)
+        try psc.destroyPersistentStore(at: coreDataManager.storeURL, ofType: NSSQLiteStoreType, options: nil)
+
+        // Action - step 1: loading persistence store with model 20
+        let sourceModelContainer = NSPersistentContainer(name: name, managedObjectModel: sourceModel)
+        sourceModelContainer.persistentStoreDescriptions = [coreDataManager.storeDescription]
+
+        var sourceModelLoadingError: Error?
+        waitForExpectation { expectation in
+            sourceModelContainer.loadPersistentStores { (storeDescription, error) in
+                sourceModelLoadingError = error
+                expectation.fulfill()
+            }
+        }
+
+        // Assert - step 1
+        XCTAssertNil(sourceModelLoadingError, "Persistence store loading error: \(String(describing: sourceModelLoadingError?.localizedDescription))")
+
+        // Arrange - step 2: populating data, migrating persistent store from model 20 to 28, then loading with model 28.
+        let context = sourceModelContainer.viewContext
+
+        let product = insertProductWithRequiredProperties(to: context)
+        // Populates transformable attributes.
+        let productCrossSellIDs: [Int64] = [630, 688]
+        let groupedProductIDs: [Int64] = [94, 134]
+        let productRelatedIDs: [Int64] = [270, 37]
+        let productUpsellIDs: [Int64] = [1126, 1216]
+        let productVariationIDs: [Int64] = [927, 1110]
+        product.crossSellIDs = productCrossSellIDs
+        product.groupedProducts = groupedProductIDs
+        product.relatedIDs = productRelatedIDs
+        product.upsellIDs = productUpsellIDs
+        product.variations = productVariationIDs
+
+        let productAttribute = insertProductAttributeWithRequiredProperties(to: context)
+        // Populates transformable attributes.
+        let attributeOptions = ["Woody", "Andy Panda"]
+        productAttribute.options = attributeOptions
+
+        product.addToAttributes(productAttribute)
+        context.saveIfNeeded()
+
+        XCTAssertEqual(context.countObjects(ofType: Product.self), 1)
+        XCTAssertEqual(context.countObjects(ofType: ProductAttribute.self), 1)
+
+        let destinationModelContainer = NSPersistentContainer(name: name, managedObjectModel: destinationModel)
+        destinationModelContainer.persistentStoreDescriptions = [coreDataManager.storeDescription]
+
+        // Action - step 2
+        let (migrateResult, migrationDebugMessages) = try CoreDataIterativeMigrator.iterativeMigrate(sourceStore: coreDataManager.storeURL,
+                                                                                                      storeType: NSSQLiteStoreType,
+                                                                                                      to: destinationModel,
+                                                                                                      using: allModelNames)
+        XCTAssertTrue(migrateResult, "Failed to migrate to model version 28: \(migrationDebugMessages)")
+
+        var destinationModelLoadingError: Error?
+        waitForExpectation { expectation in
+            destinationModelContainer.loadPersistentStores { (storeDescription, error) in
+                destinationModelLoadingError = error
+                expectation.fulfill()
+            }
+        }
+
+        // Assert - step 2
+        XCTAssertNil(destinationModelLoadingError, "Migration error: \(String(describing: destinationModelLoadingError?.localizedDescription))")
+
+        let persistedProduct = try XCTUnwrap(destinationModelContainer.viewContext.firstObject(ofType: Product.self))
+        XCTAssertEqual(persistedProduct.crossSellIDs, productCrossSellIDs)
+        XCTAssertEqual(persistedProduct.groupedProducts, groupedProductIDs)
+        XCTAssertEqual(persistedProduct.relatedIDs, productRelatedIDs)
+        XCTAssertEqual(persistedProduct.upsellIDs, productUpsellIDs)
+        XCTAssertEqual(persistedProduct.variations, productVariationIDs)
+
+        let persistedAttribute = try XCTUnwrap(destinationModelContainer.viewContext.firstObject(ofType: ProductAttribute.self))
+        XCTAssertEqual(persistedAttribute.options, attributeOptions)
+    }
 }
 
 /// Helpers for generating data in migration tests
 private extension CoreDataIterativeMigratorTests {
-    func insertAccount(to context: NSManagedObjectContext) -> Account {
+    func insertAccountWithRequiredProperties(to context: NSManagedObjectContext) -> Account {
         let account = context.insertNewObject(ofType: Account.self)
         // Populates the required attributes.
         account.userID = 17
@@ -244,7 +332,7 @@ private extension CoreDataIterativeMigratorTests {
         return account
     }
 
-    func insertProduct(to context: NSManagedObjectContext) -> Product {
+    func insertProductWithRequiredProperties(to context: NSManagedObjectContext) -> Product {
         let product = context.insertNewObject(ofType: Product.self)
         // Populates the required attributes.
         product.price = ""
@@ -275,7 +363,7 @@ private extension CoreDataIterativeMigratorTests {
         return product
     }
 
-    func insertProductCategory(to context: NSManagedObjectContext) -> ProductCategory {
+    func insertProductCategoryWithRequiredProperties(to context: NSManagedObjectContext) -> ProductCategory {
         let productCategory = context.insertNewObject(ofType: ProductCategory.self)
         // Populates the required attributes.
         productCategory.name = "testing"
@@ -290,6 +378,15 @@ private extension CoreDataIterativeMigratorTests {
         productTag.name = "testing"
         productTag.slug = ""
         return productTag
+    }
+      
+    func insertProductAttributeWithRequiredProperties(to context: NSManagedObjectContext) -> ProductAttribute {
+        let productAttribute = context.insertNewObject(ofType: ProductAttribute.self)
+        // Populates the required attributes.
+        productAttribute.name = "woodpecker"
+        productAttribute.variation = true
+        productAttribute.visible = true
+        return productAttribute
     }
 }
 

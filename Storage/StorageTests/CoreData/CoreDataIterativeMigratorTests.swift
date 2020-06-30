@@ -152,7 +152,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         // Product categories should be deleted.
         XCTAssertEqual(model27Container.viewContext.countObjects(ofType: ProductCategory.self), 0)
     }
-  
+
   func testModel28To29MigrationPassed() throws {
         // Arrange
         let model28URL = urlForModel(name: "Model 28")
@@ -232,7 +232,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         // Product tags should be deleted.
         XCTAssertEqual(model29Container.viewContext.countObjects(ofType: ProductTag.self), 0)
     }
-  
+
     func testModel20To28MigrationWithTransformableAttributesPassed() throws {
         // Arrange
         let sourceModelURL = urlForModel(name: "Model 20")
@@ -379,7 +379,7 @@ private extension CoreDataIterativeMigratorTests {
         productTag.slug = ""
         return productTag
     }
-      
+
     func insertProductAttributeWithRequiredProperties(to context: NSManagedObjectContext) -> ProductAttribute {
         let productAttribute = context.insertNewObject(ofType: ProductAttribute.self)
         // Populates the required attributes.

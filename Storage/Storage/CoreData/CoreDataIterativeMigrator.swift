@@ -102,7 +102,16 @@ public struct CoreDataIterativeMigrator {
             debugMessages.append(migrationAttemptMessage)
             DDLogWarn(migrationAttemptMessage)
 
-            guard migrateStore(at: sourceStore, storeType: storeType, fromModel: modelFrom, toModel: modelTo, with: migrateWithModel) == true else {
+            let (success, migrateStoreError) = migrateStore(at: sourceStore,
+                                                            storeType: storeType,
+                                                            fromModel: modelFrom,
+                                                            toModel: modelTo,
+                                                            with: migrateWithModel)
+            guard success else {
+                if let migrateStoreError = migrateStoreError {
+                    let errorInfo = (migrateStoreError as NSError?)?.userInfo ?? [:]
+                    debugMessages.append("Migration error: \(migrateStoreError) [\(errorInfo)]")
+                }
                 return (false, debugMessages)
             }
         }
@@ -197,7 +206,7 @@ private extension CoreDataIterativeMigrator {
                              storeType: String,
                              fromModel: NSManagedObjectModel,
                              toModel: NSManagedObjectModel,
-                             with mappingModel: NSMappingModel) -> Bool {
+                             with mappingModel: NSMappingModel) -> (success: Bool, error: Error?) {
         let tempDestinationURL = createTemporaryFolder(at: url)
 
         // Migrate from the source model to the target model using the mapping,
@@ -212,7 +221,7 @@ private extension CoreDataIterativeMigrator {
                                       destinationType: storeType,
                                       destinationOptions: nil)
         } catch {
-            return false
+            return (false, error)
         }
 
         do {
@@ -220,10 +229,10 @@ private extension CoreDataIterativeMigrator {
             try copyMigratedOverOriginal(from: tempDestinationURL, to: url)
             try deleteBackupCopies(at: backupURL)
         } catch {
-            return false
+            return (false, error)
         }
 
-        return true
+        return (true, nil)
     }
 
     static func metadataForPersistentStore(storeType: String, at url: URL) throws -> [String: Any]? {

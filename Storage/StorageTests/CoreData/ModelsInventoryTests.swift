@@ -5,6 +5,7 @@ import XCTest
 @testable import Storage
 
 private typealias ModelVersion = ModelsInventory.ModelVersion
+private typealias IntrospectionError = ModelsInventory.IntrospectionError
 
 /// Test cases for `ModelsInventory`.
 ///
@@ -99,5 +100,15 @@ final class ModelsInventoryTests: XCTestCase {
             "Model 311",
         ]
         XCTAssertEqual(sortedModelVersions.map(\.name), expectedSortedNames)
+    }
+
+    func testItThrowsAnErrorIfThePackageNameDoesNotPointToAnMomdDirectory() {
+        // Given
+        let packageName = "InvalidPackageName"
+
+        // When-Then
+        XCTAssertThrowsError(try ModelsInventory.from(packageName: packageName, bundle: bundle)) { error in
+            XCTAssertEqual(error as? IntrospectionError, IntrospectionError.cannotFindMomd)
+        }
     }
 }

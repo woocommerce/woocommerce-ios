@@ -38,14 +38,14 @@ struct ManagedObjectModelsInventory {
 
     /// The list of `ModelVersion` objects ordered by the migration sequence convention.
     ///
-    let modelVersions: [ModelVersion]
+    let versions: [ModelVersion]
 
     /// Create an instance of `self`. The `modelVersions` will be sorted using the migration
     /// sequence convention.
     ///
-    init(packageURL: URL, modelVersions: [ModelVersion]) {
+    init(packageURL: URL, versions: [ModelVersion]) {
         self.packageURL = packageURL
-        self.modelVersions = modelVersions.sortedByConvention()
+        self.versions = versions.sortedByConvention()
     }
 
     /// Create and parse all the model versions.
@@ -63,7 +63,7 @@ struct ManagedObjectModelsInventory {
         let versionInfoFileURL = self.versionInfoFileURL(from: packageURL)
         let modelVersions = try self.modelVersions(from: versionInfoFileURL)
 
-        return ManagedObjectModelsInventory(packageURL: packageURL, modelVersions: modelVersions)
+        return ManagedObjectModelsInventory(packageURL: packageURL, versions: modelVersions)
     }
 }
 

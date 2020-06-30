@@ -50,7 +50,7 @@ final class ManagedObjectModelsInventoryTests: XCTestCase {
         // When
         let inventory = try ManagedObjectModelsInventory.from(packageName: packageName, bundle: bundle)
 
-        let modelVersionNames = inventory.modelVersions.map { $0.name }
+        let modelVersionNames = inventory.versions.map { $0.name }
 
         // Then
         // We'll cut the version names up to the length of `expectedVersionNames` so that this
@@ -82,7 +82,7 @@ final class ManagedObjectModelsInventoryTests: XCTestCase {
 
         // When
         let dummyURL = try XCTUnwrap(URL(string: "https://example.com"))
-        let sortedModelVersions = ManagedObjectModelsInventory(packageURL: dummyURL, modelVersions: modelVersions).modelVersions
+        let sortedModelVersions = ManagedObjectModelsInventory(packageURL: dummyURL, versions: modelVersions).versions
 
         // Then
         let expectedSortedNames = [

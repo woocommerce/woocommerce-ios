@@ -446,23 +446,18 @@ private extension ProductStore {
     func handleProductTags(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
         let siteID = readOnlyProduct.siteID
 
+        // Remove previous linked categories
+        storageProduct.tags?.removeAll()
+
         // Upsert the tags from the read-only product
         for readOnlyTag in readOnlyProduct.tags {
-            if let existingStorageTag = storage.loadProductTag(siteID: siteID,
-                                                               tagID: readOnlyTag.tagID) {
+            if let existingStorageTag = storage.loadProductTag(siteID: siteID, tagID: readOnlyTag.tagID) {
                 existingStorageTag.update(with: readOnlyTag)
+                storageProduct.addToTags(existingStorageTag)
             } else {
                 let newStorageTag = storage.insertNewObject(ofType: Storage.ProductTag.self)
                 newStorageTag.update(with: readOnlyTag)
                 storageProduct.addToTags(newStorageTag)
-            }
-        }
-
-        // Now, remove any objects that exist in storageProduct.tags but not in readOnlyProduct.tags
-        storageProduct.tags?.forEach { storageTag in
-            if readOnlyProduct.tags.first(where: { $0.tagID == storageTag.tagID } ) == nil {
-                storageProduct.removeFromTags(storageTag)
-                storage.deleteObject(storageTag)
             }
         }
     }

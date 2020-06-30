@@ -550,7 +550,7 @@ final class ProductStoreTests: XCTestCase {
 
         productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self), 9)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self, matching: NSPredicate(format: "siteID == %lld", sampleSiteID)), 9)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductImage.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
@@ -561,7 +561,7 @@ final class ProductStoreTests: XCTestCase {
         let storageProduct1 = viewStorage.loadProduct(siteID: sampleSiteID, productID: sampleProductID)
         XCTAssertEqual(storageProduct1?.toReadOnly(), sampleProductMutated())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self), 5)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self, matching: NSPredicate(format: "siteID == %lld", sampleSiteID)), 10)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductImage.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
@@ -584,7 +584,7 @@ final class ProductStoreTests: XCTestCase {
 
         productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self), 9)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self, matching: NSPredicate(format: "siteID == %lld", sampleSiteID)), 9)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductImage.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
@@ -593,7 +593,7 @@ final class ProductStoreTests: XCTestCase {
 
         productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(sampleSiteID2), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 2)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self), 18)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self, matching: NSPredicate(format: "siteID == %lld", sampleSiteID2)), 9)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductImage.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 2)
@@ -604,7 +604,7 @@ final class ProductStoreTests: XCTestCase {
         let storageProduct1 = viewStorage.loadProduct(siteID: sampleSiteID, productID: sampleProductID)
         XCTAssertEqual(storageProduct1?.toReadOnly(), sampleProductMutated())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 2)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self), 14)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self, matching: NSPredicate(format: "siteID == %lld", sampleSiteID)), 10)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 3)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductImage.self), 3)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 2)
@@ -633,7 +633,7 @@ final class ProductStoreTests: XCTestCase {
         let storageProduct = viewStorage.loadProduct(siteID: sampleSiteID, productID: sampleProductID)
         XCTAssertEqual(storageProduct?.toReadOnly(), remoteProduct)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self), 9)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self, matching: NSPredicate(format: "siteID == %lld", sampleSiteID)), 9)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductImage.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
@@ -1136,7 +1136,7 @@ private extension ProductStoreTests {
                        parentID: 0,
                        purchaseNote: "Thank you!",
                        categories: sampleCategories(),
-                       tags: sampleTags(),
+                       tags: sampleTags(siteID: testSiteID),
                        images: sampleImages(),
                        attributes: sampleAttributes(),
                        defaultAttributes: sampleDefaultAttributes(),
@@ -1154,16 +1154,16 @@ private extension ProductStoreTests {
         return [category1]
     }
 
-    func sampleTags() -> [Networking.ProductTag] {
-        let tag1 = ProductTag(siteID: sampleSiteID, tagID: 37, name: "room", slug: "room")
-        let tag2 = ProductTag(siteID: sampleSiteID, tagID: 38, name: "party room", slug: "party-room")
-        let tag3 = ProductTag(siteID: sampleSiteID, tagID: 39, name: "30", slug: "30")
-        let tag4 = ProductTag(siteID: sampleSiteID, tagID: 40, name: "20+", slug: "20")
-        let tag5 = ProductTag(siteID: sampleSiteID, tagID: 41, name: "meeting room", slug: "meeting-room")
-        let tag6 = ProductTag(siteID: sampleSiteID, tagID: 42, name: "meetings", slug: "meetings")
-        let tag7 = ProductTag(siteID: sampleSiteID, tagID: 43, name: "parties", slug: "parties")
-        let tag8 = ProductTag(siteID: sampleSiteID, tagID: 44, name: "graduation", slug: "graduation")
-        let tag9 = ProductTag(siteID: sampleSiteID, tagID: 45, name: "birthday party", slug: "birthday-party")
+    func sampleTags(siteID: Int64) -> [Networking.ProductTag] {
+        let tag1 = ProductTag(siteID: siteID, tagID: 37, name: "room", slug: "room")
+        let tag2 = ProductTag(siteID: siteID, tagID: 38, name: "party room", slug: "party-room")
+        let tag3 = ProductTag(siteID: siteID, tagID: 39, name: "30", slug: "30")
+        let tag4 = ProductTag(siteID: siteID, tagID: 40, name: "20+", slug: "20")
+        let tag5 = ProductTag(siteID: siteID, tagID: 41, name: "meeting room", slug: "meeting-room")
+        let tag6 = ProductTag(siteID: siteID, tagID: 42, name: "meetings", slug: "meetings")
+        let tag7 = ProductTag(siteID: siteID, tagID: 43, name: "parties", slug: "parties")
+        let tag8 = ProductTag(siteID: siteID, tagID: 44, name: "graduation", slug: "graduation")
+        let tag9 = ProductTag(siteID: siteID, tagID: 45, name: "birthday party", slug: "birthday-party")
 
         return [tag1, tag2, tag3, tag4, tag5, tag6, tag7, tag8, tag9]
     }
@@ -1278,7 +1278,7 @@ private extension ProductStoreTests {
                        parentID: 444,
                        purchaseNote: "Whatever!",
                        categories: sampleCategoriesMutated(),
-                       tags: sampleTagsMutated(),
+                       tags: sampleTagsMutated(siteID: testSiteID),
                        images: sampleImagesMutated(),
                        attributes: sampleAttributesMutated(),
                        defaultAttributes: sampleDefaultAttributesMutated(),
@@ -1297,12 +1297,12 @@ private extension ProductStoreTests {
         return [category1, category2]
     }
 
-    func sampleTagsMutated() -> [Networking.ProductTag] {
-        let tag1 = ProductTag(siteID: sampleSiteID, tagID: 37, name: "something", slug: "something")
-        let tag2 = ProductTag(siteID: sampleSiteID, tagID: 38, name: "party room", slug: "party-room")
-        let tag3 = ProductTag(siteID: sampleSiteID, tagID: 39, name: "3000", slug: "3000")
-        let tag4 = ProductTag(siteID: sampleSiteID, tagID: 45, name: "birthday party", slug: "birthday-party")
-        let tag5 = ProductTag(siteID: sampleSiteID, tagID: 95, name: "yep", slug: "yep")
+    func sampleTagsMutated(siteID: Int64) -> [Networking.ProductTag] {
+        let tag1 = ProductTag(siteID: siteID, tagID: 37, name: "something", slug: "something")
+        let tag2 = ProductTag(siteID: siteID, tagID: 38, name: "party room", slug: "party-room")
+        let tag3 = ProductTag(siteID: siteID, tagID: 39, name: "3000", slug: "3000")
+        let tag4 = ProductTag(siteID: siteID, tagID: 45, name: "birthday party", slug: "birthday-party")
+        let tag5 = ProductTag(siteID: siteID, tagID: 95, name: "yep", slug: "yep")
 
         return [tag1, tag2, tag3, tag4, tag5]
     }

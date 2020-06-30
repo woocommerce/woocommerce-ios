@@ -50,7 +50,7 @@ final class ManagedObjectModelsInventoryTests: XCTestCase {
         // When
         let inventory = try ManagedObjectModelsInventory.from(packageName: packageName, bundle: bundle)
 
-        let modelVersionNames = inventory.modelVersions.map(\.name)
+        let modelVersionNames = inventory.modelVersions.map { $0.name }
 
         // Then
         // We'll cut the version names up to the length of `expectedVersionNames` so that this
@@ -99,7 +99,7 @@ final class ManagedObjectModelsInventoryTests: XCTestCase {
             "Model 301",
             "Model 311",
         ]
-        XCTAssertEqual(sortedModelVersions.map(\.name), expectedSortedNames)
+        XCTAssertEqual(sortedModelVersions.map { $0.name }, expectedSortedNames)
     }
 
     func testItThrowsAnErrorIfThePackageNameDoesNotPointToAnMomdDirectory() {

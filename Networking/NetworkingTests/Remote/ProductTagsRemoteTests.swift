@@ -33,23 +33,21 @@ final class ProductTagsRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tags-all")
 
         // When
-        var productTags: [ProductTag]?
-        var anError: Error?
+        var result: Result<[ProductTag], Error>?
         waitForExpectation { exp in
-            remote.loadAllProductTags(for: sampleSiteID) { (tags, error) in
-                productTags = tags
-                anError = error
+            remote.loadAllProductTags(for: sampleSiteID) { aResult in
+                result = aResult
                 exp.fulfill()
             }
         }
 
         // Then
-        XCTAssertNil(anError)
-        XCTAssertNotNil(productTags)
-        XCTAssertEqual(productTags?.count, 4)
-        XCTAssertEqual(productTags?.first?.tagID, 34)
-        XCTAssertEqual(productTags?.first?.name, "Leather Shoes")
-        XCTAssertEqual(productTags?.first?.slug, "leather-shoes")
+        XCTAssertNil(result?.failure)
+        XCTAssertNotNil(try result?.get())
+        XCTAssertEqual(try result?.get().count, 4)
+        XCTAssertEqual(try result?.get().first?.tagID, 34)
+        XCTAssertEqual(try result?.get().first?.name, "Leather Shoes")
+        XCTAssertEqual(try result?.get().first?.slug, "leather-shoes")
     }
 
     /// Verifies that loadAllProductTags properly relays Networking Layer errors.
@@ -59,19 +57,17 @@ final class ProductTagsRemoteTests: XCTestCase {
         let remote = ProductTagsRemote(network: network)
 
         // When
-        var productTags: [ProductTag]?
-        var anError: Error?
+        var result: Result<[ProductTag], Error>?
         waitForExpectation { exp in
-            remote.loadAllProductTags(for: sampleSiteID) { (tags, error) in
-                productTags = tags
-                anError = error
+            remote.loadAllProductTags(for: sampleSiteID) { aResult in
+                result = aResult
                 exp.fulfill()
             }
         }
 
         // Then
-        XCTAssertNil(productTags)
-        XCTAssertNotNil(anError)
+        XCTAssertNil(try? result?.get())
+        XCTAssertNotNil(result?.failure)
     }
 
     // MARK: - Create product tags tests

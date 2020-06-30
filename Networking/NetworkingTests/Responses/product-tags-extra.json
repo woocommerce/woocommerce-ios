@@ -1,15 +1,15 @@
 {
     "data": [
         {
-            "id": 34,
-            "name": "Leather Shoes",
-            "slug": "leather-shoes",
+            "id": 89,
+            "name": "Leather Shoes 2",
+            "slug": "leather-shoes-2",
             "description": "",
             "count": 0,
             "_links": {
                 "self": [
                     {
-                        "href": "https://example.com/wp-json/wc/v3/products/tags/34"
+                        "href": "https://example.com/wp-json/wc/v3/products/tags/89"
                     }
                 ],
                 "collection": [

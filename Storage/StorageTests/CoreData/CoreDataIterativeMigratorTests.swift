@@ -239,11 +239,11 @@ private extension CoreDataIterativeMigratorTests {
         return URL(fileURLWithPath: path)
     }
 
-    private func managedObjectModel(for modelName: String) throws -> NSManagedObjectModel {
+    func managedObjectModel(for modelName: String) throws -> NSManagedObjectModel {
         try XCTUnwrap(NSManagedObjectModel(contentsOf: urlForModel(name: modelName)))
     }
 
-    private func urlForModel(name: String) -> URL {
+    func urlForModel(name: String) -> URL {
 
         let bundle = Bundle(for: CoreDataManager.self)
         guard let path = bundle.paths(forResourcesOfType: "momd", inDirectory: nil).first,
@@ -254,7 +254,7 @@ private extension CoreDataIterativeMigratorTests {
         return url
     }
 
-    private func urlForStore(withName: String, deleteIfExists: Bool = false) -> URL {
+    func urlForStore(withName: String, deleteIfExists: Bool = false) -> URL {
         let storeURL = documentsDirectory.appendingPathComponent(withName)
 
         if deleteIfExists {

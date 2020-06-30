@@ -4,6 +4,8 @@ import XCTest
 
 @testable import Storage
 
+private typealias ModelVersion = ModelsInventory.ModelVersion
+
 /// Test cases for `ModelsInventory`.
 ///
 final class ModelsInventoryTests: XCTestCase {
@@ -56,5 +58,46 @@ final class ModelsInventoryTests: XCTestCase {
         let truncatedModelVersionNames = Array(modelVersionNames[..<expectedVersionNames.count])
 
         XCTAssertEqual(truncatedModelVersionNames, expectedVersionNames)
+    }
+
+    /// Tests that the model versions are sorted according to our convention of incrementing
+    /// the number names.
+    func testItSortsTheModelsUsingTheConvention() throws {
+        // Given
+        let modelVersions = [
+            ModelVersion(name: "Model 301"),
+            ModelVersion(name: "Model 311"),
+            ModelVersion(name: "Model 3"),
+            ModelVersion(name: "Model 1"),
+            ModelVersion(name: "Model"),
+            ModelVersion(name: "Model 4"),
+            ModelVersion(name: "Model 5"),
+            ModelVersion(name: "Model 7"),
+            ModelVersion(name: "Model 65"),
+            ModelVersion(name: "Model 13"),
+            ModelVersion(name: "Model 130"),
+            ModelVersion(name: "Model 10"),
+        ]
+
+        // When
+        let dummyURL = try XCTUnwrap(URL(string: "https://example.com"))
+        let sortedModelVersions = ModelsInventory(packageURL: dummyURL, modelVersions: modelVersions).modelVersions
+
+        // Then
+        let expectedSortedNames = [
+            "Model",
+            "Model 1",
+            "Model 3",
+            "Model 4",
+            "Model 5",
+            "Model 7",
+            "Model 10",
+            "Model 13",
+            "Model 65",
+            "Model 130",
+            "Model 301",
+            "Model 311",
+        ]
+        XCTAssertEqual(sortedModelVersions.map(\.name), expectedSortedNames)
     }
 }

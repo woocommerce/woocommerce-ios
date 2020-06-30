@@ -59,4 +59,14 @@ extension MockupStorageManager {
 
         return newProductCategory
     }
+    
+    /// Inserts a new (Sample) ProductTag into the specified context.
+    ///
+    @discardableResult
+    func insertSampleProductTag(readOnlyProductTag: ProductTag) -> StorageProductTag {
+        let newProductTag = viewStorage.insertNewObject(ofType: StorageProductTag.self)
+        newProductTag.update(with: readOnlyProductTag)
+
+        return newProductTag
+    }
 }

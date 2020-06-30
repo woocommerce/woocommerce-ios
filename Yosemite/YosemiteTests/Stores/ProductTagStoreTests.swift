@@ -64,7 +64,7 @@ final class ProductTagStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tags-empty")
         XCTAssertEqual(storedProductTagsCount, 0)
 
-        // When dispatching a `synchronizeProductTags` action
+        // When dispatching a `synchronizeAllProductTags` action
         var errorResponse: ProductTagActionError?
         waitForExpectation { (exp) in
             let action = ProductTagAction.synchronizeAllProductTags(siteID: sampleSiteID, fromPageNumber: defaultPageNumber) { error in
@@ -79,52 +79,52 @@ final class ProductTagStoreTests: XCTestCase {
         XCTAssertNil(errorResponse)
     }
 
-//    func testSynchronizeProductCategoriesReturnsCategoriesUponPaginatedResponse() throws {
-//        // Given a stubed product-categories network response
-//        let expectation = self.expectation(description: #function)
-//        network.simulateResponse(requestUrlSuffix: "products/categories", filename: "categories-all")
-//        network.simulateResponse(requestUrlSuffix: "products/categories", filename: "categories-extra")
-//        network.simulateResponse(requestUrlSuffix: "products/categories", filename: "categories-empty")
-//        XCTAssertEqual(storedProductCategoriesCount, 0)
-//
-//        // When dispatching a `synchronizeProductCategories` action
-//        var errorResponse: ProductCategoryActionError?
-//        let action = ProductCategoryAction.synchronizeProductCategories(siteID: sampleSiteID, fromPageNumber: defaultPageNumber) { error in
-//            errorResponse = error
-//            expectation.fulfill()
-//        }
-//        store.onAction(action)
-//        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
-//
-//        // Then a the combined set of categories should be stored
-//        XCTAssertEqual(storedProductCategoriesCount, 3)
-//        XCTAssertNil(errorResponse)
-//    }
-//
-//    func testSynchronizeProductCategoriesUpdatesStoredCategoriesSuccessfulResponse() {
-//        // Given an initial stored category and a stubed product-categories network response
-//        let expectation = self.expectation(description: #function)
-//        let initialCategory = sampleCategory(categoryID: 20)
-//        storageManager.insertSampleProductCategory(readOnlyProductCategory: initialCategory)
-//        network.simulateResponse(requestUrlSuffix: "products/categories", filename: "categories-all")
-//        network.simulateResponse(requestUrlSuffix: "products/categories", filename: "categories-empty")
-//
-//        // When dispatching a `synchronizeProductCategories` action
-//        var errorResponse: ProductCategoryActionError?
-//        let action = ProductCategoryAction.synchronizeProductCategories(siteID: sampleSiteID, fromPageNumber: defaultPageNumber) { error in
-//            errorResponse = error
-//            expectation.fulfill()
-//        }
-//        store.onAction(action)
-//        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
-//
-//        // Then the initial category should have it's values updated
-//        let updatedCategory = viewStorage.loadProductCategory(siteID: sampleSiteID, categoryID: initialCategory.categoryID)
-//        XCTAssertNotEqual(initialCategory.parentID, updatedCategory?.parentID)
-//        XCTAssertNotEqual(initialCategory.name, updatedCategory?.name)
-//        XCTAssertNotEqual(initialCategory.slug, updatedCategory?.slug)
-//        XCTAssertNil(errorResponse)
-//    }
+    func testSynchronizeProductTagsReturnsTagsUponPaginatedResponse() throws {
+        // Given a stubed product-tags network response
+        network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tags-all")
+        network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tags-extra")
+        network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tags-empty")
+        XCTAssertEqual(storedProductTagsCount, 0)
+
+        // When dispatching a `synchronizeAllProductTags` action
+        var errorResponse: ProductTagActionError?
+        waitForExpectation { (exp) in
+            let action = ProductTagAction.synchronizeAllProductTags(siteID: sampleSiteID, fromPageNumber: defaultPageNumber) { error in
+                errorResponse = error
+                exp.fulfill()
+            }
+            store.onAction(action)
+        }
+
+        // Then the combined set of tags should be stored
+        XCTAssertEqual(storedProductTagsCount, 5)
+        XCTAssertNil(errorResponse)
+    }
+
+    func testSynchronizeProductTagsUpdatesStoredTagsSuccessfulResponse() {
+        // Given an initial stored tag and a stubed product-tags network response
+        let initialTag = sampletag(tagID: 20)
+        storageManager.insertSampleProductTag(readOnlyProductTag: initialTag)
+        network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tags-all")
+        network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tags-empty")
+
+        // When dispatching a `synchronizeAllProductTags` action
+        var errorResponse: ProductTagActionError?
+        waitForExpectation { (exp) in
+            let action = ProductTagAction.synchronizeAllProductTags(siteID: sampleSiteID, fromPageNumber: defaultPageNumber) { error in
+                errorResponse = error
+                exp.fulfill()
+            }
+            store.onAction(action)
+        }
+
+        // Then the initial tag should have it's values updated
+        let updatedTag = viewStorage.loadProductTag(siteID: sampleSiteID, tagID: initialTag.tagID)
+        XCTAssertNotEqual(initialTag.tagID, updatedTag?.tagID)
+        XCTAssertNotEqual(initialTag.name, updatedTag?.name)
+        XCTAssertNotEqual(initialTag.slug, updatedTag?.slug)
+        XCTAssertNil(errorResponse)
+    }
 //
 //    func testSynchronizeProductCategoriesReturnsErrorUponPaginatedReponseError() {
 //        // Given a stubed first page category response and second page generic-error network response
@@ -284,8 +284,8 @@ final class ProductTagStoreTests: XCTestCase {
 //    }
 }
 
-private extension ProductCategoryStoreTests {
-//    func sampleCategory(categoryID: Int64) -> Networking.ProductCategory {
-//        return Networking.ProductCategory(categoryID: categoryID, siteID: sampleSiteID, parentID: 0, name: "Sample", slug: "Sample")
-//    }
+private extension ProductTagStoreTests {
+    func sampletag(tagID: Int64) -> Networking.ProductTag {
+        return Networking.ProductTag(tagID: tagID, name: "Sample", slug: "sample")
+    }
 }

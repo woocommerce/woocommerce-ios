@@ -4,16 +4,16 @@ import CoreData
 @testable import Storage
 
 final class CoreDataIterativeMigratorTests: XCTestCase {
-    private let allModelNames = ["Model", "Model 2", "Model 3", "Model 4", "Model 5", "Model 6", "Model 7", "Model 8", "Model 9", "Model 10",
-                                 "Model 11", "Model 12", "Model 13", "Model 14", "Model 15", "Model 16", "Model 17", "Model 18", "Model 19", "Model 20",
-                                 "Model 21", "Model 22", "Model 23", "Model 24", "Model 25", "Model 26", "Model 27", "Model 28"]
+    private var modelsInventory: ManagedObjectModelsInventory!
 
     override func setUp() {
         super.setUp()
         DDLog.add(DDOSLogger.sharedInstance)
+        modelsInventory = try! .from(packageName: "WooCommerce", bundle: Bundle(for: CoreDataManager.self))
     }
 
     override func tearDown() {
+        modelsInventory = nil
         DDLog.remove(DDOSLogger.sharedInstance)
         super.tearDown()
     }
@@ -32,7 +32,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         let result = try migrator.iterativeMigrate(sourceStore: databaseURL,
                                                    storeType: NSSQLiteStoreType,
                                                    to: targetModel,
-                                                   using: allModelNames)
+                                                   using: modelsInventory.modelVersions.names)
 
         // Then
         XCTAssertTrue(result.success)
@@ -86,7 +86,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
             let (result, _) = try iterativeMigrator.iterativeMigrate(sourceStore: storeURL,
                                                                      storeType: NSSQLiteStoreType,
                                                                      to: model!,
-                                                                     using: allModelNames)
+                                                                     using: modelsInventory.modelVersions.names)
             XCTAssertTrue(result)
         } catch {
             XCTFail("Error when attempting to migrate: \(error)")
@@ -160,7 +160,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         let (migrateResult, migrationDebugMessages) = try iterativeMigrator.iterativeMigrate(sourceStore: coreDataManager.storeURL,
                                                                                              storeType: NSSQLiteStoreType,
                                                                                              to: model27,
-                                                                                             using: allModelNames)
+                                                                                             using: modelsInventory.modelVersions.names)
         XCTAssertTrue(migrateResult, "Failed to migrate to model version 27: \(migrationDebugMessages)")
 
         var model27LoadingError: Error?
@@ -244,7 +244,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         let (migrateResult, migrationDebugMessages) = try iterativeMigrator.iterativeMigrate(sourceStore: coreDataManager.storeURL,
                                                                                              storeType: NSSQLiteStoreType,
                                                                                              to: destinationModel,
-                                                                                             using: allModelNames)
+                                                                                             using: modelsInventory.modelVersions.names)
         XCTAssertTrue(migrateResult, "Failed to migrate to model version 28: \(migrationDebugMessages)")
 
         var destinationModelLoadingError: Error?
@@ -362,5 +362,11 @@ private extension CoreDataIterativeMigratorTests {
         try? FileManager.default.createDirectory(at: documentsDirectory, withIntermediateDirectories: true, attributes: nil)
 
         return storeURL
+    }
+}
+
+private extension Array where Element == ManagedObjectModelsInventory.ModelVersion {
+    var names: [String] {
+        map { $0.name }
     }
 }

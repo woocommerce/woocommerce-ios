@@ -36,14 +36,6 @@ final class AddProductCategoryViewController: UIViewController {
         self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
     }
 
-    /// Dedicated NoticePresenter (use this here instead of ServiceLocator.noticePresenter)
-    ///
-    private lazy var noticePresenter: DefaultNoticePresenter = {
-        let noticePresenter = DefaultNoticePresenter()
-        noticePresenter.presentingViewController = self
-        return noticePresenter
-    }()
-
     // Completion callback
     //
     typealias Completion = (_ category: ProductCategory) -> Void
@@ -140,25 +132,11 @@ extension AddProductCategoryViewController {
             switch result {
             case .success(let category):
                 self?.onCompletion(category)
-            case .failure:
-                self?.displayAddCategoryErrorNotice { [weak self] in
-                    self?.saveNewCategory()
-                }
+            case .failure(let error):
+                self?.displayErrorAlert(error: error)
             }
         }
         ServiceLocator.stores.dispatch(action)
-    }
-
-    /// Displays the `Unable to create category` Notice.
-    ///
-    func displayAddCategoryErrorNotice(onAction: @escaping () -> Void) {
-        let notice = Notice(title: Strings.addCategoryErrorNotice,
-                            message: nil,
-                            feedbackType: .error,
-                            actionTitle: Strings.retryErrorAction) {
-                                onAction()
-        }
-        noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -290,6 +268,22 @@ private extension AddProductCategoryViewController {
     }
 }
 
+// MARK: Error handling
+//
+private extension AddProductCategoryViewController {
+    func displayErrorAlert(error: Error?) {
+        let alertController = UIAlertController(title: Strings.errorAlertTitle,
+                                                message: error?.localizedDescription,
+                                                preferredStyle: .alert)
+        let cancel = UIAlertAction(title: Strings.okErrorAlertButton,
+                                   style: .cancel,
+                                   handler: nil)
+        alertController.addAction(cancel)
+        present(alertController, animated: true)
+    }
+}
+
+
 // MARK: - Constants!
 //
 private extension AddProductCategoryViewController {
@@ -300,8 +294,9 @@ private extension AddProductCategoryViewController {
         static let titleCellPlaceholder = NSLocalizedString("Title", comment: "Add Product Category. Placeholder of cell presenting the title of the category.")
         static let parentCellTitle = NSLocalizedString("Parent Category", comment: "Add Product Category. Title of cell presenting the parent category.")
         static let parentCellPlaceholder = NSLocalizedString("Optional", comment: "Add Product Category. Placeholder of cell presenting the parent category.")
-        static let addCategoryErrorNotice = NSLocalizedString("Unable to create the new category",
-                                                              comment: "Content of error presented when Create New Category Action Failed.")
-        static let retryErrorAction = NSLocalizedString("Retry", comment: "Retry Action")
+        static let errorAlertTitle = NSLocalizedString("Cannot Add Category",
+                                                       comment: "Title of the alert when there is an error creating a new product category")
+        static let okErrorAlertButton = NSLocalizedString("OK",
+                                                          comment: "Dismiss button on the alert when there is an error creating a new product category")
     }
 }

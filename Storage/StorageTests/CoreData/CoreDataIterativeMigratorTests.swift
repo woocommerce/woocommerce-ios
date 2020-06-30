@@ -26,13 +26,12 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
 
         fileManager.whenCheckingIfFileExists(atPath: databaseURL.path, thenReturn: false)
 
-        let migrator = CoreDataIterativeMigrator(fileManager: fileManager)
+        let migrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory, fileManager: fileManager)
 
         // When
         let result = try migrator.iterativeMigrate(sourceStore: databaseURL,
                                                    storeType: NSSQLiteStoreType,
-                                                   to: targetModel,
-                                                   using: modelsInventory.versions.names)
+                                                   to: targetModel)
 
         // Then
         XCTAssertTrue(result.success)
@@ -82,11 +81,10 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         model = try XCTUnwrap(NSManagedObjectModel(contentsOf: model10URL))
 
         do {
-            let iterativeMigrator = CoreDataIterativeMigrator()
+            let iterativeMigrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory)
             let (result, _) = try iterativeMigrator.iterativeMigrate(sourceStore: storeURL,
                                                                      storeType: NSSQLiteStoreType,
-                                                                     to: model!,
-                                                                     using: modelsInventory.versions.names)
+                                                                     to: model!)
             XCTAssertTrue(result)
         } catch {
             XCTFail("Error when attempting to migrate: \(error)")
@@ -156,11 +154,10 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         model27Container.persistentStoreDescriptions = [coreDataManager.storeDescription]
 
         // Action - step 2
-        let iterativeMigrator = CoreDataIterativeMigrator()
+        let iterativeMigrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory)
         let (migrateResult, migrationDebugMessages) = try iterativeMigrator.iterativeMigrate(sourceStore: coreDataManager.storeURL,
                                                                                              storeType: NSSQLiteStoreType,
-                                                                                             to: model27,
-                                                                                             using: modelsInventory.versions.names)
+                                                                                             to: model27)
         XCTAssertTrue(migrateResult, "Failed to migrate to model version 27: \(migrationDebugMessages)")
 
         var model27LoadingError: Error?
@@ -240,11 +237,10 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         destinationModelContainer.persistentStoreDescriptions = [coreDataManager.storeDescription]
 
         // Action - step 2
-        let iterativeMigrator = CoreDataIterativeMigrator()
+        let iterativeMigrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory)
         let (migrateResult, migrationDebugMessages) = try iterativeMigrator.iterativeMigrate(sourceStore: coreDataManager.storeURL,
                                                                                              storeType: NSSQLiteStoreType,
-                                                                                             to: destinationModel,
-                                                                                             using: modelsInventory.versions.names)
+                                                                                             to: destinationModel)
         XCTAssertTrue(migrateResult, "Failed to migrate to model version 28: \(migrationDebugMessages)")
 
         var destinationModelLoadingError: Error?
@@ -362,11 +358,5 @@ private extension CoreDataIterativeMigratorTests {
         try? FileManager.default.createDirectory(at: documentsDirectory, withIntermediateDirectories: true, attributes: nil)
 
         return storeURL
-    }
-}
-
-private extension Array where Element == ManagedObjectModelsInventory.ModelVersion {
-    var names: [String] {
-        map { $0.name }
     }
 }

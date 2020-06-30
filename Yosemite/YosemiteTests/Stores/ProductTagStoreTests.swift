@@ -97,7 +97,7 @@ final class ProductTagStoreTests: XCTestCase {
         }
 
         // Then the combined set of tags should be stored
-        XCTAssertEqual(storedProductTagsCount, 5)
+        XCTAssertEqual(storedProductTagsCount, 4)
         XCTAssertNil(errorResponse)
     }
 

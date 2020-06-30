@@ -199,10 +199,11 @@ public class CoreDataManager: StorageManagerType {
         }
 
         do {
-            let (migrateResult, migrationDebugMessages) = try CoreDataIterativeMigrator.iterativeMigrate(sourceStore: storeURL,
-                                                                                                         storeType: NSSQLiteStoreType,
-                                                                                                         to: objectModel,
-                                                                                                         using: sortedKeys)
+            let iterativeMigrator = CoreDataIterativeMigrator()
+            let (migrateResult, migrationDebugMessages) = try iterativeMigrator.iterativeMigrate(sourceStore: storeURL,
+                                                                                                 storeType: NSSQLiteStoreType,
+                                                                                                 to: objectModel,
+                                                                                                 using: sortedKeys)
             debugMessages += migrationDebugMessages
             if migrateResult == false {
                 let migrationFailureMessage = "☠️ [CoreDataManager] Unable to migrate store."

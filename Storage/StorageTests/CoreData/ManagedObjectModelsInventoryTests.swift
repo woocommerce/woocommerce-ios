@@ -4,12 +4,12 @@ import XCTest
 
 @testable import Storage
 
-private typealias ModelVersion = ModelsInventory.ModelVersion
-private typealias IntrospectionError = ModelsInventory.IntrospectionError
+private typealias ModelVersion = ManagedObjectModelsInventory.ModelVersion
+private typealias IntrospectionError = ManagedObjectModelsInventory.IntrospectionError
 
-/// Test cases for `ModelsInventory`.
+/// Test cases for `ManagedObjectModelsInventory`.
 ///
-final class ModelsInventoryTests: XCTestCase {
+final class ManagedObjectModelsInventoryTests: XCTestCase {
 
     private let bundle = Bundle(for: CoreDataManager.self)
     private let packageName = "WooCommerce"
@@ -48,7 +48,7 @@ final class ModelsInventoryTests: XCTestCase {
         ]
 
         // When
-        let inventory = try ModelsInventory.from(packageName: packageName, bundle: bundle)
+        let inventory = try ManagedObjectModelsInventory.from(packageName: packageName, bundle: bundle)
 
         let modelVersionNames = inventory.modelVersions.map(\.name)
 
@@ -82,7 +82,7 @@ final class ModelsInventoryTests: XCTestCase {
 
         // When
         let dummyURL = try XCTUnwrap(URL(string: "https://example.com"))
-        let sortedModelVersions = ModelsInventory(packageURL: dummyURL, modelVersions: modelVersions).modelVersions
+        let sortedModelVersions = ManagedObjectModelsInventory(packageURL: dummyURL, modelVersions: modelVersions).modelVersions
 
         // Then
         let expectedSortedNames = [
@@ -107,7 +107,7 @@ final class ModelsInventoryTests: XCTestCase {
         let packageName = "InvalidPackageName"
 
         // When-Then
-        XCTAssertThrowsError(try ModelsInventory.from(packageName: packageName, bundle: bundle)) { error in
+        XCTAssertThrowsError(try ManagedObjectModelsInventory.from(packageName: packageName, bundle: bundle)) { error in
             XCTAssertEqual(error as? IntrospectionError, IntrospectionError.cannotFindMomd)
         }
     }

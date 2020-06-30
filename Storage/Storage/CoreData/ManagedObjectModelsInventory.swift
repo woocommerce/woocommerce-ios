@@ -2,12 +2,12 @@
 import Foundation
 import class CoreData.NSManagedObjectModel
 
-/// The main access point for finding the current Core Data model version and all the
-/// previous model versions.
+/// The main access point for finding the current Core Data ManagedObjectModel version
+/// (`.xcdatamodel`/`.mom`) and all the previous model versions.
 ///
-struct ModelsInventory {
+struct ManagedObjectModelsInventory {
 
-    /// Errors thrown by `ModelsInventory.from()`
+    /// Errors thrown by `self.from()`
     ///
     enum IntrospectionError: Error {
         /// Failed to find the `{packageName}.momd` bundle.
@@ -56,20 +56,20 @@ struct ModelsInventory {
     ///                of the compiled `.momd` bundle.
     /// - bundle: The `Bundle` where the `{packageName}.momd` is expected to be in.
     ///
-    static func from(packageName: String, bundle: Bundle) throws -> ModelsInventory {
+    static func from(packageName: String, bundle: Bundle) throws -> ManagedObjectModelsInventory {
         guard let packageURL = bundle.url(forResource: packageName, withExtension: "momd") else {
             throw IntrospectionError.cannotFindMomd
         }
         let versionInfoFileURL = self.versionInfoFileURL(from: packageURL)
         let modelVersions = try self.modelVersions(from: versionInfoFileURL)
 
-        return ModelsInventory(packageURL: packageURL, modelVersions: modelVersions)
+        return ManagedObjectModelsInventory(packageURL: packageURL, modelVersions: modelVersions)
     }
 }
 
 // MARK: - Utils
 
-private extension ModelsInventory {
+private extension ManagedObjectModelsInventory {
 
     /// Get the expected URL of the `VersionInfo.plist` file.
     ///
@@ -111,7 +111,7 @@ private extension ModelsInventory {
 
 /// MARK: - Sorting
 
-private extension Array where Element == ModelsInventory.ModelVersion {
+private extension Array where Element == ManagedObjectModelsInventory.ModelVersion {
     /// Sort the `ModelVersion` based on the convention that model versions are incremented
     /// using the number in the `.xcdatamodel` name and migrations are run in sequence
     /// according to this order.

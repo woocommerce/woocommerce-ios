@@ -1,7 +1,7 @@
-CONSULTA Y GESTIONA PEDIDOS
+VISUALIZACIÓN Y GESTIÓN DE PEDIDOS
 Desplázate por los pedidos, fíltralos o busca pedidos concretos. Toca para ver información sobre el pedido, como los productos, el valor, los datos del cliente, los detalles del envío y las notas.
 
-CONTROLA TU TIENDA
+SEGUMIENTO DE TU TIENDA
 Averigua qué productos tienen un mejor rendimiento. Mira los ingresos generales y consulta los datos de los pedidos y los visitantes por semana, mes y año.
 
 ALERTAS DE PEDIDOS EN TIEMPO REAL
@@ -10,3 +10,5 @@ Recibe notificaciones sobre la actividad en la tienda, como los nuevos pedidos y
 WooCommerce es la plataforma de eCommerce con más opciones de personalización para crear tu negocio en línea. Está creada con WordPress e integrada con las mejores herramientas de gestión de contenidos del mundo. Tanto si se trata de suscripciones a clases de español, matrículas en gimnasios o empresas de eCommerce complejas, visita WooCommerce.com/start para crear una tienda nueva y poner en marcha tu idea.
 
 Requisitos: WooCommerce v. 3.5 o posterior y la instalación del plugin de Jetpack.
+
+Puedes consultar el aviso de privacidad para usuarios de California en https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

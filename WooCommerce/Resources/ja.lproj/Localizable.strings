@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-06-11 08:54:03+0000 */
+/* Translation-Revision-Date: 2020-06-25 13:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -30,14 +30,14 @@
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%2$@ 経由 %1$@";
 
+/* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). */
+"%1$@ x %2$@" = "%1$@ x %2$@";
+
 /* Displays a time range followed by a specific date/time */
 "%1$@ › %2$@" = "%1$@ › %2$@";
 
 /* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@-%2$@";
-
-/* <item total> (<item individual price> multipled by <quantity>) */
-"%@ (%@ x %@)" = "%1$@ (%2$@ x %3$@)";
 
 /* 1 Item */
 "%@ Item" = "%@個のアイテム";
@@ -789,7 +789,7 @@
 /* 'Limit: 2 downloads', for example. */
 "Limit: %ld downloads" = "上限 :%ld件のダウンロード";
 
-/* The title of the Work In Progress top banner on the Products tab when the Products release 2 feature switch is off. */
+/* The title of the Work In Progress top banner on the Products tab. */
 "Limited editing available" = "一部の編集機能が利用可能";
 
 /* Title for screen in editor that allows to configure link options */
@@ -929,9 +929,6 @@
 
 /* The title for the net amount paid cell */
 "Net" = "純額";
-
-/* The title of the Work In Progress top banner on the Products tab when the Products release 2 feature switch is on. */
-"New editing options available" = "新しい編集オプションが利用可能";
 
 /* Title of a button.
    Title of a button. The text should be capitalized. */
@@ -1161,6 +1158,9 @@
 /* Product Details - pricing and inventory section title */
 "Pricing and Inventory" = "価格設定と在庫";
 
+/* Opens the California Privacy Policy web page */
+"Privacy Notice for California Users" = "カリフォルニア州のユーザーへのプライバシー通知";
+
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "個人情報保護方針";
 
@@ -1184,7 +1184,7 @@
 "Processing Account" = "アカウント処理中";
 
 /* Description for Top Performers left column header
-   Product section title - Section header title for the product */
+   Product section title - Product section title if there is only one product. - Section header title for the product */
 "Product" = "商品";
 
 /* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
@@ -1210,7 +1210,7 @@
 "Product editing" = "商品編集";
 
 /* My Store > Settings > Experimental features > Switch Products
-   Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
+   Product section title if there is more than one product. - Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "商品";
 
 /* Label for computed value `product refunds + taxes = subtotal`. */
@@ -1377,6 +1377,12 @@
 
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "セール価格 :%@";
+
+/* Scan Products */
+"Scan products" = "商品をスキャン";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
+"Scans barcodes that are associated with a product SKU for stock management." = "在庫管理用に商品 SKU と関連付けられたバーコードをスキャンします。";
 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "セールの予定を設定";
@@ -2199,11 +2205,8 @@
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
 "We're sorry, we couldn't find results for “%@”" = "「%@」の検索結果が見つかりませんでした。";
 
-/* The info of the Work In Progress top banner on the Products tab when the Products release 2 feature switch is off. */
+/* The info of the Work In Progress top banner on the Products tab. */
 "We've added editing functionality to simple products. Keep an eye out for more options soon!" = "シンプルな商品に編集機能が加わりました。その他のオプションもまもなく加わる予定です。";
-
-/* The info of the Work In Progress top banner on the Products tab when the Products release 2 feature switch is on. */
-"We've added more editing functionalities to products. You can now update images, see previews and sort, filter & share products!" = "商品にその他の編集機能が加わりました。画像の更新、商品のプレビュー、並べ替え、絞り込み、共有が可能になりました。";
 
 /* Statistical unit - a single week */
 "Week" = "週";

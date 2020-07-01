@@ -1,12 +1,3 @@
-Vi fortsätter att lägga till funktioner för produktredigering. Håll utkik efter förbättringar av bild- och produkthantering. Gå till ”Inställningar” i fliken Min butik för att läsa mer och aktivera de nya funktionerna!
-
-Pushnotifieringar och uppdateringsmärken fungerar bättre tillsammans. Fliken Omdömen visar inte längre ett märke efter att du tagit emot en pushnotifiering för en ny order. Om du navigerar till fliken Ordrar och/eller Omdömen rensas nu märkesnumret (beroende på notifieringstyper).
-
-Puffar är lite mindre påträngande. När du redigerar produkter visas dialogrutan ”släng ändringar” nu bara om du har raderat bilder och inte när du lämnar en produktdetaljsida med ett textfält (permalänk, beställningsinformation och menyordning).
-
-Vi har även ordnat en del små svagheter i vår UI:
-- Produktnamnet visas i navigeringsfältet för produktdetaljer, så att det alltid är synligt.
-- Vi löste ett problem som förhindrade produktdetaljerna från att bläddra hela vägen ned till botten i landskapsläget efter att tangentbordet trycktes bort.
-- Bilder som väntar på att laddas upp blir synliga efter att produktbilder redigeras från produktdetaljer.
-- ”Visa produkt i butiken” visas bara om produkten är publiceras.
-- HTML-koder i fraktsättet visas nu korrekt.
+– Produktförbättringar: uppdatera produktbilder, produktinställningar och dela produktlänkar direkt från appen utan att behöva använda datorn!
+– Visuella förbättringar: i beställningsinformationen visas inte SKU:n längre i produktlistan. Det enkla produktnamnet och ellips-menyn visas nu i navigeringsfältet när det öppnas utanför produktfliken (se till att aktivera växeln Produktfunktion). Sist men inte minst: tycker du inte laddningsstatus på produktvariationsskärmen ser fräsig ut nu?
+– Användare från Kalifornien kan visa sitt eget sekretessmeddelande.

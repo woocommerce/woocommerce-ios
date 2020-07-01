@@ -18,13 +18,12 @@ final class SwitchStoreUseCase {
     ///
     func switchStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
         guard storeID != stores.sessionManager.defaultStoreID else {
-            onCompletion()
+            //onCompletion()
             return
         }
 
         logOutOfCurrentStore { [weak self] in
             self?.finalizeStoreSelection(storeID)
-            self?.presentStoreSwitchedNotice(configuration: .switchingStores)
 
             // Reload orders badge
             NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
@@ -32,7 +31,13 @@ final class SwitchStoreUseCase {
         }
     }
 
-    func logOutOfCurrentStore(onCompletion: @escaping () -> Void) {
+    /// Do all the operations to log out from the current selected store, mantaining the Authentication
+    ///
+    private func logOutOfCurrentStore(onCompletion: @escaping () -> Void) {
+        guard stores.sessionManager.defaultStoreID != nil else {
+            return onCompletion()
+        }
+
         stores.removeDefaultStore()
 
         // Note: We are not deleting products here because products from multiple sites
@@ -70,23 +75,9 @@ final class SwitchStoreUseCase {
         }
     }
 
-    func presentStoreSwitchedNotice(configuration: StorePickerConfiguration) {
-        guard configuration == .switchingStores else {
-            return
-        }
-        guard let newStoreName = stores.sessionManager.defaultSite?.name else {
-            return
-        }
-
-        let message = NSLocalizedString("Switched to \(newStoreName). You will only receive notifications from this store.",
-            comment: "Message presented after users switch to a new store. "
-                + "Reads like: Switched to {store name}. You will only receive notifications from this store.")
-        let notice = Notice(title: message, feedbackType: .success)
-
-        noticePresenter.enqueue(notice: notice)
-    }
-
-    func finalizeStoreSelection(_ storeID: Int64) {
+    /// Part of the switch store selection. This method will update the new default store selected.
+    ///
+    private func finalizeStoreSelection(_ storeID: Int64) {
         stores.updateDefaultStore(storeID: storeID)
 
         // We need to call refreshUserData() here because the user selected

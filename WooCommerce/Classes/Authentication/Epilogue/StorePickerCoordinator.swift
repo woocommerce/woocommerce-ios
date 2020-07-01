@@ -18,7 +18,7 @@ final class StorePickerCoordinator: Coordinator {
 
     /// The switchStoreUseCase object initialized with the ServiceLocator stores and noticePresenter
     ///
-    let switchStoreUseCase = SwitchStoreUseCase(stores: ServiceLocator.stores, noticePresenter: ServiceLocator.noticePresenter)
+    private let switchStoreUseCase = SwitchStoreUseCase(stores: ServiceLocator.stores, noticePresenter: ServiceLocator.noticePresenter)
 
     /// Site Picker VC
     ///
@@ -44,34 +44,15 @@ final class StorePickerCoordinator: Coordinator {
 //
 extension StorePickerCoordinator: StorePickerViewControllerDelegate {
 
-    func willSelectStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
-        guard selectedConfiguration == .switchingStores else {
+    func didSelectStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
+        switchStoreUseCase.switchStore(with: storeID) { [weak self] in
+            if self?.selectedConfiguration == .login {
+                MainTabBarController.switchToMyStoreTab(animated: true)
+            }
+            SwitchStoreNoticePresenter.presentStoreSwitchedNotice(stores: ServiceLocator.stores, configuration: self?.selectedConfiguration)
             onCompletion()
-            return
+            self?.onDismiss?()
         }
-        guard storeID != ServiceLocator.stores.sessionManager.defaultStoreID else {
-            onCompletion()
-            return
-        }
-
-        switchStoreUseCase.logOutOfCurrentStore(onCompletion: onCompletion)
-    }
-
-    func didSelectStore(with storeID: Int64) {
-        guard storeID != ServiceLocator.stores.sessionManager.defaultStoreID else {
-            return
-        }
-
-        switchStoreUseCase.finalizeStoreSelection(storeID)
-        if selectedConfiguration == .login {
-            MainTabBarController.switchToMyStoreTab(animated: true)
-        }
-        switchStoreUseCase.presentStoreSwitchedNotice(configuration: selectedConfiguration)
-
-        // Reload orders badge
-        NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
-
-        onDismiss?()
     }
 }
 

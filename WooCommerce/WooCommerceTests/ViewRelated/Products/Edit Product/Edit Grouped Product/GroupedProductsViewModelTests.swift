@@ -19,20 +19,18 @@ final class GroupedProductsViewModelTests: XCTestCase {
         let groupedProductIDs: [Int64] = [17, 671]
         let product = MockProduct().product().copy(groupedProducts: groupedProductIDs)
         let viewModel = GroupedProductsViewModel(product: product)
-        var productsResult: Result<[Product], GroupedProductsViewModel.Error>?
-        cancellable = viewModel.products.subscribe { result in
+        var productsResult: Result<[Int64], GroupedProductsViewModel.Error>?
+        cancellable = viewModel.productIDs.subscribe { result in
             productsResult = result
         }
 
         // Action
-        let groupedProducts = groupedProductIDs.map { MockProduct().product().copy(productID: $0) }
-        viewModel.onProductsLoaded(products: groupedProducts)
-        viewModel.addProducts(groupedProducts)
+        viewModel.addProducts(groupedProductIDs)
 
         // Assert
         XCTAssertFalse(viewModel.hasUnsavedChanges())
         XCTAssertEqual(viewModel.groupedProductIDs, groupedProductIDs)
-        XCTAssertEqual(productsResult, .success(groupedProducts))
+        XCTAssertEqual(productsResult, .success(groupedProductIDs))
     }
 
     func testAddingAMixOfPreselectedAndNewProductsShouldAppendNewProductsToGroupedProducts() {
@@ -40,25 +38,20 @@ final class GroupedProductsViewModelTests: XCTestCase {
         let groupedProductIDs: [Int64] = [17, 671]
         let product = MockProduct().product().copy(groupedProducts: groupedProductIDs)
         let viewModel = GroupedProductsViewModel(product: product)
-        var productsResult: Result<[Product], GroupedProductsViewModel.Error>?
-        cancellable = viewModel.products.subscribe { result in
+        var productsResult: Result<[Int64], GroupedProductsViewModel.Error>?
+        cancellable = viewModel.productIDs.subscribe { result in
             productsResult = result
         }
 
         // Action
-        let preselectedGroupedProducts = groupedProductIDs.map { MockProduct().product().copy(productID: $0) }
-        viewModel.onProductsLoaded(products: preselectedGroupedProducts)
-        let newGroupedProducts: [Product] = [
-            MockProduct().product().copy(productID: 62),
-            MockProduct().product().copy(productID: 22)
-        ]
-        viewModel.addProducts(newGroupedProducts + preselectedGroupedProducts)
+        let newProductIDs: [Int64] = [62, 22]
+        viewModel.addProducts(groupedProductIDs + newProductIDs)
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
-        XCTAssertEqual(viewModel.groupedProductIDs, [17, 671, 62, 22])
-        let groupedProductsAfterAddition = preselectedGroupedProducts + newGroupedProducts
-        XCTAssertEqual(productsResult, .success(groupedProductsAfterAddition))
+        let productIDsAfterAddition = groupedProductIDs + newProductIDs
+        XCTAssertEqual(viewModel.groupedProductIDs, productIDsAfterAddition)
+        XCTAssertEqual(productsResult, .success(productIDsAfterAddition))
     }
 
     // MARK: `deleteProduct`
@@ -68,20 +61,20 @@ final class GroupedProductsViewModelTests: XCTestCase {
         let groupedProductIDs: [Int64] = [17, 671]
         let product = MockProduct().product().copy(groupedProducts: groupedProductIDs)
         let viewModel = GroupedProductsViewModel(product: product)
-        var productsResult: Result<[Product], GroupedProductsViewModel.Error>?
-        cancellable = viewModel.products.subscribe { result in
+        var productsResult: Result<[Int64], GroupedProductsViewModel.Error>?
+        cancellable = viewModel.productIDs.subscribe { result in
             productsResult = result
         }
 
         // Action
         let groupedProducts = groupedProductIDs.map { MockProduct().product().copy(productID: $0) }
-        viewModel.onProductsLoaded(products: groupedProducts)
         viewModel.deleteProduct(groupedProducts[1])
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
-        XCTAssertEqual(viewModel.groupedProductIDs, [17])
-        XCTAssertEqual(productsResult, .success([groupedProducts[0]]))
+        let expectedProductIDs = [groupedProductIDs[0]]
+        XCTAssertEqual(viewModel.groupedProductIDs, expectedProductIDs)
+        XCTAssertEqual(productsResult, .success(expectedProductIDs))
     }
 
     func testDeletingANonPreselectedProductResultsInAnError() {
@@ -89,14 +82,12 @@ final class GroupedProductsViewModelTests: XCTestCase {
         let groupedProductIDs: [Int64] = [17, 671]
         let product = MockProduct().product().copy(groupedProducts: groupedProductIDs)
         let viewModel = GroupedProductsViewModel(product: product)
-        var productsResult: Result<[Product], GroupedProductsViewModel.Error>?
-        cancellable = viewModel.products.subscribe { result in
+        var productsResult: Result<[Int64], GroupedProductsViewModel.Error>?
+        cancellable = viewModel.productIDs.subscribe { result in
             productsResult = result
         }
 
         // Action
-        let groupedProducts = groupedProductIDs.map { MockProduct().product().copy(productID: $0) }
-        viewModel.onProductsLoaded(products: groupedProducts)
         let newProduct = MockProduct().product().copy(productID: 62)
         viewModel.deleteProduct(newProduct)
 

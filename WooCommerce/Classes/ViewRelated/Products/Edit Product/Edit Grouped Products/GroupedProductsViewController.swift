@@ -2,6 +2,8 @@ import UIKit
 import WordPressUI
 import Yosemite
 
+import class AutomatticTracks.CrashLogging
+
 /// Displays a list of grouped products given a product's grouped product IDs, with a CTA to add more products.
 final class GroupedProductsViewController: UIViewController {
     @IBOutlet private weak var addButton: UIButton!
@@ -11,9 +13,30 @@ final class GroupedProductsViewController: UIViewController {
 
     private let imageService: ImageService
     private let viewModel: GroupedProductsViewModel
+    private let productID: Int64
     private let siteID: Int64
 
-    private var groupedProducts: [Product] = []
+    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Products in sync.
+    ///
+    private lazy var resultsController: ResultsController<StorageProduct> = {
+        let resultsController = createResultsController()
+        configureResultsController(resultsController) { [weak self] in
+            self?.tableView.reloadData()
+        }
+        return resultsController
+    }()
+
+    private var groupedProducts: [Product] {
+        resultsController.fetchedObjects.sorted { (lhs, rhs) -> Bool in
+            let lhsProductID = lhs.productID
+            let rhsProductID = rhs.productID
+            let productIDs = viewModel.groupedProductIDs
+            guard let lhsProductIDIndex = productIDs.firstIndex(of: lhsProductID), let rhsProductIDIndex = productIDs.firstIndex(of: rhsProductID) else {
+                    return true
+            }
+            return lhsProductIDIndex < rhsProductIDIndex
+        }
+    }
 
     private var cancellable: ObservationToken?
 
@@ -33,6 +56,7 @@ final class GroupedProductsViewController: UIViewController {
 
     init(product: Product, imageService: ImageService = ServiceLocator.imageService, completion: @escaping Completion) {
         self.viewModel = GroupedProductsViewModel(product: product)
+        self.productID = product.productID
         self.siteID = product.siteID
         self.imageService = imageService
         self.onCompletion = completion
@@ -63,6 +87,13 @@ final class GroupedProductsViewController: UIViewController {
 private extension GroupedProductsViewController {
     @objc func addTapped() {
         // TODO-2199: add products action
+        let excludedProductIDs = viewModel.groupedProductIDs + [productID]
+        let listSelector = ProductListSelectorViewController(excludedProductIDs: viewModel.groupedProductIDs,
+                                                             siteID: siteID) { [weak self] selectedProductIDs in
+                                                                self?.viewModel.addProducts(selectedProductIDs)
+                                                                self?.navigationController?.popViewController(animated: true)
+        }
+        show(listSelector, sender: self)
     }
 
     @objc func doneButtonTapped() {
@@ -100,6 +131,18 @@ extension GroupedProductsViewController {
     }
 }
 
+// MARK: - UI updates
+//
+private extension GroupedProductsViewController {
+    func updateNavigationRightBarButtonItem() {
+        if viewModel.hasUnsavedChanges() {
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
+        } else {
+            navigationItem.rightBarButtonItem = nil
+        }
+    }
+}
+
 // MARK: - UI configurations
 //
 private extension GroupedProductsViewController {
@@ -109,14 +152,12 @@ private extension GroupedProductsViewController {
 
     func configureNavigation() {
         title = NSLocalizedString("Grouped Products", comment: "Navigation bar title for editing linked products for a grouped product")
-
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
-
+        updateNavigationRightBarButtonItem()
         removeNavigationBackBarButtonText()
     }
 
     func configureAddButton() {
-        addButton.setTitle(NSLocalizedString("Add Product", comment: "Action to add products to a grouped product on the Grouped Products screen"),
+        addButton.setTitle(NSLocalizedString("Add Products", comment: "Action to add products to a grouped product on the Grouped Products screen"),
                            for: .normal)
         addButton.addTarget(self, action: #selector(addTapped), for: .touchUpInside)
         addButton.applySecondaryButtonStyle()
@@ -144,15 +185,52 @@ private extension GroupedProductsViewController {
     }
 
     func observeGroupedProductsResult() {
-        cancellable = viewModel.products.subscribe { [weak self] result in
+        cancellable = viewModel.productIDs.subscribe { [weak self] result in
             switch result {
             case .failure(let error):
                 self?.displayLoadingErrorNotice(error: error)
-            case .success(let products):
-                self?.groupedProducts = products
+            case .success:
+                self?.updateResultsController()
                 self?.transitionToResultsUpdatedState()
-                self?.tableView.reloadData()
+                self?.updateNavigationRightBarButtonItem()
             }
+        }
+    }
+}
+
+// MARK: - ResultsController
+//
+private extension GroupedProductsViewController {
+    func createResultsController() -> ResultsController<StorageProduct> {
+        let storageManager = ServiceLocator.storageManager
+        let productIDs = viewModel.groupedProductIDs
+        let predicate = NSPredicate(format: "siteID == %lld AND productID IN %@", siteID, productIDs)
+        let descriptor = NSSortDescriptor(keyPath: \StorageProduct.productID, ascending: true)
+
+        return ResultsController<StorageProduct>(storageManager: storageManager,
+                                                 matching: predicate,
+                                                 sortedBy: [descriptor])
+    }
+
+    func configureResultsController(_ resultsController: ResultsController<StorageProduct>, onReload: @escaping () -> Void) {
+        resultsController.onDidChangeContent = {
+            onReload()
+        }
+        resultsController.onDidResetContent = {
+            onReload()
+        }
+        do {
+            try resultsController.performFetch()
+        } catch {
+            CrashLogging.logError(error)
+        }
+        tableView.reloadData()
+    }
+
+    func updateResultsController() {
+        resultsController = createResultsController()
+        configureResultsController(resultsController) { [weak self] in
+            self?.tableView.reloadData()
         }
     }
 }
@@ -164,8 +242,7 @@ private extension GroupedProductsViewController {
         transitionToLoadingState()
         let action = ProductAction.retrieveProducts(siteID: siteID, productIDs: viewModel.groupedProductIDs) { [weak self] result in
             switch result {
-            case .success(let products):
-                self?.viewModel.onProductsLoaded(products: products)
+            case .success:
                 self?.transitionToResultsUpdatedState()
             case .failure(let error):
                 self?.displayLoadingErrorNotice(error: error)
@@ -183,7 +260,7 @@ extension GroupedProductsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return groupedProducts.count
+        return resultsController.fetchedObjects.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -238,7 +315,7 @@ private extension GroupedProductsViewController {
     }
 
     func transitionToResultsUpdatedState() {
-        state = groupedProducts.isEmpty ? .noResultsPlaceholder: .success
+        state = resultsController.numberOfObjects == 0 ? .noResultsPlaceholder: .success
     }
 }
 
@@ -249,12 +326,14 @@ private extension GroupedProductsViewController {
         let options = GhostOptions(reuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
         tableView.displayGhostContent(options: options, style: .wooDefaultGhostStyle)
         topContainerView.isHidden = true
+        resultsController.stopForwardingEvents()
     }
 
     func removePlaceholderProducts() {
+        resultsController.startForwardingEvents(to: tableView)
+        topContainerView.isHidden = false
         tableView.removeGhostContent()
         tableView.reloadData()
-        topContainerView.isHidden = false
     }
 
     /// Displays the Error Notice.

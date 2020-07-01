@@ -399,7 +399,7 @@ extension UIImage {
 
 
     static var syncImage: UIImage {
-        return UIImage.gridicon(.sync).imageFlippedForRightToLeftLayoutDirection()
+        return UIImage(imageLiteralResourceName: "icon-sync-dot")
     }
 
     /// Creates a bitmap image of the Woo "bubble" logo based on a vector image in our asset catalog.

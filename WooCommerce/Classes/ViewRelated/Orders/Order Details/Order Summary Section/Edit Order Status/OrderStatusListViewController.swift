@@ -1,6 +1,8 @@
 import UIKit
 import Yosemite
 
+import class AutomatticTracks.CrashLogging
+
 final class OrderStatusListViewController: UIViewController {
     /// Main TableView.
     ///
@@ -63,7 +65,14 @@ final class OrderStatusListViewController: UIViewController {
     ///
     private func configureResultsController() {
         statusResultsController.startForwardingEvents(to: tableView)
-        try? statusResultsController.performFetch()
+
+        do {
+            try statusResultsController.performFetch()
+        } catch {
+            CrashLogging.logError(error)
+        }
+
+        tableView.reloadData()
     }
 
     private func preselectStatusIfPossible() {
@@ -233,6 +242,7 @@ extension OrderStatusListViewController: UITableViewDataSource {
 
         let status = statusResultsController.object(at: indexPath)
         cell.textLabel?.text = status.name
+        cell.selectionStyle = .none
 
         return cell
     }

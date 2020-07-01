@@ -30,6 +30,33 @@ public final class ProductCategoriesRemote: Remote {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Create a new `ProductCategory`.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site for which we'll add a new product categories.
+    ///     - name: Category name.
+    ///     - parentID: The ID for the parent of the category.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func createProductCategory(for siteID: Int64,
+                                      name: String,
+                                      parentID: Int64?,
+                                      completion: @escaping (Result<ProductCategory, Error>) -> Void) {
+        var parameters = [
+            ParameterKey.name: name
+        ]
+
+        if let parentID = parentID {
+            parameters[ParameterKey.parent] = String(parentID)
+        }
+
+        let path = Path.categories
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+        let mapper = ProductCategoryMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 
@@ -48,5 +75,7 @@ public extension ProductCategoriesRemote {
     private enum ParameterKey {
         static let page: String = "page"
         static let perPage: String = "per_page"
+        static let name: String = "name"
+        static let parent: String = "parent"
     }
 }

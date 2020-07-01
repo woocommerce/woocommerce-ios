@@ -4,7 +4,13 @@ import CoreData
 /// CoreDataIterativeMigrator: Migrates through a series of models to allow for users to skip app versions without risk.
 /// This was derived from ALIterativeMigrator originally used in the WordPress app.
 ///
-public struct CoreDataIterativeMigrator {
+final class CoreDataIterativeMigrator {
+
+    private let fileManager: FileManagerProtocol
+
+    init(fileManager: FileManagerProtocol = FileManager.default) {
+        self.fileManager = fileManager
+    }
 
     /// Migrates a store to a particular model using the list of models to do it iteratively, if required.
     ///
@@ -18,28 +24,31 @@ public struct CoreDataIterativeMigrator {
     ///
     /// - Throws: A whole bunch of crap is possible to be thrown between Core Data and FileManager.
     ///
-    static func iterativeMigrate(sourceStore: URL, storeType: String, to targetModel: NSManagedObjectModel, using modelNames: [String]) throws -> Bool {
+    func iterativeMigrate(sourceStore: URL,
+                          storeType: String,
+                          to targetModel: NSManagedObjectModel,
+                          using modelNames: [String]) throws -> (success: Bool, debugMessages: [String]) {
         // If the persistent store does not exist at the given URL,
         // assume that it hasn't yet been created and return success immediately.
-        guard FileManager.default.fileExists(atPath: sourceStore.path) == true else {
-            return true
+        guard fileManager.fileExists(atPath: sourceStore.path) == true else {
+            return (true, [])
         }
 
         // Get the persistent store's metadata.  The metadata is used to
         // get information about the store's managed object model.
         guard let sourceMetadata = try metadataForPersistentStore(storeType: storeType, at: sourceStore) else {
-            return false
+            return (false, [])
         }
 
         // Check whether the final model is already compatible with the store.
         // If it is, no migration is necessary.
         guard targetModel.isConfiguration(withName: nil, compatibleWithStoreMetadata: sourceMetadata) == false else {
-            return true
+            return (true, [])
         }
 
         // Find the current model used by the store.
         guard let sourceModel = try model(for: sourceMetadata) else {
-            return false
+            return (false, [])
         }
 
         // Get NSManagedObjectModels for each of the model names given.
@@ -76,6 +85,8 @@ public struct CoreDataIterativeMigrator {
             modelsToMigrate = modelsToMigrate.reversed()
         }
 
+        var debugMessages = [String]()
+
         // Migrate between each model. Count - 2 because of zero-based index and we want
         // to stop at the last pair (you can't migrate the last model to nothingness).
         let upperBound = modelsToMigrate.count - 2
@@ -86,18 +97,34 @@ public struct CoreDataIterativeMigrator {
             // Check whether a custom mapping model exists.
             guard let migrateWithModel = NSMappingModel(from: nil, forSourceModel: modelFrom, destinationModel: modelTo) ??
                 (try? NSMappingModel.inferredMappingModel(forSourceModel: modelFrom, destinationModel: modelTo)) else {
-                    return false
+                    return (false, debugMessages)
+            }
+
+            guard let modelFromIndex = objectModels.firstIndex(of: modelFrom),
+                let modelToIndex = objectModels.firstIndex(of: modelTo) else {
+                    return (false, debugMessages)
             }
 
             // Migrate the model to the next step
-            DDLogWarn("⚠️ Attempting migration from \(modelNames[index]) to \(modelNames[index + 1])")
+            let migrationAttemptMessage = "⚠️ Attempting migration from \(modelNames[modelFromIndex]) to \(modelNames[modelToIndex])"
+            debugMessages.append(migrationAttemptMessage)
+            DDLogWarn(migrationAttemptMessage)
 
-            guard migrateStore(at: sourceStore, storeType: storeType, fromModel: modelFrom, toModel: modelTo, with: migrateWithModel) == true else {
-                return false
+            let (success, migrateStoreError) = migrateStore(at: sourceStore,
+                                                            storeType: storeType,
+                                                            fromModel: modelFrom,
+                                                            toModel: modelTo,
+                                                            with: migrateWithModel)
+            guard success else {
+                if let migrateStoreError = migrateStoreError {
+                    let errorInfo = (migrateStoreError as NSError?)?.userInfo ?? [:]
+                    debugMessages.append("Migration error: \(migrateStoreError) [\(errorInfo)]")
+                }
+                return (false, debugMessages)
             }
         }
 
-        return true
+        return (true, debugMessages)
     }
 }
 
@@ -108,8 +135,7 @@ private extension CoreDataIterativeMigrator {
 
     /// Build a temporary path to write the migrated store.
     ///
-    static func createTemporaryFolder(at storeURL: URL) -> URL {
-        let fileManager = FileManager.default
+    func createTemporaryFolder(at storeURL: URL) -> URL {
         let tempDestinationURL = storeURL.deletingLastPathComponent().appendingPathComponent("migration").appendingPathComponent(storeURL.lastPathComponent)
         try? fileManager.removeItem(at: tempDestinationURL.deletingLastPathComponent())
         try? fileManager.createDirectory(at: tempDestinationURL.deletingLastPathComponent(), withIntermediateDirectories: false, attributes: nil)
@@ -119,8 +145,7 @@ private extension CoreDataIterativeMigrator {
 
     /// Move the original source store to a backup location.
     ///
-    static func makeBackup(at storeURL: URL) throws -> URL {
-        let fileManager = FileManager.default
+    func makeBackup(at storeURL: URL) throws -> URL {
         let backupURL = storeURL.deletingLastPathComponent().appendingPathComponent("backup")
         try? fileManager.removeItem(at: backupURL)
         try? fileManager.createDirectory(atPath: backupURL.path, withIntermediateDirectories: false, attributes: nil)
@@ -143,9 +168,8 @@ private extension CoreDataIterativeMigrator {
 
     /// Copy migrated over the original files
     ///
-    static func copyMigratedOverOriginal(from tempDestinationURL: URL, to storeURL: URL) throws {
+    func copyMigratedOverOriginal(from tempDestinationURL: URL, to storeURL: URL) throws {
         do {
-            let fileManager = FileManager.default
             let files = try fileManager.contentsOfDirectory(atPath: tempDestinationURL.deletingLastPathComponent().path)
             try files.forEach { (file) in
                 if file.hasPrefix(tempDestinationURL.lastPathComponent) {
@@ -163,9 +187,8 @@ private extension CoreDataIterativeMigrator {
 
     /// Delete backup copies of the original file before migration
     ///
-    static func deleteBackupCopies(at backupURL: URL) throws {
+    func deleteBackupCopies(at backupURL: URL) throws {
         do {
-            let fileManager = FileManager.default
             let files = try fileManager.contentsOfDirectory(atPath: backupURL.path)
             try files.forEach { (file) in
                 let fullPath = URL(fileURLWithPath: backupURL.path).appendingPathComponent(file).path
@@ -183,11 +206,11 @@ private extension CoreDataIterativeMigrator {
 //
 private extension CoreDataIterativeMigrator {
 
-    static func migrateStore(at url: URL,
+    func migrateStore(at url: URL,
                              storeType: String,
                              fromModel: NSManagedObjectModel,
                              toModel: NSManagedObjectModel,
-                             with mappingModel: NSMappingModel) -> Bool {
+                             with mappingModel: NSMappingModel) -> (success: Bool, error: Error?) {
         let tempDestinationURL = createTemporaryFolder(at: url)
 
         // Migrate from the source model to the target model using the mapping,
@@ -202,7 +225,7 @@ private extension CoreDataIterativeMigrator {
                                       destinationType: storeType,
                                       destinationOptions: nil)
         } catch {
-            return false
+            return (false, error)
         }
 
         do {
@@ -210,13 +233,13 @@ private extension CoreDataIterativeMigrator {
             try copyMigratedOverOriginal(from: tempDestinationURL, to: url)
             try deleteBackupCopies(at: backupURL)
         } catch {
-            return false
+            return (false, error)
         }
 
-        return true
+        return (true, nil)
     }
 
-    static func metadataForPersistentStore(storeType: String, at url: URL) throws -> [String: Any]? {
+    func metadataForPersistentStore(storeType: String, at url: URL) throws -> [String: Any]? {
 
         guard let sourceMetadata = try? NSPersistentStoreCoordinator.metadataForPersistentStore(ofType: storeType, at: url, options: nil) else {
             let description = "Failed to find source metadata for store: \(url)"
@@ -226,7 +249,7 @@ private extension CoreDataIterativeMigrator {
         return sourceMetadata
     }
 
-    static func model(for metadata: [String: Any]) throws -> NSManagedObjectModel? {
+    func model(for metadata: [String: Any]) throws -> NSManagedObjectModel? {
         let bundle = Bundle(for: CoreDataManager.self)
         guard let sourceModel = NSManagedObjectModel.mergedModel(from: [bundle], forStoreMetadata: metadata) else {
             let description = "Failed to find source model for metadata: \(metadata)"
@@ -236,7 +259,7 @@ private extension CoreDataIterativeMigrator {
         return sourceModel
     }
 
-    static func models(for names: [String]) throws -> [NSManagedObjectModel] {
+    func models(for names: [String]) throws -> [NSManagedObjectModel] {
         let models = try names.map { (name) -> NSManagedObjectModel in
             guard let url = urlForModel(name: name, in: nil),
                 let model = NSManagedObjectModel(contentsOf: url) else {
@@ -250,7 +273,7 @@ private extension CoreDataIterativeMigrator {
         return models
     }
 
-    static func urlForModel(name: String, in directory: String?) -> URL? {
+    func urlForModel(name: String, in directory: String?) -> URL? {
         let bundle = Bundle(for: CoreDataManager.self)
         var url = bundle.url(forResource: name, withExtension: "mom", subdirectory: directory)
 

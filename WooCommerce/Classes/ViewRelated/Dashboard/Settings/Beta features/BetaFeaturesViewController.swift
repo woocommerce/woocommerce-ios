@@ -82,28 +82,8 @@ private extension BetaFeaturesViewController {
     /// Configure sections for table view.
     ///
     func configureSections() {
-        let action = AppSettingsAction.loadStatsVersionEligible(siteID: siteID) { [weak self] eligibleStatsVersion in
-            guard let self = self else {
-                return
-            }
-            guard eligibleStatsVersion == .v4 else {
-                self.sections = [
-                    self.productsSection()
-                ]
-
-                return
-            }
-            self.sections = [
-                self.statsSection(),
-                self.productsSection()
-            ]
-        }
-        ServiceLocator.stores.dispatch(action)
-    }
-
-    func statsSection() -> Section {
-        return Section(rows: [.statsVersionSwitch,
-                              .statsVersionDescription])
+        // This is empty because there aren't any ongoing experiments
+        self.sections = []
     }
 
     func productsSection() -> Section {
@@ -128,11 +108,6 @@ private extension BetaFeaturesViewController {
         }
 
         switch cell {
-        // Stats v4
-        case let cell as SwitchTableViewCell where row == .statsVersionSwitch:
-            configureStatsVersionSwitch(cell: cell)
-        case let cell as BasicTableViewCell where row == .statsVersionDescription:
-            configureStatsVersionDescription(cell: cell)
         // Product list
         case let cell as SwitchTableViewCell where row == .productsSwitch:
             configureProductsSwitch(cell: cell)
@@ -141,41 +116,6 @@ private extension BetaFeaturesViewController {
         default:
             fatalError()
         }
-    }
-
-    // MARK: - Stats version feature
-
-    func configureStatsVersionSwitch(cell: SwitchTableViewCell) {
-        configureCommonStylesForSwitchCell(cell)
-
-        let statsVersionTitle = NSLocalizedString("Improved stats",
-                                                  comment: "My Store > Settings > Experimental features > Switch stats version")
-        cell.title = statsVersionTitle
-
-        let action = AppSettingsAction.loadInitialStatsVersionToShow(siteID: siteID) { initialStatsVersion in
-            cell.isOn = initialStatsVersion == .v4
-        }
-        ServiceLocator.stores.dispatch(action)
-
-        cell.onChange = { [weak self] isSwitchOn in
-            guard let siteID = self?.siteID else {
-                return
-            }
-            ServiceLocator.analytics.track(.settingsBetaFeaturesNewStatsUIToggled)
-
-            let statsVersion: StatsVersion = isSwitchOn ? .v4: .v3
-            let action = AppSettingsAction.setStatsVersionPreference(siteID: siteID,
-                                                                     statsVersion: statsVersion)
-            ServiceLocator.stores.dispatch(action)
-        }
-    }
-
-    func configureStatsVersionDescription(cell: BasicTableViewCell) {
-        configureCommonStylesForDescriptionCell(cell)
-        cell.textLabel?.text = NSLocalizedString("Try the new stats available with the WooCommerce Admin plugin",
-                                                 comment: "My Store > Settings > Experimental features > Stats version description")
-
-        cell.accessibilityIdentifier = "beta-features-improved-stats-cell"
     }
 
     // MARK: - Product List feature
@@ -283,19 +223,15 @@ private struct Section {
 }
 
 private enum Row: CaseIterable {
-    // Stats v4.
-    case statsVersionSwitch
-    case statsVersionDescription
-
     // Products.
     case productsSwitch
     case productsDescription
 
     var type: UITableViewCell.Type {
         switch self {
-        case .statsVersionSwitch, .productsSwitch:
+        case .productsSwitch:
             return SwitchTableViewCell.self
-        case .statsVersionDescription, .productsDescription:
+        case .productsDescription:
             return BasicTableViewCell.self
         }
     }

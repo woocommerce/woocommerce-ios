@@ -4,10 +4,10 @@ import Kingfisher
 import Yosemite
 
 final class ProductImagesCollectionViewDataSource: NSObject {
-    private let viewModel: ProductImagesViewModel
+    private let viewModel: ProductImagesHeaderViewModel
     private let productUIImageLoader: ProductUIImageLoader
 
-    init(viewModel: ProductImagesViewModel,
+    init(viewModel: ProductImagesHeaderViewModel,
          productUIImageLoader: ProductUIImageLoader) {
         self.viewModel = viewModel
         self.productUIImageLoader = productUIImageLoader

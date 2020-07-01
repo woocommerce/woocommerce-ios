@@ -10,7 +10,7 @@ class CoreDataManagerTests: XCTestCase {
     /// Verifies that the Data Model URL contains the ContextIdentifier String.
     ///
     func testModelUrlMapsToDataModelWithContextIdentifier() {
-        let manager = CoreDataManager(name: "WooCommerce")
+        let manager = CoreDataManager(name: "WooCommerce", crashLogger: MockCrashLogger())
         XCTAssertEqual(manager.modelURL.lastPathComponent, "WooCommerce.momd")
         XCTAssertNoThrow(manager.managedModel)
     }
@@ -18,7 +18,7 @@ class CoreDataManagerTests: XCTestCase {
     /// Verifies that the Store URL contains the ContextIdentifier string.
     ///
     func testStorageUrlMapsToSqliteFileWithContextIdentifier() {
-        let manager = CoreDataManager(name: "WooCommerce")
+        let manager = CoreDataManager(name: "WooCommerce", crashLogger: MockCrashLogger())
         XCTAssertEqual(manager.storeURL.lastPathComponent, "WooCommerce.sqlite")
         XCTAssertEqual(manager.storeDescription.url?.lastPathComponent, "WooCommerce.sqlite")
     }
@@ -26,7 +26,7 @@ class CoreDataManagerTests: XCTestCase {
     /// Verifies that the PersistentContainer properly loads the sqlite database.
     ///
     func testPersistentContainerLoadsExpectedDataModelAndSqliteDatabase() {
-        let manager = CoreDataManager(name: "WooCommerce")
+        let manager = CoreDataManager(name: "WooCommerce", crashLogger: MockCrashLogger())
         let container = manager.persistentContainer
 
         XCTAssertEqual(container.managedObjectModel, manager.managedModel)
@@ -36,14 +36,14 @@ class CoreDataManagerTests: XCTestCase {
     /// Verifies that the ContextManager's viewContext matches the PersistenContainer.viewContext
     ///
     func testViewContextPropertyReturnsPersistentContainerMainContext() {
-        let manager = CoreDataManager(name: "WooCommerce")
+        let manager = CoreDataManager(name: "WooCommerce", crashLogger: MockCrashLogger())
         XCTAssertEqual(manager.viewStorage as? NSManagedObjectContext, manager.persistentContainer.viewContext)
     }
 
     /// Verifies that performBackgroundTask effectively runs received closure in BG.
     ///
     func testPerformTaskInBackgroundEffectivelyRunsReceivedClosureInBackgroundThread() {
-        let manager = CoreDataManager(name: "WooCommerce")
+        let manager = CoreDataManager(name: "WooCommerce", crashLogger: MockCrashLogger())
         let expectation = self.expectation(description: "Background")
 
         manager.performBackgroundTask { (_) in
@@ -57,7 +57,7 @@ class CoreDataManagerTests: XCTestCase {
     /// Verifies that derived context is instantiated correctly.
     ///
     func testDerivedStorageIsInstantiatedCorrectly() {
-        let manager = CoreDataManager(name: "WooCommerce")
+        let manager = CoreDataManager(name: "WooCommerce", crashLogger: MockCrashLogger())
         let viewContext = (manager.viewStorage as? NSManagedObjectContext)
         let derivedContext = (manager.newDerivedStorage() as? NSManagedObjectContext)
 

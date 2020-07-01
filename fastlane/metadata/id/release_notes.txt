@@ -1,2 +1,0 @@
-* Penyuntingan deskripsi produk yang lebih mudah: Ketuk di mana saja pada sel produk untuk mulai menyunting. Butuh keyboard? Keyboard nanti akan muncul otomatis. Selain itu, kami juga memperbaiki beberapa bug.
-* Pelaporan pesanan terkini: Daftar Pesanan akan disegarkan otomatis tiap kali Anda membuka aplkasi atau mendapatkan pesanan baru, dan daftar Memproses Pesanan kini menampilkan pesanan yang akan datang.

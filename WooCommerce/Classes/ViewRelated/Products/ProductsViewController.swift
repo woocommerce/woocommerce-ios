@@ -2,6 +2,8 @@ import UIKit
 import WordPressUI
 import Yosemite
 
+import class AutomatticTracks.CrashLogging
+
 /// Shows a list of products with pull to refresh and infinite scroll
 ///
 final class ProductsViewController: UIViewController {
@@ -74,6 +76,10 @@ final class ProductsViewController: UIViewController {
         didSet {
             if sortOrder != oldValue {
                 resultsController.updateSortOrder(sortOrder)
+
+                /// Reload data because `updateSortOrder` generates a new `predicate` which calls `performFetch`
+                tableView.reloadData()
+
                 syncingCoordinator.resynchronize {}
             }
         }
@@ -117,6 +123,10 @@ final class ProductsViewController: UIViewController {
                                                   stockStatus: filters.stockStatus,
                                                   productStatus: filters.productStatus,
                                                   productType: filters.productType)
+
+                /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
+                tableView.reloadData()
+
                 syncingCoordinator.resynchronize {}
             }
         }
@@ -213,6 +223,10 @@ private extension ProductsViewController {
 
         present(navigationController, animated: true, completion: nil)
     }
+
+    @objc func scanProducts() {
+        // TODO-2407: scan barcodes for products
+    }
 }
 
 // MARK: - View Configuration
@@ -242,6 +256,23 @@ private extension ProductsViewController {
 
             return button
         }()
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.barcodeScanner) {
+            navigationItem.rightBarButtonItem = {
+                let button = UIBarButtonItem(image: .scanImage,
+                                             style: .plain,
+                                             target: self,
+                                             action: #selector(scanProducts))
+                button.accessibilityTraits = .button
+                button.accessibilityLabel = NSLocalizedString("Scan products", comment: "Scan Products")
+                button.accessibilityHint = NSLocalizedString(
+                    "Scans barcodes that are associated with a product SKU for stock management.",
+                    comment: "VoiceOver accessibility hint, informing the user the button can be used to scan products."
+                )
+
+                return button
+            }()
+        }
     }
 
     /// Apply Woo styles.
@@ -369,7 +400,13 @@ private extension ProductsViewController {
             onReload()
         }
 
-        try? resultsController.performFetch()
+        do {
+            try resultsController.performFetch()
+        } catch {
+            CrashLogging.logError(error)
+        }
+
+        tableView.reloadData()
     }
 }
 

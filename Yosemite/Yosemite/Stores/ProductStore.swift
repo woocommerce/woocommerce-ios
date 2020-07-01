@@ -6,10 +6,21 @@ import Storage
 // MARK: - ProductStore
 //
 public class ProductStore: Store {
+    private let remote: ProductsEndpointsProviding
 
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.newDerivedStorage()
     }()
+
+    public override convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+        let remote = ProductsRemote(network: network)
+        self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+    }
+
+    init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: ProductsEndpointsProviding) {
+        self.remote = remote
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
 
     /// Registers for supported Actions.
     ///
@@ -148,15 +159,15 @@ private extension ProductStore {
         }
 
         let remote = ProductsRemote(network: network)
-        remote.loadProducts(for: order.siteID, by: missingIDs) { [weak self] (products, error) in
-            guard let products = products else {
+        remote.loadProducts(for: order.siteID, by: missingIDs) { [weak self] result in
+            switch result {
+            case .success(let products):
+                self?.upsertStoredProductsInBackground(readOnlyProducts: products, onCompletion: {
+                    onCompletion(nil)
+                })
+            case .failure(let error):
                 onCompletion(error)
-                return
             }
-
-            self?.upsertStoredProductsInBackground(readOnlyProducts: products, onCompletion: {
-                onCompletion(nil)
-            })
         }
     }
 
@@ -165,26 +176,27 @@ private extension ProductStore {
     ///
     func retrieveProducts(siteID: Int64,
                           productIDs: [Int64],
-                          onCompletion: @escaping (Error?) -> Void) {
-        let remote = ProductsRemote(network: network)
+                          onCompletion: @escaping (Result<[Product], Error>) -> Void) {
+        guard productIDs.isEmpty == false else {
+            onCompletion(.success([]))
+            return
+        }
 
-        remote.loadProducts(for: siteID, by: productIDs) { [weak self] (products, error) in
-            guard let products = products else {
-                onCompletion(error)
-                return
+        remote.loadProducts(for: siteID, by: productIDs) { [weak self] result in
+            switch result {
+            case .success(let products):
+                self?.upsertStoredProductsInBackground(readOnlyProducts: products, onCompletion: {
+                    onCompletion(result)
+                })
+            case .failure:
+                onCompletion(result)
             }
-
-            self?.upsertStoredProductsInBackground(readOnlyProducts: products, onCompletion: {
-                onCompletion(nil)
-            })
         }
     }
 
     /// Retrieves the product associated with a given siteID + productID (if any!).
     ///
     func retrieveProduct(siteID: Int64, productID: Int64, onCompletion: @escaping (Networking.Product?, Error?) -> Void) {
-        let remote = ProductsRemote(network: network)
-
         remote.loadProduct(for: siteID, productID: productID) { [weak self] result in
             guard let self = self else {
                 return

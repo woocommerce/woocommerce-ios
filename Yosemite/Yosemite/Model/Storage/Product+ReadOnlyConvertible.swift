@@ -40,6 +40,7 @@ extension Storage.Product: ReadOnlyConvertible {
         downloadable = product.downloadable
         downloadLimit = Int64(product.downloadLimit)
         downloadExpiry = Int64(product.downloadExpiry)
+        buttonText = product.buttonText
         externalURL = product.externalURL
         taxStatusKey = product.taxStatusKey
         taxClass = product.taxClass
@@ -118,6 +119,7 @@ extension Storage.Product: ReadOnlyConvertible {
                        downloads: productDownloads.sorted(),
                        downloadLimit: Int(downloadLimit),
                        downloadExpiry: Int(downloadExpiry),
+                       buttonText: buttonText,
                        externalURL: externalURL,
                        taxStatusKey: taxStatusKey,
                        taxClass: taxClass,

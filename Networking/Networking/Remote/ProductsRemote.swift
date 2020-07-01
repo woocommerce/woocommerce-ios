@@ -1,8 +1,18 @@
 import Foundation
 
+/// Protocol for `ProductsRemote` mainly used for mocking.
+///
+/// The required methods are intentionally incomplete. Feel free to add the other ones.
+///
+public protocol ProductsEndpointsProviding {
+    func loadProduct(for siteID: Int64, productID: Int64, completion: @escaping (Result<Product, Error>) -> Void)
+
+    func loadProducts(for siteID: Int64, by productIDs: [Int64], completion: @escaping (Result<[Product], Error>) -> Void)
+}
+
 /// Product: Remote Endpoints
 ///
-public class ProductsRemote: Remote {
+public final class ProductsRemote: Remote, ProductsEndpointsProviding {
 
     // MARK: - Products
 
@@ -62,7 +72,12 @@ public class ProductsRemote: Remote {
     ///     - productIDs: The array of product IDs that are requested.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadProducts(for siteID: Int64, by productIDs: [Int64], completion: @escaping ([Product]?, Error?) -> Void) {
+    public func loadProducts(for siteID: Int64, by productIDs: [Int64], completion: @escaping (Result<[Product], Error>) -> Void) {
+        guard productIDs.isEmpty == false else {
+            completion(.success([]))
+            return
+        }
+
         let stringOfProductIDs = productIDs.map { String($0) }
             .filter { !$0.isEmpty }
             .joined(separator: ",")

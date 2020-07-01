@@ -1,8 +1,18 @@
 import Foundation
 
+/// Protocol for `ProductReviewsRemote` mainly used for mocking.
+///
+/// The required methods are intentionally incomplete. Feel free to add the other ones.
+///
+public protocol ProductReviewsEndpointsProviding {
+    func loadProductReview(for siteID: Int64,
+                           reviewID: Int64,
+                           completion: @escaping (Result<ProductReview, Error>) -> Void)
+}
+
 /// Product reviews: Remote Endpoints
 ///
-public final class ProductReviewsRemote: Remote {
+public final class ProductReviewsRemote: Remote, ProductReviewsEndpointsProviding {
 
     // MARK: - Product Reviews
 

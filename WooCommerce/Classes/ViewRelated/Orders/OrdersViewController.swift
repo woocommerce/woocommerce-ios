@@ -18,7 +18,7 @@ protocol OrdersViewControllerDelegate: class {
 
 /// OrdersViewController: Displays the list of Orders associated to the active Store / Account.
 ///
-class OrdersViewController: UIViewController {
+final class OrdersViewController: UIViewController {
 
     weak var delegate: OrdersViewControllerDelegate?
 
@@ -26,7 +26,7 @@ class OrdersViewController: UIViewController {
 
     /// Main TableView.
     ///
-    @IBOutlet private var tableView: UITableView!
+    private lazy var tableView = UITableView(frame: .zero, style: .grouped)
 
     /// Ghostable TableView.
     ///
@@ -96,7 +96,7 @@ class OrdersViewController: UIViewController {
         self.viewModel = viewModel
         self.emptyStateConfig = emptyStateConfig
 
-        super.init(nibName: Self.nibName, bundle: nil)
+        super.init(nibName: nil, bundle: nil)
 
         self.title = title
     }
@@ -108,15 +108,15 @@ class OrdersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        refreshStatusPredicate()
         registerTableViewHeadersAndCells()
-
-        configureSyncingCoordinator()
         configureTableView()
         configureGhostableTableView()
-        configureResultsControllers()
+
+        refreshStatusPredicate()
+        configureStatusResultsController()
 
         configureViewModel()
+        configureSyncingCoordinator()
 
         startListeningToNotifications()
     }
@@ -151,6 +151,9 @@ private extension OrdersViewController {
         }
 
         viewModel.activateAndForwardUpdates(to: tableView)
+
+        // Reload table because the activate call above executes a performFetch()
+        tableView.reloadData()
     }
 
     /// Setup: Order status predicate
@@ -169,10 +172,9 @@ private extension OrdersViewController {
         statusResultsController.predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
     }
 
-    /// Setup: Results Controller
+    /// Setup: Status Results Controller
     ///
-    func configureResultsControllers() {
-        // Order status FRC
+    func configureStatusResultsController() {
         try? statusResultsController.performFetch()
     }
 
@@ -185,6 +187,9 @@ private extension OrdersViewController {
     /// Setup: TableView
     ///
     func configureTableView() {
+        tableView.delegate = self
+        tableView.dataSource = self
+
         view.backgroundColor = .listBackground
         tableView.backgroundColor = .listBackground
         tableView.refreshControl = refreshControl
@@ -194,6 +199,10 @@ private extension OrdersViewController {
         tableView.sectionFooterHeight = .leastNonzeroMagnitude
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = UITableView.automaticDimension
+
+        view.addSubview(tableView)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToSafeArea(tableView)
     }
 
     /// Setup: Ghostable TableView
@@ -491,7 +500,11 @@ extension OrdersViewController: UITableViewDelegate {
             assertionFailure("Expected OrderDetailsViewController to be instantiated")
             return
         }
-        orderDetailsVC.viewModel = viewModel.detailsViewModel(at: indexPath)
+        let orderDetailsViewModel = viewModel.detailsViewModel(at: indexPath)
+        orderDetailsVC.viewModel = orderDetailsViewModel
+
+        ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": orderDetailsViewModel.order.orderID,
+        "status": orderDetailsViewModel.order.statusKey])
 
         navigationController?.pushViewController(orderDetailsVC, animated: true)
     }
@@ -501,23 +514,6 @@ extension OrdersViewController: UITableViewDelegate {
         syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: orderIndex)
     }
 }
-
-
-// MARK: - Segues
-//
-extension OrdersViewController {
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let singleOrderViewController = segue.destination as? OrderDetailsViewController, let viewModel = sender as? OrderDetailsViewModel else {
-            return
-        }
-
-        ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": viewModel.order.orderID,
-                                                               "status": viewModel.order.statusKey])
-        singleOrderViewController.viewModel = viewModel
-    }
-}
-
 
 // MARK: - Finite State Machine Management
 //

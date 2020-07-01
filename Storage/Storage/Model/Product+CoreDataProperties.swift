@@ -61,6 +61,7 @@ extension Product {
     @NSManaged public var backordersKey: String
     @NSManaged public var backordersAllowed: Bool
     @NSManaged public var backordered: Bool
+    @NSManaged public var buttonText: String
     @NSManaged public var dimensions: ProductDimensions?
     @NSManaged public var attributes: Set<ProductAttribute>?
     @NSManaged public var categories: Set<ProductCategory>?

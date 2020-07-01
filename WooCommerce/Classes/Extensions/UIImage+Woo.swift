@@ -224,6 +224,12 @@ extension UIImage {
         return UIImage.gridicon(.image)
     }
 
+    /// Link Image
+    ///
+    static var linkImage: UIImage {
+        return UIImage.gridicon(.link)
+    }
+
     /// Login magic link
     ///
     static var loginMagicLinkImage: UIImage {
@@ -337,6 +343,12 @@ extension UIImage {
         return UIImage.gridicon(.spam)
     }
 
+    /// Scan Icon
+    ///
+    static var scanImage: UIImage {
+        return UIImage(named: "icon-scan")!
+    }
+
     /// Returns a star icon with the given size
     ///
     /// - Parameters:
@@ -377,6 +389,17 @@ extension UIImage {
     ///
     static var trashImage: UIImage {
         return UIImage.gridicon(.trash)
+    }
+
+    /// Widgets Icon
+    ///
+    static var widgetsImage: UIImage {
+        return UIImage(named: "icon-widgets")!.withRenderingMode(.alwaysTemplate)
+    }
+
+
+    static var syncImage: UIImage {
+        return UIImage.gridicon(.sync).imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Creates a bitmap image of the Woo "bubble" logo based on a vector image in our asset catalog.

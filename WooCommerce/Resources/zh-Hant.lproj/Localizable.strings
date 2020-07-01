@@ -1,9 +1,18 @@
-/* Translation-Revision-Date: 2020-05-12 09:54:04+0000 */
+/* Translation-Revision-Date: 2020-06-25 08:54:06+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
 
 /* No comment provided by engineer. */
+"#%1$@ %2$@ %3$@" = "#%1$@ %2$@ %3$@";
+
+/* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
+"#%@" = "#%@";
+
+/* In Order Details, the pattern to show the billed person's full name. For example, “John Doe”. The %1$@ is the first name. The %2$@ is the last name. */
+"%1$@ %2$@" = "%2$@%1$@";
+
+/* Format for each Product attribute */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld 選項)";
 
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
@@ -16,19 +25,19 @@
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (向顧客顯示)";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
-"%1$@ left a review on %2$@" = "%1$@ left a review on %2$@";
+"%1$@ left a review on %2$@" = "%1$@ 在 %2$@ 上留下了評論";
 
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "已在 %1$@ 收到 %2$@ 付款";
+
+/* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). */
+"%1$@ x %2$@" = "%1$@ x %2$@";
 
 /* Displays a time range followed by a specific date/time */
 "%1$@ › %2$@" = "%1$@ › %2$@";
 
 /* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@-%2$@";
-
-/* <item total> (<item individual price> multipled by <quantity>) */
-"%@ (%@ x %@)" = "%1$@ (%2$@ x %3$@)";
 
 /* 1 Item */
 "%@ Item" = "%@ 個品項";
@@ -37,7 +46,7 @@
 "%@ Items" = "%@ 個品項";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
-"%@ left a review on %@" = "%@ left a review on %@";
+"%@ left a review on %@" = "%1$@ 在 %2$@ 上留下了評論";
 
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
 "%@ via %@" = "已在 %1$@ 收到 %2$@ 付款";
@@ -56,6 +65,9 @@
 
 /* Placeholder of the Product Short Description row on Product main screen */
 "A brief excerpt about the product" = "關於產品的簡短摘錄";
+
+/* Subtitle of the product form bottom sheet action for editing short description. */
+"A brief excerpt about your product" = "關於產品的簡短摘錄";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "需要有效的電子郵件地址才能傳送驗證連結。請返回上一個畫面，並提供有效的電子郵件地址。";
@@ -102,6 +114,13 @@
 /* Accessibility label for the 'Add a tracking' button */
 "Add a tracking" = "新增追蹤";
 
+/* Title of the bottom sheet from the product form to add more product details.
+   Title of the button at the bottom of the product form to add more product details. */
+"Add more details" = "新增更多詳細資料";
+
+/* Subtitle of the product form bottom sheet action for editing shipping settings. */
+"Add weight and dimensions" = "新增重量和尺寸";
+
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "新增訂單追蹤。";
 
@@ -113,6 +132,9 @@
 
 /* Title for the second page in the Orders tab. */
 "All Orders" = "全部訂單";
+
+/* The message shown in the Orders → Processing tab if the list is empty. */
+"All orders have been fulfilled" = "所有訂單均已完成";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "已將所有評論標記為已讀";
@@ -171,6 +193,9 @@
 
 /* Message title for Discard Changes Action Sheet */
 "Are you sure you want to discard these changes?" = "確定要捨棄這些變更？";
+
+/* Alert title to confirm the user wants to discard changes in Product Visibility */
+"Are you sure you want to discard your changes?" = "確定要放棄變更嗎？";
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "你確定要登出帳號 %@ 嗎？";
@@ -260,7 +285,7 @@
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "隨時隨地掌握最愛網站的最新動態並加入討論。";
 
 /* Edit product categories screen - Screen title
-   Title of the Categories row on Product main screen */
+   Title of the Categories row on Product main screen - Title of the product form bottom sheet action for editing categories. */
 "Categories" = "分類";
 
 /* Popup title for wrong SSL certificate. */
@@ -280,9 +305,6 @@
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "收集資訊";
-
-/* Shown while the app waits for the site creation process to complete. */
-"Completing Signup" = "正在完成註冊程序";
 
 /* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
 "Composes a new email message to the billing customer." = "撰寫新的電子郵件訊息給帳單客戶。";
@@ -429,6 +451,9 @@
 /* Format of one dimension on the Shipping Settings row - dimension[unit] */
 "Dimensions: %1$@%2$@" = "尺寸：%1$@%2$@";
 
+/* Alert button title - dismisses alert, which discard changes on Product Visibility screen */
+"Discard" = "捨棄";
+
 /* Button title Discard Changes in Discard Changes Action Sheet */
 "Discard changes" = "捨棄變更";
 
@@ -499,11 +524,17 @@
 /* Accessibility label that lets the user know the billing customer's email address */
 "Email: %@" = "電子郵件：%@";
 
+/* Accessibility text for Unit Input cell */
+"Empty" = "清空";
+
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "空的網址";
 
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "輸入貨運業者名稱";
+
+/* Enter password placeholder in Product Visibility */
+"Enter password" = "輸入密碼";
 
 /* Instruction text on the login's site addresss screen.
    Label for button to log in using your site address. */
@@ -553,8 +584,12 @@
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "使用密碼管理員填寫";
 
-/* Title of the toolbar button to filter products by different attributes. */
+/* Title of the toolbar button to filter products by different attributes.
+   Title of the toolbar button to filter products without any filters applied. */
 "Filter" = "篩選";
+
+/* Title of the toolbar button to filter products with filters applied. */
+"Filter (%ld)" = "篩選條件 (%ld)";
 
 /* Navigation bar title format for filtering a list of products without filters applied. */
 "Filters" = "篩選條件";
@@ -708,7 +743,7 @@
 "Invalid username" = "無效的使用者名稱";
 
 /* Product Details - inventory section title
-   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Product Inventory Settings navigation title - Title of the Inventory Settings row on Product main screen */
+   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Product Inventory Settings navigation title - Title of the Inventory Settings row on Product main screen - Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "庫存";
 
 /* An error message shown during log in when the username or password is incorrect. */
@@ -720,6 +755,9 @@
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "斜體";
 
+/* Alert button title - which keeps the user on the Product Visibility screen */
+"Keep Editing" = "繼續編輯";
+
 /* Last 24 hours section header */
 "Last 24 hours" = "過去 24 小時";
 
@@ -730,7 +768,7 @@
 "Launch Wormholy debug" = "啟動 Wormholy 除錯";
 
 /* Settings > Privacy Settings. A text link to the cookie policy.
-   The action of the top banner on Dashboard that indicates new stats is unavailable */
+   The action of the top banner on Dashboard that indicates new stats is unavailable - Title of button shown in the Orders → All Orders tab if the list is empty. */
 "Learn more" = "瞭解更多";
 
 /* Title of the cell in Product Shipping Settings > Length */
@@ -751,7 +789,7 @@
 /* 'Limit: 2 downloads', for example. */
 "Limit: %ld downloads" = "限制：%ld 下載";
 
-/* The title of the Work In Progress top banner on the Products tab */
+/* The title of the Work In Progress top banner on the Products tab. */
 "Limited editing available" = "僅可進行有限編輯";
 
 /* Title for screen in editor that allows to configure link options */
@@ -918,9 +956,6 @@
 /* The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "尚未有任何產品";
 
-/* Orders List (Empty State + Filters) */
-"No results for the selected criteria" = "找不到與指定條件相符的結果";
-
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier' */
 "No results found for (term)\nAdd a custom carrier" = "No results found for (term)\nAdd a custom carrier";
 
@@ -1024,6 +1059,9 @@
    Orders stat label on dashboard - should be plural. - The title of the Orders tab. */
 "Orders" = "訂單";
 
+/* Subtitle of the product form bottom sheet action for editing categories. */
+"Organise your products into related groups" = "將你的產品整理至相關群組";
+
 /* My Store > Settings > Other app section */
 "Other" = "其他";
 
@@ -1037,8 +1075,11 @@
 "Paid By Customer" = "顧客付款";
 
 /* Accessibility label for the password text field in the self-hosted login page.
-   Login dialog password placeholder - Password placeholder */
+   Login dialog password placeholder - Password field title in Product Visibility - Password placeholder */
 "Password" = "密碼";
+
+/* One of the possible options in Product Visibility */
+"Password Protected" = "受密碼保護";
 
 /* Paste without Formatting Menu Item */
 "Paste without Formatting" = "貼上並且不設定格式";
@@ -1117,6 +1158,9 @@
 /* Product Details - pricing and inventory section title */
 "Pricing and Inventory" = "定價和庫存";
 
+/* Opens the California Privacy Policy web page */
+"Privacy Notice for California Users" = "加州使用者的隱私權聲明";
+
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "隱私權政策";
 
@@ -1124,17 +1168,23 @@
    Privacy settings screen title */
 "Privacy Settings" = "隱私權設定";
 
-/* Display label for the product's private status */
+/* One of the possible options in Product Visibility */
 "Private" = "私人";
 
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "私人備註";
 
+/* Display label for the product's private status */
+"Privately published" = "私密發佈";
+
 /* Title for the first page in the Orders tab. */
 "Processing" = "處理中";
 
+/* Shown while the app waits for the account process to complete. */
+"Processing Account" = "正在處理帳號";
+
 /* Description for Top Performers left column header
-   Product section title - Section header title for the product */
+   Product section title - Product section title if there is only one product. - Section header title for the product */
 "Product" = "產品";
 
 /* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
@@ -1147,20 +1197,20 @@
    Product Settings navigation title */
 "Product Settings" = "產品設定";
 
+/* Row title for filtering products by product status. */
+"Product Status" = "產品狀態";
+
 /* Product Total label for payment view */
 "Product Total" = "產品總額";
+
+/* Row title for filtering products by product type. */
+"Product Type" = "產品類型";
 
 /* My Store > Settings > Experimental features > Product editing */
 "Product editing" = "產品編輯";
 
-/* Row title for filtering products by product status. */
-"Product status" = "產品狀態";
-
-/* Row title for filtering products by product type. */
-"Product type" = "產品類型";
-
 /* My Store > Settings > Experimental features > Switch Products
-   Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
+   Product section title if there is more than one product. - Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "產品";
 
 /* Label for computed value `product refunds + taxes = subtotal`. */
@@ -1168,6 +1218,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "提示致電或傳簡訊給帳單客戶的選項。";
+
+/* One of the possible options in Product Visibility */
+"Public" = "公開";
 
 /* Title of the Publish Settings section on Product Settings screen */
 "Publish Settings" = "發表設定";
@@ -1325,6 +1378,12 @@
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "折扣價格：%@";
 
+/* Scan Products */
+"Scan products" = "掃描產品";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
+"Scans barcodes that are associated with a product SKU for stock management." = "掃描與產品 SKU 關聯的條碼，以便管理庫存。";
+
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "排程折扣";
 
@@ -1389,7 +1448,7 @@
 "Shipped %@" = "已運送 %@";
 
 /* Product Details > Purchase Details > Shipping cell title
-   Product Shipping Settings navigation title - Shipping label for payment view - Title of the Shipping Settings row on Product main screen */
+   Product Shipping Settings navigation title - Shipping label for payment view - Title of the product form bottom sheet action for editing shipping settings. - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "運送方式";
 
 /* Title of view displaying all available Shipment Tracking Carriers */
@@ -1426,7 +1485,7 @@
 "Shop only" = "僅限商店";
 
 /* The navigation bar title of the edit short description screen.
-   Title of the Short Description row on Product main screen */
+   Title of the product form bottom sheet action for editing short description. - Title of the Short Description row on Product main screen */
 "Short description" = "簡短說明";
 
 /* Button title for applying filters to a list of products. */
@@ -1551,18 +1610,18 @@
    Status label in Product Settings */
 "Status" = "狀態";
 
+/* Row title for filtering products by stock status. */
+"Stock Status" = "庫存狀態";
+
 /* A descriptive label prefix. Example: 'Stock quantity: 19' */
 "Stock quantity:" = "存貨數量：";
 
 /* Product stock status list selector navigation title
-   Row title for filtering products by stock status. - Title of the cell in Product Inventory Settings > Stock status */
+   Title of the cell in Product Inventory Settings > Stock status */
 "Stock status" = "庫存狀態";
 
 /* A descriptive label prefix. Example: 'Stock status: In stock' */
 "Stock status:" = "存貨狀態：";
-
-/* Format of the stock status on the Inventory Settings row */
-"Stock status: %@" = "存貨狀態：%@";
 
 /* VoiceOver accessibility label for the store revenue chart. */
 "Store revenue chart" = "商店收益圖";
@@ -1694,7 +1753,7 @@
 "Terms of Service" = "服務條款";
 
 /* My Store > Settings > Experimental features > Product editing */
-"Test out the new product editing functionality as we get ready to launch" = "在新產品編輯功能推出前搶先測試";
+"Test out new product editing functionalities as we get ready to launch them" = "在新產品編輯功能推出前搶先測試";
 
 /* My Store > Settings > Experimental features > Switch Products */
 "Test out the new products section as we get ready to launch" = "新產品推出前的測試階段";
@@ -1735,17 +1794,35 @@
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "此伺服器的憑證無效。你可能正連線至冒充為「%@」的伺服器，而這可能洩漏你的機密資料。\n\n是否仍然要信任憑證？";
 
+/* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
+"The price for this product. Editable." = "此產品的價格。可編輯。";
+
 /* Displayed whenever a review that was onscreen got deleted. */
 "The review has been removed" = "已移除評論";
 
 /* Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "無法在沒有原價的情況下新增售價。";
 
+/* VoiceOver accessibility hint, informing the user that the cell shows the sale price information for this product. */
+"The sale price for this product. Editable." = "此產品的銷售價格。可編輯。";
+
 /* Product price error notice message, when the sale price is higher than the regular price */
 "The sale price should be lower than the regular price." = "銷售價格必須低於正常價格。";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "伺服器傳回空白回應。這通常代表你必須增加網站的記憶體限制。";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the shipping height information for this product. */
+"The shipping height for this product. Editable." = "此產品的運送包裹高度。可編輯。";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the shipping length information for this product. */
+"The shipping length for this product. Editable." = "此產品的運送包裹長度。可編輯。";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the shipping weight information for this product. */
+"The shipping weight for this product. Editable." = "此產品的運送包裹重量。可編輯。";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the shipping width information for this product. */
+"The shipping width for this product. Editable." = "此產品的運送包裹寬度。可編輯。";
 
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "網站位址長度必須小於 64 個字元。";
@@ -1758,6 +1835,9 @@
 
 /* Message shown when site export API failed */
 "The site could not be exported." = "無法匯出此網站。";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the stock quantity information for this product. */
+"The stock quantity for this product. Editable." = "此產品的存貨數量。可編輯。";
 
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "封鎖指定網站的文章時發生問題。";
@@ -1998,6 +2078,9 @@
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "已更新訂單狀態";
 
+/* Subtitle of the product form bottom sheet action for editing inventory settings. */
+"Update product inventory and SKU" = "更新產品庫存和 SKU";
+
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "更新至 WooCommerce 3.5 以繼續使用此應用程式";
 
@@ -2072,17 +2155,21 @@
 /* User role badge */
 "Viewer" = "讀者";
 
+/* Product Visibility navigation title
+   Visibility label in Product Settings */
+"Visibility" = "可見度";
+
 /* Visitors stat label on dashboard - should be plural. */
 "Visitors" = "訪客";
 
 /* Add a note screen - Write Note section title */
 "WRITE NOTE" = "撰寫備註";
 
-/* Orders List (Empty State / No Filters) */
-"Waiting for Customers" = "等待客戶";
-
 /* Message shown on screen while waiting for Google to finish its signup process. */
 "Waiting for Google to complete…" = "正在等待 Google 完成…";
+
+/* The message shown in the Orders → All Orders tab if the list is empty. */
+"Waiting for your first order" = "等候你的第一筆訂單";
 
 /* shown in promotional screens during first launch */
 "Watch readers from around the world read and interact with your site — in real time." = "第一時間看到來自世界各地的讀者閱讀你的網站，並與你的網站互動。";
@@ -2102,12 +2189,24 @@
 /* Instructional text for the magic link login flow. */
 "We'll email you a magic link that'll log you in instantly, no password needed. Hunt and peck no more!" = "我們會寄給你一個神奇的連結，讓你馬上就能登入，無須輸入密碼。不用再敲著兩隻手指打字了！";
 
+/* The detailed message shown in the Orders → All Orders tab if the list is empty. */
+"We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales." = "我們會在收到新訂單時通知你。在此期間，請探索如何提高商店銷售量。";
+
 /* Error message shown when having trouble connecting to a Jetpack site. */
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "我們無法用此 URL 連上 Jetpack 網站。如需協助，請與我們聯絡。";
+
+/* Default message to show if a filtered Orders list is empty. */
+"We're sorry, we couldn't find any orders." = "很抱歉，我們找不到任何訂單。";
+
+/* Message shown if a filtered Orders list is empty. The %@ is a placeholder for the order status. */
+"We're sorry, we couldn't find any “%@” orders" = "很抱歉，我們找不到任何「%@」訂單";
 
 /* Message for empty Orders search results. The %@ is a placeholder for the text entered by the user.
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
 "We're sorry, we couldn't find results for “%@”" = "很抱歉，我們找不到「%@」的搜尋結果";
+
+/* The info of the Work In Progress top banner on the Products tab. */
+"We've added editing functionality to simple products. Keep an eye out for more options soon!" = "我們已在簡單產品中新增了編輯功能。有更多選項即將登場，敬請密切注意！";
 
 /* Statistical unit - a single week */
 "Week" = "週";
@@ -2126,9 +2225,6 @@
 
 /* The info of the top banner on Dashboard that indicates new stats is available */
 "We’re rolling out improvements to stats for stores using the WooCommerce Admin plugin" = "我們即將為使用 WooCommerce 管理員外掛程式的商店推出統計資料改善功能";
-
-/* The info of the Work In Progress top banner on the Products tab */
-"We’ve added editing functionality to simple products. Keep an eye out for more options soon!" = "我們已在簡單產品中新增了編輯功能。有更多選項即將登場，敬請密切注意！";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "我的網站位址是？";
@@ -2169,6 +2265,9 @@
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "你無法使用該電子郵件地址註冊。我們無法使用這些電子郵件地址，因為它們會阻擋我們的某些郵件。請使用其他電子郵件供應商。";
+
+/* Alert message to confirm the user wants to discard changes in Product Visibility */
+"You need to add a password to make your product password-protected" = "你需要新增密碼，才能讓產品受密碼保護";
 
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "你似乎安裝了 DudaMobile 的行動版外掛程式，導致應用程式無法連接至你的網誌";

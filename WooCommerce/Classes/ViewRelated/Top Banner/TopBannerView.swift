@@ -96,7 +96,9 @@ private extension TopBannerView {
         } else {
             updateExpandCollapseState(isExpanded: isExpanded)
             expandCollapseButton.tintColor = .textSubtle
-            expandCollapseButton.addTarget(self, action: #selector(onExpandCollapseButtonTapped), for: .touchUpInside)
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(onExpandCollapseButtonTapped))
+            tapGesture.cancelsTouchesInView = false
+            contentView.addGestureRecognizer(tapGesture)
         }
     }
 
@@ -125,10 +127,14 @@ private extension TopBannerView {
     }
 
     func createContentView() -> UIView {
-        let textStackView = UIStackView(arrangedSubviews: [titleLabel, infoLabel])
-        textStackView.translatesAutoresizingMaskIntoConstraints = false
+        let actionButon = isActionEnabled ? dismissButton : expandCollapseButton
+        let titleStackView = UIStackView(arrangedSubviews: [titleLabel, actionButon])
+        titleStackView.axis = .horizontal
+        titleStackView.spacing = 16
+
+        let textStackView = UIStackView(arrangedSubviews: [titleStackView, infoLabel])
         textStackView.axis = .vertical
-        textStackView.spacing = 3
+        textStackView.spacing = 9
 
         iconImageView.setContentHuggingPriority(.required, for: .horizontal)
         iconImageView.setContentCompressionResistancePriority(.required, for: .horizontal)
@@ -137,16 +143,10 @@ private extension TopBannerView {
         expandCollapseButton.setContentHuggingPriority(.required, for: .horizontal)
         expandCollapseButton.setContentCompressionResistancePriority(.required, for: .horizontal)
 
-        let subviews: [UIView]
-        if isActionEnabled {
-            subviews = [iconImageView, textStackView, dismissButton]
-        } else {
-            subviews = [iconImageView, textStackView, expandCollapseButton]
-        }
-        let contentStackView = UIStackView(arrangedSubviews: subviews)
+        let contentStackView = UIStackView(arrangedSubviews: [iconImageView, textStackView])
         contentStackView.translatesAutoresizingMaskIntoConstraints = false
         contentStackView.axis = .horizontal
-        contentStackView.spacing = 10
+        contentStackView.spacing = 16
         contentStackView.alignment = .leading
         return contentStackView
     }
@@ -155,7 +155,7 @@ private extension TopBannerView {
         let contentContainerView = UIView(frame: .zero)
         contentContainerView.translatesAutoresizingMaskIntoConstraints = false
         contentContainerView.addSubview(contentView)
-        contentContainerView.pinSubviewToAllEdges(contentView, insets: UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 10))
+        contentContainerView.pinSubviewToAllEdges(contentView, insets: UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16))
         return contentContainerView
     }
 

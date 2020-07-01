@@ -256,36 +256,45 @@ public extension ResultsController {
     typealias ChangeType = NSFetchedResultsChangeType
 
     // MARK: - ResultsController.SectionInfo
-    //
-    class SectionInfo {
+
+    /// An interface to `NSFetchedResultsSectionInfo` which enforces readonly usage.
+    ///
+    final class SectionInfo {
+
+        /// The real SectionInfo that we're hiding.
+        ///
+        private let mutableSectionInfo: NSFetchedResultsSectionInfo
 
         /// Name of the section
         ///
-        public let name: String
+        public var name: String {
+            mutableSectionInfo.name
+        }
 
         /// Number of objects in the current section
         ///
         public var numberOfObjects: Int {
-            return mutableObjects.count
+            mutableSectionInfo.numberOfObjects
         }
 
         /// Returns the array of (ReadOnly) objects in the section.
         ///
         private(set) public lazy var objects: [T.ReadOnlyType] = {
-            return mutableObjects.map { $0.toReadOnly() }
+            guard let objects = mutableSectionInfo.objects else {
+                return []
+            }
+            guard let castedObjects = objects as? [T] else {
+                assertionFailure("Failed to cast objects into an array of \(T.self)")
+                return []
+            }
+
+            return castedObjects.map { $0.toReadOnly() }
         }()
-
-
-        /// Array of Mutable Objects!
-        ///
-        private let mutableObjects: [T]
-
 
         /// Designated Initializer
         ///
         init(mutableSection: NSFetchedResultsSectionInfo) {
-            name = mutableSection.name
-            mutableObjects = mutableSection.objects as? [T] ?? []
+            mutableSectionInfo = mutableSection
         }
     }
 }

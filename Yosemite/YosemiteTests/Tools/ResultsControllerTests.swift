@@ -7,7 +7,7 @@ import CoreData
 
 // MARK: - ResultsController Unit Tests
 //
-class ResultsControllerTests: XCTestCase {
+final class ResultsControllerTests: XCTestCase {
 
     /// InMemory Storage!
     ///
@@ -45,8 +45,10 @@ class ResultsControllerTests: XCTestCase {
         XCTAssertEqual(resultsController.sections.count, 0)
 
         try? resultsController.performFetch()
+
         XCTAssertEqual(resultsController.sections.count, 1)
         XCTAssertEqual(resultsController.sections.first?.objects.count, 0)
+        XCTAssertEqual(resultsController.sections.first?.numberOfObjects, 0)
     }
 
 
@@ -61,6 +63,7 @@ class ResultsControllerTests: XCTestCase {
 
         XCTAssertEqual(resultsController.sections.count, 1)
         XCTAssertEqual(resultsController.sections.first?.objects.count, 1)
+        XCTAssertEqual(resultsController.sections.first?.numberOfObjects, 1)
     }
 
 
@@ -75,6 +78,7 @@ class ResultsControllerTests: XCTestCase {
 
         XCTAssertEqual(resultsController.sections.count, 1)
         XCTAssertEqual(resultsController.sections.first?.objects.count, 1)
+        XCTAssertEqual(resultsController.sections.first?.numberOfObjects, 1)
     }
 
 

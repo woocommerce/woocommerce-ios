@@ -281,8 +281,9 @@ private extension SettingsViewController {
         return sections[indexPath.section].rows[indexPath.row]
     }
 
+    /// This is false because there are no ongoing expriments
     func couldShowBetaFeaturesRow() -> Bool {
-        return true
+        return false
     }
 }
 

@@ -26,20 +26,20 @@ target 'WooCommerce' do
   #
 
   # Use the latest bugfix for coretelephony
-  #pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :tag => '0.2.4'
-  pod 'Automattic-Tracks-iOS', '~> 0.4.4'
+  #pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => 'add/application-state-tag'
+  pod 'Automattic-Tracks-iOS', '~> 0.4.5'
 
   pod 'Gridicons', '~> 1.0'
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressAuthenticator', '~> 1.16.0-beta.5'
+  pod 'WordPressAuthenticator', '1.17.0'
   # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => ''
-  # pod 'WordPressShared', :git => 'https://github.com/wordpress-mobile/WordPress-iOS-Shared.git', :branch => ''
+  # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => ''
   # pod 'WordPressAuthenticator', :path => '../WordPressAuthenticator-iOS'
 
   pod 'WordPressShared', '~> 1.8.16'
 
-  pod 'WordPressUI', '~> 1.6.0'
+  pod 'WordPressUI', '~> 1.7.0'
 
   aztec
 
@@ -101,6 +101,8 @@ def networking_pods
   pod 'Alamofire', '~> 4.8'
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
+
+  pod 'Sourcery', '~> 0.18', :configuration => 'Debug'
 
   # Used for HTML parsing
   aztec

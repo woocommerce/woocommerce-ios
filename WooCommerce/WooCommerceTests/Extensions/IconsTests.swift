@@ -127,6 +127,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.inventoryImage)
     }
 
+    func testLinkImageIsNotNil() {
+        XCTAssertNotNil(UIImage.linkImage)
+    }
+
     func testLoginMagicLinkImageIsNotNil() {
         XCTAssertNotNil(UIImage.loginMagicLinkImage)
     }
@@ -173,6 +177,10 @@ final class IconsTests: XCTestCase {
 
     func testPagesImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.pagesImage)
+    }
+
+    func testScanImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.scanImage)
     }
 
     func testSearchImageIconIsNotNil() {
@@ -242,6 +250,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.waitingForCustomersImage)
     }
 
+    func testWidgetsImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.widgetsImage)
+    }
+
     func testCategoriesIconIsNotNil() {
         XCTAssertNotNil(UIImage.categoriesIcon)
     }
@@ -249,5 +261,9 @@ final class IconsTests: XCTestCase {
     func testCategoriesIconHasDefaultSize() {
         let categoriesIcon = UIImage.categoriesIcon
         XCTAssertEqual(categoriesIcon.size, Gridicon.defaultSize)
+    }
+
+    func testSyncIconIsNotNil() {
+        XCTAssertNotNil(UIImage.syncImage)
     }
 }

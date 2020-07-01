@@ -286,7 +286,7 @@ private extension ReviewsViewController {
     /// Nukes the BadgeCount
     ///
     func resetApplicationBadge() {
-        ServiceLocator.pushNotesManager.resetBadgeCount()
+        ServiceLocator.pushNotesManager.resetBadgeCount(type: .comment)
     }
 }
 

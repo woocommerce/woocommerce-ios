@@ -6,7 +6,7 @@ import XCTest
 
 /// ProductStore Unit Tests
 ///
-class ProductStoreTests: XCTestCase {
+final class ProductStoreTests: XCTestCase {
 
     /// Mockup Dispatcher!
     ///
@@ -338,6 +338,28 @@ class ProductStoreTests: XCTestCase {
 
         productStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ProductAction.retrieveProduct` returns the expected `Product` of external product type.
+    ///
+    func testRetrieveSingleExternalProductReturnsExpectedFields() {
+        // Arrange
+        let remote = MockProductsRemote()
+        let expectedProduct = MockProduct().product(siteID: sampleSiteID, productID: sampleProductID, buttonText: "Deal", externalURL: "https://example.com")
+        remote.whenLoadingProduct(siteID: sampleSiteID, productID: sampleProductID, thenReturn: .success(expectedProduct))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // Action
+        waitForExpectation { expectation in
+            let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleProductID) { (product, error) in
+                // Assert
+                XCTAssertNil(error)
+                XCTAssertEqual(product, expectedProduct)
+
+                expectation.fulfill()
+            }
+            productStore.onAction(action)
+        }
     }
 
     /// Verifies that `ProductAction.retrieveProduct` returns the expected `Product` for `variation` product types.
@@ -981,6 +1003,71 @@ class ProductStoreTests: XCTestCase {
         productStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    // MARK: - ProductAction.retrieveProducts
+
+    /// Verifies that ProductAction.retrieveProducts effectively persists any retrieved products.
+    ///
+    func testRetrievingProductsEffectivelyPersistsRetrievedProducts() {
+        // Arrange
+        let remote = MockProductsRemote()
+        let expectedProduct = MockProduct().product(siteID: sampleSiteID, productID: sampleProductID, buttonText: "Deal", externalURL: "https://example.com")
+        remote.whenLoadingProducts(siteID: sampleSiteID, productIDs: [sampleProductID], thenReturn: .success([expectedProduct]))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        let expectation = self.expectation(description: "Retrieve product list")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+
+        // Action
+        var retrievedProducts: [Networking.Product]?
+        let action = ProductAction.retrieveProducts(siteID: sampleSiteID, productIDs: [sampleProductID]) { result in
+            switch result {
+            case .failure(let error):
+                XCTFail(error.localizedDescription)
+            case .success(let products):
+                retrievedProducts = products
+            }
+            expectation.fulfill()
+        }
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        // Assert
+        XCTAssertEqual(retrievedProducts, [expectedProduct])
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
+    }
+
+    /// Verifies that ProductAction.retrieveProducts always returns an empty result for an empty array of product IDs.
+    ///
+    func testRetrievingProductsWithEmptyIDsReturnsAnEmptyResult() {
+        // Arrange
+        let remote = MockProductsRemote()
+        let expectedProduct = MockProduct().product(siteID: sampleSiteID, productID: sampleProductID, buttonText: "Deal", externalURL: "https://example.com")
+        // The mock remote returns a non-empty result for an empty array of product IDs.
+        remote.whenLoadingProducts(siteID: sampleSiteID, productIDs: [], thenReturn: .success([expectedProduct]))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        let expectation = self.expectation(description: "Retrieve product list")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+
+        // Action
+        var retrievedProducts: [Networking.Product]?
+        let action = ProductAction.retrieveProducts(siteID: sampleSiteID, productIDs: []) { result in
+            switch result {
+            case .failure(let error):
+                XCTFail(error.localizedDescription)
+            case .success(let products):
+                retrievedProducts = products
+            }
+            expectation.fulfill()
+        }
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        // Assert
+        XCTAssertEqual(retrievedProducts, [])
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+    }
 }
 
 // MARK: - Private Helpers
@@ -1022,6 +1109,7 @@ private extension ProductStoreTests {
                        downloads: [],
                        downloadLimit: -1,
                        downloadExpiry: -1,
+                       buttonText: "",
                        externalURL: "http://somewhere.com",
                        taxStatusKey: "taxable",
                        taxClass: "",
@@ -1163,6 +1251,7 @@ private extension ProductStoreTests {
                        downloads: sampleDownloads(),
                        downloadLimit: 1,
                        downloadExpiry: 1,
+                       buttonText: "",
                        externalURL: "http://somewhere.com.net",
                        taxStatusKey: "taxable",
                        taxClass: "",
@@ -1289,6 +1378,7 @@ private extension ProductStoreTests {
                        downloads: [],
                        downloadLimit: -1,
                        downloadExpiry: -1,
+                       buttonText: "",
                        externalURL: "",
                        taxStatusKey: "taxable",
                        taxClass: "",

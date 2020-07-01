@@ -244,6 +244,7 @@ extension TopPerformerDataViewController: UITableViewDataSource {
         }
 
         cell.configure(statsItem, imageService: imageService)
+        cell.hidesBottomBorder = tableView.lastIndexPathOfTheLastSection() == indexPath ? true : false
         return cell
     }
 }
@@ -267,11 +268,6 @@ extension TopPerformerDataViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return UITableView.automaticDimension
     }
-
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section headers.
-        return .leastNonzeroMagnitude
-    }
 }
 
 // MARK: Navigation Actions
@@ -282,11 +278,8 @@ private extension TopPerformerDataViewController {
     /// Presents the ProductDetailsViewController or the ProductFormViewController, as a childViewController, for a given Product.
     ///
     func presentProductDetails(for productID: Int64, siteID: Int64) {
-        let currencyCode = CurrencySettings.shared.currencyCode
-        let currency = CurrencySettings.shared.symbol(from: currencyCode)
         let loaderViewController = ProductLoaderViewController(productID: productID,
-                                                               siteID: siteID,
-                                                               currency: currency)
+                                                               siteID: siteID)
         let navController = WooNavigationController(rootViewController: loaderViewController)
         present(navController, animated: true, completion: nil)
     }

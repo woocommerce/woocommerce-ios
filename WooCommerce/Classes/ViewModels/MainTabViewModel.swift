@@ -9,6 +9,10 @@ extension NSNotification.Name {
     /// Posted whenever an OrderBadge refresh is required.
     ///
     public static let ordersBadgeReloadRequired = Foundation.Notification.Name(rawValue: "com.woocommerce.ios.ordersBadgeReloadRequired")
+
+    /// Posted whenever a refresh of Reviews tab is required.
+    ///
+    public static let reviewsBadgeReloadRequired = Foundation.Notification.Name(rawValue: "com.woocommerce.ios.reviewsBadgeReloadRequired")
 }
 
 final class MainTabViewModel {

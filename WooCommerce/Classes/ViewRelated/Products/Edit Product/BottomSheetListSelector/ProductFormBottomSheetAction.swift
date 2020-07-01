@@ -7,21 +7,22 @@ enum ProductFormBottomSheetAction {
     case editShippingSettings
     case editCategories
     case editBriefDescription
-}
+    case editSKU
 
-extension ProductFormBottomSheetAction {
-    func isVisible(product: Product) -> Bool {
-        switch self {
-        case .editInventorySettings:
-            let hasStockData = product.manageStock ? product.stockQuantity != nil: true
-            return product.sku == nil && hasStockData == false
-        case .editShippingSettings:
-            return product.weight.isNilOrEmpty &&
-                product.dimensions.height.isEmpty && product.dimensions.width.isEmpty && product.dimensions.length.isEmpty
-        case .editCategories:
-            return product.categories.isEmpty
-        case .editBriefDescription:
-            return product.briefDescription.isNilOrEmpty
+    init?(productFormAction: ProductFormEditAction) {
+        switch productFormAction {
+        case .inventorySettings:
+            self = .editInventorySettings
+        case .shippingSettings:
+            self = .editShippingSettings
+        case .categories:
+            self = .editCategories
+        case .briefDescription:
+            self = .editBriefDescription
+        case .sku:
+            self = .editSKU
+        default:
+            return nil
         }
     }
 }
@@ -41,6 +42,9 @@ extension ProductFormBottomSheetAction {
         case .editBriefDescription:
             return NSLocalizedString("Short description",
                                      comment: "Title of the product form bottom sheet action for editing short description.")
+        case .editSKU:
+            return NSLocalizedString("SKU",
+                                     comment: "Title of the product form bottom sheet action for editing short description.")
         }
     }
 
@@ -58,6 +62,10 @@ extension ProductFormBottomSheetAction {
         case .editBriefDescription:
             return NSLocalizedString("A brief excerpt about your product",
                                      comment: "Subtitle of the product form bottom sheet action for editing short description.")
+        case .editSKU:
+            return NSLocalizedString("Easily identify your products with unique codes",
+                                     comment: "Subtitle of the product form bottom sheet action for editing SKU.")
+
         }
     }
 }

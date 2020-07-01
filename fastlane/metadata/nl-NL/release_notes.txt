@@ -1,2 +1,3 @@
-* Eenvoudigere bewerking van de productbeschrijving: Tik op een willekeurige plek op een productcel om deze te bewerken. Toetsenbord nodig? Het wordt automatisch weergegeven. En nu we toch bezig zijn: we hebben een aantal bugs verwijderd.
-* Elke minuut bijgewerkte bestellijst: De bestellijst wordt elke keer bijgewerkt dat je de app opent of een nieuwe bestelling ontvangt en in de lijst Bestellingen verwerken worden nu komende bestellingen weergegeven.
+Productverbeteringen: werk productafbeeldingen, productinstellingen en links voor het delen van producten rechtstreeks vanuit de app bij. Geen gedoe meer met die vervelende desktopcomputer!
+- Visuele verbeteringen: in Bestelgegevens wordt de SKU niet meer weergegeven in de productlijst. Ook worden de simpele productnaam en het ellips-menu nu weergegeven in de navigatiebalk wanneer ze buiten het tabblad Producten worden geopend. (Zorg dat je de Producten-functieschakelaar aanzet.) Tot slot ziet de laadstatus op het productvariatiescherm er nu strak uit, vind je niet?
+- Gebruikers uit Californië kunnen hun eigen privacyverklaring bekijken.

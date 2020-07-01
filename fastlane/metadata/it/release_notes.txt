@@ -1,2 +1,3 @@
-* Modifica della descrizione del prodotto più semplice: tocca in qualsiasi punto sulla cella di un prodotto per iniziare la modifica. Hai bisogno della tastiera? Compare in automatico. Inoltre, nel frattempo abbiamo risolvo un paio di bug.
-* Rapporto sugli ordini aggiornato: l'elenco degli ordini si aggiorna automaticamente ogni volta che apri l'app o ricevi un nuovo ordine e l'elenco degli ordini in elaborazione ora mostra gli ordini futuri in arrivo.
+- Miglioramenti del prodotto: aggiornamento di immagini e impostazioni del prodotto e condivisione dei link di prodotti direttamente dall'app. Nessuna necessità di quel fastidioso computer desktop!
+- Miglioramenti visivi: su Dettagli dell'ordine, lo SKU non compare più in Elenco dei prodotti. Inoltre, il menu del nome di prodotto semolice e dell'ellissi compare ora sulla barra di navigazione quando viene aperto fuori della scheda Prodotti. (Assicurati di abilitare l'interruttore della funzione Prodotti.) Ultimo, ma non meno importante, lo stato di caricamento nella schermata delle varianti del prodotto ora appare elegante, non credi?
+- Gli utenti in California possono vedere la propria nota sulla privacy.

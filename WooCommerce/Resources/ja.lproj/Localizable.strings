@@ -1,9 +1,18 @@
-/* Translation-Revision-Date: 2020-05-13 08:54:04+0000 */
+/* Translation-Revision-Date: 2020-06-25 13:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
 
 /* No comment provided by engineer. */
+"#%1$@ %2$@ %3$@" = "#%1$@ %2$@ %3$@";
+
+/* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
+"#%@" = "#%@";
+
+/* In Order Details, the pattern to show the billed person's full name. For example, “John Doe”. The %1$@ is the first name. The %2$@ is the last name. */
+"%1$@ %2$@" = "%1$@ %2$@";
+
+/* Format for each Product attribute */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld オプション)";
 
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
@@ -21,14 +30,14 @@
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%2$@ 経由 %1$@";
 
+/* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). */
+"%1$@ x %2$@" = "%1$@ x %2$@";
+
 /* Displays a time range followed by a specific date/time */
 "%1$@ › %2$@" = "%1$@ › %2$@";
 
 /* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@-%2$@";
-
-/* <item total> (<item individual price> multipled by <quantity>) */
-"%@ (%@ x %@)" = "%1$@ (%2$@ x %3$@)";
 
 /* 1 Item */
 "%@ Item" = "%@個のアイテム";
@@ -56,6 +65,9 @@
 
 /* Placeholder of the Product Short Description row on Product main screen */
 "A brief excerpt about the product" = "商品に関する簡単な抜粋";
+
+/* Subtitle of the product form bottom sheet action for editing short description. */
+"A brief excerpt about your product" = "商品に関する簡単な抜粋";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "認証リンクをメールで送信するには、有効なメールアドレスが必要です。前の画面に戻り、有効なメールアドレスを入力してください。";
@@ -102,6 +114,13 @@
 /* Accessibility label for the 'Add a tracking' button */
 "Add a tracking" = "追跡を追加";
 
+/* Title of the bottom sheet from the product form to add more product details.
+   Title of the button at the bottom of the product form to add more product details. */
+"Add more details" = "詳細を追加";
+
+/* Subtitle of the product form bottom sheet action for editing shipping settings. */
+"Add weight and dimensions" = "重さとサイズを追加";
+
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "注文に追跡を追加";
 
@@ -113,6 +132,9 @@
 
 /* Title for the second page in the Orders tab. */
 "All Orders" = "すべての注文";
+
+/* The message shown in the Orders → Processing tab if the list is empty. */
+"All orders have been fulfilled" = "注文がすべて処理されました";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "すべての既読レビュー";
@@ -171,6 +193,9 @@
 
 /* Message title for Discard Changes Action Sheet */
 "Are you sure you want to discard these changes?" = "この変更を破棄してもよいですか ?";
+
+/* Alert title to confirm the user wants to discard changes in Product Visibility */
+"Are you sure you want to discard your changes?" = "変更内容を破棄してもよいですか ?";
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "アカウント %@ からログアウトしてもよいですか ?";
@@ -260,7 +285,7 @@
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "お気に入りのサイトをいつでもチェックし、いつでもどこからでもコメントできます。";
 
 /* Edit product categories screen - Screen title
-   Title of the Categories row on Product main screen */
+   Title of the Categories row on Product main screen - Title of the product form bottom sheet action for editing categories. */
 "Categories" = "カテゴリー";
 
 /* Popup title for wrong SSL certificate. */
@@ -280,9 +305,6 @@
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "情報を収集";
-
-/* Shown while the app waits for the site creation process to complete. */
-"Completing Signup" = "登録を完了しています";
 
 /* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
 "Composes a new email message to the billing customer." = "請求対象の顧客に送信する新しいメールメッセージを作成します。";
@@ -429,6 +451,9 @@
 /* Format of one dimension on the Shipping Settings row - dimension[unit] */
 "Dimensions: %1$@%2$@" = "サイズ :%1$@%2$@";
 
+/* Alert button title - dismisses alert, which discard changes on Product Visibility screen */
+"Discard" = "破棄";
+
 /* Button title Discard Changes in Discard Changes Action Sheet */
 "Discard changes" = "変更を破棄";
 
@@ -499,11 +524,17 @@
 /* Accessibility label that lets the user know the billing customer's email address */
 "Email: %@" = "メール:%@";
 
+/* Accessibility text for Unit Input cell */
+"Empty" = "空にする";
+
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "空の URL";
 
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "配送業者名を入力";
+
+/* Enter password placeholder in Product Visibility */
+"Enter password" = "パスワードを入力";
 
 /* Instruction text on the login's site addresss screen.
    Label for button to log in using your site address. */
@@ -553,8 +584,12 @@
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "パスワードマネージャーで入力";
 
-/* Title of the toolbar button to filter products by different attributes. */
+/* Title of the toolbar button to filter products by different attributes.
+   Title of the toolbar button to filter products without any filters applied. */
 "Filter" = "フィルター";
+
+/* Title of the toolbar button to filter products with filters applied. */
+"Filter (%ld)" = "フィルター (%ld)";
 
 /* Navigation bar title format for filtering a list of products without filters applied. */
 "Filters" = "フィルター";
@@ -708,7 +743,7 @@
 "Invalid username" = "無効なユーザー名";
 
 /* Product Details - inventory section title
-   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Product Inventory Settings navigation title - Title of the Inventory Settings row on Product main screen */
+   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Product Inventory Settings navigation title - Title of the Inventory Settings row on Product main screen - Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "在庫";
 
 /* An error message shown during log in when the username or password is incorrect. */
@@ -720,6 +755,9 @@
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "斜体";
 
+/* Alert button title - which keeps the user on the Product Visibility screen */
+"Keep Editing" = "編集を続行";
+
 /* Last 24 hours section header */
 "Last 24 hours" = "過去24時間";
 
@@ -730,7 +768,7 @@
 "Launch Wormholy debug" = "Wormholy デバッグを起動";
 
 /* Settings > Privacy Settings. A text link to the cookie policy.
-   The action of the top banner on Dashboard that indicates new stats is unavailable */
+   The action of the top banner on Dashboard that indicates new stats is unavailable - Title of button shown in the Orders → All Orders tab if the list is empty. */
 "Learn more" = "さらに詳しく";
 
 /* Title of the cell in Product Shipping Settings > Length */
@@ -751,7 +789,7 @@
 /* 'Limit: 2 downloads', for example. */
 "Limit: %ld downloads" = "上限 :%ld件のダウンロード";
 
-/* The title of the Work In Progress top banner on the Products tab */
+/* The title of the Work In Progress top banner on the Products tab. */
 "Limited editing available" = "一部の編集機能が利用可能";
 
 /* Title for screen in editor that allows to configure link options */
@@ -918,9 +956,6 @@
 /* The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "まだ商品がありません";
 
-/* Orders List (Empty State + Filters) */
-"No results for the selected criteria" = "選択した基準と一致する結果はありません";
-
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier' */
 "No results found for (term)\nAdd a custom carrier" = "No results found for (term)\nAdd a custom carrier";
 
@@ -1024,6 +1059,9 @@
    Orders stat label on dashboard - should be plural. - The title of the Orders tab. */
 "Orders" = "注文";
 
+/* Subtitle of the product form bottom sheet action for editing categories. */
+"Organise your products into related groups" = "商品を関連グループに整理する";
+
 /* My Store > Settings > Other app section */
 "Other" = "その他";
 
@@ -1037,8 +1075,11 @@
 "Paid By Customer" = "顧客から支払われた金額";
 
 /* Accessibility label for the password text field in the self-hosted login page.
-   Login dialog password placeholder - Password placeholder */
+   Login dialog password placeholder - Password field title in Product Visibility - Password placeholder */
 "Password" = "パスワード";
+
+/* One of the possible options in Product Visibility */
+"Password Protected" = "パスワード保護";
 
 /* Paste without Formatting Menu Item */
 "Paste without Formatting" = "書式を解除して貼り付け";
@@ -1117,6 +1158,9 @@
 /* Product Details - pricing and inventory section title */
 "Pricing and Inventory" = "価格設定と在庫";
 
+/* Opens the California Privacy Policy web page */
+"Privacy Notice for California Users" = "カリフォルニア州のユーザーへのプライバシー通知";
+
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "個人情報保護方針";
 
@@ -1124,17 +1168,23 @@
    Privacy settings screen title */
 "Privacy Settings" = "プライバシー設定";
 
-/* Display label for the product's private status */
+/* One of the possible options in Product Visibility */
 "Private" = "プライベート";
 
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "プライベートメモ";
 
+/* Display label for the product's private status */
+"Privately published" = "非公開";
+
 /* Title for the first page in the Orders tab. */
 "Processing" = "処理中";
 
+/* Shown while the app waits for the account process to complete. */
+"Processing Account" = "アカウント処理中";
+
 /* Description for Top Performers left column header
-   Product section title - Section header title for the product */
+   Product section title - Product section title if there is only one product. - Section header title for the product */
 "Product" = "商品";
 
 /* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
@@ -1147,20 +1197,20 @@
    Product Settings navigation title */
 "Product Settings" = "商品設定";
 
+/* Row title for filtering products by product status. */
+"Product Status" = "商品ステータス";
+
 /* Product Total label for payment view */
 "Product Total" = "商品合計";
+
+/* Row title for filtering products by product type. */
+"Product Type" = "商品タイプ";
 
 /* My Store > Settings > Experimental features > Product editing */
 "Product editing" = "商品編集";
 
-/* Row title for filtering products by product status. */
-"Product status" = "商品ステータス";
-
-/* Row title for filtering products by product type. */
-"Product type" = "商品タイプ";
-
 /* My Store > Settings > Experimental features > Switch Products
-   Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
+   Product section title if there is more than one product. - Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "商品";
 
 /* Label for computed value `product refunds + taxes = subtotal`. */
@@ -1168,6 +1218,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "請求対象の顧客に電話で連絡するかメッセージを送信するか選択するよう求めます。";
+
+/* One of the possible options in Product Visibility */
+"Public" = "公開";
 
 /* Title of the Publish Settings section on Product Settings screen */
 "Publish Settings" = "公開設定";
@@ -1325,6 +1378,12 @@
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "セール価格 :%@";
 
+/* Scan Products */
+"Scan products" = "商品をスキャン";
+
+/* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
+"Scans barcodes that are associated with a product SKU for stock management." = "在庫管理用に商品 SKU と関連付けられたバーコードをスキャンします。";
+
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "セールの予定を設定";
 
@@ -1389,7 +1448,7 @@
 "Shipped %@" = "出荷日: %@";
 
 /* Product Details > Purchase Details > Shipping cell title
-   Product Shipping Settings navigation title - Shipping label for payment view - Title of the Shipping Settings row on Product main screen */
+   Product Shipping Settings navigation title - Shipping label for payment view - Title of the product form bottom sheet action for editing shipping settings. - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "配送";
 
 /* Title of view displaying all available Shipment Tracking Carriers */
@@ -1426,7 +1485,7 @@
 "Shop only" = "ショップのみ";
 
 /* The navigation bar title of the edit short description screen.
-   Title of the Short Description row on Product main screen */
+   Title of the product form bottom sheet action for editing short description. - Title of the Short Description row on Product main screen */
 "Short description" = "簡単な説明";
 
 /* Button title for applying filters to a list of products. */
@@ -1551,18 +1610,18 @@
    Status label in Product Settings */
 "Status" = "ステータス";
 
+/* Row title for filtering products by stock status. */
+"Stock Status" = "在庫状況";
+
 /* A descriptive label prefix. Example: 'Stock quantity: 19' */
 "Stock quantity:" = "在庫数 :";
 
 /* Product stock status list selector navigation title
-   Row title for filtering products by stock status. - Title of the cell in Product Inventory Settings > Stock status */
+   Title of the cell in Product Inventory Settings > Stock status */
 "Stock status" = "在庫状況";
 
 /* A descriptive label prefix. Example: 'Stock status: In stock' */
 "Stock status:" = "在庫状況 :";
-
-/* Format of the stock status on the Inventory Settings row */
-"Stock status: %@" = "在庫状況 :%@";
 
 /* VoiceOver accessibility label for the store revenue chart. */
 "Store revenue chart" = "ストアの収益グラフ";
@@ -1694,7 +1753,7 @@
 "Terms of Service" = "利用規約";
 
 /* My Store > Settings > Experimental features > Product editing */
-"Test out the new product editing functionality as we get ready to launch" = "リリースの準備ができ次第、新商品の編集機能をテストしてください";
+"Test out new product editing functionalities as we get ready to launch them" = "リリースの準備ができ次第、新商品の編集機能をテストしてください";
 
 /* My Store > Settings > Experimental features > Switch Products */
 "Test out the new products section as we get ready to launch" = "リリースの準備ができ次第、新商品セクションをテストしてください";
@@ -1735,17 +1794,35 @@
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "このサーバーの証明書が無効です。「%@」を偽装しているサーバーに接続中の可能性があるため、機密情報が危険にさらされる恐れがあります。\n\nこの証明書をそのまま信頼しますか ?";
 
+/* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
+"The price for this product. Editable." = "この商品の価格。編集可能。";
+
 /* Displayed whenever a review that was onscreen got deleted. */
 "The review has been removed" = "レビューを削除しました";
 
 /* Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "セール価格を標準価格なしで追加することはできません。";
 
+/* VoiceOver accessibility hint, informing the user that the cell shows the sale price information for this product. */
+"The sale price for this product. Editable." = "この商品のセール価格。編集可能。";
+
 /* Product price error notice message, when the sale price is higher than the regular price */
 "The sale price should be lower than the regular price." = "セール価格は通常価格よりも低く設定する必要があります。";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "サーバーが空のレスポンスを返しました。これは通常、サイトのメモリ上限を上げる必要があることを意味しています。";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the shipping height information for this product. */
+"The shipping height for this product. Editable." = "この商品の配送サイズの高さ。編集可能。";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the shipping length information for this product. */
+"The shipping length for this product. Editable." = "この商品の配送サイズの長さ。編集可能。";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the shipping weight information for this product. */
+"The shipping weight for this product. Editable." = "この商品の配送重量。編集可能。";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the shipping width information for this product. */
+"The shipping width for this product. Editable." = "この商品の配送サイズの横幅。編集可能。";
 
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "サイトアドレスは64文字以下にしてください。";
@@ -1758,6 +1835,9 @@
 
 /* Message shown when site export API failed */
 "The site could not be exported." = "このサイトはエクスポートできません。";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the stock quantity information for this product. */
+"The stock quantity for this product. Editable." = "この商品の在庫数。編集可能。";
 
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "指定のサイトからの投稿をブロックする際に問題が発生しました。";
@@ -1998,6 +2078,9 @@
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "注文ステータスを更新";
 
+/* Subtitle of the product form bottom sheet action for editing inventory settings. */
+"Update product inventory and SKU" = "商品在庫と SKU を更新";
+
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "WooCommerce 3.5に更新して引き続きアプリを使用";
 
@@ -2072,17 +2155,21 @@
 /* User role badge */
 "Viewer" = "読者";
 
+/* Product Visibility navigation title
+   Visibility label in Product Settings */
+"Visibility" = "公開状態";
+
 /* Visitors stat label on dashboard - should be plural. */
 "Visitors" = "訪問者";
 
 /* Add a note screen - Write Note section title */
 "WRITE NOTE" = "メモを入力";
 
-/* Orders List (Empty State / No Filters) */
-"Waiting for Customers" = "お客様が来るのを待っています";
-
 /* Message shown on screen while waiting for Google to finish its signup process. */
 "Waiting for Google to complete…" = "Google が完了するのを待機しています…";
+
+/* The message shown in the Orders → All Orders tab if the list is empty. */
+"Waiting for your first order" = "最初の注文を待っています";
 
 /* shown in promotional screens during first launch */
 "Watch readers from around the world read and interact with your site — in real time." = "サイトを訪れている世界中の読者の動向を、リアルタイムで確認できます。";
@@ -2102,12 +2189,24 @@
 /* Instructional text for the magic link login flow. */
 "We'll email you a magic link that'll log you in instantly, no password needed. Hunt and peck no more!" = "パスワードなしですぐにログインできるマジックリンクのメールをお送りします。面倒なタイピングとはさよならです。";
 
+/* The detailed message shown in the Orders → All Orders tab if the list is empty. */
+"We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales." = "新しい注文が入ると通知が届きます。それまでの間、ストアの売り上げを伸ばす方法を見つけましょう。";
+
 /* Error message shown when having trouble connecting to a Jetpack site. */
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "その URL の Jetpack サイトと連携することはできません。サポートにご連絡ください。";
+
+/* Default message to show if a filtered Orders list is empty. */
+"We're sorry, we couldn't find any orders." = "注文が見つかりませんでした。";
+
+/* Message shown if a filtered Orders list is empty. The %@ is a placeholder for the order status. */
+"We're sorry, we couldn't find any “%@” orders" = "「%@」の注文が見つかりませんでした";
 
 /* Message for empty Orders search results. The %@ is a placeholder for the text entered by the user.
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
 "We're sorry, we couldn't find results for “%@”" = "「%@」の検索結果が見つかりませんでした。";
+
+/* The info of the Work In Progress top banner on the Products tab. */
+"We've added editing functionality to simple products. Keep an eye out for more options soon!" = "シンプルな商品に編集機能が加わりました。その他のオプションもまもなく加わる予定です。";
 
 /* Statistical unit - a single week */
 "Week" = "週";
@@ -2126,9 +2225,6 @@
 
 /* The info of the top banner on Dashboard that indicates new stats is available */
 "We’re rolling out improvements to stats for stores using the WooCommerce Admin plugin" = "WooCommerce Admin プラグインでストアに強化された統計機能を提供開始します";
-
-/* The info of the Work In Progress top banner on the Products tab */
-"We’ve added editing functionality to simple products. Keep an eye out for more options soon!" = "シンプルな商品に編集機能が加わりました。その他のオプションもまもなく加わる予定です。";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "ご使用のサイトアドレス。";
@@ -2169,6 +2265,9 @@
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "ご指定のメールアドレスはアカウント登録にご利用いただけません。このメールプロバイダによって、こちらから送信するメールがブロックされる問題が発生することがあるためです。恐れ入りますが、他のメールプロバイダのアドレスをお使いください。";
+
+/* Alert message to confirm the user wants to discard changes in Product Visibility */
+"You need to add a password to make your product password-protected" = "商品をパスワードで保護するには、パスワードを追加する必要があります";
 
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "アプリがブログに接続するのを防止するモバイルプラグインが DudaMobile からインストールされたようです。";

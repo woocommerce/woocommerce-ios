@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a Product Entity.
 ///
-public struct Product: Codable {
+public struct Product: Codable, GeneratedCopiable {
     public let siteID: Int64
     public let productID: Int64
     public let name: String
@@ -38,7 +38,8 @@ public struct Product: Codable {
     public let downloadLimit: Int       // defaults to -1
     public let downloadExpiry: Int      // defaults to -1
 
-    public let externalURL: String?
+    public let buttonText: String       // External products only
+    public let externalURL: String?     // External products only
     public let taxStatusKey: String     // taxable, shipping, none
     public let taxClass: String?
 
@@ -136,6 +137,7 @@ public struct Product: Codable {
                 downloads: [ProductDownload],
                 downloadLimit: Int,
                 downloadExpiry: Int,
+                buttonText: String,
                 externalURL: String?,
                 taxStatusKey: String,
                 taxClass: String?,
@@ -196,6 +198,7 @@ public struct Product: Codable {
         self.downloads = downloads
         self.downloadLimit = downloadLimit
         self.downloadExpiry = downloadExpiry
+        self.buttonText = buttonText
         self.externalURL = externalURL
         self.taxStatusKey = taxStatusKey
         self.taxClass = taxClass
@@ -290,6 +293,7 @@ public struct Product: Codable {
         let downloadLimit = try container.decode(Int.self, forKey: .downloadLimit)
         let downloadExpiry = try container.decode(Int.self, forKey: .downloadExpiry)
 
+        let buttonText = try container.decode(String.self, forKey: .buttonText)
         let externalURL = try container.decodeIfPresent(String.self, forKey: .externalURL)
         let taxStatusKey = try container.decode(String.self, forKey: .taxStatusKey)
         let taxClass = try container.decodeIfPresent(String.self, forKey: .taxClass)
@@ -371,6 +375,7 @@ public struct Product: Codable {
                   downloads: downloads,
                   downloadLimit: downloadLimit,
                   downloadExpiry: downloadExpiry,
+                  buttonText: buttonText,
                   externalURL: externalURL,
                   taxStatusKey: taxStatusKey,
                   taxClass: taxClass,
@@ -452,6 +457,9 @@ public struct Product: Codable {
         try container.encode(backordersKey, forKey: .backordersKey)
         try container.encode(stockStatusKey, forKey: .stockStatusKey)
 
+        // Categories
+        try container.encode(categories, forKey: .categories)
+
         // Brief description (short description).
         try container.encode(briefDescription, forKey: .briefDescription)
 
@@ -462,6 +470,10 @@ public struct Product: Codable {
         try container.encode(slug, forKey: .slug)
         try container.encode(purchaseNote, forKey: .purchaseNote)
         try container.encode(menuOrder, forKey: .menuOrder)
+
+        // External link for external/affiliate products.
+        try container.encode(externalURL, forKey: .externalURL)
+        try container.encode(buttonText, forKey: .buttonText)
     }
 }
 
@@ -504,6 +516,7 @@ private extension Product {
         case downloadLimit  = "download_limit"
         case downloadExpiry = "download_expiry"
 
+        case buttonText     = "button_text"
         case externalURL    = "external_url"
         case taxStatusKey   = "tax_status"
         case taxClass       = "tax_class"
@@ -578,6 +591,7 @@ extension Product: Comparable {
             lhs.downloadable == rhs.downloadable &&
             lhs.downloadLimit == rhs.downloadLimit &&
             lhs.downloadExpiry == rhs.downloadExpiry &&
+            lhs.buttonText == rhs.buttonText &&
             lhs.externalURL == rhs.externalURL &&
             lhs.taxStatusKey == rhs.taxStatusKey &&
             lhs.taxClass == rhs.taxClass &&

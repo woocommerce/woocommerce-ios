@@ -1,11 +1,16 @@
 import Foundation
 import UIKit
 import Yosemite
+import protocol Storage.StorageManagerType
 
 
 /// The main file for Order Details data.
 ///
 final class OrderDetailsDataSource: NSObject {
+
+    /// This is only used to pass as a dependency to `OrderDetailsResultsControllers`.
+    private let storageManager: StorageManagerType
+
     private(set) var order: Order
     private let couponLines: [OrderCouponLine]?
 
@@ -32,21 +37,6 @@ final class OrderDetailsDataSource: NSObject {
     /// Is the shipment tracking plugin available?
     ///
     var trackingIsReachable: Bool = false
-
-    /// For example, #560 Pamela Nguyen
-    ///
-    var summaryTitle: String? {
-        if let billingAddress = order.billingAddress {
-            return "#\(order.number) \(billingAddress.firstName) \(billingAddress.lastName)"
-        }
-        return "#\(order.number)"
-    }
-
-    /// For example, Oct 1, 2019 at 2:31 PM
-    ///
-    private var summaryDateCreated: String {
-        return order.dateModified.relativelyFormattedUpdateString
-    }
 
     /// Closure to be executed when the cell was tapped.
     ///
@@ -142,7 +132,7 @@ final class OrderDetailsDataSource: NSObject {
     private var orderNotesSections: [NoteSection] = []
 
     private lazy var resultsControllers: OrderDetailsResultsControllers = {
-        return OrderDetailsResultsControllers(order: self.order)
+        return OrderDetailsResultsControllers(order: self.order, storageManager: self.storageManager)
     }()
 
     private lazy var orderNoteAsyncDictionary: AsyncDictionary<Int64, String> = {
@@ -151,7 +141,8 @@ final class OrderDetailsDataSource: NSObject {
 
     private let imageService: ImageService = ServiceLocator.imageService
 
-    init(order: Order) {
+    init(order: Order, storageManager: StorageManagerType = ServiceLocator.storageManager) {
+        self.storageManager = storageManager
         self.order = order
         self.couponLines = order.coupons
 
@@ -190,23 +181,33 @@ extension OrderDetailsDataSource: UITableViewDataSource {
 // MARK: - Support for UITableViewDelegate
 extension OrderDetailsDataSource {
     func viewForHeaderInSection(_ section: Int, tableView: UITableView) -> UIView? {
-        guard let leftText = sections[section].title else {
+        guard let section = sections[safe: section] else {
             return nil
         }
 
-        let headerID = TwoColumnSectionHeaderView.reuseIdentifier
-        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerID) as? TwoColumnSectionHeaderView else {
-            fatalError()
+        let reuseIdentifier = section.headerStyle.viewType.reuseIdentifier
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: reuseIdentifier) else {
+            assertionFailure("Could not find section header view for reuseIdentifier \(reuseIdentifier)")
+            return nil
         }
 
-        headerView.leftText = leftText
-        headerView.rightText = sections[section].rightTitle
+        switch headerView {
+        case let headerView as PrimarySectionHeaderView:
+            headerView.configure(title: section.title)
+        case let headerView as TwoColumnSectionHeaderView:
+            headerView.leftText = section.title
+            headerView.rightText = section.rightTitle
+        default:
+            assertionFailure("Unexpected headerView type \(headerView.self)")
+            return nil
+        }
 
         return headerView
     }
 }
 
 // MARK: - Support for UITableViewDataSource
+
 private extension OrderDetailsDataSource {
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
@@ -501,23 +502,21 @@ private extension OrderDetailsDataSource {
     private func configureShippingMethod(cell: CustomerNoteTableViewCell) {
         cell.headline = NSLocalizedString("Shipping Method",
                                           comment: "Shipping method title for customer info cell")
-        cell.body = shippingMethod
+        cell.body = shippingMethod.strippedHTML
         cell.selectionStyle = .none
     }
 
     private func configureSummary(cell: SummaryTableViewCell) {
-        cell.title = summaryTitle
-        cell.dateCreated = summaryDateCreated
+        let cellViewModel = SummaryTableViewCellViewModel(
+            order: order,
+            status: lookUpOrderStatus(for: order)
+        )
+
+        cell.configure(cellViewModel)
+
         cell.onEditTouchUp = { [weak self] in
             self?.onCellAction?(.summary, nil)
         }
-
-
-        let status = lookUpOrderStatus(for: order)?.status ?? OrderStatusEnum(rawValue: order.statusKey)
-        let statusName = lookUpOrderStatus(for: order)?.name ?? order.statusKey
-        let presentation = SummaryTableViewCellPresentation(status: status, statusName: statusName)
-
-        cell.display(presentation: presentation)
     }
 }
 
@@ -578,7 +577,7 @@ extension OrderDetailsDataSource {
                     rows.append(.details)
                 }
 
-                return Section(title: Title.product, rightTitle: Title.quantity, rows: rows)
+                return Section(title: Localization.pluralizedProducts(count: items.count), rightTitle: nil, rows: rows, headerStyle: .primary)
             }
 
             var rows = [Row]()
@@ -600,7 +599,7 @@ extension OrderDetailsDataSource {
                 return nil
             }
 
-            return Section(title: Title.product, rightTitle: Title.quantity, rows: rows)
+            return Section(title: Localization.pluralizedProducts(count: items.count), rightTitle: nil, rows: rows, headerStyle: .primary)
         }()
 
         let refundedProducts: Section? = {
@@ -686,8 +685,8 @@ extension OrderDetailsDataSource {
                     shippingNotice,
                     products,
                     refundedProducts,
-                    customerInformation,
                     payment,
+                    customerInformation,
                     tracking,
                     addTracking,
                     notes].compactMap { $0 }
@@ -862,8 +861,8 @@ extension OrderDetailsDataSource {
     }
 
     enum Title {
-        static let product = NSLocalizedString("Product", comment: "Product section title")
-        static let quantity = NSLocalizedString("Qty", comment: "Quantity abbreviation for section title")
+        static let products = NSLocalizedString("Products", comment: "Product section title if there is more than one product.")
+        static let product = NSLocalizedString("Product", comment: "Product section title if there is only one product.")
         static let refundedProducts = NSLocalizedString("Refunded Products", comment: "Section title")
         static let tracking = NSLocalizedString("Tracking", comment: "Order tracking section title")
         static let customerNote = NSLocalizedString("Customer Provided Note", comment: "Customer note section title")
@@ -878,20 +877,50 @@ extension OrderDetailsDataSource {
     }
 
     struct Section {
+        /// The table header style of a `Section`.
+        ///
+        enum HeaderStyle {
+            /// Uses the PrimarySectionHeaderView
+            case primary
+            /// Uses the TwoColumnSectionHeaderView
+            case twoColumn
+
+            /// The type of `UITableViewHeaderFooterView` to use for this style.
+            ///
+            var viewType: UITableViewHeaderFooterView.Type {
+                switch self {
+                case .primary:
+                    return PrimarySectionHeaderView.self
+                case .twoColumn:
+                    return TwoColumnSectionHeaderView.self
+                }
+            }
+        }
+
         let title: String?
         let rightTitle: String?
         let footer: String?
         let rows: [Row]
+        let headerStyle: HeaderStyle
 
-        init(title: String? = nil, rightTitle: String? = nil, footer: String? = nil, rows: [Row]) {
+        init(title: String? = nil,
+             rightTitle: String? = nil,
+             footer: String? = nil,
+             rows: [Row],
+             headerStyle: HeaderStyle = .twoColumn) {
             self.title = title
             self.rightTitle = rightTitle
             self.footer = footer
             self.rows = rows
+            self.headerStyle = headerStyle
         }
 
-        init(title: String? = nil, rightTitle: String? = nil, footer: String? = nil, row: Row) {
-            self.init(title: title, rightTitle: rightTitle, footer: footer, rows: [row])
+        init(title: String? = nil,
+             rightTitle: String? = nil,
+             footer: String? = nil,
+             row: Row,
+             headerStyle: HeaderStyle = .twoColumn) {
+            self.init(title: title, rightTitle: rightTitle, footer: footer, rows: [row], headerStyle: headerStyle)
         }
     }
 
@@ -987,5 +1016,15 @@ extension OrderDetailsDataSource {
         static let addOrderCell = 1
         static let paymentCell = 1
         static let paidByCustomerCell = 1
+    }
+}
+
+// MARK: - Private Utils
+
+private extension OrderDetailsDataSource {
+    enum Localization {
+        static func pluralizedProducts(count: Int) -> String {
+            count > 1 ? Title.products : Title.product
+        }
     }
 }

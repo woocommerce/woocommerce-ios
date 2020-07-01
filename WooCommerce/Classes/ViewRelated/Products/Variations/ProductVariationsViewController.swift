@@ -2,6 +2,8 @@ import UIKit
 import WordPressUI
 import Yosemite
 
+import class AutomatticTracks.CrashLogging
+
 /// Displays a paginated list of Product Variations with its price or visibility.
 ///
 final class ProductVariationsViewController: UIViewController {
@@ -167,7 +169,13 @@ private extension ProductVariationsViewController {
             onReload()
         }
 
-        try? resultsController.performFetch()
+        do {
+            try resultsController.performFetch()
+        } catch {
+            CrashLogging.logError(error)
+        }
+
+        tableView.reloadData()
     }
 }
 
@@ -251,7 +259,7 @@ private extension ProductVariationsViewController {
     ///
     func displayPlaceholderProducts() {
         let options = GhostOptions(reuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options)
+        tableView.displayGhostContent(options: options, style: .wooDefaultGhostStyle)
 
         resultsController.stopForwardingEvents()
     }

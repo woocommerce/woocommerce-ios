@@ -1,0 +1,7 @@
+project: 
+    file: ../Networking/Networking.xcodeproj
+    target: 
+        name: Networking
+templates:
+    - Models+Copiable.swifttemplate
+output: ../Networking/Networking/Model/Copiable/

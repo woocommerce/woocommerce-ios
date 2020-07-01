@@ -42,28 +42,13 @@ public enum AppSettingsAction: Action {
     ///
     case loadStatsVersionBannerVisibility(banner: StatsVersionBannerVisibility.StatsVersionBanner, onCompletion: (Bool) -> Void)
 
-    /// Loads the eligible stats version given the latest app settings associated with the `siteID`
-    ///
-    case loadStatsVersionEligible(siteID: Int64,
-        onCompletion: (StatsVersion?) -> Void)
-
     /// Sets whether a stats version banner should be shown
     ///
     case setStatsVersionBannerVisibility(banner: StatsVersionBannerVisibility.StatsVersionBanner, shouldShowBanner: Bool)
 
-    /// Sets the latest highest eligible stats version associated with the `siteID`
-    ///
-    case setStatsVersionEligible(siteID: Int64,
-        statsVersion: StatsVersion)
-
     /// Sets the last shown stats version associated with the `siteID`
     ///
     case setStatsVersionLastShown(siteID: Int64,
-        statsVersion: StatsVersion)
-
-    /// Sets the user preferred stats version associated with the `siteID`
-    ///
-    case setStatsVersionPreference(siteID: Int64,
         statsVersion: StatsVersion)
 
     /// Loads the user preferred Product feature switch given the latest app settings

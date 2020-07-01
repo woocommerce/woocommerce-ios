@@ -5,71 +5,23 @@ import Yosemite
 
 /// Product Details: Renders a row that displays a single Product.
 ///
-class ProductDetailsTableViewCell: UITableViewCell {
+final class ProductDetailsTableViewCell: UITableViewCell {
 
-    /// ImageView
+    /// Shows the product's image.
     ///
     @IBOutlet private var productImageView: UIImageView!
 
-    /// Label: Name
+    /// The label for the product's name.
     ///
     @IBOutlet private var nameLabel: UILabel!
 
-    /// Label: Quantity
-    ///
-    @IBOutlet private var quantityLabel: UILabel!
-
-    /// Label: Price
+    /// The label for the subtotal (quantity x item price).
     ///
     @IBOutlet private var priceLabel: UILabel!
 
-    /// Label: SKU
+    /// The label showing the pattern "{qty} x {item_price}".
     ///
-    @IBOutlet private var skuLabel: UILabel!
-
-    /// Product Name
-    ///
-    var name: String? {
-        get {
-            return nameLabel?.text
-        }
-        set {
-            nameLabel?.text = newValue
-        }
-    }
-
-    /// Number of Items
-    ///
-    var quantity: String? {
-        get {
-            return quantityLabel?.text
-        }
-        set {
-            quantityLabel?.text = newValue
-        }
-    }
-
-    /// Item's Price
-    ///
-    var price: String? {
-        get {
-            return priceLabel?.text
-        }
-        set {
-            priceLabel?.text = newValue
-        }
-    }
-
-    /// Item's SKU
-    ///
-    var sku: String? {
-        get {
-            return skuLabel?.text
-        }
-        set {
-            skuLabel?.text = newValue
-        }
-    }
+    @IBOutlet private var subtitleLabel: UILabel!
 
     // MARK: - Overridden Methods
 
@@ -79,18 +31,13 @@ class ProductDetailsTableViewCell: UITableViewCell {
         super.init(coder: aDecoder)
     }
 
-    class func makeFromNib() -> ProductDetailsTableViewCell {
-        return Bundle.main.loadNibNamed("ProductDetailsTableViewCell", owner: self, options: nil)?.first as! ProductDetailsTableViewCell
-    }
-
     override func awakeFromNib() {
         super.awakeFromNib()
         configureBackground()
         configureProductImageView()
         configureNameLabel()
-        configureQuantityLabel()
-        configureSKULabel()
         configurePriceLabel()
+        configureSubtitleLabel()
         configureSelectionStyle()
     }
 }
@@ -117,19 +64,14 @@ private extension ProductDetailsTableViewCell {
         nameLabel?.text = ""
     }
 
-    func configureQuantityLabel() {
-        quantityLabel.applyBodyStyle()
-        quantityLabel?.text = ""
-    }
-
     func configurePriceLabel() {
-        priceLabel.applySecondaryFootnoteStyle()
+        priceLabel.applyBodyStyle()
         priceLabel?.text = ""
     }
 
-    func configureSKULabel() {
-        skuLabel.applySecondaryFootnoteStyle()
-        skuLabel?.text = ""
+    func configureSubtitleLabel() {
+        subtitleLabel.applySecondaryFootnoteStyle()
+        subtitleLabel?.text = ""
     }
 
     func configureSelectionStyle() {
@@ -150,9 +92,8 @@ extension ProductDetailsTableViewCell {
                                                        progressBlock: nil,
                                                        completion: nil)
 
-        name = item.name
-        quantity = item.quantity
-        price = item.price
-        sku = item.sku
+        nameLabel.text = item.name
+        priceLabel.text = item.total
+        subtitleLabel.text = item.subtitle
     }
 }

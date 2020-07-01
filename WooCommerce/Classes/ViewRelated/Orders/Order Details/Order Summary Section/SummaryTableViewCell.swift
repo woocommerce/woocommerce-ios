@@ -2,11 +2,67 @@ import UIKit
 import Yosemite
 import Gridicons
 
-struct SummaryTableViewCellPresentation {
-    let status: OrderStatusEnum
-    let statusName: String
-}
+/// The ViewModel for `SummaryTableViewCell`.
+///
+/// TODO This and that cell class should be renamed to be less ambiguous.
+///
+struct SummaryTableViewCellViewModel {
+    fileprivate struct OrderStatusPresentation {
+        let style: OrderStatusEnum
+        let title: String
+    }
 
+    private let billingAddress: Address?
+    private let dateCreated: Date
+    private let orderNumber: String
+
+    fileprivate let presentation: OrderStatusPresentation
+
+    private let calendar: Calendar
+
+    init(order: Order,
+         status: OrderStatus?,
+         calendar: Calendar = .current) {
+
+        billingAddress = order.billingAddress
+        dateCreated = order.dateCreated
+        orderNumber = order.number
+
+        presentation = OrderStatusPresentation(
+            style: status?.status ?? OrderStatusEnum(rawValue: order.statusKey),
+            title: status?.name ?? order.statusKey
+        )
+
+        self.calendar = calendar
+    }
+
+    /// The full name from the billing address
+    ///
+    var billedPersonName: String {
+        if let billingAddress = billingAddress {
+            return Localization.billedPerson(firstName: billingAddress.firstName,
+                                             lastName: billingAddress.lastName)
+        } else {
+            return ""
+        }
+    }
+
+    /// The date and the order number concatenated together. Example, “Jan 22, 2018 • #1587”.
+    ///
+    /// If the date is today, the time will be returned instead.
+    ///
+    var subtitle: String {
+        let formatter: DateFormatter = {
+            if dateCreated.isSameDay(as: Date(), using: calendar) {
+                return DateFormatter.timeFormatter
+            } else {
+                return DateFormatter.mediumLengthLocalizedDateFormatter
+            }
+        }()
+
+        return "\(formatter.string(from: dateCreated)) • #\(orderNumber)"
+    }
+}
 
 // MARK: - SummaryTableViewCell
 //
@@ -16,9 +72,9 @@ final class SummaryTableViewCell: UITableViewCell {
     ///
     @IBOutlet private weak var titleLabel: UILabel!
 
-    /// Label: Creation / Update Date
+    /// Shows the dateCreated and order number.
     ///
-    @IBOutlet private weak var createdLabel: UILabel!
+    @IBOutlet private weak var subtitleLabel: UILabel!
 
     /// Label: Payment Status
     ///
@@ -28,37 +84,22 @@ final class SummaryTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var updateStatusButton: UIButton!
 
-    /// Title
-    ///
-    var title: String? {
-        get {
-            return titleLabel.text
-        }
-        set {
-            titleLabel.text = newValue
-        }
-    }
-
-    /// Date
-    ///
-    var dateCreated: String? {
-        get {
-            return createdLabel.text
-        }
-        set {
-            createdLabel.text = newValue
-        }
-    }
-
     /// Closure to be executed whenever the edit button is tapped.
     ///
     var onEditTouchUp: (() -> Void)?
 
+    func configure(_ viewModel: SummaryTableViewCellViewModel) {
+        titleLabel.text = viewModel.billedPersonName
+        subtitleLabel.text = viewModel.subtitle
+
+        display(presentation: viewModel.presentation)
+    }
+
     /// Displays the specified OrderStatus, and applies the right Label Style
     ///
-    func display(presentation: SummaryTableViewCellPresentation) {
-        paymentStatusLabel.applyStyle(for: presentation.status)
-        paymentStatusLabel.text = presentation.statusName
+    private func display(presentation: SummaryTableViewCellViewModel.OrderStatusPresentation) {
+        paymentStatusLabel.applyStyle(for: presentation.style)
+        paymentStatusLabel.text = presentation.title
     }
 
     // MARK: - Overridden Methods
@@ -115,8 +156,8 @@ private extension SummaryTableViewCell {
     func configureLabels() {
         titleLabel.applyHeadlineStyle()
         titleLabel.accessibilityIdentifier = "summary-table-view-cell-title-label"
-        createdLabel.applyFootnoteStyle()
-        createdLabel.accessibilityIdentifier = "summary-table-view-cell-created-label"
+        subtitleLabel.applyFootnoteStyle()
+        subtitleLabel.accessibilityIdentifier = "summary-table-view-cell-created-label"
         paymentStatusLabel.applyPaddedLabelDefaultStyles()
         paymentStatusLabel.accessibilityIdentifier = "summary-table-view-cell-payment-status-label"
     }
@@ -147,22 +188,16 @@ private extension SummaryTableViewCell {
     }
 }
 
+/// MARK: - Localization
 
-/// MARK: - Testability
-extension SummaryTableViewCell {
-    func getTitle() -> UILabel {
-        return titleLabel
-    }
+private extension SummaryTableViewCellViewModel {
+    enum Localization {
+        static func billedPerson(firstName: String, lastName: String) -> String {
+            let format = NSLocalizedString("%1$@ %2$@", comment: "In Order Details,"
+                + " the pattern to show the billed person's full name. For example, “John Doe”."
+                + " The %1$@ is the first name. The %2$@ is the last name.")
 
-    func getCreatedLabel() -> UILabel {
-        return createdLabel
-    }
-
-    func getStatusLabel() -> UILabel {
-        return paymentStatusLabel
-    }
-
-    func getEditButton() -> UIButton {
-        return updateStatusButton
+            return String.localizedStringWithFormat(format, firstName, lastName)
+        }
     }
 }

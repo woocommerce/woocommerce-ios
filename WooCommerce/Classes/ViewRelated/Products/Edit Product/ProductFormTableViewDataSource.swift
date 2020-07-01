@@ -129,7 +129,7 @@ private extension ProductFormTableViewDataSource {
             self?.onNameChange?(newName)
             }, onTextDidBeginEditing: {
                 ServiceLocator.analytics.track(.productDetailViewProductNameTapped)
-        }, inputFormatter: nil)
+        }, inputFormatter: nil, keyboardType: .default)
         cell.configure(viewModel: viewModel)
     }
 
@@ -164,7 +164,7 @@ private extension ProductFormTableViewDataSource {
         }
         switch row {
         case .price(let viewModel), .inventory(let viewModel), .shipping(let viewModel), .categories(let viewModel),
-             .briefDescription(let viewModel):
+             .briefDescription(let viewModel), .externalURL(let viewModel), .sku(let viewModel), .groupedProducts(let viewModel):
             configureSettings(cell: cell, viewModel: viewModel)
         }
     }

@@ -2,6 +2,7 @@
 import Foundation
 import UIKit
 @testable import WooCommerce
+import Yosemite
 
 final class MockPushNotificationsManager: PushNotesManager {
 
@@ -11,7 +12,15 @@ final class MockPushNotificationsManager: PushNotesManager {
 
     private let foregroundNotificationsSubject = PublishSubject<ForegroundNotification>()
 
-    func resetBadgeCount() {
+    func resetBadgeCount(type: Note.Kind) {
+
+    }
+
+    func resetBadgeCountForAllStores(onCompletion: @escaping () -> Void) {
+
+    }
+
+    func reloadBadgeCount() {
 
     }
 
@@ -35,7 +44,9 @@ final class MockPushNotificationsManager: PushNotesManager {
 
     }
 
-    func handleNotification(_ userInfo: [AnyHashable: Any], completionHandler: @escaping (UIKit.UIBackgroundFetchResult) -> ()) {
+    func handleNotification(_ userInfo: [AnyHashable: Any],
+                            onBadgeUpdateCompletion: @escaping () -> Void,
+                            completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
 
     }
 }

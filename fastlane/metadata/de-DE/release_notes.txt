@@ -1,2 +1,3 @@
-* Einfacheres Bearbeiten der Produktbeschreibung: Tippe zur Bearbeitung auf eine beliebige Produktzelle. Du benötigst die Tastatur? Sie erscheint automatisch. Und wo wir schon dabei waren, haben wir auch gleich noch ein paar andere Fehler behoben.
-* Topaktuelle Berichterstellung für Bestellungen: Die Bestellliste aktualisiert sich automatisch jedes Mal, wenn du die App öffnest oder eine Bestellung erhältst. Die Liste der Bestellungen in Bearbeitung zeigt nun auch bevorstehende Bestellungen an.
+- Produktverbesserungen: Direkt in der App Produktabbildungen und Produkteinstellungen aktualisieren und Produktlinks teilen. Du brauchst keinen Desktopcomputer mehr dazu!
+- Visuelle Verbesserungen: In den Bestelldetails wird die SKU nicht mehr in der Produktliste angezeigt. Außerdem werden der einfache Produktname und das Dreipunkt-Menü jetzt in der Navigationsleiste angezeigt, wenn sie außerhalb vom Produkte-Tab geöffnet werden. (Achte darauf, den Schalter für das Produkte-Feature zu aktivieren). Und auch der Ladestatus auf dem Bildschirm mit den Produktvarianten sieht jetzt schick aus, oder?
+- Benutzer in Kalifornien können ihren eigenen Datenschutzhinweis anzeigen.

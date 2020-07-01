@@ -1,2 +1,3 @@
-* Enklare redigering av produktbeskrivningar: Tryck var som helst i en produktcell för att börja redigera. Behöver du tangentbordet? Det dyker upp automatiskt. Dessutom åtgärdade vi ett par fel när vi ändå höll på.
-* Ständigt uppdaterad orderrapportering: Orderlistan uppdateras automatiskt varje gång du öppnar appen eller får en ny order och listan Ordrar som behandlas visar nu kommande framtida ordrar.
+– Produktförbättringar: uppdatera produktbilder, produktinställningar och dela produktlänkar direkt från appen utan att behöva använda datorn!
+– Visuella förbättringar: i beställningsinformationen visas inte SKU:n längre i produktlistan. Det enkla produktnamnet och ellips-menyn visas nu i navigeringsfältet när det öppnas utanför produktfliken (se till att aktivera växeln Produktfunktion). Sist men inte minst: tycker du inte laddningsstatus på produktvariationsskärmen ser fräsig ut nu?
+– Användare från Kalifornien kan visa sitt eget sekretessmeddelande.

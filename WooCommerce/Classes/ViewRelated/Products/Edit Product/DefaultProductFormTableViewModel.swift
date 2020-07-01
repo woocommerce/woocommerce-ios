@@ -12,64 +12,66 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
     //
     var siteTimezone: TimeZone = TimeZone.siteTimezone
 
-    private let isEditProductsRelease2Enabled: Bool
-    private let isEditProductsRelease3Enabled: Bool
-
     init(product: Product,
+         actionsFactory: ProductFormActionsFactory,
          currency: String,
-         currencyFormatter: CurrencyFormatter = CurrencyFormatter(),
-         isEditProductsRelease2Enabled: Bool,
-         isEditProductsRelease3Enabled: Bool) {
+         currencyFormatter: CurrencyFormatter = CurrencyFormatter()) {
         self.currency = currency
         self.currencyFormatter = currencyFormatter
-        self.isEditProductsRelease2Enabled = isEditProductsRelease2Enabled
-        self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
-        configureSections(product: product)
+        configureSections(product: product, actionsFactory: actionsFactory)
     }
 }
 
 private extension DefaultProductFormTableViewModel {
-    mutating func configureSections(product: Product) {
-        sections = [.primaryFields(rows: primaryFieldRows(product: product)),
-                    .settings(rows: settingsRows(product: product))]
+    mutating func configureSections(product: Product, actionsFactory: ProductFormActionsFactory) {
+        sections = [.primaryFields(rows: primaryFieldRows(product: product, actions: actionsFactory.primarySectionActions())),
+                    .settings(rows: settingsRows(product: product, actions: actionsFactory.settingsSectionActions()))]
     }
 
-    func primaryFieldRows(product: Product) -> [ProductFormSection.PrimaryFieldRow] {
-        guard isEditProductsRelease2Enabled || product.images.isEmpty == false else {
-            return [
-                .name(name: product.name),
-                .description(description: product.trimmedFullDescription)
-            ]
+    func primaryFieldRows(product: Product, actions: [ProductFormEditAction]) -> [ProductFormSection.PrimaryFieldRow] {
+        return actions.map { action in
+            switch action {
+            case .images:
+                return .images(product: product)
+            case .name:
+                return .name(name: product.name)
+            case .description:
+                return .description(description: product.trimmedFullDescription)
+            default:
+                fatalError("Unexpected action in the primary section: \(action)")
+            }
         }
-
-        return [
-            .images(product: product),
-            .name(name: product.name),
-            .description(description: product.trimmedFullDescription)
-        ]
     }
 
-    func settingsRows(product: Product) -> [ProductFormSection.SettingsRow] {
-        let shouldShowShippingSettingsRow = product.isShippingEnabled
-        let shouldShowBriefDescriptionRow = isEditProductsRelease2Enabled
-        let shouldShowCategoriesRow = isEditProductsRelease3Enabled
-
-        let rows: [ProductFormSection.SettingsRow?] = [
-            .price(viewModel: priceSettingsRow(product: product)),
-            shouldShowShippingSettingsRow ? .shipping(viewModel: shippingSettingsRow(product: product)): nil,
-            .inventory(viewModel: inventorySettingsRow(product: product)),
-            shouldShowCategoriesRow ? .categories(viewModel: categoriesRow(product: product)): nil,
-            shouldShowBriefDescriptionRow ? .briefDescription(viewModel: briefDescriptionRow(product: product)): nil
-        ]
-
-        return rows.compactMap { $0 }.filter { $0.isVisible(product: product) }
+    func settingsRows(product: Product, actions: [ProductFormEditAction]) -> [ProductFormSection.SettingsRow] {
+        return actions.map { action in
+            switch action {
+            case .priceSettings:
+                return .price(viewModel: priceSettingsRow(product: product))
+            case .shippingSettings:
+                return .shipping(viewModel: shippingSettingsRow(product: product))
+            case .inventorySettings:
+                return .inventory(viewModel: inventorySettingsRow(product: product))
+            case .categories:
+                return .categories(viewModel: categoriesRow(product: product))
+            case .briefDescription:
+                return .briefDescription(viewModel: briefDescriptionRow(product: product))
+            case .externalURL:
+                return .externalURL(viewModel: externalURLRow(product: product))
+            case .sku:
+                return .sku(viewModel: skuRow(product: product))
+            case .groupedProducts:
+                return .groupedProducts(viewModel: groupedProductsRow(product: product))
+            default:
+                fatalError("Unexpected action in the settings section: \(action)")
+            }
+        }
     }
 }
 
 private extension DefaultProductFormTableViewModel {
     func priceSettingsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.priceImage
-        let title = Constants.priceSettingsTitle
 
         var priceDetails = [String]()
 
@@ -101,11 +103,9 @@ private extension DefaultProductFormTableViewModel {
                 let formattedDate = dateFormatter.string(from: dateOnSaleEnd)
                 priceDetails.append(String.localizedStringWithFormat(Constants.saleDateFormatTo, formattedDate))
             }
-        } else if product.price.isEmpty == false {
-            let formattedPrice = currencyFormatter.formatAmount(product.regularPrice ?? product.price, with: currency) ?? ""
-            priceDetails.append(String.localizedStringWithFormat(Constants.regularPriceFormat, formattedPrice))
         }
 
+        let title = priceDetails.isEmpty ? Constants.addPriceSettingsTitle: Constants.priceSettingsTitle
         let details = priceDetails.isEmpty ? nil: priceDetails.joined(separator: "\n")
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
@@ -199,12 +199,60 @@ private extension DefaultProductFormTableViewModel {
                                                         details: details,
                                                         numberOfLinesForDetails: 1)
     }
+
+    // MARK: Affiliate products only
+
+    func externalURLRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
+        let icon = UIImage.linkImage
+        let title = product.externalURL?.isNotEmpty == true ? Constants.externalURLTitle: Constants.addExternalURLTitle
+        let details = product.externalURL
+
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon,
+                                                        title: title,
+                                                        details: details,
+                                                        numberOfLinesForDetails: 1)
+    }
+
+    func skuRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
+        let icon = UIImage.inventoryImage
+        let title = Constants.skuTitle
+        let details = product.sku
+
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon,
+                                                        title: title,
+                                                        details: details,
+                                                        numberOfLinesForDetails: 1)
+    }
+
+    // MARK: Grouped products only
+
+    func groupedProductsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
+        let icon = UIImage.widgetsImage
+        let title = product.groupedProducts.isEmpty ? Constants.addGroupedProductsTitle: Constants.groupedProductsTitle
+        let details: String
+
+        switch product.groupedProducts.count {
+        case 1:
+            details = String.localizedStringWithFormat(Constants.singularGroupedProductFormat, product.groupedProducts.count)
+        case 2...:
+            details = String.localizedStringWithFormat(Constants.pluralGroupedProductsFormat, product.groupedProducts.count)
+        default:
+            details = ""
+        }
+
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon,
+                                                        title: title,
+                                                        details: details,
+                                                        numberOfLinesForDetails: 1)
+    }
 }
 
 private extension DefaultProductFormTableViewModel {
     enum Constants {
+        static let addPriceSettingsTitle = NSLocalizedString("Add Price",
+                                                             comment: "Title for adding the price settings row on Product main screen")
         static let priceSettingsTitle = NSLocalizedString("Price",
-                                                          comment: "Title of the Price Settings row on Product main screen")
+                                                          comment: "Title for editing the price settings row on Product main screen")
         static let inventorySettingsTitle = NSLocalizedString("Inventory",
                                                               comment: "Title of the Inventory Settings row on Product main screen")
         static let shippingSettingsTitle = NSLocalizedString("Shipping",
@@ -213,6 +261,18 @@ private extension DefaultProductFormTableViewModel {
                                                        comment: "Title of the Categories row on Product main screen")
         static let briefDescriptionTitle = NSLocalizedString("Short description",
                                                              comment: "Title of the Short Description row on Product main screen")
+        static let skuTitle = NSLocalizedString("SKU",
+                                                comment: "Title of the SKU row on Product main screen")
+        static let addExternalURLTitle =
+            NSLocalizedString("Add product link",
+                              comment: "Title for adding an external URL row on Product main screen for an external/affiliate product")
+        static let externalURLTitle = NSLocalizedString("Product link",
+                                                        comment: "Title of the external URL row on Product main screen for an external/affiliate product")
+        static let addGroupedProductsTitle =
+            NSLocalizedString("Add products to the group",
+                              comment: "Title for adding grouped products row on Product main screen for a grouped product")
+        static let groupedProductsTitle = NSLocalizedString("Grouped products",
+                                                            comment: "Title for editing grouped products row on Product main screen for a grouped product")
 
         // Price
         static let regularPriceFormat = NSLocalizedString("Regular price: %@",
@@ -248,6 +308,12 @@ private extension DefaultProductFormTableViewModel {
 
         // Categories
         static let categoriesPlaceholder = NSLocalizedString("Uncategorized",
-                                                                   comment: "Placeholder of the Product Categories row on Product main screen")
+                                                             comment: "Placeholder of the Product Categories row on Product main screen")
+
+        // Grouped products
+        static let singularGroupedProductFormat = NSLocalizedString("%ld product",
+                                                                    comment: "Format of the number of grouped products in singular form")
+        static let pluralGroupedProductsFormat = NSLocalizedString("%ld products",
+                                                                   comment: "Format of the number of grouped products in plural form")
     }
 }

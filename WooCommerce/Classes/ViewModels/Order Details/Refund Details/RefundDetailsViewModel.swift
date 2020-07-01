@@ -25,11 +25,6 @@ final class RefundDetailsViewModel {
         self.refund = refund
     }
 
-    /// Section Titles
-    ///
-    let productLeftTitle = NSLocalizedString("PRODUCT", comment: "Product section title")
-    let productRightTitle = NSLocalizedString("QTY", comment: "Quantity abbreviation for section title")
-
     /// Products from a Refund
     ///
     var products: [Product] {
@@ -141,8 +136,7 @@ extension RefundDetailsViewModel {
             let item = refund.items[indexPath.row]
             let productID = item.variationID == 0 ? item.productID : item.variationID
             let loaderViewController = ProductLoaderViewController(productID: productID,
-                                                                   siteID: refund.siteID,
-                                                                   currency: order.currency)
+                                                                   siteID: refund.siteID)
             let navController = WooNavigationController(rootViewController: loaderViewController)
             viewController.present(navController, animated: true, completion: nil)
 

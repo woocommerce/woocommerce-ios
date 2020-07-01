@@ -16,59 +16,16 @@ final class ProductFormViewController: UIViewController {
         return keyboardFrameObserver
     }()
 
-    /// The product model before any potential edits; reset after a remote update.
-    private var originalProduct: Product
-
-    /// The product model with potential edits; reset after a remote update.
+    private let viewModel: ProductFormViewModel
     private var product: Product {
-        didSet {
-            defer {
-                let isUpdateEnabled = hasUnsavedChanges(product: product, password: password)
-                updateNavigationBar(isUpdateEnabled: isUpdateEnabled)
-            }
-
-            if isNameTheOnlyChange(oldProduct: oldValue, newProduct: product) {
-                return
-            }
-
-            updateMoreDetailsButtonVisibility(product: product)
-
-            viewModel = DefaultProductFormTableViewModel(product: product,
-                                                         currency: currency,
-                                                         isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
-                                                         isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
-            tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel,
-                                                                 productImageStatuses: productImageActionHandler.productImageStatuses,
-                                                                 productUIImageLoader: productUIImageLoader,
-                                                                 canEditImages: isEditProductsRelease2Enabled)
-            tableViewDataSource.configureActions(onNameChange: { [weak self] name in
-                self?.onEditProductNameCompletion(newName: name ?? "")
-            }, onAddImage: { [weak self] in
-                self?.showProductImages()
-            })
-            tableView.dataSource = tableViewDataSource
-            tableView.reloadData()
-        }
+        viewModel.product
     }
 
-    /// The product password, fetched in Product Settings
-    private var originalPassword: String? {
-        didSet {
-            password = originalPassword
-        }
-    }
     private var password: String? {
-        didSet {
-            let isUpdateEnabled = hasUnsavedChanges(product: product, password: password)
-            updateNavigationBar(isUpdateEnabled: isUpdateEnabled)
-        }
+        viewModel.password
     }
 
-    private var productUpdater: ProductUpdater {
-        return product
-    }
-
-    private var viewModel: ProductFormTableViewModel
+    private var tableViewModel: ProductFormTableViewModel
     private var tableViewDataSource: ProductFormTableViewDataSource
 
     private let productImageActionHandler: ProductImageActionHandler
@@ -87,7 +44,9 @@ final class ProductFormViewController: UIViewController {
     private var navigationRightBarButtonItems: Observable<[UIBarButtonItem]> {
         navigationRightBarButtonItemsSubject
     }
-    private var cancellable: ObservationToken?
+    private var cancellableProduct: ObservationToken?
+    private var cancellableProductName: ObservationToken?
+    private var cancellableUpdateEnabled: ObservationToken?
 
     init(product: Product,
          currency: String = CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode),
@@ -98,17 +57,18 @@ final class ProductFormViewController: UIViewController {
         self.presentationStyle = presentationStyle
         self.isEditProductsRelease2Enabled = isEditProductsRelease2Enabled
         self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
-        self.originalProduct = product
-        self.product = product
-        self.viewModel = DefaultProductFormTableViewModel(product: product,
-                                                          currency: currency,
-                                                          isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
-                                                          isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
         self.productImageActionHandler = ProductImageActionHandler(siteID: product.siteID,
                                                                    product: product)
         self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler,
                                                                 phAssetImageLoaderProvider: { PHImageManager.default() })
-        self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel,
+        self.viewModel = ProductFormViewModel(product: product,
+                                              productImageActionHandler: productImageActionHandler,
+                                              isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                              isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+        self.tableViewModel = DefaultProductFormTableViewModel(product: product,
+                                                               actionsFactory: viewModel.actionsFactory,
+                                                               currency: currency)
+        self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
                                                                   productUIImageLoader: productUIImageLoader,
                                                                   canEditImages: isEditProductsRelease2Enabled)
@@ -125,12 +85,15 @@ final class ProductFormViewController: UIViewController {
     }
 
     deinit {
-        cancellable?.cancel()
+        cancellableProduct?.cancel()
+        cancellableProductName?.cancel()
+        cancellableUpdateEnabled?.cancel()
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        configurePresentationStyle()
         configureNavigationBar()
         configureMainView()
         configureTableView()
@@ -138,7 +101,10 @@ final class ProductFormViewController: UIViewController {
 
         startListeningToNotifications()
         handleSwipeBackGesture()
-        configurePresentationStyle()
+
+        observeProduct()
+        observeProductName()
+        observeUpdateCTAVisibility()
 
         productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else {
@@ -151,7 +117,11 @@ final class ProductFormViewController: UIViewController {
                 self.displayErrorAlert(title: title, message: message)
             }
 
-            self.product = self.productUpdater.imagesUpdated(images: productImageStatuses.images)
+            if productImageStatuses.hasPendingUpload {
+                self.onImageStatusesUpdated(statuses: productImageStatuses)
+            }
+
+            self.viewModel.updateImages(productImageStatuses.images)
         }
     }
 
@@ -164,7 +134,8 @@ final class ProductFormViewController: UIViewController {
 
 private extension ProductFormViewController {
     func configureNavigationBar() {
-        updateNavigationBar(isUpdateEnabled: originalProduct != product)
+        updateNavigationBar(isUpdateEnabled: false)
+        updateNavigationBarTitle(productName: product.name)
         removeNavigationBackBarButtonText()
     }
 
@@ -190,7 +161,7 @@ private extension ProductFormViewController {
     /// Registers all of the available TableViewCells
     ///
     func registerTableViewCells() {
-        viewModel.sections.forEach { section in
+        tableViewModel.sections.forEach { section in
             switch section {
             case .primaryFields(let rows):
                 rows.forEach { row in
@@ -208,32 +179,20 @@ private extension ProductFormViewController {
         switch presentationStyle {
         case .contained(let containerViewController):
             containerViewController.addCloseNavigationBarButton(target: self, action: #selector(closeNavigationBarButtonTapped))
-            observeNavigationRightBarButtonItems(viewControllerWithNavigationItem: containerViewController)
         case .navigationStack:
-            observeNavigationRightBarButtonItems(viewControllerWithNavigationItem: self)
+            break
         }
     }
 
     @objc func closeNavigationBarButtonTapped() {
-        guard hasUnsavedChanges(product: product, password: password) == false else {
+        guard viewModel.hasUnsavedChanges() == false else {
             presentBackNavigationActionSheet()
             return
         }
         exitForm()
     }
 
-    func observeNavigationRightBarButtonItems(viewControllerWithNavigationItem: UIViewController) {
-        cancellable = navigationRightBarButtonItems.subscribe { [weak viewControllerWithNavigationItem] rightBarButtonItems in
-            viewControllerWithNavigationItem?.navigationItem.rightBarButtonItems = rightBarButtonItems
-        }
-    }
-
     func configureMoreDetailsContainerView() {
-        guard isEditProductsRelease2Enabled else {
-            moreDetailsContainerView.isHidden = true
-            return
-        }
-
         let title = NSLocalizedString("Add more details", comment: "Title of the button at the bottom of the product form to add more product details.")
         let viewModel = BottomButtonContainerView.ViewModel(style: .link,
                                                             title: title,
@@ -247,7 +206,62 @@ private extension ProductFormViewController {
         moreDetailsContainerView.setContentCompressionResistancePriority(.required, for: .vertical)
         moreDetailsContainerView.setContentHuggingPriority(.required, for: .vertical)
 
-        updateMoreDetailsButtonVisibility(product: product)
+        updateMoreDetailsButtonVisibility()
+    }
+}
+
+// MARK: - Observations & responding to changes
+//
+private extension ProductFormViewController {
+    func observeProduct() {
+        cancellableProduct = viewModel.observableProduct.subscribe { [weak self] product in
+            self?.onProductUpdated(product: product)
+        }
+    }
+
+    func observeProductName() {
+        cancellableProductName = viewModel.productName.subscribe { [weak self] name in
+            self?.updateNavigationBarTitle(productName: name)
+        }
+    }
+
+    func observeUpdateCTAVisibility() {
+        cancellableUpdateEnabled = viewModel.isUpdateEnabled.subscribe { [weak self] isUpdateEnabled in
+            self?.updateNavigationBar(isUpdateEnabled: isUpdateEnabled)
+        }
+    }
+
+    func onProductUpdated(product: Product) {
+        updateMoreDetailsButtonVisibility()
+
+        tableViewModel = DefaultProductFormTableViewModel(product: product,
+                                                          actionsFactory: viewModel.actionsFactory,
+                                                          currency: currency)
+        tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
+                                                             productImageStatuses: productImageActionHandler.productImageStatuses,
+                                                             productUIImageLoader: productUIImageLoader,
+                                                             canEditImages: isEditProductsRelease2Enabled)
+        tableViewDataSource.configureActions(onNameChange: { [weak self] name in
+            self?.onEditProductNameCompletion(newName: name ?? "")
+        }, onAddImage: { [weak self] in
+            self?.showProductImages()
+        })
+        tableView.dataSource = tableViewDataSource
+        tableView.reloadData()
+    }
+
+    func onImageStatusesUpdated(statuses: [ProductImageStatus]) {
+        tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
+                                                             productImageStatuses: statuses,
+                                                             productUIImageLoader: productUIImageLoader,
+                                                             canEditImages: isEditProductsRelease2Enabled)
+        tableViewDataSource.configureActions(onNameChange: { [weak self] name in
+            self?.onEditProductNameCompletion(newName: name ?? "")
+        }, onAddImage: { [weak self] in
+            self?.showProductImages()
+        })
+        tableView.dataSource = tableViewDataSource
+        tableView.reloadData()
     }
 }
 
@@ -258,8 +272,8 @@ private extension ProductFormViewController {
         let title = NSLocalizedString("Add more details",
                                       comment: "Title of the bottom sheet from the product form to add more product details.")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
-        let dataSource = ProductFormBottomSheetListSelectorCommand(product: product,
-                                                                   isEditProductsRelease3Enabled: isEditProductsRelease3Enabled) { [weak self] action in
+        let actions = viewModel.actionsFactory.bottomSheetActions()
+        let dataSource = ProductFormBottomSheetListSelectorCommand(actions: actions) { [weak self] action in
                                                                     self?.dismiss(animated: true) { [weak self] in
                                                                         switch action {
                                                                         case .editInventorySettings:
@@ -270,6 +284,9 @@ private extension ProductFormViewController {
                                                                             self?.editCategories()
                                                                         case .editBriefDescription:
                                                                             self?.editBriefDescription()
+                                                                        case .editSKU:
+                                                                            self?.editSKU()
+                                                                            break
                                                                         }
                                                                     }
         }
@@ -281,17 +298,9 @@ private extension ProductFormViewController {
         bottomSheet.show(from: self, sourceView: button, arrowDirections: .down)
     }
 
-    func updateMoreDetailsButtonVisibility(product: Product) {
-        guard isEditProductsRelease2Enabled else {
-            moreDetailsContainerView.isHidden = true
-            return
-        }
-
-        let moreDetailsActions: [ProductFormBottomSheetAction] = isEditProductsRelease3Enabled ?
-            [.editInventorySettings, .editShippingSettings, .editCategories, .editBriefDescription]:
-            [.editInventorySettings, .editShippingSettings, .editBriefDescription]
-        let hasVisibleActions = moreDetailsActions.map({ $0.isVisible(product: product) }).contains(true)
-        moreDetailsContainerView.isHidden = hasVisibleActions == false
+    func updateMoreDetailsButtonVisibility() {
+        let moreDetailsActions = viewModel.actionsFactory.bottomSheetActions()
+        moreDetailsContainerView.isHidden = moreDetailsActions.isEmpty
     }
 }
 
@@ -337,7 +346,7 @@ private extension ProductFormViewController {
                 return
             }
 
-            self.product = self.productUpdater.imagesUpdated(images: productImageStatuses.images)
+            self.viewModel.updateImages(productImageStatuses.images)
             group.leave()
         }
 
@@ -351,7 +360,7 @@ private extension ProductFormViewController {
         let group = DispatchGroup()
 
         // Updated Product
-        if product != originalProduct {
+        if viewModel.hasProductChanged() {
             group.enter()
             let updateProductAction = ProductAction.updateProduct(product: product) { [weak self] (product, error) in
                 guard let product = product, error == nil else {
@@ -365,8 +374,7 @@ private extension ProductFormViewController {
                     group.leave()
                     return
                 }
-                self?.originalProduct = product
-                self?.product = product
+                self?.viewModel.resetProduct(product)
 
                 ServiceLocator.analytics.track(.productDetailUpdateSuccess)
                 group.leave()
@@ -376,7 +384,7 @@ private extension ProductFormViewController {
 
 
         // Update product password if available
-        if let password = password, password != originalPassword {
+        if let password = viewModel.password, viewModel.hasPasswordChanged() {
             group.enter()
             let passwordUpdateAction = SitePostAction.updateSitePostPassword(siteID: product.siteID, postID: product.productID,
                                                                              password: password) { [weak self] (password, error) in
@@ -386,7 +394,7 @@ private extension ProductFormViewController {
                     return
                 }
 
-                self?.originalPassword = password
+                self?.viewModel.resetPassword(password)
                 group.leave()
             }
             ServiceLocator.stores.dispatch(passwordUpdateAction)
@@ -439,16 +447,27 @@ private extension ProductFormViewController {
             guard let self = self else {
                 return
             }
-            self.product = self.productUpdater.productSettingsUpdated(settings: productSettings)
-            self.password = productSettings.password
+            self.viewModel.updateProductSettings(productSettings)
         }, onPasswordRetrieved: { [weak self] (originalPassword) in
-            self?.originalPassword = originalPassword
+            self?.viewModel.resetPassword(originalPassword)
         })
         navigationController?.pushViewController(viewController, animated: true)
     }
 }
 
+// MARK: Navigation Bar Items
+//
 private extension ProductFormViewController {
+    func updateNavigationBarTitle(productName: String) {
+        navigationItem.title = productName
+        switch presentationStyle {
+        case .contained(let containerViewController):
+            containerViewController.navigationItem.title = productName
+        default:
+            break
+        }
+    }
+
     func updateNavigationBar(isUpdateEnabled: Bool) {
         var rightBarButtonItems = [UIBarButtonItem]()
 
@@ -460,7 +479,13 @@ private extension ProductFormViewController {
             rightBarButtonItems.insert(createMoreOptionsBarButtonItem(), at: 0)
         }
 
-        navigationRightBarButtonItemsSubject.send(rightBarButtonItems)
+        navigationItem.rightBarButtonItems = rightBarButtonItems
+        switch presentationStyle {
+        case .contained(let containerViewController):
+            containerViewController.navigationItem.rightBarButtonItems = rightBarButtonItems
+        default:
+            break
+        }
     }
 
     func createUpdateBarButtonItem() -> UIBarButtonItem {
@@ -483,7 +508,7 @@ extension ProductFormViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        let section = viewModel.sections[indexPath.section]
+        let section = tableViewModel.sections[indexPath.section]
         switch section {
         case .primaryFields(let rows):
             let row = rows[indexPath.row]
@@ -512,12 +537,23 @@ extension ProductFormViewController: UITableViewDelegate {
             case .briefDescription:
                 ServiceLocator.analytics.track(.productDetailViewShortDescriptionTapped)
                 editBriefDescription()
+            case .externalURL:
+                // TODO-2000 Edit Product M3 analytics
+                editExternalLink()
+                break
+            case .sku:
+                // TODO-2000 Edit Product M3 analytics
+                editSKU()
+                break
+            case .groupedProducts:
+                // TODO-2199: implement grouped products editing action
+                break
             }
         }
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        let section = viewModel.sections[section]
+        let section = tableViewModel.sections[section]
         switch section {
         case .settings:
             return Constants.settingsHeaderHeight
@@ -527,7 +563,7 @@ extension ProductFormViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let section = viewModel.sections[section]
+        let section = tableViewModel.sections[section]
         switch section {
         case .settings:
             let clearView = UIView(frame: .zero)
@@ -575,7 +611,7 @@ private extension ProductFormViewController {
         guard hasChangedData else {
             return
         }
-        self.product = productUpdater.imagesUpdated(images: images)
+        self.viewModel.updateImages(images)
     }
 }
 
@@ -583,12 +619,7 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func onEditProductNameCompletion(newName: String) {
-        product = productUpdater.nameUpdated(name: newName)
-    }
-
-    func isNameTheOnlyChange(oldProduct: Product, newProduct: Product) -> Bool {
-        let oldProductWithNewName = oldProduct.nameUpdated(name: newProduct.name)
-        return oldProductWithNewName == newProduct && newProduct.name != oldProduct.name
+        viewModel.updateName(newName)
     }
 }
 
@@ -597,7 +628,7 @@ private extension ProductFormViewController {
 //
 extension ProductFormViewController {
     override func shouldPopOnBackButton() -> Bool {
-        if hasUnsavedChanges(product: product, password: password) {
+        if viewModel.hasUnsavedChanges() {
             presentBackNavigationActionSheet()
             return false
         }
@@ -615,10 +646,6 @@ extension ProductFormViewController {
             }
             self.exitForm()
         })
-    }
-
-    private func hasUnsavedChanges(product: Product, password: String?) -> Bool {
-        return product != originalProduct || productImageActionHandler.productImageStatuses.hasPendingUpload || password != originalPassword
     }
 }
 
@@ -643,7 +670,7 @@ private extension ProductFormViewController {
         guard hasChangedData else {
             return
         }
-        self.product = productUpdater.descriptionUpdated(description: newDescription)
+        viewModel.updateDescription(newDescription)
     }
 }
 
@@ -687,12 +714,12 @@ private extension ProductFormViewController {
             return
         }
 
-        self.product = productUpdater.priceSettingsUpdated(regularPrice: regularPrice,
-                                                           salePrice: salePrice,
-                                                           dateOnSaleStart: dateOnSaleStart,
-                                                           dateOnSaleEnd: dateOnSaleEnd,
-                                                           taxStatus: taxStatus,
-                                                           taxClass: taxClass)
+        viewModel.updatePriceSettings(regularPrice: regularPrice,
+                                      salePrice: salePrice,
+                                      dateOnSaleStart: dateOnSaleStart,
+                                      dateOnSaleEnd: dateOnSaleEnd,
+                                      taxStatus: taxStatus,
+                                      taxClass: taxClass)
     }
 }
 
@@ -720,7 +747,7 @@ private extension ProductFormViewController {
         guard hasChangedData else {
             return
         }
-        self.product = productUpdater.shippingSettingsUpdated(weight: weight, dimensions: dimensions, shippingClass: shippingClass)
+        viewModel.updateShippingSettings(weight: weight, dimensions: dimensions, shippingClass: shippingClass)
     }
 }
 
@@ -745,12 +772,12 @@ private extension ProductFormViewController {
         guard hasChangedData else {
             return
         }
-        self.product = productUpdater.inventorySettingsUpdated(sku: data.sku,
-                                                               manageStock: data.manageStock,
-                                                               soldIndividually: data.soldIndividually,
-                                                               stockQuantity: data.stockQuantity,
-                                                               backordersSetting: data.backordersSetting,
-                                                               stockStatus: data.stockStatus)
+        viewModel.updateInventorySettings(sku: data.sku,
+                                          manageStock: data.manageStock,
+                                          soldIndividually: data.soldIndividually,
+                                          stockQuantity: data.stockQuantity,
+                                          backordersSetting: data.backordersSetting,
+                                          stockStatus: data.stockStatus)
     }
 }
 
@@ -774,7 +801,7 @@ private extension ProductFormViewController {
         guard hasChangedData else {
             return
         }
-        self.product = productUpdater.briefDescriptionUpdated(briefDescription: newBriefDescription)
+        viewModel.updateBriefDescription(newBriefDescription)
     }
 }
 
@@ -783,8 +810,68 @@ private extension ProductFormViewController {
 
 private extension ProductFormViewController {
     func editCategories() {
-        let categoryListViewController = ProductCategoryListViewController(product: product)
+        let categoryListViewController = ProductCategoryListViewController(product: product) { [weak self] (categories) in
+            self?.onEditCategoriesCompletion(categories: categories)
+        }
         show(categoryListViewController, sender: self)
+    }
+
+    func onEditCategoriesCompletion(categories: [ProductCategory]) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+        //TODO: Edit Product M3 analytics
+        let hasChangedData = categories.sorted() != product.categories.sorted()
+        guard hasChangedData else {
+            return
+        }
+        viewModel.updateProductCategories(categories)
+    }
+}
+
+// MARK: Action - Edit Product SKU
+//
+private extension ProductFormViewController {
+    func editSKU() {
+        let viewController = ProductInventorySettingsViewController(product: product, formType: .sku) { [weak self] data in
+            self?.onEditSKUCompletion(sku: data.sku)
+        }
+        show(viewController, sender: self)
+    }
+
+    func onEditSKUCompletion(sku: String?) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+        // TODO-2000: Edit Product M3 analytics
+        let hasChangedData = sku != product.sku
+        guard hasChangedData else {
+            return
+        }
+        viewModel.updateSKU(sku)
+    }
+}
+
+// MARK: Action - Edit Product External Link
+//
+private extension ProductFormViewController {
+    func editExternalLink() {
+        let viewController = ProductExternalLinkViewController(product: product) { [weak self] externalURL, buttonText in
+            self?.onEditExternalLinkCompletion(externalURL: externalURL, buttonText: buttonText)
+        }
+        show(viewController, sender: self)
+    }
+
+    func onEditExternalLinkCompletion(externalURL: String?, buttonText: String) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+        // TODO-2000: Edit Product M3 analytics
+        let hasChangedData = externalURL != product.externalURL || buttonText != product.buttonText
+        guard hasChangedData else {
+            return
+        }
+        viewModel.updateExternalLink(externalURL: externalURL, buttonText: buttonText)
     }
 }
 
@@ -810,9 +897,12 @@ private extension ProductFormViewController {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
 
-        actionSheet.addDefaultActionWithTitle(ActionSheetStrings.viewProduct) { [weak self] _ in
-            ServiceLocator.analytics.track(.productDetailViewProductButtonTapped)
-            self?.displayWebViewForProductInStore()
+        /// The "View product in store" action will be shown only if the product is published.
+        if viewModel.canViewProductInStore() {
+            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.viewProduct) { [weak self] _ in
+                ServiceLocator.analytics.track(.productDetailViewProductButtonTapped)
+                self?.displayWebViewForProductInStore()
+            }
         }
 
         actionSheet.addDefaultActionWithTitle(ActionSheetStrings.share) { [weak self] _ in

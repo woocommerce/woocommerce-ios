@@ -103,7 +103,7 @@ final class ProductTagStoreTests: XCTestCase {
 
     func testSynchronizeProductTagsUpdatesStoredTagsSuccessfulResponse() {
         // Given an initial stored tag and a stubed product-tags network response
-        let initialTag = sampletag(tagID: 20)
+        let initialTag = sampleTag(tagID: 20)
         storageManager.insertSampleProductTag(readOnlyProductTag: initialTag)
         network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tags-all")
         network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tags-empty")
@@ -259,7 +259,7 @@ final class ProductTagStoreTests: XCTestCase {
     func testSynchronizeProductTagsDeletesUnusedTags() {
         // Given some stored product tags without product relationships
         let sampleTags = (1...5).map { id in
-            return sampletag(tagID: id)
+            return sampleTag(tagID: id)
         }
         sampleTags.forEach { tag in
             storageManager.insertSampleProductTag(readOnlyProductTag: tag)
@@ -287,7 +287,7 @@ final class ProductTagStoreTests: XCTestCase {
     func testDeleteProductTagDeleteStoredTagSuccessfulResponse() {
         // Given a stubed product tag network response and a product tag stored locally
         network.simulateResponse(requestUrlSuffix: "products/tags/batch", filename: "product-tags-deleted")
-        storageManager.insertSampleProductTag(readOnlyProductTag: sampletag(tagID: 35))
+        storageManager.insertSampleProductTag(readOnlyProductTag: sampleTag(tagID: 35))
 
         XCTAssertEqual(storedProductTagsCount, 1)
 
@@ -309,7 +309,7 @@ final class ProductTagStoreTests: XCTestCase {
     func testDeleteProductTagReturnsErrorUponResponseError() {
         // Given a stubed generic-error network response
         network.simulateResponse(requestUrlSuffix: "products/tags/batch", filename: "generic_error")
-        storageManager.insertSampleProductTag(readOnlyProductTag: sampletag(tagID: 35))
+        storageManager.insertSampleProductTag(readOnlyProductTag: sampleTag(tagID: 35))
         XCTAssertEqual(storedProductTagsCount, 1)
 
         // When dispatching a `deleteProductTags` action
@@ -329,7 +329,7 @@ final class ProductTagStoreTests: XCTestCase {
 
     func testDeleteProductTagReturnsErrorUponEmptyResponse() {
         // Given an empty network response
-        storageManager.insertSampleProductTag(readOnlyProductTag: sampletag(tagID: 35))
+        storageManager.insertSampleProductTag(readOnlyProductTag: sampleTag(tagID: 35))
         XCTAssertEqual(storedProductTagsCount, 1)
 
         // When dispatching a `deleteProductTags` action
@@ -349,7 +349,7 @@ final class ProductTagStoreTests: XCTestCase {
 }
 
 private extension ProductTagStoreTests {
-    func sampletag(tagID: Int64) -> Networking.ProductTag {
+    func sampleTag(tagID: Int64) -> Networking.ProductTag {
         return Networking.ProductTag(siteID: sampleSiteID, tagID: tagID, name: "Sample", slug: "sample")
     }
 }

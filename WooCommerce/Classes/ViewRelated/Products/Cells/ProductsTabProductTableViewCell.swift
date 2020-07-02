@@ -42,12 +42,6 @@ final class ProductsTabProductTableViewCell: UITableViewCell {
         // Border color is not automatically updated on trait collection changes and thus manually updated here.
         productImageView.layer.borderColor = Colors.imageBorderColor.cgColor
     }
-
-    override func prepareForReuse() {
-        super.prepareForReuse()
-
-        selectedProductImageOverlayView?.removeFromSuperview()
-    }
 }
 
 extension ProductsTabProductTableViewCell: SearchResultCell {
@@ -86,6 +80,9 @@ extension ProductsTabProductTableViewCell {
         let isSelected = viewModel.isSelected
         if isSelected {
             configureSelectedProductImageOverlayView()
+        } else {
+            selectedProductImageOverlayView?.removeFromSuperview()
+            selectedProductImageOverlayView = nil
         }
         let selectedBackgroundColor = isSelected ? UIColor.primary.withAlphaComponent(0.2): .listForeground
         backgroundColor = selectedBackgroundColor
@@ -160,6 +157,10 @@ private extension ProductsTabProductTableViewCell {
     }
 
     func configureSelectedProductImageOverlayView() {
+        guard selectedProductImageOverlayView == nil else {
+            return
+        }
+
         let view = UIView(frame: .zero)
         view.backgroundColor = .primary
         view.translatesAutoresizingMaskIntoConstraints = false

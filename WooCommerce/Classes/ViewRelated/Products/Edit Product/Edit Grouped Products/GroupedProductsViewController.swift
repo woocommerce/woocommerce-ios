@@ -32,7 +32,7 @@ final class GroupedProductsViewController: UIViewController {
             let rhsProductID = rhs.productID
             let productIDs = viewModel.groupedProductIDs
             guard let lhsProductIDIndex = productIDs.firstIndex(of: lhsProductID), let rhsProductIDIndex = productIDs.firstIndex(of: rhsProductID) else {
-                    return true
+                return true
             }
             return lhsProductIDIndex < rhsProductIDIndex
         }
@@ -87,13 +87,6 @@ final class GroupedProductsViewController: UIViewController {
 private extension GroupedProductsViewController {
     @objc func addTapped() {
         // TODO-2199: add products action
-        let excludedProductIDs = viewModel.groupedProductIDs + [productID]
-        let listSelector = ProductListSelectorViewController(excludedProductIDs: viewModel.groupedProductIDs,
-                                                             siteID: siteID) { [weak self] selectedProductIDs in
-                                                                self?.viewModel.addProducts(selectedProductIDs)
-                                                                self?.navigationController?.popViewController(animated: true)
-        }
-        show(listSelector, sender: self)
     }
 
     @objc func doneButtonTapped() {
@@ -266,7 +259,7 @@ extension GroupedProductsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: ProductsTabProductTableViewCell.reuseIdentifier,
                                                        for: indexPath) as? ProductsTabProductTableViewCell else {
-            fatalError()
+                                                        fatalError()
         }
 
         let product = groupedProducts[indexPath.row]

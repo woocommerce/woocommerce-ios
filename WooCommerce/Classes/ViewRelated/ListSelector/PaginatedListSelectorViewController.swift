@@ -243,6 +243,10 @@ private extension PaginatedListSelectorViewController {
     }
 
     func registerTableViewCells() {
+        guard Bundle.main.path(forResource: rowType.classNameWithoutNamespaces, ofType: "nib") != nil else {
+            tableView.register(rowType.self, forCellReuseIdentifier: rowType.reuseIdentifier)
+            return
+        }
         tableView.register(rowType.loadNib(), forCellReuseIdentifier: rowType.reuseIdentifier)
     }
 

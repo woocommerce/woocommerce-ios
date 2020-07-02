@@ -444,7 +444,6 @@ private extension ProductStore {
     /// Updates, inserts, or prunes the provided StorageProduct's tags using the provided read-only Product's tags
     ///
     func handleProductTags(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
-
         // Removes all the tags first.
         storageProduct.tagsArray.forEach { existingStorageTag in
             storage.deleteObject(existingStorageTag)

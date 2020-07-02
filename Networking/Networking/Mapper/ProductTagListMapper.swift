@@ -48,7 +48,7 @@ private struct ProductTagListBatchUpdateEnvelope: Decodable {
     let createdTags: [ProductTag]?
     let deletedTags: [ProductTag]?
 
-    public init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let container = try? decoder.container(keyedBy: CodingKeys.self)
         let nestedContainer = try? container?.nestedContainer(keyedBy: CodingKeys.self, forKey: .data)
 

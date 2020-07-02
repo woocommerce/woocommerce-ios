@@ -20,13 +20,15 @@ struct ProductsTabProductViewModel {
     let imageUrl: String?
     let name: String
     let detailsAttributedString: NSAttributedString
+    let isSelected: Bool
 
     // Dependency for configuring the view.
     let imageService: ImageService
 
-    init(product: Product, imageService: ImageService = ServiceLocator.imageService) {
+    init(product: Product, isSelected: Bool = false, imageService: ImageService = ServiceLocator.imageService) {
         imageUrl = product.images.first?.src
         name = product.name
+        self.isSelected = isSelected
         detailsAttributedString = product.createDetailsAttributedString()
 
         self.imageService = imageService

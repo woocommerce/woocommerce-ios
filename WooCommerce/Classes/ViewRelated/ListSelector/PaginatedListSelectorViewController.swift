@@ -40,7 +40,7 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
 
     private let rowType = Cell.self
 
-    @IBOutlet private weak var tableView: UITableView!
+    private lazy var tableView: UITableView = UITableView(frame: .zero, style: viewProperties.tableViewStyle)
 
     /// Pull To Refresh Support.
     ///
@@ -104,7 +104,7 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
         self.viewProperties = viewProperties
         self.dataSource = dataSource
         self.onDismiss = onDismiss
-        super.init(nibName: "PaginatedListSelectorViewController", bundle: nil)
+        super.init(nibName: nil, bundle: nil)
     }
 
     required init?(coder: NSCoder) {
@@ -234,6 +234,10 @@ private extension PaginatedListSelectorViewController {
         tableView.estimatedRowHeight = estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
+
+        view.addSubview(tableView)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToSafeArea(tableView)
 
         registerTableViewCells()
     }

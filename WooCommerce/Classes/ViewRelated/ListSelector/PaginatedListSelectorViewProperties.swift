@@ -7,4 +7,5 @@ struct PaginatedListSelectorViewProperties {
     let noResultsPlaceholderText: String
     let noResultsPlaceholderImage: UIImage?
     let noResultsPlaceholderImageTintColor: UIColor?
+    let tableViewStyle: UITableView.Style
 }

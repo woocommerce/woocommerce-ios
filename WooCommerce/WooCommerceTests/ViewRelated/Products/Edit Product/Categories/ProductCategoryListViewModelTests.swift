@@ -62,6 +62,19 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(storesManager.numberOfResponsesConsumed, 1)
     }
+
+    func testAddAndSelectNewCategory() {
+        // Given
+        let product = MockProduct().product()
+        let viewModel = ProductCategoryListViewModel(storesManager: storesManager, product: product)
+        let newCategory = sampleCategory(categoryID: 1234, name: "Test")
+
+        // When
+        viewModel.addAndSelectNewCategory(category: newCategory)
+
+        // Then
+        XCTAssertEqual(viewModel.selectedCategories.first, newCategory)
+    }
 }
 
 private extension ProductCategoryListViewModelTests {

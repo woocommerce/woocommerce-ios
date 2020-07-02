@@ -68,7 +68,7 @@ extension Product {
     @NSManaged public var defaultAttributes: Set<ProductDefaultAttribute>?
     @NSManaged public var downloads: Set<ProductDownload>?
     @NSManaged public var images: NSOrderedSet?
-    @NSManaged public var tags: Set<ProductTag>?
+    @NSManaged public var tags: NSOrderedSet?
     @NSManaged public var searchResults: Set<ProductSearchResults>?
     @NSManaged public var productVariations: Set<ProductVariation>?
     @NSManaged public var productShippingClass: ProductShippingClass?
@@ -188,10 +188,10 @@ extension Product {
     @NSManaged public func removeFromTags(_ value: ProductTag)
 
     @objc(addTags:)
-    @NSManaged public func addToTags(_ values: NSSet)
+    @NSManaged public func addToTags(_ values: NSOrderedSet)
 
     @objc(removeTags:)
-    @NSManaged public func removeFromTags(_ values: NSSet)
+    @NSManaged public func removeFromTags(_ values: NSOrderedSet)
 
 }
 

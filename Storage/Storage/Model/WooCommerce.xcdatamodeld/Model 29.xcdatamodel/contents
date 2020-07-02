@@ -295,7 +295,7 @@
         <relationship name="productShippingClass" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductShippingClass" inverseName="products" inverseEntity="ProductShippingClass"/>
         <relationship name="productVariations" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductVariation" inverseName="product" inverseEntity="ProductVariation"/>
         <relationship name="searchResults" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductSearchResults" inverseName="products" inverseEntity="ProductSearchResults"/>
-        <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProductTag" inverseName="products" inverseEntity="ProductTag"/>
+        <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="ProductTag" inverseName="products" inverseEntity="ProductTag"/>
     </entity>
     <entity name="ProductAttribute" representedClassName="ProductAttribute" syncable="YES">
         <attribute name="attributeID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -375,7 +375,7 @@
         <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="slug" attributeType="String"/>
         <attribute name="tagID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="products" optional="YES" toMany="YES" deletionRule="Deny" destinationEntity="Product" inverseName="tags" inverseEntity="Product"/>
+        <relationship name="products" optional="YES" toMany="YES" deletionRule="Deny" ordered="YES" destinationEntity="Product" inverseName="tags" inverseEntity="Product"/>
     </entity>
     <entity name="ProductVariation" representedClassName="ProductVariation" syncable="YES">
         <attribute name="backordered" attributeType="Boolean" usesScalarValueType="YES"/>
@@ -528,7 +528,7 @@
         <element name="OrderStatsV4Interval" positionX="-675" positionY="54" width="128" height="120"/>
         <element name="OrderStatsV4Totals" positionX="-519.01171875" positionY="96.5546875" width="128" height="225"/>
         <element name="OrderStatus" positionX="-675" positionY="27" width="128" height="103"/>
-        <element name="Product" positionX="-669.6796875" positionY="1015.5859375" width="128" height="988"/>
+        <element name="Product" positionX="-692.92578125" positionY="1193.70703125" width="128" height="988"/>
         <element name="ProductAttribute" positionX="-733.52734375" positionY="-73.046875" width="128" height="148"/>
         <element name="ProductCategory" positionX="-885.69921875" positionY="65.46484375" width="128" height="133"/>
         <element name="ProductDefaultAttribute" positionX="-819.42578125" positionY="224.1171875" width="145.12109375" height="103"/>

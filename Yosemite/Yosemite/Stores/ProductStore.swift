@@ -444,22 +444,20 @@ private extension ProductStore {
     /// Updates, inserts, or prunes the provided StorageProduct's tags using the provided read-only Product's tags
     ///
     func handleProductTags(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
-        let siteID = readOnlyProduct.siteID
 
-        // Remove previous linked categories
-        storageProduct.tags?.removeAll()
-
-        // Upsert the tags from the read-only product
-        for readOnlyTag in readOnlyProduct.tags {
-            if let existingStorageTag = storage.loadProductTag(siteID: siteID, tagID: readOnlyTag.tagID) {
-                existingStorageTag.update(with: readOnlyTag)
-                storageProduct.addToTags(existingStorageTag)
-            } else {
-                let newStorageTag = storage.insertNewObject(ofType: Storage.ProductTag.self)
-                newStorageTag.update(with: readOnlyTag)
-                storageProduct.addToTags(newStorageTag)
-            }
+        // Removes all the tags first.
+        storageProduct.tagsArray.forEach { existingStorageTag in
+            storage.deleteObject(existingStorageTag)
         }
+
+        // Inserts the tags from the read-only product.
+        var storageTags = [StorageProductTag]()
+        for readOnlyTag in readOnlyProduct.tags {
+            let newStorageTag = storage.insertNewObject(ofType: Storage.ProductTag.self)
+            newStorageTag.update(with: readOnlyTag)
+            storageTags.append(newStorageTag)
+        }
+        storageProduct.tags = NSOrderedSet(array: storageTags)
     }
 }
 

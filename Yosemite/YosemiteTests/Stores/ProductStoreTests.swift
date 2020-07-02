@@ -1094,7 +1094,10 @@ final class ProductStoreTests: XCTestCase {
 //
 private extension ProductStoreTests {
 
-    func sampleProduct(_ siteID: Int64? = nil, productID: Int64? = nil, productShippingClass: Networking.ProductShippingClass? = nil, tags: [Networking.ProductTag]? = nil) -> Networking.Product {
+    func sampleProduct(_ siteID: Int64? = nil,
+                       productID: Int64? = nil,
+                       productShippingClass: Networking.ProductShippingClass? = nil,
+                       tags: [Networking.ProductTag]? = nil) -> Networking.Product {
         let testSiteID = siteID ?? sampleSiteID
         let testProductID = productID ?? sampleProductID
         return Product(siteID: testSiteID,

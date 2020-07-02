@@ -16,6 +16,19 @@ protocol SyncingCoordinatorDelegate: class {
 }
 
 
+/// In case the results from a sync and the results for UI display might differ (e.g. when the results controller predicate excludes certain sync results in a
+/// table view), this delegate can provide the necessary information for `SyncingCoordinator` to determine whether to trigger sync for the next page.
+/// To keep the states simple, only the last visible index (`totalNumberOfVisibleElements` minus 1) could trigger sync for the next page.
+protocol SyncingCoordinatorCustomPagingDelegate: class {
+    /// The number of elements that are currently visible. This value is used to determine whether a given visible index is the last element of the last page.
+    var totalNumberOfVisibleElements: Int { get }
+
+    /// Whether the last page has been synced.
+    /// Until we can get this information from the API response (e.g. in the Link Header), we can guess this value by whether the number of elements in an API
+    /// response is smaller than the given page size.
+    var hasSyncedLastPage: Bool { get }
+}
+
 /// SyncingCoordinator: Encapsulates all of the "Last Refreshed / Should Refresh" Paging Logic.
 ///
 /// Note:
@@ -62,6 +75,10 @@ class SyncingCoordinator {
     ///
     weak var delegate: SyncingCoordinatorDelegate?
 
+    /// This delegate can be set when the caller might have custom logic for the visible elements
+    ///
+    weak var customPagingDelegate: SyncingCoordinatorCustomPagingDelegate?
+
     /// Designated Initializer
     ///
     init(pageFirstIndex: Int = Defaults.pageFirstIndex,
@@ -85,7 +102,22 @@ class SyncingCoordinator {
             return
         }
 
-        let nextPage = pageNumber(for: lastVisibleIndex) + 1
+        let nextPage: Int
+
+        if let customPagingDelegate = customPagingDelegate {
+            if let highestPage = refreshDatePerPage.keys.max() {
+                nextPage = highestPage + 1
+            } else {
+                nextPage = pageFirstIndex
+            }
+
+            guard customPagingDelegate.hasSyncedLastPage == false else {
+                return
+            }
+        } else {
+            nextPage = pageNumber(for: lastVisibleIndex) + 1
+        }
+
         guard !isPageBeingSynced(pageNumber: nextPage), isCacheInvalid(pageNumber: nextPage) else {
             return
         }
@@ -171,6 +203,9 @@ extension SyncingCoordinator {
     /// Indicates if a given Element is the last one in the page. Note that `elementIndex` is expected to be in the [0, N) range.
     ///
     func isLastElementInPage(elementIndex: Int) -> Bool {
+        if let customPagingDelegate = customPagingDelegate {
+            return elementIndex == customPagingDelegate.totalNumberOfVisibleElements - 1
+        }
         return (elementIndex % pageSize) == (pageSize - 1)
     }
 

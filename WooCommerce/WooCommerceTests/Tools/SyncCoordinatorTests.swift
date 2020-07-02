@@ -4,7 +4,7 @@ import XCTest
 
 /// SyncingCoordinatorDelegate Closure-based Wrapper, for unit testing purposes.
 ///
-private class SyncingDelegateWrapper: SyncingCoordinatorDelegate {
+private final class SyncingDelegateWrapper: SyncingCoordinatorDelegate {
 
     typealias SuccessCallback = (Bool) -> Void
     typealias OnSyncClosure = (Int, SuccessCallback?) -> Void
@@ -16,6 +16,15 @@ private class SyncingDelegateWrapper: SyncingCoordinatorDelegate {
     }
 }
 
+private final class CustomPagingDelegateWrapper: SyncingCoordinatorCustomPagingDelegate {
+    let totalNumberOfVisibleElements: Int
+    let hasSyncedLastPage: Bool
+
+    init(totalNumberOfVisibleElements: Int = 0, hasSyncedLastPage: Bool = false) {
+        self.totalNumberOfVisibleElements = totalNumberOfVisibleElements
+        self.hasSyncedLastPage = hasSyncedLastPage
+    }
+}
 
 /// SyncCoordinator Tests
 ///
@@ -133,5 +142,117 @@ class SyncCoordinatorTests: XCTestCase {
         XCTAssertFalse(coordinator.isPageBeingSynced(pageNumber: secondPageNumber))
         coordinator.ensureNextPageIsSynchronized(lastVisibleIndex: lastElementInFirstPage)
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+    }
+
+    // MARK: Tests with a custom paging delegate
+
+    /// Verifies that `isLastElementInPage` returns true only when the elementIndex is effectively last one of the visible elements.
+    ///
+    func testIsLastElementInPageReturnsTrueOnlyForTheLastElementFromCustomPagingDelegate() {
+        for testPageSize in 10...100 {
+            let testCollectionSize = testPageSize * 2
+            coordinator = SyncingCoordinator(pageSize: testPageSize)
+            let totalNumberOfVisibleElements = testPageSize - 3
+            let customPagingDelegate = CustomPagingDelegateWrapper(totalNumberOfVisibleElements: totalNumberOfVisibleElements)
+            coordinator.customPagingDelegate = customPagingDelegate
+
+            for elementIndex in 0..<testCollectionSize {
+                let expectedOutput = elementIndex == (totalNumberOfVisibleElements - 1)
+                let isLastElement = coordinator.isLastElementInPage(elementIndex: elementIndex)
+
+                XCTAssertEqual(isLastElement, expectedOutput)
+            }
+        }
+    }
+
+    /// Verifies that `ensureNextPageIsSynchronized` synchronizes the next page for two pages given the last visible index.
+    ///
+    func testEnsuringNextPageIsSynchronizedForTwoPagesSyncsTwiceForTheLastElementFromCustomPagingDelegate() {
+        // Given
+        let pageSize = 25
+        coordinator = SyncingCoordinator(pageFirstIndex: 1, pageSize: pageSize)
+        coordinator.delegate = delegate
+
+        let totalNumberOfVisibleElements = 20
+        let customPagingDelegate = CustomPagingDelegateWrapper(totalNumberOfVisibleElements: totalNumberOfVisibleElements)
+        coordinator.customPagingDelegate = customPagingDelegate
+
+        // When
+        var pagesToSync = [Int]()
+        waitForExpectation(count: 2) { exp in
+            delegate.onSync = { (page, callback) in
+                pagesToSync.append(page)
+                callback?(true)
+
+                exp.fulfill()
+            }
+
+            let expectedLastIndexForTheFirstPage = totalNumberOfVisibleElements - 1
+            coordinator.ensureNextPageIsSynchronized(lastVisibleIndex: pageSize - 1) // Won't trigger sync
+            coordinator.ensureNextPageIsSynchronized(lastVisibleIndex: expectedLastIndexForTheFirstPage)
+
+            let expectedLastIndexForTheSecondPage = totalNumberOfVisibleElements - 1
+            coordinator.ensureNextPageIsSynchronized(lastVisibleIndex: expectedLastIndexForTheSecondPage)
+        }
+
+        // Then
+        XCTAssertEqual(pagesToSync, [1, 2])
+    }
+
+    /// Verifies when the first `ensureNextPageIsSynchronized` fails, the second call syncs the same first page for the last visible index.
+    ///
+    func testWhenEnsuringNextPageIsSynchronizedFailsItSyncsTheSamePageForTheLastElementFromCustomPagingDelegate() {
+        // Given
+        let pageSize = 25
+        coordinator = SyncingCoordinator(pageFirstIndex: 1, pageSize: pageSize)
+        coordinator.delegate = delegate
+
+        let totalNumberOfVisibleElements = 20
+        let customPagingDelegate = CustomPagingDelegateWrapper(totalNumberOfVisibleElements: totalNumberOfVisibleElements)
+        coordinator.customPagingDelegate = customPagingDelegate
+
+        // When
+        var pagesToSync = [Int]()
+        waitForExpectation(count: 2) { exp in
+            delegate.onSync = { (page, callback) in
+                let success = pagesToSync.count == 1
+                pagesToSync.append(page)
+                callback?(success)
+
+                exp.fulfill()
+            }
+
+            let expectedLastIndexForTheFirstPage = totalNumberOfVisibleElements - 1
+            coordinator.ensureNextPageIsSynchronized(lastVisibleIndex: pageSize - 1) // Won't trigger sync
+            coordinator.ensureNextPageIsSynchronized(lastVisibleIndex: expectedLastIndexForTheFirstPage)
+
+            let expectedLastIndexForTheSecondPage = totalNumberOfVisibleElements - 1
+            coordinator.ensureNextPageIsSynchronized(lastVisibleIndex: expectedLastIndexForTheSecondPage)
+        }
+
+        // Then
+        XCTAssertEqual(pagesToSync, [1, 1])
+    }
+
+    /// Verifies when the custom paging delegate indicates that the last page has been synced, `ensureNextPageIsSynchronized` should not trigger syncing.
+    ///
+    func testEnsuringNextPageIsSynchronizedWhenLastPageHasBeenSyncedFromCustomPagingDelegate() {
+        // Given
+        let pageSize = 25
+        coordinator = SyncingCoordinator(pageFirstIndex: 1, pageSize: pageSize)
+        coordinator.delegate = delegate
+
+        let totalNumberOfVisibleElements = 20
+        let customPagingDelegate = CustomPagingDelegateWrapper(totalNumberOfVisibleElements: totalNumberOfVisibleElements, hasSyncedLastPage: true)
+        coordinator.customPagingDelegate = customPagingDelegate
+
+        // When
+        delegate.onSync = { (page, callback) in
+            XCTFail("Sync for page \(page) should not be triggered when the last page has been synced")
+        }
+        let lastVisibleIndex = totalNumberOfVisibleElements - 1
+        coordinator.ensureNextPageIsSynchronized(lastVisibleIndex: lastVisibleIndex)
+
+        // Then: the delegate's `onSync` block should not be triggered.
     }
 }

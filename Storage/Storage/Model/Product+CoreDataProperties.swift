@@ -181,6 +181,24 @@ extension Product {
 // MARK: Generated accessors for tags
 extension Product {
 
+    @objc(insertObject:inTagsAtIndex:)
+    @NSManaged public func insertIntoTags(_ value: ProductTag, at idx: Int)
+
+    @objc(removeObjectFromTagsAtIndex:)
+    @NSManaged public func removeFromTags(at idx: Int)
+
+    @objc(insertTags:atIndexes:)
+    @NSManaged public func insertIntoTags(_ values: [ProductTag], at indexes: NSIndexSet)
+
+    @objc(removeTagsAtIndexes:)
+    @NSManaged public func removeFromTags(at indexes: NSIndexSet)
+
+    @objc(replaceObjectInTagsAtIndex:withObject:)
+    @NSManaged public func replaceTags(at idx: Int, with value: ProductTag)
+
+    @objc(replaceTagsAtIndexes:withTags:)
+    @NSManaged public func replaceTags(at indexes: NSIndexSet, with values: [ProductTag])
+
     @objc(addTagsObject:)
     @NSManaged public func addToTags(_ value: ProductTag)
 

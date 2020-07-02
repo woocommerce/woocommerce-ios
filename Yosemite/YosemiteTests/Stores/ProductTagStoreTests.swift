@@ -103,7 +103,7 @@ final class ProductTagStoreTests: XCTestCase {
 
     func testSynchronizeProductTagsUpdatesStoredTagsSuccessfulResponse() {
         // Given an initial stored tag and a stubed product-tags network response
-        let initialTag = sampleTag(tagID: 20)
+        let initialTag = sampleTag(tagID: 34)
         storageManager.insertSampleProductTag(readOnlyProductTag: initialTag)
         network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tags-all")
         network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tags-empty")
@@ -120,7 +120,8 @@ final class ProductTagStoreTests: XCTestCase {
 
         // Then the initial tag should have it's values updated
         let updatedTag = viewStorage.loadProductTag(siteID: sampleSiteID, tagID: initialTag.tagID)
-        XCTAssertNotEqual(initialTag.tagID, updatedTag?.tagID)
+        XCTAssertEqual(initialTag.siteID, updatedTag?.siteID)
+        XCTAssertEqual(initialTag.tagID, updatedTag?.tagID)
         XCTAssertNotEqual(initialTag.name, updatedTag?.name)
         XCTAssertNotEqual(initialTag.slug, updatedTag?.slug)
         XCTAssertNil(errorResponse)

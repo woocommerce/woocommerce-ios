@@ -6,7 +6,7 @@ This file documents changes in the WCiOS Storage data model. Please explain any 
 - @pmusolino 2020-06-29
 - Add `siteID` attribute to `ProductTag` entity
 - Update `ProductTag`'s  `product` relationship to `products`
-- Updated `Product`'s `tags` relationship with `nullify` as delete rule
+- Update `Product`'s `tags` relationship with `nullify` as delete rule
 - Used mapping model: `WooCommerceModelV28toV29.xcmappingmodel` to remove product tags without `siteID`
 
 ## Model 28 (Release 4.5.0.0)

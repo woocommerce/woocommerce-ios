@@ -49,6 +49,12 @@
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld in stock";
 
+/* Format of the number of grouped products in singular form */
+"%ld product" = "%ld product";
+
+/* Format of the number of grouped products in plural form */
+"%ld products" = "%ld products";
+
 /* Label about one product variation shown on Products tab */
 "%ld variant" = "%ld variant";
 
@@ -111,6 +117,15 @@
 
 /* Action to add photos on the Product images screen */
 "Add Photos" = "Add Photos";
+
+/* Title for adding the price settings row on Product main screen */
+"Add Price" = "Add Price";
+
+/* Title for adding an external URL row on Product main screen for an external/affiliate product */
+"Add product link" = "Add product link";
+
+/* Title for adding grouped products row on Product main screen for a grouped product */
+"Add products to the group" = "Add products to the group";
 
 /* A title used for a shipment tracking unit test
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
@@ -254,6 +269,12 @@
 
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "Bold";
+
+/* Title of the text field for editing the button text for an external/affiliate product */
+"Button Text" = "Button Text";
+
+/* Placeholder of the text field for editing the button text for an external/affiliate product */
+"Buy product" = "Buy product";
 
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "By signing up, you agree to our _Terms of Service_.";
@@ -513,6 +534,9 @@
 /* Display label for the product's draft status */
 "Draft" = "Draft";
 
+/* Subtitle of the product form bottom sheet action for editing SKU. */
+"Easily identify your products with unique codes" = "Easily identify your products with unique codes";
+
 /* Email address text field placeholder */
 "Email" = "Email";
 
@@ -547,6 +571,9 @@
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of your WooCommerce store you'd like to connect." = "Enter the address of your WooCommerce store you'd like to connect.";
 
+/* Footer text for editing product external URL */
+"Enter the external URL to the product." = "Enter the external URL to the product.";
+
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "Enter the password for your WordPress.com account.";
 
@@ -555,6 +582,9 @@
 
 /* Add custom shipping carrier. Placeholder of cell presenting tracking number */
 "Enter tracking number" = "Enter tracking number";
+
+/* Placeholder of the text field for editing the external URL for an external/affiliate product */
+"Enter URL" = "Enter URL";
 
 /* Title of a button on the magic link screen.
    Title of a button.  */
@@ -631,6 +661,9 @@
 /* Display label for grouped product type. */
 "Grouped" = "Grouped";
 
+/* Title for editing grouped products row on Product main screen for a grouped product */
+"Grouped products" = "Grouped products";
+
 /* Accessibility label for selecting h1 paragraph style button on the formatting toolbar. */
 "Header 1" = "Header 1";
 
@@ -699,9 +732,6 @@
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "If disabled the note will be private";
-
-/* My Store > Settings > Experimental features > Switch stats version */
-"Improved stats" = "Improved stats";
 
 /* Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
@@ -778,7 +808,7 @@
 "Launch Wormholy debug" = "Launch Wormholy debug";
 
 /* Settings > Privacy Settings. A text link to the cookie policy.
-   The action of the top banner on Dashboard that indicates new stats is unavailable - Title of button shown in the Orders → All Orders tab if the list is empty. */
+   Title of button shown in the Orders → All Orders tab if the list is empty. */
 "Learn more" = "Learn more";
 
 /* Title of the cell in Product Shipping Settings > Length */
@@ -1171,7 +1201,7 @@
 "Please wait while we publish this product to your store" = "Please wait while we publish this product to your store";
 
 /* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
-   Product Price Settings navigation title - Section header title for product price - Title of the cell in Product Price Settings > Price - Title of the Price Settings row on Product main screen */
+   Product Price Settings navigation title - Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
 "Price" = "Price";
 
 /* Product Details - pricing and inventory section title */
@@ -1215,6 +1245,12 @@
 /* My Store > Settings > Experimental features > Product editing */
 "Product editing" = "Product editing";
 
+/* Edit Product External Link navigation title */
+"Product Link" = "Product Link";
+
+/* Title of the external URL row on Product main screen for an external/affiliate product */
+"Product link" = "Product link";
+
 /* Title of the view containing a single Product Review */
 "Product Review" = "Product Review";
 
@@ -1230,6 +1266,9 @@
 
 /* Row title for filtering products by product type. */
 "Product Type" = "Product Type";
+
+/* Title of the text field for editing the external URL for an external/affiliate product */
+"Product URL" = "Product URL";
 
 /* My Store > Settings > Experimental features > Switch Products
    Product section title if there is more than one product. - Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
@@ -1538,7 +1577,7 @@
 "Size:" = "Size:";
 
 /* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products.
-   Title of the cell in Product Inventory Settings > SKU */
+   Edit Product SKU navigation title - Title of the cell in Product Inventory Settings > SKU - Title of the product form bottom sheet action for editing short description. - Title of the SKU row on Product main screen */
 "SKU" = "SKU";
 
 /* The message of the alert when there is an error updating the product SKU */
@@ -1902,6 +1941,9 @@
 /* The message of the alert when there is an error updating the product SKU */
 "This SKU is used on another product or is invalid." = "This SKU is used on another product or is invalid.";
 
+/* Footer text for editing external product button text */
+"This text will be shown on the button linking to the external product." = "This text will be shown on the button linking to the external product.";
+
 /* Tab selector title that shows the statistics for this week
    Top Performers section title - this week */
 "This Week" = "This Week";
@@ -1951,9 +1993,6 @@
 /* Used when a Reader Topic is not found for a specific id */
 "Topic not found for id:" = "Topic not found for id:";
 
-/* Product details screen - total orders descriptive label */
-"Total Orders" = "Total Orders";
-
 /* Top performers — label for the total number of products ordered */
 "Total orders: %ld" = "Total orders: %ld";
 
@@ -1988,15 +2027,6 @@
 
 /* Button to trigger connection to another account in store picker */
 "Try another account" = "Try another account";
-
-/* The action of the top banner on Dashboard that indicates new stats is available */
-"Try It Now" = "Try It Now";
-
-/* The title of the top banner on Dashboard that indicates new stats is available */
-"Try our improved stats" = "Try our improved stats";
-
-/* My Store > Settings > Experimental features > Stats version description */
-"Try the new stats available with the WooCommerce Admin plugin" = "Try the new stats available with the WooCommerce Admin plugin";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Try with another email";
@@ -2140,6 +2170,9 @@
    Updated on <date> */
 "Updated on %@" = "Updated on %@";
 
+/* Banner title in my store when stats will be deprecated */
+"Upgrade to keep seeing your stats" = "Upgrade to keep seeing your stats";
+
 /* Navigation bar title for editing the URL of a text link
    URL text field placeholder */
 "URL" = "URL";
@@ -2208,9 +2241,6 @@
 /* shown in promotional screens during first launch */
 "Watch readers from around the world read and interact with your site — in real time." = "Watch readers from around the world read and interact with your site — in real time.";
 
-/* The info of the top banner on Dashboard that indicates new stats is unavailable */
-"We have reverted to the old stats. To use the beta stats, please activate the WooCommerce Admin plugin with version 0.23 or higher" = "We have reverted to the old stats. To use the beta stats, please activate the WooCommerce Admin plugin with version 0.23 or higher";
-
 /* message to ask a user to check their email for a WordPress.com email */
 "We just emailed a link to %@. Please check your mail app and tap the link to log in." = "We just emailed a link to %@. Please check your mail app and tap the link to log in.";
 
@@ -2257,8 +2287,8 @@
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "Weight: %1$@%2$@";
 
-/* The info of the top banner on Dashboard that indicates new stats is available */
-"We’re rolling out improvements to stats for stores using the WooCommerce Admin plugin" = "We’re rolling out improvements to stats for stores using the WooCommerce Admin plugin";
+/* Banner caption in my store when the stats will be deprecated */
+"We’ve rolled out improvements to our analytics. Upgrade to WooCommerce 4.0 or above or install WooCommerce Admin plugin to keep seeing your stats after September 1, 2020." = "We’ve rolled out improvements to our analytics. Upgrade to WooCommerce 4.0 or above or install WooCommerce Admin plugin to keep seeing your stats after September 1, 2020.";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "What's my site address?";

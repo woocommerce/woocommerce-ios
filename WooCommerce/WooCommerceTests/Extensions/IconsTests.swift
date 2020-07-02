@@ -270,4 +270,8 @@ final class IconsTests: XCTestCase {
         let categoriesIcon = UIImage.categoriesIcon
         XCTAssertEqual(categoriesIcon.size, Gridicon.defaultSize)
     }
+
+    func testSyncIconIsNotNil() {
+        XCTAssertNotNil(UIImage.syncImage)
+    }
 }

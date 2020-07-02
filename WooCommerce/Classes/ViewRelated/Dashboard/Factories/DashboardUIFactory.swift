@@ -79,54 +79,22 @@ private extension DashboardUIFactory {
                                    currentState: StatsVersionState,
                                    onUIUpdate: @escaping (_ dashboardUI: DashboardUI) -> Void) {
         switch currentState {
-        case .initial(let statsVersion), .eligible(let statsVersion):
+        case .initial(let statsVersion):
             saveLastShownStatsVersion(statsVersion)
 
             let updatedDashboardUI = dashboardUI(statsVersion: statsVersion)
             onUIUpdate(updatedDashboardUI)
 
             if let topBannerPresenter = updatedDashboardUI as? TopBannerPresenter {
-                topBannerPresenter.hideTopBanner(animated: true)
-            }
-        case .v3ShownV4Eligible:
-            let updatedDashboardUI = statsV3DashboardUI()
-            onUIUpdate(updatedDashboardUI)
-
-            guard previousState != currentState else {
-                return
-            }
-
-            let topBannerView = DashboardTopBannerFactory.v3ToV4BannerView(actionHandler: { [weak self] in
-                ServiceLocator.analytics.track(.dashboardNewStatsAvailabilityBannerTryTapped)
-                self?.stateCoordinator.statsV4ButtonPressed()
-                }, dismissHandler: { [weak self] in
-                    ServiceLocator.analytics.track(.dashboardNewStatsAvailabilityBannerCancelTapped)
-                    self?.stateCoordinator.dismissV3ToV4Banner()
-            })
-            updatedDashboardUI.hideTopBanner(animated: false)
-            updatedDashboardUI.showTopBanner(topBannerView)
-        case .v4RevertedToV3:
-            saveLastShownStatsVersion(.v3)
-
-            let updatedDashboardUI = statsV3DashboardUI()
-            onUIUpdate(updatedDashboardUI)
-
-            guard previousState != currentState else {
-                return
-            }
-
-            let topBannerView = DashboardTopBannerFactory.v4ToV3BannerView(actionHandler: {
-                guard let url = URL(string: "https://wordpress.org/plugins/woocommerce-admin/") else {
-                    return
+                switch statsVersion {
+                case .v3:
+                    let topBannerView = DashboardTopBannerFactory.deprecatedStatsBannerView()
+                    topBannerPresenter.hideTopBanner(animated: false)
+                    topBannerPresenter.showTopBanner(topBannerView)
+                case .v4:
+                    topBannerPresenter.hideTopBanner(animated: true)
                 }
-                ServiceLocator.analytics.track(.dashboardNewStatsRevertedBannerLearnMoreTapped)
-                WebviewHelper.launch(url, with: updatedDashboardUI)
-            }, dismissHandler: { [weak self] in
-                ServiceLocator.analytics.track(.dashboardNewStatsRevertedBannerDismissTapped)
-                self?.stateCoordinator.dismissV4ToV3Banner()
-            })
-            updatedDashboardUI.hideTopBanner(animated: false)
-            updatedDashboardUI.showTopBanner(topBannerView)
+            }
         }
     }
 }

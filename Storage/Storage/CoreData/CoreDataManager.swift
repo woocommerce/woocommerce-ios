@@ -48,34 +48,22 @@ public class CoreDataManager: StorageManagerType {
 
             /// Backup the old Store
             ///
+            var persistentStoreBackupError: Error?
             do {
                 let sourceURL = self.storeURL
                 let backupURL = sourceURL.appendingPathExtension("~")
                 try FileManager.default.copyItem(at: sourceURL, to: backupURL)
             } catch {
-                let message = "☠️ [CoreDataManager] Cannot backup Store: \(error)"
-                self.crashLogger.logMessageAndWait(message,
-                                                   properties: ["persistentStoreLoadingError": persistentStoreLoadingError,
-                                                                "backupError": error,
-                                                                "appState": UIApplication.shared.applicationState.rawValue,
-                                                                "migrationMessages": migrationDebugMessages],
-                                                   level: .fatal)
-                fatalError(message)
+                persistentStoreBackupError = error
             }
 
             /// Remove the old Store
             ///
+            var persistentStoreRemovalError: Error?
             do {
                 try FileManager.default.removeItem(at: self.storeURL)
             } catch {
-                let message = "☠️ [CoreDataManager] Cannot remove Store: \(error)"
-                self.crashLogger.logMessageAndWait(message,
-                                                   properties: ["persistentStoreLoadingError": persistentStoreLoadingError,
-                                                                "removeStoreError": error,
-                                                                "appState": UIApplication.shared.applicationState.rawValue,
-                                                                "migrationMessages": migrationDebugMessages],
-                                                   level: .fatal)
-                fatalError(message)
+                persistentStoreRemovalError = error
             }
 
             /// Retry!
@@ -85,20 +73,27 @@ public class CoreDataManager: StorageManagerType {
                     return
                 }
 
-                let message = "☠️ [CoreDataManager] Recovery Failed! \(error) [\(error.userInfo)]"
+                let message = "☠️ [CoreDataManager] Recovery Failed!"
+
+                let logProperties: [String: Any?] = ["persistentStoreLoadingError": persistentStoreLoadingError,
+                                                     "persistentStoreBackupError": persistentStoreBackupError,
+                                                     "persistentStoreRemovalError": persistentStoreRemovalError,
+                                                     "retryError": error,
+                                                     "appState": UIApplication.shared.applicationState.rawValue,
+                                                     "migrationMessages": migrationDebugMessages]
                 self?.crashLogger.logMessageAndWait(message,
-                                                    properties: ["persistentStoreLoadingError": persistentStoreLoadingError,
-                                                                 "retryError": error,
-                                                                 "appState": UIApplication.shared.applicationState.rawValue,
-                                                                 "migrationMessages": migrationDebugMessages],
+                                                    properties: logProperties.compactMapValues { $0 },
                                                     level: .fatal)
                 fatalError(message)
             }
 
+            let logProperties: [String: Any?] = ["persistentStoreLoadingError": persistentStoreLoadingError,
+                                                 "persistentStoreBackupError": persistentStoreBackupError,
+                                                 "persistentStoreRemovalError": persistentStoreRemovalError,
+                                                 "appState": UIApplication.shared.applicationState.rawValue,
+                                                 "migrationMessages": migrationDebugMessages]
             self.crashLogger.logMessage("[CoreDataManager] Recovered from persistent store loading error",
-                                        properties: ["persistentStoreLoadingError": persistentStoreLoadingError,
-                                                     "appState": UIApplication.shared.applicationState.rawValue,
-                                                     "migrationMessages": migrationDebugMessages],
+                                        properties: logProperties.compactMapValues { $0 },
                                         level: .info)
         }
 
@@ -204,10 +199,11 @@ public class CoreDataManager: StorageManagerType {
         }
 
         do {
-            let (migrateResult, migrationDebugMessages) = try CoreDataIterativeMigrator.iterativeMigrate(sourceStore: storeURL,
-                                                                                                         storeType: NSSQLiteStoreType,
-                                                                                                         to: objectModel,
-                                                                                                         using: sortedKeys)
+            let iterativeMigrator = CoreDataIterativeMigrator()
+            let (migrateResult, migrationDebugMessages) = try iterativeMigrator.iterativeMigrate(sourceStore: storeURL,
+                                                                                                 storeType: NSSQLiteStoreType,
+                                                                                                 to: objectModel,
+                                                                                                 using: sortedKeys)
             debugMessages += migrationDebugMessages
             if migrateResult == false {
                 let migrationFailureMessage = "☠️ [CoreDataManager] Unable to migrate store."

@@ -1004,6 +1004,8 @@ final class ProductStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that whenever a `ProductAction.updateProduct` action results in product update maintaint the Product Tags order.
+    ///
     func testUpdatingProductResultingMantainingTheSameOrderForTags() {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -1013,7 +1015,9 @@ final class ProductStoreTests: XCTestCase {
 
         XCTAssertEqual(product.tags.map { $0.tagID }, productStored?.tagsArray.map { $0.tagID })
 
-        let productMutated = sampleProduct(sampleSiteID, productID: sampleProductID, tags: [ProductTag(siteID: sampleSiteID, tagID: 100, name: "My new tag", slug: "my-new-tag")])
+        let productMutated = sampleProduct(sampleSiteID,
+                                           productID: sampleProductID,
+                                           tags: [ProductTag(siteID: sampleSiteID, tagID: 100, name: "My new tag", slug: "my-new-tag")])
         productStore.upsertStoredProduct(readOnlyProduct: productMutated, in: viewStorage)
         let productMutatedStored = viewStorage.loadProduct(siteID: self.sampleSiteID, productID: self.sampleProductID)
 

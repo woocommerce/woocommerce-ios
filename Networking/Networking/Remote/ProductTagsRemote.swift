@@ -43,7 +43,7 @@ public final class ProductTagsRemote: Remote {
                                       completion: @escaping (Result<[ProductTag], Error>) -> Void) {
 
         let parameters = [
-            ParameterKey.create: names.map {[ParameterKey.name: $0]}.flatMap {$0}
+            ParameterKey.create: names.compactMap {[ParameterKey.name: $0]}
         ]
 
         let path = Path.tagsBatch

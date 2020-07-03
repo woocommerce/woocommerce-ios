@@ -27,13 +27,6 @@ struct ProductTagListMapper: Mapper {
           case .delete:
             return try decoder.decode(ProductTagListBatchDeleteEnvelope.self, from: response).tags
         }
-
-//        let decodedResponse = try? decoder.decode(ProductTagListEnvelope.self, from: response)
-//        let decodedResponseBatchUpdatedTags = try? decoder.decode(ProductTagListBatchUpdateEnvelope.self, from: response)
-//
-//        return decodedResponse?.tags ??
-//            decodedResponseBatchUpdatedTags?.createdTags ??
-//            decodedResponseBatchUpdatedTags?.deletedTags ?? []
     }
 
     enum ResponseType {

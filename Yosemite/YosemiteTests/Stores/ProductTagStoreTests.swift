@@ -67,7 +67,7 @@ final class ProductTagStoreTests: XCTestCase {
         // When dispatching a `synchronizeAllProductTags` action
         var errorResponse: ProductTagActionError?
         waitForExpectation { (exp) in
-            let action = ProductTagAction.synchronizeAllProductTags(siteID: sampleSiteID, fromPageNumber: defaultPageNumber) { error in
+            let action = ProductTagAction.synchronizeAllProductTags(siteID: sampleSiteID) { error in
                 errorResponse = error
                 exp.fulfill()
             }
@@ -89,7 +89,7 @@ final class ProductTagStoreTests: XCTestCase {
         // When dispatching a `synchronizeAllProductTags` action
         var errorResponse: ProductTagActionError?
         waitForExpectation { (exp) in
-            let action = ProductTagAction.synchronizeAllProductTags(siteID: sampleSiteID, fromPageNumber: defaultPageNumber) { error in
+            let action = ProductTagAction.synchronizeAllProductTags(siteID: sampleSiteID) { error in
                 errorResponse = error
                 exp.fulfill()
             }
@@ -111,7 +111,7 @@ final class ProductTagStoreTests: XCTestCase {
         // When dispatching a `synchronizeAllProductTags` action
         var errorResponse: ProductTagActionError?
         waitForExpectation { (exp) in
-            let action = ProductTagAction.synchronizeAllProductTags(siteID: sampleSiteID, fromPageNumber: defaultPageNumber) { error in
+            let action = ProductTagAction.synchronizeAllProductTags(siteID: sampleSiteID) { error in
                 errorResponse = error
                 exp.fulfill()
             }
@@ -136,7 +136,7 @@ final class ProductTagStoreTests: XCTestCase {
         // When dispatching a `synchronizeAllProductTags` action
         var errorResponse: ProductTagActionError?
         waitForExpectation { (exp) in
-            let action = ProductTagAction.synchronizeAllProductTags(siteID: sampleSiteID, fromPageNumber: defaultPageNumber) { error in
+            let action = ProductTagAction.synchronizeAllProductTags(siteID: sampleSiteID) { error in
                 errorResponse = error
                 exp.fulfill()
             }
@@ -163,7 +163,7 @@ final class ProductTagStoreTests: XCTestCase {
         // When dispatching a `synchronizeAllProductTags` action
         var errorResponse: ProductTagActionError?
         waitForExpectation { (exp) in
-            let action = ProductTagAction.synchronizeAllProductTags(siteID: sampleSiteID, fromPageNumber: defaultPageNumber) { error in
+            let action = ProductTagAction.synchronizeAllProductTags(siteID: sampleSiteID) { error in
                 errorResponse = error
                 exp.fulfill()
             }
@@ -182,7 +182,7 @@ final class ProductTagStoreTests: XCTestCase {
         // When dispatching a `synchronizeAllProductTags` action
         var errorResponse: ProductTagActionError?
         waitForExpectation { (exp) in
-            let action = ProductTagAction.synchronizeAllProductTags(siteID: sampleSiteID, fromPageNumber: defaultPageNumber) { error in
+            let action = ProductTagAction.synchronizeAllProductTags(siteID: sampleSiteID) { error in
                 errorResponse = error
                 exp.fulfill()
             }
@@ -273,7 +273,7 @@ final class ProductTagStoreTests: XCTestCase {
 
         var errorResponse: ProductTagActionError?
         waitForExpectation { (exp) in
-            let action = ProductTagAction.synchronizeAllProductTags(siteID: sampleSiteID, fromPageNumber: defaultPageNumber) { error in
+            let action = ProductTagAction.synchronizeAllProductTags(siteID: sampleSiteID) { error in
                 errorResponse = error
                 exp.fulfill()
             }

@@ -25,8 +25,8 @@ public final class ProductTagStore: Store {
         }
 
         switch action {
-        case let .synchronizeAllProductTags(siteID, fromPageNumber, onCompletion):
-            synchronizeAllProductTags(siteID: siteID, fromPageNumber: fromPageNumber, onCompletion: onCompletion)
+        case let .synchronizeAllProductTags(siteID, onCompletion):
+            synchronizeAllProductTags(siteID: siteID, onCompletion: onCompletion)
         case let .addProductTags(siteID, tags, onCompletion):
             addProductTags(siteID: siteID, tags: tags, onCompletion: onCompletion)
         case let .deleteProductTags(siteID, ids, onCompletion):
@@ -41,7 +41,7 @@ private extension ProductTagStore {
 
     /// Synchronizes all product tags associated with a given Site ID, starting at a specific page number.
     ///
-    func synchronizeAllProductTags(siteID: Int64, fromPageNumber: Int, onCompletion: @escaping (ProductTagActionError?) -> Void) {
+    func synchronizeAllProductTags(siteID: Int64, fromPageNumber: Int = 1, onCompletion: @escaping (ProductTagActionError?) -> Void) {
 
         // Start fetching the provided initial page
         synchronizeProductTags(siteID: siteID, pageNumber: fromPageNumber, pageSize: Constants.defaultMaxPageSize) { [weak self] (result) in

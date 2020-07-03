@@ -58,7 +58,7 @@ public extension StorageType {
     /// Deletes all of the stored Product Tags that don't have an active product relationship
     ///
     func deleteUnusedProductTags(siteID: Int64) {
-        let tagsWithNoAssociatedProducts = loadProductTags(siteID: siteID).filter { $0.products?.isEmpty == true }
+        let tagsWithNoAssociatedProducts = loadProductTags(siteID: siteID).filter { $0.products == nil || $0.products?.isEmpty == true }
         tagsWithNoAssociatedProducts.forEach { tag in
             deleteObject(tag)
         }

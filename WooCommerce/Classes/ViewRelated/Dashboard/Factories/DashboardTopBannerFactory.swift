@@ -9,7 +9,7 @@ final class DashboardTopBannerFactory {
                                            infoText: DeprecatedStatsConstants.info,
                                            icon: DeprecatedStatsConstants.icon,
                                            isExpanded: true,
-                                           expandedStateChangeHandler: nil)
+                                           topButton: .chevron(handler: nil))
         return TopBannerView(viewModel: viewModel)
     }
 }

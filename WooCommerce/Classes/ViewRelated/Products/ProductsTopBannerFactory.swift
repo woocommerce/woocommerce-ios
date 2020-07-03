@@ -16,7 +16,7 @@ struct ProductsTopBannerFactory {
                                                infoText: infoText,
                                                icon: .workInProgressBanner,
                                                isExpanded: isExpanded,
-                                               expandedStateChangeHandler: expandedStateChangeHandler)
+                                               topButton: .chevron(handler: expandedStateChangeHandler))
             let topBannerView = TopBannerView(viewModel: viewModel)
             topBannerView.translatesAutoresizingMaskIntoConstraints = false
             onCompletion(topBannerView)

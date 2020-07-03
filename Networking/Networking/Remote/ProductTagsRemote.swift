@@ -26,7 +26,7 @@ public final class ProductTagsRemote: Remote {
 
         let path = Path.tags
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
-        let mapper = ProductTagListMapper(siteID: siteID)
+        let mapper = ProductTagListMapper(siteID: siteID, responseType: .load)
 
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -48,7 +48,7 @@ public final class ProductTagsRemote: Remote {
 
         let path = Path.tagsBatch
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
-        let mapper = ProductTagListMapper(siteID: siteID)
+        let mapper = ProductTagListMapper(siteID: siteID, responseType: .create)
 
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -70,7 +70,7 @@ public final class ProductTagsRemote: Remote {
 
         let path = Path.tagsBatch
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
-        let mapper = ProductTagListMapper(siteID: siteID)
+        let mapper = ProductTagListMapper(siteID: siteID, responseType: .delete)
 
         enqueue(request, mapper: mapper, completion: completion)
     }

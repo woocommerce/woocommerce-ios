@@ -105,6 +105,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
             appearance.shadowColor = hideBottomBorder ? .clear : .separator
             appearance.backgroundColor = navBarBackgroundColor
             appearance.largeTitleTextAttributes = [.foregroundColor: largeTitleTextColor]
+            appearance.titleTextAttributes = [.foregroundColor: WordPressAuthenticator.shared.style.primaryTitleColor]
             UIBarButtonItem.appearance().tintColor = navButtonTextColor
             
             UINavigationBar.appearance().standardAppearance = appearance
@@ -114,6 +115,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
             let appearance = UINavigationBar.appearance()
             appearance.barTintColor = navBarBackgroundColor
             appearance.largeTitleTextAttributes = [.foregroundColor: largeTitleTextColor]
+            appearance.titleTextAttributes = [.foregroundColor: WordPressAuthenticator.shared.style.primaryTitleColor]
             UIBarButtonItem.appearance().tintColor = navButtonTextColor
         }
 

@@ -7,26 +7,17 @@ final class SettingsScreen: BaseScreen {
         static let headlineLabel = "headline-label"
         static let bodyLabel = "body-label"
         static let logOutButton = "settings-log-out-button"
-        static let betaFeaturesButton = "settings-beta-features-button"
     }
 
     private let selectedSiteUrl = XCUIApplication().cells.staticTexts[ElementStringIDs.headlineLabel]
     private let selectedDisplayName = XCUIApplication().cells.staticTexts[ElementStringIDs.bodyLabel]
     private let logOutButton = XCUIApplication().cells[ElementStringIDs.logOutButton]
     private let logOutAlert = XCUIApplication().alerts.element(boundBy: 0)
-    private let betaFeaturesButton = XCUIApplication().cells[ElementStringIDs.betaFeaturesButton]
 
     init() {
-        super.init(element: betaFeaturesButton)
+        super.init(element: logOutButton)
 
         XCTAssert(logOutButton.waitForExistence(timeout: 3))
-        XCTAssert(betaFeaturesButton.waitForExistence(timeout: 3))
-    }
-
-    @discardableResult
-    func openBetaFeatures() -> BetaFeaturesScreen {
-        betaFeaturesButton.tap()
-        return BetaFeaturesScreen()
     }
 
     @discardableResult

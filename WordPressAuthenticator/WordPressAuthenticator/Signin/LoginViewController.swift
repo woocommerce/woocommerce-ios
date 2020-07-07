@@ -43,7 +43,6 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         styleNavigationBar()
         
         displayError(message: "")
-        setupNavBarIcon()
         styleBackground()
         styleInstructions()
 
@@ -61,8 +60,8 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
 
     /// Places the WordPress logo in the navbar
     ///
-    func setupNavBarIcon() {
-        addWordPressLogoToNavController()
+    func setupNavBarIcon(showIcon: Bool = true) {
+        showIcon ? addAppLogoToNavController() : removeAppLogoFromNavController()
     }
 
     /// Styles the view's background color. Defaults to WPStyleGuide.lightGrey()
@@ -88,11 +87,13 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         switch navigationItem.largeTitleDisplayMode {
         // Original nav bar style
         case .never:
+            setupNavBarIcon()
             navButtonTextColor = WordPressAuthenticator.shared.style.navButtonTextColor
             navBarBackgroundColor = WordPressAuthenticator.shared.style.navBarBackgroundColor
             hideBottomBorder = false
         // Unified nav bar style
         default:
+            setupNavBarIcon(showIcon: false)
             navButtonTextColor = WordPressAuthenticator.shared.unifiedStyle?.navButtonTextColor ?? WordPressAuthenticator.shared.style.navButtonTextColor
             navBarBackgroundColor = WordPressAuthenticator.shared.unifiedStyle?.navBarBackgroundColor ?? WordPressAuthenticator.shared.style.navBarBackgroundColor
             hideBottomBorder = true

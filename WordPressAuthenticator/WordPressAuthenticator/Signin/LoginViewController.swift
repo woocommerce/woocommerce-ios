@@ -81,8 +81,6 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
 
     private func styleNavigationBar() {
         
-        let largeTitleTextColor = WordPressAuthenticator.shared.unifiedStyle?.largeTitleTextColor ?? WordPressAuthenticator.shared.style.instructionColor
-        
         var navBarBackgroundColor: UIColor
         var navButtonTextColor: UIColor
         var hideBottomBorder: Bool
@@ -100,11 +98,15 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
             hideBottomBorder = true
         }
 
+        let largeTitleTextColor = WordPressAuthenticator.shared.unifiedStyle?.largeTitleTextColor ?? WordPressAuthenticator.shared.style.instructionColor
+        let largeTitleFont = WPStyleGuide.serifFontForTextStyle(.largeTitle, fontWeight: .semibold)
+        let largeTitleTextAttributes:[NSAttributedString.Key: Any] = [.foregroundColor: largeTitleTextColor,
+                                                                      .font: largeTitleFont]
         if #available(iOS 13.0, *) {
             let appearance = UINavigationBarAppearance()
             appearance.shadowColor = hideBottomBorder ? .clear : .separator
             appearance.backgroundColor = navBarBackgroundColor
-            appearance.largeTitleTextAttributes = [.foregroundColor: largeTitleTextColor]
+            appearance.largeTitleTextAttributes = largeTitleTextAttributes
             UIBarButtonItem.appearance().tintColor = navButtonTextColor
             
             UINavigationBar.appearance().standardAppearance = appearance
@@ -113,7 +115,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         } else {
             let appearance = UINavigationBar.appearance()
             appearance.barTintColor = navBarBackgroundColor
-            appearance.largeTitleTextAttributes = [.foregroundColor: largeTitleTextColor]
+            appearance.largeTitleTextAttributes = largeTitleTextAttributes
             UIBarButtonItem.appearance().tintColor = navButtonTextColor
         }
 

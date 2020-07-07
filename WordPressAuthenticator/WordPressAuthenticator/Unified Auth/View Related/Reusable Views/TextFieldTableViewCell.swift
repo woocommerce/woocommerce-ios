@@ -21,7 +21,6 @@ final class TextFieldTableViewCell: UITableViewCell {
     public static let reuseIdentifier = "TextFieldTableViewCell"
 
     public var handleTextFieldDidChange: ((_ sender: UITextField) -> Void)?
-    public var handleEditingDidEnd: ((_ sender: UITextField) -> Void)?
     public var handleTextFieldShouldReturn: ((_ sender: UITextField) -> Bool)?
 
     override func awakeFromNib() {
@@ -75,10 +74,6 @@ private extension TextFieldTableViewCell {
 extension TextFieldTableViewCell: UITextFieldDelegate {
     func textFieldDidChangeSelection(_ textField: UITextField) {
         handleTextFieldDidChange?(textField)
-    }
-
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        handleEditingDidEnd?(textField)
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

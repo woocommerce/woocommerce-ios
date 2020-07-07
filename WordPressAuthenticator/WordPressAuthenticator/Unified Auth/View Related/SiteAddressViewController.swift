@@ -223,10 +223,6 @@ private extension SiteAddressViewController {
             self?.configureSubmitButton(animating: false)
         }
 
-        cell.handleEditingDidEnd = { [weak self] textField in
-           // now a no-op
-        }
-
         cell.handleTextFieldShouldReturn = { [weak self] textField in
             guard let self = self else {
                 return false

@@ -1,8 +1,8 @@
 import UIKit
 import WordPressShared
 
-/// Part two of the self-hosted sign in flow. A valid site address should be acquired
-/// before presenting this view controller.
+/// Part two of the self-hosted sign in flow for WooCommerce.
+/// A valid site address should be acquired before presenting this view controller.
 ///
 class LoginUsernamePasswordViewController: LoginViewController, NUXKeyboardResponder {
     @IBOutlet var siteHeaderView: SiteInfoHeaderView!

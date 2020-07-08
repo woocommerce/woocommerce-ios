@@ -20,7 +20,16 @@ public final class TextLabelTableViewCell: UITableViewCell {
         case .body:
             label.textColor = WordPressAuthenticator.shared.unifiedStyle?.textColor ?? WordPressAuthenticator.shared.style.instructionColor
             label.font = UIFont.preferredFont(forTextStyle: .body)
+        case .error:
+            label.textColor = WordPressAuthenticator.shared.unifiedStyle?.errorColor ?? UIColor.red
+            label.font = UIFont.preferredFont(forTextStyle: .body)
         }
+    }
+
+    /// Override methods
+    ///
+    public override func prepareForReuse() {
+        label.text = nil
     }
 }
 
@@ -29,5 +38,6 @@ public extension TextLabelTableViewCell {
     ///
     enum TextLabelStyle {
         case body
+        case error
     }
 }

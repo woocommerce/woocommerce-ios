@@ -1,7 +1,7 @@
 import UIKit
 import WordPressShared
 
-/// Part two of the self-hosted sign in flow for WooCommerce.
+/// Part two of the self-hosted sign in flow. For use by WooCommerce only.
 /// A valid site address should be acquired before presenting this view controller.
 ///
 class LoginUsernamePasswordViewController: LoginViewController, NUXKeyboardResponder {

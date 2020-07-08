@@ -17,17 +17,12 @@ final class TextFieldTableViewCell: UITableViewCell {
     /// Public properties
     ///
     @IBOutlet public weak var textField: UITextField! // public so it can be the first responder
-
     public static let reuseIdentifier = "TextFieldTableViewCell"
-
-    public var handleTextFieldDidChange: ((_ sender: UITextField) -> Void)?
-    public var handleTextFieldShouldReturn: ((_ sender: UITextField) -> Bool)?
 
     override func awakeFromNib() {
         super.awakeFromNib()
         styleBorder()
         setCommonTextFieldStyles()
-        textField.delegate = self
     }
 
 	/// Configures the textfield for URL, username, or entering a password.
@@ -70,22 +65,6 @@ private extension TextFieldTableViewCell {
         default:
             setCommonTextFieldStyles()
         }
-    }
-}
-
-
-// MARK: - UITextFieldDelegate conformance
-extension TextFieldTableViewCell: UITextFieldDelegate {
-    func textFieldDidChangeSelection(_ textField: UITextField) {
-        handleTextFieldDidChange?(textField)
-    }
-
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        guard let isHandled = handleTextFieldShouldReturn?(textField) else {
-            return false
-        }
-
-        return isHandled
     }
 }
 

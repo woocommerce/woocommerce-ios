@@ -131,7 +131,14 @@ extension SiteAddressViewController: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate conformance
 extension SiteAddressViewController: UITableViewDelegate {
-    // no-op
+	/// After the site address textfield cell is done displaying, remove the textfield reference.
+	///
+	func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+		let row = rows[indexPath.row]
+		if row == .siteAddress {
+			siteURLField = nil
+		}
+	}
 }
 
 
@@ -144,6 +151,29 @@ extension SiteAddressViewController: NUXKeyboardResponder {
     @objc func handleKeyboardWillHide(_ notification: Foundation.Notification) {
         keyboardWillHide(notification)
     }
+}
+
+
+// MARK: - TextField Delegate conformance
+extension SiteAddressViewController: UITextFieldDelegate {
+
+	/// Store the site address as it changes
+	///
+	func textFieldDidChangeSelection(_ textField: UITextField) {
+		loginFields.siteAddress = textField.nonNilTrimmedText()
+		configureSubmitButton(animating: false)
+	}
+
+	/// Handle the keyboard `return` button action.
+	///
+	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+		if canSubmit() {
+			validateForm()
+			return true
+		}
+
+		return false
+	}
 }
 
 

@@ -139,16 +139,22 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
     }
 
 
-    // MARK: - Navbar Help and WP Logo methods
+    // MARK: - Navbar Help and App Logo methods
 
-    /// Adds the WP logo to the nav controller
+    /// Adds the app logo to the nav controller
     ///
-    public func addWordPressLogoToNavController() {
+    public func addAppLogoToNavController() {
         let image = WordPressAuthenticator.shared.style.navBarImage
         let imageView = UIImageView(image: image.imageWithTintColor(UIColor.white))
         navigationItem.titleView = imageView
     }
 
+    /// Removes the app logo from the nav controller
+    ///
+    public func removeAppLogoFromNavController() {
+        navigationItem.titleView = nil
+    }
+    
     /// Whenever the WordPressAuthenticator Delegate returns true, when `shouldDisplayHelpButton` is queried, we'll proceed
     /// and attach the Help Button to the navigationController.
     ///

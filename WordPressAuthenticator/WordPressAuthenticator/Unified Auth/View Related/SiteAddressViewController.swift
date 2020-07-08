@@ -301,6 +301,7 @@ extension SiteAddressViewController {
             guard let error = error, let self = self else {
                 return
             }
+
             DDLogError(error.localizedDescription)
             WordPressAuthenticator.track(.loginFailedToGuessXMLRPC, error: error)
             WordPressAuthenticator.track(.loginFailed, error: error)
@@ -370,17 +371,18 @@ extension SiteAddressViewController {
         guard let err = error.userInfo[XMLRPCOriginalErrorKey] as? NSError else {
             return error
         }
+
         return err
     }
 
     /// Here we will continue with the self-hosted flow.
     ///
     @objc func showSelfHostedUsernamePassword() {
-        configureViewLoading(false)
+		configureViewLoading(false)
         guard let vc = LoginSelfHostedViewController.instantiate(from: .login) else {
-           DDLogError("Failed to navigate from LoginEmailViewController to LoginSelfHostedViewController")
-               return
-           }
+			DDLogError("Failed to navigate from LoginEmailViewController to LoginSelfHostedViewController")
+			return
+		}
 
        vc.loginFields = loginFields
        vc.dismissBlock = dismissBlock

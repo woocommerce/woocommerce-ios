@@ -134,8 +134,7 @@ extension SiteAddressViewController: UITableViewDelegate {
 	/// After the site address textfield cell is done displaying, remove the textfield reference.
 	///
 	func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-		let row = rows[indexPath.row]
-		if row == .siteAddress {
+		if rows[indexPath.row] == .siteAddress {
 			siteURLField = nil
 		}
 	}

@@ -30,6 +30,10 @@ final class TextFieldTableViewCell: UITableViewCell {
         textField.delegate = self
     }
 
+	/// Configures the textfield for URL, username, or entering a password.
+	/// - Parameter style: changes the textfield behavior and appearance.
+	/// - Parameter placeholder: the placeholder text, if any
+	///
     public func configureTextFieldStyle(with style: TextFieldStyle = .url, and placeholder: String?) {
         applyTextFieldStyle(style)
         textField.placeholder = placeholder
@@ -48,7 +52,7 @@ private extension TextFieldTableViewCell {
         borderWidth.constant = hairlineBorderWidth
     }
 
-    /// Style the font inside the textField.
+    /// Apply common keyboard traits and font styles.
     ///
     func setCommonTextFieldStyles() {
         textField.font = UIFont.preferredFont(forTextStyle: .body)
@@ -56,7 +60,7 @@ private extension TextFieldTableViewCell {
         textField.returnKeyType = .continue
     }
 
-    /// Style the textField.
+    /// Sets the textfield keyboard type and applies common traits.
     /// - note: Don't assign first responder here. It's too early in the view lifecycle.
     ///
     func applyTextFieldStyle(_ style: TextFieldStyle) {

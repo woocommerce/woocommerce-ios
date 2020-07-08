@@ -7,7 +7,7 @@ import WordPressKit
 ///
 final class SiteAddressViewController: LoginViewController {
 
-    /// Private properties
+    /// Private properties.
     ///
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
@@ -111,13 +111,13 @@ final class SiteAddressViewController: LoginViewController {
 
 // MARK: - UITableViewDataSource
 extension SiteAddressViewController: UITableViewDataSource {
-    /// Returns the number of rows in a section
+    /// Returns the number of rows in a section.
     ///
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return rows.count
     }
 
-    /// Configure cells delegate method
+    /// Configure cells delegate method.
     ///
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = rows[indexPath.row]
@@ -149,7 +149,7 @@ extension SiteAddressViewController: NUXKeyboardResponder {
 
 // MARK: - Private methods
 private extension SiteAddressViewController {
-    /// Localize the "Continue" button
+    /// Localize the "Continue" button.
     ///
     func localizePrimaryButton() {
         let primaryTitle = WordPressAuthenticator.shared.displayStrings.continueButtonTitle
@@ -157,7 +157,7 @@ private extension SiteAddressViewController {
         submitButton?.setTitle(primaryTitle, for: .highlighted)
     }
 
-    /// Registers all of the available TableViewCells
+    /// Registers all of the available TableViewCells.
     ///
     func registerTableViewCells() {
         let cells = [
@@ -185,7 +185,7 @@ private extension SiteAddressViewController {
         }
     }
 
-    /// Configure cells
+    /// Configure cells.
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
@@ -202,41 +202,24 @@ private extension SiteAddressViewController {
         }
     }
 
-    /// Configure the instruction cell
+    /// Configure the instruction cell.
     ///
     func configureInstructionLabel(_ cell: TextLabelTableViewCell) {
         cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.siteLoginInstructions, style: .body)
     }
 
-    /// Configure the textfield cell
+    /// Configure the textfield cell.
     ///
     func configureTextField(_ cell: TextFieldTableViewCell) {
         let placeholderText = NSLocalizedString("example.com", comment: "Site Address placeholder")
         cell.configureTextFieldStyle(with: .url, and: placeholderText)
         // Save a reference to the first textField so it can becomeFirstResponder.
         siteURLField = cell.textField
+		cell.textField.delegate = self
         SigninEditingState.signinEditingStateActive = true
-
-        cell.handleTextFieldDidChange = { [weak self] textField in
-            self?.loginFields.siteAddress = textField.nonNilTrimmedText()
-            self?.configureSubmitButton(animating: false)
-        }
-
-        cell.handleTextFieldShouldReturn = { [weak self] textField in
-            guard let self = self else {
-                return false
-            }
-
-            if self.canSubmit() {
-                self.validateForm()
-                return true
-            }
-
-            return false
-        }
     }
 
-    /// Configure the "Find your site address" cell
+    /// Configure the "Find your site address" cell.
     ///
     func configureTextLinkButton(_ cell: TextLinkButtonTableViewCell) {
         cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.findSiteButtonTitle)
@@ -253,7 +236,7 @@ private extension SiteAddressViewController {
         }
     }
 
-    /// Configure the error message cell
+    /// Configure the error message cell.
     ///
     func configureErrorLabel(_ cell: TextLabelTableViewCell) {
         cell.configureLabel(text: errorMessage, style: .error)
@@ -262,7 +245,7 @@ private extension SiteAddressViewController {
 
     // MARK: - Private Constants
 
-    /// Rows listed in the order they were created
+    /// Rows listed in the order they were created.
     ///
     enum Row {
         case instructions

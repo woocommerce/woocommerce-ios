@@ -26,6 +26,10 @@ public struct WordPressAuthenticatorDisplayStrings {
     public let findSiteButtonTitle: String
     public let resetPasswordButtonTitle: String
 
+	/// Placeholder text for textfields.
+	///
+	public let usernamePlaceholder: String
+
     /// Designated initializer.
     ///
     public init(emailLoginInstructions: String,
@@ -37,7 +41,8 @@ public struct WordPressAuthenticatorDisplayStrings {
                 resetPasswordButtonTitle: String,
                 gettingStartedTitle: String,
                 logInTitle: String,
-                signUpTitle: String) {
+                signUpTitle: String,
+				usernamePlaceholder: String) {
         self.emailLoginInstructions = emailLoginInstructions
         self.jetpackLoginInstructions = jetpackLoginInstructions
         self.siteLoginInstructions = siteLoginInstructions
@@ -48,6 +53,7 @@ public struct WordPressAuthenticatorDisplayStrings {
         self.gettingStartedTitle = gettingStartedTitle
         self.logInTitle = logInTitle
         self.signUpTitle = signUpTitle
+		self.usernamePlaceholder = usernamePlaceholder
     }
 }
 
@@ -73,7 +79,9 @@ public extension WordPressAuthenticatorDisplayStrings {
             logInTitle: NSLocalizedString("Log In",
                                           comment: "View title during the log in process."),
             signUpTitle: NSLocalizedString("Sign Up",
-                                           comment: "View title during the sign up process.")
+                                           comment: "View title during the sign up process."),
+			usernamePlaceholder: NSLocalizedString("Username",
+												   comment: "Placeholder for the username textfield.")
         )
     }
 }

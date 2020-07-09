@@ -31,7 +31,7 @@ final class SiteAddressViewController: LoginViewController {
         super.viewDidLoad()
 
         navigationItem.title = WordPressAuthenticator.shared.displayStrings.logInTitle
-        setLargeTitleDisplayMode(.always)
+        styleNavigationBar(forUnified: true)
 
         localizePrimaryButton()
         registerTableViewCells()

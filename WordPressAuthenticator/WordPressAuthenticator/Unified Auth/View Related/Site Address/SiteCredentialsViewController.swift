@@ -24,10 +24,10 @@ class SiteCredentialsViewController: LoginViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        localizePrimaryButton()
-        registerTableViewCells()
+		localizePrimaryButton()
+		registerTableViewCells()
 		loadRows()
-        configureSubmitButton(animating: false)
+		configureSubmitButton(animating: false)
     }
 }
 

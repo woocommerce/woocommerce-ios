@@ -39,7 +39,19 @@ extension SiteCredentialsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return rows.count
     }
+
+    /// Configure cells delegate method.
+    ///
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let row = rows[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
+        configure(cell, for: row, at: indexPath)
+
+        return cell
+    }
 }
+
+
 // MARK: - Private Methods
 private extension SiteCredentialsViewController {
 
@@ -68,6 +80,24 @@ private extension SiteCredentialsViewController {
     func loadRows() {
         rows = [.instructions]
     }
+
+	/// Configure cells.
+    ///
+    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+        switch cell {
+        case let cell as TextLabelTableViewCell where row == .instructions:
+            configureInstructionLabel(cell)
+        default:
+            DDLogError("Error: Unidentified tableViewCell type found.")
+        }
+    }
+
+	/// Configure the instruction cell.
+    ///
+    func configureInstructionLabel(_ cell: TextLabelTableViewCell) {
+        cell.configureLabel(text: "Enter your account information for ", style: .body)
+    }
+
 
 	// MARK: - Private Constants
 

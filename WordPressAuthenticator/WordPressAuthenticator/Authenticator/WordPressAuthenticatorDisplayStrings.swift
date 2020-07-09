@@ -60,7 +60,7 @@ public extension WordPressAuthenticatorDisplayStrings {
                                                         comment: "Instruction text on the login's email address screen."),
             siteLoginInstructions: NSLocalizedString("Enter the address of the WordPress site you'd like to connect.",
                                                      comment: "Instruction text on the login's site addresss screen."),
-			siteCredentialInstructions: NSLocalizedString("Enter your account information for %@",
+			siteCredentialInstructions: NSLocalizedString("Enter your account information for %@.",
 														  comment: "Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site."),
             continueButtonTitle: NSLocalizedString("Continue",
                                                     comment: "The button title text when there is a next step for logging in or signing up."),

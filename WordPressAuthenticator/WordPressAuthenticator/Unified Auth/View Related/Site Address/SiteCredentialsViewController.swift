@@ -15,6 +15,7 @@ class SiteCredentialsViewController: LoginViewController {
     var verticalCenterConstraint: NSLayoutConstraint?
 
     private var rows = [Row]()
+	private weak var firstTextField: UITextField?
 
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {

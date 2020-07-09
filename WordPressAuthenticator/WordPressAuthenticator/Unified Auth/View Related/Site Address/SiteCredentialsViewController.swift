@@ -147,7 +147,7 @@ private extension SiteCredentialsViewController {
 	/// Describes how the tableView rows should be rendered.
     ///
     func loadRows() {
-        rows = [.instructions]
+		rows = [.instructions, .username]
     }
 
 	/// Configure cells.

@@ -67,7 +67,8 @@ private extension SiteCredentialsViewController {
     ///
     func registerTableViewCells() {
         let cells = [
-            TextLabelTableViewCell.reuseIdentifier: TextLabelTableViewCell.loadNib()
+            TextLabelTableViewCell.reuseIdentifier: TextLabelTableViewCell.loadNib(),
+			TextFieldTableViewCell.reuseIdentifier: TextFieldTableViewCell.loadNib(),
         ]
 
         for (reuseIdentifier, nib) in cells {
@@ -87,6 +88,8 @@ private extension SiteCredentialsViewController {
         switch cell {
         case let cell as TextLabelTableViewCell where row == .instructions:
             configureInstructionLabel(cell)
+		case let cell as TextFieldTableViewCell where row == .username:
+			configureUsernameTextField(cell)
         default:
             DDLogError("Error: Unidentified tableViewCell type found.")
         }
@@ -99,6 +102,16 @@ private extension SiteCredentialsViewController {
         cell.configureLabel(text: text, style: .body)
     }
 
+	/// Configure the username textfield cell.
+	///
+	func configureUsernameTextField(_ cell: TextFieldTableViewCell) {
+		cell.configureTextFieldStyle(with: .username, and: WordPressAuthenticator.shared.displayStrings.usernamePlaceholder)
+		// Save a reference to the first textField so it can becomeFirstResponder.
+        firstTextField = cell.textField
+		cell.textField.delegate = self
+        SigninEditingState.signinEditingStateActive = true
+	}
+
 
 	// MARK: - Private Constants
 
@@ -106,11 +119,14 @@ private extension SiteCredentialsViewController {
     ///
     enum Row {
         case instructions
+		case username
 
         var reuseIdentifier: String {
             switch self {
             case .instructions:
                 return TextLabelTableViewCell.reuseIdentifier
+			case .username:
+				return TextFieldTableViewCell.reuseIdentifier
 			}
         }
     }

@@ -187,12 +187,15 @@ private extension SiteCredentialsViewController {
     enum Row {
         case instructions
 		case username
+		case password
 
         var reuseIdentifier: String {
             switch self {
             case .instructions:
                 return TextLabelTableViewCell.reuseIdentifier
 			case .username:
+				return TextFieldTableViewCell.reuseIdentifier
+			case .password:
 				return TextFieldTableViewCell.reuseIdentifier
 			}
         }

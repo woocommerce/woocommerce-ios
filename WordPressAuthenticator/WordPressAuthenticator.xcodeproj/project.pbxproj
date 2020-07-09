@@ -124,6 +124,7 @@
 		CE6BCD2F24A3A235001BCDC5 /* TextLabelTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE6BCD2D24A3A235001BCDC5 /* TextLabelTableViewCell.xib */; };
 		CE6BCD3824A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6BCD3624A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.swift */; };
 		CE6BCD3924A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE6BCD3724A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.xib */; };
+		CE73475624B77A3800A22660 /* SiteCredentialsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE73475524B77A3800A22660 /* SiteCredentialsViewController.swift */; };
 		CE9091F72499549500AB50BD /* TextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9091F52499549500AB50BD /* TextFieldTableViewCell.swift */; };
 		CE9091F82499549500AB50BD /* TextFieldTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE9091F62499549500AB50BD /* TextFieldTableViewCell.xib */; };
 		CE9091FE249A720E00AB50BD /* UIView+AuthHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9091FD249A720E00AB50BD /* UIView+AuthHelpers.swift */; };
@@ -294,6 +295,7 @@
 		CE6BCD2D24A3A235001BCDC5 /* TextLabelTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextLabelTableViewCell.xib; sourceTree = "<group>"; };
 		CE6BCD3624A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextLinkButtonTableViewCell.swift; sourceTree = "<group>"; };
 		CE6BCD3724A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextLinkButtonTableViewCell.xib; sourceTree = "<group>"; };
+		CE73475524B77A3800A22660 /* SiteCredentialsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteCredentialsViewController.swift; sourceTree = "<group>"; };
 		CE9091F52499549500AB50BD /* TextFieldTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldTableViewCell.swift; sourceTree = "<group>"; };
 		CE9091F62499549500AB50BD /* TextFieldTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TextFieldTableViewCell.xib; sourceTree = "<group>"; };
 		CE9091FD249A720E00AB50BD /* UIView+AuthHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+AuthHelpers.swift"; sourceTree = "<group>"; };
@@ -711,6 +713,7 @@
 			children = (
 				CEC77C6524854F2E00FB9050 /* SiteAddressViewController.swift */,
 				CEC77C6724854F3E00FB9050 /* SiteAddress.storyboard */,
+				CE73475524B77A3800A22660 /* SiteCredentialsViewController.swift */,
 			);
 			path = "Site Address";
 			sourceTree = "<group>";
@@ -992,6 +995,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE73475624B77A3800A22660 /* SiteCredentialsViewController.swift in Sources */,
 				982C8E7923021C20003F1BA0 /* LoginPrologueLoginMethodViewController.swift in Sources */,
 				B5609144208A563800399AE4 /* LoginPrologueSignupMethodViewController.swift in Sources */,
 				B56090D1208A4F5400399AE4 /* NUXViewController.swift in Sources */,

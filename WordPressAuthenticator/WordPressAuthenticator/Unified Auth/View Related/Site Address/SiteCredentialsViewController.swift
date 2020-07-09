@@ -103,6 +103,23 @@ extension SiteCredentialsViewController: NUXKeyboardResponder {
     }
 }
 
+
+// MARK: - TextField Delegate conformance
+extension SiteCredentialsViewController: UITextFieldDelegate {
+
+	/// Handle the keyboard `return` button action.
+	///
+	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == usernameField {
+            passwordField?.becomeFirstResponder()
+        } else if textField == passwordField {
+            validateForm()
+        }
+        return true
+    }
+}
+
+
 // MARK: - Private Methods
 private extension SiteCredentialsViewController {
 
@@ -180,4 +197,16 @@ private extension SiteCredentialsViewController {
 			}
         }
     }
+}
+
+
+// MARK: - Instance Methods
+extension SiteCredentialsViewController {
+
+	/// Validates what is entered in the various form fields and, if valid,
+	/// proceeds with the submit action.
+	///
+	@objc func validateForm() {
+		validateFormAndLogin()
+	}
 }

@@ -43,6 +43,7 @@ class SiteCredentialsViewController: LoginViewController {
 
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
+        configureViewForEditingIfNeeded()
     }
 
 	// MARK: - Overrides
@@ -56,6 +57,17 @@ class SiteCredentialsViewController: LoginViewController {
         }
 
         view.backgroundColor = unifiedBackgroundColor
+    }
+
+	/// Configure the view for an editing state. Should only be called from viewWillAppear
+    /// as this method skips animating any change in height.
+    ///
+    @objc func configureViewForEditingIfNeeded() {
+       // Check the helper to determine whether an editing state should be assumed.
+       adjustViewForKeyboard(SigninEditingState.signinEditingStateActive)
+       if SigninEditingState.signinEditingStateActive {
+           usernameField?.becomeFirstResponder()
+       }
     }
 }
 

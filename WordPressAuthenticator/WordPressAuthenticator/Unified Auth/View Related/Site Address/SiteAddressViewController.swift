@@ -408,8 +408,8 @@ extension SiteAddressViewController {
     ///
     @objc func showSelfHostedUsernamePassword() {
 		configureViewLoading(false)
-        guard let vc = LoginSelfHostedViewController.instantiate(from: .login) else {
-			DDLogError("Failed to navigate from LoginEmailViewController to LoginSelfHostedViewController")
+		guard let vc = SiteCredentialsViewController.instantiate(from: .siteAddress) else {
+			DDLogError("Failed to navigate from SiteAddressViewController to SiteAddressViewController")
 			return
 		}
 

@@ -26,6 +26,9 @@ class SiteCredentialsViewController: LoginViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+		navigationItem.title = WordPressAuthenticator.shared.displayStrings.logInTitle
+        styleNavigationBar(forUnified: true)
+
 		localizePrimaryButton()
 		registerTableViewCells()
 		loadRows()

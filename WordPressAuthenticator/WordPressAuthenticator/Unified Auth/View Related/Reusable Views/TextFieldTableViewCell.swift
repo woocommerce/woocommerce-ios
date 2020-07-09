@@ -58,15 +58,18 @@ private extension TextFieldTableViewCell {
     /// - note: Don't assign first responder here. It's too early in the view lifecycle.
     ///
     func applyTextFieldStyle(_ style: TextFieldStyle) {
-        switch style {
+		setCommonTextFieldStyles()
+
+		switch style {
         case .url:
             textField.keyboardType = .URL
 			textField.returnKeyType = .continue
 		case .username:
 			textField.keyboardType = .default
 			textField.returnKeyType = .next
-        default:
-            setCommonTextFieldStyles()
+		case .password:
+			textField.keyboardType = .default
+			textField.returnKeyType = .continue
         }
     }
 }

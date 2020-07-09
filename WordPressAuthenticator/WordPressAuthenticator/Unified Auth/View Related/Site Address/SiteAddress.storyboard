@@ -85,5 +85,82 @@
             </objects>
             <point key="canvasLocation" x="-162.40000000000001" y="20.239880059970016"/>
         </scene>
+        <!--Site Credentials View Controller-->
+        <scene sceneID="SNM-jM-Hwx">
+            <objects>
+                <viewController storyboardIdentifier="SiteCredentialsViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="y6V-vh-KSr" customClass="SiteCredentialsViewController" customModule="WordPressAuthenticator" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="rzp-ZY-4sV">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HOD-IX-jQc" userLabel="Containing View">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <subviews>
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" bounces="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="msV-bz-Sqp">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="591"/>
+                                        <sections/>
+                                        <connections>
+                                            <outlet property="dataSource" destination="y6V-vh-KSr" id="Jh2-5j-HIR"/>
+                                            <outlet property="delegate" destination="y6V-vh-KSr" id="0cM-sM-O0r"/>
+                                        </connections>
+                                    </tableView>
+                                    <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YGp-eK-oRp" userLabel="Button background view">
+                                        <rect key="frame" x="0.0" y="591" width="375" height="76"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bUY-a5-oHJ" userLabel="Primary Button" customClass="NUXButton" customModule="WordPressAuthenticator" customModuleProvider="target">
+                                                <rect key="frame" x="16" y="16" width="343" height="44"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="44" id="v9D-Cw-nFD"/>
+                                                </constraints>
+                                                <state key="normal" title="Button"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="isPrimary" value="YES"/>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="handleContinueButtonTapped:" destination="y6V-vh-KSr" eventType="touchUpInside" id="qJ4-PC-qO2"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                        <constraints>
+                                            <constraint firstItem="bUY-a5-oHJ" firstAttribute="top" secondItem="YGp-eK-oRp" secondAttribute="topMargin" constant="8" id="7ST-0h-lCv"/>
+                                            <constraint firstAttribute="bottomMargin" secondItem="bUY-a5-oHJ" secondAttribute="bottom" constant="8" id="CIb-xr-SzK"/>
+                                            <constraint firstItem="Hd0-aR-a4s" firstAttribute="trailing" secondItem="bUY-a5-oHJ" secondAttribute="trailing" constant="16" id="sf0-Wf-wP3"/>
+                                            <constraint firstItem="bUY-a5-oHJ" firstAttribute="leading" secondItem="Hd0-aR-a4s" secondAttribute="leading" constant="16" id="toq-jo-Ce0"/>
+                                        </constraints>
+                                        <viewLayoutGuide key="safeArea" id="Hd0-aR-a4s"/>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <constraints>
+                                    <constraint firstItem="YGp-eK-oRp" firstAttribute="bottom" secondItem="HOD-IX-jQc" secondAttribute="bottomMargin" constant="8" id="AHZ-rn-MEN"/>
+                                    <constraint firstItem="YGp-eK-oRp" firstAttribute="trailing" secondItem="HOD-IX-jQc" secondAttribute="trailing" id="FKm-da-ANZ"/>
+                                    <constraint firstItem="YGp-eK-oRp" firstAttribute="top" secondItem="msV-bz-Sqp" secondAttribute="bottom" id="Wt7-Vo-sCx"/>
+                                    <constraint firstAttribute="trailing" secondItem="msV-bz-Sqp" secondAttribute="trailing" id="ZRF-eh-ojb"/>
+                                    <constraint firstItem="msV-bz-Sqp" firstAttribute="leading" secondItem="HOD-IX-jQc" secondAttribute="leading" id="dr1-sl-C06"/>
+                                    <constraint firstItem="msV-bz-Sqp" firstAttribute="top" secondItem="HOD-IX-jQc" secondAttribute="top" id="elE-tI-VfK"/>
+                                    <constraint firstItem="YGp-eK-oRp" firstAttribute="leading" secondItem="HOD-IX-jQc" secondAttribute="leading" id="piw-Hs-lPT"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="HOD-IX-jQc" firstAttribute="top" secondItem="5Dn-ej-Nhp" secondAttribute="top" id="Iud-8M-zpD"/>
+                            <constraint firstItem="5Dn-ej-Nhp" firstAttribute="bottom" secondItem="HOD-IX-jQc" secondAttribute="bottom" id="Qxf-z0-9lF"/>
+                            <constraint firstItem="HOD-IX-jQc" firstAttribute="trailing" secondItem="rzp-ZY-4sV" secondAttribute="trailing" id="bF4-se-bcv"/>
+                            <constraint firstItem="HOD-IX-jQc" firstAttribute="leading" secondItem="rzp-ZY-4sV" secondAttribute="leading" id="txP-xH-B39"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="5Dn-ej-Nhp"/>
+                    </view>
+                    <connections>
+                        <outlet property="bottomContentConstraint" destination="Qxf-z0-9lF" id="QCJ-ks-Lz9"/>
+                        <outlet property="submitButton" destination="bUY-a5-oHJ" id="AyH-o7-6z2"/>
+                        <outlet property="tableView" destination="msV-bz-Sqp" id="UhW-BX-cA3"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Pmu-qI-bIl" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="561" y="20"/>
+        </scene>
     </scenes>
 </document>

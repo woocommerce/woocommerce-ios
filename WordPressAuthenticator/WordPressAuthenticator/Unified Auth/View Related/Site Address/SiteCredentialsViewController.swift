@@ -95,7 +95,7 @@ private extension SiteCredentialsViewController {
 	/// Configure the instruction cell.
     ///
     func configureInstructionLabel(_ cell: TextLabelTableViewCell) {
-        cell.configureLabel(text: "Enter your account information for ", style: .body)
+        cell.configureLabel(text: "Enter your account information for pamelanguyen.com", style: .body)
     }
 
 

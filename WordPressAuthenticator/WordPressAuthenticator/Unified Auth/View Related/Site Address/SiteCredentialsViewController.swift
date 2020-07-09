@@ -185,7 +185,8 @@ private extension SiteCredentialsViewController {
 	/// Configure the instruction cell.
     ///
     func configureInstructionLabel(_ cell: TextLabelTableViewCell) {
-		let text = String.localizedStringWithFormat(WordPressAuthenticator.shared.displayStrings.siteCredentialInstructions, loginFields.siteAddress)
+		let displayURL = sanitizedSiteAddress(siteAddress: loginFields.siteAddress)
+		let text = String.localizedStringWithFormat(WordPressAuthenticator.shared.displayStrings.siteCredentialInstructions, displayURL)
         cell.configureLabel(text: text, style: .body)
     }
 
@@ -234,6 +235,15 @@ private extension SiteCredentialsViewController {
 
 // MARK: - Instance Methods
 extension SiteCredentialsViewController {
+	/// Sanitize and format the site address we show to users.
+    ///
+    @objc func sanitizedSiteAddress(siteAddress: String) -> String {
+        let baseSiteUrl = WordPressAuthenticator.baseSiteURL(string: siteAddress) as NSString
+        if let str = baseSiteUrl.components(separatedBy: "://").last {
+            return str
+        }
+        return siteAddress
+    }
 
 	/// Validates what is entered in the various form fields and, if valid,
 	/// proceeds with the submit action.

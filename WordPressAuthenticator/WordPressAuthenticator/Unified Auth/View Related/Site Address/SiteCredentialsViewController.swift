@@ -164,7 +164,7 @@ private extension SiteCredentialsViewController {
 	/// Describes how the tableView rows should be rendered.
     ///
     func loadRows() {
-		rows = [.instructions, .username]
+		rows = [.instructions, .username, .password]
     }
 
 	/// Configure cells.
@@ -175,6 +175,8 @@ private extension SiteCredentialsViewController {
             configureInstructionLabel(cell)
 		case let cell as TextFieldTableViewCell where row == .username:
 			configureUsernameTextField(cell)
+		case let cell as TextFieldTableViewCell where row == .password:
+			configurePasswordTextField(cell)
         default:
             DDLogError("Error: Unidentified tableViewCell type found.")
         }
@@ -196,6 +198,15 @@ private extension SiteCredentialsViewController {
         usernameField = cell.textField
 		cell.textField.delegate = self
         SigninEditingState.signinEditingStateActive = true
+	}
+
+	/// Configure the password textfield cell.
+	///
+	func configurePasswordTextField(_ cell: TextFieldTableViewCell) {
+		cell.configureTextFieldStyle(with: .password,
+									 and: WordPressAuthenticator.shared.displayStrings.passwordPlaceholder)
+		passwordField = cell.textField
+		cell.textField.delegate = self
 	}
 
 	// MARK: - Private Constants

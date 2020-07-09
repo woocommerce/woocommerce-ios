@@ -24,13 +24,22 @@ class SiteCredentialsViewController: LoginViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        localizePrimaryButton()
+        configureSubmitButton(animating: false)
     }
 }
 
 
 // MARK: - Private Methods
 private extension SiteCredentialsViewController {
+
+	/// Localize the "Continue" button.
+    ///
+    func localizePrimaryButton() {
+        let primaryTitle = WordPressAuthenticator.shared.displayStrings.continueButtonTitle
+        submitButton?.setTitle(primaryTitle, for: .normal)
+        submitButton?.setTitle(primaryTitle, for: .highlighted)
+    }
 
 	// MARK: - Private Constants
 

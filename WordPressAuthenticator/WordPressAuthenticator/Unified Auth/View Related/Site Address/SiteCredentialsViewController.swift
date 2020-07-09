@@ -95,7 +95,8 @@ private extension SiteCredentialsViewController {
 	/// Configure the instruction cell.
     ///
     func configureInstructionLabel(_ cell: TextLabelTableViewCell) {
-        cell.configureLabel(text: "Enter your account information for pamelanguyen.com", style: .body)
+		let text = String.localizedStringWithFormat(WordPressAuthenticator.shared.displayStrings.siteCredentialInstructions, loginFields.siteAddress)
+        cell.configureLabel(text: text, style: .body)
     }
 
 

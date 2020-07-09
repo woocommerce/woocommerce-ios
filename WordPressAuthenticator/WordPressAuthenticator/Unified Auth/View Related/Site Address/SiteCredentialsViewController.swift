@@ -31,6 +31,19 @@ class SiteCredentialsViewController: LoginViewController {
 		configureSubmitButton(animating: false)
     }
 
+	override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        configureSubmitButton(animating: false)
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
+                                  keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
+    }
+
 	// MARK: - Overrides
 
     /// Style individual ViewController backgrounds, for now.
@@ -65,6 +78,17 @@ extension SiteCredentialsViewController: UITableViewDataSource {
     }
 }
 
+
+// MARK: - Keyboard Notifications
+extension SiteCredentialsViewController: NUXKeyboardResponder {
+    @objc func handleKeyboardWillShow(_ notification: Foundation.Notification) {
+        keyboardWillShow(notification)
+    }
+
+    @objc func handleKeyboardWillHide(_ notification: Foundation.Notification) {
+        keyboardWillHide(notification)
+    }
+}
 
 // MARK: - Private Methods
 private extension SiteCredentialsViewController {

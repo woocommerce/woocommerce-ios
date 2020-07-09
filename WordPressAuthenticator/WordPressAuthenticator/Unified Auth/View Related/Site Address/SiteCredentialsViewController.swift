@@ -190,7 +190,8 @@ private extension SiteCredentialsViewController {
 	/// Configure the username textfield cell.
 	///
 	func configureUsernameTextField(_ cell: TextFieldTableViewCell) {
-		cell.configureTextFieldStyle(with: .username, and: WordPressAuthenticator.shared.displayStrings.usernamePlaceholder)
+		cell.configureTextFieldStyle(with: .username,
+									 and: WordPressAuthenticator.shared.displayStrings.usernamePlaceholder)
 		// Save a reference to the textField so it can becomeFirstResponder.
         usernameField = cell.textField
 		cell.textField.delegate = self

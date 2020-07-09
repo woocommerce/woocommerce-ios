@@ -26,6 +26,7 @@ class SiteCredentialsViewController: LoginViewController {
 
         localizePrimaryButton()
         registerTableViewCells()
+		loadRows()
         configureSubmitButton(animating: false)
     }
 }
@@ -52,6 +53,12 @@ private extension SiteCredentialsViewController {
         for (reuseIdentifier, nib) in cells {
             tableView.register(nib, forCellReuseIdentifier: reuseIdentifier)
         }
+    }
+
+	/// Describes how the tableView rows should be rendered.
+    ///
+    func loadRows() {
+        rows = [.instructions]
     }
 
 	// MARK: - Private Constants

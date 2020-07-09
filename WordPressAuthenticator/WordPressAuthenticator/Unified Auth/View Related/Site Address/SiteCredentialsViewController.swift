@@ -15,7 +15,8 @@ class SiteCredentialsViewController: LoginViewController {
     var verticalCenterConstraint: NSLayoutConstraint?
 
     private var rows = [Row]()
-	private weak var firstTextField: UITextField?
+	private weak var usernameField: UITextField?
+	private weak var passwordField: UITextField?
 
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
@@ -144,12 +145,11 @@ private extension SiteCredentialsViewController {
 	///
 	func configureUsernameTextField(_ cell: TextFieldTableViewCell) {
 		cell.configureTextFieldStyle(with: .username, and: WordPressAuthenticator.shared.displayStrings.usernamePlaceholder)
-		// Save a reference to the first textField so it can becomeFirstResponder.
-        firstTextField = cell.textField
+		// Save a reference to the textField so it can becomeFirstResponder.
+        usernameField = cell.textField
 		cell.textField.delegate = self
         SigninEditingState.signinEditingStateActive = true
 	}
-
 
 	// MARK: - Private Constants
 

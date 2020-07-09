@@ -95,6 +95,20 @@ extension SiteCredentialsViewController: UITableViewDataSource {
 }
 
 
+// MARK: - UITableViewDelegate conformance
+extension SiteCredentialsViewController: UITableViewDelegate {
+	/// After a textfield cell is done displaying, remove the textfield reference.
+	///
+	func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+		if rows[indexPath.row] == .username {
+			usernameField = nil
+		} else if rows[indexPath.row] == .password {
+			passwordField = nil
+		}
+	}
+}
+
+
 // MARK: - Keyboard Notifications
 extension SiteCredentialsViewController: NUXKeyboardResponder {
     @objc func handleKeyboardWillShow(_ notification: Foundation.Notification) {

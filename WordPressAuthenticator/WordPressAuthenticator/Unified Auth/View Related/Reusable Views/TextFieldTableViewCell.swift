@@ -52,7 +52,6 @@ private extension TextFieldTableViewCell {
     func setCommonTextFieldStyles() {
         textField.font = UIFont.preferredFont(forTextStyle: .body)
         textField.autocorrectionType = .no
-        textField.returnKeyType = .continue
     }
 
     /// Sets the textfield keyboard type and applies common traits.
@@ -62,8 +61,10 @@ private extension TextFieldTableViewCell {
         switch style {
         case .url:
             textField.keyboardType = .URL
+			textField.returnKeyType = .continue
 		case .username:
 			textField.keyboardType = .default
+			textField.returnKeyType = .next
         default:
             setCommonTextFieldStyles()
         }

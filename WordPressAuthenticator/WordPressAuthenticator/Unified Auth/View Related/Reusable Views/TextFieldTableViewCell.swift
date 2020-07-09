@@ -62,6 +62,8 @@ private extension TextFieldTableViewCell {
         switch style {
         case .url:
             textField.keyboardType = .URL
+		case .username:
+			textField.keyboardType = .default
         default:
             setCommonTextFieldStyles()
         }

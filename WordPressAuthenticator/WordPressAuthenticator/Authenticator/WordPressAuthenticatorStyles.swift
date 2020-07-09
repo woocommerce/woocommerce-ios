@@ -155,6 +155,10 @@ public struct WordPressAuthenticatorUnifiedStyle {
     ///
     public let borderColor: UIColor
 
+    /// Style Auth default error color
+    ///
+    public let errorColor: UIColor
+
     /// Style: Auth default text color
     ///
     public let textColor: UIColor
@@ -184,6 +188,7 @@ public struct WordPressAuthenticatorUnifiedStyle {
     /// Designated initializer
     ///
     public init(borderColor: UIColor,
+                errorColor: UIColor,
                 textColor: UIColor,
                 textButtonColor: UIColor,
                 textButtonHighlightColor: UIColor,
@@ -193,6 +198,7 @@ public struct WordPressAuthenticatorUnifiedStyle {
                 navButtonTextColor: UIColor,
                 largeTitleTextColor: UIColor) {
         self.borderColor = borderColor
+        self.errorColor = errorColor
         self.textColor = textColor
         self.textButtonColor = textButtonColor
         self.textButtonHighlightColor = textButtonHighlightColor

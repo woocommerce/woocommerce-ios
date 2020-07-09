@@ -58,7 +58,7 @@ class LoginSocialErrorViewController: NUXTableViewController {
         super.viewDidLoad()
 
         view.backgroundColor = WordPressAuthenticator.shared.style.viewControllerBackgroundColor
-        addWordPressLogoToNavController()
+        addAppLogoToNavController()
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

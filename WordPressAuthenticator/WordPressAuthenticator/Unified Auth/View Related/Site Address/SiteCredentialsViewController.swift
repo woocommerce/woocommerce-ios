@@ -25,6 +25,7 @@ class SiteCredentialsViewController: LoginViewController {
         super.viewDidLoad()
 
         localizePrimaryButton()
+        registerTableViewCells()
         configureSubmitButton(animating: false)
     }
 }
@@ -39,6 +40,18 @@ private extension SiteCredentialsViewController {
         let primaryTitle = WordPressAuthenticator.shared.displayStrings.continueButtonTitle
         submitButton?.setTitle(primaryTitle, for: .normal)
         submitButton?.setTitle(primaryTitle, for: .highlighted)
+    }
+
+	/// Registers all of the available TableViewCells.
+    ///
+    func registerTableViewCells() {
+        let cells = [
+            TextLabelTableViewCell.reuseIdentifier: TextLabelTableViewCell.loadNib()
+        ]
+
+        for (reuseIdentifier, nib) in cells {
+            tableView.register(nib, forCellReuseIdentifier: reuseIdentifier)
+        }
     }
 
 	// MARK: - Private Constants

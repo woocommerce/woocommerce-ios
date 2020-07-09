@@ -9,6 +9,7 @@ public struct WordPressAuthenticatorDisplayStrings {
     public let emailLoginInstructions: String
     public let jetpackLoginInstructions: String
     public let siteLoginInstructions: String
+	public let siteCredentialInstructions: String
 
     /// Strings: primary call-to-action button titles.
     ///
@@ -30,6 +31,7 @@ public struct WordPressAuthenticatorDisplayStrings {
     public init(emailLoginInstructions: String,
                 jetpackLoginInstructions: String,
                 siteLoginInstructions: String,
+				siteCredentialInstructions: String,
                 continueButtonTitle: String,
                 findSiteButtonTitle: String,
                 resetPasswordButtonTitle: String,
@@ -39,6 +41,7 @@ public struct WordPressAuthenticatorDisplayStrings {
         self.emailLoginInstructions = emailLoginInstructions
         self.jetpackLoginInstructions = jetpackLoginInstructions
         self.siteLoginInstructions = siteLoginInstructions
+		self.siteCredentialInstructions = siteCredentialInstructions
         self.continueButtonTitle = continueButtonTitle
         self.findSiteButtonTitle = findSiteButtonTitle
         self.resetPasswordButtonTitle = resetPasswordButtonTitle
@@ -57,6 +60,8 @@ public extension WordPressAuthenticatorDisplayStrings {
                                                         comment: "Instruction text on the login's email address screen."),
             siteLoginInstructions: NSLocalizedString("Enter the address of the WordPress site you'd like to connect.",
                                                      comment: "Instruction text on the login's site addresss screen."),
+			siteCredentialInstructions: NSLocalizedString("Enter your account information for %@",
+														  comment: "Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site."),
             continueButtonTitle: NSLocalizedString("Continue",
                                                     comment: "The button title text when there is a next step for logging in or signing up."),
             findSiteButtonTitle: NSLocalizedString("Find your site address",

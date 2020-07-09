@@ -32,6 +32,14 @@ class SiteCredentialsViewController: LoginViewController {
 }
 
 
+// MARK: - UITableViewDataSource
+extension SiteCredentialsViewController: UITableViewDataSource {
+    /// Returns the number of rows in a section.
+    ///
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return rows.count
+    }
+}
 // MARK: - Private Methods
 private extension SiteCredentialsViewController {
 

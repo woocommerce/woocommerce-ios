@@ -30,6 +30,19 @@ class SiteCredentialsViewController: LoginViewController {
 		loadRows()
 		configureSubmitButton(animating: false)
     }
+
+	// MARK: - Overrides
+
+    /// Style individual ViewController backgrounds, for now.
+    ///
+    override func styleBackground() {
+        guard let unifiedBackgroundColor = WordPressAuthenticator.shared.unifiedStyle?.viewControllerBackgroundColor else {
+            super.styleBackground()
+            return
+        }
+
+        view.backgroundColor = unifiedBackgroundColor
+    }
 }
 
 

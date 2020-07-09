@@ -31,7 +31,7 @@ final class SiteAddressViewController: LoginViewController {
         super.viewDidLoad()
 
         navigationItem.title = WordPressAuthenticator.shared.displayStrings.logInTitle
-        setLargeTitleDisplayMode(.always)
+        styleNavigationBar(forUnified: true)
 
         localizePrimaryButton()
         registerTableViewCells()
@@ -409,7 +409,7 @@ extension SiteAddressViewController {
     @objc func showSelfHostedUsernamePassword() {
 		configureViewLoading(false)
 		guard let vc = SiteCredentialsViewController.instantiate(from: .siteAddress) else {
-			DDLogError("Failed to navigate from SiteAddressViewController to SiteAddressViewController")
+			DDLogError("Failed to navigate from SiteAddressViewController to SiteCredentialsViewController")
 			return
 		}
 

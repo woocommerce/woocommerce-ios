@@ -1,3 +1,3 @@
-- Melhorias nos produtos: atualize imagens e configurações de produtos e compartilhe os links deles diretamente pelo app, sem precisar usar o desktop!
-- Melhorias visuais: em Detalhes do pedido, o código SKU não é mais exibido na Lista de produtos. Além disso, o nome de produto Simples e o menu de elipse são exibidos na barra de navegação quando abertos fora da guia Produtos (a funcionalidade Produtos deve estar ativada). Ah, e a aparência do estado de carregamento na tela de variações de produto agora está agradável, não acha?
-- Aviso de privacidade disponível para usuários residentes da Califórnia.
+Novos alertas: quando um produto simples não tem um preço definido, um espaço reservado "Adicionar preço" é exibido na linha de preço da tela Detalhes do produto. Usuários do app que ainda não tiverem feito upgrade para o WooCommerce 4.0 verão uma faixa indicando um upgrade disponível. Porém, quem já fez upgrade verá o novo painel de estatísticas. Se você ainda não fez upgrade, encorajamos a fazê-lo!
+
+Correções e ajustes: corrigimos um bug que permitia um valor negativo resultar em uma falha visual nos gráficos do painel. Além disso, removemos a linha de pedidos totais da guia Produtos para evitar confusão por não ser exibida no formato editável para produtos simples.

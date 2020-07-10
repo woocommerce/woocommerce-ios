@@ -85,6 +85,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         if forUnified {
             // Unified nav bar style
             setupNavBarIcon(showIcon: false)
+            setHelpButtonTextColor(forUnified: true)
             backgroundColor = WordPressAuthenticator.shared.unifiedStyle?.navBarBackgroundColor ??
                               WordPressAuthenticator.shared.style.navBarBackgroundColor
             buttonTextColor = WordPressAuthenticator.shared.unifiedStyle?.navButtonTextColor ??
@@ -95,6 +96,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         } else {
             // Original nav bar style
             setupNavBarIcon()
+            setHelpButtonTextColor(forUnified: false)
             backgroundColor = WordPressAuthenticator.shared.style.navBarBackgroundColor
             buttonTextColor = WordPressAuthenticator.shared.style.navButtonTextColor
             titleTextColor = WordPressAuthenticator.shared.style.primaryTitleColor

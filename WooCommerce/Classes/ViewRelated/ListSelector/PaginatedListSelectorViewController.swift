@@ -10,6 +10,9 @@ protocol PaginatedListSelectorDataSource {
     associatedtype StorageModel: ResultsControllerMutableType
     associatedtype Cell: UITableViewCell
 
+    /// Optional custom sorting strategy for storage models in the paginated list. Default is `nil`.
+    var customResultsSortOrder: ((StorageModel.ReadOnlyType, StorageModel.ReadOnlyType) -> Bool)? { get }
+
     /// The model that is currently selected in the list.
     var selected: StorageModel.ReadOnlyType? { get }
 
@@ -27,6 +30,13 @@ protocol PaginatedListSelectorDataSource {
 
     /// Called when the UI is requesting to sync another page of data.
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?)
+}
+
+// Default implementation for optional variables/functions.
+extension PaginatedListSelectorDataSource {
+    var customResultsSortOrder: ((StorageModel.ReadOnlyType, StorageModel.ReadOnlyType) -> Bool)? {
+        nil
+    }
 }
 
 /// Displays a paginated list (implemented by table view) for the user to select a generic model.
@@ -131,6 +141,16 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
         super.viewWillDisappear(animated)
     }
 
+    // MARK: Public functions
+
+    func updateResultsController() {
+        resultsController = dataSource.createResultsController()
+        configureResultsController(resultsController) { [weak self] in
+            self?.tableView.reloadData()
+        }
+        transitionToResultsUpdatedState()
+    }
+
     // MARK: UITableViewDataSource
     //
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -146,12 +166,23 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
                                                        for: indexPath) as? Cell else {
                                                         fatalError()
         }
-        let model = resultsController.object(at: indexPath)
+        let model = object(at: indexPath)
         dataSource.configureCell(cell: cell, model: model)
 
         cell.accessoryType = dataSource.isSelected(model: model) ? .checkmark: .none
 
         return cell
+    }
+
+    private func object(at indexPath: IndexPath) -> Model {
+        guard let customResultsSortOrder = dataSource.customResultsSortOrder else {
+            return resultsController.object(at: indexPath)
+        }
+        let objects = resultsController.sections[indexPath.section].objects
+            .sorted(by: { (lhs, rhs) -> Bool in
+                return customResultsSortOrder(lhs, rhs)
+            })
+        return objects[indexPath.row]
     }
 
     // MARK: UITableViewDelegate

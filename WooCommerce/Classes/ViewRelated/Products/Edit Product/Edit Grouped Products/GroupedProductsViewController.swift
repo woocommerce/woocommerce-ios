@@ -5,6 +5,8 @@ import Yosemite
 import class AutomatticTracks.CrashLogging
 
 final class GroupedProductListSelectorDataSource: PaginatedListSelectorDataSource {
+    typealias StorageModel = StorageProduct
+
     lazy var customResultsSortOrder: ((Product, Product) -> Bool)? = { [weak self] (lhs, rhs) in
         guard let self = self else {
             return true
@@ -17,8 +19,6 @@ final class GroupedProductListSelectorDataSource: PaginatedListSelectorDataSourc
         }
         return lhsProductIDIndex < rhsProductIDIndex
     }
-
-    typealias StorageModel = StorageProduct
 
     // Observable list of the latest grouped product IDs
     var productIDs: Observable<[Int64]> {

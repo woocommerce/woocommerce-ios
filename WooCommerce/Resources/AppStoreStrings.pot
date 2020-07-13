@@ -49,11 +49,11 @@ msgctxt "app_store_promo_text"
 msgid "Run your store wherever you are. The WooCommerce app makes it easy to manage orders and inventory, track sales, and monitor store activity like new orders and reviews."
 msgstr ""
 
-msgctxt "v4.5-whats-new"
+msgctxt "v4.6-whats-new"
 msgid ""
-"- Product enhancements: Update product images, product settings, and share product links right from the app. No need to use that pesky desktop computer!\n"
-"- Visual enhancements: In Order Details, the SKU no longer appears on the Products List. Also, the Simple product name and ellipsis menu now appears in the nav bar when opened outside the Products tab.(Be sure to enable the Products feature switch.) Last but not least, the loading state on the product variations screen looks spiffy now, wouldn’t you agree?\n"
-"- California users can view their very own privacy notice.\n"
+"New alerts: When a simple product doesn’t have a price set, an “Add Price” placeholder shows up on the product details screen in the price row. App users who haven’t yet upgraded to WooCommerce 4.0 will see a banner indicating an upgrade available. Users who have already upgraded will see the new stats dashboard. If you haven’t yet upgraded, we encourage you to do so!\n"
+"\n"
+"Fixes and adjustments: We fixed a bug where a negative value could result in a visual glitch appearing on the dashboard charts. We also removed the total orders row from the Products tab to avoid confusion since we aren’t showing it on the editable form for simple products.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

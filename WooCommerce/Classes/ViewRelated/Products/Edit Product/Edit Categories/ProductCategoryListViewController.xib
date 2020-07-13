@@ -10,6 +10,8 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProductCategoryListViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
+                <outlet property="addButton" destination="FeT-Cz-Ejn" id="n2Y-in-VwH"/>
+                <outlet property="addButtonSeparator" destination="cj6-dK-CbB" id="rCK-Gr-Sa2"/>
                 <outlet property="tableView" destination="4pa-Cw-LKR" id="uF3-aL-9kf"/>
                 <outlet property="view" destination="iN0-l3-epB" id="t1s-Mw-tT3"/>
             </connections>
@@ -20,16 +22,45 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="4pa-Cw-LKR">
-                    <rect key="frame" x="0.0" y="44" width="414" height="818"/>
+                    <rect key="frame" x="0.0" y="106" width="414" height="756"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                 </tableView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="db8-Tb-7MB" userLabel="Top Container View">
+                    <rect key="frame" x="0.0" y="44" width="414" height="62"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FeT-Cz-Ejn">
+                            <rect key="frame" x="16" y="16" width="382" height="30"/>
+                            <state key="normal" title="Button"/>
+                        </button>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cj6-dK-CbB">
+                            <rect key="frame" x="0.0" y="61.5" width="414" height="0.5"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="0.5" id="vow-Jx-oM9"/>
+                            </constraints>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                    <constraints>
+                        <constraint firstItem="FeT-Cz-Ejn" firstAttribute="leading" secondItem="db8-Tb-7MB" secondAttribute="leading" constant="16" id="Am7-l4-hDz"/>
+                        <constraint firstItem="cj6-dK-CbB" firstAttribute="leading" secondItem="db8-Tb-7MB" secondAttribute="leading" id="Btq-hz-rZ1"/>
+                        <constraint firstAttribute="trailing" secondItem="cj6-dK-CbB" secondAttribute="trailing" id="dFJ-9F-4Nv"/>
+                        <constraint firstItem="FeT-Cz-Ejn" firstAttribute="centerY" secondItem="db8-Tb-7MB" secondAttribute="centerY" id="m1b-nm-28o"/>
+                        <constraint firstAttribute="bottom" secondItem="cj6-dK-CbB" secondAttribute="bottom" id="qah-eP-4FJ"/>
+                        <constraint firstItem="FeT-Cz-Ejn" firstAttribute="top" secondItem="db8-Tb-7MB" secondAttribute="top" constant="16" id="scH-Hy-cbc"/>
+                        <constraint firstItem="FeT-Cz-Ejn" firstAttribute="centerX" secondItem="db8-Tb-7MB" secondAttribute="centerX" id="ucM-Jh-FDJ"/>
+                    </constraints>
+                </view>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="4pa-Cw-LKR" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="0d8-Xy-4Fp"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="top" secondItem="4pa-Cw-LKR" secondAttribute="top" id="NIw-KU-oxA"/>
+                <constraint firstItem="db8-Tb-7MB" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="4L0-xE-z0A"/>
+                <constraint firstItem="4pa-Cw-LKR" firstAttribute="top" secondItem="db8-Tb-7MB" secondAttribute="bottom" id="hxN-Cc-Zs8"/>
+                <constraint firstItem="db8-Tb-7MB" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="iFc-6t-3d8"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="4pa-Cw-LKR" secondAttribute="trailing" id="j6T-xA-y2b"/>
                 <constraint firstItem="4pa-Cw-LKR" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" id="ttj-uA-s0c"/>
+                <constraint firstItem="db8-Tb-7MB" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="zYm-K0-76Y"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <point key="canvasLocation" x="137.68115942028987" y="128.57142857142856"/>

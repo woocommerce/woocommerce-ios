@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-06-25 11:54:03+0000 */
+/* Translation-Revision-Date: 2020-07-10 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -54,6 +54,12 @@
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld op voorraad";
 
+/* Format of the number of grouped products in singular form */
+"%ld product" = "%ld product";
+
+/* Format of the number of grouped products in plural form */
+"%ld products" = "%ld producten";
+
 /* Label about one product variation shown on Products tab */
 "%ld variant" = "%ld varianten";
 
@@ -97,6 +103,9 @@
 /* Action to add photos on the Product images screen */
 "Add Photos" = "Foto's toevoegen";
 
+/* Title for adding the price settings row on Product main screen */
+"Add Price" = "Prijs toevoegen";
+
 /* A title used for a shipment tracking unit test
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
 "Add Tracking" = "Tracking toevoegen";
@@ -117,6 +126,12 @@
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
 "Add more details" = "Meer gegevens toevoegen";
+
+/* Title for adding an external URL row on Product main screen for an external/affiliate product */
+"Add product link" = "Productlink toevoegen";
+
+/* Title for adding grouped products row on Product main screen for a grouped product */
+"Add products to the group" = "Producten toevoegen aan de groep";
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "Gewicht en afmetingen toevoegen";
@@ -250,6 +265,12 @@
 
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "Vetgedrukt";
+
+/* Title of the text field for editing the button text for an external/affiliate product */
+"Button Text" = "Knoptekst";
+
+/* Placeholder of the text field for editing the button text for an external/affiliate product */
+"Buy product" = "Product kopen";
 
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "Door aan te melden, ga je akkoord met onze _algemene voorwaarden_.";
@@ -509,6 +530,9 @@
 /* Display label for the product's draft status */
 "Draft" = "Concept";
 
+/* Subtitle of the product form bottom sheet action for editing SKU. */
+"Easily identify your products with unique codes" = "Identificeer je producten eenvoudig met unieke codes";
+
 /* Email address text field placeholder */
 "Email" = "E-mail";
 
@@ -530,6 +554,9 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "Lege URL";
 
+/* Placeholder of the text field for editing the external URL for an external/affiliate product */
+"Enter URL" = "Voer URL in";
+
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "Voer naam van bezorgservice in";
 
@@ -542,6 +569,9 @@
 
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of your WooCommerce store you'd like to connect." = "Voer het adres van de WooCommerce-winkel die je wilt koppelen in.";
+
+/* Footer text for editing product external URL */
+"Enter the external URL to the product." = "Voer de externe URL naar het product in.";
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "Voer wachtwoord voor je WordPress.com account in.";
@@ -624,6 +654,9 @@
 /* Display label for grouped product type. */
 "Grouped" = "Gegroepeerd";
 
+/* Title for editing grouped products row on Product main screen for a grouped product */
+"Grouped products" = "Gegroepeerde producten";
+
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "HOE KUNNEN WE HELPEN?";
 
@@ -692,9 +725,6 @@
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Als deze functie is uitgeschakeld, is de opmerking privé";
-
-/* My Store > Settings > Experimental features > Switch stats version */
-"Improved stats" = "Verbeterde statistieken";
 
 /* Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
@@ -768,7 +798,7 @@
 "Launch Wormholy debug" = "Wormholy-debug starten";
 
 /* Settings > Privacy Settings. A text link to the cookie policy.
-   The action of the top banner on Dashboard that indicates new stats is unavailable - Title of button shown in the Orders → All Orders tab if the list is empty. */
+   Title of button shown in the Orders → All Orders tab if the list is empty. */
 "Learn more" = "Meer informatie";
 
 /* Title of the cell in Product Shipping Settings > Length */
@@ -1152,7 +1182,7 @@
 "Please wait while we publish this product to your store" = "Een moment geduld terwijl we dit product in je winkel publiceren";
 
 /* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
-   Product Price Settings navigation title - Section header title for product price - Title of the cell in Product Price Settings > Price - Title of the Price Settings row on Product main screen */
+   Product Price Settings navigation title - Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
 "Price" = "Prijs";
 
 /* Product Details - pricing and inventory section title */
@@ -1190,6 +1220,9 @@
 /* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
 "Product %ld has been removed from your store" = "Product %ld is uit je winkel verwijderd";
 
+/* Edit Product External Link navigation title */
+"Product Link" = "Productlink";
+
 /* Title of the view containing a single Product Review */
 "Product Review" = "Productbeoordeling";
 
@@ -1206,8 +1239,14 @@
 /* Row title for filtering products by product type. */
 "Product Type" = "Producttype";
 
+/* Title of the text field for editing the external URL for an external/affiliate product */
+"Product URL" = "Product-URL";
+
 /* My Store > Settings > Experimental features > Product editing */
 "Product editing" = "Productbewerking";
+
+/* Title of the external URL row on Product main screen for an external/affiliate product */
+"Product link" = "Productlink";
 
 /* My Store > Settings > Experimental features > Switch Products
    Product section title if there is more than one product. - Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
@@ -1343,7 +1382,7 @@
 "Rich Content" = "Uitgebreide content";
 
 /* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products.
-   Title of the cell in Product Inventory Settings > SKU */
+   Edit Product SKU navigation title - Title of the cell in Product Inventory Settings > SKU - Title of the product form bottom sheet action for editing short description. - Title of the SKU row on Product main screen */
 "SKU" = "SKU";
 
 /* The message of the alert when there is an error updating the product SKU */
@@ -1885,6 +1924,9 @@
 /* Footer text in Product Catalog Visibility */
 "This setting determines which shop pages products will be listed on." = "Deze instelling bepaalt op welke winkelpagina's producten worden vermeld.";
 
+/* Footer text for editing external product button text */
+"This text will be shown on the button linking to the external product." = "Deze tekst wordt weergegeven op de knop die naar het externe product doorverwijst.";
+
 /* Placeholder in the Product Title row on Product form screen.
    Product details screen — product title descriptive label */
 "Title" = "Titel";
@@ -1923,9 +1965,6 @@
 /* Used when a Reader Topic is not found for a specific id */
 "Topic not found for id:" = "Onderwerp voor ID niet gevonden:";
 
-/* Product details screen - total orders descriptive label */
-"Total Orders" = "Totaalaantal bestellingen";
-
 /* Description for Top Performers right column header */
 "Total Spend" = "Totaal uitgegeven";
 
@@ -1955,17 +1994,8 @@
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Vertrouw";
 
-/* The action of the top banner on Dashboard that indicates new stats is available */
-"Try It Now" = "Probeer het nu";
-
 /* Button to trigger connection to another account in store picker */
 "Try another account" = "Een ander account proberen";
-
-/* The title of the top banner on Dashboard that indicates new stats is available */
-"Try our improved stats" = "Probeer onze verbeterde statistieken";
-
-/* My Store > Settings > Experimental features > Stats version description */
-"Try the new stats available with the WooCommerce Admin plugin" = "Probeer de nieuwe statistieken die beschikbaar zijn met de WooCommerce Admin-plugin";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Probeer met ander e-mailadres";
@@ -2107,6 +2137,9 @@
    Updated on <date> */
 "Updated on %@" = "Bijgewerkt op %@";
 
+/* Banner title in my store when stats will be deprecated */
+"Upgrade to keep seeing your stats" = "Upgrade om je statistieken te kunnen blijven bekijken";
+
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Username placeholder */
 "Username" = "Gebruikersnaam";
@@ -2174,9 +2207,6 @@
 /* shown in promotional screens during first launch */
 "Watch readers from around the world read and interact with your site — in real time." = "Kijk in realtime hoe lezers overal ter wereld je site lezen en bekijken.";
 
-/* The info of the top banner on Dashboard that indicates new stats is unavailable */
-"We have reverted to the old stats. To use the beta stats, please activate the WooCommerce Admin plugin with version 0.23 or higher" = "We hebben de oude statistieken hersteld. Om de bèta-statistieken te kunnen gebruiken, moet je de WooCommerce Admin-plugin met versie 0.23 of hoger activeren";
-
 /* message to ask a user to check their email for a WordPress.com email */
 "We just emailed a link to %@. Please check your mail app and tap the link to log in." = "We hebben zojuist een link gestuurd naar %@. Controleer je mail-app en tik op de link om in te loggen.";
 
@@ -2223,8 +2253,8 @@
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "Gewicht: %1$@%2$@";
 
-/* The info of the top banner on Dashboard that indicates new stats is available */
-"We’re rolling out improvements to stats for stores using the WooCommerce Admin plugin" = "We voeren verbeteringen aan statistieken voor winkels door, via de WooCommerce Admin-plugin";
+/* Banner caption in my store when the stats will be deprecated */
+"We’ve rolled out improvements to our analytics. Upgrade to WooCommerce 4.0 or above or install WooCommerce Admin plugin to keep seeing your stats after September 1, 2020." = "We hebben verbeteringen doorgevoerd voor analyses. Upgrade naar WooCommerce 4.0 of hoger of installeer de WooCommerce Admin-plugin om je statistieken te kunnen blijven bekijken na dinsdag 1 september 2020.";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "Wat is het adres van mijn site?";

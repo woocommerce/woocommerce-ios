@@ -22,7 +22,8 @@ final class GroupedProductsViewController: UIViewController {
                                                                      noResultsPlaceholderText: noResultsPlaceholderText,
                                                                      noResultsPlaceholderImage: .emptyProductsImage,
                                                                      noResultsPlaceholderImageTintColor: .primary,
-                                                                     tableViewStyle: .plain)
+                                                                     tableViewStyle: .plain,
+                                                                     separatorStyle: .none)
             return PaginatedListSelectorViewController(viewProperties: viewProperties, dataSource: dataSource, onDismiss: { _ in })
     }()
 

@@ -27,7 +27,11 @@ public enum ProductAction: Action {
 
     /// Retrieves a specified list of Products.
     ///
-    case retrieveProducts(siteID: Int64, productIDs: [Int64], onCompletion: (Result<[Product], Error>) -> Void)
+    case retrieveProducts(siteID: Int64,
+        productIDs: [Int64],
+        pageNumber: Int = ProductsRemote.Default.pageNumber,
+        pageSize: Int = ProductsRemote.Default.pageSize,
+        onCompletion: (Result<[Product], Error>) -> Void)
 
     /// Deletes all of the cached products.
     ///

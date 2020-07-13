@@ -75,17 +75,17 @@ final class GroupedProductListSelectorDataSource: PaginatedListSelectorDataSourc
         cell.accessoryView = deleteButton
     }
 
-    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Result<Bool, Error>) -> Void)?) {
+    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
         let action = ProductAction.retrieveProducts(siteID: siteID,
                                                     productIDs: groupedProductIDs,
                                                     pageNumber: pageNumber,
                                                     pageSize: pageSize) { result in
                                                         switch result {
                                                         case .success:
-                                                            onCompletion?(.success(true))
+                                                            onCompletion?(true)
                                                         case .failure(let error):
                                                             DDLogError("⛔️ Error synchronizing products: \(error)")
-                                                            onCompletion?(.failure(error))
+                                                            onCompletion?(false)
                                                         }
         }
         ServiceLocator.stores.dispatch(action)

@@ -312,10 +312,17 @@ public extension StorageType {
         return firstObject(ofType: ProductSearchResults.self, matching: predicate)
     }
 
+    /// Retrieves the all of the stored Product Tags for a `siteID`.
+    ///
+    func loadProductTags(siteID: Int64) -> [ProductTag] {
+        let predicate = NSPredicate(format: "siteID = %ld", siteID)
+        return allObjects(ofType: ProductTag.self, matching: predicate, sortedBy: nil)
+    }
+
     /// Retrieves the Stored Product Tag.
     ///
-    func loadProductTag(siteID: Int64, productID: Int64, tagID: Int64) -> ProductTag? {
-        let predicate = NSPredicate(format: "product.siteID = %ld AND product.productID = %ld AND tagID = %ld", siteID, productID, tagID)
+    func loadProductTag(siteID: Int64, tagID: Int64) -> ProductTag? {
+        let predicate = NSPredicate(format: "siteID = %ld AND tagID = %ld", siteID, tagID)
         return firstObject(ofType: ProductTag.self, matching: predicate)
     }
 

@@ -52,17 +52,15 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
         if let orderStatus = orderStatus {
             paymentStatusLabel.applyStyle(for: orderStatus.status)
             paymentStatusLabel.text = orderStatus.name
-        } else {
+        } else if let statusKey = viewModel?.order.statusKey {
             // There are unsupported extensions with even more statuses available.
             // So let's use the order.statusKey to display those as slugs.
-            if let statusKey = viewModel?.order.statusKey {
-                let statusEnum = OrderStatusEnum(rawValue: statusKey)
-                paymentStatusLabel.applyStyle(for: statusEnum)
-                paymentStatusLabel.text = statusKey
-            } else {
-                paymentStatusLabel.applyStyle(for: .failed)
-                paymentStatusLabel.text = nil
-            }
+            let statusEnum = OrderStatusEnum(rawValue: statusKey)
+            paymentStatusLabel.applyStyle(for: statusEnum)
+            paymentStatusLabel.text = statusKey
+        } else {
+            paymentStatusLabel.applyStyle(for: .failed)
+            paymentStatusLabel.text = nil
         }
     }
 

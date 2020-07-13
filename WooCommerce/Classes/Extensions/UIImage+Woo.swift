@@ -66,6 +66,13 @@ extension UIImage {
         return UIImage.gridicon(.checkmark)
     }
 
+    /// Checkmark image that is shown in a cell's image overlay
+    ///
+    static var checkmarkInCellImageOverlay: UIImage {
+        return UIImage.gridicon(.checkmark, size: CGSize(width: 22, height: 22))
+            .imageWithTintColor(.listBackground)!
+    }
+
     /// WooCommerce Styled Checkmark
     ///
     static var checkmarkStyledImage: UIImage {
@@ -399,7 +406,7 @@ extension UIImage {
 
 
     static var syncImage: UIImage {
-        return UIImage.gridicon(.sync).imageFlippedForRightToLeftLayoutDirection()
+        return UIImage(imageLiteralResourceName: "icon-sync-dot")
     }
 
     /// Creates a bitmap image of the Woo "bubble" logo based on a vector image in our asset catalog.

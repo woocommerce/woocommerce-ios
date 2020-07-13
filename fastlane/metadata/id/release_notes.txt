@@ -1,0 +1,3 @@
+Pemberitahuan baru: Ketika produk sederhana tidak memiliki ketentuan harga, placeholder "Tambahkan Harga" akan muncul pada layar detail produk di baris harga. Pengguna aplikasi yang belum melakukan upgrade ke WooCommerce 4.0 akan melihat banner yang menampilkan upgrade yang tersedia. Pengguna yang telah melakukan upgrade akan melihat dashboard statistik yang baru. Apabila Anda belum melakukan upgrade, ayo lakukan segera!
+
+Perbaikan dan penyesuaian: Kami memperbaiki bug yang mengakibatkan nilai negatif dapat menyebabkan kecacatan visual pada bagan dashboard. Kami juga menghilangkan baris total pesanan dari tab Produk untuk menghindari kebingungan karena kami tidak menampilkannya dalam bentuk yang bisa diedit untuk produk sederhana.

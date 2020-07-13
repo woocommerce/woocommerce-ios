@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-06-25 08:54:03+0000 */
+/* Translation-Revision-Date: 2020-07-08 09:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -54,6 +54,12 @@
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld 재고 있음";
 
+/* Format of the number of grouped products in singular form */
+"%ld product" = "%ld 개 제품";
+
+/* Format of the number of grouped products in plural form */
+"%ld products" = "%ld 개 제품";
+
 /* Label about one product variation shown on Products tab */
 "%ld variant" = "%ld 변형";
 
@@ -97,6 +103,9 @@
 /* Action to add photos on the Product images screen */
 "Add Photos" = "사진 추가";
 
+/* Title for adding the price settings row on Product main screen */
+"Add Price" = "가격 추가";
+
 /* A title used for a shipment tracking unit test
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
 "Add Tracking" = "추적 추가";
@@ -117,6 +126,12 @@
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
 "Add more details" = "세부사항 추가";
+
+/* Title for adding an external URL row on Product main screen for an external/affiliate product */
+"Add product link" = "제품 링크 추가";
+
+/* Title for adding grouped products row on Product main screen for a grouped product */
+"Add products to the group" = "그룹에 제품 추가";
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "무게 및 치수 추가";
@@ -250,6 +265,12 @@
 
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "굵게";
+
+/* Title of the text field for editing the button text for an external/affiliate product */
+"Button Text" = "버튼 텍스트";
+
+/* Placeholder of the text field for editing the button text for an external/affiliate product */
+"Buy product" = "제품 구매";
 
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "가입하려면 _서비스 약관_에 동의해야 합니다.";
@@ -509,6 +530,9 @@
 /* Display label for the product's draft status */
 "Draft" = "임시글";
 
+/* Subtitle of the product form bottom sheet action for editing SKU. */
+"Easily identify your products with unique codes" = "고유 코드로 제품을 간편하게 식별합니다.";
+
 /* Email address text field placeholder */
 "Email" = "이메일";
 
@@ -530,6 +554,9 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "빈 URL";
 
+/* Placeholder of the text field for editing the external URL for an external/affiliate product */
+"Enter URL" = "URL 입력";
+
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "운송업체 이름 입력";
 
@@ -542,6 +569,9 @@
 
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of your WooCommerce store you'd like to connect." = "연결하려는 WooCommerce 스토어의 주소를 입력합니다.";
+
+/* Footer text for editing product external URL */
+"Enter the external URL to the product." = "제품의 외부 URL을 입력하세요.";
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "워드프레스닷컴 계정에 대한 비밀번호를 입력합니다.";
@@ -624,6 +654,9 @@
 /* Display label for grouped product type. */
 "Grouped" = "그룹";
 
+/* Title for editing grouped products row on Product main screen for a grouped product */
+"Grouped products" = "그룹화된 제품";
+
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "어떻게 도와드릴까요?";
 
@@ -692,9 +725,6 @@
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "해제된 경우 메모는 비공개가 됩니다.";
-
-/* My Store > Settings > Experimental features > Switch stats version */
-"Improved stats" = "향상된 통계";
 
 /* Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
@@ -768,7 +798,7 @@
 "Launch Wormholy debug" = "Wormholy 디버그 시작";
 
 /* Settings > Privacy Settings. A text link to the cookie policy.
-   The action of the top banner on Dashboard that indicates new stats is unavailable - Title of button shown in the Orders → All Orders tab if the list is empty. */
+   Title of button shown in the Orders → All Orders tab if the list is empty. */
 "Learn more" = "더 알아보기";
 
 /* Title of the cell in Product Shipping Settings > Length */
@@ -1152,7 +1182,7 @@
 "Please wait while we publish this product to your store" = "이 제품을 회원님의 스토어에 게시하는 동안 기다려주세요...";
 
 /* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
-   Product Price Settings navigation title - Section header title for product price - Title of the cell in Product Price Settings > Price - Title of the Price Settings row on Product main screen */
+   Product Price Settings navigation title - Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
 "Price" = "가격";
 
 /* Product Details - pricing and inventory section title */
@@ -1190,6 +1220,9 @@
 /* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
 "Product %ld has been removed from your store" = "제품 %ld이(가) 스토어에서 제거되었습니다.";
 
+/* Edit Product External Link navigation title */
+"Product Link" = "제품 링크";
+
 /* Title of the view containing a single Product Review */
 "Product Review" = "제품 검토";
 
@@ -1206,8 +1239,14 @@
 /* Row title for filtering products by product type. */
 "Product Type" = "제품 유형";
 
+/* Title of the text field for editing the external URL for an external/affiliate product */
+"Product URL" = "제품 URL";
+
 /* My Store > Settings > Experimental features > Product editing */
 "Product editing" = "제품 편집";
+
+/* Title of the external URL row on Product main screen for an external/affiliate product */
+"Product link" = "제품 링크";
 
 /* My Store > Settings > Experimental features > Switch Products
    Product section title if there is more than one product. - Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
@@ -1343,7 +1382,7 @@
 "Rich Content" = "풍부한 콘텐츠";
 
 /* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products.
-   Title of the cell in Product Inventory Settings > SKU */
+   Edit Product SKU navigation title - Title of the cell in Product Inventory Settings > SKU - Title of the product form bottom sheet action for editing short description. - Title of the SKU row on Product main screen */
 "SKU" = "SKU";
 
 /* The message of the alert when there is an error updating the product SKU */
@@ -1885,6 +1924,9 @@
 /* Footer text in Product Catalog Visibility */
 "This setting determines which shop pages products will be listed on." = "이 설정은 제품이 어떤 상점 페이지에 등록될지 결정합니다.";
 
+/* Footer text for editing external product button text */
+"This text will be shown on the button linking to the external product." = "외부 제품으로 연결되는 버튼에 표시되는 텍스트입니다.";
+
 /* Placeholder in the Product Title row on Product form screen.
    Product details screen — product title descriptive label */
 "Title" = "제목";
@@ -1923,9 +1965,6 @@
 /* Used when a Reader Topic is not found for a specific id */
 "Topic not found for id:" = "id에 대한 게시글 없음:";
 
-/* Product details screen - total orders descriptive label */
-"Total Orders" = "총 주문 수";
-
 /* Description for Top Performers right column header */
 "Total Spend" = "총 지출";
 
@@ -1955,17 +1994,8 @@
 /* Connect when the SSL certificate is invalid */
 "Trust" = "신뢰함";
 
-/* The action of the top banner on Dashboard that indicates new stats is available */
-"Try It Now" = "지금 사용해 보기";
-
 /* Button to trigger connection to another account in store picker */
 "Try another account" = "다른 계정 사용해 보기";
-
-/* The title of the top banner on Dashboard that indicates new stats is available */
-"Try our improved stats" = "향상된 통계를 사용해 보세요.";
-
-/* My Store > Settings > Experimental features > Stats version description */
-"Try the new stats available with the WooCommerce Admin plugin" = "WooCommerce 관리자 플러그인과 함께 사용할 수 있는 새 통계 사용해 보기";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "다른 이메일로 시도";
@@ -2107,6 +2137,9 @@
    Updated on <date> */
 "Updated on %@" = "%@에 업데이트";
 
+/* Banner title in my store when stats will be deprecated */
+"Upgrade to keep seeing your stats" = "업그레이드하여 통계 확인 계속하기";
+
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Username placeholder */
 "Username" = "사용자명";
@@ -2174,9 +2207,6 @@
 /* shown in promotional screens during first launch */
 "Watch readers from around the world read and interact with your site — in real time." = "전 세계 독자들이 회원님의 사이트를 읽고 상호 작용하는 것을 실시간으로 지켜보세요.";
 
-/* The info of the top banner on Dashboard that indicates new stats is unavailable */
-"We have reverted to the old stats. To use the beta stats, please activate the WooCommerce Admin plugin with version 0.23 or higher" = "이전 통계로 되돌렸습니다. 베타 통계를 사용하려면 버전 0.23 이상으로 WooCommerce Admin 플러그인을 활성화하세요.";
-
 /* message to ask a user to check their email for a WordPress.com email */
 "We just emailed a link to %@. Please check your mail app and tap the link to log in." = "%@에 대한 링크를 이메일로 전송했습니다. 메일 앱을 확인하고 링크를 탭하여 로그인하세요.";
 
@@ -2223,8 +2253,8 @@
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "무게: %1$@%2$@";
 
-/* The info of the top banner on Dashboard that indicates new stats is available */
-"We’re rolling out improvements to stats for stores using the WooCommerce Admin plugin" = "WooCommerce 관리자 플러그인을 사용하여 스토어 통계 개선을 점진적으로 실시합니다.";
+/* Banner caption in my store when the stats will be deprecated */
+"We’ve rolled out improvements to our analytics. Upgrade to WooCommerce 4.0 or above or install WooCommerce Admin plugin to keep seeing your stats after September 1, 2020." = "분석 개선 사항을 공개했습니다. 2020년 9월 1일 이후 계속해서 통계를 확인하려면 WooCommerce 4.0 이상으로 업그레이드하거나 WooCommerce 관리자 플러그인을 설치하세요.";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "내 사이트 주소는 무엇인가요?";

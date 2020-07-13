@@ -6,10 +6,14 @@ import WordPressUI
 ///
 final class ProductCategoryListViewController: UIViewController {
 
+    @IBOutlet private weak var addButton: UIButton!
+    @IBOutlet private weak var addButtonSeparator: UIView!
     @IBOutlet private var tableView: UITableView!
     private let ghostTableView = UITableView()
 
     private let viewModel: ProductCategoryListViewModel
+
+    private let siteID: Int64
 
     // Completion callback
     //
@@ -18,6 +22,7 @@ final class ProductCategoryListViewController: UIViewController {
 
     init(product: Product, completion: @escaping Completion) {
         self.viewModel = ProductCategoryListViewModel(product: product)
+        self.siteID = product.siteID
         onCompletion = completion
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
@@ -28,6 +33,8 @@ final class ProductCategoryListViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureAddButton()
+        configureAddButtonSeparator()
         registerTableViewCells()
         configureTableView()
         configureGhostTableView()
@@ -43,6 +50,16 @@ private extension ProductCategoryListViewController {
     func registerTableViewCells() {
         tableView.register(ProductCategoryTableViewCell.loadNib(), forCellReuseIdentifier: ProductCategoryTableViewCell.reuseIdentifier)
         ghostTableView.register(ProductCategoryTableViewCell.loadNib(), forCellReuseIdentifier: ProductCategoryTableViewCell.reuseIdentifier)
+    }
+
+    func configureAddButton() {
+        addButton.setTitle(NSLocalizedString("Add Category", comment: "Action to add category on the Product Categories screen"), for: .normal)
+        addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
+        addButton.applySecondaryButtonStyle()
+    }
+
+    func configureAddButtonSeparator() {
+        addButtonSeparator.backgroundColor = .systemColor(.separator)
     }
 
     func configureTableView() {
@@ -121,6 +138,18 @@ extension ProductCategoryListViewController {
 
     @objc private func doneButtonTapped() {
         onCompletion(viewModel.selectedCategories)
+    }
+
+    @objc private func addButtonTapped() {
+        let addCategoryViewController = AddProductCategoryViewController(siteID: siteID) { [weak self] (newCategory) in
+            defer {
+                self?.dismiss(animated: true, completion: nil)
+            }
+            self?.viewModel.addAndSelectNewCategory(category: newCategory)
+            self?.tableView.reloadData()
+        }
+        let navController = WooNavigationController(rootViewController: addCategoryViewController)
+        present(navController, animated: true, completion: nil)
     }
 
     private func presentBackNavigationActionSheet() {

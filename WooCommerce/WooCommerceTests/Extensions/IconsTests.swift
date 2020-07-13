@@ -35,6 +35,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.checkmarkImage)
     }
 
+    func testCheckmarkInCellImageOverlayIsNotNil() {
+        XCTAssertNotNil(UIImage.checkmarkInCellImageOverlay)
+    }
+
     func testCheckmarkStyledImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.checkmarkStyledImage)
     }

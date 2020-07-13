@@ -8,6 +8,7 @@ extension ProductsTabProductViewModel {
         detailsAttributedString = productVariation.createDetailsAttributedString(currency: currency)
 
         imageService = ServiceLocator.imageService
+        isSelected = false
     }
 }
 

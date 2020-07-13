@@ -177,6 +177,86 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         XCTAssertEqual(model27Container.viewContext.countObjects(ofType: ProductCategory.self), 0)
     }
 
+  func testModel28To29MigrationPassed() throws {
+        // Arrange
+        let model28URL = urlForModel(name: "Model 28")
+        let model28 = NSManagedObjectModel(contentsOf: model28URL)!
+        let model29URL = urlForModel(name: "Model 29")
+        let model29 = NSManagedObjectModel(contentsOf: model29URL)!
+        let name = "WooCommerce"
+        let crashLogger = MockCrashLogger()
+        let coreDataManager = CoreDataManager(name: name, crashLogger: crashLogger)
+
+        // Destroys any pre-existing persistence store.
+        let psc = NSPersistentStoreCoordinator(managedObjectModel: modelsInventory.currentModel)
+        try? psc.destroyPersistentStore(at: coreDataManager.storeURL, ofType: NSSQLiteStoreType, options: nil)
+
+        // Action - step 1: loading persistence store with model 28
+        let model28Container = NSPersistentContainer(name: name, managedObjectModel: model28)
+        model28Container.persistentStoreDescriptions = [coreDataManager.storeDescription]
+
+        var model28LoadingError: Error?
+        waitForExpectation { expectation in
+            model28Container.loadPersistentStores { (storeDescription, error) in
+                model28LoadingError = error
+                expectation.fulfill()
+            }
+        }
+
+        // Assert - step 1
+        XCTAssertNil(model28LoadingError, "Migration error: \(String(describing: model28LoadingError?.localizedDescription))")
+
+        guard let metadata = try? NSPersistentStoreCoordinator
+            .metadataForPersistentStore(ofType: NSSQLiteStoreType,
+                                        at: coreDataManager.storeURL,
+                                        options: nil) else {
+                                            XCTFail("Cannot get metadata for persistent store at URL \(coreDataManager.storeURL)")
+                                            return
+        }
+
+        // The persistent store should be compatible with model 28 now and incompatible with model 29.
+        XCTAssertTrue(model28.isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata))
+        XCTAssertFalse(model29.isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata))
+
+        // Arrange - step 2: populating data, migrating persistent store from model 28 to 29, then loading with model 29.
+        let context = model28Container.viewContext
+        _ = insertAccountWithRequiredProperties(to: context)
+        let product = insertProductWithRequiredProperties(to: context)
+        let productTag = insertProductTag(to: context)
+        product.addToTags(productTag)
+        context.saveIfNeeded()
+
+        XCTAssertEqual(context.countObjects(ofType: Account.self), 1)
+        XCTAssertEqual(context.countObjects(ofType: Product.self), 1)
+        XCTAssertEqual(context.countObjects(ofType: ProductTag.self), 1)
+
+        let model29Container = NSPersistentContainer(name: name, managedObjectModel: model29)
+        model29Container.persistentStoreDescriptions = [coreDataManager.storeDescription]
+
+        // Action - step 2
+        let iterativeMigrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory)
+        let (migrateResult, migrationDebugMessages) = try iterativeMigrator.iterativeMigrate(sourceStore: coreDataManager.storeURL,
+                                                                                             storeType: NSSQLiteStoreType,
+                                                                                             to: model29)
+        XCTAssertTrue(migrateResult, "Failed to migrate to model version 29: \(migrationDebugMessages)")
+
+        var model29LoadingError: Error?
+        waitForExpectation { expectation in
+            model29Container.loadPersistentStores { (storeDescription, error) in
+                model29LoadingError = error
+                expectation.fulfill()
+            }
+        }
+
+        // Assert - step 2
+        XCTAssertNil(model29LoadingError, "Migration error: \(String(describing: model29LoadingError?.localizedDescription))")
+
+        XCTAssertEqual(model29Container.viewContext.countObjects(ofType: Account.self), 1)
+        XCTAssertEqual(model29Container.viewContext.countObjects(ofType: Product.self), 1)
+        // Product tags should be deleted.
+        XCTAssertEqual(model29Container.viewContext.countObjects(ofType: ProductTag.self), 0)
+    }
+
     func testModel20To28MigrationWithTransformableAttributesPassed() throws {
         // Arrange
         let sourceModelURL = urlForModel(name: "Model 20")
@@ -313,6 +393,15 @@ private extension CoreDataIterativeMigratorTests {
         productCategory.name = "testing"
         productCategory.slug = ""
         return productCategory
+    }
+
+    func insertProductTag(to context: NSManagedObjectContext) -> ProductTag {
+        let productTag = context.insertNewObject(ofType: ProductTag.self)
+        // Populates the required attributes.
+        productTag.tagID = 34
+        productTag.name = "testing"
+        productTag.slug = ""
+        return productTag
     }
 
     func insertProductAttributeWithRequiredProperties(to context: NSManagedObjectContext) -> ProductAttribute {

@@ -44,6 +44,11 @@ final class TextFieldTableViewCell: UITableViewCell {
     override func becomeFirstResponder() -> Bool {
         textField.becomeFirstResponder()
     }
+
+    @discardableResult
+    override func resignFirstResponder() -> Bool {
+        textField.resignFirstResponder()
+    }
 }
 
 private extension TextFieldTableViewCell {

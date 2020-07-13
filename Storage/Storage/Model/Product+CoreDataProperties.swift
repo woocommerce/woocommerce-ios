@@ -68,7 +68,7 @@ extension Product {
     @NSManaged public var defaultAttributes: Set<ProductDefaultAttribute>?
     @NSManaged public var downloads: Set<ProductDownload>?
     @NSManaged public var images: NSOrderedSet?
-    @NSManaged public var tags: Set<ProductTag>?
+    @NSManaged public var tags: NSOrderedSet?
     @NSManaged public var searchResults: Set<ProductSearchResults>?
     @NSManaged public var productVariations: Set<ProductVariation>?
     @NSManaged public var productShippingClass: ProductShippingClass?
@@ -181,6 +181,24 @@ extension Product {
 // MARK: Generated accessors for tags
 extension Product {
 
+    @objc(insertObject:inTagsAtIndex:)
+    @NSManaged public func insertIntoTags(_ value: ProductTag, at idx: Int)
+
+    @objc(removeObjectFromTagsAtIndex:)
+    @NSManaged public func removeFromTags(at idx: Int)
+
+    @objc(insertTags:atIndexes:)
+    @NSManaged public func insertIntoTags(_ values: [ProductTag], at indexes: NSIndexSet)
+
+    @objc(removeTagsAtIndexes:)
+    @NSManaged public func removeFromTags(at indexes: NSIndexSet)
+
+    @objc(replaceObjectInTagsAtIndex:withObject:)
+    @NSManaged public func replaceTags(at idx: Int, with value: ProductTag)
+
+    @objc(replaceTagsAtIndexes:withTags:)
+    @NSManaged public func replaceTags(at indexes: NSIndexSet, with values: [ProductTag])
+
     @objc(addTagsObject:)
     @NSManaged public func addToTags(_ value: ProductTag)
 
@@ -188,10 +206,10 @@ extension Product {
     @NSManaged public func removeFromTags(_ value: ProductTag)
 
     @objc(addTags:)
-    @NSManaged public func addToTags(_ values: NSSet)
+    @NSManaged public func addToTags(_ values: NSOrderedSet)
 
     @objc(removeTags:)
-    @NSManaged public func removeFromTags(_ values: NSSet)
+    @NSManaged public func removeFromTags(_ values: NSOrderedSet)
 
 }
 

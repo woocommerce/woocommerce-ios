@@ -129,15 +129,15 @@ extension MockReviews {
     }
 
     func sampleTags() -> [Networking.ProductTag] {
-        let tag1 = ProductTag(tagID: 37, name: "room", slug: "room")
-        let tag2 = ProductTag(tagID: 38, name: "party room", slug: "party-room")
-        let tag3 = ProductTag(tagID: 39, name: "30", slug: "30")
-        let tag4 = ProductTag(tagID: 40, name: "20+", slug: "20")
-        let tag5 = ProductTag(tagID: 41, name: "meeting room", slug: "meeting-room")
-        let tag6 = ProductTag(tagID: 42, name: "meetings", slug: "meetings")
-        let tag7 = ProductTag(tagID: 43, name: "parties", slug: "parties")
-        let tag8 = ProductTag(tagID: 44, name: "graduation", slug: "graduation")
-        let tag9 = ProductTag(tagID: 45, name: "birthday party", slug: "birthday-party")
+        let tag1 = ProductTag(siteID: siteID, tagID: 37, name: "room", slug: "room")
+        let tag2 = ProductTag(siteID: siteID, tagID: 38, name: "party room", slug: "party-room")
+        let tag3 = ProductTag(siteID: siteID, tagID: 39, name: "30", slug: "30")
+        let tag4 = ProductTag(siteID: siteID, tagID: 40, name: "20+", slug: "20")
+        let tag5 = ProductTag(siteID: siteID, tagID: 41, name: "meeting room", slug: "meeting-room")
+        let tag6 = ProductTag(siteID: siteID, tagID: 42, name: "meetings", slug: "meetings")
+        let tag7 = ProductTag(siteID: siteID, tagID: 43, name: "parties", slug: "parties")
+        let tag8 = ProductTag(siteID: siteID, tagID: 44, name: "graduation", slug: "graduation")
+        let tag9 = ProductTag(siteID: siteID, tagID: 45, name: "birthday party", slug: "birthday-party")
 
         return [tag1, tag2, tag3, tag4, tag5, tag6, tag7, tag8, tag9]
     }
@@ -272,11 +272,11 @@ extension MockReviews {
     }
 
     func sampleTagsMutated() -> [Networking.ProductTag] {
-        let tag1 = ProductTag(tagID: 37, name: "something", slug: "something")
-        let tag2 = ProductTag(tagID: 38, name: "party room", slug: "party-room")
-        let tag3 = ProductTag(tagID: 39, name: "3000", slug: "3000")
-        let tag4 = ProductTag(tagID: 45, name: "birthday party", slug: "birthday-party")
-        let tag5 = ProductTag(tagID: 95, name: "yep", slug: "yep")
+        let tag1 = ProductTag(siteID: siteID, tagID: 37, name: "something", slug: "something")
+        let tag2 = ProductTag(siteID: siteID, tagID: 38, name: "party room", slug: "party-room")
+        let tag3 = ProductTag(siteID: siteID, tagID: 39, name: "3000", slug: "3000")
+        let tag4 = ProductTag(siteID: siteID, tagID: 45, name: "birthday party", slug: "birthday-party")
+        let tag5 = ProductTag(siteID: siteID, tagID: 95, name: "yep", slug: "yep")
 
         return [tag1, tag2, tag3, tag4, tag5]
     }

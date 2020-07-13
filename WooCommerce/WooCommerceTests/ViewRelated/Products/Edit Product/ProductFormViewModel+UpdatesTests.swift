@@ -276,7 +276,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
                                              isEditProductsRelease3Enabled: false)
 
         // Action
-        let groupedProductIDs: [Int64] = [630]
+        let groupedProductIDs: [Int64] = [630, 22]
         viewModel.updateGroupedProductIDs(groupedProductIDs)
 
         // Assert

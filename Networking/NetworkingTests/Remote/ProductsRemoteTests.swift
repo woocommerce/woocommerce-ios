@@ -35,10 +35,13 @@ class ProductsRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
 
-        remote.loadAllProducts(for: sampleSiteID) { products, error in
-            XCTAssertNil(error)
-            XCTAssertNotNil(products)
-            XCTAssertEqual(products?.count, 10)
+        remote.loadAllProducts(for: sampleSiteID) { result in
+            switch result {
+            case .success(let products):
+                XCTAssertEqual(products.count, 10)
+            default:
+                XCTFail("Unexpected result: \(result)")
+            }
             expectation.fulfill()
         }
 
@@ -51,9 +54,13 @@ class ProductsRemoteTests: XCTestCase {
         let remote = ProductsRemote(network: network)
         let expectation = self.expectation(description: "Load all products returns error")
 
-        remote.loadAllProducts(for: sampleSiteID) { products, error in
-            XCTAssertNil(products)
-            XCTAssertNotNil(error)
+        remote.loadAllProducts(for: sampleSiteID) { result in
+            switch result {
+            case .failure:
+                break
+            default:
+                XCTFail("Unexpected result: \(result)")
+            }
             expectation.fulfill()
         }
 

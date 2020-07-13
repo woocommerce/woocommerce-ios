@@ -213,7 +213,8 @@ extension ProductShippingSettingsViewController: UITableViewDelegate {
             let viewProperties = PaginatedListSelectorViewProperties(navigationBarTitle: navigationBarTitle,
                                                                      noResultsPlaceholderText: noResultsPlaceholderText,
                                                                      noResultsPlaceholderImage: noResultsPlaceholderImage,
-                                                                     noResultsPlaceholderImageTintColor: .gray(.shade20))
+                                                                     noResultsPlaceholderImageTintColor: .gray(.shade20),
+                                                                     tableViewStyle: .grouped)
             let selectorViewController =
                 PaginatedListSelectorViewController(viewProperties: viewProperties,
                                                     dataSource: dataSource) { [weak self] selected in

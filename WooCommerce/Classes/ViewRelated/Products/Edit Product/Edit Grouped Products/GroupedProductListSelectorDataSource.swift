@@ -103,12 +103,6 @@ extension GroupedProductListSelectorDataSource {
         groupedProductIDs.remove(at: index)
     }
 
-    /// Called when the user adds products to a grouped product.
-    /// - Parameter products: a list of products to add to a grouped product.
-    func addProducts(_ productIDs: [Int64]) {
-        groupedProductIDs = (groupedProductIDs + productIDs).removingDuplicates()
-    }
-
     /// Returns whether there are unsaved changes on the grouped products.
     func hasUnsavedChanges() -> Bool {
         return groupedProductIDs != product.groupedProducts

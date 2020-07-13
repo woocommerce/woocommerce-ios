@@ -12,48 +12,6 @@ final class GroupedProductListSelectorDataSourceTests: XCTestCase {
         super.tearDown()
     }
 
-    // MARK: `addProducts`
-
-    func testAddingPreselectedGroupedProductsShouldResultInNoChanges() {
-        // Arrange
-        let groupedProductIDs: [Int64] = [17, 671]
-        let product = MockProduct().product().copy(groupedProducts: groupedProductIDs)
-        let dataSource = GroupedProductListSelectorDataSource(product: product)
-        var updatedProductIDs: [Int64]?
-        cancellable = dataSource.productIDs.subscribe { ids in
-            updatedProductIDs = ids
-        }
-
-        // Action
-        dataSource.addProducts(groupedProductIDs)
-
-        // Assert
-        XCTAssertFalse(dataSource.hasUnsavedChanges())
-        XCTAssertEqual(dataSource.groupedProductIDs, groupedProductIDs)
-        XCTAssertNil(updatedProductIDs)
-    }
-
-    func testAddingAMixOfPreselectedAndNewProductsShouldAppendNewProductsToGroupedProducts() {
-        // Arrange
-        let groupedProductIDs: [Int64] = [17, 671]
-        let product = MockProduct().product().copy(groupedProducts: groupedProductIDs)
-        let dataSource = GroupedProductListSelectorDataSource(product: product)
-        var updatedProductIDs: [Int64]?
-        cancellable = dataSource.productIDs.subscribe { ids in
-            updatedProductIDs = ids
-        }
-
-        // Action
-        let newProductIDs: [Int64] = [62, 22]
-        dataSource.addProducts(newProductIDs + groupedProductIDs)
-
-        // Assert
-        XCTAssertTrue(dataSource.hasUnsavedChanges())
-        let productIDsAfterAddition = groupedProductIDs + newProductIDs
-        XCTAssertEqual(dataSource.groupedProductIDs, productIDsAfterAddition)
-        XCTAssertEqual(updatedProductIDs, productIDsAfterAddition)
-    }
-
     // MARK: `deleteProduct`
 
     func testDeletingAPreselectedProductRemovesItFromGroupedProducts() {

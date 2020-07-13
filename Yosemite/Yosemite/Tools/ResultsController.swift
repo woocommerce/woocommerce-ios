@@ -129,6 +129,11 @@ public class ResultsController<T: ResultsControllerMutableType> {
         return controller.object(at: indexPath).toReadOnly()
     }
 
+    #warning("TODO")
+    public func safeObject(at indexPath: IndexPath) -> T.ReadOnlyType? {
+        object(at: indexPath)
+    }
+
     /// Returns the Plain ObjectIndex corresponding to a given IndexPath. You can use this index to map the
     /// `fetchedObject[index]` collection.
     ///

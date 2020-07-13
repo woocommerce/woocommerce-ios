@@ -310,4 +310,16 @@ final class ResultsControllerTests: XCTestCase {
             }
         }
     }
+
+    func testWhenNoFetchPerformedThenSafeObjectAtIndexPathDoesNotCrash() {
+        // Given
+        let resultsController = ResultsController<Storage.Account>(viewStorage: viewStorage, sortedBy: [sampleSortDescriptor])
+
+        // When
+        let object = resultsController.safeObject(at: IndexPath(row: 0, section: 0))
+
+        // Then
+        // If we reached this line, that means that it did not crash.
+        XCTAssertNil(object)
+    }
 }

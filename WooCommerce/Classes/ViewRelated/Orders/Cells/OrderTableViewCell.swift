@@ -38,10 +38,16 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
 
     /// Renders the specified Order ViewModel
     ///
-    func configureCell(viewModel: OrderDetailsViewModel, orderStatus: OrderStatus?) {
-        titleLabel.text = title(for: viewModel.order)
-        totalLabel.text = viewModel.totalFriendlyString
-        dateCreatedLabel.text = viewModel.formattedDateCreated
+    func configureCell(viewModel: OrderDetailsViewModel?, orderStatus: OrderStatus?) {
+        if let viewModel = viewModel {
+            titleLabel.text = title(for: viewModel.order)
+            totalLabel.text = viewModel.totalFriendlyString
+            dateCreatedLabel.text = viewModel.formattedDateCreated
+        } else {
+            titleLabel.text = nil
+            totalLabel.text = nil
+            dateCreatedLabel.text = nil
+        }
 
         if let orderStatus = orderStatus {
             paymentStatusLabel.applyStyle(for: orderStatus.status)
@@ -49,10 +55,14 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
         } else {
             // There are unsupported extensions with even more statuses available.
             // So let's use the order.statusKey to display those as slugs.
-            let statusKey = viewModel.order.statusKey
-            let statusEnum = OrderStatusEnum(rawValue: statusKey)
-            paymentStatusLabel.applyStyle(for: statusEnum)
-            paymentStatusLabel.text = viewModel.order.statusKey
+            if let statusKey = viewModel?.order.statusKey {
+                let statusEnum = OrderStatusEnum(rawValue: statusKey)
+                paymentStatusLabel.applyStyle(for: statusEnum)
+                paymentStatusLabel.text = statusKey
+            } else {
+                paymentStatusLabel.applyStyle(for: .failed)
+                paymentStatusLabel.text = nil
+            }
         }
     }
 

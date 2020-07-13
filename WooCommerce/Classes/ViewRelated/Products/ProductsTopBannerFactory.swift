@@ -26,10 +26,10 @@ struct ProductsTopBannerFactory {
 private extension ProductsTopBannerFactory {
     enum Strings {
         static let title =
-            NSLocalizedString("Limited editing available",
+            NSLocalizedString("New editing options available",
                               comment: "The title of the Work In Progress top banner on the Products tab.")
         static let info =
-            NSLocalizedString("We've added editing functionality to simple products. Keep an eye out for more options soon!",
+            NSLocalizedString("We've added more editing functionalities to products! You can now update images, see previews and share your products.",
                               comment: "The info of the Work In Progress top banner on the Products tab.")
     }
 }

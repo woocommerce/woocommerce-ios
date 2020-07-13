@@ -1,3 +1,3 @@
-– Produktförbättringar: uppdatera produktbilder, produktinställningar och dela produktlänkar direkt från appen utan att behöva använda datorn!
-– Visuella förbättringar: i beställningsinformationen visas inte SKU:n längre i produktlistan. Det enkla produktnamnet och ellips-menyn visas nu i navigeringsfältet när det öppnas utanför produktfliken (se till att aktivera växeln Produktfunktion). Sist men inte minst: tycker du inte laddningsstatus på produktvariationsskärmen ser fräsig ut nu?
-– Användare från Kalifornien kan visa sitt eget sekretessmeddelande.
+Nya meddelanden: När en enkel produkt saknar pris visas platshållaren "Lägg till pris" på produktinformationsskärmen i prisraden. Appanvändare som inte har uppgraderat till WooCommerce 4.0 än kommer att se en banderoll som anger att det finns en uppgradering tillgänglig. Användare som redan har uppgraderat kommer att se den nya adminpanelen för statistik. Om du inte har uppgraderat än, rekommenderar vi att du gör det!
+
+Korrigeringar och justeringar: Vi har åtgärdat ett fel där ett negativt värde kunde resultera i ett visningsfel i adminpanelens diagram. Vi har även tagit bort den totala orderraden från fliken Produkter för att undvika förvirring, eftersom vi inte visar den i det redigerbara formuläret för enkla produkter.

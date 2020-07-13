@@ -5,6 +5,9 @@ extension Storage.Product {
     var imagesArray: [Storage.ProductImage] {
         return images?.toArray() ?? []
     }
+    var tagsArray: [Storage.ProductTag] {
+        return tags?.toArray() ?? []
+    }
 }
 
 // MARK: - Storage.Product: ReadOnlyConvertible
@@ -81,7 +84,7 @@ extension Storage.Product: ReadOnlyConvertible {
 
         let productCategories = categories?.map { $0.toReadOnly() } ?? [Yosemite.ProductCategory]()
         let productDownloads = downloads?.map { $0.toReadOnly() } ?? [Yosemite.ProductDownload]()
-        let productTags = tags?.map { $0.toReadOnly() } ?? [Yosemite.ProductTag]()
+        let productTags = tagsArray.map { $0.toReadOnly() }
         let productImages = imagesArray.map { $0.toReadOnly() }
         let productAttributes = attributes?.map { $0.toReadOnly() } ?? [Yosemite.ProductAttribute]()
         let productDefaultAttributes = defaultAttributes?.map { $0.toReadOnly() } ?? [Yosemite.ProductDefaultAttribute]()

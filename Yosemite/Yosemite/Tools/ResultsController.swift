@@ -125,13 +125,30 @@ public class ResultsController<T: ResultsControllerMutableType> {
 
     /// Returns the fetched object at a given indexPath.
     ///
+    /// Prefer to use `safeObject(at:)` instead.
+    ///
     public func object(at indexPath: IndexPath) -> T.ReadOnlyType {
         return controller.object(at: indexPath).toReadOnly()
     }
 
-    #warning("TODO")
+    /// Returns the fetched object at the given `indexPath`. Returns `nil` if the `indexPath`
+    /// does not exist.
+    ///
     public func safeObject(at indexPath: IndexPath) -> T.ReadOnlyType? {
-        object(at: indexPath)
+        guard !isEmpty else {
+            return nil
+        }
+        guard let sections = controller.sections, sections.count > indexPath.section else {
+            return nil
+        }
+
+        let section = sections[indexPath.section]
+
+        guard section.numberOfObjects > indexPath.row else {
+            return nil
+        }
+
+        return controller.object(at: indexPath).toReadOnly()
     }
 
     /// Returns the Plain ObjectIndex corresponding to a given IndexPath. You can use this index to map the

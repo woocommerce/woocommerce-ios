@@ -311,7 +311,7 @@ final class ResultsControllerTests: XCTestCase {
         }
     }
 
-    func testWhenNoFetchPerformedThenSafeObjectAtIndexPathDoesNotCrash() {
+    func testWhenNoFetchPerformedThenSafeObjectAtIndexPathReturnsNil() {
         // Given
         let resultsController = ResultsController<Storage.Account>(viewStorage: viewStorage, sortedBy: [sampleSortDescriptor])
 
@@ -319,7 +319,85 @@ final class ResultsControllerTests: XCTestCase {
         let object = resultsController.safeObject(at: IndexPath(row: 0, section: 0))
 
         // Then
-        // If we reached this line, that means that it did not crash.
+        // If we reached this line, that means that it did not crash and nil should be returned.
         XCTAssertNil(object)
+    }
+
+    func testSafeObjectAtIndexPathReturnsTheExpectedRow() throws {
+        // Given
+        let _ = [
+            insertAccount(displayName: "Section A", username: "alpha"),
+            insertAccount(displayName: "Section A", username: "bravo"),
+        ]
+        let secondSection = [
+            insertAccount(displayName: "Section B", username: "charlie"),
+            insertAccount(displayName: "Section B", username: "delta"),
+        ]
+
+        let sortDescriptor = NSSortDescriptor(key: #keyPath(Storage.Account.username), ascending: true)
+        let resultsController = ResultsController<Storage.Account>(viewStorage: viewStorage,
+                                                                   sectionNameKeyPath: #keyPath(Storage.Account.displayName),
+                                                                   sortedBy: [sortDescriptor])
+        try resultsController.performFetch()
+
+        // When
+        let indexPath = IndexPath(row: 0, section: 1)
+        let readonlyAccount = try XCTUnwrap(resultsController.safeObject(at: indexPath))
+
+        // Then
+        XCTAssertEqual(readonlyAccount.username, secondSection[0].username)
+        XCTAssertEqual(readonlyAccount.displayName, secondSection[0].displayName)
+    }
+
+    func testSafeObjectAtIndexPathReturnsNilIfTheSectionDoesNotExist() throws {
+        // Given
+        let _ = [
+            insertAccount(displayName: "Section A", username: "alpha"),
+            insertAccount(displayName: "Section A", username: "bravo"),
+        ]
+
+        let resultsController = ResultsController<Storage.Account>(viewStorage: viewStorage,
+                                                                   sectionNameKeyPath: #keyPath(Storage.Account.displayName),
+                                                                   sortedBy: [sampleSortDescriptor])
+        try resultsController.performFetch()
+
+        // When
+        let indexPath = IndexPath(row: 0, section: 1)
+        let readonlyAccount = resultsController.safeObject(at: indexPath)
+
+        // Then
+        XCTAssertNil(readonlyAccount)
+    }
+
+    func testSafeObjectAtIndexPathReturnsNilIfTheRowDoesNotExist() throws {
+        // Given
+        let _ = [
+            insertAccount(displayName: "Section A", username: "alpha"),
+            insertAccount(displayName: "Section A", username: "bravo"),
+        ]
+
+        let resultsController = ResultsController<Storage.Account>(viewStorage: viewStorage,
+                                                                   sectionNameKeyPath: #keyPath(Storage.Account.displayName),
+                                                                   sortedBy: [sampleSortDescriptor])
+        try resultsController.performFetch()
+
+        // When
+        let indexPath = IndexPath(row: 2, section: 0)
+        let readonlyAccount = resultsController.safeObject(at: indexPath)
+
+        // Then
+        XCTAssertNil(readonlyAccount)
+    }
+}
+
+// MARK: - Utils
+
+private extension ResultsControllerTests {
+    @discardableResult
+    func insertAccount(displayName: String, username: String) -> Storage.Account {
+        let account = storageManager.insertSampleAccount()
+        account.displayName = displayName
+        account.username = username
+        return account
     }
 }

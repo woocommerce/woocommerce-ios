@@ -462,7 +462,7 @@ extension OrdersViewController: UITableViewDataSource {
         }
 
         let detailsViewModel = viewModel.detailsViewModel(at: indexPath)
-        let orderStatus = lookUpOrderStatus(for: detailsViewModel.order)
+        let orderStatus = lookUpOrderStatus(for: detailsViewModel?.order)
         cell.configureCell(viewModel: detailsViewModel, orderStatus: orderStatus)
         cell.layoutIfNeeded()
         return cell
@@ -496,15 +496,20 @@ extension OrdersViewController: UITableViewDelegate {
             return
         }
 
+        guard let orderDetailsViewModel = viewModel.detailsViewModel(at: indexPath) else {
+            return
+        }
+
         guard let orderDetailsVC = OrderDetailsViewController.instantiatedViewControllerFromStoryboard() else {
             assertionFailure("Expected OrderDetailsViewController to be instantiated")
             return
         }
-        let orderDetailsViewModel = viewModel.detailsViewModel(at: indexPath)
+
         orderDetailsVC.viewModel = orderDetailsViewModel
 
-        ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": orderDetailsViewModel.order.orderID,
-        "status": orderDetailsViewModel.order.statusKey])
+        let order = orderDetailsViewModel.order
+        ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID,
+                                                                    "status": order.statusKey])
 
         navigationController?.pushViewController(orderDetailsVC, animated: true)
     }

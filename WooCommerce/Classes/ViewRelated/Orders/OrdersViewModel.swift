@@ -270,8 +270,10 @@ extension OrdersViewModel {
     /// TODO Ideally we should have a very tiny ViewModel for the cell instead of
     /// `OrderDetailsViewModel` which is used in `OrderDetailsViewController` too.
     ///
-    func detailsViewModel(at indexPath: IndexPath) -> OrderDetailsViewModel {
-        let order = resultsController.object(at: indexPath)
+    func detailsViewModel(at indexPath: IndexPath) -> OrderDetailsViewModel? {
+        guard let order = resultsController.safeObject(at: indexPath) else {
+            return nil
+        }
 
         return OrderDetailsViewModel(order: order)
     }

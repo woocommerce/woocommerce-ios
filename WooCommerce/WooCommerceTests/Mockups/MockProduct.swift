@@ -40,6 +40,7 @@ final class MockProduct {
                  slug: String = "book-the-green-room",
                  menuOrder: Int = 0,
                  categories: [ProductCategory] = [],
+                 tags: [ProductTag] = [],
                  images: [ProductImage] = []) -> Product {
 
     return Product(siteID: testSiteID,
@@ -96,7 +97,7 @@ final class MockProduct {
                    parentID: 0,
                    purchaseNote: "Thank you!",
                    categories: categories,
-                   tags: [],
+                   tags: tags,
                    images: images,
                    attributes: [],
                    defaultAttributes: [],

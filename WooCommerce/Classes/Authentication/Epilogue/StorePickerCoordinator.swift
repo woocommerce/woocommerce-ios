@@ -45,11 +45,14 @@ final class StorePickerCoordinator: Coordinator {
 extension StorePickerCoordinator: StorePickerViewControllerDelegate {
 
     func didSelectStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
-        switchStoreUseCase.switchStore(with: storeID) { [weak self] in
+        switchStoreUseCase.switchStore(with: storeID) { [weak self] siteChanged in
             if self?.selectedConfiguration == .login {
                 MainTabBarController.switchToMyStoreTab(animated: true)
             }
-            SwitchStoreNoticePresenter.presentStoreSwitchedNotice(stores: ServiceLocator.stores, configuration: self?.selectedConfiguration)
+
+            if siteChanged {
+                SwitchStoreNoticePresenter.presentStoreSwitchedNotice(stores: ServiceLocator.stores, configuration: self?.selectedConfiguration)
+            }
             onCompletion()
             self?.onDismiss?()
         }

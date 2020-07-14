@@ -288,9 +288,12 @@ extension MainTabBarController {
                 return
             }
             let siteID = note.meta.identifier(forKey: .site) ?? Int.min
-            SwitchStoreUseCase(stores: ServiceLocator.stores).switchStore(with: Int64(siteID)) {
+            SwitchStoreUseCase(stores: ServiceLocator.stores).switchStore(with: Int64(siteID)) { siteChanged in
                 presentNotificationDetails(for: note)
-                SwitchStoreNoticePresenter.presentStoreSwitchedNotice(stores: ServiceLocator.stores, configuration: .switchingStores)
+
+                if siteChanged {
+                    SwitchStoreNoticePresenter.presentStoreSwitchedNotice(stores: ServiceLocator.stores, configuration: .switchingStores)
+                }
             }
         }
         ServiceLocator.stores.dispatch(action)

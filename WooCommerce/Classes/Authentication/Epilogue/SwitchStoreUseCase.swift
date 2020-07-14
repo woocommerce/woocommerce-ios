@@ -12,11 +12,11 @@ final class SwitchStoreUseCase {
         self.stores = stores
     }
 
-    /// A static method which allows easily to switch store
+    /// A static method which allows easily to switch store. The boolean argument in `onCompletion` indicates that the site was changed.
     ///
-    func switchStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
+    func switchStore(with storeID: Int64, onCompletion: @escaping (Bool) -> Void) {
         guard storeID != stores.sessionManager.defaultStoreID else {
-            //onCompletion()
+            onCompletion(false)
             return
         }
 
@@ -25,7 +25,7 @@ final class SwitchStoreUseCase {
 
             // Reload orders badge
             NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
-            onCompletion()
+            onCompletion(true)
         }
     }
 

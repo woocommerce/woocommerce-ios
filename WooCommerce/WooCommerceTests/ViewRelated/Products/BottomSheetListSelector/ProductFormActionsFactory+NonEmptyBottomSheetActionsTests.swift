@@ -125,7 +125,11 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editShippingSettings, .editInventorySettings, .editCategories, .editTags, .editBriefDescription]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editShippingSettings,
+                                                                          .editInventorySettings,
+                                                                          .editCategories,
+                                                                          .editTags,
+                                                                          .editBriefDescription]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 

@@ -4,11 +4,13 @@ import UIKit
 /// Generates top banner view that is shown at the top of Dashboard UI.
 ///
 final class DashboardTopBannerFactory {
-    static func deprecatedStatsBannerView() -> TopBannerView {
+    static func deprecatedStatsBannerView(actionHandler: @escaping () -> Void) -> TopBannerView {
         let viewModel = TopBannerViewModel(title: DeprecatedStatsConstants.title,
                                            infoText: DeprecatedStatsConstants.info,
                                            icon: DeprecatedStatsConstants.icon,
+                                           actionButtonTitle: DeprecatedStatsConstants.actionTitle,
                                            isExpanded: true,
+                                           actionHandler: actionHandler,
                                            topButton: .chevron(handler: nil))
         return TopBannerView(viewModel: viewModel)
     }
@@ -21,6 +23,7 @@ private extension DashboardTopBannerFactory {
             "We’ve rolled out improvements to our analytics. Upgrade to WooCommerce 4.0 or above or install WooCommerce Admin plugin to keep seeing " +
             "your stats after September 1, 2020.",
             comment: "Banner caption in my store when the stats will be deprecated")
+        static let actionTitle = NSLocalizedString("Remind me later", comment: "Banner action button text in my store when stats will be deprecated")
         static let icon = UIImage.syncImage
     }
 }

@@ -14,6 +14,9 @@ protocol DashboardUI: UIViewController {
     /// Called when the default account was updated
     func defaultAccountDidUpdate()
 
+    /// Called when the user has decided to not be bothered with the deprecated stats banner right now.
+    func remindStatsUpgradeLater()
+
     /// Reloads data in Dashboard
     ///
     /// - Parameter completion: called when Dashboard data reload finishes
@@ -88,7 +91,9 @@ private extension DashboardUIFactory {
             if let topBannerPresenter = updatedDashboardUI as? TopBannerPresenter {
                 switch statsVersion {
                 case .v3:
-                    let topBannerView = DashboardTopBannerFactory.deprecatedStatsBannerView()
+                    let topBannerView = DashboardTopBannerFactory.deprecatedStatsBannerView {
+                        updatedDashboardUI.remindStatsUpgradeLater()
+                    }
                     topBannerPresenter.hideTopBanner(animated: false)
                     topBannerPresenter.showTopBanner(topBannerView)
                 case .v4:

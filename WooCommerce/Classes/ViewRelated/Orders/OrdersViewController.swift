@@ -435,7 +435,11 @@ private extension OrdersViewController {
 private extension OrdersViewController {
 
     func lookUpOrderStatus(for order: Order?) -> OrderStatus? {
-        for orderStatus in currentSiteStatuses where orderStatus.slug == order?.statusKey {
+        guard let order = order else {
+            return nil
+        }
+
+        for orderStatus in currentSiteStatuses where orderStatus.slug == order.statusKey {
             return orderStatus
         }
 

@@ -282,6 +282,8 @@ private extension ProductFormViewController {
                                                                             self?.editShippingSettings()
                                                                         case .editCategories:
                                                                             self?.editCategories()
+                                                                        case .editTags:
+                                                                            self?.editTags()
                                                                         case .editBriefDescription:
                                                                             self?.editBriefDescription()
                                                                         case .editSKU:
@@ -534,6 +536,9 @@ extension ProductFormViewController: UITableViewDelegate {
             case .categories:
                 // TODO-2000 Edit Product M3 analytics
                 editCategories()
+            case .tags:
+                // TODO-2081 Edit Product M3 analytics
+                editTags()
             case .briefDescription:
                 ServiceLocator.analytics.track(.productDetailViewShortDescriptionTapped)
                 editBriefDescription()
@@ -826,6 +831,19 @@ private extension ProductFormViewController {
             return
         }
         viewModel.updateProductCategories(categories)
+    }
+}
+
+// MARK: Action - Edit Product Tags
+//
+
+private extension ProductFormViewController {
+    func editTags() {
+        //TODO-2081: add action
+    }
+
+    func onEditTagsCompletion(tags: [ProductTag]) {
+        //TODO-2081: manage completion in editTags()
     }
 }
 

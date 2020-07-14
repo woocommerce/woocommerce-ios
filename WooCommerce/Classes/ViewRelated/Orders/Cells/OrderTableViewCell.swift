@@ -38,29 +38,29 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
 
     /// Renders the specified Order ViewModel
     ///
+    /// If the `viewModel` is not given, then the UI will be set to empty.
+    ///
     func configureCell(viewModel: OrderDetailsViewModel?, orderStatus: OrderStatus?) {
-        if let viewModel = viewModel {
-            titleLabel.text = title(for: viewModel.order)
-            totalLabel.text = viewModel.totalFriendlyString
-            dateCreatedLabel.text = viewModel.formattedDateCreated
-        } else {
-            titleLabel.text = nil
-            totalLabel.text = nil
-            dateCreatedLabel.text = nil
+        guard let viewModel = viewModel else {
+            resetLabels()
+            return
         }
+
+        titleLabel.text = title(for: viewModel.order)
+        totalLabel.text = viewModel.totalFriendlyString
+        dateCreatedLabel.text = viewModel.formattedDateCreated
 
         if let orderStatus = orderStatus {
             paymentStatusLabel.applyStyle(for: orderStatus.status)
             paymentStatusLabel.text = orderStatus.name
-        } else if let statusKey = viewModel?.order.statusKey {
+        } else {
+            let statusKey = viewModel.order.statusKey
+
             // There are unsupported extensions with even more statuses available.
             // So let's use the order.statusKey to display those as slugs.
             let statusEnum = OrderStatusEnum(rawValue: statusKey)
             paymentStatusLabel.applyStyle(for: statusEnum)
             paymentStatusLabel.text = statusKey
-        } else {
-            paymentStatusLabel.applyStyle(for: .failed)
-            paymentStatusLabel.text = nil
         }
     }
 
@@ -103,6 +103,17 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
 // MARK: - Private
 //
 private extension OrderTableViewCell {
+
+    /// Reset the UI to a "no data" state.
+    ///
+    func resetLabels() {
+        titleLabel.text = nil
+        totalLabel.text = nil
+        dateCreatedLabel.text = nil
+        paymentStatusLabel.applyStyle(for: .failed)
+        paymentStatusLabel.text = nil
+    }
+
     /// Preserves the current Payment BG Color
     ///
     func preserveLabelColors(action: () -> Void) {

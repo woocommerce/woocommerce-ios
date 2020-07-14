@@ -192,7 +192,7 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func tagsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.categoriesIcon
+        let icon = UIImage.tagsIcon
         let title = Constants.tagsTitle
         let details = product.tagsDescription() ?? Constants.tagsPlaceholder
         return ProductFormSection.SettingsRow.ViewModel(icon: icon, title: title, details: details)

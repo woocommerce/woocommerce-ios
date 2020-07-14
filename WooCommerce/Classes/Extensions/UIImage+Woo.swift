@@ -53,6 +53,12 @@ extension UIImage {
         return UIImage.gridicon(.folder).imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Product tags Icon
+    ///
+    static var tagsIcon: UIImage {
+        return UIImage.gridicon(.tag).imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Add Image icon
     ///
     static var addImage: UIImage {

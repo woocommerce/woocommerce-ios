@@ -20,7 +20,7 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .shippingSettings, .inventorySettings, .categories, .briefDescription]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .shippingSettings, .inventorySettings, .categories, .tags, .briefDescription]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
@@ -40,7 +40,7 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .shippingSettings, .inventorySettings, .categories, .briefDescription]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .shippingSettings, .inventorySettings, .categories, .tags, .briefDescription]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
@@ -60,7 +60,7 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .inventorySettings, .categories, .briefDescription]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .inventorySettings, .categories, .tags, .briefDescription]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
@@ -80,7 +80,7 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .inventorySettings, .categories, .briefDescription]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .inventorySettings, .categories, .tags, .briefDescription]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
@@ -103,7 +103,7 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .externalURL]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editSKU, .editCategories, .editBriefDescription]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editSKU, .editCategories, .editTags, .editBriefDescription]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -123,7 +123,7 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.groupedProducts]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editSKU, .editCategories, .editBriefDescription]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editSKU, .editCategories, .editTags, .editBriefDescription]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 }
@@ -137,37 +137,45 @@ private extension ProductFormActionsFactory_EditProductsM3Tests {
                                         src: "https://photo.jpg",
                                         name: "Tshirt",
                                         alt: "")
-        // downloadable: false, virtual: false, with inventory/shipping/categories/brief description
+        static let tag = ProductTag(siteID: 123, tagID: 1, name: "", slug: "")
+        // downloadable: false, virtual: false, with inventory/shipping/categories/tags/brief description
         static let physicalSimpleProductWithoutImages = MockProduct().product(downloadable: false, briefDescription: "desc", productType: .simple,
                                                                               manageStock: true, sku: "uks", stockQuantity: nil,
                                                                               dimensions: ProductDimensions(length: "", width: "", height: ""), weight: "2",
                                                                               virtual: false,
-                                                                              categories: [category], images: [])
-        // downloadable: false, virtual: true, with inventory/shipping/categories/brief description
+                                                                              categories: [category],
+                                                                              tags: [tag],
+                                                                              images: [])
+        // downloadable: false, virtual: true, with inventory/shipping/categories/tags/brief description
         static let physicalSimpleProductWithImages = MockProduct().product(downloadable: false, briefDescription: "desc", productType: .simple,
                                                                               manageStock: true, sku: "uks", stockQuantity: nil,
                                                                               dimensions: ProductDimensions(length: "", width: "", height: ""), weight: "2",
                                                                               virtual: false,
-                                                                              categories: [category], images: [image])
-        // downloadable: false, virtual: true, with inventory/shipping/categories/brief description
+                                                                              categories: [category],
+                                                                              tags: [tag],
+                                                                              images: [image])
+        // downloadable: false, virtual: true, with inventory/shipping/categories/tags/brief description
         static let virtualSimpleProduct = MockProduct().product(downloadable: false, briefDescription: "desc", productType: .simple,
                                                                 manageStock: true, sku: "uks", stockQuantity: nil,
                                                                 dimensions: ProductDimensions(length: "", width: "", height: ""), weight: "2",
                                                                 virtual: true,
-                                                                categories: [category])
+                                                                categories: [category],
+                                                                tags: [tag])
         // downloadable: true, virtual: true, missing inventory/shipping/categories/brief description
         static let downloadableSimpleProduct = MockProduct().product(downloadable: true, briefDescription: "desc", productType: .simple,
                                                                      manageStock: true, sku: "uks", stockQuantity: nil,
                                                                      dimensions: ProductDimensions(length: "", width: "", height: ""), weight: "3",
                                                                      virtual: true,
-                                                                     categories: [category])
-        // Affiliate product, missing external URL/sku/inventory/brief description/categories
+                                                                     categories: [category],
+                                                                     tags: [tag])
+        // Affiliate product, missing external URL/sku/inventory/brief description/categories/tags
         static let affiliateProduct = MockProduct().product(briefDescription: "",
                                                             externalURL: "",
                                                             productType: .affiliate,
                                                             sku: "",
-                                                            categories: [])
-        // Grouped product, missing grouped products/sku/brief description/categories
+                                                            categories: [],
+                                                            tags: [])
+        // Grouped product, missing grouped products/sku/brief description/categories/tags
         static let groupedProduct = MockProduct().product(briefDescription: "",
                                                           productType: .grouped,
                                                           sku: "")

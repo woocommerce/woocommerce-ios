@@ -54,6 +54,8 @@ private extension DefaultProductFormTableViewModel {
                 return .inventory(viewModel: inventorySettingsRow(product: product))
             case .categories:
                 return .categories(viewModel: categoriesRow(product: product))
+            case .tags:
+                return .tags(viewModel: tagsRow(product: product))
             case .briefDescription:
                 return .briefDescription(viewModel: briefDescriptionRow(product: product))
             case .externalURL:
@@ -189,6 +191,13 @@ private extension DefaultProductFormTableViewModel {
         return ProductFormSection.SettingsRow.ViewModel(icon: icon, title: title, details: details)
     }
 
+    func tagsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
+        let icon = UIImage.categoriesIcon
+        let title = Constants.tagsTitle
+        let details = product.tagsDescription() ?? Constants.tagsPlaceholder
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon, title: title, details: details)
+    }
+
     func briefDescriptionRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.briefDescriptionImage
         let title = Constants.briefDescriptionTitle
@@ -259,6 +268,8 @@ private extension DefaultProductFormTableViewModel {
                                                              comment: "Title of the Shipping Settings row on Product main screen")
         static let categoriesTitle = NSLocalizedString("Categories",
                                                        comment: "Title of the Categories row on Product main screen")
+        static let tagsTitle = NSLocalizedString("Tags",
+                                                 comment: "Title of the Tags row on Product main screen")
         static let briefDescriptionTitle = NSLocalizedString("Short description",
                                                              comment: "Title of the Short Description row on Product main screen")
         static let skuTitle = NSLocalizedString("SKU",
@@ -309,6 +320,9 @@ private extension DefaultProductFormTableViewModel {
         // Categories
         static let categoriesPlaceholder = NSLocalizedString("Uncategorized",
                                                              comment: "Placeholder of the Product Categories row on Product main screen")
+        // Tags
+        static let tagsPlaceholder = NSLocalizedString("No tags",
+                                                       comment: "Placeholder of the Product Tags row on Product main screen")
 
         // Grouped products
         static let singularGroupedProductFormat = NSLocalizedString("%ld product",

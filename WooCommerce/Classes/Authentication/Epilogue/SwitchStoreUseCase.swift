@@ -7,11 +7,9 @@ import Yosemite
 final class SwitchStoreUseCase {
 
     private let stores: StoresManager
-    private let noticePresenter: NoticePresenter
 
-    init(stores: StoresManager, noticePresenter: NoticePresenter) {
+    init(stores: StoresManager) {
         self.stores = stores
-        self.noticePresenter = noticePresenter
     }
 
     /// A static method which allows easily to switch store

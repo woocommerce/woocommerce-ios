@@ -16,9 +16,9 @@ final class StorePickerCoordinator: Coordinator {
     ///
     var onDismiss: (() -> Void)?
 
-    /// The switchStoreUseCase object initialized with the ServiceLocator stores and noticePresenter
+    /// The switchStoreUseCase object initialized with the ServiceLocator stores
     ///
-    private let switchStoreUseCase = SwitchStoreUseCase(stores: ServiceLocator.stores, noticePresenter: ServiceLocator.noticePresenter)
+    private let switchStoreUseCase = SwitchStoreUseCase(stores: ServiceLocator.stores)
 
     /// Site Picker VC
     ///

@@ -38,7 +38,14 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
 
     /// Renders the specified Order ViewModel
     ///
-    func configureCell(viewModel: OrderDetailsViewModel, orderStatus: OrderStatus?) {
+    /// If the `viewModel` is not given, then the UI will be set to empty.
+    ///
+    func configureCell(viewModel: OrderDetailsViewModel?, orderStatus: OrderStatus?) {
+        guard let viewModel = viewModel else {
+            resetLabels()
+            return
+        }
+
         titleLabel.text = title(for: viewModel.order)
         totalLabel.text = viewModel.totalFriendlyString
         dateCreatedLabel.text = viewModel.formattedDateCreated
@@ -52,7 +59,7 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
             let statusKey = viewModel.order.statusKey
             let statusEnum = OrderStatusEnum(rawValue: statusKey)
             paymentStatusLabel.applyStyle(for: statusEnum)
-            paymentStatusLabel.text = viewModel.order.statusKey
+            paymentStatusLabel.text = statusKey
         }
     }
 
@@ -95,6 +102,17 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
 // MARK: - Private
 //
 private extension OrderTableViewCell {
+
+    /// Reset the UI to a "no data" state.
+    ///
+    func resetLabels() {
+        titleLabel.text = nil
+        totalLabel.text = nil
+        dateCreatedLabel.text = nil
+        paymentStatusLabel.applyStyle(for: .failed)
+        paymentStatusLabel.text = nil
+    }
+
     /// Preserves the current Payment BG Color
     ///
     func preserveLabelColors(action: () -> Void) {

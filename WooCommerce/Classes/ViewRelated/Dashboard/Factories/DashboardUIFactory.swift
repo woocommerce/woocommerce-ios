@@ -14,7 +14,7 @@ protocol DashboardUI: UIViewController {
     /// Called when the default account was updated
     func defaultAccountDidUpdate()
 
-    /// Called when the user has decided to not be bother with the deprecated stats banner right now.
+    /// Called when the user has decided to not be bothered with the deprecated stats banner right now.
     func remindStatsUpgradeLater()
 
     /// Reloads data in Dashboard

@@ -8,7 +8,7 @@ class DashboardStatsV3ViewController: UIViewController {
     var onPullToRefresh: () -> Void = {}
 
     /// Prevent stats banner to be shown, useful when the user has opted out of the banner for this session
-    var preventStatsBannerToBeShown = false
+    private var preventStatsBannerToBeShown = false
 
     /// MARK: TopBannerPresenter
 

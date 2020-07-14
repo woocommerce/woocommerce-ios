@@ -1,6 +1,8 @@
 import UIKit
 import Yosemite
 
+/// Configures the results and cells for a paginated list of linked products of a grouped product, syncs each page of products,
+/// and handles actions that could alter the linked products.
 final class GroupedProductListSelectorDataSource: PaginatedListSelectorDataSource {
     typealias StorageModel = StorageProduct
 
@@ -61,7 +63,7 @@ final class GroupedProductListSelectorDataSource: PaginatedListSelectorDataSourc
     }
 
     func configureCell(cell: ProductsTabProductTableViewCell, model: Product) {
-        cell.selectionStyle = .default
+        cell.selectionStyle = .none
 
         let viewModel = ProductsTabProductViewModel(product: model)
         cell.update(viewModel: viewModel, imageService: imageService)

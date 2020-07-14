@@ -2,7 +2,7 @@ import UIKit
 import WordPressUI
 import Yosemite
 
-/// Displays a list of grouped products given a product's grouped product IDs, with a CTA to add more products.
+/// Displays a paginated list of linked products for a grouped product given product IDs, with a CTA to add more products.
 final class GroupedProductsViewController: UIViewController {
     @IBOutlet private weak var addButton: UIButton!
     @IBOutlet private weak var addButtonBottomBorderView: UIView!

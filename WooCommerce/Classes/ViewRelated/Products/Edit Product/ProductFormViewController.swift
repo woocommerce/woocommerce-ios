@@ -554,7 +554,10 @@ extension ProductFormViewController: UITableViewDelegate {
                 // TODO-2199: implement grouped products editing action
                 break
             case .variations:
-                break
+                // TODO-2509 Edit Product M3 analytics
+                let variationsViewController = ProductVariationsViewController(siteID: product.siteID,
+                                                                               productID: product.productID)
+                show(variationsViewController, sender: self)
             }
         }
     }

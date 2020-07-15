@@ -267,6 +267,15 @@ final class IconsTests: XCTestCase {
         XCTAssertEqual(categoriesIcon.size, Gridicon.defaultSize)
     }
 
+    func testTagsIconIsNotNil() {
+        XCTAssertNotNil(UIImage.tagsIcon)
+    }
+
+    func testTagsIconHasDefaultSize() {
+        let tagsIcon = UIImage.tagsIcon
+        XCTAssertEqual(tagsIcon.size, Gridicon.defaultSize)
+    }
+
     func testSyncIconIsNotNil() {
         XCTAssertNotNil(UIImage.syncImage)
     }

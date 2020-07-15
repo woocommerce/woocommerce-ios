@@ -9,6 +9,7 @@ enum ProductFormEditAction {
     case inventorySettings
     case shippingSettings
     case categories
+    case tags
     case briefDescription
     // Affiliate products only
     case sku
@@ -79,12 +80,14 @@ private extension ProductFormActionsFactory {
         let shouldShowShippingSettingsRow = product.isShippingEnabled
         let shouldShowBriefDescriptionRow = isEditProductsRelease2Enabled
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
+        let shouldShowTagsRow = isEditProductsRelease3Enabled
 
         let actions: [ProductFormEditAction?] = [
             .priceSettings,
             shouldShowShippingSettingsRow ? .shippingSettings: nil,
             .inventorySettings,
             shouldShowCategoriesRow ? .categories: nil,
+            shouldShowTagsRow ? .tags: nil,
             shouldShowBriefDescriptionRow ? .briefDescription: nil
         ]
         return actions.compactMap { $0 }
@@ -93,12 +96,14 @@ private extension ProductFormActionsFactory {
     func allSettingsSectionActionsForAffiliateProduct() -> [ProductFormEditAction] {
         let shouldShowBriefDescriptionRow = isEditProductsRelease2Enabled
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
+        let shouldShowTagsRow = isEditProductsRelease3Enabled
 
         let actions: [ProductFormEditAction?] = [
             .priceSettings,
             .externalURL,
             .sku,
             shouldShowCategoriesRow ? .categories: nil,
+            shouldShowTagsRow ? .tags: nil,
             shouldShowBriefDescriptionRow ? .briefDescription: nil
         ]
         return actions.compactMap { $0 }
@@ -107,11 +112,13 @@ private extension ProductFormActionsFactory {
     func allSettingsSectionActionsForGroupedProduct() -> [ProductFormEditAction] {
         let shouldShowBriefDescriptionRow = isEditProductsRelease2Enabled
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
+        let shouldShowTagsRow = isEditProductsRelease3Enabled
 
         let actions: [ProductFormEditAction?] = [
             .groupedProducts,
             .sku,
             shouldShowCategoriesRow ? .categories: nil,
+            shouldShowTagsRow ? .tags: nil,
             shouldShowBriefDescriptionRow ? .briefDescription: nil
         ]
         return actions.compactMap { $0 }
@@ -136,6 +143,8 @@ private extension ProductFormActionsFactory {
                 product.dimensions.height.isNotEmpty || product.dimensions.width.isNotEmpty || product.dimensions.length.isNotEmpty
         case .categories:
             return product.categories.isNotEmpty
+        case .tags:
+            return product.tags.isNotEmpty
         case .briefDescription:
             return product.briefDescription.isNilOrEmpty == false
         // Affiliate products only.

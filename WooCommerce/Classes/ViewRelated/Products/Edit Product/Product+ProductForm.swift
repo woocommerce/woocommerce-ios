@@ -34,4 +34,22 @@ extension Product {
             return categoriesNames.joined(separator: ", ")
         }
     }
+
+    /// Returns a comma separated string with each tags names.
+    /// Returns `nil` if the product doesn't have any associated tag
+    /// iOS 13+ set a specific locale on to properly format the list with the `ListFormatter` class
+    func tagsDescription(using locale: Locale = .autoupdatingCurrent) -> String? {
+        guard tags.isNotEmpty else {
+            return nil
+        }
+
+        let tagsNames = tags.map { $0.name }
+        if #available(iOS 13.0, *) {
+            let formatter = ListFormatter()
+            formatter.locale = locale
+            return formatter.string(from: tagsNames)
+        } else {
+            return tagsNames.joined(separator: ", ")
+        }
+    }
 }

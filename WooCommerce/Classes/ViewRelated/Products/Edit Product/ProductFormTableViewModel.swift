@@ -16,6 +16,7 @@ enum ProductFormSection {
         case shipping(viewModel: ViewModel)
         case inventory(viewModel: ViewModel)
         case categories(viewModel: ViewModel)
+        case tags(viewModel: ViewModel)
         case briefDescription(viewModel: ViewModel)
         case externalURL(viewModel: ViewModel)
         case sku(viewModel: ViewModel)

@@ -20,8 +20,10 @@ final class SwitchStoreUseCase {
             return
         }
 
-        logOutOfCurrentStore { [weak self] in
-            self?.finalizeStoreSelection(storeID)
+        // This method doesn't use `[weak self]` because of this
+        // https://github.com/woocommerce/woocommerce-ios/pull/2013#discussion_r454620804
+        logOutOfCurrentStore {
+            self.finalizeStoreSelection(storeID)
 
             // Reload orders badge
             NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)

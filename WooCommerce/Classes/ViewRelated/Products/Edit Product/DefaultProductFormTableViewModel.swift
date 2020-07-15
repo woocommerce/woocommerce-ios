@@ -254,7 +254,8 @@ private extension DefaultProductFormTableViewModel {
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
-                                                        details: details)
+                                                        details: details,
+                                                        numberOfLinesForDetails: 1)
     }
 
     // MARK: Variable products only
@@ -272,8 +273,7 @@ private extension DefaultProductFormTableViewModel {
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
-                                                        details: details,
-                                                        numberOfLinesForDetails: 0)
+                                                        details: details)
     }
 }
 

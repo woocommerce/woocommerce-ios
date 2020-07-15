@@ -237,11 +237,9 @@ private extension PaginatedListSelectorViewController {
 
         tableView.separatorStyle = viewProperties.separatorStyle
 
-        if viewProperties.tableViewStyle == .plain {
-            // Removes extra header spacing in ghost content view.
-            tableView.estimatedSectionHeaderHeight = 0
-            tableView.sectionHeaderHeight = 0
-        }
+        // Removes extra header spacing in ghost content view.
+        tableView.estimatedSectionHeaderHeight = 0
+        tableView.sectionHeaderHeight = 0
 
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false

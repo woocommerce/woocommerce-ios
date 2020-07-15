@@ -64,6 +64,8 @@ private extension DefaultProductFormTableViewModel {
                 return .sku(viewModel: skuRow(product: product))
             case .groupedProducts:
                 return .groupedProducts(viewModel: groupedProductsRow(product: product))
+            case .variations:
+                return .variations(viewModel: variationsRow(product: product))
             default:
                 fatalError("Unexpected action in the settings section: \(action)")
             }
@@ -251,8 +253,26 @@ private extension DefaultProductFormTableViewModel {
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
+                                                        details: details)
+    }
+
+    // MARK: Variable products only
+
+    func variationsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
+        let icon = UIImage.variationsImage
+        let title = product.variations.isNotEmpty ? Constants.variationsTitle: Constants.variationsPlaceholder
+
+        let attributes = product.attributes
+
+        let format = NSLocalizedString("%1$@ (%2$ld options)", comment: "Format for each Product attribute")
+        let details = attributes
+            .map({ String.localizedStringWithFormat(format, $0.name, $0.options.count) })
+            .joined(separator: "\n")
+
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon,
+                                                        title: title,
                                                         details: details,
-                                                        numberOfLinesForDetails: 1)
+                                                        numberOfLinesForDetails: 0)
     }
 }
 
@@ -329,5 +349,12 @@ private extension DefaultProductFormTableViewModel {
                                                                     comment: "Format of the number of grouped products in singular form")
         static let pluralGroupedProductsFormat = NSLocalizedString("%ld products",
                                                                    comment: "Format of the number of grouped products in plural form")
+
+        // Variations
+        static let variationsTitle =
+            NSLocalizedString("Variations",
+                              comment: "Title of the Product Variations row on Product main screen for a variable product")
+        static let variationsPlaceholder = NSLocalizedString("No variations yet",
+                                                             comment: "Placeholder of the Product Variations row on Product main screen for a variable product")
     }
 }

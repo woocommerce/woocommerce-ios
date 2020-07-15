@@ -21,6 +21,7 @@ enum ProductFormSection {
         case externalURL(viewModel: ViewModel)
         case sku(viewModel: ViewModel)
         case groupedProducts(viewModel: ViewModel)
+        case variations(viewModel: ViewModel)
 
         struct ViewModel {
             let icon: UIImage

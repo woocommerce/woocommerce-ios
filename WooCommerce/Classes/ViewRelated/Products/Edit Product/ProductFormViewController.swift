@@ -553,6 +553,8 @@ extension ProductFormViewController: UITableViewDelegate {
             case .groupedProducts:
                 // TODO-2199: implement grouped products editing action
                 break
+            case .variations:
+                break
             }
         }
     }

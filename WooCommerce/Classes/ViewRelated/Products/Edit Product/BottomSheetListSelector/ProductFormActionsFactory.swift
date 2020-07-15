@@ -16,6 +16,8 @@ enum ProductFormEditAction {
     case externalURL
     // Grouped products only
     case groupedProducts
+    // Variable products only
+    case variations
 }
 
 /// Creates actions for different sections/UI on the product form.
@@ -70,6 +72,8 @@ private extension ProductFormActionsFactory {
             return allSettingsSectionActionsForAffiliateProduct()
         case .grouped:
             return allSettingsSectionActionsForGroupedProduct()
+        case .variable:
+            return allSettingsSectionActionsForVariableProduct()
         default:
             assertionFailure("Product of type \(product.productType) should not be editable.")
             return []
@@ -123,6 +127,20 @@ private extension ProductFormActionsFactory {
         ]
         return actions.compactMap { $0 }
     }
+
+    func allSettingsSectionActionsForVariableProduct() -> [ProductFormEditAction] {
+        let shouldShowBriefDescriptionRow = isEditProductsRelease2Enabled
+        let shouldShowCategoriesRow = isEditProductsRelease3Enabled
+        let shouldShowTagsRow = isEditProductsRelease3Enabled
+
+        let actions: [ProductFormEditAction?] = [
+            .variations,
+            shouldShowCategoriesRow ? .categories: nil,
+            shouldShowTagsRow ? .tags: nil,
+            shouldShowBriefDescriptionRow ? .briefDescription: nil
+        ]
+        return actions.compactMap { $0 }
+    }
 }
 
 private extension ProductFormActionsFactory {
@@ -156,6 +174,10 @@ private extension ProductFormActionsFactory {
         // Grouped products only.
         case .groupedProducts:
             // The grouped products action is always visible in the settings section for a grouped product.
+            return true
+        // Variable products only.
+        case .variations:
+            // The variations action is always visible in the settings section for a variable product.
             return true
         default:
             return false

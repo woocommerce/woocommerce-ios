@@ -311,6 +311,8 @@
 		459097F823CDE47F00DEA9E0 /* UIAlertController+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459097F723CDE47F00DEA9E0 /* UIAlertController+Helpers.swift */; };
 		4590CEE4249BA46700949F05 /* AddProductCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4590CEE2249BA46700949F05 /* AddProductCategoryViewController.swift */; };
 		4590CEE5249BA46700949F05 /* AddProductCategoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4590CEE3249BA46700949F05 /* AddProductCategoryViewController.xib */; };
+		4592A54B24BF58DD00BC3DE0 /* ProductTagsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4592A54924BF58DD00BC3DE0 /* ProductTagsViewController.swift */; };
+		4592A54C24BF58DD00BC3DE0 /* ProductTagsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4592A54A24BF58DD00BC3DE0 /* ProductTagsViewController.xib */; };
 		45A24E5F2451DF1A0050606B /* ProductMenuOrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A24E5D2451DF1A0050606B /* ProductMenuOrderViewController.swift */; };
 		45A24E602451DF1A0050606B /* ProductMenuOrderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45A24E5E2451DF1A0050606B /* ProductMenuOrderViewController.xib */; };
 		45AE150224A23F03005AA948 /* ProductParentCategoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE150024A23F03005AA948 /* ProductParentCategoriesViewController.swift */; };
@@ -1182,6 +1184,8 @@
 		459097F723CDE47F00DEA9E0 /* UIAlertController+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertController+Helpers.swift"; sourceTree = "<group>"; };
 		4590CEE2249BA46700949F05 /* AddProductCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductCategoryViewController.swift; sourceTree = "<group>"; };
 		4590CEE3249BA46700949F05 /* AddProductCategoryViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddProductCategoryViewController.xib; sourceTree = "<group>"; };
+		4592A54924BF58DD00BC3DE0 /* ProductTagsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagsViewController.swift; sourceTree = "<group>"; };
+		4592A54A24BF58DD00BC3DE0 /* ProductTagsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductTagsViewController.xib; sourceTree = "<group>"; };
 		45A24E5D2451DF1A0050606B /* ProductMenuOrderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductMenuOrderViewController.swift; sourceTree = "<group>"; };
 		45A24E5E2451DF1A0050606B /* ProductMenuOrderViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductMenuOrderViewController.xib; sourceTree = "<group>"; };
 		45AE150024A23F03005AA948 /* ProductParentCategoriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductParentCategoriesViewController.swift; sourceTree = "<group>"; };
@@ -1836,6 +1840,7 @@
 				0262DA5523A23AA40029AF30 /* Shipping Settings */,
 				45B9C63B23A8E4DB007FC4C5 /* Edit Price */,
 				265BCA032430E5EA004E53EE /* Edit Categories */,
+				4592A54824BF58A200BC3DE0 /* Edit Tags */,
 				02162724237963AF000208D2 /* ProductFormViewController.swift */,
 				02162725237963AF000208D2 /* ProductFormViewController.xib */,
 				02F5F80F24613C930000613A /* ProductFormViewController+PresentationStyle.swift */,
@@ -2490,6 +2495,15 @@
 				45AE150124A23F03005AA948 /* ProductParentCategoriesViewController.xib */,
 			);
 			path = "Add Category";
+			sourceTree = "<group>";
+		};
+		4592A54824BF58A200BC3DE0 /* Edit Tags */ = {
+			isa = PBXGroup;
+			children = (
+				4592A54924BF58DD00BC3DE0 /* ProductTagsViewController.swift */,
+				4592A54A24BF58DD00BC3DE0 /* ProductTagsViewController.xib */,
+			);
+			path = "Edit Tags";
 			sourceTree = "<group>";
 		};
 		45A24E5C2451DB710050606B /* Menu Order */ = {
@@ -4372,6 +4386,7 @@
 				02C8876E24501FAC00E4470F /* FilterListViewController.xib in Resources */,
 				CE21B3D820FE669A00A259D5 /* BasicTableViewCell.xib in Resources */,
 				74334F37214AB130006D6AC5 /* ProductTableViewCell.xib in Resources */,
+				4592A54C24BF58DD00BC3DE0 /* ProductTagsViewController.xib in Resources */,
 				CE855365209BA6A700938BDC /* CustomerInfoTableViewCell.xib in Resources */,
 				74F9E9CD214C036400A3F2D2 /* NoPeriodDataTableViewCell.xib in Resources */,
 				D83F5931225B269C00626E75 /* DatePickerTableViewCell.xib in Resources */,
@@ -4643,6 +4658,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B5F571A421BEC90D0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.swift in Sources */,
+				4592A54B24BF58DD00BC3DE0 /* ProductTagsViewController.swift in Sources */,
 				D817585E22BB5E8700289CFE /* OrderEmailComposer.swift in Sources */,
 				024DF3092372CA00006658FE /* EditorViewProperties.swift in Sources */,
 				267CFE1C2443A54200AF3A13 /* ProductCategoryCellViewModel.swift in Sources */,

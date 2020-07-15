@@ -839,7 +839,10 @@ private extension ProductFormViewController {
 
 private extension ProductFormViewController {
     func editTags() {
-        //TODO-2081: add action
+        let tagsViewController = ProductTagsViewController(product: product) { [weak self] (tags) in
+            self?.onEditTagsCompletion(tags: tags)
+        }
+        show(tagsViewController, sender: self)
     }
 
     func onEditTagsCompletion(tags: [ProductTag]) {

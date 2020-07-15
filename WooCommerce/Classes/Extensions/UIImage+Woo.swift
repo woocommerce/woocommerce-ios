@@ -418,7 +418,7 @@ extension UIImage {
     /// Variations Icon
     ///
     static var variationsImage: UIImage {
-        return UIImage.gridicon(.types)
+        return UIImage.gridicon(.types).imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Creates a bitmap image of the Woo "bubble" logo based on a vector image in our asset catalog.

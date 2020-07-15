@@ -6,12 +6,11 @@ class ProductTagsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
     }
 
     // Completion callback
     //
-    typealias Completion = (_ categories: [ProductCategory]) -> Void
+    typealias Completion = (_ tags: [ProductTag]) -> Void
     private let onCompletion: Completion
 
     init(product: Product, completion: @escaping Completion) {

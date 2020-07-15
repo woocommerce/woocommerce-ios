@@ -137,9 +137,29 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
-    func testViewModelForVariableProduct() {
+    func testViewModelForVariableProductWithoutVariations() {
         // Arrange
-        let product = Fixtures.variableProduct
+        let product = Fixtures.variableProductWithoutVariations
+
+        // Action
+        let factory = ProductFormActionsFactory(product: product,
+                                                isEditProductsRelease2Enabled: true,
+                                                isEditProductsRelease3Enabled: true)
+
+        // Assert
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
+        XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
+
+        let expectedSettingsSectionActions: [ProductFormEditAction] = []
+        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
+
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editBriefDescription]
+        XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
+    }
+
+    func testViewModelForVariableProductWithVariations() {
+        // Arrange
+        let product = Fixtures.variableProductWithVariations
 
         // Action
         let factory = ProductFormActionsFactory(product: product,
@@ -210,8 +230,12 @@ private extension ProductFormActionsFactory_EditProductsM3Tests {
                                                           productType: .grouped,
                                                           sku: "")
         // Variable product, missing variations/brief description/categories/tags
-        static let variableProduct = MockProduct().product(briefDescription: "",
+        static let variableProductWithoutVariations = MockProduct().product(briefDescription: "",
                                                            productType: .variable,
                                                            sku: "").copy(variations: [])
+        // Variable product with one variation, missing brief description/categories/tags
+        static let variableProductWithVariations = MockProduct().product(briefDescription: "",
+                                                           productType: .variable,
+                                                           sku: "").copy(variations: [123])
     }
 }

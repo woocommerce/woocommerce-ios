@@ -26,6 +26,7 @@ private extension DefaultProductFormTableViewModel {
     mutating func configureSections(product: Product, actionsFactory: ProductFormActionsFactory) {
         sections = [.primaryFields(rows: primaryFieldRows(product: product, actions: actionsFactory.primarySectionActions())),
                     .settings(rows: settingsRows(product: product, actions: actionsFactory.settingsSectionActions()))]
+            .filter { $0.isNotEmpty }
     }
 
     func primaryFieldRows(product: Product, actions: [ProductFormEditAction]) -> [ProductFormSection.PrimaryFieldRow] {
@@ -260,7 +261,7 @@ private extension DefaultProductFormTableViewModel {
 
     func variationsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.variationsImage
-        let title = product.variations.isNotEmpty ? Constants.variationsTitle: Constants.variationsPlaceholder
+        let title = product.variations.isNotEmpty ? Constants.variationsTitle: nil
 
         let attributes = product.attributes
 
@@ -354,7 +355,5 @@ private extension DefaultProductFormTableViewModel {
         static let variationsTitle =
             NSLocalizedString("Variations",
                               comment: "Title of the Product Variations row on Product main screen for a variable product")
-        static let variationsPlaceholder = NSLocalizedString("No variations yet",
-                                                             comment: "Placeholder of the Product Variations row on Product main screen for a variable product")
     }
 }

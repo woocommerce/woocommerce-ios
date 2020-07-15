@@ -5,6 +5,15 @@ enum ProductFormSection {
     case primaryFields(rows: [PrimaryFieldRow])
     case settings(rows: [SettingsRow])
 
+    var isNotEmpty: Bool {
+        switch self {
+        case .primaryFields(let rows):
+            return rows.isNotEmpty
+        case .settings(let rows):
+            return rows.isNotEmpty
+        }
+    }
+
     enum PrimaryFieldRow {
         case images(product: Product)
         case name(name: String?)

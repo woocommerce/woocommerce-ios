@@ -534,20 +534,20 @@ extension ProductFormViewController: UITableViewDelegate {
                 ServiceLocator.analytics.track(.productDetailViewInventorySettingsTapped)
                 editInventorySettings()
             case .categories:
-                // TODO-2000 Edit Product M3 analytics
+                // TODO-2509 Edit Product M3 analytics
                 editCategories()
             case .tags:
-                // TODO-2081 Edit Product M3 analytics
+                // TODO-2509 Edit Product M3 analytics
                 editTags()
             case .briefDescription:
                 ServiceLocator.analytics.track(.productDetailViewShortDescriptionTapped)
                 editBriefDescription()
             case .externalURL:
-                // TODO-2000 Edit Product M3 analytics
+                // TODO-2509 Edit Product M3 analytics
                 editExternalLink()
                 break
             case .sku:
-                // TODO-2000 Edit Product M3 analytics
+                // TODO-2509 Edit Product M3 analytics
                 editSKU()
                 break
             case .groupedProducts:

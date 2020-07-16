@@ -62,16 +62,6 @@ private extension ProductListSelectorViewController {
 
     @objc func searchButtonTapped() {
         // TODO-2199: search products
-        let productIDsToExclude = (excludedProductIDs + productIDs).removingDuplicates()
-        let searchProductsCommand = ProductListSelectorSearchUICommand(siteID: siteID,
-                                                                       excludedProductIDs: productIDsToExclude) { [weak self] productIDs in
-                                                                        self?.didSelectProductsFromSearch(ids: productIDs)
-        }
-        let searchViewController = SearchViewController(storeID: siteID,
-                                                        command: searchProductsCommand,
-                                                        cellType: ProductsTabProductTableViewCell.self)
-        let navigationController = WooNavigationController(rootViewController: searchViewController)
-        present(navigationController, animated: true, completion: nil)
     }
 
     func didSelectProductsFromSearch(ids: [Int64]) {

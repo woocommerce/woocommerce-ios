@@ -189,6 +189,7 @@ extension ProductFormViewModel {
                                statusKey: settings.status.rawValue,
                                featured: settings.featured,
                                catalogVisibilityKey: settings.catalogVisibility.rawValue,
+                               reviewsAllowed: settings.reviewsAllowed,
                                purchaseNote: settings.purchaseNote,
                                menuOrder: settings.menuOrder)
         password = settings.password

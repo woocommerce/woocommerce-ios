@@ -732,7 +732,6 @@
 		D8149F562251EE300006A245 /* UITextField+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8149F552251EE300006A245 /* UITextField+Helpers.swift */; };
 		D816DDBC22265DA300903E59 /* OrderTrackingTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D816DDBB22265DA300903E59 /* OrderTrackingTableViewCellTests.swift */; };
 		D817585E22BB5E8700289CFE /* OrderEmailComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D817585D22BB5E8700289CFE /* OrderEmailComposer.swift */; };
-		D817586022BB614A00289CFE /* OrderMessageComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D817585F22BB614A00289CFE /* OrderMessageComposer.swift */; };
 		D817586222BB64C300289CFE /* OrderDetailsNotices.swift in Sources */ = {isa = PBXBuildFile; fileRef = D817586122BB64C300289CFE /* OrderDetailsNotices.swift */; };
 		D817586422BDD81600289CFE /* OrderDetailsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D817586322BDD81600289CFE /* OrderDetailsDataSource.swift */; };
 		D81D9228222E7F0800FFA585 /* OrderStatusListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81D9226222E7F0800FFA585 /* OrderStatusListViewController.swift */; };
@@ -1618,7 +1617,6 @@
 		D8149F552251EE300006A245 /* UITextField+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Helpers.swift"; sourceTree = "<group>"; };
 		D816DDBB22265DA300903E59 /* OrderTrackingTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderTrackingTableViewCellTests.swift; sourceTree = "<group>"; };
 		D817585D22BB5E8700289CFE /* OrderEmailComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderEmailComposer.swift; sourceTree = "<group>"; };
-		D817585F22BB614A00289CFE /* OrderMessageComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderMessageComposer.swift; sourceTree = "<group>"; };
 		D817586122BB64C300289CFE /* OrderDetailsNotices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsNotices.swift; sourceTree = "<group>"; };
 		D817586322BDD81600289CFE /* OrderDetailsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsDataSource.swift; sourceTree = "<group>"; };
 		D81D9226222E7F0800FFA585 /* OrderStatusListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusListViewController.swift; sourceTree = "<group>"; };
@@ -3945,7 +3943,6 @@
 				CECC758D23D2260E00486676 /* Refunded Products */,
 				CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */,
 				D817585D22BB5E8700289CFE /* OrderEmailComposer.swift */,
-				D817585F22BB614A00289CFE /* OrderMessageComposer.swift */,
 				D817586122BB64C300289CFE /* OrderDetailsNotices.swift */,
 				D817586322BDD81600289CFE /* OrderDetailsDataSource.swift */,
 				D8C11A4D22DD235F00D4A88D /* OrderDetailsResultsControllers.swift */,
@@ -4988,7 +4985,6 @@
 				CECC758C23D2227000486676 /* ProductDetailsCellViewModel.swift in Sources */,
 				453227B723C4D6EC00D816B3 /* TimeZone+Woo.swift in Sources */,
 				B57C744520F55BA600EEFC87 /* NSObject+Helpers.swift in Sources */,
-				D817586022BB614A00289CFE /* OrderMessageComposer.swift in Sources */,
 				0269576A23726304001BA0BF /* KeyboardFrameObserver.swift in Sources */,
 				CEEC9B6421E7AB850055EEF0 /* AppRatingManager.swift in Sources */,
 				020F41E623163C0100776C4D /* TopBannerView.swift in Sources */,

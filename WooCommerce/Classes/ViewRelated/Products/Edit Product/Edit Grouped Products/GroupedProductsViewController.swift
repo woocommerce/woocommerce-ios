@@ -64,7 +64,6 @@ final class GroupedProductsViewController: UIViewController {
 //
 private extension GroupedProductsViewController {
     @objc func addTapped() {
-        // TODO-2199: add products action
         let excludedProductIDs = dataSource.groupedProductIDs + [productID]
         let listSelector = ProductListSelectorViewController(excludedProductIDs: excludedProductIDs,
                                                              siteID: siteID) { [weak self] selectedProductIDs in

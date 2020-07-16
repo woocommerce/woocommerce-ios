@@ -47,13 +47,13 @@ final class ProductListMultiSelectorDataSource: PaginatedListSelectorDataSource 
     }
 
     func isSelected(model: Product) -> Bool {
-        return model == selected
+        return isProductSelected(model)
     }
 
     func configureCell(cell: ProductsTabProductTableViewCell, model: Product) {
         cell.selectionStyle = .default
 
-        let viewModel = ProductsTabProductViewModel(product: model, isSelected: isProductSelected(model))
+        let viewModel = ProductsTabProductViewModel(product: model, isSelected: isSelected(model: model))
         cell.update(viewModel: viewModel, imageService: imageService)
     }
 

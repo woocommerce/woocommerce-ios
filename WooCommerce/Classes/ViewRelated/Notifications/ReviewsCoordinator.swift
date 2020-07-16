@@ -32,7 +32,7 @@ final class ReviewsCoordinator: Coordinator {
         }
     }
 
-    private func handleInactiveNotification(_ notification: ForegroundNotification) {
+    private func handleInactiveNotification(_ notification: PushNotification) {
         guard notification.kind == .comment else {
             return
         }

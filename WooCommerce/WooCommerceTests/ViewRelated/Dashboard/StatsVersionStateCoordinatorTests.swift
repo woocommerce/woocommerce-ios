@@ -22,7 +22,7 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3), .initial(statsVersion: .v4)]
 
         // When
-        let actualStates = checkStatsVersionAndWait(expectedStatesCount: expectedStates.count)
+        let actualStates = checkStatsVersionAndWait(expectedVersionChangesCount: expectedStates.count)
 
         // Then
         XCTAssertEqual(actualStates, expectedStates)
@@ -39,7 +39,7 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3)]
 
         // When
-        let actualStates = checkStatsVersionAndWait(expectedStatesCount: expectedStates.count)
+        let actualStates = checkStatsVersionAndWait(expectedVersionChangesCount: expectedStates.count)
 
         // Then
         XCTAssertEqual(actualStates, expectedStates)
@@ -56,7 +56,7 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3), .initial(statsVersion: .v4)]
 
         // When
-        let actualStates = checkStatsVersionAndWait(expectedStatesCount: expectedStates.count)
+        let actualStates = checkStatsVersionAndWait(expectedVersionChangesCount: expectedStates.count)
 
         // Then
         XCTAssertEqual(actualStates, expectedStates)
@@ -74,7 +74,7 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3)]
 
         // When
-        let actualStates = checkStatsVersionAndWait(expectedStatesCount: expectedStates.count)
+        let actualStates = checkStatsVersionAndWait(expectedVersionChangesCount: expectedStates.count)
 
         // Then
         XCTAssertEqual(actualStates, expectedStates)
@@ -91,7 +91,7 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v4), .initial(statsVersion: .v3)]
 
         // When
-        let actualStates = checkStatsVersionAndWait(expectedStatesCount: expectedStates.count)
+        let actualStates = checkStatsVersionAndWait(expectedVersionChangesCount: expectedStates.count)
 
         // Then
         XCTAssertEqual(actualStates, expectedStates)
@@ -109,7 +109,7 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v4)]
 
         // When
-        let actualStates = checkStatsVersionAndWait(expectedStatesCount: expectedStates.count)
+        let actualStates = checkStatsVersionAndWait(expectedVersionChangesCount: expectedStates.count)
 
         // Then
         XCTAssertEqual(actualStates, expectedStates)
@@ -118,16 +118,16 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
 
 private extension StatsVersionStateCoordinatorTests {
     /// Execute `loadLastShownVersionAndCheckV4Eligibility` and wait for the results
-    /// until the number of states defined by `expectedStatesCount` is reached.
+    /// until the number of states defined by `expectedVersionChangesCount` is reached.
     ///
-    func checkStatsVersionAndWait(expectedStatesCount: Int) -> [StatsVersionState] {
+    func checkStatsVersionAndWait(expectedVersionChangesCount: Int) -> [StatsVersionState] {
         var states: [StatsVersionState] = []
 
         waitForExpectation(timeout: 1.0) { exp in
             let stateCoordinator = StatsVersionStateCoordinator(siteID: 134)
             stateCoordinator.onVersionChange = { _, state in
                 states.append(state)
-                if states.count >= expectedStatesCount {
+                if states.count >= expectedVersionChangesCount {
                     exp.fulfill()
                 }
             }

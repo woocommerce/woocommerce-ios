@@ -19,6 +19,8 @@ public enum ProductAction: Action {
         productStatus: ProductStatus?,
         productType: ProductType?,
         sortOrder: ProductsSortOrder,
+        excludedProductIDs: [Int64] = [],
+        shouldDeleteStoredProductsOnFirstPage: Bool = true,
         onCompletion: (Error?) -> Void)
 
     /// Retrieves the specified Product.

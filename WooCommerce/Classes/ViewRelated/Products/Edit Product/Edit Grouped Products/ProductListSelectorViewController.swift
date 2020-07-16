@@ -20,7 +20,8 @@ final class ProductListSelectorViewController: UIViewController {
 
     private lazy var paginatedListSelector: PaginatedListSelectorViewController
         <ProductListMultiSelectorDataSource, Product, StorageProduct, ProductsTabProductTableViewCell> = {
-            let noResultsPlaceholderText = NSLocalizedString("No products yet", comment: "Placeholder text when there are no products on the product list selector")
+            let noResultsPlaceholderText = NSLocalizedString("No products yet",
+                                                             comment: "Placeholder text when there are no products on the product list selector")
             let viewProperties = PaginatedListSelectorViewProperties(navigationBarTitle: nil,
                                                                      noResultsPlaceholderText: noResultsPlaceholderText,
                                                                      noResultsPlaceholderImage: .emptyProductsImage,

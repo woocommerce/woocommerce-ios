@@ -40,11 +40,16 @@ public final class ProductsRemote: Remote, ProductsEndpointsProviding {
                                 productType: ProductType? = nil,
                                 orderBy: OrderKey = .name,
                                 order: Order = .ascending,
-                                completion: @escaping ([Product]?, Error?) -> Void) {
+                                excludedProductIDs: [Int64] = [],
+                                completion: @escaping (Result<[Product], Error>) -> Void) {
+        let stringOfExcludedProductIDs = excludedProductIDs.map { String($0) }
+            .filter { !$0.isEmpty }
+            .joined(separator: ",")
         let filterParameters = [
             ParameterKey.stockStatus: stockStatus?.rawValue ?? "",
             ParameterKey.productStatus: productStatus?.rawValue ?? "",
-            ParameterKey.productType: productType?.rawValue ?? ""
+            ParameterKey.productType: productType?.rawValue ?? "",
+            ParameterKey.exclude: stringOfExcludedProductIDs
             ].filter({ $0.value.isEmpty == false })
 
         let parameters = [
@@ -214,6 +219,7 @@ public extension ProductsRemote {
         static let page: String       = "page"
         static let perPage: String    = "per_page"
         static let contextKey: String = "context"
+        static let exclude: String    = "exclude"
         static let include: String    = "include"
         static let search: String     = "search"
         static let orderBy: String    = "orderby"

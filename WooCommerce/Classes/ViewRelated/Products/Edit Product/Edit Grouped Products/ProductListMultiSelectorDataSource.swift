@@ -57,7 +57,7 @@ final class ProductListMultiSelectorDataSource: PaginatedListSelectorDataSource 
         cell.update(viewModel: viewModel, imageService: imageService)
     }
 
-    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Result<Bool, Error>) -> Void)?) {
+    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
         let action = ProductAction
             .synchronizeProducts(siteID: siteID,
                                  pageNumber: pageNumber,
@@ -67,15 +67,13 @@ final class ProductListMultiSelectorDataSource: PaginatedListSelectorDataSource 
                                  productType: nil,
                                  sortOrder: .nameAscending,
                                  excludedProductIDs: excludedProductIDs,
-                                 shouldDeleteStoredProductsOnFirstPage: false) { result in
-                                    switch result {
-                                    case .failure(let error):
+                                 shouldDeleteStoredProductsOnFirstPage: false) { error in
+                                    if let error = error {
                                         DDLogError("⛔️ Error synchronizing products on product list selector: \(error)")
-                                        onCompletion?(.failure(error))
-                                    case .success(let isLastPage):
-                                        ServiceLocator.analytics.track(.productListLoaded)
-                                        onCompletion?(.success(isLastPage))
+                                        onCompletion?(false)
+                                        return
                                     }
+                                    onCompletion?(true)
         }
         ServiceLocator.stores.dispatch(action)
     }

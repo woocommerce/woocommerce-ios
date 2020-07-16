@@ -352,6 +352,7 @@
 		57448D28242E775000A56A74 /* EmptyStateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57448D27242E775000A56A74 /* EmptyStateViewController.swift */; };
 		57448D2A242E777700A56A74 /* EmptyStateViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 57448D29242E777700A56A74 /* EmptyStateViewController.xib */; };
 		5744BEB1248FE44D000A6FE2 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5744BEB0248FE44C000A6FE2 /* SwiftUI.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		57532CAC24BFF4DA0032B84E /* MessageComposerPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57532CAB24BFF4DA0032B84E /* MessageComposerPresenter.swift */; };
 		5754727B2451F14600A94C3C /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5754727A2451F14600A94C3C /* Observable.swift */; };
 		5754727D2451F1D800A94C3C /* PublishSubject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5754727C2451F1D800A94C3C /* PublishSubject.swift */; };
 		5754727F24520B2A00A94C3C /* Observer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5754727E24520B2A00A94C3C /* Observer.swift */; };
@@ -1222,6 +1223,7 @@
 		57448D27242E775000A56A74 /* EmptyStateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateViewController.swift; sourceTree = "<group>"; };
 		57448D29242E777700A56A74 /* EmptyStateViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EmptyStateViewController.xib; sourceTree = "<group>"; };
 		5744BEB0248FE44C000A6FE2 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		57532CAB24BFF4DA0032B84E /* MessageComposerPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageComposerPresenter.swift; sourceTree = "<group>"; };
 		5754727A2451F14600A94C3C /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
 		5754727C2451F1D800A94C3C /* PublishSubject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishSubject.swift; sourceTree = "<group>"; };
 		5754727E24520B2A00A94C3C /* Observer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observer.swift; sourceTree = "<group>"; };
@@ -3972,6 +3974,7 @@
 				D831E2DF230E0BA7000037D0 /* Logs.swift */,
 				02FE89C8231FB31400E85EF8 /* FeatureFlagService.swift */,
 				575472802452185300A94C3C /* ForegroundNotification.swift */,
+				57532CAB24BFF4DA0032B84E /* MessageComposerPresenter.swift */,
 			);
 			path = ServiceLocator;
 			sourceTree = "<group>";
@@ -5036,6 +5039,7 @@
 				D8D15F85230A18AB00D48B3F /* Analytics.swift in Sources */,
 				D8C62471227AE0030011A7D6 /* SiteCountry.swift in Sources */,
 				B582F95920FFCEAA0060934A /* UITableViewHeaderFooterView+Helpers.swift in Sources */,
+				57532CAC24BFF4DA0032B84E /* MessageComposerPresenter.swift in Sources */,
 				02C0CD2C23B5BC9600F880B1 /* DefaultImageService.swift in Sources */,
 				CE0F17CF22A8105800964A63 /* ReadMoreTableViewCell.swift in Sources */,
 				CEEC9B5E21E79C330055EEF0 /* BuildConfiguration.swift in Sources */,

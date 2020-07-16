@@ -10,12 +10,12 @@ enum StatsVersionState: Equatable {
     case initial(statsVersion: StatsVersion)
 }
 
-/// Coordinates the stats version state changes from app settings and availability stores, and v3/v4 banner actions.
+/// Coordinates the stats version changes from app settings and availability stores, and v3/v4 banner actions.
 ///
 final class StatsVersionStateCoordinator {
-    typealias StateChangeCallback = (_ previousState: StatsVersionState?, _ currentState: StatsVersionState) -> Void
+    typealias VersionChangeCallback = (_ previousVersion: StatsVersionState?, _ currentVersion: StatsVersionState) -> Void
     /// Called when stats version UI state is set.
-    var onStateChange: StateChangeCallback?
+    var onStateChange: VersionChangeCallback?
 
     private let siteID: Int64
 

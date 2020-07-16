@@ -22,9 +22,15 @@ final class MessageComposerPresenter: NSObject {
 
     /// Present a new `MFMessageComposeViewController`.
     ///
+    /// Nothing will be presented if the current device does not support SMS.
+    ///
     /// - Parameter recipient: The initial value of the "To" field. Possibly a phone number.
     ///
-    func present(from presentingViewController: UIViewController, recipient: String) {
+    func presentIfPossible(from presentingViewController: UIViewController, recipient: String) {
+        guard MFMessageComposeViewController.canSendText() else {
+            return
+        }
+
         let controller = MFMessageComposeViewController()
         controller.recipients = [recipient]
         controller.messageComposeDelegate = self

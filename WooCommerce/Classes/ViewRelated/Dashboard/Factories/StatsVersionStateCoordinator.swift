@@ -1,15 +1,6 @@
 import Storage
 import Yosemite
 
-/// Reflects the UI state associated with a stats version.
-///
-/// - initial: UI with the initial stats version from preferences in storage
-enum StatsVersionState: Equatable {
-    /// if initial(v3) = then show banner “Upgrade to keep seeing your stats”
-    /// if initial(v4) = then default to stats
-    case initial(statsVersion: StatsVersion)
-}
-
 /// Coordinates the stats version changes from app settings and availability stores, and v3/v4 banner actions.
 ///
 final class StatsVersionStateCoordinator {

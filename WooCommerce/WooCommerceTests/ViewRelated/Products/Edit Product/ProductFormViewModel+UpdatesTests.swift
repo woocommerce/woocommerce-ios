@@ -178,6 +178,26 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         XCTAssertEqual(viewModel.product.categories, newCategories)
     }
 
+    func testUpdatingProductTags() {
+        // Arrange
+        let product = MockProduct().product()
+        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: product)
+        let viewModel = ProductFormViewModel(product: product,
+                                             productImageActionHandler: productImageActionHandler,
+                                             isEditProductsRelease2Enabled: true,
+                                             isEditProductsRelease3Enabled: true)
+
+        // Action
+        let tagID = Int64(1234)
+        let name = "Test tag"
+        let slug = "test-tag"
+        let newTags = [ProductTag(siteID: 0, tagID: tagID, name: name, slug: slug)]
+        viewModel.updateProductTags(newTags)
+
+        // Assert
+        XCTAssertEqual(viewModel.product.tags, newTags)
+    }
+
     func testUpdatingBriefDescription() {
         // Arrange
         let product = MockProduct().product()

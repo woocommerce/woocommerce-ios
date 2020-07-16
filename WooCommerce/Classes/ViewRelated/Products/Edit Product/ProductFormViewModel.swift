@@ -172,6 +172,10 @@ extension ProductFormViewModel {
         product = product.copy(categories: categories)
     }
 
+    func updateProductTags(_ tags: [ProductTag]) {
+        product = product.copy(tags: tags)
+    }
+
     func updateBriefDescription(_ briefDescription: String) {
         product = product.copy(briefDescription: briefDescription)
     }

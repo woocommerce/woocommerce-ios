@@ -415,8 +415,8 @@ private extension OrdersViewModel {
     ///
     var fetchedOrders: [Yosemite.Order] {
         (0..<numberOfSections).flatMap { section in
-            (0..<numberOfRows(in: section)).map { row in
-                detailsViewModel(at: IndexPath(row: row, section: section)).order
+            (0..<numberOfRows(in: section)).compactMap { row in
+                detailsViewModel(at: IndexPath(row: row, section: section))?.order
             }
         }
     }

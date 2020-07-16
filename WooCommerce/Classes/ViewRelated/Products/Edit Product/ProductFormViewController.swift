@@ -282,6 +282,8 @@ private extension ProductFormViewController {
                                                                             self?.editShippingSettings()
                                                                         case .editCategories:
                                                                             self?.editCategories()
+                                                                        case .editTags:
+                                                                            self?.editTags()
                                                                         case .editBriefDescription:
                                                                             self?.editBriefDescription()
                                                                         case .editSKU:
@@ -532,17 +534,20 @@ extension ProductFormViewController: UITableViewDelegate {
                 ServiceLocator.analytics.track(.productDetailViewInventorySettingsTapped)
                 editInventorySettings()
             case .categories:
-                // TODO-2000 Edit Product M3 analytics
+                // TODO-2509 Edit Product M3 analytics
                 editCategories()
+            case .tags:
+                // TODO-2509 Edit Product M3 analytics
+                editTags()
             case .briefDescription:
                 ServiceLocator.analytics.track(.productDetailViewShortDescriptionTapped)
                 editBriefDescription()
             case .externalURL:
-                // TODO-2000 Edit Product M3 analytics
+                // TODO-2509 Edit Product M3 analytics
                 editExternalLink()
                 break
             case .sku:
-                // TODO-2000 Edit Product M3 analytics
+                // TODO-2509 Edit Product M3 analytics
                 editSKU()
                 break
             case .groupedProducts:
@@ -826,6 +831,19 @@ private extension ProductFormViewController {
             return
         }
         viewModel.updateProductCategories(categories)
+    }
+}
+
+// MARK: Action - Edit Product Tags
+//
+
+private extension ProductFormViewController {
+    func editTags() {
+        //TODO-2081: add action
+    }
+
+    func onEditTagsCompletion(tags: [ProductTag]) {
+        //TODO-2081: manage completion in editTags()
     }
 }
 

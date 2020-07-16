@@ -125,7 +125,11 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editShippingSettings, .editInventorySettings, .editCategories, .editBriefDescription]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editShippingSettings,
+                                                                          .editInventorySettings,
+                                                                          .editCategories,
+                                                                          .editTags,
+                                                                          .editBriefDescription]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -142,7 +146,7 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editInventorySettings, .editCategories, .editBriefDescription]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editInventorySettings, .editCategories, .editTags, .editBriefDescription]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -159,7 +163,7 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editInventorySettings, .editCategories, .editBriefDescription]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editInventorySettings, .editCategories, .editTags, .editBriefDescription]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -167,20 +171,23 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
 
 private extension ProductFormActionsFactory_NonEmptyBottomSheetActionsTests {
     enum Fixtures {
-        // downloadable: false, virtual: false, missing inventory/shipping/categories/brief description
+        // downloadable: false, virtual: false, missing inventory/shipping/categories/tags/brief description
         static let physicalProduct = MockProduct().product(downloadable: false, briefDescription: "", manageStock: true, sku: nil, stockQuantity: nil,
                                                            dimensions: ProductDimensions(length: "", width: "", height: ""), weight: nil,
                                                            virtual: false,
-                                                           categories: [])
-        // downloadable: false, virtual: true, missing inventory/shipping/categories/brief description
+                                                           categories: [],
+                                                           tags: [])
+        // downloadable: false, virtual: true, missing inventory/shipping/categories/tags/brief description
         static let virtualProduct = MockProduct().product(downloadable: false, briefDescription: "", manageStock: true, sku: nil, stockQuantity: nil,
                                                           dimensions: ProductDimensions(length: "", width: "", height: ""), weight: nil,
                                                           virtual: true,
-                                                          categories: [])
-        // downloadable: true, virtual: true, missing inventory/shipping/categories/brief description
+                                                          categories: [],
+                                                          tags: [])
+        // downloadable: true, virtual: true, missing inventory/shipping/categories/tags/brief description
         static let downloadableProduct = MockProduct().product(downloadable: true, briefDescription: "", manageStock: true, sku: nil, stockQuantity: nil,
                                                                dimensions: ProductDimensions(length: "", width: "", height: ""), weight: nil,
                                                                virtual: true,
-                                                               categories: [])
+                                                               categories: [],
+                                                               tags: [])
     }
 }

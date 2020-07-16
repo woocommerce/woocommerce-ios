@@ -86,6 +86,10 @@ extension StoreStatsAndTopPerformersViewController: DashboardUI {
             completion()
         }
     }
+
+    func remindStatsUpgradeLater() {
+        // No op as this VC represents the latest stats version to date.
+    }
 }
 
 // MARK: - Syncing Data

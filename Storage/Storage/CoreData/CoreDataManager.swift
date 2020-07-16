@@ -4,13 +4,15 @@ import CoreData
 
 /// CoreDataManager: Manages the entire CoreData Stack. Conforms to the StorageManager API.
 ///
-public class CoreDataManager: StorageManagerType {
+public final class CoreDataManager: StorageManagerType {
 
     /// Storage Identifier.
     ///
     public let name: String
 
     private let crashLogger: CrashLogger
+
+    private let modelsInventory: ManagedObjectModelsInventory
 
     /// Designated Initializer.
     ///
@@ -22,8 +24,18 @@ public class CoreDataManager: StorageManagerType {
     public init(name: String, crashLogger: CrashLogger) {
         self.name = name
         self.crashLogger = crashLogger
-    }
 
+        do {
+            self.modelsInventory = try .from(packageName: name, bundle: Bundle(for: type(of: self)))
+        } catch {
+            // We'll throw a fatalError() because we can't really proceed without a
+            // ManagedObjectModel.
+            let message = "Failed to load models inventory using packageName \(name). Error: \(error)"
+            crashLogger.logMessageAndWait(message, properties: nil, level: .fatal)
+
+            fatalError(message)
+        }
+    }
 
     /// Returns the Storage associated with the View Thread.
     ///
@@ -36,7 +48,7 @@ public class CoreDataManager: StorageManagerType {
     public lazy var persistentContainer: NSPersistentContainer = {
         let migrationDebugMessages = migrateDataModelIfNecessary()
 
-        let container = NSPersistentContainer(name: name, managedObjectModel: managedModel)
+        let container = NSPersistentContainer(name: name, managedObjectModel: self.modelsInventory.currentModel)
         container.persistentStoreDescriptions = [storeDescription]
 
         container.loadPersistentStores { [weak self] (storeDescription, error) in
@@ -175,7 +187,7 @@ public class CoreDataManager: StorageManagerType {
             return debugMessages
         }
 
-        guard managedModel.isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata) == false else {
+        guard modelsInventory.currentModel.isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata) == false else {
             // Configuration is compatible, no migration necessary.
             return debugMessages
         }
@@ -184,26 +196,11 @@ public class CoreDataManager: StorageManagerType {
         debugMessages.append(migrationRequiredMessage)
         DDLogWarn(migrationRequiredMessage)
 
-        // Extract model names
-        let versionPath = modelURL.appendingPathComponent(Constants.versionInfoPlist).path
-        guard let versionInfo = NSDictionary(contentsOfFile: versionPath),
-            let modelNames = versionInfo[Constants.versionHashesKey] as? NSDictionary,
-            let allKeys = modelNames.allKeys as? [String],
-            let objectModel = NSManagedObjectModel(contentsOf: modelURL) else {
-                debugMessages.append("Cannot get all model version names and/or the destination model")
-                return debugMessages
-        }
-
-        let sortedKeys = allKeys.sorted { (string1, string2) -> Bool in
-            return string1.compare(string2, options: [.numeric], range: nil, locale: nil) == .orderedAscending
-        }
-
         do {
-            let iterativeMigrator = CoreDataIterativeMigrator()
+            let iterativeMigrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory)
             let (migrateResult, migrationDebugMessages) = try iterativeMigrator.iterativeMigrate(sourceStore: storeURL,
                                                                                                  storeType: NSSQLiteStoreType,
-                                                                                                 to: objectModel,
-                                                                                                 using: sortedKeys)
+                                                                                                 to: modelsInventory.currentModel)
             debugMessages += migrationDebugMessages
             if migrateResult == false {
                 let migrationFailureMessage = "☠️ [CoreDataManager] Unable to migrate store."
@@ -225,17 +222,6 @@ public class CoreDataManager: StorageManagerType {
 // MARK: - Descriptors
 //
 extension CoreDataManager {
-
-    /// Returns the Application's ManagedObjectModel
-    ///
-    var managedModel: NSManagedObjectModel {
-        guard let mom = NSManagedObjectModel(contentsOf: modelURL) else {
-            fatalError("Could not load model")
-        }
-
-        return mom
-    }
-
     /// Returns the PersistentStore Descriptor
     ///
     var storeDescription: NSPersistentStoreDescription {
@@ -250,18 +236,6 @@ extension CoreDataManager {
 // MARK: - Stack URL's
 //
 extension CoreDataManager {
-
-    /// Returns the ManagedObjectModel's URL
-    ///
-    var modelURL: URL {
-        let bundle = Bundle(for: type(of: self))
-        guard let url = bundle.url(forResource: name, withExtension: "momd") else {
-            fatalError("Missing Model Resource")
-        }
-
-        return url
-    }
-
     /// Returns the Store URL (the actual sqlite file!)
     ///
     var storeURL: URL {
@@ -270,16 +244,5 @@ extension CoreDataManager {
         }
 
         return url.appendingPathComponent(name + ".sqlite")
-    }
-}
-
-
-// MARK: - Constants!
-//
-private extension CoreDataManager {
-
-    enum Constants {
-        static let versionInfoPlist = "VersionInfo.plist"
-        static let versionHashesKey = "NSManagedObjectModel_VersionHashes"
     }
 }

@@ -4,16 +4,16 @@ import CoreData
 @testable import Storage
 
 final class CoreDataIterativeMigratorTests: XCTestCase {
-    private let allModelNames = ["Model", "Model 2", "Model 3", "Model 4", "Model 5", "Model 6", "Model 7", "Model 8", "Model 9", "Model 10",
-                                 "Model 11", "Model 12", "Model 13", "Model 14", "Model 15", "Model 16", "Model 17", "Model 18", "Model 19", "Model 20",
-                                 "Model 21", "Model 22", "Model 23", "Model 24", "Model 25", "Model 26", "Model 27", "Model 28", "Model 29"]
+    private var modelsInventory: ManagedObjectModelsInventory!
 
     override func setUp() {
         super.setUp()
         DDLog.add(DDOSLogger.sharedInstance)
+        modelsInventory = try! .from(packageName: "WooCommerce", bundle: Bundle(for: CoreDataManager.self))
     }
 
     override func tearDown() {
+        modelsInventory = nil
         DDLog.remove(DDOSLogger.sharedInstance)
         super.tearDown()
     }
@@ -26,13 +26,12 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
 
         fileManager.whenCheckingIfFileExists(atPath: databaseURL.path, thenReturn: false)
 
-        let migrator = CoreDataIterativeMigrator(fileManager: fileManager)
+        let migrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory, fileManager: fileManager)
 
         // When
         let result = try migrator.iterativeMigrate(sourceStore: databaseURL,
                                                    storeType: NSSQLiteStoreType,
-                                                   to: targetModel,
-                                                   using: allModelNames)
+                                                   to: targetModel)
 
         // Then
         XCTAssertTrue(result.success)
@@ -82,11 +81,10 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         model = try XCTUnwrap(NSManagedObjectModel(contentsOf: model10URL))
 
         do {
-            let iterativeMigrator = CoreDataIterativeMigrator()
+            let iterativeMigrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory)
             let (result, _) = try iterativeMigrator.iterativeMigrate(sourceStore: storeURL,
                                                                      storeType: NSSQLiteStoreType,
-                                                                     to: model!,
-                                                                     using: allModelNames)
+                                                                     to: model!)
             XCTAssertTrue(result)
         } catch {
             XCTFail("Error when attempting to migrate: \(error)")
@@ -110,7 +108,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         let coreDataManager = CoreDataManager(name: name, crashLogger: crashLogger)
 
         // Destroys any pre-existing persistence store.
-        let psc = NSPersistentStoreCoordinator(managedObjectModel: coreDataManager.managedModel)
+        let psc = NSPersistentStoreCoordinator(managedObjectModel: modelsInventory.currentModel)
         try psc.destroyPersistentStore(at: coreDataManager.storeURL, ofType: NSSQLiteStoreType, options: nil)
 
         // Action - step 1: loading persistence store with model 26
@@ -156,11 +154,10 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         model27Container.persistentStoreDescriptions = [coreDataManager.storeDescription]
 
         // Action - step 2
-        let iterativeMigrator = CoreDataIterativeMigrator()
+        let iterativeMigrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory)
         let (migrateResult, migrationDebugMessages) = try iterativeMigrator.iterativeMigrate(sourceStore: coreDataManager.storeURL,
                                                                                              storeType: NSSQLiteStoreType,
-                                                                                             to: model27,
-                                                                                             using: allModelNames)
+                                                                                             to: model27)
         XCTAssertTrue(migrateResult, "Failed to migrate to model version 27: \(migrationDebugMessages)")
 
         var model27LoadingError: Error?
@@ -191,7 +188,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         let coreDataManager = CoreDataManager(name: name, crashLogger: crashLogger)
 
         // Destroys any pre-existing persistence store.
-        let psc = NSPersistentStoreCoordinator(managedObjectModel: coreDataManager.managedModel)
+        let psc = NSPersistentStoreCoordinator(managedObjectModel: modelsInventory.currentModel)
         try? psc.destroyPersistentStore(at: coreDataManager.storeURL, ofType: NSSQLiteStoreType, options: nil)
 
         // Action - step 1: loading persistence store with model 28
@@ -237,10 +234,10 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         model29Container.persistentStoreDescriptions = [coreDataManager.storeDescription]
 
         // Action - step 2
-    let iterativeMigrator = CoreDataIterativeMigrator()
-    let (migrateResult, migrationDebugMessages) = try iterativeMigrator.iterativeMigrate(sourceStore: coreDataManager.storeURL,
-                                                                                         storeType: NSSQLiteStoreType,
-                                                                                         to: model29, using: allModelNames)
+        let iterativeMigrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory)
+        let (migrateResult, migrationDebugMessages) = try iterativeMigrator.iterativeMigrate(sourceStore: coreDataManager.storeURL,
+                                                                                             storeType: NSSQLiteStoreType,
+                                                                                             to: model29)
         XCTAssertTrue(migrateResult, "Failed to migrate to model version 29: \(migrationDebugMessages)")
 
         var model29LoadingError: Error?
@@ -271,7 +268,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         let coreDataManager = CoreDataManager(name: name, crashLogger: crashLogger)
 
         // Destroys any pre-existing persistence store.
-        let psc = NSPersistentStoreCoordinator(managedObjectModel: coreDataManager.managedModel)
+        let psc = NSPersistentStoreCoordinator(managedObjectModel: modelsInventory.currentModel)
         try psc.destroyPersistentStore(at: coreDataManager.storeURL, ofType: NSSQLiteStoreType, options: nil)
 
         // Action - step 1: loading persistence store with model 20
@@ -320,11 +317,10 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         destinationModelContainer.persistentStoreDescriptions = [coreDataManager.storeDescription]
 
         // Action - step 2
-        let iterativeMigrator = CoreDataIterativeMigrator()
+        let iterativeMigrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory)
         let (migrateResult, migrationDebugMessages) = try iterativeMigrator.iterativeMigrate(sourceStore: coreDataManager.storeURL,
                                                                                              storeType: NSSQLiteStoreType,
-                                                                                             to: destinationModel,
-                                                                                             using: allModelNames)
+                                                                                             to: destinationModel)
         XCTAssertTrue(migrateResult, "Failed to migrate to model version 28: \(migrationDebugMessages)")
 
         var destinationModelLoadingError: Error?

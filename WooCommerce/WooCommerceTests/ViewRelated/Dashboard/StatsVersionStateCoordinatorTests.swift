@@ -19,7 +19,7 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         ServiceLocator.setStores(mockStoresManager)
 
         // V3 is returned because it is the default value if `statsVersionLastShown` is `nil`
-        let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3), .initial(statsVersion: .v4)]
+        let expectedStates: [StatsVersion] = [.v3, .v4]
 
         // When
         let actualStates = checkStatsVersionAndWait(expectedVersionChangesCount: expectedStates.count)
@@ -36,7 +36,7 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         ServiceLocator.setStores(mockStoresManager)
 
         // We will only receive one change because the stats-check should return the same value.
-        let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3)]
+        let expectedStates: [StatsVersion] = [.v3]
 
         // When
         let actualStates = checkStatsVersionAndWait(expectedVersionChangesCount: expectedStates.count)
@@ -53,7 +53,7 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         mockStoresManager.isStatsV4Available = true
         ServiceLocator.setStores(mockStoresManager)
 
-        let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3), .initial(statsVersion: .v4)]
+        let expectedStates: [StatsVersion] = [.v3, .v4]
 
         // When
         let actualStates = checkStatsVersionAndWait(expectedVersionChangesCount: expectedStates.count)
@@ -71,7 +71,7 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         ServiceLocator.setStores(mockStoresManager)
 
         // We will only receive one change because the stats-check should return the same value.
-        let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3)]
+        let expectedStates: [StatsVersion] = [.v3]
 
         // When
         let actualStates = checkStatsVersionAndWait(expectedVersionChangesCount: expectedStates.count)
@@ -88,7 +88,7 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         mockStoresManager.isStatsV4Available = false
         ServiceLocator.setStores(mockStoresManager)
 
-        let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v4), .initial(statsVersion: .v3)]
+        let expectedStates: [StatsVersion] = [.v4, .v3]
 
         // When
         let actualStates = checkStatsVersionAndWait(expectedVersionChangesCount: expectedStates.count)
@@ -106,7 +106,7 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         ServiceLocator.setStores(mockStoresManager)
 
         // We will only receive one change because the stats-check should return the same value.
-        let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v4)]
+        let expectedStates: [StatsVersion] = [.v4]
 
         // When
         let actualStates = checkStatsVersionAndWait(expectedVersionChangesCount: expectedStates.count)

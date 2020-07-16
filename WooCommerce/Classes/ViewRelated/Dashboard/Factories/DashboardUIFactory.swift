@@ -70,8 +70,8 @@ final class DashboardUIFactory {
     private func dashboardUI(statsVersion: StatsVersion) -> DashboardUI {
         switch statsVersion {
         case .v3:
-            // Return an stats-empty view controller if current system date is greater than our deprecation trigger date(09/01/2020)
-            if let deprecatedStatsDate = Date.september1st2020, currentDateProvider() > deprecatedStatsDate {
+            // Return an stats-empty view controller if current system date is greater or equal than our deprecation trigger date(09/01/2020)
+            if let deprecatedStatsDate = Date.september1st2020, currentDateProvider() >= deprecatedStatsDate {
                 return deprecatedStatsViewController
             }
             return statsV3DashboardUI()

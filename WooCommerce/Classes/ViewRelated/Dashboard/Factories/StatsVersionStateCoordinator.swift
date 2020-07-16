@@ -20,9 +20,9 @@ final class StatsVersionStateCoordinator {
 
     private let siteID: Int64
 
-    private var state: StatsVersionState? {
+    private var version: StatsVersionState? {
         didSet {
-            if let state = state {
+            if let state = version {
                 onVersionChange?(oldValue, state)
             }
         }
@@ -45,7 +45,7 @@ final class StatsVersionStateCoordinator {
 
             let lastStatsVersion: StatsVersion = initialStatsVersion ?? StatsVersion.v3
             let state = StatsVersionState.initial(statsVersion: lastStatsVersion)
-            self.state = state
+            self.version = state
 
             // Execute network request to check if the API supports the V4 stats
             let action = AvailabilityAction.checkStatsV4Availability(siteID: self.siteID) { [weak self] isStatsV4Available in
@@ -55,8 +55,8 @@ final class StatsVersionStateCoordinator {
                 let statsVersion: StatsVersion = isStatsV4Available ? .v4: .v3
 
                 let nextState = StatsVersionState.initial(statsVersion: statsVersion)
-                if nextState != self.state {
-                    self.state = nextState
+                if nextState != self.version {
+                    self.version = nextState
                 }
             }
             ServiceLocator.stores.dispatch(action)

@@ -25,23 +25,23 @@ protocol DashboardUI: UIViewController {
 
 final class DashboardUIFactory {
     private let siteID: Int64
-    private let stateCoordinator: StatsVersionCoordinator
+    private let statsVersionCoordinator: StatsVersionCoordinator
 
     private var lastStatsV3DashboardUI: (DashboardUI & TopBannerPresenter)?
     private var lastStatsV4DashboardUI: DashboardUI?
 
     init(siteID: Int64) {
         self.siteID = siteID
-        self.stateCoordinator = StatsVersionCoordinator(siteID: siteID)
+        self.statsVersionCoordinator = StatsVersionCoordinator(siteID: siteID)
     }
 
     func reloadDashboardUI(onUIUpdate: @escaping (_ dashboardUI: DashboardUI) -> Void) {
-        stateCoordinator.onVersionChange = { [weak self] (previousVersion, currentVersion) in
+        statsVersionCoordinator.onVersionChange = { [weak self] (previousVersion, currentVersion) in
             self?.onStatsVersionChange(previousVersion: previousVersion,
                                        currentVersion: currentVersion,
                                        onUIUpdate: onUIUpdate)
         }
-        stateCoordinator.loadLastShownVersionAndCheckV4Eligibility()
+        statsVersionCoordinator.loadLastShownVersionAndCheckV4Eligibility()
     }
 
     private func statsV3DashboardUI() -> DashboardUI & TopBannerPresenter {

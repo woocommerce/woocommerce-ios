@@ -8,7 +8,10 @@ final class CoreDataIterativeMigrator {
 
     private let fileManager: FileManagerProtocol
 
-    init(fileManager: FileManagerProtocol = FileManager.default) {
+    private let modelsInventory: ManagedObjectModelsInventory
+
+    init(modelsInventory: ManagedObjectModelsInventory, fileManager: FileManagerProtocol = FileManager.default) {
+        self.modelsInventory = modelsInventory
         self.fileManager = fileManager
     }
 
@@ -26,8 +29,7 @@ final class CoreDataIterativeMigrator {
     ///
     func iterativeMigrate(sourceStore: URL,
                           storeType: String,
-                          to targetModel: NSManagedObjectModel,
-                          using modelNames: [String]) throws -> (success: Bool, debugMessages: [String]) {
+                          to targetModel: NSManagedObjectModel) throws -> (success: Bool, debugMessages: [String]) {
         // If the persistent store does not exist at the given URL,
         // assume that it hasn't yet been created and return success immediately.
         guard fileManager.fileExists(atPath: sourceStore.path) == true else {
@@ -52,7 +54,7 @@ final class CoreDataIterativeMigrator {
         }
 
         // Get NSManagedObjectModels for each of the model names given.
-        let objectModels = try models(for: modelNames)
+        let objectModels = try models(for: modelsInventory.versions)
 
         // Build an inclusive list of models between the source and final models.
         var modelsToMigrate = [NSManagedObjectModel]()
@@ -100,13 +102,8 @@ final class CoreDataIterativeMigrator {
                     return (false, debugMessages)
             }
 
-            guard let modelFromIndex = objectModels.firstIndex(of: modelFrom),
-                let modelToIndex = objectModels.firstIndex(of: modelTo) else {
-                    return (false, debugMessages)
-            }
-
             // Migrate the model to the next step
-            let migrationAttemptMessage = "⚠️ Attempting migration from \(modelNames[modelFromIndex]) to \(modelNames[modelToIndex])"
+            let migrationAttemptMessage = makeMigrationAttemptLogMessage(models: objectModels, from: modelFrom, to: modelTo)
             debugMessages.append(migrationAttemptMessage)
             DDLogWarn(migrationAttemptMessage)
 
@@ -199,6 +196,32 @@ private extension CoreDataIterativeMigrator {
             throw error
         }
     }
+
+    func makeMigrationAttemptLogMessage(models: [NSManagedObjectModel],
+                                        from fromModel: NSManagedObjectModel,
+                                        to toModel: NSManagedObjectModel) -> String {
+        // This logic is a bit nasty. I'm just trying to keep the existing logic intact for now.
+
+        let versions = modelsInventory.versions
+
+        let fromName: String? = {
+            if let index = models.firstIndex(of: fromModel) {
+                return versions[safe: index]?.name
+            } else {
+                return nil
+            }
+        }()
+
+        let toName: String? = {
+            if let index = models.firstIndex(of: toModel) {
+                return versions[safe: index]?.name
+            } else {
+                return nil
+            }
+        }()
+
+        return "⚠️ Attempting migration from \(fromName ?? "unknown") to \(toName ?? "unknown")"
+    }
 }
 
 
@@ -259,11 +282,11 @@ private extension CoreDataIterativeMigrator {
         return sourceModel
     }
 
-    func models(for names: [String]) throws -> [NSManagedObjectModel] {
-        let models = try names.map { (name) -> NSManagedObjectModel in
-            guard let url = urlForModel(name: name, in: nil),
+    func models(for modelVersions: [ManagedObjectModelsInventory.ModelVersion]) throws -> [NSManagedObjectModel] {
+        let models = try modelVersions.map { version -> NSManagedObjectModel in
+            guard let url = urlForModel(name: version.name, in: nil),
                 let model = NSManagedObjectModel(contentsOf: url) else {
-                let description = "No model found for \(name)"
+                    let description = "No model found for \(version.name)"
                 throw NSError(domain: "IterativeMigrator", code: 110, userInfo: [NSLocalizedDescriptionKey: description])
             }
 

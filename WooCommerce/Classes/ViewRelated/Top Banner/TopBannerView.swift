@@ -44,23 +44,22 @@ final class TopBannerView: UIView {
         return button
     }()
 
+    private lazy var actionStackView = createActionStackView()
+
     private let isActionEnabled: Bool
 
     private(set) var isExpanded: Bool
 
-    private let onDismiss: (() -> Void)?
+    private let onTopButtonTapped: (() -> Void)?
     private let onAction: (() -> Void)?
-    private let onExpandedStateChange: (() -> Void)?
 
     init(viewModel: TopBannerViewModel) {
         isActionEnabled = viewModel.actionHandler != nil
         isExpanded = viewModel.isExpanded
-        onDismiss = viewModel.dismissHandler
         onAction = viewModel.actionHandler
-        onExpandedStateChange = viewModel.expandedStateChangeHandler
+        onTopButtonTapped = viewModel.topButton.handler
         super.init(frame: .zero)
-        configureSubviews()
-        configureSubviews(viewModel: viewModel)
+        configureSubviews(with: viewModel)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -69,14 +68,12 @@ final class TopBannerView: UIView {
 }
 
 private extension TopBannerView {
-    func configureSubviews() {
+    func configureSubviews(with viewModel: TopBannerViewModel) {
         configureBackground()
 
-        let contentView = createContentView()
-        let contentContainerView = createContentContainerView(contentView: contentView)
-        let topLevelView = createTopLevelView(contentContainerView: contentContainerView)
-        addSubview(topLevelView)
-        pinSubviewToAllEdges(topLevelView)
+        let mainStackView = createMainStackView(with: viewModel)
+        addSubview(mainStackView)
+        pinSubviewToAllEdges(mainStackView)
 
         iconImageView.tintColor = .textSubtle
 
@@ -87,22 +84,14 @@ private extension TopBannerView {
         infoLabel.numberOfLines = 0
 
         if isActionEnabled {
-            dismissButton.setImage(UIImage.gridicon(.cross, size: CGSize(width: 24, height: 24)), for: .normal)
-            dismissButton.tintColor = .textSubtle
-            dismissButton.addTarget(self, action: #selector(onDismissButtonTapped), for: .touchUpInside)
-
             actionButton.applyLinkButtonStyle()
             actionButton.addTarget(self, action: #selector(onActionButtonTapped), for: .touchUpInside)
-        } else {
-            updateExpandCollapseState(isExpanded: isExpanded)
-            expandCollapseButton.tintColor = .textSubtle
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(onExpandCollapseButtonTapped))
-            tapGesture.cancelsTouchesInView = false
-            contentView.addGestureRecognizer(tapGesture)
         }
+
+        renderContent(of: viewModel)
     }
 
-    func configureSubviews(viewModel: TopBannerViewModel) {
+    func renderContent(of viewModel: TopBannerViewModel) {
         if let title = viewModel.title, !title.isEmpty {
             titleLabel.text = title
         } else {
@@ -122,19 +111,63 @@ private extension TopBannerView {
         actionButton.setTitle(viewModel.actionButtonTitle, for: .normal)
     }
 
+    func configureTopButton(viewModel: TopBannerViewModel, onContentView contentView: UIView) {
+        switch viewModel.topButton {
+        case .chevron:
+            updateExpandCollapseState(isExpanded: isExpanded)
+            expandCollapseButton.tintColor = .textSubtle
+
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(onExpandCollapseButtonTapped))
+            tapGesture.cancelsTouchesInView = false
+            contentView.addGestureRecognizer(tapGesture)
+
+        case .dismiss:
+            dismissButton.setImage(UIImage.gridicon(.cross, size: CGSize(width: 24, height: 24)), for: .normal)
+            dismissButton.tintColor = .textSubtle
+            dismissButton.addTarget(self, action: #selector(onDismissButtonTapped), for: .touchUpInside)
+        }
+    }
+
     func configureBackground() {
         backgroundColor = .systemColor(.secondarySystemGroupedBackground)
     }
 
-    func createContentView() -> UIView {
-        let actionButon = isActionEnabled ? dismissButton : expandCollapseButton
-        let titleStackView = UIStackView(arrangedSubviews: [titleLabel, actionButon])
+    func createMainStackView(with viewModel: TopBannerViewModel) -> UIStackView {
+        let iconInformationStackView = createIconInformationStackView(with: viewModel)
+        let mainStackView = UIStackView(arrangedSubviews: [iconInformationStackView, createBorderView()])
+        if isActionEnabled {
+            mainStackView.addArrangedSubview(actionStackView)
+        }
+
+        mainStackView.translatesAutoresizingMaskIntoConstraints = false
+        mainStackView.axis = .vertical
+        return mainStackView
+    }
+
+    func createIconInformationStackView(with viewModel: TopBannerViewModel) -> UIStackView {
+        let informationStackView = createInformationStackView(with: viewModel)
+        let iconInformationStackView = UIStackView(arrangedSubviews: [iconImageView, informationStackView])
+
+        iconInformationStackView.translatesAutoresizingMaskIntoConstraints = false
+        iconInformationStackView.axis = .horizontal
+        iconInformationStackView.spacing = 16
+        iconInformationStackView.alignment = .leading
+        iconInformationStackView.layoutMargins = .init(top: 16, left: 16, bottom: 16, right: 16)
+        iconInformationStackView.isLayoutMarginsRelativeArrangement = true
+        configureTopButton(viewModel: viewModel, onContentView: iconInformationStackView)
+
+        return iconInformationStackView
+    }
+
+    func createInformationStackView(with viewModel: TopBannerViewModel) -> UIStackView {
+        let topActionButton = topButton(for: viewModel.topButton)
+        let titleStackView = UIStackView(arrangedSubviews: [titleLabel, topActionButton])
         titleStackView.axis = .horizontal
         titleStackView.spacing = 16
 
-        let textStackView = UIStackView(arrangedSubviews: [titleStackView, infoLabel])
-        textStackView.axis = .vertical
-        textStackView.spacing = 9
+        let informationStackView = UIStackView(arrangedSubviews: [titleStackView, infoLabel])
+        informationStackView.axis = .vertical
+        informationStackView.spacing = 9
 
         iconImageView.setContentHuggingPriority(.required, for: .horizontal)
         iconImageView.setContentCompressionResistancePriority(.required, for: .horizontal)
@@ -143,43 +176,32 @@ private extension TopBannerView {
         expandCollapseButton.setContentHuggingPriority(.required, for: .horizontal)
         expandCollapseButton.setContentCompressionResistancePriority(.required, for: .horizontal)
 
-        let contentStackView = UIStackView(arrangedSubviews: [iconImageView, textStackView])
-        contentStackView.translatesAutoresizingMaskIntoConstraints = false
-        contentStackView.axis = .horizontal
-        contentStackView.spacing = 16
-        contentStackView.alignment = .leading
-        return contentStackView
+        return informationStackView
     }
 
-    func createContentContainerView(contentView: UIView) -> UIView {
-        let contentContainerView = UIView(frame: .zero)
-        contentContainerView.translatesAutoresizingMaskIntoConstraints = false
-        contentContainerView.addSubview(contentView)
-        contentContainerView.pinSubviewToAllEdges(contentView, insets: UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16))
-        return contentContainerView
-    }
-
-    func createTopLevelView(contentContainerView: UIView) -> UIView {
-        let subviews: [UIView]
-        if isActionEnabled {
-            subviews = [contentContainerView, createBorderView(), actionButton, createBorderView()]
-        } else {
-            subviews = [contentContainerView, createBorderView()]
-        }
-        let stackView = UIStackView(arrangedSubviews: subviews)
+    func createActionStackView() -> UIStackView {
+        let stackView = UIStackView(arrangedSubviews: [actionButton, createBorderView()])
         stackView.axis = .vertical
-        stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }
 
     func createBorderView() -> UIView {
         return UIView.createBorderView()
     }
+
+    func topButton(for buttonType: TopBannerViewModel.TopButtonType) -> UIButton {
+        switch buttonType {
+        case .chevron:
+            return expandCollapseButton
+        case .dismiss:
+            return dismissButton
+        }
+    }
 }
 
 private extension TopBannerView {
     @objc func onDismissButtonTapped() {
-        onDismiss?()
+        onTopButtonTapped?()
     }
 
     @objc func onActionButtonTapped() {
@@ -189,7 +211,7 @@ private extension TopBannerView {
     @objc func onExpandCollapseButtonTapped() {
         self.isExpanded = !isExpanded
         updateExpandCollapseState(isExpanded: isExpanded)
-        onExpandedStateChange?()
+        onTopButtonTapped?()
     }
 }
 
@@ -200,5 +222,8 @@ private extension TopBannerView {
         let image = isExpanded ? UIImage.chevronUpImage: UIImage.chevronDownImage
         expandCollapseButton.setImage(image, for: .normal)
         infoLabel.isHidden = !isExpanded
+        if isActionEnabled {
+            actionStackView.isHidden = !isExpanded
+        }
     }
 }

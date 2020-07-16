@@ -43,7 +43,7 @@ extension Product {
             return nil
         }
 
-        let tagsNames = tags.map { $0.name.capitalized }
+        let tagsNames = tags.map { $0.name }
         if #available(iOS 13.0, *) {
             let formatter = ListFormatter()
             formatter.locale = locale

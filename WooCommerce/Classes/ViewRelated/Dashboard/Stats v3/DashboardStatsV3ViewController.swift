@@ -7,6 +7,9 @@ class DashboardStatsV3ViewController: UIViewController {
 
     var onPullToRefresh: () -> Void = {}
 
+    /// Prevent stats banner to be shown, useful when the user has opted out of the banner for this session
+    private var preventStatsBannerToBeShown = false
+
     /// MARK: TopBannerPresenter
 
     private(set) var topBannerView: UIView?
@@ -107,10 +110,19 @@ extension DashboardStatsV3ViewController: DashboardUI {
             }
         }
     }
+
+    func remindStatsUpgradeLater() {
+        hideTopBanner(animated: true)
+        preventStatsBannerToBeShown = true
+    }
 }
 
 extension DashboardStatsV3ViewController: TopBannerPresenter {
     func showTopBanner(_ topBannerView: UIView) {
+        guard preventStatsBannerToBeShown == false else {
+            return
+        }
+
         self.topBannerView = topBannerView
 
         topBannerView.isHidden = true

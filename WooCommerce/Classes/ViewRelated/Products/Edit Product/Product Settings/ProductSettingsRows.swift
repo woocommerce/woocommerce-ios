@@ -168,10 +168,7 @@ enum ProductSettingsRows {
 
             let title = NSLocalizedString("Enable Reviews", comment: "Enable Reviews label in Product Settings")
 
-            // text
             cell.title = title
-
-            // switch
             cell.isOn = settings.reviewsAllowed
             cell.onChange = { newValue in
                 // TODO-2509 Edit Product M3 analytics

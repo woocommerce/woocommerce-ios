@@ -5,6 +5,15 @@ enum ProductFormSection {
     case primaryFields(rows: [PrimaryFieldRow])
     case settings(rows: [SettingsRow])
 
+    var isNotEmpty: Bool {
+        switch self {
+        case .primaryFields(let rows):
+            return rows.isNotEmpty
+        case .settings(let rows):
+            return rows.isNotEmpty
+        }
+    }
+
     enum PrimaryFieldRow {
         case images(product: Product)
         case name(name: String?)
@@ -21,18 +30,21 @@ enum ProductFormSection {
         case externalURL(viewModel: ViewModel)
         case sku(viewModel: ViewModel)
         case groupedProducts(viewModel: ViewModel)
+        case variations(viewModel: ViewModel)
 
         struct ViewModel {
             let icon: UIImage
             let title: String?
             let details: String?
             let numberOfLinesForDetails: Int
+            let isActionable: Bool
 
-            init(icon: UIImage, title: String?, details: String?, numberOfLinesForDetails: Int = 0) {
+            init(icon: UIImage, title: String?, details: String?, numberOfLinesForDetails: Int = 0, isActionable: Bool = true) {
                 self.icon = icon
                 self.title = title
                 self.details = details
                 self.numberOfLinesForDetails = numberOfLinesForDetails
+                self.isActionable = isActionable
             }
         }
     }

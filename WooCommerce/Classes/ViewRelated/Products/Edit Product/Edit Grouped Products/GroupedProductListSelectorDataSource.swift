@@ -33,6 +33,7 @@ final class GroupedProductListSelectorDataSource: PaginatedListSelectorDataSourc
         }
     }
 
+    // Not used: a grouped product's linked product list is not selectable in this use case.
     var selected: Product?
 
     private let siteID: Int64
@@ -55,7 +56,7 @@ final class GroupedProductListSelectorDataSource: PaginatedListSelectorDataSourc
     }
 
     func handleSelectedChange(selected: Product) {
-        // no-op
+        // no-op: a grouped product's linked product list is not selectable in this use case.
     }
 
     func isSelected(model: Product) -> Bool {

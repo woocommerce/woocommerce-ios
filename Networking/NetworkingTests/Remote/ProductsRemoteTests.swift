@@ -48,6 +48,27 @@ class ProductsRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that loadAllProducts with `excludedProductIDs` makes a network request with the corresponding parameter.
+    ///
+    func testLoadAllProductsWithExcludedIDsIncludesAnExcludeParamInNetworkRequest() throws {
+        // Arrange
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
+        let excludedProductIDs: [Int64] = [17, 671]
+
+        // Action
+        waitForExpectation { expectation in
+            remote.loadAllProducts(for: sampleSiteID, excludedProductIDs: excludedProductIDs) { result in
+                expectation.fulfill()
+            }
+        }
+
+        // Assert
+        let pathComponents = try XCTUnwrap(network.pathComponents)
+        let expectedParam = "exclude=17,671"
+        XCTAssertTrue(pathComponents.contains(expectedParam), "Expected to have param: \(expectedParam)")
+    }
+
     /// Verifies that loadAllProducts properly relays Networking Layer errors.
     ///
     func testLoadAllProductsProperlyRelaysNetwokingErrors() {

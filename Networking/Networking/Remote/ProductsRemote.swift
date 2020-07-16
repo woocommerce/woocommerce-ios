@@ -29,6 +29,7 @@ public final class ProductsRemote: Remote, ProductsEndpointsProviding {
     ///     - productType: Optional product type filtering. Default to nil (no filtering).
     ///     - orderBy: the key to order the remote products. Default to product name.
     ///     - order: ascending or descending order. Default to ascending.
+    ///     - excludedProductIDs: a list of product IDs to be excluded from the results.
     ///     - completion: Closure to be executed upon completion.
     ///
     public func loadAllProducts(for siteID: Int64,

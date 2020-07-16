@@ -50,7 +50,7 @@ extension ImageAndTitleAndTextTableViewCell {
         contentImageView.image = viewModel.image
         contentImageView.isHidden = viewModel.image == nil
         accessoryType = viewModel.isActionable ? .disclosureIndicator: .none
-        selectionStyle = viewModel.isActionable ? .default: .none 
+        selectionStyle = viewModel.isActionable ? .default: .none
 
         if let imageTintColor = viewModel.imageTintColor {
             contentImageView.tintColor = imageTintColor

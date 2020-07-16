@@ -13,7 +13,7 @@ enum StatsVersionState: Equatable {
 /// Coordinates the stats version changes from app settings and availability stores, and v3/v4 banner actions.
 ///
 final class StatsVersionStateCoordinator {
-    typealias VersionChangeCallback = (_ previousVersion: StatsVersionState?, _ currentVersion: StatsVersionState) -> Void
+    typealias VersionChangeCallback = (_ previousVersion: StatsVersion?, _ currentVersion: StatsVersion) -> Void
 
     /// Called when stats version has changed.
     var onVersionChange: VersionChangeCallback?

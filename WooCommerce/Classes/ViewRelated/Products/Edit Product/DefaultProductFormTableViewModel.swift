@@ -262,18 +262,24 @@ private extension DefaultProductFormTableViewModel {
 
     func variationsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.variationsImage
-        let title = product.variations.isNotEmpty ? Constants.variationsTitle: nil
+        let title = Constants.variationsTitle
 
         let attributes = product.attributes
 
         let format = NSLocalizedString("%1$@ (%2$ld options)", comment: "Format for each Product attribute")
-        let details = attributes
-            .map({ String.localizedStringWithFormat(format, $0.name, $0.options.count) })
-            .joined(separator: "\n")
+        let details: String
+        if product.variations.isEmpty {
+            details = Constants.variationsPlaceholder
+        } else {
+            details = attributes
+                .map({ String.localizedStringWithFormat(format, $0.name, $0.options.count) })
+                .joined(separator: "\n")
+        }
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
-                                                        details: details)
+                                                        details: details,
+                                                        isActionable: false)
     }
 }
 
@@ -355,5 +361,7 @@ private extension DefaultProductFormTableViewModel {
         static let variationsTitle =
             NSLocalizedString("Variations",
                               comment: "Title of the Product Variations row on Product main screen for a variable product")
+        static let variationsPlaceholder = NSLocalizedString("No variations yet",
+                                                             comment: "Placeholder of the Product Variations row on Product main screen for a variable product")
     }
 }

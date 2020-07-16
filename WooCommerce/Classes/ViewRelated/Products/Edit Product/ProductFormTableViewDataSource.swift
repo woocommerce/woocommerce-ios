@@ -7,7 +7,8 @@ private extension ProductFormSection.SettingsRow.ViewModel {
                                                            text: details,
                                                            image: icon,
                                                            imageTintColor: .textSubtle,
-                                                           numberOfLinesForText: numberOfLinesForDetails)
+                                                           numberOfLinesForText: numberOfLinesForDetails,
+                                                           isActionable: isActionable)
     }
 }
 
@@ -171,6 +172,5 @@ private extension ProductFormTableViewDataSource {
 
     func configureSettings(cell: ImageAndTitleAndTextTableViewCell, viewModel: ProductFormSection.SettingsRow.ViewModel) {
         cell.updateUI(viewModel: viewModel.toCellViewModel())
-        cell.accessoryType = .disclosureIndicator
     }
 }

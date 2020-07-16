@@ -37,12 +37,14 @@ enum ProductFormSection {
             let title: String?
             let details: String?
             let numberOfLinesForDetails: Int
+            let isActionable: Bool
 
-            init(icon: UIImage, title: String?, details: String?, numberOfLinesForDetails: Int = 0) {
+            init(icon: UIImage, title: String?, details: String?, numberOfLinesForDetails: Int = 0, isActionable: Bool = true) {
                 self.icon = icon
                 self.title = title
                 self.details = details
                 self.numberOfLinesForDetails = numberOfLinesForDetails
+                self.isActionable = isActionable
             }
         }
     }

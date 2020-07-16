@@ -177,8 +177,8 @@ private extension ProductFormActionsFactory {
             return true
         // Variable products only.
         case .variations:
-            // When we implement adding a variation, we can return `true` here.
-            return product.variations.isNotEmpty
+            // The variations row is always visible in the settings section for a variable product.
+            return true
         default:
             return false
         }

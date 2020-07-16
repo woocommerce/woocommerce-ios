@@ -25,7 +25,9 @@ final class ProductListSelectorViewController: UIViewController {
             let viewProperties = PaginatedListSelectorViewProperties(navigationBarTitle: nil,
                                                                      noResultsPlaceholderText: noResultsPlaceholderText,
                                                                      noResultsPlaceholderImage: .emptyProductsImage,
-                                                                     noResultsPlaceholderImageTintColor: .primary, tableViewStyle: .plain)
+                                                                     noResultsPlaceholderImageTintColor: .primary,
+                                                                     tableViewStyle: .plain,
+                                                                     separatorStyle: .none)
             return PaginatedListSelectorViewController(viewProperties: viewProperties, dataSource: dataSource, onDismiss: { _ in })
     }()
 

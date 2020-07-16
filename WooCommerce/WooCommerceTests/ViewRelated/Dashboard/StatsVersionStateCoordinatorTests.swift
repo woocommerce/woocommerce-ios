@@ -19,13 +19,13 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         ServiceLocator.setStores(mockStoresManager)
 
         // V3 is returned because it is the default value if `statsVersionLastShown` is `nil`
-        let expectedStates: [StatsVersion] = [.v3, .v4]
+        let expectedVersions: [StatsVersion] = [.v3, .v4]
 
         // When
-        let actualStates = checkStatsVersionAndWait(expectedVersionChangesCount: expectedStates.count)
+        let actualVersions = checkStatsVersionAndWait(expectedVersionChangesCount: expectedVersions.count)
 
         // Then
-        XCTAssertEqual(actualStates, expectedStates)
+        XCTAssertEqual(actualVersions, expectedVersions)
     }
 
     func testWhenV4IsUnavailableWhileNoStatsVersionWasShownBefore() {
@@ -36,13 +36,13 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         ServiceLocator.setStores(mockStoresManager)
 
         // We will only receive one change because the stats-check should return the same value.
-        let expectedStates: [StatsVersion] = [.v3]
+        let expectedVersions: [StatsVersion] = [.v3]
 
         // When
-        let actualStates = checkStatsVersionAndWait(expectedVersionChangesCount: expectedStates.count)
+        let actualVersions = checkStatsVersionAndWait(expectedVersionChangesCount: expectedVersions.count)
 
         // Then
-        XCTAssertEqual(actualStates, expectedStates)
+        XCTAssertEqual(actualVersions, expectedVersions)
     }
 
     /// Stats v3 --> v4
@@ -53,13 +53,13 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         mockStoresManager.isStatsV4Available = true
         ServiceLocator.setStores(mockStoresManager)
 
-        let expectedStates: [StatsVersion] = [.v3, .v4]
+        let expectedVersions: [StatsVersion] = [.v3, .v4]
 
         // When
-        let actualStates = checkStatsVersionAndWait(expectedVersionChangesCount: expectedStates.count)
+        let actualVersions = checkStatsVersionAndWait(expectedVersionChangesCount: expectedVersions.count)
 
         // Then
-        XCTAssertEqual(actualStates, expectedStates)
+        XCTAssertEqual(actualVersions, expectedVersions)
     }
 
     /// Stats v3 --> v3
@@ -71,13 +71,13 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         ServiceLocator.setStores(mockStoresManager)
 
         // We will only receive one change because the stats-check should return the same value.
-        let expectedStates: [StatsVersion] = [.v3]
+        let expectedVersions: [StatsVersion] = [.v3]
 
         // When
-        let actualStates = checkStatsVersionAndWait(expectedVersionChangesCount: expectedStates.count)
+        let actualVersions = checkStatsVersionAndWait(expectedVersionChangesCount: expectedVersions.count)
 
         // Then
-        XCTAssertEqual(actualStates, expectedStates)
+        XCTAssertEqual(actualVersions, expectedVersions)
     }
 
     /// Stats v4 --> v3
@@ -88,13 +88,13 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         mockStoresManager.isStatsV4Available = false
         ServiceLocator.setStores(mockStoresManager)
 
-        let expectedStates: [StatsVersion] = [.v4, .v3]
+        let expectedVersions: [StatsVersion] = [.v4, .v3]
 
         // When
-        let actualStates = checkStatsVersionAndWait(expectedVersionChangesCount: expectedStates.count)
+        let actualVersions = checkStatsVersionAndWait(expectedVersionChangesCount: expectedVersions.count)
 
         // Then
-        XCTAssertEqual(actualStates, expectedStates)
+        XCTAssertEqual(actualVersions, expectedVersions)
     }
 
     /// V4 --> v4
@@ -106,13 +106,13 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         ServiceLocator.setStores(mockStoresManager)
 
         // We will only receive one change because the stats-check should return the same value.
-        let expectedStates: [StatsVersion] = [.v4]
+        let expectedVersions: [StatsVersion] = [.v4]
 
         // When
-        let actualStates = checkStatsVersionAndWait(expectedVersionChangesCount: expectedStates.count)
+        let actualVersions = checkStatsVersionAndWait(expectedVersionChangesCount: expectedVersions.count)
 
         // Then
-        XCTAssertEqual(actualStates, expectedStates)
+        XCTAssertEqual(actualVersions, expectedVersions)
     }
 }
 

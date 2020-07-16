@@ -14,15 +14,16 @@ enum StatsVersionState: Equatable {
 ///
 final class StatsVersionStateCoordinator {
     typealias VersionChangeCallback = (_ previousVersion: StatsVersionState?, _ currentVersion: StatsVersionState) -> Void
-    /// Called when stats version UI state is set.
-    var onStateChange: VersionChangeCallback?
+
+    /// Called when stats version has changed.
+    var onVersionChange: VersionChangeCallback?
 
     private let siteID: Int64
 
     private var state: StatsVersionState? {
         didSet {
             if let state = state {
-                onStateChange?(oldValue, state)
+                onVersionChange?(oldValue, state)
             }
         }
     }

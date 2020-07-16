@@ -36,9 +36,9 @@ final class DashboardUIFactory {
     }
 
     func reloadDashboardUI(onUIUpdate: @escaping (_ dashboardUI: DashboardUI) -> Void) {
-        stateCoordinator.onStateChange = { [weak self] (previousState, currentState) in
-            self?.onStatsVersionStateChange(previousState: previousState,
-                                            currentState: currentState,
+        stateCoordinator.onVersionChange = { [weak self] (previousVersion, currentVersion) in
+            self?.onStatsVersionStateChange(previousState: previousVersion,
+                                            currentState: currentVersion,
                                             onUIUpdate: onUIUpdate)
         }
         stateCoordinator.loadLastShownVersionAndCheckV4Eligibility()

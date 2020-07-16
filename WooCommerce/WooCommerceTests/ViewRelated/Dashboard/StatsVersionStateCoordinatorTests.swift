@@ -125,7 +125,7 @@ private extension StatsVersionStateCoordinatorTests {
 
         waitForExpectation(timeout: 1.0) { exp in
             let stateCoordinator = StatsVersionStateCoordinator(siteID: 134)
-            stateCoordinator.onStateChange = { _, state in
+            stateCoordinator.onVersionChange = { _, state in
                 states.append(state)
                 if states.count >= expectedStatesCount {
                     exp.fulfill()

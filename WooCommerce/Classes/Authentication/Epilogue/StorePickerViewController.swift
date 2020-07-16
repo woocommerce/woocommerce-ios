@@ -11,16 +11,11 @@ typealias SelectStoreClosure = () -> Void
 ///
 protocol StorePickerViewControllerDelegate: AnyObject {
 
-    /// Notifies the delegate that a store is about to be picked.
-    ///
+    /// Notifies the delegate that the store selection is complete,
     /// - Parameter storeID: ID of the store selected by the user
-    /// - Returns: a closure to be executed prior to store selection
+    /// - Returns: a closure to be executed after the store selection
     ///
-    func willSelectStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure)
-
-    /// Notifies the delegate that the store selection is complete
-    ///
-    func didSelectStore(with storeID: Int64)
+    func didSelectStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure)
 }
 
 
@@ -345,7 +340,8 @@ private extension StorePickerViewController {
     ///
     @objc func cleanupAndDismiss() {
         if let siteID = currentlySelectedSite?.siteID {
-            delegate?.didSelectStore(with: siteID)
+            delegate?.didSelectStore(with: siteID, onCompletion: {
+            })
         }
 
         switch configuration {
@@ -538,7 +534,7 @@ extension StorePickerViewController {
                 return
             }
 
-            delegate.willSelectStore(with: site.siteID) { [weak self] in
+            delegate.didSelectStore(with: site.siteID) { [weak self] in
                 self?.cleanupAndDismiss()
             }
         }

@@ -5,9 +5,10 @@ import MessageUI
 /// Presents the MessageUI-provided dialog for sending SMS.
 ///
 /// This should ideally be kept as a service/singleton because it needs to be able to **dismiss**
-/// the presented `MFMessageComposeViewController` manually. The `MFMessageComposeViewController.delegate`
-/// property is an `unowned` reference. So, if we set that `delegate` to class that can be
-/// deallocated, a crash will happen when the user closes the SMS dialog.
+/// the presented `MFMessageComposeViewController` manually. The
+/// `MFMessageComposeViewController.messageComposeDelegate` property is an `unowned` reference.
+/// So, if we set that `messageComposeDelegate` to class that is eventually deallocated, a crash will
+/// happen when the user closes the SMS dialog.
 ///
 final class MessageComposerPresenter: NSObject {
     private var presentedViewControllers = Set<MFMessageComposeViewController>()

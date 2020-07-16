@@ -75,6 +75,11 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.deleteCellImage)
     }
 
+    func testDeleteCellImageIconDefaultSize() {
+        let deleteCellImage = UIImage.deleteCellImage
+        XCTAssertEqual(deleteCellImage.size, CGSize(width: 22, height: 22))
+    }
+
     func testEllipsisImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.ellipsisImage)
     }

@@ -86,7 +86,7 @@ final class GroupedProductListSelectorDataSource: PaginatedListSelectorDataSourc
                                                         case .success:
                                                             onCompletion?(true)
                                                         case .failure(let error):
-                                                            DDLogError("⛔️ Error synchronizing products: \(error)")
+                                                            DDLogError("⛔️ Error synchronizing grouped product's linked products: \(error)")
                                                             onCompletion?(false)
                                                         }
         }

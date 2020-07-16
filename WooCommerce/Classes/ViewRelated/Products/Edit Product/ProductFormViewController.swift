@@ -553,6 +553,14 @@ extension ProductFormViewController: UITableViewDelegate {
             case .groupedProducts:
                 editGroupedProducts()
                 break
+            case .variations:
+                // TODO-2509 Edit Product M3 analytics
+                guard product.variations.isNotEmpty else {
+                    return
+                }
+                let variationsViewController = ProductVariationsViewController(siteID: product.siteID,
+                                                                               productID: product.productID)
+                show(variationsViewController, sender: self)
             }
         }
     }

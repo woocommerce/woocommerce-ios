@@ -19,7 +19,7 @@ struct ProductDetailsFactory {
         switch product.productType {
         case .simple:
             isEditProductsEnabled = true
-        case .affiliate, .grouped:
+        case .affiliate, .grouped, .variable:
             isEditProductsEnabled = featureFlagService.isFeatureFlagEnabled(.editProductsRelease3)
         default:
             isEditProductsEnabled = false

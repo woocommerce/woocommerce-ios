@@ -1,9 +1,11 @@
-# WooCommerce for iOS 
+# WooCommerce for iOS
 
 **Table of Contents**
 
 - [Architecture](#architecture)
 - [Coding Guidelines](#coding-guidelines)
+    - [Naming Conventions](#naming-conventions)
+        - [Protocols](#protocol)
     - [Coding Style](#coding-style)
     - [Choosing Between Structures and Classes](#choosing-between-structures-and-classes)
 - [Design Patterns](#design-patterns)
@@ -21,16 +23,35 @@
 
 ## Coding Guidelines
 
+### Naming Conventions
+
+#### Protocols
+
+When naming protocols, we generally follow the [Swift API Design Guidelines](https://swift.org/documentation/api-design-guidelines/#strive-for-fluent-usage):
+
+- Protocols that describe _what something_ is should read as nouns (e.g. `Collection`).
+- Protocols that describe a _capability_ should be named using the suffixes `able`, `ible`, or `ing` (e.g. `Equatable`, `ProgressReporting`).
+
+For protocols that are specifically for one type only, it is acceptable to append `Protocol` to the name.
+
+```swift
+public protocol ProductsRemoteProtocol { }
+
+final class ProductsRemote: Remote, ProductsRemoteProtocol { }
+```
+
+We usually end up with cases like this when we _have_ to create a protocol to support mocking unit tests.
+
 ### Coding Style
 
 The guidelines for how Swift should be written and formatted can be found in the [Coding Style Guide](coding-style-guide.md).
 
 ### Choosing Between Structures and Classes
 
-In addition to the [Apple guidelines](https://developer.apple.com/documentation/swift/choosing_between_structures_and_classes), we generally prefer to use `struct` for: 
+In addition to the [Apple guidelines](https://developer.apple.com/documentation/swift/choosing_between_structures_and_classes), we generally prefer to use `struct` for:
 
 - Value types like the [Networking Models](../Networking/Networking/Model)
-- Stateless helpers 
+- Stateless helpers
 
 But consider using `class` instead if:
 
@@ -39,15 +60,15 @@ But consider using `class` instead if:
 
 ## Design Patterns
 
-### Copiable 
+### Copiable
 
-In the WooCommerce module, we generally work with [immutable objects](../Yosemite/Yosemite/Model/Model.swift). Mutation only happens within Yosemite and Storage. This is an intentional design and promotes clarity of [where and when those objects will be updated](https://git.io/JvALp). 
+In the WooCommerce module, we generally work with [immutable objects](../Yosemite/Yosemite/Model/Model.swift). Mutation only happens within Yosemite and Storage. This is an intentional design and promotes clarity of [where and when those objects will be updated](https://git.io/JvALp).
 
-But in order to _update_ something, we still need to pass an _updated_ object to Yosemite. For example, to use the [`ProductAction.updateProduct`](../Yosemite/Yosemite/Actions/ProductAction.swift) action, we'd probably have to create a new [`Product`](../Networking/Networking/Model/Product/Product.swift) object: 
+But in order to _update_ something, we still need to pass an _updated_ object to Yosemite. For example, to use the [`ProductAction.updateProduct`](../Yosemite/Yosemite/Actions/ProductAction.swift) action, we'd probably have to create a new [`Product`](../Networking/Networking/Model/Product/Product.swift) object:
 
 ```swift
 // An existing Product instance given by Yosemite
-let currentProduct: Product 
+let currentProduct: Product
 
 // Update the Product instance with a new `name`
 let updatedProduct = Product(
@@ -66,7 +87,7 @@ let action = ProductAction.updateProduct(product: updatedProduct, ...)
 store.dispatch(action)
 ```
 
-This is quite cumbersome, especially since `Product` has more than 50 properties. 
+This is quite cumbersome, especially since `Product` has more than 50 properties.
 
 To help with this, we generate `copy()` methods for these objects. These `copy()` methods follow a specific pattern and will make use of the [`CopiableProp` and `NullableCopiableProp` typealiases](../Networking/Networking/Copiable/Copiable.swift).
 
@@ -87,14 +108,14 @@ extension Person {
         address: NullableCopiableProp<String> = .copy
     ) -> Person {
         // Create local variables to reduce Swift compilation complexity.
-        let id = id ?? self.id 
+        let id = id ?? self.id
         let name = name ?? self.name
         let address = address ?? self.address
 
         return Person(
-            id: id 
-            name: name 
-            address: address 
+            id: id
+            name: name
+            address: address
         )
     }
 }
@@ -110,7 +131,7 @@ let luke = Person(id: 1, name: "Luke", address: "Jakku")
 let leia = luke.copy(name: "Leia")
 ```
 
-In the above, `leia` would have the same `id` and `address` as `luke` because those arguments were not given. 
+In the above, `leia` would have the same `id` and `address` as `luke` because those arguments were not given.
 
 ```swift
 { id: 1, name: "Leia", address: "Jakku" }
@@ -134,7 +155,7 @@ The `lukeWithNoAddress` variable will have a `nil` address as expected:
 
 If we want to _directly_ set the `address` to `nil`, we should **not** pass just `nil`. This is because `nil` is just the same as `.copy` in this context. Instead, we should pass `.some(nil)` instead.
 
-```swift 
+```swift
 let luke = Person(id: 1, name: "Luke", address: "Jakku")
 
 // DO NOT
@@ -175,7 +196,7 @@ To generate a `copy()` method for a `class` or `struct`:
     WooCommerce/Classes/Copiable/Models+Copiable.generated.swift
     Yosemite/Yosemite/Model/Copiable/Models+Copiable.generated.swift
     ```
-    
+
 3. Add the generated files to the appropriate project if they're not added yet.
 4. Compile the project.
 

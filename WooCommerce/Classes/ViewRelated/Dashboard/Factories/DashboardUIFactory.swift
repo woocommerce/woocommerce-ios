@@ -25,14 +25,14 @@ protocol DashboardUI: UIViewController {
 
 final class DashboardUIFactory {
     private let siteID: Int64
-    private let stateCoordinator: StatsVersionStateCoordinator
+    private let stateCoordinator: StatsVersionCoordinator
 
     private var lastStatsV3DashboardUI: (DashboardUI & TopBannerPresenter)?
     private var lastStatsV4DashboardUI: DashboardUI?
 
     init(siteID: Int64) {
         self.siteID = siteID
-        self.stateCoordinator = StatsVersionStateCoordinator(siteID: siteID)
+        self.stateCoordinator = StatsVersionCoordinator(siteID: siteID)
     }
 
     func reloadDashboardUI(onUIUpdate: @escaping (_ dashboardUI: DashboardUI) -> Void) {

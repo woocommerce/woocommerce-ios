@@ -3,7 +3,7 @@ import Storage
 import Yosemite
 @testable import WooCommerce
 
-final class StatsVersionStateCoordinatorTests: XCTestCase {
+final class StatsVersionCoordinatorTests: XCTestCase {
     private var mockStoresManager: MockupStatsVersionStoresManager!
 
     override func tearDown() {
@@ -116,7 +116,7 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
     }
 }
 
-private extension StatsVersionStateCoordinatorTests {
+private extension StatsVersionCoordinatorTests {
     /// Execute `loadLastShownVersionAndCheckV4Eligibility` and wait for the results
     /// until the number of states defined by `expectedVersionChangesCount` is reached.
     ///
@@ -124,7 +124,7 @@ private extension StatsVersionStateCoordinatorTests {
         var versions: [StatsVersion] = []
 
         waitForExpectation(timeout: 1.0) { exp in
-            let stateCoordinator = StatsVersionStateCoordinator(siteID: 134)
+            let stateCoordinator = StatsVersionCoordinator(siteID: 134)
             stateCoordinator.onVersionChange = { _, currentVersion in
                 versions.append(currentVersion)
                 if versions.count >= expectedVersionChangesCount {

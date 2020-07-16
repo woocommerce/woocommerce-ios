@@ -120,14 +120,14 @@ private extension StatsVersionStateCoordinatorTests {
     /// Execute `loadLastShownVersionAndCheckV4Eligibility` and wait for the results
     /// until the number of states defined by `expectedVersionChangesCount` is reached.
     ///
-    func checkStatsVersionAndWait(expectedVersionChangesCount: Int) -> [StatsVersionState] {
-        var states: [StatsVersionState] = []
+    func checkStatsVersionAndWait(expectedVersionChangesCount: Int) -> [StatsVersion] {
+        var versions: [StatsVersion] = []
 
         waitForExpectation(timeout: 1.0) { exp in
             let stateCoordinator = StatsVersionStateCoordinator(siteID: 134)
-            stateCoordinator.onVersionChange = { _, state in
-                states.append(state)
-                if states.count >= expectedVersionChangesCount {
+            stateCoordinator.onVersionChange = { _, currentVersion in
+                versions.append(currentVersion)
+                if versions.count >= expectedVersionChangesCount {
                     exp.fulfill()
                 }
             }
@@ -135,6 +135,6 @@ private extension StatsVersionStateCoordinatorTests {
             stateCoordinator.loadLastShownVersionAndCheckV4Eligibility()
         }
 
-        return states
+        return versions
     }
 }

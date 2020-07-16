@@ -174,6 +174,7 @@ enum ProductSettingsRows {
             // switch
             cell.isOn = settings.reviewsAllowed
             cell.onChange = { newValue in
+                // TODO-2509 Edit Product M3 analytics
                 self.settings.reviewsAllowed = newValue
             }
         }

@@ -32,7 +32,17 @@ enum ProductSettingsSections {
         let rows: [ProductSettingsRowMediator]
 
         init(_ settings: ProductSettings) {
-            rows = [ProductSettingsRows.Slug(settings), ProductSettingsRows.PurchaseNote(settings), ProductSettingsRows.MenuOrder(settings)]
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease3) {
+                rows = [ProductSettingsRows.EnableReviews(settings),
+                        ProductSettingsRows.Slug(settings),
+                        ProductSettingsRows.PurchaseNote(settings),
+                        ProductSettingsRows.MenuOrder(settings)]
+            }
+            else {
+                rows = [ProductSettingsRows.Slug(settings),
+                        ProductSettingsRows.PurchaseNote(settings),
+                        ProductSettingsRows.MenuOrder(settings)]
+            }
         }
     }
 }

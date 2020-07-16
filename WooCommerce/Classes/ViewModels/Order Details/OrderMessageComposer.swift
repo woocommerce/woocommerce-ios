@@ -7,6 +7,12 @@ final class OrderMessageComposer: NSObject, MFMessageComposeViewControllerDelega
 
     private var messageComposeViewController: MFMessageComposeViewController?
 
+    deinit {
+        // If this class is dismissed while a `ComposeViewController` is active, a crash will
+        // happen because `ComposeViewController.delegate` is an `unowned` reference to `self`.
+        messageComposeViewController?.dismiss(animated: false, completion: nil)
+    }
+
     func displayMessageComposerIfPossible(order: Order, from: UIViewController) {
         guard let phoneNumber = order.billingAddress?.cleanedPhoneNumber,
             MFMessageComposeViewController.canSendText()
@@ -34,5 +40,7 @@ final class OrderMessageComposer: NSObject, MFMessageComposeViewControllerDelega
 
     func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
         controller.dismiss(animated: true, completion: nil)
+
+        messageComposeViewController = nil
     }
 }

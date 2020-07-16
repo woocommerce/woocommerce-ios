@@ -5,7 +5,7 @@
 - [Architecture](#architecture)
 - [Coding Guidelines](#coding-guidelines)
     - [Naming Conventions](#naming-conventions)
-        - [Protocols](#protocol)
+        - [Protocols](#protocols)
     - [Coding Style](#coding-style)
     - [Choosing Between Structures and Classes](#choosing-between-structures-and-classes)
 - [Design Patterns](#design-patterns)

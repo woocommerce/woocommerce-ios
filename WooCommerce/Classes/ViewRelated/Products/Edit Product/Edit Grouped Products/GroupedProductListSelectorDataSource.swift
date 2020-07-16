@@ -72,6 +72,8 @@ final class GroupedProductListSelectorDataSource: PaginatedListSelectorDataSourc
         cell.configureAccessoryDeleteButton { [weak self] in
             self?.deleteProduct(model)
         }
+
+        cell.accessoryType = isSelected(model: model) ? .checkmark: .none
     }
 
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {

@@ -69,13 +69,9 @@ final class GroupedProductListSelectorDataSource: PaginatedListSelectorDataSourc
         let viewModel = ProductsTabProductViewModel(product: model)
         cell.update(viewModel: viewModel, imageService: imageService)
 
-        let deleteButton = UIButton(type: .detailDisclosure)
-        deleteButton.setImage(.deleteCellImage, for: .normal)
-        deleteButton.tintColor = .systemColor(.tertiaryLabel)
-        deleteButton.on(.touchUpInside) { [weak self] _ in
+        cell.configureAccessoryDeleteButton { [weak self] in
             self?.deleteProduct(model)
         }
-        cell.accessoryView = deleteButton
     }
 
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {

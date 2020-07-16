@@ -143,6 +143,11 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
 
     // MARK: Public functions
 
+    /// Called when the visual data of the data source change.
+    func reloadData() {
+        tableView.reloadData()
+    }
+
     func updateResultsController() {
         resultsController = dataSource.createResultsController()
         configureResultsController(resultsController) { [weak self] in

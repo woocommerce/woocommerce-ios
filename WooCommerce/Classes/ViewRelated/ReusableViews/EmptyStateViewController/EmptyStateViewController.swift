@@ -103,7 +103,6 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
 
         messageLabel.applyBodyStyle()
         detailsLabel.applySecondaryBodyStyle()
-        actionButton.applyPrimaryButtonStyle()
 
         keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)
     }
@@ -125,15 +124,25 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
         detailsLabel.text = config.details
         detailsLabel.isHidden = config.details == nil
 
-        actionButton.setTitle(config.actionButtonTitle, for: .normal)
-        actionButton.isHidden = config.actionButtonTitle == nil
+        actionButton.setTitle(config.action?.title, for: .normal)
+        actionButton.isHidden = config.action == nil
+
+        switch config.action {
+        case .button:
+            actionButton.applyPrimaryButtonStyle()
+        case .text:
+            actionButton.applyLinkButtonStyle()
+            actionButton.contentEdgeInsets = .zero
+        default:
+            break
+        }
 
         lastActionButtonTapHandler = {
             switch config {
-            case .withLink(_, _, _, _, let linkURL):
+            case .withLink(_, _, _, let action):
                 return { [weak self] in
                     if let self = self {
-                        WebviewHelper.launch(linkURL, with: self)
+                        WebviewHelper.launch(action.linkURL, with: self)
                     }
                 }
             default:
@@ -224,12 +233,36 @@ extension EmptyStateViewController {
     /// The configuration for this Empty State View
     enum Config {
 
+        /// Configuration for the actionable button
+        enum Action {
+
+            /// Represent a prominent pink putton style
+            case button(title: String, linkURL: URL)
+
+            /// Represent a pink link style
+            case text(title: String, linkURL: URL)
+
+            fileprivate var title: String {
+                switch self {
+                case let .button(title, _), let .text(title, _):
+                    return title
+                }
+            }
+
+            fileprivate var linkURL: URL {
+                switch self {
+                case let .button(_, url), let .text(_, url):
+                    return url
+                }
+            }
+        }
+
         /// Show a message and image only.
         ///
         case simple(message: NSAttributedString, image: UIImage)
         /// Show all the elements and a button which navigates to a URL when tapped.
         ///
-        case withLink(message: NSAttributedString, image: UIImage, details: String, linkTitle: String, linkURL: URL)
+        case withLink(message: NSAttributedString, image: UIImage, details: String, action: Action)
 
         /// The font used by the message's `UILabel`.
         ///
@@ -243,7 +276,7 @@ extension EmptyStateViewController {
         fileprivate var message: NSAttributedString {
             switch self {
             case .simple(let message, _),
-                 .withLink(let message, _, _, _, _):
+                 .withLink(let message, _, _, _):
                 return message
             }
         }
@@ -251,7 +284,7 @@ extension EmptyStateViewController {
         fileprivate var image: UIImage {
             switch self {
             case .simple(_, let image),
-                 .withLink(_, let image, _, _, _):
+                 .withLink(_, let image, _, _):
                 return image
             }
         }
@@ -260,17 +293,17 @@ extension EmptyStateViewController {
             switch self {
             case .simple:
                 return nil
-            case .withLink(_, _, let detail, _, _):
+            case .withLink(_, _, let detail, _):
                 return detail
             }
         }
 
-        fileprivate var actionButtonTitle: String? {
+        fileprivate var action: Action? {
             switch self {
             case .simple:
                 return nil
-            case .withLink(_, _, _, let linkTitle, _):
-                return linkTitle
+            case .withLink(_, _, _, let action):
+                return action
             }
         }
     }

@@ -285,6 +285,23 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         XCTAssertEqual(viewModel.product.externalURL, externalURL)
         XCTAssertEqual(viewModel.product.buttonText, buttonText)
     }
+
+    func testUpdatingGroupedProductIDs() {
+        // Arrange
+        let product = MockProduct().product()
+        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: product)
+        let viewModel = ProductFormViewModel(product: product,
+                                             productImageActionHandler: productImageActionHandler,
+                                             isEditProductsRelease2Enabled: true,
+                                             isEditProductsRelease3Enabled: false)
+
+        // Action
+        let groupedProductIDs: [Int64] = [630, 22]
+        viewModel.updateGroupedProductIDs(groupedProductIDs)
+
+        // Assert
+        XCTAssertEqual(viewModel.product.groupedProducts, groupedProductIDs)
+    }
 }
 
 private extension ProductFormViewModel_UpdatesTests {

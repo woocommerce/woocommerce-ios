@@ -41,8 +41,8 @@ public class ProductStore: Store {
             resetStoredProducts(onCompletion: onCompletion)
         case .retrieveProduct(let siteID, let productID, let onCompletion):
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
-        case .retrieveProducts(let siteID, let productIDs, let onCompletion):
-            retrieveProducts(siteID: siteID, productIDs: productIDs, onCompletion: onCompletion)
+        case .retrieveProducts(let siteID, let productIDs, let pageNumber, let pageSize, let onCompletion):
+            retrieveProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .searchProducts(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
             searchProducts(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .synchronizeProducts(let siteID,
@@ -176,13 +176,15 @@ private extension ProductStore {
     ///
     func retrieveProducts(siteID: Int64,
                           productIDs: [Int64],
+                          pageNumber: Int,
+                          pageSize: Int,
                           onCompletion: @escaping (Result<[Product], Error>) -> Void) {
         guard productIDs.isEmpty == false else {
             onCompletion(.success([]))
             return
         }
 
-        remote.loadProducts(for: siteID, by: productIDs) { [weak self] result in
+        remote.loadProducts(for: siteID, by: productIDs, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
             switch result {
             case .success(let products):
                 self?.upsertStoredProductsInBackground(readOnlyProducts: products, onCompletion: {

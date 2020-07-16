@@ -551,7 +551,7 @@ extension ProductFormViewController: UITableViewDelegate {
                 editSKU()
                 break
             case .groupedProducts:
-                // TODO-2199: implement grouped products editing action
+                editGroupedProducts()
                 break
             }
         }
@@ -861,12 +861,35 @@ private extension ProductFormViewController {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        // TODO-2000: Edit Product M3 analytics
+        // TODO-2509: Edit Product M3 analytics
         let hasChangedData = sku != product.sku
         guard hasChangedData else {
             return
         }
         viewModel.updateSKU(sku)
+    }
+}
+
+// MARK: Action - Edit Grouped Products (Grouped Products Only)
+//
+private extension ProductFormViewController {
+    func editGroupedProducts() {
+        let viewController = GroupedProductsViewController(product: product) { [weak self] groupedProductIDs in
+            self?.onEditGroupedProductsCompletion(groupedProductIDs: groupedProductIDs)
+        }
+        show(viewController, sender: self)
+    }
+
+    func onEditGroupedProductsCompletion(groupedProductIDs: [Int64]) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+        // TODO-2000: Edit Product M3 analytics
+        let hasChangedData = groupedProductIDs != product.groupedProducts
+        guard hasChangedData else {
+            return
+        }
+        viewModel.updateGroupedProductIDs(groupedProductIDs)
     }
 }
 

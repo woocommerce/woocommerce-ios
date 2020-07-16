@@ -124,15 +124,15 @@ private extension StatsVersionCoordinatorTests {
         var versions: [StatsVersion] = []
 
         waitForExpectation(timeout: 1.0) { exp in
-            let stateCoordinator = StatsVersionCoordinator(siteID: 134)
-            stateCoordinator.onVersionChange = { _, currentVersion in
+            let versionCoordinator = StatsVersionCoordinator(siteID: 134)
+            versionCoordinator.onVersionChange = { _, currentVersion in
                 versions.append(currentVersion)
                 if versions.count >= expectedVersionChangesCount {
                     exp.fulfill()
                 }
             }
 
-            stateCoordinator.loadLastShownVersionAndCheckV4Eligibility()
+            versionCoordinator.loadLastShownVersionAndCheckV4Eligibility()
         }
 
         return versions

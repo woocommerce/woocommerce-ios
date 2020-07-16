@@ -79,12 +79,6 @@ final class ProductListMultiSelectorDataSource: PaginatedListSelectorDataSource 
     }
 }
 
-extension ProductListMultiSelectorDataSource {
-    func addProducts(_ productIDs: [Int64]) {
-        selectedProductIDs = (selectedProductIDs + productIDs).removingDuplicates()
-    }
-}
-
 private extension ProductListMultiSelectorDataSource {
     func isProductSelected(_ product: Product) -> Bool {
         return selectedProductIDs.contains(product.productID)

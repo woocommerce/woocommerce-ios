@@ -44,19 +44,16 @@ final class StatsVersionStateCoordinator {
             }
 
             let lastStatsVersion: StatsVersion = initialStatsVersion ?? StatsVersion.v3
-            let state = StatsVersionState.initial(statsVersion: lastStatsVersion)
-            self.version = state
+            self.version = lastStatsVersion
 
             // Execute network request to check if the API supports the V4 stats
             let action = AvailabilityAction.checkStatsV4Availability(siteID: self.siteID) { [weak self] isStatsV4Available in
                 guard let self = self else {
                     return
                 }
-                let statsVersion: StatsVersion = isStatsV4Available ? .v4: .v3
-
-                let nextState = StatsVersionState.initial(statsVersion: statsVersion)
-                if nextState != self.version {
-                    self.version = nextState
+                let nextVersion: StatsVersion = isStatsV4Available ? .v4: .v3
+                if nextVersion != self.version {
+                    self.version = nextVersion
                 }
             }
             ServiceLocator.stores.dispatch(action)

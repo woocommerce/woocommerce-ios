@@ -20,7 +20,7 @@ final class StatsVersionStateCoordinator {
 
     private let siteID: Int64
 
-    private var version: StatsVersionState? {
+    private var version: StatsVersion? {
         didSet {
             if let state = version {
                 onVersionChange?(oldValue, state)

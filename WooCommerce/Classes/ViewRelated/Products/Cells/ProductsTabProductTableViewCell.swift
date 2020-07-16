@@ -87,6 +87,16 @@ extension ProductsTabProductTableViewCell {
         let selectedBackgroundColor = isSelected ? UIColor.primary.withAlphaComponent(0.2): .listForeground
         backgroundColor = selectedBackgroundColor
     }
+
+    func configureAccessoryDeleteButton(onTap: @escaping () -> Void) {
+        let deleteButton = UIButton(type: .detailDisclosure)
+        deleteButton.setImage(.deleteCellImage, for: .normal)
+        deleteButton.tintColor = .systemColor(.tertiaryLabel)
+        deleteButton.on(.touchUpInside) { _ in
+            onTap()
+        }
+        accessoryView = deleteButton
+    }
 }
 
 private extension ProductsTabProductTableViewCell {

@@ -59,7 +59,7 @@ extension MockProductsRemote: ProductsEndpointsProviding {
         }
     }
 
-    func loadProducts(for siteID: Int64, by productIDs: [Int64], completion: @escaping (Result<[Product], Error>) -> Void) {
+    func loadProducts(for siteID: Int64, by productIDs: [Int64], pageNumber: Int, pageSize: Int, completion: @escaping (Result<[Product], Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else {
                 return

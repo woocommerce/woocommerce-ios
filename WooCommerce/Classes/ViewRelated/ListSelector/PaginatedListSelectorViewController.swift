@@ -10,6 +10,9 @@ protocol PaginatedListSelectorDataSource {
     associatedtype StorageModel: ResultsControllerMutableType
     associatedtype Cell: UITableViewCell
 
+    /// Optional custom sorting strategy for storage models in the paginated list. Default is `nil`.
+    var customResultsSortOrder: ((StorageModel.ReadOnlyType, StorageModel.ReadOnlyType) -> Bool)? { get }
+
     /// The model that is currently selected in the list.
     var selected: StorageModel.ReadOnlyType? { get }
 
@@ -29,6 +32,13 @@ protocol PaginatedListSelectorDataSource {
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?)
 }
 
+// Default implementation for optional variables/functions.
+extension PaginatedListSelectorDataSource {
+    var customResultsSortOrder: ((StorageModel.ReadOnlyType, StorageModel.ReadOnlyType) -> Bool)? {
+        nil
+    }
+}
+
 /// Displays a paginated list (implemented by table view) for the user to select a generic model.
 ///
 final class PaginatedListSelectorViewController<DataSource: PaginatedListSelectorDataSource, Model, StorageModel, Cell>: UIViewController,
@@ -40,7 +50,7 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
 
     private let rowType = Cell.self
 
-    @IBOutlet private weak var tableView: UITableView!
+    private lazy var tableView: UITableView = UITableView(frame: .zero, style: viewProperties.tableViewStyle)
 
     /// Pull To Refresh Support.
     ///
@@ -104,7 +114,7 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
         self.viewProperties = viewProperties
         self.dataSource = dataSource
         self.onDismiss = onDismiss
-        super.init(nibName: "PaginatedListSelectorViewController", bundle: nil)
+        super.init(nibName: nil, bundle: nil)
     }
 
     required init?(coder: NSCoder) {
@@ -131,6 +141,16 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
         super.viewWillDisappear(animated)
     }
 
+    // MARK: Public functions
+
+    func updateResultsController() {
+        resultsController = dataSource.createResultsController()
+        configureResultsController(resultsController) { [weak self] in
+            self?.tableView.reloadData()
+        }
+        transitionToResultsUpdatedState()
+    }
+
     // MARK: UITableViewDataSource
     //
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -146,12 +166,23 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
                                                        for: indexPath) as? Cell else {
                                                         fatalError()
         }
-        let model = resultsController.object(at: indexPath)
+        let model = object(at: indexPath)
         dataSource.configureCell(cell: cell, model: model)
 
         cell.accessoryType = dataSource.isSelected(model: model) ? .checkmark: .none
 
         return cell
+    }
+
+    private func object(at indexPath: IndexPath) -> Model {
+        guard let customResultsSortOrder = dataSource.customResultsSortOrder else {
+            return resultsController.object(at: indexPath)
+        }
+        let objects = resultsController.sections[indexPath.section].objects
+            .sorted(by: { (lhs, rhs) -> Bool in
+                return customResultsSortOrder(lhs, rhs)
+            })
+        return objects[indexPath.row]
     }
 
     // MARK: UITableViewDelegate
@@ -235,10 +266,24 @@ private extension PaginatedListSelectorViewController {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
 
+        tableView.separatorStyle = viewProperties.separatorStyle
+
+        // Removes extra header spacing in ghost content view.
+        tableView.estimatedSectionHeaderHeight = 0
+        tableView.sectionHeaderHeight = 0
+
+        view.addSubview(tableView)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToSafeArea(tableView)
+
         registerTableViewCells()
     }
 
     func registerTableViewCells() {
+        guard Bundle.main.path(forResource: rowType.classNameWithoutNamespaces, ofType: "nib") != nil else {
+            tableView.register(rowType.self, forCellReuseIdentifier: rowType.reuseIdentifier)
+            return
+        }
         tableView.register(rowType.loadNib(), forCellReuseIdentifier: rowType.reuseIdentifier)
     }
 

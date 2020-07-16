@@ -7,7 +7,7 @@ import Foundation
 public protocol ProductsEndpointsProviding {
     func loadProduct(for siteID: Int64, productID: Int64, completion: @escaping (Result<Product, Error>) -> Void)
 
-    func loadProducts(for siteID: Int64, by productIDs: [Int64], completion: @escaping (Result<[Product], Error>) -> Void)
+    func loadProducts(for siteID: Int64, by productIDs: [Int64], pageNumber: Int, pageSize: Int, completion: @escaping (Result<[Product], Error>) -> Void)
 }
 
 /// Product: Remote Endpoints
@@ -70,9 +70,15 @@ public final class ProductsRemote: Remote, ProductsEndpointsProviding {
     /// - Parameters:
     ///     - siteID: We are fetching remote products for this site.
     ///     - productIDs: The array of product IDs that are requested.
+    ///     - pageNumber: Number of page that should be retrieved.
+    ///     - pageSize: Number of products to be retrieved per page.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadProducts(for siteID: Int64, by productIDs: [Int64], completion: @escaping (Result<[Product], Error>) -> Void) {
+    public func loadProducts(for siteID: Int64,
+                             by productIDs: [Int64],
+                             pageNumber: Int = Default.pageNumber,
+                             pageSize: Int = Default.pageSize,
+                             completion: @escaping (Result<[Product], Error>) -> Void) {
         guard productIDs.isEmpty == false else {
             completion(.success([]))
             return
@@ -81,7 +87,11 @@ public final class ProductsRemote: Remote, ProductsEndpointsProviding {
         let stringOfProductIDs = productIDs.map { String($0) }
             .filter { !$0.isEmpty }
             .joined(separator: ",")
-        let parameters = [ ParameterKey.include: stringOfProductIDs ]
+        let parameters = [
+            ParameterKey.include: stringOfProductIDs,
+            ParameterKey.page: String(pageNumber),
+            ParameterKey.perPage: String(pageSize),
+        ]
         let path = Path.products
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
         let mapper = ProductListMapper(siteID: siteID)

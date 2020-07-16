@@ -25,3 +25,35 @@ class ProductTagsViewController: UIViewController {
     }
 
 }
+
+// MARK: - Constants
+//
+private extension ProductTagsViewController {
+
+    /// Table Rows
+    ///
+    enum Row {
+        /// Listed in the order they appear on screen
+        case tagsTextField
+        case tag
+
+        var reuseIdentifier: String {
+            switch self {
+            case .tagsTextField:
+                return TextFieldTableViewCell.reuseIdentifier
+            case .tag:
+                return BasicTableViewCell.reuseIdentifier
+            }
+        }
+    }
+
+    /// Table Sections
+    ///
+    struct Section: RowIterable {
+        let rows: [Row]
+
+        init(rows: [Row]) {
+            self.rows = rows
+        }
+    }
+}

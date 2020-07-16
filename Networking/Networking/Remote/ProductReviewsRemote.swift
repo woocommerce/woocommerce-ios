@@ -4,7 +4,7 @@ import Foundation
 ///
 /// The required methods are intentionally incomplete. Feel free to add the other ones.
 ///
-public protocol ProductReviewsEndpointsProviding {
+public protocol ProductReviewsRemoteProtocol {
     func loadProductReview(for siteID: Int64,
                            reviewID: Int64,
                            completion: @escaping (Result<ProductReview, Error>) -> Void)
@@ -12,7 +12,7 @@ public protocol ProductReviewsEndpointsProviding {
 
 /// Product reviews: Remote Endpoints
 ///
-public final class ProductReviewsRemote: Remote, ProductReviewsEndpointsProviding {
+public final class ProductReviewsRemote: Remote, ProductReviewsRemoteProtocol {
 
     // MARK: - Product Reviews
 

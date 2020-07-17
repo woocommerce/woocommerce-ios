@@ -38,7 +38,7 @@ final class MockProductsRemote {
 
 // MARK: - ProductsEndpointsProviding
 
-extension MockProductsRemote: ProductsEndpointsProviding {
+extension MockProductsRemote: ProductsRemoteProtocol {
 
     func loadProduct(for siteID: Int64,
                      productID: Int64,

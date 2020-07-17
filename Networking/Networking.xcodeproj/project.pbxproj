@@ -27,6 +27,7 @@
 		02698CF624C17FC1005337C4 /* product-alternative-types.json in Resources */ = {isa = PBXBuildFile; fileRef = 02698CF524C17FC1005337C4 /* product-alternative-types.json */; };
 		02698CF824C183A5005337C4 /* ProductVariationListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02698CF724C183A5005337C4 /* ProductVariationListMapperTests.swift */; };
 		02698CFA24C188E9005337C4 /* product-variations-load-all-alternative-types.json in Resources */ = {isa = PBXBuildFile; fileRef = 02698CF924C188E8005337C4 /* product-variations-load-all-alternative-types.json */; };
+		02698CFC24C1B0CE005337C4 /* product-variations-load-all-first-on-sale-empty-sale-price.json in Resources */ = {isa = PBXBuildFile; fileRef = 02698CFB24C1B0CE005337C4 /* product-variations-load-all-first-on-sale-empty-sale-price.json */; };
 		026CF61A237D607A009563D4 /* ProductVariationAttribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026CF619237D607A009563D4 /* ProductVariationAttribute.swift */; };
 		026CF61E237D6985009563D4 /* ProductVariationListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026CF61D237D6985009563D4 /* ProductVariationListMapper.swift */; };
 		026CF620237D69D6009563D4 /* ProductVariationsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026CF61F237D69D6009563D4 /* ProductVariationsRemote.swift */; };
@@ -377,6 +378,7 @@
 		02698CF524C17FC1005337C4 /* product-alternative-types.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-alternative-types.json"; sourceTree = "<group>"; };
 		02698CF724C183A5005337C4 /* ProductVariationListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationListMapperTests.swift; sourceTree = "<group>"; };
 		02698CF924C188E8005337C4 /* product-variations-load-all-alternative-types.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-variations-load-all-alternative-types.json"; sourceTree = "<group>"; };
+		02698CFB24C1B0CE005337C4 /* product-variations-load-all-first-on-sale-empty-sale-price.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-variations-load-all-first-on-sale-empty-sale-price.json"; sourceTree = "<group>"; };
 		026CF619237D607A009563D4 /* ProductVariationAttribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationAttribute.swift; sourceTree = "<group>"; };
 		026CF61D237D6985009563D4 /* ProductVariationListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationListMapper.swift; sourceTree = "<group>"; };
 		026CF61F237D69D6009563D4 /* ProductVariationsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationsRemote.swift; sourceTree = "<group>"; };
@@ -1113,6 +1115,7 @@
 				457FC68B2382B2FD00B41B02 /* product-update.json */,
 				026CF623237D839A009563D4 /* product-variations-load-all.json */,
 				02698CF924C188E8005337C4 /* product-variations-load-all-alternative-types.json */,
+				02698CFB24C1B0CE005337C4 /* product-variations-load-all-first-on-sale-empty-sale-price.json */,
 				CE0A0F1E223998A00075ED8D /* products-load-all.json */,
 				0282DD90233A120A006A5FDB /* products-search-photo.json */,
 				45D685F923D0C3CF005F87D0 /* product-search-sku.json */,
@@ -1514,6 +1517,7 @@
 				D8FBFF2922D52AFB006E3336 /* order-stats-v4-year.json in Resources */,
 				02BA23CA22EEF62C009539E7 /* order-stats-v4-wcadmin-activated.json in Resources */,
 				45AB8B1324AA34CB00B5B36E /* product-tags-deleted.json in Resources */,
+				02698CFC24C1B0CE005337C4 /* product-variations-load-all-first-on-sale-empty-sale-price.json in Resources */,
 				74A1D265211898F000931DFA /* site-visits-month.json in Resources */,
 				74159623224D2C86003C21CF /* settings-product.json in Resources */,
 				CEC4BF93234E7EE0008D9195 /* refunds-all.json in Resources */,

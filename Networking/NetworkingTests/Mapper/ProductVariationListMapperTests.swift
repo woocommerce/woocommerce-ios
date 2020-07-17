@@ -16,64 +16,74 @@ final class ProductVariationListMapperTests: XCTestCase {
     /// Verifies that all of the ProductVariation Fields are parsed correctly.
     ///
     func testProductVariationFieldsAreProperlyParsed() throws {
-        let product = try XCTUnwrap(mapLoadProductVariationListResponse()?.first)
+        let productVariation = try XCTUnwrap(mapLoadProductVariationListResponse()?.first)
 
-        XCTAssertEqual(product.siteID, dummySiteID)
-        XCTAssertEqual(product.productID, dummyProductID)
-        XCTAssertEqual(product.permalink, "https://chocolate.com/marble")
+        XCTAssertEqual(productVariation.siteID, dummySiteID)
+        XCTAssertEqual(productVariation.productID, dummyProductID)
+        XCTAssertEqual(productVariation.productVariationID, 1275)
+        XCTAssertEqual(productVariation.permalink, "https://chocolate.com/marble")
 
         let dateCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-11-14T12:40:55")
         let dateModified = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-11-14T13:06:42")
-        XCTAssertEqual(product.dateCreated, dateCreated)
-        XCTAssertEqual(product.dateModified, dateModified)
+        XCTAssertEqual(productVariation.dateCreated, dateCreated)
+        XCTAssertEqual(productVariation.dateModified, dateModified)
 
-        XCTAssertEqual(product.description, "<p>Nutty chocolate marble, 99% and organic.</p>\n")
-        XCTAssertEqual(product.sku, "99%-nuts-marble")
+        XCTAssertEqual(productVariation.description, "<p>Nutty chocolate marble, 99% and organic.</p>\n")
+        XCTAssertEqual(productVariation.sku, "99%-nuts-marble")
 
-        XCTAssertEqual(product.price, "12")
-        XCTAssertEqual(product.regularPrice, "12")
-        XCTAssertEqual(product.salePrice, "8")
-        XCTAssertFalse(product.onSale)
+        XCTAssertEqual(productVariation.price, "12")
+        XCTAssertEqual(productVariation.regularPrice, "12")
+        XCTAssertEqual(productVariation.salePrice, "8")
+        XCTAssertFalse(productVariation.onSale)
 
-        XCTAssertTrue(product.purchasable)
-        XCTAssertFalse(product.virtual)
+        XCTAssertTrue(productVariation.purchasable)
+        XCTAssertFalse(productVariation.virtual)
 
-        XCTAssertTrue(product.downloadable)
-        XCTAssertEqual(product.downloadLimit, -1)
-        XCTAssertEqual(product.downloadExpiry, 0)
+        XCTAssertTrue(productVariation.downloadable)
+        XCTAssertEqual(productVariation.downloadLimit, -1)
+        XCTAssertEqual(productVariation.downloadExpiry, 0)
 
-        XCTAssertEqual(product.taxStatusKey, "taxable")
-        XCTAssertEqual(product.taxClass, "")
+        XCTAssertEqual(productVariation.taxStatusKey, "taxable")
+        XCTAssertEqual(productVariation.taxClass, "")
 
-        XCTAssertTrue(product.manageStock)
-        XCTAssertEqual(product.stockQuantity, 16)
+        XCTAssertTrue(productVariation.manageStock)
+        XCTAssertEqual(productVariation.stockQuantity, 16)
 
-        XCTAssertEqual(product.backordersKey, "notify")
-        XCTAssertTrue(product.backordersAllowed)
-        XCTAssertFalse(product.backordered)
+        XCTAssertEqual(productVariation.backordersKey, "notify")
+        XCTAssertTrue(productVariation.backordersAllowed)
+        XCTAssertFalse(productVariation.backordered)
 
-        XCTAssertEqual(product.weight, "2.5")
-        XCTAssertEqual(product.dimensions, ProductDimensions(length: "10", width: "2.5", height: ""))
+        XCTAssertEqual(productVariation.weight, "2.5")
+        XCTAssertEqual(productVariation.dimensions, ProductDimensions(length: "10", width: "2.5", height: ""))
 
-        XCTAssertEqual(product.shippingClass, "")
-        XCTAssertEqual(product.shippingClassID, 0)
+        XCTAssertEqual(productVariation.shippingClass, "")
+        XCTAssertEqual(productVariation.shippingClassID, 0)
 
-        XCTAssertNotNil(product.image)
+        XCTAssertNotNil(productVariation.image)
 
-        XCTAssertEqual(product.attributes.count, 3)
+        XCTAssertEqual(productVariation.attributes.count, 3)
 
-        XCTAssertEqual(product.menuOrder, 8)
+        XCTAssertEqual(productVariation.menuOrder, 8)
     }
 
     /// Verifies that the fields of the ProductVariation with alternative types are parsed correctly when they have different types than in the struct.
     /// Currently, `price`, `salePrice` and `manageStock` allow alternative types.
     ///
-    func testThatProductAlternativeTypesAreProperlyParsed() throws {
-        let product = try XCTUnwrap(mapLoadProductVariationListResponseWithAlternativeTypes()?.first)
+    func testThatProductVariationAlternativeTypesAreProperlyParsed() throws {
+        let productVariation = try XCTUnwrap(mapLoadProductVariationListResponseWithAlternativeTypes()?.first)
 
-        XCTAssertEqual(product.price, "16")
-        XCTAssertEqual(product.salePrice, "12.5")
-        XCTAssertTrue(product.manageStock)
+        XCTAssertEqual(productVariation.price, "16")
+        XCTAssertEqual(productVariation.salePrice, "12.5")
+        XCTAssertTrue(productVariation.manageStock)
+    }
+
+    /// Verifies that the `salePrice` field of the ProductVariation is parsed to "0" when the product variation is on sale and the sale price is an empty string
+    ///
+    func testThatProductVariationSalePriceIsProperlyParsedWhenOnSale() throws {
+        let productVariation = try XCTUnwrap(mapLoadProductVariationOnSaleWithEmptySalePriceResponse()?.first)
+
+        XCTAssertEqual(productVariation.salePrice, "0")
+        XCTAssertTrue(productVariation.onSale)
     }
 }
 
@@ -101,5 +111,11 @@ private extension ProductVariationListMapperTests {
     ///
     func mapLoadProductVariationListResponseWithAlternativeTypes() -> [ProductVariation]? {
         return mapProductVariations(from: "product-variations-load-all-alternative-types")
+    }
+
+    /// Returns the ProductVariationListMapper output upon receiving a product variation on sale, with empty sale price
+    ///
+    func mapLoadProductVariationOnSaleWithEmptySalePriceResponse() -> [ProductVariation]? {
+        return mapProductVariations(from: "product-variations-load-all-first-on-sale-empty-sale-price")
     }
 }

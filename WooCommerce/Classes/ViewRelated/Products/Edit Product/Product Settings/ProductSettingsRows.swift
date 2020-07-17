@@ -154,7 +154,7 @@ enum ProductSettingsRows {
         let cellTypes: [UITableViewCell.Type] = [SettingTitleAndValueTableViewCell.self]
     }
 
-    struct EnableReviews: ProductSettingsRowMediator {
+    struct ReviewsAllowed: ProductSettingsRowMediator {
         private let settings: ProductSettings
 
         init(_ settings: ProductSettings) {

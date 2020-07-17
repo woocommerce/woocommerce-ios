@@ -33,7 +33,7 @@ enum ProductSettingsSections {
 
         init(_ settings: ProductSettings) {
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease3) {
-                rows = [ProductSettingsRows.EnableReviews(settings),
+                rows = [ProductSettingsRows.ReviewsAllowed(settings),
                         ProductSettingsRows.Slug(settings),
                         ProductSettingsRows.PurchaseNote(settings),
                         ProductSettingsRows.MenuOrder(settings)]

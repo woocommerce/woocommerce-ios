@@ -306,7 +306,8 @@ public struct Product: Codable, GeneratedCopiable {
                                                             forKey: .manageStock,
                                                             alternativeTypes: [
                                                                 .string(transform: { value in
-                                                                    // A bool could not be parsed — check if "parent" is set, and if so, set manageStock to `true`
+                                                                    // A bool could not be parsed — check if "parent" is set, and if so, set manageStock to
+                                                                    // `true`
                                                                     value.lowercased() == Values.manageStockParent ? true : false
                                                                 })
         ]) ?? false

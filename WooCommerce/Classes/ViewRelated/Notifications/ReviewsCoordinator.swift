@@ -10,14 +10,17 @@ final class ReviewsCoordinator: Coordinator {
 
     private let pushNotificationsManager: PushNotesManager
     private let storesManager: StoresManager
+    private let noticePresenter: NoticePresenter
 
     private var observationToken: ObservationToken?
 
     init(pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
-         storesManager: StoresManager = ServiceLocator.stores) {
+         storesManager: StoresManager = ServiceLocator.stores,
+         noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
 
         self.pushNotificationsManager = pushNotificationsManager
         self.storesManager = storesManager
+        self.noticePresenter = noticePresenter
 
         self.navigationController = WooNavigationController(rootViewController: ReviewsViewController())
     }
@@ -43,9 +46,8 @@ final class ReviewsCoordinator: Coordinator {
             }
 
             switch result {
-            case .failure(let error):
-                #warning("present error")
-                print("error \(error)")
+            case .failure:
+                self.noticePresenter.enqueue(notice: Notice(title: Localization.failedToRetrieveNotificationDetails))
             case .success(let parcel):
                 let detailsVC = ReviewDetailsViewController(productReview: parcel.review,
                                                             product: parcel.product,
@@ -55,5 +57,15 @@ final class ReviewsCoordinator: Coordinator {
         }
 
         storesManager.dispatch(action)
+    }
+}
+
+// MARK: - Public Utils
+
+extension ReviewsCoordinator {
+    enum Localization {
+        static let failedToRetrieveNotificationDetails =
+            NSLocalizedString("Failed to retrieve the review notification details.",
+                              comment: "An error message shown when failing to retrieve information to present a view for a review push notification.")
     }
 }

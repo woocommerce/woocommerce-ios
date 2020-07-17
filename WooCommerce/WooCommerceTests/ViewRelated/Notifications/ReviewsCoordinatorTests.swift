@@ -11,6 +11,7 @@ import Yosemite
 final class ReviewsCoordinatorTests: XCTestCase {
     private var pushNotificationsManager: MockPushNotificationsManager!
     private var storesManager: MockupStoresManager!
+    private var noticePresenter: MockNoticePresenter!
 
     private var reviewsCoordinator: ReviewsCoordinator!
 
@@ -19,13 +20,16 @@ final class ReviewsCoordinatorTests: XCTestCase {
 
         pushNotificationsManager = MockPushNotificationsManager()
         storesManager = MockupStoresManager(sessionManager: SessionManager.testingInstance)
+        noticePresenter = MockNoticePresenter()
 
         reviewsCoordinator = ReviewsCoordinator(pushNotificationsManager: pushNotificationsManager,
-                                                storesManager: storesManager)
+                                                storesManager: storesManager,
+                                                noticePresenter: noticePresenter)
     }
 
     override func tearDown() {
         reviewsCoordinator = nil
+        noticePresenter = nil
         storesManager = nil
         pushNotificationsManager = nil
 
@@ -105,8 +109,39 @@ final class ReviewsCoordinatorTests: XCTestCase {
         assertThat(topViewController, isAnInstanceOf: ReviewDetailsViewController.self)
     }
 
-    func testWhenFailingToRetrieveProductReviewDetailsThenItWillPresentANotice() {
+    func testWhenFailingToRetrieveProductReviewDetailsThenItWillPresentANotice() throws {
+        // Given
+        let pushNotification = PushNotification(noteID: 1_234, kind: .comment, message: "")
 
+        let navigationController = reviewsCoordinator.navigationController
+        reviewsCoordinator.start()
+
+        assertEmpty(noticePresenter.queuedNotices)
+
+        // When
+        pushNotificationsManager.sendInactiveNotification(pushNotification)
+
+        // Simulate that the network call return a parcel
+        let receivedAction = try XCTUnwrap(storesManager.receivedActions.first as? ProductReviewAction)
+        guard case .retrieveProductReviewFromNote(_, let completion) = receivedAction else {
+            return XCTFail("Expected retrieveProductReviewFromNote action.")
+        }
+        completion(.failure(NSError(domain: "domain", code: 0)))
+
+        // Wait for runloop to make sure NavigationController pushes happen
+        RunLoop.current.run(until: Date())
+
+        // Then
+        // A Notice should have been presented
+        XCTAssertEqual(noticePresenter.queuedNotices.count, 1)
+
+        let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
+        XCTAssertEqual(notice.title, ReviewsCoordinator.Localization.failedToRetrieveNotificationDetails)
+
+        // Only the Reviews list should still be visible
+        XCTAssertEqual(navigationController.viewControllers.count, 1)
+        let topViewController = try XCTUnwrap(navigationController.topViewController)
+        assertThat(topViewController, isAnInstanceOf: ReviewsViewController.self)
     }
 }
 

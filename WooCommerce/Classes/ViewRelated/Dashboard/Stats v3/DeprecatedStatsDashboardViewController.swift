@@ -26,13 +26,13 @@ final class DeprecatedDashboardStatsViewController: UIViewController {
 
     /// Shows the EmptyStateViewController
     ///
-    func displayEmptyViewController() {
+    private func displayEmptyViewController() {
         addChild(emptyStateViewController)
 
         emptyStateViewController.view.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(emptyStateViewController.view)
 
-        emptyStateViewController.view.pinSubviewToAllEdges(self.view)
+        emptyStateViewController.view.pinSubviewToAllEdges(view)
         emptyStateViewController.didMove(toParent: self)
         emptyStateViewController.configure(emptyStateConfig)
     }

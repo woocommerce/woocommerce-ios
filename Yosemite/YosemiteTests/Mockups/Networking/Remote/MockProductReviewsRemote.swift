@@ -28,7 +28,7 @@ final class MockProductReviewsRemote {
 
 // MARK: - ProductReviewsEndpointsProviding
 
-extension MockProductReviewsRemote: ProductReviewsEndpointsProviding {
+extension MockProductReviewsRemote: ProductReviewsRemoteProtocol {
     func loadProductReview(for siteID: Int64,
                            reviewID: Int64,
                            completion: @escaping (Result<ProductReview, Error>) -> Void) {

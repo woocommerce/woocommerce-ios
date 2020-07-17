@@ -234,7 +234,7 @@ extension EmptyStateViewController {
     enum Config {
 
         /// Configuration for the actionable button
-        enum Action {
+        enum LinkAction {
 
             /// Represent a prominent pink putton style
             case button(title: String, linkURL: URL)
@@ -262,7 +262,7 @@ extension EmptyStateViewController {
         case simple(message: NSAttributedString, image: UIImage)
         /// Show all the elements and a button which navigates to a URL when tapped.
         ///
-        case withLink(message: NSAttributedString, image: UIImage, details: String, action: Action)
+        case withLink(message: NSAttributedString, image: UIImage, details: String, action: LinkAction)
 
         /// The font used by the message's `UILabel`.
         ///
@@ -298,7 +298,7 @@ extension EmptyStateViewController {
             }
         }
 
-        fileprivate var action: Action? {
+        fileprivate var action: LinkAction? {
             switch self {
             case .simple:
                 return nil

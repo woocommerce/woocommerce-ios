@@ -7,12 +7,17 @@ final class ProductTagsViewController: UIViewController {
 
     private var sections: [Section] = []
 
+    private var product: Product
+    private var tags: [ProductTag]
+
     // Completion callback
     //
     typealias Completion = (_ tags: [ProductTag]) -> Void
     private let onCompletion: Completion
 
     init(product: Product, completion: @escaping Completion) {
+        self.product = product
+        tags = product.tags
         onCompletion = completion
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
@@ -72,6 +77,73 @@ private extension ProductTagsViewController {
         }.forEach {
             tableView.register($0.loadNib(), forCellReuseIdentifier: $0.reuseIdentifier)
         }
+    }
+}
+
+// MARK: - UITableViewDataSource Conformance
+//
+extension ProductTagsViewController: UITableViewDataSource {
+
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return sections.count
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return sections[section].rows.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let row = sections[indexPath.section].rows[indexPath.row]
+
+        let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
+        configure(cell, for: row, at: indexPath)
+
+        return cell
+    }
+}
+
+// MARK: - UITableViewDelegate Conformance
+//
+extension ProductTagsViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+}
+
+// MARK: - Support for UITableViewDataSource
+//
+private extension ProductTagsViewController {
+    /// Configure cellForRowAtIndexPath:
+    ///
+   func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+        switch cell {
+        case let cell as TextFieldTableViewCell:
+            configureSlug(cell: cell)
+        case let cell as BasicTableViewCell:
+            configureTag(cell: cell)
+        default:
+            fatalError("Unidentified product slug row type")
+        }
+    }
+
+    func configureSlug(cell: TextFieldTableViewCell) {
+//        cell.accessoryType = .none
+//
+//        let placeholder = NSLocalizedString("Slug", comment: "Placeholder in the Product Slug row on Edit Product Slug screen.")
+//
+//        let viewModel = TextFieldTableViewCell.ViewModel(text: productSettings.slug, placeholder: placeholder, onTextChange: { [weak self] newName in
+//            if let newName = newName {
+//                self?.productSettings.slug = newName
+//            }
+//            }, onTextDidBeginEditing: {
+//                //TODO: Add analytics track
+//        }, inputFormatter: nil, keyboardType: .default)
+//        cell.configure(viewModel: viewModel)
+//        cell.applyStyle(style: .body)
+    }
+
+    func configureTag(cell: BasicTableViewCell) {
+
     }
 }
 

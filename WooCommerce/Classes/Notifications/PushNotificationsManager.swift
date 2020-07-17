@@ -478,7 +478,7 @@ private extension PushNotificationsManager {
     }
 }
 
-// MARK: - ForegroundNotification Extension
+// MARK: - PushNotification Extension
 
 private extension PushNotification {
     static func from(userInfo: [AnyHashable: Any]) -> PushNotification? {

@@ -6,7 +6,12 @@ final class ProductSettingsViewModelTests: XCTestCase {
 
     func testOnReloadClosure() {
 
-        let product = MockProduct().product(status: .publish, featured: true, catalogVisibility: .search, slug: "this-is-a-slug", menuOrder: 1)
+        let product = MockProduct().product(status: .publish,
+                                            featured: true,
+                                            catalogVisibility: .search,
+                                            reviewsAllowed: false,
+                                            slug: "this-is-a-slug",
+                                            menuOrder: 1)
         let viewModel = ProductSettingsViewModel(product: product, password: "1234")
 
         // Act
@@ -21,6 +26,7 @@ final class ProductSettingsViewModelTests: XCTestCase {
                                                     featured: true,
                                                     password: "1234",
                                                     catalogVisibility: .search,
+                                                    reviewsAllowed: true,
                                                     slug: "this-is-a-slug",
                                                     purchaseNote: "This is a purchase note",
                                                     menuOrder: 1)

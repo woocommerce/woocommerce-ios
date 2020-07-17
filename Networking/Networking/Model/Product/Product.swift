@@ -470,6 +470,7 @@ public struct Product: Codable, GeneratedCopiable {
         try container.encode(statusKey, forKey: .statusKey)
         try container.encode(featured, forKey: .featured)
         try container.encode(catalogVisibilityKey, forKey: .catalogVisibilityKey)
+        try container.encode(reviewsAllowed, forKey: .reviewsAllowed)
         try container.encode(slug, forKey: .slug)
         try container.encode(purchaseNote, forKey: .purchaseNote)
         try container.encode(menuOrder, forKey: .menuOrder)

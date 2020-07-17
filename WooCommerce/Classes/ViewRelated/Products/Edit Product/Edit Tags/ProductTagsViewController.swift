@@ -1,14 +1,11 @@
 import UIKit
 import Yosemite
 
-class ProductTagsViewController: UIViewController {
+final class ProductTagsViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
 
-    }
+    private var sections: [Section] = []
 
     // Completion callback
     //
@@ -24,6 +21,58 @@ class ProductTagsViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        configureNavigationBar()
+        configureTableView()
+        registerTableViewCells(tableView)
+    }
+
+}
+
+// MARK: - View Configuration
+//
+private extension ProductTagsViewController {
+
+    func configureNavigationBar() {
+        title = NSLocalizedString("Tags", comment: "Product Tags navigation title")
+
+        removeNavigationBackBarButtonText()
+    }
+
+    func configureMainView() {
+        view.backgroundColor = .listBackground
+    }
+
+    func configureTableView() {
+        tableView.register(TextFieldTableViewCell.loadNib(), forCellReuseIdentifier: TextFieldTableViewCell.reuseIdentifier)
+
+        //tableView.dataSource = self
+        //tableView.delegate = self
+
+        tableView.backgroundColor = .listBackground
+        tableView.removeLastCellSeparator()
+    }
+
+    /// Since there is only a text field in this view, the text field become the first responder immediately when the view did appear
+    ///
+//    func configureTextFieldFirstResponder() {
+//        if let indexPath = sections.indexPathForRow(.slug) {
+//            let cell = tableView.cellForRow(at: indexPath) as? TextFieldTableViewCell
+//            cell?.becomeFirstResponder()
+//        }
+//    }
+
+    /// Registers all of the available TableViewCells
+    ///
+    func registerTableViewCells(_ tableView: UITableView) {
+        sections.flatMap {
+            $0.rows.compactMap { $0.cellType }
+        }.forEach {
+            tableView.register($0.loadNib(), forCellReuseIdentifier: $0.reuseIdentifier)
+        }
+    }
 }
 
 // MARK: - Constants
@@ -37,12 +86,20 @@ private extension ProductTagsViewController {
         case tagsTextField
         case tag
 
+        /// Returns the Row's Reuse Identifier
+        ///
         var reuseIdentifier: String {
+            return cellType.reuseIdentifier
+        }
+
+        /// Returns the Row's Cell Type
+        ///
+        var cellType: UITableViewCell.Type {
             switch self {
             case .tagsTextField:
-                return TextFieldTableViewCell.reuseIdentifier
+                return TextFieldTableViewCell.self
             case .tag:
-                return BasicTableViewCell.reuseIdentifier
+                return BasicTableViewCell.self
             }
         }
     }

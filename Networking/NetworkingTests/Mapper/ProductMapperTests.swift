@@ -4,7 +4,7 @@ import XCTest
 
 /// ProductMapper Unit Tests
 ///
-class ProductMapperTests: XCTestCase {
+final class ProductMapperTests: XCTestCase {
 
     /// Dummy Site ID.
     ///
@@ -13,10 +13,6 @@ class ProductMapperTests: XCTestCase {
     /// Dummy Product ID.
     ///
     private let dummyProductID: Int64 = 282
-
-    /// Dummy Product Variation ID.
-    ///
-    private let dummyProductVariationID: Int64 = 295
 
     /// Verifies that all of the Product Fields are parsed correctly.
     ///

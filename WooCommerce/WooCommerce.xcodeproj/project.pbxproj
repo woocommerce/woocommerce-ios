@@ -317,6 +317,7 @@
 		4590CEE5249BA46700949F05 /* AddProductCategoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4590CEE3249BA46700949F05 /* AddProductCategoryViewController.xib */; };
 		4592A54B24BF58DD00BC3DE0 /* ProductTagsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4592A54924BF58DD00BC3DE0 /* ProductTagsViewController.swift */; };
 		4592A54C24BF58DD00BC3DE0 /* ProductTagsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4592A54A24BF58DD00BC3DE0 /* ProductTagsViewController.xib */; };
+		4592A54E24C1BBE300BC3DE0 /* ProductTagsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4592A54D24C1BBE300BC3DE0 /* ProductTagsViewModel.swift */; };
 		45A24E5F2451DF1A0050606B /* ProductMenuOrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A24E5D2451DF1A0050606B /* ProductMenuOrderViewController.swift */; };
 		45A24E602451DF1A0050606B /* ProductMenuOrderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45A24E5E2451DF1A0050606B /* ProductMenuOrderViewController.xib */; };
 		45A4221A24ACC79C003B1E4C /* SwitchStoreNoticePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A4221924ACC79C003B1E4C /* SwitchStoreNoticePresenter.swift */; };
@@ -1195,6 +1196,7 @@
 		4590CEE3249BA46700949F05 /* AddProductCategoryViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddProductCategoryViewController.xib; sourceTree = "<group>"; };
 		4592A54924BF58DD00BC3DE0 /* ProductTagsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagsViewController.swift; sourceTree = "<group>"; };
 		4592A54A24BF58DD00BC3DE0 /* ProductTagsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductTagsViewController.xib; sourceTree = "<group>"; };
+		4592A54D24C1BBE300BC3DE0 /* ProductTagsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagsViewModel.swift; sourceTree = "<group>"; };
 		45A24E5D2451DF1A0050606B /* ProductMenuOrderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductMenuOrderViewController.swift; sourceTree = "<group>"; };
 		45A24E5E2451DF1A0050606B /* ProductMenuOrderViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductMenuOrderViewController.xib; sourceTree = "<group>"; };
 		45A4221924ACC79C003B1E4C /* SwitchStoreNoticePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchStoreNoticePresenter.swift; sourceTree = "<group>"; };
@@ -2531,6 +2533,7 @@
 			children = (
 				4592A54924BF58DD00BC3DE0 /* ProductTagsViewController.swift */,
 				4592A54A24BF58DD00BC3DE0 /* ProductTagsViewController.xib */,
+				4592A54D24C1BBE300BC3DE0 /* ProductTagsViewModel.swift */,
 			);
 			path = "Edit Tags";
 			sourceTree = "<group>";
@@ -4726,6 +4729,7 @@
 				D8736B5322EF4F5900A14A29 /* NotificationsBadgeController.swift in Sources */,
 				B541B220218A007C008FE7C1 /* NSMutableParagraphStyle+Helpers.swift in Sources */,
 				45AE582C230D9D35001901E3 /* OrderNoteHeaderTableViewCell.swift in Sources */,
+				4592A54E24C1BBE300BC3DE0 /* ProductTagsViewModel.swift in Sources */,
 				CE583A0B2107937F00D73C1C /* TextViewTableViewCell.swift in Sources */,
 				45AE150224A23F03005AA948 /* ProductParentCategoriesViewController.swift in Sources */,
 				B557652B20F681E800185843 /* StoreTableViewCell.swift in Sources */,

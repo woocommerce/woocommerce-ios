@@ -25,23 +25,23 @@ protocol DashboardUI: UIViewController {
 
 final class DashboardUIFactory {
     private let siteID: Int64
-    private let stateCoordinator: StatsVersionStateCoordinator
+    private let statsVersionCoordinator: StatsVersionCoordinator
 
     private var lastStatsV3DashboardUI: (DashboardUI & TopBannerPresenter)?
     private var lastStatsV4DashboardUI: DashboardUI?
 
     init(siteID: Int64) {
         self.siteID = siteID
-        self.stateCoordinator = StatsVersionStateCoordinator(siteID: siteID)
+        self.statsVersionCoordinator = StatsVersionCoordinator(siteID: siteID)
     }
 
     func reloadDashboardUI(onUIUpdate: @escaping (_ dashboardUI: DashboardUI) -> Void) {
-        stateCoordinator.onStateChange = { [weak self] (previousState, currentState) in
-            self?.onStatsVersionStateChange(previousState: previousState,
-                                            currentState: currentState,
-                                            onUIUpdate: onUIUpdate)
+        statsVersionCoordinator.onVersionChange = { [weak self] (previousVersion, currentVersion) in
+            self?.onStatsVersionChange(previousVersion: previousVersion,
+                                       currentVersion: currentVersion,
+                                       onUIUpdate: onUIUpdate)
         }
-        stateCoordinator.loadLastShownVersionAndCheckV4Eligibility()
+        statsVersionCoordinator.loadLastShownVersionAndCheckV4Eligibility()
     }
 
     private func statsV3DashboardUI() -> DashboardUI & TopBannerPresenter {
@@ -78,27 +78,24 @@ final class DashboardUIFactory {
 }
 
 private extension DashboardUIFactory {
-    func onStatsVersionStateChange(previousState: StatsVersionState?,
-                                   currentState: StatsVersionState,
-                                   onUIUpdate: @escaping (_ dashboardUI: DashboardUI) -> Void) {
-        switch currentState {
-        case .initial(let statsVersion):
-            saveLastShownStatsVersion(statsVersion)
+    func onStatsVersionChange(previousVersion: StatsVersion?,
+                              currentVersion: StatsVersion,
+                              onUIUpdate: @escaping (_ dashboardUI: DashboardUI) -> Void) {
+        saveLastShownStatsVersion(currentVersion)
 
-            let updatedDashboardUI = dashboardUI(statsVersion: statsVersion)
-            onUIUpdate(updatedDashboardUI)
+        let updatedDashboardUI = dashboardUI(statsVersion: currentVersion)
+        onUIUpdate(updatedDashboardUI)
 
-            if let topBannerPresenter = updatedDashboardUI as? TopBannerPresenter {
-                switch statsVersion {
-                case .v3:
-                    let topBannerView = DashboardTopBannerFactory.deprecatedStatsBannerView {
-                        updatedDashboardUI.remindStatsUpgradeLater()
-                    }
-                    topBannerPresenter.hideTopBanner(animated: false)
-                    topBannerPresenter.showTopBanner(topBannerView)
-                case .v4:
-                    topBannerPresenter.hideTopBanner(animated: true)
+        if let topBannerPresenter = updatedDashboardUI as? TopBannerPresenter {
+            switch currentVersion {
+            case .v3:
+                let topBannerView = DashboardTopBannerFactory.deprecatedStatsBannerView {
+                    updatedDashboardUI.remindStatsUpgradeLater()
                 }
+                topBannerPresenter.hideTopBanner(animated: false)
+                topBannerPresenter.showTopBanner(topBannerView)
+            case .v4:
+                topBannerPresenter.hideTopBanner(animated: true)
             }
         }
     }

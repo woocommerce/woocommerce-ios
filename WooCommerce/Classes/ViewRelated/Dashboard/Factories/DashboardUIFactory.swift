@@ -119,6 +119,6 @@ private extension Date {
         dateComponents.month = 9
         dateComponents.day = 1
 
-        return Calendar.current.date(from: dateComponents)
+        return Calendar(identifier: .gregorian).date(from: dateComponents)
     }
 }

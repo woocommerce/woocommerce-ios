@@ -1,5 +1,7 @@
 import Foundation
 
+/// Constructs and enqueues a `Notice` for informing the user that the site was switched.
+///
 final class SwitchStoreNoticePresenter {
 
     /// Present the switch notice to the user, with the new configured store name.

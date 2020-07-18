@@ -1,6 +1,6 @@
 import Foundation
 
-final class SwitchStoreNoticePresenter: NSObject {
+final class SwitchStoreNoticePresenter {
 
     /// Present the switch notice to the user, with the new configured store name.
     ///

@@ -1,8 +1,17 @@
 import Foundation
 
-/// Constructs and enqueues a `Notice` for informing the user that the site was switched.
+/// Constructs and enqueues a `Notice` for informing the user that the selected site was changed.
 ///
 final class SwitchStoreNoticePresenter {
+
+    private let sessionManager: SessionManager
+    private let noticePresenter: NoticePresenter
+
+    init(sessionManager: SessionManager = ServiceLocator.stores.sessionManager,
+         noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
+        self.sessionManager = sessionManager
+        self.noticePresenter = noticePresenter
+    }
 
     /// Present the switch notice to the user, with the new configured store name.
     ///

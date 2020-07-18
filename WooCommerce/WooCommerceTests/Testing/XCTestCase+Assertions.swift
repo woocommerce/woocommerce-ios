@@ -19,4 +19,13 @@ extension XCTestCase {
                       file: file,
                       line: line)
     }
+
+    /// Asserts that `subject` contains the given string.
+    ///
+    func assertThat(_ subject: String, contains value: String, file: StaticString = #file, line: UInt = #line) {
+        XCTAssertTrue(subject.contains(value),
+                      "Expected “\(subject)” to contain “\(value)”.",
+                      file: file,
+                      line: line)
+    }
 }

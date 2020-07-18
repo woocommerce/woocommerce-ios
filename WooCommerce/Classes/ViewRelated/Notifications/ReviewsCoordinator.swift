@@ -1,7 +1,10 @@
 
 import Foundation
 import UIKit
+
 import enum Yosemite.ProductReviewAction
+import enum Yosemite.NotificationAction
+import struct Yosemite.ProductReviewFromNoteParcel
 
 /// Coordinator for the Reviews tab.
 ///
@@ -49,14 +52,37 @@ final class ReviewsCoordinator: Coordinator {
             case .failure:
                 self.noticePresenter.enqueue(notice: Notice(title: Localization.failedToRetrieveNotificationDetails))
             case .success(let parcel):
-                let detailsVC = ReviewDetailsViewController(productReview: parcel.review,
-                                                            product: parcel.product,
-                                                            notification: parcel.note)
-                self.navigationController.pushViewController(detailsVC, animated: true)
+                guard let siteID = parcel.note.meta.identifier(forKey: .site) else {
+                    self.noticePresenter.enqueue(notice: Notice(title: Localization.failedToRetrieveNotificationDetails))
+                    return
+                }
+
+                // Switch to the correct store first if needed
+                let switchStoreUseCase = SwitchStoreUseCase(stores: self.storesManager)
+                switchStoreUseCase.switchStore(with: Int64(siteID)) { [weak self] siteChanged in
+                    guard let self = self else {
+                        return
+                    }
+
+                    self.pushReviewDetailsViewController(using: parcel)
+
+                    if siteChanged {
+                        let presenter = SwitchStoreNoticePresenter(sessionManager: self.storesManager.sessionManager,
+                                                                   noticePresenter: self.noticePresenter)
+                        presenter.presentStoreSwitchedNotice(configuration: .switchingStores)
+                    }
+                }
             }
         }
 
         storesManager.dispatch(action)
+    }
+
+    private func pushReviewDetailsViewController(using parcel: ProductReviewFromNoteParcel) {
+        let detailsVC = ReviewDetailsViewController(productReview: parcel.review,
+                                                    product: parcel.product,
+                                                    notification: parcel.note)
+        navigationController.pushViewController(detailsVC, animated: true)
     }
 }
 

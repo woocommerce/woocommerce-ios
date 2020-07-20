@@ -154,6 +154,37 @@ enum ProductSettingsRows {
         let cellTypes: [UITableViewCell.Type] = [SettingTitleAndValueTableViewCell.self]
     }
 
+    struct VirtualProduct: ProductSettingsRowMediator {
+        private let settings: ProductSettings
+
+        init(_ settings: ProductSettings) {
+            self.settings = settings
+        }
+
+        func configure(cell: UITableViewCell) {
+            guard let cell = cell as? SwitchTableViewCell else {
+                return
+            }
+
+            let title = NSLocalizedString("Virtual Product", comment: "Virtual Product label in Product Settings")
+
+            cell.title = title
+            cell.isOn = settings.reviewsAllowed
+            cell.onChange = { newValue in
+                // TODO-2509 Edit Product M3 analytics
+                self.settings.reviewsAllowed = newValue
+            }
+        }
+
+        func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
+            // Empty because we don't need to handle the tap on this cell
+        }
+
+        let reuseIdentifier: String = SwitchTableViewCell.reuseIdentifier
+
+        let cellTypes: [UITableViewCell.Type] = [SwitchTableViewCell.self]
+    }
+
     struct ReviewsAllowed: ProductSettingsRowMediator {
         private let settings: ProductSettings
 

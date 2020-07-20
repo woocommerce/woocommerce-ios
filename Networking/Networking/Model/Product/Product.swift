@@ -456,6 +456,7 @@ public struct Product: Codable, GeneratedCopiable {
         try container.encode(stockQuantity, forKey: .stockQuantity)
         try container.encode(backordersKey, forKey: .backordersKey)
         try container.encode(stockStatusKey, forKey: .stockStatusKey)
+        try container.encode(virtual, forKey: .virtual)
 
         // Categories
         try container.encode(categories, forKey: .categories)

@@ -169,10 +169,10 @@ enum ProductSettingsRows {
             let title = NSLocalizedString("Virtual Product", comment: "Virtual Product label in Product Settings")
 
             cell.title = title
-            cell.isOn = settings.reviewsAllowed
+            cell.isOn = settings.virtual
             cell.onChange = { newValue in
                 // TODO-2509 Edit Product M3 analytics
-                self.settings.reviewsAllowed = newValue
+                self.settings.virtual = newValue
             }
         }
 

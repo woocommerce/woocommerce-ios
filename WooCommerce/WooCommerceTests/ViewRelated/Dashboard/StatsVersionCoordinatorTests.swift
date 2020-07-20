@@ -3,7 +3,7 @@ import Storage
 import Yosemite
 @testable import WooCommerce
 
-final class StatsVersionStateCoordinatorTests: XCTestCase {
+final class StatsVersionCoordinatorTests: XCTestCase {
     private var mockStoresManager: MockupStatsVersionStoresManager!
 
     override func tearDown() {
@@ -19,13 +19,13 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         ServiceLocator.setStores(mockStoresManager)
 
         // V3 is returned because it is the default value if `statsVersionLastShown` is `nil`
-        let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3), .initial(statsVersion: .v4)]
+        let expectedVersions: [StatsVersion] = [.v3, .v4]
 
         // When
-        let actualStates = checkStatsVersionAndWait(expectedStatesCount: expectedStates.count)
+        let actualVersions = checkStatsVersionAndWait(expectedVersionChangesCount: expectedVersions.count)
 
         // Then
-        XCTAssertEqual(actualStates, expectedStates)
+        XCTAssertEqual(actualVersions, expectedVersions)
     }
 
     func testWhenV4IsUnavailableWhileNoStatsVersionWasShownBefore() {
@@ -36,13 +36,13 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         ServiceLocator.setStores(mockStoresManager)
 
         // We will only receive one change because the stats-check should return the same value.
-        let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3)]
+        let expectedVersions: [StatsVersion] = [.v3]
 
         // When
-        let actualStates = checkStatsVersionAndWait(expectedStatesCount: expectedStates.count)
+        let actualVersions = checkStatsVersionAndWait(expectedVersionChangesCount: expectedVersions.count)
 
         // Then
-        XCTAssertEqual(actualStates, expectedStates)
+        XCTAssertEqual(actualVersions, expectedVersions)
     }
 
     /// Stats v3 --> v4
@@ -53,13 +53,13 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         mockStoresManager.isStatsV4Available = true
         ServiceLocator.setStores(mockStoresManager)
 
-        let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3), .initial(statsVersion: .v4)]
+        let expectedVersions: [StatsVersion] = [.v3, .v4]
 
         // When
-        let actualStates = checkStatsVersionAndWait(expectedStatesCount: expectedStates.count)
+        let actualVersions = checkStatsVersionAndWait(expectedVersionChangesCount: expectedVersions.count)
 
         // Then
-        XCTAssertEqual(actualStates, expectedStates)
+        XCTAssertEqual(actualVersions, expectedVersions)
     }
 
     /// Stats v3 --> v3
@@ -71,13 +71,13 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         ServiceLocator.setStores(mockStoresManager)
 
         // We will only receive one change because the stats-check should return the same value.
-        let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3)]
+        let expectedVersions: [StatsVersion] = [.v3]
 
         // When
-        let actualStates = checkStatsVersionAndWait(expectedStatesCount: expectedStates.count)
+        let actualVersions = checkStatsVersionAndWait(expectedVersionChangesCount: expectedVersions.count)
 
         // Then
-        XCTAssertEqual(actualStates, expectedStates)
+        XCTAssertEqual(actualVersions, expectedVersions)
     }
 
     /// Stats v4 --> v3
@@ -88,13 +88,13 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         mockStoresManager.isStatsV4Available = false
         ServiceLocator.setStores(mockStoresManager)
 
-        let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v4), .initial(statsVersion: .v3)]
+        let expectedVersions: [StatsVersion] = [.v4, .v3]
 
         // When
-        let actualStates = checkStatsVersionAndWait(expectedStatesCount: expectedStates.count)
+        let actualVersions = checkStatsVersionAndWait(expectedVersionChangesCount: expectedVersions.count)
 
         // Then
-        XCTAssertEqual(actualStates, expectedStates)
+        XCTAssertEqual(actualVersions, expectedVersions)
     }
 
     /// V4 --> v4
@@ -106,35 +106,35 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         ServiceLocator.setStores(mockStoresManager)
 
         // We will only receive one change because the stats-check should return the same value.
-        let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v4)]
+        let expectedVersions: [StatsVersion] = [.v4]
 
         // When
-        let actualStates = checkStatsVersionAndWait(expectedStatesCount: expectedStates.count)
+        let actualVersions = checkStatsVersionAndWait(expectedVersionChangesCount: expectedVersions.count)
 
         // Then
-        XCTAssertEqual(actualStates, expectedStates)
+        XCTAssertEqual(actualVersions, expectedVersions)
     }
 }
 
-private extension StatsVersionStateCoordinatorTests {
+private extension StatsVersionCoordinatorTests {
     /// Execute `loadLastShownVersionAndCheckV4Eligibility` and wait for the results
-    /// until the number of states defined by `expectedStatesCount` is reached.
+    /// until the number of states defined by `expectedVersionChangesCount` is reached.
     ///
-    func checkStatsVersionAndWait(expectedStatesCount: Int) -> [StatsVersionState] {
-        var states: [StatsVersionState] = []
+    func checkStatsVersionAndWait(expectedVersionChangesCount: Int) -> [StatsVersion] {
+        var versions: [StatsVersion] = []
 
         waitForExpectation(timeout: 1.0) { exp in
-            let stateCoordinator = StatsVersionStateCoordinator(siteID: 134)
-            stateCoordinator.onStateChange = { _, state in
-                states.append(state)
-                if states.count >= expectedStatesCount {
+            let versionCoordinator = StatsVersionCoordinator(siteID: 134)
+            versionCoordinator.onVersionChange = { _, currentVersion in
+                versions.append(currentVersion)
+                if versions.count >= expectedVersionChangesCount {
                     exp.fulfill()
                 }
             }
 
-            stateCoordinator.loadLastShownVersionAndCheckV4Eligibility()
+            versionCoordinator.loadLastShownVersionAndCheckV4Eligibility()
         }
 
-        return states
+        return versions
     }
 }

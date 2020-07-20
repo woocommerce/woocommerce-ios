@@ -23,7 +23,7 @@ final class MockNotificationsRemote {
 
 // MARK: NotificationsEndpointsProviding
 
-extension MockNotificationsRemote: NotificationsEndpointsProviding {
+extension MockNotificationsRemote: NotificationsRemoteProtocol {
 
     func loadNotes(noteIDs: [Int64]?, pageSize: Int?, completion: @escaping (Result<[Note], Error>) -> Void) {
         guard let noteIDs = noteIDs else {

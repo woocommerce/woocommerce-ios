@@ -6,11 +6,11 @@ import Yosemite
 
 final class MockPushNotificationsManager: PushNotesManager {
 
-    var foregroundNotifications: Observable<ForegroundNotification> {
+    var foregroundNotifications: Observable<PushNotification> {
         foregroundNotificationsSubject
     }
 
-    private let foregroundNotificationsSubject = PublishSubject<ForegroundNotification>()
+    private let foregroundNotificationsSubject = PublishSubject<PushNotification>()
 
     func resetBadgeCount(type: Note.Kind) {
 
@@ -52,10 +52,10 @@ final class MockPushNotificationsManager: PushNotesManager {
 }
 
 extension MockPushNotificationsManager {
-    /// Send a ForegroundNotification that will be emitted by the `foregroundNotifications`
+    /// Send a `PushNotification` that will be emitted by the `foregroundNotifications`
     /// observable.
     ///
-    func sendForegroundNotification(_ notification: ForegroundNotification) {
+    func sendForegroundNotification(_ notification: PushNotification) {
         foregroundNotificationsSubject.send(notification)
     }
 }

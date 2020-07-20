@@ -380,7 +380,7 @@ final class OrdersViewModelTests: XCTestCase {
         viewModel.activateAndForwardUpdates(to: UITableView())
 
         // Act
-        let notification = ForegroundNotification(noteID: 1, kind: .storeOrder, message: "")
+        let notification = PushNotification(noteID: 1, kind: .storeOrder, message: "")
         pushNotificationsManager.sendForegroundNotification(notification)
 
         // Assert
@@ -400,7 +400,7 @@ final class OrdersViewModelTests: XCTestCase {
         viewModel.activateAndForwardUpdates(to: UITableView())
 
         // Act
-        let notification = ForegroundNotification(noteID: 1, kind: .comment, message: "")
+        let notification = PushNotification(noteID: 1, kind: .comment, message: "")
         pushNotificationsManager.sendForegroundNotification(notification)
 
         // Assert

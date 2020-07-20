@@ -6,7 +6,7 @@ import Storage
 // MARK: - ProductStore
 //
 public class ProductStore: Store {
-    private let remote: ProductsEndpointsProviding
+    private let remote: ProductsRemoteProtocol
 
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.newDerivedStorage()
@@ -17,7 +17,7 @@ public class ProductStore: Store {
         self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
     }
 
-    init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: ProductsEndpointsProviding) {
+    init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: ProductsRemoteProtocol) {
         self.remote = remote
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }

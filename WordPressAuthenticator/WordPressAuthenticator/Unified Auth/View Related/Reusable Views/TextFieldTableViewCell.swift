@@ -102,6 +102,9 @@ private extension TextFieldTableViewCell {
 
 		secureTextEntryToggle = UIButton(type: .custom)
 		secureTextEntryToggle?.clipsToBounds = true
+		// The icon should match the border color.
+		let tintColor = WordPressAuthenticator.shared.unifiedStyle?.borderColor ?? WordPressAuthenticator.shared.style.primaryNormalBorderColor
+		secureTextEntryToggle?.tintColor = tintColor
 
 		secureTextEntryToggle?.addTarget(self,
 										 action: #selector(secureTextEntryToggleAction),

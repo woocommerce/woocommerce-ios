@@ -6,7 +6,8 @@ final class ProductSettingsViewModelTests: XCTestCase {
 
     func testOnReloadClosure() {
 
-        let product = MockProduct().product(status: .publish,
+        let product = MockProduct().product(virtual: true,
+                                            status: .publish,
                                             featured: true,
                                             catalogVisibility: .search,
                                             reviewsAllowed: false,
@@ -26,6 +27,7 @@ final class ProductSettingsViewModelTests: XCTestCase {
                                                     featured: true,
                                                     password: "1234",
                                                     catalogVisibility: .search,
+                                                    virtual: true,
                                                     reviewsAllowed: true,
                                                     slug: "this-is-a-slug",
                                                     purchaseNote: "This is a purchase note",

@@ -229,6 +229,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let featured = true
         let password = ""
         let catalogVisibility = "search"
+        let virtual = true
         let reviewsAllowed = true
         let slug = "this-is-a-test"
         let purchaseNote = "This is a purchase note"
@@ -237,6 +238,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
                                               featured: featured,
                                               password: password,
                                               catalogVisibility: .search,
+                                              virtual: virtual,
                                               reviewsAllowed: reviewsAllowed,
                                               slug: slug,
                                               purchaseNote: purchaseNote,
@@ -247,6 +249,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         XCTAssertEqual(viewModel.product.statusKey, newStatus)
         XCTAssertEqual(viewModel.product.featured, featured)
         XCTAssertEqual(viewModel.product.catalogVisibilityKey, catalogVisibility)
+        XCTAssertEqual(viewModel.product.virtual, virtual)
         XCTAssertEqual(viewModel.product.reviewsAllowed, reviewsAllowed)
         XCTAssertEqual(viewModel.product.slug, slug)
         XCTAssertEqual(viewModel.product.purchaseNote, purchaseNote)

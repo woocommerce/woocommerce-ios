@@ -51,7 +51,8 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
             }
 
             if siteChanged {
-                SwitchStoreNoticePresenter.presentStoreSwitchedNotice(stores: ServiceLocator.stores, configuration: self?.selectedConfiguration)
+                let presenter = SwitchStoreNoticePresenter()
+                presenter.presentStoreSwitchedNotice(configuration: self?.selectedConfiguration)
             }
             onCompletion()
             self?.onDismiss?()

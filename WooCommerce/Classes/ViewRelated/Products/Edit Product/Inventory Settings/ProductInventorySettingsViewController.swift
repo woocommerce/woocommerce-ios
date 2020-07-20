@@ -26,7 +26,7 @@ final class ProductInventorySettingsViewController: UIViewController {
     private var soldIndividually: Bool
 
     // Editable data - manage stock enabled.
-    private var stockQuantity: Int?
+    private var stockQuantity: Int64?
     private var backordersSetting: ProductBackordersSetting?
 
     // Editable data - manage stock disabled.
@@ -309,7 +309,7 @@ private extension ProductInventorySettingsViewController {
         guard let stockQuantity = stockQuantity else {
             return
         }
-        self.stockQuantity = Int(stockQuantity)
+        self.stockQuantity = Int64(stockQuantity)
     }
 }
 

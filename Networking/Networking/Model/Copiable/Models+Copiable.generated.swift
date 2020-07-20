@@ -37,7 +37,7 @@ extension Product {
         taxStatusKey: CopiableProp<String> = .copy,
         taxClass: NullableCopiableProp<String> = .copy,
         manageStock: CopiableProp<Bool> = .copy,
-        stockQuantity: NullableCopiableProp<Int> = .copy,
+        stockQuantity: NullableCopiableProp<Int64> = .copy,
         stockStatusKey: CopiableProp<String> = .copy,
         backordersKey: CopiableProp<String> = .copy,
         backordersAllowed: CopiableProp<Bool> = .copy,
@@ -218,6 +218,123 @@ extension ProductImage {
             src: src,
             name: name,
             alt: alt
+        )
+    }
+}
+
+extension ProductVariation {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        productID: CopiableProp<Int64> = .copy,
+        productVariationID: CopiableProp<Int64> = .copy,
+        attributes: CopiableProp<[ProductVariationAttribute]> = .copy,
+        image: NullableCopiableProp<ProductImage> = .copy,
+        permalink: CopiableProp<String> = .copy,
+        dateCreated: CopiableProp<Date> = .copy,
+        dateModified: NullableCopiableProp<Date> = .copy,
+        dateOnSaleStart: NullableCopiableProp<Date> = .copy,
+        dateOnSaleEnd: NullableCopiableProp<Date> = .copy,
+        status: CopiableProp<ProductStatus> = .copy,
+        description: NullableCopiableProp<String> = .copy,
+        sku: NullableCopiableProp<String> = .copy,
+        price: CopiableProp<String> = .copy,
+        regularPrice: NullableCopiableProp<String> = .copy,
+        salePrice: NullableCopiableProp<String> = .copy,
+        onSale: CopiableProp<Bool> = .copy,
+        purchasable: CopiableProp<Bool> = .copy,
+        virtual: CopiableProp<Bool> = .copy,
+        downloadable: CopiableProp<Bool> = .copy,
+        downloads: CopiableProp<[ProductDownload]> = .copy,
+        downloadLimit: CopiableProp<Int64> = .copy,
+        downloadExpiry: CopiableProp<Int64> = .copy,
+        taxStatusKey: CopiableProp<String> = .copy,
+        taxClass: NullableCopiableProp<String> = .copy,
+        manageStock: CopiableProp<Bool> = .copy,
+        stockQuantity: NullableCopiableProp<Int64> = .copy,
+        stockStatus: CopiableProp<ProductStockStatus> = .copy,
+        backordersKey: CopiableProp<String> = .copy,
+        backordersAllowed: CopiableProp<Bool> = .copy,
+        backordered: CopiableProp<Bool> = .copy,
+        weight: NullableCopiableProp<String> = .copy,
+        dimensions: CopiableProp<ProductDimensions> = .copy,
+        shippingClass: NullableCopiableProp<String> = .copy,
+        shippingClassID: CopiableProp<Int64> = .copy,
+        menuOrder: CopiableProp<Int64> = .copy
+    ) -> ProductVariation {
+        let siteID = siteID ?? self.siteID
+        let productID = productID ?? self.productID
+        let productVariationID = productVariationID ?? self.productVariationID
+        let attributes = attributes ?? self.attributes
+        let image = image ?? self.image
+        let permalink = permalink ?? self.permalink
+        let dateCreated = dateCreated ?? self.dateCreated
+        let dateModified = dateModified ?? self.dateModified
+        let dateOnSaleStart = dateOnSaleStart ?? self.dateOnSaleStart
+        let dateOnSaleEnd = dateOnSaleEnd ?? self.dateOnSaleEnd
+        let status = status ?? self.status
+        let description = description ?? self.description
+        let sku = sku ?? self.sku
+        let price = price ?? self.price
+        let regularPrice = regularPrice ?? self.regularPrice
+        let salePrice = salePrice ?? self.salePrice
+        let onSale = onSale ?? self.onSale
+        let purchasable = purchasable ?? self.purchasable
+        let virtual = virtual ?? self.virtual
+        let downloadable = downloadable ?? self.downloadable
+        let downloads = downloads ?? self.downloads
+        let downloadLimit = downloadLimit ?? self.downloadLimit
+        let downloadExpiry = downloadExpiry ?? self.downloadExpiry
+        let taxStatusKey = taxStatusKey ?? self.taxStatusKey
+        let taxClass = taxClass ?? self.taxClass
+        let manageStock = manageStock ?? self.manageStock
+        let stockQuantity = stockQuantity ?? self.stockQuantity
+        let stockStatus = stockStatus ?? self.stockStatus
+        let backordersKey = backordersKey ?? self.backordersKey
+        let backordersAllowed = backordersAllowed ?? self.backordersAllowed
+        let backordered = backordered ?? self.backordered
+        let weight = weight ?? self.weight
+        let dimensions = dimensions ?? self.dimensions
+        let shippingClass = shippingClass ?? self.shippingClass
+        let shippingClassID = shippingClassID ?? self.shippingClassID
+        let menuOrder = menuOrder ?? self.menuOrder
+
+        return ProductVariation(
+            siteID: siteID,
+            productID: productID,
+            productVariationID: productVariationID,
+            attributes: attributes,
+            image: image,
+            permalink: permalink,
+            dateCreated: dateCreated,
+            dateModified: dateModified,
+            dateOnSaleStart: dateOnSaleStart,
+            dateOnSaleEnd: dateOnSaleEnd,
+            status: status,
+            description: description,
+            sku: sku,
+            price: price,
+            regularPrice: regularPrice,
+            salePrice: salePrice,
+            onSale: onSale,
+            purchasable: purchasable,
+            virtual: virtual,
+            downloadable: downloadable,
+            downloads: downloads,
+            downloadLimit: downloadLimit,
+            downloadExpiry: downloadExpiry,
+            taxStatusKey: taxStatusKey,
+            taxClass: taxClass,
+            manageStock: manageStock,
+            stockQuantity: stockQuantity,
+            stockStatus: stockStatus,
+            backordersKey: backordersKey,
+            backordersAllowed: backordersAllowed,
+            backordered: backordered,
+            weight: weight,
+            dimensions: dimensions,
+            shippingClass: shippingClass,
+            shippingClassID: shippingClassID,
+            menuOrder: menuOrder
         )
     }
 }

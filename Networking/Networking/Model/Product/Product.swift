@@ -44,7 +44,7 @@ public struct Product: Codable, GeneratedCopiable {
     public let taxClass: String?
 
     public let manageStock: Bool
-    public let stockQuantity: Int?      // API reports Int or null
+    public let stockQuantity: Int64?    // API reports Int or null
     public let stockStatusKey: String   // instock, outofstock, backorder
 
     public let backordersKey: String    // no, notify, yes
@@ -142,7 +142,7 @@ public struct Product: Codable, GeneratedCopiable {
                 taxStatusKey: String,
                 taxClass: String?,
                 manageStock: Bool,
-                stockQuantity: Int?,
+                stockQuantity: Int64?,
                 stockStatusKey: String,
                 backordersKey: String,
                 backordersAllowed: Bool,
@@ -311,7 +311,7 @@ public struct Product: Codable, GeneratedCopiable {
             manageStock = parsedStringValue.lowercased() == Values.manageStockParent ? true : false
         }
 
-        let stockQuantity = try container.decodeIfPresent(Int.self, forKey: .stockQuantity)
+        let stockQuantity = try container.decodeIfPresent(Int64.self, forKey: .stockQuantity)
         let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)
 
         let backordersKey = try container.decode(String.self, forKey: .backordersKey)

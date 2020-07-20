@@ -193,6 +193,7 @@ extension ProductFormViewModel {
                                statusKey: settings.status.rawValue,
                                featured: settings.featured,
                                catalogVisibilityKey: settings.catalogVisibility.rawValue,
+                               virtual: settings.virtual,
                                reviewsAllowed: settings.reviewsAllowed,
                                purchaseNote: settings.purchaseNote,
                                menuOrder: settings.menuOrder)

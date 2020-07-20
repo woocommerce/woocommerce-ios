@@ -5,18 +5,27 @@ import UIKit
 ///
 final class TextFieldTableViewCell: UITableViewCell {
 
-    /// Private properties
+    /// Private properties.
     ///
     @IBOutlet private weak var borderView: UIView!
     @IBOutlet private weak var borderWidth: NSLayoutConstraint!
+	private var secureTextEntryToggle: UIButton?
+	private var secureTextEntryImageVisible: UIImage?
+	private var secureTextEntryImageHidden: UIImage?
 
     private var hairlineBorderWidth: CGFloat {
         return 1.0 / UIScreen.main.scale
     }
 
-    /// Public properties
+    /// Public properties.
     ///
     @IBOutlet public weak var textField: UITextField! // public so it can be the first responder
+	@IBInspectable public var showSecureTextEntryToggle: Bool = false {
+		didSet {
+			configureSecureTextEntryToggle()
+		}
+	}
+
     public static let reuseIdentifier = "TextFieldTableViewCell"
 
     override func awakeFromNib() {
@@ -58,8 +67,6 @@ private extension TextFieldTableViewCell {
     /// - note: Don't assign first responder here. It's too early in the view lifecycle.
     ///
     func applyTextFieldStyle(_ style: TextFieldStyle) {
-		setCommonTextFieldStyles()
-
 		switch style {
         case .url:
             textField.keyboardType = .URL
@@ -70,8 +77,74 @@ private extension TextFieldTableViewCell {
 		case .password:
 			textField.keyboardType = .default
 			textField.returnKeyType = .continue
+			setSecureTextEntry(true)
+			showSecureTextEntryToggle = true
+			configureSecureTextEntryToggle()
         }
     }
+}
+
+
+// MARK: - Secure Text Entry
+/// Methods ported from WPWalkthroughTextField.h/.m
+///
+private extension TextFieldTableViewCell {
+
+	/// Build the show / hide icon in the textfield.
+	///
+	func configureSecureTextEntryToggle() {
+		if showSecureTextEntryToggle == false {
+			return
+		}
+
+		secureTextEntryImageVisible = UIImage.gridicon(.visible)
+		secureTextEntryImageHidden = UIImage.gridicon(.notVisible)
+
+		secureTextEntryToggle = UIButton(type: .custom)
+		secureTextEntryToggle?.clipsToBounds = true
+
+		secureTextEntryToggle?.addTarget(self,
+										 action: #selector(secureTextEntryToggleAction),
+										 for: .touchUpInside)
+
+		updateSecureTextEntryToggleImage()
+		updateSecureTextEntryForAccessibility()
+		textField.rightView = secureTextEntryToggle
+		textField.rightViewMode = .always
+	}
+
+	func setSecureTextEntry(_ secureTextEntry: Bool) {
+		// This is a fix for a bug where the text field reverts to a system
+		// serif font if you disable secure text entry while it contains text.
+		textField.font = nil
+		textField.font = UIFont.preferredFont(forTextStyle: .body)
+
+		textField.isSecureTextEntry = secureTextEntry
+		updateSecureTextEntryToggleImage()
+		updateSecureTextEntryForAccessibility()
+	}
+
+	@objc func secureTextEntryToggleAction(_ sender: Any) {
+		textField.isSecureTextEntry = !textField.isSecureTextEntry
+
+		// Save and re-apply the current selection range to save the cursor position
+		let currentTextRange = textField.selectedTextRange
+		textField.becomeFirstResponder()
+		textField.selectedTextRange = currentTextRange
+		updateSecureTextEntryToggleImage()
+		updateSecureTextEntryForAccessibility()
+	}
+
+	func updateSecureTextEntryToggleImage() {
+		let image = textField.isSecureTextEntry ? secureTextEntryImageHidden : secureTextEntryImageVisible
+		secureTextEntryToggle?.setImage(image, for: .normal)
+		secureTextEntryToggle?.sizeToFit()
+	}
+
+	func updateSecureTextEntryForAccessibility() {
+		secureTextEntryToggle?.accessibilityLabel = Constants.showPassword
+		secureTextEntryToggle?.accessibilityValue = textField.isSecureTextEntry ? Constants.passwordHidden : Constants.passwordShown
+	}
 }
 
 
@@ -85,4 +158,16 @@ extension TextFieldTableViewCell {
         case username
         case password
     }
+
+	struct Constants {
+		/// Accessibility Hints
+		///
+		static let passwordHidden = NSLocalizedString("Hidden",
+													  comment: "Accessibility value if login page's password field is hiding the password (i.e. with asterisks).")
+		static let passwordShown = NSLocalizedString("Shown",
+													 comment: "Accessibility value if login page's password field is displaying the password.")
+		static let showPassword = NSLocalizedString("Show password",
+													comment:"Accessibility label for the 'Show password' button in the login page's password field.")
+
+	}
 }

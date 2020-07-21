@@ -14,7 +14,6 @@ final class leaderboardsRemoteV4Tests: XCTestCase {
     }
 
     func testLeaderboardReturnsCorrectParsedValues() throws {
-
         // Given
         let remote = LeaderboardsRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "wc-analytics/leaderboards", filename: "leaderboards-year")
@@ -51,5 +50,26 @@ final class leaderboardsRemoteV4Tests: XCTestCase {
             XCTAssertFalse(product.value.display.isEmpty)
             XCTAssertTrue(product.value.value > 0)
         }
+    }
+
+    func testLeaderboardsProperlyRelaysNetwokingErrors() {
+        // Given
+        let remote = LeaderboardsRemote(network: network)
+
+        // When
+        var remoteResult: Result<[Leaderboard], Error>?
+        waitForExpectation { exp in
+            remote.loadLeaderboards(for: sampleSiteID,
+                                    unit: .yearly,
+                                    earliestDateToInclude: "2020-01-01T00:00:00",
+                                    latestDateToInclude: "2020-12-31T23:59:59",
+                                    quantity: 3) { result in
+                                        remoteResult = result
+                                        exp.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(remoteResult?.failure)
     }
 }

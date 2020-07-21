@@ -38,6 +38,8 @@ struct PaginatedProductShippingClassListSelectorDataSource: PaginatedListSelecto
 
         let bodyText = model.name
         cell.bodyLabel.text = bodyText
+
+        cell.accessoryType = isSelected(model: model) ? .checkmark: .none
     }
 
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {

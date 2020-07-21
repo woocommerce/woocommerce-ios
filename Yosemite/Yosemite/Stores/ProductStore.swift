@@ -52,6 +52,8 @@ public class ProductStore: Store {
                                   let productStatus,
                                   let productType,
                                   let sortOrder,
+                                  let excludedProductIDs,
+                                  let shouldDeleteStoredProductsOnFirstPage,
                                   let onCompletion):
             synchronizeProducts(siteID: siteID,
                                 pageNumber: pageNumber,
@@ -60,6 +62,8 @@ public class ProductStore: Store {
                                 productStatus: productStatus,
                                 productType: productType,
                                 sortOrder: sortOrder,
+                                excludedProductIDs: excludedProductIDs,
+                                shouldDeleteStoredProductsOnFirstPage: shouldDeleteStoredProductsOnFirstPage,
                                 onCompletion: onCompletion)
         case .requestMissingProducts(let order, let onCompletion):
             requestMissingProducts(for: order, onCompletion: onCompletion)
@@ -117,6 +121,8 @@ private extension ProductStore {
                              productStatus: ProductStatus?,
                              productType: ProductType?,
                              sortOrder: ProductsSortOrder,
+                             excludedProductIDs: [Int64],
+                             shouldDeleteStoredProductsOnFirstPage: Bool,
                              onCompletion: @escaping (Error?) -> Void) {
         let remote = ProductsRemote(network: network)
 
@@ -127,19 +133,20 @@ private extension ProductStore {
                                productStatus: productStatus,
                                productType: productType,
                                orderBy: sortOrder.remoteOrderKey,
-                               order: sortOrder.remoteOrder) { [weak self] (products, error) in
-            guard let products = products else {
-                onCompletion(error)
-                return
-            }
+                               order: sortOrder.remoteOrder,
+                               excludedProductIDs: excludedProductIDs) { [weak self] result in
+                                switch result {
+                                case .failure(let error):
+                                    onCompletion(error)
+                                case .success(let products):
+                                    if pageNumber == Default.firstPageNumber && shouldDeleteStoredProductsOnFirstPage {
+                                        self?.deleteStoredProducts(siteID: siteID)
+                                    }
 
-            if pageNumber == Default.firstPageNumber {
-                self?.deleteStoredProducts(siteID: siteID)
-            }
-
-            self?.upsertStoredProductsInBackground(readOnlyProducts: products) {
-                onCompletion(nil)
-            }
+                                    self?.upsertStoredProductsInBackground(readOnlyProducts: products) {
+                                        onCompletion(nil)
+                                    }
+                                }
         }
     }
 

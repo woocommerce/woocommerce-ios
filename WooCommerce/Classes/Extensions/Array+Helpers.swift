@@ -51,3 +51,16 @@ extension Sequence where Element: Numeric {
     /// Returns the sum of all elements in the collection.
     func sum() -> Element { return reduce(0, +) }
 }
+
+extension Sequence where Element: Equatable {
+    /// Returns the sequence with any duplicate elements after the first one removed.
+    func removingDuplicates() -> [Element] {
+        var result = [Element]()
+        for value in self {
+            if result.contains(value) == false {
+                result.append(value)
+            }
+        }
+        return result
+    }
+}

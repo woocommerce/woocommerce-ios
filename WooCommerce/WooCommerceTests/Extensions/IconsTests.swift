@@ -292,4 +292,8 @@ final class IconsTests: XCTestCase {
     func testSyncIconIsNotNil() {
         XCTAssertNotNil(UIImage.syncImage)
     }
+
+    func testNoStoreImageIsNotNil() {
+        XCTAssertNotNil(UIImage.noStoreImage)
+    }
 }

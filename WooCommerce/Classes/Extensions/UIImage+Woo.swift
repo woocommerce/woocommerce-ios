@@ -427,6 +427,12 @@ extension UIImage {
         return UIImage.gridicon(.types).imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// No store image
+    ///
+    static var noStoreImage: UIImage {
+        return UIImage(imageLiteralResourceName: "woo-no-store").imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Creates a bitmap image of the Woo "bubble" logo based on a vector image in our asset catalog.
     ///
     /// - Parameters:

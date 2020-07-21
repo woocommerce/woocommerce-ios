@@ -204,10 +204,27 @@ extension ProductFormViewModel {
     }
 }
 
+// MARK: Remote actions
+//
+extension ProductFormViewModel {
+    func updateProductRemotely(onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
+        let updateProductAction = ProductAction.updateProduct(product: product) { [weak self] result in
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            case .success(let product):
+                self?.resetProduct(product)
+                onCompletion(.success(product))
+            }
+        }
+        ServiceLocator.stores.dispatch(updateProductAction)
+    }
+}
+
 // MARK: Reset actions
 //
 extension ProductFormViewModel {
-    func resetProduct(_ product: Product) {
+    private func resetProduct(_ product: Product) {
         originalProduct = product
     }
 

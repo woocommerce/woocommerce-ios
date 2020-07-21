@@ -176,7 +176,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///     - product: the Product to update remotely.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func updateProduct(product: Product, completion: @escaping (Product?, Error?) -> Void) {
+    public func updateProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void) {
         do {
             let parameters = try product.toDictionary()
             let productID = product.productID
@@ -187,7 +187,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
 
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
-            completion(nil, error)
+            completion(.failure(error))
         }
     }
 }

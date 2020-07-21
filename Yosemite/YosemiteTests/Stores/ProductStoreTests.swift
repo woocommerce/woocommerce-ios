@@ -857,30 +857,32 @@ final class ProductStoreTests: XCTestCase {
         storageManager.insertSampleProduct(readOnlyProduct: product)
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageProduct.self), 1)
 
-        let action = ProductAction.updateProduct(product: product) { (product, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(product)
-            XCTAssertEqual(product?.productID, expectedProductID)
-            XCTAssertEqual(product?.name, expectedProductName)
-            XCTAssertEqual(product?.fullDescription, expectedProductDescription)
+        let action = ProductAction.updateProduct(product: product) { result in
+            guard case let .success(product) = result else {
+                XCTFail("Unexpected result: \(result)")
+                return
+            }
+            XCTAssertEqual(product.productID, expectedProductID)
+            XCTAssertEqual(product.name, expectedProductName)
+            XCTAssertEqual(product.fullDescription, expectedProductDescription)
             // Shipping settings.
-            XCTAssertEqual(product?.shippingClassID, expectedProductShippingClassID)
-            XCTAssertEqual(product?.shippingClass, expectedProductShippingClassSlug)
-            XCTAssertEqual(product?.productShippingClass, expectedProductShippingClass)
+            XCTAssertEqual(product.shippingClassID, expectedProductShippingClassID)
+            XCTAssertEqual(product.shippingClass, expectedProductShippingClassSlug)
+            XCTAssertEqual(product.productShippingClass, expectedProductShippingClass)
             // Inventory settings.
-            XCTAssertEqual(product?.sku, expectedProductSKU)
-            XCTAssertEqual(product?.manageStock, expectedProductManageStock)
-            XCTAssertEqual(product?.soldIndividually, expectedProductSoldIndividually)
-            XCTAssertEqual(product?.stockQuantity, expectedStockQuantity)
-            XCTAssertEqual(product?.backordersSetting, expectedBackordersSetting)
-            XCTAssertEqual(product?.productStockStatus, expectedStockStatus)
+            XCTAssertEqual(product.sku, expectedProductSKU)
+            XCTAssertEqual(product.manageStock, expectedProductManageStock)
+            XCTAssertEqual(product.soldIndividually, expectedProductSoldIndividually)
+            XCTAssertEqual(product.stockQuantity, expectedStockQuantity)
+            XCTAssertEqual(product.backordersSetting, expectedBackordersSetting)
+            XCTAssertEqual(product.productStockStatus, expectedStockStatus)
             // Price settings.
-            XCTAssertEqual(product?.regularPrice, expectedProductRegularPrice)
-            XCTAssertEqual(product?.salePrice, expectedProductSalePrice)
-            XCTAssertEqual(product?.dateOnSaleStart, expectedProductSaleStart)
-            XCTAssertEqual(product?.dateOnSaleEnd, expectedProductSaleEnd)
-            XCTAssertEqual(product?.taxStatusKey, expectedProductTaxStatus)
-            XCTAssertEqual(product?.taxClass, expectedProductTaxClass)
+            XCTAssertEqual(product.regularPrice, expectedProductRegularPrice)
+            XCTAssertEqual(product.salePrice, expectedProductSalePrice)
+            XCTAssertEqual(product.dateOnSaleStart, expectedProductSaleStart)
+            XCTAssertEqual(product.dateOnSaleEnd, expectedProductSaleEnd)
+            XCTAssertEqual(product.taxStatusKey, expectedProductTaxStatus)
+            XCTAssertEqual(product.taxClass, expectedProductTaxClass)
 
             let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: expectedProductID)
             let readOnlyStoredProduct = storedProduct?.toReadOnly()
@@ -918,9 +920,11 @@ final class ProductStoreTests: XCTestCase {
         existingStorageShippingClass.update(with: existingShippingClass)
 
         let product = sampleProduct(productID: expectedProductID)
-        let action = ProductAction.updateProduct(product: product) { (product, error) in
-            XCTAssertNotNil(product)
-            XCTAssertNil(error)
+        let action = ProductAction.updateProduct(product: product) { result in
+            guard case .success = result else {
+                XCTFail("Unexpected result: \(result)")
+                return
+            }
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 1)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductTag.self), 0)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCategory.self), 0)
@@ -953,8 +957,11 @@ final class ProductStoreTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "generic_error")
         let product = sampleProduct()
-        let action = ProductAction.updateProduct(product: product) { (product, error) in
-            XCTAssertNotNil(error)
+        let action = ProductAction.updateProduct(product: product) { result in
+            guard case .failure = result else {
+                XCTFail("Unexpected result: \(result)")
+                return
+            }
             expectation.fulfill()
         }
 
@@ -969,9 +976,11 @@ final class ProductStoreTests: XCTestCase {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         let product = sampleProduct()
-        let action = ProductAction.updateProduct(product: product) { (product, error) in
-            XCTAssertNotNil(error)
-            XCTAssertNil(product)
+        let action = ProductAction.updateProduct(product: product) { result in
+            guard case .failure = result else {
+                XCTFail("Unexpected result: \(result)")
+                return
+            }
             expectation.fulfill()
         }
 
@@ -991,9 +1000,11 @@ final class ProductStoreTests: XCTestCase {
 
         network.simulateError(requestUrlSuffix: "products/\(sampleProductID)", error: NetworkError.notFound)
         let product = sampleProduct()
-        let action = ProductAction.updateProduct(product: product) { (product, error) in
-            XCTAssertNotNil(error)
-            XCTAssertNil(product)
+        let action = ProductAction.updateProduct(product: product) { result in
+            guard case .failure = result else {
+                XCTFail("Unexpected result: \(result)")
+                return
+            }
             // The existing Product should not be deleted on 404 response.
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 1)
 

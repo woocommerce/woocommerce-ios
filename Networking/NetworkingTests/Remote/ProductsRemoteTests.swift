@@ -4,7 +4,7 @@ import XCTest
 
 /// ProductsRemoteTests
 ///
-class ProductsRemoteTests: XCTestCase {
+final class ProductsRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
@@ -259,11 +259,13 @@ class ProductsRemoteTests: XCTestCase {
         let productName = "This is my new product name!"
         let productDescription = "Learn something!"
         let product = sampleProduct()
-        remote.updateProduct(product: product) { (product, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(product)
-            XCTAssertEqual(product?.name, productName)
-            XCTAssertEqual(product?.fullDescription, productDescription)
+        remote.updateProduct(product: product) { result in
+            guard case let .success(product) = result else {
+                XCTFail("Unexpected result: \(result)")
+                return
+            }
+            XCTAssertEqual(product.name, productName)
+            XCTAssertEqual(product.fullDescription, productDescription)
             expectation.fulfill()
         }
 
@@ -277,9 +279,11 @@ class ProductsRemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Wait for product name update")
 
         let product = sampleProduct()
-        remote.updateProduct(product: product) { (product, error) in
-            XCTAssertNil(product)
-            XCTAssertNotNil(error)
+        remote.updateProduct(product: product) { result in
+            guard case .failure = result else {
+                XCTFail("Unexpected result: \(result)")
+                return
+            }
             expectation.fulfill()
         }
 

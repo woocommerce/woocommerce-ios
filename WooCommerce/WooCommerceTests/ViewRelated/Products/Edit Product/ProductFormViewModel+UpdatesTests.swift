@@ -115,7 +115,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let newSKU = "94115"
         let newManageStock = !product.manageStock
         let newSoldIndividually = !product.soldIndividually
-        let newStockQuantity = 17
+        let newStockQuantity: Int64 = 17
         let newBackordersSetting = ProductBackordersSetting.allowedAndNotifyCustomer
         let newStockStatus = ProductStockStatus.onBackOrder
         viewModel.updateInventorySettings(sku: newSKU,

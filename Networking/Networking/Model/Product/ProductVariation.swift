@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents a Product Variation Entity.
 ///
-public struct ProductVariation: Decodable {
+public struct ProductVariation: Decodable, GeneratedCopiable {
     public let siteID: Int64
     public let productID: Int64
 

@@ -90,9 +90,9 @@ extension Storage.Product: ReadOnlyConvertible {
         let productDefaultAttributes = defaultAttributes?.map { $0.toReadOnly() } ?? [Yosemite.ProductDefaultAttribute]()
         let productShippingClassModel = productShippingClass?.toReadOnly()
 
-        var quantity: Int?
+        var quantity: Int64?
         if let stockQuantity = stockQuantity {
-            quantity = Int(stockQuantity)
+            quantity = Int64(stockQuantity)
         }
 
         return Product(siteID: siteID,

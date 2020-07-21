@@ -6,7 +6,7 @@ struct ProductInventoryEditableData {
     let sku: String?
     let manageStock: Bool
     let soldIndividually: Bool
-    let stockQuantity: Int?
+    let stockQuantity: Int64?
     let backordersSetting: ProductBackordersSetting?
     let stockStatus: ProductStockStatus?
 }

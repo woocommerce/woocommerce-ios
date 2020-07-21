@@ -117,9 +117,6 @@ private extension TextFieldTableViewCell {
 	}
 
 	func setSecureTextEntry(_ secureTextEntry: Bool) {
-		// This is a fix for a bug where the text field reverts to a system
-		// serif font if you disable secure text entry while it contains text.
-		textField.font = nil
 		textField.font = UIFont.preferredFont(forTextStyle: .body)
 
 		textField.isSecureTextEntry = secureTextEntry

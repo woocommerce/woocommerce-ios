@@ -8,7 +8,7 @@ protocol ProductSettingsSectionMediator {
     var title: String { get }
     var rows: [ProductSettingsRowMediator] { get }
 
-    init(_ settings: ProductSettings)
+    init(_ settings: ProductSettings, productType: ProductType)
 }
 
 // MARK: - Sections declaration for Product Settings
@@ -20,8 +20,17 @@ enum ProductSettingsSections {
 
         let rows: [ProductSettingsRowMediator]
 
-        init(_ settings: ProductSettings) {
-            rows = [ProductSettingsRows.Status(settings), ProductSettingsRows.Visibility(settings), ProductSettingsRows.CatalogVisibility(settings)]
+        init(_ settings: ProductSettings, productType: ProductType) {
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease3) && productType == .simple {
+                rows = [ProductSettingsRows.Status(settings),
+                        ProductSettingsRows.Visibility(settings),
+                        ProductSettingsRows.CatalogVisibility(settings),
+                        ProductSettingsRows.VirtualProduct(settings)]
+            } else {
+                rows = [ProductSettingsRows.Status(settings),
+                        ProductSettingsRows.Visibility(settings),
+                        ProductSettingsRows.CatalogVisibility(settings)]
+            }
         }
     }
 
@@ -31,7 +40,7 @@ enum ProductSettingsSections {
 
         let rows: [ProductSettingsRowMediator]
 
-        init(_ settings: ProductSettings) {
+        init(_ settings: ProductSettings, productType: ProductType) {
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease3) {
                 rows = [ProductSettingsRows.ReviewsAllowed(settings),
                         ProductSettingsRows.Slug(settings),

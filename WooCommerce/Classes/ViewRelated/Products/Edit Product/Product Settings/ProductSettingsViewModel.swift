@@ -11,7 +11,7 @@ final class ProductSettingsViewModel {
 
     var productSettings: ProductSettings {
         didSet {
-            sections = Self.configureSections(productSettings)
+            sections = Self.configureSections(productSettings, productType: product.productType)
         }
     }
 
@@ -31,7 +31,7 @@ final class ProductSettingsViewModel {
         self.product = product
         self.password = password
         productSettings = ProductSettings(from: product, password: password)
-        sections = Self.configureSections(productSettings)
+        sections = Self.configureSections(productSettings, productType: product.productType)
 
         /// If nil, we fetch the password from site post API because it was never fetched
         if password == nil {
@@ -45,7 +45,7 @@ final class ProductSettingsViewModel {
                 self.onPasswordRetrieved?(password)
                 self.password = password
                 self.productSettings.password = password
-                self.sections = Self.configureSections(self.productSettings)
+                self.sections = Self.configureSections(self.productSettings, productType: product.productType)
             }
         }
     }
@@ -89,9 +89,9 @@ private extension ProductSettingsViewModel {
 // MARK: Configure sections and rows in Product Settings
 //
 private extension ProductSettingsViewModel {
-    static func configureSections(_ settings: ProductSettings) -> [ProductSettingsSectionMediator] {
-        return [ProductSettingsSections.PublishSettings(settings),
-                     ProductSettingsSections.MoreOptions(settings)
+    static func configureSections(_ settings: ProductSettings, productType: ProductType) -> [ProductSettingsSectionMediator] {
+        return [ProductSettingsSections.PublishSettings(settings, productType: productType),
+                ProductSettingsSections.MoreOptions(settings, productType: productType)
         ]
     }
 }

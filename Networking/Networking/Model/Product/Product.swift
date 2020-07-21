@@ -264,12 +264,10 @@ public struct Product: Codable, GeneratedCopiable {
 
         // Even though a plain install of WooCommerce Core provides string values,
         // some plugins alter the field value from String to Int or Decimal.
-        var price = ""
-        if let parsedStringValue = container.failsafeDecodeIfPresent(stringForKey: .price) {
-            price = parsedStringValue
-        } else if let parsedDecimalValue = container.failsafeDecodeIfPresent(decimalForKey: .price) {
-            price = NSDecimalNumber(decimal: parsedDecimalValue).stringValue
-        }
+        let price = container.failsafeDecodeIfPresent(targetType: String.self,
+                                                      forKey: .price,
+                                                      alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })])
+            ?? ""
 
         let regularPrice = try container.decodeIfPresent(String.self, forKey: .regularPrice)
 
@@ -277,12 +275,13 @@ public struct Product: Codable, GeneratedCopiable {
 
         // Even though a plain install of WooCommerce Core provides string values,
         // some plugins alter the field value from String to Int or Decimal.
-        var salePrice = ""
-        if let parsedSalePriceString = container.failsafeDecodeIfPresent(stringForKey: .salePrice) {
-            salePrice = (onSale && parsedSalePriceString.isEmpty) ? "0" : parsedSalePriceString
-        } else if let parsedSalePriceDecimal = container.failsafeDecodeIfPresent(decimalForKey: .salePrice) {
-            salePrice = NSDecimalNumber(decimal: parsedSalePriceDecimal).stringValue
-        }
+        let salePrice = container.failsafeDecodeIfPresent(targetType: String.self,
+                                                          forKey: .salePrice,
+                                                          shouldDecodeTargetTypeFirst: false,
+                                                          alternativeTypes: [
+                                                            .string(transform: { (onSale && $0.isEmpty) ? "0" : $0 }),
+                                                            .decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })])
+            ?? ""
 
         let purchasable = try container.decode(Bool.self, forKey: .purchasable)
         let totalSales = container.failsafeDecodeIfPresent(Int.self, forKey: .totalSales) ?? 0
@@ -303,13 +302,15 @@ public struct Product: Codable, GeneratedCopiable {
         // A "parent" value means that stock mgmt is turned on + managed at the parent product-level, therefore
         // we need to set this var as `true` in this situation.
         // See: https://github.com/woocommerce/woocommerce-ios/issues/884 for more deets
-        var manageStock = false
-        if let parsedBoolValue = container.failsafeDecodeIfPresent(booleanForKey: .manageStock) {
-            manageStock = parsedBoolValue
-        } else if let parsedStringValue = container.failsafeDecodeIfPresent(stringForKey: .manageStock) {
-            // A bool could not be parsed — check if "parent" is set, and if so, set manageStock to `true`
-            manageStock = parsedStringValue.lowercased() == Values.manageStockParent ? true : false
-        }
+        let manageStock = container.failsafeDecodeIfPresent(targetType: Bool.self,
+                                                            forKey: .manageStock,
+                                                            alternativeTypes: [
+                                                                .string(transform: { value in
+                                                                    // A bool could not be parsed — check if "parent" is set, and if so, set manageStock to
+                                                                    // `true`
+                                                                    value.lowercased() == Values.manageStockParent ? true : false
+                                                                })
+        ]) ?? false
 
         let stockQuantity = try container.decodeIfPresent(Int64.self, forKey: .stockQuantity)
         let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)

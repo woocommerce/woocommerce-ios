@@ -9,14 +9,15 @@ class SiteCredentialsViewController: LoginViewController {
 	/// Private properties.
     ///
     @IBOutlet private weak var tableView: UITableView!
-    @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
-
-    // Required property declaration for `NUXKeyboardResponder` but unused here.
-    var verticalCenterConstraint: NSLayoutConstraint?
-
-    private var rows = [Row]()
+	private var rows = [Row]()
 	private weak var usernameField: UITextField?
 	private weak var passwordField: UITextField?
+
+	/// Internal properties.
+	///
+	@IBOutlet var bottomContentConstraint: NSLayoutConstraint?
+    // Required property declaration for `NUXKeyboardResponder` but unused here.
+    var verticalCenterConstraint: NSLayoutConstraint?
 
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {

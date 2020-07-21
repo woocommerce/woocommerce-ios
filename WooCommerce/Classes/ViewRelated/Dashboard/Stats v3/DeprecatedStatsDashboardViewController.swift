@@ -13,11 +13,10 @@ final class DeprecatedDashboardStatsViewController: UIViewController {
     ///
     private let emptyStateConfig: EmptyStateViewController.Config = {
         let message = NSAttributedString(string: Constants.title, attributes: [.font: EmptyStateViewController.Config.messageFont.bold])
-        return .withLink(message: message,
-                         image: .noStoreImage,
-                         details: Constants.details,
-                         linkTitle: Constants.buttonTitle,
-                         linkURL: WooConstants.helpCenterURL)
+        return .withSupportRequest(message: message,
+                                   image: .noStoreImage,
+                                   details: Constants.details,
+                                   buttonTitle: Constants.buttonTitle)
     }()
 
     override func viewDidLoad() {

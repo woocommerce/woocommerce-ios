@@ -20,5 +20,5 @@ public struct LeaderboardRow: Decodable {
 
     /// Value of te subject in the leaderboard
     ///
-    public let value: LeaderboardRowContent<Int>
+    public let value: LeaderboardRowContent<Double>
 }

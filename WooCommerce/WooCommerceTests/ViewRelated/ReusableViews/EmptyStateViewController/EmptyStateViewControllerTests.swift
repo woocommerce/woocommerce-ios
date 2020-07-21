@@ -59,7 +59,8 @@ final class EmptyStateViewControllerTests: XCTestCase {
             message: NSAttributedString(string: "Ola"),
             image: .appleIcon,
             details: "Dolores eum",
-            action: .button(title: "Bakero!", linkURL: WooConstants.blogURL)
+            linkTitle: "Bakero!",
+            linkURL: WooConstants.blogURL
         ))
 
         // Then

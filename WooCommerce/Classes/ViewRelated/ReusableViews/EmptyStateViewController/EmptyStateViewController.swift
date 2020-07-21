@@ -124,25 +124,14 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
         detailsLabel.text = config.details
         detailsLabel.isHidden = config.details == nil
 
-        actionButton.setTitle(config.action?.title, for: .normal)
-        actionButton.isHidden = config.action == nil
-
-        switch config.action {
-        case .button:
-            actionButton.applyPrimaryButtonStyle()
-        case .text:
-            actionButton.applyLinkButtonStyle()
-            actionButton.contentEdgeInsets = .zero
-        default:
-            break
-        }
+        configureActionButton(config)
 
         lastActionButtonTapHandler = {
             switch config {
-            case .withLink(_, _, _, let action):
+            case .withLink(_, _, _, _, let linkURL):
                 return { [weak self] in
                     if let self = self {
-                        WebviewHelper.launch(action.linkURL, with: self)
+                        WebviewHelper.launch(linkURL, with: self)
                     }
                 }
             default:
@@ -199,6 +188,27 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     }
 }
 
+// MARK: - Configuration
+
+private extension EmptyStateViewController {
+    /// Configures the `actionButton` based on the given `config`.
+    func configureActionButton(_ config: Config) {
+        switch config {
+        case .simple:
+            actionButton.isHidden = true
+        case .withLink(_, _, _, let linkTitle, _):
+            actionButton.isHidden = false
+            actionButton.applyPrimaryButtonStyle()
+            actionButton.setTitle(linkTitle, for: .normal)
+        case .withSupportRequest(_, _, _, let buttonTitle):
+            actionButton.isHidden = false
+            actionButton.applyLinkButtonStyle()
+            actionButton.contentEdgeInsets = .zero
+            actionButton.setTitle(buttonTitle, for: .normal)
+        }
+    }
+}
+
 // MARK: - KeyboardScrollable
 
 extension EmptyStateViewController: KeyboardScrollable {
@@ -231,43 +241,33 @@ extension EmptyStateViewController {
     }
 
     /// The configuration for this Empty State View
+    ///
+    /// The options like `simple`, `withLink`, etc define the standard behaviors or styles that
+    /// we use throughout the app. Right now, the options are generally split by the behavior
+    /// of the `actionButton`.
+    ///
+    /// There are probably better solutions than this but we should try to limit these to
+    /// what the design standards tell us. I believe it's better to have simple options than
+    /// having a high degree of customizability.
+    ///
     enum Config {
-
-        /// Configuration for the actionable button
-        enum LinkAction {
-
-            /// Represent a prominent pink putton style
-            case button(title: String, linkURL: URL)
-
-            /// Represent a pink link style
-            case text(title: String, linkURL: URL)
-
-            fileprivate var title: String {
-                switch self {
-                case let .button(title, _), let .text(title, _):
-                    return title
-                }
-            }
-
-            fileprivate var linkURL: URL {
-                switch self {
-                case let .button(_, url), let .text(_, url):
-                    return url
-                }
-            }
-        }
-
         /// Show a message and image only.
         ///
         case simple(message: NSAttributedString, image: UIImage)
 
-        /// Show all the elements and a button which navigates to a URL when tapped.
+        /// Show all the elements and a prominent button which navigates to a URL when tapped.
         ///
-        case withLink(message: NSAttributedString, image: UIImage, details: String, action: LinkAction)
+        /// - Parameters:
+        ///     - linkTitle: The content shown on the `actionButton`.
+        ///     - linkURL: The URL that will be navigated to when the `actionButton` is activated.
+        ///
+        case withLink(message: NSAttributedString, image: UIImage, details: String, linkTitle: String, linkURL: URL)
 
-        /// Shows all the elements and a link which shows the Contact Support dialog.
+        /// Shows all the elements and a text-style button which shows the Contact Support dialog when activated.
         ///
-        case withSupportRequest(message: NSAttributedString, image: UIImage, details: String)
+        /// - Parameter buttonTitle: The content shown on the button that displays the Contact Support dialog.
+        ///
+        case withSupportRequest(message: NSAttributedString, image: UIImage, details: String, buttonTitle: String)
 
         /// The font used by the message's `UILabel`.
         ///
@@ -281,8 +281,8 @@ extension EmptyStateViewController {
         fileprivate var message: NSAttributedString {
             switch self {
             case .simple(let message, _),
-                 .withLink(let message, _, _, _),
-                 .withSupportRequest(let message, _, _):
+                 .withLink(let message, _, _, _, _),
+                 .withSupportRequest(let message, _, _, _):
                 return message
             }
         }
@@ -290,8 +290,8 @@ extension EmptyStateViewController {
         fileprivate var image: UIImage {
             switch self {
             case .simple(_, let image),
-                 .withLink(_, let image, _, _),
-                 .withSupportRequest(_, let image, _):
+                 .withLink(_, let image, _, _, _),
+                 .withSupportRequest(_, let image, _, _):
                 return image
             }
         }
@@ -300,19 +300,9 @@ extension EmptyStateViewController {
             switch self {
             case .simple:
                 return nil
-            case .withLink(_, _, let detail, _),
-                 .withSupportRequest(_, _, let detail):
+            case .withLink(_, _, let detail, _, _),
+                 .withSupportRequest(_, _, let detail, _):
                 return detail
-            }
-        }
-
-        fileprivate var action: LinkAction? {
-            switch self {
-            case .simple,
-                 .withSupportRequest:
-                return nil
-            case .withLink(_, _, _, let action):
-                return action
             }
         }
     }

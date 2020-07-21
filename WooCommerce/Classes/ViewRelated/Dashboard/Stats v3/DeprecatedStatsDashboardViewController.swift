@@ -16,7 +16,8 @@ final class DeprecatedDashboardStatsViewController: UIViewController {
         return .withLink(message: message,
                          image: .noStoreImage,
                          details: Constants.details,
-                         action: .text(title: Constants.buttonTitle, linkURL: WooConstants.helpCenterURL))
+                         linkTitle: Constants.buttonTitle,
+                         linkURL: WooConstants.helpCenterURL)
     }()
 
     override func viewDidLoad() {

@@ -72,6 +72,7 @@ class SiteCredentialsViewController: LoginViewController {
 		registerTableViewCells()
 		loadRows()
 		setupOnePasswordButtonIfNeeded()
+		configureForAccessibility()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -246,6 +247,25 @@ private extension SiteCredentialsViewController {
 									 and: WordPressAuthenticator.shared.displayStrings.passwordPlaceholder)
 		passwordField = cell.textField
 		cell.textField.delegate = self
+	}
+
+	/// Sets up necessary accessibility labels and attributes for the all the UI elements in self.
+	///
+	func configureForAccessibility() {
+		usernameField?.accessibilityLabel =
+			NSLocalizedString("Username", comment: "Accessibility label for the username text field in the self-hosted login page.")
+		passwordField?.accessibilityLabel =
+			NSLocalizedString("Password", comment: "Accessibility label for the password text field in the self-hosted login page.")
+
+		if UIAccessibility.isVoiceOverRunning {
+			// Remove the placeholder if VoiceOver is running. VoiceOver speaks the label and the
+			// placeholder together. In this case, both labels and placeholders are the same so it's
+			// like VoiceOver is reading the same thing twice.
+			usernameField?.placeholder = nil
+			passwordField?.placeholder = nil
+		}
+
+//		forgotPasswordButton.accessibilityTraits = .link
 	}
 
 	// MARK: - Private Constants

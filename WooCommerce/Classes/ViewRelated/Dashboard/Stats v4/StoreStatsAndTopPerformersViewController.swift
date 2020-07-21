@@ -163,6 +163,7 @@ private extension StoreStatsAndTopPerformersViewController {
 
             group.enter()
             self.syncTopEarnersStats(for: siteID,
+                                     siteTimezone: timezoneForSync,
                                      timeRange: vc.timeRange,
                                      latestDateToInclude: latestDateToInclude) { error in
                 if let error = error {
@@ -338,10 +339,16 @@ private extension StoreStatsAndTopPerformersViewController {
         ServiceLocator.stores.dispatch(action)
     }
 
-    func syncTopEarnersStats(for siteID: Int64, timeRange: StatsTimeRangeV4, latestDateToInclude: Date, onCompletion: ((Error?) -> Void)? = nil) {
+    func syncTopEarnersStats(for siteID: Int64,
+                             siteTimezone: TimeZone,
+                             timeRange: StatsTimeRangeV4,
+                             latestDateToInclude: Date,
+                             onCompletion: ((Error?) -> Void)? = nil) {
+        let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
         let action = StatsActionV4.retrieveTopEarnerStats(siteID: siteID,
                                                           timeRange: timeRange,
-                                                          latestDateToInclude: Date()) { error in
+                                                          earliestDateToInclude: earliestDateToInclude,
+                                                          latestDateToInclude: latestDateToInclude) { error in
                                                             if let error = error {
                                                                 DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
                                                             } else {

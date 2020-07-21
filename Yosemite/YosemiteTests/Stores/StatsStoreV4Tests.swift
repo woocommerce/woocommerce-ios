@@ -245,7 +245,10 @@ final class StatsStoreV4Tests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/top-earners/", filename: "top-performers-week")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 0)
 
-        let action = StatsActionV4.retrieveTopEarnerStats(siteID: sampleSiteID, timeRange: .thisMonth, latestDateToInclude: Date()) { error in
+        let action = StatsActionV4.retrieveTopEarnerStats(siteID: sampleSiteID,
+                                                          timeRange: .thisMonth,
+                                                          earliestDateToInclude: Date(),
+                                                          latestDateToInclude: Date()) { error in
             XCTAssertNil(error)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 1)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 3)
@@ -271,7 +274,10 @@ final class StatsStoreV4Tests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 3)
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/top-earners/", filename: "top-performers-week-alt")
-        let action = StatsActionV4.retrieveTopEarnerStats(siteID: sampleSiteID, timeRange: .thisMonth, latestDateToInclude: Date()) { error in
+        let action = StatsActionV4.retrieveTopEarnerStats(siteID: sampleSiteID,
+                                                          timeRange: .thisMonth,
+                                                          earliestDateToInclude: Date(),
+                                                          latestDateToInclude: Date()) { error in
             XCTAssertNil(error)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 1)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 2)
@@ -292,7 +298,10 @@ final class StatsStoreV4Tests: XCTestCase {
         let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/top-earners/", filename: "generic_error")
-        let action = StatsActionV4.retrieveTopEarnerStats(siteID: sampleSiteID, timeRange: .thisMonth, latestDateToInclude: Date()) { error in
+        let action = StatsActionV4.retrieveTopEarnerStats(siteID: sampleSiteID,
+                                                          timeRange: .thisMonth,
+                                                          earliestDateToInclude: Date(),
+                                                          latestDateToInclude: Date()) { error in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -307,7 +316,10 @@ final class StatsStoreV4Tests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve top earner stats empty response")
         let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = StatsActionV4.retrieveTopEarnerStats(siteID: sampleSiteID, timeRange: .thisMonth, latestDateToInclude: Date()) { error in
+        let action = StatsActionV4.retrieveTopEarnerStats(siteID: sampleSiteID,
+                                                          timeRange: .thisMonth,
+                                                          earliestDateToInclude: Date(),
+                                                          latestDateToInclude: Date()) { error in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }

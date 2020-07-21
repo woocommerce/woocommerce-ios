@@ -47,10 +47,12 @@ public final class StatsStoreV4: Store {
                                    onCompletion: onCompletion)
         case .retrieveTopEarnerStats(let siteID,
                                      let timeRange,
+                                     let earliestDateToInclude,
                                      let latestDateToInclude,
                                      let onCompletion):
             retrieveTopEarnerStats(siteID: siteID,
                                    timeRange: timeRange,
+                                   earliestDateToInclude: earliestDateToInclude,
                                    latestDateToInclude: latestDateToInclude,
                                    onCompletion: onCompletion)
         }
@@ -132,23 +134,28 @@ public extension StatsStoreV4 {
     ///
     func retrieveTopEarnerStats(siteID: Int64,
                                 timeRange: StatsTimeRangeV4,
+                                earliestDateToInclude: Date,
                                 latestDateToInclude: Date,
                                 onCompletion: @escaping (Error?) -> Void) {
-        let remote = TopEarnersStatsRemote(network: network)
-        let granularity = timeRange.topEarnerStatsGranularity
-        let formattedDateString = StatsStore.buildDateString(from: latestDateToInclude, with: granularity)
+        let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
+        let earliestDate = dateFormatter.string(from: earliestDateToInclude)
+        let latestDate = dateFormatter.string(from: latestDateToInclude)
+        let remote = LeaderboardsRemote(network: network)
 
-        remote.loadTopEarnersStats(for: siteID,
-                                   unit: granularity,
-                                   latestDateToInclude: formattedDateString,
-                                   limit: Constants.defaultTopEarnerStatsLimit) { [weak self] (topEarnerStats, error) in
-                                    guard let topEarnerStats = topEarnerStats else {
+        remote.loadLeaderboards(for: siteID,
+                                unit: timeRange.intervalGranularity,
+                                earliestDateToInclude: earliestDate,
+                                latestDateToInclude: latestDate,
+                                quantity: Constants.defaultTopEarnerStatsLimit) { [weak self] result in
+                                    switch result {
+                                    case .success(let leaderboards):
+                                        // TODO: Transform leaderboard into TopEearner and upsert into storage
+                                        // self?.upsertStoredTopEarnerStats(readOnlyStats: topEarnerStats)
+                                        onCompletion(nil)
+
+                                    case .failure(let error):
                                         onCompletion(error)
-                                        return
                                     }
-
-                                    self?.upsertStoredTopEarnerStats(readOnlyStats: topEarnerStats)
-                                    onCompletion(nil)
         }
     }
 }

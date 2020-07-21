@@ -86,8 +86,12 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     /// Required implementation by `KeyboardFrameAdjustmentProvider`.
     var additionalKeyboardFrameHeight: CGFloat = 0
 
-    init(style: Style = .basic) {
+    /// Used to present the Contact Support dialog if the `Config` is `.withSupportRequest`.
+    private let zendeskManager: ZendeskManager
+
+    init(style: Style = .basic, zendeskManager: ZendeskManager = .shared) {
         self.style = style
+        self.zendeskManager = zendeskManager
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -132,6 +136,12 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
                 return { [weak self] in
                     if let self = self {
                         WebviewHelper.launch(linkURL, with: self)
+                    }
+                }
+            case .withSupportRequest:
+                return { [weak self] in
+                    if let self = self {
+                        self.zendeskManager.showNewRequestIfPossible(from: self)
                     }
                 }
             default:

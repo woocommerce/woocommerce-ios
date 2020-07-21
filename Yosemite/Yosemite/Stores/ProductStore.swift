@@ -239,7 +239,7 @@ private extension ProductStore {
             case .success(let product):
                 self?.upsertStoredProductsInBackground(readOnlyProducts: [product]) { [weak self] in
                     guard let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: product.siteID, productID: product.productID) else {
-                        onCompletion(.failure(.storage))
+                        onCompletion(.failure(.notFoundInStorage))
                         return
                     }
                     onCompletion(.success(storageProduct.toReadOnly()))
@@ -528,7 +528,7 @@ extension ProductStore {
 public enum ProductUpdateError: Error {
     case duplicatedSKU
     case invalidSKU
-    case storage
+    case notFoundInStorage
     case unknown
 
     init(error: Error) {

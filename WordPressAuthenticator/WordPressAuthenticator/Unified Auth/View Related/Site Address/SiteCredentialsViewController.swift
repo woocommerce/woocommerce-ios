@@ -16,6 +16,7 @@ class SiteCredentialsViewController: LoginViewController {
 	/// Internal properties.
 	///
 	@IBOutlet var bottomContentConstraint: NSLayoutConstraint?
+	@objc var onePasswordButton: UIButton!
     // Required property declaration for `NUXKeyboardResponder` but unused here.
     var verticalCenterConstraint: NSLayoutConstraint?
 

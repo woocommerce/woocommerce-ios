@@ -24,4 +24,20 @@ struct LeaderboardStatsConverter {
         // Try to convert the `productID` to an `Int`
         return Int64(productItemValue)
     }
+
+    /// Returns the correct formatted date for `TopEarnerStats` from a date using the provided `granularity`
+    /// `.hourly` granularity is not supported
+    //
+    static func statsDateFor(date: Date, using granularity: StatGranularity) -> String {
+        switch granularity {
+        case .day:
+            return DateFormatter.Stats.statsDayFormatter.string(from: date)
+        case .week:
+            return DateFormatter.Stats.statsWeekFormatter.string(from: date)
+        case .month:
+            return DateFormatter.Stats.statsMonthFormatter.string(from: date)
+        case .year:
+            return DateFormatter.Stats.statsYearFormatter.string(from: date)
+        }
+    }
 }

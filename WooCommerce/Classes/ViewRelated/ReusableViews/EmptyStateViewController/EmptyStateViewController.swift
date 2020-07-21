@@ -265,7 +265,7 @@ extension EmptyStateViewController {
         ///
         case simple(message: NSAttributedString, image: UIImage)
 
-        /// Show all the elements and a prominent button which navigates to a URL when tapped.
+        /// Show all the elements and a prominent button which navigates to a URL when activated.
         ///
         /// - Parameters:
         ///     - linkTitle: The content shown on the `actionButton`.
@@ -273,7 +273,7 @@ extension EmptyStateViewController {
         ///
         case withLink(message: NSAttributedString, image: UIImage, details: String, linkTitle: String, linkURL: URL)
 
-        /// Shows all the elements and a text-style button which shows the Contact Support dialog when activated.
+        /// Shows all the elements and a text-style button which shows the Contact Us dialog when activated.
         ///
         /// - Parameter buttonTitle: The content shown on the button that displays the Contact Support dialog.
         ///

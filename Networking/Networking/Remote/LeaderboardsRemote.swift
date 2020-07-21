@@ -37,7 +37,7 @@ public class LeaderboardsRemote: Remote {
 //
 private extension LeaderboardsRemote {
     enum Constants {
-        static let path = "wc-analytics/leaderboards"
+        static let path = "leaderboards"
     }
 
     enum ParameterKeys {

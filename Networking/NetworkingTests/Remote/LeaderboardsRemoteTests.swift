@@ -16,7 +16,7 @@ final class leaderboardsRemoteV4Tests: XCTestCase {
     func testLeaderboardReturnsCorrectParsedValues() throws {
         // Given
         let remote = LeaderboardsRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "wc-analytics/leaderboards", filename: "leaderboards-year")
+        network.simulateResponse(requestUrlSuffix: "leaderboards", filename: "leaderboards-year")
 
         // When
         var remoteResult: Result<[Leaderboard], Error>?

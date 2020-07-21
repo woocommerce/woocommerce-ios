@@ -13,11 +13,21 @@ extension NSNotification.Name {
     static let ZDPNCleared = NSNotification.Name(rawValue: "ZDPNCleared")
 }
 
+/// Defines methods for showing Zendesk UI.
+///
+/// This is primarily used for testability. Not all methods in `ZendeskManager` are defined but
+/// feel free to add them when needed.
+///
+protocol ZendeskManagerProtocol {
+    /// Displays the Zendesk New Request view from the given controller, for users to submit new tickets.
+    ///
+    func showNewRequestIfPossible(from controller: UIViewController, with sourceTag: String?)
+}
 
 /// This class provides the functionality to communicate with Zendesk for Help Center and support ticket interaction,
 /// as well as displaying views for the Help Center, new tickets, and ticket list.
 ///
-final class ZendeskManager: NSObject {
+final class ZendeskManager: NSObject, ZendeskManagerProtocol {
 
     /// Shared Instance
     ///

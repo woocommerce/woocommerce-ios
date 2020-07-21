@@ -8,7 +8,7 @@ struct LeaderboardProductParser {
     /// A valid html is an `a` tag with an `href` that includes the `product_id` in a query parameter named `products`
     /// EG:  `<a href='https://store.com?products=9'>Product</a>`
     ///
-    static func infeerProductID(fromHTMLString html: String) -> Int? {
+    static func infeerProductID(fromHTMLString html: String) -> Int64? {
 
         // Parse and extract the `products` parameter out the the html using `Aztec parser` and `URLComponents`
         let parsed = HTMLParser().parse(html)
@@ -20,6 +20,6 @@ struct LeaderboardProductParser {
         }
 
         // Try to convert the `productID` to an `Int`
-        return Int(productItemValue)
+        return Int64(productItemValue)
     }
 }

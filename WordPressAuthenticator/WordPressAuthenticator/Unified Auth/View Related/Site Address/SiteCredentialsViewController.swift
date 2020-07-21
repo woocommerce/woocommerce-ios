@@ -20,6 +20,12 @@ class SiteCredentialsViewController: LoginViewController {
     // Required property declaration for `NUXKeyboardResponder` but unused here.
     var verticalCenterConstraint: NSLayoutConstraint?
 
+	override var sourceTag: WordPressSupportSourceTag {
+        get {
+            return .loginUsernamePassword
+        }
+    }
+
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
 

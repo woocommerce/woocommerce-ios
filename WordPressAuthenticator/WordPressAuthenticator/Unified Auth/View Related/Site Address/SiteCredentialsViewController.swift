@@ -54,6 +54,11 @@ class SiteCredentialsViewController: LoginViewController {
 
         view.backgroundColor = unifiedBackgroundColor
     }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return WordPressAuthenticator.shared.unifiedStyle?.statusBarStyle ?? WordPressAuthenticator.shared.style.statusBarStyle
+    }
+
 
 	/// Configure the view for an editing state. Should only be called from viewWillAppear
     /// as this method skips animating any change in height.

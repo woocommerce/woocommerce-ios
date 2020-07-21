@@ -6,7 +6,7 @@ import WordPressUI
 public class LoginNavigationController: RotationAwareNavigationViewController {
 
     public override var preferredStatusBarStyle: UIStatusBarStyle {
-        return WordPressAuthenticator.shared.style.statusBarStyle
+        return topViewController?.preferredStatusBarStyle ?? WordPressAuthenticator.shared.style.statusBarStyle
     }
 
     public override func pushViewController(_ viewController: UIViewController, animated: Bool) {

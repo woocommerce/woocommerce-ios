@@ -260,9 +260,14 @@ extension EmptyStateViewController {
         /// Show a message and image only.
         ///
         case simple(message: NSAttributedString, image: UIImage)
+
         /// Show all the elements and a button which navigates to a URL when tapped.
         ///
         case withLink(message: NSAttributedString, image: UIImage, details: String, action: LinkAction)
+
+        /// Shows all the elements and a link which shows the Contact Support dialog.
+        ///
+        case withSupportRequest(message: NSAttributedString, image: UIImage, details: String)
 
         /// The font used by the message's `UILabel`.
         ///
@@ -276,7 +281,8 @@ extension EmptyStateViewController {
         fileprivate var message: NSAttributedString {
             switch self {
             case .simple(let message, _),
-                 .withLink(let message, _, _, _):
+                 .withLink(let message, _, _, _),
+                 .withSupportRequest(let message, _, _):
                 return message
             }
         }
@@ -284,7 +290,8 @@ extension EmptyStateViewController {
         fileprivate var image: UIImage {
             switch self {
             case .simple(_, let image),
-                 .withLink(_, let image, _, _):
+                 .withLink(_, let image, _, _),
+                 .withSupportRequest(_, let image, _):
                 return image
             }
         }
@@ -293,14 +300,16 @@ extension EmptyStateViewController {
             switch self {
             case .simple:
                 return nil
-            case .withLink(_, _, let detail, _):
+            case .withLink(_, _, let detail, _),
+                 .withSupportRequest(_, _, let detail):
                 return detail
             }
         }
 
         fileprivate var action: LinkAction? {
             switch self {
-            case .simple:
+            case .simple,
+                 .withSupportRequest:
                 return nil
             case .withLink(_, _, _, let action):
                 return action

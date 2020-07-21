@@ -9,10 +9,6 @@ class LoginPrologueViewController: LoginViewController {
     private var buttonViewController: NUXButtonViewController?
     var showCancel = false
 
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
-    }
-
     // MARK: - Lifecycle Methods
 
     override func viewWillAppear(_ animated: Bool) {

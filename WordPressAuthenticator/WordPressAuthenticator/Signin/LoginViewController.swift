@@ -32,7 +32,13 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
 
         return delegate
     }
-    
+
+    open override var preferredStatusBarStyle: UIStatusBarStyle {
+        // Set to the old style as the default.
+        // Each VC in the unified flows needs to override this to use the unified style.
+        return WordPressAuthenticator.shared.style.statusBarStyle
+    }
+
     // MARK: Lifecycle Methods
 
     override open func viewDidLoad() {

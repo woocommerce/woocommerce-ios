@@ -73,25 +73,25 @@ extension WPStyleGuide {
         onePasswordButton.addTarget(target, action: selector, for: .touchUpInside)
     }
 
-	/// Adds a 1password button to a UITextField, if available
-	///
-	class func configureOnePasswordButtonForTextfield(_ textField: UITextField?, target: NSObject, selector: Selector) {
-		guard OnePasswordFacade.isOnePasswordEnabled else {
-			return
-		}
+    /// Adds a 1password button to a UITextField, if available
+    ///
+    class func configureOnePasswordButtonForTextfield(_ textField: UITextField?, target: NSObject, selector: Selector) {
+        guard OnePasswordFacade.isOnePasswordEnabled else {
+            return
+        }
 
-		let onePasswordButton = UIButton(type: .custom)
-		onePasswordButton.setImage(.onePasswordImage, for: .normal)
-		onePasswordButton.sizeToFit()
+        let onePasswordButton = UIButton(type: .custom)
+        onePasswordButton.setImage(.onePasswordImage, for: .normal)
+        onePasswordButton.sizeToFit()
 
-		onePasswordButton.accessibilityLabel =
-			NSLocalizedString("Fill with password manager", comment: "The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). ")
+        onePasswordButton.accessibilityLabel =
+            NSLocalizedString("Fill with password manager", comment: "The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). ")
 
-		textField?.rightView = onePasswordButton
-		textField?.rightViewMode = .always
+        textField?.rightView = onePasswordButton
+        textField?.rightViewMode = .always
 
-		onePasswordButton.addTarget(target, action: selector, for: .touchUpInside)
-	}
+        onePasswordButton.addTarget(target, action: selector, for: .touchUpInside)
+    }
 
     /// Configures a plain text button with default styles.
     ///
@@ -170,7 +170,7 @@ extension WPStyleGuide {
         } else {
             // Create an attributed string that contains the Google icon + button text.
             googleAttachment.bounds = CGRect(x: 0, y: (NUXButton.titleFont.capHeight - Constants.googleIconButtonSize) / 2,
-                                            width: Constants.googleIconButtonSize, height: Constants.googleIconButtonSize)
+                                             width: Constants.googleIconButtonSize, height: Constants.googleIconButtonSize)
 
             let buttonString = NSMutableAttributedString(attachment: googleAttachment)
             //  Add leading non-breaking spaces to separate the button text from the Google logo.

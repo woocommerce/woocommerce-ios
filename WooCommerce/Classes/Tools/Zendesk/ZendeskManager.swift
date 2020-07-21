@@ -17,7 +17,7 @@ extension NSNotification.Name {
 /// This class provides the functionality to communicate with Zendesk for Help Center and support ticket interaction,
 /// as well as displaying views for the Help Center, new tickets, and ticket list.
 ///
-class ZendeskManager: NSObject {
+final class ZendeskManager: NSObject {
 
     /// Shared Instance
     ///

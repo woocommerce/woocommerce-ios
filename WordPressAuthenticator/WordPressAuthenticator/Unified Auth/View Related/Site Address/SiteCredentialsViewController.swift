@@ -26,6 +26,13 @@ class SiteCredentialsViewController: LoginViewController {
         }
     }
 
+	override var loginFields: LoginFields {
+        didSet {
+            // Clear the password (if any) from LoginFields
+            loginFields.password = ""
+        }
+    }
+
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
 

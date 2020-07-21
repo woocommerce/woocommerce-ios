@@ -2,7 +2,9 @@ import Foundation
 import class Aztec.HTMLParser
 import struct Aztec.Element
 
-struct LeaderboardProductParser {
+/// Helper functions to  convert a `Leaderboard` type into a `TopEearnerStat`
+///
+struct LeaderboardStatsConverter {
 
     /// Infeers a product-id from an specific html string type
     /// A valid html is an `a` tag with an `href` that includes the `product_id` in a query parameter named `products`

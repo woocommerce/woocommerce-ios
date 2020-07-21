@@ -3,7 +3,7 @@ import XCTest
 
 /// LeaderboardProductParser unit tests
 ///
-final class LeaderboardProductParserTests: XCTestCase {
+final class LeaderboardStatsConverterTest: XCTestCase {
 
     func testProductIDIsInferedFromAValidHTML() {
         // Given
@@ -13,7 +13,7 @@ final class LeaderboardProductParserTests: XCTestCase {
         """
 
         // When
-        let productID = LeaderboardProductParser.infeerProductID(fromHTMLString: html)
+        let productID = LeaderboardStatsConverter.infeerProductID(fromHTMLString: html)
 
         // Then
         XCTAssertEqual(productID, 9)
@@ -27,7 +27,7 @@ final class LeaderboardProductParserTests: XCTestCase {
         """
 
         // When
-        let productID = LeaderboardProductParser.infeerProductID(fromHTMLString: html)
+        let productID = LeaderboardStatsConverter.infeerProductID(fromHTMLString: html)
 
         // Then
         XCTAssertNil(productID)
@@ -38,7 +38,7 @@ final class LeaderboardProductParserTests: XCTestCase {
         let html = ""
 
         // When
-        let productID = LeaderboardProductParser.infeerProductID(fromHTMLString: html)
+        let productID = LeaderboardStatsConverter.infeerProductID(fromHTMLString: html)
 
         // Then
         XCTAssertNil(productID)

@@ -32,13 +32,6 @@ class SiteCredentialsViewController: LoginViewController {
 		localizePrimaryButton()
 		registerTableViewCells()
 		loadRows()
-		configureSubmitButton(animating: false)
-    }
-
-	override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        configureSubmitButton(animating: false)
     }
 
     override func viewDidAppear(_ animated: Bool) {

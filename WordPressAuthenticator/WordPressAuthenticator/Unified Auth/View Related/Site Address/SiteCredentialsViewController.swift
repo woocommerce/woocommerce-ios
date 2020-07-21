@@ -45,6 +45,11 @@ class SiteCredentialsViewController: LoginViewController {
 
         view.backgroundColor = unifiedBackgroundColor
     }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return WordPressAuthenticator.shared.unifiedStyle?.statusBarStyle ?? WordPressAuthenticator.shared.style.statusBarStyle
+    }
+
 }
 
 

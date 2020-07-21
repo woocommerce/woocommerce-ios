@@ -193,6 +193,7 @@ private extension SiteCredentialsViewController {
         let cells = [
             TextLabelTableViewCell.reuseIdentifier: TextLabelTableViewCell.loadNib(),
 			TextFieldTableViewCell.reuseIdentifier: TextFieldTableViewCell.loadNib(),
+			TextLinkButtonTableViewCell.reuseIdentifier: TextLinkButtonTableViewCell.loadNib()
         ]
 
         for (reuseIdentifier, nib) in cells {
@@ -203,7 +204,7 @@ private extension SiteCredentialsViewController {
 	/// Describes how the tableView rows should be rendered.
     ///
     func loadRows() {
-		rows = [.instructions, .username, .password]
+		rows = [.instructions, .username, .password, .forgotPassword]
     }
 
 	/// Configure cells.
@@ -216,6 +217,8 @@ private extension SiteCredentialsViewController {
 			configureUsernameTextField(cell)
 		case let cell as TextFieldTableViewCell where row == .password:
 			configurePasswordTextField(cell)
+		case let cell as TextLinkButtonTableViewCell:
+			configureForgotPassword(cell)
         default:
             DDLogError("Error: Unidentified tableViewCell type found.")
         }
@@ -249,6 +252,25 @@ private extension SiteCredentialsViewController {
 		cell.textField.delegate = self
 	}
 
+	/// Configure the forgot password cell.
+	///
+	func configureForgotPassword(_ cell: TextLinkButtonTableViewCell) {
+		cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.resetPasswordButtonTitle)
+		cell.actionHandler = { [weak self] in
+			guard let self = self else {
+				return
+			}
+
+			// If information is currently processing, ignore button tap.
+			guard self.enableSubmit(animating: false) else {
+				return
+			}
+
+			WordPressAuthenticator.openForgotPasswordURL(self.loginFields)
+			WordPressAuthenticator.track(.loginForgotPasswordClicked)
+		}
+	}
+
 	/// Sets up necessary accessibility labels and attributes for the all the UI elements in self.
 	///
 	func configureForAccessibility() {
@@ -276,6 +298,7 @@ private extension SiteCredentialsViewController {
         case instructions
 		case username
 		case password
+		case forgotPassword
 
         var reuseIdentifier: String {
             switch self {
@@ -285,6 +308,8 @@ private extension SiteCredentialsViewController {
 				return TextFieldTableViewCell.reuseIdentifier
 			case .password:
 				return TextFieldTableViewCell.reuseIdentifier
+			case .forgotPassword:
+				return TextLinkButtonTableViewCell.reuseIdentifier
 			}
         }
     }

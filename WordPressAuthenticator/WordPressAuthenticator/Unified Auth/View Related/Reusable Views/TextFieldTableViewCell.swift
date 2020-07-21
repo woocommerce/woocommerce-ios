@@ -93,7 +93,7 @@ private extension TextFieldTableViewCell {
 	/// Build the show / hide icon in the textfield.
 	///
 	func configureSecureTextEntryToggle() {
-		if showSecureTextEntryToggle == false {
+		guard showSecureTextEntryToggle else {
 			return
 		}
 

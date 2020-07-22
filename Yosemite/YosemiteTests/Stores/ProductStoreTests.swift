@@ -952,46 +952,50 @@ final class ProductStoreTests: XCTestCase {
     /// Verifies that `ProductAction.updateProduct` returns an error whenever there is an error response from the backend.
     ///
     func testUpdatingProductReturnsErrorUponReponseError() {
-        let expectation = self.expectation(description: "Update product")
+        // Given
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "generic_error")
-        let product = sampleProduct()
-        let action = ProductAction.updateProduct(product: product) { result in
-            guard case .failure = result else {
-                XCTFail("Unexpected result: \(result)")
-                return
-            }
-            expectation.fulfill()
-        }
 
-        productStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // When
+        let product = sampleProduct()
+        waitForExpectation { expectation in
+            let action = ProductAction.updateProduct(product: product) { result in
+                // Then
+                guard case .failure = result else {
+                    XCTFail("Unexpected result: \(result)")
+                    return
+                }
+                expectation.fulfill()
+            }
+            productStore.onAction(action)
+        }
     }
 
     /// Verifies that `ProductAction.updateProduct` returns an error whenever there is no backend response.
     ///
     func testUpdatingProductReturnsErrorUponEmptyResponse() {
-        let expectation = self.expectation(description: "Update product")
+        // Given
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
+        // When
         let product = sampleProduct()
-        let action = ProductAction.updateProduct(product: product) { result in
-            guard case .failure = result else {
-                XCTFail("Unexpected result: \(result)")
-                return
+        waitForExpectation { expectation in
+            let action = ProductAction.updateProduct(product: product) { result in
+                // Then
+                guard case .failure = result else {
+                    XCTFail("Unexpected result: \(result)")
+                    return
+                }
+                expectation.fulfill()
             }
-            expectation.fulfill()
+            productStore.onAction(action)
         }
-
-        productStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     /// Verifies that whenever a `ProductAction.updateProduct` action results in a response with statusCode = 404, the local entity is not deleted.
     ///
     func testUpdatingProductResultingInStatusCode404DoesNotCauseTheStoredProductToGetDeleted() {
-        let expectation = self.expectation(description: "Update product")
+        // Given
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
@@ -999,20 +1003,23 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
 
         network.simulateError(requestUrlSuffix: "products/\(sampleProductID)", error: NetworkError.notFound)
+
+        // When
         let product = sampleProduct()
-        let action = ProductAction.updateProduct(product: product) { result in
-            guard case .failure = result else {
-                XCTFail("Unexpected result: \(result)")
-                return
+        waitForExpectation { expectation in
+            let action = ProductAction.updateProduct(product: product) { result in
+                // Then
+                guard case .failure = result else {
+                    XCTFail("Unexpected result: \(result)")
+                    return
+                }
+                // The existing Product should not be deleted on 404 response.
+                XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 1)
+
+                expectation.fulfill()
             }
-            // The existing Product should not be deleted on 404 response.
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 1)
-
-            expectation.fulfill()
+            productStore.onAction(action)
         }
-
-        productStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     /// Verifies that whenever a `ProductAction.updateProduct` action results in product update maintaint the Product Tags order.

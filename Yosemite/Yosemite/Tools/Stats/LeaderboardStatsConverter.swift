@@ -10,7 +10,7 @@ struct LeaderboardStatsConverter {
     ///
     static func topProductsIDs(from topProducts: Leaderboard) -> [Int64] {
         return topProducts.rows.compactMap {
-            LeaderboardStatsConverter.infeerProductID(fromHTMLString: $0.subject.display)
+            Self.infeerProductID(fromHTMLString: $0.subject.display)
         }
     }
 
@@ -65,7 +65,7 @@ private extension LeaderboardStatsConverter {
     static func topEearnerStatItem(from topProduct: LeaderboardRow, using storedProducts: [Product]) -> TopEarnerStatsItem? {
 
         // Match the product that corresponds to the leaderboard row(top product)
-        guard let productID = LeaderboardStatsConverter.infeerProductID(fromHTMLString: topProduct.subject.display),
+        guard let productID = Self.infeerProductID(fromHTMLString: topProduct.subject.display),
             let product = storedProducts.first(where: { $0.productID == productID }) else {
                 return nil
         }

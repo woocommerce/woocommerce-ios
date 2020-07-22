@@ -74,7 +74,7 @@ private extension ProductListSelectorViewController {
         let navigationController = WooNavigationController(rootViewController: searchViewController)
         present(navigationController, animated: true, completion: nil)
     }
-    
+
     func didSelectProductsFromSearch(ids: [Int64]) {
         dataSource.addProducts(ids)
         paginatedListSelector.reloadData()

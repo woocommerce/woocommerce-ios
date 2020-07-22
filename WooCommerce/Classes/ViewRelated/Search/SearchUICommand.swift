@@ -71,6 +71,8 @@ protocol SearchUICommand {
     /// - Parameters:
     ///   - model: search result model.
     ///   - viewController: view controller where the user selects the search result.
+    ///   - reloadData: called when UI reload is necessary.
+    ///   - updateActionButton: called when action button update is necessary.
     func didSelectSearchResult(model: Model, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void)
 
     /// The Accessibility Identifier for the search bar

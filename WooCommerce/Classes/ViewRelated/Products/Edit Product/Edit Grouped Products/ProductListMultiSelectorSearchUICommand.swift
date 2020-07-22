@@ -83,10 +83,7 @@ final class ProductListMultiSelectorSearchUICommand: SearchUICommand {
 
                                                     onCompletion?(error == nil)
         }
-
         ServiceLocator.stores.dispatch(action)
-
-        ServiceLocator.analytics.track(.productListSearched)
     }
 
     func didSelectSearchResult(model: Product, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {

@@ -55,10 +55,20 @@ class SiteCredentialsViewController: LoginViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
+		configureSubmitButton(animating: false)
+
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
         configureViewForEditingIfNeeded()
+
+		// Tracks go here. Old event: WordPressAuthenticator.track(.loginUsernamePasswordFormViewed)
     }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        unregisterForKeyboardEvents()
+    }
+
 
 	// MARK: - Overrides
 

@@ -59,7 +59,8 @@ final class EmptyStateViewControllerTests: XCTestCase {
             message: NSAttributedString(string: "Ola"),
             image: .appleIcon,
             details: "Dolores eum",
-            action: .button(title: "Bakero!", linkURL: WooConstants.blogURL)
+            linkTitle: "Bakero!",
+            linkURL: WooConstants.blogURL
         ))
 
         // Then
@@ -128,6 +129,60 @@ final class EmptyStateViewControllerTests: XCTestCase {
 
         // Then
         XCTAssertFalse(mirror.imageView.isHidden)
+    }
+
+    func testGivenASupportRequestConfigThenItShowsAllTheElements() throws {
+        // Given
+        let viewController = EmptyStateViewController()
+        XCTAssertNotNil(viewController.view)
+
+        let mirror = try self.mirror(of: viewController)
+
+        // When
+        viewController.configure(.withSupportRequest(
+            message: NSAttributedString(string: "aTque"),
+            image: .infoImage,
+            details: "Sequi corrupti explicabo",
+            buttonTitle: "Contact You!"
+        ))
+
+        // Then
+        XCTAssertFalse(mirror.messageLabel.isHidden)
+        XCTAssertFalse(mirror.detailsLabel.isHidden)
+        XCTAssertFalse(mirror.actionButton.isHidden)
+
+        XCTAssertEqual(mirror.messageLabel.attributedText, NSAttributedString(string: "aTque"))
+        XCTAssertEqual(mirror.imageView.image, UIImage.infoImage)
+        XCTAssertEqual(mirror.detailsLabel.text, "Sequi corrupti explicabo")
+        XCTAssertEqual(mirror.actionButton.titleLabel?.text, "Contact You!")
+    }
+
+    func testGivenASupportRequestConfigWhenTappingOnButtonThenTheContactUsPageIsPresented() throws {
+        // Given
+        let zendeskManager = MockZendeskManager()
+        let viewController = EmptyStateViewController(style: .basic, zendeskManager: zendeskManager)
+        XCTAssertNotNil(viewController.view)
+
+        let mirror = try self.mirror(of: viewController)
+
+        viewController.configure(.withSupportRequest(
+            message: NSAttributedString(string: ""),
+            image: .appleIcon,
+            details: "",
+            buttonTitle: "Dolores"
+        ))
+
+        assertEmpty(zendeskManager.newRequestIfPossibleInvocations)
+
+        // When
+        mirror.actionButton.sendActions(for: .touchUpInside)
+
+        // Then
+        XCTAssertEqual(zendeskManager.newRequestIfPossibleInvocations.count, 1)
+
+        let invocation = try XCTUnwrap(zendeskManager.newRequestIfPossibleInvocations.first)
+        XCTAssertEqual(invocation.controller, viewController)
+        XCTAssertNil(invocation.sourceTag)
     }
 }
 

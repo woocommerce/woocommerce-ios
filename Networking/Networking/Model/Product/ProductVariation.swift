@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents a Product Variation Entity.
 ///
-public struct ProductVariation: Decodable, GeneratedCopiable {
+public struct ProductVariation: Codable, GeneratedCopiable {
     public let siteID: Int64
     public let productID: Int64
 
@@ -247,6 +247,51 @@ public struct ProductVariation: Decodable, GeneratedCopiable {
                   shippingClass: shippingClass,
                   shippingClassID: shippingClassID,
                   menuOrder: menuOrder)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(image, forKey: .image)
+
+        try container.encode(description, forKey: .description)
+
+        // Price Settings.
+        try container.encode(regularPrice, forKey: .regularPrice)
+        try container.encode(salePrice, forKey: .salePrice)
+
+        // We need to send empty string if fields are null, because there is a bug on the API side
+        // Issue: https://github.com/woocommerce/woocommerce/issues/25350
+        if dateOnSaleStart == nil {
+            try container.encode("", forKey: .dateOnSaleStart)
+        }
+        else {
+            try container.encode(dateOnSaleStart, forKey: .dateOnSaleStart)
+        }
+        if dateOnSaleEnd == nil {
+            try container.encode("", forKey: .dateOnSaleEnd)
+        }
+        else {
+            try container.encode(dateOnSaleEnd, forKey: .dateOnSaleEnd)
+        }
+
+        try container.encode(taxStatusKey, forKey: .taxStatusKey)
+        //The backend for the standard tax class return "standard",
+        // but to set the standard tax class it accept only an empty string "" in the POST request
+        let newTaxClass = taxClass == "standard" ? "" : taxClass
+        try container.encode(newTaxClass, forKey: .taxClass)
+
+        // Shipping Settings.
+        try container.encode(weight, forKey: .weight)
+        try container.encode(dimensions, forKey: .dimensions)
+        try container.encode(shippingClass, forKey: .shippingClass)
+
+        // Inventory Settings.
+        try container.encode(sku, forKey: .sku)
+        try container.encode(manageStock, forKey: .manageStock)
+        try container.encode(stockQuantity, forKey: .stockQuantity)
+        try container.encode(backordersKey, forKey: .backordersKey)
+        try container.encode(stockStatus.rawValue, forKey: .stockStatusKey)
     }
 }
 

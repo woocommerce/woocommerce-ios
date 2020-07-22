@@ -117,9 +117,117 @@ final class ProductVariationsRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    // MARK: - Update ProductVariation
+
+    /// Verifies that updateProductVariation properly parses the `product-variation-update` sample response.
+    ///
+    func testUpdateProductVariationProperlyReturnsParsedProduct() {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        let sampleProductVariationID: Int64 = 2783
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations/\(sampleProductVariationID)", filename: "product-variation-update")
+        let productVariation = sampleProductVariation(siteID: sampleSiteID, productID: sampleProductID, id: sampleProductVariationID)
+
+        // When
+        var updatedProductVariation: ProductVariation?
+        waitForExpectation { expectation in
+            remote.updateProductVariation(productVariation: productVariation) { result in
+                guard case let .success(productVariation) = result else {
+                    XCTFail("Unexpected result: \(result)")
+                    return
+                }
+                updatedProductVariation = productVariation
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertEqual(updatedProductVariation, productVariation)
+    }
+
+    /// Verifies that updateProductVariation properly relays Networking Layer errors.
+    ///
+    func testUpdateProductVariationProperlyRelaysNetwokingErrors() {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        let sampleProductVariationID: Int64 = 2783
+        let productVariation = sampleProductVariation(siteID: sampleSiteID, productID: sampleProductID, id: sampleProductVariationID)
+
+        // When
+        var result: Result<ProductVariation, Error>?
+        waitForExpectation { expectation in
+            remote.updateProductVariation(productVariation: productVariation) { updatedResult in
+                result = updatedResult
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        guard case .failure = result else {
+            XCTFail("Unexpected result: \(String(describing: result))")
+            return
+        }
+    }
 }
 
 private extension ProductVariationsRemoteTests {
+    func sampleProductVariation(siteID: Int64,
+                                productID: Int64,
+                                id: Int64) -> ProductVariation {
+        let imageSource = "https://i0.wp.com/funtestingusa.wpcomstaging.com/wp-content/uploads/2019/11/img_0002-1.jpeg?fit=4288%2C2848&ssl=1"
+        return ProductVariation(siteID: siteID,
+                                productID: productID,
+                                productVariationID: id,
+                                attributes: sampleProductVariationAttributes(),
+                                image: ProductImage(imageID: 2432,
+                                                    dateCreated: dateFromGMT("2020-03-13T03:13:57"),
+                                                    dateModified: dateFromGMT("2020-07-21T08:29:16"),
+                                                    src: imageSource,
+                                                    name: "DSC_0010",
+                                                    alt: ""),
+                                permalink: "https://chocolate.com/marble",
+                                dateCreated: dateFromGMT("2020-06-12T14:36:02"),
+                                dateModified: dateFromGMT("2020-07-21T08:35:47"),
+                                dateOnSaleStart: nil,
+                                dateOnSaleEnd: nil,
+                                status: .publish,
+                                description: "<p>Nutty chocolate marble, 99% and organic.</p>\n",
+                                sku: "87%-strawberry-marble",
+                                price: "14.99",
+                                regularPrice: "14.99",
+                                salePrice: "",
+                                onSale: false,
+                                purchasable: true,
+                                virtual: false,
+                                downloadable: true,
+                                downloads: [],
+                                downloadLimit: -1,
+                                downloadExpiry: 0,
+                                taxStatusKey: "taxable",
+                                taxClass: "",
+                                manageStock: true,
+                                stockQuantity: 16,
+                                stockStatus: .inStock,
+                                backordersKey: "notify",
+                                backordersAllowed: true,
+                                backordered: false,
+                                weight: "2.5",
+                                dimensions: ProductDimensions(length: "10",
+                                                              width: "2.5",
+                                                              height: ""),
+                                shippingClass: "",
+                                shippingClassID: 0,
+                                menuOrder: 1)
+    }
+
+    func sampleProductVariationAttributes() -> [ProductVariationAttribute] {
+        return [
+            ProductVariationAttribute(id: 0, name: "Darkness", option: "87%"),
+            ProductVariationAttribute(id: 0, name: "Flavor", option: "strawberry"),
+            ProductVariationAttribute(id: 0, name: "Shape", option: "marble")
+        ]
+    }
+
     func dateFromGMT(_ dateStringInGMT: String) -> Date {
         let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
         return dateFormatter.date(from: dateStringInGMT)!

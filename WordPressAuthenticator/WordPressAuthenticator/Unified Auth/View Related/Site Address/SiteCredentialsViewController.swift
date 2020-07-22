@@ -36,12 +36,14 @@ class SiteCredentialsViewController: LoginViewController {
 
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
-
+		validateForm()
     }
 
 	// MARK: - View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+
+		loginFields.meta.userIsDotCom = false
 
         navigationItem.title = WordPressAuthenticator.shared.displayStrings.logInTitle
         styleNavigationBar(forUnified: true)
@@ -98,7 +100,30 @@ class SiteCredentialsViewController: LoginViewController {
            usernameField?.becomeFirstResponder()
        }
     }
-}
+
+	/// Configures the appearance and state of the submit button.
+    ///
+    override func configureSubmitButton(animating: Bool) {
+        submitButton?.showActivityIndicator(animating)
+
+        submitButton?.isEnabled = (
+            !animating &&
+                !loginFields.username.isEmpty &&
+                !loginFields.password.isEmpty
+        )
+    }
+
+	/// Sets the view's state to loading or not loading.
+    ///
+    /// - Parameter loading: True if the form should be configured to a "loading" state.
+    ///
+    override func configureViewLoading(_ loading: Bool) {
+        usernameField?.isEnabled = !loading
+        passwordField?.isEnabled = !loading
+
+        configureSubmitButton(animating: loading)
+        navigationItem.hidesBackButton = loading
+    }
 
 	/// Set error messages and reload the table to display them.
 	///
@@ -385,4 +410,29 @@ extension SiteCredentialsViewController {
 	@objc func validateForm() {
 		validateFormAndLogin()
 	}
+
+	func finishedLogin(withUsername username: String, password: String, xmlrpc: String, options: [AnyHashable: Any]) {
+        guard let delegate = WordPressAuthenticator.shared.delegate else {
+            fatalError("Error: Where did the delegate go?")
+        }
+
+        let wporg = WordPressOrgCredentials(username: username, password: password, xmlrpc: xmlrpc, options: options)
+        let credentials = AuthenticatorCredentials(wporg: wporg)
+        delegate.sync(credentials: credentials) { [weak self] in
+            NotificationCenter.default.post(name: Foundation.Notification.Name(rawValue: WordPressAuthenticator.WPSigninDidFinishNotification), object: nil)
+            self?.showLoginEpilogue(for: credentials)
+        }
+    }
+
+    override func displayRemoteError(_ error: Error) {
+        configureViewLoading(false)
+        let err = error as NSError
+        if err.code == 403 {
+            let message = NSLocalizedString("It looks like this username/password isn't associated with this site.",
+                                            comment: "An error message shown during log in when the username or password is incorrect.")
+            displayError(message: message, moveVoiceOverFocus: true)
+        } else {
+            displayError(error as NSError, sourceTag: sourceTag)
+        }
+    }
 }

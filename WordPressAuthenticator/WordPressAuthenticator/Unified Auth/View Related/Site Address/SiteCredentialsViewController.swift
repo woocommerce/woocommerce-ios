@@ -247,7 +247,7 @@ private extension SiteCredentialsViewController {
 	/// Configure the forgot password cell.
 	///
 	func configureForgotPassword(_ cell: TextLinkButtonTableViewCell) {
-		cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.resetPasswordButtonTitle)
+		cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.resetPasswordButtonTitle, accessibilityTrait: .link)
 		cell.actionHandler = { [weak self] in
 			guard let self = self else {
 				return
@@ -278,8 +278,6 @@ private extension SiteCredentialsViewController {
 			usernameField?.placeholder = nil
 			passwordField?.placeholder = nil
 		}
-
-		forgotPasswordButton.accessibilityTraits = .link
 	}
 
 	// MARK: - Private Constants

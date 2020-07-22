@@ -81,9 +81,9 @@ extension WPStyleGuide {
     /// - Note: this is for the Unified styles.
 	///
 	class func configureOnePasswordButtonForTextfield(_ textField: UITextField?, tintColor: UIColor?, target: NSObject, selector: Selector) {
-//        guard OnePasswordFacade.isOnePasswordEnabled else {
-//            return
-//        }
+        guard OnePasswordFacade.isOnePasswordEnabled else {
+            return
+        }
 
         let onePasswordButton = UIButton(type: .custom)
         onePasswordButton.setImage(.onePasswordImage, for: .normal)

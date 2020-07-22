@@ -257,6 +257,11 @@ public extension StorageType {
         return allObjects(ofType: Product.self, matching: predicate, sortedBy: [descriptor])
     }
 
+    func loadProducts(siteID: Int64, productsIDs: [Int64]) -> [Product] {
+        let predicate = NSPredicate(format: "siteID = %ld AND productID IN %@", siteID, productsIDs)
+        return allObjects(ofType: Product.self, matching: predicate, sortedBy: nil)
+    }
+
     /// Retrieves a stored Product for the provided siteID.
     ///
     func loadProduct(siteID: Int64, productID: Int64) -> Product? {

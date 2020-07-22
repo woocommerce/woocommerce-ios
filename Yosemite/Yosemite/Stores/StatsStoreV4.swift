@@ -349,7 +349,7 @@ private extension StatsStoreV4 {
         productsRemote.loadProducts(for: siteID, by: missingProductsIDs) { result in
             switch result {
             case .success(let products):
-                // Return the complete array of products that replate to a leaderboard
+                // Return the complete array of products that corresponds to a top product leaderboard
                 let completeTopProducts = products + topStoredProducts
                 completion(.success(completeTopProducts))
 

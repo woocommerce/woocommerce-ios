@@ -16,7 +16,6 @@ class SiteCredentialsViewController: LoginViewController {
 	/// Internal properties.
 	///
 	@IBOutlet var bottomContentConstraint: NSLayoutConstraint?
-	@objc var onePasswordButton: UIButton!
     // Required property declaration for `NUXKeyboardResponder` but unused here.
     var verticalCenterConstraint: NSLayoutConstraint?
 
@@ -38,29 +37,6 @@ class SiteCredentialsViewController: LoginViewController {
 
     }
 
-	/// Sets up a 1Password button if 1Password is available and user is on iOS 12.
-	///
-   @objc func setupOnePasswordButtonIfNeeded() {
-		if #available(iOS 13, *) {
-		   // no-op, we rely on the key icon in the keyboard to initiate a password manager.
-		} else {
-			// iOS 12 and lower, display the OnePassword button.
-			WPStyleGuide.configureOnePasswordButtonForTextfield(usernameField,
-																target: self,
-																selector: #selector(handleOnePasswordTapped(_:)))
-		}
-   }
-
-	@objc func handleOnePasswordTapped(_ sender: UIButton) {
-        view.endEditing(true)
-
-        WordPressAuthenticator.fetchOnePasswordCredentials(self, sourceView: sender, loginFields: loginFields) { [unowned self] (loginFields) in
-            self.usernameField?.text = loginFields.username
-            self.passwordField?.text = loginFields.password
-            self.validateForm()
-        }
-    }
-
 	// MARK: - View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -71,7 +47,6 @@ class SiteCredentialsViewController: LoginViewController {
 		localizePrimaryButton()
 		registerTableViewCells()
 		loadRows()
-		setupOnePasswordButtonIfNeeded()
 		configureForAccessibility()
     }
 
@@ -241,6 +216,23 @@ private extension SiteCredentialsViewController {
         usernameField = cell.textField
 		cell.textField.delegate = self
         SigninEditingState.signinEditingStateActive = true
+		cell.onePasswordHandler = { [weak self] in
+			guard let self = self else {
+				return
+			}
+
+			guard let sourceView = self.usernameField else {
+				return
+			}
+
+			self.view.endEditing(true)
+
+			WordPressAuthenticator.fetchOnePasswordCredentials(self, sourceView: sourceView, loginFields: self.loginFields) { [unowned self] loginFields in
+				self.usernameField?.text = loginFields.username
+				self.passwordField?.text = loginFields.password
+				self.validateForm()
+			}
+		}
 	}
 
 	/// Configure the password textfield cell.

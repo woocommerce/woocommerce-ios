@@ -76,7 +76,8 @@ final class ProductListMultiSelectorSearchUICommand: SearchUICommand {
         let action = ProductAction.searchProducts(siteID: siteID,
                                                   keyword: keyword,
                                                   pageNumber: pageNumber,
-                                                  pageSize: pageSize) { error in
+                                                  pageSize: pageSize,
+                                                  excludedProductIDs: excludedProductIDs) { error in
                                                     if let error = error {
                                                         DDLogError("☠️ Product Search Failure! \(error)")
                                                     }

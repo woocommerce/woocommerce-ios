@@ -128,17 +128,24 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///     - keyword: Search string that should be matched by the products - title, excerpt and content (description).
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of products to be retrieved per page.
+    ///     - excludedProductIDs: a list of product IDs to be excluded from the results.
     ///     - completion: Closure to be executed upon completion.
     ///
     public func searchProducts(for siteID: Int64,
                                keyword: String,
                                pageNumber: Int,
                                pageSize: Int,
+                               excludedProductIDs: [Int64] = [],
                                completion: @escaping ([Product]?, Error?) -> Void) {
+        let stringOfExcludedProductIDs = excludedProductIDs.map { String($0) }
+            .filter { !$0.isEmpty }
+            .joined(separator: ",")
+
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
-            ParameterKey.search: keyword
+            ParameterKey.search: keyword,
+            ParameterKey.exclude: stringOfExcludedProductIDs
         ]
 
         let path = Path.products

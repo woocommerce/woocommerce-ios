@@ -110,6 +110,16 @@ class SiteCredentialsViewController: LoginViewController {
 		}
     }
 
+	/// No-op. Required by the SigninWPComSyncHandler protocol but the self-hosted
+    /// controller's implementation does not use safari saved credentials.
+    ///
+    override func updateSafariCredentialsIfNeeded() {}
+
+	/// No-op. Required by LoginFacade.
+	func displayLoginMessage(_ message: String) {}
+}
+
+
 // MARK: - UITableViewDataSource
 extension SiteCredentialsViewController: UITableViewDataSource {
     /// Returns the number of rows in a section.

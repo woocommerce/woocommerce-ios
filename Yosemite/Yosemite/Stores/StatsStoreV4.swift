@@ -379,26 +379,6 @@ private extension StatsStoreV4 {
 
         self.upsertStoredTopEarnerStats(readOnlyStats: stats)
     }
-
-    /// Converts a `leaderboard row(top product)` into a `TopEarnerStatsItem` using an array of stored products to match
-    ///
-    private func topEearnerStatItem(from topProduct: LeaderboardRow, using storedProducts: [Product]) -> TopEarnerStatsItem? {
-
-        // Match the product wich corresponds to the leaderboard row(top product)
-        guard let productID = LeaderboardStatsConverter.infeerProductID(fromHTMLString: topProduct.subject.display),
-            let product = storedProducts.first(where: { $0.productID == productID }) else {
-                return nil
-        }
-
-        // Create the stat item using the two sources of information
-        return TopEarnerStatsItem(productID: productID,
-                                  productName: product.name,
-                                  quantity: topProduct.quantity.value,
-                                  price: Double(product.price) ?? 0.0,
-                                  total: topProduct.total.value,
-                                  currency: "USD", // TODO: Check what to do with currency
-                                  imageUrl: product.images.first?.src)
-    }
 }
 
 // MARK: - Constants!

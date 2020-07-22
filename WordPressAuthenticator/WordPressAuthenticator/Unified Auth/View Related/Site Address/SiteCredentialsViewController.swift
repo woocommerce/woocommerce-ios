@@ -9,9 +9,11 @@ class SiteCredentialsViewController: LoginViewController {
 	/// Private properties.
     ///
     @IBOutlet private weak var tableView: UITableView!
-	private var rows = [Row]()
 	private weak var usernameField: UITextField?
 	private weak var passwordField: UITextField?
+	private var rows = [Row]()
+	private var errorMessage: String?
+	private var shouldChangeVoiceOverFocus: Bool = false
 
 	/// Internal properties.
 	///

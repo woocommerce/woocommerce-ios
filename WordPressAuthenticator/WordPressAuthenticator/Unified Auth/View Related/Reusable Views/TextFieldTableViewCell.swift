@@ -17,6 +17,10 @@ final class TextFieldTableViewCell: UITableViewCell {
         return 1.0 / UIScreen.main.scale
     }
 
+	/// Internal properties.
+	///
+	@objc var onePasswordButton: UIButton!
+
     /// Public properties.
     ///
     @IBOutlet public weak var textField: UITextField! // public so it can be the first responder
@@ -26,6 +30,7 @@ final class TextFieldTableViewCell: UITableViewCell {
 		}
 	}
 
+	public var onePasswordHandler: (() -> Void)?
     public static let reuseIdentifier = "TextFieldTableViewCell"
 
     override func awakeFromNib() {
@@ -74,6 +79,7 @@ private extension TextFieldTableViewCell {
 		case .username:
 			textField.keyboardType = .default
 			textField.returnKeyType = .next
+			setupOnePasswordButtonIfNeeded()
 		case .password:
 			textField.keyboardType = .default
 			textField.returnKeyType = .continue
@@ -82,6 +88,25 @@ private extension TextFieldTableViewCell {
 			configureSecureTextEntryToggle()
         }
     }
+
+	/// Sets up a 1Password button if 1Password is available and user is on iOS 12.
+	///
+	@objc func setupOnePasswordButtonIfNeeded() {
+		if #available(iOS 13, *) {
+			// no-op, we rely on the key icon in the keyboard to initiate a password manager.
+		} else {
+			let tintColor = WordPressAuthenticator.shared.unifiedStyle?.borderColor ?? WordPressAuthenticator.shared.style.primaryNormalBorderColor
+			// iOS 12 and lower, display the OnePassword button.
+			WPStyleGuide.configureOnePasswordButtonForTextfield(textField,
+																tintColor: tintColor,
+																target: self,
+																selector: #selector(onePasswordTapped(_:)))
+		}
+	}
+
+	@objc func onePasswordTapped(_ sender: UIButton) {
+		onePasswordHandler?()
+	}
 }
 
 

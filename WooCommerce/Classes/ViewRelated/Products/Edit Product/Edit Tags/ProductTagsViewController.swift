@@ -1,14 +1,17 @@
 import UIKit
 import Yosemite
+import WordPressUI
 
+/// ProductTagsViewController: Displays the list of ProductTag associated to the active Site and to the specific product.
+///
 final class ProductTagsViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
-
-    private var sections: [Section] = []
+    private let ghostTableView = UITableView()
 
     private var product: Product
-    private var tags: [ProductTag]
+
+    private let viewModel: ProductTagsViewModel
 
     // Completion callback
     //
@@ -17,7 +20,7 @@ final class ProductTagsViewController: UIViewController {
 
     init(product: Product, completion: @escaping Completion) {
         self.product = product
-        tags = product.tags
+        self.viewModel = ProductTagsViewModel(product: product)
         onCompletion = completion
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
@@ -31,7 +34,7 @@ final class ProductTagsViewController: UIViewController {
 
         configureNavigationBar()
         configureTableView()
-        registerTableViewCells(tableView)
+        configureViewModel()
     }
 
 }
@@ -51,10 +54,9 @@ private extension ProductTagsViewController {
     }
 
     func configureTableView() {
-        tableView.register(TextFieldTableViewCell.loadNib(), forCellReuseIdentifier: TextFieldTableViewCell.reuseIdentifier)
-
-        //tableView.dataSource = self
-        //tableView.delegate = self
+        registerTableViewCells()
+        tableView.dataSource = self
+        tableView.delegate = self
 
         tableView.backgroundColor = .listBackground
         tableView.removeLastCellSeparator()
@@ -71,12 +73,68 @@ private extension ProductTagsViewController {
 
     /// Registers all of the available TableViewCells
     ///
-    func registerTableViewCells(_ tableView: UITableView) {
-        sections.flatMap {
-            $0.rows.compactMap { $0.cellType }
-        }.forEach {
-            tableView.register($0.loadNib(), forCellReuseIdentifier: $0.reuseIdentifier)
+    func registerTableViewCells() {
+        tableView.register(TextFieldTableViewCell.loadNib(), forCellReuseIdentifier: TextFieldTableViewCell.reuseIdentifier)
+        tableView.register(BasicTableViewCell.loadNib(), forCellReuseIdentifier: BasicTableViewCell.reuseIdentifier)
+        ghostTableView.register(BasicTableViewCell.loadNib(), forCellReuseIdentifier: BasicTableViewCell.reuseIdentifier)
+    }
+}
+
+// MARK: - Synchronize Tags
+//
+private extension ProductTagsViewController {
+    func configureViewModel() {
+        viewModel.performFetch()
+        viewModel.observeTagListStateChanges { [weak self] syncState in
+            switch syncState {
+            case .initialized:
+                break
+            case .syncing:
+                self?.displayGhostTableView()
+            case let .failed(retryToken):
+                self?.removeGhostTableView()
+                self?.displaySyncingErrorNotice(retryToken: retryToken)
+            case .synced:
+                self?.removeGhostTableView()
+            }
         }
+    }
+}
+
+// MARK: - Placeholders & Errors
+//
+private extension ProductTagsViewController {
+
+    /// Renders ghost placeholder categories.
+    ///
+    func displayGhostTableView() {
+        let placeholderTagsPerSection = [3]
+        let options = GhostOptions(displaysSectionHeader: false,
+                                   reuseIdentifier: BasicTableViewCell.reuseIdentifier,
+                                   rowsPerSection: placeholderTagsPerSection)
+        ghostTableView.displayGhostContent(options: options,
+                                           style: .wooDefaultGhostStyle)
+        ghostTableView.isHidden = false
+    }
+
+    /// Removes ghost  placeholder categories.
+    ///
+    func removeGhostTableView() {
+        tableView.reloadData()
+        ghostTableView.removeGhostContent()
+        ghostTableView.isHidden = true
+    }
+
+    /// Displays the Sync Error Notice.
+    ///
+    func displaySyncingErrorNotice(retryToken: ProductTagsViewModel.RetryToken) {
+        let message = NSLocalizedString("Unable to load tags", comment: "Load Product Tags Action Failed")
+        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
+        let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
+            self?.viewModel.retryTagSynchronization(retryToken: retryToken)
+        }
+
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -85,15 +143,15 @@ private extension ProductTagsViewController {
 extension ProductTagsViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return sections.count
+        return viewModel.sections.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sections[section].rows.count
+        return viewModel.sections[section].rows.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let row = sections[indexPath.section].rows[indexPath.row]
+        let row = viewModel.sections[indexPath.section].rows[indexPath.row]
 
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
         configure(cell, for: row, at: indexPath)
@@ -115,7 +173,7 @@ extension ProductTagsViewController: UITableViewDelegate {
 private extension ProductTagsViewController {
     /// Configure cellForRowAtIndexPath:
     ///
-   func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+    func configure(_ cell: UITableViewCell, for row: ProductTagsViewModel.Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as TextFieldTableViewCell:
             configureSlug(cell: cell)
@@ -144,45 +202,5 @@ private extension ProductTagsViewController {
 
     func configureTag(cell: BasicTableViewCell) {
 
-    }
-}
-
-// MARK: - Constants
-//
-private extension ProductTagsViewController {
-
-    /// Table Rows
-    ///
-    enum Row {
-        /// Listed in the order they appear on screen
-        case tagsTextField
-        case tag
-
-        /// Returns the Row's Reuse Identifier
-        ///
-        var reuseIdentifier: String {
-            return cellType.reuseIdentifier
-        }
-
-        /// Returns the Row's Cell Type
-        ///
-        var cellType: UITableViewCell.Type {
-            switch self {
-            case .tagsTextField:
-                return TextFieldTableViewCell.self
-            case .tag:
-                return BasicTableViewCell.self
-            }
-        }
-    }
-
-    /// Table Sections
-    ///
-    struct Section: RowIterable {
-        let rows: [Row]
-
-        init(rows: [Row]) {
-            self.rows = rows
-        }
     }
 }

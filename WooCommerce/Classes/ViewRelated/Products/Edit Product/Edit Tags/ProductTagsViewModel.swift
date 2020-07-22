@@ -30,6 +30,14 @@ final class ProductTagsViewModel {
     ///
     private(set) var selectedTags: [ProductTag]
 
+    /// List of all the fetched tags for a specific SiteID
+    ///
+    private(set) var fetchedTags: [ProductTag] = []
+
+    /// List of all the sections
+    ///
+    private (set) var sections: [Section] = []
+
     /// Closure to be invoked when `synchronizeTags` state  changes
     ///
     private var onSyncStateChange: ((SyncingState) -> Void)?
@@ -95,8 +103,8 @@ private extension ProductTagsViewModel {
     func synchronizeAllTags(fromPageNumber: Int = Default.firstPageNumber) {
         self.syncTagsState = .syncing
         let action = ProductTagAction.synchronizeAllProductTags(siteID: product.siteID, fromPageNumber: fromPageNumber) { [weak self] error in
-            // Make sure we always have view models to display
-            self?.updateViewModelsArray()
+            // Make sure we always have fetched tags to display
+            self?.updateFetchedTagsAndSections()
 
             if let error = error {
                 self?.handleSychronizeAllTagsError(error)
@@ -118,17 +126,57 @@ private extension ProductTagsViewModel {
         }
     }
 
-    /// Updates  `tagViewModels` from  the resultController's fetched objects.
+    /// Updates  `fetchedTags` and `sections` from  the resultController's fetched objects.
     ///
-    func updateViewModelsArray() {
-        //let fetchedTags = resultController.fetchedObjects
-        //tagViewModels = CellViewModelBuilder.viewModels(from: fetchedTags, selectedTags: selectedTags)
+    func updateFetchedTagsAndSections() {
+        fetchedTags = resultController.fetchedObjects
+        var rows: [Row] = [.tagsTextField]
+        for _ in fetchedTags {
+            rows.append(.tag)
+        }
+        sections = [Section(rows: rows)]
     }
 }
 
 // MARK: - Constants
 //
-private extension ProductTagsViewModel {
+extension ProductTagsViewModel {
+
+    /// Table Rows
+    ///
+    enum Row {
+        /// Listed in the order they appear on screen
+        case tagsTextField
+        case tag
+
+        /// Returns the Row's Reuse Identifier
+        ///
+        var reuseIdentifier: String {
+            return cellType.reuseIdentifier
+        }
+
+        /// Returns the Row's Cell Type
+        ///
+        var cellType: UITableViewCell.Type {
+            switch self {
+            case .tagsTextField:
+                return TextFieldTableViewCell.self
+            case .tag:
+                return BasicTableViewCell.self
+            }
+        }
+    }
+
+    /// Table Sections
+    ///
+    struct Section: RowIterable {
+        let rows: [Row]
+
+        init(rows: [Row]) {
+            self.rows = rows
+        }
+    }
+
     enum Default {
         public static let firstPageNumber = 1
     }

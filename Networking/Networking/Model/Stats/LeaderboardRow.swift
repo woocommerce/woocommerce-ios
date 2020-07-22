@@ -21,4 +21,10 @@ public struct LeaderboardRow: Decodable {
     /// Total ranking of the subject in the leaderboard
     ///
     public let total: LeaderboardRowContent<Double>
+
+    public init(subject: LeaderboardRowContent<String>, quantity: LeaderboardRowContent<Int>, total: LeaderboardRowContent<Double>) {
+        self.subject = subject
+        self.quantity = quantity
+        self.total = total
+    }
 }

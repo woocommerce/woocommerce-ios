@@ -11,4 +11,9 @@ public struct LeaderboardRowContent<Type: Decodable>: Decodable {
     /// Raw value
     ///
     public let value: Type
+
+    public init(display: String, value: Type) {
+        self.display = display
+        self.value = value
+    }
 }

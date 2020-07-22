@@ -59,4 +59,10 @@ public struct Leaderboard: Decodable {
             return try JSONDecoder().decode(LeaderboardRow.self, from: encodedData)
         }
     }
+
+    public init(id: String, label: String, rows: [LeaderboardRow]) {
+        self.id = id
+        self.label = label
+        self.rows = rows
+    }
 }

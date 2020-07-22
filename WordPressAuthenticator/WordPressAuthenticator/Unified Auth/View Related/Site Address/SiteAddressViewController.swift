@@ -42,6 +42,7 @@ final class SiteAddressViewController: LoginViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
+		siteURLField?.text = loginFields.siteAddress
         configureSubmitButton(animating: false)
     }
 
@@ -160,13 +161,6 @@ extension SiteAddressViewController: NUXKeyboardResponder {
 // MARK: - TextField Delegate conformance
 extension SiteAddressViewController: UITextFieldDelegate {
 
-	/// Store the site address as it changes
-	///
-	func textFieldDidChangeSelection(_ textField: UITextField) {
-		loginFields.siteAddress = textField.nonNilTrimmedText()
-		configureSubmitButton(animating: false)
-	}
-
 	/// Handle the keyboard `return` button action.
 	///
 	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -249,6 +243,11 @@ private extension SiteAddressViewController {
         // Save a reference to the first textField so it can becomeFirstResponder.
         siteURLField = cell.textField
 		cell.textField.delegate = self
+		cell.siteURLHandler = { [weak self] textfield in
+			self?.loginFields.siteAddress = textfield.nonNilTrimmedText()
+			self?.configureSubmitButton(animating: false)
+		}
+
         SigninEditingState.signinEditingStateActive = true
     }
 

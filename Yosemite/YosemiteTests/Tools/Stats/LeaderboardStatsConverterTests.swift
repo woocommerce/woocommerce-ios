@@ -48,54 +48,6 @@ final class LeaderboardStatsConverterTest: XCTestCase {
         XCTAssertNil(productID)
     }
 
-    func testDailyGranularityDateIsFormattedCorrectly() throws {
-        // Given
-        let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
-        let date = try XCTUnwrap(dateFormatter.date(from: "2020-07-21T12:00:00"))
-
-        // When
-        let statsDate = LeaderboardStatsConverter.statsDateFor(date: date, using: .day)
-
-        // Then
-        XCTAssertEqual(statsDate, "2020-07-21")
-    }
-
-    func testWeeklyGranularityDateIsFormattedCorrectly() throws {
-        // Given
-        let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
-        let date = try XCTUnwrap(dateFormatter.date(from: "2020-07-21T12:00:00"))
-
-        // When
-        let statsDate = LeaderboardStatsConverter.statsDateFor(date: date, using: .week)
-
-        // Then
-        XCTAssertEqual(statsDate, "2020-W30")
-    }
-
-    func testMonthlyGranularityDateIsFormattedCorrectly() throws {
-        // Given
-        let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
-        let date = try XCTUnwrap(dateFormatter.date(from: "2020-07-21T12:00:00"))
-
-        // When
-        let statsDate = LeaderboardStatsConverter.statsDateFor(date: date, using: .month)
-
-        // Then
-        XCTAssertEqual(statsDate, "2020-07")
-    }
-
-    func testYearlyGranularityDateIsFormattedCorrectly() throws {
-        // Given
-        let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
-        let date = try XCTUnwrap(dateFormatter.date(from: "2020-07-21T12:00:00"))
-
-        // When
-        let statsDate = LeaderboardStatsConverter.statsDateFor(date: date, using: .year)
-
-        // Then
-        XCTAssertEqual(statsDate, "2020")
-    }
-
     func testCorrectProductIdsFormLeaderboardOfTopProducts() {
         // Given
         let leaderboard = Self.sampleLeaderboard(productIds: Array((1...5)))

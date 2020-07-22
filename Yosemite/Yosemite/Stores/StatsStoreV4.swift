@@ -369,7 +369,7 @@ private extension StatsStoreV4 {
     /// Merges and stored a top-product leaderboard with an array of stored products into  a `StatsTopEearner` object
     ///
     private func handleTopProductsAndStoreTopEearners(granularity: StatGranularity, date: Date, topProducts: Leaderboard, storedProducts: [Product]) {
-        let statsDate = LeaderboardStatsConverter.statsDateFor(date: date, using: granularity)
+        let statsDate = StatsStore.buildDateString(from: date, with: granularity)
         let statsItems = topProducts.rows.compactMap { topEearnerStatItem(from: $0, using: storedProducts) }
         let stats = TopEarnerStats(date: statsDate,
                                    granularity: granularity,

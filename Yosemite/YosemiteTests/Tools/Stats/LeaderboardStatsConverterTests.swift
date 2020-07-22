@@ -96,13 +96,24 @@ final class LeaderboardStatsConverterTest: XCTestCase {
         XCTAssertEqual(statsDate, "2020")
     }
 
+    func testCorrectProductIdsFormLeaderboardOfTopProducts() {
+        // Given
+        let leaderboard = Self.sampleLeaderboard(productIds: Array((1...5)))
+
+        // When
+        let productIDs = LeaderboardStatsConverter.topProductsIDs(from: leaderboard)
+
+        // Then
+        XCTAssertEqual(productIDs, [1, 2, 3, 4, 5])
+    }
+
     func testTopProductsAreMissingFromStoredProducts() {
         // Given
         let products = (2...4).map { MockProduct().product(siteID: siteID, productID: $0) }
         let leaderboard = Self.sampleLeaderboard(productIds: Array((1...5)))
 
         // When
-        let missingIds = LeaderboardStatsConverter.missingProductsFrom(leaderboard, in: products)
+        let missingIds = LeaderboardStatsConverter.missingProductsIDs(from: leaderboard, in: products)
 
         // Then
         XCTAssertEqual(missingIds, [1, 5])
@@ -114,7 +125,7 @@ final class LeaderboardStatsConverterTest: XCTestCase {
         let leaderboard = Self.sampleLeaderboard(productIds: Array((1...5)))
 
         // When
-        let missingIds = LeaderboardStatsConverter.missingProductsFrom(leaderboard, in: products)
+        let missingIds = LeaderboardStatsConverter.missingProductsIDs(from: leaderboard, in: products)
 
         // Then
         XCTAssertTrue(missingIds.isEmpty)

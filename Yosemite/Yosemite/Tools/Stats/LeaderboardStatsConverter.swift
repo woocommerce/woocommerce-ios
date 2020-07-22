@@ -41,14 +41,20 @@ struct LeaderboardStatsConverter {
         }
     }
 
-    /// Indicates what products are missing from a leaderboard in an array of stored products
+    /// Returns the ids of the products associated with a top products leaderboar
     ///
-    static func missingProductsFrom(_ topProducts: Leaderboard, in storedProducts: [Product]) -> [Int64] {
-
-        // Get the top products IDs
-        let topProductsIDs = topProducts.rows.compactMap {
+    static func topProductsIDs(from topProducts: Leaderboard) -> [Int64] {
+        return topProducts.rows.compactMap {
             LeaderboardStatsConverter.infeerProductID(fromHTMLString: $0.subject.display)
         }
+    }
+
+    /// Indicates what products are missing from a leaderboard in an array of stored products
+    ///
+    static func missingProductsIDs(from topProducts: Leaderboard, in storedProducts: [Product]) -> [Int64] {
+
+        // Get the top products IDs
+        let topProductsIDs = Self.topProductsIDs(from: topProducts)
 
         // Get the stored products IDs
         let storedProductsIDs = storedProducts.map { $0.productID }

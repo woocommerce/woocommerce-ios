@@ -334,9 +334,9 @@ private extension StatsStoreV4 {
     private func loadProducts(for topProducts: Leaderboard, siteID: Int64, completion: @escaping (Result<[Product], Error>) -> Void )  {
 
         // Workout if we have stored all products that relate to the given leaderboard
-        let topProductIDs = topProducts.rows.compactMap { LeaderboardStatsConverter.infeerProductID(fromHTMLString: $0.subject.display) }
+        let topProductIDs = LeaderboardStatsConverter.topProductsIDs(from: topProducts)
         let topStoredProducts = loadStoredProducts(siteID: siteID, productIDs: topProductIDs)
-        let missingProductsIDs = LeaderboardStatsConverter.missingProductsFrom(topProducts, in: topStoredProducts)
+        let missingProductsIDs = LeaderboardStatsConverter.missingProductsIDs(from: topProducts, in: topStoredProducts)
 
         // Return if we have al the products that we need
         guard !missingProductsIDs.isEmpty else {

@@ -279,7 +279,7 @@ private extension SiteCredentialsViewController {
 			passwordField?.placeholder = nil
 		}
 
-//		forgotPasswordButton.accessibilityTraits = .link
+		forgotPasswordButton.accessibilityTraits = .link
 	}
 
 	// MARK: - Private Constants

@@ -235,6 +235,11 @@ private extension SiteCredentialsViewController {
 				self.validateForm()
 			}
 		}
+
+		cell.onChangeSelectionHandler = { [weak self] textfield in
+			self?.loginFields.username = textfield.nonNilTrimmedText()
+			self?.configureSubmitButton(animating: false)
+		}
 	}
 
 	/// Configure the password textfield cell.
@@ -244,6 +249,10 @@ private extension SiteCredentialsViewController {
 									 and: WordPressAuthenticator.shared.displayStrings.passwordPlaceholder)
 		passwordField = cell.textField
 		cell.textField.delegate = self
+		cell.onChangeSelectionHandler = { [weak self] textfield in
+			self?.loginFields.password = textfield.nonNilTrimmedText()
+			self?.configureSubmitButton(animating: false)
+		}
 	}
 
 	/// Configure the forgot password cell.

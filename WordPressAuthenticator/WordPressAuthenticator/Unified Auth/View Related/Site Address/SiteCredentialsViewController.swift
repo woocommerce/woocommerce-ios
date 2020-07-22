@@ -100,6 +100,15 @@ class SiteCredentialsViewController: LoginViewController {
     }
 }
 
+	/// Set error messages and reload the table to display them.
+	///
+	override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
+		if errorMessage != message {
+			errorMessage = message
+			shouldChangeVoiceOverFocus = moveVoiceOverFocus
+			tableView.reloadData()
+		}
+    }
 
 // MARK: - UITableViewDataSource
 extension SiteCredentialsViewController: UITableViewDataSource {
@@ -191,7 +200,15 @@ private extension SiteCredentialsViewController {
 	/// Describes how the tableView rows should be rendered.
     ///
     func loadRows() {
-		rows = [.instructions, .username, .password, .forgotPassword]
+		rows = [.instructions, .username, .password]
+
+		if errorMessage != nil {
+             rows.append(.errorMessage)
+         }
+
+        if WordPressAuthenticator.shared.configuration.displayHintButtons {
+            rows.append(.forgotPassword)
+        }
     }
 
 	/// Configure cells.
@@ -206,6 +223,8 @@ private extension SiteCredentialsViewController {
 			configurePasswordTextField(cell)
 		case let cell as TextLinkButtonTableViewCell:
 			configureForgotPassword(cell)
+		case let cell as TextLabelTableViewCell where row == .errorMessage:
+			configureErrorLabel(cell)
         default:
             DDLogError("Error: Unidentified tableViewCell type found.")
         }
@@ -284,6 +303,12 @@ private extension SiteCredentialsViewController {
 		}
 	}
 
+    /// Configure the error message cell.
+    ///
+    func configureErrorLabel(_ cell: TextLabelTableViewCell) {
+        cell.configureLabel(text: errorMessage, style: .error)
+    }
+
 	/// Sets up necessary accessibility labels and attributes for the all the UI elements in self.
 	///
 	func configureForAccessibility() {
@@ -310,6 +335,7 @@ private extension SiteCredentialsViewController {
 		case username
 		case password
 		case forgotPassword
+		case errorMessage
 
         var reuseIdentifier: String {
             switch self {
@@ -321,6 +347,8 @@ private extension SiteCredentialsViewController {
 				return TextFieldTableViewCell.reuseIdentifier
 			case .forgotPassword:
 				return TextLinkButtonTableViewCell.reuseIdentifier
+			case .errorMessage:
+				return TextLabelTableViewCell.reuseIdentifier
 			}
         }
     }
@@ -328,6 +356,8 @@ private extension SiteCredentialsViewController {
 
 
 // MARK: - Instance Methods
+/// Implementation methods copied from LoginSelfHostedViewController.
+///
 extension SiteCredentialsViewController {
 	/// Sanitize and format the site address we show to users.
     ///

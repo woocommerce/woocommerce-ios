@@ -5,6 +5,10 @@ import XCTest
 ///
 final class LeaderboardStatsConverterTest: XCTestCase {
 
+    /// Sample site ID
+    ///
+    let siteID: Int64 = 1234
+
     func testProductIDIsInferedFromAValidHTML() {
         // Given
         let html =
@@ -90,5 +94,47 @@ final class LeaderboardStatsConverterTest: XCTestCase {
 
         // Then
         XCTAssertEqual(statsDate, "2020")
+    }
+
+    func testTopProductsAreMissingFromStoredProducts() {
+        // Given
+        let products = (2...4).map { MockProduct().product(siteID: siteID, productID: $0) }
+        let leaderboard = Self.sampleLeaderboard(productIds: Array((1...5)))
+
+        // When
+        let missingIds = LeaderboardStatsConverter.missingProductsFrom(leaderboard, in: products)
+
+        // Then
+        XCTAssertEqual(missingIds, [1, 5])
+    }
+
+    func testTopProductsAreNotMissingFromStoredProducts() {
+        // Given
+        let products = (1...5).map { MockProduct().product(siteID: siteID, productID: $0) }
+        let leaderboard = Self.sampleLeaderboard(productIds: Array((1...5)))
+
+        // When
+        let missingIds = LeaderboardStatsConverter.missingProductsFrom(leaderboard, in: products)
+
+        // Then
+        XCTAssertTrue(missingIds.isEmpty)
+    }
+}
+
+/// MARK: Test functions to generate sample data
+///
+private extension LeaderboardStatsConverterTest {
+
+    static func sampleLeaderboard(productIds: [Int64]) -> Leaderboard {
+        let topProducts = productIds.map { sampleTopProduct(productID: $0) }
+        return Leaderboard(id: "Top Products", label: "Top Products", rows: topProducts)
+    }
+
+    static func sampleTopProduct(productID: Int64) -> LeaderboardRow {
+        let productHtml = "<a href='https://store.com?products=\(productID)'>Product</a>"
+        let subject = LeaderboardRowContent(display: productHtml, value: "Product")
+        let quantity = LeaderboardRowContent(display: "2", value: 2)
+        let total = LeaderboardRowContent(display: "10.50", value: 10.50)
+        return LeaderboardRow(subject: subject, quantity: quantity, total: total)
     }
 }

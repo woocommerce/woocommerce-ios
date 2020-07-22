@@ -243,7 +243,7 @@ private extension SiteAddressViewController {
         // Save a reference to the first textField so it can becomeFirstResponder.
         siteURLField = cell.textField
 		cell.textField.delegate = self
-		cell.siteURLHandler = { [weak self] textfield in
+		cell.onChangeSelectionHandler = { [weak self] textfield in
 			self?.loginFields.siteAddress = textfield.nonNilTrimmedText()
 			self?.configureSubmitButton(animating: false)
 		}

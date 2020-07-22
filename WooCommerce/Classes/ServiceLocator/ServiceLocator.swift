@@ -126,6 +126,10 @@ final class ServiceLocator {
     /// (i.e. AppDelegate) for it to accurately provide the last known state.
     ///
     static let keyboardStateProvider: KeyboardStateProviding = KeyboardStateProvider()
+
+    /// The main object to use for presenting SMS (`MessageUI`) ViewControllers.
+    ///
+    static let messageComposerPresenter = MessageComposerPresenter()
 }
 
 

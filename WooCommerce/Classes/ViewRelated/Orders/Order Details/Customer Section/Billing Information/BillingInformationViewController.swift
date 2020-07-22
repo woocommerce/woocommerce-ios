@@ -46,7 +46,7 @@ final class BillingInformationViewController: UIViewController {
     ///
     private let emailComposer = OrderEmailComposer()
 
-    private let messageComposer = OrderMessageComposer()
+    private let messageComposerPresenter: MessageComposerPresenter = ServiceLocator.messageComposerPresenter
 
     /// Haptic Feedback!
     ///
@@ -159,7 +159,15 @@ private extension BillingInformationViewController {
     /// Initiate communication with a customer via message
     ///
     func displayMessageComposerIfPossible(from: UIViewController) {
-        messageComposer.displayMessageComposerIfPossible(order: order, from: from)
+        guard let phoneNumber = order.billingAddress?.cleanedPhoneNumber else {
+            return
+        }
+
+        messageComposerPresenter.presentIfPossible(from: from, recipient: phoneNumber)
+
+        ServiceLocator.analytics.track(.orderContactAction, withProperties: ["id": order.orderID,
+                                                                             "status": order.statusKey,
+                                                                             "type": "sms"])
     }
 
     /// Create an action sheet that offers the option to copy the email address

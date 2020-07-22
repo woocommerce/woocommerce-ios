@@ -19,6 +19,8 @@ public enum ProductAction: Action {
         productStatus: ProductStatus?,
         productType: ProductType?,
         sortOrder: ProductsSortOrder,
+        excludedProductIDs: [Int64] = [],
+        shouldDeleteStoredProductsOnFirstPage: Bool = true,
         onCompletion: (Error?) -> Void)
 
     /// Retrieves the specified Product.
@@ -43,7 +45,7 @@ public enum ProductAction: Action {
 
     /// Updates a specified Product.
     ///
-    case updateProduct(product: Product, onCompletion: (Product?, ProductUpdateError?) -> Void)
+    case updateProduct(product: Product, onCompletion: (Result<Product, ProductUpdateError>) -> Void)
 
     /// Checks whether a Product SKU is valid against other Products in the store.
     ///

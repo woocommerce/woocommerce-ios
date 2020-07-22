@@ -8,6 +8,8 @@ public final class ProductSettings {
     public var featured: Bool
     public var password: String?
     public var catalogVisibility: ProductCatalogVisibility
+    public var virtual: Bool
+    public var reviewsAllowed: Bool
     public var slug: String
     public var purchaseNote: String?
     public var menuOrder: Int
@@ -16,6 +18,8 @@ public final class ProductSettings {
                 featured: Bool,
                 password: String?,
                 catalogVisibility: ProductCatalogVisibility,
+                virtual: Bool,
+                reviewsAllowed: Bool,
                 slug: String,
                 purchaseNote: String?,
                 menuOrder: Int) {
@@ -23,6 +27,8 @@ public final class ProductSettings {
         self.featured = featured
         self.password = password
         self.catalogVisibility = catalogVisibility
+        self.virtual = virtual
+        self.reviewsAllowed = reviewsAllowed
         self.slug = slug
         self.purchaseNote = purchaseNote
         self.menuOrder = menuOrder
@@ -33,6 +39,8 @@ public final class ProductSettings {
                   featured: product.featured,
                   password: password,
                   catalogVisibility: product.productCatalogVisibility,
+                  virtual: product.virtual,
+                  reviewsAllowed: product.reviewsAllowed,
                   slug: product.slug,
                   purchaseNote: product.purchaseNote,
                   menuOrder: product.menuOrder)
@@ -47,6 +55,8 @@ extension ProductSettings: Equatable {
             lhs.featured == rhs.featured &&
             lhs.password == rhs.password &&
             lhs.catalogVisibility.rawValue == rhs.catalogVisibility.rawValue &&
+            lhs.virtual == rhs.virtual &&
+            lhs.reviewsAllowed == rhs.reviewsAllowed &&
             lhs.slug == rhs.slug &&
             lhs.purchaseNote == rhs.purchaseNote &&
             lhs.menuOrder == rhs.menuOrder

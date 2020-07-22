@@ -46,9 +46,9 @@ final class RetrieveProductReviewFromNoteUseCase {
         case storageNoLongerAvailable
     }
 
-    private let notificationsRemote: NotificationsEndpointsProviding
-    private let productReviewsRemote: ProductReviewsEndpointsProviding
-    private let productsRemote: ProductsEndpointsProviding
+    private let notificationsRemote: NotificationsRemoteProtocol
+    private let productReviewsRemote: ProductReviewsRemoteProtocol
+    private let productsRemote: ProductsRemoteProtocol
 
     /// The derived `StorageType` used by the `ProductReviewStore`.
     ///
@@ -62,9 +62,9 @@ final class RetrieveProductReviewFromNoteUseCase {
     /// - Parameters:
     ///   - derivedStorage: The derived (background) `StorageType` of `ProductReviewStore`.
     init(derivedStorage: StorageType,
-         notificationsRemote: NotificationsEndpointsProviding,
-         productReviewsRemote: ProductReviewsEndpointsProviding,
-         productsRemote: ProductsEndpointsProviding) {
+         notificationsRemote: NotificationsRemoteProtocol,
+         productReviewsRemote: ProductReviewsRemoteProtocol,
+         productsRemote: ProductsRemoteProtocol) {
         self.derivedStorage = derivedStorage
         self.notificationsRemote = notificationsRemote
         self.productReviewsRemote = productReviewsRemote

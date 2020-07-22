@@ -4,7 +4,7 @@ import XCTest
 
 /// ProductsRemoteTests
 ///
-class ProductsRemoteTests: XCTestCase {
+final class ProductsRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
@@ -35,14 +35,38 @@ class ProductsRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
 
-        remote.loadAllProducts(for: sampleSiteID) { products, error in
-            XCTAssertNil(error)
-            XCTAssertNotNil(products)
-            XCTAssertEqual(products?.count, 10)
+        remote.loadAllProducts(for: sampleSiteID) { result in
+            switch result {
+            case .success(let products):
+                XCTAssertEqual(products.count, 10)
+            default:
+                XCTFail("Unexpected result: \(result)")
+            }
             expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that loadAllProducts with `excludedProductIDs` makes a network request with the corresponding parameter.
+    ///
+    func testLoadAllProductsWithExcludedIDsIncludesAnExcludeParamInNetworkRequest() throws {
+        // Arrange
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
+        let excludedProductIDs: [Int64] = [17, 671]
+
+        // Action
+        waitForExpectation { expectation in
+            remote.loadAllProducts(for: sampleSiteID, excludedProductIDs: excludedProductIDs) { result in
+                expectation.fulfill()
+            }
+        }
+
+        // Assert
+        let pathComponents = try XCTUnwrap(network.pathComponents)
+        let expectedParam = "exclude=17,671"
+        XCTAssertTrue(pathComponents.contains(expectedParam), "Expected to have param: \(expectedParam)")
     }
 
     /// Verifies that loadAllProducts properly relays Networking Layer errors.
@@ -51,9 +75,13 @@ class ProductsRemoteTests: XCTestCase {
         let remote = ProductsRemote(network: network)
         let expectation = self.expectation(description: "Load all products returns error")
 
-        remote.loadAllProducts(for: sampleSiteID) { products, error in
-            XCTAssertNil(products)
-            XCTAssertNotNil(error)
+        remote.loadAllProducts(for: sampleSiteID) { result in
+            switch result {
+            case .failure:
+                break
+            default:
+                XCTFail("Unexpected result: \(result)")
+            }
             expectation.fulfill()
         }
 
@@ -223,39 +251,47 @@ class ProductsRemoteTests: XCTestCase {
     /// Verifies that updateProduct properly parses the `product-update` sample response.
     ///
     func testUpdateProductProperlyReturnsParsedProduct() {
+        // Given
         let remote = ProductsRemote(network: network)
-        let expectation = self.expectation(description: "Wait for product update")
-
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product-update")
 
         let productName = "This is my new product name!"
         let productDescription = "Learn something!"
-        let product = sampleProduct()
-        remote.updateProduct(product: product) { (product, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(product)
-            XCTAssertEqual(product?.name, productName)
-            XCTAssertEqual(product?.fullDescription, productDescription)
-            expectation.fulfill()
-        }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // When
+        let product = sampleProduct()
+        waitForExpectation { expectation in
+            remote.updateProduct(product: product) { result in
+                // Then
+                guard case let .success(product) = result else {
+                    XCTFail("Unexpected result: \(result)")
+                    return
+                }
+                XCTAssertEqual(product.name, productName)
+                XCTAssertEqual(product.fullDescription, productDescription)
+                expectation.fulfill()
+            }
+        }
     }
 
     /// Verifies that updateProduct properly relays Networking Layer errors.
     ///
     func testUpdateProductProperlyRelaysNetwokingErrors() {
+        // Given
         let remote = ProductsRemote(network: network)
-        let expectation = self.expectation(description: "Wait for product name update")
 
+        // When
         let product = sampleProduct()
-        remote.updateProduct(product: product) { (product, error) in
-            XCTAssertNil(product)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        waitForExpectation { expectation in
+            remote.updateProduct(product: product) { result in
+                // Then
+                guard case .failure = result else {
+                    XCTFail("Unexpected result: \(result)")
+                    return
+                }
+                expectation.fulfill()
+            }
         }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 }
 

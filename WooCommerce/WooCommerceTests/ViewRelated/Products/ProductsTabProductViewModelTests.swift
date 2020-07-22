@@ -15,7 +15,7 @@ final class ProductsTabProductViewModelTests: XCTestCase {
     }
 
     func testDetailsForProductInStockWithQuantity() {
-        let stockQuantity = 6
+        let stockQuantity: Int64 = 6
         let product = productMock(name: "Yay", stockQuantity: stockQuantity, stockStatus: .inStock)
         let viewModel = ProductsTabProductViewModel(product: product)
         let detailsText = viewModel.detailsAttributedString.string
@@ -58,7 +58,7 @@ final class ProductsTabProductViewModelTests: XCTestCase {
 
 extension ProductsTabProductViewModelTests {
     func productMock(name: String = "Hogsmeade",
-                     stockQuantity: Int? = nil,
+                     stockQuantity: Int64? = nil,
                      stockStatus: ProductStockStatus = .inStock,
                      variations: [Int64] = [],
                      images: [ProductImage] = []) -> Product {

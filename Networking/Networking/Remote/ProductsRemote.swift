@@ -4,7 +4,7 @@ import Foundation
 ///
 /// The required methods are intentionally incomplete. Feel free to add the other ones.
 ///
-public protocol ProductsEndpointsProviding {
+public protocol ProductsRemoteProtocol {
     func loadProduct(for siteID: Int64, productID: Int64, completion: @escaping (Result<Product, Error>) -> Void)
 
     func loadProducts(for siteID: Int64, by productIDs: [Int64], pageNumber: Int, pageSize: Int, completion: @escaping (Result<[Product], Error>) -> Void)
@@ -12,7 +12,7 @@ public protocol ProductsEndpointsProviding {
 
 /// Product: Remote Endpoints
 ///
-public final class ProductsRemote: Remote, ProductsEndpointsProviding {
+public final class ProductsRemote: Remote, ProductsRemoteProtocol {
 
     // MARK: - Products
 
@@ -29,6 +29,7 @@ public final class ProductsRemote: Remote, ProductsEndpointsProviding {
     ///     - productType: Optional product type filtering. Default to nil (no filtering).
     ///     - orderBy: the key to order the remote products. Default to product name.
     ///     - order: ascending or descending order. Default to ascending.
+    ///     - excludedProductIDs: a list of product IDs to be excluded from the results.
     ///     - completion: Closure to be executed upon completion.
     ///
     public func loadAllProducts(for siteID: Int64,
@@ -40,11 +41,16 @@ public final class ProductsRemote: Remote, ProductsEndpointsProviding {
                                 productType: ProductType? = nil,
                                 orderBy: OrderKey = .name,
                                 order: Order = .ascending,
-                                completion: @escaping ([Product]?, Error?) -> Void) {
+                                excludedProductIDs: [Int64] = [],
+                                completion: @escaping (Result<[Product], Error>) -> Void) {
+        let stringOfExcludedProductIDs = excludedProductIDs.map { String($0) }
+            .filter { !$0.isEmpty }
+            .joined(separator: ",")
         let filterParameters = [
             ParameterKey.stockStatus: stockStatus?.rawValue ?? "",
             ParameterKey.productStatus: productStatus?.rawValue ?? "",
-            ParameterKey.productType: productType?.rawValue ?? ""
+            ParameterKey.productType: productType?.rawValue ?? "",
+            ParameterKey.exclude: stringOfExcludedProductIDs
             ].filter({ $0.value.isEmpty == false })
 
         let parameters = [
@@ -170,7 +176,7 @@ public final class ProductsRemote: Remote, ProductsEndpointsProviding {
     ///     - product: the Product to update remotely.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func updateProduct(product: Product, completion: @escaping (Product?, Error?) -> Void) {
+    public func updateProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void) {
         do {
             let parameters = try product.toDictionary()
             let productID = product.productID
@@ -181,7 +187,7 @@ public final class ProductsRemote: Remote, ProductsEndpointsProviding {
 
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
-            completion(nil, error)
+            completion(.failure(error))
         }
     }
 }
@@ -214,6 +220,7 @@ public extension ProductsRemote {
         static let page: String       = "page"
         static let perPage: String    = "per_page"
         static let contextKey: String = "context"
+        static let exclude: String    = "exclude"
         static let include: String    = "include"
         static let search: String     = "search"
         static let orderBy: String    = "orderby"

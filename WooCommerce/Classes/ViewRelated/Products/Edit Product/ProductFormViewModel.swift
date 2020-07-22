@@ -149,7 +149,7 @@ extension ProductFormViewModel {
     func updateInventorySettings(sku: String?,
                                  manageStock: Bool,
                                  soldIndividually: Bool,
-                                 stockQuantity: Int?,
+                                 stockQuantity: Int64?,
                                  backordersSetting: ProductBackordersSetting?,
                                  stockStatus: ProductStockStatus?) {
         product = product.copy(sku: sku,
@@ -193,6 +193,8 @@ extension ProductFormViewModel {
                                statusKey: settings.status.rawValue,
                                featured: settings.featured,
                                catalogVisibilityKey: settings.catalogVisibility.rawValue,
+                               virtual: settings.virtual,
+                               reviewsAllowed: settings.reviewsAllowed,
                                purchaseNote: settings.purchaseNote,
                                menuOrder: settings.menuOrder)
         password = settings.password
@@ -203,10 +205,27 @@ extension ProductFormViewModel {
     }
 }
 
+// MARK: Remote actions
+//
+extension ProductFormViewModel {
+    func updateProductRemotely(onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
+        let updateProductAction = ProductAction.updateProduct(product: product) { [weak self] result in
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            case .success(let product):
+                self?.resetProduct(product)
+                onCompletion(.success(product))
+            }
+        }
+        ServiceLocator.stores.dispatch(updateProductAction)
+    }
+}
+
 // MARK: Reset actions
 //
 extension ProductFormViewModel {
-    func resetProduct(_ product: Product) {
+    private func resetProduct(_ product: Product) {
         originalProduct = product
     }
 

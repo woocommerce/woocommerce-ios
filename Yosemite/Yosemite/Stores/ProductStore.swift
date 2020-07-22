@@ -6,7 +6,7 @@ import Storage
 // MARK: - ProductStore
 //
 public class ProductStore: Store {
-    private let remote: ProductsEndpointsProviding
+    private let remote: ProductsRemoteProtocol
 
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.newDerivedStorage()
@@ -17,7 +17,7 @@ public class ProductStore: Store {
         self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
     }
 
-    init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: ProductsEndpointsProviding) {
+    init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: ProductsRemoteProtocol) {
         self.remote = remote
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -52,6 +52,8 @@ public class ProductStore: Store {
                                   let productStatus,
                                   let productType,
                                   let sortOrder,
+                                  let excludedProductIDs,
+                                  let shouldDeleteStoredProductsOnFirstPage,
                                   let onCompletion):
             synchronizeProducts(siteID: siteID,
                                 pageNumber: pageNumber,
@@ -60,6 +62,8 @@ public class ProductStore: Store {
                                 productStatus: productStatus,
                                 productType: productType,
                                 sortOrder: sortOrder,
+                                excludedProductIDs: excludedProductIDs,
+                                shouldDeleteStoredProductsOnFirstPage: shouldDeleteStoredProductsOnFirstPage,
                                 onCompletion: onCompletion)
         case .requestMissingProducts(let order, let onCompletion):
             requestMissingProducts(for: order, onCompletion: onCompletion)
@@ -117,6 +121,8 @@ private extension ProductStore {
                              productStatus: ProductStatus?,
                              productType: ProductType?,
                              sortOrder: ProductsSortOrder,
+                             excludedProductIDs: [Int64],
+                             shouldDeleteStoredProductsOnFirstPage: Bool,
                              onCompletion: @escaping (Error?) -> Void) {
         let remote = ProductsRemote(network: network)
 
@@ -127,19 +133,20 @@ private extension ProductStore {
                                productStatus: productStatus,
                                productType: productType,
                                orderBy: sortOrder.remoteOrderKey,
-                               order: sortOrder.remoteOrder) { [weak self] (products, error) in
-            guard let products = products else {
-                onCompletion(error)
-                return
-            }
+                               order: sortOrder.remoteOrder,
+                               excludedProductIDs: excludedProductIDs) { [weak self] result in
+                                switch result {
+                                case .failure(let error):
+                                    onCompletion(error)
+                                case .success(let products):
+                                    if pageNumber == Default.firstPageNumber && shouldDeleteStoredProductsOnFirstPage {
+                                        self?.deleteStoredProducts(siteID: siteID)
+                                    }
 
-            if pageNumber == Default.firstPageNumber {
-                self?.deleteStoredProducts(siteID: siteID)
-            }
-
-            self?.upsertStoredProductsInBackground(readOnlyProducts: products) {
-                onCompletion(nil)
-            }
+                                    self?.upsertStoredProductsInBackground(readOnlyProducts: products) {
+                                        onCompletion(nil)
+                                    }
+                                }
         }
     }
 
@@ -222,18 +229,21 @@ private extension ProductStore {
 
     /// Updates the product.
     ///
-    func updateProduct(product: Product, onCompletion: @escaping (Product?, ProductUpdateError?) -> Void) {
+    func updateProduct(product: Product, onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
         let remote = ProductsRemote(network: network)
 
-        remote.updateProduct(product: product) { [weak self] (product, error) in
-            guard let product = product else {
-                onCompletion(nil, error.map({ ProductUpdateError(error: $0) }))
-                return
-            }
-
-            self?.upsertStoredProductsInBackground(readOnlyProducts: [product]) { [weak self] in
-                let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: product.siteID, productID: product.productID)
-                onCompletion(storageProduct?.toReadOnly(), nil)
+        remote.updateProduct(product: product) { [weak self] result in
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(ProductUpdateError(error: error)))
+            case .success(let product):
+                self?.upsertStoredProductsInBackground(readOnlyProducts: [product]) { [weak self] in
+                    guard let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: product.siteID, productID: product.productID) else {
+                        onCompletion(.failure(.notFoundInStorage))
+                        return
+                    }
+                    onCompletion(.success(storageProduct.toReadOnly()))
+                }
             }
         }
     }
@@ -518,6 +528,7 @@ extension ProductStore {
 public enum ProductUpdateError: Error {
     case duplicatedSKU
     case invalidSKU
+    case notFoundInStorage
     case unknown
 
     init(error: Error) {

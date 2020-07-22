@@ -292,7 +292,8 @@ extension MainTabBarController {
                 presentNotificationDetails(for: note)
 
                 if siteChanged {
-                    SwitchStoreNoticePresenter.presentStoreSwitchedNotice(stores: ServiceLocator.stores, configuration: .switchingStores)
+                    let presenter = SwitchStoreNoticePresenter()
+                    presenter.presentStoreSwitchedNotice(configuration: .switchingStores)
                 }
             }
         }

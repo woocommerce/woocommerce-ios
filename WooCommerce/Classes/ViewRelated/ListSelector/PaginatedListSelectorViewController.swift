@@ -169,8 +169,6 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
         let model = object(at: indexPath)
         dataSource.configureCell(cell: cell, model: model)
 
-        cell.accessoryType = dataSource.isSelected(model: model) ? .checkmark: .none
-
         return cell
     }
 

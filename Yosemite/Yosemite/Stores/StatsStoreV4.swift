@@ -370,7 +370,7 @@ private extension StatsStoreV4 {
     ///
     private func handleTopProductsAndStoreTopEearners(granularity: StatGranularity, date: Date, topProducts: Leaderboard, storedProducts: [Product]) {
         let statsDate = StatsStore.buildDateString(from: date, with: granularity)
-        let statsItems = topProducts.rows.compactMap { topEearnerStatItem(from: $0, using: storedProducts) }
+        let statsItems = LeaderboardStatsConverter.topEearnerStatItems(from: topProducts, using: storedProducts)
         let stats = TopEarnerStats(date: statsDate,
                                    granularity: granularity,
                                    limit: String(Constants.defaultTopEarnerStatsLimit),

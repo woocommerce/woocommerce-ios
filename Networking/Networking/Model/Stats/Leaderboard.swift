@@ -50,8 +50,8 @@ public struct Leaderboard: Decodable {
             // It is guaranteed that the row will contain at least 3 elements.
             let rawDictionary = [
                 LeaderboardRow.CodingKeys.subject.rawValue: rawRow[0],
-                LeaderboardRow.CodingKeys.subjectValue.rawValue: rawRow[1],
-                LeaderboardRow.CodingKeys.value.rawValue: rawRow[2],
+                LeaderboardRow.CodingKeys.quantity.rawValue: rawRow[1],
+                LeaderboardRow.CodingKeys.total.rawValue: rawRow[2],
             ]
 
             // Encode the compound dictionary and let Swift decode the `LeaderboardRow`

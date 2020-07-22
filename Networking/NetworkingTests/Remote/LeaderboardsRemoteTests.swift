@@ -45,10 +45,10 @@ final class leaderboardsRemoteV4Tests: XCTestCase {
         topProducts.rows.forEach { product in
             XCTAssertFalse(product.subject.display.isEmpty)
             XCTAssertFalse(product.subject.value.isEmpty)
-            XCTAssertFalse(product.subjectValue.display.isEmpty)
-            XCTAssertTrue(product.subjectValue.value > 0)
-            XCTAssertFalse(product.value.display.isEmpty)
-            XCTAssertTrue(product.value.value > 0)
+            XCTAssertFalse(product.quantity.display.isEmpty)
+            XCTAssertTrue(product.quantity.value > 0)
+            XCTAssertFalse(product.total.display.isEmpty)
+            XCTAssertTrue(product.total.value > 0)
         }
     }
 

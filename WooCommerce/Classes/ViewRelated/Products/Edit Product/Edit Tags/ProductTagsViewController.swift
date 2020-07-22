@@ -176,7 +176,7 @@ private extension ProductTagsViewController {
     func configure(_ cell: UITableViewCell, for row: ProductTagsViewModel.Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as TextFieldTableViewCell:
-            configureSlug(cell: cell)
+            configureTextField(cell: cell)
         case let cell as BasicTableViewCell:
             configureTag(cell: cell)
         default:
@@ -184,20 +184,22 @@ private extension ProductTagsViewController {
         }
     }
 
-    func configureSlug(cell: TextFieldTableViewCell) {
-//        cell.accessoryType = .none
-//
-//        let placeholder = NSLocalizedString("Slug", comment: "Placeholder in the Product Slug row on Edit Product Slug screen.")
-//
-//        let viewModel = TextFieldTableViewCell.ViewModel(text: productSettings.slug, placeholder: placeholder, onTextChange: { [weak self] newName in
-//            if let newName = newName {
-//                self?.productSettings.slug = newName
-//            }
-//            }, onTextDidBeginEditing: {
-//                //TODO: Add analytics track
-//        }, inputFormatter: nil, keyboardType: .default)
-//        cell.configure(viewModel: viewModel)
-//        cell.applyStyle(style: .body)
+    func configureTextField(cell: TextFieldTableViewCell) {
+        cell.accessoryType = .none
+
+        let placeholder = NSLocalizedString("Tags", comment: "Placeholder in the Product Tag row on Edit Product Tags screen.")
+        let tags: String = viewModel.selectedTags.map { $0.name }.joined(separator: ",")
+        let viewModelCell = TextFieldTableViewCell.ViewModel(text: String(tags),
+                                                             placeholder: placeholder,
+                                                             onTextChange: { newTags in
+            //if let newTags = newTags {
+                //self?.productSettings.slug = newName
+            //}
+            }, onTextDidBeginEditing: {
+                //TODO: Add analytics track
+        }, inputFormatter: nil, keyboardType: .default)
+        cell.configure(viewModel: viewModelCell)
+        cell.applyStyle(style: .body)
     }
 
     func configureTag(cell: BasicTableViewCell) {

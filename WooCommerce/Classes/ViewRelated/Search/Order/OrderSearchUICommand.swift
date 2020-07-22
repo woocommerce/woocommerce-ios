@@ -71,7 +71,7 @@ final class OrderSearchUICommand: SearchUICommand {
         ServiceLocator.analytics.track(.ordersListFilterOrSearch, withProperties: ["filter": "", "search": "\(keyword)"])
     }
 
-    func didSelectSearchResult(model: Order, from viewController: UIViewController) {
+    func didSelectSearchResult(model: Order, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {
         guard let detailsViewController = OrderDetailsViewController.instantiatedViewControllerFromStoryboard() else {
             fatalError()
         }

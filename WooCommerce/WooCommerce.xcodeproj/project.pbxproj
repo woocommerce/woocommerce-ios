@@ -74,6 +74,7 @@
 		021E2A2023AA274700B1DE07 /* ProductBackordersSettingListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021E2A1F23AA274700B1DE07 /* ProductBackordersSettingListSelectorCommandTests.swift */; };
 		021FAFCD2355621E00B99241 /* UIView+SubviewsAxisTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021FAFCC2355621E00B99241 /* UIView+SubviewsAxisTests.swift */; };
 		021FAFCF23556D2B00B99241 /* UIView+SubviewsAxis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021FAFCE23556D2B00B99241 /* UIView+SubviewsAxis.swift */; };
+		021FB44C24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021FB44B24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift */; };
 		0225C42824768A4C00C5B4F0 /* FilterProductListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0225C42724768A4C00C5B4F0 /* FilterProductListViewModelTests.swift */; };
 		0225C42A24768CE900C5B4F0 /* FilterProductListViewModelProductListFilterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0225C42924768CE900C5B4F0 /* FilterProductListViewModelProductListFilterTests.swift */; };
 		0225C42C2477D0D500C5B4F0 /* ProductFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0225C42B2477D0D500C5B4F0 /* ProductFormViewModel.swift */; };
@@ -105,7 +106,6 @@
 		023A059A24135F2600E3FC99 /* ReviewsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023A059824135F2600E3FC99 /* ReviewsViewController.swift */; };
 		023A059B24135F2600E3FC99 /* ReviewsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 023A059924135F2600E3FC99 /* ReviewsViewController.xib */; };
 		023D1DD124AB2D05002B03A3 /* ProductListSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023D1DD024AB2D05002B03A3 /* ProductListSelectorViewController.swift */; };
-		02404EDA2314C36300FF1170 /* StatsVersionStateCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404ED92314C36200FF1170 /* StatsVersionStateCoordinator.swift */; };
 		02404EDA2314C36300FF1170 /* StatsVersionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404ED92314C36200FF1170 /* StatsVersionCoordinator.swift */; };
 		02404EE02314FE5900FF1170 /* DashboardUIFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404EDF2314FE5900FF1170 /* DashboardUIFactoryTests.swift */; };
 		02404EE2231501E000FF1170 /* StatsVersionCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404EE1231501E000FF1170 /* StatsVersionCoordinatorTests.swift */; };
@@ -956,6 +956,7 @@
 		021E2A1F23AA274700B1DE07 /* ProductBackordersSettingListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductBackordersSettingListSelectorCommandTests.swift; sourceTree = "<group>"; };
 		021FAFCC2355621E00B99241 /* UIView+SubviewsAxisTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SubviewsAxisTests.swift"; sourceTree = "<group>"; };
 		021FAFCE23556D2B00B99241 /* UIView+SubviewsAxis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SubviewsAxis.swift"; sourceTree = "<group>"; };
+		021FB44B24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListMultiSelectorSearchUICommand.swift; sourceTree = "<group>"; };
 		0225C42724768A4C00C5B4F0 /* FilterProductListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductListViewModelTests.swift; sourceTree = "<group>"; };
 		0225C42924768CE900C5B4F0 /* FilterProductListViewModelProductListFilterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductListViewModelProductListFilterTests.swift; sourceTree = "<group>"; };
 		0225C42B2477D0D500C5B4F0 /* ProductFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormViewModel.swift; sourceTree = "<group>"; };
@@ -987,7 +988,6 @@
 		023A059824135F2600E3FC99 /* ReviewsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsViewController.swift; sourceTree = "<group>"; };
 		023A059924135F2600E3FC99 /* ReviewsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReviewsViewController.xib; sourceTree = "<group>"; };
 		023D1DD024AB2D05002B03A3 /* ProductListSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListSelectorViewController.swift; sourceTree = "<group>"; };
-		02404ED92314C36200FF1170 /* StatsVersionStateCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatsVersionStateCoordinator.swift; sourceTree = "<group>"; };
 		02404ED92314C36200FF1170 /* StatsVersionCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatsVersionCoordinator.swift; sourceTree = "<group>"; };
 		02404EDF2314FE5900FF1170 /* DashboardUIFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardUIFactoryTests.swift; sourceTree = "<group>"; };
 		02404EE1231501E000FF1170 /* StatsVersionCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsVersionCoordinatorTests.swift; sourceTree = "<group>"; };
@@ -1939,6 +1939,7 @@
 			children = (
 				022F7A0124A05F6400012601 /* GroupedProductsViewController.swift */,
 				022F7A0224A05F6400012601 /* GroupedProductsViewController.xib */,
+				021FB44B24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift */,
 				023D1DD024AB2D05002B03A3 /* ProductListSelectorViewController.swift */,
 				02B1AFEB24BC5AE5005DB1E3 /* GroupedProductListSelectorDataSource.swift */,
 				0273707F24C0094500167204 /* ProductListMultiSelectorDataSource.swift */,
@@ -5158,6 +5159,7 @@
 				02C88775245036D400E4470F /* FilterProductListViewModel.swift in Sources */,
 				02A65301246AA63600755A01 /* ProductDetailsFactory.swift in Sources */,
 				02C8876D24501FAC00E4470F /* FilterListViewController.swift in Sources */,
+				021FB44C24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift in Sources */,
 				45D1CF4523BAC2A500945A36 /* ProductTaxClassListSelectorDataSource.swift in Sources */,
 				6856D31F941A33BAE66F394D /* KeyboardFrameAdjustmentProvider.swift in Sources */,
 				6856DB2E741639716E149967 /* KeyboardStateProvider.swift in Sources */,

@@ -143,6 +143,12 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
 
     // MARK: Public functions
 
+    /// Called when the visual data of the data source change outside of selection UX.
+    /// (e.g. receiving selected products from search UI in `ProductListMultiSelectorDataSource`)
+    func reloadData() {
+        tableView.reloadData()
+    }
+
     func updateResultsController() {
         resultsController = dataSource.createResultsController()
         configureResultsController(resultsController) { [weak self] in

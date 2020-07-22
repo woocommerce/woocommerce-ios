@@ -45,7 +45,7 @@ public enum ProductAction: Action {
 
     /// Updates a specified Product.
     ///
-    case updateProduct(product: Product, onCompletion: (Product?, ProductUpdateError?) -> Void)
+    case updateProduct(product: Product, onCompletion: (Result<Product, ProductUpdateError>) -> Void)
 
     /// Checks whether a Product SKU is valid against other Products in the store.
     ///

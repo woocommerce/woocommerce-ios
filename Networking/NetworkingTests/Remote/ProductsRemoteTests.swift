@@ -4,7 +4,7 @@ import XCTest
 
 /// ProductsRemoteTests
 ///
-class ProductsRemoteTests: XCTestCase {
+final class ProductsRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
@@ -251,39 +251,47 @@ class ProductsRemoteTests: XCTestCase {
     /// Verifies that updateProduct properly parses the `product-update` sample response.
     ///
     func testUpdateProductProperlyReturnsParsedProduct() {
+        // Given
         let remote = ProductsRemote(network: network)
-        let expectation = self.expectation(description: "Wait for product update")
-
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product-update")
 
         let productName = "This is my new product name!"
         let productDescription = "Learn something!"
-        let product = sampleProduct()
-        remote.updateProduct(product: product) { (product, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(product)
-            XCTAssertEqual(product?.name, productName)
-            XCTAssertEqual(product?.fullDescription, productDescription)
-            expectation.fulfill()
-        }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // When
+        let product = sampleProduct()
+        waitForExpectation { expectation in
+            remote.updateProduct(product: product) { result in
+                // Then
+                guard case let .success(product) = result else {
+                    XCTFail("Unexpected result: \(result)")
+                    return
+                }
+                XCTAssertEqual(product.name, productName)
+                XCTAssertEqual(product.fullDescription, productDescription)
+                expectation.fulfill()
+            }
+        }
     }
 
     /// Verifies that updateProduct properly relays Networking Layer errors.
     ///
     func testUpdateProductProperlyRelaysNetwokingErrors() {
+        // Given
         let remote = ProductsRemote(network: network)
-        let expectation = self.expectation(description: "Wait for product name update")
 
+        // When
         let product = sampleProduct()
-        remote.updateProduct(product: product) { (product, error) in
-            XCTAssertNil(product)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        waitForExpectation { expectation in
+            remote.updateProduct(product: product) { result in
+                // Then
+                guard case .failure = result else {
+                    XCTFail("Unexpected result: \(result)")
+                    return
+                }
+                expectation.fulfill()
+            }
         }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 }
 

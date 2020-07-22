@@ -15,6 +15,8 @@ class SiteCredentialsViewController: LoginViewController {
     var verticalCenterConstraint: NSLayoutConstraint?
 
     private var rows = [Row]()
+	private weak var usernameField: UITextField?
+	private weak var passwordField: UITextField?
 
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
@@ -24,10 +26,20 @@ class SiteCredentialsViewController: LoginViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        navigationItem.title = WordPressAuthenticator.shared.displayStrings.logInTitle
+        styleNavigationBar(forUnified: true)
+
 		localizePrimaryButton()
 		registerTableViewCells()
 		loadRows()
-		configureSubmitButton(animating: false)
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
+                                  keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
+        configureViewForEditingIfNeeded()
     }
 
 	// MARK: - Overrides
@@ -41,6 +53,22 @@ class SiteCredentialsViewController: LoginViewController {
         }
 
         view.backgroundColor = unifiedBackgroundColor
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return WordPressAuthenticator.shared.unifiedStyle?.statusBarStyle ?? WordPressAuthenticator.shared.style.statusBarStyle
+    }
+
+
+	/// Configure the view for an editing state. Should only be called from viewWillAppear
+    /// as this method skips animating any change in height.
+    ///
+    @objc func configureViewForEditingIfNeeded() {
+       // Check the helper to determine whether an editing state should be assumed.
+       adjustViewForKeyboard(SigninEditingState.signinEditingStateActive)
+       if SigninEditingState.signinEditingStateActive {
+           usernameField?.becomeFirstResponder()
+       }
     }
 }
 
@@ -65,6 +93,48 @@ extension SiteCredentialsViewController: UITableViewDataSource {
 }
 
 
+// MARK: - UITableViewDelegate conformance
+extension SiteCredentialsViewController: UITableViewDelegate {
+	/// After a textfield cell is done displaying, remove the textfield reference.
+	///
+	func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+		if rows[indexPath.row] == .username {
+			usernameField = nil
+		} else if rows[indexPath.row] == .password {
+			passwordField = nil
+		}
+	}
+}
+
+
+// MARK: - Keyboard Notifications
+extension SiteCredentialsViewController: NUXKeyboardResponder {
+    @objc func handleKeyboardWillShow(_ notification: Foundation.Notification) {
+        keyboardWillShow(notification)
+    }
+
+    @objc func handleKeyboardWillHide(_ notification: Foundation.Notification) {
+        keyboardWillHide(notification)
+    }
+}
+
+
+// MARK: - TextField Delegate conformance
+extension SiteCredentialsViewController: UITextFieldDelegate {
+
+	/// Handle the keyboard `return` button action.
+	///
+	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == usernameField {
+            passwordField?.becomeFirstResponder()
+        } else if textField == passwordField {
+            validateForm()
+        }
+        return true
+    }
+}
+
+
 // MARK: - Private Methods
 private extension SiteCredentialsViewController {
 
@@ -80,7 +150,8 @@ private extension SiteCredentialsViewController {
     ///
     func registerTableViewCells() {
         let cells = [
-            TextLabelTableViewCell.reuseIdentifier: TextLabelTableViewCell.loadNib()
+            TextLabelTableViewCell.reuseIdentifier: TextLabelTableViewCell.loadNib(),
+			TextFieldTableViewCell.reuseIdentifier: TextFieldTableViewCell.loadNib(),
         ]
 
         for (reuseIdentifier, nib) in cells {
@@ -91,7 +162,7 @@ private extension SiteCredentialsViewController {
 	/// Describes how the tableView rows should be rendered.
     ///
     func loadRows() {
-        rows = [.instructions]
+		rows = [.instructions, .username, .password]
     }
 
 	/// Configure cells.
@@ -100,6 +171,10 @@ private extension SiteCredentialsViewController {
         switch cell {
         case let cell as TextLabelTableViewCell where row == .instructions:
             configureInstructionLabel(cell)
+		case let cell as TextFieldTableViewCell where row == .username:
+			configureUsernameTextField(cell)
+		case let cell as TextFieldTableViewCell where row == .password:
+			configurePasswordTextField(cell)
         default:
             DDLogError("Error: Unidentified tableViewCell type found.")
         }
@@ -108,9 +183,30 @@ private extension SiteCredentialsViewController {
 	/// Configure the instruction cell.
     ///
     func configureInstructionLabel(_ cell: TextLabelTableViewCell) {
-        cell.configureLabel(text: "Enter your account information for pamelanguyen.com.", style: .body)
+		let displayURL = sanitizedSiteAddress(siteAddress: loginFields.siteAddress)
+		let text = String.localizedStringWithFormat(WordPressAuthenticator.shared.displayStrings.siteCredentialInstructions, displayURL)
+        cell.configureLabel(text: text, style: .body)
     }
 
+	/// Configure the username textfield cell.
+	///
+	func configureUsernameTextField(_ cell: TextFieldTableViewCell) {
+		cell.configureTextFieldStyle(with: .username,
+									 and: WordPressAuthenticator.shared.displayStrings.usernamePlaceholder)
+		// Save a reference to the textField so it can becomeFirstResponder.
+        usernameField = cell.textField
+		cell.textField.delegate = self
+        SigninEditingState.signinEditingStateActive = true
+	}
+
+	/// Configure the password textfield cell.
+	///
+	func configurePasswordTextField(_ cell: TextFieldTableViewCell) {
+		cell.configureTextFieldStyle(with: .password,
+									 and: WordPressAuthenticator.shared.displayStrings.passwordPlaceholder)
+		passwordField = cell.textField
+		cell.textField.delegate = self
+	}
 
 	// MARK: - Private Constants
 
@@ -118,12 +214,39 @@ private extension SiteCredentialsViewController {
     ///
     enum Row {
         case instructions
+		case username
+		case password
 
         var reuseIdentifier: String {
             switch self {
             case .instructions:
                 return TextLabelTableViewCell.reuseIdentifier
+			case .username:
+				return TextFieldTableViewCell.reuseIdentifier
+			case .password:
+				return TextFieldTableViewCell.reuseIdentifier
 			}
         }
     }
+}
+
+
+// MARK: - Instance Methods
+extension SiteCredentialsViewController {
+	/// Sanitize and format the site address we show to users.
+    ///
+    @objc func sanitizedSiteAddress(siteAddress: String) -> String {
+        let baseSiteUrl = WordPressAuthenticator.baseSiteURL(string: siteAddress) as NSString
+        if let str = baseSiteUrl.components(separatedBy: "://").last {
+            return str
+        }
+        return siteAddress
+    }
+
+	/// Validates what is entered in the various form fields and, if valid,
+	/// proceeds with the submit action.
+	///
+	@objc func validateForm() {
+		validateFormAndLogin()
+	}
 }

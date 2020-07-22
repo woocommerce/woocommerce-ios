@@ -2,7 +2,6 @@ import Gridicons
 import WordPressUI
 
 private enum Constants {
-    static let helpButtonTitleColor = UIColor(white: 1.0, alpha: 0.4)
     static let helpButtonInsets = UIEdgeInsets(top: 0.0, left: 5.0, bottom: 0.0, right: 5.0)
     //Button Item: Custom view wrapping the Help UIbutton
     static let helpButtonItemMarginSpace = CGFloat(-8)
@@ -158,7 +157,7 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
     /// Whenever the WordPressAuthenticator Delegate returns true, when `shouldDisplayHelpButton` is queried, we'll proceed
     /// and attach the Help Button to the navigationController.
     ///
-    public func setupHelpButtonIfNeeded() {
+    func setupHelpButtonIfNeeded() {
         guard shouldDisplayHelpButton else {
             return
         }
@@ -167,16 +166,33 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
         refreshSupportNotificationIndicator()
     }
 
+    /// Sets the Help button text color.
+    ///
+    /// - Parameters:
+    ///     - forUnified: Indicates whether to use text color for the unified auth flows or the original auth flows.
+    ///
+    func setHelpButtonTextColor(forUnified: Bool) {
+        let navButtonTextColor: UIColor = {
+            if forUnified {
+                return WordPressAuthenticator.shared.unifiedStyle?.navButtonTextColor ?? WordPressAuthenticator.shared.style.navButtonTextColor
+            }
+            return WordPressAuthenticator.shared.style.navButtonTextColor
+        }()
+        
+        helpButton.setTitleColor(navButtonTextColor, for: .normal)
+        helpButton.setTitleColor(navButtonTextColor.withAlphaComponent(0.4), for: .highlighted)
+    }
+
+    // MARK: - Helpers
+
     /// Adds the Help Button to the nav controller
     ///
-    public func addHelpButtonToNavController() {
+    private func addHelpButtonToNavController() {
         let barButtonView = createBarButtonView()
         addHelpButton(to: barButtonView)
         addNotificationIndicatorView(to: barButtonView)
         addRightBarButtonItem(with: barButtonView)
     }
-
-    // MARK: - helpers
 
     private func addRightBarButtonItem(with customView: UIView) {
         let spacer = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
@@ -197,7 +213,8 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
 
     private func addHelpButton(to superView: UIView) {
         helpButton.setTitle(NSLocalizedString("Help", comment: "Help button"), for: .normal)
-        helpButton.setTitleColor(Constants.helpButtonTitleColor, for: .highlighted)
+        setHelpButtonTextColor(forUnified: false)
+        
         helpButton.on(.touchUpInside) { [weak self] control in
             self?.handleHelpButtonTapped(control)
         }

@@ -82,6 +82,38 @@ final class LeaderboardStatsConverterTest: XCTestCase {
         // Then
         XCTAssertTrue(missingIds.isEmpty)
     }
+
+    func testConvertToProductsIntoStatItemsUsinfStoredProducts() {
+        // Given
+        let products = (1...3).map { MockProduct().product(siteID: siteID, productID: $0) }
+        let topProducts = Self.sampleLeaderboard(productIds: [1, 2, 3])
+
+        // When
+        let statItems = LeaderboardStatsConverter.topEearnerStatItems(from: topProducts, using: products)
+
+        // Then
+        XCTAssertEqual(statItems.count, topProducts.rows.count)
+        for ((topProduct, product), statItem) in zip(zip(topProducts.rows, products), statItems) {
+            XCTAssertNotNil(statItem)
+            XCTAssertEqual(statItem.productID, product.productID)
+            XCTAssertEqual(statItem.productName, product.name)
+            XCTAssertEqual(statItem.quantity, topProduct.quantity.value)
+            XCTAssertEqual(statItem.price, Double(product.price))
+            XCTAssertEqual(statItem.total, topProduct.total.value)
+            XCTAssertEqual(statItem.imageUrl, product.images.first?.src)
+        }
+    }
+
+    func testConvertTopProductsToStatItemsWithoutStoredProducts() {
+        // Given
+        let topProducts = Self.sampleLeaderboard(productIds: [1, 2, 3])
+
+        // When
+        let statItems = LeaderboardStatsConverter.topEearnerStatItems(from: topProducts, using: [])
+
+        // Then
+        XCTAssertTrue(statItems.isEmpty)
+    }
 }
 
 /// MARK: Test functions to generate sample data

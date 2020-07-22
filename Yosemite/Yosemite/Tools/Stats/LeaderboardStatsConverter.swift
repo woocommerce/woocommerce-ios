@@ -47,4 +47,32 @@ struct LeaderboardStatsConverter {
         let missingIDs = Set(topProductsIDs).subtracting(storedProductsIDs)
         return Array(missingIDs)
     }
+
+    /// Converts a the`leaderboard rows(top products)` into an array `TopEarnerStatsItem` using an array of stored products to match
+    ///
+    static func topEearnerStatItems(from topProducts: Leaderboard, using storedProducts: [Product]) -> [TopEarnerStatsItem] {
+        return topProducts.rows.compactMap {
+            Self.topEearnerStatItem(from: $0, using: storedProducts)
+        }
+    }
+
+    /// Converts a `leaderboard row(top product)` into a `TopEarnerStatsItem` using an array of stored products to match
+    ///
+    static func topEearnerStatItem(from topProduct: LeaderboardRow, using storedProducts: [Product]) -> TopEarnerStatsItem? {
+
+        // Match the product that corresponds to the leaderboard row(top product)
+        guard let productID = LeaderboardStatsConverter.infeerProductID(fromHTMLString: topProduct.subject.display),
+            let product = storedProducts.first(where: { $0.productID == productID }) else {
+                return nil
+        }
+
+        // Create the stat item using the two sources of information
+        return TopEarnerStatsItem(productID: productID,
+                                  productName: product.name,
+                                  quantity: topProduct.quantity.value,
+                                  price: Double(product.price) ?? 0.0,
+                                  total: topProduct.total.value,
+                                  currency: "USD", // TODO: Sort out currency
+                                  imageUrl: product.images.first?.src)
+    }
 }

@@ -361,7 +361,7 @@ private extension StatsStoreV4 {
 
     /// Indicates what products are missing from a leaderboard in an array of stored products
     ///
-    private func missingProductsFrom(_ topProducts: Leaderboards, in storedProducts: [Product]) -> [Int64] {
+    private func missingProductsFrom(_ topProducts: Leaderboard, in storedProducts: [Product]) -> [Int64] {
 
         // Get the top products IDs
         let topProductsIDs = topProducts.rows.compactMap {
@@ -399,7 +399,7 @@ private extension StatsStoreV4 {
 
     /// Converts a `leaderboard row(top product)` into a `TopEarnerStatsItem` using an array of stored products to match
     ///
-    private func topEearnerStatItem(from topProduct: LeaderboardsRow, using storedProducts: [Product]) -> TopEarnerStatsItem? {
+    private func topEearnerStatItem(from topProduct: LeaderboardRow, using storedProducts: [Product]) -> TopEarnerStatsItem? {
 
         // Match the product wich corresponds to the leaderboard row(top product)
         guard let productID = LeaderboardStatsConverter.infeerProductID(fromHTMLString: topProduct.subject.display),

@@ -390,6 +390,7 @@ extension LoginViewController {
 // MARK: - Social Sign In Handling
 
 extension LoginViewController {
+
     func signInAppleAccount() {
         guard let token = loginFields.meta.socialServiceIDToken else {
             WordPressAuthenticator.track(.loginSocialButtonFailure, properties: ["source": SocialServiceName.apple.rawValue])
@@ -407,6 +408,31 @@ extension LoginViewController {
         loginFields.username = googleEmail
         loginFields.meta.socialServiceIDToken = googleToken
         loginFields.meta.googleUser = googleUser
+    }
+    
+    // Used by SIWA when logging with with a passwordless, 2FA account.
+    //
+    func socialNeedsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
+        loginFields.nonceInfo = nonceInfo
+        loginFields.nonceUserID = userID
+        
+        var properties = [AnyHashable:Any]()
+        if let service = loginFields.meta.socialService?.rawValue {
+            properties["source"] = service
+        }
+        
+        WordPressAuthenticator.track(.loginSocial2faNeeded, properties: properties)
+        
+        guard let vc = Login2FAViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from LoginViewController to Login2FAViewController")
+            return
+        }
+        
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+        
+        navigationController?.pushViewController(vc, animated: true)
     }
     
 }

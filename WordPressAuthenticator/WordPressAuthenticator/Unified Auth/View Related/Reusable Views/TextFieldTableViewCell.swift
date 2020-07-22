@@ -22,12 +22,10 @@ final class TextFieldTableViewCell: UITableViewCell {
 	/// - Note: we have to manually add an action to the textfield
 	///	        because the delegate method `textFieldDidChangeSelection(_ textField: UITextField)`
 	///         is only available to iOS 13+. When we no longer support iOS 12,
-	///			`registerTextFieldAction`, `textFieldDidChangeSelection`, and `siteURLHandler` can
+	///			`registerTextFieldAction`, `textFieldDidChangeSelection`, and `onChangeSelectionHandler` can
 	///			be deleted in favor of adding the delegate method to SiteAddressViewController.
 	@IBAction func registerTextFieldAction() {
-		if textfieldStyle == .url {
-			textFieldDidChangeSelection()
-		}
+		onChangeSelectionHandler?(textField)
 	}
 
 	/// Internal properties.
@@ -43,7 +41,7 @@ final class TextFieldTableViewCell: UITableViewCell {
 		}
 	}
 
-	public var siteURLHandler: ((_ sender: UITextField) -> Void)?
+	public var onChangeSelectionHandler: ((_ sender: UITextField) -> Void)?
 	public var onePasswordHandler: (() -> Void)?
     public static let reuseIdentifier = "TextFieldTableViewCell"
 
@@ -108,7 +106,7 @@ private extension TextFieldTableViewCell {
 	/// Call the handler when the textfield changes.
 	///
 	@objc func textFieldDidChangeSelection() {
-		siteURLHandler?(textField)
+		onChangeSelectionHandler?(textField)
 	}
 
 	/// Sets up a 1Password button if 1Password is available and user is on iOS 12.

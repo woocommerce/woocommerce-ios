@@ -1,0 +1,393 @@
+{
+  "data" : [
+    {
+      "related_ids" : [
+        30
+      ],
+      "shipping_required" : false,
+      "categories" : [
+        {
+          "id" : 21,
+          "name" : "Music",
+          "slug" : "music"
+        }
+      ],
+      "parent_id" : 0,
+      "variations" : [
+
+      ],
+      "id" : 29,
+      "regular_price" : "15",
+      "weight" : "",
+      "total_sales" : 1,
+      "sku" : "woo-album",
+      "rating_count" : 3,
+      "grouped_products" : [
+
+      ],
+      "backordered" : false,
+      "on_sale" : false,
+      "status" : "publish",
+      "download_limit" : 1,
+      "permalink" : "https://dulces.mystagingwebsite.com/product/album/",
+      "date_created" : "2020-06-18T18:03:17",
+      "description" : "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sagittis orci ac odio dictum tincidunt. Donec ut metus leo. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed luctus, dui eu sagittis sodales, nulla nibh sagittis augue, vel porttitor diam enim non metus. Vestibulum aliquam augue neque. Phasellus tincidunt odio eget ullamcorper efficitur. Cras placerat ut turpis pellentesque vulputate. Nam sed consequat tortor. Curabitur finibus sapien dolor. Ut eleifend tellus nec erat pulvinar dignissim. Nam non arcu purus. Vivamus et massa massa.</p>\n",
+      "reviews_allowed" : true,
+      "sale_price" : "",
+      "slug" : "album",
+      "type" : "simple",
+      "catalog_visibility" : "visible",
+      "download_expiry" : 1,
+      "meta_data" : [
+        {
+          "id" : 604,
+          "key" : "_wpcom_is_markdown",
+          "value" : "1"
+        }
+      ],
+      "dimensions" : {
+        "width" : "",
+        "height" : "",
+        "length" : ""
+      },
+      "cross_sell_ids" : [
+
+      ],
+      "price" : "15",
+      "date_on_sale_to" : null,
+      "name" : "Album",
+      "purchasable" : true,
+      "shipping_class" : "",
+      "attributes" : [
+
+      ],
+      "menu_order" : 0,
+      "virtual" : true,
+      "stock_status" : "instock",
+      "downloadable" : true,
+      "date_modified_gmt" : "2020-07-01T12:44:22",
+      "date_created_gmt" : "2020-06-18T18:03:17",
+      "default_attributes" : [
+
+      ],
+      "upsell_ids" : [
+
+      ],
+      "tags" : [
+
+      ],
+      "tax_class" : "",
+      "price_html" : "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;</span>15.00</span>",
+      "sold_individually" : false,
+      "short_description" : "<p>This is a simple, virtual product.</p>\n",
+      "downloads" : [
+        {
+          "id" : "262be1e5-9d26-40e1-804e-992e2fc71371",
+          "name" : "Single 1",
+          "file" : "https://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2017/08/single.jpg"
+        },
+        {
+          "id" : "f5d20309-c189-45cf-8bf8-e43f4f4416ae",
+          "name" : "Single 2",
+          "file" : "https://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2017/08/album.jpg"
+        }
+      ],
+      "backorders" : "no",
+      "tax_status" : "taxable",
+      "date_on_sale_from_gmt" : null,
+      "shipping_taxable" : false,
+      "average_rating" : "4.67",
+      "_links" : {
+        "collection" : [
+          {
+            "href" : "https://dulces.mystagingwebsite.com/wp-json/wc/v3/products"
+          }
+        ],
+        "self" : [
+          {
+            "href" : "https://dulces.mystagingwebsite.com/wp-json/wc/v3/products/29"
+          }
+        ]
+      },
+      "date_on_sale_from" : null,
+      "button_text" : "",
+      "purchase_note" : "",
+      "shipping_class_id" : 0,
+      "date_modified" : "2020-07-01T12:44:22",
+      "external_url" : "",
+      "date_on_sale_to_gmt" : null,
+      "backorders_allowed" : false,
+      "images" : [
+        {
+          "id" : 58,
+          "src" : "https://dulces.mystagingwebsite.com/wp-content/uploads/2020/06/album-1.jpg",
+          "alt" : "",
+          "date_created" : "2020-06-18T18:03:22",
+          "date_modified" : "2020-06-18T18:03:22",
+          "date_created_gmt" : "2020-06-18T18:03:22",
+          "date_modified_gmt" : "2020-06-18T18:03:22",
+          "name" : "album-1.jpg"
+        }
+      ],
+      "stock_quantity" : null,
+      "featured" : false,
+      "manage_stock" : false
+    },
+    {
+      "related_ids" : [
+        27,
+        37,
+        20,
+        17
+      ],
+      "shipping_required" : true,
+      "categories" : [
+        {
+          "id" : 18,
+          "name" : "Tshirts",
+          "slug" : "tshirts"
+        }
+      ],
+      "parent_id" : 0,
+      "variations" : [
+
+      ],
+      "id" : 28,
+      "regular_price" : "20.99",
+      "weight" : "",
+      "total_sales" : 2,
+      "sku" : "woo-polo",
+      "rating_count" : 0,
+      "grouped_products" : [
+
+      ],
+      "backordered" : false,
+      "on_sale" : false,
+      "status" : "publish",
+      "download_limit" : 0,
+      "permalink" : "https://dulces.mystagingwebsite.com/product/polo/",
+      "date_created" : "2020-06-18T18:03:17",
+      "description" : "<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>\n",
+      "reviews_allowed" : true,
+      "sale_price" : "",
+      "slug" : "polo",
+      "type" : "simple",
+      "catalog_visibility" : "visible",
+      "download_expiry" : 0,
+      "meta_data" : [
+        {
+          "id" : 595,
+          "key" : "_wpcom_is_markdown",
+          "value" : "1"
+        }
+      ],
+      "dimensions" : {
+        "width" : "",
+        "height" : "",
+        "length" : ""
+      },
+      "cross_sell_ids" : [
+
+      ],
+      "price" : "20.99",
+      "date_on_sale_to" : null,
+      "name" : "Polo",
+      "purchasable" : true,
+      "shipping_class" : "",
+      "attributes" : [
+        {
+          "id" : 1,
+          "variation" : false,
+          "options" : [
+            "Blue"
+          ],
+          "name" : "Color",
+          "position" : 0,
+          "visible" : true
+        }
+      ],
+      "menu_order" : 0,
+      "virtual" : false,
+      "stock_status" : "instock",
+      "downloadable" : false,
+      "date_modified_gmt" : "2020-07-21T21:30:55",
+      "date_created_gmt" : "2020-06-18T18:03:17",
+      "default_attributes" : [
+
+      ],
+      "upsell_ids" : [
+
+      ],
+      "tags" : [
+
+      ],
+      "tax_class" : "",
+      "price_html" : "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;</span>20.99</span>",
+      "sold_individually" : false,
+      "short_description" : "<p>This is a simple product.</p>\n",
+      "downloads" : [
+
+      ],
+      "backorders" : "no",
+      "tax_status" : "taxable",
+      "date_on_sale_from_gmt" : null,
+      "shipping_taxable" : true,
+      "average_rating" : "0.00",
+      "_links" : {
+        "collection" : [
+          {
+            "href" : "https://dulces.mystagingwebsite.com/wp-json/wc/v3/products"
+          }
+        ],
+        "self" : [
+          {
+            "href" : "https://dulces.mystagingwebsite.com/wp-json/wc/v3/products/28"
+          }
+        ]
+      },
+      "date_on_sale_from" : null,
+      "button_text" : "",
+      "purchase_note" : "",
+      "shipping_class_id" : 0,
+      "date_modified" : "2020-07-21T21:30:55",
+      "external_url" : "",
+      "date_on_sale_to_gmt" : null,
+      "backorders_allowed" : false,
+      "images" : [
+        {
+          "id" : 57,
+          "src" : "https://dulces.mystagingwebsite.com/wp-content/uploads/2020/06/polo-2.jpg",
+          "alt" : "",
+          "date_created" : "2020-06-18T18:03:22",
+          "date_modified" : "2020-06-18T18:03:22",
+          "date_created_gmt" : "2020-06-18T18:03:22",
+          "date_modified_gmt" : "2020-06-18T18:03:22",
+          "name" : "polo-2.jpg"
+        }
+      ],
+      "stock_quantity" : null,
+      "featured" : false,
+      "manage_stock" : false
+    },
+    {
+      "related_ids" : [
+
+      ],
+      "shipping_required" : true,
+      "categories" : [
+        {
+          "id" : 15,
+          "name" : "Uncategorized",
+          "slug" : "uncategorized"
+        }
+      ],
+      "parent_id" : 0,
+      "variations" : [
+
+      ],
+      "id" : 9,
+      "regular_price" : "4000",
+      "weight" : "1",
+      "total_sales" : 4,
+      "sku" : "",
+      "rating_count" : 4,
+      "grouped_products" : [
+
+      ],
+      "backordered" : false,
+      "on_sale" : false,
+      "status" : "publish",
+      "download_limit" : -1,
+      "permalink" : "https://dulces.mystagingwebsite.com/product/aljafor/",
+      "date_created" : "2020-06-02T21:27:19",
+      "description" : "<p>Rico alfajor con arequipe</p>\n",
+      "reviews_allowed" : true,
+      "sale_price" : "",
+      "slug" : "aljafor",
+      "type" : "simple",
+      "catalog_visibility" : "visible",
+      "download_expiry" : -1,
+      "meta_data" : [
+
+      ],
+      "dimensions" : {
+        "width" : "20",
+        "height" : "20",
+        "length" : "20"
+      },
+      "cross_sell_ids" : [
+
+      ],
+      "price" : "4000",
+      "date_on_sale_to" : null,
+      "name" : "Aljafor",
+      "purchasable" : true,
+      "shipping_class" : "",
+      "attributes" : [
+
+      ],
+      "menu_order" : 0,
+      "virtual" : false,
+      "stock_status" : "instock",
+      "downloadable" : false,
+      "date_modified_gmt" : "2020-07-01T13:24:13",
+      "date_created_gmt" : "2020-06-02T21:27:19",
+      "default_attributes" : [
+
+      ],
+      "upsell_ids" : [
+
+      ],
+      "tags" : [
+
+      ],
+      "tax_class" : "zero-rate",
+      "price_html" : "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;</span>4,000.00</span>",
+      "sold_individually" : false,
+      "short_description" : "",
+      "downloads" : [
+
+      ],
+      "backorders" : "no",
+      "tax_status" : "none",
+      "date_on_sale_from_gmt" : null,
+      "shipping_taxable" : false,
+      "average_rating" : "4.75",
+      "_links" : {
+        "collection" : [
+          {
+            "href" : "https://dulces.mystagingwebsite.com/wp-json/wc/v3/products"
+          }
+        ],
+        "self" : [
+          {
+            "href" : "https://dulces.mystagingwebsite.com/wp-json/wc/v3/products/9"
+          }
+        ]
+      },
+      "date_on_sale_from" : null,
+      "button_text" : "",
+      "purchase_note" : "",
+      "shipping_class_id" : 0,
+      "date_modified" : "2020-07-01T13:24:13",
+      "external_url" : "",
+      "date_on_sale_to_gmt" : null,
+      "backorders_allowed" : false,
+      "images" : [
+        {
+          "id" : 67,
+          "src" : "https://dulces.mystagingwebsite.com/wp-content/uploads/2020/07/img_7472-scaled.jpeg",
+          "alt" : "",
+          "date_created" : "2020-07-01T13:23:24",
+          "date_modified" : "2020-07-01T13:24:13",
+          "date_created_gmt" : "2020-07-01T13:23:24",
+          "date_modified_gmt" : "2020-07-01T13:24:13",
+          "name" : "img_7472"
+        }
+      ],
+      "stock_quantity" : null,
+      "featured" : false,
+      "manage_stock" : false
+    }
+  ]
+}

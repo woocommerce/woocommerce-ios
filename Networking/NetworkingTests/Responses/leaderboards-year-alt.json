@@ -1,0 +1,141 @@
+{
+  "data": [
+    {
+      "id": "customers",
+      "label": "Top Customers - Total Spend",
+      "headers": [
+        {
+          "label": "Customer Name"
+        },
+        {
+          "label": "Orders"
+        },
+        {
+          "label": "Total Spend"
+        }
+      ],
+      "rows": [
+        [
+          {
+            "display": "<a href='https:\/\/dulces.mystagingwebsite.com\/wp-admin\/admin.php?page=wc-admin&path=\/analytics\/customers&filter=single_customer&customers=1'>Ernesto Carrion<\/a>",
+            "value": "Ernesto Carrion"
+          },
+          {
+            "display": "3",
+            "value": 3
+          },
+          {
+            "display": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;<\/span>5,015.00<\/span>",
+            "value": 5015
+          }
+        ]
+      ]
+    },
+    {
+      "id": "coupons",
+      "label": "Top Coupons - Number of Orders",
+      "headers": [
+        {
+          "label": "Coupon Code"
+        },
+        {
+          "label": "Orders"
+        },
+        {
+          "label": "Amount Discounted"
+        }
+      ],
+      "rows": []
+    },
+    {
+      "id": "categories",
+      "label": "Top Categories - Items Sold",
+      "headers": [
+        {
+          "label": "Category"
+        },
+        {
+          "label": "Items Sold"
+        },
+        {
+          "label": "Net Sales"
+        }
+      ],
+      "rows": [
+        [
+          {
+            "display": "<a href='https:\/\/dulces.mystagingwebsite.com\/wp-admin\/admin.php?page=wc-admin&path=\/analytics\/categories&filter=single_category&categories=15'>Uncategorized<\/a>",
+            "value": "Uncategorized"
+          },
+          {
+            "display": "4",
+            "value": 4
+          },
+          {
+            "display": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;<\/span>20,000.00<\/span>",
+            "value": 20000
+          }
+        ],
+        [
+          {
+            "display": "<a href='https:\/\/dulces.mystagingwebsite.com\/wp-admin\/admin.php?page=wc-admin&path=\/analytics\/categories&filter=single_category&categories=21'>Music<\/a>",
+            "value": "Music"
+          },
+          {
+            "display": "1",
+            "value": 1
+          },
+          {
+            "display": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;<\/span>15.00<\/span>",
+            "value": 15
+          }
+        ]
+      ]
+    },
+    {
+      "id": "products",
+      "label": "Top Products - Items Sold",
+      "headers": [
+        {
+          "label": "Product"
+        },
+        {
+          "label": "Items Sold"
+        },
+        {
+          "label": "Net Sales"
+        }
+      ],
+      "rows": [
+        [
+          {
+            "display": "<a href='https:\/\/dulces.mystagingwebsite.com\/wp-admin\/admin.php?page=wc-admin&path=\/analytics\/products&filter=single_product&products=9'>Aljafor<\/a>",
+            "value": "Aljafor"
+          },
+          {
+            "display": "10",
+            "value": 10
+          },
+          {
+            "display": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;<\/span>20,000.00<\/span>",
+            "value": 60000
+          }
+        ],
+        [
+          {
+            "display": "<a href='https:\/\/dulces.mystagingwebsite.com\/wp-admin\/admin.php?page=wc-admin&path=\/analytics\/products&filter=single_product&products=29'>Album<\/a>",
+            "value": "Album"
+          },
+          {
+            "display": "2",
+            "value": 2
+          },
+          {
+            "display": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;<\/span>15.00<\/span>",
+            "value": 30.99
+          }
+        ]
+      ]
+    }
+  ]
+}

@@ -336,7 +336,7 @@ private extension StatsStoreV4 {
         // Workout if we have stored all products that relate to the given leaderboard
         let topProductIDs = topProducts.rows.compactMap { LeaderboardStatsConverter.infeerProductID(fromHTMLString: $0.subject.display) }
         let topStoredProducts = loadStoredProducts(siteID: siteID, productIDs: topProductIDs)
-        let missingProductsIDs = missingProductsFrom(topProducts, in: topStoredProducts)
+        let missingProductsIDs = LeaderboardStatsConverter.missingProductsFrom(topProducts, in: topStoredProducts)
 
         // Return if we have al the products that we need
         guard !missingProductsIDs.isEmpty else {
@@ -357,23 +357,6 @@ private extension StatsStoreV4 {
                 completion(result)
             }
         }
-    }
-
-    /// Indicates what products are missing from a leaderboard in an array of stored products
-    ///
-    private func missingProductsFrom(_ topProducts: Leaderboard, in storedProducts: [Product]) -> [Int64] {
-
-        // Get the top products IDs
-        let topProductsIDs = topProducts.rows.compactMap {
-            LeaderboardStatsConverter.infeerProductID(fromHTMLString: $0.subject.display)
-        }
-
-        // Get the stored products IDs
-        let storedProductsIDs = storedProducts.map { $0.productID }
-
-        // Figure out which top products IDs are missing from store products IDs
-        let missingIDs = Set(topProductsIDs).subtracting(storedProductsIDs)
-        return Array(missingIDs)
     }
 
     /// Returns all stored products for a given site ID

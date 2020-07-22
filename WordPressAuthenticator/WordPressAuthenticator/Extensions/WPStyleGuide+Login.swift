@@ -67,7 +67,7 @@ extension WPStyleGuide {
 
         let onePasswordButton = UIButton(type: .custom)
         onePasswordButton.setImage(.onePasswordImage, for: .normal)
-		textField.tintColor = WordPressAuthenticator.shared.style.secondaryNormalBorderColor
+		onePasswordButton.tintColor = WordPressAuthenticator.shared.style.secondaryNormalBorderColor
         onePasswordButton.sizeToFit()
         onePasswordButton.setContentHuggingPriority(.required, for: .horizontal)
         onePasswordButton.setContentCompressionResistancePriority(.required, for: .horizontal)

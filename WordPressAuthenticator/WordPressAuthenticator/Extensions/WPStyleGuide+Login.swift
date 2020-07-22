@@ -36,7 +36,8 @@ extension WPStyleGuide {
     }
 
     /// Adds a 1password button to a WPWalkthroughTextField, if available
-    ///
+    /// - Note: this is for the old UI.
+	///
     class func configureOnePasswordButtonForTextfield(_ textField: WPWalkthroughTextField, target: NSObject, selector: Selector) {
         guard OnePasswordFacade.isOnePasswordEnabled else {
             return
@@ -44,6 +45,7 @@ extension WPStyleGuide {
 
         let onePasswordButton = UIButton(type: .custom)
         onePasswordButton.setImage(.onePasswordImage, for: .normal)
+		onePasswordButton.tintColor = WordPressAuthenticator.shared.style.primaryNormalBorderColor
         onePasswordButton.sizeToFit()
 
         onePasswordButton.accessibilityLabel =
@@ -56,7 +58,8 @@ extension WPStyleGuide {
     }
 
     /// Adds a 1password button to a stack view, if available
-    ///
+    /// - Note: this is for the old UI.
+	///
     class func configureOnePasswordButtonForStackView(_ stack: UIStackView, target: NSObject, selector: Selector) {
         guard OnePasswordFacade.isOnePasswordEnabled else {
             return
@@ -64,6 +67,7 @@ extension WPStyleGuide {
 
         let onePasswordButton = UIButton(type: .custom)
         onePasswordButton.setImage(.onePasswordImage, for: .normal)
+		onePasswordButton.tintColor = WordPressAuthenticator.shared.style.primaryNormalBorderColor
         onePasswordButton.sizeToFit()
         onePasswordButton.setContentHuggingPriority(.required, for: .horizontal)
         onePasswordButton.setContentCompressionResistancePriority(.required, for: .horizontal)
@@ -74,14 +78,16 @@ extension WPStyleGuide {
     }
 
     /// Adds a 1password button to a UITextField, if available
-    ///
-    class func configureOnePasswordButtonForTextfield(_ textField: UITextField?, target: NSObject, selector: Selector) {
-        guard OnePasswordFacade.isOnePasswordEnabled else {
-            return
-        }
+    /// - Note: this is for the Unified styles.
+	///
+	class func configureOnePasswordButtonForTextfield(_ textField: UITextField?, tintColor: UIColor?, target: NSObject, selector: Selector) {
+//        guard OnePasswordFacade.isOnePasswordEnabled else {
+//            return
+//        }
 
         let onePasswordButton = UIButton(type: .custom)
         onePasswordButton.setImage(.onePasswordImage, for: .normal)
+		onePasswordButton.tintColor = tintColor
         onePasswordButton.sizeToFit()
 
         onePasswordButton.accessibilityLabel =

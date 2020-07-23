@@ -37,6 +37,11 @@ final class ProductTagsViewController: UIViewController {
         configureGhostTableView()
         configureViewModel()
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        configureTextFieldFirstResponder()
+    }
 
 }
 
@@ -74,12 +79,12 @@ private extension ProductTagsViewController {
 
     /// Since there is only a text field in this view, the text field become the first responder immediately when the view did appear
     ///
-//    func configureTextFieldFirstResponder() {
-//        if let indexPath = sections.indexPathForRow(.slug) {
-//            let cell = tableView.cellForRow(at: indexPath) as? TextFieldTableViewCell
-//            cell?.becomeFirstResponder()
-//        }
-//    }
+    func configureTextFieldFirstResponder() {
+        if let indexPath = viewModel.sections.indexPathForRow(.tagsTextField) {
+            let cell = tableView.cellForRow(at: indexPath) as? TextFieldTableViewCell
+            cell?.becomeFirstResponder()
+        }
+    }
 
     /// Registers all of the available TableViewCells
     ///

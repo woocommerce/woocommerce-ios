@@ -28,7 +28,7 @@ final class ProductTagsViewModel {
 
     /// Product tags that will be eventually modified by the user
     ///
-    private(set) var selectedTags: [ProductTag]
+    private(set) var originalTags: [String]
 
     /// List of all the fetched tags for a specific SiteID
     ///
@@ -63,7 +63,8 @@ final class ProductTagsViewModel {
     init(storesManager: StoresManager = ServiceLocator.stores, product: Product) {
         self.storesManager = storesManager
         self.product = product
-        selectedTags = product.tags
+
+        originalTags = product.tags.map { $0.name }
     }
 
     /// Load existing tags from storage and fire the synchronize all tags action.
@@ -91,7 +92,7 @@ final class ProductTagsViewModel {
     }
 
     func hasUnsavedChanges() -> Bool {
-        return product.tags.sorted() != selectedTags.sorted()
+        return product.tags.map { $0.name }.sorted() != originalTags.sorted()
     }
 }
 

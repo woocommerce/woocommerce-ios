@@ -77,9 +77,29 @@ final class ProductTagsViewController: UIViewController {
 private extension ProductTagsViewController {
 
     func configureNavigationBar() {
-        title = NSLocalizedString("Tags", comment: "Product Tags navigation title")
+        title = Strings.title
 
         removeNavigationBackBarButtonText()
+    }
+
+    func configureRightBarButtomitemAsSave() {
+        navigationItem.setRightBarButton(UIBarButtonItem(title: Strings.saveButton,
+                                                         style: .done,
+                                                         target: self,
+                                                         action: #selector(addTagsRemotely)),
+                                         animated: true)
+        navigationItem.rightBarButtonItem?.isEnabled = textView?.text.isNotEmpty == true
+    }
+
+    func configureRightButtonItemAsSpinner() {
+        let activityIndicator = UIActivityIndicatorView(style: .white)
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.startAnimating()
+
+        let rightBarButton = UIBarButtonItem(customView: activityIndicator)
+
+        navigationItem.setRightBarButton(rightBarButton, animated: true)
+        navigationItem.rightBarButtonItem?.isEnabled = false
     }
 
     func configureMainView() {
@@ -97,8 +117,7 @@ private extension ProductTagsViewController {
         // Don't add extra padding so text aligns with suggestions
         textView.textContainer.lineFragmentPadding = 0
         textView.textContainerInset = UIEdgeInsets(top: 11, left: 0, bottom: 11, right: 0)
-        textView.accessibilityLabel = NSLocalizedString("Add new tags, separated by commas.",
-                                                        comment: "Voiceover accessibility label for the tags field in product tags.")
+        textView.accessibilityLabel = Strings.accessibilityLabel
         textView.accessibilityIdentifier = "add-tags"
     }
 
@@ -144,16 +163,49 @@ private extension ProductTagsViewController {
                                            searchQuery: partialTag)
     }
 
+    @objc func addTagsRemotely() {
+        textView.resignFirstResponder()
+        configureRightButtonItemAsSpinner()
+
+        let action = ProductTagAction.addProductTags(siteID: product.siteID, tags: allTags) { [weak self] (result) in
+            self?.configureRightBarButtomitemAsSave()
+            switch result {
+            case .success(let category):
+                self?.onCompletion(category)
+            case .failure(let error):
+                self?.displayErrorAlert(error: error)
+            }
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
+
+
+}
+
+// MARK: Error handling
+//
+private extension ProductTagsViewController {
+    func displayErrorAlert(error: Error?) {
+        let alertController = UIAlertController(title: Strings.errorAlertTitle,
+                                                message: error?.localizedDescription,
+                                                preferredStyle: .alert)
+        let cancel = UIAlertAction(title: Strings.okErrorAlertButton,
+                                   style: .cancel,
+                                   handler: nil)
+        alertController.addAction(cancel)
+        present(alertController, animated: true)
+    }
+
     func tagsFailedLoading() {
         DDLogError("Error loading product tags")
         dataSource = FailureDataSource()
         UIApplication.shared.keyWindow?.endEditing(true)
-        let errorMessage = NSLocalizedString("Couldn't load tags.", comment: "Error message when tag loading failed")
+        let errorMessage = Strings.errorLoadingTags
         let notice = Notice(title: errorMessage, feedbackType: .error)
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
-
 
 // MARK: - Tag tokenization
 
@@ -406,5 +458,24 @@ private class SuggestionsDataSource: NSObject, ProductTagsDataSource {
         let font = UIFont.systemFont(ofSize: font.pointSize, weight: .bold)
         highlighted.setAttributes([.font: font], range: range)
         return highlighted
+    }
+}
+
+// MARK: - Constants!
+//
+private extension ProductTagsViewController {
+    enum Strings {
+        static let title = NSLocalizedString("Tags",
+                                             comment: "Product Tags navigation title")
+        static let saveButton = NSLocalizedString("Save",
+                                                  comment: "Add Product Tags. Save button title in navbar.")
+        static let accessibilityLabel = NSLocalizedString("Add new tags, separated by commas.",
+                                                          comment: "Voiceover accessibility label for the tags field in product tags.")
+        static let errorLoadingTags = NSLocalizedString("Couldn't load tags.",
+                                                        comment: "Error message when tag loading failed")
+        static let errorAlertTitle = NSLocalizedString("Cannot Add Tags",
+                                                       comment: "Title of the alert when there is an error adding new product tags.")
+        static let okErrorAlertButton = NSLocalizedString("OK",
+                                                          comment: "Dismiss button on the alert when there is an error creating new product tags.")
     }
 }

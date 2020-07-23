@@ -4,7 +4,7 @@ import Foundation
 ///
 public struct Leaderboard: Decodable {
 
-    enum CodingKeys: String, CodingKey {
+    private enum CodingKeys: String, CodingKey {
         case id
         case label
         case rows

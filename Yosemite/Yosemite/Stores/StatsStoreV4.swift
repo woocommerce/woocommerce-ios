@@ -314,7 +314,7 @@ private extension StatsStoreV4 {
         let topProducts = leaderboards[Constants.topProductsIndex]
 
         // Make sure we have all the necesary product data before converting and storing top earners.
-        self.loadProducts(for: topProducts, siteID: siteID) { [weak self] topProductsResult in
+        loadProducts(for: topProducts, siteID: siteID) { [weak self] topProductsResult in
             guard let self = self else { return }
 
             switch topProductsResult {

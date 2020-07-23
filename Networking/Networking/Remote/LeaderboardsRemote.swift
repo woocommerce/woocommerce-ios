@@ -1,5 +1,4 @@
 import Foundation
-import Alamofire
 
 
 /// TopPerformersLeaderboard
@@ -20,7 +19,7 @@ public class LeaderboardsRemote: Remote {
                                  earliestDateToInclude: String,
                                  latestDateToInclude: String,
                                  quantity: Int,
-                                 completion: @escaping (Swift.Result<[Leaderboard], Error>) -> Void) {
+                                 completion: @escaping (Result<[Leaderboard], Error>) -> Void) {
         let parameters = [ParameterKeys.interval: unit.rawValue,
                           ParameterKeys.after: earliestDateToInclude,
                           ParameterKeys.before: latestDateToInclude,

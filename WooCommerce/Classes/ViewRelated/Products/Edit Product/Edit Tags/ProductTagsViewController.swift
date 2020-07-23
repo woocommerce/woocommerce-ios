@@ -10,7 +10,6 @@ final class ProductTagsViewController: UIViewController {
     private let ghostTableView = UITableView()
     @IBOutlet weak var textView: UITextView!
 
-
     private var product: Product
 
     private let viewModel: ProductTagsViewModel
@@ -40,11 +39,6 @@ final class ProductTagsViewController: UIViewController {
         configureTableView()
         configureGhostTableView()
         configureViewModel()
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        textView.becomeFirstResponder()
     }
 
 }
@@ -148,6 +142,7 @@ private extension ProductTagsViewController {
         tableView.reloadData()
         ghostTableView.removeGhostContent()
         ghostTableView.isHidden = true
+        textView.becomeFirstResponder()
     }
 
     /// Displays the Sync Error Notice.
@@ -212,6 +207,73 @@ private extension ProductTagsViewController {
     }
 }
 
+// MARK: - Tags Loading
+
+private extension ProductTagsViewController {
+    func loadTags() {
+       
+    }
+
+    func tagsLoaded(tags: [String]) {
+        dataSource = SuggestionsDataSource(suggestions: tags,
+                                           selectedTags: completeTags,
+                                           searchQuery: partialTag)
+    }
+
+    func tagsFailedLoading(error: Error) {
+        DDLogError("Error loading tags for \(String(describing: blog.url)): \(error)")
+        dataSource = FailureDataSource()
+        WPError.showNetworkingNotice(title: NSLocalizedString("Couldn't load tags.", comment: "Error message when tag loading failed"), error: error as NSError)
+    }
+}
+
+// MARK: - Tag tokenization
+
+/*
+ There are two different "views" of the tag list:
+
+ 1. For completion purposes, everything before the last comma is a "completed"
+    tag, and will not appear again in suggestions. The text after the last comma
+    (or the whole text if there is no comma) will be interpreted as a partially
+    typed tag (parialTag) and used to filter suggestions.
+
+ 2. The above doesn't apply when it comes to reporting back the tag list, and so
+    we use `allTags` for all the tags in the text view. In this case the last
+    part of text is considered as a complete tag as well.
+
+ */
+private extension ProductTagsViewController {
+    static func extractTags(from string: String) -> [String] {
+        return string.components(separatedBy: ",")
+            .map({ $0.trimmingCharacters(in: .whitespacesAndNewlines) })
+    }
+
+    var tagsInField: [String] {
+        return ProductTagsViewController.extractTags(from: textView.text)
+    }
+
+    var partialTag: String {
+        return tagsInField.last ?? ""
+    }
+
+    var completeTags: [String] {
+        return Array(tagsInField.dropLast())
+    }
+
+    var allTags: [String] {
+        return tagsInField.filter({ !$0.isEmpty })
+    }
+
+    func complete(tag: String) {
+        var tags = completeTags
+        tags.append(tag)
+        tags.append("")
+        textView.text = tags.joined(separator: ", ")
+        updateSuggestions()
+    }
+}
+
+
 // MARK: - Text & Input Handling
 
 extension ProductTagsViewController: UITextViewDelegate {
@@ -265,7 +327,7 @@ extension ProductTagsViewController: UITextViewDelegate {
         return true
     }
 
-    fileprivate func normalizeText() {
+    private func normalizeText() {
         // Remove any space before a comma, and allow one space at most after.
         let regexp = try! NSRegularExpression(pattern: "\\s*(,(\\s|(\\s(?=\\s)))?)\\s*", options: [])
         let text = textView.text ?? ""
@@ -277,63 +339,76 @@ extension ProductTagsViewController: UITextViewDelegate {
     ///
     /// The algorithm here differs slightly as we don't want to interpret the last tag as a partial one.
     ///
-    fileprivate func normalizeInitialTags(tags: [String]) -> String {
+    private func normalizeInitialTags(tags: [String]) -> String {
         var tags = tags.filter({ !$0.isEmpty })
         tags.append("")
         return tags.joined(separator: ", ")
     }
 
-    fileprivate func updateSuggestions() {
+    private func updateSuggestions() {
         //TODO: to be implemented
-//        dataSource.selectedTags = completeTags
+//        dataSource.originalTags = completeTags
 //        dataSource.searchQuery = partialTag
 //        reloadTableData()
     }
 }
 
+// MARK: - Data Sources
 
-// MARK: - Tag tokenization
+private protocol ProductTagsDataSource: UITableViewDataSource {
+    var selectedTags: [String] { get set }
+    var searchQuery: String { get set }
+}
 
-/*
- There are two different "views" of the tag list:
+private class SuggestionsDataSource: NSObject, ProductTagsDataSource {
+    @objc static let cellIdentifier = "Default"
+    @objc let suggestions: [String]
 
- 1. For completion purposes, everything before the last comma is a "completed"
-    tag, and will not appear again in suggestions. The text after the last comma
-    (or the whole text if there is no comma) will be interpreted as a partially
-    typed tag (parialTag) and used to filter suggestions.
-
- 2. The above doesn't apply when it comes to reporting back the tag list, and so
-    we use `allTags` for all the tags in the text view. In this case the last
-    part of text is considered as a complete tag as well.
-
- */
-private extension ProductTagsViewController {
-    static func extractTags(from string: String) -> [String] {
-        return string.components(separatedBy: ",")
-            .map({ $0.trimmingCharacters(in: .whitespacesAndNewlines) })
+    @objc init(suggestions: [String], selectedTags: [String], searchQuery: String) {
+        self.suggestions = suggestions
+        self.selectedTags = selectedTags
+        self.searchQuery = searchQuery
+        super.init()
     }
 
-    var tagsInField: [String] {
-        return ProductTagsViewController.extractTags(from: "") //TODO: textView.text
+    @objc var selectedTags: [String]
+    @objc var searchQuery: String
+
+    @objc var availableSuggestions: [String] {
+        return suggestions.filter({ !selectedTags.contains($0) })
     }
 
-    var partialTag: String {
-        return tagsInField.last ?? ""
+    @objc var matchedSuggestions: [String] {
+        guard !searchQuery.isEmpty else {
+            return availableSuggestions
+        }
+        return availableSuggestions.filter({ $0.localizedStandardContains(searchQuery) })
     }
 
-    var completeTags: [String] {
-        return Array(tagsInField.dropLast())
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
     }
 
-    var allTags: [String] {
-        return tagsInField.filter({ !$0.isEmpty })
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return matchedSuggestions.count
     }
 
-    func complete(tag: String) {
-        var tags = completeTags
-        tags.append(tag)
-        tags.append("")
-        textView.text = tags.joined(separator: ", ")
-        updateSuggestions()
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: SuggestionsDataSource.cellIdentifier, for: indexPath)
+        WPStyleGuide.configureTableViewSuggestionCell(cell)
+        let match = matchedSuggestions[indexPath.row]
+        cell.textLabel?.attributedText = highlight(searchQuery, in: match)
+        return cell
+    }
+
+    @objc func highlight(_ search: String, in string: String) -> NSAttributedString {
+        let highlighted = NSMutableAttributedString(string: string)
+        let range = (string as NSString).localizedStandardRange(of: search)
+        guard range.location != NSNotFound else {
+            return highlighted
+        }
+        let font = UIFont.systemFont(ofSize: WPStyleGuide.tableviewTextFont().pointSize, weight: .bold)
+        highlighted.setAttributes([.font: font], range: range)
+        return highlighted
     }
 }

@@ -185,4 +185,63 @@ final class AppSettingsStoreTests: XCTestCase {
 
         waitForExpectations(timeout: 2, handler: nil)
     }
+
+    // MARK: - General App Settings
+
+    func testItCanSaveTheAppInstallationDate() throws {
+        // Given
+        let date = Date(timeIntervalSince1970: 100)
+
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        var result: Result<Void, Error>?
+        let action = AppSettingsAction.setInstallationDateIfNecessary(date: date) { aResult in
+            result = aResult
+        }
+        subject?.onAction(action)
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(result).isSuccess)
+
+        let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
+        XCTAssertEqual(date, savedSettings.installationDate)
+    }
+
+    func testItDoesNotSaveTheAppInstallationDateIfTheGivenDateIsNewer() throws {
+        // Given
+        let existingDate = Date(timeIntervalSince1970: 100)
+        let newerDate = Date(timeIntervalSince1970: 101)
+
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // Save existingDate
+        subject?.onAction(AppSettingsAction.setInstallationDateIfNecessary(date: existingDate, onCompletion: { _ in
+            // noop
+        }))
+
+        // When
+        // Save newerDate. This should be successful but the existingDate should be retained.
+        var result: Result<Void, Error>?
+        let action = AppSettingsAction.setInstallationDateIfNecessary(date: newerDate) { aResult in
+            result = aResult
+        }
+        subject?.onAction(action)
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(result).isSuccess)
+
+        let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
+        XCTAssertEqual(existingDate, savedSettings.installationDate)
+        XCTAssertNotEqual(newerDate, savedSettings.installationDate)
+    }
+}
+
+// MARK: - Utils
+
+private extension AppSettingsStoreTests {
+    var expectedGeneralAppSettingsFileURL: URL {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent("general-app-settings.plist")
+    }
 }

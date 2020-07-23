@@ -63,4 +63,12 @@ public enum AppSettingsAction: Action {
     /// Clears all the states related to stats version
     ///
     case resetStatsVersionStates
+
+    // MARK: - General App Settings
+
+    /// Saves the `date` as the last known date that the app was installed. This does not do
+    /// anything if there is a persisted installation date already and it is older than the
+    /// given `date`.
+    ///
+    case setInstallationDateIfNecessary(date: Date, onCompletion: ((Result<Void, Error>) -> Void))
 }

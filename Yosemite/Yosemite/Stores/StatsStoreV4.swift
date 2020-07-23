@@ -304,7 +304,7 @@ private extension StatsStoreV4 {
     /// Converts and stores a top-product `leaderboard` into a `StatsTopEarner`
     /// Since  a `leaderboard` does not containt  the necesary product information, this method fetches the related product before starting the convertion.
     ///
-    private func convertAndsStoreLeaderboarsIntoTopEarners(siteID: Int64,
+    func convertAndsStoreLeaderboarsIntoTopEarners(siteID: Int64,
                                                            granularity: StatGranularity,
                                                            date: Date,
                                                            leaderboards: [Leaderboard],
@@ -337,7 +337,7 @@ private extension StatsStoreV4 {
     /// Loads product objects that relates to the top products on a `leaderboard`
     /// If product objects can't be found in the storage layer, they will be fetched from the remote layer.
     ///
-    private func loadProducts(for topProducts: Leaderboard, siteID: Int64, completion: @escaping (Result<[Product], Error>) -> Void) {
+    func loadProducts(for topProducts: Leaderboard, siteID: Int64, completion: @escaping (Result<[Product], Error>) -> Void) {
 
         // Workout if we have stored all products that relate to the given leaderboard
         let topProductIDs = LeaderboardStatsConverter.topProductsIDs(from: topProducts)
@@ -367,14 +367,14 @@ private extension StatsStoreV4 {
 
     /// Returns all stored products for a given site ID
     ///
-    private func loadStoredProducts(siteID: Int64, productIDs: [Int64] ) -> [Networking.Product] {
+    func loadStoredProducts(siteID: Int64, productIDs: [Int64] ) -> [Networking.Product] {
         let products = storageManager.viewStorage.loadProducts(siteID: siteID, productsIDs: productIDs)
         return products.map { $0.toReadOnly() }
     }
 
     /// Merges and stored a top-product leaderboard with an array of stored products into  a `StatsTopEarner` object
     ///
-    private func mergeAndStoreTopProductsAndStoredProductsIntoTopEarners(granularity: StatGranularity,
+    func mergeAndStoreTopProductsAndStoredProductsIntoTopEarners(granularity: StatGranularity,
                                                                          date: Date,
                                                                          topProducts: Leaderboard,
                                                                          storedProducts: [Product]) {

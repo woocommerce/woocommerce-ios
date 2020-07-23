@@ -376,7 +376,7 @@ private extension StatsStoreV4 {
                                                                          topProducts: Leaderboard,
                                                                          storedProducts: [Product]) {
         let statsDate = StatsStore.buildDateString(from: date, with: granularity)
-        let statsItems = LeaderboardStatsConverter.topEearnerStatItems(from: topProducts, using: storedProducts)
+        let statsItems = LeaderboardStatsConverter.topEearnerStatsItems(from: topProducts, using: storedProducts)
         let stats = TopEarnerStats(date: statsDate,
                                    granularity: granularity,
                                    limit: String(Constants.defaultTopEarnerStatsLimit),

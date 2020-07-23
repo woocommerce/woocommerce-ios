@@ -31,7 +31,7 @@ struct LeaderboardStatsConverter {
 
     /// Converts a the`leaderboard rows(top products)` into an array `TopEarnerStatsItem` using an array of stored products to match
     ///
-    static func topEearnerStatItems(from topProducts: Leaderboard, using storedProducts: [Product]) -> [TopEarnerStatsItem] {
+    static func topEearnerStatsItems(from topProducts: Leaderboard, using storedProducts: [Product]) -> [TopEarnerStatsItem] {
         return topProducts.rows.compactMap {
             Self.topEearnerStatItem(from: $0, using: storedProducts)
         }

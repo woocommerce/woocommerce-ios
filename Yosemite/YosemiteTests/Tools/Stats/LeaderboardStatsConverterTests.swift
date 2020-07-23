@@ -9,7 +9,7 @@ final class LeaderboardStatsConverterTest: XCTestCase {
     ///
     private let siteID: Int64 = 1234
 
-    func testCorrectProductIDsFormLeaderboardOfTopProducts() {
+    func testCorrectProductIDsFromLeaderboardOfTopProducts() {
         // Given
         let leaderboard = Self.sampleLeaderboard(productIDs: Array((1...5)))
 
@@ -44,13 +44,13 @@ final class LeaderboardStatsConverterTest: XCTestCase {
         XCTAssertTrue(missingIds.isEmpty)
     }
 
-    func testConvertToProductsIntoStatItemsUsinfStoredProducts() {
+    func testConvertToProductsIntoStatItemsUsingStoredProducts() {
         // Given
         let products = (1...3).map { MockProduct().product(siteID: siteID, productID: $0) }
         let topProducts = Self.sampleLeaderboard(productIDs: [1, 2, 3])
 
         // When
-        let statItems = LeaderboardStatsConverter.topEearnerStatItems(from: topProducts, using: products)
+        let statItems = LeaderboardStatsConverter.topEearnerStatsItems(from: topProducts, using: products)
 
         // Then
         XCTAssertEqual(statItems.count, topProducts.rows.count)
@@ -70,7 +70,7 @@ final class LeaderboardStatsConverterTest: XCTestCase {
         let topProducts = Self.sampleLeaderboard(productIDs: [1, 2, 3])
 
         // When
-        let statItems = LeaderboardStatsConverter.topEearnerStatItems(from: topProducts, using: [])
+        let statItems = LeaderboardStatsConverter.topEearnerStatsItems(from: topProducts, using: [])
 
         // Then
         XCTAssertTrue(statItems.isEmpty)

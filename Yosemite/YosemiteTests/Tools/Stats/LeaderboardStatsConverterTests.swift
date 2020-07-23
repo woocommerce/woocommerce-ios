@@ -7,7 +7,7 @@ final class LeaderboardStatsConverterTest: XCTestCase {
 
     /// Sample site ID
     ///
-    let siteID: Int64 = 1234
+    private let siteID: Int64 = 1234
 
     func testCorrectProductIDsFormLeaderboardOfTopProducts() {
         // Given

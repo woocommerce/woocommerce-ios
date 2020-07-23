@@ -10,7 +10,7 @@ struct LeaderboardStatsConverter {
     ///
     static func topProductsIDs(from topProducts: Leaderboard) -> [Int64] {
         return topProducts.rows.compactMap {
-            Self.infeerProductID(fromHTMLString: $0.subject.display)
+            Self.inferProductID(fromHTMLString: $0.subject.display)
         }
     }
 
@@ -41,11 +41,11 @@ struct LeaderboardStatsConverter {
 /// MARK: Private helpers
 private extension LeaderboardStatsConverter {
 
-    /// Infeers a product-id from an specific html string type
+    /// Infers a product-id from an specific html string type
     /// A valid html is an `a` tag with an `href` that includes the `product_id` in a query parameter named `products`
     /// EG:  `<a href='https://store.com?products=9'>Product</a>`
     ///
-    static func infeerProductID(fromHTMLString html: String) -> Int64? {
+    static func inferProductID(fromHTMLString html: String) -> Int64? {
 
         // Parse and extract the `products` parameter out the the html using `Aztec parser` and `URLComponents`
         let parsed = HTMLParser().parse(html)
@@ -65,7 +65,7 @@ private extension LeaderboardStatsConverter {
     static func topEearnerStatItem(from topProduct: LeaderboardRow, using storedProducts: [Product]) -> TopEarnerStatsItem? {
 
         // Match the product that corresponds to the leaderboard row(top product)
-        guard let productID = Self.infeerProductID(fromHTMLString: topProduct.subject.display),
+        guard let productID = Self.inferProductID(fromHTMLString: topProduct.subject.display),
             let product = storedProducts.first(where: { $0.productID == productID }) else {
                 return nil
         }

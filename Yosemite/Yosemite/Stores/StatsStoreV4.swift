@@ -310,8 +310,11 @@ private extension StatsStoreV4 {
                                                            leaderboards: [Leaderboard],
                                                            onCompletion: @escaping (Error?) -> Void) {
 
-        // API guarantees a fixed index for the top products leaderboard
-        let topProducts = leaderboards[Constants.topProductsIndex]
+        // Find the top products leaderboard by its ID
+        guard let topProducts = leaderboards.first(where: { $0.id == Constants.topProductsID }) else {
+            onCompletion(StatsStoreV4Error.missingTopProducts)
+            return
+        }
 
         // Make sure we have all the necesary product data before converting and storing top earners.
         loadProducts(for: topProducts, siteID: siteID) { [weak self] topProductsResult in
@@ -341,7 +344,7 @@ private extension StatsStoreV4 {
         let topStoredProducts = loadStoredProducts(siteID: siteID, productIDs: topProductIDs)
         let missingProductsIDs = LeaderboardStatsConverter.missingProductsIDs(from: topProducts, in: topStoredProducts)
 
-        // Return if we have al the products that we need
+        // Return if we have all the products that we need
         guard !missingProductsIDs.isEmpty else {
             completion(.success(topStoredProducts))
             return
@@ -397,8 +400,14 @@ private extension StatsStoreV4 {
         ///
         static let defaultTopEarnerStatsLimit: Int = 3
 
-        /// Index of top products in leaderboards API
+        /// ID of top products section in leaderboards API
         ///
-        static let topProductsIndex = 3
+        static let topProductsID = "products"
     }
+}
+
+// MARK: Errors
+//
+public enum StatsStoreV4Error: Error {
+    case missingTopProducts
 }

@@ -12,6 +12,8 @@
 		0202B6972387AFBF00F3EBE0 /* MockInMemoryStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B6962387AFBF00F3EBE0 /* MockInMemoryStorage.swift */; };
 		0202B6992387B01500F3EBE0 /* AppSettingsStoreTests+ProductsFeatureSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B6982387B01500F3EBE0 /* AppSettingsStoreTests+ProductsFeatureSwitch.swift */; };
 		020B2F9623BDE4DD00BD79AD /* ProductStoreTests+Validation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020B2F9523BDE4DD00BD79AD /* ProductStoreTests+Validation.swift */; };
+		020C907D24C729D6001E2BEB /* MockProductVariation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020C907C24C729D6001E2BEB /* MockProductVariation.swift */; };
+		020C908124C7D71D001E2BEB /* MockProductVariationsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020C908024C7D71D001E2BEB /* MockProductVariationsRemote.swift */; };
 		02124DAC24318D6B00980D74 /* Media+MediaTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02124DAB24318D6B00980D74 /* Media+MediaTypeTests.swift */; };
 		02124DAE2431C11600980D74 /* Media+ProductImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02124DAD2431C11500980D74 /* Media+ProductImage.swift */; };
 		02124DB02431C18700980D74 /* Media+ProductImageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02124DAF2431C18700980D74 /* Media+ProductImageTests.swift */; };
@@ -250,6 +252,8 @@
 		0202B6962387AFBF00F3EBE0 /* MockInMemoryStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInMemoryStorage.swift; sourceTree = "<group>"; };
 		0202B6982387B01500F3EBE0 /* AppSettingsStoreTests+ProductsFeatureSwitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppSettingsStoreTests+ProductsFeatureSwitch.swift"; sourceTree = "<group>"; };
 		020B2F9523BDE4DD00BD79AD /* ProductStoreTests+Validation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductStoreTests+Validation.swift"; sourceTree = "<group>"; };
+		020C907C24C729D6001E2BEB /* MockProductVariation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductVariation.swift; sourceTree = "<group>"; };
+		020C908024C7D71D001E2BEB /* MockProductVariationsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductVariationsRemote.swift; sourceTree = "<group>"; };
 		02124DAB24318D6B00980D74 /* Media+MediaTypeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Media+MediaTypeTests.swift"; sourceTree = "<group>"; };
 		02124DAD2431C11500980D74 /* Media+ProductImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Media+ProductImage.swift"; sourceTree = "<group>"; };
 		02124DAF2431C18700980D74 /* Media+ProductImageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Media+ProductImageTests.swift"; sourceTree = "<group>"; };
@@ -697,6 +701,7 @@
 				578CE78B2475E7A500492EBF /* MockNotificationsRemote.swift */,
 				578CE78F2475EBAB00492EBF /* MockProductReviewsRemote.swift */,
 				578CE7912475EC9200492EBF /* MockProductsRemote.swift */,
+				020C908024C7D71D001E2BEB /* MockProductVariationsRemote.swift */,
 			);
 			path = Remote;
 			sourceTree = "<group>";
@@ -1019,6 +1024,7 @@
 				B53A569F211245E0000776C9 /* MockupStorage+Sample.swift */,
 				0202B6962387AFBF00F3EBE0 /* MockInMemoryStorage.swift */,
 				020220E32396969E00290165 /* MockProduct.swift */,
+				020C907C24C729D6001E2BEB /* MockProductVariation.swift */,
 				0248B36A2459127200A271A4 /* MockupNetwork+Path.swift */,
 				02A098232480D0D8002F8C7A /* MockCrashLogger.swift */,
 			);
@@ -1474,6 +1480,8 @@
 				B5BC736E20D1AB3600B5B6FA /* Constants.swift in Sources */,
 				02FF055D23D9846A0058E6E7 /* FileManager+URLTests.swift in Sources */,
 				748525AC218A45360036DF75 /* NotificationStoreTests.swift in Sources */,
+				020C908124C7D71D001E2BEB /* MockProductVariationsRemote.swift in Sources */,
+				020C907D24C729D6001E2BEB /* MockProductVariation.swift in Sources */,
 				7499936820EFC0ED00CF01CD /* OrderNoteStoreTests.swift in Sources */,
 				578CE7972475FD8200492EBF /* MockProductReview.swift in Sources */,
 			);

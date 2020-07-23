@@ -289,6 +289,82 @@ final class ProductVariationStoreTests: XCTestCase {
         store.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    // MARK: - ProductVariationAction.updateProductVariation
+
+    /// Verifies that `ProductVariationAction.updateProductVariation` returns the expected `ProductVariation`.
+    ///
+    func testUpdatingProductVariationReturnsExpectedFieldsAndRelatedObjects() {
+        // Given
+        let remote = MockProductVariationsRemote()
+        let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        let productVariationID: Int64 = 17
+        let expectedProductVariation = MockProductVariation()
+            .productVariation(siteID: sampleSiteID, productID: sampleProductID, variationID: productVariationID)
+            .copy(attributes: sampleProductVariationAttributes())
+        let productVariation = MockProductVariation().productVariation(siteID: sampleSiteID, productID: sampleProductID, variationID: productVariationID)
+            .copy(description: "Wooooo", sku: "test-woo")
+        remote.whenUpdatingProductVariation(siteID: sampleSiteID,
+                                   productID: sampleProductID,
+                                   productVariationID: productVariationID,
+                                   thenReturn: .success(expectedProductVariation))
+
+        // Saves an existing ProductVariation into storage.
+        // Note: at least one field of `ProductVariation` before and after the update should be different.
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: productVariation)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageProductVariation.self), 1)
+
+        // When
+        var result: Result<Yosemite.ProductVariation, ProductUpdateError>?
+        waitForExpectation { expectation in
+            let action = ProductVariationAction.updateProductVariation(productVariation: productVariation) { aResult in
+                result = aResult
+                expectation.fulfill()
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let updatedProductVariation = try? result?.get()
+        XCTAssertEqual(updatedProductVariation, expectedProductVariation)
+
+        let storedProductVariation = viewStorage.loadProductVariation(siteID: sampleSiteID, productVariationID: productVariationID)
+        let readOnlyStoredProduct = storedProductVariation?.toReadOnly()
+        XCTAssertEqual(readOnlyStoredProduct, expectedProductVariation)
+    }
+
+    /// Verifies that `ProductVariationAction.updateProductVariation` returns an error whenever there is an error response from the backend.
+    ///
+    func testUpdatingProductVariationReturnsErrorUponReponseError() {
+        // Given
+        let remote = MockProductVariationsRemote()
+        let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        let productVariationID: Int64 = 17
+        remote.whenUpdatingProductVariation(siteID: sampleSiteID,
+                                   productID: sampleProductID,
+                                   productVariationID: productVariationID,
+                                   thenReturn: .failure(NSError(domain: "", code: 400, userInfo: nil)))
+        // Saves an existing ProductVariation into storage.
+        let productVariation = MockProductVariation().productVariation(siteID: sampleSiteID, productID: sampleProductID, variationID: productVariationID)
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: productVariation)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageProductVariation.self), 1)
+
+        // When
+        var result: Result<Yosemite.ProductVariation, ProductUpdateError>?
+        waitForExpectation { expectation in
+            let action = ProductVariationAction.updateProductVariation(productVariation: productVariation) { aResult in
+                result = aResult
+                expectation.fulfill()
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(result).isFailure)
+
+        // The existing ProductVariation should not be deleted.
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
+    }
 }
 
 

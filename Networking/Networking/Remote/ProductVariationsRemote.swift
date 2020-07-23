@@ -1,10 +1,16 @@
 import Foundation
-import Alamofire
 
+/// Protocol for `ProductVariationsRemote` mainly used for mocking.
+///
+/// The required methods are intentionally incomplete. Feel free to add the other ones.
+///
+public protocol ProductVariationsRemoteProtocol {
+    func updateProductVariation(productVariation: ProductVariation, completion: @escaping (Result<ProductVariation, Error>) -> Void)
+}
 
 /// ProductVariation: Remote Endpoints
 ///
-public class ProductVariationsRemote: Remote {
+public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
 
     /// Retrieves all of the `ProductVariation`s available.
     ///
@@ -33,6 +39,27 @@ public class ProductVariationsRemote: Remote {
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
         let mapper = ProductVariationListMapper(siteID: siteID, productID: productID)
         enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Updates a specific `ProductVariation`.
+    ///
+    /// - Parameters:
+    ///     - productVariation: the ProductVariation to update remotely.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func updateProductVariation(productVariation: ProductVariation, completion: @escaping (Result<ProductVariation, Error>) -> Void) {
+        do {
+            let parameters = try productVariation.toDictionary()
+            let productID = productVariation.productID
+            let siteID = productVariation.siteID
+            let path = "\(Path.products)/\(productID)/variations/\(productVariation.productVariationID)"
+            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+            let mapper = ProductVariationMapper(siteID: siteID, productID: productID)
+
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
     }
 }
 

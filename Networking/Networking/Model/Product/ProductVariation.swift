@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents a Product Variation Entity.
 ///
-public struct ProductVariation: Decodable, GeneratedCopiable {
+public struct ProductVariation: Codable, GeneratedCopiable, Equatable {
     public let siteID: Int64
     public let productID: Int64
 
@@ -248,6 +248,49 @@ public struct ProductVariation: Decodable, GeneratedCopiable {
                   shippingClassID: shippingClassID,
                   menuOrder: menuOrder)
     }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(image, forKey: .image)
+
+        try container.encode(description, forKey: .description)
+
+        // Price Settings.
+        try container.encode(regularPrice, forKey: .regularPrice)
+        try container.encode(salePrice, forKey: .salePrice)
+
+        // We need to send empty string if fields are null, because there is a bug on the API side
+        // Issue: https://github.com/woocommerce/woocommerce/issues/25350
+        if dateOnSaleStart == nil {
+            try container.encode("", forKey: .dateOnSaleStart)
+        } else {
+            try container.encode(dateOnSaleStart, forKey: .dateOnSaleStart)
+        }
+        if dateOnSaleEnd == nil {
+            try container.encode("", forKey: .dateOnSaleEnd)
+        } else {
+            try container.encode(dateOnSaleEnd, forKey: .dateOnSaleEnd)
+        }
+
+        try container.encode(taxStatusKey, forKey: .taxStatusKey)
+        //The backend for the standard tax class return "standard",
+        // but to set the standard tax class it accept only an empty string "" in the POST request
+        let newTaxClass = taxClass == "standard" ? "" : taxClass
+        try container.encode(newTaxClass, forKey: .taxClass)
+
+        // Shipping Settings.
+        try container.encode(weight, forKey: .weight)
+        try container.encode(dimensions, forKey: .dimensions)
+        try container.encode(shippingClass, forKey: .shippingClass)
+
+        // Inventory Settings.
+        try container.encode(sku, forKey: .sku)
+        try container.encode(manageStock, forKey: .manageStock)
+        try container.encode(stockQuantity, forKey: .stockQuantity)
+        try container.encode(backordersKey, forKey: .backordersKey)
+        try container.encode(stockStatus.rawValue, forKey: .stockStatusKey)
+    }
 }
 
 /// Defines all of the ProductVariation CodingKeys
@@ -303,50 +346,6 @@ private extension ProductVariation {
 
         case attributes
         case menuOrder          = "menu_order"
-    }
-}
-
-
-// MARK: - Equatable Conformance
-//
-extension ProductVariation: Equatable {
-    public static func == (lhs: ProductVariation, rhs: ProductVariation) -> Bool {
-        return lhs.siteID == rhs.siteID &&
-            lhs.productID == rhs.productID &&
-            lhs.productVariationID == rhs.productVariationID &&
-            lhs.attributes == rhs.attributes &&
-            lhs.image == rhs.image &&
-            lhs.permalink == rhs.permalink &&
-            lhs.dateCreated == rhs.dateCreated &&
-            lhs.dateModified == rhs.dateModified &&
-            lhs.dateOnSaleStart == rhs.dateOnSaleStart &&
-            lhs.dateOnSaleEnd == rhs.dateOnSaleEnd &&
-            lhs.status == rhs.status &&
-            lhs.description == rhs.description &&
-            lhs.sku == rhs.sku &&
-            lhs.price == rhs.price &&
-            lhs.regularPrice == rhs.regularPrice &&
-            lhs.salePrice == rhs.salePrice &&
-            lhs.onSale == rhs.onSale &&
-            lhs.purchasable == rhs.purchasable &&
-            lhs.virtual == rhs.virtual &&
-            lhs.downloadable == rhs.downloadable &&
-            lhs.downloads == rhs.downloads &&
-            lhs.downloadLimit == rhs.downloadLimit &&
-            lhs.downloadExpiry == rhs.downloadExpiry &&
-            lhs.taxStatusKey == rhs.taxStatusKey &&
-            lhs.taxClass == rhs.taxClass &&
-            lhs.manageStock == rhs.manageStock &&
-            lhs.stockQuantity == rhs.stockQuantity &&
-            lhs.stockStatus == rhs.stockStatus &&
-            lhs.backordersKey == rhs.backordersKey &&
-            lhs.backordersAllowed == rhs.backordersAllowed &&
-            lhs.backordered == rhs.backordered &&
-            lhs.weight == rhs.weight &&
-            lhs.dimensions == rhs.dimensions &&
-            lhs.shippingClass == rhs.shippingClass &&
-            lhs.shippingClassID == rhs.shippingClassID &&
-            lhs.menuOrder == rhs.menuOrder
     }
 }
 

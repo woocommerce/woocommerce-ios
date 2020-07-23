@@ -5,10 +5,21 @@ import Storage
 // MARK: - ProductVariationStore
 //
 public final class ProductVariationStore: Store {
+    private let remote: ProductVariationsRemoteProtocol
 
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.newDerivedStorage()
     }()
+
+    public override convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+        let remote = ProductVariationsRemote(network: network)
+        self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+    }
+
+    init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: ProductVariationsRemoteProtocol) {
+        self.remote = remote
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
 
     /// Registers for supported Actions.
     ///
@@ -27,6 +38,8 @@ public final class ProductVariationStore: Store {
         switch action {
         case .synchronizeProductVariations(let siteID, let productID, let pageNumber, let pageSize, let onCompletion):
             synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .updateProductVariation(let productVariation, let onCompletion):
+            updateProductVariation(productVariation: productVariation, onCompletion: onCompletion)
         }
     }
 }
@@ -59,6 +72,32 @@ private extension ProductVariationStore {
                                                             siteID: siteID,
                                                             productID: productID) {
                 onCompletion(nil)
+            }
+        }
+    }
+
+    /// Updates the product variation.
+    ///
+    func updateProductVariation(productVariation: ProductVariation, onCompletion: @escaping (Result<ProductVariation, ProductUpdateError>) -> Void) {
+        remote.updateProductVariation(productVariation: productVariation) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(ProductUpdateError(error: error)))
+            case .success(let productVariation):
+                self.upsertStoredProductVariationsInBackground(readOnlyProductVariations: [productVariation],
+                                                               siteID: productVariation.siteID,
+                                                               productID: productVariation.productID) { [weak self] in
+                                                                guard let storageProductVariation = self?.storageManager.viewStorage
+                                                                    .loadProductVariation(siteID: productVariation.siteID,
+                                                                                          productVariationID: productVariation.productVariationID) else {
+                                                                                            onCompletion(.failure(.notFoundInStorage))
+                                                                                            return
+                                                                }
+                                                                onCompletion(.success(storageProductVariation.toReadOnly()))
+                }
             }
         }
     }

@@ -21,7 +21,7 @@ enum ProductFormEditAction {
 }
 
 /// Creates actions for different sections/UI on the product form.
-struct ProductFormActionsFactory {
+struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let product: Product
     private let isEditProductsRelease2Enabled: Bool
     private let isEditProductsRelease3Enabled: Bool

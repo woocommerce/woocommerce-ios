@@ -13,7 +13,7 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
     var siteTimezone: TimeZone = TimeZone.siteTimezone
 
     init(product: Product,
-         actionsFactory: ProductFormActionsFactory,
+         actionsFactory: ProductFormActionsFactoryProtocol,
          currency: String,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter()) {
         self.currency = currency
@@ -23,7 +23,7 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
 }
 
 private extension DefaultProductFormTableViewModel {
-    mutating func configureSections(product: Product, actionsFactory: ProductFormActionsFactory) {
+    mutating func configureSections(product: Product, actionsFactory: ProductFormActionsFactoryProtocol) {
         sections = [.primaryFields(rows: primaryFieldRows(product: product, actions: actionsFactory.primarySectionActions())),
                     .settings(rows: settingsRows(product: product, actions: actionsFactory.settingsSectionActions()))]
             .filter { $0.isNotEmpty }

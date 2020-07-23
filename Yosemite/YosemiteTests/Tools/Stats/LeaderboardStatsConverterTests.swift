@@ -9,9 +9,9 @@ final class LeaderboardStatsConverterTest: XCTestCase {
     ///
     let siteID: Int64 = 1234
 
-    func testCorrectProductIdsFormLeaderboardOfTopProducts() {
+    func testCorrectProductIDsFormLeaderboardOfTopProducts() {
         // Given
-        let leaderboard = Self.sampleLeaderboard(productIds: Array((1...5)))
+        let leaderboard = Self.sampleLeaderboard(productIDs: Array((1...5)))
 
         // When
         let productIDs = LeaderboardStatsConverter.topProductsIDs(from: leaderboard)
@@ -23,19 +23,19 @@ final class LeaderboardStatsConverterTest: XCTestCase {
     func testTopProductsAreMissingFromStoredProducts() {
         // Given
         let products = (2...4).map { MockProduct().product(siteID: siteID, productID: $0) }
-        let leaderboard = Self.sampleLeaderboard(productIds: Array((1...5)))
+        let leaderboard = Self.sampleLeaderboard(productIDs: Array((1...5)))
 
         // When
-        let missingIds = LeaderboardStatsConverter.missingProductsIDs(from: leaderboard, in: products)
+        let missingIDs = LeaderboardStatsConverter.missingProductsIDs(from: leaderboard, in: products)
 
         // Then
-        XCTAssertEqual(missingIds.sorted(), [1, 5])
+        XCTAssertEqual(missingIDs.sorted(), [1, 5])
     }
 
     func testTopProductsAreNotMissingFromStoredProducts() {
         // Given
         let products = (1...5).map { MockProduct().product(siteID: siteID, productID: $0) }
-        let leaderboard = Self.sampleLeaderboard(productIds: Array((1...5)))
+        let leaderboard = Self.sampleLeaderboard(productIDs: Array((1...5)))
 
         // When
         let missingIds = LeaderboardStatsConverter.missingProductsIDs(from: leaderboard, in: products)
@@ -47,7 +47,7 @@ final class LeaderboardStatsConverterTest: XCTestCase {
     func testConvertToProductsIntoStatItemsUsinfStoredProducts() {
         // Given
         let products = (1...3).map { MockProduct().product(siteID: siteID, productID: $0) }
-        let topProducts = Self.sampleLeaderboard(productIds: [1, 2, 3])
+        let topProducts = Self.sampleLeaderboard(productIDs: [1, 2, 3])
 
         // When
         let statItems = LeaderboardStatsConverter.topEearnerStatItems(from: topProducts, using: products)
@@ -67,7 +67,7 @@ final class LeaderboardStatsConverterTest: XCTestCase {
 
     func testConvertTopProductsToStatItemsWithoutStoredProducts() {
         // Given
-        let topProducts = Self.sampleLeaderboard(productIds: [1, 2, 3])
+        let topProducts = Self.sampleLeaderboard(productIDs: [1, 2, 3])
 
         // When
         let statItems = LeaderboardStatsConverter.topEearnerStatItems(from: topProducts, using: [])
@@ -81,8 +81,8 @@ final class LeaderboardStatsConverterTest: XCTestCase {
 ///
 private extension LeaderboardStatsConverterTest {
 
-    static func sampleLeaderboard(productIds: [Int64]) -> Leaderboard {
-        let topProducts = productIds.map { sampleTopProduct(productID: $0) }
+    static func sampleLeaderboard(productIDs: [Int64]) -> Leaderboard {
+        let topProducts = productIDs.map { sampleTopProduct(productID: $0) }
         return Leaderboard(id: "Top Products", label: "Top Products", rows: topProducts)
     }
 

@@ -34,6 +34,7 @@ final class ProductTagsViewController: UIViewController {
 
         configureNavigationBar()
         configureTableView()
+        configureGhostTableView()
         configureViewModel()
     }
 
@@ -60,6 +61,15 @@ private extension ProductTagsViewController {
 
         tableView.backgroundColor = .listBackground
         tableView.removeLastCellSeparator()
+    }
+
+    func configureGhostTableView() {
+        view.addSubview(ghostTableView)
+        ghostTableView.isHidden = true
+        ghostTableView.translatesAutoresizingMaskIntoConstraints = false
+        ghostTableView.pinSubviewToAllEdges(view)
+        ghostTableView.backgroundColor = .listBackground
+        ghostTableView.removeLastCellSeparator()
     }
 
     /// Since there is only a text field in this view, the text field become the first responder immediately when the view did appear
@@ -109,7 +119,7 @@ private extension ProductTagsViewController {
     ///
     func displayGhostTableView() {
         let placeholderTagsPerSection = [3]
-        let options = GhostOptions(displaysSectionHeader: false,
+        let options = GhostOptions(displaysSectionHeader: true,
                                    reuseIdentifier: BasicTableViewCell.reuseIdentifier,
                                    rowsPerSection: placeholderTagsPerSection)
         ghostTableView.displayGhostContent(options: options,

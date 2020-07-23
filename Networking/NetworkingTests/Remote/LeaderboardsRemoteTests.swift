@@ -3,7 +3,7 @@ import XCTest
 
 /// Leaderboards Unit Tests
 ///
-final class leaderboardsRemoteV4Tests: XCTestCase {
+final class LeaderboardsRemoteV4Tests: XCTestCase {
 
     let network = MockupNetwork()
     let sampleSiteID: Int64 = 1234
@@ -42,13 +42,14 @@ final class leaderboardsRemoteV4Tests: XCTestCase {
         XCTAssertFalse(topProducts.rows.isEmpty)
 
         // Each prodcut should have non-empty values
-        topProducts.rows.forEach { product in
+        let expectedValues = [(quantity: 4, total: 20000.0), (quantity: 1, total: 15.99)]
+        zip(topProducts.rows, expectedValues).forEach { product, expectedValue in
             XCTAssertFalse(product.subject.display.isEmpty)
             XCTAssertFalse(product.subject.value.isEmpty)
             XCTAssertFalse(product.quantity.display.isEmpty)
-            XCTAssertTrue(product.quantity.value > 0)
+            XCTAssertEqual(product.quantity.value, expectedValue.quantity)
             XCTAssertFalse(product.total.display.isEmpty)
-            XCTAssertTrue(product.total.value > 0)
+            XCTAssertEqual(product.total.value, expectedValue.total)
         }
     }
 

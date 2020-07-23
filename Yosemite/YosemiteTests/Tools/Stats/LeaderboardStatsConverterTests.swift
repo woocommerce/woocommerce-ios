@@ -9,7 +9,7 @@ final class LeaderboardStatsConverterTest: XCTestCase {
     ///
     private let siteID: Int64 = 1234
 
-    func testCorrectProductIDsFromLeaderboardOfTopProducts() {
+    func testCorrectProductIDsFormLeaderboardOfTopProducts() {
         // Given
         let leaderboard = Self.sampleLeaderboard(productIDs: Array((1...5)))
 

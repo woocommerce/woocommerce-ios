@@ -15,7 +15,7 @@ enum ProductFormSection {
     }
 
     enum PrimaryFieldRow {
-        case images(product: Product)
+        case images
         case name(name: String?)
         case description(description: String?)
     }
@@ -73,8 +73,8 @@ extension ProductFormSection: Equatable {
 extension ProductFormSection.PrimaryFieldRow: Equatable {
     static func ==(lhs: ProductFormSection.PrimaryFieldRow, rhs: ProductFormSection.PrimaryFieldRow) -> Bool {
         switch (lhs, rhs) {
-        case (let .images(product1), let .images(product2)):
-            return product1 == product2
+        case (.images, .images):
+            return true
         case (let .name(name1), let .name(name2)):
             return name1 == name2
         case (let .description(description1), let .description(description2)):

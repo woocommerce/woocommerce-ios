@@ -234,6 +234,7 @@
 		02CA63DC23D1ADD100BBF148 /* DeviceMediaLibraryPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CA63D823D1ADD100BBF148 /* DeviceMediaLibraryPicker.swift */; };
 		02CA63DD23D1ADD100BBF148 /* MediaPickingContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CA63D923D1ADD100BBF148 /* MediaPickingContext.swift */; };
 		02CEBB8024C9869E002EDF35 /* ProductFormActionsFactoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CEBB7F24C9869E002EDF35 /* ProductFormActionsFactoryProtocol.swift */; };
+		02CEBB8224C98861002EDF35 /* ProductFormDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CEBB8124C98861002EDF35 /* ProductFormDataModel.swift */; };
 		02D45647231CB1FB008CF0A9 /* UIImage+Dot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D45646231CB1FB008CF0A9 /* UIImage+Dot.swift */; };
 		02D4564C231D05E2008CF0A9 /* BetaFeaturesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D4564B231D05E1008CF0A9 /* BetaFeaturesViewController.swift */; };
 		02DC2ED2242061BF002F9676 /* ProductPriceSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DC2ED1242061BE002F9676 /* ProductPriceSettingsViewModel.swift */; };
@@ -1117,6 +1118,7 @@
 		02CA63D823D1ADD100BBF148 /* DeviceMediaLibraryPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceMediaLibraryPicker.swift; sourceTree = "<group>"; };
 		02CA63D923D1ADD100BBF148 /* MediaPickingContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaPickingContext.swift; sourceTree = "<group>"; };
 		02CEBB7F24C9869E002EDF35 /* ProductFormActionsFactoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormActionsFactoryProtocol.swift; sourceTree = "<group>"; };
+		02CEBB8124C98861002EDF35 /* ProductFormDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormDataModel.swift; sourceTree = "<group>"; };
 		02D45646231CB1FB008CF0A9 /* UIImage+Dot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Dot.swift"; sourceTree = "<group>"; };
 		02D4564B231D05E1008CF0A9 /* BetaFeaturesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BetaFeaturesViewController.swift; sourceTree = "<group>"; };
 		02DC2ED1242061BE002F9676 /* ProductPriceSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductPriceSettingsViewModel.swift; sourceTree = "<group>"; };
@@ -1871,6 +1873,7 @@
 				265BCA032430E5EA004E53EE /* Edit Categories */,
 				02162724237963AF000208D2 /* ProductFormViewController.swift */,
 				02162725237963AF000208D2 /* ProductFormViewController.xib */,
+				02CEBB8124C98861002EDF35 /* ProductFormDataModel.swift */,
 				02F5F80F24613C930000613A /* ProductFormViewController+PresentationStyle.swift */,
 				02162728237965E8000208D2 /* ProductFormTableViewModel.swift */,
 				0216272A2379662C000208D2 /* DefaultProductFormTableViewModel.swift */,
@@ -4996,6 +4999,7 @@
 				D8149F562251EE300006A245 /* UITextField+Helpers.swift in Sources */,
 				0212276124498A270042161F /* ProductFormBottomSheetListSelectorCommand.swift in Sources */,
 				D831E2E0230E0BA7000037D0 /* Logs.swift in Sources */,
+				02CEBB8224C98861002EDF35 /* ProductFormDataModel.swift in Sources */,
 				CECC759C23D61C1400486676 /* AggregateDataHelper.swift in Sources */,
 				02B296A722FA6DB500FD7A4C /* Date+StartAndEnd.swift in Sources */,
 				D81D9228222E7F0800FFA585 /* OrderStatusListViewController.swift in Sources */,

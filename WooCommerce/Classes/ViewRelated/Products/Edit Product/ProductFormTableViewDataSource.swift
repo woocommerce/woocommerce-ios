@@ -80,8 +80,8 @@ private extension ProductFormTableViewDataSource {
 private extension ProductFormTableViewDataSource {
     func configureCellInPrimaryFieldsSection(_ cell: UITableViewCell, row: ProductFormSection.PrimaryFieldRow) {
         switch row {
-        case .images(let product):
-            configureImages(cell: cell, product: product)
+        case .images:
+            configureImages(cell: cell)
         case .name(let name):
             configureName(cell: cell, name: name)
         case .description(let description):
@@ -89,7 +89,7 @@ private extension ProductFormTableViewDataSource {
         }
     }
 
-    func configureImages(cell: UITableViewCell, product: Product) {
+    func configureImages(cell: UITableViewCell) {
         guard let cell = cell as? ProductImagesHeaderTableViewCell else {
             fatalError()
         }

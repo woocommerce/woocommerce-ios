@@ -9,7 +9,7 @@ struct PaginatedProductShippingClassListSelectorDataSource: PaginatedListSelecto
 
     private let siteID: Int64
 
-    init(product: Product, selected: ProductShippingClass?) {
+    init(product: ProductFormDataModel, selected: ProductShippingClass?) {
         self.siteID = product.siteID
         self.selected = selected
     }

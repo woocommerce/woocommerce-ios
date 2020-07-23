@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents a Product Variation Entity.
 ///
-public struct ProductVariation: Codable, GeneratedCopiable {
+public struct ProductVariation: Codable, GeneratedCopiable, Equatable {
     public let siteID: Int64
     public let productID: Int64
 
@@ -264,14 +264,12 @@ public struct ProductVariation: Codable, GeneratedCopiable {
         // Issue: https://github.com/woocommerce/woocommerce/issues/25350
         if dateOnSaleStart == nil {
             try container.encode("", forKey: .dateOnSaleStart)
-        }
-        else {
+        } else {
             try container.encode(dateOnSaleStart, forKey: .dateOnSaleStart)
         }
         if dateOnSaleEnd == nil {
             try container.encode("", forKey: .dateOnSaleEnd)
-        }
-        else {
+        } else {
             try container.encode(dateOnSaleEnd, forKey: .dateOnSaleEnd)
         }
 
@@ -348,50 +346,6 @@ private extension ProductVariation {
 
         case attributes
         case menuOrder          = "menu_order"
-    }
-}
-
-
-// MARK: - Equatable Conformance
-//
-extension ProductVariation: Equatable {
-    public static func == (lhs: ProductVariation, rhs: ProductVariation) -> Bool {
-        return lhs.siteID == rhs.siteID &&
-            lhs.productID == rhs.productID &&
-            lhs.productVariationID == rhs.productVariationID &&
-            lhs.attributes == rhs.attributes &&
-            lhs.image == rhs.image &&
-            lhs.permalink == rhs.permalink &&
-            lhs.dateCreated == rhs.dateCreated &&
-            lhs.dateModified == rhs.dateModified &&
-            lhs.dateOnSaleStart == rhs.dateOnSaleStart &&
-            lhs.dateOnSaleEnd == rhs.dateOnSaleEnd &&
-            lhs.status == rhs.status &&
-            lhs.description == rhs.description &&
-            lhs.sku == rhs.sku &&
-            lhs.price == rhs.price &&
-            lhs.regularPrice == rhs.regularPrice &&
-            lhs.salePrice == rhs.salePrice &&
-            lhs.onSale == rhs.onSale &&
-            lhs.purchasable == rhs.purchasable &&
-            lhs.virtual == rhs.virtual &&
-            lhs.downloadable == rhs.downloadable &&
-            lhs.downloads == rhs.downloads &&
-            lhs.downloadLimit == rhs.downloadLimit &&
-            lhs.downloadExpiry == rhs.downloadExpiry &&
-            lhs.taxStatusKey == rhs.taxStatusKey &&
-            lhs.taxClass == rhs.taxClass &&
-            lhs.manageStock == rhs.manageStock &&
-            lhs.stockQuantity == rhs.stockQuantity &&
-            lhs.stockStatus == rhs.stockStatus &&
-            lhs.backordersKey == rhs.backordersKey &&
-            lhs.backordersAllowed == rhs.backordersAllowed &&
-            lhs.backordered == rhs.backordered &&
-            lhs.weight == rhs.weight &&
-            lhs.dimensions == rhs.dimensions &&
-            lhs.shippingClass == rhs.shippingClass &&
-            lhs.shippingClassID == rhs.shippingClassID &&
-            lhs.menuOrder == rhs.menuOrder
     }
 }
 

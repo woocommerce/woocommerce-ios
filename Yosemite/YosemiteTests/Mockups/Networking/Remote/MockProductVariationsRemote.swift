@@ -18,7 +18,7 @@ final class MockProductVariationsRemote {
 
     /// Set the value passed to the `completion` block if `updateProductVariation()` is called.
     ///
-    func whenUpdatingProduct(siteID: Int64, productID: Int64, productVariationID: Int64, thenReturn result: Result<ProductVariation, Error>) {
+    func whenUpdatingProductVariation(siteID: Int64, productID: Int64, productVariationID: Int64, thenReturn result: Result<ProductVariation, Error>) {
         let key = ResultKey(siteID: siteID, productID: productID, productVariationIDs: [productVariationID])
         productVariationUpdateResults[key] = result
     }

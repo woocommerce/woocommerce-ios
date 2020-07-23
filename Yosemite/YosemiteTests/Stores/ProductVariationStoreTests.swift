@@ -304,7 +304,7 @@ final class ProductVariationStoreTests: XCTestCase {
             .copy(attributes: sampleProductVariationAttributes())
         let productVariation = MockProductVariation().productVariation(siteID: sampleSiteID, productID: sampleProductID, variationID: productVariationID)
             .copy(description: "Wooooo", sku: "test-woo")
-        remote.whenUpdatingProduct(siteID: sampleSiteID,
+        remote.whenUpdatingProductVariation(siteID: sampleSiteID,
                                    productID: sampleProductID,
                                    productVariationID: productVariationID,
                                    thenReturn: .success(expectedProductVariation))
@@ -325,10 +325,7 @@ final class ProductVariationStoreTests: XCTestCase {
         }
 
         // Then
-        guard case let .success(updatedProductVariation) = result else {
-            XCTFail("Unexpected result: \(String(describing: result))")
-            return
-        }
+        let updatedProductVariation = try? result?.get()
         XCTAssertEqual(updatedProductVariation, expectedProductVariation)
 
         let storedProductVariation = viewStorage.loadProductVariation(siteID: sampleSiteID, productVariationID: productVariationID)
@@ -343,7 +340,7 @@ final class ProductVariationStoreTests: XCTestCase {
         let remote = MockProductVariationsRemote()
         let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
         let productVariationID: Int64 = 17
-        remote.whenUpdatingProduct(siteID: sampleSiteID,
+        remote.whenUpdatingProductVariation(siteID: sampleSiteID,
                                    productID: sampleProductID,
                                    productVariationID: productVariationID,
                                    thenReturn: .failure(NSError(domain: "", code: 400, userInfo: nil)))
@@ -363,10 +360,7 @@ final class ProductVariationStoreTests: XCTestCase {
         }
 
         // Then
-        guard case .failure = result else {
-            XCTFail("Unexpected result: \(String(describing: result))")
-            return
-        }
+        XCTAssertTrue(try XCTUnwrap(result).isFailure)
 
         // The existing ProductVariation should not be deleted.
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)

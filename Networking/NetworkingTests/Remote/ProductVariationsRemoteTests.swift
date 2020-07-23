@@ -132,11 +132,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
         var updatedProductVariation: ProductVariation?
         waitForExpectation { expectation in
             remote.updateProductVariation(productVariation: productVariation) { result in
-                guard case let .success(productVariation) = result else {
-                    XCTFail("Unexpected result: \(result)")
-                    return
-                }
-                updatedProductVariation = productVariation
+                updatedProductVariation = try? result.get()
                 expectation.fulfill()
             }
         }
@@ -163,10 +159,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
         }
 
         // Then
-        guard case .failure = result else {
-            XCTFail("Unexpected result: \(String(describing: result))")
-            return
-        }
+        XCTAssertTrue(try XCTUnwrap(result).isFailure)
     }
 }
 

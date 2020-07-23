@@ -31,7 +31,7 @@ struct ProductVariationMapper: Mapper {
 
 /// ProductVariationEnvelope Disposable Entity
 ///
-/// `ProductVariation` endpoint returns the requested product document in the `data` key. This entity
+/// `ProductVariation` endpoint returns the requested product variation document in the `data` key. This entity
 /// allows us to do parse all the things with JSONDecoder.
 ///
 private struct ProductVariationEnvelope: Decodable {

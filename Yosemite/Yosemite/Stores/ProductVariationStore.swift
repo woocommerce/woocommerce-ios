@@ -80,20 +80,23 @@ private extension ProductVariationStore {
     ///
     func updateProductVariation(productVariation: ProductVariation, onCompletion: @escaping (Result<ProductVariation, ProductUpdateError>) -> Void) {
         remote.updateProductVariation(productVariation: productVariation) { [weak self] result in
+            guard let self = self else {
+                return
+            }
             switch result {
             case .failure(let error):
                 onCompletion(.failure(ProductUpdateError(error: error)))
             case .success(let productVariation):
-                self?.upsertStoredProductVariationsInBackground(readOnlyProductVariations: [productVariation],
-                                                                siteID: productVariation.siteID,
-                                                                productID: productVariation.productID) { [weak self] in
-                                                                    guard let storageProductVariation = self?.storageManager.viewStorage
-                                                                        .loadProductVariation(siteID: productVariation.siteID,
-                                                                                              productVariationID: productVariation.productVariationID) else {
-                                                                                                onCompletion(.failure(.notFoundInStorage))
-                                                                                                return
-                                                                    }
-                                                                    onCompletion(.success(storageProductVariation.toReadOnly()))
+                self.upsertStoredProductVariationsInBackground(readOnlyProductVariations: [productVariation],
+                                                               siteID: productVariation.siteID,
+                                                               productID: productVariation.productID) { [weak self] in
+                                                                guard let storageProductVariation = self?.storageManager.viewStorage
+                                                                    .loadProductVariation(siteID: productVariation.siteID,
+                                                                                          productVariationID: productVariation.productVariationID) else {
+                                                                                            onCompletion(.failure(.notFoundInStorage))
+                                                                                            return
+                                                                }
+                                                                onCompletion(.success(storageProductVariation.toReadOnly()))
                 }
             }
         }

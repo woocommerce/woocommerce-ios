@@ -71,4 +71,9 @@ public enum AppSettingsAction: Action {
     /// given `date`.
     ///
     case setInstallationDateIfNecessary(date: Date, onCompletion: ((Result<Void, Error>) -> Void))
+
+    /// Saves the `date` as the last known date that the user interacted with the in-app
+    /// feedback prompt (https://git.io/JJ8i0).
+    ///
+    case setLastFeedbackDate(date: Date, onCompletion: ((Result<Void, Error>) -> Void))
 }

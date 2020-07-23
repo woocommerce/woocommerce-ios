@@ -491,7 +491,7 @@ private extension StatsStoreV4Tests {
                                   quantity: 1,
                                   price: 15.0,
                                   total: 15.99,
-                                  currency: "USD",
+                                  currency: "",
                                   imageUrl: "https://dulces.mystagingwebsite.com/wp-content/uploads/2020/06/album-1.jpg")
     }
 
@@ -501,7 +501,7 @@ private extension StatsStoreV4Tests {
                                   quantity: 4,
                                   price: 4000,
                                   total: 20000,
-                                  currency: "USD",
+                                  currency: "",
                                   imageUrl: "https://dulces.mystagingwebsite.com/wp-content/uploads/2020/07/img_7472-scaled.jpeg")
     }
 
@@ -518,7 +518,7 @@ private extension StatsStoreV4Tests {
                                   quantity: 2,
                                   price: 15.0,
                                   total: 30.99,
-                                  currency: "USD",
+                                  currency: "",
                                   imageUrl: "https://dulces.mystagingwebsite.com/wp-content/uploads/2020/06/album-1.jpg")
     }
 
@@ -528,7 +528,7 @@ private extension StatsStoreV4Tests {
                                   quantity: 10,
                                   price: 4000,
                                   total: 60000,
-                                  currency: "USD",
+                                  currency: "",
                                   imageUrl: "https://dulces.mystagingwebsite.com/wp-content/uploads/2020/07/img_7472-scaled.jpeg")
     }
 }

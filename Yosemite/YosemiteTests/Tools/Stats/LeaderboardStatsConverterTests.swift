@@ -29,7 +29,7 @@ final class LeaderboardStatsConverterTest: XCTestCase {
         let missingIds = LeaderboardStatsConverter.missingProductsIDs(from: leaderboard, in: products)
 
         // Then
-        XCTAssertEqual(missingIds, [1, 5])
+        XCTAssertEqual(missingIds.sorted(), [1, 5])
     }
 
     func testTopProductsAreNotMissingFromStoredProducts() {

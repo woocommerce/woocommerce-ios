@@ -76,7 +76,7 @@ private extension LeaderboardStatsConverter {
                                   quantity: topProduct.quantity.value,
                                   price: Double(product.price) ?? 0.0,
                                   total: topProduct.total.value,
-                                  currency: "USD", // TODO: Sort out currency
+                                  currency: "", // TODO: Remove currency https://github.com/woocommerce/woocommerce-ios/issues/2549
                                   imageUrl: product.images.first?.src)
     }
 }

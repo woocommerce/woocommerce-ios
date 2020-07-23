@@ -260,11 +260,11 @@ final class StatsStoreV4Tests: XCTestCase {
 
         // Then
         XCTAssertNil(topEarnersError)
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 1)
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 2)
 
-        let readOnlyTopEarnerStats = self.viewStorage.firstObject(ofType: Storage.TopEarnerStats.self)?.toReadOnly()
-        XCTAssertEqual(readOnlyTopEarnerStats, self.sampleTopEarnerStats())
+        let readOnlyTopEarnerStats = viewStorage.firstObject(ofType: Storage.TopEarnerStats.self)?.toReadOnly()
+        XCTAssertEqual(readOnlyTopEarnerStats, sampleTopEarnerStats())
     }
 
     /// Verifies that `StatsActionV4.retrieveTopEarnerStats` effectively persists any updated TopEarnerStatsItems.
@@ -291,11 +291,11 @@ final class StatsStoreV4Tests: XCTestCase {
 
         // Then
         XCTAssertNil(topEarnersError)
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 1)
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 2)
 
-        let readOnlyTopEarnerStats = self.viewStorage.firstObject(ofType: Storage.TopEarnerStats.self)?.toReadOnly()
-        XCTAssertEqual(readOnlyTopEarnerStats, self.sampleTopEarnerStatsMutated())
+        let readOnlyTopEarnerStats = viewStorage.firstObject(ofType: Storage.TopEarnerStats.self)?.toReadOnly()
+        XCTAssertEqual(readOnlyTopEarnerStats, sampleTopEarnerStatsMutated())
     }
 
     /// Verifies that `StatsActionV4.retrieveTopEarnerStats` returns an error whenever there is an error response from the backend.
@@ -356,10 +356,10 @@ final class StatsStoreV4Tests: XCTestCase {
         XCTAssertNil(viewStorage.loadTopEarnerStats(date: "2020", granularity: StatGranularity.week.rawValue))
         statsStore.upsertStoredTopEarnerStats(readOnlyStats: sampleTopEarnerStats())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 1)
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 2)
         statsStore.upsertStoredTopEarnerStats(readOnlyStats: sampleTopEarnerStatsMutated())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 1)
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 2)
 
         let expectedTopEarnerStats = sampleTopEarnerStatsMutated()
         let storageTopEarnerStats = viewStorage.loadTopEarnerStats(date: "2020", granularity: StatGranularity.year.rawValue)

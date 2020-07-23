@@ -302,7 +302,7 @@ extension StatsStoreV4 {
 private extension StatsStoreV4 {
 
     /// Converts and stores a top-product `leaderboard` into a `StatsTopEearner`
-    /// Sincea  a `leaderboard` does not containt all the necesary product information, this method fetches the related product(if needed) before starting the convertion.
+    /// Since  a `leaderboard` does not containt  the necesary product information, this method fetches the related product before starting the convertion.
     ///
     private func convertLeaderboarsAndStoreTopEearners(siteID: Int64,
                                                        granularity: StatGranularity,
@@ -331,7 +331,7 @@ private extension StatsStoreV4 {
     /// Loads product objects that relates to the top products on a `leaderboard`
     /// If product objects can't be found in the storage layer, they will be fetched from the remote layer.
     ///
-    private func loadProducts(for topProducts: Leaderboard, siteID: Int64, completion: @escaping (Result<[Product], Error>) -> Void )  {
+    private func loadProducts(for topProducts: Leaderboard, siteID: Int64, completion: @escaping (Result<[Product], Error>) -> Void) {
 
         // Workout if we have stored all products that relate to the given leaderboard
         let topProductIDs = LeaderboardStatsConverter.topProductsIDs(from: topProducts)

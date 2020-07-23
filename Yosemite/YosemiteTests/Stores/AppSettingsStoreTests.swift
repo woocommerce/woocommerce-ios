@@ -241,6 +241,27 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertNotEqual(newerDate, savedSettings.installationDate)
     }
 
+    func testGivenNoExistingSettingsThenItCanSaveTheAppInstallationDate() throws {
+        // Given
+        let date = Date(timeIntervalSince1970: 100)
+
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        var result: Result<Void, Error>?
+        let action = AppSettingsAction.setInstallationDateIfNecessary(date: date) { aResult in
+            result = aResult
+        }
+        subject?.onAction(action)
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(result).isSuccess)
+
+        let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
+        XCTAssertEqual(date, savedSettings.installationDate)
+        XCTAssertNil(savedSettings.lastFeedbackDate)
+    }
+
     func testItCanSaveTheLastFeedbackDate() throws {
         // Given
         let date = Date(timeIntervalSince1970: 300)

@@ -115,6 +115,8 @@ public class AppSettingsStore: Store {
             resetStatsVersionStates()
         case .setInstallationDateIfNecessary(let date, let onCompletion):
             setInstallationDateIfNecessary(date: date, onCompletion: onCompletion)
+        case .setLastFeedbackDate(let date, let onCompletion):
+            setLastFeedbackDate(date: date, onCompletion: onCompletion)
         }
     }
 }
@@ -135,6 +137,21 @@ private extension AppSettingsStore {
             }
 
             let settingsToSave = GeneralAppSettings(installationDate: date, lastFeedbackDate: settings.lastFeedbackDate)
+            try saveGeneralAppSettings(settingsToSave)
+
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+    }
+
+    /// Save the `date` in `GeneralAppSettings.lastFeedbackDate`.
+    ///
+    func setLastFeedbackDate(date: Date, onCompletion: ((Result<Void, Error>) -> Void)) {
+        do {
+            let settings = try loadOrCreateGeneralAppSettings()
+
+            let settingsToSave = GeneralAppSettings(installationDate: settings.installationDate, lastFeedbackDate: date)
             try saveGeneralAppSettings(settingsToSave)
 
             onCompletion(.success(()))

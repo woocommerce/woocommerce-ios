@@ -192,7 +192,9 @@ final class AppSettingsStoreTests: XCTestCase {
         // Given
         let date = Date(timeIntervalSince1970: 100)
 
-        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let existingSettings = GeneralAppSettings(installationDate: Date(timeIntervalSince1970: 4_810),
+                                                  lastFeedbackDate: Date(timeIntervalSince1970: 9_971_311))
+        try fileStorage?.write(existingSettings, to: expectedGeneralAppSettingsFileURL)
 
         // When
         var result: Result<Void, Error>?
@@ -206,6 +208,9 @@ final class AppSettingsStoreTests: XCTestCase {
 
         let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
         XCTAssertEqual(date, savedSettings.installationDate)
+
+        // The other properties should be kept
+        XCTAssertEqual(savedSettings.lastFeedbackDate, existingSettings.lastFeedbackDate)
     }
 
     func testItDoesNotSaveTheAppInstallationDateIfTheGivenDateIsNewer() throws {
@@ -234,6 +239,31 @@ final class AppSettingsStoreTests: XCTestCase {
         let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
         XCTAssertEqual(existingDate, savedSettings.installationDate)
         XCTAssertNotEqual(newerDate, savedSettings.installationDate)
+    }
+
+    func testItCanSaveTheLastFeedbackDate() throws {
+        // Given
+        let date = Date(timeIntervalSince1970: 300)
+
+        let existingSettings = GeneralAppSettings(installationDate: Date(timeIntervalSince1970: 1),
+                                                  lastFeedbackDate: Date(timeIntervalSince1970: 999))
+        try fileStorage?.write(existingSettings, to: expectedGeneralAppSettingsFileURL)
+
+        // When
+        var result: Result<Void, Error>?
+        let action = AppSettingsAction.setLastFeedbackDate(date: date) { aResult in
+            result = aResult
+        }
+        subject?.onAction(action)
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(result).isSuccess)
+
+        let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
+        XCTAssertEqual(date, savedSettings.lastFeedbackDate)
+
+        // The other properties should be kept
+        XCTAssertEqual(savedSettings.installationDate, existingSettings.installationDate)
     }
 }
 

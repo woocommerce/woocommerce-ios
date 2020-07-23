@@ -33,4 +33,10 @@ enum FeatureFlag: Int {
     /// Refunds
     ///
     case refunds
+
+    /// To be used for the In-app Feedback tasks until all tasks are completed.
+    ///
+    /// - SeeAlso: https://github.com/woocommerce/woocommerce-ios/projects/18
+    ///
+    case inAppFeedback
 }

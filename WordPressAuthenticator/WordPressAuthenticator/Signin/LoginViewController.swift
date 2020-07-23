@@ -8,6 +8,12 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     @IBOutlet var instructionLabel: UILabel?
     @objc var errorToPresent: Error?
 
+    /// Constraints on the table view container.
+    /// Used to adjust the table width in unified views.
+    @IBOutlet var tableViewLeadingConstraint: NSLayoutConstraint?
+    @IBOutlet var tableViewTrailingConstraint: NSLayoutConstraint?
+    var defaultTableViewMargin: CGFloat = 0
+    
     lazy var loginFacade: LoginFacade = {
         let configuration = WordPressAuthenticator.shared.configuration
         let facade = LoginFacade(dotcomClientID: configuration.wpcomClientId,
@@ -375,16 +381,58 @@ extension LoginViewController {
 }
 
 
-// MARK: - Handle changes in traitCollections. In particular, changes in Dynamic Type
+// MARK: - Handle View Changes
 //
 extension LoginViewController {
-    override open func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    
+    open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
+        // Update Dynamic Type
         if previousTraitCollection?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory {
             didChangePreferredContentSize()
         }
+        
+        // Update Table View size
+        setTableViewMargins(forWidth: view.frame.width)
     }
+    
+    open override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        setTableViewMargins(forWidth: size.width)
+    }
+
+    /// Resize the table view based on trait collection.
+    /// Used only in unified views.
+    ///
+    func setTableViewMargins(forWidth viewWidth: CGFloat) {
+        guard let tableViewLeadingConstraint = tableViewLeadingConstraint,
+            let tableViewTrailingConstraint = tableViewTrailingConstraint else {
+                return
+        }
+
+        guard traitCollection.horizontalSizeClass == .regular &&
+            traitCollection.verticalSizeClass == .regular else {
+                tableViewLeadingConstraint.constant = defaultTableViewMargin
+                tableViewTrailingConstraint.constant = defaultTableViewMargin
+                return
+        }
+
+        let marginMultiplier = UIDevice.current.orientation.isLandscape ?
+            TableViewMarginMultipliers.ipadLandscape :
+            TableViewMarginMultipliers.ipadPortrait
+
+        let margin = viewWidth * marginMultiplier
+
+        tableViewLeadingConstraint.constant = margin
+        tableViewTrailingConstraint.constant = margin
+    }
+    
+    private enum TableViewMarginMultipliers {
+        static let ipadPortrait: CGFloat = 0.1667
+        static let ipadLandscape: CGFloat = 0.25
+    }
+    
 }
 
 // MARK: - Social Sign In Handling

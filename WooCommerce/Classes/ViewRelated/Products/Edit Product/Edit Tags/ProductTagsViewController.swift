@@ -7,12 +7,25 @@ import WordPressUI
 final class ProductTagsViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
-    private let ghostTableView = UITableView()
     @IBOutlet weak var textView: UITextView!
 
     private var product: Product
 
-    private let viewModel: ProductTagsViewModel
+    private let originalTags: [String]
+
+    private var dataSource: ProductTagsDataSource = LoadingDataSource() {
+        didSet {
+            tableView.dataSource = dataSource
+            tableView.reloadData()
+        }
+    }
+
+    private lazy var resultController: ResultsController<StorageProductTag> = {
+        let storageManager = ServiceLocator.storageManager
+        let predicate = NSPredicate(format: "siteID = %ld", self.product.siteID)
+        let descriptor = NSSortDescriptor(keyPath: \StorageProductTag.name, ascending: true)
+        return ResultsController<StorageProductTag>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
 
     // Completion callback
     //
@@ -21,7 +34,7 @@ final class ProductTagsViewController: UIViewController {
 
     init(product: Product, completion: @escaping Completion) {
         self.product = product
-        self.viewModel = ProductTagsViewModel(product: product)
+        originalTags = product.tags.map { $0.name }
         onCompletion = completion
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
@@ -37,10 +50,26 @@ final class ProductTagsViewController: UIViewController {
         configureMainView()
         configureTextView()
         configureTableView()
-        configureGhostTableView()
-        configureViewModel()
+
+        textView.text = normalizeInitialTags(tags: originalTags)
+        textViewDidChange(textView)
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        textView.becomeFirstResponder()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        updateSuggestions()
+        loadTags()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+           super.viewWillDisappear(animated)
+           textView.resignFirstResponder()
+       }
 }
 
 // MARK: - View Configuration
@@ -75,143 +104,38 @@ private extension ProductTagsViewController {
 
     func configureTableView() {
         registerTableViewCells()
-        tableView.dataSource = self
+        // The datasource will be dinamically assigned on variable `datasource`
         tableView.delegate = self
 
         tableView.backgroundColor = .listBackground
         tableView.removeLastCellSeparator()
     }
 
-    func configureGhostTableView() {
-        view.addSubview(ghostTableView)
-        ghostTableView.isHidden = true
-        ghostTableView.translatesAutoresizingMaskIntoConstraints = false
-        ghostTableView.pinSubviewToAllEdges(view)
-        ghostTableView.backgroundColor = .listBackground
-        ghostTableView.removeLastCellSeparator()
-    }
-
     /// Registers all of the available TableViewCells
     ///
     func registerTableViewCells() {
         tableView.register(BasicTableViewCell.loadNib(), forCellReuseIdentifier: BasicTableViewCell.reuseIdentifier)
-        ghostTableView.register(BasicTableViewCell.loadNib(), forCellReuseIdentifier: BasicTableViewCell.reuseIdentifier)
     }
 }
 
 // MARK: - Synchronize Tags
 //
 private extension ProductTagsViewController {
-    func configureViewModel() {
-        viewModel.performFetch()
-        viewModel.observeTagListStateChanges { [weak self] syncState in
-            switch syncState {
-            case .initialized:
-                break
-            case .syncing:
-                self?.displayGhostTableView()
-            case let .failed(retryToken):
-                self?.removeGhostTableView()
-                self?.displaySyncingErrorNotice(retryToken: retryToken)
-            case .synced:
-                self?.removeGhostTableView()
+    func loadTags() {
+        dataSource = LoadingDataSource()
+
+        let action = ProductTagAction.synchronizeAllProductTags(siteID: product.siteID) { [weak self] error in
+            guard error == nil else {
+                self?.tagsFailedLoading()
+                return
+            }
+
+            try? self?.resultController.performFetch()
+            if let tagNames = self?.resultController.fetchedObjects.map({ $0.name }) {
+                self?.tagsLoaded(tags: tagNames)
             }
         }
-    }
-}
-
-// MARK: - Placeholders & Errors
-//
-private extension ProductTagsViewController {
-
-    /// Renders ghost placeholder categories.
-    ///
-    func displayGhostTableView() {
-        let placeholderTagsPerSection = [3]
-        let options = GhostOptions(displaysSectionHeader: true,
-                                   reuseIdentifier: BasicTableViewCell.reuseIdentifier,
-                                   rowsPerSection: placeholderTagsPerSection)
-        ghostTableView.displayGhostContent(options: options,
-                                           style: .wooDefaultGhostStyle)
-        ghostTableView.isHidden = false
-    }
-
-    /// Removes ghost  placeholder categories.
-    ///
-    func removeGhostTableView() {
-        tableView.reloadData()
-        ghostTableView.removeGhostContent()
-        ghostTableView.isHidden = true
-        textView.becomeFirstResponder()
-    }
-
-    /// Displays the Sync Error Notice.
-    ///
-    func displaySyncingErrorNotice(retryToken: ProductTagsViewModel.RetryToken) {
-        let message = NSLocalizedString("Unable to load tags", comment: "Load Product Tags Action Failed")
-        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
-        let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
-            self?.viewModel.retryTagSynchronization(retryToken: retryToken)
-        }
-
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
-    }
-}
-
-// MARK: - UITableViewDataSource Conformance
-//
-extension ProductTagsViewController: UITableViewDataSource {
-
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return viewModel.sections.count
-    }
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.sections[section].rows.count
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let row = viewModel.sections[indexPath.section].rows[indexPath.row]
-
-        let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
-        configure(cell, for: row, at: indexPath)
-
-        return cell
-    }
-}
-
-// MARK: - UITableViewDelegate Conformance
-//
-extension ProductTagsViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-    }
-}
-
-// MARK: - Support for UITableViewDataSource
-//
-private extension ProductTagsViewController {
-    /// Configure cellForRowAtIndexPath:
-    ///
-    func configure(_ cell: UITableViewCell, for row: ProductTagsViewModel.Row, at indexPath: IndexPath) {
-        switch cell {
-        case let cell as BasicTableViewCell:
-            configureTag(cell: cell, indexPath: indexPath)
-        default:
-            fatalError("Unidentified product slug row type")
-        }
-    }
-
-    func configureTag(cell: BasicTableViewCell, indexPath: IndexPath) {
-        cell.textLabel?.text = viewModel.fetchedTags[indexPath.row].name
-    }
-}
-
-// MARK: - Tags Loading
-
-private extension ProductTagsViewController {
-    func loadTags() {
-       
+        ServiceLocator.stores.dispatch(action)
     }
 
     func tagsLoaded(tags: [String]) {
@@ -220,12 +144,16 @@ private extension ProductTagsViewController {
                                            searchQuery: partialTag)
     }
 
-    func tagsFailedLoading(error: Error) {
-        DDLogError("Error loading tags for \(String(describing: blog.url)): \(error)")
+    func tagsFailedLoading() {
+        DDLogError("Error loading product tags")
         dataSource = FailureDataSource()
-        WPError.showNetworkingNotice(title: NSLocalizedString("Couldn't load tags.", comment: "Error message when tag loading failed"), error: error as NSError)
+        UIApplication.shared.keyWindow?.endEditing(true)
+        let errorMessage = NSLocalizedString("Couldn't load tags.", comment: "Error message when tag loading failed")
+        let notice = Notice(title: errorMessage, feedbackType: .error)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
+
 
 // MARK: - Tag tokenization
 
@@ -272,7 +200,6 @@ private extension ProductTagsViewController {
         updateSuggestions()
     }
 }
-
 
 // MARK: - Text & Input Handling
 
@@ -346,10 +273,32 @@ extension ProductTagsViewController: UITextViewDelegate {
     }
 
     private func updateSuggestions() {
-        //TODO: to be implemented
-//        dataSource.originalTags = completeTags
-//        dataSource.searchQuery = partialTag
-//        reloadTableData()
+        dataSource.selectedTags = completeTags
+        dataSource.searchQuery = partialTag
+        tableView.reloadData()
+    }
+}
+
+extension ProductTagsViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        switch tableView.dataSource {
+        case is FailureDataSource:
+            loadTags()
+        case is LoadingDataSource:
+            return
+        case is SuggestionsDataSource:
+            suggestionTapped(cell: tableView.cellForRow(at: indexPath))
+        default:
+            assertionFailure("Unexpected data source")
+        }
+    }
+
+    private func suggestionTapped(cell: UITableViewCell?) {
+        guard let tag = cell?.textLabel?.text else {
+            return
+        }
+        complete(tag: tag)
     }
 }
 
@@ -360,25 +309,72 @@ private protocol ProductTagsDataSource: UITableViewDataSource {
     var searchQuery: String { get set }
 }
 
-private class SuggestionsDataSource: NSObject, ProductTagsDataSource {
-    @objc static let cellIdentifier = "Default"
-    @objc let suggestions: [String]
+private class LoadingDataSource: NSObject, ProductTagsDataSource {
+    var selectedTags = [String]()
+    var searchQuery = ""
 
-    @objc init(suggestions: [String], selectedTags: [String], searchQuery: String) {
+    static let cellIdentifier = BasicTableViewCell.reuseIdentifier
+    typealias Cell = BasicTableViewCell
+
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: LoadingDataSource.cellIdentifier, for: indexPath)
+
+        cell.textLabel?.text = NSLocalizedString("Loading...", comment: "Loading tags in Product Tags screen")
+        cell.selectionStyle = .none
+        return cell
+    }
+}
+
+private class FailureDataSource: NSObject, ProductTagsDataSource {
+    var selectedTags = [String]()
+    var searchQuery = ""
+
+    static let cellIdentifier = "Failure"
+    typealias Cell = UITableViewCell
+
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 0
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 0
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: FailureDataSource.cellIdentifier, for: indexPath)
+        cell.textLabel?.textColor = .text
+        cell.backgroundColor = .listForeground
+        return cell
+    }
+}
+
+private class SuggestionsDataSource: NSObject, ProductTagsDataSource {
+    static let cellIdentifier = BasicTableViewCell.reuseIdentifier
+    let suggestions: [String]
+
+    init(suggestions: [String], selectedTags: [String], searchQuery: String) {
         self.suggestions = suggestions
         self.selectedTags = selectedTags
         self.searchQuery = searchQuery
         super.init()
     }
 
-    @objc var selectedTags: [String]
-    @objc var searchQuery: String
+    var selectedTags: [String]
+    var searchQuery: String
 
-    @objc var availableSuggestions: [String] {
+    var availableSuggestions: [String] {
         return suggestions.filter({ !selectedTags.contains($0) })
     }
 
-    @objc var matchedSuggestions: [String] {
+    var matchedSuggestions: [String] {
         guard !searchQuery.isEmpty else {
             return availableSuggestions
         }
@@ -395,19 +391,19 @@ private class SuggestionsDataSource: NSObject, ProductTagsDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: SuggestionsDataSource.cellIdentifier, for: indexPath)
-        WPStyleGuide.configureTableViewSuggestionCell(cell)
         let match = matchedSuggestions[indexPath.row]
-        cell.textLabel?.attributedText = highlight(searchQuery, in: match)
+        cell.textLabel?.attributedText = highlight(searchQuery, in: match, font: cell.textLabel?.font ?? UIFont())
         return cell
     }
 
-    @objc func highlight(_ search: String, in string: String) -> NSAttributedString {
+    func highlight(_ search: String, in string: String, font: UIFont) -> NSAttributedString {
         let highlighted = NSMutableAttributedString(string: string)
         let range = (string as NSString).localizedStandardRange(of: search)
         guard range.location != NSNotFound else {
             return highlighted
         }
-        let font = UIFont.systemFont(ofSize: WPStyleGuide.tableviewTextFont().pointSize, weight: .bold)
+
+        let font = UIFont.systemFont(ofSize: font.pointSize, weight: .bold)
         highlighted.setAttributes([.font: font], range: range)
         return highlighted
     }

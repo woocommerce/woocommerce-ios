@@ -2,7 +2,7 @@ import Foundation
 
 /// Mapper: Leaderboard List
 ///
-struct LeaderboardsMapper: Mapper {
+struct LeaderboardListMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into a Leaderboards entity.
     ///

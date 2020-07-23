@@ -27,7 +27,7 @@ public class LeaderboardsRemote: Remote {
                           ParameterKeys.quantity: String(quantity)]
 
         let request = JetpackRequest(wooApiVersion: .wcAnalytics, method: .get, siteID: siteID, path: Constants.path, parameters: parameters)
-        let mapper = LeaderboardsMapper()
+        let mapper = LeaderboardListMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
 }

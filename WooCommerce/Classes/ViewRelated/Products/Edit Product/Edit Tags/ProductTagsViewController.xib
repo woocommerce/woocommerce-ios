@@ -11,6 +11,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProductTagsViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
                 <outlet property="tableView" destination="zVJ-8z-2vs" id="KHA-P7-8J7"/>
+                <outlet property="textView" destination="6Wz-Zl-b7p" id="3gD-hq-Ybw"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -19,20 +20,46 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="zVJ-8z-2vs">
-                    <rect key="frame" x="0.0" y="44" width="414" height="818"/>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ip2-5h-wvk" userLabel="Container View">
+                    <rect key="frame" x="0.0" y="68" width="414" height="44"/>
+                    <subviews>
+                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="6Wz-Zl-b7p">
+                            <rect key="frame" x="16" y="0.0" width="382" height="44"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                            <constraints>
+                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="44" id="OhC-fQ-2OT"/>
+                            </constraints>
+                            <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                            <color key="textColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                        </textView>
+                    </subviews>
                     <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="6Wz-Zl-b7p" secondAttribute="trailing" constant="16" id="K00-GM-Q5R"/>
+                        <constraint firstAttribute="bottom" secondItem="6Wz-Zl-b7p" secondAttribute="bottom" id="KVO-Tf-MMf"/>
+                        <constraint firstItem="6Wz-Zl-b7p" firstAttribute="top" secondItem="Ip2-5h-wvk" secondAttribute="top" id="WVv-UX-Zxg"/>
+                        <constraint firstAttribute="height" priority="250" constant="44" id="cff-Qk-3wb"/>
+                        <constraint firstItem="6Wz-Zl-b7p" firstAttribute="leading" secondItem="Ip2-5h-wvk" secondAttribute="leading" constant="16" id="csr-W2-Fgm"/>
+                    </constraints>
+                </view>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="zVJ-8z-2vs">
+                    <rect key="frame" x="0.0" y="112" width="414" height="750"/>
                 </tableView>
             </subviews>
             <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
             <constraints>
-                <constraint firstItem="zVJ-8z-2vs" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="9hP-i8-HbC"/>
-                <constraint firstItem="zVJ-8z-2vs" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="OWa-7l-VSF"/>
-                <constraint firstItem="zVJ-8z-2vs" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="VDG-jj-yGJ"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="zVJ-8z-2vs" secondAttribute="bottom" id="gyS-xy-BIt"/>
+                <constraint firstItem="zVJ-8z-2vs" firstAttribute="top" secondItem="Ip2-5h-wvk" secondAttribute="bottom" id="51P-yI-3FR"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="Ip2-5h-wvk" secondAttribute="trailing" id="5AZ-8i-UZP"/>
+                <constraint firstItem="zVJ-8z-2vs" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="Chb-li-7pc"/>
+                <constraint firstItem="zVJ-8z-2vs" firstAttribute="bottom" secondItem="fnl-2z-Ty3" secondAttribute="bottom" id="ECp-36-O08"/>
+                <constraint firstItem="Ip2-5h-wvk" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="24" id="REa-GU-ALk"/>
+                <constraint firstItem="zVJ-8z-2vs" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="eeY-QK-my7"/>
+                <constraint firstItem="Ip2-5h-wvk" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="oUV-Mg-GkZ"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
-            <point key="canvasLocation" x="132" y="136"/>
+            <point key="canvasLocation" x="131.8840579710145" y="135.9375"/>
         </view>
     </objects>
 </document>

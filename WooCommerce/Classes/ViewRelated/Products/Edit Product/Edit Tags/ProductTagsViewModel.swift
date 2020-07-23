@@ -130,10 +130,7 @@ private extension ProductTagsViewModel {
     ///
     func updateFetchedTagsAndSections() {
         fetchedTags = resultController.fetchedObjects
-        var rows: [Row] = [.tagsTextField]
-        for _ in fetchedTags {
-            rows.append(.tag)
-        }
+        let rows: [Row] = fetchedTags.map { _ in Row.tag }
         sections = [Section(rows: rows)]
     }
 }
@@ -146,7 +143,6 @@ extension ProductTagsViewModel {
     ///
     enum Row {
         /// Listed in the order they appear on screen
-        case tagsTextField
         case tag
 
         /// Returns the Row's Reuse Identifier
@@ -159,8 +155,6 @@ extension ProductTagsViewModel {
         ///
         var cellType: UITableViewCell.Type {
             switch self {
-            case .tagsTextField:
-                return TextFieldTableViewCell.self
             case .tag:
                 return BasicTableViewCell.self
             }

@@ -1,6 +1,6 @@
 import Foundation
 
-/// Mapper: OrderStats
+/// Mapper: Leaderboard List
 ///
 struct LeaderboardsMapper: Mapper {
 

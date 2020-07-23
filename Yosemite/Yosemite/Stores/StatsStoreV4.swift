@@ -151,11 +151,11 @@ public extension StatsStoreV4 {
 
                                     switch result {
                                     case .success(let leaderboards):
-                                        self.convertLeaderboarsAndStoreTopEearners(siteID: siteID,
-                                                                                   granularity: timeRange.topEarnerStatsGranularity,
-                                                                                   date: latestDateToInclude,
-                                                                                   leaderboards: leaderboards,
-                                                                                   onCompletion: onCompletion)
+                                        self.convertAndsStoreLeaderboarsIntoTopEarners(siteID: siteID,
+                                                                                       granularity: timeRange.topEarnerStatsGranularity,
+                                                                                       date: latestDateToInclude,
+                                                                                       leaderboards: leaderboards,
+                                                                                       onCompletion: onCompletion)
 
                                     case .failure(let error):
                                         onCompletion(error)
@@ -301,14 +301,14 @@ extension StatsStoreV4 {
 //
 private extension StatsStoreV4 {
 
-    /// Converts and stores a top-product `leaderboard` into a `StatsTopEearner`
+    /// Converts and stores a top-product `leaderboard` into a `StatsTopEarner`
     /// Since  a `leaderboard` does not containt  the necesary product information, this method fetches the related product before starting the convertion.
     ///
-    private func convertLeaderboarsAndStoreTopEearners(siteID: Int64,
-                                                       granularity: StatGranularity,
-                                                       date: Date,
-                                                       leaderboards: [Leaderboard],
-                                                       onCompletion: @escaping (Error?) -> Void) {
+    private func convertAndsStoreLeaderboarsIntoTopEarners(siteID: Int64,
+                                                           granularity: StatGranularity,
+                                                           date: Date,
+                                                           leaderboards: [Leaderboard],
+                                                           onCompletion: @escaping (Error?) -> Void) {
 
         // API guarantees a fixed index for the top products leaderboard
         let topProducts = leaderboards[Constants.topProductsIndex]
@@ -319,7 +319,10 @@ private extension StatsStoreV4 {
 
             switch topProductsResult {
             case .success(let products):
-                self.handleTopProductsAndStoreTopEearners(granularity: granularity, date: date, topProducts: topProducts, storedProducts: products)
+                self.mergeAndStoreTopProductsAndStoredProductsIntoTopEarners(granularity: granularity,
+                                                                             date: date,
+                                                                             topProducts: topProducts,
+                                                                             storedProducts: products)
                 onCompletion(nil)
 
             case .failure(let error):
@@ -366,9 +369,12 @@ private extension StatsStoreV4 {
         return products.map { $0.toReadOnly() }
     }
 
-    /// Merges and stored a top-product leaderboard with an array of stored products into  a `StatsTopEearner` object
+    /// Merges and stored a top-product leaderboard with an array of stored products into  a `StatsTopEarner` object
     ///
-    private func handleTopProductsAndStoreTopEearners(granularity: StatGranularity, date: Date, topProducts: Leaderboard, storedProducts: [Product]) {
+    private func mergeAndStoreTopProductsAndStoredProductsIntoTopEarners(granularity: StatGranularity,
+                                                                         date: Date,
+                                                                         topProducts: Leaderboard,
+                                                                         storedProducts: [Product]) {
         let statsDate = StatsStore.buildDateString(from: date, with: granularity)
         let statsItems = LeaderboardStatsConverter.topEearnerStatItems(from: topProducts, using: storedProducts)
         let stats = TopEarnerStats(date: statsDate,
@@ -377,7 +383,7 @@ private extension StatsStoreV4 {
                                    items: statsItems
         )
 
-        self.upsertStoredTopEarnerStats(readOnlyStats: stats)
+        upsertStoredTopEarnerStats(readOnlyStats: stats)
     }
 }
 

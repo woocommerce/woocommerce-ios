@@ -22,6 +22,12 @@ enum FeatureFlag: Int {
     ///
     case editProductsRelease3
 
+    /// To be used for the In-app Feedback tasks until all tasks are completed.
+    ///
+    /// - SeeAlso: https://github.com/woocommerce/woocommerce-ios/projects/18
+    ///
+    case inAppFeedback
+
     /// Readonly Product variants
     ///
     case readonlyProductVariants

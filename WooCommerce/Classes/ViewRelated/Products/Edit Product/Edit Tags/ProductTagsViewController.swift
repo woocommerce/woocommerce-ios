@@ -8,6 +8,7 @@ final class ProductTagsViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var textView: UITextView!
+    @IBOutlet var separatorView: UIView!
 
     private var product: Product
 
@@ -61,6 +62,7 @@ final class ProductTagsViewController: UIViewController {
         configureNavigationBar()
         configureMainView()
         configureTextView()
+        configureSeparator()
         configureTableView()
         startListeningToNotifications()
 
@@ -133,6 +135,10 @@ private extension ProductTagsViewController {
         textView.textContainerInset = UIEdgeInsets(top: 11, left: 0, bottom: 11, right: 0)
         textView.accessibilityLabel = Strings.accessibilityLabel
         textView.accessibilityIdentifier = "add-tags"
+    }
+
+    func configureSeparator() {
+        separatorView.backgroundColor = .divider
     }
 
     func configureTableView() {

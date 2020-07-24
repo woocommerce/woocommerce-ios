@@ -32,6 +32,13 @@ final class ProductTagsViewController: UIViewController {
         return ResultsController<StorageProductTag>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
+    /// Keyboard management
+    ///
+    private lazy var keyboardFrameObserver: KeyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
+        self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
+    }
+
+
     // Completion callback
     //
     typealias Completion = (_ tags: [ProductTag]) -> Void
@@ -55,6 +62,7 @@ final class ProductTagsViewController: UIViewController {
         configureMainView()
         configureTextView()
         configureTableView()
+        startListeningToNotifications()
 
         textView.text = normalizeInitialTags(tags: originalTags)
         textViewDidChange(textView)
@@ -93,7 +101,7 @@ private extension ProductTagsViewController {
                                                          target: self,
                                                          action: #selector(addTagsRemotely)),
                                          animated: true)
-        navigationItem.rightBarButtonItem?.isEnabled = textView?.text.isNotEmpty == true
+        navigationItem.rightBarButtonItem?.isEnabled = true
     }
 
     func configureRightButtonItemAsSpinner() {
@@ -166,6 +174,22 @@ extension ProductTagsViewController {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
             self?.navigationController?.popViewController(animated: true)
         })
+    }
+}
+
+// MARK: - Keyboard management
+//
+private extension ProductTagsViewController {
+    /// Registers for all of the related Notifications
+    ///
+    func startListeningToNotifications() {
+        keyboardFrameObserver.startObservingKeyboardFrame()
+    }
+}
+
+extension ProductTagsViewController: KeyboardScrollable {
+    var scrollable: UIScrollView {
+        return tableView
     }
 }
 

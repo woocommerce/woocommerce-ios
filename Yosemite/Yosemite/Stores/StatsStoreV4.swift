@@ -151,7 +151,7 @@ public extension StatsStoreV4 {
 
                                     switch result {
                                     case .success(let leaderboards):
-                                        self.convertAndsStoreLeaderboarsIntoTopEarners(siteID: siteID,
+                                        self.convertAndStoreLeaderboardsIntoTopEarners(siteID: siteID,
                                                                                        granularity: timeRange.topEarnerStatsGranularity,
                                                                                        date: latestDateToInclude,
                                                                                        leaderboards: leaderboards,

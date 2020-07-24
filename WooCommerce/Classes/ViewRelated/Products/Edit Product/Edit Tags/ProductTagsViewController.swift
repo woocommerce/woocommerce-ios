@@ -392,8 +392,8 @@ private class FailureDataSource: NSObject, ProductTagsDataSource {
     var selectedTags = [String]()
     var searchQuery = ""
 
-    static let cellIdentifier = "Failure"
-    typealias Cell = UITableViewCell
+    static let cellIdentifier = BasicTableViewCell.reuseIdentifier
+    typealias Cell = BasicTableViewCell
 
     func numberOfSections(in tableView: UITableView) -> Int {
         return 0

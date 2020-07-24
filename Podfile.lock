@@ -105,6 +105,7 @@ DEPENDENCIES:
   - Gridicons (~> 1.0)
   - KeychainAccess (~> 3.2)
   - Kingfisher (~> 5.11.0)
+  - lottie-ios
   - Sourcery (~> 0.18)
   - WordPress-Editor-iOS (~> 1.11.0)
   - WordPressAuthenticator (= 1.17.0)
@@ -198,6 +199,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: c266e08211b58bd5f678df487b47b59bfb513599
+PODFILE CHECKSUM: 2c3fe04951e0629333e5a03737b42b86d2a99eda
 
 COCOAPODS: 1.9.1

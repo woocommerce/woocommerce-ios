@@ -125,10 +125,14 @@ private extension ProductListViewController {
     /// Displays the product detail screen for the provided ProductID
     ///
     func productWasPressed(for productID: Int64) {
-        let loaderViewController = ProductLoaderViewController(productID: productID,
-                                                               siteID: viewModel.order.siteID)
-        let navController = WooNavigationController(rootViewController: loaderViewController)
+
+        let viewController = LottieTestViewController()
+        let navController = WooNavigationController(rootViewController: viewController)
         present(navController, animated: true, completion: nil)
+//        let loaderViewController = ProductLoaderViewController(productID: productID,
+//                                                               siteID: viewModel.order.siteID)
+//        let navController = WooNavigationController(rootViewController: loaderViewController)
+//        present(navController, animated: true, completion: nil)
     }
 }
 

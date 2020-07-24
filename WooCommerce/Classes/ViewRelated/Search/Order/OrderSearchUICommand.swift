@@ -1,4 +1,5 @@
 import Yosemite
+import Lottie
 
 /// Implementation of `SearchUICommand` for Order search.
 final class OrderSearchUICommand: SearchUICommand {
@@ -45,6 +46,7 @@ final class OrderSearchUICommand: SearchUICommand {
                                        comment: "Message for empty Orders search results. The %@ is a placeholder for the text entered by the user.")
         let message = NSMutableAttributedString(string: format)
         message.replaceFirstOccurrence(of: "%@", with: boldSearchKeyword)
+
 
         viewController.configure(.simple(message: message, image: .emptySearchResultsImage))
     }

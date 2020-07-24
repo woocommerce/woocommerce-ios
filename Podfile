@@ -57,6 +57,7 @@ target 'WooCommerce' do
   pod 'ZendeskSupportSDK', '~> 5.0'
   pod 'Kingfisher', '~> 5.11.0'
   pod 'Wormholy', '~> 1.6.0', :configurations => ['Debug']
+  pod 'lottie-ios'
 
   # Unit Tests
   # ==========

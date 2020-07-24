@@ -313,6 +313,12 @@
 		456417F6247D5643001203F6 /* UITableView+HelpersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456417F5247D5643001203F6 /* UITableView+HelpersTests.swift */; };
 		456CB50D2444BFAC00992A05 /* ProductPurchaseNoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456CB50B2444BFAC00992A05 /* ProductPurchaseNoteViewController.swift */; };
 		456CB50E2444BFAC00992A05 /* ProductPurchaseNoteViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 456CB50C2444BFAC00992A05 /* ProductPurchaseNoteViewController.xib */; };
+		456F71CB24CAD6B100472EC1 /* prologue-stats.json in Resources */ = {isa = PBXBuildFile; fileRef = 456F71C724CAD6B000472EC1 /* prologue-stats.json */; };
+		456F71CC24CAD6B100472EC1 /* prologue-orders.json in Resources */ = {isa = PBXBuildFile; fileRef = 456F71C824CAD6B100472EC1 /* prologue-orders.json */; };
+		456F71CD24CAD6B100472EC1 /* prologue-reviews.json in Resources */ = {isa = PBXBuildFile; fileRef = 456F71C924CAD6B100472EC1 /* prologue-reviews.json */; };
+		456F71CE24CAD6B100472EC1 /* prologue-products.json in Resources */ = {isa = PBXBuildFile; fileRef = 456F71CA24CAD6B100472EC1 /* prologue-products.json */; };
+		456F71D124CAD71900472EC1 /* LottieTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456F71CF24CAD71900472EC1 /* LottieTestViewController.swift */; };
+		456F71D224CAD71900472EC1 /* LottieTestViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 456F71D024CAD71900472EC1 /* LottieTestViewController.xib */; };
 		457151AB243B6E8000EB2DFA /* ProductSlugViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457151A9243B6E8000EB2DFA /* ProductSlugViewController.swift */; };
 		457151AC243B6E8000EB2DFA /* ProductSlugViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 457151AA243B6E8000EB2DFA /* ProductSlugViewController.xib */; };
 		4580BA7423F192D400B5F764 /* ProductSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4580BA7223F192D400B5F764 /* ProductSettingsViewController.swift */; };
@@ -1199,6 +1205,12 @@
 		456417F5247D5643001203F6 /* UITableView+HelpersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+HelpersTests.swift"; sourceTree = "<group>"; };
 		456CB50B2444BFAC00992A05 /* ProductPurchaseNoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductPurchaseNoteViewController.swift; sourceTree = "<group>"; };
 		456CB50C2444BFAC00992A05 /* ProductPurchaseNoteViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductPurchaseNoteViewController.xib; sourceTree = "<group>"; };
+		456F71C724CAD6B000472EC1 /* prologue-stats.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "prologue-stats.json"; sourceTree = "<group>"; };
+		456F71C824CAD6B100472EC1 /* prologue-orders.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "prologue-orders.json"; sourceTree = "<group>"; };
+		456F71C924CAD6B100472EC1 /* prologue-reviews.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "prologue-reviews.json"; sourceTree = "<group>"; };
+		456F71CA24CAD6B100472EC1 /* prologue-products.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "prologue-products.json"; sourceTree = "<group>"; };
+		456F71CF24CAD71900472EC1 /* LottieTestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieTestViewController.swift; sourceTree = "<group>"; };
+		456F71D024CAD71900472EC1 /* LottieTestViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LottieTestViewController.xib; sourceTree = "<group>"; };
 		457151A9243B6E8000EB2DFA /* ProductSlugViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSlugViewController.swift; sourceTree = "<group>"; };
 		457151AA243B6E8000EB2DFA /* ProductSlugViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductSlugViewController.xib; sourceTree = "<group>"; };
 		4580BA7223F192D400B5F764 /* ProductSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSettingsViewController.swift; sourceTree = "<group>"; };
@@ -1871,12 +1883,18 @@
 				4592A54824BF58A200BC3DE0 /* Edit Tags */,
 				02162724237963AF000208D2 /* ProductFormViewController.swift */,
 				02162725237963AF000208D2 /* ProductFormViewController.xib */,
+				456F71CF24CAD71900472EC1 /* LottieTestViewController.swift */,
+				456F71D024CAD71900472EC1 /* LottieTestViewController.xib */,
 				02F5F80F24613C930000613A /* ProductFormViewController+PresentationStyle.swift */,
 				02162728237965E8000208D2 /* ProductFormTableViewModel.swift */,
 				0216272A2379662C000208D2 /* DefaultProductFormTableViewModel.swift */,
 				02F4F50A237AEB8A00E13A9C /* ProductFormTableViewDataSource.swift */,
 				025B1747237A92D800C780B4 /* ProductFormSection+ReusableTableRow.swift */,
 				025B1749237AA49D00C780B4 /* Product+ProductForm.swift */,
+				456F71C824CAD6B100472EC1 /* prologue-orders.json */,
+				456F71CA24CAD6B100472EC1 /* prologue-products.json */,
+				456F71C924CAD6B100472EC1 /* prologue-reviews.json */,
+				456F71C724CAD6B000472EC1 /* prologue-stats.json */,
 				4580BA7123F192A300B5F764 /* Product Settings */,
 				0225C42B2477D0D500C5B4F0 /* ProductFormViewModel.swift */,
 			);
@@ -4352,6 +4370,7 @@
 				0262DA5923A23AC80029AF30 /* ProductShippingSettingsViewController.xib in Resources */,
 				74E0F441211C9AE600A79CCE /* PeriodDataViewController.xib in Resources */,
 				B5F571B021BF149D0010D1B8 /* o.caf in Resources */,
+				456F71CD24CAD6B100472EC1 /* prologue-reviews.json in Resources */,
 				0212275E2449728A0042161F /* BottomSheetListSelectorSectionHeaderView.xib in Resources */,
 				022BF7FE23B9D708000A1DFB /* InProgressViewController.xib in Resources */,
 				45AE582D230D9D35001901E3 /* OrderNoteHeaderTableViewCell.xib in Resources */,
@@ -4382,6 +4401,7 @@
 				57CFCD2A2488496F003F51EC /* PrimarySectionHeaderView.xib in Resources */,
 				CE22E3FC21714776005A6BEF /* TopLeftImageTableViewCell.xib in Resources */,
 				B5D1AFB420BC445A00DB0E8C /* Images.xcassets in Resources */,
+				456F71CB24CAD6B100472EC1 /* prologue-stats.json in Resources */,
 				CEE005F62076C4040079161F /* Orders.storyboard in Resources */,
 				CE85FD5C20F7A7740080B73E /* TableFooterView.xib in Resources */,
 				B57C744C20F564B400EEFC87 /* EmptyStoresTableViewCell.xib in Resources */,
@@ -4398,6 +4418,7 @@
 				B5F355F121CD504400A7077A /* SearchViewController.xib in Resources */,
 				CE1EC8F020B8A408009762BF /* OrderNoteTableViewCell.xib in Resources */,
 				265BCA0E2430E771004E53EE /* ProductCategoryTableViewCell.xib in Resources */,
+				456F71CC24CAD6B100472EC1 /* prologue-orders.json in Resources */,
 				B55D4BFD20B5CDE700D7A50F /* replace_secrets.rb in Resources */,
 				020BE74E23B1F5EB007FE54C /* TitleAndTextFieldTableViewCell.xib in Resources */,
 				4580BA7523F192D400B5F764 /* ProductSettingsViewController.xib in Resources */,
@@ -4460,7 +4481,9 @@
 				4592A54C24BF58DD00BC3DE0 /* ProductTagsViewController.xib in Resources */,
 				CE855365209BA6A700938BDC /* CustomerInfoTableViewCell.xib in Resources */,
 				74F9E9CD214C036400A3F2D2 /* NoPeriodDataTableViewCell.xib in Resources */,
+				456F71D224CAD71900472EC1 /* LottieTestViewController.xib in Resources */,
 				D83F5931225B269C00626E75 /* DatePickerTableViewCell.xib in Resources */,
+				456F71CE24CAD6B100472EC1 /* prologue-products.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4801,6 +4824,7 @@
 				451C77732404534000413F73 /* ProductSettingsSections.swift in Sources */,
 				265D909B2446657B00D66F0F /* ProductCategoryViewModelBuilder.swift in Sources */,
 				576F92222423C3C0003E5FEF /* OrdersViewModel.swift in Sources */,
+				456F71D124CAD71900472EC1 /* LottieTestViewController.swift in Sources */,
 				D8915DC32372C9EF00F63762 /* UIColor+ColorStudio.swift in Sources */,
 				024DF31623742BB6006658FE /* AztecStrikethroughFormatBarCommand.swift in Sources */,
 				02817B39242B34560050AD8B /* ToolbarView.swift in Sources */,

@@ -475,9 +475,9 @@ extension ProductsViewController: UITableViewDelegate {
 
 private extension ProductsViewController {
     func didSelectProduct(product: Product, isEditProductsEnabled: Bool) {
-        ProductDetailsFactory.productDetails(product: product, presentationStyle: .navigationStack) { [weak self] viewController in
-            self?.navigationController?.pushViewController(viewController, animated: true)
-        }
+        let viewController = LottieTestViewController()
+        let navController = WooNavigationController(rootViewController: viewController)
+        present(navController, animated: true, completion: nil)
     }
 }
 

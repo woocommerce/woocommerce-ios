@@ -13,7 +13,10 @@ final class ProductTagsViewController: UIViewController {
 
     private let originalTags: [String]
 
-    private var fetchedTags: [ProductTag] = []
+    private var fetchedTags: [ProductTag] {
+        try? resultController.performFetch()
+        return resultController.fetchedObjects
+    }
 
     private var dataSource: ProductTagsDataSource = LoadingDataSource() {
         didSet {
@@ -55,8 +58,6 @@ final class ProductTagsViewController: UIViewController {
 
         textView.text = normalizeInitialTags(tags: originalTags)
         textViewDidChange(textView)
-
-        configureRightBarButtomitemAsSave()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -141,6 +142,33 @@ private extension ProductTagsViewController {
     }
 }
 
+// MARK: - Navigation actions handling
+//
+extension ProductTagsViewController {
+
+    override func shouldPopOnBackButton() -> Bool {
+        if hasUnsavedChanges() {
+            presentBackNavigationActionSheet()
+            return false
+        }
+        return true
+    }
+
+    func hasUnsavedChanges() -> Bool {
+        return product.tags.sorted() != mergeTags(tags: allTags, fetchedTags: fetchedTags).sorted()
+    }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        return shouldPopOnBackButton()
+    }
+
+    private func presentBackNavigationActionSheet() {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        })
+    }
+}
+
 // MARK: - Synchronize Tags
 //
 private extension ProductTagsViewController {
@@ -153,8 +181,6 @@ private extension ProductTagsViewController {
                 return
             }
 
-            try? self?.resultController.performFetch()
-            self?.fetchedTags = self?.resultController.fetchedObjects ?? []
             if let tagNames = self?.fetchedTags.map({ $0.name }) {
                 self?.tagsLoaded(tags: tagNames)
             }
@@ -178,8 +204,8 @@ private extension ProductTagsViewController {
             }
             self.configureRightBarButtomitemAsSave()
             switch result {
-            case .success(let tags):
-                let mergedTags = self.mergeTags(tags: self.allTags, fetchedTags: self.fetchedTags, tagsAddedRemotely: tags)
+            case .success:
+                let mergedTags = self.mergeTags(tags: self.allTags, fetchedTags: self.fetchedTags)
                 self.onCompletion(mergedTags)
             case .failure(let error):
                 self.displayErrorAlert(error: error)
@@ -260,17 +286,12 @@ private extension ProductTagsViewController {
         updateSuggestions()
     }
 
-    func mergeTags(tags: [String], fetchedTags: [ProductTag], tagsAddedRemotely: [ProductTag]) -> [ProductTag] {
+    func mergeTags(tags: [String], fetchedTags: [ProductTag]) -> [ProductTag] {
         var finalTags: [ProductTag] = []
         for tag in tags {
             for fetchedTag in fetchedTags {
                 if tag.lowercased() == fetchedTag.name.lowercased() {
                     finalTags.append(fetchedTag)
-                }
-            }
-            for tagAddedRemotely in tagsAddedRemotely {
-                if tag.lowercased() == tagAddedRemotely.name.lowercased() {
-                    finalTags.append(tagAddedRemotely)
                 }
             }
         }

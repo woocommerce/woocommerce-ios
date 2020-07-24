@@ -309,6 +309,7 @@ extension ProductTagsViewController: UITextViewDelegate {
         }
         normalizeText()
         updateSuggestions()
+        configureRightBarButtomitemAsSave()
     }
 
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {

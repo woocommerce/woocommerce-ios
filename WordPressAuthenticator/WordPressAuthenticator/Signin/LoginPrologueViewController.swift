@@ -227,6 +227,19 @@ class LoginPrologueViewController: LoginViewController {
     
 }
 
+// MARK: - LoginFacadeDelegate
+
+extension LoginPrologueViewController {
+
+    // Used by SIWA when logging with with a passwordless, 2FA account.
+    //
+    func needsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
+        configureViewLoading(false)
+        socialNeedsMultifactorCode(forUserID: userID, andNonceInfo: nonceInfo)
+    }
+
+}
+
 // MARK: - AppleAuthenticatorDelegate
 
 extension LoginPrologueViewController: AppleAuthenticatorDelegate {

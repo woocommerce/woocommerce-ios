@@ -460,8 +460,8 @@ private extension ProductStore {
         let siteID = readOnlyProduct.siteID
 
         // Removes all the tags first.
-        storageProduct.tagsArray.forEach { existingStorageTag in
-            storage.deleteObject(existingStorageTag)
+        for tag in storageProduct.tagsArray {
+            storageProduct.removeFromTags(tag)
         }
 
         // Inserts the tags from the read-only product.

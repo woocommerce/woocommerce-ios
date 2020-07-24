@@ -1,6 +1,6 @@
 import UIKit
 import Yosemite
-import WordPressUI
+
 
 /// ProductTagsViewController: Displays the list of ProductTag associated to the active Site and to the specific product.
 ///
@@ -53,6 +53,8 @@ final class ProductTagsViewController: UIViewController {
 
         textView.text = normalizeInitialTags(tags: originalTags)
         textViewDidChange(textView)
+
+        configureRightBarButtomitemAsSave()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -170,8 +172,8 @@ private extension ProductTagsViewController {
         let action = ProductTagAction.addProductTags(siteID: product.siteID, tags: allTags) { [weak self] (result) in
             self?.configureRightBarButtomitemAsSave()
             switch result {
-            case .success(let category):
-                self?.onCompletion(category)
+            case .success(let tags):
+                self?.onCompletion(tags)
             case .failure(let error):
                 self?.displayErrorAlert(error: error)
             }
@@ -241,7 +243,8 @@ private extension ProductTagsViewController {
     }
 
     var allTags: [String] {
-        return tagsInField.filter({ !$0.isEmpty })
+        let tags = tagsInField.filter({ !$0.isEmpty })
+        return tags
     }
 
     func complete(tag: String) {

@@ -304,7 +304,7 @@ private extension StatsStoreV4 {
     /// Converts and stores a top-product `leaderboard` into a `StatsTopEarner`
     /// Since  a `leaderboard` does not containt  the necesary product information, this method fetches the related product before starting the convertion.
     ///
-    func convertAndsStoreLeaderboarsIntoTopEarners(siteID: Int64,
+    func convertAndStoreLeaderboardsIntoTopEarners(siteID: Int64,
                                                            granularity: StatGranularity,
                                                            date: Date,
                                                            leaderboards: [Leaderboard],
@@ -372,14 +372,14 @@ private extension StatsStoreV4 {
         return products.map { $0.toReadOnly() }
     }
 
-    /// Merges and stored a top-product leaderboard with an array of stored products into  a `StatsTopEarner` object
+    /// Merges and stores a top-product leaderboard with an array of stored products into  a `TopEarnerStats` object
     ///
     func mergeAndStoreTopProductsAndStoredProductsIntoTopEarners(granularity: StatGranularity,
                                                                          date: Date,
                                                                          topProducts: Leaderboard,
                                                                          storedProducts: [Product]) {
         let statsDate = StatsStore.buildDateString(from: date, with: granularity)
-        let statsItems = LeaderboardStatsConverter.topEearnerStatsItems(from: topProducts, using: storedProducts)
+        let statsItems = LeaderboardStatsConverter.topEarnerStatsItems(from: topProducts, using: storedProducts)
         let stats = TopEarnerStats(date: statsDate,
                                    granularity: granularity,
                                    limit: String(Constants.defaultTopEarnerStatsLimit),

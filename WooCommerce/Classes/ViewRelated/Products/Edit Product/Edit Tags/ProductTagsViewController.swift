@@ -13,6 +13,8 @@ final class ProductTagsViewController: UIViewController {
 
     private let originalTags: [String]
 
+    private var fetchedTags: [ProductTag] = []
+
     private var dataSource: ProductTagsDataSource = LoadingDataSource() {
         didSet {
             tableView.dataSource = dataSource
@@ -152,7 +154,8 @@ private extension ProductTagsViewController {
             }
 
             try? self?.resultController.performFetch()
-            if let tagNames = self?.resultController.fetchedObjects.map({ $0.name }) {
+            self?.fetchedTags = self?.resultController.fetchedObjects ?? []
+            if let tagNames = self?.fetchedTags.map({ $0.name }) {
                 self?.tagsLoaded(tags: tagNames)
             }
         }
@@ -170,18 +173,20 @@ private extension ProductTagsViewController {
         configureRightButtonItemAsSpinner()
 
         let action = ProductTagAction.addProductTags(siteID: product.siteID, tags: allTags) { [weak self] (result) in
-            self?.configureRightBarButtomitemAsSave()
+            guard let self = self else {
+                return
+            }
+            self.configureRightBarButtomitemAsSave()
             switch result {
             case .success(let tags):
-                self?.onCompletion(tags)
+                let mergedTags = self.mergeTags(tags: self.allTags, fetchedTags: self.fetchedTags, tagsAddedRemotely: tags)
+                self.onCompletion(mergedTags)
             case .failure(let error):
-                self?.displayErrorAlert(error: error)
+                self.displayErrorAlert(error: error)
             }
         }
         ServiceLocator.stores.dispatch(action)
     }
-
-
 
 }
 
@@ -253,6 +258,23 @@ private extension ProductTagsViewController {
         tags.append("")
         textView.text = tags.joined(separator: ", ")
         updateSuggestions()
+    }
+
+    func mergeTags(tags: [String], fetchedTags: [ProductTag], tagsAddedRemotely: [ProductTag]) -> [ProductTag] {
+        var finalTags: [ProductTag] = []
+        for tag in tags {
+            for fetchedTag in fetchedTags {
+                if tag.lowercased() == fetchedTag.name.lowercased() {
+                    finalTags.append(fetchedTag)
+                }
+            }
+            for tagAddedRemotely in tagsAddedRemotely {
+                if tag.lowercased() == tagAddedRemotely.name.lowercased() {
+                    finalTags.append(tagAddedRemotely)
+                }
+            }
+        }
+        return finalTags
     }
 }
 

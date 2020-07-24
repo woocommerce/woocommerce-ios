@@ -12,10 +12,25 @@ final class TextFieldTableViewCell: UITableViewCell {
 	private var secureTextEntryToggle: UIButton?
 	private var secureTextEntryImageVisible: UIImage?
 	private var secureTextEntryImageHidden: UIImage?
+	private var textfieldStyle: TextFieldStyle = .url
 
     private var hairlineBorderWidth: CGFloat {
         return 1.0 / UIScreen.main.scale
     }
+
+	/// Register an action for the SiteAddress URL textfield.
+	/// - Note: we have to manually add an action to the textfield
+	///	        because the delegate method `textFieldDidChangeSelection(_ textField: UITextField)`
+	///         is only available to iOS 13+. When we no longer support iOS 12,
+	///			`registerTextFieldAction`, `textFieldDidChangeSelection`, and `onChangeSelectionHandler` can
+	///			be deleted in favor of adding the delegate method to SiteAddressViewController.
+	@IBAction func registerTextFieldAction() {
+		onChangeSelectionHandler?(textField)
+	}
+
+	/// Internal properties.
+	///
+	@objc var onePasswordButton: UIButton!
 
     /// Public properties.
     ///
@@ -26,6 +41,8 @@ final class TextFieldTableViewCell: UITableViewCell {
 		}
 	}
 
+	public var onChangeSelectionHandler: ((_ sender: UITextField) -> Void)?
+	public var onePasswordHandler: (() -> Void)?
     public static let reuseIdentifier = "TextFieldTableViewCell"
 
     override func awakeFromNib() {
@@ -39,6 +56,7 @@ final class TextFieldTableViewCell: UITableViewCell {
 	/// - Parameter placeholder: the placeholder text, if any
 	///
     public func configureTextFieldStyle(with style: TextFieldStyle = .url, and placeholder: String?) {
+		textfieldStyle = style
         applyTextFieldStyle(style)
         textField.placeholder = placeholder
     }
@@ -71,9 +89,11 @@ private extension TextFieldTableViewCell {
         case .url:
             textField.keyboardType = .URL
 			textField.returnKeyType = .continue
+			registerTextFieldAction()
 		case .username:
 			textField.keyboardType = .default
 			textField.returnKeyType = .next
+			setupOnePasswordButtonIfNeeded()
 		case .password:
 			textField.keyboardType = .default
 			textField.returnKeyType = .continue
@@ -82,6 +102,31 @@ private extension TextFieldTableViewCell {
 			configureSecureTextEntryToggle()
         }
     }
+
+	/// Call the handler when the textfield changes.
+	///
+	@objc func textFieldDidChangeSelection() {
+		onChangeSelectionHandler?(textField)
+	}
+
+	/// Sets up a 1Password button if 1Password is available and user is on iOS 12.
+	///
+	@objc func setupOnePasswordButtonIfNeeded() {
+		if #available(iOS 13, *) {
+			// no-op, we rely on the key icon in the keyboard to initiate a password manager.
+		} else {
+			let tintColor = WordPressAuthenticator.shared.unifiedStyle?.borderColor ?? WordPressAuthenticator.shared.style.primaryNormalBorderColor
+			// iOS 12 and lower, display the OnePassword button.
+			WPStyleGuide.configureOnePasswordButtonForTextfield(textField,
+																tintColor: tintColor,
+																target: self,
+																selector: #selector(onePasswordTapped(_:)))
+		}
+	}
+
+	@objc func onePasswordTapped(_ sender: UIButton) {
+		onePasswordHandler?()
+	}
 }
 
 

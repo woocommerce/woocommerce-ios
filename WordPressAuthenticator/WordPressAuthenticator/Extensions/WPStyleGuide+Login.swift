@@ -36,7 +36,8 @@ extension WPStyleGuide {
     }
 
     /// Adds a 1password button to a WPWalkthroughTextField, if available
-    ///
+    /// - Note: this is for the old UI.
+	///
     class func configureOnePasswordButtonForTextfield(_ textField: WPWalkthroughTextField, target: NSObject, selector: Selector) {
         guard OnePasswordFacade.isOnePasswordEnabled else {
             return
@@ -44,6 +45,7 @@ extension WPStyleGuide {
 
         let onePasswordButton = UIButton(type: .custom)
         onePasswordButton.setImage(.onePasswordImage, for: .normal)
+		textField.tintColor = WordPressAuthenticator.shared.style.secondaryNormalBorderColor
         onePasswordButton.sizeToFit()
 
         onePasswordButton.accessibilityLabel =
@@ -56,7 +58,8 @@ extension WPStyleGuide {
     }
 
     /// Adds a 1password button to a stack view, if available
-    ///
+    /// - Note: this is for the old UI.
+	///
     class func configureOnePasswordButtonForStackView(_ stack: UIStackView, target: NSObject, selector: Selector) {
         guard OnePasswordFacade.isOnePasswordEnabled else {
             return
@@ -64,11 +67,34 @@ extension WPStyleGuide {
 
         let onePasswordButton = UIButton(type: .custom)
         onePasswordButton.setImage(.onePasswordImage, for: .normal)
+		onePasswordButton.tintColor = WordPressAuthenticator.shared.style.secondaryNormalBorderColor
         onePasswordButton.sizeToFit()
         onePasswordButton.setContentHuggingPriority(.required, for: .horizontal)
         onePasswordButton.setContentCompressionResistancePriority(.required, for: .horizontal)
 
         stack.addArrangedSubview(onePasswordButton)
+
+        onePasswordButton.addTarget(target, action: selector, for: .touchUpInside)
+    }
+
+    /// Adds a 1password button to a UITextField, if available
+    /// - Note: this is for the Unified styles.
+	///
+	class func configureOnePasswordButtonForTextfield(_ textField: UITextField?, tintColor: UIColor?, target: NSObject, selector: Selector) {
+        guard OnePasswordFacade.isOnePasswordEnabled else {
+            return
+        }
+
+        let onePasswordButton = UIButton(type: .custom)
+        onePasswordButton.setImage(.onePasswordImage, for: .normal)
+		onePasswordButton.tintColor = tintColor
+        onePasswordButton.sizeToFit()
+
+        onePasswordButton.accessibilityLabel =
+            NSLocalizedString("Fill with password manager", comment: "The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). ")
+
+        textField?.rightView = onePasswordButton
+        textField?.rightViewMode = .always
 
         onePasswordButton.addTarget(target, action: selector, for: .touchUpInside)
     }
@@ -150,7 +176,7 @@ extension WPStyleGuide {
         } else {
             // Create an attributed string that contains the Google icon + button text.
             googleAttachment.bounds = CGRect(x: 0, y: (NUXButton.titleFont.capHeight - Constants.googleIconButtonSize) / 2,
-                                            width: Constants.googleIconButtonSize, height: Constants.googleIconButtonSize)
+                                             width: Constants.googleIconButtonSize, height: Constants.googleIconButtonSize)
 
             let buttonString = NSMutableAttributedString(attachment: googleAttachment)
             //  Add leading non-breaking spaces to separate the button text from the Google logo.

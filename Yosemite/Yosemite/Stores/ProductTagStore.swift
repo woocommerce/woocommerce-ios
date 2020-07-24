@@ -25,8 +25,8 @@ public final class ProductTagStore: Store {
         }
 
         switch action {
-        case let .synchronizeAllProductTags(siteID, fromPageNumber, onCompletion):
-            synchronizeAllProductTags(siteID: siteID, fromPageNumber: fromPageNumber, onCompletion: onCompletion)
+        case let .synchronizeAllProductTags(siteID, onCompletion):
+            synchronizeAllProductTags(siteID: siteID, onCompletion: onCompletion)
         case let .addProductTags(siteID, tags, onCompletion):
             addProductTags(siteID: siteID, tags: tags, onCompletion: onCompletion)
         case let .deleteProductTags(siteID, ids, onCompletion):

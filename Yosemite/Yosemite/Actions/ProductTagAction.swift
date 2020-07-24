@@ -8,7 +8,7 @@ public enum ProductTagAction: Action {
     /// Synchronizes all ProductTags matching the specified criteria.
     /// `onCompletion` will be invoked when the sync operation finishes.
     ///
-    case synchronizeAllProductTags(siteID: Int64, fromPageNumber: Int = 1, onCompletion: (ProductTagActionError?) -> Void)
+    case synchronizeAllProductTags(siteID: Int64, onCompletion: (ProductTagActionError?) -> Void)
 
 
     /// Create new product tags associated with a given Site ID.

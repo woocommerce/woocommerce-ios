@@ -93,6 +93,7 @@ private extension ProductTagsViewController {
         title = Strings.title
 
         removeNavigationBackBarButtonText()
+        configureRightBarButtomitemAsSave()
     }
 
     func configureRightBarButtomitemAsSave() {
@@ -333,7 +334,6 @@ extension ProductTagsViewController: UITextViewDelegate {
         }
         normalizeText()
         updateSuggestions()
-        configureRightBarButtomitemAsSave()
     }
 
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {

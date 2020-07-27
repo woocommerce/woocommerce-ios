@@ -44,7 +44,6 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
                                 excludedProductIDs: [Int64] = [],
                                 completion: @escaping (Result<[Product], Error>) -> Void) {
         let stringOfExcludedProductIDs = excludedProductIDs.map { String($0) }
-            .filter { !$0.isEmpty }
             .joined(separator: ",")
         let filterParameters = [
             ParameterKey.stockStatus: stockStatus?.rawValue ?? "",
@@ -91,7 +90,6 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         }
 
         let stringOfProductIDs = productIDs.map { String($0) }
-            .filter { !$0.isEmpty }
             .joined(separator: ",")
         let parameters = [
             ParameterKey.include: stringOfProductIDs,
@@ -138,7 +136,6 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
                                excludedProductIDs: [Int64] = [],
                                completion: @escaping ([Product]?, Error?) -> Void) {
         let stringOfExcludedProductIDs = excludedProductIDs.map { String($0) }
-            .filter { !$0.isEmpty }
             .joined(separator: ",")
 
         let parameters = [

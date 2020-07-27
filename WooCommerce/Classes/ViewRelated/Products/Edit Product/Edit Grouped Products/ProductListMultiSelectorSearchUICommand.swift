@@ -41,9 +41,7 @@ final class ProductListMultiSelectorSearchUICommand: SearchUICommand {
         let boldSearchKeyword = NSAttributedString(string: searchKeyword,
                                                    attributes: [.font: EmptyStateViewController.Config.messageFont.bold])
 
-        let format = NSLocalizedString("We're sorry, we couldn't find results for “%@”",
-                                       comment: "Message for empty Products search results. The %@ is a placeholder for the text entered by the user.")
-        let message = NSMutableAttributedString(string: format)
+        let message = NSMutableAttributedString(string: Strings.emptySearchResultsFormat)
         message.replaceFirstOccurrence(of: "%@", with: boldSearchKeyword)
 
         viewController.configure(.simple(message: message, image: .emptySearchResultsImage))
@@ -119,5 +117,8 @@ private extension ProductListMultiSelectorSearchUICommand {
     enum Strings {
         static let cancel = NSLocalizedString("Cancel", comment: "Action title to cancel selecting products to add to a grouped product from search results")
         static let done = NSLocalizedString("Done", comment: "Action title to select products to add to a grouped product from search results")
+        static let emptySearchResultsFormat =
+            NSLocalizedString("We're sorry, we couldn't find results for “%@”",
+                              comment: "Message for empty Products search results. The %@ is a placeholder for the text entered by the user.")
     }
 }

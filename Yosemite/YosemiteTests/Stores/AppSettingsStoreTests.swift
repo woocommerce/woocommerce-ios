@@ -197,7 +197,7 @@ final class AppSettingsStoreTests: XCTestCase {
         try fileStorage?.write(existingSettings, to: expectedGeneralAppSettingsFileURL)
 
         // When
-        var result: Result<Void, Error>?
+        var result: Result<Bool, Error>?
         let action = AppSettingsAction.setInstallationDateIfNecessary(date: date) { aResult in
             result = aResult
         }
@@ -205,6 +205,7 @@ final class AppSettingsStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(try XCTUnwrap(result).isSuccess)
+        XCTAssertTrue(try XCTUnwrap(result).get())
 
         let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
         XCTAssertEqual(date, savedSettings.installationDate)
@@ -227,7 +228,7 @@ final class AppSettingsStoreTests: XCTestCase {
 
         // When
         // Save newerDate. This should be successful but the existingDate should be retained.
-        var result: Result<Void, Error>?
+        var result: Result<Bool, Error>?
         let action = AppSettingsAction.setInstallationDateIfNecessary(date: newerDate) { aResult in
             result = aResult
         }
@@ -235,6 +236,7 @@ final class AppSettingsStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(try XCTUnwrap(result).isSuccess)
+        XCTAssertFalse(try XCTUnwrap(result).get())
 
         let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
         XCTAssertEqual(existingDate, savedSettings.installationDate)
@@ -248,7 +250,7 @@ final class AppSettingsStoreTests: XCTestCase {
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
 
         // When
-        var result: Result<Void, Error>?
+        var result: Result<Bool, Error>?
         let action = AppSettingsAction.setInstallationDateIfNecessary(date: date) { aResult in
             result = aResult
         }
@@ -256,6 +258,7 @@ final class AppSettingsStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(try XCTUnwrap(result).isSuccess)
+        XCTAssertTrue(try XCTUnwrap(result).get())
 
         let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
         XCTAssertEqual(date, savedSettings.installationDate)

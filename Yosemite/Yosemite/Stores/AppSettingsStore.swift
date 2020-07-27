@@ -127,19 +127,22 @@ private extension AppSettingsStore {
     /// Save the `date` in `GeneralAppSettings` but only if the `date` is older than the existing
     /// `GeneralAppSettings.installationDate`.
     ///
-    func setInstallationDateIfNecessary(date: Date, onCompletion: ((Result<Void, Error>) -> Void)) {
+    /// - Parameter onCompletion: The `Result`'s success value will be `true` if the installation
+    ///                           date was changed and `false` if not.
+    ///
+    func setInstallationDateIfNecessary(date: Date, onCompletion: ((Result<Bool, Error>) -> Void)) {
         do {
             let settings = try loadOrCreateGeneralAppSettings()
 
             if let installationDate = settings.installationDate,
                 date > installationDate {
-                return onCompletion(.success(()))
+                return onCompletion(.success(false))
             }
 
             let settingsToSave = GeneralAppSettings(installationDate: date, lastFeedbackDate: settings.lastFeedbackDate)
             try saveGeneralAppSettings(settingsToSave)
 
-            onCompletion(.success(()))
+            onCompletion(.success(true))
         } catch {
             onCompletion(.failure(error))
         }

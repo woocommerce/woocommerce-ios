@@ -5,7 +5,7 @@ import Yosemite
 /// Top-level stats container view controller that consists of a button bar with 4 time ranges.
 /// Each time range tab is managed by a `StoreStatsAndTopPerformersPeriodViewController`.
 ///
-class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripViewController {
+final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripViewController {
 
     // MARK: - DashboardUI protocol
 

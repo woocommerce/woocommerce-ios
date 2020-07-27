@@ -82,14 +82,10 @@ extension GoogleAuthViewController: GoogleAuthenticatorDelegate {
     func googleNeedsMultifactorCode(loginFields: LoginFields) {
         self.loginFields = loginFields
 
-        guard let vc = Login2FAViewController.instantiate(from: .login) else {
-            DDLogError("Failed to navigate from GoogleAuthViewController to Login2FAViewController")
+        guard let vc = TwoFAViewController.instantiate(from: .twoFA) else {
+            DDLogError("Failed to navigate from GoogleAuthViewController to TwoFAViewController")
             return
         }
-
-        vc.loginFields = loginFields
-        vc.dismissBlock = dismissBlock
-        vc.errorToPresent = errorToPresent
 
         navigationController?.pushViewController(vc, animated: true)
     }

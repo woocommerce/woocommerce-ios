@@ -287,13 +287,13 @@ private extension ProductTagsViewController {
 
  */
 private extension ProductTagsViewController {
-    static func extractTags(from string: String) -> [String] {
+    func extractTags(from string: String) -> [String] {
         return string.components(separatedBy: ",")
             .map({ $0.trimmingCharacters(in: .whitespacesAndNewlines) })
     }
 
     var tagsInField: [String] {
-        return ProductTagsViewController.extractTags(from: textView.text)
+        return extractTags(from: textView.text)
     }
 
     var partialTag: String {

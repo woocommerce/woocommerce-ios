@@ -469,7 +469,7 @@ private extension SearchViewController {
             childView.leadingAnchor.constraint(equalTo: tableView.leadingAnchor),
             childView.trailingAnchor.constraint(equalTo: tableView.trailingAnchor),
             childView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
-            childView.bottomAnchor.constraint(equalTo: tableView.bottomAnchor)
+            childView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
 
         childController.didMove(toParent: self)

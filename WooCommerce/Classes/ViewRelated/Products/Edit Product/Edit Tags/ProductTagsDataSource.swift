@@ -12,8 +12,7 @@ class LoadingDataSource: NSObject, ProductTagsDataSource {
     var selectedTags = [String]()
     var searchQuery = ""
 
-    static let cellIdentifier = BasicTableViewCell.reuseIdentifier
-    typealias Cell = BasicTableViewCell
+    private static let cellIdentifier = BasicTableViewCell.reuseIdentifier
 
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -36,8 +35,7 @@ class FailureDataSource: NSObject, ProductTagsDataSource {
     var selectedTags = [String]()
     var searchQuery = ""
 
-    static let cellIdentifier = BasicTableViewCell.reuseIdentifier
-    typealias Cell = BasicTableViewCell
+    private static let cellIdentifier = BasicTableViewCell.reuseIdentifier
 
     func numberOfSections(in tableView: UITableView) -> Int {
         return 0
@@ -56,8 +54,8 @@ class FailureDataSource: NSObject, ProductTagsDataSource {
 }
 
 class SuggestionsDataSource: NSObject, ProductTagsDataSource {
-    static let cellIdentifier = BasicTableViewCell.reuseIdentifier
-    let suggestions: [String]
+    private static let cellIdentifier = BasicTableViewCell.reuseIdentifier
+    private let suggestions: [String]
 
     init(suggestions: [String], selectedTags: [String], searchQuery: String) {
         self.suggestions = suggestions

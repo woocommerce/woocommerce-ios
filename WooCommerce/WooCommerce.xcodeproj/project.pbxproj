@@ -42,6 +42,7 @@
 		020BE77323B4A567007FE54C /* AztecInsertMoreFormatBarCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020BE77223B4A567007FE54C /* AztecInsertMoreFormatBarCommandTests.swift */; };
 		020BE77523B4A7EC007FE54C /* AztecSourceCodeFormatBarCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020BE77423B4A7EC007FE54C /* AztecSourceCodeFormatBarCommandTests.swift */; };
 		020BE77723B4A9D9007FE54C /* AztecLinkFormatBarCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020BE77623B4A9D9007FE54C /* AztecLinkFormatBarCommandTests.swift */; };
+		020C908424C84652001E2BEB /* ProductListMultiSelectorSearchUICommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020C908324C84652001E2BEB /* ProductListMultiSelectorSearchUICommandTests.swift */; };
 		020DD48A23229495005822B1 /* ProductsTabProductTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020DD48923229495005822B1 /* ProductsTabProductTableViewCell.swift */; };
 		020DD48D2322A617005822B1 /* ProductsTabProductViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020DD48C2322A617005822B1 /* ProductsTabProductViewModel.swift */; };
 		020DD48F232392C9005822B1 /* UIViewController+AppReview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020DD48E232392C9005822B1 /* UIViewController+AppReview.swift */; };
@@ -74,6 +75,7 @@
 		021E2A2023AA274700B1DE07 /* ProductBackordersSettingListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021E2A1F23AA274700B1DE07 /* ProductBackordersSettingListSelectorCommandTests.swift */; };
 		021FAFCD2355621E00B99241 /* UIView+SubviewsAxisTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021FAFCC2355621E00B99241 /* UIView+SubviewsAxisTests.swift */; };
 		021FAFCF23556D2B00B99241 /* UIView+SubviewsAxis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021FAFCE23556D2B00B99241 /* UIView+SubviewsAxis.swift */; };
+		021FB44C24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021FB44B24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift */; };
 		0225C42824768A4C00C5B4F0 /* FilterProductListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0225C42724768A4C00C5B4F0 /* FilterProductListViewModelTests.swift */; };
 		0225C42A24768CE900C5B4F0 /* FilterProductListViewModelProductListFilterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0225C42924768CE900C5B4F0 /* FilterProductListViewModelProductListFilterTests.swift */; };
 		0225C42C2477D0D500C5B4F0 /* ProductFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0225C42B2477D0D500C5B4F0 /* ProductFormViewModel.swift */; };
@@ -924,6 +926,7 @@
 		020BE77223B4A567007FE54C /* AztecInsertMoreFormatBarCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecInsertMoreFormatBarCommandTests.swift; sourceTree = "<group>"; };
 		020BE77423B4A7EC007FE54C /* AztecSourceCodeFormatBarCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecSourceCodeFormatBarCommandTests.swift; sourceTree = "<group>"; };
 		020BE77623B4A9D9007FE54C /* AztecLinkFormatBarCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecLinkFormatBarCommandTests.swift; sourceTree = "<group>"; };
+		020C908324C84652001E2BEB /* ProductListMultiSelectorSearchUICommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListMultiSelectorSearchUICommandTests.swift; sourceTree = "<group>"; };
 		020DD48923229495005822B1 /* ProductsTabProductTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsTabProductTableViewCell.swift; sourceTree = "<group>"; };
 		020DD48C2322A617005822B1 /* ProductsTabProductViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsTabProductViewModel.swift; sourceTree = "<group>"; };
 		020DD48E232392C9005822B1 /* UIViewController+AppReview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+AppReview.swift"; sourceTree = "<group>"; };
@@ -956,6 +959,7 @@
 		021E2A1F23AA274700B1DE07 /* ProductBackordersSettingListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductBackordersSettingListSelectorCommandTests.swift; sourceTree = "<group>"; };
 		021FAFCC2355621E00B99241 /* UIView+SubviewsAxisTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SubviewsAxisTests.swift"; sourceTree = "<group>"; };
 		021FAFCE23556D2B00B99241 /* UIView+SubviewsAxis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SubviewsAxis.swift"; sourceTree = "<group>"; };
+		021FB44B24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListMultiSelectorSearchUICommand.swift; sourceTree = "<group>"; };
 		0225C42724768A4C00C5B4F0 /* FilterProductListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductListViewModelTests.swift; sourceTree = "<group>"; };
 		0225C42924768CE900C5B4F0 /* FilterProductListViewModelProductListFilterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterProductListViewModelProductListFilterTests.swift; sourceTree = "<group>"; };
 		0225C42B2477D0D500C5B4F0 /* ProductFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormViewModel.swift; sourceTree = "<group>"; };
@@ -1835,6 +1839,14 @@
 			path = Vendors;
 			sourceTree = "<group>";
 		};
+		020C908224C84638001E2BEB /* Product */ = {
+			isa = PBXGroup;
+			children = (
+				020C908324C84652001E2BEB /* ProductListMultiSelectorSearchUICommandTests.swift */,
+			);
+			path = Product;
+			sourceTree = "<group>";
+		};
 		020DD48B2322A5F9005822B1 /* View Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -1939,6 +1951,7 @@
 			children = (
 				022F7A0124A05F6400012601 /* GroupedProductsViewController.swift */,
 				022F7A0224A05F6400012601 /* GroupedProductsViewController.xib */,
+				021FB44B24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift */,
 				023D1DD024AB2D05002B03A3 /* ProductListSelectorViewController.swift */,
 				02B1AFEB24BC5AE5005DB1E3 /* GroupedProductListSelectorDataSource.swift */,
 				0273707F24C0094500167204 /* ProductListMultiSelectorDataSource.swift */,
@@ -2604,6 +2617,7 @@
 			isa = PBXGroup;
 			children = (
 				573D0ACD2458665C004DE614 /* Order */,
+				020C908224C84638001E2BEB /* Product */,
 			);
 			path = Search;
 			sourceTree = "<group>";
@@ -5159,6 +5173,7 @@
 				02C88775245036D400E4470F /* FilterProductListViewModel.swift in Sources */,
 				02A65301246AA63600755A01 /* ProductDetailsFactory.swift in Sources */,
 				02C8876D24501FAC00E4470F /* FilterListViewController.swift in Sources */,
+				021FB44C24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift in Sources */,
 				45D1CF4523BAC2A500945A36 /* ProductTaxClassListSelectorDataSource.swift in Sources */,
 				6856D31F941A33BAE66F394D /* KeyboardFrameAdjustmentProvider.swift in Sources */,
 				6856DB2E741639716E149967 /* KeyboardStateProvider.swift in Sources */,
@@ -5253,6 +5268,7 @@
 				02EA6BFC2435EC3500FFF90A /* MockImageDownloader.swift in Sources */,
 				45B9C64523A945C0007FC4C5 /* PriceInputFormatterTests.swift in Sources */,
 				453904F523BB8BD5007C4956 /* ProductTaxClassListSelectorDataSourceTests.swift in Sources */,
+				020C908424C84652001E2BEB /* ProductListMultiSelectorSearchUICommandTests.swift in Sources */,
 				746FC23D2200A62B00C3096C /* DateWooTests.swift in Sources */,
 				02F5F80E246102240000613A /* FilterProductListViewModel+numberOfActiveFiltersTests.swift in Sources */,
 				021AEF9C2407B07300029D28 /* ProductImageStatus+HelpersTests.swift in Sources */,

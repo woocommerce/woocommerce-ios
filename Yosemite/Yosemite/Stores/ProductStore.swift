@@ -43,8 +43,13 @@ public class ProductStore: Store {
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .retrieveProducts(let siteID, let productIDs, let pageNumber, let pageSize, let onCompletion):
             retrieveProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
-        case .searchProducts(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
-            searchProducts(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .searchProducts(let siteID, let keyword, let pageNumber, let pageSize, let excludedProductIDs, let onCompletion):
+            searchProducts(siteID: siteID,
+                           keyword: keyword,
+                           pageNumber: pageNumber,
+                           pageSize: pageSize,
+                           excludedProductIDs: excludedProductIDs,
+                           onCompletion: onCompletion)
         case .synchronizeProducts(let siteID,
                                   let pageNumber,
                                   let pageSize,
@@ -93,12 +98,13 @@ private extension ProductStore {
 
     /// Searches all of the products that contain a given Keyword.
     ///
-    func searchProducts(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
+    func searchProducts(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, excludedProductIDs: [Int64], onCompletion: @escaping (Error?) -> Void) {
         let remote = ProductsRemote(network: network)
         remote.searchProducts(for: siteID,
                               keyword: keyword,
                               pageNumber: pageNumber,
-                              pageSize: pageSize) { [weak self] (products, error) in
+                              pageSize: pageSize,
+                              excludedProductIDs: excludedProductIDs) { [weak self] (products, error) in
                                 guard let products = products else {
                                     onCompletion(error)
                                     return

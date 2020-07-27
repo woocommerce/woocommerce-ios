@@ -85,6 +85,26 @@ final class ProductListMultiSelectorDataSourceTests: XCTestCase {
         // Assert - step 2
         XCTAssertFalse(dataSource.isSelected(model: product))
     }
+
+    func testAddingProductsChangesSelectedProductIDsWithoutDuplicates() {
+        // Arrange
+        let siteID: Int64 = 1
+        let dataSource = ProductListMultiSelectorDataSource(siteID: siteID, excludedProductIDs: [])
+        var productsSequence = [[Int64]]()
+        cancellable = dataSource.productIDs.subscribe { productIDs in
+            productsSequence.append(productIDs)
+        }
+
+        // Action
+        dataSource.addProducts([17, 671])
+        dataSource.addProducts([17, 630])
+
+        // Assert
+        XCTAssertEqual(productsSequence, [
+            [17, 671],
+            [17, 671, 630]
+        ])
+    }
 }
 
 private extension ProductListMultiSelectorDataSourceTests {

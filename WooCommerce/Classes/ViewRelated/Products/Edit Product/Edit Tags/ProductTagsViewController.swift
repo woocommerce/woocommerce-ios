@@ -95,10 +95,10 @@ private extension ProductTagsViewController {
         title = Strings.title
 
         removeNavigationBackBarButtonText()
-        configureRightBarButtomitemAsSave()
+        configureRightBarButtonItemAsSave()
     }
 
-    func configureRightBarButtomitemAsSave() {
+    func configureRightBarButtonItemAsSave() {
         navigationItem.setRightBarButton(UIBarButtonItem(title: Strings.saveButton,
                                                          style: .done,
                                                          target: self,
@@ -107,7 +107,7 @@ private extension ProductTagsViewController {
         navigationItem.rightBarButtonItem?.isEnabled = true
     }
 
-    func configureRightButtonItemAsSpinner() {
+    func configureRightBarButtonItemAsSpinner() {
         let activityIndicator = UIActivityIndicatorView(style: .white)
         activityIndicator.hidesWhenStopped = true
         activityIndicator.startAnimating()
@@ -143,7 +143,7 @@ private extension ProductTagsViewController {
 
     func configureTableView() {
         registerTableViewCells()
-        // The datasource will be dinamically assigned on variable `datasource`
+        // The datasource will be dynamically assigned on variable `dataSource`
         tableView.delegate = self
 
         tableView.backgroundColor = .listBackground
@@ -169,7 +169,7 @@ extension ProductTagsViewController {
         return true
     }
 
-    func hasUnsavedChanges() -> Bool {
+    private func hasUnsavedChanges() -> Bool {
         return product.tags.sorted() != mergeTags(tags: allTags, fetchedTags: fetchedTags).sorted()
     }
 
@@ -227,13 +227,13 @@ private extension ProductTagsViewController {
 
     @objc func addTagsRemotely() {
         textView.resignFirstResponder()
-        configureRightButtonItemAsSpinner()
+        configureRightBarButtonItemAsSpinner()
 
         let action = ProductTagAction.addProductTags(siteID: product.siteID, tags: allTags) { [weak self] (result) in
             guard let self = self else {
                 return
             }
-            self.configureRightBarButtomitemAsSave()
+            self.configureRightBarButtonItemAsSave()
             switch result {
             case .success:
                 let mergedTags = self.mergeTags(tags: self.allTags, fetchedTags: self.fetchedTags)

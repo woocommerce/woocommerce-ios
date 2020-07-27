@@ -401,9 +401,11 @@ extension ProductTagsViewController: UITextViewDelegate {
     }
 
     private func updateSuggestions() {
-        dataSource.selectedTags = completeTags
-        dataSource.searchQuery = partialTag
-        tableView.reloadData()
+        if let suggestionsDataSource = dataSource as? SuggestionsDataSource {
+            suggestionsDataSource.selectedTags = completeTags
+            suggestionsDataSource.searchQuery = partialTag
+            tableView.reloadData()
+        }
     }
 }
 

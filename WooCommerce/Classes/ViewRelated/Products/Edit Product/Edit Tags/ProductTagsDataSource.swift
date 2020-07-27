@@ -4,13 +4,9 @@ import UIKit
 /// ProductTagsDataSource: Data Sources for Product Tags
 ///
 protocol ProductTagsDataSource: UITableViewDataSource {
-    var selectedTags: [String] { get set }
-    var searchQuery: String { get set }
 }
 
 class LoadingDataSource: NSObject, ProductTagsDataSource {
-    var selectedTags = [String]()
-    var searchQuery = ""
 
     private static let cellIdentifier = BasicTableViewCell.reuseIdentifier
 
@@ -32,8 +28,6 @@ class LoadingDataSource: NSObject, ProductTagsDataSource {
 }
 
 class FailureDataSource: NSObject, ProductTagsDataSource {
-    var selectedTags = [String]()
-    var searchQuery = ""
 
     private static let cellIdentifier = BasicTableViewCell.reuseIdentifier
 
@@ -56,6 +50,8 @@ class FailureDataSource: NSObject, ProductTagsDataSource {
 class SuggestionsDataSource: NSObject, ProductTagsDataSource {
     private static let cellIdentifier = BasicTableViewCell.reuseIdentifier
     private let suggestions: [String]
+    var selectedTags: [String]
+    var searchQuery: String
 
     init(suggestions: [String], selectedTags: [String], searchQuery: String) {
         self.suggestions = suggestions
@@ -63,9 +59,6 @@ class SuggestionsDataSource: NSObject, ProductTagsDataSource {
         self.searchQuery = searchQuery
         super.init()
     }
-
-    var selectedTags: [String]
-    var searchQuery: String
 
     var availableSuggestions: [String] {
         return suggestions.filter({ !selectedTags.contains($0) })

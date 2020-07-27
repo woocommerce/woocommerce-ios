@@ -28,7 +28,7 @@ final class ProductTagsViewController: UIViewController {
 
     private lazy var resultController: ResultsController<StorageProductTag> = {
         let storageManager = ServiceLocator.storageManager
-        let predicate = NSPredicate(format: "siteID = %ld", self.product.siteID)
+        let predicate = NSPredicate(format: "siteID = %ld", product.siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageProductTag.name, ascending: true)
         return ResultsController<StorageProductTag>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()

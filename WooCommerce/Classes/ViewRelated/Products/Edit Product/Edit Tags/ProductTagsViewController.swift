@@ -28,7 +28,7 @@ final class ProductTagsViewController: UIViewController {
 
     private lazy var resultController: ResultsController<StorageProductTag> = {
         let storageManager = ServiceLocator.storageManager
-        let predicate = NSPredicate(format: "siteID = %ld", self.product.siteID)
+        let predicate = NSPredicate(format: "siteID = %ld", product.siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageProductTag.name, ascending: true)
         return ResultsController<StorageProductTag>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
@@ -82,9 +82,9 @@ final class ProductTagsViewController: UIViewController {
     }
 
     override func viewWillDisappear(_ animated: Bool) {
-           super.viewWillDisappear(animated)
-           textView.resignFirstResponder()
-       }
+       super.viewWillDisappear(animated)
+       textView.resignFirstResponder()
+   }
 }
 
 // MARK: - View Configuration

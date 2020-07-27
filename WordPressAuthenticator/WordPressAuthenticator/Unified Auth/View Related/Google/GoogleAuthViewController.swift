@@ -17,12 +17,33 @@ class GoogleAuthViewController: LoginViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        navigationItem.title = WordPressAuthenticator.shared.displayStrings.waitingForGoogleTitle
+        styleNavigationBar(forUnified: true)
+
         titleLabel?.text = NSLocalizedString("Waiting for Google to complete…", comment: "Message shown on screen while waiting for Google to finish its signup process.")
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         showGoogleScreenIfNeeded()
+    }
+
+    // MARK: - Overrides
+
+    /// Style individual ViewController backgrounds, for now.
+    ///
+    override func styleBackground() {
+        guard let unifiedBackgroundColor = WordPressAuthenticator.shared.unifiedStyle?.viewControllerBackgroundColor else {
+            super.styleBackground()
+            return
+        }
+
+        view.backgroundColor = unifiedBackgroundColor
+    }
+
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return WordPressAuthenticator.shared.unifiedStyle?.statusBarStyle ?? WordPressAuthenticator.shared.style.statusBarStyle
     }
 
 }

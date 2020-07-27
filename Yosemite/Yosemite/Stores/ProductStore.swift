@@ -471,8 +471,7 @@ private extension ProductStore {
             if let existingStorageTag = storage.loadProductTag(siteID: siteID, tagID: readOnlyTag.tagID) {
                 existingStorageTag.update(with: readOnlyTag)
                 storageTags.append(existingStorageTag)
-            }
-            else {
+            } else {
                 let newStorageTag = storage.insertNewObject(ofType: Storage.ProductTag.self)
                 newStorageTag.update(with: readOnlyTag)
                 storageTags.append(newStorageTag)

@@ -6,9 +6,9 @@ import Yosemite
 ///
 final class ProductTagsViewController: UIViewController {
 
-    @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var textView: UITextView!
-    @IBOutlet var separatorView: UIView!
+    @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var textView: UITextView!
+    @IBOutlet private var separatorView: UIView!
 
     private var product: Product
 

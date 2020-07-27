@@ -82,9 +82,9 @@ final class ProductTagsViewController: UIViewController {
     }
 
     override func viewWillDisappear(_ animated: Bool) {
-           super.viewWillDisappear(animated)
-           textView.resignFirstResponder()
-       }
+       super.viewWillDisappear(animated)
+       textView.resignFirstResponder()
+   }
 }
 
 // MARK: - View Configuration

@@ -131,8 +131,8 @@ private extension AppSettingsStore {
         do {
             let settings = try loadOrCreateGeneralAppSettings()
 
-            let installationDate = settings.installationDate ?? .distantFuture
-            guard date < installationDate else {
+            if let installationDate = settings.installationDate,
+                date > installationDate {
                 return onCompletion(.success(()))
             }
 

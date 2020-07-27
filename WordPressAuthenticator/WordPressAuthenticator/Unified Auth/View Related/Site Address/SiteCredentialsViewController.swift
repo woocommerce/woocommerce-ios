@@ -214,14 +214,6 @@ extension SiteCredentialsViewController: UITextFieldDelegate {
 // MARK: - Private Methods
 private extension SiteCredentialsViewController {
 
-	/// Localize the "Continue" button.
-    ///
-    func localizePrimaryButton() {
-        let primaryTitle = WordPressAuthenticator.shared.displayStrings.continueButtonTitle
-        submitButton?.setTitle(primaryTitle, for: .normal)
-        submitButton?.setTitle(primaryTitle, for: .highlighted)
-    }
-
 	/// Registers all of the available TableViewCells.
     ///
     func registerTableViewCells() {

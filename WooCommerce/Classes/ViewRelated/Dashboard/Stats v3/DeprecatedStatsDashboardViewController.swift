@@ -66,11 +66,10 @@ private extension DeprecatedDashboardStatsViewController {
     struct Constants {
         static let title = NSLocalizedString("We can’t display your store’s analytics",
                                       comment: "Title when we can't show stats because user is on a deprecated WC Version")
-        static let details = NSLocalizedString("""
-                                        Make sure you are running the latest version of WooCommerce on your site and that you have
-                                        WooCommerce Admin activated.
-                                        """,
-                                       comment: "Text that explains how to update VC to get the latest stats")
+        static let details = NSLocalizedString(
+            "Make sure you are running the latest version of WooCommerce on your site and that you have WooCommerce Admin activated.",
+            comment: "Text that explains how to update VC to get the latest stats"
+        )
         static let buttonTitle = NSLocalizedString("Still need help? Contact us",
                                                    comment: "Button title to contact support to get help with deprecated stats")
     }

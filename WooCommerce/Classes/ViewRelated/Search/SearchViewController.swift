@@ -186,13 +186,13 @@ where Cell.SearchModel == Command.CellViewModel {
         let model = resultsController.object(at: indexPath)
         searchUICommand.didSelectSearchResult(model: model, from: self, reloadData: { [weak self] in
             self?.tableView.reloadData()
-            }, updateActionButton: { [weak self] in
-                guard let self = self else {
-                    return
-                }
-                self.searchUICommand.configureActionButton(self.cancelButton, onDismiss: { [weak self] in
-                    self?.dismissWasPressed()
-                })
+        }, updateActionButton: { [weak self] in
+            guard let self = self else {
+                return
+            }
+            self.searchUICommand.configureActionButton(self.cancelButton, onDismiss: { [weak self] in
+                self?.dismissWasPressed()
+            })
         })
     }
 

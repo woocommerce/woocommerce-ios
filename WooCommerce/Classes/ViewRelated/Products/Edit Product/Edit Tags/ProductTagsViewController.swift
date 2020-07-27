@@ -318,15 +318,14 @@ private extension ProductTagsViewController {
     }
 
     func mergeTags(tags: [String], fetchedTags: [ProductTag]) -> [ProductTag] {
-        var finalTags: [ProductTag] = []
-        for tag in tags {
-            for fetchedTag in fetchedTags {
-                if tag.lowercased() == fetchedTag.name.lowercased() {
-                    finalTags.append(fetchedTag)
-                }
-            }
+        var fetchedTags = fetchedTags
+        return tags.compactMap { tagName -> ProductTag? in
+            let first = fetchedTags.first(where: { $0.name.lowercased() == tagName.lowercased() })
+            fetchedTags.removeAll(where: { (productTag) -> Bool in
+                first?.name.lowercased() == productTag.name.lowercased()
+            })
+            return first
         }
-        return finalTags
     }
 }
 

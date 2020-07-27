@@ -4,10 +4,9 @@ final class TwoFAViewController: LoginViewController {
 
     // MARK: - Properties
     @IBOutlet private weak var tableView: UITableView!
-    
-    // support tag
-    
-    
+
+    // TODO: add support tag
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -23,8 +22,6 @@ final class TwoFAViewController: LoginViewController {
     
     // MARK: - Overrides
 
-    /// Style individual ViewController backgrounds, for now.
-    ///
     override func styleBackground() {
         guard let unifiedBackgroundColor = WordPressAuthenticator.shared.unifiedStyle?.viewControllerBackgroundColor else {
             super.styleBackground()
@@ -44,6 +41,7 @@ final class TwoFAViewController: LoginViewController {
 // MARK: - UITableViewDataSource
 
 extension TwoFAViewController: UITableViewDataSource {
+
     /// Returns the number of rows in a section.
     ///
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -57,4 +55,5 @@ extension TwoFAViewController: UITableViewDataSource {
         // TODO: update when real cells are added.
         return UITableViewCell()
     }
+
 }

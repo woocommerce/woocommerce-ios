@@ -2,15 +2,15 @@ import Foundation
 
 /// Represents a ProductTag entity, used during a tag creation.
 ///
-public struct ProductTagCreate: Decodable {
-    public let siteID: Int64
-    public let tagID: Int64
-    public let error: CreateError?
-    public let name, slug: String?
+struct ProductTagFromBatchCreation: Decodable {
+    let siteID: Int64
+    let tagID: Int64
+    let error: CreateError?
+    let name, slug: String?
 
-    /// ProductTagCreate initializer.
+    /// ProductTagFromBatchCreation initializer.
     ///
-    public init(siteID: Int64,
+    init(siteID: Int64,
                 tagID: Int64,
                 error: CreateError?,
                 name: String?,
@@ -22,9 +22,9 @@ public struct ProductTagCreate: Decodable {
         self.slug = slug
     }
 
-    /// Public initializer for ProductTagCreate.
+    /// Initializer for ProductTagFromBatchCreation.
     ///
-    public init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         guard let siteID = decoder.userInfo[.siteID] as? Int64 else {
             throw ProductTagCreateDecodingError.missingSiteID
         }
@@ -45,13 +45,13 @@ public struct ProductTagCreate: Decodable {
 }
 
 // MARK: - CreateError
-public struct CreateError: Decodable {
+struct CreateError: Decodable {
     public let code, message: String
 }
 
-/// Defines all of the ProductTagCreate CodingKeys
+/// Defines all of the ProductTagFromBatchCreation CodingKeys
 ///
-private extension ProductTagCreate {
+private extension ProductTagFromBatchCreation {
     enum CodingKeys: String, CodingKey {
         case tagID  = "id"
         case name   = "name"

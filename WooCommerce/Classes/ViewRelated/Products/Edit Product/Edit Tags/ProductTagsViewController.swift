@@ -10,9 +10,9 @@ final class ProductTagsViewController: UIViewController {
     @IBOutlet private weak var textView: UITextView!
     @IBOutlet private var separatorView: UIView!
 
-    private var product: Product
+    private let product: Product
 
-    private let originalTags: [String]
+    private let originalTagNames: [String]
 
     private var fetchedTags: [ProductTag] {
         try? resultController.performFetch()
@@ -47,7 +47,7 @@ final class ProductTagsViewController: UIViewController {
 
     init(product: Product, completion: @escaping Completion) {
         self.product = product
-        originalTags = product.tags.map { $0.name }
+        originalTagNames = product.tags.map { $0.name }
         onCompletion = completion
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
@@ -66,7 +66,7 @@ final class ProductTagsViewController: UIViewController {
         configureTableView()
         startListeningToNotifications()
 
-        textView.text = normalizeInitialTags(tags: originalTags)
+        textView.text = normalizeInitialTags(tags: originalTagNames)
         textViewDidChange(textView)
     }
 

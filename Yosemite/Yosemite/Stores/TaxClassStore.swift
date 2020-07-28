@@ -10,6 +10,8 @@ public protocol TaxClassRequestable {
 
 extension Product: TaxClassRequestable {}
 
+extension ProductVariation: TaxClassRequestable {}
+
 // MARK: - TaxClassStore
 //
 public class TaxClassStore: Store {

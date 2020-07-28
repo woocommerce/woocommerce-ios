@@ -49,7 +49,7 @@ enum ProductPriceSetingsError: Error {
 /// Provides view data for price settings, and handles init/UI/navigation actions needed in product price settings.
 ///
 final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
-    private let product: Product
+    private let product: ProductFormDataModel & TaxClassRequestable
 
     // Editable data
     //
@@ -89,7 +89,9 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
 
     private let currencyFormatter: CurrencyFormatter
 
-    init(product: Product, currencySettings: CurrencySettings = CurrencySettings.shared, timezoneForScheduleSaleDates: TimeZone = TimeZone.siteTimezone) {
+    init(product: ProductFormDataModel & TaxClassRequestable,
+         currencySettings: CurrencySettings = CurrencySettings.shared,
+         timezoneForScheduleSaleDates: TimeZone = TimeZone.siteTimezone) {
         self.product = product
         self.timezoneForScheduleSaleDates = timezoneForScheduleSaleDates
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)

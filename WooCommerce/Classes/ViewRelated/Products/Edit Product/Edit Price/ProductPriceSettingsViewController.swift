@@ -38,7 +38,7 @@ final class ProductPriceSettingsViewController: UIViewController {
 
     /// Init
     ///
-    init(product: Product, completion: @escaping Completion) {
+    init(product: ProductFormDataModel & TaxClassRequestable, completion: @escaping Completion) {
         siteID = product.siteID
         viewModel = ProductPriceSettingsViewModel(product: product)
         onCompletion = completion

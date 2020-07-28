@@ -46,6 +46,31 @@ class Product_ProductFormTests: XCTestCase {
         let usLocale = Locale(identifier: "en_US")
         XCTAssertEqual(product.categoriesDescription(using: usLocale), expectedDescription)
     }
+
+    // MARK: `productTaxStatus`
+
+    func testProductTaxStatusFromAnUnexpectedRawValueReturnsDefaultTaxable() {
+        let product = Product().copy(taxStatusKey: "unknown tax status")
+        XCTAssertEqual(product.productTaxStatus, .taxable)
+    }
+
+    func testProductTaxStatusFromAValidRawValueReturnsTheCorrespondingCase() {
+        let product = Product().copy(taxStatusKey: ProductTaxStatus.shipping.rawValue)
+        XCTAssertEqual(product.productTaxStatus, .shipping)
+    }
+
+    // MARK: `backordersSetting`
+
+    func testBackordersSettingFromAnUnexpectedRawValueReturnsACustomCase() {
+        let rawValue = "unknown setting"
+        let product = Product().copy(backordersKey: rawValue)
+        XCTAssertEqual(product.backordersSetting, .custom(rawValue))
+    }
+
+    func testBackordersSettingFromAValidRawValueReturnsTheCorrespondingCase() {
+        let product = Product().copy(backordersKey: ProductBackordersSetting.notAllowed.rawValue)
+        XCTAssertEqual(product.backordersSetting, .notAllowed)
+    }
 }
 
 private extension Product_ProductFormTests {

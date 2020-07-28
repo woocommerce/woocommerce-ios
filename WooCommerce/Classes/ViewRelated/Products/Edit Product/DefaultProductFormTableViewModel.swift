@@ -12,8 +12,8 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
     //
     var siteTimezone: TimeZone = TimeZone.siteTimezone
 
-    init(product: Product,
-         actionsFactory: ProductFormActionsFactory,
+    init(product: ProductFormDataModel,
+         actionsFactory: ProductFormActionsFactoryProtocol,
          currency: String,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter()) {
         self.currency = currency
@@ -23,17 +23,17 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
 }
 
 private extension DefaultProductFormTableViewModel {
-    mutating func configureSections(product: Product, actionsFactory: ProductFormActionsFactory) {
+    mutating func configureSections(product: ProductFormDataModel, actionsFactory: ProductFormActionsFactoryProtocol) {
         sections = [.primaryFields(rows: primaryFieldRows(product: product, actions: actionsFactory.primarySectionActions())),
-                    .settings(rows: settingsRows(product: product, actions: actionsFactory.settingsSectionActions()))]
+                    .settings(rows: settingsRows(productModel: product, actions: actionsFactory.settingsSectionActions()))]
             .filter { $0.isNotEmpty }
     }
 
-    func primaryFieldRows(product: Product, actions: [ProductFormEditAction]) -> [ProductFormSection.PrimaryFieldRow] {
+    func primaryFieldRows(product: ProductFormDataModel, actions: [ProductFormEditAction]) -> [ProductFormSection.PrimaryFieldRow] {
         return actions.map { action in
             switch action {
             case .images:
-                return .images(product: product)
+                return .images
             case .name:
                 return .name(name: product.name)
             case .description:
@@ -41,6 +41,15 @@ private extension DefaultProductFormTableViewModel {
             default:
                 fatalError("Unexpected action in the primary section: \(action)")
             }
+        }
+    }
+
+    func settingsRows(productModel product: ProductFormDataModel, actions: [ProductFormEditAction]) -> [ProductFormSection.SettingsRow] {
+        switch product {
+        case let product as Product:
+            return settingsRows(product: product, actions: actions)
+        default:
+            fatalError("Unexpected product form data model: \(type(of: product))")
         }
     }
 
@@ -75,7 +84,7 @@ private extension DefaultProductFormTableViewModel {
 }
 
 private extension DefaultProductFormTableViewModel {
-    func priceSettingsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
+    func priceSettingsRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.priceImage
 
         var priceDetails = [String]()
@@ -117,7 +126,7 @@ private extension DefaultProductFormTableViewModel {
                                                         details: details)
     }
 
-    func inventorySettingsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
+    func inventorySettingsRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.inventoryImage
         let title = Constants.inventorySettingsTitle
 
@@ -130,7 +139,7 @@ private extension DefaultProductFormTableViewModel {
         if let stockQuantity = product.stockQuantity, product.manageStock {
             inventoryDetails.append(String.localizedStringWithFormat(Constants.stockQuantityFormat, stockQuantity))
         } else if product.manageStock == false {
-            let stockStatus = product.productStockStatus
+            let stockStatus = product.stockStatus
             inventoryDetails.append(stockStatus.description)
         }
 
@@ -141,7 +150,7 @@ private extension DefaultProductFormTableViewModel {
                                                         details: details)
     }
 
-    func shippingSettingsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
+    func shippingSettingsRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.shippingImage
         let title = Constants.shippingSettingsTitle
 

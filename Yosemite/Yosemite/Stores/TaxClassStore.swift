@@ -2,6 +2,13 @@ import Foundation
 import Networking
 import Storage
 
+/// Describes a class/struct that can be used to request a tax class remotely.
+public protocol TaxClassRequestable {
+    var siteID: Int64 { get }
+    var taxClass: String? { get }
+}
+
+extension Product: TaxClassRequestable {}
 
 // MARK: - TaxClassStore
 //
@@ -59,8 +66,8 @@ private extension TaxClassStore {
 
     /// Synchronizes the Tax Class found in a specified Product.
     ///
-    func requestMissingTaxClasses(for product: Product, onCompletion: @escaping (TaxClass?, Error?) -> Void) {
-        guard let taxClassFromStorage = product.taxClass, product.taxClass?.isEmpty == false else {
+    func requestMissingTaxClasses(for taxClassRequestable: TaxClassRequestable, onCompletion: @escaping (TaxClass?, Error?) -> Void) {
+        guard let taxClassFromStorage = taxClassRequestable.taxClass, taxClassRequestable.taxClass?.isEmpty == false else {
             onCompletion(nil, nil)
             return
         }
@@ -73,14 +80,14 @@ private extension TaxClassStore {
         }
         else {
             let remote = TaxClassRemote(network: network)
-            remote.loadAllTaxClasses(for: product.siteID) { [weak self] (taxClasses, error) in
+            remote.loadAllTaxClasses(for: taxClassRequestable.siteID) { [weak self] (taxClasses, error) in
                 guard let taxClasses = taxClasses else {
                     onCompletion(nil, error)
                     return
                 }
 
                 self?.upsertStoredTaxClassesInBackground(readOnlyTaxClasses: taxClasses) {
-                    let taxClass = taxClasses.first(where: { $0.slug == product.taxClass } )
+                    let taxClass = taxClasses.first(where: { $0.slug == taxClassRequestable.taxClass } )
                     onCompletion(taxClass, nil)
                 }
             }

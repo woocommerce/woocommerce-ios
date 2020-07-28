@@ -11,21 +11,21 @@ final class EditorFactory {
 
     // MARK: - Editor: Instantiation
 
-    func productDescriptionEditor(product: Product,
+    func productDescriptionEditor(product: ProductFormDataModel,
                                   onContentSave: @escaping Editor.OnContentSave) -> Editor & UIViewController {
         let navigationTitle = NSLocalizedString("Description", comment: "The navigation bar title of the Aztec editor screen.")
         let viewProperties = EditorViewProperties(navigationTitle: navigationTitle, showSaveChangesActionSheet: true)
-        let editor = AztecEditorViewController(content: product.fullDescription, viewProperties: viewProperties)
+        let editor = AztecEditorViewController(content: product.description, viewProperties: viewProperties)
         editor.onContentSave = onContentSave
         return editor
     }
 
-    func productBriefDescriptionEditor(product: Product,
+    func productBriefDescriptionEditor(product: ProductFormDataModel,
                                        onContentSave: @escaping Editor.OnContentSave) -> Editor & UIViewController {
         let navigationTitle = NSLocalizedString("Short description",
                                                 comment: "The navigation bar title of the edit short description screen.")
         let viewProperties = EditorViewProperties(navigationTitle: navigationTitle, showSaveChangesActionSheet: true)
-        let editor = AztecEditorViewController(content: product.briefDescription, viewProperties: viewProperties)
+        let editor = AztecEditorViewController(content: product.shortDescription, viewProperties: viewProperties)
         editor.onContentSave = onContentSave
         return editor
     }

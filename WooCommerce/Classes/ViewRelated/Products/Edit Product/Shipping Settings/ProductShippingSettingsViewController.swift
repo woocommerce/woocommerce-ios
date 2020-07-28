@@ -35,15 +35,14 @@ final class ProductShippingSettingsViewController: UIViewController {
     typealias Completion = (_ weight: String?, _ dimensions: ProductDimensions, _ shippingClass: ProductShippingClass?) -> Void
     private let onCompletion: Completion
 
-    private let product: Product
+    private let product: ProductFormDataModel
     private var originalShippingClass: ProductShippingClass?
     private let shippingSettingsService: ShippingSettingsService
 
-    init(product: Product,
+    init(product: ProductFormDataModel,
          shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService,
          completion: @escaping Completion) {
         self.product = product
-        self.originalShippingClass = product.productShippingClass
         self.shippingSettingsService = shippingSettingsService
         self.onCompletion = completion
 
@@ -51,8 +50,6 @@ final class ProductShippingSettingsViewController: UIViewController {
         self.length = product.dimensions.length
         self.width = product.dimensions.width
         self.height = product.dimensions.height
-
-        self.shippingClass = product.productShippingClass
 
         super.init(nibName: nil, bundle: nil)
     }

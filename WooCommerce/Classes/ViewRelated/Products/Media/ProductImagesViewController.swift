@@ -13,7 +13,7 @@ final class ProductImagesViewController: UIViewController {
 
     private let siteID: Int64
     private let productID: Int64
-    private let product: Product
+    private let product: ProductFormDataModel
 
     private let productImageActionHandler: ProductImageActionHandler
     private let productUIImageLoader: ProductUIImageLoader
@@ -57,7 +57,7 @@ final class ProductImagesViewController: UIViewController {
 
     private let onCompletion: Completion
 
-    init(product: Product,
+    init(product: ProductFormDataModel,
          productImageActionHandler: ProductImageActionHandler,
          productUIImageLoader: ProductUIImageLoader,
          completion: @escaping Completion) {

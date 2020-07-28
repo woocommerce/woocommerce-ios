@@ -1,8 +1,8 @@
 import XCTest
-@testable import Yosemite
+@testable import WooCommerce
 
-/// Tests for `Product+Settings.swift`.
-final class Product_SettingsTests: XCTestCase {
+/// Tests for `Product`'s shipping helper.
+final class Product_ShippingTests: XCTestCase {
     // MARK: - `isShippingEnabled`
 
     func testShippingIsEnabledForAPhysicalProduct() {

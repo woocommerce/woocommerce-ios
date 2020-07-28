@@ -845,11 +845,22 @@ private extension ProductFormViewController {
 
 private extension ProductFormViewController {
     func editTags() {
-        //TODO-2081: add action
+        let tagsViewController = ProductTagsViewController(product: product) { [weak self] (tags) in
+            self?.onEditTagsCompletion(tags: tags)
+        }
+        show(tagsViewController, sender: self)
     }
 
     func onEditTagsCompletion(tags: [ProductTag]) {
-        //TODO-2081: manage completion in editTags()
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+        // TODO-2509: Edit Product M3 analytics
+        let hasChangedData = tags.sorted() != product.tags.sorted()
+        guard hasChangedData else {
+            return
+        }
+        viewModel.updateProductTags(tags)
     }
 }
 

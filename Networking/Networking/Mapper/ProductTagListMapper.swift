@@ -61,7 +61,16 @@ private struct ProductTagListBatchCreateEnvelope: Decodable {
         let container = try? decoder.container(keyedBy: CodingKeys.self)
         let nestedContainer = try? container?.nestedContainer(keyedBy: CodingKeys.self, forKey: .data)
 
-        tags = nestedContainer?.failsafeDecodeIfPresent(Array<ProductTag>.self, forKey: .create) ?? []
+        let productTagsCreated: [ProductTagFromBatchCreation]? = nestedContainer?.failsafeDecodeIfPresent(Array<ProductTagFromBatchCreation>.self,
+                                                                                                          forKey: .create)
+        tags = productTagsCreated?
+            .filter { $0.error == nil }
+            .compactMap { (tagCreated) -> ProductTag? in
+                if let name = tagCreated.name, let slug = tagCreated.slug {
+                    return ProductTag(siteID: tagCreated.siteID, tagID: tagCreated.tagID, name: name, slug: slug)
+                }
+                return nil
+            } ?? []
     }
 
     private enum CodingKeys: String, CodingKey {

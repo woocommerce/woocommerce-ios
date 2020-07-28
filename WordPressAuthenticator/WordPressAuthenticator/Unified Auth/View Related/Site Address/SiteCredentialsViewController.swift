@@ -4,7 +4,7 @@ import UIKit
 /// Part two of the self-hosted sign in flow: username + password. Used by WPiOS and NiOS.
 /// A valid site address should be acquired before presenting this view controller.
 ///
-class SiteCredentialsViewController: LoginViewController {
+final class SiteCredentialsViewController: LoginViewController {
 
 	/// Private properties.
     ///
@@ -15,10 +15,8 @@ class SiteCredentialsViewController: LoginViewController {
 	private var errorMessage: String?
 	private var shouldChangeVoiceOverFocus: Bool = false
 
-	/// Internal properties.
-	///
-	@IBOutlet var bottomContentConstraint: NSLayoutConstraint?
-    // Required property declaration for `NUXKeyboardResponder` but unused here.
+    // Required for `NUXKeyboardResponder` but unused here.
+    @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
     var verticalCenterConstraint: NSLayoutConstraint?
 
 	override var sourceTag: WordPressSupportSourceTag {
@@ -91,18 +89,6 @@ class SiteCredentialsViewController: LoginViewController {
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return WordPressAuthenticator.shared.unifiedStyle?.statusBarStyle ?? WordPressAuthenticator.shared.style.statusBarStyle
-    }
-
-
-	/// Configure the view for an editing state. Should only be called from viewWillAppear
-    /// as this method skips animating any change in height.
-    ///
-    @objc func configureViewForEditingIfNeeded() {
-       // Check the helper to determine whether an editing state should be assumed.
-       adjustViewForKeyboard(SigninEditingState.signinEditingStateActive)
-       if SigninEditingState.signinEditingStateActive {
-           usernameField?.becomeFirstResponder()
-       }
     }
 
 	/// Configures the appearance and state of the submit button.
@@ -357,6 +343,16 @@ private extension SiteCredentialsViewController {
 		}
 	}
 
+    /// Configure the view for an editing state.
+    ///
+    func configureViewForEditingIfNeeded() {
+       // Check the helper to determine whether an editing state should be assumed.
+       adjustViewForKeyboard(SigninEditingState.signinEditingStateActive)
+       if SigninEditingState.signinEditingStateActive {
+           usernameField?.becomeFirstResponder()
+       }
+    }
+    
 	// MARK: - Private Constants
 
     /// Rows listed in the order they were created.

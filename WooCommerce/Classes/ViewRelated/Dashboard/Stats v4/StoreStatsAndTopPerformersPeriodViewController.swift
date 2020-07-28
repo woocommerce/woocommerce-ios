@@ -79,12 +79,20 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
     private let featureFlagService: FeatureFlagService
 
+    /// If applicable, present the in-app feedback. The in-app feedback may still not be presented
+    /// depending on the constraints. But setting this to `false`, will ensure that it will
+    /// never be presented.
+    ///
+    private let canDisplayInAppFeedback: Bool
+
     init(timeRange: StatsTimeRangeV4,
          currentDate: Date,
+         canDisplayInAppFeedback: Bool,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.timeRange = timeRange
         self.granularity = timeRange.intervalGranularity
         self.currentDate = currentDate
+        self.canDisplayInAppFeedback = canDisplayInAppFeedback
         self.featureFlagService = featureFlagService
         super.init(nibName: nil, bundle: nil)
         configureChildViewControllers()
@@ -225,7 +233,8 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
     /// - Returns: The views or empty array if we do not need in-app feedback from the user.
     ///
     func createInAppFeedbackCardViewsForStackView() -> [UIView] {
-        guard featureFlagService.isFeatureFlagEnabled(.inAppFeedback),
+        guard canDisplayInAppFeedback,
+            featureFlagService.isFeatureFlagEnabled(.inAppFeedback),
             let cardView = inAppFeedbackCardViewController.view else {
             return []
         }

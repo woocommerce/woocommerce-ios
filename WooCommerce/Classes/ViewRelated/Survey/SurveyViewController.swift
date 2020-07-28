@@ -13,8 +13,13 @@ final class SurveyViewController: UIViewController {
     ///
     private let survey: SurveySource
 
-    init(survey: SurveySource) {
+    /// Handler invoked when the survey has been completed
+    ///
+    private let onCompletion: () -> Void
+
+    init(survey: SurveySource, onCompletion: @escaping () -> Void) {
         self.survey = survey
+        self.onCompletion = onCompletion
         super.init(nibName: Self.nibName, bundle: nil)
     }
 
@@ -34,6 +39,7 @@ final class SurveyViewController: UIViewController {
 
         let request = URLRequest(url: survey.url)
         webView.load(request)
+        webView.navigationDelegate = self
     }
 }
 
@@ -56,5 +62,20 @@ extension SurveyViewController {
                 return NSLocalizedString("How can we improve?", comment: "Title on the navigation bar for the in-app feedback survey")
             }
         }
+    }
+}
+
+// MARK: WebView Delegate
+//
+extension SurveyViewController: WKNavigationDelegate {
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+
+        // The condition for the POST HTTP method is necessary, since the `formSubmitted` callback is triggered when showing the Crowdsignal completion screen
+        // (a GET request).
+        if case .formSubmitted = navigationAction.navigationType, navigationAction.request.httpMethod == "POST" {
+            onCompletion()
+        }
+
+        decisionHandler(.allow)
     }
 }

@@ -100,6 +100,9 @@ private extension TextFieldTableViewCell {
 			setSecureTextEntry(true)
 			showSecureTextEntryToggle = true
 			configureSecureTextEntryToggle()
+        case .numericCode:
+            textField.keyboardType = .numberPad
+            textField.returnKeyType = .continue
         }
     }
 
@@ -202,6 +205,7 @@ extension TextFieldTableViewCell {
         case url
         case username
         case password
+        case numericCode
     }
 
 	struct Constants {

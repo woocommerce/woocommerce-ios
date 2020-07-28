@@ -6,21 +6,13 @@ import Yosemite
 ///
 final class ProductSettingsRowsTests: XCTestCase {
 
-    var settings = ProductSettings(status: .draft,
-                                   featured: false,
-                                   password: nil,
-                                   catalogVisibility: .catalog,
-                                   virtual: false,
-                                   reviewsAllowed: false,
-                                   slug: "slug",
-                                   purchaseNote: nil,
-                                   menuOrder: 0)
+    var originalSettings: ProductSettings?
 
     override func setUp() {
         super.setUp()
 
         // Given
-        settings = ProductSettings(status: .draft,
+        originalSettings = ProductSettings(status: .draft,
                                        featured: false,
                                        password: nil,
                                        catalogVisibility: .catalog,
@@ -35,7 +27,9 @@ final class ProductSettingsRowsTests: XCTestCase {
         super.tearDown()
     }
 
-    func testVirtualProductRowChangedWhenUpdated() {
+    func testVirtualProductRowChangedWhenUpdated() throws {
+        let settings = try XCTUnwrap(originalSettings)
+
         // Given
         let virtualProduct = ProductSettingsRows.VirtualProduct(settings)
 
@@ -49,7 +43,9 @@ final class ProductSettingsRowsTests: XCTestCase {
         XCTAssertEqual(settings.virtual, true)
     }
 
-    func testReviewsAllowedRowChangedWhenUpdated() {
+    func testReviewsAllowedRowChangedWhenUpdated() throws {
+        let settings = try XCTUnwrap(originalSettings)
+
         // Given
         let reviewsAllowed = ProductSettingsRows.ReviewsAllowed(settings)
 

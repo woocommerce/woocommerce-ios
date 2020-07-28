@@ -1,14 +1,16 @@
 import Yosemite
 
 /// Provides data for product form UI, and handles product editing actions.
-final class ProductFormViewModel {
+final class ProductFormViewModel: ProductFormViewModelProtocol {
+    typealias ProductModel = Product
+
     /// Emits product on change, except when the product name is the only change (`productName` is emitted for this case).
     var observableProduct: Observable<Product> {
         productSubject
     }
 
     /// Emits product name on change.
-    var productName: Observable<String> {
+    var productName: Observable<String>? {
         productNameSubject
     }
 
@@ -17,8 +19,13 @@ final class ProductFormViewModel {
         isUpdateEnabledSubject
     }
 
+    /// The latest product value.
+    var productModel: Product {
+        product
+    }
+
     /// Creates actions available on the bottom sheet.
-    private(set) var actionsFactory: ProductFormActionsFactory
+    private(set) var actionsFactory: ProductFormActionsFactoryProtocol
 
     private let productSubject: PublishSubject<Product> = PublishSubject<Product>()
     private let productNameSubject: PublishSubject<String> = PublishSubject<String>()
@@ -32,7 +39,7 @@ final class ProductFormViewModel {
     }
 
     /// The product model with potential edits; reset after a remote update.
-    private(set) var product: Product {
+    private var product: Product {
         didSet {
             guard product != oldValue else {
                 return
@@ -148,7 +155,7 @@ extension ProductFormViewModel {
 
     func updateInventorySettings(sku: String?,
                                  manageStock: Bool,
-                                 soldIndividually: Bool,
+                                 soldIndividually: Bool?,
                                  stockQuantity: Int64?,
                                  backordersSetting: ProductBackordersSetting?,
                                  stockStatus: ProductStockStatus?) {

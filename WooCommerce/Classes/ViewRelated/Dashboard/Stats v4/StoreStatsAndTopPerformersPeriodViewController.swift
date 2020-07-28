@@ -75,10 +75,15 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         return [storeStatsPeriodViewController, topPerformersPeriodViewController]
     }
 
-    init(timeRange: StatsTimeRangeV4, currentDate: Date) {
+    private let featureFlagService: FeatureFlagService
+
+    init(timeRange: StatsTimeRangeV4,
+         currentDate: Date,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.timeRange = timeRange
         self.granularity = timeRange.intervalGranularity
         self.currentDate = currentDate
+        self.featureFlagService = featureFlagService
         super.init(nibName: nil, bundle: nil)
         configureChildViewControllers()
     }

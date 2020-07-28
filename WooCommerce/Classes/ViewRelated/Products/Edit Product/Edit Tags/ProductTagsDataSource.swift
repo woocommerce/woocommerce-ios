@@ -6,7 +6,7 @@ import UIKit
 protocol ProductTagsDataSource: UITableViewDataSource {
 }
 
-class LoadingDataSource: NSObject, ProductTagsDataSource {
+final class LoadingDataSource: NSObject, ProductTagsDataSource {
 
     private static let cellIdentifier = BasicTableViewCell.reuseIdentifier
 
@@ -27,7 +27,7 @@ class LoadingDataSource: NSObject, ProductTagsDataSource {
     }
 }
 
-class FailureDataSource: NSObject, ProductTagsDataSource {
+final class FailureDataSource: NSObject, ProductTagsDataSource {
 
     private static let cellIdentifier = BasicTableViewCell.reuseIdentifier
 
@@ -47,7 +47,7 @@ class FailureDataSource: NSObject, ProductTagsDataSource {
     }
 }
 
-class SuggestionsDataSource: NSObject, ProductTagsDataSource {
+final class SuggestionsDataSource: NSObject, ProductTagsDataSource {
     private static let cellIdentifier = BasicTableViewCell.reuseIdentifier
     private let suggestions: [String]
     var selectedTags: [String]
@@ -60,11 +60,11 @@ class SuggestionsDataSource: NSObject, ProductTagsDataSource {
         super.init()
     }
 
-    var availableSuggestions: [String] {
+    private var availableSuggestions: [String] {
         return suggestions.filter({ !selectedTags.contains($0) })
     }
 
-    var matchedSuggestions: [String] {
+    private var matchedSuggestions: [String] {
         guard !searchQuery.isEmpty else {
             return availableSuggestions
         }

@@ -11,10 +11,10 @@ struct ProductTagFromBatchCreation: Decodable {
     /// ProductTagFromBatchCreation initializer.
     ///
     init(siteID: Int64,
-                tagID: Int64,
-                error: CreateError?,
-                name: String?,
-                slug: String?) {
+         tagID: Int64,
+         error: CreateError?,
+         name: String?,
+         slug: String?) {
         self.siteID = siteID
         self.tagID = tagID
         self.error = error

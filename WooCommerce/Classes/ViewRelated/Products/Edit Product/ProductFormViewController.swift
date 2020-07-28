@@ -1018,14 +1018,14 @@ private extension ProductFormViewController {
 
 // MARK: Constants
 //
-private enum Constants {
-    static let settingsHeaderHeight = CGFloat(16)
-}
-
 private enum ActionSheetStrings {
     static let viewProduct = NSLocalizedString("View Product in Store",
                                                comment: "Button title View product in store in Edit Product More Options Action Sheet")
     static let share = NSLocalizedString("Share", comment: "Button title Share in Edit Product More Options Action Sheet")
     static let productSettings = NSLocalizedString("Product Settings", comment: "Button title Product Settings in Edit Product More Options Action Sheet")
     static let cancel = NSLocalizedString("Cancel", comment: "Button title Cancel in Edit Product More Options Action Sheet")
+}
+
+private enum Constants {
+    static let settingsHeaderHeight = CGFloat(16)
 }

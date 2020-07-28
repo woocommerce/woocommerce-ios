@@ -6,7 +6,7 @@ import Yosemite
 ///
 final class ProductSettingsRowsTests: XCTestCase {
 
-    var originalSettings: ProductSettings?
+    private var originalSettings: ProductSettings?
 
     override func setUp() {
         super.setUp()

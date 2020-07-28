@@ -10,6 +10,9 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="InAppFeedbackCardViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
+                <outlet property="didNotLikeButton" destination="fwj-Sy-QD3" id="lHh-PH-TAX"/>
+                <outlet property="likeButton" destination="Sgc-1W-ZK6" id="qRZ-w4-Hw2"/>
+                <outlet property="titleLabel" destination="knB-Iy-ibQ" id="mYE-x1-nqG"/>
                 <outlet property="view" destination="iN0-l3-epB" id="NfP-gC-jAJ"/>
             </connections>
         </placeholder>
@@ -21,7 +24,7 @@
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="ffG-Ca-TIf">
                     <rect key="frame" x="16" y="16" width="382" height="108"/>
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enjoying the WooCommerce app?" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="knB-Iy-ibQ">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enjoying the WooCommerce app?" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="knB-Iy-ibQ">
                             <rect key="frame" x="0.0" y="0.0" width="382" height="20.5"/>
                             <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                             <nil key="textColor"/>

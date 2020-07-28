@@ -5,6 +5,50 @@ import UIKit
 ///
 final class InAppFeedbackCardViewController: UIViewController {
 
+    @IBOutlet private var titleLabel: UILabel!
+    @IBOutlet private var didNotLikeButton: UIButton!
+    @IBOutlet private var likeButton: UIButton!
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        configureTitleLabel()
+        configureDidNotLikeButton()
+        configureLikeButton()
+    }
+}
+
+// MARK: - Provisioning
+
+private extension InAppFeedbackCardViewController {
+    func configureTitleLabel() {
+        titleLabel.applyBodyStyle()
+        titleLabel.numberOfLines = 0
+        titleLabel.text = Localization.enjoyingTheWooCommerceApp
+    }
+
+    func configureDidNotLikeButton() {
+        didNotLikeButton.applySecondaryButtonStyle()
+        didNotLikeButton.setTitle(Localization.couldBeBetter, for: .normal)
+    }
+
+    func configureLikeButton() {
+        likeButton.applyPrimaryButtonStyle()
+        likeButton.setTitle(Localization.iLikeIt, for: .normal)
+    }
+}
+
+// MARK: - Constants
+
+private extension InAppFeedbackCardViewController {
+    enum Localization {
+        static let enjoyingTheWooCommerceApp = NSLocalizedString("Enjoying the WooCommerce app?",
+                                                                 comment: "The title used when asking the user for feedback for the app.")
+        static let couldBeBetter = NSLocalizedString("Could Be Better",
+                                                     comment: "The title of the button for giving a negative feedback for the app.")
+        static let iLikeIt = NSLocalizedString("I Like It",
+                                               comment: "The title of the button for giving a positive feedback for the app.")
+    }
 }
 
 // MARK: - Previews
@@ -46,7 +90,7 @@ struct InAppFeedbackCardViewController_Previews: PreviewProvider {
                 .previewDisplayName("Dark")
 
             makeStack()
-                .previewLayout(.fixed(width: 375, height: 128))
+                .previewLayout(.fixed(width: 375, height: 528))
                 .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
                 .previewDisplayName("Large Font")
         }

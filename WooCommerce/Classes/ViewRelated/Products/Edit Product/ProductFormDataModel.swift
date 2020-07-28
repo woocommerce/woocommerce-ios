@@ -52,17 +52,17 @@ extension ProductFormDataModel {
 
     /// Whether shipping settings are available for the product.
     var isShippingEnabled: Bool {
-        return downloadable == false && virtual == false
+        downloadable == false && virtual == false
     }
 
     /// Returns `ProductTaxStatus` given the raw value from `taxStatusKey` field.
     var productTaxStatus: ProductTaxStatus {
-        return ProductTaxStatus(rawValue: taxStatusKey)
+        ProductTaxStatus(rawValue: taxStatusKey)
     }
 
     /// Returns `ProductBackordersSetting` given the raw value from `backordersKey` field.
     var backordersSetting: ProductBackordersSetting {
-        return ProductBackordersSetting(rawValue: backordersKey)
+        ProductBackordersSetting(rawValue: backordersKey)
     }
 }
 

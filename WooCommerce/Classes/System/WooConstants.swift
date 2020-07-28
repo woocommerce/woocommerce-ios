@@ -67,6 +67,12 @@ enum WooConstants {
         trustedURL("https://woocommerce.com/blog/")
     }
 
+    /// URL for in-app feedback survey
+    ///
+    static var inAppFeedbackURL: URL {
+        trustedURL("https://automattic.survey.fm/woo-app-general-feedback-user-survey")
+    }
+
     /// Number of section events required before an app review prompt appears
     ///
     static let notificationEventCount = 5

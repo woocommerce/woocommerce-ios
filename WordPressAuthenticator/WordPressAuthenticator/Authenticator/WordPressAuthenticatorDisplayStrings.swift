@@ -31,6 +31,7 @@ public struct WordPressAuthenticatorDisplayStrings {
 	///
 	public let usernamePlaceholder: String
 	public let passwordPlaceholder: String
+    public let siteAddressPlaceholder: String
 
     /// Designated initializer.
     ///
@@ -47,6 +48,7 @@ public struct WordPressAuthenticatorDisplayStrings {
                 waitingForGoogleTitle: String,
 				usernamePlaceholder: String,
 				passwordPlaceholder: String) {
+                siteAddressPlaceholder: String,
         self.emailLoginInstructions = emailLoginInstructions
         self.jetpackLoginInstructions = jetpackLoginInstructions
         self.siteLoginInstructions = siteLoginInstructions
@@ -60,6 +62,7 @@ public struct WordPressAuthenticatorDisplayStrings {
         self.waitingForGoogleTitle = waitingForGoogleTitle
 		self.usernamePlaceholder = usernamePlaceholder
 		self.passwordPlaceholder = passwordPlaceholder
+        self.siteAddressPlaceholder = siteAddressPlaceholder
     }
 }
 
@@ -92,6 +95,7 @@ public extension WordPressAuthenticatorDisplayStrings {
 												   comment: "Placeholder for the username textfield."),
 			passwordPlaceholder: NSLocalizedString("Password",
 												   comment: "Placeholder for the password textfield.")
+            siteAddressPlaceholder: NSLocalizedString("example.com",
         )
     }
 }

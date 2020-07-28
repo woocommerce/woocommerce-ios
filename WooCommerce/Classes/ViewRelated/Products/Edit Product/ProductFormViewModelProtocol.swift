@@ -75,7 +75,7 @@ protocol ProductFormViewModelProtocol {
 
     func updateProductRemotely(onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void)
 
-    // Reset actions
+    // Reset action
 
     func resetPassword(_ password: String?)
 }

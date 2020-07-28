@@ -75,13 +75,12 @@ struct InAppFeedbackCardViewController_Previews: PreviewProvider {
         VStack {
             InAppFeedbackCardViewControllerRepresentable()
         }
-        .background(Color(UIColor.listBackground))
     }
 
     static var previews: some View {
         Group {
             makeStack()
-                .previewLayout(.fixed(width: 375, height: 128))
+                .previewLayout(.fixed(width: 320, height: 128))
                 .previewDisplayName("Light")
 
             makeStack()
@@ -90,9 +89,14 @@ struct InAppFeedbackCardViewController_Previews: PreviewProvider {
                 .previewDisplayName("Dark")
 
             makeStack()
-                .previewLayout(.fixed(width: 375, height: 528))
+                .previewLayout(.fixed(width: 414, height: 528))
                 .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
                 .previewDisplayName("Large Font")
+
+            makeStack()
+                .previewLayout(.fixed(width: 896, height: 128))
+                .environment(\.colorScheme, .dark)
+                .previewDisplayName("Large Width - Dark")
         }
     }
 }

@@ -18,44 +18,58 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="414" height="140"/>
+            <rect key="frame" x="0.0" y="0.0" width="320" height="140"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="ffG-Ca-TIf">
-                    <rect key="frame" x="16" y="16" width="382" height="108"/>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Asl-4X-QmQ" userLabel="ContainerView">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="140"/>
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enjoying the WooCommerce app?" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="knB-Iy-ibQ">
-                            <rect key="frame" x="0.0" y="0.0" width="382" height="20.5"/>
-                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                            <nil key="textColor"/>
-                            <nil key="highlightedColor"/>
-                        </label>
-                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="nuf-l1-QC2">
-                            <rect key="frame" x="0.0" y="40.5" width="382" height="67.5"/>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="ffG-Ca-TIf" userLabel="VerticalStackView">
+                            <rect key="frame" x="16" y="16" width="288" height="108"/>
                             <subviews>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fwj-Sy-QD3">
-                                    <rect key="frame" x="0.0" y="0.0" width="183.5" height="67.5"/>
-                                    <state key="normal" title="Could Be Better"/>
-                                </button>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Sgc-1W-ZK6">
-                                    <rect key="frame" x="198.5" y="0.0" width="183.5" height="67.5"/>
-                                    <state key="normal" title="I Like It"/>
-                                </button>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enjoying the WooCommerce app?" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="knB-Iy-ibQ">
+                                    <rect key="frame" x="0.0" y="0.0" width="288" height="20.5"/>
+                                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="nuf-l1-QC2" userLabel="ButtonsStackView">
+                                    <rect key="frame" x="0.0" y="40.5" width="288" height="67.5"/>
+                                    <subviews>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fwj-Sy-QD3">
+                                            <rect key="frame" x="0.0" y="0.0" width="136.5" height="67.5"/>
+                                            <state key="normal" title="Could Be Better"/>
+                                        </button>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Sgc-1W-ZK6">
+                                            <rect key="frame" x="151.5" y="0.0" width="136.5" height="67.5"/>
+                                            <state key="normal" title="I Like It"/>
+                                        </button>
+                                    </subviews>
+                                </stackView>
                             </subviews>
                         </stackView>
                     </subviews>
-                </stackView>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="ffG-Ca-TIf" secondAttribute="trailing" constant="16" id="BKG-rz-CsH"/>
+                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="320" id="J4L-rz-0aV"/>
+                        <constraint firstAttribute="bottom" secondItem="ffG-Ca-TIf" secondAttribute="bottom" constant="16" id="K1I-cL-mig"/>
+                        <constraint firstAttribute="width" relation="lessThanOrEqual" constant="414" id="Rra-Ce-xpI"/>
+                        <constraint firstItem="ffG-Ca-TIf" firstAttribute="top" secondItem="Asl-4X-QmQ" secondAttribute="top" constant="16" id="qLb-cQ-MOr"/>
+                        <constraint firstItem="ffG-Ca-TIf" firstAttribute="leading" secondItem="Asl-4X-QmQ" secondAttribute="leading" constant="16" id="uJh-9r-7n9"/>
+                    </constraints>
+                </view>
             </subviews>
             <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
             <constraints>
-                <constraint firstAttribute="bottom" secondItem="ffG-Ca-TIf" secondAttribute="bottom" constant="16" id="2XZ-pu-IqB"/>
-                <constraint firstAttribute="top" secondItem="ffG-Ca-TIf" secondAttribute="top" constant="-16" id="60C-sl-8B2"/>
-                <constraint firstItem="ffG-Ca-TIf" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="16" id="BEG-3z-meN"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="ffG-Ca-TIf" secondAttribute="trailing" constant="16" id="p6T-5h-EAY"/>
+                <constraint firstItem="Asl-4X-QmQ" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="APR-1a-jpq"/>
+                <constraint firstAttribute="top" secondItem="Asl-4X-QmQ" secondAttribute="top" id="Ibo-uC-Sbw"/>
+                <constraint firstItem="Asl-4X-QmQ" firstAttribute="height" secondItem="iN0-l3-epB" secondAttribute="height" id="MbE-G4-ZaM"/>
+                <constraint firstItem="Asl-4X-QmQ" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" priority="750" id="XUM-hY-coZ"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
-            <point key="canvasLocation" x="137.68115942028987" y="-100.44642857142857"/>
+            <point key="canvasLocation" x="69.565217391304358" y="-100.44642857142857"/>
         </view>
     </objects>
 </document>

@@ -3,6 +3,10 @@ import Yosemite
 /// Provides data needed for price settings.
 ///
 protocol ProductPriceSettingsViewModelOutput {
+    typealias Section = ProductPriceSettingsViewController.Section
+    typealias Row = ProductPriceSettingsViewController.Row
+    var sections: [Section] { get }
+
     var regularPrice: String? { get }
     var salePrice: String? { get }
     var dateOnSaleStart: Date? { get }
@@ -16,6 +20,10 @@ protocol ProductPriceSettingsViewModelOutput {
 protocol ProductPriceSettingsActionHandler {
     // Initialization
     func retrieveProductTaxClass(completion: @escaping () -> Void)
+
+    // Tap actions
+    func didTapScheduleSaleFromRow()
+    func didTapScheduleSaleToRow()
 
     // Input field actions
     func handleRegularPriceChange(_ regularPrice: String?)
@@ -110,6 +118,38 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
         }
         taxStatus = product.productTaxStatus
     }
+
+    var sections: [Section] {
+        // Price section
+        let priceSection = Section(title: NSLocalizedString("Price", comment: "Section header title for product price"), rows: [.price, .salePrice])
+
+        // Sales section
+        var saleScheduleRows: [Row] = [.scheduleSale]
+        if dateOnSaleStart != nil || dateOnSaleEnd != nil {
+            saleScheduleRows.append(contentsOf: [.scheduleSaleFrom])
+            if datePickerSaleFromVisible {
+                saleScheduleRows.append(contentsOf: [.datePickerSaleFrom])
+            }
+            saleScheduleRows.append(contentsOf: [.scheduleSaleTo])
+            if datePickerSaleToVisible {
+                saleScheduleRows.append(contentsOf: [.datePickerSaleTo])
+            }
+            if dateOnSaleEnd != nil {
+                saleScheduleRows.append(.removeSaleTo)
+            }
+        }
+        let salesSection = Section(title: nil, rows: saleScheduleRows)
+
+        // Tax section
+        let taxSection = Section(title: NSLocalizedString("Tax Settings", comment: "Section header title for product tax settings"),
+                                 rows: [.taxStatus, .taxClass])
+
+        return [
+            priceSection,
+            salesSection,
+            taxSection
+        ]
+    }
 }
 
 extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
@@ -121,6 +161,16 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
             completion()
         }
         ServiceLocator.stores.dispatch(action)
+    }
+
+    // MARK: - Tap actions
+
+    func didTapScheduleSaleFromRow() {
+        datePickerSaleFromVisible = !datePickerSaleFromVisible
+    }
+
+    func didTapScheduleSaleToRow() {
+        datePickerSaleToVisible = !datePickerSaleToVisible
     }
 
     // MARK: - UI changes
@@ -161,6 +211,8 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
     }
 
     func handleSaleEndDateChange(_ date: Date?) {
+        datePickerSaleToVisible = false
+
         if let date = date, let dateOnSaleStart = dateOnSaleStart, date < dateOnSaleStart {
             return
         }

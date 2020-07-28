@@ -15,11 +15,6 @@ final class ProductPriceSettingsViewController: UIViewController {
     //
     private let timezoneForScheduleSaleDates = TimeZone.siteTimezone
 
-    // Date Pickers status
-    //
-    private var datePickerSaleFromVisible = false
-    private var datePickerSaleToVisible = false
-
     /// Table Sections to be rendered
     ///
     private var sections: [Section] = []
@@ -219,13 +214,12 @@ extension ProductPriceSettingsViewController: UITableViewDelegate {
 
         switch row {
         case .scheduleSaleFrom:
-            datePickerSaleFromVisible = !datePickerSaleFromVisible
+            viewModel.didTapScheduleSaleFromRow()
             refreshViewContent()
         case .scheduleSaleTo:
-            datePickerSaleToVisible = !datePickerSaleToVisible
+            viewModel.didTapScheduleSaleToRow()
             refreshViewContent()
         case .removeSaleTo:
-            datePickerSaleToVisible = false
             viewModel.handleSaleEndDateChange(nil)
             refreshViewContent()
         case .taxStatus:
@@ -439,34 +433,15 @@ private extension ProductPriceSettingsViewController {
     }
 
     func configureSections() {
-        var saleScheduleRows: [Row] = [.scheduleSale]
-        if viewModel.dateOnSaleStart != nil || viewModel.dateOnSaleEnd != nil {
-            saleScheduleRows.append(contentsOf: [.scheduleSaleFrom])
-            if datePickerSaleFromVisible {
-                saleScheduleRows.append(contentsOf: [.datePickerSaleFrom])
-            }
-            saleScheduleRows.append(contentsOf: [.scheduleSaleTo])
-            if datePickerSaleToVisible {
-                saleScheduleRows.append(contentsOf: [.datePickerSaleTo])
-            }
-            if viewModel.dateOnSaleEnd != nil {
-                saleScheduleRows.append(.removeSaleTo)
-            }
-        }
-
-        sections = [
-        Section(title: NSLocalizedString("Price", comment: "Section header title for product price"), rows: [.price, .salePrice]),
-        Section(title: nil, rows: saleScheduleRows),
-        Section(title: NSLocalizedString("Tax Settings", comment: "Section header title for product tax settings"), rows: [.taxStatus, .taxClass])
-        ]
+        sections = viewModel.sections
     }
 }
 
 // MARK: - Private Types
 //
-private extension ProductPriceSettingsViewController {
+extension ProductPriceSettingsViewController {
 
-    struct Section {
+    struct Section: Equatable {
         let title: String?
         let rows: [Row]
     }
@@ -485,7 +460,7 @@ private extension ProductPriceSettingsViewController {
         case taxStatus
         case taxClass
 
-        var type: UITableViewCell.Type {
+        fileprivate var type: UITableViewCell.Type {
             switch self {
             case .price, .salePrice:
                 return UnitInputTableViewCell.self
@@ -502,7 +477,7 @@ private extension ProductPriceSettingsViewController {
             }
         }
 
-        var reuseIdentifier: String {
+        fileprivate var reuseIdentifier: String {
             return type.reuseIdentifier
         }
     }

@@ -149,7 +149,7 @@ extension Storage.Product: ReadOnlyConvertible {
                        parentID: parentID,
                        purchaseNote: purchaseNote,
                        categories: productCategories.sorted(),
-                       tags: productTags.sorted(),
+                       tags: productTags,
                        images: productImages,
                        attributes: productAttributes.sorted(),
                        defaultAttributes: productDefaultAttributes.sorted(),

@@ -180,13 +180,6 @@ extension SiteAddressViewController: UITextFieldDelegate {
 
 // MARK: - Private methods
 private extension SiteAddressViewController {
-    /// Localize the "Continue" button.
-    ///
-    func localizePrimaryButton() {
-        let primaryTitle = WordPressAuthenticator.shared.displayStrings.continueButtonTitle
-        submitButton?.setTitle(primaryTitle, for: .normal)
-        submitButton?.setTitle(primaryTitle, for: .highlighted)
-    }
 
     /// Registers all of the available TableViewCells.
     ///

@@ -20,6 +20,7 @@ public struct WordPressAuthenticatorDisplayStrings {
     public let gettingStartedTitle: String
     public let logInTitle: String
     public let signUpTitle: String
+    public let waitingForGoogleTitle: String
 
     /// Strings: secondary call-to-action button titles.
     ///
@@ -43,6 +44,7 @@ public struct WordPressAuthenticatorDisplayStrings {
                 gettingStartedTitle: String,
                 logInTitle: String,
                 signUpTitle: String,
+                waitingForGoogleTitle: String,
 				usernamePlaceholder: String,
 				passwordPlaceholder: String) {
         self.emailLoginInstructions = emailLoginInstructions
@@ -55,6 +57,7 @@ public struct WordPressAuthenticatorDisplayStrings {
         self.gettingStartedTitle = gettingStartedTitle
         self.logInTitle = logInTitle
         self.signUpTitle = signUpTitle
+        self.waitingForGoogleTitle = waitingForGoogleTitle
 		self.usernamePlaceholder = usernamePlaceholder
 		self.passwordPlaceholder = passwordPlaceholder
     }
@@ -83,6 +86,8 @@ public extension WordPressAuthenticatorDisplayStrings {
                                           comment: "View title during the log in process."),
             signUpTitle: NSLocalizedString("Sign Up",
                                            comment: "View title during the sign up process."),
+            waitingForGoogleTitle: NSLocalizedString("Waiting...",
+                                                     comment: "View title during the Google auth process."),
 			usernamePlaceholder: NSLocalizedString("Username",
 												   comment: "Placeholder for the username textfield."),
 			passwordPlaceholder: NSLocalizedString("Password",

@@ -38,6 +38,14 @@ open class NUXViewController: UIViewController, NUXViewControllerBase, UIViewCon
         submitButton?.isEnabled = enableSubmit(animating: animating)
     }
 
+    /// Localize the "Continue" button.
+    ///
+    func localizePrimaryButton() {
+        let primaryTitle = WordPressAuthenticator.shared.displayStrings.continueButtonTitle
+        submitButton?.setTitle(primaryTitle, for: .normal)
+        submitButton?.setTitle(primaryTitle, for: .highlighted)
+    }
+    
     open func enableSubmit(animating: Bool) -> Bool {
         return !animating
     }

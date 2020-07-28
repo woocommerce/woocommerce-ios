@@ -15,6 +15,8 @@ final class InAppFeedbackCardViewController: UIViewController {
         configureTitleLabel()
         configureDidNotLikeButton()
         configureLikeButton()
+
+        view.backgroundColor = .listForeground
     }
 }
 

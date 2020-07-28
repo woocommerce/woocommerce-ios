@@ -65,6 +65,8 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         return StoreStatsV4PeriodViewController(timeRange: timeRange, currentDate: currentDate)
     }()
 
+    private lazy var inAppFeedbackCardViewController = InAppFeedbackCardViewController()
+
     private lazy var topPerformersPeriodViewController: TopPerformerDataViewController = {
         return TopPerformerDataViewController(granularity: timeRange.topEarnerStatsGranularity)
     }()
@@ -72,7 +74,7 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     // MARK: Internal Properties
 
     private var childViewContrllers: [UIViewController] {
-        return [storeStatsPeriodViewController, topPerformersPeriodViewController]
+        return [storeStatsPeriodViewController, inAppFeedbackCardViewController, topPerformersPeriodViewController]
     }
 
     private let featureFlagService: FeatureFlagService
@@ -168,6 +170,12 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
             storeStatsPeriodView.heightAnchor.constraint(equalToConstant: 380),
             ])
 
+        // In-app Feedback Card
+        let inAppFeedbackCardViews = createInAppFeedbackCardViewsForStackView()
+        inAppFeedbackCardViews.forEach {
+            stackView.addArrangedSubview($0)
+        }
+
         // Top performers header.
         let topPerformersHeaderView = TopPerformersSectionHeaderView(title:
             NSLocalizedString("Top Performers",
@@ -207,6 +215,31 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         childViewContrllers.forEach { childViewController in
             childViewController.didMove(toParent: self)
         }
+    }
+
+    /// Create in-app feedback views to be added to the main `stackView`.
+    ///
+    /// The views created are an empty space and the `inAppFeedbackCardViewController.view`.
+    ///
+    /// - SeeAlso: configureSubviews
+    /// - Returns: The views or empty array if we do not need in-app feedback from the user.
+    ///
+    func createInAppFeedbackCardViewsForStackView() -> [UIView] {
+        guard featureFlagService.isFeatureFlagEnabled(.inAppFeedback),
+            let cardView = inAppFeedbackCardViewController.view else {
+            return []
+        }
+
+        let emptySpaceView: UIView = {
+            let view = UIView(frame: .zero)
+            view.backgroundColor = nil
+            NSLayoutConstraint.activate([
+                view.heightAnchor.constraint(equalToConstant: 8)
+            ])
+            return view
+        }()
+
+        return [emptySpaceView, cardView]
     }
 
     func createBorderView() -> UIView {

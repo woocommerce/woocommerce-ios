@@ -82,7 +82,7 @@ struct InAppFeedbackCardViewController_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             makeStack()
-                .previewLayout(.fixed(width: 320, height: 128))
+                .previewLayout(.fixed(width: 320, height: 148))
                 .previewDisplayName("Light")
 
             makeStack()

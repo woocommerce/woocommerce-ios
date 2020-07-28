@@ -7,7 +7,7 @@ import Yosemite
 /// - Top performers header view (`TopPerformersSectionHeaderView`)
 /// - Top performers data view (managed by child view controller `TopPerformerDataViewController`)
 ///
-class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
+final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
     // MARK: Public Interface
 

@@ -1,14 +1,21 @@
 import UIKit
 import WebKit
 
+/// Shows a web-based survey
+///
 final class SurveyViewController: UIViewController {
+
+    /// Internal web view to render the survey
+    ///
     @IBOutlet private weak var webView: WKWebView!
 
-    private let onSurveySubmission: (_ viewController: UIViewController) -> Void
+    /// Survey configuration provided by the consumer
+    ///
+    private let survey: SurveySource
 
-    init(onSurveySubmission: @escaping (_ viewController: UIViewController) -> Void) {
-        self.onSurveySubmission = onSurveySubmission
-        super.init(nibName: nil, bundle: nil)
+    init(survey: SurveySource) {
+        self.survey = survey
+        super.init(nibName: Self.nibName, bundle: nil)
     }
 
     required init?(coder: NSCoder) {
@@ -18,29 +25,36 @@ final class SurveyViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // TODO-jc: localization comment
-        title = NSLocalizedString("How can we improve?", comment: "")
-
         addCloseNavigationBarButton()
+        configureAndLoadSurvey()
+    }
 
-        let request = URLRequest(url: URL(string: "https://wasseryi.survey.fm/woo-mobile-app-test-survey")!)
+    private func configureAndLoadSurvey() {
+        title = survey.title
+
+        let request = URLRequest(url: survey.url)
         webView.load(request)
-        webView.navigationDelegate = self
     }
 }
 
-extension SurveyViewController: WKNavigationDelegate {
-    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        switch navigationAction.navigationType {
-        // The condition for the POST HTTP method is necessary, since the `formSubmitted` callback is triggered when showing the Crowdsignal completion screen
-        // (a GET request).
-        case .formSubmitted where navigationAction.request.httpMethod == "POST":
-            decisionHandler(.allow)
+// MARK: Survey Configuration
+//
+extension SurveyViewController {
+    enum SurveySource {
+        case inAppFeedback
 
-            onSurveySubmission(self)
-        default:
-            decisionHandler(.allow)
-            break
+        var url: URL {
+            switch self {
+            case .inAppFeedback:
+                return WooConstants.inAppFeedbackURL
+            }
+        }
+
+        var title: String {
+            switch self {
+            case .inAppFeedback:
+                return NSLocalizedString("How can we improve?", comment: "Title on the navigation bar for the in-app feedback survey")
+            }
         }
     }
 }

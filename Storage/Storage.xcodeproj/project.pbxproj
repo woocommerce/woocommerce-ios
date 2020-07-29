@@ -35,6 +35,7 @@
 		574B774E24AA883D0042116F /* MockFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574B774D24AA883D0042116F /* MockFileManager.swift */; };
 		574B775024AA897E0042116F /* FileManager+FileManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574B774F24AA897E0042116F /* FileManager+FileManagerProtocol.swift */; };
 		575CD4DC24ABE77800755B2B /* Collection+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575CD4DB24ABE77800755B2B /* Collection+Extensions.swift */; };
+		57A881A024CA396D00AE0943 /* GeneralAppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A8819F24CA396D00AE0943 /* GeneralAppSettings.swift */; };
 		68BC97FB41770051C287D1A8 /* Pods_StorageTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47556EE256120BEE49FF5FD3 /* Pods_StorageTests.framework */; };
 		7028A41485A08AC748206184 /* Pods_Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF3D3B298350F68191CD1DAD /* Pods_Storage.framework */; };
 		7426A05020F69D00002A4E07 /* OrderCoupon+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7426A04E20F69D00002A4E07 /* OrderCoupon+CoreDataClass.swift */; };
@@ -192,6 +193,7 @@
 		574B774D24AA883D0042116F /* MockFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFileManager.swift; sourceTree = "<group>"; };
 		574B774F24AA897E0042116F /* FileManager+FileManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+FileManagerProtocol.swift"; sourceTree = "<group>"; };
 		575CD4DB24ABE77800755B2B /* Collection+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Extensions.swift"; sourceTree = "<group>"; };
+		57A8819F24CA396D00AE0943 /* GeneralAppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralAppSettings.swift; sourceTree = "<group>"; };
 		5D12CAE2D0EA6AB66F162FF9 /* Pods-StorageTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StorageTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-StorageTests/Pods-StorageTests.debug.xcconfig"; sourceTree = "<group>"; };
 		74159626224D5644003C21CF /* Model 13.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 13.xcdatamodel"; sourceTree = "<group>"; };
 		7426A04E20F69D00002A4E07 /* OrderCoupon+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderCoupon+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -378,6 +380,14 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		57A8819E24CA395000AE0943 /* AppSettings */ = {
+			isa = PBXGroup;
+			children = (
+				57A8819F24CA396D00AE0943 /* GeneralAppSettings.swift */,
+			);
+			name = AppSettings;
+			sourceTree = "<group>";
+		};
 		7471A518216CF12900219F7E /* Stats */ = {
 			isa = PBXGroup;
 			children = (
@@ -541,6 +551,7 @@
 		B59E11D720A9CFF3004121A4 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				57A8819E24CA395000AE0943 /* AppSettings */,
 				025CA2BB238EB86200B05C81 /* ProductShippingClass+CoreDataClass.swift */,
 				025CA2BC238EB86200B05C81 /* ProductShippingClass+CoreDataProperties.swift */,
 				028296EE237D404F00E84012 /* ProductVariation+CoreDataClass.swift */,
@@ -924,6 +935,7 @@
 				CE4FD4482350EB7600A16B31 /* OrderItemRefund+CoreDataProperties.swift in Sources */,
 				D8FBFF5622D66A06006E3336 /* OrderStatsV4Interval+CoreDataProperties.swift in Sources */,
 				B505F6DE20BEEA4F00BB1B69 /* CoreDataManager.swift in Sources */,
+				57A881A024CA396D00AE0943 /* GeneralAppSettings.swift in Sources */,
 				7492FAD7217FA9C100ED2C69 /* SiteSetting+CoreDataProperties.swift in Sources */,
 				45E1863023704519009241F3 /* ShippingLine+CoreDataProperties.swift in Sources */,
 				B5FD111F21D4046E00560344 /* OrderSearchResults+CoreDataClass.swift in Sources */,

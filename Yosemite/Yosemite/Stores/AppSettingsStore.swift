@@ -58,6 +58,11 @@ public class AppSettingsStore: Store {
         return documents!.appendingPathComponent(Constants.productsFeatureSwitchFileName)
     }()
 
+    private lazy var generalAppSettingsFileURL: URL! = {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent(Constants.generalAppSettingsFileName)
+    }()
+
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
@@ -108,11 +113,70 @@ public class AppSettingsStore: Store {
             setProductsFeatureSwitch(isEnabled: isEnabled, onCompletion: onCompletion)
         case .resetStatsVersionStates:
             resetStatsVersionStates()
+        case .setInstallationDateIfNecessary(let date, let onCompletion):
+            setInstallationDateIfNecessary(date: date, onCompletion: onCompletion)
+        case .setLastFeedbackDate(let date, let onCompletion):
+            setLastFeedbackDate(date: date, onCompletion: onCompletion)
         }
     }
 }
 
+// MARK: - General App Settings
 
+private extension AppSettingsStore {
+    /// Save the `date` in `GeneralAppSettings` but only if the `date` is older than the existing
+    /// `GeneralAppSettings.installationDate`.
+    ///
+    /// - Parameter onCompletion: The `Result`'s success value will be `true` if the installation
+    ///                           date was changed and `false` if not.
+    ///
+    func setInstallationDateIfNecessary(date: Date, onCompletion: ((Result<Bool, Error>) -> Void)) {
+        do {
+            let settings = try loadOrCreateGeneralAppSettings()
+
+            if let installationDate = settings.installationDate,
+                date > installationDate {
+                return onCompletion(.success(false))
+            }
+
+            let settingsToSave = GeneralAppSettings(installationDate: date, lastFeedbackDate: settings.lastFeedbackDate)
+            try saveGeneralAppSettings(settingsToSave)
+
+            onCompletion(.success(true))
+        } catch {
+            onCompletion(.failure(error))
+        }
+    }
+
+    /// Save the `date` in `GeneralAppSettings.lastFeedbackDate`.
+    ///
+    func setLastFeedbackDate(date: Date, onCompletion: ((Result<Void, Error>) -> Void)) {
+        do {
+            let settings = try loadOrCreateGeneralAppSettings()
+
+            let settingsToSave = GeneralAppSettings(installationDate: settings.installationDate, lastFeedbackDate: date)
+            try saveGeneralAppSettings(settingsToSave)
+
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+    }
+
+    /// Load the `GeneralAppSettings` from file or create an empty one if it doesn't exist.
+    func loadOrCreateGeneralAppSettings() throws -> GeneralAppSettings {
+        guard let settings: GeneralAppSettings = try fileStorage.data(for: generalAppSettingsFileURL) else {
+            return GeneralAppSettings(installationDate: nil, lastFeedbackDate: nil)
+        }
+
+        return settings
+    }
+
+    /// Save the `GeneralAppSettings` to the appropriate file.
+    func saveGeneralAppSettings(_ settings: GeneralAppSettings) throws {
+        try fileStorage.write(settings, to: generalAppSettingsFileURL)
+    }
+}
 // MARK: - Shipment tracking providers!
 //
 private extension AppSettingsStore {
@@ -391,4 +455,5 @@ private enum Constants {
     static let statsVersionBannerVisibilityFileName = "stats-version-banner-visibility.plist"
     static let statsVersionLastShownFileName = "stats-version-last-shown.plist"
     static let productsFeatureSwitchFileName = "products-feature-switch.plist"
+    static let generalAppSettingsFileName = "general-app-settings.plist"
 }

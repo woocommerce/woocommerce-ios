@@ -8,6 +8,7 @@ final class TwoFAViewController: LoginViewController {
     // MARK: - Properties
     
     @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
     private weak var codeField: UITextField?
     
     private var rows = [Row]()
@@ -20,7 +21,6 @@ final class TwoFAViewController: LoginViewController {
     }
 
     // Required for `NUXKeyboardResponder` but unused here.
-    @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
     var verticalCenterConstraint: NSLayoutConstraint?
 
     // MARK: - View

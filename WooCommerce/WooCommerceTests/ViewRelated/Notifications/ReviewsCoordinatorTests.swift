@@ -11,7 +11,9 @@ import Yosemite
 final class ReviewsCoordinatorTests: XCTestCase {
     private var pushNotificationsManager: MockPushNotificationsManager!
     private var storesManager: MockupStoresManager!
+    private var sessionManager: SessionManager!
     private var noticePresenter: MockNoticePresenter!
+    private var switchStoreUseCase: MockSwitchStoreUseCase!
 
     private var reviewsCoordinator: ReviewsCoordinator!
 
@@ -19,18 +21,23 @@ final class ReviewsCoordinatorTests: XCTestCase {
         super.setUp()
 
         pushNotificationsManager = MockPushNotificationsManager()
-        storesManager = MockupStoresManager(sessionManager: SessionManager.testingInstance)
+        sessionManager = SessionManager.testingInstance
+        storesManager = MockupStoresManager(sessionManager: sessionManager)
         noticePresenter = MockNoticePresenter()
+        switchStoreUseCase = MockSwitchStoreUseCase()
 
         reviewsCoordinator = ReviewsCoordinator(pushNotificationsManager: pushNotificationsManager,
                                                 storesManager: storesManager,
-                                                noticePresenter: noticePresenter)
+                                                noticePresenter: noticePresenter,
+                                                switchStoreUseCase: switchStoreUseCase)
     }
 
     override func tearDown() {
         reviewsCoordinator = nil
+        switchStoreUseCase = nil
         noticePresenter = nil
         storesManager = nil
+        sessionManager = nil
         pushNotificationsManager = nil
 
         super.tearDown()
@@ -142,6 +149,39 @@ final class ReviewsCoordinatorTests: XCTestCase {
         XCTAssertEqual(navigationController.viewControllers.count, 1)
         let topViewController = try XCTUnwrap(navigationController.topViewController)
         assertThat(topViewController, isAnInstanceOf: ReviewsViewController.self)
+    }
+
+    func testWhenReceivingAReviewNotificationFromADifferentSiteThenItWillSwitchTheCurrentSite() throws {
+        // Given
+        sessionManager.setStoreId(1_000)
+        // Clear the `receivedActions`
+        storesManager.reset()
+
+        let pushNotification = PushNotification(noteID: 1_234, kind: .comment, message: "")
+        let differentSiteID: Int64 = 2_000_111
+
+        let navigationController = reviewsCoordinator.navigationController
+        reviewsCoordinator.start()
+
+        // When
+        pushNotificationsManager.sendInactiveNotification(pushNotification)
+
+        // Simulate that the network call returns a parcel from a different site
+        let receivedProductReviewAction = try XCTUnwrap(storesManager.receivedActions.first as? ProductReviewAction)
+        guard case .retrieveProductReviewFromNote(_, let completion) = receivedProductReviewAction else {
+            return XCTFail("Expected retrieveProductReviewFromNote action.")
+        }
+        completion(.success(makeParcel(metaSiteID: differentSiteID)))
+
+        waitUntil {
+            navigationController.viewControllers.count >= 2
+        }
+
+        // Then
+        // A ReviewDetailsViewController should be pushed
+        assertThat(navigationController.topViewController, isAnInstanceOf: ReviewDetailsViewController.self)
+        // We should have switched to the other site
+        XCTAssertEqual(switchStoreUseCase.destinationStoreIDs, [differentSiteID])
     }
 }
 

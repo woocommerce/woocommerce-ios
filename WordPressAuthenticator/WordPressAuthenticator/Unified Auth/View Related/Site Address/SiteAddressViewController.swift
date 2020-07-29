@@ -10,9 +10,9 @@ final class SiteAddressViewController: LoginViewController {
     /// Private properties.
     ///
     @IBOutlet private weak var tableView: UITableView!
-    @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
 
-    // Required property declaration for `NUXKeyboardResponder` but unused here.
+    // Required for `NUXKeyboardResponder` but unused here.
+    @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
     var verticalCenterConstraint: NSLayoutConstraint?
 
     private var rows = [Row]()
@@ -95,17 +95,6 @@ final class SiteAddressViewController: LoginViewController {
 
        configureSubmitButton(animating: loading)
        navigationItem.hidesBackButton = loading
-    }
-
-    /// Configure the view for an editing state. Should only be called from viewWillAppear
-    /// as this method skips animating any change in height.
-    ///
-    @objc func configureViewForEditingIfNeeded() {
-       // Check the helper to determine whether an editing state should be assumed.
-       adjustViewForKeyboard(SigninEditingState.signinEditingStateActive)
-       if SigninEditingState.signinEditingStateActive {
-           siteURLField?.becomeFirstResponder()
-       }
     }
 
     override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
@@ -235,8 +224,9 @@ private extension SiteAddressViewController {
     /// Configure the textfield cell.
     ///
     func configureTextField(_ cell: TextFieldTableViewCell) {
-        let placeholderText = NSLocalizedString("example.com", comment: "Site Address placeholder")
-        cell.configureTextFieldStyle(with: .url, and: placeholderText)
+        cell.configureTextFieldStyle(with: .url,
+                                     and: WordPressAuthenticator.shared.displayStrings.siteAddressPlaceholder)
+
         // Save a reference to the first textField so it can becomeFirstResponder.
         siteURLField = cell.textField
 		cell.textField.delegate = self
@@ -271,6 +261,15 @@ private extension SiteAddressViewController {
         cell.configureLabel(text: errorMessage, style: .error)
     }
 
+    /// Configure the view for an editing state.
+    ///
+    func configureViewForEditingIfNeeded() {
+       // Check the helper to determine whether an editing state should be assumed.
+       adjustViewForKeyboard(SigninEditingState.signinEditingStateActive)
+       if SigninEditingState.signinEditingStateActive {
+           siteURLField?.becomeFirstResponder()
+       }
+    }
 
     // MARK: - Private Constants
 

@@ -128,6 +128,10 @@ private extension ProductImagesGalleryViewController {
                 self.productImages.remove(at: index)
                 self.collectionView.reloadData()
             }
+
+            if self.productImages.count == 0 {
+                self.navigationController?.popViewController(animated: true)
+            }
         }
 
         alert.addAction(cancel)

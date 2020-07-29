@@ -11,13 +11,13 @@ final class SurveyViewController: UIViewController {
 
     /// Survey configuration provided by the consumer
     ///
-    private let survey: SurveySource
+    private let survey: Source
 
     /// Handler invoked when the survey has been completed
     ///
     private let onCompletion: () -> Void
 
-    init(survey: SurveySource, onCompletion: @escaping () -> Void) {
+    init(survey: Source, onCompletion: @escaping () -> Void) {
         self.survey = survey
         self.onCompletion = onCompletion
         super.init(nibName: Self.nibName, bundle: nil)
@@ -46,7 +46,7 @@ final class SurveyViewController: UIViewController {
 // MARK: Survey Configuration
 //
 extension SurveyViewController {
-    enum SurveySource {
+    enum Source {
         case inAppFeedback
 
         var url: URL {

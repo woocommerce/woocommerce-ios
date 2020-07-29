@@ -85,6 +85,13 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     ///
     private let canDisplayInAppFeedback: Bool
 
+    /// Create an instance of `self`.
+    ///
+    /// - Parameter canDisplayInAppFeedback: If applicable, present the in-app feedback. The in-app
+    ///                                      feedback may still not be presented depending on the
+    ///                                      constraints. But setting this to `false`, will ensure
+    ///                                      that it will never be presented.
+    ///
     init(timeRange: StatsTimeRangeV4,
          currentDate: Date,
          canDisplayInAppFeedback: Bool,

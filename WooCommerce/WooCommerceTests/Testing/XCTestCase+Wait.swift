@@ -34,13 +34,22 @@ extension XCTestCase {
     /// }
     /// ```
     ///
-    func waitUntil(condition: @escaping () -> Bool, timeout: TimeInterval = Constants.expectationTimeout) {
+    func waitUntil(file: StaticString = #file,
+                   line: UInt = #line,
+                   timeout: TimeInterval = Constants.expectationTimeout,
+                   condition: @escaping (() -> Bool)) {
         let predicate = NSPredicate { _, _ -> Bool in
             return condition()
         }
 
         let exp = expectation(for: predicate, evaluatedWith: nil)
 
-        wait(for: [exp], timeout: timeout)
+        let result = XCTWaiter.wait(for: [exp], timeout: timeout)
+        switch result {
+        case .timedOut:
+            XCTFail("Timed out waiting for condition to return `true`.", file: file, line: line)
+        default:
+            break
+        }
     }
 }

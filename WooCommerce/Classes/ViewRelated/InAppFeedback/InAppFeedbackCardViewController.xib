@@ -13,6 +13,7 @@
                 <outlet property="didNotLikeButton" destination="fwj-Sy-QD3" id="lHh-PH-TAX"/>
                 <outlet property="likeButton" destination="Sgc-1W-ZK6" id="qRZ-w4-Hw2"/>
                 <outlet property="titleLabel" destination="knB-Iy-ibQ" id="mYE-x1-nqG"/>
+                <outlet property="verticalStackView" destination="ffG-Ca-TIf" id="Yfy-BA-qN8"/>
                 <outlet property="view" destination="iN0-l3-epB" id="NfP-gC-jAJ"/>
             </connections>
         </placeholder>
@@ -22,16 +23,16 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="ffG-Ca-TIf" userLabel="VerticalStackView">
-                    <rect key="frame" x="15" y="16" width="290.5" height="108"/>
+                    <rect key="frame" x="31" y="16" width="258.5" height="108"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enjoying the WooCommerce app?" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="knB-Iy-ibQ">
-                            <rect key="frame" x="16" y="0.0" width="258.5" height="20.5"/>
+                            <rect key="frame" x="0.0" y="0.0" width="258.5" height="20.5"/>
                             <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="nuf-l1-QC2" userLabel="ButtonsStackView">
-                            <rect key="frame" x="16" y="40.5" width="258.5" height="67.5"/>
+                            <rect key="frame" x="0.0" y="40.5" width="258.5" height="67.5"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fwj-Sy-QD3">
                                     <rect key="frame" x="0.0" y="0.0" width="121.5" height="67.5"/>
@@ -47,7 +48,6 @@
                     <constraints>
                         <constraint firstAttribute="width" relation="lessThanOrEqual" constant="414" id="vf1-wt-Fs4"/>
                     </constraints>
-                    <edgeInsets key="layoutMargins" top="0.0" left="16" bottom="0.0" right="16"/>
                 </stackView>
             </subviews>
             <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>

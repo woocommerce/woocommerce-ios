@@ -9,9 +9,13 @@ final class InAppFeedbackCardViewController: UIViewController {
     @IBOutlet private var didNotLikeButton: UIButton!
     @IBOutlet private var likeButton: UIButton!
 
+    /// The stackview containing the `titleLabel` and the horizontal view for the buttons.
+    @IBOutlet private var verticalStackView: UIStackView!
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        configureVerticalStackView()
         configureTitleLabel()
         configureDidNotLikeButton()
         configureLikeButton()
@@ -23,6 +27,12 @@ final class InAppFeedbackCardViewController: UIViewController {
 // MARK: - Provisioning
 
 private extension InAppFeedbackCardViewController {
+
+    func configureVerticalStackView() {
+        verticalStackView.isLayoutMarginsRelativeArrangement = true
+        verticalStackView.layoutMargins = .init(top: 0, left: 16, bottom: 0, right: 16)
+    }
+
     func configureTitleLabel() {
         titleLabel.applyBodyStyle()
         titleLabel.numberOfLines = 0

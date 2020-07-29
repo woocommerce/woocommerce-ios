@@ -21,7 +21,7 @@ final class SurveyViewControllerTests: XCTestCase {
         XCTAssertEqual(mirror.webView.url, WooConstants.inAppFeedbackURL)
     }
 
-    func testItCompletesAfterReceivingAFormSubmittedPostCallbackRequest() throws {
+    func testItCompletesAfterReceivingAFormSubmittedPOSTCallbackRequest() throws {
         // Given
         let exp = expectation(description: #function)
         var surveyCompleted = false

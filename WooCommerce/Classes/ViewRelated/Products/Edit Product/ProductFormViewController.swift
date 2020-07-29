@@ -904,6 +904,10 @@ private extension ProductFormViewController {
 
 private extension ProductFormViewController {
     func editTags() {
+        guard let product = product as? Product else {
+            return
+        }
+
         let tagsViewController = ProductTagsViewController(product: product) { [weak self] (tags) in
             self?.onEditTagsCompletion(tags: tags)
         }
@@ -911,6 +915,10 @@ private extension ProductFormViewController {
     }
 
     func onEditTagsCompletion(tags: [ProductTag]) {
+        guard let product = product as? Product else {
+            return
+        }
+
         defer {
             navigationController?.popViewController(animated: true)
         }

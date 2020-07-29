@@ -9,6 +9,8 @@ final class ProductImagesGalleryViewController: UIViewController {
     @IBOutlet private weak var collectionView: UICollectionView!
 
     private var productImages: [ProductImage]
+    // If present, the collection view will initially show the image at the selected index
+    private var selectedIndex: Int?
     private let productUIImageLoader: ProductUIImageLoader
     private let onDeletion: ProductImageViewController.Deletion
 
@@ -17,10 +19,13 @@ final class ProductImagesGalleryViewController: UIViewController {
         return collectionView.indexPathsForVisibleItems.first?.item
     }
 
+
     init(images: [ProductImage],
+         selectedIndex: Int? = nil,
          productUIImageLoader: ProductUIImageLoader,
          onDeletion: @escaping ProductImageViewController.Deletion) {
         self.productImages = images
+        self.selectedIndex = selectedIndex
         self.productUIImageLoader = productUIImageLoader
         self.onDeletion = onDeletion
         super.init(nibName: nil, bundle: nil)
@@ -37,6 +42,8 @@ final class ProductImagesGalleryViewController: UIViewController {
         configureNavigation()
         configureCollectionView()
         registerCells()
+
+        scrollToSelectedIndex(index: selectedIndex)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -50,6 +57,14 @@ final class ProductImagesGalleryViewController: UIViewController {
         super.viewWillDisappear(animated)
     }
 
+    private func scrollToSelectedIndex(index: Int?) {
+        if let selectedIndex = index {
+            let indexPath = IndexPath(item: selectedIndex, section: 0)
+            DispatchQueue.main.async {
+                self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
+            }
+        }
+    }
 }
 
 private extension ProductImagesGalleryViewController {
@@ -156,6 +171,7 @@ private extension ProductImagesGalleryViewController {
             fatalError()
         }
 
+        cell.backgroundColor = .black
         cell.imageView.contentMode = .center
         cell.imageView.image = .productsTabProductCellPlaceholderImage
         cell.contentView.layer.borderWidth = 0

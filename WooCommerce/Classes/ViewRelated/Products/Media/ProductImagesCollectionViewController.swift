@@ -129,6 +129,7 @@ extension ProductImagesCollectionViewController {
             }
         }
         let productImagesGalleryViewController = ProductImagesGalleryViewController(images: productImages,
+                                                                                    selectedIndex: indexPath.row,
                                                                                     productUIImageLoader: productUIImageLoader) { [weak self] (productImage) in
                                                                                         self?.onDeletion(productImage)
         }

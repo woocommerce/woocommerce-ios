@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="InAppFeedbackCardViewController" customModule="WooCommerce" customModuleProvider="target">
+            <connections>
+                <outlet property="didNotLikeButton" destination="fwj-Sy-QD3" id="lHh-PH-TAX"/>
+                <outlet property="likeButton" destination="Sgc-1W-ZK6" id="qRZ-w4-Hw2"/>
+                <outlet property="titleLabel" destination="knB-Iy-ibQ" id="mYE-x1-nqG"/>
+                <outlet property="verticalStackView" destination="ffG-Ca-TIf" id="Yfy-BA-qN8"/>
+                <outlet property="view" destination="iN0-l3-epB" id="NfP-gC-jAJ"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="140"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="ffG-Ca-TIf" userLabel="VerticalStackView">
+                    <rect key="frame" x="31" y="16" width="258.5" height="108"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enjoying the WooCommerce app?" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="knB-Iy-ibQ">
+                            <rect key="frame" x="0.0" y="0.0" width="258.5" height="20.5"/>
+                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="nuf-l1-QC2" userLabel="ButtonsStackView">
+                            <rect key="frame" x="0.0" y="40.5" width="258.5" height="67.5"/>
+                            <subviews>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fwj-Sy-QD3">
+                                    <rect key="frame" x="0.0" y="0.0" width="121.5" height="67.5"/>
+                                    <state key="normal" title="Could Be Better"/>
+                                </button>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Sgc-1W-ZK6">
+                                    <rect key="frame" x="136.5" y="0.0" width="122" height="67.5"/>
+                                    <state key="normal" title="I Like It"/>
+                                </button>
+                            </subviews>
+                        </stackView>
+                    </subviews>
+                    <constraints>
+                        <constraint firstAttribute="width" relation="lessThanOrEqual" constant="414" id="vf1-wt-Fs4"/>
+                    </constraints>
+                </stackView>
+            </subviews>
+            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+            <constraints>
+                <constraint firstItem="ffG-Ca-TIf" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="vUN-kp-3ea" secondAttribute="leading" id="HI7-Gz-sqF"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="ffG-Ca-TIf" secondAttribute="trailing" id="KGT-7l-Gal"/>
+                <constraint firstItem="ffG-Ca-TIf" firstAttribute="centerX" secondItem="vUN-kp-3ea" secondAttribute="centerX" id="OfF-He-JOA"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="ffG-Ca-TIf" secondAttribute="bottom" constant="16" id="VdC-Gq-cXg"/>
+                <constraint firstAttribute="top" secondItem="ffG-Ca-TIf" secondAttribute="top" constant="-16" id="dqn-7D-6sl"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <point key="canvasLocation" x="69.565217391304358" y="-100.44642857142857"/>
+        </view>
+    </objects>
+</document>

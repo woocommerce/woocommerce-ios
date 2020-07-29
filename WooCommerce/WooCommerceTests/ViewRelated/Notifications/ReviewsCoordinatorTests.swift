@@ -92,7 +92,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
         // When
         pushNotificationsManager.sendInactiveNotification(pushNotification)
 
-        // Simulate that the network call return a parcel
+        // Simulate that the network call returns a parcel
         let receivedAction = try XCTUnwrap(storesManager.receivedActions.first as? ProductReviewAction)
         guard case .retrieveProductReviewFromNote(_, let completion) = receivedAction else {
             return XCTFail("Expected retrieveProductReviewFromNote action.")
@@ -121,7 +121,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
         // When
         pushNotificationsManager.sendInactiveNotification(pushNotification)
 
-        // Simulate that the network call return a parcel
+        // Simulate that the network call returns a parcel
         let receivedAction = try XCTUnwrap(storesManager.receivedActions.first as? ProductReviewAction)
         guard case .retrieveProductReviewFromNote(_, let completion) = receivedAction else {
             return XCTFail("Expected retrieveProductReviewFromNote action.")
@@ -149,7 +149,21 @@ final class ReviewsCoordinatorTests: XCTestCase {
 
 private extension ReviewsCoordinatorTests {
     /// Create a dummy Parcel.
-    func makeParcel() -> ProductReviewFromNoteParcel {
+    func makeParcel(metaSiteID: Int64 = 0) -> ProductReviewFromNoteParcel {
+        let metaAsData: Data = {
+            var ids = [String: Int64]()
+            ids[MetaContainer.Keys.site.rawValue] = metaSiteID
+
+            var metaAsJSON = [String: [String: Int64]]()
+            metaAsJSON[MetaContainer.Containers.ids.rawValue] = ids
+            do {
+                return try JSONEncoder().encode(metaAsJSON)
+            } catch {
+                XCTFail("Expected to convert MetaContainer JSON to Data. \(error)")
+                return Data()
+            }
+        }()
+
         let note = Note(noteID: 1,
                         hash: 0,
                         read: false,
@@ -163,7 +177,7 @@ private extension ReviewsCoordinatorTests {
                         subject: Data(),
                         header: Data(),
                         body: Data(),
-                        meta: Data())
+                        meta: metaAsData)
         let product = MockProduct().product()
         let review = MockReviews().anonyousReview()
 

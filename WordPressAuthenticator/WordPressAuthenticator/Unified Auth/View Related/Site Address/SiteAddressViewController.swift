@@ -10,9 +10,9 @@ final class SiteAddressViewController: LoginViewController {
     /// Private properties.
     ///
     @IBOutlet private weak var tableView: UITableView!
-    @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
 
-    // Required property declaration for `NUXKeyboardResponder` but unused here.
+    // Required for `NUXKeyboardResponder` but unused here.
+    @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
     var verticalCenterConstraint: NSLayoutConstraint?
 
     private var rows = [Row]()
@@ -235,8 +235,9 @@ private extension SiteAddressViewController {
     /// Configure the textfield cell.
     ///
     func configureTextField(_ cell: TextFieldTableViewCell) {
-        let placeholderText = NSLocalizedString("example.com", comment: "Site Address placeholder")
-        cell.configureTextFieldStyle(with: .url, and: placeholderText)
+        cell.configureTextFieldStyle(with: .url,
+                                     and: WordPressAuthenticator.shared.displayStrings.siteAddressPlaceholder)
+
         // Save a reference to the first textField so it can becomeFirstResponder.
         siteURLField = cell.textField
         cell.textField.delegate = self

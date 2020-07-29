@@ -21,4 +21,26 @@ extension XCTestCase {
         block(exp)
         wait(for: [exp], timeout: timeout)
     }
+
+    /// Creates an `XCTestExpectation` and waits until `condition` returns `true`.
+    ///
+    /// Example usage:
+    ///
+    /// ```
+    /// var valueThatIsUpdatedAsynchronously: Int = 0
+    ///
+    /// waitUntil {
+    ///     valueThatIsUpdatedAsynchronously > 5
+    /// }
+    /// ```
+    ///
+    func waitUntil(condition: @escaping () -> Bool, timeout: TimeInterval = Constants.expectationTimeout) {
+        let predicate = NSPredicate { _, _ -> Bool in
+            return condition()
+        }
+
+        let exp = expectation(for: predicate, evaluatedWith: nil)
+
+        wait(for: [exp], timeout: timeout)
+    }
 }

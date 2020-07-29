@@ -24,7 +24,6 @@ final class PushNotificationsManager: PushNotesManager {
     private let foregroundNotificationsSubject = PublishSubject<PushNotification>()
 
     /// An observable that emits values when the app is activated due to a Remote Notification.
-    /// The Remote Notification is emitted.
     ///
     var inactiveNotifications: Observable<PushNotification> {
         inactiveNotificationsSubject

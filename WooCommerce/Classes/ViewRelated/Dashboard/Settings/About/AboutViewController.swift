@@ -198,19 +198,19 @@ private extension AboutViewController {
     /// California Privacy Policy action
     ///
     func californiaPrivacyWasPressed() {
-        displayWebView(url: WooConstants.californiaPrivacyURL)
+        displayWebView(url: WooConstants.URLs.californiaPrivacy.asURL())
     }
 
     /// Privacy Policy action
     ///
     func privacyWasPressed() {
-        displayWebView(url: WooConstants.privacyURL)
+        displayWebView(url: WooConstants.URLs.privacy.asURL())
     }
 
     /// Terms of Service action
     ///
     func termsWasPressed() {
-        displayWebView(url: WooConstants.termsOfServiceUrl)
+        displayWebView(url: WooConstants.URLs.termsOfService.asURL())
     }
 }
 

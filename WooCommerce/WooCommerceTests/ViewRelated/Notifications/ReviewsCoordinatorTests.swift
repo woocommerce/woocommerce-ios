@@ -22,7 +22,11 @@ final class ReviewsCoordinatorTests: XCTestCase {
 
         pushNotificationsManager = MockPushNotificationsManager()
         sessionManager = SessionManager.testingInstance
+
         storesManager = MockupStoresManager(sessionManager: sessionManager)
+        // Reset `receivedActions`
+        storesManager.reset()
+
         noticePresenter = MockNoticePresenter()
         switchStoreUseCase = MockSwitchStoreUseCase()
 
@@ -154,8 +158,6 @@ final class ReviewsCoordinatorTests: XCTestCase {
     func testWhenReceivingAReviewNotificationFromADifferentSiteThenItWillSwitchTheCurrentSite() throws {
         // Given
         sessionManager.setStoreId(1_000)
-        // Clear the `receivedActions`
-        storesManager.reset()
 
         let pushNotification = PushNotification(noteID: 1_234, kind: .comment, message: "")
         let differentSiteID: Int64 = 2_000_111

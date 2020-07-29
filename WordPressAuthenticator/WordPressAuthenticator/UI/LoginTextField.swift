@@ -6,7 +6,6 @@ open class LoginTextField: WPWalkthroughTextField {
     open override func awakeFromNib() {
         super.awakeFromNib()
         backgroundColor = WordPressAuthenticator.shared.style.textFieldBackgroundColor
-        secureTextEntryImageColor = WordPressAuthenticator.shared.style.placeholderColor
     }
 
     override open func draw(_ rect: CGRect) {

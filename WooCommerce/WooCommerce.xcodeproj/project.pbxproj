@@ -290,6 +290,8 @@
 		4506BD722461965300FE6377 /* ProductVisibilityViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4506BD702461965300FE6377 /* ProductVisibilityViewController.xib */; };
 		450C2CB024CF006A00D570DD /* ProductTagsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450C2CAF24CF006A00D570DD /* ProductTagsDataSource.swift */; };
 		450C2CB324D0803000D570DD /* ProductSettingsRowsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450C2CB224D0803000D570DD /* ProductSettingsRowsTests.swift */; };
+		450C2CB624D1ABB200D570DD /* ProductImagesGalleryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450C2CB424D1ABB100D570DD /* ProductImagesGalleryViewController.swift */; };
+		450C2CB724D1ABB200D570DD /* ProductImagesGalleryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 450C2CB524D1ABB200D570DD /* ProductImagesGalleryViewController.xib */; };
 		4512054F2464741B005D68DE /* ProductVisibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4512054E2464741B005D68DE /* ProductVisibility.swift */; };
 		4512055224655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4512055024655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.swift */; };
 		4512055324655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4512055124655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.xib */; };
@@ -1184,6 +1186,8 @@
 		4506BD702461965300FE6377 /* ProductVisibilityViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductVisibilityViewController.xib; sourceTree = "<group>"; };
 		450C2CAF24CF006A00D570DD /* ProductTagsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagsDataSource.swift; sourceTree = "<group>"; };
 		450C2CB224D0803000D570DD /* ProductSettingsRowsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSettingsRowsTests.swift; sourceTree = "<group>"; };
+		450C2CB424D1ABB100D570DD /* ProductImagesGalleryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesGalleryViewController.swift; sourceTree = "<group>"; };
+		450C2CB524D1ABB200D570DD /* ProductImagesGalleryViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductImagesGalleryViewController.xib; sourceTree = "<group>"; };
 		4512054E2464741B005D68DE /* ProductVisibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVisibility.swift; sourceTree = "<group>"; };
 		4512055024655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndTextFieldWithImageTableViewCell.swift; sourceTree = "<group>"; };
 		4512055124655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TitleAndTextFieldWithImageTableViewCell.xib; sourceTree = "<group>"; };
@@ -2239,6 +2243,8 @@
 				02A275B923FE50AA005C560F /* ProductUIImageLoader.swift */,
 				0218B4EB242E06F00083A847 /* MediaType+WPMediaType.swift */,
 				02521E10243DC3C400DC7810 /* CancellableMedia.swift */,
+				450C2CB424D1ABB100D570DD /* ProductImagesGalleryViewController.swift */,
+				450C2CB524D1ABB200D570DD /* ProductImagesGalleryViewController.xib */,
 			);
 			path = Media;
 			sourceTree = "<group>";
@@ -4375,6 +4381,7 @@
 				B56DB3D72049BFAA00D4AA8E /* LaunchScreen.storyboard in Resources */,
 				CE583A0C2107937F00D73C1C /* TextViewTableViewCell.xib in Resources */,
 				D843D5CC22437E59001BFA55 /* TitleAndEditableValueTableViewCell.xib in Resources */,
+				450C2CB724D1ABB200D570DD /* ProductImagesGalleryViewController.xib in Resources */,
 				02EEB5C52424AFAA00B8A701 /* TextFieldTableViewCell.xib in Resources */,
 				B560D68A2195BD100027BB7E /* NoteDetailsCommentTableViewCell.xib in Resources */,
 				CE0F17D022A8105800964A63 /* ReadMoreTableViewCell.xib in Resources */,
@@ -4817,6 +4824,7 @@
 				0240B3AC230A910C000A866C /* StoreStatsV4ChartAxisHelper.swift in Sources */,
 				74D0A5302139CF1300E2919F /* String+Helpers.swift in Sources */,
 				0286B27F23C70557003D784B /* ColumnFlowLayout.swift in Sources */,
+				450C2CB624D1ABB200D570DD /* ProductImagesGalleryViewController.swift in Sources */,
 				7435E58E21C0151B00216F0F /* OrderNote+Woo.swift in Sources */,
 				451A04F42386F7C900E368C9 /* AddProductImageCollectionViewCell.swift in Sources */,
 				D843D5CB22437E59001BFA55 /* TitleAndEditableValueTableViewCell.swift in Sources */,

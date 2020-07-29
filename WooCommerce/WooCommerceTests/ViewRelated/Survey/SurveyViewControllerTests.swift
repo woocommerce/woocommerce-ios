@@ -34,6 +34,7 @@ final class SurveyViewControllerTests: XCTestCase {
         _ = try XCTUnwrap(viewController.view)
         let mirror = try self.mirror(of: viewController)
 
+        // Fakes a form submission POST navigation
         let navigationAction = FormSubmittedNavigationAction(httpMethod: "POST")
         viewController.webView(mirror.webView, decidePolicyFor: navigationAction, decisionHandler: { _ in })
         waitForExpectations(timeout: Constants.expectationTimeout)
@@ -56,6 +57,7 @@ final class SurveyViewControllerTests: XCTestCase {
         _ = try XCTUnwrap(viewController.view)
         let mirror = try self.mirror(of: viewController)
 
+        // Fakes a form submission GET navigation
         let navigationAction = FormSubmittedNavigationAction(httpMethod: "GET")
         viewController.webView(mirror.webView, decidePolicyFor: navigationAction, decisionHandler: { _ in })
         waitForExpectations(timeout: 1)

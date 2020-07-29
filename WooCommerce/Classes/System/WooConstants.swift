@@ -70,7 +70,11 @@ enum WooConstants {
     /// URL for in-app feedback survey
     ///
     static var inAppFeedbackURL: URL {
-        trustedURL("https://automattic.survey.fm/woo-app-general-feedback-user-survey")
+        if BuildConfiguration.current == .localDeveloper {
+            return trustedURL("https://wasseryi.survey.fm/woo-mobile-app-test-survey")
+        } else {
+            return trustedURL("https://automattic.survey.fm/woo-app-general-feedback-user-survey")
+        }
     }
 
     /// Number of section events required before an app review prompt appears

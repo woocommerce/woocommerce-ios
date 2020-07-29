@@ -70,8 +70,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
 
         // Only the Reviews list is shown
         XCTAssertEqual(navigationController.viewControllers.count, 1)
-        let currentViewController = try XCTUnwrap(navigationController.viewControllers.first)
-        assertThat(currentViewController, isAnInstanceOf: ReviewsViewController.self)
+        assertThat(navigationController.topViewController, isAnInstanceOf: ReviewsViewController.self)
     }
 
     func testWhenReceivingANotificationWhileInForegroundThenItWillNotDoAnything() throws {
@@ -91,8 +90,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
 
         // Only the Reviews list is shown
         XCTAssertEqual(navigationController.viewControllers.count, 1)
-        let currentViewController = try XCTUnwrap(navigationController.viewControllers.first)
-        assertThat(currentViewController, isAnInstanceOf: ReviewsViewController.self)
+        assertThat(navigationController.topViewController, isAnInstanceOf: ReviewsViewController.self)
     }
 
     func testWhenReceivingAReviewNotificationWhileInactiveThenItWillPresentTheReviewDetails() throws {
@@ -117,8 +115,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
         // Then
         // A ReviewDetailsViewController should be pushed
         XCTAssertEqual(navigationController.viewControllers.count, 2)
-        let topViewController = try XCTUnwrap(navigationController.topViewController)
-        assertThat(topViewController, isAnInstanceOf: ReviewDetailsViewController.self)
+        assertThat(navigationController.topViewController, isAnInstanceOf: ReviewDetailsViewController.self)
     }
 
     func testWhenFailingToRetrieveProductReviewDetailsThenItWillPresentANotice() throws {
@@ -151,8 +148,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
 
         // Only the Reviews list should still be visible
         XCTAssertEqual(navigationController.viewControllers.count, 1)
-        let topViewController = try XCTUnwrap(navigationController.topViewController)
-        assertThat(topViewController, isAnInstanceOf: ReviewsViewController.self)
+        assertThat(navigationController.topViewController, isAnInstanceOf: ReviewsViewController.self)
     }
 
     func testWhenReceivingAReviewNotificationFromADifferentSiteThenItWillSwitchTheCurrentSite() throws {

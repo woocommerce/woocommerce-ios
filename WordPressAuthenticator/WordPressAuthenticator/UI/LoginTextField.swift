@@ -3,6 +3,18 @@ import WordPressShared
 
 open class LoginTextField: WPWalkthroughTextField {
 
+    /// Make a Swift-only property communicate a color to the
+    /// Objective-C only class, WPWalkthroughTextField.
+    ///
+    open override var secureTextEntryImageColor: UIColor! {
+        set {
+            // no-op. Usually set in Interface Builder.
+        }
+        get {
+            return WordPressAuthenticator.shared.style.secondaryNormalBorderColor
+        }
+    }
+
     open override func awakeFromNib() {
         super.awakeFromNib()
         backgroundColor = WordPressAuthenticator.shared.style.textFieldBackgroundColor

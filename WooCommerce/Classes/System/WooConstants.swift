@@ -87,6 +87,62 @@ enum WooConstants {
     static let systemEventCount = 10
 }
 
+// MARK: URLs
+//
+extension WooConstants {
+
+    /// List of thrusted URls
+    ///
+    enum URLs: String, CaseIterable {
+
+        /// Jetpack Setup URL
+        ///
+        case jetpackSetup = "https://jetpack.com/support/getting-started-with-jetpack/"
+
+        /// Terms of Service Website. Displayed by the Authenticator (when / if needed).
+        ///
+        case termsOfService = "https://wordpress.com/tos/"
+
+        /// Cookie policy URL
+        ///
+        case cookie = "https://automattic.com/cookies/"
+
+        /// Privacy policy URL
+        ///
+        case privacy = "https://automattic.com/privacy/"
+
+        /// Privacy policy for California users URL
+        ///
+        case californiaPrivacy = "https://automattic.com/privacy/#california-consumer-privacy-act-ccpa"
+
+        /// Help Center URL
+        ///
+        case helpCenter = "https://docs.woocommerce.com/document/woocommerce-ios/"
+
+        /// Feature Request URL
+        ///
+        case featureRequestURL = "http://ideas.woocommerce.com/forums/133476-woocommerce?category_id=84283"
+
+        /// URL used for Learn More button in Orders empty state.
+        ///
+        case blogURL = "https://woocommerce.com/blog/"
+
+        /// URL for in-app feedback survey
+        ///
+        #if DEBUG
+        case inAppFeedbackURL = "https://wasseryi.survey.fm/woo-mobile-app-test-survey"
+        #else
+        case inAppFeedbackURL = "https://automattic.survey.fm/woo-app-general-feedback-user-survey"
+        #endif
+
+        /// Returns the URL version of the receiver
+        ///
+        func asURL() -> URL {
+            WooConstants.trustedURL(self.rawValue)
+        }
+    }
+}
+
 // MARK: - Utils
 
 private extension WooConstants {

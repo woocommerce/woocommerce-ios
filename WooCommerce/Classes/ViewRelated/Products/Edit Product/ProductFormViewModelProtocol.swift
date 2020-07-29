@@ -8,7 +8,7 @@ protocol ProductFormViewModelProtocol {
     /// Emits product on change, except when the product name is the only change (`productName` is emitted for this case).
     var observableProduct: Observable<ProductModel> { get }
 
-    /// Emits product name on change. If product name is not editable, `nil` is returned.
+    /// Emits product name on change. If the name is not editable (e.g. when the product model is `ProductVariation`), `nil` is returned.
     var productName: Observable<String>? { get }
 
     /// Emits a boolean of whether the product has unsaved changes for remote update.

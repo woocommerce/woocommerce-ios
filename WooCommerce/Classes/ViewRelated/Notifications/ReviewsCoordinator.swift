@@ -14,18 +14,26 @@ final class ReviewsCoordinator: Coordinator {
     private let pushNotificationsManager: PushNotesManager
     private let storesManager: StoresManager
     private let noticePresenter: NoticePresenter
+    private let switchStoreUseCase: SwitchStoreUseCaseProtocol
 
     private var observationToken: ObservationToken?
 
     init(pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          storesManager: StoresManager = ServiceLocator.stores,
-         noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
+         noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
+         switchStoreUseCase: SwitchStoreUseCaseProtocol) {
 
         self.pushNotificationsManager = pushNotificationsManager
         self.storesManager = storesManager
         self.noticePresenter = noticePresenter
+        self.switchStoreUseCase = switchStoreUseCase
 
         self.navigationController = WooNavigationController(rootViewController: ReviewsViewController())
+    }
+
+    convenience init() {
+        let storesManager = ServiceLocator.stores
+        self.init(storesManager: storesManager, switchStoreUseCase: SwitchStoreUseCase(stores: storesManager))
     }
 
     deinit {
@@ -58,8 +66,7 @@ final class ReviewsCoordinator: Coordinator {
                 }
 
                 // Switch to the correct store first if needed
-                let switchStoreUseCase = SwitchStoreUseCase(stores: self.storesManager)
-                switchStoreUseCase.switchStore(with: Int64(siteID)) { [weak self] siteChanged in
+                self.switchStoreUseCase.switchStore(with: Int64(siteID)) { [weak self] siteChanged in
                     guard let self = self else {
                         return
                     }

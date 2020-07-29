@@ -49,14 +49,14 @@ extension SurveyViewController {
     enum Source {
         case inAppFeedback
 
-        var url: URL {
+        fileprivate var url: URL {
             switch self {
             case .inAppFeedback:
                 return WooConstants.inAppFeedbackURL
             }
         }
 
-        var title: String {
+        fileprivate var title: String {
             switch self {
             case .inAppFeedback:
                 return NSLocalizedString("How can we improve?", comment: "Title on the navigation bar for the in-app feedback survey")

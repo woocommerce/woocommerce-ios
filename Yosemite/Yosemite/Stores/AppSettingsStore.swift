@@ -58,7 +58,7 @@ public class AppSettingsStore: Store {
         return documents!.appendingPathComponent(Constants.productsFeatureSwitchFileName)
     }()
 
-    private lazy var generalAppSettingsFileURL: URL = {
+    private lazy var generalAppSettingsFileURL: URL! = {
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
         return documents!.appendingPathComponent(Constants.generalAppSettingsFileName)
     }()

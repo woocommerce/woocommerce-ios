@@ -114,15 +114,24 @@ extension ProductImagesCollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let status = productImageStatuses[indexPath.row]
         switch status {
-        case .remote(let productImage):
-            let productImageViewController = ProductImageViewController(productImage: productImage,
-                                                                        productUIImageLoader: productUIImageLoader,
-                                                                        onDeletion: { [weak self] productImage in
-                                                                            self?.onDeletion(productImage)
-            })
-            navigationController?.pushViewController(productImageViewController, animated: true)
+        case .remote:
+            break
         default:
             return
         }
+
+        let productImages: [ProductImage] = productImageStatuses.compactMap {
+            switch $0 {
+            case .remote(let image):
+                return image
+            default:
+                return nil
+            }
+        }
+        let productImagesGalleryViewController = ProductImagesGalleryViewController(images: productImages,
+                                                                                    productUIImageLoader: productUIImageLoader) { [weak self] (productImage) in
+                                                                                        self?.onDeletion(productImage)
+        }
+        navigationController?.pushViewController(productImagesGalleryViewController, animated: true)
     }
 }

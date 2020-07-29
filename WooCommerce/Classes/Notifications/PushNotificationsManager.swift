@@ -29,7 +29,7 @@ final class PushNotificationsManager: PushNotesManager {
         inactiveNotificationsSubject
     }
 
-    /// Mutable reference to `backgroundNotifications`
+    /// Mutable reference to `inactiveNotifications`
     private let inactiveNotificationsSubject = PublishSubject<PushNotification>()
 
     /// Returns the current Application's State

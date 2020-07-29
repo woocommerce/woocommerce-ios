@@ -62,9 +62,6 @@ final class ReviewsCoordinatorTests: XCTestCase {
         // When
         pushNotificationsManager.sendInactiveNotification(pushNotification)
 
-        // Wait for runloop to make sure NavigationController pushes happen
-        RunLoop.current.run(until: Date())
-
         // Then
         assertEmpty(storesManager.receivedActions)
 
@@ -81,9 +78,6 @@ final class ReviewsCoordinatorTests: XCTestCase {
 
         // When
         pushNotificationsManager.sendForegroundNotification(pushNotification)
-
-        // Wait for runloop to make sure NavigationController pushes happen
-        RunLoop.current.run(until: Date())
 
         // Then
         assertEmpty(storesManager.receivedActions)
@@ -109,10 +103,11 @@ final class ReviewsCoordinatorTests: XCTestCase {
         }
         completion(.success(makeParcel()))
 
-        // Wait for runloop to make sure NavigationController pushes happen
-        RunLoop.current.run(until: Date())
-
         // Then
+        waitUntil {
+            self.navigationController.viewControllers.count > 1
+        }
+
         // A ReviewDetailsViewController should be pushed
         XCTAssertEqual(navigationController.viewControllers.count, 2)
         assertThat(navigationController.topViewController, isAnInstanceOf: ReviewDetailsViewController.self)
@@ -136,10 +131,11 @@ final class ReviewsCoordinatorTests: XCTestCase {
         }
         completion(.failure(NSError(domain: "domain", code: 0)))
 
-        // Wait for runloop to make sure NavigationController pushes happen
-        RunLoop.current.run(until: Date())
-
         // Then
+        waitUntil {
+            self.noticePresenter.queuedNotices.count == 1
+        }
+
         // A Notice should have been presented
         XCTAssertEqual(noticePresenter.queuedNotices.count, 1)
 
@@ -170,11 +166,11 @@ final class ReviewsCoordinatorTests: XCTestCase {
         }
         completion(.success(makeParcel(metaSiteID: differentSiteID)))
 
+        // Then
         waitUntil {
             self.navigationController.viewControllers.count >= 2
         }
 
-        // Then
         // A ReviewDetailsViewController should be pushed
         assertThat(navigationController.topViewController, isAnInstanceOf: ReviewDetailsViewController.self)
         // We should have switched to the other site

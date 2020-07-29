@@ -170,7 +170,6 @@ private extension ProductImagesViewController {
     func onDeletion(productImage: ProductImage) {
         hasDeletedAnyImages = true
         productImageActionHandler.deleteProductImage(productImage)
-        navigationController?.popViewController(animated: true)
     }
 }
 

@@ -17,6 +17,10 @@ final class ReviewsCoordinatorTests: XCTestCase {
 
     private var reviewsCoordinator: ReviewsCoordinator!
 
+    private var navigationController: UINavigationController! {
+        reviewsCoordinator.navigationController
+    }
+
     override func setUp() {
         super.setUp()
 
@@ -51,7 +55,6 @@ final class ReviewsCoordinatorTests: XCTestCase {
         // Given
         let pushNotification = PushNotification(noteID: 1_234, kind: .storeOrder, message: "")
 
-        let navigationController = reviewsCoordinator.navigationController
         reviewsCoordinator.start()
 
         XCTAssertEqual(navigationController.viewControllers.count, 1)
@@ -75,7 +78,6 @@ final class ReviewsCoordinatorTests: XCTestCase {
         // Given
         let pushNotification = PushNotification(noteID: 1_234, kind: .comment, message: "")
 
-        let navigationController = reviewsCoordinator.navigationController
         reviewsCoordinator.start()
 
         // When
@@ -97,7 +99,6 @@ final class ReviewsCoordinatorTests: XCTestCase {
         // Given
         let pushNotification = PushNotification(noteID: 1_234, kind: .comment, message: "")
 
-        let navigationController = reviewsCoordinator.navigationController
         reviewsCoordinator.start()
 
         // When
@@ -124,7 +125,6 @@ final class ReviewsCoordinatorTests: XCTestCase {
         // Given
         let pushNotification = PushNotification(noteID: 1_234, kind: .comment, message: "")
 
-        let navigationController = reviewsCoordinator.navigationController
         reviewsCoordinator.start()
 
         assertEmpty(noticePresenter.queuedNotices)
@@ -162,7 +162,6 @@ final class ReviewsCoordinatorTests: XCTestCase {
         let pushNotification = PushNotification(noteID: 1_234, kind: .comment, message: "")
         let differentSiteID: Int64 = 2_000_111
 
-        let navigationController = reviewsCoordinator.navigationController
         reviewsCoordinator.start()
 
         // When
@@ -176,7 +175,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
         completion(.success(makeParcel(metaSiteID: differentSiteID)))
 
         waitUntil {
-            navigationController.viewControllers.count >= 2
+            self.navigationController.viewControllers.count >= 2
         }
 
         // Then

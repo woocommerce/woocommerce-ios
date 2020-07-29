@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a ProductTag entity.
 ///
-public struct ProductTag: Decodable {
+public struct ProductTag: Codable {
     public let siteID: Int64
     public let tagID: Int64
     public let name: String
@@ -35,6 +35,14 @@ public struct ProductTag: Decodable {
         let slug = try container.decode(String.self, forKey: .slug)
 
         self.init(siteID: siteID, tagID: tagID, name: name, slug: slug)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(tagID, forKey: .tagID)
+        try container.encode(name, forKey: .name)
+        try container.encode(slug, forKey: .slug)
     }
 }
 

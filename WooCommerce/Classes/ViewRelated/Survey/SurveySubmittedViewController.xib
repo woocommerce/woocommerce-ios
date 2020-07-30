@@ -59,12 +59,18 @@
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4eG-pe-akh">
                                             <rect key="frame" x="46" y="0.0" width="45" height="30"/>
                                             <state key="normal" title="button"/>
+                                            <connections>
+                                                <action selector="contactUsButtonTapped:" destination="-1" eventType="touchUpInside" id="rxL-6f-y3q"/>
+                                            </connections>
                                         </button>
                                     </subviews>
                                 </stackView>
                                 <button opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0hX-nr-BdE">
                                     <rect key="frame" x="16" y="553.5" width="382" height="30"/>
                                     <state key="normal" title="button"/>
+                                    <connections>
+                                        <action selector="backToStoreButtonPressed:" destination="-1" eventType="touchUpInside" id="3Zf-mh-nAy"/>
+                                    </connections>
                                 </button>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="14" translatesAutoresizingMaskIntoConstraints="NO" id="XqL-g7-NW1">
                                     <rect key="frame" x="180.5" y="667" width="53" height="72"/>

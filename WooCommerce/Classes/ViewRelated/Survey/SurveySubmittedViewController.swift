@@ -48,6 +48,16 @@ final class SurveySubmittedViewController: UIViewController {
         applyLocalizedTextsToComponents()
         configureStackViewsAxis()
     }
+
+    @IBAction func contactUsButtonTapped(_ sender: Any) {
+        ZendeskManager.shared.showNewRequestIfPossible(from: self)
+    }
+
+    @IBAction func backToStoreButtonPressed(_ sender: Any) {
+        // Assumes it is in a presentation context. Addressed in a following PR
+        self.dismiss(animated: true, completion: nil)
+    }
+
 }
 
 // MARK: View Configuration

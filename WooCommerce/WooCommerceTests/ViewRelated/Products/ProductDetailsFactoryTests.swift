@@ -16,7 +16,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .navigationStack) { viewController in
                                                 // Assert
-                                                XCTAssertTrue(viewController is ProductFormViewController)
+                                                XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
                                                 expectation.fulfill()
         }
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
@@ -34,7 +34,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .navigationStack) { viewController in
                                                 // Assert
-                                                XCTAssertTrue(viewController is ProductFormViewController)
+                                                XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
                                                 expectation.fulfill()
         }
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
@@ -53,7 +53,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
                                              presentationStyle: .navigationStack,
                                              featureFlagService: featureFlagService) { viewController in
                                                 // Assert
-                                                XCTAssertTrue(viewController is ProductFormViewController)
+                                                XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
                                                 expectation.fulfill()
         }
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
@@ -89,7 +89,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
                                              presentationStyle: .navigationStack,
                                              featureFlagService: featureFlagService) { viewController in
                                                 // Assert
-                                                XCTAssertTrue(viewController is ProductFormViewController)
+                                                XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
                                                 expectation.fulfill()
         }
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
@@ -125,7 +125,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
                                              presentationStyle: .navigationStack,
                                              featureFlagService: featureFlagService) { viewController in
                                                 // Assert
-                                                XCTAssertTrue(viewController is ProductFormViewController)
+                                                XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
                                                 expectation.fulfill()
         }
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)

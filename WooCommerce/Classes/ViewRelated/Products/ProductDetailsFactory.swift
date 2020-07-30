@@ -10,7 +10,7 @@ struct ProductDetailsFactory {
     ///   - featureFlagService: where edit product feature flags are read.
     ///   - onCompletion: called when the view controller is created and ready for display.
     static func productDetails(product: Product,
-                               presentationStyle: ProductFormViewController.PresentationStyle,
+                               presentationStyle: ProductFormPresentationStyle,
                                currencySettings: CurrencySettings = CurrencySettings.shared,
                                featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
                                onCompletion: @escaping (UIViewController) -> Void) {
@@ -47,14 +47,21 @@ struct ProductDetailsFactory {
 
 private extension ProductDetailsFactory {
     static func productDetails(product: Product,
-                               presentationStyle: ProductFormViewController.PresentationStyle,
+                               presentationStyle: ProductFormPresentationStyle,
                                currencySettings: CurrencySettings,
                                isEditProductsEnabled: Bool,
                                isEditProductsRelease2Enabled: Bool,
                                isEditProductsRelease3Enabled: Bool) -> UIViewController {
         let vc: UIViewController
+        let productImageActionHandler = ProductImageActionHandler(siteID: product.siteID,
+                                                                  product: product)
         if isEditProductsEnabled {
-            vc = ProductFormViewController(product: product,
+            let viewModel = ProductFormViewModel(product: product,
+                                                 productImageActionHandler: productImageActionHandler,
+                                                 isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                                 isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+            vc = ProductFormViewController(viewModel: viewModel,
+                                           productImageActionHandler: productImageActionHandler,
                                            presentationStyle: presentationStyle,
                                            isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
                                            isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)

@@ -15,7 +15,7 @@ final class ProductInventorySettingsViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
 
-    private let product: Product
+    private let product: ProductFormDataModel
 
     private let siteID: Int64
 
@@ -23,7 +23,8 @@ final class ProductInventorySettingsViewController: UIViewController {
     //
     private var sku: String?
     private var manageStockEnabled: Bool
-    private var soldIndividually: Bool
+    // Optional: only editable in `Product`
+    private var soldIndividually: Bool?
 
     // Editable data - manage stock enabled.
     private var stockQuantity: Int64?
@@ -53,7 +54,7 @@ final class ProductInventorySettingsViewController: UIViewController {
     typealias Completion = (_ data: ProductInventoryEditableData) -> Void
     private let onCompletion: Completion
 
-    init(product: Product, formType: FormType = .inventory, completion: @escaping Completion) {
+    init(product: ProductFormDataModel, formType: FormType = .inventory, completion: @escaping Completion) {
         self.formType = formType
         self.onCompletion = completion
 
@@ -63,11 +64,11 @@ final class ProductInventorySettingsViewController: UIViewController {
 
         self.sku = product.sku
         self.manageStockEnabled = product.manageStock
-        self.soldIndividually = product.soldIndividually
+        self.soldIndividually = (product as? Product)?.soldIndividually
 
         self.stockQuantity = product.stockQuantity
         self.backordersSetting = product.backordersSetting
-        self.stockStatus = product.productStockStatus
+        self.stockStatus = product.stockStatus
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -126,11 +127,21 @@ private extension ProductInventorySettingsViewController {
                 stockSection = Section(rows: [.manageStock, .stockStatus])
             }
 
-            sections = [
-                createSKUSection(),
-                stockSection,
-                Section(rows: [.limitOnePerOrder])
-            ]
+            switch product {
+            case is Product:
+                sections = [
+                    createSKUSection(),
+                    stockSection,
+                    Section(rows: [.limitOnePerOrder])
+                ]
+            case is ProductVariation:
+                sections = [
+                    createSKUSection(),
+                    stockSection
+                ]
+            default:
+                fatalError("Unsupported product type: \(product)")
+            }
         case .sku:
             sections = [
                 createSKUSection()
@@ -215,7 +226,16 @@ extension ProductInventorySettingsViewController {
         }
 
         // Checks general settings regardless of whether stock management is enabled.
-        let hasChangesInGeneralSettings = sku != product.sku || manageStockEnabled != product.manageStock || soldIndividually != product.soldIndividually
+        let hasChangesInGeneralSettings: Bool
+
+        switch product {
+        case let product as Product:
+            hasChangesInGeneralSettings = sku != product.sku || manageStockEnabled != product.manageStock || soldIndividually != product.soldIndividually
+        case let product as ProductVariation:
+            hasChangesInGeneralSettings = sku != product.sku || manageStockEnabled != product.manageStock
+        default:
+            fatalError("Unsupported product type: \(product)")
+        }
 
         if hasChangesInGeneralSettings {
             presentBackNavigationActionSheet()
@@ -227,7 +247,7 @@ extension ProductInventorySettingsViewController {
         if manageStockEnabled {
             hasChangesInStockSettings = stockQuantity != product.stockQuantity || backordersSetting != product.backordersSetting
         } else {
-            hasChangesInStockSettings = stockStatus != product.productStockStatus
+            hasChangesInStockSettings = stockStatus != product.stockStatus
         }
 
         if hasChangesInStockSettings {
@@ -457,7 +477,7 @@ private extension ProductInventorySettingsViewController {
 
     func configureLimitOnePerOrder(cell: SwitchTableViewCell) {
         cell.title = NSLocalizedString("Limit one per order", comment: "Title of the cell in Product Inventory Settings > Limit one per order")
-        cell.isOn = soldIndividually
+        cell.isOn = soldIndividually == true
         cell.onChange = { [weak self] value in
             self?.soldIndividually = value
         }

@@ -79,3 +79,17 @@ extension Product: ProductFormDataModel {
         productStockStatus
     }
 }
+
+extension ProductVariation: ProductFormDataModel {
+    var name: String {
+        attributes.map({ $0.option }).joined(separator: " - ")
+    }
+
+    var shortDescription: String? {
+        nil
+    }
+
+    var images: [ProductImage] {
+        [image].compactMap { $0 }
+    }
+}

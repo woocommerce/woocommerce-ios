@@ -119,6 +119,8 @@
 		CE1B18CE20EEC3CB00BECC3F /* WordPressAuthenticatorDelegateProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1B18CD20EEC3CB00BECC3F /* WordPressAuthenticatorDelegateProtocol.swift */; };
 		CE1B18D020EEC41600BECC3F /* WordPressAuthenticatorConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1B18CF20EEC41600BECC3F /* WordPressAuthenticatorConfiguration.swift */; };
 		CE1B18D220EEC44400BECC3F /* WordPressAuthenticatorStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1B18D120EEC44400BECC3F /* WordPressAuthenticatorStyles.swift */; };
+		CE1BBF8324D348CD001D2E3E /* UnifiedSignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1BBF8224D348CD001D2E3E /* UnifiedSignUpViewController.swift */; };
+		CE1BBF8524D348EC001D2E3E /* UnifiedSignUp.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE1BBF8424D348EC001D2E3E /* UnifiedSignUp.storyboard */; };
 		CE30A2A722579F4100DF3CDA /* LoginUsernamePasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE30A2A622579F4100DF3CDA /* LoginUsernamePasswordViewController.swift */; };
 		CE30A2A92257C60500DF3CDA /* WordPressOrgCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE30A2A82257C60500DF3CDA /* WordPressOrgCredentials.swift */; };
 		CE30A2AD2257CECC00DF3CDA /* AuthenticatorCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE30A2AC2257CECC00DF3CDA /* AuthenticatorCredentials.swift */; };
@@ -292,6 +294,8 @@
 		CE1B18CD20EEC3CB00BECC3F /* WordPressAuthenticatorDelegateProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressAuthenticatorDelegateProtocol.swift; sourceTree = "<group>"; };
 		CE1B18CF20EEC41600BECC3F /* WordPressAuthenticatorConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressAuthenticatorConfiguration.swift; sourceTree = "<group>"; };
 		CE1B18D120EEC44400BECC3F /* WordPressAuthenticatorStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressAuthenticatorStyles.swift; sourceTree = "<group>"; };
+		CE1BBF8224D348CD001D2E3E /* UnifiedSignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnifiedSignUpViewController.swift; sourceTree = "<group>"; };
+		CE1BBF8424D348EC001D2E3E /* UnifiedSignUp.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = UnifiedSignUp.storyboard; sourceTree = "<group>"; };
 		CE30A2A622579F4100DF3CDA /* LoginUsernamePasswordViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginUsernamePasswordViewController.swift; sourceTree = "<group>"; };
 		CE30A2A82257C60500DF3CDA /* WordPressOrgCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressOrgCredentials.swift; sourceTree = "<group>"; };
 		CE30A2AC2257CECC00DF3CDA /* AuthenticatorCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatorCredentials.swift; sourceTree = "<group>"; };
@@ -698,12 +702,22 @@
 			path = Credentials;
 			sourceTree = "<group>";
 		};
+		CE1BBF8124D3487A001D2E3E /* Sign up */ = {
+			isa = PBXGroup;
+			children = (
+				CE1BBF8224D348CD001D2E3E /* UnifiedSignUpViewController.swift */,
+				CE1BBF8424D348EC001D2E3E /* UnifiedSignUp.storyboard */,
+			);
+			path = "Sign up";
+			sourceTree = "<group>";
+		};
 		CEC77C6424854EE400FB9050 /* View Related */ = {
 			isa = PBXGroup;
 			children = (
 				988AD89F24CB820200BD045E /* 2FA */,
 				98CF18F5248725130047B66C /* Google */,
 				CEC77C70248AB0C700FB9050 /* Reusable Views */,
+				CE1BBF8124D3487A001D2E3E /* Sign up */,
 				CEFE241E24B666AA00B46DC5 /* Site Address */,
 			);
 			path = "View Related";
@@ -854,6 +868,7 @@
 				B5609118208A555600399AE4 /* SearchTableViewCell.xib in Resources */,
 				98ED48392480300500992B2D /* GoogleAuth.storyboard in Resources */,
 				B560913F208A563800399AE4 /* Login.storyboard in Resources */,
+				CE1BBF8524D348EC001D2E3E /* UnifiedSignUp.storyboard in Resources */,
 				CE6BCD3924A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.xib in Resources */,
 				CE6BCD2F24A3A235001BCDC5 /* TextLabelTableViewCell.xib in Resources */,
 				98CF18F9248725620047B66C /* GoogleSignupConfirmation.storyboard in Resources */,
@@ -1029,6 +1044,7 @@
 				CE1B18CC20EEC32400BECC3F /* WordPressComCredentials.swift in Sources */,
 				98AA5A5720AA1A7000A5958A /* WPHelpIndicatorView.swift in Sources */,
 				B560913C208A563800399AE4 /* LoginProloguePromoViewController.swift in Sources */,
+				CE1BBF8324D348CD001D2E3E /* UnifiedSignUpViewController.swift in Sources */,
 				B560910F208A54F800399AE4 /* SafariCredentialsService.swift in Sources */,
 				B5CDBED420B4714500BC1EF2 /* UIImage+Assets.swift in Sources */,
 				B5609116208A555600399AE4 /* LoginTextField.swift in Sources */,

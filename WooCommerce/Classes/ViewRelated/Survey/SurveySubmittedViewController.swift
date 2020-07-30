@@ -81,7 +81,8 @@ private extension SurveySubmittedViewController {
     /// Apply the correspondent localized texts to each component
     ///
     func applyLocalizedTextsToComponents() {
-        thankYouLabel.text = Localization.title
+        title = Localization.title
+        thankYouLabel.text = Localization.thanks
         infoLabel.text = Localization.info
         needHelpLabel.text = Localization.needHelp
         poweredLabel.text = Localization.surveyAttributtion
@@ -110,7 +111,8 @@ extension SurveySubmittedViewController {
 //
 private extension SurveySubmittedViewController {
     enum Localization {
-        static let title = NSLocalizedString("Thank you for sharing your\nthoughts with us", comment: "Title text when the survey is completed")
+        static let title = NSLocalizedString("Feedback Sent!", comment: "Title in the navigation bar when the survey is completed")
+        static let thanks = NSLocalizedString("Thank you for sharing your\nthoughts with us", comment: "Text thanking the user when the survey is completed")
         static let info = NSLocalizedString("Keep in mind that this is not a\nsupport ticket and we won’t be able\nto address individual feedback",
                                             comment: "Information text when the survey is completed")
         static let needHelp = NSLocalizedString("Need some help?", comment: "Text preceding the Contact Us button in the survey completed screen")

@@ -43,6 +43,7 @@ final class SurveySubmittedViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        addCloseNavigationBarButton()
         applyStyleToComponents()
         applyLocalizedTextsToComponents()
         configureStackViewsAxis()

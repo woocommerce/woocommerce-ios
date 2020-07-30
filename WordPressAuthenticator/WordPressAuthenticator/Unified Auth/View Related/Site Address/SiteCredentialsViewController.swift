@@ -12,10 +12,10 @@ final class SiteCredentialsViewController: LoginViewController {
     @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
 
     private weak var usernameField: UITextField?
-	private weak var passwordField: UITextField?
-	private var rows = [Row]()
-	private var errorMessage: String?
-	private var shouldChangeVoiceOverFocus: Bool = false
+    private weak var passwordField: UITextField?
+    private var rows = [Row]()
+    private var errorMessage: String?
+    private var shouldChangeVoiceOverFocus: Bool = false
 
     // Required for `NUXKeyboardResponder` but unused here.
     var verticalCenterConstraint: NSLayoutConstraint?

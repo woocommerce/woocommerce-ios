@@ -121,8 +121,7 @@ NSInteger const LeftImageSpacing = 8;
     self.secureTextEntryToggle = [UIButton buttonWithType:UIButtonTypeCustom];
     self.secureTextEntryToggle.clipsToBounds = true;
 
-    // colors here are overridden in LoginTextField
-    self.secureTextEntryToggle.tintColor = (self.secureTextEntryImageColor != nil) ? self.secureTextEntryImageColor : [WPStyleGuide greyLighten10];
+    // Tint color changes set in LoginTextField.
 
     [self.secureTextEntryToggle addTarget:self action:@selector(secureTextEntryToggleAction:) forControlEvents:UIControlEventTouchUpInside];
 
@@ -280,6 +279,7 @@ NSInteger const LeftImageSpacing = 8;
     UIImage *image = self.isSecureTextEntry ? self.secureTextEntryImageHidden : self.secureTextEntryImageVisible;
     [self.secureTextEntryToggle setImage:image forState:UIControlStateNormal];
     [self.secureTextEntryToggle sizeToFit];
+    self.secureTextEntryToggle.tintColor = self.secureTextEntryImageColor;
 }
 
 - (void)updateSecureTextEntryForAccessibility

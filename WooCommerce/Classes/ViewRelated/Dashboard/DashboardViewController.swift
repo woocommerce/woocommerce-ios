@@ -34,6 +34,14 @@ class DashboardViewController: UIViewController {
         configureNavigation()
         configureView()
         configureDashboardUIContainer()
+
+        let leftBarButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(showSurvey))
+        navigationItem.leftBarButtonItem = leftBarButton
+    }
+
+    @objc private func showSurvey() {
+        let surveyNavigation = SurveyNavigationController.init(survey: .inAppFeedback)
+        present(surveyNavigation, animated: true, completion: nil)
     }
 
     override func viewWillAppear(_ animated: Bool) {

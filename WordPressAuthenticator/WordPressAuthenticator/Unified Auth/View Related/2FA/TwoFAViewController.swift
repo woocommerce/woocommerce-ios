@@ -54,7 +54,7 @@ final class TwoFAViewController: LoginViewController {
         unregisterForKeyboardEvents()
         
         // Multifactor codes are time sensitive, so clear the stored code if the
-        // user dismisses the view. They'll need to reentered it upon return.
+        // user dismisses the view. They'll need to reenter it upon return.
         loginFields.multifactorCode = ""
         codeField?.text = ""
     }

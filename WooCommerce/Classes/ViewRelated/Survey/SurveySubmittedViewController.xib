@@ -47,17 +47,17 @@
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <stackView opaque="NO" contentMode="scaleToFill" spacing="4" id="Fir-BZ-rg8">
-                                    <rect key="frame" x="161.5" y="440.5" width="91" height="30"/>
+                                    <rect key="frame" x="160" y="440.5" width="94" height="30"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lq2-EI-ndE">
-                                            <rect key="frame" x="0.0" y="0.0" width="42" height="30"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lq2-EI-ndE">
+                                            <rect key="frame" x="0.0" y="0.0" width="45" height="30"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4eG-pe-akh">
-                                            <rect key="frame" x="46" y="0.0" width="45" height="30"/>
+                                            <rect key="frame" x="49" y="0.0" width="45" height="30"/>
                                             <state key="normal" title="button"/>
                                             <connections>
                                                 <action selector="contactUsButtonTapped:" destination="-1" eventType="touchUpInside" id="rxL-6f-y3q"/>

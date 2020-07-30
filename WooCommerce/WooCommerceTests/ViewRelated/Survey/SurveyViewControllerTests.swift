@@ -18,7 +18,7 @@ final class SurveyViewControllerTests: XCTestCase {
 
         // Then
         XCTAssertTrue(mirror.webView.isLoading)
-        XCTAssertEqual(mirror.webView.url, WooConstants.inAppFeedbackURL)
+        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.inAppFeedback.asURL())
     }
 
     func testItCompletesAfterReceivingAFormSubmittedPOSTCallbackRequest() throws {
@@ -95,7 +95,7 @@ private extension SurveyViewControllerTests {
         }
 
         override var request: URLRequest {
-            var request = URLRequest(url: WooConstants.inAppFeedbackURL)
+            var request = URLRequest(url: WooConstants.URLs.inAppFeedback.asURL())
             request.httpMethod = httpMethod
             return request
         }

@@ -164,6 +164,16 @@ extension ProductImagesGalleryViewController: UICollectionViewDelegateFlowLayout
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return collectionView.frame.size
     }
+
+    // Scroll to the right index every time viewWillTransitionToSize is called.
+    // Then performBatchUpdates to adjust our layout.
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        if let indexVisibleItem = collectionView.indexPathsForVisibleItems.first {
+            scrollToSelectedIndex(index: indexVisibleItem.item)
+        }
+        collectionView.performBatchUpdates(nil, completion: nil)
+    }
 }
 
 // MARK: Cell configuration

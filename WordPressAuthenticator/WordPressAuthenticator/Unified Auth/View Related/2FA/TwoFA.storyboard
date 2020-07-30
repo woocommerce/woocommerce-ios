@@ -39,6 +39,9 @@
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="boolean" keyPath="isPrimary" value="YES"/>
                                                 </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="handleContinueButtonTapped:" destination="aQT-Gx-U3x" eventType="touchUpInside" id="Yeh-8i-cow"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
@@ -73,6 +76,7 @@
                         <viewLayoutGuide key="safeArea" id="ihD-pY-rg9"/>
                     </view>
                     <connections>
+                        <outlet property="bottomContentConstraint" destination="Dva-c1-u2U" id="Mq1-PI-MuN"/>
                         <outlet property="submitButton" destination="ClH-Cn-49d" id="kBa-QN-0oH"/>
                         <outlet property="tableView" destination="KLl-Uz-wEP" id="MGk-sG-xGv"/>
                         <outlet property="tableViewLeadingConstraint" destination="7Fn-Eh-Xx9" id="yKO-sE-7mh"/>

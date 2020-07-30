@@ -10,9 +10,9 @@ final class SiteAddressViewController: LoginViewController {
     /// Private properties.
     ///
     @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
 
     // Required for `NUXKeyboardResponder` but unused here.
-    @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
     var verticalCenterConstraint: NSLayoutConstraint?
 
     private var rows = [Row]()

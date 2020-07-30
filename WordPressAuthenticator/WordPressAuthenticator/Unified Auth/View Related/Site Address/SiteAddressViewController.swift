@@ -10,9 +10,9 @@ final class SiteAddressViewController: LoginViewController {
     /// Private properties.
     ///
     @IBOutlet private weak var tableView: UITableView!
-    @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
 
-    // Required property declaration for `NUXKeyboardResponder` but unused here.
+    // Required for `NUXKeyboardResponder` but unused here.
+    @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
     var verticalCenterConstraint: NSLayoutConstraint?
 
     private var rows = [Row]()
@@ -46,7 +46,7 @@ final class SiteAddressViewController: LoginViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-		siteURLField?.text = loginFields.siteAddress
+        siteURLField?.text = loginFields.siteAddress
         configureSubmitButton(animating: false)
     }
 
@@ -91,29 +91,29 @@ final class SiteAddressViewController: LoginViewController {
     /// - Parameter loading: True if the form should be configured to a "loading" state.
     ///
     override func configureViewLoading(_ loading: Bool) {
-       siteURLField?.isEnabled = !loading
+        siteURLField?.isEnabled = !loading
 
-       configureSubmitButton(animating: loading)
-       navigationItem.hidesBackButton = loading
+        configureSubmitButton(animating: loading)
+        navigationItem.hidesBackButton = loading
     }
 
     /// Configure the view for an editing state. Should only be called from viewWillAppear
     /// as this method skips animating any change in height.
     ///
     @objc func configureViewForEditingIfNeeded() {
-       // Check the helper to determine whether an editing state should be assumed.
-       adjustViewForKeyboard(SigninEditingState.signinEditingStateActive)
-       if SigninEditingState.signinEditingStateActive {
-           siteURLField?.becomeFirstResponder()
-       }
+        // Check the helper to determine whether an editing state should be assumed.
+        adjustViewForKeyboard(SigninEditingState.signinEditingStateActive)
+        if SigninEditingState.signinEditingStateActive {
+            siteURLField?.becomeFirstResponder()
+        }
     }
 
     override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
-		if errorMessage != message {
-			errorMessage = message
-			shouldChangeVoiceOverFocus = moveVoiceOverFocus
-			tableView.reloadData()
-		}
+        if errorMessage != message {
+            errorMessage = message
+            shouldChangeVoiceOverFocus = moveVoiceOverFocus
+            tableView.reloadData()
+        }
     }
 }
 
@@ -140,13 +140,13 @@ extension SiteAddressViewController: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate conformance
 extension SiteAddressViewController: UITableViewDelegate {
-	/// After the site address textfield cell is done displaying, remove the textfield reference.
-	///
-	func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-		if rows[indexPath.row] == .siteAddress {
-			siteURLField = nil
-		}
-	}
+    /// After the site address textfield cell is done displaying, remove the textfield reference.
+    ///
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if rows[indexPath.row] == .siteAddress {
+            siteURLField = nil
+        }
+    }
 }
 
 
@@ -165,16 +165,16 @@ extension SiteAddressViewController: NUXKeyboardResponder {
 // MARK: - TextField Delegate conformance
 extension SiteAddressViewController: UITextFieldDelegate {
 
-	/// Handle the keyboard `return` button action.
-	///
-	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-		if canSubmit() {
-			validateForm()
-			return true
-		}
+    /// Handle the keyboard `return` button action.
+    ///
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if canSubmit() {
+            validateForm()
+            return true
+        }
 
-		return false
-	}
+        return false
+    }
 }
 
 
@@ -201,8 +201,8 @@ private extension SiteAddressViewController {
         rows = [.instructions, .siteAddress]
 
         if errorMessage != nil {
-             rows.append(.errorMessage)
-         }
+            rows.append(.errorMessage)
+        }
 
         if WordPressAuthenticator.shared.configuration.displayHintButtons {
             rows.append(.findSiteAddress)
@@ -235,15 +235,16 @@ private extension SiteAddressViewController {
     /// Configure the textfield cell.
     ///
     func configureTextField(_ cell: TextFieldTableViewCell) {
-        let placeholderText = NSLocalizedString("example.com", comment: "Site Address placeholder")
-        cell.configureTextFieldStyle(with: .url, and: placeholderText)
+        cell.configureTextFieldStyle(with: .url,
+                                     and: WordPressAuthenticator.shared.displayStrings.siteAddressPlaceholder)
+
         // Save a reference to the first textField so it can becomeFirstResponder.
         siteURLField = cell.textField
-		cell.textField.delegate = self
-		cell.onChangeSelectionHandler = { [weak self] textfield in
-			self?.loginFields.siteAddress = textfield.nonNilTrimmedText()
-			self?.configureSubmitButton(animating: false)
-		}
+        cell.textField.delegate = self
+        cell.onChangeSelectionHandler = { [weak self] textfield in
+            self?.loginFields.siteAddress = textfield.nonNilTrimmedText()
+            self?.configureSubmitButton(animating: false)
+        }
 
         SigninEditingState.signinEditingStateActive = true
     }
@@ -326,32 +327,32 @@ extension SiteAddressViewController {
             // Let's try to grab site info in preparation for the next screen.
             self?.fetchSiteInfo()
 
-        }, failure: { [weak self] (error) in
-            guard let error = error, let self = self else {
-                return
-            }
+            }, failure: { [weak self] (error) in
+                guard let error = error, let self = self else {
+                    return
+                }
 
-            DDLogError(error.localizedDescription)
-            WordPressAuthenticator.track(.loginFailedToGuessXMLRPC, error: error)
-            WordPressAuthenticator.track(.loginFailed, error: error)
-            self.configureViewLoading(false)
+                DDLogError(error.localizedDescription)
+                WordPressAuthenticator.track(.loginFailedToGuessXMLRPC, error: error)
+                WordPressAuthenticator.track(.loginFailed, error: error)
+                self.configureViewLoading(false)
 
-            let err = self.originalErrorOrError(error: error as NSError)
+                let err = self.originalErrorOrError(error: error as NSError)
 
-            if let xmlrpcValidatorError = err as? WordPressOrgXMLRPCValidatorError {
-                self.displayError(message: xmlrpcValidatorError.localizedDescription, moveVoiceOverFocus: true)
+                if let xmlrpcValidatorError = err as? WordPressOrgXMLRPCValidatorError {
+                    self.displayError(message: xmlrpcValidatorError.localizedDescription, moveVoiceOverFocus: true)
 
-            } else if (err.domain == NSURLErrorDomain && err.code == NSURLErrorCannotFindHost) ||
-                (err.domain == NSURLErrorDomain && err.code == NSURLErrorNetworkConnectionLost) {
-                // NSURLErrorNetworkConnectionLost can be returned when an invalid URL is entered.
-                let msg = NSLocalizedString(
-                    "The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress.",
-                    comment: "Error message shown a URL does not point to an existing site.")
-                self.displayError(message: msg, moveVoiceOverFocus: true)
+                } else if (err.domain == NSURLErrorDomain && err.code == NSURLErrorCannotFindHost) ||
+                    (err.domain == NSURLErrorDomain && err.code == NSURLErrorNetworkConnectionLost) {
+                    // NSURLErrorNetworkConnectionLost can be returned when an invalid URL is entered.
+                    let msg = NSLocalizedString(
+                        "The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress.",
+                        comment: "Error message shown a URL does not point to an existing site.")
+                    self.displayError(message: msg, moveVoiceOverFocus: true)
 
-            } else {
-                self.displayError(error as NSError, sourceTag: self.sourceTag)
-            }
+                } else {
+                    self.displayError(error as NSError, sourceTag: self.sourceTag)
+                }
         })
     }
 
@@ -407,17 +408,17 @@ extension SiteAddressViewController {
     /// Here we will continue with the self-hosted flow.
     ///
     @objc func showSelfHostedUsernamePassword() {
-		configureViewLoading(false)
-		guard let vc = SiteCredentialsViewController.instantiate(from: .siteAddress) else {
-			DDLogError("Failed to navigate from SiteAddressViewController to SiteCredentialsViewController")
-			return
-		}
+        configureViewLoading(false)
+        guard let vc = SiteCredentialsViewController.instantiate(from: .siteAddress) else {
+            DDLogError("Failed to navigate from SiteAddressViewController to SiteCredentialsViewController")
+            return
+        }
 
-       vc.loginFields = loginFields
-       vc.dismissBlock = dismissBlock
-       vc.errorToPresent = errorToPresent
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
 
-       navigationController?.pushViewController(vc, animated: true)
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     /// Break away from the self-hosted flow.
@@ -428,7 +429,7 @@ extension SiteAddressViewController {
 
         guard let vc = LoginUsernamePasswordViewController.instantiate(from: .login) else {
             DDLogError("Failed to navigate from LoginSiteAddressViewController to LoginUsernamePasswordViewController")
-                return
+            return
         }
 
         vc.loginFields = loginFields
@@ -437,7 +438,7 @@ extension SiteAddressViewController {
 
         navigationController?.pushViewController(vc, animated: true)
     }
-
+    
     /// Whether the form can be submitted.
     ///
     @objc func canSubmit() -> Bool {

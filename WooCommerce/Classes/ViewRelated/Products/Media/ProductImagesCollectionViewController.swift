@@ -9,11 +9,11 @@ final class ProductImagesCollectionViewController: UICollectionViewController {
     private var productImageStatuses: [ProductImageStatus]
 
     private let productUIImageLoader: ProductUIImageLoader
-    private let onDeletion: ProductImageViewController.Deletion
+    private let onDeletion: ProductImagesGalleryViewController.Deletion
 
     init(imageStatuses: [ProductImageStatus],
          productUIImageLoader: ProductUIImageLoader,
-         onDeletion: @escaping ProductImageViewController.Deletion) {
+         onDeletion: @escaping ProductImagesGalleryViewController.Deletion) {
         self.productImageStatuses = imageStatuses
         self.productUIImageLoader = productUIImageLoader
         self.onDeletion = onDeletion

@@ -6,6 +6,8 @@ import Photos
 ///
 final class ProductImagesGalleryViewController: UIViewController {
 
+    typealias Deletion = (_ productImage: ProductImage) -> Void
+
     @IBOutlet private weak var collectionView: UICollectionView!
 
     private var productImages: [ProductImage]
@@ -13,7 +15,7 @@ final class ProductImagesGalleryViewController: UIViewController {
     // If present, the collection view will initially show the image at the selected index
     private var selectedIndex: Int?
     private let productUIImageLoader: ProductUIImageLoader
-    private let onDeletion: ProductImageViewController.Deletion
+    private let onDeletion: Deletion
 
     private var previousBarTintColor: UIColor?
 
@@ -26,7 +28,7 @@ final class ProductImagesGalleryViewController: UIViewController {
     init(images: [ProductImage],
          selectedIndex: Int? = nil,
          productUIImageLoader: ProductUIImageLoader,
-         onDeletion: @escaping ProductImageViewController.Deletion) {
+         onDeletion: @escaping Deletion) {
         self.productImages = images
         self.selectedIndex = selectedIndex
         self.productUIImageLoader = productUIImageLoader

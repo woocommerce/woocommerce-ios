@@ -4,7 +4,11 @@ import UIKit
 ///
 final class SurveyNavigationController: WooNavigationController {
 
-    init(survey: SurveyViewController.Source) {
+    /// Used to present the Contact Support dialog
+    private let zendeskManager: ZendeskManagerProtocol
+
+    init(survey: SurveyViewController.Source, zendeskManager: ZendeskManagerProtocol = ZendeskManager.shared) {
+        self.zendeskManager = zendeskManager
         super.init(navigationBarClass: nil, toolbarClass: nil)
         startSurveyNavigation(survey: survey)
     }
@@ -18,6 +22,7 @@ final class SurveyNavigationController: WooNavigationController {
 private extension SurveyNavigationController {
 
     /// Starts navigation with `SurveyViewController` as root view controller.
+    ///
     func startSurveyNavigation(survey: SurveyViewController.Source) {
         let surveyViewController = SurveyViewController(survey: survey, onCompletion: { [weak self] in
             self?.navigateToSurveySubmitted()
@@ -26,8 +31,27 @@ private extension SurveyNavigationController {
     }
 
     /// Proceeds navigation to `SurveySubmittedViewController`
+    ///
     func navigateToSurveySubmitted() {
         let completionViewController = SurveySubmittedViewController()
+
+        completionViewController.onContactUsAction = { [weak self] in
+            guard let self = self else {
+                return
+            }
+            self.zendeskManager.showNewRequestIfPossible(from: self, with: nil)
+        }
+
+        completionViewController.onBackToStoreAction = { [weak self] in
+            self?.finishSurveyNavigation()
+        }
+
         show(completionViewController, sender: self)
+    }
+
+    /// Dismisses the flow modally
+    ///
+    func finishSurveyNavigation() {
+        dismiss(animated: true)
     }
 }

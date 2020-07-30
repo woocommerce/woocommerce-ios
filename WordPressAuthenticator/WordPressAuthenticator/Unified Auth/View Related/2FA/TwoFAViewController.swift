@@ -1,5 +1,6 @@
 import UIKit
 import WordPressKit
+import SVProgressHUD
 
 /// TwoFAViewController: view to enter 2FA code.
 ///
@@ -122,10 +123,22 @@ final class TwoFAViewController: LoginViewController {
 
 private extension TwoFAViewController {
 
-    // MARK: - Button Action
-    
+    // MARK: - Button Actions
+
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
         validateForm()
+    }
+
+    func requestCode() {
+        SVProgressHUD.showSuccess(withStatus: LocalizedText.smsSent)
+        SVProgressHUD.dismiss(withDelay: TimeInterval(1))
+
+        if loginFields.nonceInfo != nil {
+            // social login
+            loginFacade.requestSocial2FACode(with: loginFields)
+        } else {
+            loginFacade.requestOneTimeCode(with: loginFields)
+        }
     }
     
     // MARK: - Login
@@ -329,8 +342,10 @@ private extension TwoFAViewController {
     ///
     func configureTextLinkButton(_ cell: TextLinkButtonTableViewCell) {
         cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.textCodeButtonTitle)
-        
-        // TODO: add cell.actionHandler here.
+
+        cell.actionHandler = { [weak self] in
+            self?.requestCode()
+        }
     }
 
     /// Configure the error message cell.
@@ -375,6 +390,7 @@ private extension TwoFAViewController {
         static let bad2FAMessage = NSLocalizedString("Whoops, that's not a valid two-factor verification code. Double-check your code and try again!", comment: "Error message shown when an incorrect two factor code is provided.")
         static let numericalCode = NSLocalizedString("A verification code will only contain numbers.", comment: "Shown when a user types a non-number into the two factor field.")
         static let invalidCode = NSLocalizedString("That doesn't appear to be a valid verification code.", comment: "Shown when a user pastes a code into the two factor field that contains letters or is the wrong length")
+        static let smsSent = NSLocalizedString("SMS Sent", comment: "One Time Code has been sent via SMS")
     }
 
 }

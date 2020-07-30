@@ -27,6 +27,8 @@ class UnifiedSignUpViewController: LoginViewController {
         // Store default margin, and size table for the view.
         defaultTableViewMargin = tableViewLeadingConstraint?.constant ?? 0
         setTableViewMargins(forWidth: view.frame.width)
+
+        localizePrimaryButton()
     }
 
     // MARK: - Overrides

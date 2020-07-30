@@ -35,7 +35,7 @@ enum WooConstants {
 //
 extension WooConstants {
 
-    /// List of thrusted URLs
+    /// List of trusted URLs
     ///
     enum URLs: String, CaseIterable {
 
@@ -82,14 +82,14 @@ extension WooConstants {
         /// Returns the URL version of the receiver
         ///
         func asURL() -> URL {
-            WooConstants.trustedURL(self.rawValue)
+            Self.trustedURL(self.rawValue)
         }
     }
 }
 
 // MARK: - Utils
 
-private extension WooConstants {
+private extension WooConstants.URLs {
     /// Convert a `string` to a `URL`. Crash if it is malformed.
     ///
     private static func trustedURL(_ url: String) -> URL {

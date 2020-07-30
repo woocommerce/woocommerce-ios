@@ -3,7 +3,7 @@ import XCTest
 
 final class WooConstantsTests: XCTestCase {
 
-    func testAllThrustedURLsAreValid() {
+    func testAllTrustedURLsAreValid() {
         // Given
         let allTrustedURLPaths = WooConstants.URLs.allCases
 

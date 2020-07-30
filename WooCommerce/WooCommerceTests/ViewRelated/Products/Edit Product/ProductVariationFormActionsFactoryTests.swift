@@ -106,8 +106,6 @@ private extension ProductVariationFormActionsFactoryTests {
                   weight: "2", dimensions: ProductDimensions(length: "", width: "", height: ""))
         // downloadable: true, virtual: false, missing inventory/shipping
         static let downloadableProductVariation = MockProductVariation().productVariation()
-            .copy(image: nil, sku: "uks", virtual: false, downloadable: true,
-                  manageStock: true, stockQuantity: nil,
-                  weight: "2", dimensions: ProductDimensions(length: "", width: "", height: ""))
+            .copy(image: nil, sku: "uks", virtual: false, downloadable: true)
     }
 }

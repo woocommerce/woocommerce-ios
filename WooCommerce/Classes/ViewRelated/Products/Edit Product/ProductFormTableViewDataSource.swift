@@ -108,8 +108,9 @@ private extension ProductFormTableViewDataSource {
             cell.configure(with: productImageStatuses, config: .extendedAddImages, productUIImageLoader: productUIImageLoader)
         }
 
-        cell.onImageSelected = { (productImage, indexPath) in
-            // TODO: open image detail
+        cell.onImageSelected = { [weak self] (productImage, indexPath) in
+            ServiceLocator.analytics.track(.productDetailAddImageTapped)
+            self?.onAddImage?()
         }
         cell.onAddImage = { [weak self] in
             ServiceLocator.analytics.track(.productDetailAddImageTapped)

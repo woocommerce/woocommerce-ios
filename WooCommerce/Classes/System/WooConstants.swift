@@ -67,6 +67,16 @@ enum WooConstants {
         trustedURL("https://woocommerce.com/blog/")
     }
 
+    /// URL for in-app feedback survey
+    ///
+    static var inAppFeedbackURL: URL {
+        if BuildConfiguration.current == .localDeveloper {
+            return trustedURL("https://wasseryi.survey.fm/woo-mobile-app-test-survey")
+        } else {
+            return trustedURL("https://automattic.survey.fm/woo-app-general-feedback-user-survey")
+        }
+    }
+
     /// Number of section events required before an app review prompt appears
     ///
     static let notificationEventCount = 5

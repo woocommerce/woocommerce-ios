@@ -7,7 +7,7 @@ import Yosemite
 /// - Top performers header view (`TopPerformersSectionHeaderView`)
 /// - Top performers data view (managed by child view controller `TopPerformerDataViewController`)
 ///
-class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
+final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
     // MARK: Public Interface
 
@@ -65,6 +65,8 @@ class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         return StoreStatsV4PeriodViewController(timeRange: timeRange, currentDate: currentDate)
     }()
 
+    private lazy var inAppFeedbackCardViewController = InAppFeedbackCardViewController()
+
     private lazy var topPerformersPeriodViewController: TopPerformerDataViewController = {
         return TopPerformerDataViewController(granularity: timeRange.topEarnerStatsGranularity)
     }()
@@ -72,13 +74,33 @@ class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     // MARK: Internal Properties
 
     private var childViewContrllers: [UIViewController] {
-        return [storeStatsPeriodViewController, topPerformersPeriodViewController]
+        return [storeStatsPeriodViewController, inAppFeedbackCardViewController, topPerformersPeriodViewController]
     }
 
-    init(timeRange: StatsTimeRangeV4, currentDate: Date) {
+    private let featureFlagService: FeatureFlagService
+
+    /// If applicable, present the in-app feedback. The in-app feedback may still not be presented
+    /// depending on the constraints. But setting this to `false`, will ensure that it will
+    /// never be presented.
+    ///
+    private let canDisplayInAppFeedback: Bool
+
+    /// Create an instance of `self`.
+    ///
+    /// - Parameter canDisplayInAppFeedback: If applicable, present the in-app feedback. The in-app
+    ///                                      feedback may still not be presented depending on the
+    ///                                      constraints. But setting this to `false`, will ensure
+    ///                                      that it will never be presented.
+    ///
+    init(timeRange: StatsTimeRangeV4,
+         currentDate: Date,
+         canDisplayInAppFeedback: Bool,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.timeRange = timeRange
         self.granularity = timeRange.intervalGranularity
         self.currentDate = currentDate
+        self.canDisplayInAppFeedback = canDisplayInAppFeedback
+        self.featureFlagService = featureFlagService
         super.init(nibName: nil, bundle: nil)
         configureChildViewControllers()
     }
@@ -163,6 +185,12 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
             storeStatsPeriodView.heightAnchor.constraint(equalToConstant: 380),
             ])
 
+        // In-app Feedback Card
+        let inAppFeedbackCardViews = createInAppFeedbackCardViewsForStackView()
+        inAppFeedbackCardViews.forEach {
+            stackView.addArrangedSubview($0)
+        }
+
         // Top performers header.
         let topPerformersHeaderView = TopPerformersSectionHeaderView(title:
             NSLocalizedString("Top Performers",
@@ -202,6 +230,32 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         childViewContrllers.forEach { childViewController in
             childViewController.didMove(toParent: self)
         }
+    }
+
+    /// Create in-app feedback views to be added to the main `stackView`.
+    ///
+    /// The views created are an empty space and the `inAppFeedbackCardViewController.view`.
+    ///
+    /// - SeeAlso: configureSubviews
+    /// - Returns: The views or empty array if we do not need in-app feedback from the user.
+    ///
+    func createInAppFeedbackCardViewsForStackView() -> [UIView] {
+        guard canDisplayInAppFeedback,
+            featureFlagService.isFeatureFlagEnabled(.inAppFeedback),
+            let cardView = inAppFeedbackCardViewController.view else {
+            return []
+        }
+
+        let emptySpaceView: UIView = {
+            let view = UIView(frame: .zero)
+            view.backgroundColor = nil
+            NSLayoutConstraint.activate([
+                view.heightAnchor.constraint(equalToConstant: 8)
+            ])
+            return view
+        }()
+
+        return [emptySpaceView, cardView]
     }
 
     func createBorderView() -> UIView {

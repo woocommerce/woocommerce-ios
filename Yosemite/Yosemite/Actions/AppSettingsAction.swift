@@ -63,4 +63,20 @@ public enum AppSettingsAction: Action {
     /// Clears all the states related to stats version
     ///
     case resetStatsVersionStates
+
+    // MARK: - General App Settings
+
+    /// Saves the `date` as the last known date that the app was installed. This does not do
+    /// anything if there is a persisted installation date already and it is older than the
+    /// given `date`.
+    ///
+    /// - Parameter onCompletion: The `Result`'s success value will be `true` if the installation
+    ///                           date was changed and `false` if not.
+    ///
+    case setInstallationDateIfNecessary(date: Date, onCompletion: ((Result<Bool, Error>) -> Void))
+
+    /// Saves the `date` as the last known date that the user interacted with the in-app
+    /// feedback prompt (https://git.io/JJ8i0).
+    ///
+    case setLastFeedbackDate(date: Date, onCompletion: ((Result<Void, Error>) -> Void))
 }

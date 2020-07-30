@@ -65,6 +65,7 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
+                <outlet property="contentImageView" destination="CZ3-4H-uDU" id="Udv-9V-jZH"/>
                 <outlet property="ratingView" destination="12b-yC-TgZ" id="Idt-EQ-lmF"/>
                 <outlet property="reviewsLabel" destination="9XR-6U-0aG" id="Oz3-TV-mkK"/>
                 <outlet property="titleLabel" destination="jNf-Yw-A2U" id="ZyU-9p-ust"/>

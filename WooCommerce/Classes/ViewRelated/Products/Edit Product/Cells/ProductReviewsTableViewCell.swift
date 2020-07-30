@@ -10,6 +10,7 @@ import UIKit
 
 class ProductReviewsTableViewCell: UITableViewCell {
 
+    @IBOutlet private weak var contentImageView: UIImageView!
     @IBOutlet private weak var titleLabel: UILabel!
     @IBOutlet private weak var ratingView: RatingView!
     @IBOutlet private weak var reviewsLabel: UILabel!
@@ -29,6 +30,7 @@ class ProductReviewsTableViewCell: UITableViewCell {
         super.awakeFromNib()
         
         configureBackground()
+        configureImageView()
         configureLabels()
         configureStarView()
     }
@@ -40,6 +42,11 @@ private extension ProductReviewsTableViewCell {
     func configureBackground() {
         applyDefaultBackgroundStyle()
     }
+    
+    func configureImageView() {
+        contentImageView.contentMode = .center
+    }
+
 
     func configureLabels() {
         titleLabel.applyBodyStyle()

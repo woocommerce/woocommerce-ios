@@ -14,6 +14,7 @@ final class TwoFAViewController: LoginViewController {
     
     private var rows = [Row]()
     private var errorMessage: String?
+    private var pasteboardBeforeBackground: String? = nil
 
     override var sourceTag: WordPressSupportSourceTag {
         get {
@@ -48,6 +49,10 @@ final class TwoFAViewController: LoginViewController {
 
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
+
+        let nc = NotificationCenter.default
+        nc.addObserver(self, selector: #selector(applicationBecameInactive), name: UIApplication.willResignActiveNotification, object: nil)
+        nc.addObserver(self, selector: #selector(applicationBecameActive), name: UIApplication.didBecomeActiveNotification, object: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -273,6 +278,40 @@ extension TwoFAViewController: NUXKeyboardResponder {
     }
 
 }
+
+// MARK: - Application state changes
+
+private extension TwoFAViewController {
+
+    @objc func applicationBecameInactive() {
+        pasteboardBeforeBackground = UIPasteboard.general.string
+    }
+    
+    @objc func applicationBecameActive() {
+        guard let codeField = codeField else {
+            return
+        }
+        
+        let emptyField = codeField.text?.isEmpty ?? true
+        guard emptyField,
+            let pasteString = UIPasteboard.general.string,
+            pasteString != pasteboardBeforeBackground else {
+                return
+        }
+        
+        switch isValidCode(code: pasteString) {
+        case .valid(let cleanedCode):
+            displayError(message: "")
+            codeField.text = cleanedCode
+            handleTextFieldDidChange(codeField)
+        default:
+            break
+        }
+    }
+
+}
+
+// MARK: - Table Management
 
 private extension TwoFAViewController {
 

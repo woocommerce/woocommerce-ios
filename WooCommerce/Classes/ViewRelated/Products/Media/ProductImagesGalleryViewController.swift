@@ -72,6 +72,8 @@ final class ProductImagesGalleryViewController: UIViewController {
     }
 }
 
+// MARK: Configuration
+//
 private extension ProductImagesGalleryViewController {
     func configureMainView() {
         view.backgroundColor = .black
@@ -106,6 +108,7 @@ private extension ProductImagesGalleryViewController {
 }
 
 // MARK: Actions
+//
 private extension ProductImagesGalleryViewController {
     @objc func deleteProductImage() {
         let title = NSLocalizedString("Remove Image",

@@ -91,7 +91,7 @@ final class SiteCredentialsViewController: LoginViewController {
         return WordPressAuthenticator.shared.unifiedStyle?.statusBarStyle ?? WordPressAuthenticator.shared.style.statusBarStyle
     }
 
-	/// Configures the appearance and state of the submit button.
+    /// Configures the appearance and state of the submit button.
     ///
     override func configureSubmitButton(animating: Bool) {
         submitButton?.showActivityIndicator(animating)
@@ -346,14 +346,14 @@ private extension SiteCredentialsViewController {
     /// Configure the view for an editing state.
     ///
     func configureViewForEditingIfNeeded() {
-       // Check the helper to determine whether an editing state should be assumed.
-       adjustViewForKeyboard(SigninEditingState.signinEditingStateActive)
-       if SigninEditingState.signinEditingStateActive {
-           usernameField?.becomeFirstResponder()
-       }
+        // Check the helper to determine whether an editing state should be assumed.
+        adjustViewForKeyboard(SigninEditingState.signinEditingStateActive)
+        if SigninEditingState.signinEditingStateActive {
+            usernameField?.becomeFirstResponder()
+        }
     }
     
-	// MARK: - Private Constants
+    // MARK: - Private Constants
 
     /// Rows listed in the order they were created.
     ///

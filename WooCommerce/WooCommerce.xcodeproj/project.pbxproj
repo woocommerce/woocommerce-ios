@@ -2236,6 +2236,8 @@
 				0286B27823C7051F003D784B /* ProductImagesViewController.xib */,
 				02357B2823CDB3E300147C2B /* ProductImageViewController.swift */,
 				02357B2923CDB3E300147C2B /* ProductImageViewController.xib */,
+				450C2CB424D1ABB100D570DD /* ProductImagesGalleryViewController.swift */,
+				450C2CB524D1ABB200D570DD /* ProductImagesGalleryViewController.xib */,
 				02E8B17B23E2C78A00A43403 /* ProductImageStatus.swift */,
 				02E8B17D23E2C8D900A43403 /* ProductImageActionHandler.swift */,
 				024EFA6823FCC10B00F36918 /* Product+Media.swift */,
@@ -2243,8 +2245,6 @@
 				02A275B923FE50AA005C560F /* ProductUIImageLoader.swift */,
 				0218B4EB242E06F00083A847 /* MediaType+WPMediaType.swift */,
 				02521E10243DC3C400DC7810 /* CancellableMedia.swift */,
-				450C2CB424D1ABB100D570DD /* ProductImagesGalleryViewController.swift */,
-				450C2CB524D1ABB200D570DD /* ProductImagesGalleryViewController.xib */,
 			);
 			path = Media;
 			sourceTree = "<group>";

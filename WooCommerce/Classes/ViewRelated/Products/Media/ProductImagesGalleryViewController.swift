@@ -2,19 +2,22 @@ import UIKit
 import Yosemite
 import Photos
 
-/// Displays Product images in sequence.
+/// Displays Product images in sequence, with a delete action.
 ///
 final class ProductImagesGalleryViewController: UIViewController {
 
     @IBOutlet private weak var collectionView: UICollectionView!
 
     private var productImages: [ProductImage]
+
     // If present, the collection view will initially show the image at the selected index
     private var selectedIndex: Int?
     private let productUIImageLoader: ProductUIImageLoader
     private let onDeletion: ProductImageViewController.Deletion
 
     private var previousBarTintColor: UIColor?
+
+    // The index of the current visible image
     private var currentImageIndex: Int? {
         return collectionView.indexPathsForVisibleItems.first?.item
     }
@@ -169,10 +172,8 @@ extension ProductImagesGalleryViewController: UICollectionViewDelegateFlowLayout
     // Then performBatchUpdates to adjust our layout.
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-        if let indexVisibleItem = collectionView.indexPathsForVisibleItems.first {
-            scrollToSelectedIndex(index: indexVisibleItem.item)
-        }
-        collectionView.performBatchUpdates(nil, completion: nil)
+        scrollToSelectedIndex(index: currentImageIndex)
+        collectionView.reloadData()
     }
 }
 

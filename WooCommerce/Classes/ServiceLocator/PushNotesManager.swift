@@ -9,7 +9,8 @@ protocol PushNotesManager {
     ///
     var foregroundNotifications: Observable<PushNotification> { get }
 
-    /// An observable that emits values when the app is activated due to a Remote Notification.
+    /// An observable that emits values when a Remote Notification is received while the app is
+    /// in inactive.
     ///
     var inactiveNotifications: Observable<PushNotification> { get }
 

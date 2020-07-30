@@ -10,7 +10,7 @@ struct DefaultFeatureFlagService: FeatureFlagService {
         case .editProductsRelease2:
             return true
         case .editProductsRelease3:
-            return false
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .inAppFeedback:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .readonlyProductVariants:

@@ -82,6 +82,10 @@ public struct WordPressAuthenticatorConfiguration {
     ///
     let enableUnifiedGoogle: Bool
 
+    /// Flag indicating if signing up via Email shouls display.
+    ///
+    let enableUnifiedSignup: Bool
+
     /// Designated Initializer
     ///
     public init (wpcomClientId: String,
@@ -100,7 +104,8 @@ public struct WordPressAuthenticatorConfiguration {
                  enableUnifiedAuth: Bool = false,
                  displayHintButtons: Bool = true,
                  enableUnifiedSiteAddress: Bool = false,
-                 enableUnifiedGoogle: Bool = false) {
+                 enableUnifiedGoogle: Bool = false,
+                 enableUnifiedSignup: Bool = false) {
 
         self.wpcomClientId = wpcomClientId
         self.wpcomSecret = wpcomSecret
@@ -119,5 +124,6 @@ public struct WordPressAuthenticatorConfiguration {
         self.enableUnifiedSiteAddress = enableUnifiedAuth && enableUnifiedSiteAddress
         self.enableUnifiedGoogle = enableUnifiedAuth && enableUnifiedGoogle
         self.enableSignupWithGoogle = enableSignupWithGoogle
+        self.enableUnifiedSignup = enableUnifiedAuth && enableUnifiedSignup
     }
 }

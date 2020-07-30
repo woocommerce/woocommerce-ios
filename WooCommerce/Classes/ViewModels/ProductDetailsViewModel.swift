@@ -239,7 +239,7 @@ extension ProductDetailsViewModel {
             configureProductImages(cell)
         case let cell as TitleBodyTableViewCell where row == .productName:
             configureProductName(cell)
-        case let cell as ProductReviewsTableViewCell:
+        case let cell as OldProductReviewsTableViewCell:
             configureReviews(cell)
         case let cell as WooBasicTableViewCell where row == .permalink:
             configurePermalink(cell)
@@ -288,7 +288,7 @@ extension ProductDetailsViewModel {
 
     /// Reviews cell.
     ///
-    func configureReviews(_ cell: ProductReviewsTableViewCell) {
+    func configureReviews(_ cell: OldProductReviewsTableViewCell) {
         cell.selectionStyle = .none
         cell.reviewLabel?.text = NSLocalizedString("Reviews",
                                                    comment: "Reviews descriptive label")
@@ -799,7 +799,7 @@ extension ProductDetailsViewModel {
             case .productName:
                 return TitleBodyTableViewCell.reuseIdentifier
             case .reviews:
-                return ProductReviewsTableViewCell.reuseIdentifier
+                return OldProductReviewsTableViewCell.reuseIdentifier
             case .productVariants:
                 return TitleBodyTableViewCell.reuseIdentifier
             case .permalink:

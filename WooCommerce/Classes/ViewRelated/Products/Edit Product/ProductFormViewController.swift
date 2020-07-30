@@ -243,7 +243,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 editTags()
             case .briefDescription:
                 ServiceLocator.analytics.track(.productDetailViewShortDescriptionTapped)
-                editBriefDescription()
+                editShortDescription()
             case .externalURL:
                 // TODO-2509 Edit Product M3 analytics
                 editExternalLink()
@@ -437,7 +437,7 @@ private extension ProductFormViewController {
                                                                         case .editTags:
                                                                             self?.editTags()
                                                                         case .editBriefDescription:
-                                                                            self?.editBriefDescription()
+                                                                            self?.editShortDescription()
                                                                         case .editSKU:
                                                                             self?.editSKU()
                                                                             break
@@ -846,24 +846,24 @@ private extension ProductFormViewController {
 // MARK: Action - Edit Product Brief Description (Short Description)
 //
 private extension ProductFormViewController {
-    func editBriefDescription() {
+    func editShortDescription() {
         let editorViewController = EditorFactory().productBriefDescriptionEditor(product: product) { [weak self] content in
-            self?.onEditBriefDescriptionCompletion(newBriefDescription: content)
+            self?.onEditShortDescriptionCompletion(newShortDescription: content)
         }
         navigationController?.pushViewController(editorViewController, animated: true)
     }
 
-    func onEditBriefDescriptionCompletion(newBriefDescription: String) {
+    func onEditShortDescriptionCompletion(newShortDescription: String) {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        let hasChangedData = newBriefDescription != product.shortDescription
+        let hasChangedData = newShortDescription != product.shortDescription
         ServiceLocator.analytics.track(.productShortDescriptionDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
 
         guard hasChangedData else {
             return
         }
-        viewModel.updateBriefDescription(newBriefDescription)
+        viewModel.updateBriefDescription(newShortDescription)
     }
 }
 

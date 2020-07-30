@@ -14,9 +14,10 @@ class UnifiedSignUpViewController: LoginViewController {
 
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
-        
+
     }
 
+    // MARK: - View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -26,5 +27,22 @@ class UnifiedSignUpViewController: LoginViewController {
         // Store default margin, and size table for the view.
         defaultTableViewMargin = tableViewLeadingConstraint?.constant ?? 0
         setTableViewMargins(forWidth: view.frame.width)
+    }
+
+    // MARK: - Overrides
+
+    /// Style individual ViewController backgrounds, for now.
+    ///
+    override func styleBackground() {
+        guard let unifiedBackgroundColor = WordPressAuthenticator.shared.unifiedStyle?.viewControllerBackgroundColor else {
+            super.styleBackground()
+            return
+        }
+
+        view.backgroundColor = unifiedBackgroundColor
+    }
+
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return WordPressAuthenticator.shared.unifiedStyle?.statusBarStyle ?? WordPressAuthenticator.shared.style.statusBarStyle
     }
 }

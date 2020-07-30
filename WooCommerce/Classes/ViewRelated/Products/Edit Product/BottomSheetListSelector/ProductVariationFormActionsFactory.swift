@@ -30,7 +30,7 @@ struct ProductVariationFormActionsFactory: ProductFormActionsFactoryProtocol {
 }
 
 private extension ProductVariationFormActionsFactory {
-    /// All the editable actions in the settings section given the product and feature switches.
+    /// All the editable actions in the settings section given the product variation.
     func allSettingsSectionActions() -> [ProductFormEditAction] {
         let shouldShowShippingSettingsRow = productVariation.isShippingEnabled
 

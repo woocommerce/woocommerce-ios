@@ -32,7 +32,11 @@ final class SurveySubmittedViewController: UIViewController {
     ///
     @IBOutlet private weak var poweredLabel: UILabel!
 
-    init() {
+    /// Used to present the Contact Support dialog
+    private let zendeskManager: ZendeskManagerProtocol
+
+    init(zendeskManager: ZendeskManagerProtocol = ZendeskManager.shared) {
+        self.zendeskManager = zendeskManager
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -49,13 +53,13 @@ final class SurveySubmittedViewController: UIViewController {
         configureStackViewsAxis()
     }
 
-    @IBAction func contactUsButtonTapped(_ sender: Any) {
-        ZendeskManager.shared.showNewRequestIfPossible(from: self)
+    @IBAction private func contactUsButtonTapped(_ sender: Any) {
+        zendeskManager.showNewRequestIfPossible(from: self, with: nil)
     }
 
-    @IBAction func backToStoreButtonPressed(_ sender: Any) {
-        // Assumes it is in a presentation context. Addressed in a following PR
-        self.dismiss(animated: true, completion: nil)
+    @IBAction private func backToStoreButtonPressed(_ sender: Any) {
+        // Assumes it's in a presentation context. To be addressed in a following PR.
+        dismiss(animated: true, completion: nil)
     }
 
 }

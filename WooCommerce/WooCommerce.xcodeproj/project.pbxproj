@@ -287,6 +287,7 @@
 		267CFE1C2443A54200AF3A13 /* ProductCategoryCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267CFE1A2443740900AF3A13 /* ProductCategoryCellViewModel.swift */; };
 		2687165524D21BC80042F6AE /* SurveySubmittedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2687165324D21BC80042F6AE /* SurveySubmittedViewController.swift */; };
 		2687165624D21BC80042F6AE /* SurveySubmittedViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2687165424D21BC80042F6AE /* SurveySubmittedViewController.xib */; };
+		2687165824D296720042F6AE /* SurveySubmittedViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2687165724D296720042F6AE /* SurveySubmittedViewControllerTests.swift */; };
 		26B119B924D0B38F00FED5C7 /* SurveyViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26B119B824D0B38F00FED5C7 /* SurveyViewController.xib */; };
 		26B119BB24D0B62E00FED5C7 /* SurveyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B119BA24D0B62E00FED5C7 /* SurveyViewController.swift */; };
 		26B119C024D0C69500FED5C7 /* SurveyViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B119BF24D0C69500FED5C7 /* SurveyViewControllerTests.swift */; };
@@ -1184,6 +1185,7 @@
 		267CFE1A2443740900AF3A13 /* ProductCategoryCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryCellViewModel.swift; sourceTree = "<group>"; };
 		2687165324D21BC80042F6AE /* SurveySubmittedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveySubmittedViewController.swift; sourceTree = "<group>"; };
 		2687165424D21BC80042F6AE /* SurveySubmittedViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SurveySubmittedViewController.xib; sourceTree = "<group>"; };
+		2687165724D296720042F6AE /* SurveySubmittedViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveySubmittedViewControllerTests.swift; sourceTree = "<group>"; };
 		26B119B824D0B38F00FED5C7 /* SurveyViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SurveyViewController.xib; sourceTree = "<group>"; };
 		26B119BA24D0B62E00FED5C7 /* SurveyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SurveyViewController.swift; sourceTree = "<group>"; };
 		26B119BF24D0C69500FED5C7 /* SurveyViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyViewControllerTests.swift; sourceTree = "<group>"; };
@@ -2488,6 +2490,7 @@
 			isa = PBXGroup;
 			children = (
 				26B119BF24D0C69500FED5C7 /* SurveyViewControllerTests.swift */,
+				2687165724D296720042F6AE /* SurveySubmittedViewControllerTests.swift */,
 			);
 			path = Survey;
 			sourceTree = "<group>";
@@ -5273,6 +5276,7 @@
 				D83F593D225B4B5000626E75 /* ManualTrackingViewControllerTests.swift in Sources */,
 				CEEC9B6621E7C5200055EEF0 /* AppRatingManagerTests.swift in Sources */,
 				263EB409242C58EA00F3A15F /* ProductFormActionsFactory+EditProductsM3Tests.swift in Sources */,
+				2687165824D296720042F6AE /* SurveySubmittedViewControllerTests.swift in Sources */,
 				02BA23C022EE9DAF009539E7 /* AsyncDictionaryTests.swift in Sources */,
 				B555531121B57E6F00449E71 /* MockupApplicationAdapter.swift in Sources */,
 				021E2A2023AA274700B1DE07 /* ProductBackordersSettingListSelectorCommandTests.swift in Sources */,

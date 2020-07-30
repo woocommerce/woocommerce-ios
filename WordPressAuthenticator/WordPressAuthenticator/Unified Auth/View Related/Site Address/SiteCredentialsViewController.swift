@@ -9,6 +9,8 @@ final class SiteCredentialsViewController: LoginViewController {
     /// Private properties.
     ///
     @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
+
     private weak var usernameField: UITextField?
     private weak var passwordField: UITextField?
     private var rows = [Row]()
@@ -16,7 +18,6 @@ final class SiteCredentialsViewController: LoginViewController {
     private var shouldChangeVoiceOverFocus: Bool = false
 
     // Required for `NUXKeyboardResponder` but unused here.
-    @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
     var verticalCenterConstraint: NSLayoutConstraint?
 
     override var sourceTag: WordPressSupportSourceTag {

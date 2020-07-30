@@ -108,6 +108,7 @@ extension GoogleAuthViewController: GoogleAuthenticatorDelegate {
             return
         }
 
+        vc.loginFields = loginFields
         navigationController?.pushViewController(vc, animated: true)
     }
 

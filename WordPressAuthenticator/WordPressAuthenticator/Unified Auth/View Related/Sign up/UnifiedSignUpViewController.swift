@@ -13,6 +13,8 @@ class UnifiedSignUpViewController: LoginViewController {
     var verticalCenterConstraint: NSLayoutConstraint?
 
     private var rows = [Row]()
+    private var errorMessage: String?
+    private var shouldChangeVoiceOverFocus: Bool = false
 
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {

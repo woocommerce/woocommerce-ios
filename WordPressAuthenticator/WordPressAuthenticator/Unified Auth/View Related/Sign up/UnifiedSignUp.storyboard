@@ -77,7 +77,6 @@
                     </view>
                     <navigationItem key="navigationItem" id="5lc-hf-cia"/>
                     <connections>
-                        <outlet property="bottomContentConstraint" destination="A5i-l6-R2a" id="elI-gU-ibK"/>
                         <outlet property="submitButton" destination="4e9-BU-PNb" id="GSH-Hx-8G0"/>
                         <outlet property="tableView" destination="uMq-La-HEm" id="uaR-Kf-8hW"/>
                         <outlet property="tableViewLeadingConstraint" destination="xs1-4O-GeZ" id="hDa-A6-doE"/>

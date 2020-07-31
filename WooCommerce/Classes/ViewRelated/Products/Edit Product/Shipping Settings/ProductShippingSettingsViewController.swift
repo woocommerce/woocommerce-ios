@@ -43,6 +43,7 @@ final class ProductShippingSettingsViewController: UIViewController {
         self.shippingSettingsService = shippingSettingsService
         self.onCompletion = completion
 
+        // TODO-2580: re-enable shipping class for `ProductVariation` when the API issue is fixed.
         switch product {
         case is Product:
             sections = [

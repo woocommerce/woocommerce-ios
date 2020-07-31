@@ -188,14 +188,18 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable {
 
         // Even though the API docs claim `manageStock` is a bool, it's possible that `"parent"`
         // could be returned as well (typically with variations) — we need to account for this.
-        // A "parent" value means that stock mgmt is turned on + managed at the parent product-level, therefore
-        // we need to set this var as `true` in this situation.
+        // A "parent" value means that stock mgmt is turned off at the product variation and it is managed at the parent product-level.
+        // Therefore, we need to set this var as `false` in this situation.
         // See: https://github.com/woocommerce/woocommerce-ios/issues/884 for more deets
         let manageStock = container.failsafeDecodeIfPresent(targetType: Bool.self,
                                                             forKey: .manageStock,
                                                             alternativeTypes: [
                                                                 .string(transform: { value in
-                                                                    value.lowercased() == Values.manageStockParent ? true : false
+                                                                    guard value.lowercased() == Values.manageStockParent else {
+                                                                        assertionFailure("Unexpected manage stock value: \(value)")
+                                                                        return false
+                                                                    }
+                                                                    return false
                                                                 })
         ]) ?? false
 
@@ -293,7 +297,6 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable {
         try container.encode(manageStock, forKey: .manageStock)
         try container.encode(stockQuantity, forKey: .stockQuantity)
         try container.encode(backordersKey, forKey: .backordersKey)
-        try container.encode(stockStatus.rawValue, forKey: .stockStatusKey)
     }
 }
 

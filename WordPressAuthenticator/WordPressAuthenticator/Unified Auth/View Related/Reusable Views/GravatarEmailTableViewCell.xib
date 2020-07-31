@@ -13,7 +13,7 @@
         <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="GravatarEmailTableViewCell" id="KGk-i7-Jjw" customClass="GravatarEmailTableViewCell" customModule="WordPressAuthenticator">
             <rect key="frame" x="0.0" y="0.0" width="320" height="73"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
                 <rect key="frame" x="0.0" y="0.0" width="320" height="73"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
@@ -40,6 +40,7 @@
                     <constraint firstAttribute="trailingMargin" secondItem="jle-eu-TeA" secondAttribute="trailing" id="IUZ-dB-QnU"/>
                     <constraint firstItem="odI-Gb-fXa" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="kVa-7e-I73"/>
                     <constraint firstItem="odI-Gb-fXa" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="mKZ-7r-7KE"/>
+                    <constraint firstAttribute="bottom" secondItem="odI-Gb-fXa" secondAttribute="bottom" id="rbk-nC-l0W"/>
                     <constraint firstItem="jle-eu-TeA" firstAttribute="centerY" secondItem="odI-Gb-fXa" secondAttribute="centerY" id="zuD-0q-QlE"/>
                 </constraints>
             </tableViewCellContentView>

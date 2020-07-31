@@ -91,6 +91,7 @@ private extension UnifiedSignUpViewController {
     ///
     func registerTableViewCells() {
         let cells = [
+            GravatarEmailTableViewCell.reuseIdentifier: GravatarEmailTableViewCell.loadNib(),
             TextLabelTableViewCell.reuseIdentifier: TextLabelTableViewCell.loadNib()
         ]
 
@@ -102,7 +103,7 @@ private extension UnifiedSignUpViewController {
     /// Describes how the tableView rows should be rendered.
     ///
     func loadRows() {
-        rows = [.instructions]
+        rows = [.gravatarEmail, .instructions]
 
         if errorMessage != nil {
             rows.append(.errorMessage)
@@ -113,6 +114,8 @@ private extension UnifiedSignUpViewController {
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
+        case let cell as GravatarEmailTableViewCell:
+            configureGravatarEmail(cell)
         case let cell as TextLabelTableViewCell where row == .instructions:
             configureInstructionLabel(cell)
         case let cell as TextLabelTableViewCell where row == .errorMessage:
@@ -120,6 +123,12 @@ private extension UnifiedSignUpViewController {
         default:
             DDLogError("Error: Unidentified tableViewCell type found.")
         }
+    }
+
+    /// Configure the gravtar + email cell.
+    ///
+    func configureGravatarEmail(_ cell: GravatarEmailTableViewCell) {
+        cell.configureImage(UIImage.gridicon(.user), text: "unknownuser@example.com")
     }
 
     /// Configure the instruction cell.
@@ -139,11 +148,14 @@ private extension UnifiedSignUpViewController {
     /// Rows listed in the order they were created.
     ///
     enum Row {
+        case gravatarEmail
         case instructions
         case errorMessage
 
         var reuseIdentifier: String {
             switch self {
+            case .gravatarEmail:
+                return GravatarEmailTableViewCell.reuseIdentifier
             case .instructions:
                 return TextLabelTableViewCell.reuseIdentifier
             case .errorMessage:

@@ -26,19 +26,21 @@
                         </constraints>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Email Label" textAlignment="natural" lineBreakMode="characterWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jle-eu-TeA" userLabel="Email Label">
-                        <rect key="frame" x="72" y="11" width="232" height="51"/>
+                        <rect key="frame" x="72" y="9" width="232" height="44"/>
+                        <constraints>
+                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="44" id="QBs-7U-E3W"/>
+                        </constraints>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="topMargin" secondItem="jle-eu-TeA" secondAttribute="top" id="6XX-Lt-OIj"/>
                     <constraint firstItem="jle-eu-TeA" firstAttribute="leading" secondItem="odI-Gb-fXa" secondAttribute="trailing" constant="16" id="8Wx-qB-Fs2"/>
-                    <constraint firstAttribute="bottomMargin" secondItem="jle-eu-TeA" secondAttribute="bottom" id="H6p-O8-1R7"/>
                     <constraint firstAttribute="trailingMargin" secondItem="jle-eu-TeA" secondAttribute="trailing" id="IUZ-dB-QnU"/>
                     <constraint firstItem="odI-Gb-fXa" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="kVa-7e-I73"/>
                     <constraint firstItem="odI-Gb-fXa" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="mKZ-7r-7KE"/>
+                    <constraint firstItem="jle-eu-TeA" firstAttribute="centerY" secondItem="odI-Gb-fXa" secondAttribute="centerY" id="zuD-0q-QlE"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

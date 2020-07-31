@@ -82,7 +82,7 @@ public struct WordPressAuthenticatorConfiguration {
     ///
     let enableUnifiedGoogle: Bool
 
-    /// Flag indicating if signing up via Email shouls display.
+    /// Flag indicating if signing up via Email should display.
     ///
     let enableUnifiedSignup: Bool
 

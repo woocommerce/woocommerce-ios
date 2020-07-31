@@ -272,7 +272,6 @@ private extension SiteAddressViewController {
         cell.configureLabel(text: errorMessage, style: .error)
     }
 
-
     // MARK: - Private Constants
 
     /// Rows listed in the order they were created.

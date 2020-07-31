@@ -12,6 +12,12 @@ final class MockPushNotificationsManager: PushNotesManager {
 
     private let foregroundNotificationsSubject = PublishSubject<PushNotification>()
 
+    var inactiveNotifications: Observable<PushNotification> {
+        inactiveNotificationsSubject
+    }
+
+    private let inactiveNotificationsSubject = PublishSubject<PushNotification>()
+
     func resetBadgeCount(type: Note.Kind) {
 
     }
@@ -57,5 +63,12 @@ extension MockPushNotificationsManager {
     ///
     func sendForegroundNotification(_ notification: PushNotification) {
         foregroundNotificationsSubject.send(notification)
+    }
+
+    /// Send a `PushNotification` that will be emitted by the `inactiveNotifications`
+    /// observable.
+    ///
+    func sendInactiveNotification(_ notification: PushNotification) {
+        inactiveNotificationsSubject.send(notification)
     }
 }

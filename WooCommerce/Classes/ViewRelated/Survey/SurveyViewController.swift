@@ -52,7 +52,7 @@ extension SurveyViewController {
         fileprivate var url: URL {
             switch self {
             case .inAppFeedback:
-                return WooConstants.inAppFeedbackURL
+                return WooConstants.URLs.inAppFeedback.asURL()
             }
         }
 

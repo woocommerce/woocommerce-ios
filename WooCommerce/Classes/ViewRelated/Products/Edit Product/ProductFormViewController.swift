@@ -809,10 +809,6 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func editInventorySettings() {
-        // TODO-2085: Support product variation
-        guard let product = product as? Product else {
-            return
-        }
         let inventorySettingsViewController = ProductInventorySettingsViewController(product: product) { [weak self] data in
             self?.onEditInventorySettingsCompletion(data: data)
         }
@@ -820,14 +816,10 @@ private extension ProductFormViewController {
     }
 
     func onEditInventorySettingsCompletion(data: ProductInventoryEditableData) {
-        // TODO-2085: Support product variation
-        guard let product = product as? Product else {
-            return
-        }
         defer {
             navigationController?.popViewController(animated: true)
         }
-        let originalData = ProductInventoryEditableData(product: product)
+        let originalData = ProductInventoryEditableData(productModel: product)
         let hasChangedData = originalData != data
         ServiceLocator.analytics.track(.productInventorySettingsDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
 

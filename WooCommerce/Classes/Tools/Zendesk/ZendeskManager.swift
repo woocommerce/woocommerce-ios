@@ -114,7 +114,7 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
     /// For now, link to the online help documentation
     ///
     func showHelpCenter(from controller: UIViewController) {
-        let safariViewController = SFSafariViewController(url: WooConstants.helpCenterURL)
+        let safariViewController = SFSafariViewController(url: WooConstants.URLs.helpCenter.asURL())
         safariViewController.modalPresentationStyle = .pageSheet
         controller.present(safariViewController, animated: true, completion: nil)
 

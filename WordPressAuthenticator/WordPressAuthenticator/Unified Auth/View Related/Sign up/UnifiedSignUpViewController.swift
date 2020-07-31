@@ -7,10 +7,10 @@ class UnifiedSignUpViewController: LoginViewController {
     /// Private properties.
     ///
     @IBOutlet private weak var tableView: UITableView!
-    @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
 
-    // Required for `NUXKeyboardResponder` but unused here.
-    var verticalCenterConstraint: NSLayoutConstraint?
+    private var rows = [Row]()
+    private var errorMessage: String?
+    private var shouldChangeVoiceOverFocus: Bool = false
 
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
@@ -29,6 +29,8 @@ class UnifiedSignUpViewController: LoginViewController {
         setTableViewMargins(forWidth: view.frame.width)
 
         localizePrimaryButton()
+        registerTableViewCells()
+        loadRows()
     }
 
     // MARK: - Overrides
@@ -44,7 +46,132 @@ class UnifiedSignUpViewController: LoginViewController {
         view.backgroundColor = unifiedBackgroundColor
     }
 
+    /// Style individual ViewController status bars.
+    ///
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return WordPressAuthenticator.shared.unifiedStyle?.statusBarStyle ?? WordPressAuthenticator.shared.style.statusBarStyle
+    }
+
+    /// Override the title on 'submit' button
+    ///
+    override func localizePrimaryButton() {
+        submitButton?.setTitle(WordPressAuthenticator.shared.displayStrings.magicLinkButtonTitle, for: .normal)
+    }
+
+    /// Reload the tableview and show errors, if any.
+    ///
+    override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
+        if errorMessage != message {
+            errorMessage = message
+            shouldChangeVoiceOverFocus = moveVoiceOverFocus
+            tableView.reloadData()
+        }
+    }
+}
+
+
+// MARK: - UITableViewDataSource
+extension UnifiedSignUpViewController: UITableViewDataSource {
+
+    /// Returns the number of rows in a section.
+    ///
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return rows.count
+    }
+
+    /// Configure cells delegate method.
+    ///
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let row = rows[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
+        configure(cell, for: row, at: indexPath)
+
+        return cell
+    }
+}
+
+
+// MARK: - UITableViewDelegate conformance
+extension UnifiedSignUpViewController: UITableViewDelegate { }
+
+
+// MARK: - Private methods
+private extension UnifiedSignUpViewController {
+
+    /// Registers all of the available TableViewCells.
+    ///
+    func registerTableViewCells() {
+        let cells = [
+            GravatarEmailTableViewCell.reuseIdentifier: GravatarEmailTableViewCell.loadNib(),
+            TextLabelTableViewCell.reuseIdentifier: TextLabelTableViewCell.loadNib()
+        ]
+
+        for (reuseIdentifier, nib) in cells {
+            tableView.register(nib, forCellReuseIdentifier: reuseIdentifier)
+        }
+    }
+
+    /// Describes how the tableView rows should be rendered.
+    ///
+    func loadRows() {
+        rows = [.gravatarEmail, .instructions]
+
+        if errorMessage != nil {
+            rows.append(.errorMessage)
+        }
+    }
+
+    /// Configure cells.
+    ///
+    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+        switch cell {
+        case let cell as GravatarEmailTableViewCell:
+            configureGravatarEmail(cell)
+        case let cell as TextLabelTableViewCell where row == .instructions:
+            configureInstructionLabel(cell)
+        case let cell as TextLabelTableViewCell where row == .errorMessage:
+            configureErrorLabel(cell)
+        default:
+            DDLogError("Error: Unidentified tableViewCell type found.")
+        }
+    }
+
+    /// Configure the gravtar + email cell.
+    ///
+    func configureGravatarEmail(_ cell: GravatarEmailTableViewCell) {
+        cell.configureImage(UIImage.gridicon(.userCircle), text: "unknownuser@example.com")
+    }
+
+    /// Configure the instruction cell.
+    ///
+    func configureInstructionLabel(_ cell: TextLabelTableViewCell) {
+        cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.magicLinkInstructions, style: .body)
+    }
+
+    /// Configure the error message cell.
+    ///
+    func configureErrorLabel(_ cell: TextLabelTableViewCell) {
+        cell.configureLabel(text: errorMessage, style: .error)
+    }
+
+    // MARK: - Private Constants
+
+    /// Rows listed in the order they were created.
+    ///
+    enum Row {
+        case gravatarEmail
+        case instructions
+        case errorMessage
+
+        var reuseIdentifier: String {
+            switch self {
+            case .gravatarEmail:
+                return GravatarEmailTableViewCell.reuseIdentifier
+            case .instructions:
+                return TextLabelTableViewCell.reuseIdentifier
+            case .errorMessage:
+                return TextLabelTableViewCell.reuseIdentifier
+            }
+        }
     }
 }

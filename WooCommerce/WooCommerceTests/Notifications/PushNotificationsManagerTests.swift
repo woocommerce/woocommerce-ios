@@ -432,6 +432,31 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Then
         XCTAssertTrue(emittedNotifications.isEmpty)
     }
+
+    func testItEmitsInactiveNotificationsWhenItReceivesANotificationWhileTheAppIsNotActive() throws {
+        // Given
+        application.applicationState = .inactive
+
+        var emittedNotifications = [PushNotification]()
+        _ = manager.inactiveNotifications.subscribe { notification in
+            emittedNotifications.append(notification)
+        }
+
+        let userinfo = notificationPayload(noteID: 9_981, type: .storeOrder)
+
+        // When
+        manager.handleNotification(userinfo, onBadgeUpdateCompletion: {}) { _ in
+            // noop
+        }
+
+        // Then
+        XCTAssertEqual(emittedNotifications.count, 1)
+
+        let emittedNotification = try XCTUnwrap(emittedNotifications.first)
+        XCTAssertEqual(emittedNotification.kind, .storeOrder)
+        XCTAssertEqual(emittedNotification.noteID, 9_981)
+        XCTAssertEqual(emittedNotification.message, Sample.defaultMessage)
+    }
 }
 
 

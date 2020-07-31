@@ -12,6 +12,8 @@ class UnifiedSignUpViewController: LoginViewController {
     // Required for `NUXKeyboardResponder` but unused here.
     var verticalCenterConstraint: NSLayoutConstraint?
 
+    private var rows = [Row]()
+
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
 
@@ -46,5 +48,27 @@ class UnifiedSignUpViewController: LoginViewController {
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return WordPressAuthenticator.shared.unifiedStyle?.statusBarStyle ?? WordPressAuthenticator.shared.style.statusBarStyle
+    }
+}
+
+// MARK: - Private methods
+private extension UnifiedSignUpViewController {
+
+    // MARK: - Private Constants
+
+    /// Rows listed in the order they were created.
+    ///
+    enum Row {
+        case instructions
+        case errorMessage
+
+        var reuseIdentifier: String {
+            switch self {
+            case .instructions:
+                return TextLabelTableViewCell.reuseIdentifier
+            case .errorMessage:
+                return TextLabelTableViewCell.reuseIdentifier
+            }
+        }
     }
 }

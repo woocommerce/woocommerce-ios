@@ -56,7 +56,6 @@ class UnifiedSignUpViewController: LoginViewController {
     ///
     override func localizePrimaryButton() {
         submitButton?.setTitle(WordPressAuthenticator.shared.displayStrings.magicLinkButtonTitle, for: .normal)
-        submitButton?.setTitle(WordPressAuthenticator.shared.displayStrings.magicLinkButtonTitle, for: .highlighted)
     }
 
     /// Reload the tableview and show errors, if any.

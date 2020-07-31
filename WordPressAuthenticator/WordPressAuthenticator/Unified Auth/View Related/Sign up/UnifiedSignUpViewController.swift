@@ -49,6 +49,13 @@ class UnifiedSignUpViewController: LoginViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return WordPressAuthenticator.shared.unifiedStyle?.statusBarStyle ?? WordPressAuthenticator.shared.style.statusBarStyle
     }
+
+    /// Override the title on 'submit' button
+    ///
+    override func localizePrimaryButton() {
+        submitButton?.setTitle(WordPressAuthenticator.shared.displayStrings.magicLinkButtonTitle, for: .normal)
+        submitButton?.setTitle(WordPressAuthenticator.shared.displayStrings.magicLinkButtonTitle, for: .highlighted)
+    }
 }
 
 

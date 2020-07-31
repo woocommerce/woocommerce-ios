@@ -27,10 +27,7 @@ final class ProductShippingSettingsViewController: UIViewController {
 
     /// Table Sections to be rendered
     ///
-    private let sections: [Section] = [
-        Section(rows: [.weight, .length, .width, .height]),
-        Section(rows: [.shippingClass])
-    ]
+    private let sections: [Section]
 
     typealias Completion = (_ weight: String?, _ dimensions: ProductDimensions, _ shippingClass: ProductShippingClass?) -> Void
     private let onCompletion: Completion
@@ -45,6 +42,20 @@ final class ProductShippingSettingsViewController: UIViewController {
         self.product = product
         self.shippingSettingsService = shippingSettingsService
         self.onCompletion = completion
+
+        switch product {
+        case is Product:
+            sections = [
+                Section(rows: [.weight, .length, .width, .height]),
+                Section(rows: [.shippingClass])
+            ]
+        case is ProductVariation:
+            sections = [
+                Section(rows: [.weight, .length, .width, .height])
+            ]
+        default:
+            fatalError("Unsupported product type: \(product)")
+        }
 
         self.weight = product.weight
         self.length = product.dimensions.length

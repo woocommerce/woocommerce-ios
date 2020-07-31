@@ -78,7 +78,7 @@ PODS:
     - FormatterKit/TimeIntervalFormatter (= 1.8.2)
   - WordPressUI (1.7.0)
   - Wormholy (1.6.0)
-  - WPMediaPicker (1.6.0)
+  - WPMediaPicker (1.7.1-beta.1)
   - wpxmlrpc (0.8.5)
   - XLPagerTabStrip (9.0.0)
   - ZendeskCommonUISDK (4.2.0):
@@ -111,7 +111,7 @@ DEPENDENCIES:
   - WordPressShared (~> 1.8.16)
   - WordPressUI (~> 1.7.0)
   - Wormholy (~> 1.6.0)
-  - WPMediaPicker (~> 1.6.0)
+  - WPMediaPicker (from `https://github.com/wordpress-mobile/MediaPicker-iOS.git`, branch `issue/wcios-2581-pagination-crash`)
   - XLPagerTabStrip (~> 9.0)
   - ZendeskSupportSDK (~> 5.0)
 
@@ -146,7 +146,6 @@ SPEC REPOS:
     - WordPressShared
     - WordPressUI
     - Wormholy
-    - WPMediaPicker
     - wpxmlrpc
     - XLPagerTabStrip
     - ZendeskCommonUISDK
@@ -156,6 +155,16 @@ SPEC REPOS:
     - ZendeskSDKConfigurationsSDK
     - ZendeskSupportProvidersSDK
     - ZendeskSupportSDK
+
+EXTERNAL SOURCES:
+  WPMediaPicker:
+    :branch: issue/wcios-2581-pagination-crash
+    :git: https://github.com/wordpress-mobile/MediaPicker-iOS.git
+
+CHECKOUT OPTIONS:
+  WPMediaPicker:
+    :commit: e08e2a0ce00e7b1b966d59b8fd75a2931ed8702c
+    :git: https://github.com/wordpress-mobile/MediaPicker-iOS.git
 
 SPEC CHECKSUMS:
   1PasswordExtension: f97cc80ae58053c331b2b6dc8843ba7103b33794
@@ -187,7 +196,7 @@ SPEC CHECKSUMS:
   WordPressShared: 1bc316ed162f42af4e0fa2869437e9e28b532b01
   WordPressUI: 1cf47a3b78154faf69caa18569ee7ece1e510fa0
   Wormholy: f52cd3c384fb49ae3e8fdb2b1398b66746a65104
-  WPMediaPicker: e5d28197da6b467d4e5975d64a49255977e39455
+  WPMediaPicker: 1b770d4d4f14fbfb7c421c53c761a521fc23bf12
   wpxmlrpc: 6a9bdd6ab9d1b159b384b0df0f3f39de9af4fecf
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
   ZendeskCommonUISDK: afbee7c58c04cf88012a48c079599ec0d1590d16
@@ -198,6 +207,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: c266e08211b58bd5f678df487b47b59bfb513599
+PODFILE CHECKSUM: 700e7eef4cc42e190e38d5cd10c55e0aebb4dd84
 
 COCOAPODS: 1.9.1

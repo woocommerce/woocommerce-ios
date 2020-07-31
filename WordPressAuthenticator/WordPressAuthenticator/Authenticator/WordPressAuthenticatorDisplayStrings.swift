@@ -11,6 +11,7 @@ public struct WordPressAuthenticatorDisplayStrings {
     public let siteLoginInstructions: String
 	public let siteCredentialInstructions: String
     public let twoFactorInstructions: String
+    public let magicLinkInstructions: String
 
     /// Strings: primary call-to-action button titles.
     ///
@@ -43,6 +44,7 @@ public struct WordPressAuthenticatorDisplayStrings {
                 siteLoginInstructions: String,
 				siteCredentialInstructions: String,
                 twoFactorInstructions: String,
+                magicLinkInstructions: String,
                 continueButtonTitle: String,
                 findSiteButtonTitle: String,
                 resetPasswordButtonTitle: String,
@@ -60,6 +62,7 @@ public struct WordPressAuthenticatorDisplayStrings {
         self.siteLoginInstructions = siteLoginInstructions
 		self.siteCredentialInstructions = siteCredentialInstructions
         self.twoFactorInstructions = twoFactorInstructions
+        self.magicLinkInstructions = magicLinkInstructions
         self.continueButtonTitle = continueButtonTitle
         self.findSiteButtonTitle = findSiteButtonTitle
         self.resetPasswordButtonTitle = resetPasswordButtonTitle
@@ -88,6 +91,7 @@ public extension WordPressAuthenticatorDisplayStrings {
 														  comment: "Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site."),
             twoFactorInstructions: NSLocalizedString("Please enter the verification code from your authenticator app, or tap the link below to receive a code via SMS.",
                                                      comment: "Instruction text on the two-factor screen."),
+            magicLinkInstructions: NSLocalizedString("We'll email you a magic link to create your new WordPress.com account.", comment: ""),
             continueButtonTitle: NSLocalizedString("Continue",
                                                     comment: "The button title text when there is a next step for logging in or signing up."),
             findSiteButtonTitle: NSLocalizedString("Find your site address",

@@ -53,8 +53,81 @@ class UnifiedSignUpViewController: LoginViewController {
     }
 }
 
+
+// MARK: - UITableViewDataSource
+extension UnifiedSignUpViewController: UITableViewDataSource {
+
+    /// Returns the number of rows in a section.
+    ///
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return rows.count
+    }
+
+    /// Configure cells delegate method.
+    ///
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let row = rows[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
+        configure(cell, for: row, at: indexPath)
+
+        return cell
+    }
+}
+
+
+// MARK: - UITableViewDelegate conformance
+extension UnifiedSignUpViewController: UITableViewDelegate { }
+
+
 // MARK: - Private methods
 private extension UnifiedSignUpViewController {
+
+    /// Registers all of the available TableViewCells.
+    ///
+    func registerTableViewCells() {
+        let cells = [
+            TextLabelTableViewCell.reuseIdentifier: TextLabelTableViewCell.loadNib()
+        ]
+
+        for (reuseIdentifier, nib) in cells {
+            tableView.register(nib, forCellReuseIdentifier: reuseIdentifier)
+        }
+    }
+
+    /// Describes how the tableView rows should be rendered.
+    ///
+    func loadRows() {
+        rows = [.instructions]
+
+        if errorMessage != nil {
+            rows.append(.errorMessage)
+        }
+    }
+
+    /// Configure cells.
+    ///
+    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+        switch cell {
+        case let cell as TextLabelTableViewCell where row == .instructions:
+            configureInstructionLabel(cell)
+        case let cell as TextLabelTableViewCell where row == .errorMessage:
+            configureErrorLabel(cell)
+        default:
+            DDLogError("Error: Unidentified tableViewCell type found.")
+        }
+    }
+
+    /// Configure the instruction cell.
+    ///
+    func configureInstructionLabel(_ cell: TextLabelTableViewCell) {
+        cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.magicLinkInstructions, style: .body)
+    }
+
+    /// Configure the error message cell.
+    ///
+    func configureErrorLabel(_ cell: TextLabelTableViewCell) {
+        cell.configureLabel(text: errorMessage, style: .error)
+    }
 
     // MARK: - Private Constants
 

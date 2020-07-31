@@ -22,6 +22,10 @@
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" bounces="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="uMq-La-HEm">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="547"/>
                                         <sections/>
+                                        <connections>
+                                            <outlet property="dataSource" destination="eEV-Dl-qyz" id="Kql-sH-scf"/>
+                                            <outlet property="delegate" destination="eEV-Dl-qyz" id="gJT-2W-j3C"/>
+                                        </connections>
                                     </tableView>
                                     <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UFq-9y-0cn" userLabel="Button background view">
                                         <rect key="frame" x="0.0" y="547" width="375" height="76"/>

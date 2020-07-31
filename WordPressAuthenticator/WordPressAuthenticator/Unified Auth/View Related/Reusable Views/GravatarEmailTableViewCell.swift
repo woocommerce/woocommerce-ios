@@ -15,16 +15,11 @@ class GravatarEmailTableViewCell: UITableViewCell {
     ///
     public static let reuseIdentifier = "GravatarEmailTableViewCell"
 
-    override func awakeFromNib() {
-        super.awakeFromNib()
-
-        emailLabel.textColor = WordPressAuthenticator.shared.unifiedStyle?.textColor ?? WordPressAuthenticator.shared.style.instructionColor
-        emailLabel.font = UIFont.preferredFont(forTextStyle: .body)
-    }
-
     public func configureImage(_ image: UIImage?, text: String?) {
         gravatarImageView?.image = image
         emailLabel.text = text
+        emailLabel.textColor = WordPressAuthenticator.shared.unifiedStyle?.textColor ?? WordPressAuthenticator.shared.style.instructionColor
+        emailLabel.font = UIFont.preferredFont(forTextStyle: .body)
     }
 
     /// Override methods

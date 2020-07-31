@@ -7,10 +7,6 @@ class UnifiedSignUpViewController: LoginViewController {
     /// Private properties.
     ///
     @IBOutlet private weak var tableView: UITableView!
-    @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
-
-    // Required for `NUXKeyboardResponder` but unused here.
-    var verticalCenterConstraint: NSLayoutConstraint?
 
     private var rows = [Row]()
     private var errorMessage: String?

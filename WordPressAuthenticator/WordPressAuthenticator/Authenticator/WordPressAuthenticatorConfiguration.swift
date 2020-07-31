@@ -82,6 +82,10 @@ public struct WordPressAuthenticatorConfiguration {
     ///
     let enableUnifiedGoogle: Bool
 
+    /// Flag indicating if the unified Apple flow should display.
+    ///
+    let enableUnifiedApple: Bool
+    
     /// Flag indicating if signing up via Email should display.
     ///
     let enableUnifiedSignup: Bool
@@ -105,6 +109,7 @@ public struct WordPressAuthenticatorConfiguration {
                  displayHintButtons: Bool = true,
                  enableUnifiedSiteAddress: Bool = false,
                  enableUnifiedGoogle: Bool = false,
+                 enableUnifiedApple: Bool = false,
                  enableUnifiedSignup: Bool = false) {
 
         self.wpcomClientId = wpcomClientId
@@ -124,6 +129,7 @@ public struct WordPressAuthenticatorConfiguration {
         self.enableUnifiedSiteAddress = enableUnifiedAuth && enableUnifiedSiteAddress
         self.enableUnifiedGoogle = enableUnifiedAuth && enableUnifiedGoogle
         self.enableSignupWithGoogle = enableSignupWithGoogle
+        self.enableUnifiedApple = enableUnifiedAuth && enableUnifiedApple
         self.enableUnifiedSignup = enableUnifiedAuth && enableUnifiedSignup
     }
 }

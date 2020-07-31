@@ -20,7 +20,7 @@ final class SurveySubmittedViewController: UIViewController {
     ///
     @IBOutlet private weak var needHelpLabel: UILabel!
 
-    /// Liink button to contect support
+    /// Link button to contact support
     ///
     @IBOutlet private weak var contactUsButton: UIButton!
 

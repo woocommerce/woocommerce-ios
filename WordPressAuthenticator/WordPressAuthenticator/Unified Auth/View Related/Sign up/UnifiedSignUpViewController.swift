@@ -33,6 +33,8 @@ class UnifiedSignUpViewController: LoginViewController {
         setTableViewMargins(forWidth: view.frame.width)
 
         localizePrimaryButton()
+        registerTableViewCells()
+        loadRows()
     }
 
     // MARK: - Overrides

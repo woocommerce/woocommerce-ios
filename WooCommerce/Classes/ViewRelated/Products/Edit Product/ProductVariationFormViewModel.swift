@@ -106,7 +106,7 @@ extension ProductVariationFormViewModel {
 //
 extension ProductVariationFormViewModel {
     func updateName(_ name: String) {
-        // no-op
+        // no-op: a variation's name is derived from its attributes and is not editable
     }
 
     func updateImages(_ images: [ProductImage]) {

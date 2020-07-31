@@ -116,8 +116,8 @@ extension SurveySubmittedViewController {
 private extension SurveySubmittedViewController {
     enum Localization {
         static let title = NSLocalizedString("Feedback Sent!", comment: "Title in the navigation bar when the survey is completed")
-        static let thanks = NSLocalizedString("Thank you for sharing your\nthoughts with us", comment: "Text thanking the user when the survey is completed")
-        static let info = NSLocalizedString("Keep in mind that this is not a\nsupport ticket and we won’t be able\nto address individual feedback",
+        static let thanks = NSLocalizedString("Thank you for sharing your thoughts with us", comment: "Text thanking the user when the survey is completed")
+        static let info = NSLocalizedString("Keep in mind that this is not a support ticket and we won’t be able to address individual feedback",
                                             comment: "Information text when the survey is completed")
         static let needHelp = NSLocalizedString("Need some help?", comment: "Text preceding the Contact Us button in the survey completed screen")
         static let contactUs = NSLocalizedString("Contact us here", comment: "Title of a button to contact support in the survey complete screen")

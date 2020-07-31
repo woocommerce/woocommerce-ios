@@ -62,6 +62,11 @@ class UnifiedSignUpViewController: LoginViewController {
     /// Reload the tableview and show errors, if any.
     ///
     override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
+        if errorMessage != message {
+            errorMessage = message
+            shouldChangeVoiceOverFocus = moveVoiceOverFocus
+            tableView.reloadData()
+        }
     }
 }
 

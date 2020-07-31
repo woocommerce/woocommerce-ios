@@ -46,6 +46,8 @@ class UnifiedSignUpViewController: LoginViewController {
         view.backgroundColor = unifiedBackgroundColor
     }
 
+    /// Style individual ViewController status bars.
+    ///
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return WordPressAuthenticator.shared.unifiedStyle?.statusBarStyle ?? WordPressAuthenticator.shared.style.statusBarStyle
     }
@@ -55,6 +57,11 @@ class UnifiedSignUpViewController: LoginViewController {
     override func localizePrimaryButton() {
         submitButton?.setTitle(WordPressAuthenticator.shared.displayStrings.magicLinkButtonTitle, for: .normal)
         submitButton?.setTitle(WordPressAuthenticator.shared.displayStrings.magicLinkButtonTitle, for: .highlighted)
+    }
+
+    /// Reload the tableview and show errors, if any.
+    ///
+    override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
     }
 }
 

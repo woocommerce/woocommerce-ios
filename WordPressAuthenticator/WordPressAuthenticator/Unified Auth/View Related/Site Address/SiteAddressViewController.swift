@@ -72,6 +72,8 @@ final class SiteAddressViewController: LoginViewController {
         view.backgroundColor = unifiedBackgroundColor
     }
 
+    /// Style individual ViewController status bars.
+    ///
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return WordPressAuthenticator.shared.unifiedStyle?.statusBarStyle ?? WordPressAuthenticator.shared.style.statusBarStyle
     }
@@ -108,6 +110,8 @@ final class SiteAddressViewController: LoginViewController {
         }
     }
 
+    /// Reload the tableview and show errors, if any.
+    ///
     override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
         if errorMessage != message {
             errorMessage = message

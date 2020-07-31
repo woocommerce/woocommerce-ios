@@ -129,12 +129,12 @@ class LoginPrologueViewController: LoginViewController {
         vc.modalPresentationStyle = .custom
 
         vc.emailTapped = { [weak self] in
-            guard let toVC = SignupEmailViewController.instantiate(from: .signup) else {
-                DDLogError("Failed to navigate to SignupEmailViewController")
+            guard WordPressAuthenticator.shared.configuration.enableUnifiedSignup else {
+                self?.presentSignUpEmailView()
                 return
             }
 
-            self?.navigationController?.pushViewController(toVC, animated: true)
+            self?.presentUnifiedSignUpView()
         }
 
         vc.googleTapped = { [weak self] in
@@ -177,6 +177,24 @@ class LoginPrologueViewController: LoginViewController {
         }
 
         presentUnifiedSiteAddressView()
+    }
+
+    private func presentSignUpEmailView() {
+        guard let toVC = SignupEmailViewController.instantiate(from: .signup) else {
+            DDLogError("Failed to navigate to SignupEmailViewController")
+            return
+        }
+
+        navigationController?.pushViewController(toVC, animated: true)
+    }
+
+    private func presentUnifiedSignUpView() {
+        guard let toVC = UnifiedSignUpViewController.instantiate(from: .unifiedSignUp) else {
+            DDLogError("Failed to navigate to UnifiedSignUpViewController")
+            return
+        }
+
+        navigationController?.pushViewController(toVC, animated: true)
     }
 
     // Shows the VC that handles both Google login & signup.

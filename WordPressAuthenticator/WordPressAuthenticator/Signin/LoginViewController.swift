@@ -463,7 +463,16 @@ extension LoginViewController {
     func socialNeedsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
         loginFields.nonceInfo = nonceInfo
         loginFields.nonceUserID = userID
-        
+
+        guard WordPressAuthenticator.shared.configuration.enableUnifiedApple else {
+            presentLogin2FA()
+            return
+        }
+
+        presentUnified2FA()
+    }
+    
+    private func presentLogin2FA() {
         var properties = [AnyHashable:Any]()
         if let service = loginFields.meta.socialService?.rawValue {
             properties["source"] = service
@@ -483,6 +492,20 @@ extension LoginViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
     
+    private func presentUnified2FA() {
+        
+        // TODO: add Tracks. Old event:
+        // WordPressAuthenticator.track(.loginSocial2faNeeded, properties: properties)
+        
+        guard let vc = TwoFAViewController.instantiate(from: .twoFA) else {
+            DDLogError("Failed to navigate from LoginViewController to TwoFAViewController")
+            return
+        }
+        
+        vc.loginFields = loginFields
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
 }
 
 // MARK: - LoginSocialError delegate methods

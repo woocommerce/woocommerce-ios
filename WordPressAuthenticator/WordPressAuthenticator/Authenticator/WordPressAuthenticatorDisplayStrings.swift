@@ -16,6 +16,7 @@ public struct WordPressAuthenticatorDisplayStrings {
     /// Strings: primary call-to-action button titles.
     ///
     public let continueButtonTitle: String
+    public let magicLinkButtonTitle: String
     
     /// Large titles displayed in unified auth flows.
     ///
@@ -46,6 +47,7 @@ public struct WordPressAuthenticatorDisplayStrings {
                 twoFactorInstructions: String,
                 magicLinkInstructions: String,
                 continueButtonTitle: String,
+                magicLinkButtonTitle: String,
                 findSiteButtonTitle: String,
                 resetPasswordButtonTitle: String,
                 textCodeButtonTitle: String,
@@ -64,6 +66,7 @@ public struct WordPressAuthenticatorDisplayStrings {
         self.twoFactorInstructions = twoFactorInstructions
         self.magicLinkInstructions = magicLinkInstructions
         self.continueButtonTitle = continueButtonTitle
+        self.magicLinkButtonTitle = magicLinkButtonTitle
         self.findSiteButtonTitle = findSiteButtonTitle
         self.resetPasswordButtonTitle = resetPasswordButtonTitle
         self.textCodeButtonTitle = textCodeButtonTitle
@@ -91,9 +94,12 @@ public extension WordPressAuthenticatorDisplayStrings {
 														  comment: "Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site."),
             twoFactorInstructions: NSLocalizedString("Please enter the verification code from your authenticator app, or tap the link below to receive a code via SMS.",
                                                      comment: "Instruction text on the two-factor screen."),
-            magicLinkInstructions: NSLocalizedString("We'll email you a magic link to create your new WordPress.com account.", comment: ""),
+            magicLinkInstructions: NSLocalizedString("We'll email you a magic link to create your new WordPress.com account.",
+                                                     comment: "Instruction text on the Sign Up screen."),
             continueButtonTitle: NSLocalizedString("Continue",
                                                     comment: "The button title text when there is a next step for logging in or signing up."),
+            magicLinkButtonTitle: NSLocalizedString("Send Link by Email",
+                                                    comment: "The button title text for sending a magic link."),
             findSiteButtonTitle: NSLocalizedString("Find your site address",
                                                    comment: "The hint button's title text to help users find their site address."),
             resetPasswordButtonTitle: NSLocalizedString("Reset your password",

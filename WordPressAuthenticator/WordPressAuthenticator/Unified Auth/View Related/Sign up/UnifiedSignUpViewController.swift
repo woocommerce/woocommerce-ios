@@ -128,7 +128,7 @@ private extension UnifiedSignUpViewController {
     /// Configure the gravtar + email cell.
     ///
     func configureGravatarEmail(_ cell: GravatarEmailTableViewCell) {
-        cell.configureImage(UIImage.gridicon(.user), text: "unknownuser@example.com")
+        cell.configureImage(UIImage.gridicon(.userCircle), text: "unknownuser@example.com")
     }
 
     /// Configure the instruction cell.

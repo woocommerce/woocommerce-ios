@@ -9,7 +9,7 @@ class GravatarEmailTableViewCell: UITableViewCell {
     /// Private properties
     ///
     @IBOutlet private weak var gravatarImageView: UIImageView?
-    @IBOutlet private weak var emailLabel: UILabel!
+    @IBOutlet private weak var emailLabel: UILabel?
 
     /// Public properties
     ///
@@ -17,14 +17,15 @@ class GravatarEmailTableViewCell: UITableViewCell {
 
     public func configureImage(_ image: UIImage?, text: String?) {
         gravatarImageView?.image = image
-        emailLabel.text = text
-        emailLabel.textColor = WordPressAuthenticator.shared.unifiedStyle?.textColor ?? WordPressAuthenticator.shared.style.instructionColor
-        emailLabel.font = UIFont.preferredFont(forTextStyle: .body)
+        gravatarImageView?.tintColor = WordPressAuthenticator.shared.unifiedStyle?.textColor ?? WordPressAuthenticator.shared.style.instructionColor
+        emailLabel?.text = text
+        emailLabel?.textColor = WordPressAuthenticator.shared.unifiedStyle?.textColor ?? WordPressAuthenticator.shared.style.instructionColor
+        emailLabel?.font = UIFont.preferredFont(forTextStyle: .body)
     }
 
     /// Override methods
     ///
     public override func prepareForReuse() {
-        emailLabel.text = nil
+        emailLabel?.text = nil
     }
 }

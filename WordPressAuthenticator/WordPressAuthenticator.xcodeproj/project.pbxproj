@@ -121,8 +121,8 @@
 		CE1B18D220EEC44400BECC3F /* WordPressAuthenticatorStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1B18D120EEC44400BECC3F /* WordPressAuthenticatorStyles.swift */; };
 		CE1BBF8324D348CD001D2E3E /* UnifiedSignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1BBF8224D348CD001D2E3E /* UnifiedSignUpViewController.swift */; };
 		CE1BBF8524D348EC001D2E3E /* UnifiedSignUp.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE1BBF8424D348EC001D2E3E /* UnifiedSignUp.storyboard */; };
-		CE1BBF8824D46A19001D2E3E /* GravatarEmailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1BBF8624D46A19001D2E3E /* GravatarEmailTableViewCell.swift */; };
-		CE1BBF8924D46A19001D2E3E /* GravatarEmailTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1BBF8724D46A19001D2E3E /* GravatarEmailTableViewCell.xib */; };
+		CE1BBF8C24D48580001D2E3E /* GravatarEmailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1BBF8A24D4857F001D2E3E /* GravatarEmailTableViewCell.swift */; };
+		CE1BBF8D24D48580001D2E3E /* GravatarEmailTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1BBF8B24D48580001D2E3E /* GravatarEmailTableViewCell.xib */; };
 		CE30A2A722579F4100DF3CDA /* LoginUsernamePasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE30A2A622579F4100DF3CDA /* LoginUsernamePasswordViewController.swift */; };
 		CE30A2A92257C60500DF3CDA /* WordPressOrgCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE30A2A82257C60500DF3CDA /* WordPressOrgCredentials.swift */; };
 		CE30A2AD2257CECC00DF3CDA /* AuthenticatorCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE30A2AC2257CECC00DF3CDA /* AuthenticatorCredentials.swift */; };
@@ -298,8 +298,8 @@
 		CE1B18D120EEC44400BECC3F /* WordPressAuthenticatorStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressAuthenticatorStyles.swift; sourceTree = "<group>"; };
 		CE1BBF8224D348CD001D2E3E /* UnifiedSignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnifiedSignUpViewController.swift; sourceTree = "<group>"; };
 		CE1BBF8424D348EC001D2E3E /* UnifiedSignUp.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = UnifiedSignUp.storyboard; sourceTree = "<group>"; };
-		CE1BBF8624D46A19001D2E3E /* GravatarEmailTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GravatarEmailTableViewCell.swift; sourceTree = "<group>"; };
-		CE1BBF8724D46A19001D2E3E /* GravatarEmailTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GravatarEmailTableViewCell.xib; sourceTree = "<group>"; };
+		CE1BBF8A24D4857F001D2E3E /* GravatarEmailTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GravatarEmailTableViewCell.swift; sourceTree = "<group>"; };
+		CE1BBF8B24D48580001D2E3E /* GravatarEmailTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GravatarEmailTableViewCell.xib; sourceTree = "<group>"; };
 		CE30A2A622579F4100DF3CDA /* LoginUsernamePasswordViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginUsernamePasswordViewController.swift; sourceTree = "<group>"; };
 		CE30A2A82257C60500DF3CDA /* WordPressOrgCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressOrgCredentials.swift; sourceTree = "<group>"; };
 		CE30A2AC2257CECC00DF3CDA /* AuthenticatorCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatorCredentials.swift; sourceTree = "<group>"; };
@@ -730,14 +730,14 @@
 		CEC77C70248AB0C700FB9050 /* Reusable Views */ = {
 			isa = PBXGroup;
 			children = (
+				CE1BBF8A24D4857F001D2E3E /* GravatarEmailTableViewCell.swift */,
+				CE1BBF8B24D48580001D2E3E /* GravatarEmailTableViewCell.xib */,
 				CE6BCD3624A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.swift */,
 				CE6BCD3724A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.xib */,
 				CE6BCD2C24A3A235001BCDC5 /* TextLabelTableViewCell.swift */,
 				CE6BCD2D24A3A235001BCDC5 /* TextLabelTableViewCell.xib */,
 				CE9091F52499549500AB50BD /* TextFieldTableViewCell.swift */,
 				CE9091F62499549500AB50BD /* TextFieldTableViewCell.xib */,
-				CE1BBF8624D46A19001D2E3E /* GravatarEmailTableViewCell.swift */,
-				CE1BBF8724D46A19001D2E3E /* GravatarEmailTableViewCell.xib */,
 			);
 			path = "Reusable Views";
 			sourceTree = "<group>";
@@ -873,7 +873,7 @@
 				988AD8A724CB8C0400BD045E /* TwoFA.storyboard in Resources */,
 				B5609118208A555600399AE4 /* SearchTableViewCell.xib in Resources */,
 				98ED48392480300500992B2D /* GoogleAuth.storyboard in Resources */,
-				CE1BBF8924D46A19001D2E3E /* GravatarEmailTableViewCell.xib in Resources */,
+				CE1BBF8D24D48580001D2E3E /* GravatarEmailTableViewCell.xib in Resources */,
 				B560913F208A563800399AE4 /* Login.storyboard in Resources */,
 				CE1BBF8524D348EC001D2E3E /* UnifiedSignUp.storyboard in Resources */,
 				CE6BCD3924A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.xib in Resources */,
@@ -1120,7 +1120,7 @@
 				B56090D0208A4F5400399AE4 /* NUXViewControllerBase.swift in Sources */,
 				3F550D5123DA4A9C007E5897 /* LinkMailPresenter.swift in Sources */,
 				98D9A4B12474A526002E491C /* GoogleAuthenticator.swift in Sources */,
-				CE1BBF8824D46A19001D2E3E /* GravatarEmailTableViewCell.swift in Sources */,
+				CE1BBF8C24D48580001D2E3E /* GravatarEmailTableViewCell.swift in Sources */,
 				B56090DE208A4F9D00399AE4 /* WPWalkthroughOverlayView.m in Sources */,
 				B560910A208A54F800399AE4 /* WordPressComAccountService.swift in Sources */,
 				B56090FA208A533200399AE4 /* WordPressAuthenticator.swift in Sources */,

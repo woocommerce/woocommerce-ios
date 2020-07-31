@@ -82,8 +82,8 @@ private extension ProductFormTableViewDataSource {
         switch row {
         case .images:
             configureImages(cell: cell)
-        case .name(let name):
-            configureName(cell: cell, name: name)
+        case .name(let name, let isEditable):
+            configureName(cell: cell, name: name, isEditable: isEditable)
         case .description(let description):
             configureDescription(cell: cell, description: description)
         }
@@ -118,21 +118,31 @@ private extension ProductFormTableViewDataSource {
         }
     }
 
-    func configureName(cell: UITableViewCell, name: String?) {
-        guard let cell = cell as? TextFieldTableViewCell else {
-            fatalError()
+    func configureName(cell: UITableViewCell, name: String?, isEditable: Bool) {
+        if isEditable {
+            guard let cell = cell as? TextFieldTableViewCell else {
+                fatalError()
+            }
+
+            cell.accessoryType = .none
+
+            let placeholder = NSLocalizedString("Title", comment: "Placeholder in the Product Title row on Product form screen.")
+            let viewModel = TextFieldTableViewCell.ViewModel(text: name, placeholder: placeholder, onTextChange: { [weak self] newName in
+                self?.onNameChange?(newName)
+                }, onTextDidBeginEditing: {
+                    ServiceLocator.analytics.track(.productDetailViewProductNameTapped)
+            }, inputFormatter: nil, keyboardType: .default)
+            cell.configure(viewModel: viewModel)
+        } else {
+            guard let cell = cell as? BasicTableViewCell else {
+                fatalError()
+            }
+
+            cell.accessoryType = .none
+            cell.textLabel?.text = name
+            cell.textLabel?.applyHeadlineStyle()
+            cell.textLabel?.textColor = .text
         }
-
-        cell.accessoryType = .none
-
-        let placeholder = NSLocalizedString("Title", comment: "Placeholder in the Product Title row on Product form screen.")
-
-        let viewModel = TextFieldTableViewCell.ViewModel(text: name, placeholder: placeholder, onTextChange: { [weak self] newName in
-            self?.onNameChange?(newName)
-            }, onTextDidBeginEditing: {
-                ServiceLocator.analytics.track(.productDetailViewProductNameTapped)
-        }, inputFormatter: nil, keyboardType: .default)
-        cell.configure(viewModel: viewModel)
     }
 
     func configureDescription(cell: UITableViewCell, description: String?) {

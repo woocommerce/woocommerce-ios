@@ -261,7 +261,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                     return
                 }
                 let variationsViewController = ProductVariationsViewController(siteID: product.siteID,
-                                                                               productID: product.productID)
+                                                                               productID: product.productID,
+                                                                               isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
                 show(variationsViewController, sender: self)
             }
         }

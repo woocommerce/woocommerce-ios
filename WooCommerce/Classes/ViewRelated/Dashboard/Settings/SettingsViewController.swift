@@ -360,7 +360,7 @@ private extension SettingsViewController {
     }
 
     func featureRequestWasPressed() {
-        let safariViewController = SFSafariViewController(url: WooConstants.featureRequestURL)
+        let safariViewController = SFSafariViewController(url: WooConstants.URLs.featureRequest.asURL())
         present(safariViewController, animated: true, completion: nil)
     }
 

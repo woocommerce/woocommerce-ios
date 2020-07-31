@@ -612,7 +612,7 @@ private extension ProductFormViewController {
             rightBarButtonItems.append(createUpdateBarButtonItem())
         }
 
-        if isEditProductsRelease2Enabled {
+        if isEditProductsRelease2Enabled && viewModel.canEditProductSettings() {
             rightBarButtonItems.insert(createMoreOptionsBarButtonItem(), at: 0)
         }
 

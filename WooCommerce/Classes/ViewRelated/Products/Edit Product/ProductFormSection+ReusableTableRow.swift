@@ -41,8 +41,8 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
         switch self {
         case .images:
             return ProductImagesHeaderTableViewCell.self
-        case .name:
-            return TextFieldTableViewCell.self
+        case .name(_, let isEditable):
+            return isEditable ? TextFieldTableViewCell.self: BasicTableViewCell.self
         case .description(let description):
             return description?.isEmpty == false ? ImageAndTitleAndTextTableViewCell.self: BasicTableViewCell.self
         }

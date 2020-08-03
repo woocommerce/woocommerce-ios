@@ -198,7 +198,7 @@ private extension ProductVariationsRemoteTests {
                                 downloadExpiry: 0,
                                 taxStatusKey: "taxable",
                                 taxClass: "",
-                                manageStock: true,
+                                manageStock: false,
                                 stockQuantity: 16,
                                 stockStatus: .inStock,
                                 backordersKey: "notify",

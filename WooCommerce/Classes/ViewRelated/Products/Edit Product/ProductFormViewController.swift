@@ -264,7 +264,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                     return
                 }
                 let variationsViewController = ProductVariationsViewController(siteID: product.siteID,
-                                                                               productID: product.productID)
+                                                                               productID: product.productID,
+                                                                               isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
                 show(variationsViewController, sender: self)
             }
         }
@@ -619,7 +620,7 @@ private extension ProductFormViewController {
             rightBarButtonItems.append(createUpdateBarButtonItem())
         }
 
-        if isEditProductsRelease2Enabled {
+        if isEditProductsRelease2Enabled && viewModel.canEditProductSettings() {
             rightBarButtonItems.insert(createMoreOptionsBarButtonItem(), at: 0)
         }
 
@@ -842,10 +843,6 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func editInventorySettings() {
-        // TODO-2085: Support product variation
-        guard let product = product as? Product else {
-            return
-        }
         let inventorySettingsViewController = ProductInventorySettingsViewController(product: product) { [weak self] data in
             self?.onEditInventorySettingsCompletion(data: data)
         }
@@ -853,14 +850,10 @@ private extension ProductFormViewController {
     }
 
     func onEditInventorySettingsCompletion(data: ProductInventoryEditableData) {
-        // TODO-2085: Support product variation
-        guard let product = product as? Product else {
-            return
-        }
         defer {
             navigationController?.popViewController(animated: true)
         }
-        let originalData = ProductInventoryEditableData(product: product)
+        let originalData = ProductInventoryEditableData(productModel: product)
         let hasChangedData = originalData != data
         ServiceLocator.analytics.track(.productInventorySettingsDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
 

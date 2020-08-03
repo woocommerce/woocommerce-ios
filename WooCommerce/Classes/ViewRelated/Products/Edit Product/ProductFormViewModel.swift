@@ -118,6 +118,14 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     func hasPasswordChanged() -> Bool {
         return password != nil && password != originalPassword
     }
+}
+
+// MARK: - More menu
+//
+extension ProductFormViewModel {
+    func canEditProductSettings() -> Bool {
+        return true
+    }
 
     func canViewProductInStore() -> Bool {
         return originalProduct.productStatus == .publish

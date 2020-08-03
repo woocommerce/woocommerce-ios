@@ -1,7 +1,7 @@
 import UIKit
 import Yosemite
 
-enum ProductFormSection {
+enum ProductFormSection: Equatable {
     case primaryFields(rows: [PrimaryFieldRow])
     case settings(rows: [SettingsRow])
 
@@ -14,13 +14,13 @@ enum ProductFormSection {
         }
     }
 
-    enum PrimaryFieldRow {
+    enum PrimaryFieldRow: Equatable {
         case images
-        case name(name: String?)
+        case name(name: String?, isEditable: Bool)
         case description(description: String?)
     }
 
-    enum SettingsRow {
+    enum SettingsRow: Equatable {
         case price(viewModel: ViewModel)
         case reviews(viewModel: ViewModel, ratingCount: Int, averageRating: String)
         case shipping(viewModel: ViewModel)
@@ -55,6 +55,7 @@ enum ProductFormSection {
 protocol ProductFormTableViewModel {
     var sections: [ProductFormSection] { get }
 }
+
 
 // MARK: Equatable implementations
 
@@ -104,6 +105,7 @@ extension ProductFormSection.SettingsRow: Equatable {
         }
     }
 }
+
 
 extension ProductFormSection.SettingsRow.ViewModel: Equatable {
     static func ==(lhs: ProductFormSection.SettingsRow.ViewModel, rhs: ProductFormSection.SettingsRow.ViewModel) -> Bool {

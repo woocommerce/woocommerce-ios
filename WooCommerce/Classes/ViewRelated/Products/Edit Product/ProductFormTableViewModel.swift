@@ -1,7 +1,7 @@
 import UIKit
 import Yosemite
 
-enum ProductFormSection: Equatable {
+enum ProductFormSection {
     case primaryFields(rows: [PrimaryFieldRow])
     case settings(rows: [SettingsRow])
 
@@ -14,13 +14,13 @@ enum ProductFormSection: Equatable {
         }
     }
 
-    enum PrimaryFieldRow: Equatable {
+    enum PrimaryFieldRow {
         case images
         case name(name: String?, isEditable: Bool)
         case description(description: String?)
     }
 
-    enum SettingsRow: Equatable {
+    enum SettingsRow {
         case price(viewModel: ViewModel)
         case reviews(viewModel: ViewModel, ratingCount: Int, averageRating: String)
         case shipping(viewModel: ViewModel)
@@ -77,7 +77,7 @@ extension ProductFormSection.PrimaryFieldRow: Equatable {
         switch (lhs, rhs) {
         case (.images, .images):
             return true
-        case (let .name(name1), let .name(name2)):
+        case (let .name(name1, _), let .name(name2, _)):
             return name1 == name2
         case (let .description(description1), let .description(description2)):
             return description1 == description2

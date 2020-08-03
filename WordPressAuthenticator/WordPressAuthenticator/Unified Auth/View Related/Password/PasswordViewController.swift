@@ -211,9 +211,9 @@ private extension PasswordViewController {
     ///
     func configureTextLinkButton(_ cell: TextLinkButtonTableViewCell) {
         cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.resetPasswordButtonTitle, accessibilityTrait: .link)
-        cell.actionHandler = { [weak self] in
+        // cell.actionHandler = { [weak self] in
             // TODO: handle tap
-        }
+        //}
     }
     
     /// Configure the error message cell.

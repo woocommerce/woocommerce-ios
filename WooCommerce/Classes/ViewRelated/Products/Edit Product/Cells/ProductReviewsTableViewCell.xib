@@ -26,33 +26,40 @@
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jNf-Yw-A2U">
                         <rect key="frame" x="56" y="9" width="248" height="20.5"/>
+                        <constraints>
+                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="20" id="Mel-Np-3JS"/>
+                        </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yP0-v9-44i">
-                        <rect key="frame" x="56" y="31.5" width="248" height="22"/>
+                        <rect key="frame" x="56" y="31.5" width="248" height="21.5"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="12b-yC-TgZ" customClass="RatingView" customModule="WooCommerce" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="0.0" width="100" height="22"/>
+                                <rect key="frame" x="0.0" y="0.0" width="100" height="21.5"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="100" id="mHV-65-IxC"/>
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9XR-6U-0aG">
-                                <rect key="frame" x="100" y="0.0" width="148" height="22"/>
+                                <rect key="frame" x="100" y="0.0" width="148" height="21.5"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="21" id="xcJ-Zt-cKe"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <constraints>
-                            <constraint firstAttribute="height" constant="22" id="2Lz-Ut-yZO"/>
+                            <constraint firstAttribute="height" relation="greaterThanOrEqual" priority="250" constant="22" id="2Lz-Ut-yZO"/>
                         </constraints>
                     </stackView>
                 </subviews>
                 <constraints>
+                    <constraint firstAttribute="bottom" secondItem="yP0-v9-44i" secondAttribute="bottom" constant="7" id="36U-Vo-Lcl"/>
                     <constraint firstItem="yP0-v9-44i" firstAttribute="leading" secondItem="CZ3-4H-uDU" secondAttribute="trailing" constant="16" id="ANM-Xd-eIv"/>
                     <constraint firstItem="jNf-Yw-A2U" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="9" id="Bou-YM-FUc"/>
                     <constraint firstItem="CZ3-4H-uDU" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="Eeu-xl-AMO"/>

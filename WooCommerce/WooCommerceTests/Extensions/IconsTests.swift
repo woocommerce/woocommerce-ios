@@ -249,6 +249,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.variationsImage)
     }
 
+    func testVisibleImageIsNotNil() {
+        XCTAssertNotNil(UIImage.visibilityImage)
+    }
+
     func testWooLogoImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.wooLogoImage())
     }

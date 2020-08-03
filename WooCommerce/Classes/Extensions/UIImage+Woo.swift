@@ -427,6 +427,12 @@ extension UIImage {
         return UIImage.gridicon(.types).imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Visibility Image
+    ///
+    static var visibilityImage: UIImage {
+        return UIImage.gridicon(.visible)
+    }
+
     /// No store image
     ///
     static var noStoreImage: UIImage {

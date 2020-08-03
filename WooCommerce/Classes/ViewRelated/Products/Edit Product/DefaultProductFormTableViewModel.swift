@@ -56,7 +56,7 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func settingsRows(product: Product, actions: [ProductFormEditAction]) -> [ProductFormSection.SettingsRow] {
-        return actions.map { action in
+        return actions.compactMap { action in
             switch action {
             case .priceSettings:
                 return .price(viewModel: priceSettingsRow(product: product))
@@ -79,13 +79,14 @@ private extension DefaultProductFormTableViewModel {
             case .variations:
                 return .variations(viewModel: variationsRow(product: product))
             default:
-                fatalError("Unexpected action in the settings section: \(action)")
+                assertionFailure("Unexpected action in the settings section: \(action)")
+                return nil
             }
         }
     }
 
     func settingsRows(productVariation: ProductVariation, actions: [ProductFormEditAction]) -> [ProductFormSection.SettingsRow] {
-        return actions.map { action in
+        return actions.compactMap { action in
             switch action {
             case .priceSettings:
                 return .price(viewModel: priceSettingsRow(product: productVariation))
@@ -94,7 +95,8 @@ private extension DefaultProductFormTableViewModel {
             case .inventorySettings:
                 return .inventory(viewModel: inventorySettingsRow(product: productVariation))
             default:
-                fatalError("Unexpected action in the settings section: \(action)")
+                assertionFailure("Unexpected action in the settings section: \(action)")
+                return nil
             }
         }
     }

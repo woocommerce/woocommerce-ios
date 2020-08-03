@@ -196,7 +196,9 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable {
                                                             alternativeTypes: [
                                                                 .string(transform: { value in
                                                                     guard value.lowercased() == Values.manageStockParent else {
-                                                                        assertionFailure("Unexpected manage stock value: \(value)")
+                                                                        let message = "Unexpected manage stock value: \(value)"
+                                                                        assertionFailure(message)
+                                                                        DDLogError(message)
                                                                         return false
                                                                     }
                                                                     return false

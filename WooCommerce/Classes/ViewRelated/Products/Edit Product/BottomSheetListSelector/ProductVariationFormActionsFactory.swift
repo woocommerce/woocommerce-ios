@@ -36,6 +36,7 @@ private extension ProductVariationFormActionsFactory {
 
         let actions: [ProductFormEditAction?] = [
             .priceSettings,
+            .visibility,
             shouldShowShippingSettingsRow ? .shippingSettings: nil,
             .inventorySettings,
         ]
@@ -50,8 +51,8 @@ private extension ProductVariationFormActionsFactory {
 
     func isVisibleInSettingsSection(action: ProductFormEditAction) -> Bool {
         switch action {
-        case .priceSettings:
-            // The price settings action is always visible in the settings section.
+        case .priceSettings, .visibility:
+            // The price settings and visibility actions are always visible in the settings section.
             return true
         case .inventorySettings:
             let hasStockData = productVariation.manageStock ? productVariation.stockQuantity != nil: true

@@ -16,6 +16,7 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings,
+                                                                       .visibility,
                                                                        .shippingSettings,
                                                                        .inventorySettings]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
@@ -36,6 +37,7 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings,
+                                                                       .visibility,
                                                                        .shippingSettings,
                                                                        .inventorySettings]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
@@ -56,6 +58,7 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings,
+                                                                       .visibility,
                                                                        .inventorySettings]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
@@ -74,7 +77,7 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .inventorySettings]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .visibility, .inventorySettings]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
@@ -92,7 +95,7 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .inventorySettings]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .visibility, .inventorySettings]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []

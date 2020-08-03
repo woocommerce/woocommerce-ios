@@ -139,8 +139,7 @@ private extension UnifiedSignUpViewController {
     /// Configure the gravtar + email cell.
     ///
     func configureGravatarEmail(_ cell: GravatarEmailTableViewCell) {
-        // TODO: This will be loginFields.emailAddress once the new sign up by email VC is ready.
-        cell.configureImage(UIImage.gridicon(.userCircle), text: "unknownuser@example.com")
+        cell.configureImage(UIImage.gridicon(.userCircle), text: loginFields.emailAddress)
     }
 
     /// Configure the instruction cell.
@@ -205,7 +204,7 @@ extension UnifiedSignUpViewController {
         configureSubmitButton(animating: true)
 
         let service = WordPressComAccountService()
-        service.requestSignupLink(for: loginFields.username,
+        service.requestSignupLink(for: loginFields.emailAddress,
                                   success: { [weak self] in
                                     self?.didRequestSignupLink()
                                     self?.configureSubmitButton(animating: false)

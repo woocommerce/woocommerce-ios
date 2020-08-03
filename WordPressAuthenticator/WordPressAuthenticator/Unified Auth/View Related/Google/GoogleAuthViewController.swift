@@ -115,15 +115,12 @@ extension GoogleAuthViewController: GoogleAuthenticatorDelegate {
     func googleExistingUserNeedsConnection(loginFields: LoginFields) {
         self.loginFields = loginFields
 
-        guard let vc = LoginWPComViewController.instantiate(from: .login) else {
-            DDLogError("Failed to navigate from GoogleAuthViewController to LoginWPComViewController")
+        guard let vc = PasswordViewController.instantiate(from: .password) else {
+            DDLogError("Failed to navigate from GoogleAuthViewController to PasswordViewController")
             return
         }
 
         vc.loginFields = loginFields
-        vc.dismissBlock = dismissBlock
-        vc.errorToPresent = errorToPresent
-
         navigationController?.pushViewController(vc, animated: true)
     }
 

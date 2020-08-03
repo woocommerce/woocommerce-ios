@@ -22,7 +22,7 @@ class UnifiedSignUpViewController: LoginViewController {
         super.viewDidLoad()
 
         // TODO: Delete this line when the new sign up by email VC is ready.
-        loginFields.emailAddress = "unknownuser@example.com"
+        loginFields.username = "unknownuser@example.com"
 
         navigationItem.title = WordPressAuthenticator.shared.displayStrings.signUpTitle
         styleNavigationBar(forUnified: true)
@@ -142,7 +142,7 @@ private extension UnifiedSignUpViewController {
     /// Configure the gravtar + email cell.
     ///
     func configureGravatarEmail(_ cell: GravatarEmailTableViewCell) {
-        cell.configureImage(UIImage.gridicon(.userCircle), text: loginFields.emailAddress)
+        cell.configureImage(UIImage.gridicon(.userCircle), text: loginFields.username)
     }
 
     /// Configure the instruction cell.
@@ -207,7 +207,7 @@ extension UnifiedSignUpViewController {
         configureSubmitButton(animating: true)
 
         let service = WordPressComAccountService()
-        service.requestSignupLink(for: loginFields.emailAddress,
+        service.requestSignupLink(for: loginFields.username,
                                   success: { [weak self] in
                                     self?.didRequestSignupLink()
                                     self?.configureSubmitButton(animating: false)

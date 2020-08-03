@@ -51,6 +51,20 @@ extension StatsTimeRangeV4 {
         }
     }
 
+    /// Represents the period unit of the leaderboards v4 API  given a time range.
+    public var leaderboardsGranularity: StatsGranularityV4 {
+        switch self {
+        case .today:
+            return .daily
+        case .thisWeek:
+            return .weekly
+        case .thisMonth:
+            return .monthly
+        case .thisYear:
+            return .yearly
+        }
+    }
+
     /// The number of intervals for site visit stats to fetch given a time range.
     /// The interval unit is in `siteVisitStatsGranularity`.
     func siteVisitStatsQuantity(date: Date, siteTimezone: TimeZone) -> Int {

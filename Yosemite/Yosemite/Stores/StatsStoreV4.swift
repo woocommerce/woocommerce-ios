@@ -143,7 +143,7 @@ public extension StatsStoreV4 {
         let remote = LeaderboardsRemote(network: network)
 
         remote.loadLeaderboards(for: siteID,
-                                unit: timeRange.intervalGranularity,
+                                unit: timeRange.leaderboardsGranularity,
                                 earliestDateToInclude: earliestDate,
                                 latestDateToInclude: latestDate,
                                 quantity: Constants.defaultTopEarnerStatsLimit) { [weak self] result in

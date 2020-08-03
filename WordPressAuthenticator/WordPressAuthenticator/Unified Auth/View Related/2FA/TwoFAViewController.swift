@@ -361,7 +361,7 @@ private extension TwoFAViewController {
     /// Configure the instruction cell.
     ///
     func configureInstructionLabel(_ cell: TextLabelTableViewCell) {
-        cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.twoFactorInstructions, style: .body)
+        cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.twoFactorInstructions)
     }
 
     /// Configure the textfield cell.

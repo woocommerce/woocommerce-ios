@@ -379,6 +379,10 @@ extension ProductInventorySettingsViewController: UITableViewDelegate {
 
         switch rowAtIndexPath(indexPath) {
         case .stockStatus:
+            // Stock status is only editable for `Product`.
+            guard product is Product else {
+                return
+            }
             let command = ProductStockStatusListSelectorCommand(selected: stockStatus)
             let listSelectorViewController = ListSelectorViewController(command: command) { [weak self] selected in
                                                                             self?.stockStatus = selected
@@ -503,7 +507,17 @@ private extension ProductInventorySettingsViewController {
     func configureStockStatus(cell: SettingTitleAndValueTableViewCell) {
         let title = NSLocalizedString("Stock status", comment: "Title of the cell in Product Inventory Settings > Stock status")
         cell.updateUI(title: title, value: stockStatus?.description)
-        cell.accessoryType = .disclosureIndicator
+
+        // Stock status is only editable for `Product`.
+        switch product {
+        case is Product:
+            cell.accessoryType = .disclosureIndicator
+        case is ProductVariation:
+            cell.accessoryType = .none
+            cell.selectionStyle = .none
+        default:
+            break
+        }
     }
 }
 

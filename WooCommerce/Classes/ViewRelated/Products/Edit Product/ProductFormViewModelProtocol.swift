@@ -31,6 +31,10 @@ protocol ProductFormViewModelProtocol {
 
     func hasPasswordChanged() -> Bool
 
+    // More menu
+
+    func canEditProductSettings() -> Bool
+
     func canViewProductInStore() -> Bool
 
     // Update actions

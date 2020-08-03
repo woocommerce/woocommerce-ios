@@ -784,7 +784,7 @@ private extension ProductFormViewController {
     }
 }
 
-// MARK: Action - Edit Product Price Settings
+// MARK: Action - Edit Product Reviews Settings
 //
 private extension ProductFormViewController {
     func editReviews() {

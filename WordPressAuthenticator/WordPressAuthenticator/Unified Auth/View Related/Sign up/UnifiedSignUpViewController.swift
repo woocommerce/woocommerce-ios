@@ -177,19 +177,13 @@ private extension UnifiedSignUpViewController {
     }
 
     enum ErrorMessage: String {
-        case invalidEmail = "invalid_email"
         case availabilityCheckFail = "availability_check_fail"
-        case emailUnavailable = "email_unavailable"
         case magicLinkRequestFail = "magic_link_request_fail"
 
         func description() -> String {
             switch self {
-            case .invalidEmail:
-                return NSLocalizedString("Please enter a valid email address.", comment: "Error message displayed when the user attempts use an invalid email address.")
             case .availabilityCheckFail:
                 return NSLocalizedString("Unable to verify the email address. Please try again later.", comment: "Error message displayed when an error occurred checking for email availability.")
-            case .emailUnavailable:
-                return NSLocalizedString("Sorry, that email address is already being used!", comment: "Error message displayed when the entered email is not available.")
             case .magicLinkRequestFail:
                 return NSLocalizedString("We were unable to send you an email at this time. Please try again later.", comment: "Error message displayed when an error occurred sending the magic link email.")
             }

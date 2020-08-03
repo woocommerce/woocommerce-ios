@@ -15,7 +15,7 @@ class ProductReviewsTableViewCell: UITableViewCell {
     @IBOutlet private weak var ratingView: RatingView!
     @IBOutlet private weak var reviewsLabel: UILabel!
 
-    var starRating: Int? {
+    private var starRating: Double? {
         didSet {
             guard let starRating = starRating else {
                 ratingView.isHidden = true
@@ -35,9 +35,17 @@ class ProductReviewsTableViewCell: UITableViewCell {
         configureStarView()
     }
 
+    func configure(image: UIImage, title: String, details: String, ratingCount: Int, averageRating: String) {
+        contentImageView.image = image
+        titleLabel.text = title
+        reviewsLabel.text = details
+        ratingView.isHidden = ratingCount == 0
+        starRating = Double(averageRating)
+    }
 }
 
-
+// MARK: - Configure
+//
 private extension ProductReviewsTableViewCell {
     func configureBackground() {
         applyDefaultBackgroundStyle()
@@ -46,7 +54,6 @@ private extension ProductReviewsTableViewCell {
     func configureImageView() {
         contentImageView.contentMode = .center
     }
-
 
     func configureLabels() {
         titleLabel.applyBodyStyle()
@@ -57,8 +64,10 @@ private extension ProductReviewsTableViewCell {
     }
 
     func configureStarView() {
+        ratingView.backgroundColor = .clear
         ratingView.starImage = Star.filledImage
         ratingView.emptyStarImage = Star.emptyImage
+        ratingView.configureStarColors(fullStarTintColor: UIColor.ratingStarFilled, emptyStarTintColor: .textSubtle)
     }
 }
 

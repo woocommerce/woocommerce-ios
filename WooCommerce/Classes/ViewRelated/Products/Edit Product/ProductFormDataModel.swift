@@ -16,6 +16,8 @@ protocol ProductFormDataModel {
 
     // Images
     var images: [ProductImage] { get }
+    /// Whether the product model allows multiple images.
+    func allowsMultipleImages() -> Bool
 
     // Price
     var regularPrice: String? { get }
@@ -78,6 +80,10 @@ extension Product: ProductFormDataModel {
     var stockStatus: ProductStockStatus {
         productStockStatus
     }
+
+    func allowsMultipleImages() -> Bool {
+        true
+    }
 }
 
 extension ProductVariation: ProductFormDataModel {
@@ -91,5 +97,9 @@ extension ProductVariation: ProductFormDataModel {
 
     var images: [ProductImage] {
         [image].compactMap { $0 }
+    }
+
+    func allowsMultipleImages() -> Bool {
+        false
     }
 }

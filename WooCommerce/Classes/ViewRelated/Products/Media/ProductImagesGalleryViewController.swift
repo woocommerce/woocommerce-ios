@@ -94,7 +94,6 @@ private extension ProductImagesGalleryViewController {
             collectionViewLayout.scrollDirection = .horizontal
             collectionViewLayout.minimumLineSpacing = 0
             collectionViewLayout.minimumInteritemSpacing = 0
-            //collectionViewLayout.itemSize = collectionView.frame.size
         }
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -102,8 +101,6 @@ private extension ProductImagesGalleryViewController {
 
     func registerCells() {
         collectionView.register(ProductImageCollectionViewCell.loadNib(), forCellWithReuseIdentifier: ProductImageCollectionViewCell.reuseIdentifier)
-        collectionView.register(InProgressProductImageCollectionViewCell.loadNib(),
-                                forCellWithReuseIdentifier: InProgressProductImageCollectionViewCell.reuseIdentifier)
     }
 }
 
@@ -188,7 +185,7 @@ private extension ProductImagesGalleryViewController {
 
     func configureRemoteImageCell(_ cell: UICollectionViewCell, productImage: ProductImage) {
         guard let cell = cell as? ProductImageCollectionViewCell else {
-            fatalError()
+            return
         }
 
         cell.backgroundColor = .black

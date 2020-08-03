@@ -120,19 +120,11 @@ extension ProductImagesCollectionViewController {
             return
         }
 
-        let productImages: [ProductImage] = productImageStatuses.compactMap {
-            switch $0 {
-            case .remote(let image):
-                return image
-            default:
-                return nil
-            }
-        }
-        let productImagesGalleryViewController = ProductImagesGalleryViewController(images: productImages,
+        let productImagesGalleryViewController = ProductImagesGalleryViewController(images: productImageStatuses.images,
                                                                                     selectedIndex: indexPath.row,
                                                                                     productUIImageLoader: productUIImageLoader) { [weak self] (productImage) in
                                                                                         self?.onDeletion(productImage)
         }
-        navigationController?.pushViewController(productImagesGalleryViewController, animated: true)
+        navigationController?.show(productImagesGalleryViewController, sender: self)
     }
 }

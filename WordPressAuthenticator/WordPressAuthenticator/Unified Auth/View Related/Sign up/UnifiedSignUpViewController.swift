@@ -14,7 +14,7 @@ class UnifiedSignUpViewController: LoginViewController {
 
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
-
+        requestAuthenticationLink()
     }
 
     // MARK: - View lifecycle

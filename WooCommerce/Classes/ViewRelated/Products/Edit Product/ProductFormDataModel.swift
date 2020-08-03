@@ -13,6 +13,7 @@ protocol ProductFormDataModel {
     var virtual: Bool { get }
     var downloadable: Bool { get }
     var permalink: String { get }
+    var status: ProductStatus { get }
 
     // Images
     var images: [ProductImage] { get }
@@ -77,6 +78,10 @@ extension Product: ProductFormDataModel {
 
     var stockStatus: ProductStockStatus {
         productStockStatus
+    }
+
+    var status: ProductStatus {
+        productStatus
     }
 }
 

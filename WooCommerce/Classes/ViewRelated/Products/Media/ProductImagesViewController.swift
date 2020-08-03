@@ -32,9 +32,15 @@ final class ProductImagesViewController: UIViewController {
     }
     private var productImageStatusesObservationToken: ObservationToken?
 
+    private var allowsMultipleImages: Bool {
+        product.allowsMultipleImages()
+    }
+
     // Child view controller.
     private lazy var imagesViewController: ProductImagesCollectionViewController = {
+        let isDeletionEnabled = product.isImageDeletionEnabled()
         let viewController = ProductImagesCollectionViewController(imageStatuses: productImageStatuses,
+                                                                   isDeletionEnabled: isDeletionEnabled,
                                                                    productUIImageLoader: productUIImageLoader,
                                                                    onDeletion: { [weak self] productImage in
                                                                     self?.onDeletion(productImage: productImage)
@@ -44,7 +50,7 @@ final class ProductImagesViewController: UIViewController {
 
     private lazy var mediaPickingCoordinator: MediaPickingCoordinator = {
         return MediaPickingCoordinator(siteID: siteID,
-                                       allowsMultipleImages: product.allowsMultipleImages(),
+                                       allowsMultipleImages: allowsMultipleImages,
                                        onCameraCaptureCompletion: { [weak self] asset, error in
                                         self?.onCameraCaptureCompletion(asset: asset, error: error)
             }, onDeviceMediaLibraryPickerCompletion: { [weak self] assets in
@@ -153,7 +159,7 @@ private extension ProductImagesViewController {
 private extension ProductImagesViewController {
     func updateAddButtonTitle(numberOfImages: Int) {
         let title: String
-        if product.allowsMultipleImages() {
+        if allowsMultipleImages {
             title = Localization.addPhotos
         } else {
             title = numberOfImages == 0 ? Localization.addPhoto: Localization.replacePhoto
@@ -176,7 +182,7 @@ private extension ProductImagesViewController {
     }
 
     func deleteExistingImageIfOnlyOneImageIsAllowed() {
-        if product.allowsMultipleImages() == false, let currentImage = product.images.first {
+        if allowsMultipleImages == false, let currentImage = product.images.first {
             productImageActionHandler.deleteProductImage(currentImage)
         }
     }

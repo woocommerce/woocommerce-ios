@@ -144,7 +144,7 @@ private extension UnifiedSignUpViewController {
     /// Configure the gravtar + email cell.
     ///
     func configureGravatarEmail(_ cell: GravatarEmailTableViewCell) {
-        cell.configureImage(UIImage.gridicon(.userCircle), text: loginFields.username)
+        cell.configureImage(UIImage.gridicon(.userCircle, size: Constants.gravatarSize), text: loginFields.username)
     }
 
     /// Configure the instruction cell.
@@ -192,6 +192,10 @@ private extension UnifiedSignUpViewController {
                 return NSLocalizedString("We were unable to send you an email at this time. Please try again later.", comment: "Error message displayed when an error occurred sending the magic link email.")
             }
         }
+    }
+
+    struct Constants {
+        static let gravatarSize = CGSize(width: 48, height: 48)
     }
 }
 

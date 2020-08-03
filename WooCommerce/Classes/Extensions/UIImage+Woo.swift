@@ -280,6 +280,13 @@ extension UIImage {
         return UIImage.gridicon(.money, size: CGSize(width: 24, height: 24))
     }
 
+    /// Product Reviews Icon
+    ///
+    static var productReviewsImage: UIImage {
+        let tintColor = UIColor.listIcon
+        return UIImage.gridicon(.starOutline, size: CGSize(width: 24, height: 24)).imageWithTintColor(tintColor)!
+    }
+
     /// Product Placeholder Image
     ///
     static var productPlaceholderImage: UIImage {

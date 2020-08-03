@@ -22,7 +22,6 @@ class PasswordViewController: LoginViewController {
     
     // Required for `NUXKeyboardResponder` but unused here.
     var verticalCenterConstraint: NSLayoutConstraint?
-    // TODO: implement NUXKeyboardResponder support
     
     // MARK: - View
     
@@ -38,6 +37,20 @@ class PasswordViewController: LoginViewController {
         localizePrimaryButton()
         registerTableViewCells()
         loadRows()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
+                                  keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
+
+        configureViewForEditingIfNeeded()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        unregisterForKeyboardEvents()
     }
     
     // MARK: - Overrides
@@ -73,6 +86,20 @@ extension PasswordViewController: UITableViewDataSource {
         return cell
     }
     
+}
+
+// MARK: - Keyboard Notifications
+
+extension PasswordViewController: NUXKeyboardResponder {
+    
+    @objc func handleKeyboardWillShow(_ notification: Foundation.Notification) {
+        keyboardWillShow(notification)
+    }
+
+    @objc func handleKeyboardWillHide(_ notification: Foundation.Notification) {
+        keyboardWillHide(notification)
+    }
+
 }
 
 // MARK: - Validation and Continue
@@ -195,6 +222,15 @@ private extension PasswordViewController {
         cell.configureLabel(text: errorMessage, style: .error)
     }
     
+    /// Configure the view for an editing state.
+    ///
+    func configureViewForEditingIfNeeded() {
+       // Check the helper to determine whether an editing state should be assumed.
+       adjustViewForKeyboard(SigninEditingState.signinEditingStateActive)
+       if SigninEditingState.signinEditingStateActive {
+           passwordField?.becomeFirstResponder()
+       }
+    }
     
     /// Rows listed in the order they were created.
     ///

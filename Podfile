@@ -43,9 +43,7 @@ target 'WooCommerce' do
 
   aztec
 
-  # TODO: update to point to production version after the fix is released
-  # pod 'WPMediaPicker', '~> 1.7.1-beta'
-  pod 'WPMediaPicker', :git => 'https://github.com/wordpress-mobile/MediaPicker-iOS.git', :branch => 'issue/wcios-2581-pagination-crash'
+  pod 'WPMediaPicker', '~> 1.7.1-beta'
 
   # External Libraries
   # ==================

@@ -9,6 +9,12 @@ public class SignInTracker {
         case failure = "unified_login_failure"
     }
     
+    enum Property: String {
+        case flow
+        case source
+        case step
+    }
+    
     enum Source: String {
         case `default`
         case jetpack
@@ -204,22 +210,29 @@ public class SignInTracker {
         }
     }
     
+    typealias TrackerMethod = (_ event: AnalyticsEvent) -> ()
+    
     let context: Context
+    
+    /// Allows overriding for testing purposes
+    ///
+    let track: TrackerMethod
     
     // MARK: - Initializers
     
-    init(context: Context) {
+    init(context: Context, track: @escaping TrackerMethod = WPAnalytics.track) {
         self.context = context
+        self.track = track
     }
     
     // MARK: - Tracking
     
-    func track(_ event: AnalyticsEvent) {
-        WPAnalytics.track(event)
-    }
-    
     func track(step: Step, flow: Flow) {
         track(event(step: step, flow: flow))
+    }
+    
+    func track(interaction: Interaction) {
+        track(event(interaction: interaction))
     }
     
     func track(failure: String) {
@@ -264,9 +277,9 @@ public class SignInTracker {
     
     private func properties(step: Step, flow: Flow, source: Source) -> [String: String] {
         return [
-            "flow": flow.rawValue,
-            "source": source.rawValue,
-            "step": step.rawValue,
+            Property.flow.rawValue: flow.rawValue,
+            Property.source.rawValue: source.rawValue,
+            Property.step.rawValue: step.rawValue,
         ]
     }
     

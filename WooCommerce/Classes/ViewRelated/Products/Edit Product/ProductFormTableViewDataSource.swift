@@ -161,17 +161,43 @@ private extension ProductFormTableViewDataSource {
 //
 private extension ProductFormTableViewDataSource {
     func configureCellInSettingsFieldsSection(_ cell: UITableViewCell, row: ProductFormSection.SettingsRow) {
-        guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {
-            fatalError()
-        }
         switch row {
-        case .price(let viewModel), .inventory(let viewModel), .shipping(let viewModel), .categories(let viewModel), .tags(let viewModel),
-             .briefDescription(let viewModel), .externalURL(let viewModel), .sku(let viewModel), .groupedProducts(let viewModel), .variations(let viewModel):
+        case .price(let viewModel),
+             .inventory(let viewModel),
+             .shipping(let viewModel),
+             .categories(let viewModel),
+             .tags(let viewModel),
+             .briefDescription(let viewModel),
+             .externalURL(let viewModel),
+             .sku(let viewModel),
+             .groupedProducts(let viewModel),
+             .variations(let viewModel):
             configureSettings(cell: cell, viewModel: viewModel)
+        case .reviews(let viewModel, let ratingCount, let averageRating):
+            configureReviews(cell: cell, viewModel: viewModel, ratingCount: ratingCount, averageRating: averageRating)
         }
     }
 
-    func configureSettings(cell: ImageAndTitleAndTextTableViewCell, viewModel: ProductFormSection.SettingsRow.ViewModel) {
+    func configureSettings(cell: UITableViewCell, viewModel: ProductFormSection.SettingsRow.ViewModel) {
+        guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {
+            fatalError()
+        }
         cell.updateUI(viewModel: viewModel.toCellViewModel())
+    }
+
+    func configureReviews(cell: UITableViewCell,
+                          viewModel: ProductFormSection.SettingsRow.ViewModel,
+                          ratingCount: Int,
+                          averageRating: String) {
+        guard let cell = cell as? ProductReviewsTableViewCell else {
+            fatalError()
+        }
+
+        cell.configure(image: viewModel.icon,
+                       title: viewModel.title ?? "",
+                       details: viewModel.details ?? "",
+                       ratingCount: ratingCount,
+                       averageRating: averageRating)
+        cell.accessoryType = .disclosureIndicator
     }
 }

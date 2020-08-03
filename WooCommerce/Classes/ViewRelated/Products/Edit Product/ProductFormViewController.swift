@@ -229,6 +229,9 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             case .price:
                 ServiceLocator.analytics.track(.productDetailViewPriceSettingsTapped)
                 editPriceSettings()
+            case .reviews:
+                // TODO-2509 Edit Product M3 analytics
+                editReviews()
             case .shipping:
                 ServiceLocator.analytics.track(.productDetailViewShippingSettingsTapped)
                 editShippingSettings()
@@ -329,8 +332,12 @@ private extension ProductFormViewController {
                         tableView.register(cellType.loadNib(), forCellReuseIdentifier: cellType.reuseIdentifier)
                     }
                 }
-            default:
-                return
+            case .settings(let rows):
+                rows.forEach { row in
+                    row.cellTypes.forEach { cellType in
+                        tableView.register(cellType.loadNib(), forCellReuseIdentifier: cellType.reuseIdentifier)
+                    }
+                }
             }
         }
     }
@@ -774,6 +781,32 @@ private extension ProductFormViewController {
                                       dateOnSaleEnd: dateOnSaleEnd,
                                       taxStatus: taxStatus,
                                       taxClass: taxClass)
+    }
+}
+
+// MARK: Action - Edit Product Price Settings
+//
+private extension ProductFormViewController {
+    func editReviews() {
+        // TODO: issue-2082 present Reviews Controller
+    }
+
+    func onEditReviewsCompletion(averageRating: String, ratingCount: Int) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+
+        let hasChangedData: Bool = {
+            averageRating != product.averageRating ||
+                ratingCount != product.ratingCount
+        }()
+
+        //TODO: Edit Product M3 analytics
+        guard hasChangedData else {
+            return
+        }
+
+        viewModel.updateReviews(averageRating: averageRating, ratingCount: ratingCount)
     }
 }
 

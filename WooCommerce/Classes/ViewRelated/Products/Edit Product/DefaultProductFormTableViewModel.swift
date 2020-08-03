@@ -58,6 +58,8 @@ private extension DefaultProductFormTableViewModel {
             switch action {
             case .priceSettings:
                 return .price(viewModel: priceSettingsRow(product: product))
+            case .reviews:
+                return .reviews(viewModel: reviewsRow(product: product), ratingCount: product.ratingCount, averageRating: product.averageRating)
             case .shippingSettings:
                 return .shipping(viewModel: shippingSettingsRow(product: product))
             case .inventorySettings:
@@ -121,6 +123,20 @@ private extension DefaultProductFormTableViewModel {
 
         let title = priceDetails.isEmpty ? Constants.addPriceSettingsTitle: Constants.priceSettingsTitle
         let details = priceDetails.isEmpty ? nil: priceDetails.joined(separator: "\n")
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon,
+                                                        title: title,
+                                                        details: details)
+    }
+
+    func reviewsRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {
+        let icon = UIImage.productReviewsImage
+        let title = Constants.reviewsTitle
+        var details = ""
+        if product.ratingCount > 0 {
+            details += " · "
+        }
+        details += String.localizedStringWithFormat(Constants.reviewsFormat, product.ratingCount)
+
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
                                                         details: details)
@@ -298,6 +314,8 @@ private extension DefaultProductFormTableViewModel {
                                                              comment: "Title for adding the price settings row on Product main screen")
         static let priceSettingsTitle = NSLocalizedString("Price",
                                                           comment: "Title for editing the price settings row on Product main screen")
+        static let reviewsTitle = NSLocalizedString("Reviews",
+                                                    comment: "Title of the Reviews row on Product main screen")
         static let inventorySettingsTitle = NSLocalizedString("Inventory",
                                                               comment: "Title of the Inventory Settings row on Product main screen")
         static let shippingSettingsTitle = NSLocalizedString("Shipping",
@@ -332,6 +350,10 @@ private extension DefaultProductFormTableViewModel {
                                                     comment: "Format of the sale period on the Price Settings row from a certain date")
         static let saleDateFormatTo = NSLocalizedString("Sale dates: Until %@",
                                                     comment: "Format of the sale period on the Price Settings row until a certain date")
+
+        // Reviews
+        static let reviewsFormat = NSLocalizedString("%ld reviews",
+                                                     comment: "Format of the number of product review")
 
         // Inventory
         static let skuFormat = NSLocalizedString("SKU: %@",

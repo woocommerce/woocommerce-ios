@@ -25,6 +25,10 @@ protocol ProductFormDataModel {
     var taxStatusKey: String { get }
     var taxClass: String? { get }
 
+    // Reviews
+    var averageRating: String { get }
+    var ratingCount: Int { get }
+
     // Shipping
     var weight: String? { get }
     var dimensions: ProductDimensions { get }
@@ -67,6 +71,7 @@ extension ProductFormDataModel {
 }
 
 extension Product: ProductFormDataModel {
+
     var description: String? {
         fullDescription
     }
@@ -81,6 +86,14 @@ extension Product: ProductFormDataModel {
 }
 
 extension ProductVariation: ProductFormDataModel {
+    var averageRating: String {
+        "0.00"
+    }
+
+    var ratingCount: Int {
+        0
+    }
+
     var name: String {
         attributes.map({ $0.option }).joined(separator: " - ")
     }

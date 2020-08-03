@@ -22,6 +22,7 @@ enum ProductFormSection {
 
     enum SettingsRow {
         case price(viewModel: ViewModel)
+        case reviews(viewModel: ViewModel, ratingCount: Int, averageRating: String)
         case shipping(viewModel: ViewModel)
         case inventory(viewModel: ViewModel)
         case categories(viewModel: ViewModel)
@@ -90,6 +91,8 @@ extension ProductFormSection.SettingsRow: Equatable {
         switch (lhs, rhs) {
         case (let .price(viewModel1), let .price(viewModel2)):
             return viewModel1 == viewModel2
+        case (let .reviews(viewModel1, ratingCount1, averageRating1), let .reviews(viewModel2, ratingCount2, averageRating2)):
+            return viewModel1 == viewModel2 && ratingCount1 == ratingCount2 && averageRating1 == averageRating2
         case (let .shipping(viewModel1), let .shipping(viewModel2)):
             return viewModel1 == viewModel2
         case (let .inventory(viewModel1), let .inventory(viewModel2)):

@@ -48,6 +48,8 @@ protocol ProductFormViewModelProtocol {
                              taxStatus: ProductTaxStatus,
                              taxClass: TaxClass?)
 
+    func updateReviews(averageRating: String, ratingCount: Int)
+
     func updateInventorySettings(sku: String?,
                                  manageStock: Bool,
                                  soldIndividually: Bool?,

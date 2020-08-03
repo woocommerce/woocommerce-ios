@@ -153,6 +153,10 @@ extension ProductFormViewModel {
                                taxClass: taxClass?.slug)
     }
 
+    func updateReviews(averageRating: String, ratingCount: Int) {
+        product = product.copy(averageRating: averageRating, ratingCount: ratingCount)
+    }
+
     func updateInventorySettings(sku: String?,
                                  manageStock: Bool,
                                  soldIndividually: Bool?,

@@ -35,7 +35,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
             // Assert
             XCTFail("Should not be triggered from edit actions of the same data")
         }
-        cancellableProductName = viewModel.productName.subscribe { _ in
+        cancellableProductName = viewModel.productName?.subscribe { _ in
             // Assert
             XCTFail("Should not be triggered from edit actions of the same data")
         }
@@ -83,7 +83,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         var updatedProductName: String?
         let expectationForProductName = self.expectation(description: "Product name updates")
         expectationForProductName.expectedFulfillmentCount = 1
-        cancellableProductName = viewModel.productName.subscribe { productName in
+        cancellableProductName = viewModel.productName?.subscribe { productName in
             updatedProductName = productName
             expectationForProductName.fulfill()
         }
@@ -122,7 +122,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         }
 
         var updatedProductName: String?
-        cancellableProductName = viewModel.productName.subscribe { productName in
+        cancellableProductName = viewModel.productName?.subscribe { productName in
             updatedProductName = productName
         }
 
@@ -162,7 +162,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         }
 
         var updatedProductName: String?
-        cancellableProductName = viewModel.productName.subscribe { productName in
+        cancellableProductName = viewModel.productName?.subscribe { productName in
             updatedProductName = productName
         }
 
@@ -203,7 +203,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         }
 
         var updatedProductName: String?
-        cancellableProductName = viewModel.productName.subscribe { productName in
+        cancellableProductName = viewModel.productName?.subscribe { productName in
             updatedProductName = productName
         }
 

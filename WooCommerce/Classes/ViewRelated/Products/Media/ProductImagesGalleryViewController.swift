@@ -12,6 +12,8 @@ final class ProductImagesGalleryViewController: UIViewController {
 
     private var productImages: [ProductImage]
 
+    private let isDeletionEnabled: Bool
+
     // If present, the collection view will initially show the image at the selected index
     private var selectedIndex: Int?
     private let productUIImageLoader: ProductUIImageLoader
@@ -27,10 +29,12 @@ final class ProductImagesGalleryViewController: UIViewController {
 
     init(images: [ProductImage],
          selectedIndex: Int? = nil,
+         isDeletionEnabled: Bool,
          productUIImageLoader: ProductUIImageLoader,
          onDeletion: @escaping Deletion) {
         self.productImages = images
         self.selectedIndex = selectedIndex
+        self.isDeletionEnabled = isDeletionEnabled
         self.productUIImageLoader = productUIImageLoader
         self.onDeletion = onDeletion
         super.init(nibName: nil, bundle: nil)
@@ -80,6 +84,9 @@ private extension ProductImagesGalleryViewController {
     }
 
     func configureNavigation() {
+        guard isDeletionEnabled else {
+            return
+        }
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: .trashImage,
                                                             style: .plain,
                                                             target: self,

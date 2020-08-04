@@ -60,7 +60,7 @@ final class EmptyStateViewControllerTests: XCTestCase {
             image: .appleIcon,
             details: "Dolores eum",
             linkTitle: "Bakero!",
-            linkURL: WooConstants.blogURL
+            linkURL: WooConstants.URLs.blog.asURL()
         ))
 
         // Then

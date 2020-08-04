@@ -16,6 +16,11 @@ protocol ProductFormDataModel {
 
     // Images
     var images: [ProductImage] { get }
+    /// Whether the product model allows multiple images.
+    func allowsMultipleImages() -> Bool
+    /// Whether the product model's images can be deleted.
+    /// TODO-2576: always allows image deletion when the API issue is fixed for removing an image from a product variation.
+    func isImageDeletionEnabled() -> Bool
 
     // Price
     var regularPrice: String? { get }
@@ -77,5 +82,35 @@ extension Product: ProductFormDataModel {
 
     var stockStatus: ProductStockStatus {
         productStockStatus
+    }
+
+    func allowsMultipleImages() -> Bool {
+        true
+    }
+
+    func isImageDeletionEnabled() -> Bool {
+        true
+    }
+}
+
+extension ProductVariation: ProductFormDataModel {
+    var name: String {
+        attributes.map({ $0.option }).joined(separator: " - ")
+    }
+
+    var shortDescription: String? {
+        nil
+    }
+
+    var images: [ProductImage] {
+        [image].compactMap { $0 }
+    }
+
+    func allowsMultipleImages() -> Bool {
+        false
+    }
+
+    func isImageDeletionEnabled() -> Bool {
+        false
     }
 }

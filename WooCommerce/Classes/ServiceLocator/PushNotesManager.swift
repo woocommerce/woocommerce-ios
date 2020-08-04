@@ -9,6 +9,11 @@ protocol PushNotesManager {
     ///
     var foregroundNotifications: Observable<PushNotification> { get }
 
+    /// An observable that emits values when a Remote Notification is received while the app is
+    /// in inactive.
+    ///
+    var inactiveNotifications: Observable<PushNotification> { get }
+
     /// Resets the Badge Count.
     ///
     func resetBadgeCount(type: Note.Kind)

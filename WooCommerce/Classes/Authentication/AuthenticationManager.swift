@@ -18,7 +18,7 @@ class AuthenticationManager: Authentication {
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
-                                                                wpcomTermsOfServiceURL: WooConstants.termsOfServiceUrl.absoluteString,
+                                                                wpcomTermsOfServiceURL: WooConstants.URLs.termsOfService.rawValue,
                                                                 wpcomAPIBaseURL: Settings.wordpressApiBaseURL,
                                                                 googleLoginClientId: ApiCredentials.googleClientId,
                                                                 googleLoginServerClientId: ApiCredentials.googleServerId,

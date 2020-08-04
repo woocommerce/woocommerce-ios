@@ -74,7 +74,7 @@ final class ProductVariationListMapperTests: XCTestCase {
 
         XCTAssertEqual(productVariation.price, "16")
         XCTAssertEqual(productVariation.salePrice, "12.5")
-        XCTAssertTrue(productVariation.manageStock)
+        XCTAssertFalse(productVariation.manageStock)
     }
 
     /// Verifies that the `salePrice` field of the ProductVariation is parsed to "0" when the product variation is on sale and the sale price is an empty string
@@ -84,6 +84,24 @@ final class ProductVariationListMapperTests: XCTestCase {
 
         XCTAssertEqual(productVariation.salePrice, "0")
         XCTAssertTrue(productVariation.onSale)
+    }
+
+    /// Verifies that the `manageStock` field of the ProductVariation is parsed to `false` when the product variation has the same stock
+    /// management as its parent product (API value for `manage_stock` is `parent`).
+    ///
+    func testThatProductVariationManageStockIsFalseWhenTheAPIValueIsParent() throws {
+        let productVariation = try XCTUnwrap(mapLoadProductVariationListResponseWithTwoManageStockStates()?[1])
+
+        XCTAssertFalse(productVariation.manageStock)
+    }
+
+    /// Verifies that the `manageStock` field of the ProductVariation is parsed to `true` when the product variation's stock management is enabled
+    /// (API value for `manage_stock` is `true`).
+    ///
+    func testThatProductVariationManageStockIsTrueWhenTheAPIValueIsTrue() throws {
+        let productVariation = try XCTUnwrap(mapLoadProductVariationListResponseWithTwoManageStockStates()?.first)
+
+        XCTAssertTrue(productVariation.manageStock)
     }
 }
 
@@ -117,5 +135,11 @@ private extension ProductVariationListMapperTests {
     ///
     func mapLoadProductVariationOnSaleWithEmptySalePriceResponse() -> [ProductVariation]? {
         return mapProductVariations(from: "product-variations-load-all-first-on-sale-empty-sale-price")
+    }
+
+    /// Returns the ProductVariationListMapper output upon receiving two variations with different `manageStock` states
+    ///
+    func mapLoadProductVariationListResponseWithTwoManageStockStates() -> [ProductVariation]? {
+        return mapProductVariations(from: "product-variations-load-all-manage-stock-two-states")
     }
 }

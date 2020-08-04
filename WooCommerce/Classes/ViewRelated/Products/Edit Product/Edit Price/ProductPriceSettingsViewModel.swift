@@ -109,8 +109,7 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
         originalDateOnSaleStart = dateOnSaleStart
         dateOnSaleEnd = product.dateOnSaleEnd
 
-        let taxClassName = NSLocalizedString("Standard rate", comment: "The name of the default Tax Class in Product Price Settings")
-        standardTaxClass = TaxClass(siteID: product.siteID, name: taxClassName, slug: "standard")
+        standardTaxClass = TaxClass(siteID: product.siteID, name: Strings.standardTaxClassName, slug: "standard")
 
         if let productTaxClassSlug = product.taxClass, productTaxClassSlug.isEmpty == false {
             taxClass = TaxClass(siteID: product.siteID, name: productTaxClassSlug, slug: productTaxClassSlug)
@@ -123,7 +122,7 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
 
     var sections: [Section] {
         // Price section
-        let priceSection = Section(title: NSLocalizedString("Price", comment: "Section header title for product price"), rows: [.price, .salePrice])
+        let priceSection = Section(title: Strings.priceSectionTitle, rows: [.price, .salePrice])
 
         // Sales section
         var saleScheduleRows: [Row] = [.scheduleSale]
@@ -142,15 +141,25 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
         }
         let salesSection = Section(title: nil, rows: saleScheduleRows)
 
-        // Tax section
-        let taxSection = Section(title: NSLocalizedString("Tax Settings", comment: "Section header title for product tax settings"),
+        switch product {
+        case is Product:
+            // Tax section
+            let taxSection: Section
+            taxSection = Section(title: Strings.taxSectionTitle,
                                  rows: [.taxStatus, .taxClass])
-
-        return [
-            priceSection,
-            salesSection,
-            taxSection
-        ]
+            return [
+                priceSection,
+                salesSection,
+                taxSection
+            ]
+        case is ProductVariation:
+            return [
+                priceSection,
+                salesSection
+            ]
+        default:
+            fatalError("Unsupported product type: \(product)")
+        }
     }
 }
 
@@ -269,5 +278,13 @@ private extension ProductPriceSettingsViewModel {
             return nil
         }
         return currencyFormatter.convertToDecimal(from: price)
+    }
+}
+
+extension ProductPriceSettingsViewModel {
+    enum Strings {
+        static let priceSectionTitle = NSLocalizedString("Price", comment: "Section header title for product price")
+        static let taxSectionTitle = NSLocalizedString("Tax Settings", comment: "Section header title for product tax settings")
+        static let standardTaxClassName = NSLocalizedString("Standard rate", comment: "The name of the default Tax Class in Product Price Settings")
     }
 }

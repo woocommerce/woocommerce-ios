@@ -1,17 +1,15 @@
 import UIKit
 
-extension ProductFormViewController {
-    /// How the product form is presented.
-    enum PresentationStyle {
-        /// Pushed to a navigation stack.
-        case navigationStack
+/// How the product form (`ProductFormViewController`) is presented.
+enum ProductFormPresentationStyle {
+    /// Pushed to a navigation stack.
+    case navigationStack
 
-        /// Contained in another view controller in a navigation stack.
-        case contained(containerViewController: UIViewController)
-    }
+    /// Contained in another view controller in a navigation stack.
+    case contained(containerViewController: UIViewController)
 }
 
-extension ProductFormViewController.PresentationStyle {
+extension ProductFormPresentationStyle {
     /// Determines how a product form view controller exits.
     /// - Parameter viewController: the product form view controller that is about to exit.
     /// - Returns: a closure to be called that exits the product form.

@@ -31,6 +31,7 @@ enum ProductFormSection: Equatable {
         case sku(viewModel: ViewModel)
         case groupedProducts(viewModel: ViewModel)
         case variations(viewModel: ViewModel)
+        case status(viewModel: SwitchableViewModel)
 
         struct ViewModel {
             let icon: UIImage
@@ -45,6 +46,18 @@ enum ProductFormSection: Equatable {
                 self.details = details
                 self.numberOfLinesForDetails = numberOfLinesForDetails
                 self.isActionable = isActionable
+            }
+        }
+
+        /// View model with a switch toggle
+        struct SwitchableViewModel: Equatable {
+            let viewModel: ViewModel
+            let isSwitchOn: Bool
+
+            init(viewModel: ViewModel,
+                 isSwitchOn: Bool) {
+                self.viewModel = viewModel
+                self.isSwitchOn = isSwitchOn
             }
         }
     }

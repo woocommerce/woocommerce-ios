@@ -18,6 +18,7 @@ final class ProductFormTableViewDataSource: NSObject {
     private let viewModel: ProductFormTableViewModel
     private let canEditImages: Bool
     private var onNameChange: ((_ name: String?) -> Void)?
+    private var onStatusChange: ((_ isEnabled: Bool) -> Void)?
     private var onAddImage: (() -> Void)?
 
     private let productImageStatuses: [ProductImageStatus]
@@ -34,8 +35,9 @@ final class ProductFormTableViewDataSource: NSObject {
         super.init()
     }
 
-    func configureActions(onNameChange: ((_ name: String?) -> Void)?, onAddImage: @escaping () -> Void) {
+    func configureActions(onNameChange: ((_ name: String?) -> Void)?, onStatusChange: ((_ isEnabled: Bool) -> Void)?, onAddImage: @escaping () -> Void) {
         self.onNameChange = onNameChange
+        self.onStatusChange = onStatusChange
         self.onAddImage = onAddImage
     }
 }
@@ -185,11 +187,21 @@ private extension ProductFormTableViewDataSource {
         switch row {
         case .price(let viewModel), .inventory(let viewModel), .shipping(let viewModel), .categories(let viewModel), .tags(let viewModel),
              .briefDescription(let viewModel), .externalURL(let viewModel), .sku(let viewModel), .groupedProducts(let viewModel), .variations(let viewModel):
-            configureSettings(cell: cell, viewModel: viewModel)
+            configureSettingsRow(cell: cell, viewModel: viewModel)
+        case .status(let viewModel):
+            configureSettingsRowWithASwitch(cell: cell, viewModel: viewModel)
         }
     }
 
-    func configureSettings(cell: ImageAndTitleAndTextTableViewCell, viewModel: ProductFormSection.SettingsRow.ViewModel) {
+    func configureSettingsRow(cell: ImageAndTitleAndTextTableViewCell, viewModel: ProductFormSection.SettingsRow.ViewModel) {
         cell.updateUI(viewModel: viewModel.toCellViewModel())
+    }
+
+    func configureSettingsRowWithASwitch(cell: ImageAndTitleAndTextTableViewCell, viewModel: ProductFormSection.SettingsRow.SwitchableViewModel) {
+        let switchableViewModel = ImageAndTitleAndTextTableViewCell.SwitchableViewModel(viewModel: viewModel.viewModel.toCellViewModel(),
+                                                                                        isSwitchOn: viewModel.isSwitchOn) { [weak self] isSwitchOn in
+                                                                                            self?.onStatusChange?(isSwitchOn)
+        }
+        cell.updateUI(switchViewModel: switchableViewModel)
     }
 }

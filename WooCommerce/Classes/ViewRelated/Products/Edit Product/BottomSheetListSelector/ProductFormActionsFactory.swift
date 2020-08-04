@@ -19,7 +19,7 @@ enum ProductFormEditAction {
     // Variable products only
     case variations
     // Variation only
-    case visibility
+    case status
 }
 
 /// Creates actions for different sections/UI on the product form.

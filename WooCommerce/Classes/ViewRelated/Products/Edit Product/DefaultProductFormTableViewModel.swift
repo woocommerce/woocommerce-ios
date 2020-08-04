@@ -94,6 +94,8 @@ private extension DefaultProductFormTableViewModel {
                 return .shipping(viewModel: shippingSettingsRow(product: productVariation))
             case .inventorySettings:
                 return .inventory(viewModel: inventorySettingsRow(product: productVariation))
+            case .status:
+                return .status(viewModel: variationStatusRow(productVariation: productVariation))
             default:
                 assertionFailure("Unexpected action in the settings section: \(action)")
                 return nil
@@ -309,6 +311,19 @@ private extension DefaultProductFormTableViewModel {
                                                         details: details,
                                                         isActionable: product.variations.isNotEmpty)
     }
+
+    // MARK: Product variation only
+
+    func variationStatusRow(productVariation: ProductVariation) -> ProductFormSection.SettingsRow.SwitchableViewModel {
+        let icon = UIImage.visibilityImage
+        let title = Constants.variationStatusTitle
+        let viewModel = ProductFormSection.SettingsRow.ViewModel(icon: icon,
+                                                                 title: title,
+                                                                 details: nil,
+                                                                 isActionable: false)
+        let isSwitchOn = productVariation.isVisible
+        return ProductFormSection.SettingsRow.SwitchableViewModel(viewModel: viewModel, isSwitchOn: isSwitchOn)
+    }
 }
 
 private extension DefaultProductFormTableViewModel {
@@ -391,5 +406,24 @@ private extension DefaultProductFormTableViewModel {
                               comment: "Title of the Product Variations row on Product main screen for a variable product")
         static let variationsPlaceholder = NSLocalizedString("No variations yet",
                                                              comment: "Placeholder of the Product Variations row on Product main screen for a variable product")
+
+        // Variation visibility
+        static let variationStatusTitle =
+            NSLocalizedString("Enabled",
+                              comment: "Title of the status row on Product Variation main screen to enable/disable a variation")
+    }
+}
+
+private extension ProductVariation {
+    var isVisible: Bool {
+        switch status {
+        case .publish:
+            return true
+        case .privateStatus:
+            return false
+        default:
+            DDLogError("Unexpected product variation status: \(status)")
+            return false
+        }
     }
 }

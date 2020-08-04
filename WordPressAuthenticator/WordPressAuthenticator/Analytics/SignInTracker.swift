@@ -257,7 +257,7 @@ public class SignInTracker {
     /// Creates an event for a step.  Updates the state machine.
     ///
     /// - Parameters:
-    ///     - step: the step we're tracking..
+    ///     - step: the step we're tracking.
     ///     - flow: the flow that the step belongs to.
     ///
     /// - Returns: an analytics event representing the step.

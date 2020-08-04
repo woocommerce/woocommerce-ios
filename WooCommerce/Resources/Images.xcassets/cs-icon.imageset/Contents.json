@@ -3,6 +3,16 @@
     {
       "filename" : "cs-icon.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "cs-icon-dark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

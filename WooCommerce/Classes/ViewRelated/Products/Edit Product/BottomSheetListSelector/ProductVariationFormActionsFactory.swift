@@ -2,9 +2,9 @@ import Yosemite
 
 /// Creates actions for different sections/UI on the product variation form.
 struct ProductVariationFormActionsFactory: ProductFormActionsFactoryProtocol {
-    private let productVariation: ProductVariation
+    private let productVariation: EditableProductVariationModel
 
-    init(productVariation: ProductVariation) {
+    init(productVariation: EditableProductVariationModel) {
         self.productVariation = productVariation
     }
 
@@ -32,7 +32,7 @@ struct ProductVariationFormActionsFactory: ProductFormActionsFactoryProtocol {
 private extension ProductVariationFormActionsFactory {
     /// All the editable actions in the settings section given the product variation.
     func allSettingsSectionActions() -> [ProductFormEditAction] {
-        let shouldShowShippingSettingsRow = productVariation.isShippingEnabled
+        let shouldShowShippingSettingsRow = productVariation.isShippingEnabled()
 
         let actions: [ProductFormEditAction?] = [
             .priceSettings,

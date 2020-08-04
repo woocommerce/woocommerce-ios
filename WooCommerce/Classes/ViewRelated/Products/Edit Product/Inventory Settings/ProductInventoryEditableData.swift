@@ -15,7 +15,7 @@ extension ProductInventoryEditableData {
     init(productModel: ProductFormDataModel) {
         self.sku = productModel.sku
         self.manageStock = productModel.manageStock
-        self.soldIndividually = (productModel as? Product)?.soldIndividually
+        self.soldIndividually = (productModel as? EditableProductModel)?.product.soldIndividually
         self.stockQuantity = productModel.stockQuantity
         self.backordersSetting = productModel.backordersSetting
         self.stockStatus = productModel.stockStatus

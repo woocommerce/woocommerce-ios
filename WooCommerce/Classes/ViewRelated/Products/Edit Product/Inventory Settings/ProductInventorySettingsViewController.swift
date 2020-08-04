@@ -64,7 +64,7 @@ final class ProductInventorySettingsViewController: UIViewController {
 
         self.sku = product.sku
         self.manageStockEnabled = product.manageStock
-        self.soldIndividually = (product as? Product)?.soldIndividually
+        self.soldIndividually = (product as? EditableProductModel)?.product.soldIndividually
 
         self.stockQuantity = product.stockQuantity
         self.backordersSetting = product.backordersSetting
@@ -128,13 +128,13 @@ private extension ProductInventorySettingsViewController {
             }
 
             switch product {
-            case is Product:
+            case is EditableProductModel:
                 sections = [
                     createSKUSection(),
                     stockSection,
                     Section(rows: [.limitOnePerOrder])
                 ]
-            case is ProductVariation:
+            case is EditableProductVariationModel:
                 sections = [
                     createSKUSection(),
                     stockSection
@@ -229,9 +229,10 @@ extension ProductInventorySettingsViewController {
         let hasChangesInGeneralSettings: Bool
 
         switch product {
-        case let product as Product:
-            hasChangesInGeneralSettings = sku != product.sku || manageStockEnabled != product.manageStock || soldIndividually != product.soldIndividually
-        case let product as ProductVariation:
+        case let product as EditableProductModel:
+            hasChangesInGeneralSettings = sku != product.sku || manageStockEnabled != product.manageStock
+                || soldIndividually != product.product.soldIndividually
+        case let product as EditableProductVariationModel:
             hasChangesInGeneralSettings = sku != product.sku || manageStockEnabled != product.manageStock
         default:
             fatalError("Unsupported product type: \(product)")
@@ -380,7 +381,7 @@ extension ProductInventorySettingsViewController: UITableViewDelegate {
         switch rowAtIndexPath(indexPath) {
         case .stockStatus:
             // Stock status is only editable for `Product`.
-            guard product is Product else {
+            guard product is EditableProductModel else {
                 return
             }
             let command = ProductStockStatusListSelectorCommand(selected: stockStatus)
@@ -510,9 +511,9 @@ private extension ProductInventorySettingsViewController {
 
         // Stock status is only editable for `Product`.
         switch product {
-        case is Product:
+        case is EditableProductModel:
             cell.accessoryType = .disclosureIndicator
-        case is ProductVariation:
+        case is EditableProductVariationModel:
             cell.accessoryType = .none
             cell.selectionStyle = .none
         default:

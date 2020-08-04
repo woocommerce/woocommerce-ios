@@ -35,7 +35,7 @@ private extension DefaultProductFormTableViewModel {
             case .images:
                 return .images
             case .name:
-                return .name(name: product.name, isEditable: product is Product)
+                return .name(name: product.name, isEditable: product is EditableProductModel)
             case .description:
                 return .description(description: product.trimmedFullDescription)
             default:
@@ -46,16 +46,16 @@ private extension DefaultProductFormTableViewModel {
 
     func settingsRows(productModel product: ProductFormDataModel, actions: [ProductFormEditAction]) -> [ProductFormSection.SettingsRow] {
         switch product {
-        case let product as Product:
+        case let product as EditableProductModel:
             return settingsRows(product: product, actions: actions)
-        case let product as ProductVariation:
+        case let product as EditableProductVariationModel:
             return settingsRows(productVariation: product, actions: actions)
         default:
             fatalError("Unexpected product form data model: \(type(of: product))")
         }
     }
 
-    func settingsRows(product: Product, actions: [ProductFormEditAction]) -> [ProductFormSection.SettingsRow] {
+    func settingsRows(product: EditableProductModel, actions: [ProductFormEditAction]) -> [ProductFormSection.SettingsRow] {
         return actions.compactMap { action in
             switch action {
             case .priceSettings:
@@ -65,19 +65,19 @@ private extension DefaultProductFormTableViewModel {
             case .inventorySettings:
                 return .inventory(viewModel: inventorySettingsRow(product: product))
             case .categories:
-                return .categories(viewModel: categoriesRow(product: product))
+                return .categories(viewModel: categoriesRow(product: product.product))
             case .tags:
-                return .tags(viewModel: tagsRow(product: product))
+                return .tags(viewModel: tagsRow(product: product.product))
             case .briefDescription:
-                return .briefDescription(viewModel: briefDescriptionRow(product: product))
+                return .briefDescription(viewModel: briefDescriptionRow(product: product.product))
             case .externalURL:
-                return .externalURL(viewModel: externalURLRow(product: product))
+                return .externalURL(viewModel: externalURLRow(product: product.product))
             case .sku:
-                return .sku(viewModel: skuRow(product: product))
+                return .sku(viewModel: skuRow(product: product.product))
             case .groupedProducts:
-                return .groupedProducts(viewModel: groupedProductsRow(product: product))
+                return .groupedProducts(viewModel: groupedProductsRow(product: product.product))
             case .variations:
-                return .variations(viewModel: variationsRow(product: product))
+                return .variations(viewModel: variationsRow(product: product.product))
             default:
                 assertionFailure("Unexpected action in the settings section: \(action)")
                 return nil
@@ -85,7 +85,7 @@ private extension DefaultProductFormTableViewModel {
         }
     }
 
-    func settingsRows(productVariation: ProductVariation, actions: [ProductFormEditAction]) -> [ProductFormSection.SettingsRow] {
+    func settingsRows(productVariation: EditableProductVariationModel, actions: [ProductFormEditAction]) -> [ProductFormSection.SettingsRow] {
         return actions.compactMap { action in
             switch action {
             case .priceSettings:

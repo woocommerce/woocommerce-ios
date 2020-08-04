@@ -2,10 +2,10 @@ import Yosemite
 
 /// Provides data for product form UI, and handles product editing actions.
 final class ProductFormViewModel: ProductFormViewModelProtocol {
-    typealias ProductModel = Product
+    typealias ProductModel = EditableProductModel
 
     /// Emits product on change, except when the product name is the only change (`productName` is emitted for this case).
-    var observableProduct: Observable<Product> {
+    var observableProduct: Observable<EditableProductModel> {
         productSubject
     }
 
@@ -20,26 +20,26 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     }
 
     /// The latest product value.
-    var productModel: Product {
+    var productModel: EditableProductModel {
         product
     }
 
     /// Creates actions available on the bottom sheet.
     private(set) var actionsFactory: ProductFormActionsFactoryProtocol
 
-    private let productSubject: PublishSubject<Product> = PublishSubject<Product>()
+    private let productSubject: PublishSubject<EditableProductModel> = PublishSubject<EditableProductModel>()
     private let productNameSubject: PublishSubject<String> = PublishSubject<String>()
     private let isUpdateEnabledSubject: PublishSubject<Bool>
 
     /// The product model before any potential edits; reset after a remote update.
-    private var originalProduct: Product {
+    private var originalProduct: EditableProductModel {
         didSet {
             product = originalProduct
         }
     }
 
     /// The product model with potential edits; reset after a remote update.
-    private var product: Product {
+    private var product: EditableProductModel {
         didSet {
             guard product != oldValue else {
                 return
@@ -55,8 +55,8 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
             }
 
             actionsFactory = ProductFormActionsFactory(product: product,
-                                                                  isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
-                                                                  isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+                                                       isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                                       isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
             productSubject.send(product)
         }
     }
@@ -82,7 +82,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private var cancellable: ObservationToken?
 
-    init(product: Product,
+    init(product: EditableProductModel,
          productImageActionHandler: ProductImageActionHandler,
          isEditProductsRelease2Enabled: Bool,
          isEditProductsRelease3Enabled: Bool) {
@@ -92,8 +92,8 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.originalProduct = product
         self.product = product
         self.actionsFactory = ProductFormActionsFactory(product: product,
-                                                                   isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
-                                                                   isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+                                                        isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
+                                                        isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
         self.isUpdateEnabledSubject = PublishSubject<Bool>()
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
@@ -128,7 +128,7 @@ extension ProductFormViewModel {
     }
 
     func canViewProductInStore() -> Bool {
-        return originalProduct.productStatus == .publish
+        return originalProduct.product.productStatus == .publish
     }
 }
 
@@ -136,15 +136,15 @@ extension ProductFormViewModel {
 //
 extension ProductFormViewModel {
     func updateName(_ name: String) {
-        product = product.copy(name: name)
+        product = EditableProductModel(product: product.product.copy(name: name))
     }
 
     func updateImages(_ images: [ProductImage]) {
-        product = product.copy(images: images)
+        product = EditableProductModel(product: product.product.copy(images: images))
     }
 
     func updateDescription(_ newDescription: String) {
-        product = product.copy(fullDescription: newDescription)
+        product = EditableProductModel(product: product.product.copy(fullDescription: newDescription))
     }
 
     func updatePriceSettings(regularPrice: String?,
@@ -153,12 +153,12 @@ extension ProductFormViewModel {
                              dateOnSaleEnd: Date?,
                              taxStatus: ProductTaxStatus,
                              taxClass: TaxClass?) {
-        product = product.copy(dateOnSaleStart: dateOnSaleStart,
-                               dateOnSaleEnd: dateOnSaleEnd,
-                               regularPrice: regularPrice,
-                               salePrice: salePrice,
-                               taxStatusKey: taxStatus.rawValue,
-                               taxClass: taxClass?.slug)
+        product = EditableProductModel(product: product.product.copy(dateOnSaleStart: dateOnSaleStart,
+                                                                     dateOnSaleEnd: dateOnSaleEnd,
+                                                                     regularPrice: regularPrice,
+                                                                     salePrice: salePrice,
+                                                                     taxStatusKey: taxStatus.rawValue,
+                                                                     taxClass: taxClass?.slug))
     }
 
     func updateInventorySettings(sku: String?,
@@ -167,70 +167,71 @@ extension ProductFormViewModel {
                                  stockQuantity: Int64?,
                                  backordersSetting: ProductBackordersSetting?,
                                  stockStatus: ProductStockStatus?) {
-        product = product.copy(sku: sku,
-                               manageStock: manageStock,
-                               stockQuantity: stockQuantity,
-                               stockStatusKey: stockStatus?.rawValue,
-                               backordersKey: backordersSetting?.rawValue,
-                               soldIndividually: soldIndividually)
+        product = EditableProductModel(product: product.product.copy(sku: sku,
+                                                                     manageStock: manageStock,
+                                                                     stockQuantity: stockQuantity,
+                                                                     stockStatusKey: stockStatus?.rawValue,
+                                                                     backordersKey: backordersSetting?.rawValue,
+                                                                     soldIndividually: soldIndividually))
     }
 
     func updateShippingSettings(weight: String?, dimensions: ProductDimensions, shippingClass: ProductShippingClass?) {
-        product = product.copy(weight: weight,
-                               dimensions: dimensions,
-                               shippingClass: shippingClass?.slug ?? "",
-                               shippingClassID: shippingClass?.shippingClassID ?? 0,
-                               productShippingClass: shippingClass)
+        product = EditableProductModel(product: product.product.copy(weight: weight,
+                                                                     dimensions: dimensions,
+                                                                     shippingClass: shippingClass?.slug ?? "",
+                                                                     shippingClassID: shippingClass?.shippingClassID ?? 0,
+                                                                     productShippingClass: shippingClass))
     }
 
     func updateProductCategories(_ categories: [ProductCategory]) {
-        product = product.copy(categories: categories)
+        product = EditableProductModel(product: product.product.copy(categories: categories))
     }
 
     func updateProductTags(_ tags: [ProductTag]) {
-        product = product.copy(tags: tags)
+        product = EditableProductModel(product: product.product.copy(tags: tags))
     }
 
     func updateBriefDescription(_ briefDescription: String) {
-        product = product.copy(briefDescription: briefDescription)
+        product = EditableProductModel(product: product.product.copy(briefDescription: briefDescription))
     }
 
     func updateSKU(_ sku: String?) {
-        product = product.copy(sku: sku)
+        product = EditableProductModel(product: product.product.copy(sku: sku))
     }
 
     func updateGroupedProductIDs(_ groupedProductIDs: [Int64]) {
-        product = product.copy(groupedProducts: groupedProductIDs)
+        product = EditableProductModel(product: product.product.copy(groupedProducts: groupedProductIDs))
     }
 
     func updateProductSettings(_ settings: ProductSettings) {
-        product = product.copy(slug: settings.slug,
-                               statusKey: settings.status.rawValue,
-                               featured: settings.featured,
-                               catalogVisibilityKey: settings.catalogVisibility.rawValue,
-                               virtual: settings.virtual,
-                               reviewsAllowed: settings.reviewsAllowed,
-                               purchaseNote: settings.purchaseNote,
-                               menuOrder: settings.menuOrder)
+        product = EditableProductModel(product: product.product.copy(slug: settings.slug,
+                                                                     statusKey: settings.status.rawValue,
+                                                                     featured: settings.featured,
+                                                                     catalogVisibilityKey: settings.catalogVisibility.rawValue,
+                                                                     virtual: settings.virtual,
+                                                                     reviewsAllowed: settings.reviewsAllowed,
+                                                                     purchaseNote: settings.purchaseNote,
+                                                                     menuOrder: settings.menuOrder))
         password = settings.password
     }
 
     func updateExternalLink(externalURL: String?, buttonText: String) {
-        product = product.copy(buttonText: buttonText, externalURL: externalURL)
+        product = EditableProductModel(product: product.product.copy(buttonText: buttonText, externalURL: externalURL))
     }
 }
 
 // MARK: Remote actions
 //
 extension ProductFormViewModel {
-    func updateProductRemotely(onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
-        let updateProductAction = ProductAction.updateProduct(product: product) { [weak self] result in
+    func updateProductRemotely(onCompletion: @escaping (Result<EditableProductModel, ProductUpdateError>) -> Void) {
+        let updateProductAction = ProductAction.updateProduct(product: product.product) { [weak self] result in
             switch result {
             case .failure(let error):
                 onCompletion(.failure(error))
             case .success(let product):
-                self?.resetProduct(product)
-                onCompletion(.success(product))
+                let model = EditableProductModel(product: product)
+                self?.resetProduct(model)
+                onCompletion(.success(model))
             }
         }
         ServiceLocator.stores.dispatch(updateProductAction)
@@ -240,7 +241,7 @@ extension ProductFormViewModel {
 // MARK: Reset actions
 //
 extension ProductFormViewModel {
-    private func resetProduct(_ product: Product) {
+    private func resetProduct(_ product: EditableProductModel) {
         originalProduct = product
     }
 
@@ -251,8 +252,8 @@ extension ProductFormViewModel {
 }
 
 private extension ProductFormViewModel {
-    func isNameTheOnlyChange(oldProduct: Product, newProduct: Product) -> Bool {
-        let oldProductWithNewName = oldProduct.copy(name: newProduct.name)
+    func isNameTheOnlyChange(oldProduct: EditableProductModel, newProduct: EditableProductModel) -> Bool {
+        let oldProductWithNewName = EditableProductModel(product: oldProduct.product.copy(name: newProduct.name))
         return oldProductWithNewName == newProduct && newProduct.name != oldProduct.name
     }
 }

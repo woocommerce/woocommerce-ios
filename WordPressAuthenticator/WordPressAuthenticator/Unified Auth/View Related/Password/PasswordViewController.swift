@@ -110,6 +110,7 @@ private extension PasswordViewController {
     
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
         // TODO: passwordy stuff
+        // configureViewLoading(true)
     }
     
 }
@@ -171,11 +172,10 @@ private extension PasswordViewController {
         }
     }
     
-    /// Configure the gravtar + email cell.
+    /// Configure the gravatar + email cell.
     ///
     func configureGravatarEmail(_ cell: GravatarEmailTableViewCell) {
-        // TODO: update with user info
-        cell.configureImage(UIImage.gridicon(.userCircle), text: "unknownuser@example.com")
+        cell.configure(withEmail: loginFields.username)
     }
     
     /// Configure the instruction cell.

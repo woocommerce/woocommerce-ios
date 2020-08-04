@@ -202,6 +202,6 @@ private extension ProductFormTableViewDataSource {
                                                                                         isSwitchOn: viewModel.isSwitchOn) { [weak self] isSwitchOn in
                                                                                             self?.onStatusChange?(isSwitchOn)
         }
-        cell.updateUI(switchViewModel: switchableViewModel)
+        cell.updateUI(switchableViewModel: switchableViewModel)
     }
 }

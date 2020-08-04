@@ -71,15 +71,15 @@ extension ImageAndTitleAndTextTableViewCell {
         }
     }
 
-    func updateUI(switchViewModel: SwitchableViewModel) {
-        updateUI(viewModel: switchViewModel.viewModel)
+    func updateUI(switchableViewModel: SwitchableViewModel) {
+        updateUI(viewModel: switchableViewModel.viewModel)
         titleLabel.textColor = .text
 
         let toggleSwitch = UISwitch()
         toggleSwitch.onTintColor = .primary
-        toggleSwitch.isOn = switchViewModel.isSwitchOn
+        toggleSwitch.isOn = switchableViewModel.isSwitchOn
         toggleSwitch.on(.touchUpInside) { visibilitySwitch in
-            switchViewModel.onSwitchChange(visibilitySwitch.isOn)
+            switchableViewModel.onSwitchChange(visibilitySwitch.isOn)
         }
         accessoryView = toggleSwitch
     }

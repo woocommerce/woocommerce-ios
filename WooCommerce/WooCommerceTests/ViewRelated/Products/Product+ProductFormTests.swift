@@ -10,8 +10,9 @@ class Product_ProductFormTests: XCTestCase {
     func testTrimmedFullDescriptionWithLeadingNewLinesAndHTMLTags() {
         let description = "\n\n\n  <p>This is the party room!</p>\n"
         let product = sampleProduct(description: description)
+        let model = EditableProductModel(product: product)
         let expectedDescription = "This is the party room!"
-        XCTAssertEqual(product.trimmedFullDescription, expectedDescription)
+        XCTAssertEqual(model.trimmedFullDescription, expectedDescription)
     }
 
     func testTrimmedBriefDescriptionWithLeadingNewLinesAndHTMLTags() {
@@ -51,12 +52,14 @@ class Product_ProductFormTests: XCTestCase {
 
     func testProductAllowsMultipleImages() {
         let product = Product().copy(images: [])
-        XCTAssertTrue(product.allowsMultipleImages())
+        let model = EditableProductModel(product: product)
+        XCTAssertTrue(model.allowsMultipleImages())
     }
 
     func testProductImageDeletionIsEnabled() {
         let product = Product().copy(images: [])
-        XCTAssertTrue(product.isImageDeletionEnabled())
+        let model = EditableProductModel(product: product)
+        XCTAssertTrue(model.isImageDeletionEnabled())
     }
 
     // MARK: `productTaxStatus`

@@ -10,9 +10,10 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
     func testViewModelForPhysicalSimpleProductWithoutImages() {
         // Arrange
         let product = Fixtures.physicalSimpleProductWithoutImages
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
@@ -35,9 +36,10 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
     func testViewModelForPhysicalSimpleProductWithImages() {
         // Arrange
         let product = Fixtures.physicalSimpleProductWithImages
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
@@ -60,9 +62,10 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
     func testViewModelForDownloadableSimpleProduct() {
         // Arrange
         let product = Fixtures.downloadableSimpleProduct
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
@@ -80,9 +83,10 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
     func testViewModelForVirtualSimpleProduct() {
         // Arrange
         let product = Fixtures.virtualSimpleProduct
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
@@ -100,9 +104,10 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
     func testViewModelForAffiliateProduct() {
         // Arrange
         let product = Fixtures.affiliateProduct
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
@@ -120,9 +125,10 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
     func testViewModelForGroupedProduct() {
         // Arrange
         let product = Fixtures.groupedProduct
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
@@ -140,9 +146,10 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
     func testViewModelForVariableProductWithoutVariations() {
         // Arrange
         let product = Fixtures.variableProductWithoutVariations
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
@@ -160,9 +167,10 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
     func testViewModelForVariableProductWithVariations() {
         // Arrange
         let product = Fixtures.variableProductWithVariations
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 

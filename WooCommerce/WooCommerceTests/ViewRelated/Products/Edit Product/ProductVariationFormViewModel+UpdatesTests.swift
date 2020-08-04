@@ -8,8 +8,9 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
     func testUpdatingDescription() {
         // Arrange
         let productVariation = MockProductVariation().productVariation()
-        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: productVariation)
-        let viewModel = ProductVariationFormViewModel(productVariation: productVariation, productImageActionHandler: productImageActionHandler)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
+        let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
 
         // Action
         let newDescription = "<p> cool product </p>"
@@ -22,8 +23,9 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
     func testUpdatingShippingSettings() {
         // Arrange
         let productVariation = MockProductVariation().productVariation()
-        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: productVariation)
-        let viewModel = ProductVariationFormViewModel(productVariation: productVariation, productImageActionHandler: productImageActionHandler)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
+        let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
 
         // Action
         let newWeight = "9999.88"
@@ -48,8 +50,9 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
     func testUpdatingPriceSettings() {
         // Arrange
         let productVariation = MockProductVariation().productVariation()
-        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: productVariation)
-        let viewModel = ProductVariationFormViewModel(productVariation: productVariation, productImageActionHandler: productImageActionHandler)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
+        let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
 
         // Action
         let newRegularPrice = "32.45"
@@ -77,8 +80,9 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
     func testUpdatingInventorySettings() {
         // Arrange
         let productVariation = MockProductVariation().productVariation()
-        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: productVariation)
-        let viewModel = ProductVariationFormViewModel(productVariation: productVariation, productImageActionHandler: productImageActionHandler)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
+        let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
 
         // Action
         let newSKU = "94115"
@@ -104,8 +108,9 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
     func testUpdatingImages() {
         // Arrange
         let productVariation = MockProductVariation().productVariation()
-        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: productVariation)
-        let viewModel = ProductVariationFormViewModel(productVariation: productVariation, productImageActionHandler: productImageActionHandler)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
+        let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
 
         // Action
         let newImage = ProductImage(imageID: 17,

@@ -38,17 +38,21 @@ public class AnalyticsTracker {
         /// The initial flow before we decide whether the user is logging in or signing up
         case wpCom = "wordpress_com"
         
-        /// The flow that starts when the user starts the Google login
+        /// Flow for Google login
         ///
         case googleLogin = "google_login"
         
-        /// The flow that starts when the user starts the Google signup
+        /// Flow for Google  signup
         ///
         case googleSignup = "google_signup"
         
-        /// Flow for Sign in with Apple
+        /// Flow for Apple login
         ///
-        case apple = "siwa_login"
+        case appleLogin = "siwa_login"
+        
+        /// Flow for Apple signup
+        ///
+        case appleSignup = "siwa_signup"
         
         /// Sign in with the icloud keychain
         ///

@@ -1025,7 +1025,7 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func onEditStatusCompletion(isEnabled: Bool) {
-        viewModel.updateVisibility(isEnabled)
+        viewModel.updateStatus(isEnabled)
     }
 }
 

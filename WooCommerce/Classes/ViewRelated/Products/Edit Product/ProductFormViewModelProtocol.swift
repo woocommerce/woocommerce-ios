@@ -75,7 +75,7 @@ protocol ProductFormViewModelProtocol {
 
     func updateExternalLink(externalURL: String?, buttonText: String)
 
-    func updateVisibility(_ isVisible: Bool)
+    func updateStatus(_ isEnabled: Bool)
 
     // Remote action
 

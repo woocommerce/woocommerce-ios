@@ -219,7 +219,7 @@ extension ProductFormViewModel {
         product = product.copy(buttonText: buttonText, externalURL: externalURL)
     }
 
-    func updateVisibility(_ isVisible: Bool) {
+    func updateStatus(_ isEnabled: Bool) {
         // no-op: visibility is editable in product settings for `Product`
     }
 }

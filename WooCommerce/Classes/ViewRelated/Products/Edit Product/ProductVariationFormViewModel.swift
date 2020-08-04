@@ -183,8 +183,8 @@ extension ProductVariationFormViewModel {
         // no-op
     }
 
-    func updateVisibility(_ isVisible: Bool) {
-        let status: ProductStatus = isVisible ? .publish: .privateStatus
+    func updateStatus(_ isEnabled: Bool) {
+        let status: ProductStatus = isEnabled ? .publish: .privateStatus
         productVariation = productVariation.copy(status: status)
     }
 }

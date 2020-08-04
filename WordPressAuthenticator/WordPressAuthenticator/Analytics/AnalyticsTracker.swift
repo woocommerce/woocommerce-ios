@@ -54,9 +54,9 @@ public class AnalyticsTracker {
         ///
         case appleSignup = "siwa_signup"
         
-        /// Sign in with the icloud keychain
+        /// Flow for iCloud Keychain login
         ///
-        case keychain = "icloud_keychain_login"
+        case iCloudKeychainLogin = "icloud_keychain_login"
         
         /// The flow that starts when we offer the user the magic link login
         ///

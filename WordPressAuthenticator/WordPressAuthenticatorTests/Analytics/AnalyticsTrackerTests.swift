@@ -43,9 +43,9 @@ class AnalyticsTrackerTests: XCTestCase {
     /// Test that initializing a context with specific params works.
     ///
     func testContextInitializerWithExplicitParams() {
-        let context = AnalyticsTracker.Context(lastFlow: .apple, lastSource: .deeplink, lastStep: .emailOpened)
+        let context = AnalyticsTracker.Context(lastFlow: .appleLogin, lastSource: .deeplink, lastStep: .emailOpened)
         
-        XCTAssertEqual(context.lastFlow, .apple)
+        XCTAssertEqual(context.lastFlow, .appleLogin)
         XCTAssertEqual(context.lastSource, .deeplink)
         XCTAssertEqual(context.lastStep, .emailOpened)
     }

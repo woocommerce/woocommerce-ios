@@ -41,6 +41,18 @@ final class ProductVariation_ProductFormTests: XCTestCase {
         XCTAssertFalse(productVariation.isShippingEnabled)
     }
 
+    // MARK: image related
+
+    func testProductVariationDoesNotAllowMultipleImages() {
+        let productVariation = MockProductVariation().productVariation().copy(image: nil)
+        XCTAssertFalse(productVariation.allowsMultipleImages())
+    }
+
+    func testProductVariationImageDeletionIsDisabled() {
+        let productVariation = MockProductVariation().productVariation().copy(image: nil)
+        XCTAssertFalse(productVariation.isImageDeletionEnabled())
+    }
+
     // MARK: `productTaxStatus`
 
     func testProductTaxStatusFromAnUnexpectedRawValueReturnsDefaultTaxable() {

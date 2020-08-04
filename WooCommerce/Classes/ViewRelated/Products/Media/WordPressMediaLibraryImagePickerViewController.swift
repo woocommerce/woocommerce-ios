@@ -17,7 +17,7 @@ final class WordPressMediaLibraryImagePickerViewController: UIViewController {
         options.showSearchBar = false
         options.showActionBar = false
         options.badgedUTTypes = [String(kUTTypeGIF)]
-        options.allowMultipleSelection = true
+        options.allowMultipleSelection = allowsMultipleImages
         return options
     }()
 
@@ -26,9 +26,11 @@ final class WordPressMediaLibraryImagePickerViewController: UIViewController {
     private var mediaPickerNavigationController: WPNavigationMediaPickerViewController!
 
     private let siteID: Int64
+    private let allowsMultipleImages: Bool
 
-    init(siteID: Int64, onCompletion: @escaping Completion) {
+    init(siteID: Int64, allowsMultipleImages: Bool, onCompletion: @escaping Completion) {
         self.siteID = siteID
+        self.allowsMultipleImages = allowsMultipleImages
         self.onCompletion = onCompletion
         super.init(nibName: nil, bundle: nil)
     }

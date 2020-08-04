@@ -47,6 +47,18 @@ class Product_ProductFormTests: XCTestCase {
         XCTAssertEqual(product.categoriesDescription(using: usLocale), expectedDescription)
     }
 
+    // MARK: image related
+
+    func testProductAllowsMultipleImages() {
+        let product = Product().copy(images: [])
+        XCTAssertTrue(product.allowsMultipleImages())
+    }
+
+    func testProductImageDeletionIsEnabled() {
+        let product = Product().copy(images: [])
+        XCTAssertTrue(product.isImageDeletionEnabled())
+    }
+
     // MARK: `productTaxStatus`
 
     func testProductTaxStatusFromAnUnexpectedRawValueReturnsDefaultTaxable() {

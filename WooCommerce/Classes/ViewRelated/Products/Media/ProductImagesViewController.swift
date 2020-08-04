@@ -32,9 +32,15 @@ final class ProductImagesViewController: UIViewController {
     }
     private var productImageStatusesObservationToken: ObservationToken?
 
+    private var allowsMultipleImages: Bool {
+        product.allowsMultipleImages()
+    }
+
     // Child view controller.
     private lazy var imagesViewController: ProductImagesCollectionViewController = {
+        let isDeletionEnabled = product.isImageDeletionEnabled()
         let viewController = ProductImagesCollectionViewController(imageStatuses: productImageStatuses,
+                                                                   isDeletionEnabled: isDeletionEnabled,
                                                                    productUIImageLoader: productUIImageLoader,
                                                                    onDeletion: { [weak self] productImage in
                                                                     self?.onDeletion(productImage: productImage)
@@ -44,6 +50,7 @@ final class ProductImagesViewController: UIViewController {
 
     private lazy var mediaPickingCoordinator: MediaPickingCoordinator = {
         return MediaPickingCoordinator(siteID: siteID,
+                                       allowsMultipleImages: allowsMultipleImages,
                                        onCameraCaptureCompletion: { [weak self] asset, error in
                                         self?.onCameraCaptureCompletion(asset: asset, error: error)
             }, onDeviceMediaLibraryPickerCompletion: { [weak self] assets in
@@ -108,7 +115,7 @@ private extension ProductImagesViewController {
     }
 
     func configureAddButton() {
-        addButton.setTitle(NSLocalizedString("Add Photos", comment: "Action to add photos on the Product images screen"), for: .normal)
+        updateAddButtonTitle(numberOfImages: product.images.count)
         addButton.addTarget(self, action: #selector(addTapped), for: .touchUpInside)
         addButton.applySecondaryButtonStyle()
     }
@@ -140,8 +147,24 @@ private extension ProductImagesViewController {
                 self.displayErrorAlert(error: error)
             }
 
+            self.updateAddButtonTitle(numberOfImages: productImageStatuses.count)
+
             self.imagesViewController.updateProductImageStatuses(productImageStatuses)
         }
+    }
+}
+
+// MARK: - Updates
+//
+private extension ProductImagesViewController {
+    func updateAddButtonTitle(numberOfImages: Int) {
+        let title: String
+        if allowsMultipleImages {
+            title = Localization.addPhotos
+        } else {
+            title = numberOfImages == 0 ? Localization.addPhoto: Localization.replacePhoto
+        }
+        addButton.setTitle(title, for: .normal)
     }
 }
 
@@ -156,6 +179,12 @@ private extension ProductImagesViewController {
 
     @objc func doneButtonTapped() {
         commitAndDismiss(hasOutstandingChanges())
+    }
+
+    func deleteExistingImageIfOnlyOneImageIsAllowed() {
+        if allowsMultipleImages == false, let currentImage = product.images.first {
+            productImageActionHandler.deleteProductImage(currentImage)
+        }
     }
 
     func commitAndDismiss(_ hasChangedData: Bool) {
@@ -221,6 +250,7 @@ private extension ProductImagesViewController {
             displayErrorAlert(error: error)
             return
         }
+        deleteExistingImageIfOnlyOneImageIsAllowed()
         uploadMediaAssetToSiteMediaLibrary(asset: asset)
         commitAndDismiss(true)
     }
@@ -236,6 +266,7 @@ private extension ProductImagesViewController {
                 return
             }
 
+            self.deleteExistingImageIfOnlyOneImageIsAllowed()
             assets.forEach { asset in
                 self.uploadMediaAssetToSiteMediaLibrary(asset: asset)
             }
@@ -254,6 +285,7 @@ private extension ProductImagesViewController {
                 return
             }
 
+            self.deleteExistingImageIfOnlyOneImageIsAllowed()
             self.productImageActionHandler.addSiteMediaLibraryImagesToProduct(mediaItems: mediaItems)
             self.commitAndDismiss(true)
         }
@@ -274,5 +306,13 @@ private extension ProductImagesViewController {
                                    handler: nil)
         alertController.addAction(cancel)
         present(alertController, animated: true)
+    }
+}
+
+private extension ProductImagesViewController {
+    enum Localization {
+        static let addPhotos = NSLocalizedString("Add Photos", comment: "Action to add photos on the Product images screen")
+        static let addPhoto = NSLocalizedString("Add Photo", comment: "Action to add one photo on the Product images screen")
+        static let replacePhoto = NSLocalizedString("Replace Photo", comment: "Action to replace one photo on the Product images screen")
     }
 }

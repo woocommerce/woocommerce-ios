@@ -8,13 +8,16 @@ final class ProductImagesCollectionViewController: UICollectionViewController {
 
     private var productImageStatuses: [ProductImageStatus]
 
+    private let isDeletionEnabled: Bool
     private let productUIImageLoader: ProductUIImageLoader
     private let onDeletion: ProductImageViewController.Deletion
 
     init(imageStatuses: [ProductImageStatus],
+         isDeletionEnabled: Bool,
          productUIImageLoader: ProductUIImageLoader,
          onDeletion: @escaping ProductImageViewController.Deletion) {
         self.productImageStatuses = imageStatuses
+        self.isDeletionEnabled = isDeletionEnabled
         self.productUIImageLoader = productUIImageLoader
         self.onDeletion = onDeletion
         let columnLayout = ColumnFlowLayout(
@@ -116,6 +119,7 @@ extension ProductImagesCollectionViewController {
         switch status {
         case .remote(let productImage):
             let productImageViewController = ProductImageViewController(productImage: productImage,
+                                                                        isDeletionEnabled: isDeletionEnabled,
                                                                         productUIImageLoader: productUIImageLoader,
                                                                         onDeletion: { [weak self] productImage in
                                                                             self?.onDeletion(productImage)

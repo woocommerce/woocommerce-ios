@@ -53,6 +53,8 @@ class SignInTrackerTests: XCTestCase {
     /// Test that when tracking an event through the SignInTracker, the backing analytics tracker
     /// receives a matching event.
     ///
+    /// Ref: pbArwn-AP-p2
+    ///
     func testEventTracking() {
         let source = SignInTracker.Source.reauthetication
         let flow = SignInTracker.Flow.googleLogin
@@ -110,6 +112,8 @@ class SignInTrackerTests: XCTestCase {
     
     /// Test that tracking a failure maintains the source, flow and step from the previously recorded step.
     ///
+    /// Ref: pbArwn-I6-p2
+    ///
     func testFailure() {
         let source = SignInTracker.Source.default
         let flow = SignInTracker.Flow.googleLogin
@@ -140,6 +144,8 @@ class SignInTrackerTests: XCTestCase {
     }
     
     /// Test that tracking a click maintains the source, flow and step from the previously recorded step.
+    ///
+    /// Ref: pbArwn-I6-p2
     ///
     func testClick() {
         let source = SignInTracker.Source.default

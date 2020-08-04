@@ -42,6 +42,8 @@ public class SignInTracker {
         ///
         case googleLogin = "google_login"
         
+        /// The flow that starts when the user starts the Google signup
+        ///
         case googleSignup = "google_signup"
         
         /// Flow for Sign in with Apple

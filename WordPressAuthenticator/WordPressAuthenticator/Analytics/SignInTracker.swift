@@ -140,6 +140,10 @@ public class SignInTracker {
         ///
         case signUpWithEmail = "signup_with_email"
         
+        /// When the user tries to sign up with Apple from the confirmation screen
+        ///
+        case signUpWithApple = "signup_with_apple"
+        
         /// When the user tries to sign up with Google from the confirmation screen
         ///
         case signUpWithGoogle = "signup_with_google"

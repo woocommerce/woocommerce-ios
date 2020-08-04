@@ -16,7 +16,7 @@ final class SummaryTableViewCellTests: XCTestCase {
         super.tearDown()
     }
 
-    func testTitleLabelIsSetToTheBilledPersonName() throws {
+    func test_titleLabel_is_set_to_the_billedPersonName() throws {
         let mirror = try self.mirror(of: cell)
         let viewModel = SummaryTableViewCellViewModel(order: sampleOrder(), status: nil)
 
@@ -25,7 +25,7 @@ final class SummaryTableViewCellTests: XCTestCase {
         XCTAssertEqual(mirror.titleLabel.text, viewModel.billedPersonName)
     }
 
-    func testCreatedLabelIsSetToTheCreationDateAndOrderNumber() throws {
+    func test_created_label_is_set_to_the_creation_date_and_order_number() throws {
         let mirror = try self.mirror(of: cell)
         let viewModel = SummaryTableViewCellViewModel(order: sampleOrder(), status: nil)
 
@@ -34,7 +34,7 @@ final class SummaryTableViewCellTests: XCTestCase {
         XCTAssertEqual(mirror.subtitleLabel.text, viewModel.subtitle)
     }
 
-    func testDisplayStatusLabelIsSetToThePresentationStatusName() throws {
+    func test_display_status_label_is_set_to_the_presentation_status_name() throws {
         // Given
         let mirror = try self.mirror(of: cell)
 
@@ -48,7 +48,7 @@ final class SummaryTableViewCellTests: XCTestCase {
         XCTAssertEqual(mirror.paymentStatusLabel.text, orderStatus.name)
     }
 
-    func testTappingButtonExecutesCallback() throws {
+    func test_tapping_button_executes_callback() throws {
         // Given
         let mirror = try self.mirror(of: cell)
 

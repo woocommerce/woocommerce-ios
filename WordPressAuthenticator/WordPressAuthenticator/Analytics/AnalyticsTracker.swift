@@ -2,7 +2,7 @@ import Foundation
 
 /// Implements the analytics tracking logic for our sign in flow.
 ///
-public class SignInTracker {
+public class AnalyticsTracker {
     
     /// The method used for analytics tracking.  Useful for overriding in automated tests.
     ///

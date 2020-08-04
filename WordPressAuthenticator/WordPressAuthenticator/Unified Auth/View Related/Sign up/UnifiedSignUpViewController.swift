@@ -14,12 +14,17 @@ class UnifiedSignUpViewController: LoginViewController {
 
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
-
+        requestAuthenticationLink()
     }
 
     // MARK: - View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        // TODO: Delete these 2 lines when the new sign up by email VC is ready.
+        // Currently this helps us bypass the SignupEmailViewController.
+        loginFields.username = "unknownuser@example.com"
+        loginFields.meta.emailMagicLinkSource = .signup
 
         navigationItem.title = WordPressAuthenticator.shared.displayStrings.signUpTitle
         styleNavigationBar(forUnified: true)
@@ -139,7 +144,8 @@ private extension UnifiedSignUpViewController {
     /// Configure the gravtar + email cell.
     ///
     func configureGravatarEmail(_ cell: GravatarEmailTableViewCell) {
-        cell.configureImage(UIImage.gridicon(.userCircle), text: "unknownuser@example.com")
+        let gridicon = UIImage.gridicon(.userCircle, size: Constants.gridiconSize)
+        cell.configureImage(gridicon, text: loginFields.username)
     }
 
     /// Configure the instruction cell.
@@ -173,5 +179,66 @@ private extension UnifiedSignUpViewController {
                 return TextLabelTableViewCell.reuseIdentifier
             }
         }
+    }
+
+    enum ErrorMessage: String {
+        case availabilityCheckFail = "availability_check_fail"
+        case magicLinkRequestFail = "magic_link_request_fail"
+
+        func description() -> String {
+            switch self {
+            case .availabilityCheckFail:
+                return NSLocalizedString("Unable to verify the email address. Please try again later.", comment: "Error message displayed when an error occurred checking for email availability.")
+            case .magicLinkRequestFail:
+                return NSLocalizedString("We were unable to send you an email at this time. Please try again later.", comment: "Error message displayed when an error occurred sending the magic link email.")
+            }
+        }
+    }
+
+    struct Constants {
+        static let gridiconSize = CGSize(width: 48, height: 48)
+    }
+}
+
+
+// Mark: - Instance Methods
+/// Implementation methods imported from SignupEmailViewController.
+///
+extension UnifiedSignUpViewController {
+    // MARK: - Send email
+
+    /// Makes the call to request a magic signup link be emailed to the user.
+    ///
+    func requestAuthenticationLink() {
+
+        configureSubmitButton(animating: true)
+
+        let service = WordPressComAccountService()
+        service.requestSignupLink(for: loginFields.username,
+                                  success: { [weak self] in
+                                    self?.didRequestSignupLink()
+                                    self?.configureSubmitButton(animating: false)
+
+            }, failure: { [weak self] (error: Error) in
+                DDLogError("Request for signup link email failed.")
+                // TODO: add new Tracks event. Old: .signupMagicLinkFailed
+                self?.displayError(message: ErrorMessage.magicLinkRequestFail.description())
+                self?.configureSubmitButton(animating: false)
+        })
+    }
+
+    func didRequestSignupLink() {
+        // TODO: add new Tracks event. Old: .signupMagicLinkRequested
+        WordPressAuthenticator.storeLoginInfoForTokenAuth(loginFields)
+
+        guard let vc = NUXLinkMailViewController.instantiate(from: .emailMagicLink) else {
+            DDLogError("Failed to navigate to NUXLinkMailViewController")
+            return
+        }
+
+        vc.loginFields = loginFields
+        vc.loginFields.restrictToWPCom = true
+
+        navigationController?.pushViewController(vc, animated: true)
     }
 }

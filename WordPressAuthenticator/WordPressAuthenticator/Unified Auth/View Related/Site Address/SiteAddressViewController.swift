@@ -213,7 +213,7 @@ private extension SiteAddressViewController {
     func loadRows() {
         rows = [.instructions, .siteAddress]
 
-        if errorMessage != nil {
+        if let errorText = errorMessage, !errorText.isEmpty {
             rows.append(.errorMessage)
         }
 

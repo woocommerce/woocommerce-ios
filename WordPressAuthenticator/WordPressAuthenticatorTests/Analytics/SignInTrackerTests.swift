@@ -56,7 +56,7 @@ class SignInTrackerTests: XCTestCase {
     /// Ref: pbArwn-AP-p2
     ///
     func testEventTracking() {
-        let source = SignInTracker.Source.reauthetication
+        let source = SignInTracker.Source.reauthentication
         let flow = SignInTracker.Flow.googleLogin
         let step = SignInTracker.Step.start
         
@@ -85,7 +85,7 @@ class SignInTrackerTests: XCTestCase {
     /// receives a matching event.
     ///
     func testBackingTracker() {
-        let source = SignInTracker.Source.reauthetication
+        let source = SignInTracker.Source.reauthentication
         let flow = SignInTracker.Flow.googleLogin
         let step = SignInTracker.Step.start
         

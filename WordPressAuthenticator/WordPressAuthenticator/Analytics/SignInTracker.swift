@@ -27,7 +27,7 @@ public class SignInTracker {
         case jetpack
         case share
         case deeplink
-        case reauthetication
+        case reauthentication
         
         /// Starts when the used adds a site from the site picker
         ///

@@ -135,10 +135,6 @@ extension ProductVariationFormViewModel {
                                                  taxClass: taxClass?.slug)
     }
 
-    func updateReviews(averageRating: String, ratingCount: Int) {
-        // no-op
-    }
-
     func updateInventorySettings(sku: String?,
                                  manageStock: Bool,
                                  soldIndividually: Bool?,

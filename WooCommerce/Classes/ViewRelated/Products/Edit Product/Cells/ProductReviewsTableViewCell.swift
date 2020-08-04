@@ -1,14 +1,6 @@
-//
-//  ProductReviewsTableViewCell.swift
-//  WooCommerce
-//
-//  Created by Paolo Musolino on 30/07/2020.
-//  Copyright © 2020 Automattic. All rights reserved.
-//
-
 import UIKit
 
-class ProductReviewsTableViewCell: UITableViewCell {
+final class ProductReviewsTableViewCell: UITableViewCell {
 
     @IBOutlet private weak var contentImageView: UIImageView!
     @IBOutlet private weak var titleLabel: UILabel!

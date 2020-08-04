@@ -150,11 +150,16 @@ private extension DefaultProductFormTableViewModel {
     func reviewsRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.productReviewsImage
         let title = Constants.reviewsTitle
-        var details = ""
+        var details = Constants.emptyReviews
         if product.ratingCount > 0 {
-            details += " · "
+            details = " · "
         }
-        details += String.localizedStringWithFormat(Constants.reviewsFormat, product.ratingCount)
+        if product.ratingCount == 1 {
+            details += String.localizedStringWithFormat(Constants.singularReviewFormat, product.ratingCount)
+        }
+        else if product.ratingCount > 1 {
+            details += String.localizedStringWithFormat(Constants.pluralReviewsFormat, product.ratingCount)
+        }
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
@@ -371,8 +376,12 @@ private extension DefaultProductFormTableViewModel {
                                                     comment: "Format of the sale period on the Price Settings row until a certain date")
 
         // Reviews
-        static let reviewsFormat = NSLocalizedString("%ld reviews",
-                                                     comment: "Format of the number of product review")
+        static let emptyReviews = NSLocalizedString("No reviews yet",
+                                                    comment: "Placeholder for empty product reviews")
+        static let singularReviewFormat = NSLocalizedString("%ld review",
+                                                            comment: "Format of the number of product review in singular form")
+        static let pluralReviewsFormat = NSLocalizedString("%ld reviews",
+                                                           comment: "Format of the number of product reviews in plural form")
 
         // Inventory
         static let skuFormat = NSLocalizedString("SKU: %@",

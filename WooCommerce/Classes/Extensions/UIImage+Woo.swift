@@ -283,7 +283,7 @@ extension UIImage {
     /// Product Reviews Icon
     ///
     static var productReviewsImage: UIImage {
-        let tintColor = UIColor.listIcon
+        let tintColor = UIColor.gray(.shade30)
         return UIImage.gridicon(.starOutline, size: CGSize(width: 24, height: 24)).imageWithTintColor(tintColor)!
     }
 

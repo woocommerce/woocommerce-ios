@@ -1,7 +1,7 @@
 import UIKit
 import Yosemite
 
-enum ProductFormSection {
+enum ProductFormSection: Equatable {
     case primaryFields(rows: [PrimaryFieldRow])
     case settings(rows: [SettingsRow])
 
@@ -14,13 +14,13 @@ enum ProductFormSection {
         }
     }
 
-    enum PrimaryFieldRow {
+    enum PrimaryFieldRow: Equatable {
         case images
         case name(name: String?, isEditable: Bool)
         case description(description: String?)
     }
 
-    enum SettingsRow {
+    enum SettingsRow: Equatable {
         case price(viewModel: ViewModel)
         case reviews(viewModel: ViewModel, ratingCount: Int, averageRating: String)
         case shipping(viewModel: ViewModel)
@@ -58,55 +58,6 @@ protocol ProductFormTableViewModel {
 
 
 // MARK: Equatable implementations
-
-extension ProductFormSection: Equatable {
-    static func ==(lhs: ProductFormSection, rhs: ProductFormSection) -> Bool {
-        switch (lhs, rhs) {
-        case (let .primaryFields(rows1), let .primaryFields(rows2)):
-            return rows1 == rows2
-        case (let .settings(rows1), let .settings(rows2)):
-            return rows1 == rows2
-        default:
-            return false
-        }
-    }
-}
-
-extension ProductFormSection.PrimaryFieldRow: Equatable {
-    static func ==(lhs: ProductFormSection.PrimaryFieldRow, rhs: ProductFormSection.PrimaryFieldRow) -> Bool {
-        switch (lhs, rhs) {
-        case (.images, .images):
-            return true
-        case (let .name(name1, _), let .name(name2, _)):
-            return name1 == name2
-        case (let .description(description1), let .description(description2)):
-            return description1 == description2
-        default:
-            return false
-        }
-    }
-}
-
-extension ProductFormSection.SettingsRow: Equatable {
-    static func ==(lhs: ProductFormSection.SettingsRow, rhs: ProductFormSection.SettingsRow) -> Bool {
-        switch (lhs, rhs) {
-        case (let .price(viewModel1), let .price(viewModel2)):
-            return viewModel1 == viewModel2
-        case (let .reviews(viewModel1, ratingCount1, averageRating1), let .reviews(viewModel2, ratingCount2, averageRating2)):
-            return viewModel1 == viewModel2 && ratingCount1 == ratingCount2 && averageRating1 == averageRating2
-        case (let .shipping(viewModel1), let .shipping(viewModel2)):
-            return viewModel1 == viewModel2
-        case (let .inventory(viewModel1), let .inventory(viewModel2)):
-            return viewModel1 == viewModel2
-        case (let .briefDescription(viewModel1), let .briefDescription(viewModel2)):
-            return viewModel1 == viewModel2
-        default:
-            return false
-        }
-    }
-}
-
-
 extension ProductFormSection.SettingsRow.ViewModel: Equatable {
     static func ==(lhs: ProductFormSection.SettingsRow.ViewModel, rhs: ProductFormSection.SettingsRow.ViewModel) -> Bool {
         return lhs.icon == rhs.icon &&

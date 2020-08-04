@@ -231,7 +231,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 editPriceSettings()
             case .reviews:
                 // TODO-2509 Edit Product M3 analytics
-                editReviews()
+                showReviews()
             case .shipping:
                 ServiceLocator.analytics.track(.productDetailViewShippingSettingsTapped)
                 editShippingSettings()
@@ -785,29 +785,11 @@ private extension ProductFormViewController {
     }
 }
 
-// MARK: Action - Edit Product Reviews Settings
+// MARK: Action - Show Product Reviews Settings
 //
 private extension ProductFormViewController {
-    func editReviews() {
+    func showReviews() {
         // TODO: issue-2082 present Reviews Controller
-    }
-
-    func onEditReviewsCompletion(averageRating: String, ratingCount: Int) {
-        defer {
-            navigationController?.popViewController(animated: true)
-        }
-
-        let hasChangedData: Bool = {
-            averageRating != product.averageRating ||
-                ratingCount != product.ratingCount
-        }()
-
-        //TODO: Edit Product M3 analytics
-        guard hasChangedData else {
-            return
-        }
-
-        viewModel.updateReviews(averageRating: averageRating, ratingCount: ratingCount)
     }
 }
 

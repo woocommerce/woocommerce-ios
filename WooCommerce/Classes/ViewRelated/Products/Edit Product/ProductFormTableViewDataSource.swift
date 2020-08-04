@@ -216,6 +216,8 @@ private extension ProductFormTableViewDataSource {
                        details: viewModel.details ?? "",
                        ratingCount: ratingCount,
                        averageRating: averageRating)
-        cell.accessoryType = .disclosureIndicator
+        if ratingCount > 0 {
+            cell.accessoryType = .disclosureIndicator
+        }
     }
 }

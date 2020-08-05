@@ -65,6 +65,36 @@ final class SurveyViewControllerTests: XCTestCase {
         // Then
         XCTAssertFalse(surveyCompleted)
     }
+
+    func test_it_shows_the_loading_view_when_loading_a_survey() throws {
+        // Given
+        let viewController = SurveyViewController(survey: .inAppFeedback, onCompletion: {})
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+        let mirror = try self.mirror(of: viewController)
+
+        // Then
+        XCTAssertFalse(mirror.loadingView.isHidden)
+    }
+
+    func test_it_hides_the_loading_view_after_loading_a_survey() throws {
+        // Given
+        let viewController = SurveyViewController(survey: .inAppFeedback, onCompletion: {})
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+        let mirror = try self.mirror(of: viewController)
+
+        // Fakes a web view loading completion
+        let navigation = try XCTUnwrap(mirror.webView.reload())
+        viewController.webView(mirror.webView, didFinish: navigation)
+
+        // Then
+        waitUntil(timeout: 1) {
+            return mirror.loadingView.isHidden
+        }
+    }
 }
 
 // MARK: - Mirroring
@@ -72,11 +102,15 @@ final class SurveyViewControllerTests: XCTestCase {
 private extension SurveyViewControllerTests {
     struct SurveyViewControllerMirror {
         let webView: WKWebView
+        let loadingView: SurveyLoadingView
     }
 
     func mirror(of viewController: SurveyViewController) throws -> SurveyViewControllerMirror {
         let mirror = Mirror(reflecting: viewController)
-        return SurveyViewControllerMirror(webView: try XCTUnwrap(mirror.descendant("webView") as? WKWebView))
+        return SurveyViewControllerMirror(
+            webView: try XCTUnwrap(mirror.descendant("webView") as? WKWebView),
+            loadingView: try XCTUnwrap(mirror.descendant("loadingView") as? SurveyLoadingView)
+        )
     }
 }
 

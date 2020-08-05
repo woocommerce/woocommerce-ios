@@ -457,12 +457,6 @@ extension UIImage {
         return im2.imageWithTintColor(tintColor)
     }
 
-    /// Password Field Image
-    ///
-    static var passwordFieldImage: UIImage {
-        return UIImage.gridicon(.visible)
-    }
-
     /// Waiting for Customers Image
     ///
     static var waitingForCustomersImage: UIImage {

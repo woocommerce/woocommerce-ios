@@ -42,14 +42,15 @@ final class TwoFAViewController: LoginViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        
         super.viewDidAppear(animated)
-
-        configureSubmitButton(animating: false)
-        configureViewForEditingIfNeeded()
-
+        
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
-
+        
+        configureSubmitButton(animating: false)
+        configureViewForEditingIfNeeded()
+        
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(applicationBecameInactive), name: UIApplication.willResignActiveNotification, object: nil)
         nc.addObserver(self, selector: #selector(applicationBecameActive), name: UIApplication.didBecomeActiveNotification, object: nil)
@@ -165,6 +166,7 @@ private extension TwoFAViewController {
     }
 
     func loginWithNonce(info nonceInfo: SocialLogin2FANonceInfo) {
+        configureViewLoading(true)
         let code = loginFields.multifactorCode
         let (authType, nonce) = nonceInfo.authTypeAndNonce(for: code)
         loginFacade.loginToWordPressDotCom(withUser: loginFields.nonceUserID, authType: authType, twoStepCode: code, twoStepNonce: nonce)

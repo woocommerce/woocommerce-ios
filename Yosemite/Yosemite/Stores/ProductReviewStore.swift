@@ -28,8 +28,13 @@ public final class ProductReviewStore: Store {
         switch action {
         case .resetStoredProductReviews(let onCompletion):
             resetStoredProductReviews(onCompletion: onCompletion)
-        case .synchronizeProductReviews(let siteID, let pageNumber, let pageSize, let onCompletion):
-            synchronizeProductReviews(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .synchronizeProductReviews(let siteID, let pageNumber, let pageSize, let products, let status, let onCompletion):
+            synchronizeProductReviews(siteID: siteID,
+                                      pageNumber: pageNumber,
+                                      pageSize: pageSize,
+                                      products: products,
+                                      status: status,
+                                      onCompletion: onCompletion)
         case .retrieveProductReview(let siteID, let reviewID, let onCompletion):
             retrieveProductReview(siteID: siteID, reviewID: reviewID, onCompletion: onCompletion)
         case .retrieveProductReviewFromNote(let noteID, let onCompletion):
@@ -62,10 +67,15 @@ private extension ProductReviewStore {
 
     /// Synchronizes the product reviews associated with a given Site ID (if any!).
     ///
-    func synchronizeProductReviews(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
+    func synchronizeProductReviews(siteID: Int64, pageNumber: Int, pageSize: Int, products: [Int64]? = nil, status: ProductReviewStatus? = nil,
+                                   onCompletion: @escaping (Error?) -> Void) {
         let remote = ProductReviewsRemote(network: network)
 
-        remote.loadAllProductReviews(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (productReviews, error) in
+        remote.loadAllProductReviews(for: siteID,
+                                     pageNumber: pageNumber,
+                                     pageSize: pageSize,
+                                     products: products,
+                                     status: status) { [weak self] (productReviews, error) in
             guard let productReviews = productReviews else {
                 onCompletion(error)
                 return

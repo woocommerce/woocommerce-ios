@@ -7,7 +7,12 @@ public enum ProductReviewAction: Action {
 
     /// Synchronizes the ProductReviews matching the specified criteria.
     ///
-    case synchronizeProductReviews(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)
+    case synchronizeProductReviews(siteID: Int64,
+        pageNumber: Int,
+        pageSize: Int,
+        products: [Int64]? = nil,
+        status: ProductReviewStatus? = nil,
+        onCompletion: (Error?) -> Void)
 
     /// Retrieves the specified ProductReview.
     ///

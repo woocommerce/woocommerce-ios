@@ -6,7 +6,7 @@ import class AutomatticTracks.CrashLogging
 
 
 final class ProductReviewsViewModel {
-    private let data: ProductReviewsDataSource
+    private let data: ReviewsDataSource
 
     var isEmpty: Bool {
         return data.isEmpty
@@ -20,7 +20,7 @@ final class ProductReviewsViewModel {
         return data
     }
 
-    init(data: ProductReviewsDataSource) {
+    init(data: ReviewsDataSource) {
         self.data = data
     }
 

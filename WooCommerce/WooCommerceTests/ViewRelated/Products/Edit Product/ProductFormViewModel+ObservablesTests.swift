@@ -25,8 +25,9 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
     func testObservablesFromEditActionsOfTheSameData() {
         // Arrange
         let product = MockProduct().product()
-        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: product)
-        let viewModel = ProductFormViewModel(product: product,
+        let model = EditableProductModel(product: product)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
+        let viewModel = ProductFormViewModel(product: model,
                                              productImageActionHandler: productImageActionHandler,
                                              isEditProductsRelease2Enabled: true,
                                              isEditProductsRelease3Enabled: false)
@@ -70,8 +71,9 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
     func testObservablesFromEditingProductName() {
         // Arrange
         let product = MockProduct().product()
-        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: product)
-        let viewModel = ProductFormViewModel(product: product,
+        let model = EditableProductModel(product: product)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
+        let viewModel = ProductFormViewModel(product: model,
                                              productImageActionHandler: productImageActionHandler,
                                              isEditProductsRelease2Enabled: true,
                                              isEditProductsRelease3Enabled: false)
@@ -111,8 +113,9 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
     func testObservablesFromEditingProductPassword() {
         // Arrange
         let product = MockProduct().product()
-        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: product)
-        let viewModel = ProductFormViewModel(product: product,
+        let model = EditableProductModel(product: product)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
+        let viewModel = ProductFormViewModel(product: model,
                                              productImageActionHandler: productImageActionHandler,
                                              isEditProductsRelease2Enabled: true,
                                              isEditProductsRelease3Enabled: false)
@@ -148,8 +151,9 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
     func testObservablesFromUpdatingProductPasswordRemotely() {
         // Arrange
         let product = MockProduct().product()
-        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: product)
-        let viewModel = ProductFormViewModel(product: product,
+        let model = EditableProductModel(product: product)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
+        let viewModel = ProductFormViewModel(product: model,
                                              productImageActionHandler: productImageActionHandler,
                                              isEditProductsRelease2Enabled: true,
                                              isEditProductsRelease3Enabled: false)
@@ -192,8 +196,9 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
     func testObservablesFromUploadingAnImage() {
         // Arrange
         let product = MockProduct().product()
-        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: product)
-        let viewModel = ProductFormViewModel(product: product,
+        let model = EditableProductModel(product: product)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
+        let viewModel = ProductFormViewModel(product: model,
                                              productImageActionHandler: productImageActionHandler,
                                              isEditProductsRelease2Enabled: true,
                                              isEditProductsRelease3Enabled: false)

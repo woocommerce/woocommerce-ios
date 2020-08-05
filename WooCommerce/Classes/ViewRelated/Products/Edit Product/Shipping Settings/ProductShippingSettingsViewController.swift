@@ -45,12 +45,12 @@ final class ProductShippingSettingsViewController: UIViewController {
 
         // TODO-2580: re-enable shipping class for `ProductVariation` when the API issue is fixed.
         switch product {
-        case is Product:
+        case is EditableProductModel:
             sections = [
                 Section(rows: [.weight, .length, .width, .height]),
                 Section(rows: [.shippingClass])
             ]
-        case is ProductVariation:
+        case is EditableProductVariationModel:
             sections = [
                 Section(rows: [.weight, .length, .width, .height])
             ]

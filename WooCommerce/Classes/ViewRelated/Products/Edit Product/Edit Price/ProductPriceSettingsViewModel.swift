@@ -142,7 +142,7 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
         let salesSection = Section(title: nil, rows: saleScheduleRows)
 
         switch product {
-        case is Product:
+        case is EditableProductModel:
             // Tax section
             let taxSection: Section
             taxSection = Section(title: Strings.taxSectionTitle,
@@ -152,7 +152,7 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
                 salesSection,
                 taxSection
             ]
-        case is ProductVariation:
+        case is EditableProductVariationModel:
             return [
                 priceSection,
                 salesSection

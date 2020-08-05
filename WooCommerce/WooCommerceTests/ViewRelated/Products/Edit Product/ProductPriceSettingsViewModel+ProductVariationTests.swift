@@ -11,8 +11,9 @@ final class ProductPriceSettingsViewModel_ProductVariationTests: XCTestCase {
         // Arrange
         let saleStartDate: Date? = nil
         let saleEndDate: Date? = nil
-        let product = MockProductVariation().productVariation().copy(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
-        let viewModel = ProductPriceSettingsViewModel(product: product)
+        let productVariation = MockProductVariation().productVariation().copy(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let viewModel = ProductPriceSettingsViewModel(product: model)
 
         // Act
         let sections = viewModel.sections
@@ -29,8 +30,9 @@ final class ProductPriceSettingsViewModel_ProductVariationTests: XCTestCase {
         // Arrange
         let saleStartDate: Date? = nil
         let saleEndDate = Date()
-        let product = MockProductVariation().productVariation().copy(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
-        let viewModel = ProductPriceSettingsViewModel(product: product)
+        let productVariation = MockProductVariation().productVariation().copy(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let viewModel = ProductPriceSettingsViewModel(product: model)
         let initialSections: [Section] = [
             Section(title: ProductPriceSettingsViewModel.Strings.priceSectionTitle, rows: [.price, .salePrice]),
             Section(title: nil, rows: [.scheduleSale, .scheduleSaleFrom, .scheduleSaleTo, .removeSaleTo]),
@@ -55,8 +57,9 @@ final class ProductPriceSettingsViewModel_ProductVariationTests: XCTestCase {
         // Arrange
         let saleStartDate: Date? = nil
         let saleEndDate = Date()
-        let product = MockProductVariation().productVariation().copy(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
-        let viewModel = ProductPriceSettingsViewModel(product: product)
+        let productVariation = MockProductVariation().productVariation().copy(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let viewModel = ProductPriceSettingsViewModel(product: model)
         let initialSections: [Section] = [
             Section(title: ProductPriceSettingsViewModel.Strings.priceSectionTitle, rows: [.price, .salePrice]),
             Section(title: nil, rows: [.scheduleSale, .scheduleSaleFrom, .scheduleSaleTo, .removeSaleTo]),

@@ -9,6 +9,23 @@ import Combine
 ///
 final class BehaviorSubjectTests: XCTestCase {
 
+    func test_it_keeps_the_initial_value() {
+        let subject = BehaviorSubject("dolorem")
+
+        XCTAssertEqual(subject.value, "dolorem")
+    }
+
+    func test_it_keeps_the_last_emitted_value() {
+        // Given
+        let subject = BehaviorSubject("dolorem")
+
+        // When
+        subject.send("autem")
+
+        // Then
+        XCTAssertEqual(subject.value, "autem")
+    }
+
     func test_it_will_emit_the_initial_value_to_an_observer() {
         // Given
         let subject = BehaviorSubject("dolorem")
@@ -121,6 +138,33 @@ final class BehaviorSubjectTests: XCTestCase {
     }
 
     // MARK: - Proof of Compatibility with Combine's CurrentValueSubject
+
+    func test_Combine_CurrentValueSubject_keeps_the_initial_value() throws {
+        guard #available(iOS 13.0, *) else {
+            try XCTSkipIf(true, "This test is for iOS 13.0+ only")
+            return
+        }
+
+        let subject = CurrentValueSubject<String, Error>("dolorem")
+
+        XCTAssertEqual(subject.value, "dolorem")
+    }
+
+    func test_Combine_CurrentValueSubject_keeps_the_last_emitted_value() throws {
+        guard #available(iOS 13.0, *) else {
+            try XCTSkipIf(true, "This test is for iOS 13.0+ only")
+            return
+        }
+
+        // Given
+        let subject = CurrentValueSubject<String, Error>("dolorem")
+
+        // When
+        subject.send("autem")
+
+        // Then
+        XCTAssertEqual(subject.value, "autem")
+    }
 
     func test_Combine_CurrentValueSubject_will_emit_the_initial_value_to_an_observer() throws {
         guard #available(iOS 13.0, *) else {

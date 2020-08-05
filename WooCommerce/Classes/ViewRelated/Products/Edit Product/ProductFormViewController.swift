@@ -229,6 +229,9 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             case .price:
                 ServiceLocator.analytics.track(.productDetailViewPriceSettingsTapped)
                 editPriceSettings()
+            case .reviews:
+                // TODO-2509 Edit Product M3 analytics
+                showReviews()
             case .shipping:
                 ServiceLocator.analytics.track(.productDetailViewShippingSettingsTapped)
                 editShippingSettings()
@@ -330,8 +333,12 @@ private extension ProductFormViewController {
                         tableView.register(cellType.loadNib(), forCellReuseIdentifier: cellType.reuseIdentifier)
                     }
                 }
-            default:
-                return
+            case .settings(let rows):
+                rows.forEach { row in
+                    row.cellTypes.forEach { cellType in
+                        tableView.register(cellType.loadNib(), forCellReuseIdentifier: cellType.reuseIdentifier)
+                    }
+                }
             }
         }
     }
@@ -775,6 +782,14 @@ private extension ProductFormViewController {
                                       dateOnSaleEnd: dateOnSaleEnd,
                                       taxStatus: taxStatus,
                                       taxClass: taxClass)
+    }
+}
+
+// MARK: Action - Show Product Reviews Settings
+//
+private extension ProductFormViewController {
+    func showReviews() {
+        // TODO: issue-2082 present Reviews Controller
     }
 }
 

@@ -154,7 +154,7 @@ private extension ProductDetailsViewController {
             ProductImagesHeaderTableViewCell.self,
             TitleBodyTableViewCell.self,
             TwoColumnTableViewCell.self,
-            ProductReviewsTableViewCell.self,
+            OldProductReviewsTableViewCell.self,
             WooBasicTableViewCell.self,
             ReadMoreTableViewCell.self
         ]

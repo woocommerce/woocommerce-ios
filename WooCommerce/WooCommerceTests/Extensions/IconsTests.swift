@@ -168,6 +168,16 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.priceImage)
     }
 
+    func testProductReviewsImageIsNotNil() {
+        XCTAssertNotNil(UIImage.productReviewsImage)
+    }
+
+    func testProductReviewsImageMatchesExpectedSize() {
+        let size = CGSize(width: 24, height: 24)
+        let image = UIImage.productReviewsImage
+        XCTAssertEqual(size, image.size)
+    }
+
     func testProductPlaceholderImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.productPlaceholderImage)
     }

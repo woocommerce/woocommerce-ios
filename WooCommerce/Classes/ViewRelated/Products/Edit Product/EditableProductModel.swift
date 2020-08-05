@@ -10,6 +10,7 @@ final class EditableProductModel {
 }
 
 extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
+
     var siteID: Int64 {
         product.siteID
     }
@@ -60,6 +61,14 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
 
     var taxClass: String? {
         product.taxClass
+    }
+
+    var averageRating: String {
+        product.averageRating
+    }
+
+    var ratingCount: Int {
+        product.ratingCount
     }
 
     var weight: String? {

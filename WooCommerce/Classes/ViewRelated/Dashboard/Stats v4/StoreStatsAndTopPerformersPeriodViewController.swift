@@ -66,6 +66,15 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     }()
 
     private lazy var inAppFeedbackCardViewController = InAppFeedbackCardViewController()
+    /// An array of UIViews for the In-app Feedback Card. This will be dynamically shown
+    /// or hidden depending on the configuration.
+    private lazy var inAppFeedbackCardViewsForStackView: [UIView] = {
+        let views = createInAppFeedbackCardViewsForStackView()
+        views.forEach {
+            $0.isHidden = true
+        }
+        return views
+    }()
 
     private lazy var topPerformersPeriodViewController: TopPerformerDataViewController = {
         return TopPerformerDataViewController(granularity: timeRange.topEarnerStatsGranularity)
@@ -186,10 +195,7 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
             ])
 
         // In-app Feedback Card
-        let inAppFeedbackCardViews = createInAppFeedbackCardViewsForStackView()
-        inAppFeedbackCardViews.forEach {
-            stackView.addArrangedSubview($0)
-        }
+        stackView.addArrangedSubviews(inAppFeedbackCardViewsForStackView)
 
         // Top performers header.
         let topPerformersHeaderView = TopPerformersSectionHeaderView(title:

@@ -102,6 +102,10 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
         product.soldIndividually
     }
 
+    func isStockStatusEnabled() -> Bool {
+        true
+    }
+
     // Visibility logic
 
     func allowsMultipleImages() -> Bool {

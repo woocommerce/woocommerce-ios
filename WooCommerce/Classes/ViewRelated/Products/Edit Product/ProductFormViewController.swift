@@ -260,8 +260,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 guard let product = product as? EditableProductModel, product.product.variations.isNotEmpty else {
                     return
                 }
-                let variationsViewController = ProductVariationsViewController(siteID: product.siteID,
-                                                                               productID: product.productID,
+                let variationsViewController = ProductVariationsViewController(product: product.product,
                                                                                isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
                 show(variationsViewController, sender: self)
             }

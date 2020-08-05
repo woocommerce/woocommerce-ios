@@ -709,8 +709,7 @@ extension ProductDetailsViewModel {
             WebviewHelper.launch(product.externalURL, with: sender)
         case .productVariants:
             ServiceLocator.analytics.track(.productDetailsProductVariantsTapped)
-            let variationsViewController = ProductVariationsViewController(siteID: product.siteID,
-                                                                           productID: product.productID,
+            let variationsViewController = ProductVariationsViewController(product: product,
                                                                            isEditProductsRelease3Enabled: false)
             sender.navigationController?.pushViewController(variationsViewController, animated: true)
         default:

@@ -247,16 +247,13 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
 
         WordPressAuthenticator.track(.twoFactorCodeRequested)
 
-        guard let vc = Login2FAViewController.instantiate(from: .login) else {
-            DDLogError("Failed to navigate from LoginViewController to Login2FAViewController")
+        guard WordPressAuthenticator.shared.configuration.enableUnifiedGoogle,
+            loginFields.meta.socialService == .google else {
+            presentLogin2FA()
             return
         }
 
-        vc.loginFields = loginFields
-        vc.dismissBlock = dismissBlock
-        vc.errorToPresent = errorToPresent
-
-        navigationController?.pushViewController(vc, animated: true)
+        presentUnified2FA()
     }
 
     // Update safari stored credentials. Call after a successful sign in.

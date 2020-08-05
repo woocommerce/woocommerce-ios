@@ -11,10 +11,7 @@ final class BehaviorSubjectTests: XCTestCase {
 
     func test_it_will_emit_the_initial_value_to_an_observer() {
         // Given
-        let subject = PublishSubject<String>()
-
-        #warning("replace with initial value call")
-        subject.send("dolorem")
+        let subject = BehaviorSubject("dolorem")
 
         // When
         var emittedValues = [String]()
@@ -28,10 +25,7 @@ final class BehaviorSubjectTests: XCTestCase {
 
     func test_it_will_emit_the_last_value_before_the_subscription() {
         // Given
-        let subject = PublishSubject<String>()
-
-        #warning("replace with initial value call")
-        subject.send("dolorem")
+        let subject = BehaviorSubject("dolorem")
 
         // This will be emitted instead of "dolorem" when the subscription happens below
         // because it's the last value.
@@ -49,10 +43,7 @@ final class BehaviorSubjectTests: XCTestCase {
 
     func test_it_will_emit_values_to_an_observer() {
         // Given
-        let subject = PublishSubject<String>()
-
-        #warning("replace with initial value call")
-        subject.send("consequatur")
+        let subject = BehaviorSubject("consequatur")
 
         var emittedValues = [String]()
         _ = subject.subscribe { value in
@@ -68,10 +59,7 @@ final class BehaviorSubjectTests: XCTestCase {
 
     func test_it_will_continuously_emit_values_to_an_observer() {
         // Given
-        let subject = PublishSubject<String>()
-
-        #warning("replace with initial value call")
-        subject.send("exercitationem")
+        let subject = BehaviorSubject("exercitationem")
 
         var emittedValues = [String]()
         _ = subject.subscribe { value in
@@ -89,10 +77,7 @@ final class BehaviorSubjectTests: XCTestCase {
 
     func test_it_will_emit_values_to_all_observers() {
         // Given
-        let subject = PublishSubject<String>()
-
-        #warning("replace with initial value call")
-        subject.send("provident")
+        let subject = BehaviorSubject("provident")
 
         var emittedValues = [String]()
 
@@ -116,11 +101,8 @@ final class BehaviorSubjectTests: XCTestCase {
 
     func test_it_will_not_emit_values_to_cancelled_observers() {
         // Given
-        let subject = PublishSubject<String>()
-
-        #warning("replace with initial value call")
         // "dicta" will be emitted because it is the initial value
-        subject.send("dicta")
+        let subject = BehaviorSubject("dicta")
 
         var emittedValues = [String]()
         let observationToken = subject.subscribe { value in

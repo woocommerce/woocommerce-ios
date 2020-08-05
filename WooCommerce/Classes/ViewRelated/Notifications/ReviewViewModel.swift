@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 
 final class ReviewViewModel {
+    let showProductTitle: Bool
     let review: ProductReview
     let product: Product?
     let notification: Note?
@@ -9,13 +10,22 @@ final class ReviewViewModel {
     let notIcon: String = "\u{f300}"
 
     lazy var subject: String? = {
-        let subjectUnformatted = NSLocalizedString(
+        let subjectUnformattedWithProductTitle = NSLocalizedString(
             "%1$@ left a review on %2$@",
             comment: "Review title. Reads as {Review author} left a review on {Product}."
         )
+        let subjectUnformatted = NSLocalizedString(
+            "%1$@ left a review",
+            comment: "Review title. Reads as {Review author} left a review"
+        )
 
-        let formattedSubject = String(format: subjectUnformatted, self.reviewerName, product?.name ?? "")
-
+        var formattedSubject = ""
+        if showProductTitle {
+            formattedSubject = String(format: subjectUnformattedWithProductTitle, self.reviewerName, product?.name ?? "")
+        }
+        else {
+            formattedSubject = String(format: subjectUnformatted, self.reviewerName)
+        }
         return formattedSubject
     }()
 
@@ -71,7 +81,8 @@ final class ReviewViewModel {
         return review.status == .hold
     }
 
-    init(review: ProductReview, product: Product?, notification: Note?) {
+    init(showProductTitle: Bool = true, review: ProductReview, product: Product?, notification: Note?) {
+        self.showProductTitle = showProductTitle
         self.review = review
         self.product = product
         self.notification = notification

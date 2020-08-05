@@ -145,7 +145,7 @@ private extension ProductReviewsDataSource {
     private func reviewViewModel(at indexPath: IndexPath) -> ReviewViewModel {
         let review = reviewsResultsController.object(at: indexPath)
 
-        return ReviewViewModel(review: review, product: product, notification: nil)
+        return ReviewViewModel(showProductTitle: false, review: review, product: product, notification: nil)
     }
 }
 

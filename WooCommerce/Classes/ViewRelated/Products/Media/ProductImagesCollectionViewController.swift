@@ -10,12 +10,12 @@ final class ProductImagesCollectionViewController: UICollectionViewController {
 
     private let isDeletionEnabled: Bool
     private let productUIImageLoader: ProductUIImageLoader
-    private let onDeletion: ProductImageViewController.Deletion
+    private let onDeletion: ProductImagesGalleryViewController.Deletion
 
     init(imageStatuses: [ProductImageStatus],
          isDeletionEnabled: Bool,
          productUIImageLoader: ProductUIImageLoader,
-         onDeletion: @escaping ProductImageViewController.Deletion) {
+         onDeletion: @escaping ProductImagesGalleryViewController.Deletion) {
         self.productImageStatuses = imageStatuses
         self.isDeletionEnabled = isDeletionEnabled
         self.productUIImageLoader = productUIImageLoader
@@ -117,16 +117,18 @@ extension ProductImagesCollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let status = productImageStatuses[indexPath.row]
         switch status {
-        case .remote(let productImage):
-            let productImageViewController = ProductImageViewController(productImage: productImage,
-                                                                        isDeletionEnabled: isDeletionEnabled,
-                                                                        productUIImageLoader: productUIImageLoader,
-                                                                        onDeletion: { [weak self] productImage in
-                                                                            self?.onDeletion(productImage)
-            })
-            navigationController?.pushViewController(productImageViewController, animated: true)
+        case .remote:
+            break
         default:
             return
         }
+
+        let productImagesGalleryViewController = ProductImagesGalleryViewController(images: productImageStatuses.images,
+                                                                                    selectedIndex: indexPath.row,
+                                                                                    isDeletionEnabled: isDeletionEnabled,
+                                                                                    productUIImageLoader: productUIImageLoader) { [weak self] (productImage) in
+                                                                                        self?.onDeletion(productImage)
+        }
+        navigationController?.show(productImagesGalleryViewController, sender: self)
     }
 }

@@ -99,8 +99,6 @@
 		0235595524496B6D004BE2B8 /* BottomSheetListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0235595424496B6D004BE2B8 /* BottomSheetListSelectorCommand.swift */; };
 		0235595924496D70004BE2B8 /* ProductsSortOrderBottomSheetListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0235595824496D70004BE2B8 /* ProductsSortOrderBottomSheetListSelectorCommand.swift */; };
 		0235595B24496E88004BE2B8 /* BottomSheetListSelectorViewController+DrawerPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0235595A24496E88004BE2B8 /* BottomSheetListSelectorViewController+DrawerPresentable.swift */; };
-		02357B2A23CDB3E300147C2B /* ProductImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02357B2823CDB3E300147C2B /* ProductImageViewController.swift */; };
-		02357B2B23CDB3E300147C2B /* ProductImageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02357B2923CDB3E300147C2B /* ProductImageViewController.xib */; };
 		0235BFD9246E959500778909 /* ProductFormActionsFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0235BFD8246E959500778909 /* ProductFormActionsFactory.swift */; };
 		0235BFDB246E99A700778909 /* ProductFormActionsFactory+NonEmptyBottomSheetActionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0235BFDA246E99A700778909 /* ProductFormActionsFactory+NonEmptyBottomSheetActionsTests.swift */; };
 		02396251239948470096F34C /* UIImage+TintColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02396250239948470096F34C /* UIImage+TintColor.swift */; };
@@ -310,6 +308,8 @@
 		4506BD722461965300FE6377 /* ProductVisibilityViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4506BD702461965300FE6377 /* ProductVisibilityViewController.xib */; };
 		450C2CB024CF006A00D570DD /* ProductTagsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450C2CAF24CF006A00D570DD /* ProductTagsDataSource.swift */; };
 		450C2CB324D0803000D570DD /* ProductSettingsRowsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450C2CB224D0803000D570DD /* ProductSettingsRowsTests.swift */; };
+		450C2CB624D1ABB200D570DD /* ProductImagesGalleryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450C2CB424D1ABB100D570DD /* ProductImagesGalleryViewController.swift */; };
+		450C2CB724D1ABB200D570DD /* ProductImagesGalleryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 450C2CB524D1ABB200D570DD /* ProductImagesGalleryViewController.xib */; };
 		4512054F2464741B005D68DE /* ProductVisibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4512054E2464741B005D68DE /* ProductVisibility.swift */; };
 		4512055224655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4512055024655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.swift */; };
 		4512055324655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4512055124655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.xib */; };
@@ -1012,8 +1012,6 @@
 		0235595424496B6D004BE2B8 /* BottomSheetListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetListSelectorCommand.swift; sourceTree = "<group>"; };
 		0235595824496D70004BE2B8 /* ProductsSortOrderBottomSheetListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsSortOrderBottomSheetListSelectorCommand.swift; sourceTree = "<group>"; };
 		0235595A24496E88004BE2B8 /* BottomSheetListSelectorViewController+DrawerPresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BottomSheetListSelectorViewController+DrawerPresentable.swift"; sourceTree = "<group>"; };
-		02357B2823CDB3E300147C2B /* ProductImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageViewController.swift; sourceTree = "<group>"; };
-		02357B2923CDB3E300147C2B /* ProductImageViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductImageViewController.xib; sourceTree = "<group>"; };
 		0235BFD8246E959500778909 /* ProductFormActionsFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormActionsFactory.swift; sourceTree = "<group>"; };
 		0235BFDA246E99A700778909 /* ProductFormActionsFactory+NonEmptyBottomSheetActionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormActionsFactory+NonEmptyBottomSheetActionsTests.swift"; sourceTree = "<group>"; };
 		02396250239948470096F34C /* UIImage+TintColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+TintColor.swift"; sourceTree = "<group>"; };
@@ -1226,6 +1224,8 @@
 		4506BD702461965300FE6377 /* ProductVisibilityViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductVisibilityViewController.xib; sourceTree = "<group>"; };
 		450C2CAF24CF006A00D570DD /* ProductTagsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagsDataSource.swift; sourceTree = "<group>"; };
 		450C2CB224D0803000D570DD /* ProductSettingsRowsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSettingsRowsTests.swift; sourceTree = "<group>"; };
+		450C2CB424D1ABB100D570DD /* ProductImagesGalleryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesGalleryViewController.swift; sourceTree = "<group>"; };
+		450C2CB524D1ABB200D570DD /* ProductImagesGalleryViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductImagesGalleryViewController.xib; sourceTree = "<group>"; };
 		4512054E2464741B005D68DE /* ProductVisibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVisibility.swift; sourceTree = "<group>"; };
 		4512055024655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndTextFieldWithImageTableViewCell.swift; sourceTree = "<group>"; };
 		4512055124655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TitleAndTextFieldWithImageTableViewCell.xib; sourceTree = "<group>"; };
@@ -2285,8 +2285,8 @@
 				0286B27623C7051F003D784B /* ProductImagesCollectionViewController.xib */,
 				0286B27923C7051F003D784B /* ProductImagesViewController.swift */,
 				0286B27823C7051F003D784B /* ProductImagesViewController.xib */,
-				02357B2823CDB3E300147C2B /* ProductImageViewController.swift */,
-				02357B2923CDB3E300147C2B /* ProductImageViewController.xib */,
+				450C2CB424D1ABB100D570DD /* ProductImagesGalleryViewController.swift */,
+				450C2CB524D1ABB200D570DD /* ProductImagesGalleryViewController.xib */,
 				02E8B17B23E2C78A00A43403 /* ProductImageStatus.swift */,
 				02E8B17D23E2C8D900A43403 /* ProductImageActionHandler.swift */,
 				024EFA6823FCC10B00F36918 /* Product+Media.swift */,
@@ -4465,6 +4465,7 @@
 				B56DB3D72049BFAA00D4AA8E /* LaunchScreen.storyboard in Resources */,
 				CE583A0C2107937F00D73C1C /* TextViewTableViewCell.xib in Resources */,
 				D843D5CC22437E59001BFA55 /* TitleAndEditableValueTableViewCell.xib in Resources */,
+				450C2CB724D1ABB200D570DD /* ProductImagesGalleryViewController.xib in Resources */,
 				02EEB5C52424AFAA00B8A701 /* TextFieldTableViewCell.xib in Resources */,
 				B560D68A2195BD100027BB7E /* NoteDetailsCommentTableViewCell.xib in Resources */,
 				CE0F17D022A8105800964A63 /* ReadMoreTableViewCell.xib in Resources */,
@@ -4576,7 +4577,6 @@
 				CE21B3E120FFC59700A259D5 /* ProductDetailsTableViewCell.xib in Resources */,
 				CE35F11C2343F3B1007B2A6B /* TwoColumnHeadlineFootnoteTableViewCell.xib in Resources */,
 				451A04E72386CE8700E368C9 /* ProductImagesHeaderTableViewCell.xib in Resources */,
-				02357B2B23CDB3E300147C2B /* ProductImageViewController.xib in Resources */,
 				CE85FD5320F677770080B73E /* Dashboard.storyboard in Resources */,
 				B56DB3CF2049BFAA00D4AA8E /* Main.storyboard in Resources */,
 				02C8876E24501FAC00E4470F /* FilterListViewController.xib in Resources */,
@@ -4911,6 +4911,7 @@
 				0240B3AC230A910C000A866C /* StoreStatsV4ChartAxisHelper.swift in Sources */,
 				74D0A5302139CF1300E2919F /* String+Helpers.swift in Sources */,
 				0286B27F23C70557003D784B /* ColumnFlowLayout.swift in Sources */,
+				450C2CB624D1ABB200D570DD /* ProductImagesGalleryViewController.swift in Sources */,
 				7435E58E21C0151B00216F0F /* OrderNote+Woo.swift in Sources */,
 				451A04F42386F7C900E368C9 /* AddProductImageCollectionViewCell.swift in Sources */,
 				D843D5CB22437E59001BFA55 /* TitleAndEditableValueTableViewCell.swift in Sources */,
@@ -4976,7 +4977,6 @@
 				B5DBF3CB20E149CC00B53AED /* AuthenticatedState.swift in Sources */,
 				02EA6BF82435E80600FFF90A /* ImageDownloader.swift in Sources */,
 				CECC758623D21AC200486676 /* AggregateOrderItem.swift in Sources */,
-				02357B2A23CDB3E300147C2B /* ProductImageViewController.swift in Sources */,
 				B53B3F39219C817800DF1EB6 /* UIStoryboard+Woo.swift in Sources */,
 				021E2A1723A9FE5A00B1DE07 /* ProductInventorySettingsViewController.swift in Sources */,
 				020F41E823176F8E00776C4D /* TopBannerPresenter.swift in Sources */,

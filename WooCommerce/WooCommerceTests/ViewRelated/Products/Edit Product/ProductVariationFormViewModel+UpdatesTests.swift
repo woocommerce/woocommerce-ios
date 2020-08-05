@@ -129,8 +129,9 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
     func testDisablingAVariationUpdatesItsStatusFromPublishToPrivate() {
         // Arrange
         let productVariation = MockProductVariation().productVariation().copy(status: .publish)
-        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: productVariation)
-        let viewModel = ProductVariationFormViewModel(productVariation: productVariation, productImageActionHandler: productImageActionHandler)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
+        let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
 
         // Action
         viewModel.updateStatus(false)
@@ -142,8 +143,9 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
     func testEnablingAVariationUpdatesItsStatusFromPrivateToPublish() {
         // Arrange
         let productVariation = MockProductVariation().productVariation().copy(status: .privateStatus)
-        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: productVariation)
-        let viewModel = ProductVariationFormViewModel(productVariation: productVariation, productImageActionHandler: productImageActionHandler)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
+        let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
 
         // Action
         viewModel.updateStatus(true)

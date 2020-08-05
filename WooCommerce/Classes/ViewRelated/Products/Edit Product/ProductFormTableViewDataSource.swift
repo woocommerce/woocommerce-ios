@@ -84,6 +84,8 @@ private extension ProductFormTableViewDataSource {
             configureImages(cell: cell)
         case .name(let name, let isEditable):
             configureName(cell: cell, name: name, isEditable: isEditable)
+        case .variationName(let name):
+            configureVariationName(cell: cell, name: name)
         case .description(let description):
             configureDescription(cell: cell, description: description)
         }
@@ -151,6 +153,18 @@ private extension ProductFormTableViewDataSource {
         cell.textLabel?.text = name
         cell.textLabel?.applyHeadlineStyle()
         cell.textLabel?.textColor = .text
+    }
+
+    func configureVariationName(cell: UITableViewCell, name: String) {
+        guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {
+            fatalError()
+        }
+        let title = NSLocalizedString("Selected Attributes",
+                                      comment: "Title of the selected attributes as the name for a product variation on Product Variation form screen.")
+        let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: title, text: name)
+        cell.updateUI(viewModel: viewModel)
+        cell.accessoryType = .none
+        cell.selectionStyle = .none
     }
 
     func configureDescription(cell: UITableViewCell, description: String?) {

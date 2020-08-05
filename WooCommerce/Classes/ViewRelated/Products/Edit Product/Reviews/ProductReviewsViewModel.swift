@@ -20,14 +20,6 @@ final class ProductReviewsViewModel {
         return data
     }
 
-    var hasUnreadNotifications: Bool {
-        return unreadNotifications.count != 0
-    }
-
-    private var unreadNotifications: [Note] {
-        return data.notifications.filter { $0.read == false }
-    }
-
     init(data: ProductReviewsDataSource) {
         self.data = data
     }

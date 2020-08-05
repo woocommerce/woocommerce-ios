@@ -91,9 +91,12 @@ final class ProductInventorySettingsViewModel: ProductInventorySettingsViewModel
     private var skuIsValid: Bool = true
     private lazy var throttler: Throttler = Throttler(seconds: 0.5)
 
-    init(formType: FormType, productModel: ProductFormDataModel) {
+    private let stores: StoresManager
+
+    init(formType: FormType, productModel: ProductFormDataModel, stores: StoresManager = ServiceLocator.stores) {
         self.formType = formType
         self.productModel = productModel
+        self.stores = stores
         self.siteID = productModel.siteID
 
         self.sku = productModel.sku
@@ -126,7 +129,7 @@ extension ProductInventorySettingsViewModel: ProductInventorySettingsActionHandl
         // Throttled API call
         let siteID = self.siteID
         throttler.throttle {
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in
                 let action = ProductAction.validateProductSKU(sku, siteID: siteID) { [weak self] isValid in
                     guard let self = self else {
                         return
@@ -142,7 +145,7 @@ extension ProductInventorySettingsViewModel: ProductInventorySettingsActionHandl
                     onValidation(true, false)
                 }
 
-                ServiceLocator.stores.dispatch(action)
+                self?.stores.dispatch(action)
             }
         }
     }

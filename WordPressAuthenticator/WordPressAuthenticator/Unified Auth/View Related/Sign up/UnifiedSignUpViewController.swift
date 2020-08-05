@@ -141,11 +141,10 @@ private extension UnifiedSignUpViewController {
         }
     }
 
-    /// Configure the gravtar + email cell.
+    /// Configure the gravatar + email cell.
     ///
     func configureGravatarEmail(_ cell: GravatarEmailTableViewCell) {
-        let gridicon = UIImage.gridicon(.userCircle, size: Constants.gridiconSize)
-        cell.configureImage(gridicon, text: loginFields.username)
+        cell.configure(withEmail: loginFields.username)
     }
 
     /// Configure the instruction cell.
@@ -195,9 +194,6 @@ private extension UnifiedSignUpViewController {
         }
     }
 
-    struct Constants {
-        static let gridiconSize = CGSize(width: 48, height: 48)
-    }
 }
 
 

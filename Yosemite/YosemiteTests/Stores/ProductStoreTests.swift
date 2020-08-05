@@ -1075,6 +1075,31 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
     }
 
+    /// Verifies that ProductAction.retrieveProducts with a page number and size makes a network request that includes these params.
+    ///
+    func testRetrievingProductsMakesANetworkRequestWithTheExpectedPageNumberAndSize() {
+        // Arrange
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // Action
+        let pageNumber = 6
+        let pageSize = 36
+        let action = ProductAction.retrieveProducts(siteID: sampleSiteID, productIDs: [sampleProductID], pageNumber: pageNumber, pageSize: pageSize) { _ in }
+        productStore.onAction(action)
+
+        // Assert
+        guard let pathComponents = network.pathComponents else {
+            XCTFail("Cannot parse path from the API request")
+            return
+        }
+
+        let expectedPageNumberParam = "page=\(pageNumber)"
+        XCTAssertTrue(pathComponents.contains(expectedPageNumberParam), "Expected to have param: \(expectedPageNumberParam)")
+
+        let expectedPageSizeParam = "per_page=\(pageSize)"
+        XCTAssertTrue(pathComponents.contains(expectedPageSizeParam), "Expected to have param: \(expectedPageSizeParam)")
+    }
+
     /// Verifies that ProductAction.retrieveProducts always returns an empty result for an empty array of product IDs.
     ///
     func testRetrievingProductsWithEmptyIDsReturnsAnEmptyResult() {

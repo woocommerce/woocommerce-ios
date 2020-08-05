@@ -9,9 +9,10 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
     func testDataHasNoEditProductsRelease2And3ActionsForAPhysicalProductWhenBothFeatureFlagsAreOff() {
         // Arrange
         let product = Fixtures.physicalProduct
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: false,
                                                 isEditProductsRelease3Enabled: false)
 
@@ -26,9 +27,10 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
     func testDataHasNoEditProductsRelease2And3AndShippingActionsForAVirtualProductWhenBothFeatureFlagsAreOff() {
         // Arrange
         let product = Fixtures.virtualProduct
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: false,
                                                 isEditProductsRelease3Enabled: false)
 
@@ -43,9 +45,10 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
     func testDataHasNoEditProductsRelease2And3AndShippingActionsForADownloadableProductWhenBothFeatureFlagsAreOff() {
         // Arrange
         let product = Fixtures.downloadableProduct
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: false,
                                                 isEditProductsRelease3Enabled: false)
 
@@ -62,9 +65,10 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
     func testDataHasNoEditProductsRelease3ActionsForAPhysicalProductWhenM3FeatureFlagIsOff() {
         // Arrange
         let product = Fixtures.physicalProduct
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: false)
 
@@ -79,9 +83,10 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
     func testDataHasNoEditProductsRelease3AndShippingActionsForAVirtualProductWhenM3FeatureFlagIsOff() {
         // Arrange
         let product = Fixtures.virtualProduct
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: false)
 
@@ -96,9 +101,10 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
     func testDataHasNoEditProductsRelease3AndShippingActionsForADownloadableProductWhenM3FeatureFlagIsOff() {
         // Arrange
         let product = Fixtures.downloadableProduct
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: false)
 
@@ -115,9 +121,10 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
     func testDataHasEditProductsRelease3ActionsForAPhysicalProductWhenBothFeatureFlagsAreOn() {
         // Arrange
         let product = Fixtures.physicalProduct
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
@@ -136,9 +143,10 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
     func testDataHasEditProductsRelease3ButNoShippingActionsForAVirtualProductWhenBothFeatureFlagsAreOn() {
         // Arrange
         let product = Fixtures.virtualProduct
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
@@ -153,9 +161,10 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
     func testDataHasEditProductsRelease3ButNoShippingActionsForADownloadableProductWhenBothFeatureFlagsAreOn() {
         // Arrange
         let product = Fixtures.downloadableProduct
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 

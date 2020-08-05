@@ -10,9 +10,10 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                             name: "woo",
                                             productType: .simple,
                                             virtual: false)
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: false,
                                                 isEditProductsRelease3Enabled: false)
 
@@ -34,9 +35,10 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                             productType: .simple,
                                             virtual: true,
                                             images: sampleImages())
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: false,
                                                 isEditProductsRelease3Enabled: false)
 
@@ -56,9 +58,10 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let product = MockProduct().product(downloadable: true,
                                             name: "woo",
                                             productType: .simple)
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: false,
                                                 isEditProductsRelease3Enabled: false)
 
@@ -79,9 +82,10 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                             name: "woo",
                                             productType: .simple,
                                             virtual: true)
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: false,
                                                 isEditProductsRelease3Enabled: false)
 

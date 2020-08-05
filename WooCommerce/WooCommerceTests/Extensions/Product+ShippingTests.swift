@@ -7,16 +7,19 @@ final class Product_ShippingTests: XCTestCase {
 
     func testShippingIsEnabledForAPhysicalProduct() {
         let product = MockProduct().product(downloadable: false, virtual: false)
-        XCTAssertTrue(product.isShippingEnabled)
+        let model = EditableProductModel(product: product)
+        XCTAssertTrue(model.isShippingEnabled())
     }
 
     func testShippingIsDisabledForADownloadableProduct() {
         let product = MockProduct().product(downloadable: true, virtual: false)
-        XCTAssertFalse(product.isShippingEnabled)
+        let model = EditableProductModel(product: product)
+        XCTAssertFalse(model.isShippingEnabled())
     }
 
     func testShippingIsDisabledForAVirtualProduct() {
         let product = MockProduct().product(downloadable: false, virtual: true)
-        XCTAssertFalse(product.isShippingEnabled)
+        let model = EditableProductModel(product: product)
+        XCTAssertFalse(model.isShippingEnabled())
     }
 }

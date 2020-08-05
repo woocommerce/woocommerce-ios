@@ -7,9 +7,10 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
     func testActionsForAPhysicalProductVariationWithoutImages() {
         // Arrange
         let productVariation = Fixtures.physicalProductVariationWithoutImages
+        let model = EditableProductVariationModel(productVariation: productVariation)
 
         // Action
-        let factory = ProductVariationFormActionsFactory(productVariation: productVariation)
+        let factory = ProductVariationFormActionsFactory(productVariation: model)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
@@ -27,9 +28,10 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
     func testActionsForAPhysicalProductVariationWithImages() {
         // Arrange
         let productVariation = Fixtures.physicalProductVariationWithImages
+        let model = EditableProductVariationModel(productVariation: productVariation)
 
         // Action
-        let factory = ProductVariationFormActionsFactory(productVariation: productVariation)
+        let factory = ProductVariationFormActionsFactory(productVariation: model)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
@@ -47,9 +49,10 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
     func testActionsForAPhysicalProductVariationWithImagesMissingShippingData() {
         // Arrange
         let productVariation = Fixtures.physicalProductVariationWithImagesWithoutShipping
+        let model = EditableProductVariationModel(productVariation: productVariation)
 
         // Action
-        let factory = ProductVariationFormActionsFactory(productVariation: productVariation)
+        let factory = ProductVariationFormActionsFactory(productVariation: model)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
@@ -66,9 +69,10 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
     func testActionsForADownloadableProductVariation() {
         // Arrange
         let productVariation = Fixtures.downloadableProductVariation
+        let model = EditableProductVariationModel(productVariation: productVariation)
 
         // Action
-        let factory = ProductVariationFormActionsFactory(productVariation: productVariation)
+        let factory = ProductVariationFormActionsFactory(productVariation: model)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
@@ -84,9 +88,10 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
     func testActionsForAVirtualProductVariation() {
         // Arrange
         let productVariation = Fixtures.virtualProductVariation
+        let model = EditableProductVariationModel(productVariation: productVariation)
 
         // Action
-        let factory = ProductVariationFormActionsFactory(productVariation: productVariation)
+        let factory = ProductVariationFormActionsFactory(productVariation: model)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]

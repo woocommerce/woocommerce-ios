@@ -227,12 +227,13 @@ extension ProductVariationsViewController: UITableViewDelegate {
 
         if isEditProductsRelease3Enabled {
             let productVariation = resultsController.object(at: indexPath)
+            let model = EditableProductVariationModel(productVariation: productVariation)
 
             let currencyCode = CurrencySettings.shared.currencyCode
             let currency = CurrencySettings.shared.symbol(from: currencyCode)
             let productImageActionHandler = ProductImageActionHandler(siteID: productVariation.siteID,
-                                                                      product: productVariation)
-            let viewModel = ProductVariationFormViewModel(productVariation: productVariation,
+                                                                      product: model)
+            let viewModel = ProductVariationFormViewModel(productVariation: model,
                                                           productImageActionHandler: productImageActionHandler)
             let viewController = ProductFormViewController(viewModel: viewModel,
                                                            productImageActionHandler: productImageActionHandler,

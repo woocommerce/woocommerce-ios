@@ -260,7 +260,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 break
             case .variations:
                 // TODO-2509 Edit Product M3 analytics
-                guard let product = product as? Product, product.variations.isNotEmpty else {
+                guard let product = product as? EditableProductModel, product.product.variations.isNotEmpty else {
                     return
                 }
                 let variationsViewController = ProductVariationsViewController(siteID: product.siteID,
@@ -584,11 +584,11 @@ private extension ProductFormViewController {
     }
 
     func displayProductSettings() {
-        guard let product = product as? Product else {
+        guard let product = product as? EditableProductModel else {
             return
         }
 
-        let viewController = ProductSettingsViewController(product: product, password: password, completion: { [weak self] (productSettings) in
+        let viewController = ProductSettingsViewController(product: product.product, password: password, completion: { [weak self] (productSettings) in
             guard let self = self else {
                 return
             }
@@ -880,18 +880,18 @@ private extension ProductFormViewController {
 
 private extension ProductFormViewController {
     func editCategories() {
-        guard let product = product as? Product else {
+        guard let product = product as? EditableProductModel else {
             return
         }
 
-        let categoryListViewController = ProductCategoryListViewController(product: product) { [weak self] (categories) in
+        let categoryListViewController = ProductCategoryListViewController(product: product.product) { [weak self] (categories) in
             self?.onEditCategoriesCompletion(categories: categories)
         }
         show(categoryListViewController, sender: self)
     }
 
     func onEditCategoriesCompletion(categories: [ProductCategory]) {
-        guard let product = product as? Product else {
+        guard let product = product as? EditableProductModel else {
             return
         }
 
@@ -899,7 +899,7 @@ private extension ProductFormViewController {
             navigationController?.popViewController(animated: true)
         }
         //TODO: Edit Product M3 analytics
-        let hasChangedData = categories.sorted() != product.categories.sorted()
+        let hasChangedData = categories.sorted() != product.product.categories.sorted()
         guard hasChangedData else {
             return
         }
@@ -912,18 +912,18 @@ private extension ProductFormViewController {
 
 private extension ProductFormViewController {
     func editTags() {
-        guard let product = product as? Product else {
+        guard let product = product as? EditableProductModel else {
             return
         }
 
-        let tagsViewController = ProductTagsViewController(product: product) { [weak self] (tags) in
+        let tagsViewController = ProductTagsViewController(product: product.product) { [weak self] (tags) in
             self?.onEditTagsCompletion(tags: tags)
         }
         show(tagsViewController, sender: self)
     }
 
     func onEditTagsCompletion(tags: [ProductTag]) {
-        guard let product = product as? Product else {
+        guard let product = product as? EditableProductModel else {
             return
         }
 
@@ -931,7 +931,7 @@ private extension ProductFormViewController {
             navigationController?.popViewController(animated: true)
         }
         // TODO-2509: Edit Product M3 analytics
-        let hasChangedData = tags.sorted() != product.tags.sorted()
+        let hasChangedData = tags.sorted() != product.product.tags.sorted()
         guard hasChangedData else {
             return
         }
@@ -943,7 +943,7 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func editSKU() {
-        guard let product = product as? Product else {
+        guard let product = product as? EditableProductModel else {
             return
         }
 
@@ -970,18 +970,18 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func editGroupedProducts() {
-        guard let product = product as? Product else {
+        guard let product = product as? EditableProductModel else {
             return
         }
 
-        let viewController = GroupedProductsViewController(product: product) { [weak self] groupedProductIDs in
+        let viewController = GroupedProductsViewController(product: product.product) { [weak self] groupedProductIDs in
             self?.onEditGroupedProductsCompletion(groupedProductIDs: groupedProductIDs)
         }
         show(viewController, sender: self)
     }
 
     func onEditGroupedProductsCompletion(groupedProductIDs: [Int64]) {
-        guard let product = product as? Product else {
+        guard let product = product as? EditableProductModel else {
             return
         }
 
@@ -989,7 +989,7 @@ private extension ProductFormViewController {
             navigationController?.popViewController(animated: true)
         }
         // TODO-2000: Edit Product M3 analytics
-        let hasChangedData = groupedProductIDs != product.groupedProducts
+        let hasChangedData = groupedProductIDs != product.product.groupedProducts
         guard hasChangedData else {
             return
         }
@@ -1001,18 +1001,18 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func editExternalLink() {
-        guard let product = product as? Product else {
+        guard let product = product as? EditableProductModel else {
             return
         }
 
-        let viewController = ProductExternalLinkViewController(product: product) { [weak self] externalURL, buttonText in
+        let viewController = ProductExternalLinkViewController(product: product.product) { [weak self] externalURL, buttonText in
             self?.onEditExternalLinkCompletion(externalURL: externalURL, buttonText: buttonText)
         }
         show(viewController, sender: self)
     }
 
     func onEditExternalLinkCompletion(externalURL: String?, buttonText: String) {
-        guard let product = product as? Product else {
+        guard let product = product as? EditableProductModel else {
             return
         }
 
@@ -1020,7 +1020,7 @@ private extension ProductFormViewController {
             navigationController?.popViewController(animated: true)
         }
         // TODO-2000: Edit Product M3 analytics
-        let hasChangedData = externalURL != product.externalURL || buttonText != product.buttonText
+        let hasChangedData = externalURL != product.product.externalURL || buttonText != product.product.buttonText
         guard hasChangedData else {
             return
         }

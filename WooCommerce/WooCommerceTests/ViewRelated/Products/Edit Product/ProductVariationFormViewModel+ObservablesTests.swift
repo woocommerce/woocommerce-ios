@@ -25,10 +25,11 @@ final class ProductVariationFormViewModel_ObservablesTests: XCTestCase {
     func testProductVariationNameObservableIsNil() {
         // Arrange
         let productVariation = MockProductVariation().productVariation()
-        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: productVariation)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
 
         // Action
-        let viewModel = ProductVariationFormViewModel(productVariation: productVariation, productImageActionHandler: productImageActionHandler)
+        let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
 
         // Assert
         XCTAssertNil(viewModel.productName)
@@ -37,8 +38,9 @@ final class ProductVariationFormViewModel_ObservablesTests: XCTestCase {
     func testObservablesAreNotEmittedFromEditActionsOfTheSameData() {
         // Arrange
         let productVariation = MockProductVariation().productVariation()
-        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: productVariation)
-        let viewModel = ProductVariationFormViewModel(productVariation: productVariation, productImageActionHandler: productImageActionHandler)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
+        let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
         cancellableProduct = viewModel.observableProduct.subscribe { _ in
             // Assert
             XCTFail("Should not be triggered from edit actions of the same data")
@@ -49,19 +51,19 @@ final class ProductVariationFormViewModel_ObservablesTests: XCTestCase {
         }
 
         // Action
-        viewModel.updateImages(productVariation.images)
+        viewModel.updateImages(model.images)
         viewModel.updateDescription(productVariation.description ?? "")
         viewModel.updatePriceSettings(regularPrice: productVariation.regularPrice,
                                       salePrice: productVariation.salePrice,
                                       dateOnSaleStart: productVariation.dateOnSaleStart,
                                       dateOnSaleEnd: productVariation.dateOnSaleEnd,
-                                      taxStatus: productVariation.productTaxStatus,
+                                      taxStatus: model.productTaxStatus,
                                       taxClass: nil)
         viewModel.updateInventorySettings(sku: productVariation.sku,
                                           manageStock: productVariation.manageStock,
                                           soldIndividually: nil,
                                           stockQuantity: productVariation.stockQuantity,
-                                          backordersSetting: productVariation.backordersSetting,
+                                          backordersSetting: model.backordersSetting,
                                           stockStatus: productVariation.stockStatus)
         viewModel.updateShippingSettings(weight: productVariation.weight, dimensions: productVariation.dimensions, shippingClass: nil)
     }
@@ -69,8 +71,9 @@ final class ProductVariationFormViewModel_ObservablesTests: XCTestCase {
     func testObservablesFromUploadingAnImage() {
         // Arrange
         let productVariation = MockProductVariation().productVariation()
-        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: productVariation)
-        let viewModel = ProductVariationFormViewModel(productVariation: productVariation, productImageActionHandler: productImageActionHandler)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
+        let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
         var isProductUpdated: Bool?
         cancellableProduct = viewModel.observableProduct.subscribe { product in
             isProductUpdated = true
@@ -94,11 +97,13 @@ final class ProductVariationFormViewModel_ObservablesTests: XCTestCase {
     func testObservablesFromUpdatingAVariationSuccessfully() {
         // Arrange
         let productVariation = MockProductVariation().productVariation()
-        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: productVariation)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let newDescription = "Woo!"
         let expectedProductVariationAfterUpdate = productVariation.copy(description: newDescription)
+        let expectedModelAfterUpdate = EditableProductVariationModel(productVariation: expectedProductVariationAfterUpdate)
         let mockStoresManager = MockProductVariationStoresManager(updateResult: .success(expectedProductVariationAfterUpdate))
-        let viewModel = ProductVariationFormViewModel(productVariation: productVariation,
+        let viewModel = ProductVariationFormViewModel(productVariation: model,
                                                       productImageActionHandler: productImageActionHandler,
                                                       storesManager: mockStoresManager)
 
@@ -115,14 +120,14 @@ final class ProductVariationFormViewModel_ObservablesTests: XCTestCase {
         // Action
         viewModel.updateDescription(newDescription)
 
-        var updateResult: Result<ProductVariation, ProductUpdateError>?
+        var updateResult: Result<EditableProductVariationModel, ProductUpdateError>?
         viewModel.updateProductRemotely { result in
             updateResult = result
         }
 
         // Assert
-        XCTAssertEqual(viewModel.productModel, expectedProductVariationAfterUpdate)
-        XCTAssertEqual(updateResult, .success(expectedProductVariationAfterUpdate))
+        XCTAssertEqual(viewModel.productModel, expectedModelAfterUpdate)
+        XCTAssertEqual(updateResult, .success(expectedModelAfterUpdate))
         XCTAssertEqual(isProductUpdated, true)
         XCTAssertEqual(updatedUpdateEnabled, false)
     }
@@ -130,11 +135,12 @@ final class ProductVariationFormViewModel_ObservablesTests: XCTestCase {
     func testObservablesFromUpdatingAVariationWithAnError() {
         // Arrange
         let productVariation = MockProductVariation().productVariation()
-        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: productVariation)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let newDescription = "Woo!"
         let mockUpdateError = ProductUpdateError.notFoundInStorage
         let mockStoresManager = MockProductVariationStoresManager(updateResult: .failure(mockUpdateError))
-        let viewModel = ProductVariationFormViewModel(productVariation: productVariation,
+        let viewModel = ProductVariationFormViewModel(productVariation: model,
                                                       productImageActionHandler: productImageActionHandler,
                                                       storesManager: mockStoresManager)
 
@@ -151,13 +157,14 @@ final class ProductVariationFormViewModel_ObservablesTests: XCTestCase {
         // Action
         viewModel.updateDescription(newDescription)
 
-        var updateResult: Result<ProductVariation, ProductUpdateError>?
+        var updateResult: Result<EditableProductVariationModel, ProductUpdateError>?
         viewModel.updateProductRemotely { result in
             updateResult = result
         }
 
         // Assert
-        XCTAssertEqual(viewModel.productModel, productVariation.copy(description: newDescription))
+        let expectedModelAfterUpdate = EditableProductVariationModel(productVariation: productVariation.copy(description: newDescription))
+        XCTAssertEqual(viewModel.productModel, expectedModelAfterUpdate)
         XCTAssertEqual(updateResult, .failure(mockUpdateError))
         XCTAssertEqual(isProductUpdated, true)
         XCTAssertEqual(updatedUpdateEnabled, true)

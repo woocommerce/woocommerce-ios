@@ -53,10 +53,11 @@ private extension ProductDetailsFactory {
                                isEditProductsRelease2Enabled: Bool,
                                isEditProductsRelease3Enabled: Bool) -> UIViewController {
         let vc: UIViewController
+        let productModel = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: product.siteID,
-                                                                  product: product)
+                                                                  product: productModel)
         if isEditProductsEnabled {
-            let viewModel = ProductFormViewModel(product: product,
+            let viewModel = ProductFormViewModel(product: productModel,
                                                  productImageActionHandler: productImageActionHandler,
                                                  isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
                                                  isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)

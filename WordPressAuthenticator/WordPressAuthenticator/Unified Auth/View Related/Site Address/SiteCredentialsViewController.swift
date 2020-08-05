@@ -330,10 +330,10 @@ private extension SiteCredentialsViewController {
     /// Sets up necessary accessibility labels and attributes for the all the UI elements in self.
     ///
     func configureForAccessibility() {
-        usernameField?.accessibilityLabel =
-            NSLocalizedString("Username", comment: "Accessibility label for the username text field in the self-hosted login page.")
-        passwordField?.accessibilityLabel =
-            NSLocalizedString("Password", comment: "Accessibility label for the password text field in the self-hosted login page.")
+        view.accessibilityElements = [
+            tableView,
+            submitButton as Any
+        ]
 
         if UIAccessibility.isVoiceOverRunning {
             // Remove the placeholder if VoiceOver is running. VoiceOver speaks the label and the

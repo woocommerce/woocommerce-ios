@@ -26,7 +26,7 @@ public final class ProductReviewsRemote: Remote, ProductReviewsRemoteProtocol {
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of Orders to be retrieved per page.
     ///     - products: Limit result set to reviews assigned to specific product IDs.
-    ///     - status: Limit result set to reviews assigned a specific status. If empty, the default is `all`.
+    ///     - status: Limit result set to reviews assigned a specific status. If nil, the default status will be `allReviews`.
     ///     - completion: Closure to be executed upon completion.
     ///
     public func loadAllProductReviews(for siteID: Int64,

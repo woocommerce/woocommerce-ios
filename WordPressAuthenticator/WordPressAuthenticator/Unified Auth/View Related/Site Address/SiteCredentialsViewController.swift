@@ -123,6 +123,7 @@ final class SiteCredentialsViewController: LoginViewController {
         if errorMessage != message {
             errorMessage = message
             shouldChangeVoiceOverFocus = moveVoiceOverFocus
+            loadRows()
             tableView.reloadData()
         }
     }
@@ -162,9 +163,13 @@ extension SiteCredentialsViewController: UITableViewDelegate {
     /// After a textfield cell is done displaying, remove the textfield reference.
     ///
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if rows[indexPath.row] == .username {
+        guard let row = rows[safe: indexPath.row] else {
+            return
+        }
+
+        if row == .username {
             usernameField = nil
-        } else if rows[indexPath.row] == .password {
+        } else if row == .password {
             passwordField = nil
         }
     }

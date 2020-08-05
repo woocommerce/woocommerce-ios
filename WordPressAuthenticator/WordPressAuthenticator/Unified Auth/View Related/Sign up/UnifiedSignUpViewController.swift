@@ -69,6 +69,7 @@ class UnifiedSignUpViewController: LoginViewController {
         if errorMessage != message {
             errorMessage = message
             shouldChangeVoiceOverFocus = moveVoiceOverFocus
+            loadRows()
             tableView.reloadData()
         }
     }

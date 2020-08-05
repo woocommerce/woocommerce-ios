@@ -126,6 +126,7 @@ final class SiteAddressViewController: LoginViewController {
         if errorMessage != message {
             errorMessage = message
             shouldChangeVoiceOverFocus = moveVoiceOverFocus
+            loadRows()
             tableView.reloadData()
         }
     }
@@ -157,7 +158,11 @@ extension SiteAddressViewController: UITableViewDelegate {
     /// After the site address textfield cell is done displaying, remove the textfield reference.
     ///
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if rows[indexPath.row] == .siteAddress {
+        guard let row = rows[safe: indexPath.row] else {
+            return
+        }
+
+        if row == .siteAddress {
             siteURLField = nil
         }
     }

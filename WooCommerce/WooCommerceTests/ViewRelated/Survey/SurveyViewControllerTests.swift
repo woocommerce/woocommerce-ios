@@ -23,11 +23,9 @@ final class SurveyViewControllerTests: XCTestCase {
 
     func testItCompletesAfterReceivingAFormSubmittedPOSTCallbackRequest() throws {
         // Given
-        let exp = expectation(description: #function)
         var surveyCompleted = false
         let viewController = SurveyViewController(survey: .inAppFeedback, onCompletion: {
             surveyCompleted = true
-            exp.fulfill()
         })
 
         // When
@@ -37,10 +35,11 @@ final class SurveyViewControllerTests: XCTestCase {
         // Fakes a form submission POST navigation
         let navigationAction = FormSubmittedNavigationAction(httpMethod: "POST")
         viewController.webView(mirror.webView, decidePolicyFor: navigationAction, decisionHandler: { _ in })
-        waitForExpectations(timeout: Constants.expectationTimeout)
 
         // Then
-        XCTAssertTrue(surveyCompleted)
+        waitUntil(timeout: 1) {
+            surveyCompleted
+        }
     }
 
     func testItDoesNotCompletesAfterReceivingAFormSubmittedGETCallbackRequest() throws {

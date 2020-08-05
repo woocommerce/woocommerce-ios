@@ -220,7 +220,7 @@ private extension SiteCredentialsViewController {
     func loadRows() {
         rows = [.instructions, .username, .password]
 
-        if errorMessage != nil {
+        if let errorText = errorMessage, !errorText.isEmpty {
             rows.append(.errorMessage)
         }
 

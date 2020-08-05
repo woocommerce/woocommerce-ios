@@ -301,6 +301,7 @@
 		26B119BB24D0B62E00FED5C7 /* SurveyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B119BA24D0B62E00FED5C7 /* SurveyViewController.swift */; };
 		26B119C024D0C69500FED5C7 /* SurveyViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B119BF24D0C69500FED5C7 /* SurveyViewControllerTests.swift */; };
 		26B119C224D1CD3500FED5C7 /* WooConstantsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B119C124D1CD3500FED5C7 /* WooConstantsTests.swift */; };
+		26FE09DD24D9F3F600B9BDF5 /* SurveyLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09DC24D9F3F600B9BDF5 /* SurveyLoadingView.swift */; };
 		26FF455F24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FF455E24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift */; };
 		4506BD712461965300FE6377 /* ProductVisibilityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4506BD6F2461965300FE6377 /* ProductVisibilityViewController.swift */; };
 		4506BD722461965300FE6377 /* ProductVisibilityViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4506BD702461965300FE6377 /* ProductVisibilityViewController.xib */; };
@@ -1213,6 +1214,7 @@
 		26B119BA24D0B62E00FED5C7 /* SurveyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SurveyViewController.swift; sourceTree = "<group>"; };
 		26B119BF24D0C69500FED5C7 /* SurveyViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyViewControllerTests.swift; sourceTree = "<group>"; };
 		26B119C124D1CD3500FED5C7 /* WooConstantsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooConstantsTests.swift; sourceTree = "<group>"; };
+		26FE09DC24D9F3F600B9BDF5 /* SurveyLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyLoadingView.swift; sourceTree = "<group>"; };
 		26FF455E24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeprecatedStatsDashboardViewController.swift; sourceTree = "<group>"; };
 		2719B6FD1E6FE78A76B6AC74 /* Pods-WooCommerceTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		33035144757869DE5E4DC88A /* Pods-WooCommerce.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release.xcconfig"; sourceTree = "<group>"; };
@@ -2517,6 +2519,7 @@
 			children = (
 				26B119BA24D0B62E00FED5C7 /* SurveyViewController.swift */,
 				26B119B824D0B38F00FED5C7 /* SurveyViewController.xib */,
+				26FE09DC24D9F3F600B9BDF5 /* SurveyLoadingView.swift */,
 				2687165324D21BC80042F6AE /* SurveySubmittedViewController.swift */,
 				2687165424D21BC80042F6AE /* SurveySubmittedViewController.xib */,
 			);
@@ -5218,6 +5221,7 @@
 				0295355B245ADF8100BDC42B /* FilterType+Products.swift in Sources */,
 				02CA63DA23D1ADD100BBF148 /* CameraCaptureCoordinator.swift in Sources */,
 				CEEC9B5C21E79B3E0055EEF0 /* FeatureFlag.swift in Sources */,
+				26FE09DD24D9F3F600B9BDF5 /* SurveyLoadingView.swift in Sources */,
 				457151AB243B6E8000EB2DFA /* ProductSlugViewController.swift in Sources */,
 				02F49ADA23BF356E00FA0BFA /* TitleAndTextFieldTableViewCell.ViewModel+State.swift in Sources */,
 				74036CC0211B882100E462C2 /* PeriodDataViewController.swift in Sources */,

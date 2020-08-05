@@ -77,9 +77,9 @@ extension ProductReviewsViewModel {
 
     /// Synchronizes the approved Reviews associated to the current store, for a specific Product ID.
     ///
-    private func synchronizeReviews(pageNumber: Int,
+    func synchronizeReviews(pageNumber: Int,
                                        pageSize: Int,
-                                       productId: Int64,
+                                       productID: Int64,
                                        onCompletion: (() -> Void)? = nil) {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
@@ -88,10 +88,10 @@ extension ProductReviewsViewModel {
         let action = ProductReviewAction.synchronizeProductReviews(siteID: siteID,
                                                                    pageNumber: pageNumber,
                                                                    pageSize: pageSize,
-                                                                   products: [productId],
+                                                                   products: [productID],
                                                                    status: .approved) { error in
             if let error = error {
-                DDLogError("⛔️ Error synchronizing reviews for product ID :\(productId). Error: \(error)")
+                DDLogError("⛔️ Error synchronizing reviews for product ID :\(productID). Error: \(error)")
                 // TODO: Analytics Products M3. Failed
             } else {
                 // TODO: Analytics Products M3. Loading more

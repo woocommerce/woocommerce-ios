@@ -38,7 +38,7 @@ final class ProductReviewsDataSource: NSObject, ReviewsDataSource {
         return reviewsResultsController.isEmpty
     }
 
-    /// Notifications associated with the reviews.
+    /// Notifications associated with the reviews. In this case, we don't want to show notifications.
     ///
     var notifications: [Note] {
         return []

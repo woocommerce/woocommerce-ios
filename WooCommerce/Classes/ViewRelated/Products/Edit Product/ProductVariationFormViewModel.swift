@@ -2,15 +2,15 @@ import Yosemite
 
 /// Provides data for product form UI on a `ProductVariation`, and handles product editing actions.
 final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
-    typealias ProductModel = ProductVariation
+    typealias ProductModel = EditableProductVariationModel
 
     /// Emits product variation on change.
-    var observableProduct: Observable<ProductVariation> {
+    var observableProduct: Observable<EditableProductVariationModel> {
         productVariationSubject
     }
 
     /// The latest product variation including potential edits.
-    var productModel: ProductVariation {
+    var productModel: EditableProductVariationModel {
         productVariation
     }
 
@@ -28,18 +28,18 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
     /// Not applicable to product variation form
     private(set) var productName: Observable<String>? = nil
 
-    private let productVariationSubject: PublishSubject<ProductVariation> = PublishSubject<ProductVariation>()
+    private let productVariationSubject: PublishSubject<EditableProductVariationModel> = PublishSubject<EditableProductVariationModel>()
     private let isUpdateEnabledSubject: PublishSubject<Bool>
 
     /// The product variation before any potential edits; reset after a remote update.
-    private var originalProductVariation: ProductVariation {
+    private var originalProductVariation: EditableProductVariationModel {
         didSet {
             productVariation = originalProductVariation
         }
     }
 
     /// The product variation with potential edits; reset after a remote update.
-    private var productVariation: ProductVariation {
+    private var productVariation: EditableProductVariationModel {
         didSet {
             guard productVariation != oldValue else {
                 return
@@ -55,7 +55,7 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
     private let storesManager: StoresManager
     private var cancellable: ObservationToken?
 
-    init(productVariation: ProductVariation,
+    init(productVariation: EditableProductVariationModel,
          productImageActionHandler: ProductImageActionHandler,
          storesManager: StoresManager = ServiceLocator.stores) {
         self.productImageActionHandler = productImageActionHandler
@@ -114,11 +114,11 @@ extension ProductVariationFormViewModel {
             assertionFailure("Up to 1 image can be attached to a product variation.")
             return
         }
-        productVariation = productVariation.copy(image: images.first)
+        productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(image: images.first))
     }
 
     func updateDescription(_ newDescription: String) {
-        productVariation = productVariation.copy(description: newDescription)
+        productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(description: newDescription))
     }
 
     func updatePriceSettings(regularPrice: String?,
@@ -127,12 +127,12 @@ extension ProductVariationFormViewModel {
                              dateOnSaleEnd: Date?,
                              taxStatus: ProductTaxStatus,
                              taxClass: TaxClass?) {
-        productVariation = productVariation.copy(dateOnSaleStart: dateOnSaleStart,
-                                                 dateOnSaleEnd: dateOnSaleEnd,
-                                                 regularPrice: regularPrice,
-                                                 salePrice: salePrice,
-                                                 taxStatusKey: taxStatus.rawValue,
-                                                 taxClass: taxClass?.slug)
+        productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(dateOnSaleStart: dateOnSaleStart,
+                                                                                                                  dateOnSaleEnd: dateOnSaleEnd,
+                                                                                                                  regularPrice: regularPrice,
+                                                                                                                  salePrice: salePrice,
+                                                                                                                  taxStatusKey: taxStatus.rawValue,
+                                                                                                                  taxClass: taxClass?.slug))
     }
 
     func updateInventorySettings(sku: String?,
@@ -141,18 +141,18 @@ extension ProductVariationFormViewModel {
                                  stockQuantity: Int64?,
                                  backordersSetting: ProductBackordersSetting?,
                                  stockStatus: ProductStockStatus?) {
-        productVariation = productVariation.copy(sku: sku,
-                                                 manageStock: manageStock,
-                                                 stockQuantity: stockQuantity,
-                                                 stockStatus: stockStatus,
-                                                 backordersKey: backordersSetting?.rawValue)
+        productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(sku: sku,
+                                                                                                                  manageStock: manageStock,
+                                                                                                                  stockQuantity: stockQuantity,
+                                                                                                                  stockStatus: stockStatus,
+                                                                                                                  backordersKey: backordersSetting?.rawValue))
     }
 
     func updateShippingSettings(weight: String?, dimensions: ProductDimensions, shippingClass: ProductShippingClass?) {
-        productVariation = productVariation.copy(weight: weight,
+        productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(weight: weight,
                                                  dimensions: dimensions,
                                                  shippingClass: shippingClass?.slug ?? "",
-                                                 shippingClassID: shippingClass?.shippingClassID ?? 0)
+                                                 shippingClassID: shippingClass?.shippingClassID ?? 0))
     }
 
     func updateProductCategories(_ categories: [ProductCategory]) {
@@ -185,27 +185,28 @@ extension ProductVariationFormViewModel {
 
     func updateStatus(_ isEnabled: Bool) {
         let status: ProductStatus = isEnabled ? .publish: .privateStatus
-        productVariation = productVariation.copy(status: status)
+        productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(status: status))
     }
 }
 
 // MARK: Remote actions
 //
 extension ProductVariationFormViewModel {
-    func updateProductRemotely(onCompletion: @escaping (Result<ProductVariation, ProductUpdateError>) -> Void) {
-        let updateAction = ProductVariationAction.updateProductVariation(productVariation: productVariation) { [weak self] result in
+    func updateProductRemotely(onCompletion: @escaping (Result<EditableProductVariationModel, ProductUpdateError>) -> Void) {
+        let updateAction = ProductVariationAction.updateProductVariation(productVariation: productVariation.productVariation) { [weak self] result in
             switch result {
             case .failure(let error):
                 onCompletion(.failure(error))
             case .success(let productVariation):
-                self?.resetProductVariation(productVariation)
-                onCompletion(.success(productVariation))
+                let model = EditableProductVariationModel(productVariation: productVariation)
+                self?.resetProductVariation(model)
+                onCompletion(.success(model))
             }
         }
         storesManager.dispatch(updateAction)
     }
 
-    private func resetProductVariation(_ productVariation: ProductVariation) {
+    private func resetProductVariation(_ productVariation: EditableProductVariationModel) {
         originalProductVariation = productVariation
         isUpdateEnabledSubject.send(hasUnsavedChanges())
     }

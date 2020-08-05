@@ -8,9 +8,10 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
     func testPriceRowIsVisibleForProductWithPriceData() {
         // Arrange
         let product = Fixtures.productWithPriceData
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
@@ -21,9 +22,10 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
     func testPriceRowIsVisibleForProductWithoutPriceData() {
         // Arrange
         let product = Fixtures.productWithoutPriceData
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
@@ -36,9 +38,10 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
     func testInventoryRowIsVisibleForProductWithInventoryData() {
         // Arrange
         let product = Fixtures.productWithInventoryData
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
@@ -50,9 +53,10 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
     func testInventoryRowIsInvisibleForProductWithMissingInventoryData() {
         // Arrange
         let product = Fixtures.productWithMissingInventoryData
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
@@ -66,9 +70,10 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
     func testShippingRowIsVisibleForProductWithShippingData() {
         // Arrange
         let product = Fixtures.productWithShippingData
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
@@ -80,9 +85,10 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
     func testShippingRowIsInvisibleForProductWithMissingShippingData() {
         // Arrange
         let product = Fixtures.productWithMissingShippingData
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
@@ -96,9 +102,10 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
     func testCategoriesRowIsVisibleForProductWithACategory() {
         // Arrange
         let product = Fixtures.productWithOneCategory
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
@@ -110,9 +117,10 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
     func testCategoriesRowIsInvisibleForProductWithoutCategories() {
         // Arrange
         let product = Fixtures.productWithoutCategories
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
@@ -126,9 +134,10 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
     func testBriefDescriptionRowIsVisibleForProductWithNonEmptyBriefDescription() {
         // Arrange
         let product = Fixtures.productWithNonEmptyBriefDescription
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
@@ -140,9 +149,10 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
     func testBriefDescriptionRowIsInvisibleForProductWithoutBriefDescription() {
         // Arrange
         let product = Fixtures.productWithEmptyBriefDescription
+        let model = EditableProductModel(product: product)
 
         // Action
-        let factory = ProductFormActionsFactory(product: product,
+        let factory = ProductFormActionsFactory(product: model,
                                                 isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 

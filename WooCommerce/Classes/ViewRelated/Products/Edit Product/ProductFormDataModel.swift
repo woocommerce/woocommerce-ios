@@ -10,8 +10,6 @@ protocol ProductFormDataModel {
     var shortDescription: String? { get }
 
     // Settings
-    var virtual: Bool { get }
-    var downloadable: Bool { get }
     var permalink: String { get }
     var status: ProductStatus { get }
 
@@ -36,6 +34,8 @@ protocol ProductFormDataModel {
     var dimensions: ProductDimensions { get }
     var shippingClass: String? { get }
     var shippingClassID: Int64 { get }
+    // Whether shipping settings are available for the product.
+    func isShippingEnabled() -> Bool
 
     // Inventory
     var sku: String? { get }
@@ -43,6 +43,7 @@ protocol ProductFormDataModel {
     var stockStatus: ProductStockStatus { get }
     var stockQuantity: Int64? { get }
     var backordersKey: String { get }
+    var soldIndividually: Bool? { get }
 }
 
 // MARK: Helpers that can be derived from `ProductFormDataModel`
@@ -56,11 +57,6 @@ extension ProductFormDataModel {
         return description.removedHTMLTags.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    /// Whether shipping settings are available for the product.
-    var isShippingEnabled: Bool {
-        downloadable == false && virtual == false
-    }
-
     /// Returns `ProductTaxStatus` given the raw value from `taxStatusKey` field.
     var productTaxStatus: ProductTaxStatus {
         ProductTaxStatus(rawValue: taxStatusKey)
@@ -69,53 +65,5 @@ extension ProductFormDataModel {
     /// Returns `ProductBackordersSetting` given the raw value from `backordersKey` field.
     var backordersSetting: ProductBackordersSetting {
         ProductBackordersSetting(rawValue: backordersKey)
-    }
-}
-
-extension Product: ProductFormDataModel {
-    var description: String? {
-        fullDescription
-    }
-
-    var shortDescription: String? {
-        briefDescription
-    }
-
-    var stockStatus: ProductStockStatus {
-        productStockStatus
-    }
-
-    var status: ProductStatus {
-        productStatus
-    }
-
-    func allowsMultipleImages() -> Bool {
-        true
-    }
-
-    func isImageDeletionEnabled() -> Bool {
-        true
-    }
-}
-
-extension ProductVariation: ProductFormDataModel {
-    var name: String {
-        attributes.map({ $0.option }).joined(separator: " - ")
-    }
-
-    var shortDescription: String? {
-        nil
-    }
-
-    var images: [ProductImage] {
-        [image].compactMap { $0 }
-    }
-
-    func allowsMultipleImages() -> Bool {
-        false
-    }
-
-    func isImageDeletionEnabled() -> Bool {
-        false
     }
 }

@@ -11,8 +11,9 @@ final class ProductVariation_ProductFormTests: XCTestCase {
         let attributeOptions = ["Strawberry", "Vanilla", "Sprinkles"]
         let attributes: [ProductVariationAttribute] = attributeOptions.map { ProductVariationAttribute(id: 0, name: "", option: $0) }
         let productVariation = MockProductVariation().productVariation().copy(attributes: attributes)
+        let model = EditableProductVariationModel(productVariation: productVariation)
         let expectedName = attributeOptions.joined(separator: " - ")
-        XCTAssertEqual(productVariation.name, expectedName)
+        XCTAssertEqual(model.name, expectedName)
     }
 
     // MARK: - `trimmedFullDescription`
@@ -20,49 +21,57 @@ final class ProductVariation_ProductFormTests: XCTestCase {
     func testTrimmedFullDescriptionWithLeadingNewLinesAndHTMLTags() {
         let description = "\n\n\n  <p>This is the party room!</p>\n"
         let productVariation = MockProductVariation().productVariation().copy(description: description)
+        let model = EditableProductVariationModel(productVariation: productVariation)
         let expectedDescription = "This is the party room!"
-        XCTAssertEqual(productVariation.trimmedFullDescription, expectedDescription)
+        XCTAssertEqual(model.trimmedFullDescription, expectedDescription)
     }
 
     // MARK: - `isShippingEnabled`
 
     func testShippingIsEnabledForAPhysicalProductVariation() {
         let productVariation = MockProductVariation().productVariation().copy(virtual: false, downloadable: false)
-        XCTAssertTrue(productVariation.isShippingEnabled)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        XCTAssertTrue(model.isShippingEnabled())
     }
 
     func testShippingIsDisabledForADownloadableProductVariation() {
         let productVariation = MockProductVariation().productVariation().copy(virtual: false, downloadable: true)
-        XCTAssertFalse(productVariation.isShippingEnabled)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        XCTAssertFalse(model.isShippingEnabled())
     }
 
     func testShippingIsDisabledForAVirtualProductVariation() {
         let productVariation = MockProductVariation().productVariation().copy(virtual: true, downloadable: false)
-        XCTAssertFalse(productVariation.isShippingEnabled)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        XCTAssertFalse(model.isShippingEnabled())
     }
 
     // MARK: image related
 
     func testProductVariationDoesNotAllowMultipleImages() {
         let productVariation = MockProductVariation().productVariation().copy(image: nil)
-        XCTAssertFalse(productVariation.allowsMultipleImages())
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        XCTAssertFalse(model.allowsMultipleImages())
     }
 
     func testProductVariationImageDeletionIsDisabled() {
         let productVariation = MockProductVariation().productVariation().copy(image: nil)
-        XCTAssertFalse(productVariation.isImageDeletionEnabled())
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        XCTAssertFalse(model.isImageDeletionEnabled())
     }
 
     // MARK: `productTaxStatus`
 
     func testProductTaxStatusFromAnUnexpectedRawValueReturnsDefaultTaxable() {
         let productVariation = MockProductVariation().productVariation().copy(taxStatusKey: "unknown tax status")
-        XCTAssertEqual(productVariation.productTaxStatus, .taxable)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        XCTAssertEqual(model.productTaxStatus, .taxable)
     }
 
     func testProductTaxStatusFromAValidRawValueReturnsTheCorrespondingCase() {
         let productVariation = MockProductVariation().productVariation().copy(taxStatusKey: ProductTaxStatus.shipping.rawValue)
-        XCTAssertEqual(productVariation.productTaxStatus, .shipping)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        XCTAssertEqual(model.productTaxStatus, .shipping)
     }
 
     // MARK: `backordersSetting`
@@ -70,11 +79,13 @@ final class ProductVariation_ProductFormTests: XCTestCase {
     func testBackordersSettingFromAnUnexpectedRawValueReturnsACustomCase() {
         let rawValue = "unknown setting"
         let productVariation = MockProductVariation().productVariation().copy(backordersKey: rawValue)
-        XCTAssertEqual(productVariation.backordersSetting, .custom(rawValue))
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        XCTAssertEqual(model.backordersSetting, .custom(rawValue))
     }
 
     func testBackordersSettingFromAValidRawValueReturnsTheCorrespondingCase() {
         let productVariation = MockProductVariation().productVariation().copy(backordersKey: ProductBackordersSetting.notAllowed.rawValue)
-        XCTAssertEqual(productVariation.backordersSetting, .notAllowed)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        XCTAssertEqual(model.backordersSetting, .notAllowed)
     }
 }

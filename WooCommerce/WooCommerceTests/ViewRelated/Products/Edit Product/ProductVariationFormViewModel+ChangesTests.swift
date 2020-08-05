@@ -11,23 +11,24 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
     func testProductVariationHasNoChangesFromEditActionsOfTheSameData() {
         // Arrange
         let productVariation = MockProductVariation().productVariation()
-        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: productVariation)
-        let viewModel = ProductVariationFormViewModel(productVariation: productVariation, productImageActionHandler: productImageActionHandler)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
+        let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
 
         // Action
-        viewModel.updateImages(productVariation.images)
+        viewModel.updateImages(model.images)
         viewModel.updateDescription(productVariation.description ?? "")
         viewModel.updatePriceSettings(regularPrice: productVariation.regularPrice,
                                       salePrice: productVariation.salePrice,
                                       dateOnSaleStart: productVariation.dateOnSaleStart,
                                       dateOnSaleEnd: productVariation.dateOnSaleEnd,
-                                      taxStatus: productVariation.productTaxStatus,
+                                      taxStatus: model.productTaxStatus,
                                       taxClass: nil)
         viewModel.updateInventorySettings(sku: productVariation.sku,
                                           manageStock: productVariation.manageStock,
                                           soldIndividually: nil,
                                           stockQuantity: productVariation.stockQuantity,
-                                          backordersSetting: productVariation.backordersSetting,
+                                          backordersSetting: model.backordersSetting,
                                           stockStatus: productVariation.stockStatus)
         viewModel.updateShippingSettings(weight: productVariation.weight, dimensions: productVariation.dimensions, shippingClass: nil)
 
@@ -40,8 +41,9 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
     func testProductVariationHasUnsavedChangesFromUploadingAnImage() {
         // Arrange
         let productVariation = MockProductVariation().productVariation()
-        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: productVariation)
-        let viewModel = ProductVariationFormViewModel(productVariation: productVariation, productImageActionHandler: productImageActionHandler)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
+        let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
 
         // Action
         waitForExpectation { expectation in
@@ -62,8 +64,9 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
     func testProductVariationHasUnsavedChangesFromEditingImages() {
         // Arrange
         let productVariation = MockProductVariation().productVariation()
-        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: productVariation)
-        let viewModel = ProductVariationFormViewModel(productVariation: productVariation, productImageActionHandler: productImageActionHandler)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
+        let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
 
         // Action
         let productImage = ProductImage(imageID: 6,
@@ -83,8 +86,9 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
     func testProductVariationHasUnsavedChangesFromEditingDescription() {
         // Arrange
         let productVariation = MockProductVariation().productVariation()
-        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: productVariation)
-        let viewModel = ProductVariationFormViewModel(productVariation: productVariation, productImageActionHandler: productImageActionHandler)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
+        let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
 
         // Action
         viewModel.updateDescription("Another way to describe the product?")
@@ -98,8 +102,9 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
     func testProductVariationHasUnsavedChangesFromEditingPriceSettings() {
         // Arrange
         let productVariation = MockProductVariation().productVariation()
-        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: productVariation)
-        let viewModel = ProductVariationFormViewModel(productVariation: productVariation, productImageActionHandler: productImageActionHandler)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
+        let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
 
         // Action
         viewModel.updatePriceSettings(regularPrice: "999999", salePrice: "888888", dateOnSaleStart: nil, dateOnSaleEnd: nil, taxStatus: .none, taxClass: nil)
@@ -113,8 +118,9 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
     func testProductVariationHasUnsavedChangesFromEditingInventorySettings() {
         // Arrange
         let productVariation = MockProductVariation().productVariation()
-        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: productVariation)
-        let viewModel = ProductVariationFormViewModel(productVariation: productVariation, productImageActionHandler: productImageActionHandler)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
+        let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
 
         // Action
         viewModel.updateInventorySettings(sku: "", manageStock: false, soldIndividually: nil, stockQuantity: 888888, backordersSetting: nil, stockStatus: nil)
@@ -128,8 +134,9 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
     func testProductVariationHasUnsavedChangesFromEditingShippingSettings() {
         // Arrange
         let productVariation = MockProductVariation().productVariation()
-        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: productVariation)
-        let viewModel = ProductVariationFormViewModel(productVariation: productVariation, productImageActionHandler: productImageActionHandler)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
+        let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
 
         // Action
         viewModel.updateShippingSettings(weight: "88888", dimensions: productVariation.dimensions, shippingClass: nil)

@@ -132,6 +132,7 @@
 		CE6BCD2F24A3A235001BCDC5 /* TextLabelTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE6BCD2D24A3A235001BCDC5 /* TextLabelTableViewCell.xib */; };
 		CE6BCD3824A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6BCD3624A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.swift */; };
 		CE6BCD3924A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE6BCD3724A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.xib */; };
+		CE72A84C24DB4BAB0069FB3D /* Collection+AuthHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE72A84B24DB4BAB0069FB3D /* Collection+AuthHelpers.swift */; };
 		CE73475624B77A3800A22660 /* SiteCredentialsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE73475524B77A3800A22660 /* SiteCredentialsViewController.swift */; };
 		CE9091F72499549500AB50BD /* TextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9091F52499549500AB50BD /* TextFieldTableViewCell.swift */; };
 		CE9091F82499549500AB50BD /* TextFieldTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE9091F62499549500AB50BD /* TextFieldTableViewCell.xib */; };
@@ -313,6 +314,7 @@
 		CE6BCD2D24A3A235001BCDC5 /* TextLabelTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextLabelTableViewCell.xib; sourceTree = "<group>"; };
 		CE6BCD3624A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextLinkButtonTableViewCell.swift; sourceTree = "<group>"; };
 		CE6BCD3724A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextLinkButtonTableViewCell.xib; sourceTree = "<group>"; };
+		CE72A84B24DB4BAB0069FB3D /* Collection+AuthHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+AuthHelpers.swift"; sourceTree = "<group>"; };
 		CE73475524B77A3800A22660 /* SiteCredentialsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteCredentialsViewController.swift; sourceTree = "<group>"; };
 		CE9091F52499549500AB50BD /* TextFieldTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldTableViewCell.swift; sourceTree = "<group>"; };
 		CE9091F62499549500AB50BD /* TextFieldTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TextFieldTableViewCell.xib; sourceTree = "<group>"; };
@@ -606,6 +608,7 @@
 				CEDE0D942420121D00CB3345 /* UIStoryboard+Helpers.swift */,
 				CEDE0D962420126900CB3345 /* UIViewController+Helpers.swift */,
 				CE9091FD249A720E00AB50BD /* UIView+AuthHelpers.swift */,
+				CE72A84B24DB4BAB0069FB3D /* Collection+AuthHelpers.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1148,6 +1151,7 @@
 				CE30A2A722579F4100DF3CDA /* LoginUsernamePasswordViewController.swift in Sources */,
 				CE30A2A92257C60500DF3CDA /* WordPressOrgCredentials.swift in Sources */,
 				B56090CB208A4F5400399AE4 /* NUXNavigationController.swift in Sources */,
+				CE72A84C24DB4BAB0069FB3D /* Collection+AuthHelpers.swift in Sources */,
 				B560911F208A555E00399AE4 /* SignupGoogleViewController.swift in Sources */,
 				B5609142208A563800399AE4 /* LoginNavigationController.swift in Sources */,
 				B56090E4208A4F9D00399AE4 /* WPNUXMainButton.m in Sources */,

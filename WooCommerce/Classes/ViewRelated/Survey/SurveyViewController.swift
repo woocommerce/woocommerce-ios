@@ -17,6 +17,10 @@ final class SurveyViewController: UIViewController {
     ///
     private let onCompletion: () -> Void
 
+    /// Loading view displayed while the survey loads
+    ///
+    private let loadingView = SurveyLoadingView()
+
     init(survey: Source, onCompletion: @escaping () -> Void) {
         self.survey = survey
         self.onCompletion = onCompletion
@@ -31,6 +35,7 @@ final class SurveyViewController: UIViewController {
         super.viewDidLoad()
 
         addCloseNavigationBarButton()
+        addLoadingView()
         configureAndLoadSurvey()
     }
 
@@ -40,6 +45,20 @@ final class SurveyViewController: UIViewController {
         let request = URLRequest(url: survey.url)
         webView.load(request)
         webView.navigationDelegate = self
+    }
+
+    /// Adds a loading view to the screen pinned at the center
+    ///
+    private func addLoadingView() {
+        loadingView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(loadingView)
+        view.pinSubviewAtCenter(loadingView)
+    }
+
+    /// Removes the loading view from the screen with a fade out animaition
+    ///
+    private func removeLoadingView() {
+        loadingView.fadeOut()
     }
 }
 
@@ -77,5 +96,9 @@ extension SurveyViewController: WKNavigationDelegate {
         }
 
         decisionHandler(.allow)
+    }
+
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation) {
+        removeLoadingView()
     }
 }

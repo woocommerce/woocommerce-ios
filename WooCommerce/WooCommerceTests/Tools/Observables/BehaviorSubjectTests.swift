@@ -9,9 +9,50 @@ import Combine
 ///
 final class BehaviorSubjectTests: XCTestCase {
 
+    func test_it_will_emit_the_initial_value_to_an_observer() {
+        // Given
+        let subject = PublishSubject<String>()
+
+        #warning("replace with initial value call")
+        subject.send("dolorem")
+
+        // When
+        var emittedValues = [String]()
+        _ = subject.subscribe { value in
+            emittedValues.append(value)
+        }
+
+        // Then
+        XCTAssertEqual(emittedValues, ["dolorem"])
+    }
+
+    func test_it_will_emit_the_last_value_before_the_subscription() {
+        // Given
+        let subject = PublishSubject<String>()
+
+        #warning("replace with initial value call")
+        subject.send("dolorem")
+
+        // This will be emitted instead of "dolorem" when the subscription happens below
+        // because it's the last value.
+        subject.send("recusandae")
+
+        // When
+        var emittedValues = [String]()
+        _ = subject.subscribe { value in
+            emittedValues.append(value)
+        }
+
+        // Then
+        XCTAssertEqual(emittedValues, ["recusandae"])
+    }
+
     func test_it_will_emit_values_to_an_observer() {
         // Given
         let subject = PublishSubject<String>()
+
+        #warning("replace with initial value call")
+        subject.send("consequatur")
 
         var emittedValues = [String]()
         _ = subject.subscribe { value in
@@ -22,13 +63,16 @@ final class BehaviorSubjectTests: XCTestCase {
         subject.send("dicta")
 
         // Then
-        XCTAssertEqual(emittedValues, ["dicta"])
+        XCTAssertEqual(emittedValues, ["consequatur", "dicta"])
     }
 
     func test_it_will_continuously_emit_values_to_an_observer() {
         // Given
         let subject = PublishSubject<String>()
 
+        #warning("replace with initial value call")
+        subject.send("exercitationem")
+
         var emittedValues = [String]()
         _ = subject.subscribe { value in
             emittedValues.append(value)
@@ -40,35 +84,15 @@ final class BehaviorSubjectTests: XCTestCase {
         subject.send("dolor")
 
         // Then
-        XCTAssertEqual(emittedValues, ["dicta", "amet", "dolor"])
-    }
-
-    func test_it_will_not_emit_values_before_the_subscription() {
-        // Given
-        let subject = PublishSubject<String>()
-
-        var emittedValues = [String]()
-
-        // When
-        // These are not emitted because there's no observer yet
-        subject.send("dicta")
-        subject.send("amet")
-
-        // Add the observer
-        _ = subject.subscribe { value in
-            emittedValues.append(value)
-        }
-
-        // This will be emitted to the observer
-        subject.send("dolor")
-
-        // Then
-        XCTAssertEqual(emittedValues, ["dolor"])
+        XCTAssertEqual(emittedValues, ["exercitationem", "dicta", "amet", "dolor"])
     }
 
     func test_it_will_emit_values_to_all_observers() {
         // Given
         let subject = PublishSubject<String>()
+
+        #warning("replace with initial value call")
+        subject.send("provident")
 
         var emittedValues = [String]()
 
@@ -87,20 +111,21 @@ final class BehaviorSubjectTests: XCTestCase {
 
         // Then
         // We'll receive two values for each observer
-        XCTAssertEqual(emittedValues, ["dicta", "dicta", "amet", "amet"])
+        XCTAssertEqual(emittedValues, ["provident", "provident", "dicta", "dicta", "amet", "amet"])
     }
 
     func test_it_will_not_emit_values_to_cancelled_observers() {
         // Given
         let subject = PublishSubject<String>()
 
+        #warning("replace with initial value call")
+        // "dicta" will be emitted because it is the initial value
+        subject.send("dicta")
+
         var emittedValues = [String]()
         let observationToken = subject.subscribe { value in
             emittedValues.append(value)
         }
-
-        // This will be emitted because the observer is active
-        subject.send("dicta")
 
         // When
         // Cancel the observer

@@ -96,6 +96,11 @@ final class TwoFAViewController: LoginViewController {
         )
     }
 
+    override func configureViewLoading(_ loading: Bool) {
+        super.configureViewLoading(loading)
+        codeField?.isEnabled = !loading
+    }
+    
     override func displayRemoteError(_ error: Error) {
         displayError(message: "")
 

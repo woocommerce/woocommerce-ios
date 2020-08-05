@@ -317,7 +317,7 @@ private extension SiteCredentialsViewController {
             }
 
             WordPressAuthenticator.openForgotPasswordURL(self.loginFields)
-            WordPressAuthenticator.track(.loginForgotPasswordClicked)
+            // TODO: add new tracks. Old track: WordPressAuthenticator.track(.loginForgotPasswordClicked)
         }
     }
 

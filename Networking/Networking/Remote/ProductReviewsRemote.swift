@@ -33,8 +33,8 @@ public final class ProductReviewsRemote: Remote, ProductReviewsRemoteProtocol {
                                 context: String? = nil,
                                 pageNumber: Int = Default.pageNumber,
                                 pageSize: Int = Default.pageSize,
-                                products: [Int64]?,
-                                status: ProductReviewStatus?,
+                                products: [Int64]? = nil,
+                                status: ProductReviewStatus? = nil,
                                 completion: @escaping ([ProductReview]?, Error?) -> Void) {
 
 

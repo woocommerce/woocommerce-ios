@@ -276,7 +276,8 @@ private extension SiteAddressViewController {
             alert.modalPresentationStyle = .custom
             alert.transitioningDelegate = self
             self.present(alert, animated: true, completion: nil)
-            WordPressAuthenticator.track(.loginURLHelpScreenViewed)
+            // TODO: Add new Tracks event
+            // WordPressAuthenticator.track(.loginURLHelpScreenViewed)
         }
     }
 
@@ -349,8 +350,9 @@ extension SiteAddressViewController {
                 }
 
                 DDLogError(error.localizedDescription)
-                WordPressAuthenticator.track(.loginFailedToGuessXMLRPC, error: error)
-                WordPressAuthenticator.track(.loginFailed, error: error)
+                // TODO: Add new Tracks events
+                // WordPressAuthenticator.track(.loginFailedToGuessXMLRPC, error: error)
+                // WordPressAuthenticator.track(.loginFailed, error: error)
                 self.configureViewLoading(false)
 
                 let err = self.originalErrorOrError(error: error as NSError)

@@ -325,6 +325,9 @@ private extension SiteCredentialsViewController {
     ///
     func configureErrorLabel(_ cell: TextLabelTableViewCell) {
         cell.configureLabel(text: errorMessage, style: .error)
+        if shouldChangeVoiceOverFocus {
+            UIAccessibility.post(notification: .layoutChanged, argument: cell)
+        }
     }
 
     /// Sets up necessary accessibility labels and attributes for the all the UI elements in self.

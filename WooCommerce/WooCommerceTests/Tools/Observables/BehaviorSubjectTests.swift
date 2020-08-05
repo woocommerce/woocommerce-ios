@@ -140,6 +140,54 @@ final class BehaviorSubjectTests: XCTestCase {
 
     // MARK: - Proof of Compatibility with Combine's PassthroughSubject
 
+    func test_Combine_CurrentValueSubject_will_emit_the_initial_value_to_an_observer() throws {
+        guard #available(iOS 13.0, *) else {
+            try XCTSkipIf(true, "This test is for iOS 13.0+ only")
+            return
+        }
+
+        // Given
+        let subject = CurrentValueSubject<String, Error>("dolorem")
+        var disposeBag = Set<AnyCancellable>()
+
+        // When
+        var emittedValues = [String]()
+        subject.sink(receiveCompletion: { _ in
+            // noop
+        }) { value in
+            emittedValues.append(value)
+        }.store(in: &disposeBag)
+
+        // Then
+        XCTAssertEqual(emittedValues, ["dolorem"])
+    }
+
+    func test_Combine_CurrentValueSubject_will_emit_the_last_value_before_the_subscription() throws {
+        guard #available(iOS 13.0, *) else {
+            try XCTSkipIf(true, "This test is for iOS 13.0+ only")
+            return
+        }
+
+        // Given
+        let subject = CurrentValueSubject<String, Error>("dolorem")
+        var disposeBag = Set<AnyCancellable>()
+
+        // This will be emitted instead of "dolorem" when the subscription happens below
+        // because it's the last value.
+        subject.send("recusandae")
+
+        // When
+        var emittedValues = [String]()
+        subject.sink(receiveCompletion: { _ in
+            // noop
+        }) { value in
+            emittedValues.append(value)
+        }.store(in: &disposeBag)
+
+        // Then
+        XCTAssertEqual(emittedValues, ["recusandae"])
+    }
+
     func test_Combine_PassthroughSubject_emits_values_to_an_observer() throws {
         guard #available(iOS 13.0, *) else {
             try XCTSkipIf(true, "This test is for iOS 13.0+ only")

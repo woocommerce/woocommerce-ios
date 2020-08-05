@@ -121,7 +121,7 @@ private extension UnifiedSignUpViewController {
     func loadRows() {
         rows = [.gravatarEmail, .instructions]
 
-        if errorMessage != nil {
+        if let errorText = errorMessage, !errorText.isEmpty {
             rows.append(.errorMessage)
         }
     }
@@ -157,6 +157,9 @@ private extension UnifiedSignUpViewController {
     ///
     func configureErrorLabel(_ cell: TextLabelTableViewCell) {
         cell.configureLabel(text: errorMessage, style: .error)
+        if shouldChangeVoiceOverFocus {
+            UIAccessibility.post(notification: .layoutChanged, argument: cell)
+        }
     }
 
     // MARK: - Private Constants

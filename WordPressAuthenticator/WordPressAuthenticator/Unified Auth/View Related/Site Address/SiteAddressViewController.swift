@@ -41,7 +41,6 @@ final class SiteAddressViewController: LoginViewController {
         registerTableViewCells()
         loadRows()
         configureSubmitButton(animating: false)
-        configureForAccessibility()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -49,6 +48,7 @@ final class SiteAddressViewController: LoginViewController {
 
         siteURLField?.text = loginFields.siteAddress
         configureSubmitButton(animating: false)
+        configureForAccessibility()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -92,9 +92,10 @@ final class SiteAddressViewController: LoginViewController {
     /// Sets up necessary accessibility label(s) and attribute(s) for the all the UI elements in this view.
     ///
     private func configureForAccessibility() {
-        siteURLField?.accessibilityLabel =
-            NSLocalizedString("Site address", comment: "Accessibility label of the site address field shown when adding a self-hosted site.")
-
+        view.accessibilityElements = [
+            tableView,
+            submitButton as Any
+        ]
     }
 
     /// Sets the view's state to loading or not loading.

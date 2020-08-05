@@ -68,13 +68,7 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     private lazy var inAppFeedbackCardViewController = InAppFeedbackCardViewController()
     /// An array of UIViews for the In-app Feedback Card. This will be dynamically shown
     /// or hidden depending on the configuration.
-    private lazy var inAppFeedbackCardViewsForStackView: [UIView] = {
-        let views = createInAppFeedbackCardViewsForStackView()
-        views.forEach {
-            $0.isHidden = true
-        }
-        return views
-    }()
+    private lazy var inAppFeedbackCardViewsForStackView: [UIView] = createInAppFeedbackCardViewsForStackView()
 
     private lazy var topPerformersPeriodViewController: TopPerformerDataViewController = {
         return TopPerformerDataViewController(granularity: timeRange.topEarnerStatsGranularity)
@@ -86,31 +80,25 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         return [storeStatsPeriodViewController, inAppFeedbackCardViewController, topPerformersPeriodViewController]
     }
 
-    private let featureFlagService: FeatureFlagService
-
-    /// If applicable, present the in-app feedback. The in-app feedback may still not be presented
-    /// depending on the constraints. But setting this to `false`, will ensure that it will
-    /// never be presented.
-    ///
-    private let canDisplayInAppFeedback: Bool
+    private let viewModel: StoreStatsAndTopPerformersPeriodViewModel
 
     /// Create an instance of `self`.
     ///
-    /// - Parameter canDisplayInAppFeedback: If applicable, present the in-app feedback. The in-app
-    ///                                      feedback may still not be presented depending on the
-    ///                                      constraints. But setting this to `false`, will ensure
-    ///                                      that it will never be presented.
+    /// - Parameter canDisplayInAppFeedbackCard: If applicable, present the in-app feedback card.
+    ///     The in-app feedback card may still not be presented depending on the constraints. But
+    ///     setting this to `false`, will ensure that it will never be presented.
     ///
     init(timeRange: StatsTimeRangeV4,
          currentDate: Date,
-         canDisplayInAppFeedback: Bool,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         canDisplayInAppFeedbackCard: Bool) {
         self.timeRange = timeRange
         self.granularity = timeRange.intervalGranularity
         self.currentDate = currentDate
-        self.canDisplayInAppFeedback = canDisplayInAppFeedback
-        self.featureFlagService = featureFlagService
+        self.viewModel = StoreStatsAndTopPerformersPeriodViewModel(canDisplayInAppFeedbackCard: canDisplayInAppFeedbackCard)
+
         super.init(nibName: nil, bundle: nil)
+
+        configureInAppFeedbackCardViews()
         configureChildViewControllers()
     }
 
@@ -161,11 +149,29 @@ extension StoreStatsAndTopPerformersPeriodViewController: IndicatorInfoProvider 
     }
 }
 
+// MARK: - Provisioning and Utils
+
 private extension StoreStatsAndTopPerformersPeriodViewController {
     func configureChildViewControllers() {
         childViewContrllers.forEach { childViewController in
             addChild(childViewController)
             childViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        }
+    }
+
+    func configureInAppFeedbackCardViews() {
+        guard viewModel.canDisplayInAppFeedbackCard else {
+            return
+        }
+
+        _ = viewModel.isInAppFeedbackCardVisible.subscribe { [weak self] isVisible in
+            guard let self = self else {
+                return
+            }
+
+            self.inAppFeedbackCardViewsForStackView.forEach {
+                $0.isHidden = !isVisible
+            }
         }
     }
 
@@ -243,11 +249,10 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
     /// The views created are an empty space and the `inAppFeedbackCardViewController.view`.
     ///
     /// - SeeAlso: configureSubviews
-    /// - Returns: The views or empty array if we do not need in-app feedback from the user.
+    /// - Returns: The views or an empty array if something catastrophic happened.
     ///
     func createInAppFeedbackCardViewsForStackView() -> [UIView] {
-        guard canDisplayInAppFeedback,
-            featureFlagService.isFeatureFlagEnabled(.inAppFeedback),
+        guard viewModel.canDisplayInAppFeedbackCard,
             let cardView = inAppFeedbackCardViewController.view else {
             return []
         }

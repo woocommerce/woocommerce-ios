@@ -4,7 +4,7 @@ import Yosemite
 
 
 /// Product Reviews implementation of the ReviewsDataSource, dequeues and
-/// populates cells to render the Product Review list  for a specific Product.
+/// populates cells to render the Product Review list for a specific Product.
 ///
 final class ProductReviewsDataSource: NSObject, ReviewsDataSource {
 

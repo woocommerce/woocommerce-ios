@@ -5,12 +5,17 @@ import Yosemite
 protocol ProductInventorySettingsViewModelOutput {
     typealias Section = ProductInventorySettingsViewController.Section
 
+    /// Observable table view sections.
     var sections: Observable<[Section]> { get }
-    // Until we have a passthrough/behavior subject, we have to provide the readonly value for initialization.
+
+    /// The latest table view sections.
+    /// Until we have a passthrough/behavior subject, we have to provide the readonly value for initialization.
     var sectionsValue: [Section] { get }
 
+    /// Potential error from input changes.
     var error: ProductUpdateError? { get }
 
+    /// The type of inventory form.
     var formType: ProductInventorySettingsViewController.FormType { get }
 
     // Editable data - shared.
@@ -28,6 +33,8 @@ protocol ProductInventorySettingsViewModelOutput {
     var stockStatus: ProductStockStatus? { get }
 
     // Visibility logic
+
+    /// Whether stock status is editable in the inventory settings.
     var isStockStatusEnabled: Bool { get }
 }
 

@@ -179,6 +179,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
     // MARK: - `hasUnsavedChanges`
 
     func testViewModelHasUnsavedChangesAfterUpdatingSoldInvidually() {
+        // Arrange
         let product = MockProduct().product().copy(soldIndividually: true)
         let model = EditableProductModel(product: product)
         let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
@@ -191,6 +192,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
     }
 
     func testViewModelHasNoUnsavedChangesAfterUpdatingWithTheOriginalValues() {
+        // Arrange
         let product = MockProduct().product()
             .copy(sku: "sku", manageStock: true, stockQuantity: 12, backordersKey: ProductBackordersSetting.allowed.rawValue, soldIndividually: true)
         let model = EditableProductModel(product: product)

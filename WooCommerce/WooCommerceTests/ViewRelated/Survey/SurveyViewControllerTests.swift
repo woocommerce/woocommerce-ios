@@ -8,7 +8,7 @@ import XCTest
 ///
 final class SurveyViewControllerTests: XCTestCase {
 
-    func testItLoadsTheCorrectInAppFeedbackSurvey() throws {
+    func test_it_loads_the_correct_inApp_feedback_survey() throws {
         // Given
         let viewController = SurveyViewController(survey: .inAppFeedback, onCompletion: {})
 
@@ -21,7 +21,7 @@ final class SurveyViewControllerTests: XCTestCase {
         XCTAssertEqual(mirror.webView.url, WooConstants.URLs.inAppFeedback.asURL())
     }
 
-    func testItCompletesAfterReceivingAFormSubmittedPOSTCallbackRequest() throws {
+    func test_it_completes_after_receiving_a_form_submitted_POST_callback_request() throws {
         // Given
         var surveyCompleted = false
         let viewController = SurveyViewController(survey: .inAppFeedback, onCompletion: {
@@ -42,7 +42,7 @@ final class SurveyViewControllerTests: XCTestCase {
         }
     }
 
-    func testItDoesNotCompletesAfterReceivingAFormSubmittedGETCallbackRequest() throws {
+    func test_it_does_not_completes_after_receiving_a_form_submitted_GET_callback_request() throws {
         // Given
         let exp = expectation(description: #function)
         exp.isInverted = true

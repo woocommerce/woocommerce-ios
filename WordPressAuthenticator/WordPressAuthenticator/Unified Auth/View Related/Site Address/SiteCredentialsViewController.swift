@@ -330,7 +330,8 @@ private extension SiteCredentialsViewController {
         }
     }
 
-    /// Sets up necessary accessibility labels and attributes for the all the UI elements in self.
+    /// Sets up accessibility elements in the order which they should be read aloud
+    /// and quiets repetitive elements.
     ///
     func configureForAccessibility() {
         view.accessibilityElements = [

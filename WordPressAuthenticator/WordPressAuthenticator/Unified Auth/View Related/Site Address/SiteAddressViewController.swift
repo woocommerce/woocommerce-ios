@@ -89,7 +89,7 @@ final class SiteAddressViewController: LoginViewController {
         )
     }
 
-    /// Sets up necessary accessibility label(s) and attribute(s) for the all the UI elements in this view.
+    /// Sets up the order in which accessibility elements should be read aloud.
     ///
     private func configureForAccessibility() {
         view.accessibilityElements = [

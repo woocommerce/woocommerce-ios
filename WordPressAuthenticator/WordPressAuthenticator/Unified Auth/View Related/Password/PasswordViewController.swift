@@ -14,6 +14,13 @@ class PasswordViewController: LoginViewController {
     private var rows = [Row]()
     private var errorMessage: String?
 
+    override var loginFields: LoginFields {
+        didSet {
+            // Clear the password (if any) from LoginFields.
+            loginFields.password = ""
+        }
+    }
+    
     override var sourceTag: WordPressSupportSourceTag {
         get {
             return .loginWPComPassword
@@ -39,6 +46,13 @@ class PasswordViewController: LoginViewController {
         loadRows()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        loginFields.meta.userIsDotCom = true
+        configureSubmitButton(animating: false)
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -46,6 +60,8 @@ class PasswordViewController: LoginViewController {
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
 
         configureViewForEditingIfNeeded()
+        
+        // TODO: add new tracks. Old track: WordPressAuthenticator.track(.loginPasswordFormViewed)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -69,6 +85,61 @@ class PasswordViewController: LoginViewController {
             WordPressAuthenticator.shared.style.statusBarStyle
     }
     
+    override func configureViewLoading(_ loading: Bool) {
+        super.configureViewLoading(loading)
+        passwordField?.isEnabled = !loading
+    }
+
+    override func displayRemoteError(_ error: Error) {
+        configureViewLoading(false)
+
+        let errorCode = (error as NSError).code
+        let errorDomain = (error as NSError).domain
+        if errorDomain == WordPressComOAuthClient.WordPressComOAuthErrorDomain, errorCode == WordPressComOAuthError.invalidRequest.rawValue {
+            let message = NSLocalizedString("It seems like you've entered an incorrect password. Want to give it another try?", comment: "An error message shown when a wpcom user provides the wrong password.")
+            displayError(message: message)
+        } else {
+            super.displayRemoteError(error)
+        }
+    }
+    
+    override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
+        if errorMessage != message {
+            errorMessage = message
+            tableView.reloadData()
+        }
+    }
+    
+}
+
+// MARK: - Validation and Continue
+
+private extension PasswordViewController {
+    
+    // MARK: - Button Actions
+    
+    @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
+        configureViewLoading(true)
+        validateForm()
+    }
+
+    func validateForm() {
+        validateFormAndLogin()
+    }
+    
+}
+
+// MARK: - UITextFieldDelegate
+
+extension PasswordViewController: UITextFieldDelegate {
+        
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if enableSubmit(animating: false) {
+            validateForm()
+        }
+        return true
+    }
+
 }
 
 // MARK: - UITableViewDataSource
@@ -100,19 +171,6 @@ extension PasswordViewController: NUXKeyboardResponder {
         keyboardWillHide(notification)
     }
 
-}
-
-// MARK: - Validation and Continue
-
-private extension PasswordViewController {
-    
-    // MARK: - Button Actions
-    
-    @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
-        // TODO: passwordy stuff
-        // configureViewLoading(true)
-    }
-    
 }
 
 // MARK: - Table Management
@@ -200,20 +258,34 @@ private extension PasswordViewController {
                                      and: WordPressAuthenticator.shared.displayStrings.passwordPlaceholder)
         // Save a reference to the first textField so it can becomeFirstResponder.
         passwordField = cell.textField
+         cell.textField.delegate = self
         
-        // TODO: implement textField delegate
-        // cell.textField.delegate = self
+        cell.onChangeSelectionHandler = { [weak self] textfield in
+            self?.loginFields.password = textfield.nonNilTrimmedText()
+            self?.configureSubmitButton(animating: false)
+        }
         
         SigninEditingState.signinEditingStateActive = true
     }
     
-    /// Configure the link cell.
+    /// Configure the forgot password link cell.
     ///
     func configureTextLinkButton(_ cell: TextLinkButtonTableViewCell) {
         cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.resetPasswordButtonTitle, accessibilityTrait: .link)
-        // cell.actionHandler = { [weak self] in
-            // TODO: handle tap
-        //}
+        cell.actionHandler = { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            // If information is currently processing, ignore button tap.
+            guard self.enableSubmit(animating: false) else {
+                return
+            }
+
+            WordPressAuthenticator.openForgotPasswordURL(self.loginFields)
+
+            // TODO: add new tracks. Old track: WordPressAuthenticator.track(.loginForgotPasswordClicked)
+        }
     }
     
     /// Configure the error message cell.
@@ -256,4 +328,5 @@ private extension PasswordViewController {
             }
         }
     }
+
 }

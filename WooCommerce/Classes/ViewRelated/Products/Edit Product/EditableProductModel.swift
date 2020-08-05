@@ -98,6 +98,10 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
         product.backordersKey
     }
 
+    var soldIndividually: Bool? {
+        product.soldIndividually
+    }
+
     // Visibility logic
 
     func allowsMultipleImages() -> Bool {

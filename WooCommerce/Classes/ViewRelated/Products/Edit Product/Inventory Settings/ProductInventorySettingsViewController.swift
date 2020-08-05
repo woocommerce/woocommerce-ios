@@ -64,7 +64,7 @@ final class ProductInventorySettingsViewController: UIViewController {
 
         self.sku = product.sku
         self.manageStockEnabled = product.manageStock
-        self.soldIndividually = (product as? EditableProductModel)?.product.soldIndividually
+        self.soldIndividually = product.soldIndividually
 
         self.stockQuantity = product.stockQuantity
         self.backordersSetting = product.backordersSetting

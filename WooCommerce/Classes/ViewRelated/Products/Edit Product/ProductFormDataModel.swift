@@ -42,6 +42,7 @@ protocol ProductFormDataModel {
     var stockStatus: ProductStockStatus { get }
     var stockQuantity: Int64? { get }
     var backordersKey: String { get }
+    var soldIndividually: Bool? { get }
 }
 
 // MARK: Helpers that can be derived from `ProductFormDataModel`

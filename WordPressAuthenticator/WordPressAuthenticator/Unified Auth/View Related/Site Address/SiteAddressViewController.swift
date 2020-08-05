@@ -284,6 +284,9 @@ private extension SiteAddressViewController {
     ///
     func configureErrorLabel(_ cell: TextLabelTableViewCell) {
         cell.configureLabel(text: errorMessage, style: .error)
+        if shouldChangeVoiceOverFocus {
+            UIAccessibility.post(notification: .layoutChanged, argument: cell)
+        }
     }
 
     // MARK: - Private Constants

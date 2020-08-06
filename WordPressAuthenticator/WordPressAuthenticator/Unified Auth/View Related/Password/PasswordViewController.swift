@@ -16,7 +16,6 @@ class PasswordViewController: LoginViewController {
 
     override var loginFields: LoginFields {
         didSet {
-            // Clear the password (if any) from LoginFields.
             loginFields.password = ""
         }
     }

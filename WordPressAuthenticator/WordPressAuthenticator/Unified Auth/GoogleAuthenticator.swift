@@ -275,7 +275,7 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
 
         track(.signedIn)
         track(.loginSocialSuccess)
-        tracker?.trackSigninSuccess(authType: authType)
+        tracker?.trackLoginSuccess()
         
         let wpcom = WordPressComCredentials(authToken: authToken,
                                             isJetpackLogin: loginFields.meta.jetpackLogin,
@@ -387,7 +387,7 @@ private extension GoogleAuthenticator {
         track(.createdAccount)
         track(.signedIn)
         track(.signupSocialSuccess)
-        tracker?.trackSigninSuccess(authType: .signup)
+        tracker?.trackSignupSuccess()
 
         signupDelegate?.googleFinishedSignup(credentials: credentials, loginFields: loginFields)
         delegate?.googleFinishedSignup(credentials: credentials, loginFields: loginFields)
@@ -397,6 +397,7 @@ private extension GoogleAuthenticator {
         track(.signedIn)
         track(.signupSocialToLogin)
         track(.loginSocialSuccess)
+        tracker?.trackLoginInstead()
 
         signupDelegate?.googleLoggedInInstead(credentials: credentials, loginFields: loginFields)
         delegate?.googleLoggedInInstead(credentials: credentials, loginFields: loginFields)
@@ -404,6 +405,7 @@ private extension GoogleAuthenticator {
     
     func signupFailed(error: Error) {
         track(.signupSocialFailure, properties: ["error": error.localizedDescription])
+        tracker?.trackSignupFailure(error: error)
 
         signupDelegate?.googleSignupFailed(error: error, loginFields: loginFields)
         delegate?.googleSignupFailed(error: error, loginFields: loginFields)

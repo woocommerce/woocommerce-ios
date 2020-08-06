@@ -27,7 +27,7 @@ class GoogleAuthenticatorTracker {
         trackLogin(step: .success)
     }
     
-    func trackSignupSuccess(authType: GoogleAuthType) {
+    func trackSignupSuccess() {
         trackSignup(step: .success)
     }
     

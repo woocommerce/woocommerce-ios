@@ -3,7 +3,9 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 
-final class StoreStatsAndTopPerformersPeriodViewModelTest: XCTestCase {
+/// Test cases for StoreStatsAndTopPerformersPeriodViewModel.
+///
+final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
 
     private var storesManager: MockupStoresManager!
 

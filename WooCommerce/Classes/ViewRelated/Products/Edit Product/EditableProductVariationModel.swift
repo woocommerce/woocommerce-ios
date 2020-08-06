@@ -3,8 +3,8 @@ import Yosemite
 /// Represents an editable data model based on `ProductVariation`.
 final class EditableProductVariationModel {
     let productVariation: ProductVariation
-    let allAttributes: [ProductAttribute]
 
+    private let allAttributes: [ProductAttribute]
     private lazy var variationName: String = generateName(variationAttributes: productVariation.attributes, allAttributes: allAttributes)
 
     init(productVariation: ProductVariation, allAttributes: [ProductAttribute]) {

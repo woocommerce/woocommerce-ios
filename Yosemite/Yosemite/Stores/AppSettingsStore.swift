@@ -132,7 +132,7 @@ private extension AppSettingsStore {
     ///
     func setInstallationDateIfNecessary(date: Date, onCompletion: ((Result<Bool, Error>) -> Void)) {
         do {
-            let settings = try loadOrCreateGeneralAppSettings()
+            let settings = loadOrCreateGeneralAppSettings()
 
             if let installationDate = settings.installationDate,
                 date > installationDate {
@@ -152,7 +152,7 @@ private extension AppSettingsStore {
     ///
     func setLastFeedbackDate(date: Date, onCompletion: ((Result<Void, Error>) -> Void)) {
         do {
-            let settings = try loadOrCreateGeneralAppSettings()
+            let settings = loadOrCreateGeneralAppSettings()
 
             let settingsToSave = GeneralAppSettings(installationDate: settings.installationDate, lastFeedbackDate: date)
             try saveGeneralAppSettings(settingsToSave)
@@ -164,8 +164,8 @@ private extension AppSettingsStore {
     }
 
     /// Load the `GeneralAppSettings` from file or create an empty one if it doesn't exist.
-    func loadOrCreateGeneralAppSettings() throws -> GeneralAppSettings {
-        guard let settings: GeneralAppSettings = try fileStorage.data(for: generalAppSettingsFileURL) else {
+    func loadOrCreateGeneralAppSettings() -> GeneralAppSettings {
+        guard let settings: GeneralAppSettings = try? fileStorage.data(for: generalAppSettingsFileURL) else {
             return GeneralAppSettings(installationDate: nil, lastFeedbackDate: nil)
         }
 

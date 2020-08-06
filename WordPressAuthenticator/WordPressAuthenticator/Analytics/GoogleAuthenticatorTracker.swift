@@ -13,10 +13,6 @@ class GoogleAuthenticatorTracker {
     }
     
     // MARK: -  Tracking Support
-    /*
-    func track(_ event: AnalyticsEvent) {
-        analyticsTracker.track(event)
-    }*/
     
     func trackSigninStart(authType: GoogleAuthType) {
         switch authType {

@@ -406,10 +406,11 @@
 		575472812452185300A94C3C /* PushNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575472802452185300A94C3C /* PushNotification.swift */; };
 		57612989245888E2007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57612988245888E2007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlus.swift */; };
 		5761298B24589B84007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlusTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5761298A24589B84007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlusTests.swift */; };
+		576D9F2924DB81D3007B48F4 /* StoreStatsAndTopPerformersPeriodViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576D9F2824DB81D3007B48F4 /* StoreStatsAndTopPerformersPeriodViewModelTests.swift */; };
 		576F92222423C3C0003E5FEF /* OrdersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576F92212423C3C0003E5FEF /* OrdersViewModel.swift */; };
+		5778E00624DB0C3900B65CBF /* StoreStatsAndTopPerformersPeriodViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5778E00524DB0C3900B65CBF /* StoreStatsAndTopPerformersPeriodViewModel.swift */; };
 		5778E00A24DB1D8600B65CBF /* BehaviorSubjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5778E00924DB1D8600B65CBF /* BehaviorSubjectTests.swift */; };
 		5778E00E24DB2BA200B65CBF /* BehaviorSubject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5778E00D24DB2BA200B65CBF /* BehaviorSubject.swift */; };
-		5778E00624DB0C3900B65CBF /* StoreStatsAndTopPerformersPeriodViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5778E00524DB0C3900B65CBF /* StoreStatsAndTopPerformersPeriodViewModel.swift */; };
 		578187B22481D9290063B46B /* XCTestCase+Assertions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578187B12481D9290063B46B /* XCTestCase+Assertions.swift */; };
 		5795F22C23E26A8D00F6707C /* OrderSearchStarterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5795F22B23E26A8D00F6707C /* OrderSearchStarterViewController.xib */; };
 		5795F22E23E26A9E00F6707C /* OrderSearchStarterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5795F22D23E26A9E00F6707C /* OrderSearchStarterViewController.swift */; };
@@ -1328,10 +1329,11 @@
 		575472802452185300A94C3C /* PushNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotification.swift; sourceTree = "<group>"; };
 		57612988245888E2007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NumberFormatter+LocalizedOrNinetyNinePlus.swift"; sourceTree = "<group>"; };
 		5761298A24589B84007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlusTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NumberFormatter+LocalizedOrNinetyNinePlusTests.swift"; sourceTree = "<group>"; };
+		576D9F2824DB81D3007B48F4 /* StoreStatsAndTopPerformersPeriodViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsAndTopPerformersPeriodViewModelTests.swift; sourceTree = "<group>"; };
 		576F92212423C3C0003E5FEF /* OrdersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersViewModel.swift; sourceTree = "<group>"; };
+		5778E00524DB0C3900B65CBF /* StoreStatsAndTopPerformersPeriodViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsAndTopPerformersPeriodViewModel.swift; sourceTree = "<group>"; };
 		5778E00924DB1D8600B65CBF /* BehaviorSubjectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BehaviorSubjectTests.swift; sourceTree = "<group>"; };
 		5778E00D24DB2BA200B65CBF /* BehaviorSubject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BehaviorSubject.swift; sourceTree = "<group>"; };
-		5778E00524DB0C3900B65CBF /* StoreStatsAndTopPerformersPeriodViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsAndTopPerformersPeriodViewModel.swift; sourceTree = "<group>"; };
 		578187B12481D9290063B46B /* XCTestCase+Assertions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+Assertions.swift"; sourceTree = "<group>"; };
 		5795F22B23E26A8D00F6707C /* OrderSearchStarterViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderSearchStarterViewController.xib; sourceTree = "<group>"; };
 		5795F22D23E26A9E00F6707C /* OrderSearchStarterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSearchStarterViewController.swift; sourceTree = "<group>"; };
@@ -2482,6 +2484,7 @@
 		02E4FD7F2306AA770049610C /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				576D9F2724DB81BF007B48F4 /* Stats V4 */,
 				02E4FD802306AA890049610C /* StatsTimeRangeBarViewModelTests.swift */,
 				0257285B230ACC7E00A288C4 /* StoreStatsV4ChartAxisHelperTests.swift */,
 				02404EDF2314FE5900FF1170 /* DashboardUIFactoryTests.swift */,
@@ -2777,6 +2780,14 @@
 				5778E00D24DB2BA200B65CBF /* BehaviorSubject.swift */,
 			);
 			path = Observables;
+			sourceTree = "<group>";
+		};
+		576D9F2724DB81BF007B48F4 /* Stats V4 */ = {
+			isa = PBXGroup;
+			children = (
+				576D9F2824DB81D3007B48F4 /* StoreStatsAndTopPerformersPeriodViewModelTests.swift */,
+			);
+			path = "Stats V4";
 			sourceTree = "<group>";
 		};
 		5798191124526FC7000817F8 /* Observables */ = {
@@ -5450,6 +5461,7 @@
 				0257285C230ACC7E00A288C4 /* StoreStatsV4ChartAxisHelperTests.swift in Sources */,
 				020BE76B23B4A380007FE54C /* AztecUnderlineFormatBarCommandTests.swift in Sources */,
 				D83F5937225B402E00626E75 /* TitleAndEditableValueTableViewCellTests.swift in Sources */,
+				576D9F2924DB81D3007B48F4 /* StoreStatsAndTopPerformersPeriodViewModelTests.swift in Sources */,
 				9379E1A6225537D0006A6BE4 /* TestingAppDelegate.swift in Sources */,
 				453904F323BB88B5007C4956 /* ProductTaxStatusListSelectorCommandTests.swift in Sources */,
 				02BAB02124D0235F00F8B06E /* ProductPriceSettingsViewModel+ProductVariationTests.swift in Sources */,

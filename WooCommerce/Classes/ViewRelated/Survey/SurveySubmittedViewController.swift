@@ -1,8 +1,20 @@
 import UIKit
 
+/// Outputs of the the `SurveySubmittedViewController`
+///
+protocol SurveySubmittedViewControllerOutputs: UIViewController {
+    /// Closure invoked when tapping the contact us button
+    ///
+    var onContactUsAction: (() -> Void)? { get }
+
+    /// Closure invoked when tapping the back to store button
+    ///
+    var onBackToStoreAction: (() -> Void)? { get }
+}
+
 /// Shows a completion screen once a survey has been submitted
 ///
-final class SurveySubmittedViewController: UIViewController {
+final class SurveySubmittedViewController: UIViewController, SurveySubmittedViewControllerOutputs {
 
     /// Thank you label at the top
     ///

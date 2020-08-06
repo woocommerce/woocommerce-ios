@@ -43,7 +43,7 @@ private extension InAppFeedbackCardViewController {
         didNotLikeButton.applySecondaryButtonStyle()
         didNotLikeButton.setTitle(Localization.couldBeBetter, for: .normal)
         didNotLikeButton.on(.touchUpInside) { _ in
-            let surveyNavigation = SurveyNavigationController.init(survey: .inAppFeedback)
+            let surveyNavigation = SurveyCoordinatingController.init(survey: .inAppFeedback)
             self.present(surveyNavigation, animated: true, completion: nil)
         }
     }

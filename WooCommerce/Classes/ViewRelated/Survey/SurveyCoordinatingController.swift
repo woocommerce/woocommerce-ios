@@ -2,7 +2,7 @@ import UIKit
 
 /// Controls navigation for the in-app feedback flow. Meant to be presented modally
 ///
-final class SurveyNavigationController: WooNavigationController {
+final class SurveyCoordinatingController: WooNavigationController {
 
     /// Used to present the Contact Support dialog
     private let zendeskManager: ZendeskManagerProtocol
@@ -25,7 +25,7 @@ final class SurveyNavigationController: WooNavigationController {
 }
 
 // MARK: Navigation
-private extension SurveyNavigationController {
+private extension SurveyCoordinatingController {
 
     /// Starts navigation with `SurveyViewController` as root view controller.
     ///

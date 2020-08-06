@@ -5,7 +5,7 @@ import XCTest
 
 final class ProductBackordersSettingListSelectorCommandTests: XCTestCase {
 
-    func testSelectedSetting() {
+    func test_selected_setting() {
         let expectedSetting = ProductBackordersSetting.notAllowed
         let product = MockProduct().product(backordersSetting: expectedSetting)
         let command = ProductBackordersSettingListSelectorCommand(selected: product.backordersSetting)
@@ -17,12 +17,12 @@ final class ProductBackordersSettingListSelectorCommandTests: XCTestCase {
         XCTAssertEqual(command.selected, newSetting)
     }
 
-    func testSettingListData() {
+    func test_setting_list_data() {
         let command = ProductBackordersSettingListSelectorCommand(selected: nil)
         XCTAssertEqual(command.data.count, 3)
     }
 
-    func testCellConfiguration() {
+    func test_cell_configuration() {
         let product = MockProduct().product()
         let command = ProductBackordersSettingListSelectorCommand(selected: product.backordersSetting)
         let nib = Bundle.main.loadNibNamed(BasicTableViewCell.classNameWithoutNamespaces, owner: self, options: nil)

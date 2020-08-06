@@ -214,6 +214,41 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertEqual(savedSettings.lastFeedbackDate, existingSettings.lastFeedbackDate)
     }
 
+    /// Test that the installationDate can still be saved even if there is no existing
+    /// settings file.
+    ///
+    /// This has to be tested using a `FileStorage` that operates on real files instead of an
+    /// in-memory storage. The in-memory storage does not fail if the given file URL does not exist.
+    ///
+    func test_it_can_save_the_installationDate_when_the_settings_file_does_not_exist() throws {
+        // Given
+        let date = Date(timeIntervalSince1970: 100)
+
+        // Create our own infrastructure so we can inject `PListFileStorage`.
+        let fileStorage = PListFileStorage()
+        let storageManager = MockupStorageManager()
+        let dispatcher = Dispatcher()
+        let store = AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: fileStorage)
+
+        if FileManager.default.fileExists(atPath: expectedGeneralAppSettingsFileURL.path) {
+            try fileStorage.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        }
+
+        // When
+        var result: Result<Bool, Error>?
+        let action = AppSettingsAction.setInstallationDateIfNecessary(date: date) { aResult in
+            result = aResult
+        }
+        store.onAction(action)
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(result).isSuccess)
+        XCTAssertTrue(try XCTUnwrap(result).get())
+
+        let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage.data(for: expectedGeneralAppSettingsFileURL))
+        XCTAssertEqual(date, savedSettings.installationDate)
+    }
+
     func testItDoesNotSaveTheAppInstallationDateIfTheGivenDateIsNewer() throws {
         // Given
         let existingDate = Date(timeIntervalSince1970: 100)

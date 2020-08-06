@@ -3,6 +3,8 @@ import XCTest
 @testable import Yosemite
 import struct Storage.GeneralAppSettings
 
+private typealias InferenceError = InAppFeedbackCardVisibilityUseCase.InferenceError
+
 final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
 
     private var dateFormatter: DateFormatter!
@@ -28,10 +30,10 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         // Given
         let installationDate = try date(from: "2020-08-08T00:00:00Z")
         let currentDate = try date(from: "2020-11-05T23:59:59Z")
-        let settings = GeneralAppSettings(installationDate: installationDate, lastFeedbackDate: nil)
 
         fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path, thenReturn: [:])
 
+        let settings = GeneralAppSettings(installationDate: installationDate, lastFeedbackDate: nil)
         let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, fileManager: fileManager, calendar: calendar)
 
         // When
@@ -41,15 +43,32 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         XCTAssertFalse(shouldBeVisible)
     }
 
+    func test_shouldBeVisible_is_true_if_installationDate_is_more_than_or_equal_to_90_days_ago() throws {
+        // Given
+        let installationDate = try date(from: "2020-08-08T00:00:00Z")
+        let currentDate = try date(from: "2020-11-06T00:00:00Z")
+
+        fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path, thenReturn: [:])
+
+        let settings = GeneralAppSettings(installationDate: installationDate, lastFeedbackDate: nil)
+        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, fileManager: fileManager, calendar: calendar)
+
+        // When
+        let shouldBeVisible = try useCase.shouldBeVisible(currentDate: currentDate)
+
+        // Then
+        XCTAssertTrue(shouldBeVisible)
+    }
+
     func test_shouldBeVisible_is_false_if_lastFeedback_is_less_than_180_days_ago() throws {
         // Given
         let installationDate = try date(from: "2020-08-08T00:00:00Z")
         let lastFeedbackDate = try date(from: "2020-11-06T00:00:00Z")
         let currentDate = try date(from: "2021-05-04T23:59:59Z")
-        let settings = GeneralAppSettings(installationDate: installationDate, lastFeedbackDate: lastFeedbackDate)
 
         fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path, thenReturn: [:])
 
+        let settings = GeneralAppSettings(installationDate: installationDate, lastFeedbackDate: lastFeedbackDate)
         let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, fileManager: fileManager, calendar: calendar)
 
         // When
@@ -64,10 +83,10 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         let installationDate = try date(from: "2020-08-08T00:00:00Z")
         let lastFeedbackDate = try date(from: "2020-11-06T00:00:00Z")
         let currentDate = try date(from: "2021-05-05T00:00:00Z")
-        let settings = GeneralAppSettings(installationDate: installationDate, lastFeedbackDate: lastFeedbackDate)
 
         fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path, thenReturn: [:])
 
+        let settings = GeneralAppSettings(installationDate: installationDate, lastFeedbackDate: lastFeedbackDate)
         let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, fileManager: fileManager, calendar: calendar)
 
         // When
@@ -75,6 +94,61 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
 
         // Then
         XCTAssertTrue(shouldBeVisible)
+    }
+
+    func test_shouldBeVisible_is_false_if_documentDir_creation_date_is_less_than_90_days_ago() throws {
+        // Given
+        let documentDirCreationDate = try date(from: "2020-08-08T00:00:00Z")
+        let currentDate = try date(from: "2020-11-05T23:59:59Z")
+
+        fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path,
+                                                   thenReturn: [.creationDate: documentDirCreationDate])
+
+        let settings = GeneralAppSettings(installationDate: nil, lastFeedbackDate: nil)
+        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, fileManager: fileManager, calendar: calendar)
+
+        // When
+        let shouldBeVisible = try useCase.shouldBeVisible(currentDate: currentDate)
+
+        // Then
+        XCTAssertFalse(shouldBeVisible)
+    }
+
+    func test_shouldBeVisible_is_true_if_documentDir_creation_date_is_more_than_or_equal_to_90_days_ago() throws {
+        // Given
+        let documentDirCreationDate = try date(from: "2020-08-08T00:00:00Z")
+        // The installationDate is ignored because it is "later" than documentDirCreationDate
+        let installationDate = try date(from: "2020-08-09T00:00:00Z")
+        let currentDate = try date(from: "2020-11-06T00:00:00Z")
+
+        fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path,
+                                                   thenReturn: [.creationDate: documentDirCreationDate])
+
+        let settings = GeneralAppSettings(installationDate: installationDate, lastFeedbackDate: nil)
+        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, fileManager: fileManager, calendar: calendar)
+
+        // When
+        let shouldBeVisible = try useCase.shouldBeVisible(currentDate: currentDate)
+
+        // Then
+        XCTAssertTrue(shouldBeVisible)
+    }
+
+    func test_shouldBeVisible_throws_if_the_installation_date_cannot_be_inferred() throws {
+        // Given
+        fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path, thenReturn: [:])
+
+        let settings = GeneralAppSettings(installationDate: nil, lastFeedbackDate: nil)
+        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, fileManager: fileManager, calendar: calendar)
+
+        // When
+        var error: Error?
+        XCTAssertThrowsError(try useCase.shouldBeVisible()) {
+            error = $0
+        }
+
+        // Then
+        XCTAssertEqual(error as? InferenceError, .failedToInferInstallationDate)
     }
 }
 

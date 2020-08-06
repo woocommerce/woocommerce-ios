@@ -324,6 +324,31 @@ final class AppSettingsStoreTests: XCTestCase {
         // The other properties should be kept
         XCTAssertEqual(savedSettings.installationDate, existingSettings.installationDate)
     }
+
+    /// This is more like a simple integration test because most of the logic is tested by
+    /// `InAppFeedbackCardVisibilityUseCase`.
+    ///
+    func test_loadInAppFeedbackCardVisibility_returns_true_if_installationDate_is_more_than_90_days_ago() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // Set the installation date. We'll set a very old one to make sure that it's older than the
+        // Documents directory which is also considered as an "installation date".
+        subject?.onAction(AppSettingsAction.setInstallationDateIfNecessary(date: Date.distantPast, onCompletion: { _ in
+            // noop
+        }))
+
+        // When
+        var shouldBeVisibleResult: Result<Bool, Error>?
+        let action = AppSettingsAction.loadInAppFeedbackCardVisibility { result in
+            shouldBeVisibleResult = result
+        }
+        subject?.onAction(action)
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(shouldBeVisibleResult).isSuccess)
+        XCTAssertTrue(try XCTUnwrap(shouldBeVisibleResult).get())
+    }
 }
 
 // MARK: - Utils

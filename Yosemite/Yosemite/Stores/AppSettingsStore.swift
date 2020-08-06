@@ -117,6 +117,8 @@ public class AppSettingsStore: Store {
             setInstallationDateIfNecessary(date: date, onCompletion: onCompletion)
         case .setLastFeedbackDate(let date, let onCompletion):
             setLastFeedbackDate(date: date, onCompletion: onCompletion)
+        case .loadInAppFeedbackCardVisibility(let onCompletion):
+            loadInAppFeedbackCardVisibility(onCompletion: onCompletion)
         }
     }
 }
@@ -161,6 +163,15 @@ private extension AppSettingsStore {
         } catch {
             onCompletion(.failure(error))
         }
+    }
+
+    func loadInAppFeedbackCardVisibility(onCompletion: (Result<Bool, Error>) -> Void) {
+        let settings = loadOrCreateGeneralAppSettings()
+        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings)
+
+        onCompletion(Result {
+            try useCase.shouldBeVisible()
+        })
     }
 
     /// Load the `GeneralAppSettings` from file or create an empty one if it doesn't exist.

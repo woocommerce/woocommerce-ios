@@ -159,6 +159,7 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         }
     }
 
+    /// Observe and react to visibility events for the in-app feedback card.
     func configureInAppFeedbackCardViews() {
         guard viewModel.canDisplayInAppFeedbackCard else {
             return
@@ -169,8 +170,10 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
                 return
             }
 
-            self.inAppFeedbackCardViewsForStackView.forEach {
-                $0.isHidden = !isVisible
+            UIView.animate(withDuration: 0.2) {
+                self.inAppFeedbackCardViewsForStackView.forEach {
+                    $0.isHidden = !isVisible
+                }
             }
         }
     }

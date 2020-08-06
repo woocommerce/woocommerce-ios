@@ -156,15 +156,15 @@ private extension ProductFormTableViewDataSource {
     }
 
     func configureVariationName(cell: UITableViewCell, name: String) {
-        guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {
+        guard let cell = cell as? BasicTableViewCell else {
             fatalError()
         }
-        let title = NSLocalizedString("Selected Attributes",
-                                      comment: "Title of the selected attributes as the name for a product variation on Product Variation form screen.")
-        let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: title, text: name)
-        cell.updateUI(viewModel: viewModel)
+
         cell.accessoryType = .none
-        cell.selectionStyle = .none
+        cell.textLabel?.text = name
+        cell.textLabel?.applyHeadlineStyle()
+        cell.textLabel?.textColor = .text
+        cell.textLabel?.numberOfLines = 0
     }
 
     func configureDescription(cell: UITableViewCell, description: String?) {

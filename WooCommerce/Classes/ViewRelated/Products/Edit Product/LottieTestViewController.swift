@@ -18,7 +18,7 @@ class LottieTestViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let starAnimation = Animation.named("prologue-orders")
+        let starAnimation = Animation.named("prologue-stats")
         animationView.animation = starAnimation
         animationView.play { (finished) in
           /// Animation finished

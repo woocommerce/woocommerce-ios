@@ -34,6 +34,10 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
         productVariation.permalink
     }
 
+    var status: ProductStatus {
+        productVariation.status
+    }
+
     var images: [ProductImage] {
         [productVariation.image].compactMap { $0 }
     }

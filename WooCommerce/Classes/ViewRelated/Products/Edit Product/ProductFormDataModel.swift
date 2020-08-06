@@ -11,6 +11,7 @@ protocol ProductFormDataModel {
 
     // Settings
     var permalink: String { get }
+    var status: ProductStatus { get }
 
     // Images
     var images: [ProductImage] { get }

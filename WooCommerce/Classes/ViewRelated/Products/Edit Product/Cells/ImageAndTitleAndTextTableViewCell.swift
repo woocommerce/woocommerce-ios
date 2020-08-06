@@ -21,6 +21,19 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         }
     }
 
+    /// View model with a switch in the cell's accessory view.
+    struct SwitchableViewModel {
+        let viewModel: ViewModel
+        let isSwitchOn: Bool
+        let onSwitchChange: (_ isOn: Bool) -> Void
+
+        init(viewModel: ViewModel, isSwitchOn: Bool, onSwitchChange: @escaping (_ isOn: Bool) -> Void) {
+            self.viewModel = viewModel
+            self.isSwitchOn = isSwitchOn
+            self.onSwitchChange = onSwitchChange
+        }
+    }
+
     @IBOutlet private weak var contentStackView: UIStackView!
     @IBOutlet private weak var contentImageView: UIImageView!
     @IBOutlet private weak var titleAndTextStackView: UIStackView!
@@ -51,10 +64,24 @@ extension ImageAndTitleAndTextTableViewCell {
         contentImageView.isHidden = viewModel.image == nil
         accessoryType = viewModel.isActionable ? .disclosureIndicator: .none
         selectionStyle = viewModel.isActionable ? .default: .none
+        accessoryView = nil
 
         if let imageTintColor = viewModel.imageTintColor {
             contentImageView.tintColor = imageTintColor
         }
+    }
+
+    func updateUI(switchableViewModel: SwitchableViewModel) {
+        updateUI(viewModel: switchableViewModel.viewModel)
+        titleLabel.textColor = .text
+
+        let toggleSwitch = UISwitch()
+        toggleSwitch.onTintColor = .primary
+        toggleSwitch.isOn = switchableViewModel.isSwitchOn
+        toggleSwitch.on(.touchUpInside) { visibilitySwitch in
+            switchableViewModel.onSwitchChange(visibilitySwitch.isOn)
+        }
+        accessoryView = toggleSwitch
     }
 }
 

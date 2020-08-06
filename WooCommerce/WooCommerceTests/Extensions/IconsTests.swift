@@ -259,6 +259,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.variationsImage)
     }
 
+    func testVisibleImageIsNotNil() {
+        XCTAssertNotNil(UIImage.visibilityImage)
+    }
+
     func testWooLogoImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.wooLogoImage())
     }
@@ -267,10 +271,6 @@ final class IconsTests: XCTestCase {
         let size = CGSize(width: 20, height: 20)
         let image = UIImage.wooLogoImage(withSize: size, tintColor: .clear)
         XCTAssertEqual(size, image!.size)
-    }
-
-    func testPasswordFieldImageIsNotNil() {
-        XCTAssertNotNil(UIImage.passwordFieldImage)
     }
 
     func testWaitingForCustomersImageIconIsNotNil() {

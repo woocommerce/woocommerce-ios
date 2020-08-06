@@ -18,6 +18,7 @@ final class ProductFormTableViewDataSource: NSObject {
     private let viewModel: ProductFormTableViewModel
     private let canEditImages: Bool
     private var onNameChange: ((_ name: String?) -> Void)?
+    private var onStatusChange: ((_ isEnabled: Bool) -> Void)?
     private var onAddImage: (() -> Void)?
 
     private let productImageStatuses: [ProductImageStatus]
@@ -34,8 +35,9 @@ final class ProductFormTableViewDataSource: NSObject {
         super.init()
     }
 
-    func configureActions(onNameChange: ((_ name: String?) -> Void)?, onAddImage: @escaping () -> Void) {
+    func configureActions(onNameChange: ((_ name: String?) -> Void)?, onStatusChange: ((_ isEnabled: Bool) -> Void)?, onAddImage: @escaping () -> Void) {
         self.onNameChange = onNameChange
+        self.onStatusChange = onStatusChange
         self.onAddImage = onAddImage
     }
 }
@@ -193,6 +195,8 @@ private extension ProductFormTableViewDataSource {
             configureSettings(cell: cell, viewModel: viewModel)
         case .reviews(let viewModel, let ratingCount, let averageRating):
             configureReviews(cell: cell, viewModel: viewModel, ratingCount: ratingCount, averageRating: averageRating)
+        case .status(let viewModel):
+            configureSettingsRowWithASwitch(cell: cell, viewModel: viewModel)
         }
     }
 
@@ -219,5 +223,17 @@ private extension ProductFormTableViewDataSource {
         if ratingCount > 0 {
             cell.accessoryType = .disclosureIndicator
         }
+    }
+
+    func configureSettingsRowWithASwitch(cell: UITableViewCell, viewModel: ProductFormSection.SettingsRow.SwitchableViewModel) {
+        guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {
+            fatalError()
+        }
+
+        let switchableViewModel = ImageAndTitleAndTextTableViewCell.SwitchableViewModel(viewModel: viewModel.viewModel.toCellViewModel(),
+                                                                                        isSwitchOn: viewModel.isSwitchOn) { [weak self] isSwitchOn in
+                                                                                            self?.onStatusChange?(isSwitchOn)
+        }
+        cell.updateUI(switchableViewModel: switchableViewModel)
     }
 }

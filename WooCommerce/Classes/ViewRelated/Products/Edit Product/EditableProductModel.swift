@@ -35,6 +35,10 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
         product.permalink
     }
 
+    var status: ProductStatus {
+        product.productStatus
+    }
+
     var images: [ProductImage] {
         product.images
     }

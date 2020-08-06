@@ -73,6 +73,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         super.init(nibName: "ProductFormViewController", bundle: nil)
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
             self?.onEditProductNameCompletion(newName: name ?? "")
+        }, onStatusChange: { [weak self] isVisible in
+            self?.onEditStatusCompletion(isEnabled: isVisible)
         }, onAddImage: { [weak self] in
             self?.showProductImages()
         })
@@ -267,6 +269,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                                                                                productID: product.productID,
                                                                                isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
                 show(variationsViewController, sender: self)
+            case .status:
+                break
             }
         }
     }
@@ -403,6 +407,8 @@ private extension ProductFormViewController {
                                                              canEditImages: isEditProductsRelease2Enabled)
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
             self?.onEditProductNameCompletion(newName: name ?? "")
+        }, onStatusChange: { [weak self] isEnabled in
+            self?.onEditStatusCompletion(isEnabled: isEnabled)
         }, onAddImage: { [weak self] in
             self?.showProductImages()
         })
@@ -417,6 +423,8 @@ private extension ProductFormViewController {
                                                              canEditImages: isEditProductsRelease2Enabled)
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
             self?.onEditProductNameCompletion(newName: name ?? "")
+        }, onStatusChange: { [weak self] isEnabled in
+            self?.onEditStatusCompletion(isEnabled: isEnabled)
         }, onAddImage: { [weak self] in
             self?.showProductImages()
         })
@@ -1025,6 +1033,14 @@ private extension ProductFormViewController {
             return
         }
         viewModel.updateExternalLink(externalURL: externalURL, buttonText: buttonText)
+    }
+}
+
+// MARK: Action - Edit Status (Enabled/Disabled)
+//
+private extension ProductFormViewController {
+    func onEditStatusCompletion(isEnabled: Bool) {
+        viewModel.updateStatus(isEnabled)
     }
 }
 

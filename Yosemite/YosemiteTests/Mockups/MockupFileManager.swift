@@ -6,6 +6,7 @@ import XCTest
 final class MockupFileManager: FileManager {
     var dataByFilePath: [String: Data] = [:]
 
+    /// The mocked results for the `attributesOfItem(atPath:)`.
     private var attributesOfItemResults = [String: [FileAttributeKey: Any]]()
 
     override func fileExists(atPath path: String) -> Bool {
@@ -34,6 +35,7 @@ final class MockupFileManager: FileManager {
 // MARK: - Mocking
 
 extension MockupFileManager {
+    /// Sets the return value when `attributesOfItem(atPath:)` is called.
     func whenRetrievingAttributesOfItem(atPath path: String, thenReturn: [FileAttributeKey: Any]) {
         attributesOfItemResults[path] = thenReturn
     }

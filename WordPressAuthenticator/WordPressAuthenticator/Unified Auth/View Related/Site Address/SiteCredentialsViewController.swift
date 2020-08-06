@@ -66,7 +66,7 @@ final class SiteCredentialsViewController: LoginViewController {
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
         configureViewForEditingIfNeeded()
 
-        // TODO: Add new Tracks event
+        // TODO: - Tracks.
         // WordPressAuthenticator.track(.loginUsernamePasswordFormViewed)
     }
 
@@ -323,7 +323,7 @@ private extension SiteCredentialsViewController {
             }
 
             WordPressAuthenticator.openForgotPasswordURL(self.loginFields)
-            // TODO: Add new Tracks event
+            // TODO: - Tracks.
             // WordPressAuthenticator.track(.loginForgotPasswordClicked)
         }
     }

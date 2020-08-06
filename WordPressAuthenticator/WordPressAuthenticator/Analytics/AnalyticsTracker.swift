@@ -215,9 +215,13 @@ public class AnalyticsTracker {
         case createAccount = "create_account"
     }
     
-    /// Provides the sign-in tracking state machine that can be shared across different trackers if needed.
+    /// Shared Instance.
     ///
-    public class Context {
+    public static var shared = AnalyticsTracker()
+    
+    /// State for the analytics tracker.
+    ///
+    private class State {
         var lastFlow: Flow
         var lastSource: Source
         var lastStep: Step
@@ -229,7 +233,7 @@ public class AnalyticsTracker {
         }
     }
     
-    let context: Context
+    private let state = State()
     
     /// The backing analytics tracking method.  Can be overridden for testing purposes.
     ///
@@ -237,8 +241,7 @@ public class AnalyticsTracker {
     
     // MARK: - Initializers
     
-    init(context: Context, track: @escaping TrackerMethod = WPAnalytics.track) {
-        self.context = context
+    init(track: @escaping TrackerMethod = WPAnalytics.track) {
         self.track = track
     }
     
@@ -317,13 +320,13 @@ public class AnalyticsTracker {
     // MARK: - Source
     
     func set(source: Source) {
-        context.lastSource = source
+        state.lastSource = source
     }
     
     // MARK: - Properties
     
     private func properties(step: Step, flow: Flow) -> [String: String] {
-        return properties(step: step, flow: flow, source: context.lastSource)
+        return properties(step: step, flow: flow, source: state.lastSource)
     }
     
     private func properties(step: Step, flow: Flow, source: Source) -> [String: String] {
@@ -339,13 +342,13 @@ public class AnalyticsTracker {
     /// Retrieve the last step, flow and source stored in the state machine.
     ///
     private func lastProperties() -> [String: String] {
-        return properties(step: context.lastStep, flow: context.lastFlow, source: context.lastSource)
+        return properties(step: state.lastStep, flow: state.lastFlow, source: state.lastSource)
     }
     
     /// Save the step and flow in the state machine.  The source can only be changed directly using `set(source:)`.
     ///
     private func saveLastProperties(step: Step, flow: Flow) {
-        context.lastFlow = flow
-        context.lastStep = step
+        state.lastFlow = flow
+        state.lastStep = step
     }
 }

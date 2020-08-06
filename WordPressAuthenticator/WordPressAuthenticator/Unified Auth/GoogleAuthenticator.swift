@@ -115,7 +115,7 @@ class GoogleAuthenticator: NSObject {
     
     private override init() {
         if WordPressAuthenticator.shared.configuration.enableUnifiedGoogle {
-            tracker = GoogleAuthenticatorTracker(context: AnalyticsTracker.Context())
+            tracker = GoogleAuthenticatorTracker(analyticsTracker: AnalyticsTracker.shared)
         } else {
             tracker = nil
         }

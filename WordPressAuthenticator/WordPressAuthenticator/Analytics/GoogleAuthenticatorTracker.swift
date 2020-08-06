@@ -8,8 +8,8 @@ class GoogleAuthenticatorTracker {
     ///
     private let analyticsTracker: AnalyticsTracker
     
-    init(context: AnalyticsTracker.Context) {
-        self.analyticsTracker = AnalyticsTracker(context: context)
+    init(analyticsTracker: AnalyticsTracker) {
+        self.analyticsTracker = analyticsTracker
     }
     
     // MARK: -  Tracking Support

@@ -5,7 +5,7 @@ final class EditableProductVariationModel {
     let productVariation: ProductVariation
     let allAttributes: [ProductAttribute]
 
-    lazy var variationName: String = generateName(variationAttributes: productVariation.attributes, allAttributes: allAttributes)
+    private lazy var variationName: String = generateName(variationAttributes: productVariation.attributes, allAttributes: allAttributes)
 
     init(productVariation: ProductVariation, allAttributes: [ProductAttribute]) {
         self.productVariation = productVariation

@@ -15,7 +15,11 @@ final class EditableProductVariationModel {
 
 private extension EditableProductVariationModel {
     func generateName(variationAttributes: [ProductVariationAttribute], allAttributes: [ProductAttribute]) -> String {
-        return allAttributes.map { attribute in
+        return allAttributes
+            .sorted(by: { (lhs, rhs) -> Bool in
+                lhs.position < rhs.position
+            })
+            .map { attribute in
             guard let variationAttribute = variationAttributes.first(where: { $0.id == attribute.attributeID && $0.name == attribute.name }) else {
                 // The variation doesn't have an option set for this attribute, and we show "Any \(attributeName)" in this case.
                 return String.localizedStringWithFormat(Localization.anyAttirubteFormat, attribute.name)

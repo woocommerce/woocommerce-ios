@@ -58,7 +58,9 @@ final class SurveyViewController: UIViewController {
     /// Removes the loading view from the screen with a fade out animaition
     ///
     private func removeLoadingView() {
-        loadingView.fadeOut()
+        loadingView.fadeOut { [weak self] _ in
+            self?.loadingView.removeFromSuperview()
+        }
     }
 }
 

@@ -42,7 +42,7 @@ final class SurveyViewControllerTests: XCTestCase {
         }
     }
 
-    func test_it_does_not_completes_after_receiving_a_form_submitted_GET_callback_request() throws {
+    func test_it_does_not_complete_after_receiving_a_form_submitted_GET_callback_request() throws {
         // Given
         let exp = expectation(description: #function)
         exp.isInverted = true

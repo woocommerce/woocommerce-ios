@@ -51,7 +51,7 @@ final class SurveyLoadingView: UIView {
     ///
     private func styleComponents() {
         backgroundColor = .listBackground
-        layer.cornerRadius = Layout.corderRadius
+        layer.cornerRadius = Layout.cornerRadius
         waitLabel.applyHeadlineStyle()
         loadingIndicator.color = .primary
     }
@@ -71,6 +71,6 @@ private extension SurveyLoadingView {
         static let stackViewEdges = UIEdgeInsets(top: 38, left: 54, bottom: 48, right: 54)
         static let stackViewSpacing = CGFloat(40)
         static let indicatorScaleFactor = CGFloat(2.5)
-        static let corderRadius = CGFloat(14.5)
+        static let cornerRadius = CGFloat(14.5)
     }
 }

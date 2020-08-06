@@ -198,10 +198,11 @@ extension ProductVariationsViewController: UITableViewDataSource {
         }
 
         let productVariation = resultsController.object(at: indexPath)
+        let model = EditableProductVariationModel(productVariation: productVariation, allAttributes: allAttributes)
 
         let currencyCode = CurrencySettings.shared.currencyCode
         let currency = CurrencySettings.shared.symbol(from: currencyCode)
-        let viewModel = ProductsTabProductViewModel(productVariation: productVariation,
+        let viewModel = ProductsTabProductViewModel(productVariationModel: model,
                                                     currency: currency)
         cell.update(viewModel: viewModel, imageService: imageService)
         cell.selectionStyle = .none

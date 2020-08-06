@@ -193,7 +193,8 @@ extension ProductVariationFormViewModel {
 
     func updateStatus(_ isEnabled: Bool) {
         let status: ProductStatus = isEnabled ? .publish: .privateStatus
-        productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(status: status))
+        productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(status: status),
+                                                         allAttributes: allAttributes)
     }
 }
 

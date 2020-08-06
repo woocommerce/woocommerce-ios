@@ -5,6 +5,8 @@ import struct Storage.GeneralAppSettings
 
 private typealias InferenceError = InAppFeedbackCardVisibilityUseCase.InferenceError
 
+/// Test cases for InAppFeedbackCardVisibilityUseCase.
+///
 final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
 
     private var dateFormatter: DateFormatter!

@@ -66,6 +66,13 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
         productVariation.taxClass
     }
 
+    var averageRating: String {
+        "0.00"
+    }
+
+    var ratingCount: Int {
+        0
+    }
     var weight: String? {
         productVariation.weight
     }

@@ -22,6 +22,7 @@ enum ProductFormSection: Equatable {
 
     enum SettingsRow: Equatable {
         case price(viewModel: ViewModel)
+        case reviews(viewModel: ViewModel, ratingCount: Int, averageRating: String)
         case shipping(viewModel: ViewModel)
         case inventory(viewModel: ViewModel)
         case categories(viewModel: ViewModel)
@@ -68,6 +69,8 @@ protocol ProductFormTableViewModel {
     var sections: [ProductFormSection] { get }
 }
 
+
+// MARK: Equatable implementations
 extension ProductFormSection.SettingsRow.ViewModel: Equatable {
     static func ==(lhs: ProductFormSection.SettingsRow.ViewModel, rhs: ProductFormSection.SettingsRow.ViewModel) -> Bool {
         return lhs.icon == rhs.icon &&

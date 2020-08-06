@@ -54,6 +54,8 @@ extension ProductFormSection.SettingsRow: ReusableTableRow {
         switch self {
         case .price, .inventory, .shipping, .categories, .tags, .briefDescription, .externalURL, .sku, .groupedProducts, .variations, .status:
             return [ImageAndTitleAndTextTableViewCell.self]
+        case .reviews:
+            return [ProductReviewsTableViewCell.self]
         }
     }
 
@@ -65,6 +67,8 @@ extension ProductFormSection.SettingsRow: ReusableTableRow {
         switch self {
         case .price, .inventory, .shipping, .categories, .tags, .briefDescription, .externalURL, .sku, .groupedProducts, .variations, .status:
             return ImageAndTitleAndTextTableViewCell.self
+        case .reviews:
+            return ProductReviewsTableViewCell.self
         }
     }
 }

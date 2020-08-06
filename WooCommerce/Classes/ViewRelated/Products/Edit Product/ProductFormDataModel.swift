@@ -29,6 +29,10 @@ protocol ProductFormDataModel {
     var taxStatusKey: String { get }
     var taxClass: String? { get }
 
+    // Reviews
+    var averageRating: String { get }
+    var ratingCount: Int { get }
+
     // Shipping
     var weight: String? { get }
     var dimensions: ProductDimensions { get }

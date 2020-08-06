@@ -3,6 +3,16 @@
     {
       "filename" : "tablet-success-light.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "tablet-success-dark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

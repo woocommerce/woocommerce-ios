@@ -181,23 +181,55 @@ private extension ProductFormTableViewDataSource {
 //
 private extension ProductFormTableViewDataSource {
     func configureCellInSettingsFieldsSection(_ cell: UITableViewCell, row: ProductFormSection.SettingsRow) {
-        guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {
-            fatalError()
-        }
         switch row {
-        case .price(let viewModel), .inventory(let viewModel), .shipping(let viewModel), .categories(let viewModel), .tags(let viewModel),
-             .briefDescription(let viewModel), .externalURL(let viewModel), .sku(let viewModel), .groupedProducts(let viewModel), .variations(let viewModel):
-            configureSettingsRow(cell: cell, viewModel: viewModel)
+        case .price(let viewModel),
+             .inventory(let viewModel),
+             .shipping(let viewModel),
+             .categories(let viewModel),
+             .tags(let viewModel),
+             .briefDescription(let viewModel),
+             .externalURL(let viewModel),
+             .sku(let viewModel),
+             .groupedProducts(let viewModel),
+             .variations(let viewModel):
+            configureSettings(cell: cell, viewModel: viewModel)
+        case .reviews(let viewModel, let ratingCount, let averageRating):
+            configureReviews(cell: cell, viewModel: viewModel, ratingCount: ratingCount, averageRating: averageRating)
         case .status(let viewModel):
             configureSettingsRowWithASwitch(cell: cell, viewModel: viewModel)
         }
     }
 
-    func configureSettingsRow(cell: ImageAndTitleAndTextTableViewCell, viewModel: ProductFormSection.SettingsRow.ViewModel) {
+    func configureSettings(cell: UITableViewCell, viewModel: ProductFormSection.SettingsRow.ViewModel) {
+        guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {
+            fatalError()
+        }
         cell.updateUI(viewModel: viewModel.toCellViewModel())
     }
 
-    func configureSettingsRowWithASwitch(cell: ImageAndTitleAndTextTableViewCell, viewModel: ProductFormSection.SettingsRow.SwitchableViewModel) {
+    func configureReviews(cell: UITableViewCell,
+                          viewModel: ProductFormSection.SettingsRow.ViewModel,
+                          ratingCount: Int,
+                          averageRating: String) {
+        guard let cell = cell as? ProductReviewsTableViewCell else {
+            fatalError()
+        }
+
+        cell.configure(image: viewModel.icon,
+                       title: viewModel.title ?? "",
+                       details: viewModel.details ?? "",
+                       ratingCount: ratingCount,
+                       averageRating: averageRating)
+        if ratingCount > 0 {
+            cell.accessoryType = .disclosureIndicator
+        }
+    }
+
+    func configureSettingsRowWithASwitch(cell: UITableViewCell, viewModel: ProductFormSection.SettingsRow.SwitchableViewModel) {
+        guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {
+            fatalError()
+        }
+
         let switchableViewModel = ImageAndTitleAndTextTableViewCell.SwitchableViewModel(viewModel: viewModel.viewModel.toCellViewModel(),
                                                                                         isSwitchOn: viewModel.isSwitchOn) { [weak self] isSwitchOn in
                                                                                             self?.onStatusChange?(isSwitchOn)

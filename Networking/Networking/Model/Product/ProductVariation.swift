@@ -265,6 +265,7 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable {
         }
 
         try container.encode(description, forKey: .description)
+        try container.encode(status.rawValue, forKey: .statusKey)
 
         // Price Settings.
         try container.encode(regularPrice, forKey: .regularPrice)

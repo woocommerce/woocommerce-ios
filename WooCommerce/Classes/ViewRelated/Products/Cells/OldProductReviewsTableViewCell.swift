@@ -2,9 +2,10 @@ import UIKit
 import Gridicons
 
 
-// MARK: - ProductReviewsTableViewCell
+// MARK: - OldProductReviewsTableViewCell
+// TODO: delete this cell when `ProductDetailsViewController` will be removed
 //
-final class ProductReviewsTableViewCell: UITableViewCell {
+final class OldProductReviewsTableViewCell: UITableViewCell {
 
     @IBOutlet weak var reviewLabel: UILabel!
     @IBOutlet weak var reviewTotalsLabel: UILabel!
@@ -31,7 +32,7 @@ final class ProductReviewsTableViewCell: UITableViewCell {
 }
 
 
-private extension ProductReviewsTableViewCell {
+private extension OldProductReviewsTableViewCell {
     func configureBackground() {
         applyDefaultBackgroundStyle()
     }
@@ -50,7 +51,7 @@ private extension ProductReviewsTableViewCell {
 
 // MARK: - Constants
 //
-private extension ProductReviewsTableViewCell {
+private extension OldProductReviewsTableViewCell {
     enum Star {
         static let size = Double(20)
         static let filledImage = UIImage.starImage(size: Star.size)

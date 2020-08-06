@@ -73,6 +73,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         super.init(nibName: "ProductFormViewController", bundle: nil)
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
             self?.onEditProductNameCompletion(newName: name ?? "")
+        }, onStatusChange: { [weak self] isVisible in
+            self?.onEditStatusCompletion(isEnabled: isVisible)
         }, onAddImage: { [weak self] in
             self?.showProductImages()
         })
@@ -229,6 +231,9 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             case .price:
                 ServiceLocator.analytics.track(.productDetailViewPriceSettingsTapped)
                 editPriceSettings()
+            case .reviews:
+                // TODO-2509 Edit Product M3 analytics
+                showReviews()
             case .shipping:
                 ServiceLocator.analytics.track(.productDetailViewShippingSettingsTapped)
                 editShippingSettings()
@@ -263,6 +268,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 let variationsViewController = ProductVariationsViewController(product: product.product,
                                                                                isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
                 show(variationsViewController, sender: self)
+            case .status:
+                break
             }
         }
     }
@@ -329,8 +336,12 @@ private extension ProductFormViewController {
                         tableView.register(cellType.loadNib(), forCellReuseIdentifier: cellType.reuseIdentifier)
                     }
                 }
-            default:
-                return
+            case .settings(let rows):
+                rows.forEach { row in
+                    row.cellTypes.forEach { cellType in
+                        tableView.register(cellType.loadNib(), forCellReuseIdentifier: cellType.reuseIdentifier)
+                    }
+                }
             }
         }
     }
@@ -395,6 +406,8 @@ private extension ProductFormViewController {
                                                              canEditImages: isEditProductsRelease2Enabled)
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
             self?.onEditProductNameCompletion(newName: name ?? "")
+        }, onStatusChange: { [weak self] isEnabled in
+            self?.onEditStatusCompletion(isEnabled: isEnabled)
         }, onAddImage: { [weak self] in
             self?.showProductImages()
         })
@@ -409,6 +422,8 @@ private extension ProductFormViewController {
                                                              canEditImages: isEditProductsRelease2Enabled)
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
             self?.onEditProductNameCompletion(newName: name ?? "")
+        }, onStatusChange: { [weak self] isEnabled in
+            self?.onEditStatusCompletion(isEnabled: isEnabled)
         }, onAddImage: { [weak self] in
             self?.showProductImages()
         })
@@ -777,6 +792,14 @@ private extension ProductFormViewController {
     }
 }
 
+// MARK: Action - Show Product Reviews Settings
+//
+private extension ProductFormViewController {
+    func showReviews() {
+        // TODO: issue-2082 present Reviews Controller
+    }
+}
+
 // MARK: Action - Edit Product Shipping Settings
 //
 private extension ProductFormViewController {
@@ -1009,6 +1032,14 @@ private extension ProductFormViewController {
             return
         }
         viewModel.updateExternalLink(externalURL: externalURL, buttonText: buttonText)
+    }
+}
+
+// MARK: Action - Edit Status (Enabled/Disabled)
+//
+private extension ProductFormViewController {
+    func onEditStatusCompletion(isEnabled: Bool) {
+        viewModel.updateStatus(isEnabled)
     }
 }
 

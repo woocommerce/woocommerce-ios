@@ -23,6 +23,7 @@ enum ProductFormSection: Equatable {
 
     enum SettingsRow: Equatable {
         case price(viewModel: ViewModel)
+        case reviews(viewModel: ViewModel, ratingCount: Int, averageRating: String)
         case shipping(viewModel: ViewModel)
         case inventory(viewModel: ViewModel)
         case categories(viewModel: ViewModel)
@@ -32,6 +33,7 @@ enum ProductFormSection: Equatable {
         case sku(viewModel: ViewModel)
         case groupedProducts(viewModel: ViewModel)
         case variations(viewModel: ViewModel)
+        case status(viewModel: SwitchableViewModel)
 
         struct ViewModel {
             let icon: UIImage
@@ -48,6 +50,18 @@ enum ProductFormSection: Equatable {
                 self.isActionable = isActionable
             }
         }
+
+        /// View model with a switch toggle
+        struct SwitchableViewModel: Equatable {
+            let viewModel: ViewModel
+            let isSwitchOn: Bool
+
+            init(viewModel: ViewModel,
+                 isSwitchOn: Bool) {
+                self.viewModel = viewModel
+                self.isSwitchOn = isSwitchOn
+            }
+        }
     }
 }
 
@@ -56,6 +70,8 @@ protocol ProductFormTableViewModel {
     var sections: [ProductFormSection] { get }
 }
 
+
+// MARK: Equatable implementations
 extension ProductFormSection.SettingsRow.ViewModel: Equatable {
     static func ==(lhs: ProductFormSection.SettingsRow.ViewModel, rhs: ProductFormSection.SettingsRow.ViewModel) -> Bool {
         return lhs.icon == rhs.icon &&

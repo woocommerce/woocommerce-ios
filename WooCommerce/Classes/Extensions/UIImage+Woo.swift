@@ -280,6 +280,13 @@ extension UIImage {
         return UIImage.gridicon(.money, size: CGSize(width: 24, height: 24))
     }
 
+    /// Product Reviews Icon
+    ///
+    static var productReviewsImage: UIImage {
+        let tintColor = UIColor.gray(.shade30)
+        return UIImage.gridicon(.starOutline, size: CGSize(width: 24, height: 24)).imageWithTintColor(tintColor)!
+    }
+
     /// Product Placeholder Image
     ///
     static var productPlaceholderImage: UIImage {
@@ -427,6 +434,12 @@ extension UIImage {
         return UIImage.gridicon(.types).imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Visibility Image
+    ///
+    static var visibilityImage: UIImage {
+        return UIImage.gridicon(.visible)
+    }
+
     /// No store image
     ///
     static var noStoreImage: UIImage {
@@ -449,12 +462,6 @@ extension UIImage {
         }
 
         return im2.imageWithTintColor(tintColor)
-    }
-
-    /// Password Field Image
-    ///
-    static var passwordFieldImage: UIImage {
-        return UIImage.gridicon(.visible)
     }
 
     /// Waiting for Customers Image

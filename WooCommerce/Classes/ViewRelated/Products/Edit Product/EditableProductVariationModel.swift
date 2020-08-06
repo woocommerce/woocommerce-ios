@@ -54,6 +54,10 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
         productVariation.permalink
     }
 
+    var status: ProductStatus {
+        productVariation.status
+    }
+
     var images: [ProductImage] {
         [productVariation.image].compactMap { $0 }
     }
@@ -82,6 +86,13 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
         productVariation.taxClass
     }
 
+    var averageRating: String {
+        "0.00"
+    }
+
+    var ratingCount: Int {
+        0
+    }
     var weight: String? {
         productVariation.weight
     }

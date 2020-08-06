@@ -387,6 +387,7 @@ private extension GoogleAuthenticator {
         track(.createdAccount)
         track(.signedIn)
         track(.signupSocialSuccess)
+        tracker?.trackSigninSuccess(authType: .signup)
 
         signupDelegate?.googleFinishedSignup(credentials: credentials, loginFields: loginFields)
         delegate?.googleFinishedSignup(credentials: credentials, loginFields: loginFields)

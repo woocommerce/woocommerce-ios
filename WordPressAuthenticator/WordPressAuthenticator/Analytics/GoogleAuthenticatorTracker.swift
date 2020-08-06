@@ -23,13 +23,12 @@ class GoogleAuthenticatorTracker {
         }
      }
     
-    func trackSigninSuccess(authType: GoogleAuthType) {
-        switch authType {
-        case .login:
-            trackLogin(step: .success)
-        case .signup:
-            trackSignup(step: .success)
-        }
+    func trackLoginSuccess() {
+        trackLogin(step: .success)
+    }
+    
+    func trackSignupSuccess(authType: GoogleAuthType) {
+        trackSignup(step: .success)
     }
     
     /// Tracks a failure in any step of the signin process.

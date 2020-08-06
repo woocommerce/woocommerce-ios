@@ -82,8 +82,8 @@ private extension ProductFormTableViewDataSource {
         switch row {
         case .images:
             configureImages(cell: cell)
-        case .name(let name, let isEditable):
-            configureName(cell: cell, name: name, isEditable: isEditable)
+        case .name(let name):
+            configureName(cell: cell, name: name)
         case .variationName(let name):
             configureVariationName(cell: cell, name: name)
         case .description(let description):
@@ -120,15 +120,7 @@ private extension ProductFormTableViewDataSource {
         }
     }
 
-    func configureName(cell: UITableViewCell, name: String?, isEditable: Bool) {
-        if isEditable {
-            configureEditableName(cell: cell, name: name)
-        } else {
-            configureReadonlyName(cell: cell, name: name)
-        }
-    }
-
-    func configureEditableName(cell: UITableViewCell, name: String?) {
+    func configureName(cell: UITableViewCell, name: String?) {
         guard let cell = cell as? TextFieldTableViewCell else {
             fatalError()
         }
@@ -142,17 +134,6 @@ private extension ProductFormTableViewDataSource {
                 ServiceLocator.analytics.track(.productDetailViewProductNameTapped)
         }, inputFormatter: nil, keyboardType: .default)
         cell.configure(viewModel: viewModel)
-    }
-
-    func configureReadonlyName(cell: UITableViewCell, name: String?) {
-        guard let cell = cell as? BasicTableViewCell else {
-            fatalError()
-        }
-
-        cell.accessoryType = .none
-        cell.textLabel?.text = name
-        cell.textLabel?.applyHeadlineStyle()
-        cell.textLabel?.textColor = .text
     }
 
     func configureVariationName(cell: UITableViewCell, name: String) {

@@ -16,7 +16,7 @@ enum ProductFormSection: Equatable {
 
     enum PrimaryFieldRow: Equatable {
         case images
-        case name(name: String?, isEditable: Bool) // TODO-jc: delete `isEditable`
+        case name(name: String?)
         case variationName(name: String)
         case description(description: String?)
     }

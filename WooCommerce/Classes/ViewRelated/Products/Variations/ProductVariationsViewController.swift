@@ -63,13 +63,15 @@ final class ProductVariationsViewController: UIViewController {
 
     private let siteID: Int64
     private let productID: Int64
+    private let allAttributes: [ProductAttribute]
 
     private let imageService: ImageService = ServiceLocator.imageService
     private let isEditProductsRelease3Enabled: Bool
 
-    init(siteID: Int64, productID: Int64, isEditProductsRelease3Enabled: Bool) {
-        self.siteID = siteID
-        self.productID = productID
+    init(product: Product, isEditProductsRelease3Enabled: Bool) {
+        self.siteID = product.siteID
+        self.productID = product.productID
+        self.allAttributes = product.attributes
         self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
         super.init(nibName: nil, bundle: nil)
     }
@@ -196,10 +198,11 @@ extension ProductVariationsViewController: UITableViewDataSource {
         }
 
         let productVariation = resultsController.object(at: indexPath)
+        let model = EditableProductVariationModel(productVariation: productVariation, allAttributes: allAttributes)
 
         let currencyCode = CurrencySettings.shared.currencyCode
         let currency = CurrencySettings.shared.symbol(from: currencyCode)
-        let viewModel = ProductsTabProductViewModel(productVariation: productVariation,
+        let viewModel = ProductsTabProductViewModel(productVariationModel: model,
                                                     currency: currency)
         cell.update(viewModel: viewModel, imageService: imageService)
         cell.selectionStyle = .none
@@ -227,13 +230,14 @@ extension ProductVariationsViewController: UITableViewDelegate {
 
         if isEditProductsRelease3Enabled {
             let productVariation = resultsController.object(at: indexPath)
-            let model = EditableProductVariationModel(productVariation: productVariation)
+            let model = EditableProductVariationModel(productVariation: productVariation, allAttributes: allAttributes)
 
             let currencyCode = CurrencySettings.shared.currencyCode
             let currency = CurrencySettings.shared.symbol(from: currencyCode)
             let productImageActionHandler = ProductImageActionHandler(siteID: productVariation.siteID,
                                                                       product: model)
             let viewModel = ProductVariationFormViewModel(productVariation: model,
+                                                          allAttributes: allAttributes,
                                                           productImageActionHandler: productImageActionHandler)
             let viewController = ProductFormViewController(viewModel: viewModel,
                                                            productImageActionHandler: productImageActionHandler,

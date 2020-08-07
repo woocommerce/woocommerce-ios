@@ -18,6 +18,7 @@ final class ProductFormTableViewDataSource: NSObject {
     private let viewModel: ProductFormTableViewModel
     private let canEditImages: Bool
     private var onNameChange: ((_ name: String?) -> Void)?
+    private var onStatusChange: ((_ isEnabled: Bool) -> Void)?
     private var onAddImage: (() -> Void)?
 
     private let productImageStatuses: [ProductImageStatus]
@@ -34,8 +35,9 @@ final class ProductFormTableViewDataSource: NSObject {
         super.init()
     }
 
-    func configureActions(onNameChange: ((_ name: String?) -> Void)?, onAddImage: @escaping () -> Void) {
+    func configureActions(onNameChange: ((_ name: String?) -> Void)?, onStatusChange: ((_ isEnabled: Bool) -> Void)?, onAddImage: @escaping () -> Void) {
         self.onNameChange = onNameChange
+        self.onStatusChange = onStatusChange
         self.onAddImage = onAddImage
     }
 }
@@ -82,8 +84,10 @@ private extension ProductFormTableViewDataSource {
         switch row {
         case .images:
             configureImages(cell: cell)
-        case .name(let name, let isEditable):
-            configureName(cell: cell, name: name, isEditable: isEditable)
+        case .name(let name):
+            configureName(cell: cell, name: name)
+        case .variationName(let name):
+            configureVariationName(cell: cell, name: name)
         case .description(let description):
             configureDescription(cell: cell, description: description)
         }
@@ -118,15 +122,7 @@ private extension ProductFormTableViewDataSource {
         }
     }
 
-    func configureName(cell: UITableViewCell, name: String?, isEditable: Bool) {
-        if isEditable {
-            configureEditableName(cell: cell, name: name)
-        } else {
-            configureReadonlyName(cell: cell, name: name)
-        }
-    }
-
-    func configureEditableName(cell: UITableViewCell, name: String?) {
+    func configureName(cell: UITableViewCell, name: String?) {
         guard let cell = cell as? TextFieldTableViewCell else {
             fatalError()
         }
@@ -142,7 +138,7 @@ private extension ProductFormTableViewDataSource {
         cell.configure(viewModel: viewModel)
     }
 
-    func configureReadonlyName(cell: UITableViewCell, name: String?) {
+    func configureVariationName(cell: UITableViewCell, name: String) {
         guard let cell = cell as? BasicTableViewCell else {
             fatalError()
         }
@@ -151,6 +147,7 @@ private extension ProductFormTableViewDataSource {
         cell.textLabel?.text = name
         cell.textLabel?.applyHeadlineStyle()
         cell.textLabel?.textColor = .text
+        cell.textLabel?.numberOfLines = 0
     }
 
     func configureDescription(cell: UITableViewCell, description: String?) {
@@ -193,6 +190,8 @@ private extension ProductFormTableViewDataSource {
             configureSettings(cell: cell, viewModel: viewModel)
         case .reviews(let viewModel, let ratingCount, let averageRating):
             configureReviews(cell: cell, viewModel: viewModel, ratingCount: ratingCount, averageRating: averageRating)
+        case .status(let viewModel):
+            configureSettingsRowWithASwitch(cell: cell, viewModel: viewModel)
         }
     }
 
@@ -219,5 +218,17 @@ private extension ProductFormTableViewDataSource {
         if ratingCount > 0 {
             cell.accessoryType = .disclosureIndicator
         }
+    }
+
+    func configureSettingsRowWithASwitch(cell: UITableViewCell, viewModel: ProductFormSection.SettingsRow.SwitchableViewModel) {
+        guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {
+            fatalError()
+        }
+
+        let switchableViewModel = ImageAndTitleAndTextTableViewCell.SwitchableViewModel(viewModel: viewModel.viewModel.toCellViewModel(),
+                                                                                        isSwitchOn: viewModel.isSwitchOn) { [weak self] isSwitchOn in
+                                                                                            self?.onStatusChange?(isSwitchOn)
+        }
+        cell.updateUI(switchableViewModel: switchableViewModel)
     }
 }

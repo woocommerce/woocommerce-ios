@@ -125,4 +125,32 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
         // Assert
         XCTAssertEqual(viewModel.productModel.images, newImages)
     }
+
+    func testDisablingAVariationUpdatesItsStatusFromPublishToPrivate() {
+        // Arrange
+        let productVariation = MockProductVariation().productVariation().copy(status: .publish)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
+        let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
+
+        // Action
+        viewModel.updateStatus(false)
+
+        // Assert
+        XCTAssertEqual(viewModel.productModel.status, .privateStatus)
+    }
+
+    func testEnablingAVariationUpdatesItsStatusFromPrivateToPublish() {
+        // Arrange
+        let productVariation = MockProductVariation().productVariation().copy(status: .privateStatus)
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
+        let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
+
+        // Action
+        viewModel.updateStatus(true)
+
+        // Assert
+        XCTAssertEqual(viewModel.productModel.status, .publish)
+    }
 }

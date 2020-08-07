@@ -27,7 +27,7 @@ final class SwitchStoreNoticePresenterTests: XCTestCase {
         super.tearDown()
     }
 
-    func testItEnqueuesANoticeWhenSwitchingStores() throws {
+    func test_it_enqueues_a_notice_when_switching_stores() throws {
         // Given
         let site = makeSite()
         sessionManager.defaultSite = site
@@ -46,7 +46,7 @@ final class SwitchStoreNoticePresenterTests: XCTestCase {
         assertThat(notice.title, contains: site.name)
     }
 
-    func testItDoesNotEnqueueANoticeWhenNotSwitchingStores() throws {
+    func test_it_does_not_enqueue_a_notice_when_not_switching_stores() throws {
         // Given
         let presenter = SwitchStoreNoticePresenter(sessionManager: sessionManager, noticePresenter: noticePresenter)
 

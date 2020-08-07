@@ -222,6 +222,10 @@ extension ProductFormViewModel {
     func updateExternalLink(externalURL: String?, buttonText: String) {
         product = EditableProductModel(product: product.product.copy(buttonText: buttonText, externalURL: externalURL))
     }
+
+    func updateStatus(_ isEnabled: Bool) {
+        // no-op: visibility is editable in product settings for `Product`
+    }
 }
 
 // MARK: Remote actions

@@ -28,6 +28,8 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
             return [ProductImagesHeaderTableViewCell.self]
         case .name:
             return [TextFieldTableViewCell.self]
+        case .variationName:
+            return [cellType]
         case .description:
             return [ImageAndTitleAndTextTableViewCell.self, BasicTableViewCell.self]
         }
@@ -41,8 +43,10 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
         switch self {
         case .images:
             return ProductImagesHeaderTableViewCell.self
-        case .name(_, let isEditable):
-            return isEditable ? TextFieldTableViewCell.self: BasicTableViewCell.self
+        case .name:
+            return TextFieldTableViewCell.self
+        case .variationName:
+            return BasicTableViewCell.self
         case .description(let description):
             return description?.isEmpty == false ? ImageAndTitleAndTextTableViewCell.self: BasicTableViewCell.self
         }
@@ -52,7 +56,7 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
 extension ProductFormSection.SettingsRow: ReusableTableRow {
     var cellTypes: [UITableViewCell.Type] {
         switch self {
-        case .price, .inventory, .shipping, .categories, .tags, .briefDescription, .externalURL, .sku, .groupedProducts, .variations:
+        case .price, .inventory, .shipping, .categories, .tags, .briefDescription, .externalURL, .sku, .groupedProducts, .variations, .status:
             return [ImageAndTitleAndTextTableViewCell.self]
         case .reviews:
             return [ProductReviewsTableViewCell.self]
@@ -65,7 +69,7 @@ extension ProductFormSection.SettingsRow: ReusableTableRow {
 
     private var cellType: UITableViewCell.Type {
         switch self {
-        case .price, .inventory, .shipping, .categories, .tags, .briefDescription, .externalURL, .sku, .groupedProducts, .variations:
+        case .price, .inventory, .shipping, .categories, .tags, .briefDescription, .externalURL, .sku, .groupedProducts, .variations, .status:
             return ImageAndTitleAndTextTableViewCell.self
         case .reviews:
             return ProductReviewsTableViewCell.self

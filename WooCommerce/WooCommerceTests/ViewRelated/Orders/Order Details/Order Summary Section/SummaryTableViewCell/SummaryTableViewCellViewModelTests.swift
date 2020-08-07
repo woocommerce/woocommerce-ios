@@ -10,7 +10,7 @@ import Yosemite
 ///
 final class SummaryTableViewCellViewModelTests: XCTestCase {
 
-    func testBilledPersonNameReturnsTheNameFromTheBillingAddress() {
+    func test_billedPersonName_returns_the_name_from_the_billing_address() {
         // Given
         let address = Address(firstName: "Skylar",
                               lastName: "Ferry",
@@ -32,7 +32,7 @@ final class SummaryTableViewCellViewModelTests: XCTestCase {
         XCTAssertEqual(personName, "Skylar Ferry")
     }
 
-    func testSubtitleReturnsTheDateAndOrderNumber() throws {
+    func test_subtitle_returns_the_date_and_order_number() throws {
         // Given
         let expectedFormatter = DateFormatter.mediumLengthLocalizedDateFormatter
         let calendar = Calendar(identifier: .gregorian, timeZone: expectedFormatter.timeZone)
@@ -51,7 +51,7 @@ final class SummaryTableViewCellViewModelTests: XCTestCase {
         XCTAssertEqual(subtitle, expectedSubtitle)
     }
 
-    func testGivenAnOrderCreatedTodayThenSubtitleReturnsTheTimeAndOrderNumber() {
+    func test_given_an_order_created_today_then_subtitle_returns_the_time_and_order_number() {
         // Given
         let expectedFormatter = DateFormatter.timeFormatter
         let calendar = Calendar(identifier: .gregorian, timeZone: expectedFormatter.timeZone)

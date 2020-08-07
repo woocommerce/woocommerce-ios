@@ -147,3 +147,19 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
         XCTAssertFalse(viewModel.hasPasswordChanged())
     }
 }
+
+// Helper in unit tests
+extension EditableProductVariationModel {
+    convenience init(productVariation: ProductVariation) {
+        self.init(productVariation: productVariation, allAttributes: [])
+    }
+}
+
+// Helper in unit tests
+extension ProductVariationFormViewModel {
+    convenience init(productVariation: EditableProductVariationModel,
+                     productImageActionHandler: ProductImageActionHandler,
+                     storesManager: StoresManager = ServiceLocator.stores) {
+        self.init(productVariation: productVariation, allAttributes: [], productImageActionHandler: productImageActionHandler, storesManager: storesManager)
+    }
+}

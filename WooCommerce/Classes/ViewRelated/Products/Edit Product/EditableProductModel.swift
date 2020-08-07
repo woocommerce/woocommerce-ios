@@ -35,6 +35,10 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
         product.permalink
     }
 
+    var status: ProductStatus {
+        product.productStatus
+    }
+
     var images: [ProductImage] {
         product.images
     }
@@ -109,6 +113,10 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
 
     var soldIndividually: Bool? {
         product.soldIndividually
+    }
+
+    func isStockStatusEnabled() -> Bool {
+        true
     }
 
     // Visibility logic

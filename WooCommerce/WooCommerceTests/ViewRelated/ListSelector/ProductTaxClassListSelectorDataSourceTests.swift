@@ -6,7 +6,7 @@ import XCTest
 final class ProductTaxClassListSelectorDataSourceTests: XCTestCase {
     private let sampleSiteID: Int64 = 521
 
-    func testSelectedTaxClass() {
+    func test_selected_taxClass() {
         let taxClass = TaxClass(siteID: sampleSiteID, name: "Reduced rate", slug: "reduced-rate")
         var dataSource = ProductTaxClassListSelectorDataSource(siteID: sampleSiteID, selected: taxClass)
         XCTAssertEqual(dataSource.selected, taxClass)
@@ -20,7 +20,7 @@ final class ProductTaxClassListSelectorDataSourceTests: XCTestCase {
         XCTAssertNotNil(dataSource.selected)
     }
 
-    func testCellConfiguration() {
+    func test_cell_configuration() {
         let taxClass = TaxClass(siteID: sampleSiteID, name: "Reduced rate", slug: "reduced-rate")
         let dataSource = ProductTaxClassListSelectorDataSource(siteID: sampleSiteID, selected: taxClass)
         let nib = Bundle.main.loadNibNamed(WooBasicTableViewCell.classNameWithoutNamespaces, owner: self, options: nil)

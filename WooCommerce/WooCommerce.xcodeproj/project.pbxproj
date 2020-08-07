@@ -306,6 +306,7 @@
 		26FE09DD24D9F3F600B9BDF5 /* SurveyLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09DC24D9F3F600B9BDF5 /* SurveyLoadingView.swift */; };
 		26FE09DF24DB871100B9BDF5 /* SurveyViewControllersFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09DE24DB871100B9BDF5 /* SurveyViewControllersFactory.swift */; };
 		26FE09E124DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09E024DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift */; };
+		26FE09E424DCFE5200B9BDF5 /* InAppFeedbackCardViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09E324DCFE5200B9BDF5 /* InAppFeedbackCardViewControllerTests.swift */; };
 		26FF455F24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FF455E24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift */; };
 		4506BD712461965300FE6377 /* ProductVisibilityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4506BD6F2461965300FE6377 /* ProductVisibilityViewController.swift */; };
 		4506BD722461965300FE6377 /* ProductVisibilityViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4506BD702461965300FE6377 /* ProductVisibilityViewController.xib */; };
@@ -1225,6 +1226,7 @@
 		26FE09DC24D9F3F600B9BDF5 /* SurveyLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyLoadingView.swift; sourceTree = "<group>"; };
 		26FE09DE24DB871100B9BDF5 /* SurveyViewControllersFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyViewControllersFactory.swift; sourceTree = "<group>"; };
 		26FE09E024DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyCoordinatorControllerTests.swift; sourceTree = "<group>"; };
+		26FE09E324DCFE5200B9BDF5 /* InAppFeedbackCardViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppFeedbackCardViewControllerTests.swift; sourceTree = "<group>"; };
 		26FF455E24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeprecatedStatsDashboardViewController.swift; sourceTree = "<group>"; };
 		2719B6FD1E6FE78A76B6AC74 /* Pods-WooCommerceTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		33035144757869DE5E4DC88A /* Pods-WooCommerce.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release.xcconfig"; sourceTree = "<group>"; };
@@ -2551,6 +2553,14 @@
 				26FE09E024DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift */,
 			);
 			path = Survey;
+			sourceTree = "<group>";
+		};
+		26FE09E224DCFE4000B9BDF5 /* inAppFeedback */ = {
+			isa = PBXGroup;
+			children = (
+				26FE09E324DCFE5200B9BDF5 /* InAppFeedbackCardViewControllerTests.swift */,
+			);
+			path = inAppFeedback;
 			sourceTree = "<group>";
 		};
 		4506BD6E2461962700FE6377 /* Visibility */ = {
@@ -4141,6 +4151,7 @@
 		D816DDBA22265D8000903E59 /* ViewRelated */ = {
 			isa = PBXGroup;
 			children = (
+				26FE09E224DCFE4000B9BDF5 /* inAppFeedback */,
 				57B374B3245B32EE00D58BE0 /* ReusableViews */,
 				57F34A9F2423D44000E38AFB /* Orders */,
 				0290E27C238E5B4A00B5C466 /* ListSelector */,
@@ -5405,6 +5416,7 @@
 				02691782232605B9002AFC20 /* PaginatedListViewControllerStateCoordinatorTests.swift in Sources */,
 				02564A88246C047C00D6DB2A /* Optional+StringTests.swift in Sources */,
 				0269576D23726401001BA0BF /* KeyboardFrameObserverTests.swift in Sources */,
+				26FE09E424DCFE5200B9BDF5 /* InAppFeedbackCardViewControllerTests.swift in Sources */,
 				0215320D2423309B003F2BBD /* UIStackView+SubviewsTests.swift in Sources */,
 				027B8BBD23FE0DE10040944E /* ProductImageActionHandlerTests.swift in Sources */,
 				B5980A6521AC905C00EBF596 /* UIDeviceWooTests.swift in Sources */,

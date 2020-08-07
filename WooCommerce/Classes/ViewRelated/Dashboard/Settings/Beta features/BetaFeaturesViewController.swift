@@ -83,7 +83,9 @@ private extension BetaFeaturesViewController {
     ///
     func configureSections() {
         // This is empty because there aren't any ongoing experiments
-        self.sections = []
+        self.sections = [
+            productsSection()
+        ]
     }
 
     func productsSection() -> Section {
@@ -123,14 +125,8 @@ private extension BetaFeaturesViewController {
     func configureProductsSwitch(cell: SwitchTableViewCell) {
         configureCommonStylesForSwitchCell(cell)
 
-        let title: String
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts) {
-            title = NSLocalizedString("Product editing",
+        let title = NSLocalizedString("Product editing",
                                       comment: "My Store > Settings > Experimental features > Product editing")
-        } else {
-            title = NSLocalizedString("Products",
-                                      comment: "My Store > Settings > Experimental features > Switch Products")
-        }
 
         cell.title = title
 
@@ -153,14 +149,8 @@ private extension BetaFeaturesViewController {
     func configureProductsDescription(cell: BasicTableViewCell) {
         configureCommonStylesForDescriptionCell(cell)
 
-        let description: String
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts) {
-            description = NSLocalizedString("Test out new product editing functionalities as we get ready to launch them",
+        let description = NSLocalizedString("Test out new product editing functionalities as we get ready to launch them",
                                             comment: "My Store > Settings > Experimental features > Product editing")
-        } else {
-            description = NSLocalizedString("Test out the new products section as we get ready to launch",
-                                            comment: "My Store > Settings > Experimental features > Switch Products")
-        }
         cell.textLabel?.text = description
     }
 }

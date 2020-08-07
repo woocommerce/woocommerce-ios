@@ -13,8 +13,6 @@ class PasswordViewController: LoginViewController {
     private weak var passwordField: UITextField?
     private var rows = [Row]()
     private var errorMessage: String?
-    
-    private let tracker = AnalyticsTracker.shared
 
     override var loginFields: LoginFields {
         didSet {

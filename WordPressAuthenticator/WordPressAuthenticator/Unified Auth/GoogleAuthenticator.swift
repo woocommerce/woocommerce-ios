@@ -275,7 +275,7 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
 
         track(.signedIn)
         track(.loginSocialSuccess)
-        tracker?.trackLoginSuccess()
+        tracker?.trackSuccess()
         
         let wpcom = WordPressComCredentials(authToken: authToken,
                                             isJetpackLogin: loginFields.meta.jetpackLogin,
@@ -387,7 +387,7 @@ private extension GoogleAuthenticator {
         track(.createdAccount)
         track(.signedIn)
         track(.signupSocialSuccess)
-        tracker?.trackSignupSuccess()
+        tracker?.trackSuccess()
 
         signupDelegate?.googleFinishedSignup(credentials: credentials, loginFields: loginFields)
         delegate?.googleFinishedSignup(credentials: credentials, loginFields: loginFields)

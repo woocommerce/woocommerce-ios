@@ -2,7 +2,7 @@ import XCTest
 
 @testable import WooCommerce
 
-class InAppFeedbackCardViewControllerTests: XCTestCase {
+final class InAppFeedbackCardViewControllerTests: XCTestCase {
 
     override class func setUp() {
         super.setUp()

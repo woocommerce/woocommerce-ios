@@ -74,8 +74,8 @@ private extension InAppFeedbackCardViewController {
     func configureLikeButton() {
         likeButton.applyPrimaryButtonStyle()
         likeButton.setTitle(Localization.iLikeIt, for: .normal)
-        likeButton.on(.touchUpInside) { _ in
-            self.storeReviewControllerType.requestReview()
+        likeButton.on(.touchUpInside) { [weak self] _ in
+            self?.storeReviewControllerType.requestReview()
         }
     }
 }

@@ -48,6 +48,8 @@ protocol ProductFormDataModel {
     var stockQuantity: Int64? { get }
     var backordersKey: String { get }
     var soldIndividually: Bool? { get }
+    // Whether stock status is available for the product.
+    func isStockStatusEnabled() -> Bool
 }
 
 // MARK: Helpers that can be derived from `ProductFormDataModel`

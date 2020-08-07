@@ -128,10 +128,6 @@ private extension ProductInventorySettingsViewController {
     }
 
     func observeSections() {
-        // Until we have a passthrough/behavior subject, we have to configure the initial value manually.
-        sections = viewModel.sectionsValue
-        tableView.reloadData()
-
         cancellable = viewModel.sections.subscribe { [weak self] sections in
             self?.sections = sections
             self?.tableView.reloadData()

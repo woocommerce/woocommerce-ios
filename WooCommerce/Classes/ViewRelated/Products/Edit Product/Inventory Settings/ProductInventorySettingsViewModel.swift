@@ -8,10 +8,6 @@ protocol ProductInventorySettingsViewModelOutput {
     /// Observable table view sections.
     var sections: Observable<[Section]> { get }
 
-    /// The latest table view sections.
-    /// Until we have a passthrough/behavior subject, we have to provide the readonly value for initialization.
-    var sectionsValue: [Section] { get }
-
     /// Potential error from input changes.
     var error: ProductUpdateError? { get }
 
@@ -84,13 +80,7 @@ final class ProductInventorySettingsViewModel: ProductInventorySettingsViewModel
     var sections: Observable<[Section]> {
         sectionsSubject
     }
-    private let sectionsSubject: PublishSubject<[Section]> = PublishSubject<[Section]>()
-    // Until we have a passthrough/behavior subject, we have to provide the readonly value for initialization.
-    private(set) var sectionsValue: [Section] = [] {
-        didSet {
-            sectionsSubject.send(sectionsValue)
-        }
-    }
+    private let sectionsSubject: BehaviorSubject<[Section]> = BehaviorSubject<[Section]>([])
 
     private(set) var error: ProductUpdateError?
 
@@ -252,7 +242,7 @@ private extension ProductInventorySettingsViewModel {
                 createSKUSection()
             ]
         }
-        sectionsValue = sections
+        sectionsSubject.send(sections)
     }
 
     func createSKUSection() -> Section {

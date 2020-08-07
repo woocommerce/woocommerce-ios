@@ -2,10 +2,10 @@ import UIKit
 import Yosemite
 
 extension ProductsTabProductViewModel {
-    init(productVariation: ProductVariation, currency: String) {
-        imageUrl = productVariation.image?.src
-        name = productVariation.attributes.map({ $0.option }).joined(separator: " - ")
-        detailsAttributedString = productVariation.createDetailsAttributedString(currency: currency)
+    init(productVariationModel: EditableProductVariationModel, currency: String) {
+        imageUrl = productVariationModel.productVariation.image?.src
+        name = productVariationModel.name
+        detailsAttributedString = productVariationModel.productVariation.createDetailsAttributedString(currency: currency)
 
         imageService = ServiceLocator.imageService
         isSelected = false

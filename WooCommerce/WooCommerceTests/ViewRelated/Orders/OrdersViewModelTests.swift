@@ -43,7 +43,7 @@ final class OrdersViewModelTests: XCTestCase {
     // 1. deleting all orders
     // 2. fetching both the filtered list and the "all orders" list
     //
-    func testPullingToRefreshOnFilteredListItDeletesAndPerformsDualFetch() {
+    func test_pulling_to_refresh_on_filtered_list_it_deletes_and_performs_dual_fetch() {
         // Arrange
         let viewModel = OrdersViewModel(statusFilter: orderStatus(with: .processing))
 
@@ -69,7 +69,7 @@ final class OrdersViewModelTests: XCTestCase {
     // other than pull-to-refresh (e.g. `viewWillAppear`), the action returned will only be for
     // dual fetching of the filtered list and the all orders list.
     //
-    func testFirstPageLoadOnFilteredListWithNonPullToRefreshReasonsWillOnlyPerformDualFetch() {
+    func test_first_page_load_on_filtered_list_with_non_pull_to_refresh_reasons_will_only_perform_dual_fetch() {
         // Arrange
         let viewModel = OrdersViewModel(statusFilter: orderStatus(with: .processing))
 
@@ -96,7 +96,7 @@ final class OrdersViewModelTests: XCTestCase {
     // 1. Deleting all the orders
     // 2. Fetching the first page of all orders (any status)
     //
-    func testPullingToRefreshOnAllOrdersListDeletesAndFetchesFirstPageOfAllOrdersOnly() {
+    func test_pulling_to_refresh_on_all_orders_list_deletes_and_fetches_first_page_of_all_orders_only() {
         // Arrange
         let viewModel = OrdersViewModel(statusFilter: nil)
 
@@ -122,7 +122,7 @@ final class OrdersViewModelTests: XCTestCase {
     // pull-to-refresh (e.g. `viewWillAppear`), the action returned will only be for fetching the
     // all the orders (any status).
     //
-    func testFirstPageLoadOnAllOrdersListWithNonPullToRefreshReasonsWillOnlyPerformSingleFetch() {
+    func test_first_page_load_on_all_orders_list_with_non_pull_to_refresh_reasons_will_only_perform_single_fetch() {
         // Arrange
         let viewModel = OrdersViewModel(statusFilter: nil)
 
@@ -144,7 +144,7 @@ final class OrdersViewModelTests: XCTestCase {
         XCTAssertNil(statusKey, "No filtered list will be fetched.")
     }
 
-    func testSubsequentPageLoadsOnFilteredListWillFetchTheGivenPageOnThatList() {
+    func test_subsequent_page_loads_on_filtered_list_will_fetch_the_given_page_on_that_list() {
         // Arrange
         let viewModel = OrdersViewModel(statusFilter: orderStatus(with: .pending))
 
@@ -167,7 +167,7 @@ final class OrdersViewModelTests: XCTestCase {
         XCTAssertEqual(pageSize, self.pageSize)
     }
 
-    func testSubsequentPageLoadsOnAllOrdersListWillFetchTheGivenPageOnThatList() {
+    func test_subsequent_page_loads_on_all_orders_list_will_fetch_the_given_page_on_that_list() {
         // Arrange
         let viewModel = OrdersViewModel(statusFilter: nil)
 
@@ -192,7 +192,7 @@ final class OrdersViewModelTests: XCTestCase {
 
     // MARK: - Future Orders
 
-    func testGivenAFilterItLoadsTheOrdersMatchingThatFilterFromTheDB() {
+    func test_given_a_filter_it_loads_the_orders_matching_that_filter_from_the_DB() {
         // Arrange
         let viewModel = OrdersViewModel(storageManager: storageManager,
                                         statusFilter: orderStatus(with: .processing))
@@ -212,7 +212,7 @@ final class OrdersViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.fetchedOrders.orderIDs, processingOrders.orderIDs)
     }
 
-    func testGivenNoFilterItLoadsAllTheTodayAndPastOrdersFromTheDB() {
+    func test_given_no_filter_it_loads_all_the_today_and_past_orders_from_the_DB() {
         // Arrange
         let viewModel = OrdersViewModel(storageManager: storageManager, statusFilter: nil)
 
@@ -236,7 +236,7 @@ final class OrdersViewModelTests: XCTestCase {
 
     /// If `includeFutureOrders` is `true`, all orders including orders dated in the future (dateCreated) will
     /// be fetched.
-    func testGivenIncludingFutureOrdersItAlsoLoadsFutureOrdersFromTheDB() {
+    func test_given_including_future_orders_it_also_loads_future_orders_from_the_DB() {
         // Arrange
         let viewModel = OrdersViewModel(storageManager: storageManager,
                                         statusFilter: orderStatus(with: .pending),
@@ -267,7 +267,7 @@ final class OrdersViewModelTests: XCTestCase {
 
     /// If `includesFutureOrders` is `false`, only orders created up to the current day are returned. Orders before
     /// midnight are included.
-    func testGivenExcludingFutureOrdersItOnlyLoadsOrdersUpToMidnightFromTheDB() {
+    func test_given_excluding_future_orders_it_only_loads_orders_up_to_midnight_from_the_DB() {
         // Arrange
         let viewModel = OrdersViewModel(storageManager: storageManager, statusFilter: nil, includesFutureOrders: false)
 
@@ -298,7 +298,7 @@ final class OrdersViewModelTests: XCTestCase {
     }
 
     /// Orders with dateCreated in the future should be grouped in an "Upcoming" section.
-    func testItGroupsFutureOrdersInUpcomingSection() {
+    func test_it_groups_future_orders_in_upcoming_section() {
         // Arrange
         let viewModel = OrdersViewModel(storageManager: storageManager, statusFilter: orderStatus(with: .failed))
 
@@ -326,7 +326,7 @@ final class OrdersViewModelTests: XCTestCase {
 
     // MARK: - App Activation
 
-    func testItRequestsAResynchronizationWhenTheAppIsActivated() {
+    func test_it_requests_a_resynchronization_when_the_app_is_activated() {
         // Arrange
         let notificationCenter = NotificationCenter()
         let viewModel = OrdersViewModel(notificationCenter: notificationCenter, statusFilter: nil)
@@ -346,7 +346,7 @@ final class OrdersViewModelTests: XCTestCase {
         XCTAssertTrue(resynchronizeRequested)
     }
 
-    func testGivenNoPreviousDeactivationItDoesNotRequestAResynchronizationWhenTheAppIsActivated() {
+    func test_given_no_previous_deactivation_it_does_not_request_a_resynchronization_when_the_app_is_activated() {
         // Arrange
         let notificationCenter = NotificationCenter()
         let viewModel = OrdersViewModel(notificationCenter: notificationCenter, statusFilter: nil)
@@ -367,7 +367,7 @@ final class OrdersViewModelTests: XCTestCase {
 
     // MARK: - Foreground Notifications
 
-    func testGivenANewOrderNotificationItRequestsAResynchronization() {
+    func test_given_a_new_order_notification_it_requests_a_resynchronization() {
         // Arrange
         let pushNotificationsManager = MockPushNotificationsManager()
         let viewModel = OrdersViewModel(pushNotificationsManager: pushNotificationsManager, statusFilter: nil)
@@ -387,7 +387,7 @@ final class OrdersViewModelTests: XCTestCase {
         XCTAssertTrue(resynchronizeRequested)
     }
 
-    func testGivenANonOrderNotificationItDoesNotRequestAResynchronization() {
+    func test_given_a_non_order_notification_it_does_not_request_a_resynchronization() {
         // Arrange
         let pushNotificationsManager = MockPushNotificationsManager()
         let viewModel = OrdersViewModel(pushNotificationsManager: pushNotificationsManager, statusFilter: nil)

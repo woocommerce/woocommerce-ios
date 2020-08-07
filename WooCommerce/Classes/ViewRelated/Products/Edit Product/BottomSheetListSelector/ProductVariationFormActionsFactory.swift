@@ -12,7 +12,7 @@ struct ProductVariationFormActionsFactory: ProductFormActionsFactoryProtocol {
     func primarySectionActions() -> [ProductFormEditAction] {
         return [
             .images,
-            .name,
+            .variationName,
             .description
         ]
     }

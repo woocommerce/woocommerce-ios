@@ -6,7 +6,7 @@ import XCTest
 final class PaginatedProductShippingClassListSelectorDataSourceTests: XCTestCase {
     private let sampleSiteID: Int64 = 521
 
-    func testSelectedShippingClass() {
+    func test_selected_shippingClass() {
         let shippingClassID = Int64(134)
         let shippingClass = sampleProductShippingClass(remoteID: shippingClassID)
         let product = MockProduct().product(productShippingClass: shippingClass)
@@ -23,7 +23,7 @@ final class PaginatedProductShippingClassListSelectorDataSourceTests: XCTestCase
         XCTAssertNil(dataSource.selected)
     }
 
-    func testCellConfiguration() {
+    func test_cell_configuration() {
         let product = MockProduct().product()
         let model = EditableProductModel(product: product)
         let dataSource = PaginatedProductShippingClassListSelectorDataSource(product: model, selected: product.productShippingClass)

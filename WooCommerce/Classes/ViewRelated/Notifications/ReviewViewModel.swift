@@ -2,7 +2,7 @@ import Foundation
 import Yosemite
 
 final class ReviewViewModel {
-    let showProductTitle: Bool
+    let showsProductTitle: Bool
     let review: ProductReview
     let product: Product?
     let notification: Note?
@@ -20,11 +20,10 @@ final class ReviewViewModel {
         )
 
         var formattedSubject = ""
-        if showProductTitle {
-            formattedSubject = String(format: subjectUnformattedWithProductTitle, self.reviewerName, product?.name ?? "")
-        }
-        else {
-            formattedSubject = String(format: subjectUnformatted, self.reviewerName)
+        if showsProductTitle {
+            formattedSubject = String(format: subjectUnformattedWithProductTitle, reviewerName, product?.name ?? "")
+        } else {
+            formattedSubject = String(format: subjectUnformatted, reviewerName)
         }
         return formattedSubject
     }()
@@ -82,7 +81,7 @@ final class ReviewViewModel {
     }
 
     init(showProductTitle: Bool = true, review: ProductReview, product: Product?, notification: Note?) {
-        self.showProductTitle = showProductTitle
+        self.showsProductTitle = showProductTitle
         self.review = review
         self.product = product
         self.notification = notification

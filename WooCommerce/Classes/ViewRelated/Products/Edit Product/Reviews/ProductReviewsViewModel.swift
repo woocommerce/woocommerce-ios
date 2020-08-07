@@ -4,7 +4,7 @@ import WordPressUI
 import Yosemite
 import class AutomatticTracks.CrashLogging
 
-
+/// The Product Reviews view model used in ProductReviewsViewController
 final class ProductReviewsViewModel {
     private let data: ReviewsDataSource
 
@@ -78,9 +78,9 @@ extension ProductReviewsViewModel {
     /// Synchronizes the approved Reviews associated to the current store, for a specific Product ID.
     ///
     func synchronizeReviews(pageNumber: Int,
-                                       pageSize: Int,
-                                       productID: Int64,
-                                       onCompletion: (() -> Void)? = nil) {
+                            pageSize: Int,
+                            productID: Int64,
+                            onCompletion: (() -> Void)? = nil) {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
@@ -90,14 +90,14 @@ extension ProductReviewsViewModel {
                                                                    pageSize: pageSize,
                                                                    products: [productID],
                                                                    status: .approved) { error in
-            if let error = error {
-                DDLogError("⛔️ Error synchronizing reviews for product ID :\(productID). Error: \(error)")
-                // TODO: Analytics Products M3. Failed
-            } else {
-                // TODO: Analytics Products M3. Loading more
-            }
+                                                                    if let error = error {
+                                                                        DDLogError("⛔️ Error synchronizing reviews for product ID :\(productID). Error: \(error)")
+                                                                        // TODO: Analytics Products M3. Failed
+                                                                    } else {
+                                                                        // TODO: Analytics Products M3. Loading more
+                                                                    }
 
-            onCompletion?()
+                                                                    onCompletion?()
         }
 
         ServiceLocator.stores.dispatch(action)

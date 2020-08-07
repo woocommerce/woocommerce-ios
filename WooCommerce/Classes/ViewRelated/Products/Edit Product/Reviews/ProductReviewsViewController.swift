@@ -74,8 +74,6 @@ final class ProductReviewsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        transitionToResultsUpdatedState()
-
         syncingCoordinator.synchronizeFirstPage()
     }
 }
@@ -164,22 +162,6 @@ extension ProductReviewsViewController: UITableViewDelegate {
 }
 
 
-// MARK: - ResultsController
-//
-private extension ProductReviewsViewController {
-
-    /// Refreshes the Results Controller Predicate, and ensures the UI is in Sync.
-    ///
-    func reloadResultsController() {
-        viewModel.refreshResults()
-
-        tableView.setContentOffset(.zero, animated: false)
-        tableView.reloadData()
-        transitionToSyncingState()
-    }
-}
-
-
 // MARK: - Placeholders
 //
 private extension ProductReviewsViewController {
@@ -198,7 +180,7 @@ private extension ProductReviewsViewController {
 
     /// Displays the Empty State Overlay.
     ///
-    func displayEmptyUnfilteredOverlay() {
+    func displayEmptyOverlay() {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
         overlayView.messageImage = .emptyReviewsImage
         overlayView.messageText = NSLocalizedString("No Reviews Yet for this Product!", comment: "Empty Product Reviews List Message")
@@ -246,9 +228,9 @@ private extension ProductReviewsViewController {
     ///
     func didEnter(state: State) {
         switch state {
-        case .emptyUnfiltered:
+        case .empty:
             if isEmpty == true {
-                displayEmptyUnfilteredOverlay()
+                displayEmptyOverlay()
             }
         case .results:
             break
@@ -263,7 +245,7 @@ private extension ProductReviewsViewController {
     ///
     func didLeave(state: State) {
         switch state {
-        case .emptyUnfiltered:
+        case .empty:
             removeAllOverlays()
         case .results:
             break
@@ -281,7 +263,7 @@ private extension ProductReviewsViewController {
     }
 
     /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
-    /// Transitions to `.results` / `.emptyFiltered` / `.emptyUnfiltered` accordingly.
+    /// Transitions to `.results` / `.emptyFiltered` / `.empty` accordingly.
     ///
     func transitionToResultsUpdatedState() {
         if isEmpty == false {
@@ -289,7 +271,7 @@ private extension ProductReviewsViewController {
             return
         }
 
-        state = .emptyUnfiltered
+        state = .empty
     }
 }
 
@@ -343,15 +325,9 @@ extension ProductReviewsViewController {
 // MARK: - Nested Types
 //
 private extension ProductReviewsViewController {
-
-    enum Settings {
-        static let estimatedRowHeight             = CGFloat(88)
-        static let placeholderRowsPerSection      = [3]
-    }
-
     enum State {
         case placeholder
-        case emptyUnfiltered
+        case empty
         case results
         case syncing
     }

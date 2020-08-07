@@ -142,7 +142,7 @@ private extension ProductReviewsDataSource {
         cell.configure(with: viewModel)
     }
 
-    private func reviewViewModel(at indexPath: IndexPath) -> ReviewViewModel {
+    func reviewViewModel(at indexPath: IndexPath) -> ReviewViewModel {
         let review = reviewsResultsController.object(at: indexPath)
 
         return ReviewViewModel(showProductTitle: false, review: review, product: product, notification: nil)

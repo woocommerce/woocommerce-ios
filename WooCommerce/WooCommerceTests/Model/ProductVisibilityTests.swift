@@ -7,7 +7,7 @@ import Yosemite
 ///
 final class ProductVisibilityTests: XCTestCase {
 
-    func testProductVisibilityWithEmptyPassword() {
+    func test_ProductVisibility_with_empty_password() {
         let visibility = ProductVisibility(status: .publish, password: nil)
         let visibility2 = ProductVisibility(status: .publish, password: "")
 
@@ -15,25 +15,25 @@ final class ProductVisibilityTests: XCTestCase {
         XCTAssertEqual(visibility2, .public)
     }
 
-    func testProductVisibilityWithPrivateStatus() {
+    func test_ProductVisibility_with_private_status() {
         let visibility = ProductVisibility(status: .privateStatus, password: nil)
 
         XCTAssertEqual(visibility, .private)
     }
 
-    func testProductVisibilityWithPendingStatus() {
+    func test_ProductVisibility_with_pending_status() {
         let visibility = ProductVisibility(status: .pending, password: nil)
 
         XCTAssertEqual(visibility, .public)
     }
 
-    func testProductVisibilityWithDraftStatus() {
+    func test_ProductVisibility_with_draft_status() {
         let visibility = ProductVisibility(status: .draft, password: nil)
 
         XCTAssertEqual(visibility, .public)
     }
 
-    func testProductVisibilityPasswordProtected() {
+    func test_ProductVisibility_password_protected() {
         let visibility = ProductVisibility(status: .publish, password: "1234")
 
         XCTAssertEqual(visibility, .passwordProtected)

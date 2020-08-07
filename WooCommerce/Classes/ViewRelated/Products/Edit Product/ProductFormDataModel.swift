@@ -11,6 +11,7 @@ protocol ProductFormDataModel {
 
     // Settings
     var permalink: String { get }
+    var status: ProductStatus { get }
 
     // Images
     var images: [ProductImage] { get }
@@ -27,6 +28,10 @@ protocol ProductFormDataModel {
     var dateOnSaleEnd: Date? { get }
     var taxStatusKey: String { get }
     var taxClass: String? { get }
+
+    // Reviews
+    var averageRating: String { get }
+    var ratingCount: Int { get }
 
     // Shipping
     var weight: String? { get }

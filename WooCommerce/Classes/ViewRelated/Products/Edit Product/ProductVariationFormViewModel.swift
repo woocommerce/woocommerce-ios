@@ -182,6 +182,11 @@ extension ProductVariationFormViewModel {
     func updateExternalLink(externalURL: String?, buttonText: String) {
         // no-op
     }
+
+    func updateStatus(_ isEnabled: Bool) {
+        let status: ProductStatus = isEnabled ? .publish: .privateStatus
+        productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(status: status))
+    }
 }
 
 // MARK: Remote actions

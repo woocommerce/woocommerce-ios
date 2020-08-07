@@ -161,6 +161,10 @@ extension ProductFormViewModel {
                                                                      taxClass: taxClass?.slug))
     }
 
+    func updateReviews(averageRating: String, ratingCount: Int) {
+        product = EditableProductModel(product: product.product.copy(averageRating: averageRating, ratingCount: ratingCount))
+    }
+
     func updateInventorySettings(sku: String?,
                                  manageStock: Bool,
                                  soldIndividually: Bool?,
@@ -217,6 +221,10 @@ extension ProductFormViewModel {
 
     func updateExternalLink(externalURL: String?, buttonText: String) {
         product = EditableProductModel(product: product.product.copy(buttonText: buttonText, externalURL: externalURL))
+    }
+
+    func updateStatus(_ isEnabled: Bool) {
+        // no-op: visibility is editable in product settings for `Product`
     }
 }
 

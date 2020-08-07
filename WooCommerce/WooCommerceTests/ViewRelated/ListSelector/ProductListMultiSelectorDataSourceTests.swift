@@ -21,7 +21,7 @@ final class ProductListMultiSelectorDataSourceTests: XCTestCase {
         cancellable = nil
     }
 
-    func testDataSourceCreatesResultsControllerExcludingSpecifiedProductIDs() throws {
+    func test_dataSource_creates_ResultsController_excluding_specified_product_ids() throws {
         // Arrange
         let siteID: Int64 = 1
         let excludedProductIDs: [Int64] = [17, 630]
@@ -45,7 +45,7 @@ final class ProductListMultiSelectorDataSourceTests: XCTestCase {
         XCTAssertFalse(resultsController.fetchedObjects.contains(where: { excludedProductIDs.contains($0.productID) }))
     }
 
-    func testSelectingAndUnselectingAProductChangesSelectedProductIDs() {
+    func test_selecting_and_unselecting_a_product_changes_selected_product_ids() {
         // Arrange
         let siteID: Int64 = 1
         let dataSource = ProductListMultiSelectorDataSource(siteID: siteID, excludedProductIDs: [])
@@ -66,7 +66,7 @@ final class ProductListMultiSelectorDataSourceTests: XCTestCase {
         ])
     }
 
-    func testProductIsSelectedOnlyAfterSelectedChange() {
+    func test_product_is_selected_only_after_selected_change() {
         // Arrange
         let siteID: Int64 = 1
         let dataSource = ProductListMultiSelectorDataSource(siteID: siteID, excludedProductIDs: [])
@@ -86,7 +86,7 @@ final class ProductListMultiSelectorDataSourceTests: XCTestCase {
         XCTAssertFalse(dataSource.isSelected(model: product))
     }
 
-    func testAddingProductsChangesSelectedProductIDsWithoutDuplicates() {
+    func test_adding_products_changes_selected_product_ids_without_duplicates() {
         // Arrange
         let siteID: Int64 = 1
         let dataSource = ProductListMultiSelectorDataSource(siteID: siteID, excludedProductIDs: [])

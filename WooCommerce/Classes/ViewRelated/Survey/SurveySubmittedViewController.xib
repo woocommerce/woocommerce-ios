@@ -29,7 +29,7 @@
                     <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="AJ5-6t-PeU">
-                            <rect key="frame" x="0.0" y="63" width="414" height="736"/>
+                            <rect key="frame" x="0.0" y="63" width="414" height="736.5"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gS5-1U-lvq">
                                     <rect key="frame" x="190.5" y="0.0" width="33.5" height="20.5"/>
@@ -38,16 +38,16 @@
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="tablet-success" translatesAutoresizingMaskIntoConstraints="NO" id="wd8-FF-a0m">
-                                    <rect key="frame" x="67" y="103" width="280" height="150"/>
+                                    <rect key="frame" x="67" y="97.5" width="280" height="150"/>
                                 </imageView>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Info Text" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="p3r-Gh-oqa" userLabel="Keep in mind that this is not a support ticket and we won’t be able to address individual feedback.">
-                                    <rect key="frame" x="174.5" y="335.5" width="65.5" height="20.5"/>
+                                    <rect key="frame" x="174.5" y="325" width="65.5" height="20.5"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <nil key="textColor"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <stackView opaque="NO" contentMode="scaleToFill" spacing="4" id="Fir-BZ-rg8">
-                                    <rect key="frame" x="160" y="438.5" width="94" height="30"/>
+                                    <rect key="frame" x="160" y="422.5" width="94" height="30"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lq2-EI-ndE">
@@ -66,23 +66,23 @@
                                     </subviews>
                                 </stackView>
                                 <button opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0hX-nr-BdE">
-                                    <rect key="frame" x="16" y="551" width="382" height="30"/>
+                                    <rect key="frame" x="16" y="529.5" width="382" height="30"/>
                                     <state key="normal" title="button"/>
                                     <connections>
                                         <action selector="backToStoreButtonPressed:" destination="-1" eventType="touchUpInside" id="3Zf-mh-nAy"/>
                                     </connections>
                                 </button>
-                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="14" translatesAutoresizingMaskIntoConstraints="NO" id="XqL-g7-NW1">
-                                    <rect key="frame" x="180.5" y="663.5" width="53" height="72.5"/>
+                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="XqL-g7-NW1">
+                                    <rect key="frame" x="169.5" y="637" width="75" height="99.5"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yNA-A2-3MZ">
-                                            <rect key="frame" x="8.5" y="0.0" width="36.5" height="20.5"/>
+                                            <rect key="frame" x="19.5" y="0.0" width="36.5" height="20.5"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="cs-icon" translatesAutoresizingMaskIntoConstraints="NO" id="Oup-dY-KXI">
-                                            <rect key="frame" x="0.0" y="35" width="53" height="37.5"/>
+                                            <rect key="frame" x="0.0" y="24.5" width="75" height="75"/>
                                         </imageView>
                                     </subviews>
                                 </stackView>
@@ -121,7 +121,7 @@
         </view>
     </objects>
     <resources>
-        <image name="cs-icon" width="53" height="38"/>
+        <image name="cs-icon" width="75" height="75"/>
         <image name="tablet-success" width="280" height="150"/>
     </resources>
 </document>

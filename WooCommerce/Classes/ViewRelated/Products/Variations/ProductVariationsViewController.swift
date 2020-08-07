@@ -64,6 +64,7 @@ final class ProductVariationsViewController: UIViewController {
     private let siteID: Int64
     private let productID: Int64
     private let allAttributes: [ProductAttribute]
+    private let parentProductSKU: String?
 
     private let imageService: ImageService = ServiceLocator.imageService
     private let isEditProductsRelease3Enabled: Bool
@@ -72,6 +73,7 @@ final class ProductVariationsViewController: UIViewController {
         self.siteID = product.siteID
         self.productID = product.productID
         self.allAttributes = product.attributes
+        self.parentProductSKU = product.sku
         self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
         super.init(nibName: nil, bundle: nil)
     }
@@ -198,7 +200,9 @@ extension ProductVariationsViewController: UITableViewDataSource {
         }
 
         let productVariation = resultsController.object(at: indexPath)
-        let model = EditableProductVariationModel(productVariation: productVariation, allAttributes: allAttributes)
+        let model = EditableProductVariationModel(productVariation: productVariation,
+                                                  allAttributes: allAttributes,
+                                                  parentProductSKU: parentProductSKU)
 
         let currencyCode = CurrencySettings.shared.currencyCode
         let currency = CurrencySettings.shared.symbol(from: currencyCode)
@@ -230,7 +234,9 @@ extension ProductVariationsViewController: UITableViewDelegate {
 
         if isEditProductsRelease3Enabled {
             let productVariation = resultsController.object(at: indexPath)
-            let model = EditableProductVariationModel(productVariation: productVariation, allAttributes: allAttributes)
+            let model = EditableProductVariationModel(productVariation: productVariation,
+                                                      allAttributes: allAttributes,
+                                                      parentProductSKU: parentProductSKU)
 
             let currencyCode = CurrencySettings.shared.currencyCode
             let currency = CurrencySettings.shared.symbol(from: currencyCode)
@@ -238,6 +244,7 @@ extension ProductVariationsViewController: UITableViewDelegate {
                                                                       product: model)
             let viewModel = ProductVariationFormViewModel(productVariation: model,
                                                           allAttributes: allAttributes,
+                                                          parentProductSKU: parentProductSKU,
                                                           productImageActionHandler: productImageActionHandler)
             let viewController = ProductFormViewController(viewModel: viewModel,
                                                            productImageActionHandler: productImageActionHandler,

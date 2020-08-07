@@ -4,12 +4,16 @@ import Yosemite
 final class EditableProductVariationModel {
     let productVariation: ProductVariation
 
+    // Property that requires other dependencies than `ProductVariation`
+    let sku: String?
+
     private let allAttributes: [ProductAttribute]
     private lazy var variationName: String = generateName(variationAttributes: productVariation.attributes, allAttributes: allAttributes)
 
-    init(productVariation: ProductVariation, allAttributes: [ProductAttribute]) {
-        self.productVariation = productVariation
+    init(productVariation: ProductVariation, allAttributes: [ProductAttribute], parentProductSKU: String?) {
         self.allAttributes = allAttributes
+        self.sku = parentProductSKU == productVariation.sku ? nil: productVariation.sku
+        self.productVariation = productVariation.copy(sku: self.sku)
     }
 }
 
@@ -107,10 +111,6 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
 
     var shippingClassID: Int64 {
         productVariation.shippingClassID
-    }
-
-    var sku: String? {
-        productVariation.sku
     }
 
     var manageStock: Bool {

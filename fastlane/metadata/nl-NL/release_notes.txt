@@ -1,3 +1,5 @@
-Nieuwe alarmen: Wanneer er voor een eenvoudig product geen prijs is ingesteld, wordt er een placeholder 'Prijs toevoegen' weergegeven op de pagina met productgegevens in de prijs-rij. App-gebruikers die nog geen upgrade hebben uitgevoerd naar WooCommerce 4.0 zullen een banner zien waarop wordt aangegeven dat er een upgrade beschikbaar is. Gebruikers die de upgrade al hebben uitgevoerd, zien het nieuwe statistieken-dashboard. Als je nog geen upgrade hebt uitgevoerd, raden we je aan dit te doen!
+We willen je van een paar dingen op de hoogte stellen:
 
-Fixes en aanpassingen: We hebben een bug verholpen waarbij een negatieve waarde tot een visuele glitch kon leiden die in de dashboardgrafieken werd weergegeven. We hebben ook de rij met het totaalaantal bestellingen verwijderd uit het tabblad Producten om verwarring te vermijden, aangezien we deze niet opnemen in het bewerkbare formulier voor eenvoudige producten.
+Er vond soms een crash plaats wanneer je een sms vanuit de app verzond. Niemand wil een sms'je missen, dus hebben we dat opgelost.
+
+Hou je van statistieken? Wij wel in ieder geval! We hebben hard gewerkt om je statistieken nog beter te maken. Zolang je over WooCommerce 4.0 of WooCommerce Admin beschikt, komt je statistiekengrafiek nu overeen met wat je ziet in wp-admin. Jammer! Als je een oudere versie van WooCommerce gebruikt, wil je deze ongetwijfeld bijwerken zodat je niets mist!

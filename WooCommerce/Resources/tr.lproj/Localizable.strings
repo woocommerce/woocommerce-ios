@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-07-09 12:54:04+0000 */
+/* Translation-Revision-Date: 2020-08-06 18:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -51,6 +51,9 @@
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
 "%@ via %@" = "%2$@ üzerinden %1$@";
 
+/* Navigation bar title for selecting multiple products when more multiple products have been selected. */
+"%ld Products Selected" = "%ld Ürünler Seçildi";
+
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "Stokta %ld";
 
@@ -65,6 +68,9 @@
 
 /* Label about number of variations shown on Products tab */
 "%ld variants" = "%ld varyasyonları";
+
+/* Navigation bar title for selecting multiple products when one product has been selected. */
+"1 Product Selected" = "1 Ürün Seçildi";
 
 /* Shown when there are more than 99 items of something (e.g. Processing Orders). */
 "99+" = "99+";
@@ -100,11 +106,19 @@
    A button title used for a unit test - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
 "Add" = "Ekle";
 
+/* Action to add category on the Product Categories screen
+   Product Add Category navigation title */
+"Add Category" = "Kategori Ekle";
+
 /* Action to add photos on the Product images screen */
 "Add Photos" = "Fotoğraf ekle";
 
 /* Title for adding the price settings row on Product main screen */
 "Add Price" = "Fiyat Ekle";
+
+/* Action to add products to a grouped product on the Grouped Products screen
+   Navigation bar title for selecting multiple products. */
+"Add Products" = "Ürün Ekle";
 
 /* A title used for a shipment tracking unit test
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
@@ -284,9 +298,12 @@
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "Bağlantı istenemiyor";
 
-/* Button title Cancel in Discard Changes Action Sheet
-   Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links */
+/* Action title to cancel selecting products to add to a grouped product from search results
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links */
 "Cancel" = "İptal";
+
+/* Title of the alert when there is an error creating a new product category */
+"Cannot Add Category" = "Kategori Eklenemiyor";
 
 /* The title of the alert when there is an error updating the product */
 "Cannot update product" = "Ürün güncellenemiyor";
@@ -313,7 +330,7 @@
 "Certificate error" = "Sertifika hatası";
 
 /* Instructional text on how to open the email containing a magic link. */
-"Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder." = "Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder.";
+"Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder." = "Bu cihazdaki e-postanızı kontrol edin ve WordPress.com'dan aldığınız e-postadaki bağlantıya dokunun.\n\nE-postayı görmüyor musun? İstenmeyen veya önemsiz posta klasörünüzü kontrol edin.";
 
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "E-postanızı kontrol edin!";
@@ -491,7 +508,8 @@
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Hesabınız yok mu? _Kaydol_";
 
-/* Edit product categories screen - button title to apply categories selection */
+/* Action title to select products to add to a grouped product from search results
+   Edit product categories screen - button title to apply categories selection */
 "Done" = "Bitti";
 
 /* WordPress.com (unmapped!) error */
@@ -553,6 +571,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "Boş adres";
+
+/* Enable Reviews label in Product Settings */
+"Enable Reviews" = "Yorumları Etkinleştir";
 
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "URL gir";
@@ -653,6 +674,9 @@
 
 /* Display label for grouped product type. */
 "Grouped" = "Gruplanmış";
+
+/* Navigation bar title for editing linked products for a grouped product */
+"Grouped Products" = "Gruplandırılmış Ürünler";
 
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "Gruplanmış ürünler";
@@ -819,9 +843,6 @@
 /* 'Limit: 2 downloads', for example. */
 "Limit: %ld downloads" = "Sınır: %ld indirme";
 
-/* The title of the Work In Progress top banner on the Products tab. */
-"Limited editing available" = "Sınırlı düzenleme mevcut";
-
 /* Title for screen in editor that allows to configure link options */
 "Link Settings" = "Bağlantı Ayarları";
 
@@ -869,6 +890,12 @@
 
 /* Option to select the Apple Mail app when logging in with magic links */
 "Mail (Default)" = "Mail (Varsayılan)";
+
+/* Text that explains how to update VC to get the latest stats */
+"Make sure you are running the latest version of WooCommerce on your site and that you have WooCommerce Admin activated." = "Sitenizde en son WooCommerce sürümünü çalıştırdığınızdan ve WooCommerce Admin'i etkinleştirdiğinizden emin olun.";
+
+/* Subtitle of the product form bottom sheet action for editing tags. */
+"Make your products easier to find with tags" = "Etiket kullanarak ürünlerinizin bulunmasını kolaylaştırın";
 
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "Siparişleri yönetin, satışları takip edin ve gerçek zamanlı uyarılarla mağaza etkinliğini izleyin.";
@@ -960,6 +987,9 @@
 /* The title for the net amount paid cell */
 "Net" = "Net";
 
+/* The title of the Work In Progress top banner on the Products tab. */
+"New editing options available" = "Yeni düzenleme seçenekleri kullanılabilir";
+
 /* Title of a button.
    Title of a button. The text should be capitalized. */
 "Next" = "Sonraki";
@@ -983,7 +1013,8 @@
 /* The text on the placeholder overlay when there are no product variations on the Products tab */
 "No product variations yet" = "Henüz ürün değişikliği yok";
 
-/* The text on the placeholder overlay when there are no products on the Products tab */
+/* Placeholder for editing linked products for a grouped product
+   Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "Henüz ürün yok";
 
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier' */
@@ -995,8 +1026,14 @@
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "Henüz bir kargo sınıfı yok";
 
+/* Placeholder of the Product Tags row on Product main screen */
+"No tags" = "Etiket yok";
+
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
 "No tax classes yet" = "Henüz bir vergi sınıfı yok";
+
+/* Placeholder of the Product Variations row on Product main screen for a variable product */
+"No variations yet" = "Henüz farklılık yok";
 
 /* Display label for the product's tax status setting option */
 "None" = "Hiçbiri";
@@ -1011,7 +1048,7 @@
 "Number of files:" = "Dosya sayısı:";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "Tamam";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -1050,7 +1087,8 @@
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "Kullanılabilir durumların bir listesini açar.";
 
-/* Placeholder of the cell text field in Product Inventory Settings > SKU */
+/* Add Product Category. Placeholder of cell presenting the parent category.
+   Placeholder of the cell text field in Product Inventory Settings > SKU */
 "Optional" = "İsteğe Bağlı";
 
 /* No comment provided by engineer. */
@@ -1103,6 +1141,9 @@
 
 /* The title for the customer payment cell */
 "Paid By Customer" = "Müşteri Tarafından Ödenen";
+
+/* Add Product Category. Title of cell presenting the parent category. */
+"Parent Category" = "Üst kategori";
 
 /* Accessibility label for the password text field in the self-hosted login page.
    Login dialog password placeholder - Password field title in Product Visibility - Password placeholder */
@@ -1340,6 +1381,9 @@
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Normal fiyat: %@";
 
+/* Banner action button text in my store when stats will be deprecated */
+"Remind me later" = "Daha sonra hatırlat";
+
 /* Confirm button on the alert when the user taps to delete a Product image */
 "Remove" = "Kaldır";
 
@@ -1417,6 +1461,9 @@
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "İndirimli satış fiyatı: %@";
 
+/* Add Product Category. Save button title in navbar. */
+"Save" = "Kaydet";
+
 /* Scan Products */
 "Scan products" = "Ürünleri tara";
 
@@ -1440,6 +1487,9 @@
 
 /* Display label for the product's catalog visibility */
 "Search results only" = "Yalnızca arama sonuçları";
+
+/* Select parent category screen - Screen title */
+"Select Parent Category" = "Üst Kategori Seç";
 
 /* Page title for the select a different store screen */
 "Select Store" = "Mağaza Seç";
@@ -1649,6 +1699,9 @@
    Status label in Product Settings */
 "Status" = "Durum";
 
+/* Button title to contact support to get help with deprecated stats */
+"Still need help? Contact us" = "Hâlâ yardıma ihtiyacınız var mı? İletişim kurun";
+
 /* Row title for filtering products by stock status. */
 "Stock Status" = "Stok durumu";
 
@@ -1706,6 +1759,10 @@
 
 /* Accessibility Identifier for the Default Font Aztec Style. */
 "Switches to the default Font Size" = "Varsayılan Yazı Tipi Boyutuna geçer";
+
+/* Title of the product form bottom sheet action for editing tags.
+   Title of the Tags row on Product main screen */
+"Tags" = "Etiketler";
 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "Fotoğraf çek";
@@ -1927,8 +1984,8 @@
 /* Footer text for editing external product button text */
 "This text will be shown on the button linking to the external product." = "Bu metin harici ürüne bağlantı düğmesinde gösterilecektir.";
 
-/* Placeholder in the Product Title row on Product form screen.
-   Product details screen — product title descriptive label */
+/* Add Product Category. Placeholder of cell presenting the title of the category.
+   Placeholder in the Product Title row on Product form screen. - Product details screen — product title descriptive label */
 "Title" = "Başlık";
 
 /* Action sheet option to sort products by ascending product name */
@@ -2151,7 +2208,7 @@
 "Variable" = "Değişken";
 
 /* Product Details > descriptive label for the Product Variants cell.
-   Title that appears on top of the Product Variation List screen. */
+   Title of the Product Variations row on Product main screen for a variable product - Title that appears on top of the Product Variation List screen. */
 "Variations" = "Varyasyonlar";
 
 /* two factor code placeholder */
@@ -2188,6 +2245,9 @@
 /* User role badge */
 "Viewer" = "İzleyici";
 
+/* Virtual Product label in Product Settings */
+"Virtual Product" = "Sanal Ürün";
+
 /* Product Visibility navigation title
    Visibility label in Product Settings */
 "Visibility" = "Görünürlük";
@@ -2206,6 +2266,9 @@
 
 /* shown in promotional screens during first launch */
 "Watch readers from around the world read and interact with your site — in real time." = "Tüm dünyadan sitenizi okuyup onunla etkileşime geçen okuyucuları gerçek zamanlı olarak izleyin.";
+
+/* Title when we can't show stats because user is on a deprecated WC Version */
+"We can’t display your store’s analytics" = "Mağazanızın analizlerini görüntüleyemiyoruz";
 
 /* message to ask a user to check their email for a WordPress.com email */
 "We just emailed a link to %@. Please check your mail app and tap the link to log in." = "%@ adresine bir e-posta gönderdik. Lütfen posta uygulamanızı kontrol edin ve oturum açmak için bağlantıya dokunun.";
@@ -2236,7 +2299,7 @@
 "We're sorry, we couldn't find results for “%@”" = "Üzgünüz, \"%@\" için sonuç bulamadık";
 
 /* The info of the Work In Progress top banner on the Products tab. */
-"We've added editing functionality to simple products. Keep an eye out for more options soon!" = "Basit ürünlere düzenleme işlevi ekledik. Yakında sunulacak daha fazla seçeneği takip edin!";
+"We've added more editing functionalities to products! You can now update images, see previews and share your products." = "Ürünler için daha fazla düzenleme işlevi ekledik. Artık görselleri güncelleyebilir, önizlemeleri görebilir ve ürünlerinizi paylaşabilirsiniz.";
 
 /* Statistical unit - a single week */
 "Week" = "Hafta";

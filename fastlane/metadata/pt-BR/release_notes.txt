@@ -1,3 +1,5 @@
-Novos alertas: quando um produto simples não tem um preço definido, um espaço reservado "Adicionar preço" é exibido na linha de preço da tela Detalhes do produto. Usuários do app que ainda não tiverem feito upgrade para o WooCommerce 4.0 verão uma faixa indicando um upgrade disponível. Porém, quem já fez upgrade verá o novo painel de estatísticas. Se você ainda não fez upgrade, encorajamos a fazê-lo!
+Esteja a par de algumas informações:
 
-Correções e ajustes: corrigimos um bug que permitia um valor negativo resultar em uma falha visual nos gráficos do painel. Além disso, removemos a linha de pedidos totais da guia Produtos para evitar confusão por não ser exibida no formato editável para produtos simples.
+Às vezes, ocorria uma falha ao enviar um SMS pelo aplicativo. Para você não perder nenhum SMS, corrigimos esse problema.
+
+Adora estatísticas? Nós com certeza sim! Temos nos empenhado para melhorar ainda mais sua experiência com estatísticas. Seu gráfico de estatísticas agora corresponde ao que é exibido no Painel WP Admin se você estiver usando o WooCommerce 4.0 ou o WooCommerce Admin. Dá no mesmo! Se você estiver usando uma versão antiga do WooCommerce, atualize-a para não perder essa novidade!

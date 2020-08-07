@@ -3,6 +3,15 @@ import XCTest
 @testable import Yosemite
 
 final class ProductInventorySettingsViewModel_VariationTests: XCTestCase {
+    typealias Section = ProductInventorySettingsViewController.Section
+
+    private var cancellable: ObservationToken?
+
+    override func tearDown() {
+        cancellable = nil
+        super.tearDown()
+    }
+
     // MARK: - Initialization
 
     func testReadonlyValuesAreAsExpectedAfterInitializingAProductVariationWithManageStockEnabled() {
@@ -14,13 +23,17 @@ final class ProductInventorySettingsViewModel_VariationTests: XCTestCase {
 
         // Act
         let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
+        var sections: [Section] = []
+        cancellable = viewModel.sections.subscribe { sectionsValue in
+            sections = sectionsValue
+        }
 
         // Assert
-        let expectedSections: [ProductInventorySettingsViewController.Section] = [
+        let expectedSections: [Section] = [
             .init(rows: [.sku]),
             .init(rows: [.manageStock, .stockQuantity, .backorders])
         ]
-        XCTAssertEqual(viewModel.sectionsValue, expectedSections)
+        XCTAssertEqual(sections, expectedSections)
         XCTAssertEqual(viewModel.sku, sku)
         XCTAssertTrue(viewModel.manageStockEnabled)
         XCTAssertEqual(viewModel.soldIndividually, nil)
@@ -38,13 +51,17 @@ final class ProductInventorySettingsViewModel_VariationTests: XCTestCase {
 
         // Act
         let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
+        var sections: [Section] = []
+        cancellable = viewModel.sections.subscribe { sectionsValue in
+            sections = sectionsValue
+        }
 
         // Assert
-        let expectedSections: [ProductInventorySettingsViewController.Section] = [
+        let expectedSections: [Section] = [
             .init(rows: [.sku]),
             .init(rows: [.manageStock, .stockStatus])
         ]
-        XCTAssertEqual(viewModel.sectionsValue, expectedSections)
+        XCTAssertEqual(sections, expectedSections)
         XCTAssertEqual(viewModel.sku, sku)
         XCTAssertFalse(viewModel.manageStockEnabled)
         XCTAssertEqual(viewModel.soldIndividually, nil)

@@ -3,6 +3,15 @@ import XCTest
 @testable import Yosemite
 
 final class ProductInventorySettingsViewModelTests: XCTestCase {
+    typealias Section = ProductInventorySettingsViewController.Section
+
+    private var cancellable: ObservationToken?
+
+    override func tearDown() {
+        cancellable = nil
+        super.tearDown()
+    }
+
     // MARK: - Initialization
 
     func testReadonlyValuesAreAsExpectedAfterInitializingAProductWithManageStockEnabled() {
@@ -14,14 +23,18 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
         // Act
         let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
+        var sections: [Section] = []
+        cancellable = viewModel.sections.subscribe { sectionsValue in
+            sections = sectionsValue
+        }
 
         // Assert
-        let expectedSections: [ProductInventorySettingsViewController.Section] = [
+        let expectedSections: [Section] = [
             .init(rows: [.sku]),
             .init(rows: [.manageStock, .stockQuantity, .backorders]),
             .init(rows: [.limitOnePerOrder])
         ]
-        XCTAssertEqual(viewModel.sectionsValue, expectedSections)
+        XCTAssertEqual(sections, expectedSections)
         XCTAssertEqual(viewModel.sku, sku)
         XCTAssertTrue(viewModel.manageStockEnabled)
         XCTAssertEqual(viewModel.soldIndividually, true)
@@ -39,14 +52,18 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
         // Act
         let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
+        var sections: [Section] = []
+        cancellable = viewModel.sections.subscribe { sectionsValue in
+            sections = sectionsValue
+        }
 
         // Assert
-        let expectedSections: [ProductInventorySettingsViewController.Section] = [
+        let expectedSections: [Section] = [
             .init(rows: [.sku]),
             .init(rows: [.manageStock, .stockStatus]),
             .init(rows: [.limitOnePerOrder])
         ]
-        XCTAssertEqual(viewModel.sectionsValue, expectedSections)
+        XCTAssertEqual(sections, expectedSections)
         XCTAssertEqual(viewModel.sku, sku)
         XCTAssertFalse(viewModel.manageStockEnabled)
         XCTAssertEqual(viewModel.soldIndividually, true)
@@ -61,12 +78,16 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
         // Act
         let viewModel = ProductInventorySettingsViewModel(formType: .sku, productModel: model)
+        var sections: [Section] = []
+        cancellable = viewModel.sections.subscribe { sectionsValue in
+            sections = sectionsValue
+        }
 
         // Assert
-        let expectedSections: [ProductInventorySettingsViewController.Section] = [
+        let expectedSections: [Section] = [
             .init(rows: [.sku])
         ]
-        XCTAssertEqual(viewModel.sectionsValue, expectedSections)
+        XCTAssertEqual(sections, expectedSections)
         XCTAssertEqual(viewModel.sku, "134")
     }
 
@@ -79,6 +100,10 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         let model = EditableProductModel(product: product)
         let stores = MockProductSKUValidationStoresManager(existingSKUs: [sku])
         let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model, stores: stores)
+        var sections: [Section] = []
+        cancellable = viewModel.sections.subscribe { sectionsValue in
+            sections = sectionsValue
+        }
 
         // Act
         var isSKUValid: Bool?
@@ -94,12 +119,12 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         // Assert
         XCTAssertEqual(isSKUValid, false)
         XCTAssertEqual(shouldBringUpKeyboard, true)
-        let expectedSections: [ProductInventorySettingsViewController.Section] = [
+        let expectedSections: [Section] = [
             .init(errorTitle: ProductUpdateError.duplicatedSKU.alertMessage, rows: [.sku]),
             .init(rows: [.manageStock, .stockStatus]),
             .init(rows: [.limitOnePerOrder])
         ]
-        XCTAssertEqual(viewModel.sectionsValue, expectedSections)
+        XCTAssertEqual(sections, expectedSections)
         XCTAssertEqual(viewModel.sku, sku)
     }
 
@@ -110,6 +135,10 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         let model = EditableProductModel(product: product)
         let stores = MockProductSKUValidationStoresManager(existingSKUs: [sku])
         let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model, stores: stores)
+        var sections: [Section] = []
+        cancellable = viewModel.sections.subscribe { sectionsValue in
+            sections = sectionsValue
+        }
 
         // Act
         var isSKUValid: Bool?
@@ -125,12 +154,12 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         // Assert
         XCTAssertEqual(isSKUValid, true)
         XCTAssertEqual(shouldBringUpKeyboard, true)
-        let expectedSections: [ProductInventorySettingsViewController.Section] = [
+        let expectedSections: [Section] = [
             .init(rows: [.sku]),
             .init(rows: [.manageStock, .stockStatus]),
             .init(rows: [.limitOnePerOrder])
         ]
-        XCTAssertEqual(viewModel.sectionsValue, expectedSections)
+        XCTAssertEqual(sections, expectedSections)
         XCTAssertEqual(viewModel.sku, sku)
     }
 
@@ -143,17 +172,21 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
             .copy(sku: sku, manageStock: true, stockQuantity: 12, backordersKey: ProductBackordersSetting.allowed.rawValue, soldIndividually: true)
         let model = EditableProductModel(product: product)
         let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
+        var sections: [Section] = []
+        cancellable = viewModel.sections.subscribe { sectionsValue in
+            sections = sectionsValue
+        }
 
         // Act
         viewModel.handleManageStockEnabledChange(false)
 
         // Assert
-        let expectedSections: [ProductInventorySettingsViewController.Section] = [
+        let expectedSections: [Section] = [
             .init(rows: [.sku]),
             .init(rows: [.manageStock, .stockStatus]),
             .init(rows: [.limitOnePerOrder])
         ]
-        XCTAssertEqual(viewModel.sectionsValue, expectedSections)
+        XCTAssertEqual(sections, expectedSections)
     }
 
     func testEnablingStockManagementUpdatesItsSections() {
@@ -163,17 +196,21 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
             .copy(sku: sku, manageStock: false, stockStatusKey: ProductStockStatus.onBackOrder.rawValue, soldIndividually: true)
         let model = EditableProductModel(product: product)
         let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
+        var sections: [Section] = []
+        cancellable = viewModel.sections.subscribe { sectionsValue in
+            sections = sectionsValue
+        }
 
         // Act
         viewModel.handleManageStockEnabledChange(true)
 
         // Assert
-        let expectedSections: [ProductInventorySettingsViewController.Section] = [
+        let expectedSections: [Section] = [
             .init(rows: [.sku]),
             .init(rows: [.manageStock, .stockQuantity, .backorders]),
             .init(rows: [.limitOnePerOrder])
         ]
-        XCTAssertEqual(viewModel.sectionsValue, expectedSections)
+        XCTAssertEqual(sections, expectedSections)
     }
 
     // MARK: - `hasUnsavedChanges`

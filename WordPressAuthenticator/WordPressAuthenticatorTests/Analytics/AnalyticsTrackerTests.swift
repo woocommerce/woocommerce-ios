@@ -30,26 +30,6 @@ class AnalyticsTrackerTests: XCTestCase {
         return properties
     }
     
-    /// Test that the no-params constructor for the context initializes it with the properties we expect.
-    ///
-    func testContextInitializerWithDefaultParams() {
-        let context = AnalyticsTracker.Context()
-        
-        XCTAssertEqual(context.lastFlow, .wpCom)
-        XCTAssertEqual(context.lastSource, .default)
-        XCTAssertEqual(context.lastStep, .prologue)
-    }
-    
-    /// Test that initializing a context with specific params works.
-    ///
-    func testContextInitializerWithExplicitParams() {
-        let context = AnalyticsTracker.Context(lastFlow: .appleLogin, lastSource: .deeplink, lastStep: .emailOpened)
-        
-        XCTAssertEqual(context.lastFlow, .appleLogin)
-        XCTAssertEqual(context.lastSource, .deeplink)
-        XCTAssertEqual(context.lastStep, .emailOpened)
-    }
-    
     /// Test that when tracking an event through the AnalyticsTracker, the backing analytics tracker
     /// receives a matching event.
     ///
@@ -72,11 +52,11 @@ class AnalyticsTrackerTests: XCTestCase {
             }
         }
         
-        let context = AnalyticsTracker.Context()
-        let tracker = AnalyticsTracker(context: context, track: track)
+        let tracker = AnalyticsTracker(track: track)
         
         tracker.set(source: source)
-        tracker.track(step: step, flow: flow)
+        tracker.set(flow: flow)
+        tracker.track(step: step)
         
         waitForExpectations(timeout: 0.1)
     }
@@ -101,11 +81,11 @@ class AnalyticsTrackerTests: XCTestCase {
             }
         }
         
-        let context = AnalyticsTracker.Context()
-        let tracker = AnalyticsTracker(context: context, track: track)
+        let tracker = AnalyticsTracker(track: track)
         
         tracker.set(source: source)
-        tracker.track(step: step, flow: flow)
+        tracker.set(flow: flow)
+        tracker.track(step: step)
         
         waitForExpectations(timeout: 0.1)
     }
@@ -133,11 +113,11 @@ class AnalyticsTrackerTests: XCTestCase {
             }
         }
         
-        let context = AnalyticsTracker.Context()
-        let tracker = AnalyticsTracker(context: context, track: track)
+        let tracker = AnalyticsTracker(track: track)
         
         tracker.set(source: source)
-        tracker.track(step: step, flow: flow)
+        tracker.set(flow: flow)
+        tracker.track(step: step)
         tracker.track(failure: failure)
         
         waitForExpectations(timeout: 0.1)
@@ -166,11 +146,11 @@ class AnalyticsTrackerTests: XCTestCase {
             }
         }
         
-        let context = AnalyticsTracker.Context()
-        let tracker = AnalyticsTracker(context: context, track: track)
+        let tracker = AnalyticsTracker(track: track)
         
         tracker.set(source: source)
-        tracker.track(step: step, flow: flow)
+        tracker.set(flow: flow)
+        tracker.track(step: step)
         tracker.track(click: click)
         
         waitForExpectations(timeout: 0.1)

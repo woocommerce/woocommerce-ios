@@ -115,7 +115,7 @@ class GoogleAuthenticator: NSObject {
     
     private override init() {
         if WordPressAuthenticator.shared.configuration.enableUnifiedGoogle {
-            tracker = GoogleAuthenticatorTracker(context: AnalyticsTracker.Context())
+            tracker = GoogleAuthenticatorTracker(analyticsTracker: AnalyticsTracker.shared)
         } else {
             tracker = nil
         }
@@ -275,7 +275,7 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
 
         track(.signedIn)
         track(.loginSocialSuccess)
-        tracker?.trackLoginSuccess()
+        tracker?.trackSuccess()
         
         let wpcom = WordPressComCredentials(authToken: authToken,
                                             isJetpackLogin: loginFields.meta.jetpackLogin,
@@ -349,6 +349,8 @@ private extension GoogleAuthenticator {
     func createWordPressComUser(user: GIDGoogleUser, token: String, email: String) {
         SVProgressHUD.show(withStatus: LocalizedText.processing)
         let service = SignupService()
+        
+        tracker?.trackSignupStart()
 
         service.createWPComUserWithGoogle(token: token, success: { [weak self] accountCreated, wpcomUsername, wpcomToken in
 
@@ -387,7 +389,7 @@ private extension GoogleAuthenticator {
         track(.createdAccount)
         track(.signedIn)
         track(.signupSocialSuccess)
-        tracker?.trackSignupSuccess()
+        tracker?.trackSuccess()
 
         signupDelegate?.googleFinishedSignup(credentials: credentials, loginFields: loginFields)
         delegate?.googleFinishedSignup(credentials: credentials, loginFields: loginFields)

@@ -7,6 +7,8 @@ import GoogleSignIn
 open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     @IBOutlet var instructionLabel: UILabel?
     @objc var errorToPresent: Error?
+    
+    let tracker = AnalyticsTracker.shared
 
     /// Constraints on the table view container.
     /// Used to adjust the table width in unified views.

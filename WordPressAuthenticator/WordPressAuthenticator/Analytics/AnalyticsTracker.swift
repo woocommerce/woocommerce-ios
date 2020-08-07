@@ -215,9 +215,13 @@ public class AnalyticsTracker {
         case createAccount = "create_account"
     }
     
-    /// Provides the sign-in tracking state machine that can be shared across different trackers if needed.
+    /// Shared Instance.
     ///
-    public class Context {
+    public static var shared = AnalyticsTracker()
+    
+    /// State for the analytics tracker.
+    ///
+    private class State {
         var lastFlow: Flow
         var lastSource: Source
         var lastStep: Step
@@ -229,16 +233,15 @@ public class AnalyticsTracker {
         }
     }
     
-    let context: Context
+    private let state = State()
     
     /// The backing analytics tracking method.  Can be overridden for testing purposes.
     ///
     let track: TrackerMethod
-    
+
     // MARK: - Initializers
     
-    init(context: Context, track: @escaping TrackerMethod = WPAnalytics.track) {
-        self.context = context
+    init(track: @escaping TrackerMethod = WPAnalytics.track) {
         self.track = track
     }
     
@@ -246,8 +249,8 @@ public class AnalyticsTracker {
     
     /// Track a step within a flow.
     ///
-    func track(step: Step, flow: Flow) {
-        track(event(step: step, flow: flow))
+    func track(step: Step) {
+        track(event(step: step))
     }
     
     /// Track a click interaction.
@@ -272,12 +275,12 @@ public class AnalyticsTracker {
     ///
     /// - Returns: an analytics event representing the step.
     ///
-    private func event(step: Step, flow: Flow) -> AnalyticsEvent {
+    private func event(step: Step) -> AnalyticsEvent {
         let event = AnalyticsEvent(
             name: EventType.step.rawValue,
-            properties: properties(step: step, flow: flow))
+            properties: properties(step: step))
         
-        saveLastProperties(step: step, flow: flow)
+        state.lastStep = step
         
         return event
     }
@@ -314,16 +317,20 @@ public class AnalyticsTracker {
             properties: properties)
     }
     
-    // MARK: - Source
+    // MARK: - Source & Flow
+    
+    func set(flow: Flow) {
+        state.lastFlow = flow
+    }
     
     func set(source: Source) {
-        context.lastSource = source
+        state.lastSource = source
     }
     
     // MARK: - Properties
     
-    private func properties(step: Step, flow: Flow) -> [String: String] {
-        return properties(step: step, flow: flow, source: context.lastSource)
+    private func properties(step: Step) -> [String: String] {
+        return properties(step: step, flow: state.lastFlow, source: state.lastSource)
     }
     
     private func properties(step: Step, flow: Flow, source: Source) -> [String: String] {
@@ -334,18 +341,9 @@ public class AnalyticsTracker {
         ]
     }
     
-    // MARK: - Properties: state machine
-    
     /// Retrieve the last step, flow and source stored in the state machine.
     ///
     private func lastProperties() -> [String: String] {
-        return properties(step: context.lastStep, flow: context.lastFlow, source: context.lastSource)
-    }
-    
-    /// Save the step and flow in the state machine.  The source can only be changed directly using `set(source:)`.
-    ///
-    private func saveLastProperties(step: Step, flow: Flow) {
-        context.lastFlow = flow
-        context.lastStep = step
+        return properties(step: state.lastStep, flow: state.lastFlow, source: state.lastSource)
     }
 }

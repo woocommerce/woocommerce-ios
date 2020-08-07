@@ -1,3 +1,5 @@
-Pemberitahuan baru: Ketika produk sederhana tidak memiliki ketentuan harga, placeholder "Tambahkan Harga" akan muncul pada layar detail produk di baris harga. Pengguna aplikasi yang belum melakukan upgrade ke WooCommerce 4.0 akan melihat banner yang menampilkan upgrade yang tersedia. Pengguna yang telah melakukan upgrade akan melihat dashboard statistik yang baru. Apabila Anda belum melakukan upgrade, ayo lakukan segera!
+Ada beberapa hal yang perlu Anda ketahui:
 
-Perbaikan dan penyesuaian: Kami memperbaiki bug yang mengakibatkan nilai negatif dapat menyebabkan kecacatan visual pada bagan dashboard. Kami juga menghilangkan baris total pesanan dari tab Produk untuk menghindari kebingungan karena kami tidak menampilkannya dalam bentuk yang bisa diedit untuk produk sederhana.
+Terkadang terjadi crash saat Anda mengirim SMS dari aplikasi. Melewatkan SMS tentu menimbulkan risiko, jadi kami langsung memperbaikinya.
+
+Suka statistiknya? Kami suka! Kami senantiasa berusaha keras untuk membuat pengalaman statistik Anda lebih baik. Selama Anda memiliki WooCommerce 4.0 atau WooCommerce Admin, grafik statistik Anda sekarang akan cocok dengan yang Anda lihat di wp-admin. Sekejap! Jika Anda menggunakan WooCommerce versi lama, Anda perlu memperbaruinya supaya tidak ketinggalan!

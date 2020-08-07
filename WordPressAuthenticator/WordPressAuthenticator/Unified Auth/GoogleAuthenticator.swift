@@ -194,7 +194,7 @@ private extension GoogleAuthenticator {
     }
 
     func track(_ event: WPAnalyticsStat, properties: [AnyHashable: Any] = [:]) {
-        guard authConfig.enableUnifiedGoogle else {
+        guard !authConfig.enableUnifiedGoogle else {
             return
         }
         

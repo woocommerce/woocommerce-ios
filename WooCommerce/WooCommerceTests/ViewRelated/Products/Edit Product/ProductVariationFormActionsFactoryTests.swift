@@ -13,7 +13,7 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
         let factory = ProductVariationFormActionsFactory(productVariation: model)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .variationName, .description]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings,
@@ -35,7 +35,7 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
         let factory = ProductVariationFormActionsFactory(productVariation: model)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .variationName, .description]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings,
@@ -57,7 +57,7 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
         let factory = ProductVariationFormActionsFactory(productVariation: model)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .variationName, .description]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings,
@@ -78,7 +78,7 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
         let factory = ProductVariationFormActionsFactory(productVariation: model)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .variationName, .description]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .status, .inventorySettings]
@@ -97,7 +97,7 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
         let factory = ProductVariationFormActionsFactory(productVariation: model)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .variationName, .description]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .status, .inventorySettings]

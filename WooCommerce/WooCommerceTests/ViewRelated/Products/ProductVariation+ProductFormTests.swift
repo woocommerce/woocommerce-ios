@@ -5,17 +5,6 @@ import Yosemite
 
 /// Tests on `ProductFormDataModel` helpers for a `ProductVariation`.
 final class ProductVariation_ProductFormTests: XCTestCase {
-    // MARK: - `name`
-
-    func testNameReturnsMultipleAttributes() {
-        let attributeOptions = ["Strawberry", "Vanilla", "Sprinkles"]
-        let attributes: [ProductVariationAttribute] = attributeOptions.map { ProductVariationAttribute(id: 0, name: "", option: $0) }
-        let productVariation = MockProductVariation().productVariation().copy(attributes: attributes)
-        let model = EditableProductVariationModel(productVariation: productVariation)
-        let expectedName = attributeOptions.joined(separator: " - ")
-        XCTAssertEqual(model.name, expectedName)
-    }
-
     // MARK: - `trimmedFullDescription`
 
     func testTrimmedFullDescriptionWithLeadingNewLinesAndHTMLTags() {

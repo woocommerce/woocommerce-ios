@@ -4,8 +4,28 @@ import Yosemite
 final class EditableProductVariationModel {
     let productVariation: ProductVariation
 
-    init(productVariation: ProductVariation) {
+    private let allAttributes: [ProductAttribute]
+    private lazy var variationName: String = generateName(variationAttributes: productVariation.attributes, allAttributes: allAttributes)
+
+    init(productVariation: ProductVariation, allAttributes: [ProductAttribute]) {
         self.productVariation = productVariation
+        self.allAttributes = allAttributes
+    }
+}
+
+private extension EditableProductVariationModel {
+    func generateName(variationAttributes: [ProductVariationAttribute], allAttributes: [ProductAttribute]) -> String {
+        return allAttributes
+            .sorted(by: { (lhs, rhs) -> Bool in
+                lhs.position < rhs.position
+            })
+            .map { attribute in
+            guard let variationAttribute = variationAttributes.first(where: { $0.id == attribute.attributeID && $0.name == attribute.name }) else {
+                // The variation doesn't have an option set for this attribute, and we show "Any \(attributeName)" in this case.
+                return String.localizedStringWithFormat(Localization.anyAttributeFormat, attribute.name)
+            }
+            return variationAttribute.option
+        }.joined(separator: " - ")
     }
 }
 
@@ -19,7 +39,7 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
     }
 
     var name: String {
-        productVariation.attributes.map({ $0.option }).joined(separator: " - ")
+        variationName
     }
 
     var description: String? {
@@ -135,5 +155,12 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
 extension EditableProductVariationModel: Equatable {
     static func ==(lhs: EditableProductVariationModel, rhs: EditableProductVariationModel) -> Bool {
         return lhs.productVariation == rhs.productVariation
+    }
+}
+
+extension EditableProductVariationModel {
+    enum Localization {
+        static let anyAttributeFormat =
+            NSLocalizedString("Any %@", comment: "Format of a product varition attribute description where the attribute is set to any value.")
     }
 }

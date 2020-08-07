@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-07-10 09:54:04+0000 */
+/* Translation-Revision-Date: 2020-08-07 10:54:34+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -51,6 +51,9 @@
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
 "%@ via %@" = "%2$@ 経由 %1$@";
 
+/* Navigation bar title for selecting multiple products when more multiple products have been selected. */
+"%ld Products Selected" = "%ld 選択済みの商品";
+
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "在庫%ld個";
 
@@ -65,6 +68,9 @@
 
 /* Label about number of variations shown on Products tab */
 "%ld variants" = "%ld個のバリエーション";
+
+/* Navigation bar title for selecting multiple products when one product has been selected. */
+"1 Product Selected" = "1件の商品を選択済み";
 
 /* Shown when there are more than 99 items of something (e.g. Processing Orders). */
 "99+" = "99+";
@@ -100,11 +106,19 @@
    A button title used for a unit test - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
 "Add" = "追加";
 
+/* Action to add category on the Product Categories screen
+   Product Add Category navigation title */
+"Add Category" = "カテゴリーを追加";
+
 /* Action to add photos on the Product images screen */
 "Add Photos" = "画像を追加";
 
 /* Title for adding the price settings row on Product main screen */
 "Add Price" = "価格を追加";
+
+/* Action to add products to a grouped product on the Grouped Products screen
+   Navigation bar title for selecting multiple products. */
+"Add Products" = "すべての商品";
 
 /* A title used for a shipment tracking unit test
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
@@ -284,9 +298,12 @@
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "リンクをリクエストできません";
 
-/* Button title Cancel in Discard Changes Action Sheet
-   Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links */
+/* Action title to cancel selecting products to add to a grouped product from search results
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links */
 "Cancel" = "キャンセル";
+
+/* Title of the alert when there is an error creating a new product category */
+"Cannot Add Category" = "カテゴリーを追加できません";
 
 /* The title of the alert when there is an error updating the product */
 "Cannot update product" = "商品を更新できません";
@@ -313,7 +330,7 @@
 "Certificate error" = "証明書エラー";
 
 /* Instructional text on how to open the email containing a magic link. */
-"Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder." = "Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder.";
+"Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder." = "この端末でメールを確認し、WordPress.com から届いたメールの中にあるリンクをタップしてください。\n\nメールが表示されない場合は、迷惑メールフォルダーを確認してみてください。";
 
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "メールをご確認ください。";
@@ -491,7 +508,8 @@
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "アカウントをお持ちでない場合は_登録_してください。";
 
-/* Edit product categories screen - button title to apply categories selection */
+/* Action title to select products to add to a grouped product from search results
+   Edit product categories screen - button title to apply categories selection */
 "Done" = "完了";
 
 /* WordPress.com (unmapped!) error */
@@ -553,6 +571,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "空の URL";
+
+/* Enable Reviews label in Product Settings */
+"Enable Reviews" = "レビューを有効にする";
 
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "URL を入力";
@@ -653,6 +674,9 @@
 
 /* Display label for grouped product type. */
 "Grouped" = "グループ化";
+
+/* Navigation bar title for editing linked products for a grouped product */
+"Grouped Products" = "セット販売商品";
 
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "セット販売商品";
@@ -819,9 +843,6 @@
 /* 'Limit: 2 downloads', for example. */
 "Limit: %ld downloads" = "上限 :%ld件のダウンロード";
 
-/* The title of the Work In Progress top banner on the Products tab. */
-"Limited editing available" = "一部の編集機能が利用可能";
-
 /* Title for screen in editor that allows to configure link options */
 "Link Settings" = "リンク設定";
 
@@ -869,6 +890,12 @@
 
 /* Option to select the Apple Mail app when logging in with magic links */
 "Mail (Default)" = "メールアドレス (デフォルト)";
+
+/* Text that explains how to update VC to get the latest stats */
+"Make sure you are running the latest version of WooCommerce on your site and that you have WooCommerce Admin activated." = "サイトで最新バージョンの WooCommerce を実行していることと、WooCommerce Admin を有効にしていることを確認してください。";
+
+/* Subtitle of the product form bottom sheet action for editing tags. */
+"Make your products easier to find with tags" = "タグを使用して商品を見つけやすくする";
 
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "注文を管理し、売り上げをトラッキングし、ストアのアクティビティをリアルタイムのアラートでモニターします。";
@@ -960,6 +987,9 @@
 /* The title for the net amount paid cell */
 "Net" = "純額";
 
+/* The title of the Work In Progress top banner on the Products tab. */
+"New editing options available" = "新しい編集オプションが利用可能";
+
 /* Title of a button.
    Title of a button. The text should be capitalized. */
 "Next" = "次へ";
@@ -983,7 +1013,8 @@
 /* The text on the placeholder overlay when there are no product variations on the Products tab */
 "No product variations yet" = "商品のバリエーションはまだありません";
 
-/* The text on the placeholder overlay when there are no products on the Products tab */
+/* Placeholder for editing linked products for a grouped product
+   Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "まだ商品がありません";
 
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier' */
@@ -995,8 +1026,14 @@
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "送料区分がまだありません";
 
+/* Placeholder of the Product Tags row on Product main screen */
+"No tags" = "タグなし";
+
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
 "No tax classes yet" = "税区分がまだありません";
+
+/* Placeholder of the Product Variations row on Product main screen for a variable product */
+"No variations yet" = "バリエーションなし";
 
 /* Display label for the product's tax status setting option */
 "None" = "なし";
@@ -1011,7 +1048,7 @@
 "Number of files:" = "ファイル数 :";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "OK";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -1050,7 +1087,8 @@
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "利用可能なステータスのリストを開きます。";
 
-/* Placeholder of the cell text field in Product Inventory Settings > SKU */
+/* Add Product Category. Placeholder of cell presenting the parent category.
+   Placeholder of the cell text field in Product Inventory Settings > SKU */
 "Optional" = "オプション";
 
 /* No comment provided by engineer. */
@@ -1103,6 +1141,9 @@
 
 /* The title for the customer payment cell */
 "Paid By Customer" = "顧客から支払われた金額";
+
+/* Add Product Category. Title of cell presenting the parent category. */
+"Parent Category" = "親カテゴリー";
 
 /* Accessibility label for the password text field in the self-hosted login page.
    Login dialog password placeholder - Password field title in Product Visibility - Password placeholder */
@@ -1340,6 +1381,9 @@
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "標準価格 :%@";
 
+/* Banner action button text in my store when stats will be deprecated */
+"Remind me later" = "後で再通知";
+
 /* Confirm button on the alert when the user taps to delete a Product image */
 "Remove" = "削除";
 
@@ -1417,6 +1461,9 @@
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "セール価格 :%@";
 
+/* Add Product Category. Save button title in navbar. */
+"Save" = "保存";
+
 /* Scan Products */
 "Scan products" = "商品をスキャン";
 
@@ -1440,6 +1487,9 @@
 
 /* Display label for the product's catalog visibility */
 "Search results only" = "検索結果のみ";
+
+/* Select parent category screen - Screen title */
+"Select Parent Category" = "親カテゴリーを選択";
 
 /* Page title for the select a different store screen */
 "Select Store" = "ストアを選択";
@@ -1649,6 +1699,9 @@
    Status label in Product Settings */
 "Status" = "ステータス";
 
+/* Button title to contact support to get help with deprecated stats */
+"Still need help? Contact us" = "さらにサポートが必要ですか ? お問い合わせ";
+
 /* Row title for filtering products by stock status. */
 "Stock Status" = "在庫状況";
 
@@ -1706,6 +1759,10 @@
 
 /* Accessibility Identifier for the Default Font Aztec Style. */
 "Switches to the default Font Size" = "デフォルトのフォントサイズに変更する";
+
+/* Title of the product form bottom sheet action for editing tags.
+   Title of the Tags row on Product main screen */
+"Tags" = "タグ";
 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "写真を撮る";
@@ -1927,8 +1984,8 @@
 /* Footer text for editing external product button text */
 "This text will be shown on the button linking to the external product." = "このテキストは外部商品のリンクボタンに表示されます";
 
-/* Placeholder in the Product Title row on Product form screen.
-   Product details screen — product title descriptive label */
+/* Add Product Category. Placeholder of cell presenting the title of the category.
+   Placeholder in the Product Title row on Product form screen. - Product details screen — product title descriptive label */
 "Title" = "タイトル";
 
 /* Action sheet option to sort products by ascending product name */
@@ -2151,7 +2208,7 @@
 "Variable" = "変数";
 
 /* Product Details > descriptive label for the Product Variants cell.
-   Title that appears on top of the Product Variation List screen. */
+   Title of the Product Variations row on Product main screen for a variable product - Title that appears on top of the Product Variation List screen. */
 "Variations" = "バリエーション";
 
 /* two factor code placeholder */
@@ -2188,6 +2245,9 @@
 /* User role badge */
 "Viewer" = "読者";
 
+/* Virtual Product label in Product Settings */
+"Virtual Product" = "仮想商品";
+
 /* Product Visibility navigation title
    Visibility label in Product Settings */
 "Visibility" = "公開状態";
@@ -2206,6 +2266,9 @@
 
 /* shown in promotional screens during first launch */
 "Watch readers from around the world read and interact with your site — in real time." = "サイトを訪れている世界中の読者の動向を、リアルタイムで確認できます。";
+
+/* Title when we can't show stats because user is on a deprecated WC Version */
+"We can’t display your store’s analytics" = "ストアのアナリティクスを表示できません";
 
 /* message to ask a user to check their email for a WordPress.com email */
 "We just emailed a link to %@. Please check your mail app and tap the link to log in." = "メールアドレス「%@」宛てにリンクを送信しました。お使いのメールソフトをチェックして、ログインリンクをタップしてください。";
@@ -2236,7 +2299,7 @@
 "We're sorry, we couldn't find results for “%@”" = "「%@」の検索結果が見つかりませんでした。";
 
 /* The info of the Work In Progress top banner on the Products tab. */
-"We've added editing functionality to simple products. Keep an eye out for more options soon!" = "シンプルな商品に編集機能が加わりました。その他のオプションもまもなく加わる予定です。";
+"We've added more editing functionalities to products! You can now update images, see previews and share your products." = "商品に編集機能が加わりました。 画像のアップデート、商品のプレビューと共有が可能になりました。";
 
 /* Statistical unit - a single week */
 "Week" = "週";

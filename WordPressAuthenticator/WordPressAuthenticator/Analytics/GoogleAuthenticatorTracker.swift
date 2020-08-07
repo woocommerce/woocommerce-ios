@@ -17,13 +17,21 @@ class GoogleAuthenticatorTracker {
     func trackSigninStart(authType: GoogleAuthType) {
         switch authType {
         case .login:
-            analyticsTracker.set(flow: .googleLogin)
-            analyticsTracker.track(step: .start)
+            trackLoginStart()
         case .signup:
-            analyticsTracker.set(flow: .googleSignup)
-            analyticsTracker.track(step: .start)
+            trackSignupStart()
         }
      }
+    
+    func trackLoginStart() {
+        analyticsTracker.set(flow: .googleLogin)
+        analyticsTracker.track(step: .start)
+    }
+    
+    func trackSignupStart() {
+        analyticsTracker.set(flow: .googleSignup)
+        analyticsTracker.track(step: .start)
+    }
     
     func trackSuccess() {
         analyticsTracker.track(step: .success)

@@ -349,6 +349,8 @@ private extension GoogleAuthenticator {
     func createWordPressComUser(user: GIDGoogleUser, token: String, email: String) {
         SVProgressHUD.show(withStatus: LocalizedText.processing)
         let service = SignupService()
+        
+        tracker?.trackSignupStart()
 
         service.createWPComUserWithGoogle(token: token, success: { [weak self] accountCreated, wpcomUsername, wpcomToken in
 

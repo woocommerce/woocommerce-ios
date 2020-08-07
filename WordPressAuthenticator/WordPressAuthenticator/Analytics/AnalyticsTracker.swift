@@ -238,7 +238,7 @@ public class AnalyticsTracker {
     /// The backing analytics tracking method.  Can be overridden for testing purposes.
     ///
     let track: TrackerMethod
-    
+
     // MARK: - Initializers
     
     init(track: @escaping TrackerMethod = WPAnalytics.track) {

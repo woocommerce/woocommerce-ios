@@ -34,7 +34,15 @@ final class StoreStatsAndTopPerformersPeriodViewModel {
         self.canDisplayInAppFeedbackCard = canDisplayInAppFeedbackCard
         self.featureFlagService = featureFlagService
         self.storesManager = storesManager
+    }
 
+    /// Must be called by the `ViewController` during the `viewDidAppear()` event. This will
+    /// update the visibility of the in-app feedback card.
+    ///
+    /// The visibility is updated on `viewDidAppear()` to consider scenarios when the app is
+    /// never terminated.
+    ///
+    func onViewDidAppear() {
         updateIsInAppFeedbackCardVisibleValue()
     }
 

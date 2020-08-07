@@ -111,6 +111,11 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
         configureSubviews()
     }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        viewModel.onViewDidAppear()
+    }
 }
 
 // MARK: Public Interface

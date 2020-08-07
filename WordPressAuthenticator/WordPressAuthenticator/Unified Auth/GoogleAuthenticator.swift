@@ -194,6 +194,10 @@ private extension GoogleAuthenticator {
     }
 
     func track(_ event: WPAnalyticsStat, properties: [AnyHashable: Any] = [:]) {
+        guard authConfig.enableUnifiedGoogle else {
+            return
+        }
+        
         var trackProperties = properties
         trackProperties["source"] = "google"
         WordPressAuthenticator.track(event, properties: trackProperties)

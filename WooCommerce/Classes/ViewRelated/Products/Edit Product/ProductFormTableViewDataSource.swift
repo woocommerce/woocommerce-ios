@@ -12,6 +12,12 @@ private extension ProductFormSection.SettingsRow.ViewModel {
     }
 }
 
+private extension ProductFormSection.SettingsRow.WarningViewModel {
+    func toCellViewModel() -> ImageAndTitleAndTextTableViewCell.WarningViewModel {
+        return ImageAndTitleAndTextTableViewCell.WarningViewModel(icon: icon, title: title)
+    }
+}
+
 /// Configures the sections and rows of Product form table view based on the view model.
 ///
 final class ProductFormTableViewDataSource: NSObject {
@@ -192,6 +198,8 @@ private extension ProductFormTableViewDataSource {
             configureReviews(cell: cell, viewModel: viewModel, ratingCount: ratingCount, averageRating: averageRating)
         case .status(let viewModel):
             configureSettingsRowWithASwitch(cell: cell, viewModel: viewModel)
+        case .noPriceWarning(let viewModel):
+            configureWarningRow(cell: cell, viewModel: viewModel)
         }
     }
 
@@ -230,5 +238,12 @@ private extension ProductFormTableViewDataSource {
                                                                                             self?.onStatusChange?(isSwitchOn)
         }
         cell.updateUI(switchableViewModel: switchableViewModel)
+    }
+
+    func configureWarningRow(cell: UITableViewCell, viewModel: ProductFormSection.SettingsRow.WarningViewModel) {
+        guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {
+            fatalError()
+        }
+        cell.updateUI(warningViewModel: viewModel.toCellViewModel())
     }
 }

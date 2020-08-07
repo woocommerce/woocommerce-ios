@@ -32,10 +32,12 @@ struct ProductVariationFormActionsFactory: ProductFormActionsFactoryProtocol {
 private extension ProductVariationFormActionsFactory {
     /// All the editable actions in the settings section given the product variation.
     func allSettingsSectionActions() -> [ProductFormEditAction] {
+        let shouldShowNoPriceWarningRow = productVariation.isEnabled && productVariation.regularPrice.isNilOrEmpty
         let shouldShowShippingSettingsRow = productVariation.isShippingEnabled()
 
         let actions: [ProductFormEditAction?] = [
             .priceSettings,
+            shouldShowNoPriceWarningRow ? .noPriceWarning: nil,
             .status,
             shouldShowShippingSettingsRow ? .shippingSettings: nil,
             .inventorySettings,
@@ -51,7 +53,7 @@ private extension ProductVariationFormActionsFactory {
 
     func isVisibleInSettingsSection(action: ProductFormEditAction) -> Bool {
         switch action {
-        case .priceSettings, .status:
+        case .priceSettings, .noPriceWarning, .status:
             // The price settings and visibility actions are always visible in the settings section.
             return true
         case .inventorySettings:

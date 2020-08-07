@@ -237,6 +237,12 @@ extension UIImage {
         return UIImage.gridicon(.info, size: CGSize(width: 24, height: 24))
     }
 
+    /// Info Outline Icon
+    ///
+    static var infoOutlineImage: UIImage {
+        return UIImage.gridicon(.infoOutline)
+    }
+
     /// Invisible Image
     ///
     static var invisibleImage: UIImage {

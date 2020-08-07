@@ -34,6 +34,17 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         }
     }
 
+    /// View model for warning UI.
+    struct WarningViewModel {
+        let icon: UIImage
+        let title: String?
+
+        init(icon: UIImage, title: String?) {
+            self.icon = icon
+            self.title = title
+        }
+    }
+
     @IBOutlet private weak var contentStackView: UIStackView!
     @IBOutlet private weak var contentImageView: UIImageView!
     @IBOutlet private weak var titleAndTextStackView: UIStackView!
@@ -69,6 +80,7 @@ extension ImageAndTitleAndTextTableViewCell {
         if let imageTintColor = viewModel.imageTintColor {
             contentImageView.tintColor = imageTintColor
         }
+        contentView.backgroundColor = nil
     }
 
     func updateUI(switchableViewModel: SwitchableViewModel) {
@@ -82,6 +94,20 @@ extension ImageAndTitleAndTextTableViewCell {
             switchableViewModel.onSwitchChange(visibilitySwitch.isOn)
         }
         accessoryView = toggleSwitch
+        contentView.backgroundColor = nil
+    }
+
+    func updateUI(warningViewModel: WarningViewModel) {
+        let viewModel = ViewModel(title: warningViewModel.title,
+                                  text: nil,
+                                  image: warningViewModel.icon,
+                                  imageTintColor: .warning,
+                                  isActionable: false)
+        updateUI(viewModel: viewModel)
+
+        titleLabel.textColor = .text
+        titleLabel.numberOfLines = 0
+        contentView.backgroundColor = .warningBackground
     }
 }
 

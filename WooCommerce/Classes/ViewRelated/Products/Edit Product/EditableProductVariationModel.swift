@@ -152,6 +152,20 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
     }
 }
 
+extension EditableProductVariationModel {
+    var isEnabled: Bool {
+        switch status {
+        case .publish:
+            return true
+        case .privateStatus:
+            return false
+        default:
+            DDLogError("Unexpected product variation status: \(status)")
+            return false
+        }
+    }
+}
+
 extension EditableProductVariationModel: Equatable {
     static func ==(lhs: EditableProductVariationModel, rhs: EditableProductVariationModel) -> Bool {
         return lhs.productVariation == rhs.productVariation

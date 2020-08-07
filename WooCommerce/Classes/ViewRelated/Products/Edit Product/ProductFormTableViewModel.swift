@@ -33,6 +33,7 @@ enum ProductFormSection: Equatable {
         case sku(viewModel: ViewModel)
         case groupedProducts(viewModel: ViewModel)
         case variations(viewModel: ViewModel)
+        case noPriceWarning(viewModel: WarningViewModel)
         case status(viewModel: SwitchableViewModel)
 
         struct ViewModel {
@@ -60,6 +61,17 @@ enum ProductFormSection: Equatable {
                  isSwitchOn: Bool) {
                 self.viewModel = viewModel
                 self.isSwitchOn = isSwitchOn
+            }
+        }
+
+        /// View model for warning UI
+        struct WarningViewModel: Equatable {
+            let icon: UIImage
+            let title: String?
+
+            init(icon: UIImage, title: String?) {
+                self.icon = icon
+                self.title = title
             }
         }
     }

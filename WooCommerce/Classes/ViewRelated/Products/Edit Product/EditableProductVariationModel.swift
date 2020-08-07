@@ -22,7 +22,7 @@ private extension EditableProductVariationModel {
             .map { attribute in
             guard let variationAttribute = variationAttributes.first(where: { $0.id == attribute.attributeID && $0.name == attribute.name }) else {
                 // The variation doesn't have an option set for this attribute, and we show "Any \(attributeName)" in this case.
-                return String.localizedStringWithFormat(Localization.anyAttirubteFormat, attribute.name)
+                return String.localizedStringWithFormat(Localization.anyAttributeFormat, attribute.name)
             }
             return variationAttribute.option
         }.joined(separator: " - ")
@@ -156,7 +156,7 @@ extension EditableProductVariationModel: Equatable {
 
 extension EditableProductVariationModel {
     enum Localization {
-        static let anyAttirubteFormat =
+        static let anyAttributeFormat =
             NSLocalizedString("Any %@", comment: "Format of a product varition attribute description where the attribute is set to any value.")
     }
 }

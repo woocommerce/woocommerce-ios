@@ -21,7 +21,7 @@ final class EditableProductVariationModelTests: XCTestCase {
         // Assert
         let expectedName = [
             "Orange",
-            String.localizedStringWithFormat(EditableProductVariationModel.Localization.anyAttirubteFormat, "Brand")
+            String.localizedStringWithFormat(EditableProductVariationModel.Localization.anyAttributeFormat, "Brand")
         ].joined(separator: " - ")
         XCTAssertEqual(name, expectedName)
     }

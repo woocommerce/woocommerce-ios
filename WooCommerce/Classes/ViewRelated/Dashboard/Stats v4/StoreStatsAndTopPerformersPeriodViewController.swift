@@ -170,9 +170,16 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
                 return
             }
 
-            UIView.animate(withDuration: 0.2) {
-                self.inAppFeedbackCardViewsForStackView.forEach {
-                    $0.isHidden = !isVisible
+            let isHidden = !isVisible
+
+            self.inAppFeedbackCardViewsForStackView.forEach { subView in
+                // Check if the subView will change first. It looks like if we don't do this,
+                // then StackView will not animate the change correctly.
+                if subView.isHidden != isHidden {
+                    UIView.animate(withDuration: 0.2) {
+                        subView.isHidden = isHidden
+                        self.stackView.setNeedsLayout()
+                    }
                 }
             }
         }

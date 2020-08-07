@@ -30,7 +30,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testPaymentSectionIsShownRightAfterTheProductsAndRefundedProductsSections() {
+    func test_payment_section_is_shown_right_after_the_products_and_refunded_products_sections() {
         // Given
         let order = makeOrder()
 

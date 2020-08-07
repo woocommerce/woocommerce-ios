@@ -35,7 +35,9 @@ private extension DefaultProductFormTableViewModel {
             case .images:
                 return .images
             case .name:
-                return .name(name: product.name, isEditable: product is EditableProductModel)
+                return .name(name: product.name)
+            case .variationName:
+                return .variationName(name: product.name)
             case .description:
                 return .description(description: product.trimmedFullDescription)
             default:

@@ -28,6 +28,8 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
             return [ProductImagesHeaderTableViewCell.self]
         case .name:
             return [TextFieldTableViewCell.self]
+        case .variationName:
+            return [cellType]
         case .description:
             return [ImageAndTitleAndTextTableViewCell.self, BasicTableViewCell.self]
         }
@@ -41,8 +43,10 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
         switch self {
         case .images:
             return ProductImagesHeaderTableViewCell.self
-        case .name(_, let isEditable):
-            return isEditable ? TextFieldTableViewCell.self: BasicTableViewCell.self
+        case .name:
+            return TextFieldTableViewCell.self
+        case .variationName:
+            return BasicTableViewCell.self
         case .description(let description):
             return description?.isEmpty == false ? ImageAndTitleAndTextTableViewCell.self: BasicTableViewCell.self
         }

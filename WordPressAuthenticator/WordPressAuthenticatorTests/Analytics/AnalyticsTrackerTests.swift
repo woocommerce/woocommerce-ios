@@ -55,7 +55,8 @@ class AnalyticsTrackerTests: XCTestCase {
         let tracker = AnalyticsTracker(track: track)
         
         tracker.set(source: source)
-        tracker.track(step: step, flow: flow)
+        tracker.set(flow: flow)
+        tracker.track(step: step)
         
         waitForExpectations(timeout: 0.1)
     }
@@ -83,7 +84,8 @@ class AnalyticsTrackerTests: XCTestCase {
         let tracker = AnalyticsTracker(track: track)
         
         tracker.set(source: source)
-        tracker.track(step: step, flow: flow)
+        tracker.set(flow: flow)
+        tracker.track(step: step)
         
         waitForExpectations(timeout: 0.1)
     }
@@ -114,7 +116,8 @@ class AnalyticsTrackerTests: XCTestCase {
         let tracker = AnalyticsTracker(track: track)
         
         tracker.set(source: source)
-        tracker.track(step: step, flow: flow)
+        tracker.set(flow: flow)
+        tracker.track(step: step)
         tracker.track(failure: failure)
         
         waitForExpectations(timeout: 0.1)
@@ -146,7 +149,8 @@ class AnalyticsTrackerTests: XCTestCase {
         let tracker = AnalyticsTracker(track: track)
         
         tracker.set(source: source)
-        tracker.track(step: step, flow: flow)
+        tracker.set(flow: flow)
+        tracker.track(step: step)
         tracker.track(click: click)
         
         waitForExpectations(timeout: 0.1)

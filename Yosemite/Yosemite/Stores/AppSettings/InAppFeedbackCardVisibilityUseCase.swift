@@ -71,18 +71,15 @@ struct InAppFeedbackCardVisibilityUseCase {
     /// consider the users who have already installed before we started tracking that value.
     ///
     private func inferInstallationDate() -> Date? {
-        let documentDirCreationDate = creationDateOfDocumentDir()
-        let savedInstallationDate = settings.installationDate
-
-        if let documentDirCreationDate = documentDirCreationDate,
-            let savedInstallationDate = savedInstallationDate {
-            return min(documentDirCreationDate, savedInstallationDate)
-        } else if documentDirCreationDate != nil {
-            return documentDirCreationDate
-        } else if savedInstallationDate != nil {
-            return savedInstallationDate
-        } else {
-            return nil
+        switch (creationDateOfDocumentDir(), settings.installationDate) {
+            case let (documentDirCreationDate?, savedInstallationDate?):
+                return min(documentDirCreationDate, savedInstallationDate)
+            case let (documentDirCreationDate?, nil):
+                return documentDirCreationDate
+            case let (nil, savedInstallationDate?):
+                return savedInstallationDate
+            default:
+                return nil
         }
     }
 

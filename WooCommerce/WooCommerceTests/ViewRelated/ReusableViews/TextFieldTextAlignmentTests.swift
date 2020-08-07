@@ -5,7 +5,7 @@ final class TextFieldTextAlignmentTests: XCTestCase {
 
     // MARK: .leading
 
-    func testTextFieldTextLeadingAlignmentMapsToLeftForLTR() {
+    func test_TextField_text_leading_alignment_maps_to_left_for_LTR() {
         // Arrange
         let textAlignment = TextFieldTextAlignment.leading
 
@@ -16,7 +16,7 @@ final class TextFieldTextAlignmentTests: XCTestCase {
         XCTAssertEqual(nsTextAlignment, .left)
     }
 
-    func testTextFieldTextLeadingAlignmentMapsToRightForRTL() {
+    func test_TextField_text_leading_alignment_maps_to_right_for_RTL() {
         // Arrange
         let textAlignment = TextFieldTextAlignment.leading
 
@@ -29,7 +29,7 @@ final class TextFieldTextAlignmentTests: XCTestCase {
 
     // MARK: .trailing
 
-    func testTextFieldTextTrailingAlignmentMapsToRightForLTR() {
+    func test_TextField_text_trailing_alignment_maps_to_right_for_LTR() {
         // Arrange
         let textAlignment = TextFieldTextAlignment.trailing
 
@@ -40,7 +40,7 @@ final class TextFieldTextAlignmentTests: XCTestCase {
         XCTAssertEqual(nsTextAlignment, .right)
     }
 
-    func testTextFieldTextTrailingAlignmentMapsToLeftForRTL() {
+    func test_TextField_text_trailing_alignment_maps_to_left_for_RTL() {
         // Arrange
         let textAlignment = TextFieldTextAlignment.trailing
 
@@ -53,7 +53,7 @@ final class TextFieldTextAlignmentTests: XCTestCase {
 
     // MARK: .center
 
-    func testTextFieldTextCenterAlignmentMapsToCenterForLTR() {
+    func test_TextField_text_center_alignment_maps_to_center_for_LTR() {
         // Arrange
         let textAlignment = TextFieldTextAlignment.center
 
@@ -64,7 +64,7 @@ final class TextFieldTextAlignmentTests: XCTestCase {
         XCTAssertEqual(nsTextAlignment, .center)
     }
 
-    func testTextFieldTextCenterAlignmentMapsToCenterForRTL() {
+    func test_TextField_text_center_alignment_maps_to_center_for_RTL() {
         // Arrange
         let textAlignment = TextFieldTextAlignment.center
 

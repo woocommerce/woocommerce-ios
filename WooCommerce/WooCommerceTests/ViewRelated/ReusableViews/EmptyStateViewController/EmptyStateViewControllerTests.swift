@@ -8,7 +8,7 @@ import XCTest
 ///
 final class EmptyStateViewControllerTests: XCTestCase {
 
-    func testItHidesAllConfigurableElementsExceptMessageByDefault() throws {
+    func test_it_hides_all_configurable_elements_except_message_by_default() throws {
         // Given
         let viewController = EmptyStateViewController()
 
@@ -28,7 +28,7 @@ final class EmptyStateViewControllerTests: XCTestCase {
         XCTAssertNil(mirror.actionButton.titleLabel?.text)
     }
 
-    func testGivenASimpleConfigItHidesTheDetailsAndActionButton() throws {
+    func test_given_a_simple_config_it_hides_the_details_and_action_button() throws {
         // Given
         let viewController = EmptyStateViewController()
         XCTAssertNotNil(viewController.view)
@@ -47,7 +47,7 @@ final class EmptyStateViewControllerTests: XCTestCase {
         XCTAssertEqual(mirror.imageView.image, UIImage.appleIcon)
     }
 
-    func testGivenALinkConfigItShowsAllTheElements() throws {
+    func test_given_a_link_config_it_shows_all_the_elements() throws {
         // Given
         let viewController = EmptyStateViewController()
         XCTAssertNotNil(viewController.view)
@@ -74,7 +74,7 @@ final class EmptyStateViewControllerTests: XCTestCase {
         XCTAssertEqual(mirror.actionButton.titleLabel?.text, "Bakero!")
     }
 
-    func testTheImageViewVisibilityIsSetDuringConfigure() throws {
+    func test_the_imageView_visibility_is_set_during_configure() throws {
         // Given
         let viewController = EmptyStateViewController()
         XCTAssertNotNil(viewController.view)
@@ -97,7 +97,7 @@ final class EmptyStateViewControllerTests: XCTestCase {
         XCTAssertEqual(mirror.imageView.isHidden, shouldBeHidden)
     }
 
-    func testGivenACompactVerticalSizeClassItWillHideTheImageView() throws {
+    func test_given_a_compact_verticalSizeClass_it_will_hide_the_imageView() throws {
         // Given
         let viewController = EmptyStateViewController()
         XCTAssertNotNil(viewController.view)
@@ -114,7 +114,7 @@ final class EmptyStateViewControllerTests: XCTestCase {
         XCTAssertTrue(mirror.imageView.isHidden)
     }
 
-    func testGivenANonCompactVerticalSizeClassItWillNotHideTheImageView() throws {
+    func test_given_a_non_compact_verticalSizeClass_it_will_not_hide_the_imageView() throws {
         // Given
         let viewController = EmptyStateViewController()
         XCTAssertNotNil(viewController.view)
@@ -131,7 +131,7 @@ final class EmptyStateViewControllerTests: XCTestCase {
         XCTAssertFalse(mirror.imageView.isHidden)
     }
 
-    func testGivenASupportRequestConfigThenItShowsAllTheElements() throws {
+    func test_given_a_supportRequest_config_then_it_shows_all_the_elements() throws {
         // Given
         let viewController = EmptyStateViewController()
         XCTAssertNotNil(viewController.view)
@@ -157,7 +157,7 @@ final class EmptyStateViewControllerTests: XCTestCase {
         XCTAssertEqual(mirror.actionButton.titleLabel?.text, "Contact You!")
     }
 
-    func testGivenASupportRequestConfigWhenTappingOnButtonThenTheContactUsPageIsPresented() throws {
+    func test_given_a_supportRequest_config_when_tapping_on_button_then_the_contact_us_page_is_presented() throws {
         // Given
         let zendeskManager = MockZendeskManager()
         let viewController = EmptyStateViewController(style: .basic, zendeskManager: zendeskManager)

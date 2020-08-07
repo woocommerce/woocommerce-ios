@@ -10,7 +10,7 @@ final class SurveyCoordinatingControllerTests: XCTestCase {
 
     func test_it_loads_SurveyViewController_on_start() {
         // Given
-        let factory = MockSurveyViewControllerFactory()
+        let factory = MockSurveyViewControllersFactory()
 
         // When
         let coordinator = SurveyCoordinatingController(survey: .inAppFeedback, viewControllersFactory: factory)
@@ -22,7 +22,7 @@ final class SurveyCoordinatingControllerTests: XCTestCase {
 
     func test_it_navigates_to_SurveySubmittedViewController_when_survey_is_submitted() throws {
         // Given
-        let factory = MockSurveyViewControllerFactory()
+        let factory = MockSurveyViewControllersFactory()
         let coordinator = SurveyCoordinatingController(survey: .inAppFeedback, viewControllersFactory: factory)
 
         // When
@@ -37,7 +37,7 @@ final class SurveyCoordinatingControllerTests: XCTestCase {
 
     func test_it_gets_dismissed_on_backToStore_action() throws {
         // Given
-        let factory = MockSurveyViewControllerFactory()
+        let factory = MockSurveyViewControllersFactory()
         let coordinator = SurveyCoordinatingController(survey: .inAppFeedback, viewControllersFactory: factory)
 
         let window = UIWindow(frame: UIScreen.main.bounds)
@@ -55,10 +55,10 @@ final class SurveyCoordinatingControllerTests: XCTestCase {
         }
     }
 
-    func test_it_invokes_zendesk_on_ContactUs_action() throws {
+    func test_it_invokes_zendesk_on_contactUs_action() throws {
         // Given
         let zendeskManager = MockZendeskManager()
-        let factory = MockSurveyViewControllerFactory()
+        let factory = MockSurveyViewControllersFactory()
         let coordinator = SurveyCoordinatingController(survey: .inAppFeedback, zendeskManager: zendeskManager, viewControllersFactory: factory)
         assertEmpty(zendeskManager.newRequestIfPossibleInvocations)
 
@@ -75,7 +75,7 @@ final class SurveyCoordinatingControllerTests: XCTestCase {
     }
 }
 
-private final class MockSurveyViewControllerFactory: SurveyViewControllersFactoryProtocol {
+private final class MockSurveyViewControllersFactory: SurveyViewControllersFactoryProtocol {
     let surveyViewController = MockSurveyViewController()
     let surveySubmittedViewController = MockSurveySubmittedViewController()
 

@@ -40,13 +40,16 @@ enum ProductFormSection: Equatable {
             let icon: UIImage
             let title: String?
             let details: String?
+            /// If not nil, the color is applied to icon and text labels.
+            let tintColor: UIColor?
             let numberOfLinesForDetails: Int
             let isActionable: Bool
 
-            init(icon: UIImage, title: String?, details: String?, numberOfLinesForDetails: Int = 0, isActionable: Bool = true) {
+            init(icon: UIImage, title: String?, details: String?, tintColor: UIColor? = nil, numberOfLinesForDetails: Int = 0, isActionable: Bool = true) {
                 self.icon = icon
                 self.title = title
                 self.details = details
+                self.tintColor = tintColor
                 self.numberOfLinesForDetails = numberOfLinesForDetails
                 self.isActionable = isActionable
             }

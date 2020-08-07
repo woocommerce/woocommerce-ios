@@ -5,8 +5,9 @@ private extension ProductFormSection.SettingsRow.ViewModel {
     func toCellViewModel() -> ImageAndTitleAndTextTableViewCell.ViewModel {
         return ImageAndTitleAndTextTableViewCell.ViewModel(title: title,
                                                            text: details,
+                                                           textTintColor: tintColor,
                                                            image: icon,
-                                                           imageTintColor: .textSubtle,
+                                                           imageTintColor: tintColor ?? .textSubtle,
                                                            numberOfLinesForText: numberOfLinesForDetails,
                                                            isActionable: isActionable)
     }

@@ -6,14 +6,22 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
     struct ViewModel {
         let title: String?
         let text: String?
+        let textTintColor: UIColor?
         let image: UIImage?
         let imageTintColor: UIColor?
         let numberOfLinesForText: Int
         let isActionable: Bool
 
-        init(title: String?, text: String?, image: UIImage? = nil, imageTintColor: UIColor? = nil, numberOfLinesForText: Int = 1, isActionable: Bool = true) {
+        init(title: String?,
+             text: String?,
+             textTintColor: UIColor? = nil,
+             image: UIImage? = nil,
+             imageTintColor: UIColor? = nil,
+             numberOfLinesForText: Int = 1,
+             isActionable: Bool = true) {
             self.title = title
             self.text = text
+            self.textTintColor = textTintColor
             self.image = image
             self.imageTintColor = imageTintColor
             self.numberOfLinesForText = numberOfLinesForText
@@ -69,6 +77,7 @@ extension ImageAndTitleAndTextTableViewCell {
         titleLabel.isHidden = viewModel.title == nil || viewModel.title?.isEmpty == true
         titleLabel.textColor = viewModel.text?.isEmpty == false ? .text: .textSubtle
         descriptionLabel.text = viewModel.text
+        descriptionLabel.textColor = .textSubtle
         descriptionLabel.isHidden = viewModel.text == nil || viewModel.text?.isEmpty == true
         descriptionLabel.numberOfLines = viewModel.numberOfLinesForText
         contentImageView.image = viewModel.image
@@ -76,6 +85,11 @@ extension ImageAndTitleAndTextTableViewCell {
         accessoryType = viewModel.isActionable ? .disclosureIndicator: .none
         selectionStyle = viewModel.isActionable ? .default: .none
         accessoryView = nil
+
+        if let textTintColor = viewModel.textTintColor {
+            titleLabel.textColor = textTintColor
+            descriptionLabel.textColor = textTintColor
+        }
 
         if let imageTintColor = viewModel.imageTintColor {
             contentImageView.tintColor = imageTintColor
@@ -100,6 +114,7 @@ extension ImageAndTitleAndTextTableViewCell {
     func updateUI(warningViewModel: WarningViewModel) {
         let viewModel = ViewModel(title: warningViewModel.title,
                                   text: nil,
+                                  textTintColor: .warning,
                                   image: warningViewModel.icon,
                                   imageTintColor: .warning,
                                   isActionable: false)

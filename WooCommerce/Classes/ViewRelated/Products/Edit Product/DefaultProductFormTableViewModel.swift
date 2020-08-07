@@ -93,7 +93,7 @@ private extension DefaultProductFormTableViewModel {
         return actions.compactMap { action in
             switch action {
             case .priceSettings:
-                return .price(viewModel: priceSettingsRow(product: productVariation))
+                return .price(viewModel: variationPriceSettingsRow(productVariation: productVariation))
             case .shippingSettings:
                 return .shipping(viewModel: shippingSettingsRow(product: productVariation))
             case .inventorySettings:
@@ -151,6 +151,12 @@ private extension DefaultProductFormTableViewModel {
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
                                                         details: details)
+    }
+
+    func variationPriceSettingsRow(productVariation: EditableProductVariationModel) -> ProductFormSection.SettingsRow.ViewModel {
+        let priceViewModel = priceSettingsRow(product: productVariation)
+        let tintColor = productVariation.isEnabledAndMissingPrice ? UIColor.warning: nil
+        return .init(icon: priceViewModel.icon, title: priceViewModel.title, details: priceViewModel.details, tintColor: tintColor)
     }
 
     func reviewsRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {

@@ -153,6 +153,7 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
 }
 
 extension EditableProductVariationModel {
+    /// Whether the variation is enabled based on its status.
     var isEnabled: Bool {
         switch status {
         case .publish:
@@ -163,6 +164,11 @@ extension EditableProductVariationModel {
             DDLogError("Unexpected product variation status: \(status)")
             return false
         }
+    }
+
+    /// Whether the variation is enabled but doesn't have a price so that it is still not visible.
+    var isEnabledAndMissingPrice: Bool {
+        isEnabled && regularPrice.isNilOrEmpty
     }
 }
 

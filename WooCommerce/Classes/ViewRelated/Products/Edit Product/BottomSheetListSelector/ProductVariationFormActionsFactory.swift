@@ -32,7 +32,7 @@ struct ProductVariationFormActionsFactory: ProductFormActionsFactoryProtocol {
 private extension ProductVariationFormActionsFactory {
     /// All the editable actions in the settings section given the product variation.
     func allSettingsSectionActions() -> [ProductFormEditAction] {
-        let shouldShowNoPriceWarningRow = productVariation.isEnabled && productVariation.regularPrice.isNilOrEmpty
+        let shouldShowNoPriceWarningRow = productVariation.isEnabledAndMissingPrice
         let shouldShowShippingSettingsRow = productVariation.isShippingEnabled()
 
         let actions: [ProductFormEditAction?] = [

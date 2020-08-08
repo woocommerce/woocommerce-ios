@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -103,6 +103,7 @@
 		573B448B2424082B00E71ADC /* OrderStoreTests+FetchFilteredAndAllOrders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 573B448A2424082B00E71ADC /* OrderStoreTests+FetchFilteredAndAllOrders.swift */; };
 		5758EB3024DC7791009ED8A6 /* InAppFeedbackCardVisibilityUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5758EB2F24DC7791009ED8A6 /* InAppFeedbackCardVisibilityUseCase.swift */; };
 		5758EB3324DC9631009ED8A6 /* InAppFeedbackCardVisibilityUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5758EB3224DC9631009ED8A6 /* InAppFeedbackCardVisibilityUseCaseTests.swift */; };
+		577B6D1824DE2B8600D645E5 /* Testing in Frameworks */ = {isa = PBXBuildFile; productRef = 577B6D1724DE2B8600D645E5 /* Testing */; };
 		578CE7882475D70F00492EBF /* RetrieveProductReviewFromNoteUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578CE7872475D70E00492EBF /* RetrieveProductReviewFromNoteUseCaseTests.swift */; };
 		578CE78C2475E7A500492EBF /* MockNotificationsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578CE78B2475E7A500492EBF /* MockNotificationsRemote.swift */; };
 		578CE7902475EBAB00492EBF /* MockProductReviewsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578CE78F2475EBAB00492EBF /* MockProductReviewsRemote.swift */; };
@@ -504,6 +505,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				577B6D1824DE2B8600D645E5 /* Testing in Frameworks */,
 				B5C9DDFF2087FEC0006B910A /* Yosemite.framework in Frameworks */,
 				36941EA7B9242CAB1FF828BC /* Pods_YosemiteTests.framework in Frameworks */,
 			);
@@ -1173,6 +1175,9 @@
 				B5C9DE012087FEC0006B910A /* PBXTargetDependency */,
 			);
 			name = YosemiteTests;
+			packageProductDependencies = (
+				577B6D1724DE2B8600D645E5 /* Testing */,
+			);
 			productName = FluxCTests;
 			productReference = B5C9DDFE2087FEC0006B910A /* YosemiteTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -1893,6 +1898,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		577B6D1724DE2B8600D645E5 /* Testing */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Testing;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B5C9DDEC2087FEC0006B910A /* Project object */;
 }

@@ -102,6 +102,7 @@ class OnePasswordFacade {
     }
 }
 
+extension OnePasswordFacade: OnePasswordResultsFetcher {}
 
 // MARK: - Default Settings
 //

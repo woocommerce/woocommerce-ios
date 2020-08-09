@@ -232,4 +232,24 @@ class WordPressAuthenticatorTests: XCTestCase {
 
         XCTAssertFalse(result)
     }
+
+//MARK: WordPressAuthenticator OnePassword Tests
+    func testFetchOnePasswordCredentialsSucceeds() {
+        let onePasswordFetcher = MockOnePasswordFacade(username: "username", password: "knockknock", otp: nil)
+        let loginFields = LoginFields()
+        loginFields.meta.userIsDotCom = true
+
+        let expect = expectation(description: "Could fetch OnePassword credentials")
+
+        WordPressAuthenticator.fetchOnePasswordCredentials(UIViewController(), sourceView: UIView(), loginFields: loginFields, onePasswordFetcher: onePasswordFetcher) { (credentials) in
+
+            XCTAssertEqual(credentials.username, "username")
+            XCTAssertEqual(credentials.password, "knockknock")
+            XCTAssertEqual(credentials.multifactorCode, String())
+            expect.fulfill()
+        }
+
+        waitForExpectations(timeout: timeInterval, handler: nil)
+
+    }
 }

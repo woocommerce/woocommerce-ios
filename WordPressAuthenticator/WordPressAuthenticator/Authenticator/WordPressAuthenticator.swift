@@ -458,11 +458,11 @@ import AuthenticationServices
     ///
     /// - Parameter sender: A UIView. Typically the button the user tapped on.
     ///
-    class func fetchOnePasswordCredentials(_ controller: UIViewController, sourceView: UIView, loginFields: LoginFields, success: @escaping ((_ loginFields: LoginFields) -> Void)) {
+    class func fetchOnePasswordCredentials(_ controller: UIViewController, sourceView: UIView, loginFields: LoginFields, onePasswordFetcher: OnePasswordResultsFetcher = OnePasswordFacade(), success: @escaping ((_ loginFields: LoginFields) -> Void)) {
 
         let loginURL = loginFields.meta.userIsDotCom ? OnePasswordDefaults.dotcomURL : loginFields.siteAddress
 
-        OnePasswordFacade().findLogin(for: loginURL, viewController: controller, sender: sourceView, success: { (username, password, otp) in
+        onePasswordFetcher.findLogin(for: loginURL, viewController: controller, sender: sourceView, success: { (username, password, otp) in
             loginFields.username = username
             loginFields.password = password
             loginFields.multifactorCode = otp ?? String()

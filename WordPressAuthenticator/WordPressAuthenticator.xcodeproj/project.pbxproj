@@ -119,7 +119,6 @@
 		BA53D64B24DFE07D001F1ABF /* MockWordpressAuthenticatorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA53D64A24DFE07D001F1ABF /* MockWordpressAuthenticatorProvider.swift */; };
 		BA53D64D24DFE4E6001F1ABF /* ModalViewControllerPresentingSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA53D64C24DFE4E6001F1ABF /* ModalViewControllerPresentingSpy.swift */; };
 		BA53D64F24DFE981001F1ABF /* MockOnePasswordFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA53D64E24DFE981001F1ABF /* MockOnePasswordFacade.swift */; };
-		BA53D65124DFE990001F1ABF /* WordPressAuthenticatorDelegateSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA53D65024DFE990001F1ABF /* WordPressAuthenticatorDelegateSpy.swift */; };
 		BA53D65324DFEA58001F1ABF /* OnePasswordResultsFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA53D65224DFEA58001F1ABF /* OnePasswordResultsFetcher.swift */; };
 		CE16177521B6D82200B82A47 /* WordPressAuthenticatorDisplayStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE16177421B6D82200B82A47 /* WordPressAuthenticatorDisplayStrings.swift */; };
 		CE16177821B70C1A00B82A47 /* WordPressAuthenticatorDisplayTextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE16177721B70C1A00B82A47 /* WordPressAuthenticatorDisplayTextTests.swift */; };
@@ -307,7 +306,6 @@
 		BA53D64A24DFE07D001F1ABF /* MockWordpressAuthenticatorProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockWordpressAuthenticatorProvider.swift; sourceTree = "<group>"; };
 		BA53D64C24DFE4E6001F1ABF /* ModalViewControllerPresentingSpy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModalViewControllerPresentingSpy.swift; sourceTree = "<group>"; };
 		BA53D64E24DFE981001F1ABF /* MockOnePasswordFacade.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockOnePasswordFacade.swift; sourceTree = "<group>"; };
-		BA53D65024DFE990001F1ABF /* WordPressAuthenticatorDelegateSpy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordPressAuthenticatorDelegateSpy.swift; sourceTree = "<group>"; };
 		BA53D65224DFEA58001F1ABF /* OnePasswordResultsFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnePasswordResultsFetcher.swift; sourceTree = "<group>"; };
 		C736FF243DE333FCAB1C2614 /* Pods_WordPressAuthenticator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WordPressAuthenticator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE16177421B6D82200B82A47 /* WordPressAuthenticatorDisplayStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressAuthenticatorDisplayStrings.swift; sourceTree = "<group>"; };
@@ -747,7 +745,6 @@
 			isa = PBXGroup;
 			children = (
 				BA53D64E24DFE981001F1ABF /* MockOnePasswordFacade.swift */,
-				BA53D65024DFE990001F1ABF /* WordPressAuthenticatorDelegateSpy.swift */,
 				BA53D64C24DFE4E6001F1ABF /* ModalViewControllerPresentingSpy.swift */,
 				BA53D64A24DFE07D001F1ABF /* MockWordpressAuthenticatorProvider.swift */,
 			);
@@ -1213,7 +1210,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B501C045208FC68700D1E58F /* LoginFieldsValidationTests.swift in Sources */,
-				BA53D65124DFE990001F1ABF /* WordPressAuthenticatorDelegateSpy.swift in Sources */,
 				BA53D64824DFDF97001F1ABF /* WordPressSourceTagTests.swift in Sources */,
 				BA53D64D24DFE4E6001F1ABF /* ModalViewControllerPresentingSpy.swift in Sources */,
 				BA53D64624DFDE1D001F1ABF /* CredentialsTests.swift in Sources */,

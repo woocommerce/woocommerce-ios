@@ -183,4 +183,53 @@ class WordPressAuthenticatorTests: XCTestCase {
         XCTAssertEqual(vc.loginFields.emailAddress, "")
         XCTAssertEqual(vc.loginFields.username, "")
     }
+
+//MARK: WordPressAuthenticator URL verification Tests
+    func testIsGoogleAuthURL() {
+        let authenticator = MockWordpressAuthenticatorProvider.getWordpressAuthenticator()
+        let googleURL = URL(string: "com.googleuserconsent.apps/82ekn2932nub23h23hn3")!
+        let magicLinkURL = URL(string: "https://magic-login")!
+        let wordpressComURL = URL(string: "https://WordPress.com")!
+
+        XCTAssertTrue(authenticator.isGoogleAuthUrl(googleURL))
+        XCTAssertFalse(authenticator.isGoogleAuthUrl(magicLinkURL))
+        XCTAssertFalse(authenticator.isGoogleAuthUrl(wordpressComURL))
+    }
+
+    func testIsWordPressAuthURL() {
+        let authenticator = MockWordpressAuthenticatorProvider.getWordpressAuthenticator()
+        let magicLinkURL = URL(string: "https://magic-login")!
+        let googleURL = URL(string: "https://google.com")!
+        let wordpressComURL = URL(string: "https://WordPress.com")!
+
+        XCTAssertTrue(authenticator.isWordPressAuthUrl(magicLinkURL))
+        XCTAssertFalse(authenticator.isWordPressAuthUrl(googleURL))
+        XCTAssertFalse(authenticator.isWordPressAuthUrl(wordpressComURL))
+    }
+
+    func testHandleWordPressAuthURLReturnsTrueOnSucceed() {
+        let authenticator = MockWordpressAuthenticatorProvider.getWordpressAuthenticator()
+        let url = URL(string: "https://wordpress.com/wp-login.php?token=1234567890%26action&magic-login&sr=1&signature=1234567890oienhdtsra")
+
+        XCTAssertTrue(authenticator.handleWordPressAuthUrl(url!, allowWordPressComAuth: true, rootViewController: UIViewController()))
+    }
+
+    func testOpenAuthenticationFailsWithoutQuery() {
+        let url = URL(string: "https://WordPress.com/")
+
+        let result = WordPressAuthenticator.openAuthenticationURL(url!, allowWordPressComAuth: false, fromRootViewController: UIViewController())
+
+        XCTAssertFalse(result)
+    }
+
+    func testOpenAuthenticationFailsWithoutWpcomAuth() {
+        let url = URL(string: "https://WordPress.com/?token=arstdhneio0987654321")
+        let loginFields = LoginFields()
+        loginFields.username = "user123"
+        loginFields.password = "knockknock"
+
+        let result = WordPressAuthenticator.openAuthenticationURL(url!, allowWordPressComAuth: false, fromRootViewController: UIViewController())
+
+        XCTAssertFalse(result)
+    }
 }

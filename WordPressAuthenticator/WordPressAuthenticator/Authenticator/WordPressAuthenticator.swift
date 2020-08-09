@@ -71,7 +71,7 @@ import AuthenticationServices
 
     /// Designated Initializer
     ///
-    private init(configuration: WordPressAuthenticatorConfiguration,
+    internal init(configuration: WordPressAuthenticatorConfiguration,
                  style: WordPressAuthenticatorStyle,
                  unifiedStyle: WordPressAuthenticatorUnifiedStyle?,
                  displayImages: WordPressAuthenticatorDisplayImages,

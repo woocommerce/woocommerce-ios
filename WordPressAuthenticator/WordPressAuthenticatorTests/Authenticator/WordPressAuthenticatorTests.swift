@@ -1,6 +1,8 @@
 import XCTest
 @testable import WordPressAuthenticator
 
+let timeInterval = TimeInterval(3)
+
 
 // MARK: - WordPressAuthenticator Unit Tests
 //
@@ -54,5 +56,24 @@ class WordPressAuthenticatorTests: XCTestCase {
         retrievedEmail = retrievedLoginFields.username
 
         XCTAssert(email != retrievedEmail, "Saved loginFields should be deleted after calling deleteLoginInfoForTokenAuth.")
+    }
+
+    //MARK: WorpressAuthenticator Notification Tests
+    func testDispatchesSupportPushNotificationReceived() {
+        let authenticator = MockWordpressAuthenticatorProvider.getWordpressAuthenticator()
+        let _ = expectation(forNotification: .wordpressSupportNotificationReceived, object: nil, handler: nil)
+
+        authenticator.supportPushNotificationReceived()
+
+        waitForExpectations(timeout: timeInterval, handler: nil)
+    }
+
+    func testSupportPushNotificationCleared() {
+        let authenticator = MockWordpressAuthenticatorProvider.getWordpressAuthenticator()
+        let _ = expectation(forNotification: .wordpressSupportNotificationCleared, object: nil, handler: nil)
+
+        authenticator.supportPushNotificationCleared()
+
+        waitForExpectations(timeout: timeInterval, handler: nil)
     }
 }

@@ -1,3 +1,5 @@
-Neue Benachrichtigungen: Wenn bei einem einfachen Produkt der Preis fehlt, wird in der Preiszeile der Produktdetailansicht der Platzhalter „Preis hinzufügen“ angezeigt. App-Benutzer, die noch kein Upgrade auf WooCommerce 4.0 durchgeführt haben, sehen ein Banner mit der Information, dass ein Upgrade verfügbar ist. Benutzer, die das Upgrade bereits durchgeführt haben, sehen das neue Statistiken-Dashboard. Wir empfehlen dir, das Upgrade durchzuführen, falls es dir noch fehlt!
+Es gibt ein paar Dinge, die wir dir mitteilen möchten:
 
-Behoben und angepasst: Wir haben den Fehler behoben, der zur Folge haben konnte, dass ein negativer Wert zu einer visuellen Störung in den Dashboard-Diagrammen führte. Außerdem haben wir die Zeile mit der Gesamtzahl der Bestellung vom Tab „Produkte“ entfernt. Dies führte zu Verwirrung, da die Zeile auf dem editierbaren Formular für einfache Produkte nicht angezeigt wird.
+Manchmal kam es zu einem Absturz, wenn du in der App eine SMS gesendet hast. Niemand möchte eine SMS verpassen. Daher haben wir das Problem sofort behoben.
+
+Du magst Statistiken? Wir auch! Wir haben uns bemüht, Statistiken für dich noch weiter zu verbessern. Solange du WooCommerce 4.0 oder WooCommerce Admin verwendest, entspricht dein Statistikdiagramm jetzt deiner Anzeige in wp-admin. Voilà! Wenn du eine ältere Version von WooCommerce verwendest, solltest du ein Update durchführen, damit du nichts verpasst!

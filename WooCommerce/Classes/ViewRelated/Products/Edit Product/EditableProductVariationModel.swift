@@ -7,9 +7,14 @@ final class EditableProductVariationModel {
     private let allAttributes: [ProductAttribute]
     private lazy var variationName: String = generateName(variationAttributes: productVariation.attributes, allAttributes: allAttributes)
 
-    init(productVariation: ProductVariation, allAttributes: [ProductAttribute]) {
-        self.productVariation = productVariation
+    init(productVariation: ProductVariation, allAttributes: [ProductAttribute], parentProductSKU: String?) {
         self.allAttributes = allAttributes
+
+        // API sets a variation's SKU to be its parent product's SKU by default.
+        // However, variation API update will fail if we send the variation's SKU as its parent product's SKU (duplicate SKU error).
+        // As a workaround, we set a variation's SKU to nil if it has the same SKU as its parent product during initialization.
+        let sku = parentProductSKU == productVariation.sku ? nil: productVariation.sku
+        self.productVariation = productVariation.copy(sku: sku)
     }
 }
 

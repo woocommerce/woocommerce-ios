@@ -321,14 +321,7 @@ private extension ProductInventorySettingsViewController {
     func configureStockStatus(cell: SettingTitleAndValueTableViewCell) {
         let title = NSLocalizedString("Stock status", comment: "Title of the cell in Product Inventory Settings > Stock status")
         cell.updateUI(title: title, value: viewModel.stockStatus?.description)
-
-        // Stock status is only editable for `Product`.
-        if viewModel.isStockStatusEnabled {
-            cell.accessoryType = .disclosureIndicator
-        } else {
-            cell.accessoryType = .none
-            cell.selectionStyle = .none
-        }
+        cell.accessoryType = .disclosureIndicator
     }
 }
 

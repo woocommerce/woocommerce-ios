@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-07-09 08:54:03+0000 */
+/* Translation-Revision-Date: 2020-08-06 18:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -51,6 +51,9 @@
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
 "%@ via %@" = "已在 %1$@ 收到 %2$@ 付款";
 
+/* Navigation bar title for selecting multiple products when more multiple products have been selected. */
+"%ld Products Selected" = "已選取　%ld 件商品";
+
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld 尚有存貨";
 
@@ -65,6 +68,9 @@
 
 /* Label about number of variations shown on Products tab */
 "%ld variants" = "%ld 個子類選項";
+
+/* Navigation bar title for selecting multiple products when one product has been selected. */
+"1 Product Selected" = "已選取　1 件商品";
 
 /* Shown when there are more than 99 items of something (e.g. Processing Orders). */
 "99+" = "99 筆以上";
@@ -100,11 +106,19 @@
    A button title used for a unit test - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
 "Add" = "新增";
 
+/* Action to add category on the Product Categories screen
+   Product Add Category navigation title */
+"Add Category" = "新增類別";
+
 /* Action to add photos on the Product images screen */
 "Add Photos" = "新增相片";
 
 /* Title for adding the price settings row on Product main screen */
 "Add Price" = "新增價格";
+
+/* Action to add products to a grouped product on the Grouped Products screen
+   Navigation bar title for selecting multiple products. */
+"Add Products" = "新增商品";
 
 /* A title used for a shipment tracking unit test
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
@@ -284,9 +298,12 @@
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "無法要求連結";
 
-/* Button title Cancel in Discard Changes Action Sheet
-   Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links */
+/* Action title to cancel selecting products to add to a grouped product from search results
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links */
 "Cancel" = "取消";
+
+/* Title of the alert when there is an error creating a new product category */
+"Cannot Add Category" = "無法新增類別";
 
 /* The title of the alert when there is an error updating the product */
 "Cannot update product" = "無法更新商品";
@@ -491,7 +508,8 @@
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "還沒有帳號？_註冊_";
 
-/* Edit product categories screen - button title to apply categories selection */
+/* Action title to select products to add to a grouped product from search results
+   Edit product categories screen - button title to apply categories selection */
 "Done" = "完成";
 
 /* WordPress.com (unmapped!) error */
@@ -553,6 +571,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "空的網址";
+
+/* Enable Reviews label in Product Settings */
+"Enable Reviews" = "啟用評論";
 
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "輸入 URL";
@@ -653,6 +674,9 @@
 
 /* Display label for grouped product type. */
 "Grouped" = "組合";
+
+/* Navigation bar title for editing linked products for a grouped product */
+"Grouped Products" = "組合商品";
 
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "已加入群組的產品";
@@ -819,9 +843,6 @@
 /* 'Limit: 2 downloads', for example. */
 "Limit: %ld downloads" = "限制：%ld 下載";
 
-/* The title of the Work In Progress top banner on the Products tab. */
-"Limited editing available" = "僅可進行有限編輯";
-
 /* Title for screen in editor that allows to configure link options */
 "Link Settings" = "連結設定";
 
@@ -869,6 +890,12 @@
 
 /* Option to select the Apple Mail app when logging in with magic links */
 "Mail (Default)" = "郵件 (預設)";
+
+/* Text that explains how to update VC to get the latest stats */
+"Make sure you are running the latest version of WooCommerce on your site and that you have WooCommerce Admin activated." = "請確認你的網站執行最新版本的 WooCommerce，並已啟用 WooCommerce Admin。";
+
+/* Subtitle of the product form bottom sheet action for editing tags. */
+"Make your products easier to find with tags" = "透過標籤輕鬆找到你的產品";
 
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "透過即時警示管理訂單、追蹤銷售狀況，並監控商店活動。";
@@ -960,6 +987,9 @@
 /* The title for the net amount paid cell */
 "Net" = "淨額";
 
+/* The title of the Work In Progress top banner on the Products tab. */
+"New editing options available" = "有可用的新編輯選項";
+
 /* Title of a button.
    Title of a button. The text should be capitalized. */
 "Next" = "下一步";
@@ -983,7 +1013,8 @@
 /* The text on the placeholder overlay when there are no product variations on the Products tab */
 "No product variations yet" = "尚未有任何不同型號產品";
 
-/* The text on the placeholder overlay when there are no products on the Products tab */
+/* Placeholder for editing linked products for a grouped product
+   Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "尚未有任何產品";
 
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier' */
@@ -995,8 +1026,14 @@
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "尚未有運送類別";
 
+/* Placeholder of the Product Tags row on Product main screen */
+"No tags" = "無標籤";
+
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
 "No tax classes yet" = "尚未有稅金類別";
+
+/* Placeholder of the Product Variations row on Product main screen for a variable product */
+"No variations yet" = "尚未有變化版本";
 
 /* Display label for the product's tax status setting option */
 "None" = "無";
@@ -1011,7 +1048,7 @@
 "Number of files:" = "檔案數量：";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "確定";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -1050,7 +1087,8 @@
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "開啟可用狀態的清單。";
 
-/* Placeholder of the cell text field in Product Inventory Settings > SKU */
+/* Add Product Category. Placeholder of cell presenting the parent category.
+   Placeholder of the cell text field in Product Inventory Settings > SKU */
 "Optional" = "選用";
 
 /* No comment provided by engineer. */
@@ -1103,6 +1141,9 @@
 
 /* The title for the customer payment cell */
 "Paid By Customer" = "顧客付款";
+
+/* Add Product Category. Title of cell presenting the parent category. */
+"Parent Category" = "上層分類";
 
 /* Accessibility label for the password text field in the self-hosted login page.
    Login dialog password placeholder - Password field title in Product Visibility - Password placeholder */
@@ -1340,6 +1381,9 @@
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "原價：%@";
 
+/* Banner action button text in my store when stats will be deprecated */
+"Remind me later" = "稍後再提醒我";
+
 /* Confirm button on the alert when the user taps to delete a Product image */
 "Remove" = "移除";
 
@@ -1417,6 +1461,9 @@
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "折扣價格：%@";
 
+/* Add Product Category. Save button title in navbar. */
+"Save" = "儲存";
+
 /* Scan Products */
 "Scan products" = "掃描產品";
 
@@ -1440,6 +1487,9 @@
 
 /* Display label for the product's catalog visibility */
 "Search results only" = "僅限搜尋結果";
+
+/* Select parent category screen - Screen title */
+"Select Parent Category" = "選取上層類別";
 
 /* Page title for the select a different store screen */
 "Select Store" = "選取商店";
@@ -1649,6 +1699,9 @@
    Status label in Product Settings */
 "Status" = "狀態";
 
+/* Button title to contact support to get help with deprecated stats */
+"Still need help? Contact us" = "還需要協助嗎？ 聯絡我們";
+
 /* Row title for filtering products by stock status. */
 "Stock Status" = "庫存狀態";
 
@@ -1706,6 +1759,10 @@
 
 /* Accessibility Identifier for the Default Font Aztec Style. */
 "Switches to the default Font Size" = "切換至預設的文字大小";
+
+/* Title of the product form bottom sheet action for editing tags.
+   Title of the Tags row on Product main screen */
+"Tags" = "標籤";
 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "拍攝相片";
@@ -1927,8 +1984,8 @@
 /* Footer text for editing external product button text */
 "This text will be shown on the button linking to the external product." = "這些文字會顯示在連結至外部商品的按鈕上。";
 
-/* Placeholder in the Product Title row on Product form screen.
-   Product details screen — product title descriptive label */
+/* Add Product Category. Placeholder of cell presenting the title of the category.
+   Placeholder in the Product Title row on Product form screen. - Product details screen — product title descriptive label */
 "Title" = "標題";
 
 /* Action sheet option to sort products by ascending product name */
@@ -2151,7 +2208,7 @@
 "Variable" = "款式";
 
 /* Product Details > descriptive label for the Product Variants cell.
-   Title that appears on top of the Product Variation List screen. */
+   Title of the Product Variations row on Product main screen for a variable product - Title that appears on top of the Product Variation List screen. */
 "Variations" = "不同型號";
 
 /* two factor code placeholder */
@@ -2188,6 +2245,9 @@
 /* User role badge */
 "Viewer" = "讀者";
 
+/* Virtual Product label in Product Settings */
+"Virtual Product" = "虛擬商品";
+
 /* Product Visibility navigation title
    Visibility label in Product Settings */
 "Visibility" = "可見度";
@@ -2206,6 +2266,9 @@
 
 /* shown in promotional screens during first launch */
 "Watch readers from around the world read and interact with your site — in real time." = "第一時間看到來自世界各地的讀者閱讀你的網站，並與你的網站互動。";
+
+/* Title when we can't show stats because user is on a deprecated WC Version */
+"We can’t display your store’s analytics" = "我們無法顯示你的商店分析資料";
 
 /* message to ask a user to check their email for a WordPress.com email */
 "We just emailed a link to %@. Please check your mail app and tap the link to log in." = "我們剛將連結以電子郵件傳送至 %@。請檢查你的電子郵件應用程式，並點選連結以登入。";
@@ -2236,7 +2299,7 @@
 "We're sorry, we couldn't find results for “%@”" = "很抱歉，我們找不到「%@」的搜尋結果";
 
 /* The info of the Work In Progress top banner on the Products tab. */
-"We've added editing functionality to simple products. Keep an eye out for more options soon!" = "我們已在簡單產品中新增了編輯功能。有更多選項即將登場，敬請密切注意！";
+"We've added more editing functionalities to products! You can now update images, see previews and share your products." = "我們已新增更多商品編輯功能！ 你現在可以更新圖片、查看預覽畫面並分享你的商品。";
 
 /* Statistical unit - a single week */
 "Week" = "週";

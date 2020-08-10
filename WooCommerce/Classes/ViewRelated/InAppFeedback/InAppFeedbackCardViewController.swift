@@ -1,5 +1,16 @@
 
 import UIKit
+import StoreKit
+
+/// Defines methods for presenting the in-app app store review form.
+///
+protocol SKStoreReviewControllerProtocol {
+    /// Displays the in app app store review alert.
+    ///
+    static func requestReview()
+}
+
+extension SKStoreReviewController: SKStoreReviewControllerProtocol { }
 
 /// Displays a small view asking the user to provide a feedback for the app.
 ///
@@ -11,6 +22,18 @@ final class InAppFeedbackCardViewController: UIViewController {
 
     /// The stackview containing the `titleLabel` and the horizontal view for the buttons.
     @IBOutlet private var verticalStackView: UIStackView!
+
+    /// SKStoreReviewController type wrapper. Needed for testing
+    private let storeReviewControllerType: SKStoreReviewControllerProtocol.Type
+
+    init(storeReviewControllerType: SKStoreReviewControllerProtocol.Type = SKStoreReviewController.self) {
+        self.storeReviewControllerType = storeReviewControllerType
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,11 +65,18 @@ private extension InAppFeedbackCardViewController {
     func configureDidNotLikeButton() {
         didNotLikeButton.applySecondaryButtonStyle()
         didNotLikeButton.setTitle(Localization.couldBeBetter, for: .normal)
+        didNotLikeButton.on(.touchUpInside) { [weak self] _ in
+            let surveyNavigation = SurveyCoordinatingController(survey: .inAppFeedback)
+            self?.present(surveyNavigation, animated: true, completion: nil)
+        }
     }
 
     func configureLikeButton() {
         likeButton.applyPrimaryButtonStyle()
         likeButton.setTitle(Localization.iLikeIt, for: .normal)
+        likeButton.on(.touchUpInside) { [weak self] _ in
+            self?.storeReviewControllerType.requestReview()
+        }
     }
 }
 

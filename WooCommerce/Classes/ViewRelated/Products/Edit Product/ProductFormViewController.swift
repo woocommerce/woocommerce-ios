@@ -796,7 +796,12 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func showReviews() {
-        // TODO: issue-2082 present Reviews Controller
+        guard let product = product as? EditableProductModel, product.product.ratingCount > 0 else {
+            return
+        }
+
+        let productReviewsViewController = ProductReviewsViewController(product: product.product)
+        navigationController?.show(productReviewsViewController, sender: self)
     }
 }
 

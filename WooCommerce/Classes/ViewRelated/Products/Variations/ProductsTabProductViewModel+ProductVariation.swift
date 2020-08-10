@@ -41,7 +41,7 @@ private extension EditableProductVariationModel {
 
     func createPriceText(currency: String, currencySettings: CurrencySettings) -> String {
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        return currencyFormatter.formatAmount(regularPrice ?? productVariation.price, with: currency) ?? ""
+        return currencyFormatter.formatAmount(productVariation.price, with: currency) ?? ""
     }
 }
 

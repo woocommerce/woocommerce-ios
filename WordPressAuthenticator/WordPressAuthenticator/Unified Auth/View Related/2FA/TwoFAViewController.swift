@@ -15,6 +15,7 @@ final class TwoFAViewController: LoginViewController {
     private var rows = [Row]()
     private var errorMessage: String?
     private var pasteboardBeforeBackground: String? = nil
+    private var shouldChangeVoiceOverFocus: Bool = false
 
     override var sourceTag: WordPressSupportSourceTag {
         get {
@@ -124,6 +125,8 @@ final class TwoFAViewController: LoginViewController {
     override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
         if errorMessage != message {
             errorMessage = message
+            shouldChangeVoiceOverFocus = moveVoiceOverFocus
+            loadRows()
             tableView.reloadData()
         }
     }
@@ -338,9 +341,9 @@ private extension TwoFAViewController {
     func loadRows() {
         rows = [.instructions, .code]
 
-        if errorMessage != nil {
-             rows.append(.errorMessage)
-         }
+        if let errorText = errorMessage, !errorText.isEmpty {
+            rows.append(.errorMessage)
+        }
 
         rows.append(.sendCode)
     }
@@ -395,6 +398,9 @@ private extension TwoFAViewController {
     ///
     func configureErrorLabel(_ cell: TextLabelTableViewCell) {
         cell.configureLabel(text: errorMessage, style: .error)
+        if shouldChangeVoiceOverFocus {
+            UIAccessibility.post(notification: .layoutChanged, argument: cell)
+        }
     }
 
     /// Configure the view for an editing state.

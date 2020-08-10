@@ -51,6 +51,7 @@ final class TwoFAViewController: LoginViewController {
         
         configureSubmitButton(animating: false)
         configureViewForEditingIfNeeded()
+        configureForAccessibility()
         
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(applicationBecameInactive), name: UIApplication.willResignActiveNotification, object: nil)
@@ -96,6 +97,15 @@ final class TwoFAViewController: LoginViewController {
             isNumeric &&
             isValidLength
         )
+    }
+
+    /// Sets up the order in which accessibility elements should be read aloud.
+    ///
+    private func configureForAccessibility() {
+        view.accessibilityElements = [
+            tableView,
+            submitButton as Any
+        ]
     }
 
     override func configureViewLoading(_ loading: Bool) {

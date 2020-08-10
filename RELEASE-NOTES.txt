@@ -1,3 +1,6 @@
+4.9
+-----
+ 
 4.8
 -----
 - [*] Enabled right/left swipe on product images.

@@ -172,7 +172,7 @@ class LoginPrologueViewController: LoginViewController {
             return
         }
 
-        self.tracker.track(click: .signUpWithGoogle)
+        self.tracker.track(click: .loginWithGoogle)
         presentUnifiedGoogleView()
     }
 

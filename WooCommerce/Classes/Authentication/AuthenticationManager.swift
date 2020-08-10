@@ -23,7 +23,8 @@ class AuthenticationManager: Authentication {
                                                                 googleLoginClientId: ApiCredentials.googleClientId,
                                                                 googleLoginServerClientId: ApiCredentials.googleServerId,
                                                                 googleLoginScheme: ApiCredentials.googleAuthScheme,
-                                                                userAgent: UserAgent.defaultUserAgent)
+                                                                userAgent: UserAgent.defaultUserAgent,
+                                                                enableSignInWithApple: true)
 
         let style = WordPressAuthenticatorStyle(primaryNormalBackgroundColor: .primaryButtonBackground,
                                                 primaryNormalBorderColor: .primaryButtonDownBackground,
@@ -46,11 +47,41 @@ class AuthenticationManager: Authentication {
                                                 viewControllerBackgroundColor: .listBackground,
                                                 textFieldBackgroundColor: .listForeground,
                                                 navBarImage: StyleManager.navBarImage,
-                                                navBarBadgeColor: .primary)
+                                                navBarBadgeColor: .primary,
+                                                navBarBackgroundColor: .primary)
 
         let displayStrings = WordPressAuthenticatorDisplayStrings(emailLoginInstructions: AuthenticationConstants.emailInstructions,
-                                                     jetpackLoginInstructions: AuthenticationConstants.jetpackInstructions,
-                                                     siteLoginInstructions: AuthenticationConstants.siteInstructions)
+                                                                  jetpackLoginInstructions: AuthenticationConstants.jetpackInstructions,
+                                                                  siteLoginInstructions: AuthenticationConstants.siteInstructions,
+                                                                  siteCredentialInstructions: WordPressAuthenticatorDisplayStrings.defaultStrings.siteCredentialInstructions,
+                                                                  twoFactorInstructions: WordPressAuthenticatorDisplayStrings.defaultStrings.twoFactorInstructions,
+                                                                  magicLinkInstructions: WordPressAuthenticatorDisplayStrings.defaultStrings.magicLinkInstructions,
+                                                                  googlePasswordInstructions: WordPressAuthenticatorDisplayStrings.defaultStrings.googlePasswordInstructions,
+                                                                  applePasswordInstructions: WordPressAuthenticatorDisplayStrings.defaultStrings.applePasswordInstructions,
+                                                                  continueButtonTitle: WordPressAuthenticatorDisplayStrings.defaultStrings.continueButtonTitle,
+                                                                  magicLinkButtonTitle: WordPressAuthenticatorDisplayStrings.defaultStrings.magicLinkButtonTitle,
+                                                                  findSiteButtonTitle: WordPressAuthenticatorDisplayStrings.defaultStrings.findSiteButtonTitle,
+                                                                  resetPasswordButtonTitle: WordPressAuthenticatorDisplayStrings.defaultStrings.resetPasswordButtonTitle,
+                                                                  textCodeButtonTitle: WordPressAuthenticatorDisplayStrings.defaultStrings.textCodeButtonTitle,
+                                                                  gettingStartedTitle: WordPressAuthenticatorDisplayStrings.defaultStrings.gettingStartedTitle,
+                                                                  logInTitle: WordPressAuthenticatorDisplayStrings.defaultStrings.logInTitle,
+                                                                  signUpTitle: WordPressAuthenticatorDisplayStrings.defaultStrings.signUpTitle,
+                                                                  waitingForGoogleTitle: WordPressAuthenticatorDisplayStrings.defaultStrings.waitingForGoogleTitle,
+                                                                  usernamePlaceholder: WordPressAuthenticatorDisplayStrings.defaultStrings.usernamePlaceholder,
+                                                                  passwordPlaceholder: WordPressAuthenticatorDisplayStrings.defaultStrings.passwordPlaceholder,
+                                                                  siteAddressPlaceholder: WordPressAuthenticatorDisplayStrings.defaultStrings.siteAddressPlaceholder,
+                                                                  twoFactorCodePlaceholder: WordPressAuthenticatorDisplayStrings.defaultStrings.twoFactorCodePlaceholder)
+
+        let unifiedStyle = WordPressAuthenticatorUnifiedStyle(borderColor: .divider,
+                                                              errorColor: .error,
+                                                              textColor: .text,
+                                                              textSubtleColor: .textSubtle,
+                                                              textButtonColor: .brand,
+                                                              textButtonHighlightColor: .brand,
+                                                              viewControllerBackgroundColor: .basicBackground,
+                                                              navBarBackgroundColor: .basicBackground,
+                                                              navButtonTextColor: .brand,
+                                                              navTitleTextColor: .text)
 
         let displayImages = WordPressAuthenticatorDisplayImages(
             magicLink: .loginMagicLinkImage,
@@ -59,6 +90,7 @@ class AuthenticationManager: Authentication {
 
         WordPressAuthenticator.initialize(configuration: configuration,
                                           style: style,
+                                          unifiedStyle: unifiedStyle,
                                           displayImages: displayImages,
                                           displayStrings: displayStrings)
         WordPressAuthenticator.shared.delegate = self
@@ -76,12 +108,20 @@ class AuthenticationManager: Authentication {
 
     /// Returns a LoginViewController preinitialized for WordPress.com
     ///
-    func loginForWordPressDotCom() -> UIViewController {
-        let loginViewController = WordPressAuthenticator.signinForWPCom()
-        loginViewController.offerSignupOption = false
-        loginViewController.loginFields.restrictToWPCom = false
+    func loginForWordPressDotCom(from sourceViewController: UIViewController) -> UIViewController {
+        let loginMethodsViewController = WordPressAuthenticator.signinMethods(from: sourceViewController, onDismiss: { isCancelled in
 
-        return loginViewController
+        })
+//        loginMethodsViewController.transitioningDelegate = sourceViewController
+        loginMethodsViewController.modalPresentationStyle = .custom
+        sourceViewController.navigationController?.present(loginMethodsViewController, animated: true, completion: nil)
+        return loginMethodsViewController
+
+//        let loginViewController = WordPressAuthenticator.signinForWPCom()
+//        loginViewController.offerSignupOption = false
+//        loginViewController.loginFields.restrictToWPCom = false
+//
+//        return loginViewController
     }
 
     /// Handles an Authentication URL Callback. Returns *true* on success.
@@ -107,8 +147,18 @@ class AuthenticationManager: Authentication {
 // MARK: - WordPressAuthenticator Delegate
 //
 extension AuthenticationManager: WordPressAuthenticatorDelegate {
+    /// When an Apple account is used during the Auth flow, save the Apple user id to the keychain.
+    /// It will be used on app launch to check the user id state.
+    ///
     func userAuthenticatedWithAppleUserID(_ appleUserID: String) {
-        // Sign in with Apple is not supported yet.
+//        do {
+//            try SFHFKeychainUtils.storeUsername(WPAppleIDKeychainUsernameKey,
+//                                                andPassword: appleUserID,
+//                                                forServiceName: WPAppleIDKeychainServiceName,
+//                                                updateExisting: true)
+//        } catch {
+//            DDLogInfo("Error while saving Apple User ID: \(error)")
+//        }
     }
 
     var allowWPComLogin: Bool {

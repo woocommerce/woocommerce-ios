@@ -8,7 +8,7 @@ protocol Authentication {
 
     /// Returns a LoginViewController preinitialized for WordPress.com
     ///
-    func loginForWordPressDotCom() -> UIViewController
+    func loginForWordPressDotCom(from sourceViewController: UIViewController) -> UIViewController
 
     /// Presents the Support Interface from a given ViewController, with a specified SourceTag.
     ///

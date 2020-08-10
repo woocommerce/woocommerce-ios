@@ -399,7 +399,7 @@ private extension StorePickerViewController {
             return
         }
 
-        let loginViewController = ServiceLocator.authenticationManager.loginForWordPressDotCom()
+        let loginViewController = ServiceLocator.authenticationManager.loginForWordPressDotCom(from: self)
 
         guard let navigationController = navigationController else {
             assertionFailure("Navigation error: one of the login / logout states is not correctly handling navigation. No navigationController found.")

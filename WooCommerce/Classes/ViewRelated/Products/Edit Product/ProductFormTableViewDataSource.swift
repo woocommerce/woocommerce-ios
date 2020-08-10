@@ -241,9 +241,9 @@ private extension ProductFormTableViewDataSource {
         cell.updateUI(switchableViewModel: switchableViewModel)
     }
 
-    func configureWarningRow(cell: UITableViewCell, viewModel: ProductFormSection.SettingsRow.WarningViewModel) {
-        guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {
-            fatalError()
+    func configureWarningRow(cell warningCell: UITableViewCell, viewModel: ProductFormSection.SettingsRow.WarningViewModel) {
+        guard let cell = warningCell as? ImageAndTitleAndTextTableViewCell else {
+            fatalError("Unexpected cell type \(warningCell) for view model: \(viewModel)")
         }
         cell.updateUI(warningViewModel: viewModel.toCellViewModel())
     }

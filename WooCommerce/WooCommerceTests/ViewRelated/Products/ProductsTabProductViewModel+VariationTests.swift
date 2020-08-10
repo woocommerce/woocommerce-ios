@@ -29,7 +29,7 @@ final class ProductsTabProductViewModel_VariationTests: XCTestCase {
 
     func test_product_cell_view_model_shows_price_details_text_when_variation_is_enabled_and_has_price() {
         // Arrange
-        let variation = MockProductVariation().productVariation().copy(status: .publish, regularPrice: "6")
+        let variation = MockProductVariation().productVariation().copy(status: .publish, price: "6", regularPrice: "6")
         let model = EditableProductVariationModel(productVariation: variation)
         let currencySettings = CurrencySettings(currencyCode: .USD,
                                                 currencyPosition: .left,

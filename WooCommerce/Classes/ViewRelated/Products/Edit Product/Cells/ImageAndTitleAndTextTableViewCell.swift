@@ -46,11 +46,6 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
     struct WarningViewModel {
         let icon: UIImage
         let title: String?
-
-        init(icon: UIImage, title: String?) {
-            self.icon = icon
-            self.title = title
-        }
     }
 
     @IBOutlet private weak var contentStackView: UIStackView!

@@ -66,6 +66,7 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     }()
 
     private lazy var inAppFeedbackCardViewController = InAppFeedbackCardViewController()
+
     /// An array of UIViews for the In-app Feedback Card. This will be dynamically shown
     /// or hidden depending on the configuration.
     private lazy var inAppFeedbackCardViewsForStackView: [UIView] = createInAppFeedbackCardViewsForStackView()
@@ -103,6 +104,7 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
         configureInAppFeedbackCardViews()
         configureChildViewControllers()
+        configureInAppFeedbackViewControllerAction()
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -302,6 +304,12 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
             view.heightAnchor.constraint(equalToConstant: 0.5)
             ])
         return view
+    }
+
+    func configureInAppFeedbackViewControllerAction() {
+        inAppFeedbackCardViewController.onFeedbackGiven = { [weak self] in
+            self?.viewModel.onInAppFeedbackCardAction()
+        }
     }
 }
 

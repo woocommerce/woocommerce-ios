@@ -20,6 +20,9 @@ final class InAppFeedbackCardViewController: UIViewController {
     @IBOutlet private var didNotLikeButton: UIButton!
     @IBOutlet private var likeButton: UIButton!
 
+    /// Closure invoked after the user has choose what kind feedback to give.
+    var onFeedbackGiven: (() -> Void)?
+
     /// The stackview containing the `titleLabel` and the horizontal view for the buttons.
     @IBOutlet private var verticalStackView: UIStackView!
 
@@ -68,6 +71,7 @@ private extension InAppFeedbackCardViewController {
         didNotLikeButton.on(.touchUpInside) { [weak self] _ in
             let surveyNavigation = SurveyCoordinatingController(survey: .inAppFeedback)
             self?.present(surveyNavigation, animated: true, completion: nil)
+            self?.onFeedbackGiven?()
         }
     }
 
@@ -76,6 +80,7 @@ private extension InAppFeedbackCardViewController {
         likeButton.setTitle(Localization.iLikeIt, for: .normal)
         likeButton.on(.touchUpInside) { [weak self] _ in
             self?.storeReviewControllerType.requestReview()
+            self?.onFeedbackGiven?()
         }
     }
 }

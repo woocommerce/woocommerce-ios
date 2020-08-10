@@ -34,6 +34,46 @@ final class InAppFeedbackCardViewControllerTests: XCTestCase {
         // Then
         XCTAssertFalse(MockStoreReviewController.requestReviewInvoked)
     }
+
+    func test_feedbackGiven_closure_is_invoked_when_tapping_like_button() throws {
+        // Given
+        let viewController = InAppFeedbackCardViewController()
+
+        // When
+        var feedbackGivenInvoked = false
+        viewController.onFeedbackGiven = {
+            feedbackGivenInvoked = true
+        }
+
+        _ = try XCTUnwrap(viewController.view)
+        let mirror = try self.mirror(of: viewController)
+        mirror.likeButton.sendActions(for: .touchUpInside)
+
+        // Then
+        waitUntil {
+            feedbackGivenInvoked == true
+        }
+    }
+
+    func test_feedbackGiven_closure_is_invoked_when_tapping_didNotLike_button() throws {
+        // Given
+        let viewController = InAppFeedbackCardViewController()
+
+        // When
+        var feedbackGivenInvoked = false
+        viewController.onFeedbackGiven = {
+            feedbackGivenInvoked = true
+        }
+
+        _ = try XCTUnwrap(viewController.view)
+        let mirror = try self.mirror(of: viewController)
+        mirror.didNotLikeButton.sendActions(for: .touchUpInside)
+
+        // Then
+        waitUntil {
+            feedbackGivenInvoked == true
+        }
+    }
 }
 
 // MARK: - Mirroring

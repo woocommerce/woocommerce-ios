@@ -2,10 +2,10 @@ import UIKit
 import Yosemite
 
 extension ProductsTabProductViewModel {
-    init(productVariationModel: EditableProductVariationModel, currency: String, currencySettings: CurrencySettings = .shared) {
+    init(productVariationModel: EditableProductVariationModel, currencySettings: CurrencySettings = .shared) {
         imageUrl = productVariationModel.productVariation.image?.src
         name = productVariationModel.name
-        detailsAttributedString = productVariationModel.createDetailsAttributedString(currency: currency, currencySettings: currencySettings)
+        detailsAttributedString = productVariationModel.createDetailsAttributedString(currencySettings: currencySettings)
 
         imageService = ServiceLocator.imageService
         isSelected = false
@@ -13,7 +13,10 @@ extension ProductsTabProductViewModel {
 }
 
 private extension EditableProductVariationModel {
-    func createDetailsAttributedString(currency: String, currencySettings: CurrencySettings) -> NSAttributedString {
+    func createDetailsAttributedString(currencySettings: CurrencySettings) -> NSAttributedString {
+        let currencyCode = currencySettings.currencyCode
+        let currency = currencySettings.symbol(from: currencyCode)
+
         let detailsText: String
         let textColor: UIColor
 

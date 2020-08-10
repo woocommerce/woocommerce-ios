@@ -9,7 +9,7 @@ final class ProductsTabProductViewModel_VariationTests: XCTestCase {
         let model = EditableProductVariationModel(productVariation: variation)
 
         // Action
-        let viewModel = ProductsTabProductViewModel(productVariationModel: model, currency: "")
+        let viewModel = ProductsTabProductViewModel(productVariationModel: model)
 
         // Assert
         XCTAssertEqual(viewModel.detailsAttributedString.string, EditableProductVariationModel.DetailsLocalization.disabledText)
@@ -21,7 +21,7 @@ final class ProductsTabProductViewModel_VariationTests: XCTestCase {
         let model = EditableProductVariationModel(productVariation: variation)
 
         // Action
-        let viewModel = ProductsTabProductViewModel(productVariationModel: model, currency: "")
+        let viewModel = ProductsTabProductViewModel(productVariationModel: model)
 
         // Assert
         XCTAssertEqual(viewModel.detailsAttributedString.string, EditableProductVariationModel.DetailsLocalization.noPriceText)
@@ -38,7 +38,7 @@ final class ProductsTabProductViewModel_VariationTests: XCTestCase {
                                                 numberOfDecimals: 3)
 
         // Action
-        let viewModel = ProductsTabProductViewModel(productVariationModel: model, currency: "$", currencySettings: currencySettings)
+        let viewModel = ProductsTabProductViewModel(productVariationModel: model, currencySettings: currencySettings)
 
         // Assert
         XCTAssertEqual(viewModel.detailsAttributedString.string, "$6.000")

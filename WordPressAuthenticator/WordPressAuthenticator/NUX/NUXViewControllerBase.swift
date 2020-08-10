@@ -134,6 +134,8 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
     // Handle the help button being tapped
     //
     func handleHelpButtonTapped(_ sender: AnyObject) {
+        AuthenticatorAnalyticsTracker.shared.track(click: .showHelp)
+        
         displaySupportViewController(from: sourceTag)
     }
 

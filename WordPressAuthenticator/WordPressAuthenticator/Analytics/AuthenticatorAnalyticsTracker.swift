@@ -253,18 +253,33 @@ public class AuthenticatorAnalyticsTracker {
     /// Track a step within a flow.
     ///
     public func track(step: Step) {
+        // This is a temporary guard, until the unified flows are enabled for all users
+        guard WordPressAuthenticator.shared.configuration.enableUnifiedAuth else {
+            return
+        }
+        
         track(event(step: step))
     }
     
     /// Track a click interaction.
     ///
     public func track(click: ClickTarget) {
+        // This is a temporary guard, until the unified flows are enabled for all users
+        guard WordPressAuthenticator.shared.configuration.enableUnifiedAuth else {
+            return
+        }
+        
         track(event(click: click))
     }
     
     /// Track a failure.
     ///
     public func track(failure: String) {
+        // This is a temporary guard, until the unified flows are enabled for all users
+        guard WordPressAuthenticator.shared.configuration.enableUnifiedAuth else {
+            return
+        }
+        
         track(event(failure: failure))
     }
     

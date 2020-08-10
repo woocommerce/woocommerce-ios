@@ -66,14 +66,6 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     func didChangePreferredContentSize() {
         styleInstructions()
     }
-    
-    // MARK: - NUX Overrides
-    
-    func handleHelpButtonTapped(_ sender: AnyObject) {
-        tracker.track(click: .showHelp)
-        
-        super.handleHelpButtonTapped(sender)
-    }
 
     // MARK: - Setup and Configuration
 

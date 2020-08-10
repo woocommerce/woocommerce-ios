@@ -48,6 +48,7 @@ final class SiteAddressViewController: LoginViewController {
 
         siteURLField?.text = loginFields.siteAddress
         configureSubmitButton(animating: false)
+        configureForAccessibility()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -88,6 +89,15 @@ final class SiteAddressViewController: LoginViewController {
         )
     }
 
+    /// Sets up the order in which accessibility elements should be read aloud.
+    ///
+    private func configureForAccessibility() {
+        view.accessibilityElements = [
+            tableView,
+            submitButton as Any
+        ]
+    }
+
     /// Sets the view's state to loading or not loading.
     ///
     /// - Parameter loading: True if the form should be configured to a "loading" state.
@@ -116,6 +126,7 @@ final class SiteAddressViewController: LoginViewController {
         if errorMessage != message {
             errorMessage = message
             shouldChangeVoiceOverFocus = moveVoiceOverFocus
+            loadRows()
             tableView.reloadData()
         }
     }
@@ -147,7 +158,11 @@ extension SiteAddressViewController: UITableViewDelegate {
     /// After the site address textfield cell is done displaying, remove the textfield reference.
     ///
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if rows[indexPath.row] == .siteAddress {
+        guard let row = rows[safe: indexPath.row] else {
+            return
+        }
+
+        if row == .siteAddress {
             siteURLField = nil
         }
     }
@@ -204,7 +219,7 @@ private extension SiteAddressViewController {
     func loadRows() {
         rows = [.instructions, .siteAddress]
 
-        if errorMessage != nil {
+        if let errorText = errorMessage, !errorText.isEmpty {
             rows.append(.errorMessage)
         }
 
@@ -266,7 +281,8 @@ private extension SiteAddressViewController {
             alert.modalPresentationStyle = .custom
             alert.transitioningDelegate = self
             self.present(alert, animated: true, completion: nil)
-            WordPressAuthenticator.track(.loginURLHelpScreenViewed)
+            // TODO: - Tracks.
+            // WordPressAuthenticator.track(.loginURLHelpScreenViewed)
         }
     }
 
@@ -274,6 +290,9 @@ private extension SiteAddressViewController {
     ///
     func configureErrorLabel(_ cell: TextLabelTableViewCell) {
         cell.configureLabel(text: errorMessage, style: .error)
+        if shouldChangeVoiceOverFocus {
+            UIAccessibility.post(notification: .layoutChanged, argument: cell)
+        }
     }
 
     // MARK: - Private Constants
@@ -336,8 +355,9 @@ extension SiteAddressViewController {
                 }
 
                 DDLogError(error.localizedDescription)
-                WordPressAuthenticator.track(.loginFailedToGuessXMLRPC, error: error)
-                WordPressAuthenticator.track(.loginFailed, error: error)
+                // TODO: - Tracks.
+                // WordPressAuthenticator.track(.loginFailedToGuessXMLRPC, error: error)
+                // WordPressAuthenticator.track(.loginFailed, error: error)
                 self.configureViewLoading(false)
 
                 let err = self.originalErrorOrError(error: error as NSError)

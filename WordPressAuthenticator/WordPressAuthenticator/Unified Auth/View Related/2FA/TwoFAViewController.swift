@@ -177,10 +177,7 @@ private extension TwoFAViewController {
         let credentials = AuthenticatorCredentials(wpcom: wpcom)
         syncWPComAndPresentEpilogue(credentials: credentials)
         
-        // TODO: add new Tracks.
-        // Old events:
-        // WordPressAuthenticator.track(.signedIn)
-        // WordPressAuthenticator.track(.loginSocialSuccess, properties: properties)
+        tracker.track(step: .success)
     }
     
     // MARK: - Code Validation

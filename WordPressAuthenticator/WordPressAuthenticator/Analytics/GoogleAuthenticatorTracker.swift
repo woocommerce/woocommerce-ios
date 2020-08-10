@@ -8,8 +8,8 @@ class GoogleAuthenticatorTracker {
     ///
     private let analyticsTracker: AnalyticsTracker
     
-    init(context: AnalyticsTracker.Context) {
-        self.analyticsTracker = AnalyticsTracker(context: context)
+    init(analyticsTracker: AnalyticsTracker) {
+        self.analyticsTracker = analyticsTracker
     }
     
     // MARK: -  Tracking Support
@@ -17,53 +17,55 @@ class GoogleAuthenticatorTracker {
     func trackSigninStart(authType: GoogleAuthType) {
         switch authType {
         case .login:
-            trackLogin(step: .start)
+            trackLoginStart()
         case .signup:
-            trackSignup(step: .start)
+            trackSignupStart()
         }
      }
     
-    func trackLoginSuccess() {
-        trackLogin(step: .success)
+    func trackLoginStart() {
+        analyticsTracker.set(flow: .googleLogin)
+        analyticsTracker.track(step: .start)
     }
     
-    func trackSignupSuccess() {
-        trackSignup(step: .success)
+    func trackSignupStart() {
+        analyticsTracker.set(flow: .googleSignup)
+        analyticsTracker.track(step: .start)
+    }
+    
+    func trackSuccess() {
+        analyticsTracker.track(step: .success)
     }
     
     /// Tracks a failure in any step of the signin process.
     ///
     func trackSigninFailure(authType: GoogleAuthType, error: Error?) {
         let errorMessage = error?.localizedDescription ?? "Unknown error"
-        trackFailure(failure: errorMessage)
+        analyticsTracker.track(failure: errorMessage)
     }
     
 
     func trackSignupFailure(error: Error) {
         let errorMessage = error.localizedDescription
-        trackFailure(failure: errorMessage)
+        analyticsTracker.track(failure: errorMessage)
     }
     
     /// Tracks a change of flow from signup to login.
     ///
     func trackLoginInstead() {
-        trackLogin(step: .start)
-        trackLogin(step: .success)
+        analyticsTracker.set(flow: .googleLogin)
+        analyticsTracker.track(step: .start)
+        analyticsTracker.track(step: .success)
     }
     
     /// Tracks the request of a 2FA code to the user.
     ///
     func trackTwoFactorAuthenticationRequested() {
-        trackLogin(step: .twoFactorAuthentication)
+        analyticsTracker.track(step: .twoFactorAuthentication)
     }
     
     func trackPasswordRequested(authType: GoogleAuthType) {
-        switch authType {
-        case .login:
-            trackLogin(step: .userPasswordScreenShown)
-        case .signup:
-            trackSignup(step: .userPasswordScreenShown)
-        }
+        analyticsTracker.track(step: .userPasswordScreenShown)
     }
 }
 
@@ -71,15 +73,7 @@ class GoogleAuthenticatorTracker {
 
 extension GoogleAuthenticatorTracker {
 
-    private func trackLogin(step: AnalyticsTracker.Step) {
-        analyticsTracker.track(step: step, flow: .googleLogin)
-    }
-
-    private func trackSignup(step: AnalyticsTracker.Step) {
-        analyticsTracker.track(step: step, flow: .googleSignup)
-    }
-
     private func trackFailure(failure: String) {
-        analyticsTracker.track(failure: failure)
+        
     }
 }

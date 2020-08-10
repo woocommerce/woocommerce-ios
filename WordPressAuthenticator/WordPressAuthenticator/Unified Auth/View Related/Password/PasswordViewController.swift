@@ -101,7 +101,7 @@ class PasswordViewController: LoginViewController {
             super.displayRemoteError(error)
         }
     }
-    
+
     override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
         if errorMessage != message {
             errorMessage = message

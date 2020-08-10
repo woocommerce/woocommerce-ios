@@ -51,7 +51,7 @@ import AuthenticationServices
     /// Authenticator's Display Texts.
     ///
     public let displayStrings: WordPressAuthenticatorDisplayStrings
-
+    
     /// Notification to be posted whenever the signing flow completes.
     ///
     @objc public static let WPSigninDidFinishNotification = "WPSigninDidFinishNotification"

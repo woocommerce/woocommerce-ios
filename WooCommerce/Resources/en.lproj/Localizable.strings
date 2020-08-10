@@ -19,6 +19,9 @@
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (To Customer)";
 
+/* Review title. Reads as {Review author} left a review */
+"%1$@ left a review" = "%1$@ left a review";
+
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ left a review on %2$@";
 
@@ -57,6 +60,12 @@
 
 /* Navigation bar title for selecting multiple products when more multiple products have been selected. */
 "%ld Products Selected" = "%ld Products Selected";
+
+/* Format of the number of product review in singular form */
+"%ld review" = "%ld review";
+
+/* Format of the number of product reviews in plural form */
+"%ld reviews" = "%ld reviews";
 
 /* Label about one product variation shown on Products tab */
 "%ld variant" = "%ld variant";
@@ -124,6 +133,12 @@
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
 "Add more details" = "Add more details";
+
+/* Voiceover accessibility label for the tags field in product tags. */
+"Add new tags, separated by commas." = "Add new tags, separated by commas.";
+
+/* Action to add one photo on the Product images screen */
+"Add Photo" = "Add Photo";
 
 /* Action to add photos on the Product images screen */
 "Add Photos" = "Add Photos";
@@ -202,6 +217,9 @@
 /* Title when there is no filter set. */
 "Any" = "Any";
 
+/* Format of a product varition attribute description where the attribute is set to any value. */
+"Any %@" = "Any %@";
+
 /* Message shown when Apple authentication fails. */
 "Apple authentication failed." = "Apple authentication failed.";
 
@@ -254,6 +272,9 @@
 
 /* Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "Back";
+
+/* Title of a button to dismiss the survey complete screen */
+"Back to store" = "Back to store";
 
 /* Application's Background State */
 "Background" = "Background";
@@ -308,6 +329,9 @@
 
 /* Title of the alert when there is an error creating a new product category */
 "Cannot Add Category" = "Cannot Add Category";
+
+/* Title of the alert when there is an error adding new product tags. */
+"Cannot Add Tags" = "Cannot Add Tags";
 
 /* The title of the alert when there is an error updating the product */
 "Cannot update product" = "Cannot update product";
@@ -372,6 +396,9 @@
 /* Contact Support title */
 "Contact Support" = "Contact Support";
 
+/* Title of a button to contact support in the survey complete screen */
+"Contact us here" = "Contact us here";
+
 /* No comment provided by engineer. */
 "Continue" = "Continue";
 
@@ -399,6 +426,9 @@
 /* Copy tracking number button title */
 "Copy Tracking Number" = "Copy Tracking Number";
 
+/* The title of the button for giving a negative feedback for the app. */
+"Could Be Better" = "Could Be Better";
+
 /* Message shown when site purchases API failed */
 "Could not check site purchases." = "Could not check site purchases.";
 
@@ -419,6 +449,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem.";
+
+/* Error message when tag loading failed */
+"Couldn't load tags." = "Couldn't load tags.";
 
 /* Cell title: the current date. */
 "Current" = "Current";
@@ -579,6 +612,12 @@
 /* Enable Reviews label in Product Settings */
 "Enable Reviews" = "Enable Reviews";
 
+/* Title of the status row on Product Variation main screen to enable/disable a variation */
+"Enabled" = "Enabled";
+
+/* The title used when asking the user for feedback for the app. */
+"Enjoying the WooCommerce app?" = "Enjoying the WooCommerce app?";
+
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "Enter carrier name";
 
@@ -638,6 +677,9 @@
 
 /* Featured Product switch in Product Catalog Visibility */
 "Featured Product" = "Featured Product";
+
+/* Title in the navigation bar when the survey is completed */
+"Feedback Sent!" = "Feedback Sent!";
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass).  */
 "Fill with password manager" = "Fill with password manager";
@@ -747,12 +789,18 @@
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "HOW CAN WE HELP?";
 
+/* Title on the navigation bar for the in-app feedback survey */
+"How can we improve?" = "How can we improve?";
+
 /* Accessibility label for HTML button on formatting toolbar.
    HTML Attachment Label */
 "HTML" = "HTML";
 
 /* Post HTML content */
 "HTML Content" = "HTML Content";
+
+/* The title of the button for giving a positive feedback for the app. */
+"I Like It" = "I Like It";
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "If disabled the note will be private";
@@ -819,6 +867,9 @@
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "Keep Editing";
 
+/* Information text when the survey is completed */
+"Keep in mind that this is not a support ticket and we won’t be able to address individual feedback" = "Keep in mind that this is not a support ticket and we won’t be able to address individual feedback";
+
 /* Last 24 hours section header */
 "Last 24 hours" = "Last 24 hours";
 
@@ -865,6 +916,9 @@
 
 /* Displayed when an Product is being retrieved */
 "Loading Product" = "Loading Product";
+
+/* Loading tags in Product Tags screen */
+"Loading..." = "Loading...";
 
 /* Explains that the files are sorted by LIFO date: most recent day listed first. */
 "Log files by created date" = "Log files by created date";
@@ -997,6 +1051,9 @@
 /* Title of the more help button on alert helping users understand their site address */
 "Need more help?" = "Need more help?";
 
+/* Text preceding the Contact Us button in the survey completed screen */
+"Need some help?" = "Need some help?";
+
 /* The title for the net amount paid cell */
 "Net" = "Net";
 
@@ -1032,6 +1089,12 @@
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "No revenue this period";
+
+/* Placeholder for empty product reviews */
+"No reviews yet" = "No reviews yet";
+
+/* Empty Product Reviews List Message */
+"No Reviews Yet for this Product!" = "No Reviews Yet for this Product!";
 
 /* Empty Reviews List Message */
 "No Reviews Yet!" = "No Reviews Yet!";
@@ -1073,7 +1136,7 @@
 "Off" = "Off";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "OK";
 
 /* +2 Days Section Header */
@@ -1238,8 +1301,14 @@
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "Please try again.";
 
+/* Text on the loading view of the survey screen indicating the user to wait */
+"Please wait" = "Please wait";
+
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "Please wait while we publish this product to your store";
+
+/* Info text saying that crowdsignal in an Automattic product */
+"Powered by Automattic" = "Powered by Automattic";
 
 /* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
    Product Price Settings navigation title - Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
@@ -1418,6 +1487,9 @@
 /* Label action for removing a link from the editor */
 "Remove Link" = "Remove Link";
 
+/* Action to replace one photo on the Product images screen */
+"Replace Photo" = "Replace Photo";
+
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "Report Crashes";
 
@@ -1441,7 +1513,7 @@
 "Review marked as %@" = "Review marked as %@";
 
 /* Reviews descriptive label
-   Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
+   Title of the Reviews row on Product main screen - Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). - Title that appears on top of the Product Reviews screen. */
 "Reviews" = "Reviews";
 
 /* Post Rich content */
@@ -1465,7 +1537,8 @@
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "Sale price: %@";
 
-/* Add Product Category. Save button title in navbar. */
+/* Add Product Category. Save button title in navbar.
+   Add Product Tags. Save button title in navbar. */
 "Save" = "Save";
 
 /* Scan Products */
@@ -1785,8 +1858,8 @@
 /* Accessibility Identifier for the H6 Aztec Style */
 "Switches to the Heading 6 font size" = "Switches to the Heading 6 font size";
 
-/* Title of the product form bottom sheet action for editing tags.
-   Title of the Tags row on Product main screen */
+/* Product Tags navigation title
+   Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
 "Tags" = "Tags";
 
 /* Menu option for taking an image or video with the device's camera. */
@@ -1881,6 +1954,9 @@
 
 /* Button title */
 "Text me a code instead" = "Text me a code instead";
+
+/* Text thanking the user when the survey is completed */
+"Thank you for sharing your thoughts with us" = "Thank you for sharing your thoughts with us";
 
 /* Shown when a user pastes a code into the two factor field that contains letters or is the wrong length */
 "That doesn't appear to be a valid verification code." = "That doesn't appear to be a valid verification code.";

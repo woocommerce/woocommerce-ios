@@ -2,7 +2,7 @@ import UIKit
 
 /// UnifiedSignUpViewController: sign up to .com with an email address.
 ///
-class UnifiedSignUpViewController: LoginViewController {
+class UnifiedSignupViewController: LoginViewController {
 
     /// Private properties.
     ///
@@ -77,7 +77,7 @@ class UnifiedSignUpViewController: LoginViewController {
 
 
 // MARK: - UITableViewDataSource
-extension UnifiedSignUpViewController: UITableViewDataSource {
+extension UnifiedSignupViewController: UITableViewDataSource {
 
     /// Returns the number of rows in a section.
     ///
@@ -98,11 +98,11 @@ extension UnifiedSignUpViewController: UITableViewDataSource {
 
 
 // MARK: - UITableViewDelegate conformance
-extension UnifiedSignUpViewController: UITableViewDelegate { }
+extension UnifiedSignupViewController: UITableViewDelegate { }
 
 
 // MARK: - Private methods
-private extension UnifiedSignUpViewController {
+private extension UnifiedSignupViewController {
 
     /// Registers all of the available TableViewCells.
     ///
@@ -204,7 +204,7 @@ private extension UnifiedSignUpViewController {
 // Mark: - Instance Methods
 /// Implementation methods imported from SignupEmailViewController.
 ///
-extension UnifiedSignUpViewController {
+extension UnifiedSignupViewController {
     // MARK: - Send email
 
     /// Makes the call to request a magic signup link be emailed to the user.

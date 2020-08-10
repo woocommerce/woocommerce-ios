@@ -1,11 +1,11 @@
 PODS:
   - 1PasswordExtension (1.8.6)
   - Alamofire (4.8.0)
-  - AppAuth (1.3.1):
-    - AppAuth/Core (= 1.3.1)
-    - AppAuth/ExternalUserAgent (= 1.3.1)
-  - AppAuth/Core (1.3.1)
-  - AppAuth/ExternalUserAgent (1.3.1)
+  - AppAuth (1.4.0):
+    - AppAuth/Core (= 1.4.0)
+    - AppAuth/ExternalUserAgent (= 1.4.0)
+  - AppAuth/Core (1.4.0)
+  - AppAuth/ExternalUserAgent (1.4.0)
   - Automattic-Tracks-iOS (0.4.5):
     - CocoaLumberjack (~> 3)
     - Reachability (~> 3)
@@ -54,7 +54,7 @@ PODS:
   - WordPress-Aztec-iOS (1.11.0)
   - WordPress-Editor-iOS (1.11.0):
     - WordPress-Aztec-iOS (= 1.11.0)
-  - WordPressAuthenticator (1.17.0):
+  - WordPressAuthenticator (1.22.0-beta.17):
     - 1PasswordExtension (= 1.8.6)
     - Alamofire (= 4.8)
     - CocoaLumberjack (~> 3.5)
@@ -63,17 +63,17 @@ PODS:
     - lottie-ios (= 3.1.6)
     - "NSURL+IDN (= 0.4)"
     - SVProgressHUD (= 2.2.5)
-    - WordPressKit (~> 4.9.0)
-    - WordPressShared (~> 1.8.16)
+    - WordPressKit (~> 4.14-beta)
+    - WordPressShared (~> 1.10-beta)
     - WordPressUI (~> 1.7.0)
-  - WordPressKit (4.9.0):
+  - WordPressKit (4.14.0-beta.2):
     - Alamofire (~> 4.8.0)
     - CocoaLumberjack (~> 3.4)
     - NSObject-SafeExpectations (= 0.0.4)
     - UIDeviceIdentifier (~> 1)
-    - WordPressShared (~> 1.8.16)
+    - WordPressShared (~> 1.10-beta)
     - wpxmlrpc (= 0.8.5)
-  - WordPressShared (1.8.16):
+  - WordPressShared (1.10.0-beta.2):
     - CocoaLumberjack (~> 3.4)
     - FormatterKit/TimeIntervalFormatter (= 1.8.2)
   - WordPressUI (1.7.0)
@@ -107,8 +107,8 @@ DEPENDENCIES:
   - Kingfisher (~> 5.11.0)
   - Sourcery (~> 0.18)
   - WordPress-Editor-iOS (~> 1.11.0)
-  - WordPressAuthenticator (= 1.17.0)
-  - WordPressShared (~> 1.8.16)
+  - WordPressAuthenticator (from `../WordPressAuthenticator-iOS`)
+  - WordPressShared (~> 1.10-beta)
   - WordPressUI (~> 1.7.0)
   - Wormholy (~> 1.6.0)
   - WPMediaPicker (~> 1.7.1-beta)
@@ -141,7 +141,6 @@ SPEC REPOS:
     - UIDeviceIdentifier
     - WordPress-Aztec-iOS
     - WordPress-Editor-iOS
-    - WordPressAuthenticator
     - WordPressKit
     - WordPressShared
     - WordPressUI
@@ -157,10 +156,14 @@ SPEC REPOS:
     - ZendeskSupportProvidersSDK
     - ZendeskSupportSDK
 
+EXTERNAL SOURCES:
+  WordPressAuthenticator:
+    :path: "../WordPressAuthenticator-iOS"
+
 SPEC CHECKSUMS:
   1PasswordExtension: f97cc80ae58053c331b2b6dc8843ba7103b33794
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
-  AppAuth: 8803ba1aec6d00d9afd30093f82e600307eaa6ea
+  AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
   Automattic-Tracks-iOS: 7475e8e77cd142ddd1d10c0a3a7a04ac39a8cdb3
   Charts: e0dd4cd8f257bccf98407b58183ddca8e8d5b578
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
@@ -182,9 +185,9 @@ SPEC CHECKSUMS:
   UIDeviceIdentifier: 44f805037d21b94394821828f4fcaba34b38c2d0
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
-  WordPressAuthenticator: 4b133a708d585c0e7ce374985051c5f40bcc157c
-  WordPressKit: 2e707edd1b28e8dd0f74a40469ca6e7be7b20a70
-  WordPressShared: 1bc316ed162f42af4e0fa2869437e9e28b532b01
+  WordPressAuthenticator: f1409be31cb8ed5076a00e84b19458ffa55e23a1
+  WordPressKit: eb32b62436777b67862e78e9b3eab51d0210e815
+  WordPressShared: d2eede525d5b874a9911362e504da5cc376e5564
   WordPressUI: 1cf47a3b78154faf69caa18569ee7ece1e510fa0
   Wormholy: f52cd3c384fb49ae3e8fdb2b1398b66746a65104
   WPMediaPicker: 1b770d4d4f14fbfb7c421c53c761a521fc23bf12
@@ -198,6 +201,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: 29c7d61f9c667641dd50c083f1b697bb9ca44c96
+PODFILE CHECKSUM: 3edb0099e6b0838d892ca67e7b8dcc25487cbe5e
 
 COCOAPODS: 1.9.1

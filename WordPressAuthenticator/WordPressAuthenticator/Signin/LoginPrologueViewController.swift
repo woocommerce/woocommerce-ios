@@ -68,6 +68,8 @@ class LoginPrologueViewController: LoginViewController {
     // MARK: - Actions
 
     private func loginTapped() {
+        tracker.set(source: .default)
+        
         if WordPressAuthenticator.shared.configuration.showLoginOptions {
             guard let vc = LoginPrologueLoginMethodViewController.instantiate(from: .login) else {
                 DDLogError("Failed to navigate to LoginPrologueLoginMethodViewController from LoginPrologueViewController")
@@ -114,6 +116,8 @@ class LoginPrologueViewController: LoginViewController {
     }
 
     private func signupTapped() {
+        tracker.set(source: .default)
+        
         // This stat is part of a funnel that provides critical information.
         // Before making ANY modification to this stat please refer to: p4qSXL-35X-p2
         WordPressAuthenticator.track(.signupButtonTapped)
@@ -138,12 +142,15 @@ class LoginPrologueViewController: LoginViewController {
         }
 
         vc.googleTapped = { [weak self] in
+            guard let self = self else { return }
+            
             guard WordPressAuthenticator.shared.configuration.enableUnifiedGoogle else {
-                self?.presentGoogleSignupView()
+                self.presentGoogleSignupView()
                 return
             }
 
-            self?.presentUnifiedGoogleView()
+            self.tracker.track(click: .signUpWithGoogle)
+            self.presentUnifiedGoogleView()
         }
 
         vc.appleTapped = { [weak self] in
@@ -165,6 +172,7 @@ class LoginPrologueViewController: LoginViewController {
             return
         }
 
+        self.tracker.track(click: .signUpWithGoogle)
         presentUnifiedGoogleView()
     }
 

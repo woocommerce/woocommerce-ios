@@ -2,19 +2,19 @@ import Foundation
 
 /// Implements the analytics tracking logic for our sign in flow.
 ///
-public class AnalyticsTracker {
+public class AuthenticatorAnalyticsTracker {
     
     /// The method used for analytics tracking.  Useful for overriding in automated tests.
     ///
     typealias TrackerMethod = (_ event: AnalyticsEvent) -> ()
 
-    enum EventType: String {
+    public enum EventType: String {
         case step = "unified_login_step"
         case interaction = "unified_login_interaction"
         case failure = "unified_login_failure"
     }
     
-    enum Property: String {
+    public enum Property: String {
         case failure
         case flow
         case click
@@ -22,8 +22,11 @@ public class AnalyticsTracker {
         case step
     }
     
-    enum Source: String {
+    public enum Source: String {
+        /// Starts when the user logs in / sign up from the prologue screen
+        ///
         case `default`
+        
         case jetpack
         case share
         case deeplink
@@ -34,7 +37,7 @@ public class AnalyticsTracker {
         case selfHosted
     }
     
-    enum Flow: String {
+    public enum Flow: String {
         /// The initial flow before we decide whether the user is logging in or signing up
         case wpCom = "wordpress_com"
         
@@ -75,7 +78,7 @@ public class AnalyticsTracker {
         case signup
     }
     
-    enum Step: String {
+    public enum Step: String {
         /// Gets shown on the Prologue screen
         ///
         case prologue
@@ -107,7 +110,7 @@ public class AnalyticsTracker {
         case twoFactorAuthentication = "2fa"
     }
     
-    enum ClickTarget: String {
+    public enum ClickTarget: String {
         /// Tracked when submitting the email form, the email & password form, site address form,
         /// username & password form and signup email form
         ///
@@ -217,7 +220,7 @@ public class AnalyticsTracker {
     
     /// Shared Instance.
     ///
-    public static var shared = AnalyticsTracker()
+    public static var shared = AuthenticatorAnalyticsTracker()
     
     /// State for the analytics tracker.
     ///
@@ -249,19 +252,19 @@ public class AnalyticsTracker {
     
     /// Track a step within a flow.
     ///
-    func track(step: Step) {
+    public func track(step: Step) {
         track(event(step: step))
     }
     
     /// Track a click interaction.
     ///
-    func track(click: ClickTarget) {
+    public func track(click: ClickTarget) {
         track(event(click: click))
     }
     
     /// Track a failure.
     ///
-    func track(failure: String) {
+    public func track(failure: String) {
         track(event(failure: failure))
     }
     

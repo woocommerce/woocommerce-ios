@@ -8,7 +8,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     @IBOutlet var instructionLabel: UILabel?
     @objc var errorToPresent: Error?
     
-    let tracker = AnalyticsTracker.shared
+    let tracker = AuthenticatorAnalyticsTracker.shared
 
     /// Constraints on the table view container.
     /// Used to adjust the table width in unified views.
@@ -65,6 +65,14 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
 
     func didChangePreferredContentSize() {
         styleInstructions()
+    }
+    
+    // MARK: - NUX Overrides
+    
+    func handleHelpButtonTapped(_ sender: AnyObject) {
+        tracker.track(click: .showHelp)
+        
+        super.handleHelpButtonTapped(sender)
     }
 
     // MARK: - Setup and Configuration

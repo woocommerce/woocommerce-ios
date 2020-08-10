@@ -49,6 +49,8 @@ private extension GoogleSignupConfirmationViewController {
     // MARK: - Button Handling
 
     @IBAction func handleSubmit() {
+        tracker.track(click: .submit)
+        
         configureSubmitButton(animating: true)
         GoogleAuthenticator.sharedInstance.delegate = self
         GoogleAuthenticator.sharedInstance.createGoogleAccount(loginFields: loginFields)

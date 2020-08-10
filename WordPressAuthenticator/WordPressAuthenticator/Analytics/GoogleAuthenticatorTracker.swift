@@ -6,9 +6,9 @@ class GoogleAuthenticatorTracker {
     
     /// The backing analytics tracker for the Google sign in flows.
     ///
-    private let analyticsTracker: AnalyticsTracker
+    private let analyticsTracker: AuthenticatorAnalyticsTracker
     
-    init(analyticsTracker: AnalyticsTracker) {
+    init(analyticsTracker: AuthenticatorAnalyticsTracker) {
         self.analyticsTracker = analyticsTracker
     }
     

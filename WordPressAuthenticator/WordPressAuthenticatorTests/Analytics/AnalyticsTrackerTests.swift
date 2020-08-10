@@ -5,27 +5,27 @@ class AnalyticsTrackerTests: XCTestCase {
     
     // MARK: - Expectations: Building the properties dictionary
     
-    private func expectedProperties(source: AnalyticsTracker.Source, flow: AnalyticsTracker.Flow, step: AnalyticsTracker.Step) -> [String: String] {
+    private func expectedProperties(source: AuthenticatorAnalyticsTracker.Source, flow: AuthenticatorAnalyticsTracker.Flow, step: AuthenticatorAnalyticsTracker.Step) -> [String: String] {
         
         return [
-            AnalyticsTracker.Property.source.rawValue: source.rawValue,
-            AnalyticsTracker.Property.flow.rawValue: flow.rawValue,
-            AnalyticsTracker.Property.step.rawValue: step.rawValue
+            AuthenticatorAnalyticsTracker.Property.source.rawValue: source.rawValue,
+            AuthenticatorAnalyticsTracker.Property.flow.rawValue: flow.rawValue,
+            AuthenticatorAnalyticsTracker.Property.step.rawValue: step.rawValue
         ]
     }
     
-    private func expectedProperties(source: AnalyticsTracker.Source, flow: AnalyticsTracker.Flow, step: AnalyticsTracker.Step, failure: String) -> [String: String] {
+    private func expectedProperties(source: AuthenticatorAnalyticsTracker.Source, flow: AuthenticatorAnalyticsTracker.Flow, step: AuthenticatorAnalyticsTracker.Step, failure: String) -> [String: String] {
         
         var properties = expectedProperties(source: source, flow: flow, step: step)
-        properties[AnalyticsTracker.Property.failure.rawValue] = failure
+        properties[AuthenticatorAnalyticsTracker.Property.failure.rawValue] = failure
         
         return properties
     }
     
-    private func expectedProperties(source: AnalyticsTracker.Source, flow: AnalyticsTracker.Flow, step: AnalyticsTracker.Step, click: AnalyticsTracker.ClickTarget) -> [String: String] {
+    private func expectedProperties(source: AuthenticatorAnalyticsTracker.Source, flow: AuthenticatorAnalyticsTracker.Flow, step: AuthenticatorAnalyticsTracker.Step, click: AuthenticatorAnalyticsTracker.ClickTarget) -> [String: String] {
         
         var properties = expectedProperties(source: source, flow: flow, step: step)
-        properties[AnalyticsTracker.Property.click.rawValue] = click.rawValue
+        properties[AuthenticatorAnalyticsTracker.Property.click.rawValue] = click.rawValue
         
         return properties
     }
@@ -36,11 +36,11 @@ class AnalyticsTrackerTests: XCTestCase {
     /// Ref: pbArwn-AP-p2
     ///
     func testEventTracking() {
-        let source = AnalyticsTracker.Source.reauthentication
-        let flow = AnalyticsTracker.Flow.googleLogin
-        let step = AnalyticsTracker.Step.start
+        let source = AuthenticatorAnalyticsTracker.Source.reauthentication
+        let flow = AuthenticatorAnalyticsTracker.Flow.googleLogin
+        let step = AuthenticatorAnalyticsTracker.Step.start
         
-        let expectedEventName = AnalyticsTracker.EventType.step.rawValue
+        let expectedEventName = AuthenticatorAnalyticsTracker.EventType.step.rawValue
         let expectedEventProperties = self.expectedProperties(source: source, flow: flow, step: step)
         let trackingIsOk = expectation(description: "The parameters of the tracking call are as expected")
         
@@ -52,7 +52,7 @@ class AnalyticsTrackerTests: XCTestCase {
             }
         }
         
-        let tracker = AnalyticsTracker(track: track)
+        let tracker = AuthenticatorAnalyticsTracker(track: track)
         
         tracker.set(source: source)
         tracker.set(flow: flow)
@@ -65,11 +65,11 @@ class AnalyticsTrackerTests: XCTestCase {
     /// receives a matching event.
     ///
     func testBackingTracker() {
-        let source = AnalyticsTracker.Source.reauthentication
-        let flow = AnalyticsTracker.Flow.googleLogin
-        let step = AnalyticsTracker.Step.start
+        let source = AuthenticatorAnalyticsTracker.Source.reauthentication
+        let flow = AuthenticatorAnalyticsTracker.Flow.googleLogin
+        let step = AuthenticatorAnalyticsTracker.Step.start
         
-        let expectedEventName = AnalyticsTracker.EventType.step.rawValue
+        let expectedEventName = AuthenticatorAnalyticsTracker.EventType.step.rawValue
         let expectedEventProperties = self.expectedProperties(source: source, flow: flow, step: step)
         let trackingIsOk = expectation(description: "The parameters of the tracking call are as expected")
         
@@ -81,7 +81,7 @@ class AnalyticsTrackerTests: XCTestCase {
             }
         }
         
-        let tracker = AnalyticsTracker(track: track)
+        let tracker = AuthenticatorAnalyticsTracker(track: track)
         
         tracker.set(source: source)
         tracker.set(flow: flow)
@@ -95,12 +95,12 @@ class AnalyticsTrackerTests: XCTestCase {
     /// Ref: pbArwn-I6-p2
     ///
     func testFailure() {
-        let source = AnalyticsTracker.Source.default
-        let flow = AnalyticsTracker.Flow.googleLogin
-        let step = AnalyticsTracker.Step.start
+        let source = AuthenticatorAnalyticsTracker.Source.default
+        let flow = AuthenticatorAnalyticsTracker.Flow.googleLogin
+        let step = AuthenticatorAnalyticsTracker.Step.start
         let failure = "some error"
         
-        let expectedEventName = AnalyticsTracker.EventType.failure.rawValue
+        let expectedEventName = AuthenticatorAnalyticsTracker.EventType.failure.rawValue
         let expectedEventProperties = self.expectedProperties(source: source, flow: flow, step: step, failure: failure)
         let trackingIsOk = expectation(description: "The parameters of the tracking call are as expected")
         
@@ -113,7 +113,7 @@ class AnalyticsTrackerTests: XCTestCase {
             }
         }
         
-        let tracker = AnalyticsTracker(track: track)
+        let tracker = AuthenticatorAnalyticsTracker(track: track)
         
         tracker.set(source: source)
         tracker.set(flow: flow)
@@ -128,12 +128,12 @@ class AnalyticsTrackerTests: XCTestCase {
     /// Ref: pbArwn-I6-p2
     ///
     func testClick() {
-        let source = AnalyticsTracker.Source.default
-        let flow = AnalyticsTracker.Flow.googleLogin
-        let step = AnalyticsTracker.Step.start
-        let click = AnalyticsTracker.ClickTarget.dismiss
+        let source = AuthenticatorAnalyticsTracker.Source.default
+        let flow = AuthenticatorAnalyticsTracker.Flow.googleLogin
+        let step = AuthenticatorAnalyticsTracker.Step.start
+        let click = AuthenticatorAnalyticsTracker.ClickTarget.dismiss
         
-        let expectedEventName = AnalyticsTracker.EventType.interaction.rawValue
+        let expectedEventName = AuthenticatorAnalyticsTracker.EventType.interaction.rawValue
         let expectedEventProperties = self.expectedProperties(source: source, flow: flow, step: step, click: click)
         let trackingIsOk = expectation(description: "The parameters of the tracking call are as expected")
         
@@ -146,7 +146,7 @@ class AnalyticsTrackerTests: XCTestCase {
             }
         }
         
-        let tracker = AnalyticsTracker(track: track)
+        let tracker = AuthenticatorAnalyticsTracker(track: track)
         
         tracker.set(source: source)
         tracker.set(flow: flow)

@@ -24,6 +24,8 @@ class AuthenticationManager: Authentication {
                                                                 googleLoginServerClientId: ApiCredentials.googleServerId,
                                                                 googleLoginScheme: ApiCredentials.googleAuthScheme,
                                                                 userAgent: UserAgent.defaultUserAgent,
+                                                                showLoginOptions: true,
+                                                                enabledSignUp: false,
                                                                 enableSignInWithApple: true)
 
         let style = WordPressAuthenticatorStyle(primaryNormalBackgroundColor: .primaryButtonBackground,
@@ -46,9 +48,12 @@ class AuthenticationManager: Authentication {
                                                 placeholderColor: .placeholderImage,
                                                 viewControllerBackgroundColor: .listBackground,
                                                 textFieldBackgroundColor: .listForeground,
+                                                buttonViewBackgroundColor: .init(light: .brand, dark: .withColorStudio(.brand, shade: .shade80)),
+                                                buttonViewTopShadowImage: nil,
                                                 navBarImage: StyleManager.navBarImage,
                                                 navBarBadgeColor: .primary,
-                                                navBarBackgroundColor: .primary)
+                                                navBarBackgroundColor: .appBar,
+                                                prologueTopContainerChildViewController: LoginPrologueViewController())
 
         let displayStrings = WordPressAuthenticatorDisplayStrings(emailLoginInstructions: AuthenticationConstants.emailInstructions,
                                                                   jetpackLoginInstructions: AuthenticationConstants.jetpackInstructions,
@@ -99,11 +104,7 @@ class AuthenticationManager: Authentication {
     /// Displays the Login Flow using the specified UIViewController as presenter.
     ///
     func displayAuthentication(from presenter: UIViewController) {
-        let prologueViewController = LoginPrologueViewController()
-        let navigationController = LoginNavigationController(rootViewController: prologueViewController)
-        navigationController.modalPresentationStyle = .fullScreen
-
-        presenter.present(navigationController, animated: true, completion: nil)
+        WordPressAuthenticator.showLogin(from: presenter, animated: false)
     }
 
     /// Returns a LoginViewController preinitialized for WordPress.com

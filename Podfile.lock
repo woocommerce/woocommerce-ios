@@ -66,7 +66,7 @@ PODS:
     - WordPressKit (~> 4.14-beta)
     - WordPressShared (~> 1.11-beta)
     - WordPressUI (~> 1.7.0)
-  - WordPressKit (4.14.0-beta.2):
+  - WordPressKit (4.14.0):
     - Alamofire (~> 4.8.0)
     - CocoaLumberjack (~> 3.4)
     - NSObject-SafeExpectations (= 0.0.4)
@@ -107,7 +107,7 @@ DEPENDENCIES:
   - Kingfisher (~> 5.11.0)
   - Sourcery (~> 0.18)
   - WordPress-Editor-iOS (~> 1.11.0)
-  - WordPressAuthenticator (from `../WordPressAuthenticator-iOS`)
+  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, branch `wcios-siwa/refactor-login-prologue`)
   - WordPressShared (~> 1.11-beta)
   - WordPressUI (~> 1.7.0)
   - Wormholy (~> 1.6.0)
@@ -158,7 +158,13 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   WordPressAuthenticator:
-    :path: "../WordPressAuthenticator-iOS"
+    :branch: wcios-siwa/refactor-login-prologue
+    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
+
+CHECKOUT OPTIONS:
+  WordPressAuthenticator:
+    :commit: da23033641b9b36b67e4a1b77cfeadb479f2d20e
+    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 SPEC CHECKSUMS:
   1PasswordExtension: f97cc80ae58053c331b2b6dc8843ba7103b33794
@@ -186,7 +192,7 @@ SPEC CHECKSUMS:
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
   WordPressAuthenticator: 04fdbd520564aba888e282761b956fa3a4d3ebf4
-  WordPressKit: eb32b62436777b67862e78e9b3eab51d0210e815
+  WordPressKit: dcab41057f0c39af3280b7c0d17bdc36271e01ae
   WordPressShared: b56046080c99d41519d097c970df663fda48e218
   WordPressUI: 1cf47a3b78154faf69caa18569ee7ece1e510fa0
   Wormholy: f52cd3c384fb49ae3e8fdb2b1398b66746a65104
@@ -201,6 +207,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: ef1af33f2f27f79e03dc9e5dab448d707201a402
+PODFILE CHECKSUM: 90618b1e6616777240b54b3693395a1795adc7a5
 
 COCOAPODS: 1.9.1

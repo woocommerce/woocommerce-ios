@@ -32,6 +32,7 @@
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ClH-Cn-49d" userLabel="Primary Button" customClass="NUXButton" customModule="WordPressAuthenticatorResources" customModuleProvider="target">
                                                 <rect key="frame" x="16" y="16" width="343" height="44"/>
+                                                <accessibility key="accessibilityConfiguration" identifier="submitButton"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="44" id="iBk-Pi-8cv"/>
                                                 </constraints>

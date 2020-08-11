@@ -16,6 +16,9 @@ protocol StorePickerViewControllerDelegate: AnyObject {
     /// - Returns: a closure to be executed after the store selection
     ///
     func didSelectStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure)
+
+    /// Notifies the delegate to dismiss the store picker and restart authentication.
+    func restartAuthentication()
 }
 
 
@@ -399,15 +402,8 @@ private extension StorePickerViewController {
             return
         }
 
-        let loginViewController = ServiceLocator.authenticationManager.loginForWordPressDotCom(from: self)
-
-        guard let navigationController = navigationController else {
-            assertionFailure("Navigation error: one of the login / logout states is not correctly handling navigation. No navigationController found.")
-            return
-        }
-
         ServiceLocator.stores.deauthenticate()
-        navigationController.setViewControllers([loginViewController], animated: true)
+        delegate?.restartAuthentication()
     }
 
     /// If the provided site's WC version is not valid, display a warning to the user.

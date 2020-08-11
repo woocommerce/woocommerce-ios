@@ -132,13 +132,6 @@ extension LoginPrologueViewController {
         safariViewController.modalPresentationStyle = .pageSheet
         present(safariViewController, animated: true, completion: nil)
     }
-
-    /// Proceeds with the Login Flow.
-    ///
-    @IBAction func loginWasPressed() {
-        ServiceLocator.analytics.track(.loginPrologueContinueTapped)
-        let loginViewController = ServiceLocator.authenticationManager.loginForWordPressDotCom(from: self)
-    }
 }
 
 

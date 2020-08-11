@@ -58,6 +58,11 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
             self?.onDismiss?()
         }
     }
+
+    func restartAuthentication() {
+        onDismiss?()
+        navigationController.popToRootViewController(animated: true)
+    }
 }
 
 // MARK: - Private Helpers

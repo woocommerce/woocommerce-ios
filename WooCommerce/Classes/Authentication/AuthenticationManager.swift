@@ -104,25 +104,9 @@ class AuthenticationManager: Authentication {
     /// Displays the Login Flow using the specified UIViewController as presenter.
     ///
     func displayAuthentication(from presenter: UIViewController) {
-        WordPressAuthenticator.showLogin(from: presenter, animated: false)
-    }
-
-    /// Returns a LoginViewController preinitialized for WordPress.com
-    ///
-    func loginForWordPressDotCom(from sourceViewController: UIViewController) -> UIViewController {
-        let loginMethodsViewController = WordPressAuthenticator.signinMethods(from: sourceViewController, onDismiss: { isCancelled in
-
+        WordPressAuthenticator.showLogin(from: presenter, animated: false, onLoginButtonTapped: {
+            ServiceLocator.analytics.track(.loginPrologueContinueTapped)
         })
-//        loginMethodsViewController.transitioningDelegate = sourceViewController
-        loginMethodsViewController.modalPresentationStyle = .custom
-        sourceViewController.navigationController?.present(loginMethodsViewController, animated: true, completion: nil)
-        return loginMethodsViewController
-
-//        let loginViewController = WordPressAuthenticator.signinForWPCom()
-//        loginViewController.offerSignupOption = false
-//        loginViewController.loginFields.restrictToWPCom = false
-//
-//        return loginViewController
     }
 
     /// Handles an Authentication URL Callback. Returns *true* on success.

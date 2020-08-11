@@ -6,10 +6,6 @@ import WordPressAuthenticator
 ///
 protocol Authentication {
 
-    /// Returns a LoginViewController preinitialized for WordPress.com
-    ///
-    func loginForWordPressDotCom(from sourceViewController: UIViewController) -> UIViewController
-
     /// Presents the Support Interface from a given ViewController, with a specified SourceTag.
     ///
     func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag)

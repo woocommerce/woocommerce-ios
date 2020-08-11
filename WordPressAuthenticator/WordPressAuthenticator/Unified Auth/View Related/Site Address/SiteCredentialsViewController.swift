@@ -110,7 +110,7 @@ final class SiteCredentialsViewController: LoginViewController {
     ///
     private func configureForAccessibility() {
         view.accessibilityElements = [
-            usernameField,
+            usernameField as Any,
             tableView,
             submitButton as Any
         ]

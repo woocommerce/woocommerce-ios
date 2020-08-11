@@ -136,6 +136,7 @@
 		CE9091F72499549500AB50BD /* TextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9091F52499549500AB50BD /* TextFieldTableViewCell.swift */; };
 		CE9091F82499549500AB50BD /* TextFieldTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE9091F62499549500AB50BD /* TextFieldTableViewCell.xib */; };
 		CE9091FE249A720E00AB50BD /* UIView+AuthHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9091FD249A720E00AB50BD /* UIView+AuthHelpers.swift */; };
+		CE9C5B4E24E31E03005A8BCF /* SignupMagicLinkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9C5B4D24E31E02005A8BCF /* SignupMagicLinkViewController.swift */; };
 		CEC77C6624854F2E00FB9050 /* SiteAddressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC77C6524854F2E00FB9050 /* SiteAddressViewController.swift */; };
 		CEC77C6824854F3E00FB9050 /* SiteAddress.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEC77C6724854F3E00FB9050 /* SiteAddress.storyboard */; };
 		CEDE0D93242011E000CB3345 /* NSObject+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDE0D92242011E000CB3345 /* NSObject+Helpers.swift */; };
@@ -318,6 +319,7 @@
 		CE9091F52499549500AB50BD /* TextFieldTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldTableViewCell.swift; sourceTree = "<group>"; };
 		CE9091F62499549500AB50BD /* TextFieldTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TextFieldTableViewCell.xib; sourceTree = "<group>"; };
 		CE9091FD249A720E00AB50BD /* UIView+AuthHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+AuthHelpers.swift"; sourceTree = "<group>"; };
+		CE9C5B4D24E31E02005A8BCF /* SignupMagicLinkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupMagicLinkViewController.swift; sourceTree = "<group>"; };
 		CEC77C6524854F2E00FB9050 /* SiteAddressViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteAddressViewController.swift; sourceTree = "<group>"; };
 		CEC77C6724854F3E00FB9050 /* SiteAddress.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SiteAddress.storyboard; sourceTree = "<group>"; };
 		CEDE0D92242011E000CB3345 /* NSObject+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+Helpers.swift"; sourceTree = "<group>"; };
@@ -732,6 +734,7 @@
 			children = (
 				CE1BBF8224D348CD001D2E3E /* UnifiedSignupViewController.swift */,
 				CE1BBF8424D348EC001D2E3E /* UnifiedSignup.storyboard */,
+				CE9C5B4D24E31E02005A8BCF /* SignupMagicLinkViewController.swift */,
 			);
 			path = "Sign up";
 			sourceTree = "<group>";
@@ -1154,6 +1157,7 @@
 				B56090CB208A4F5400399AE4 /* NUXNavigationController.swift in Sources */,
 				B560911F208A555E00399AE4 /* SignupGoogleViewController.swift in Sources */,
 				B5609142208A563800399AE4 /* LoginNavigationController.swift in Sources */,
+				CE9C5B4E24E31E03005A8BCF /* SignupMagicLinkViewController.swift in Sources */,
 				B56090E4208A4F9D00399AE4 /* WPNUXMainButton.m in Sources */,
 				3FFF2FC323D7F53200D38C77 /* AppSelector.swift in Sources */,
 				B560913B208A563800399AE4 /* LoginSelfHostedViewController.swift in Sources */,

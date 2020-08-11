@@ -8,6 +8,7 @@ class LoginPrologueViewController: LoginViewController {
 
     private var buttonViewController: NUXButtonViewController?
     var showCancel = false
+    private let configuration = WordPressAuthenticator.shared.configuration
 
     // MARK: - Lifecycle Methods
 
@@ -53,8 +54,11 @@ class LoginPrologueViewController: LoginViewController {
         buttonViewController.setupTopButton(title: loginTitle, isPrimary: false, accessibilityIdentifier: "Prologue Log In Button") { [weak self] in
             self?.loginTapped()
         }
-        buttonViewController.setupBottomButton(title: createTitle, isPrimary: true, accessibilityIdentifier: "Prologue Signup Button") { [weak self] in
-            self?.signupTapped()
+
+        if configuration.enabledSignUp {
+            buttonViewController.setupBottomButton(title: createTitle, isPrimary: true, accessibilityIdentifier: "Prologue Signup Button") { [weak self] in
+                self?.signupTapped()
+            }
         }
         if showCancel {
             let cancelTitle = NSLocalizedString("Cancel", comment: "Button title. Tapping it cancels the login flow.")

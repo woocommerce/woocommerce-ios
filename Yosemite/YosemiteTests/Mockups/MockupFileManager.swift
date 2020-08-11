@@ -1,9 +1,13 @@
 import Foundation
+import XCTest
 
 /// A subclass of `FileManager` where the file existence is based on a dictionary whose key is the file path.
 ///
 final class MockupFileManager: FileManager {
     var dataByFilePath: [String: Data] = [:]
+
+    /// The mocked results for the `attributesOfItem(atPath:)`.
+    private var attributesOfItemResults = [String: [FileAttributeKey: Any]]()
 
     override func fileExists(atPath path: String) -> Bool {
         return dataByFilePath[path] != nil
@@ -16,5 +20,23 @@ final class MockupFileManager: FileManager {
 
     override func removeItem(at URL: URL) throws {
         dataByFilePath.removeValue(forKey: URL.path)
+    }
+
+    override func attributesOfItem(atPath path: String) throws -> [FileAttributeKey: Any] {
+        guard let attributes = attributesOfItemResults[path] else {
+            XCTFail("No mocked attributes for path \(path)")
+            return [:]
+        }
+
+        return attributes
+    }
+}
+
+// MARK: - Mocking
+
+extension MockupFileManager {
+    /// Sets the return value when `attributesOfItem(atPath:)` is called.
+    func whenRetrievingAttributesOfItem(atPath path: String, thenReturn: [FileAttributeKey: Any]) {
+        attributesOfItemResults[path] = thenReturn
     }
 }

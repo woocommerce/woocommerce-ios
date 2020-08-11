@@ -66,6 +66,9 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     }()
 
     private lazy var inAppFeedbackCardViewController = InAppFeedbackCardViewController()
+    /// An array of UIViews for the In-app Feedback Card. This will be dynamically shown
+    /// or hidden depending on the configuration.
+    private lazy var inAppFeedbackCardViewsForStackView: [UIView] = createInAppFeedbackCardViewsForStackView()
 
     private lazy var topPerformersPeriodViewController: TopPerformerDataViewController = {
         return TopPerformerDataViewController(granularity: timeRange.topEarnerStatsGranularity)
@@ -77,31 +80,28 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         return [storeStatsPeriodViewController, inAppFeedbackCardViewController, topPerformersPeriodViewController]
     }
 
-    private let featureFlagService: FeatureFlagService
+    private let viewModel: StoreStatsAndTopPerformersPeriodViewModel
 
-    /// If applicable, present the in-app feedback. The in-app feedback may still not be presented
-    /// depending on the constraints. But setting this to `false`, will ensure that it will
-    /// never be presented.
-    ///
-    private let canDisplayInAppFeedback: Bool
+    /// Subscriptions that should be cancelled on `deinit`.
+    private var cancellables = [ObservationToken]()
 
     /// Create an instance of `self`.
     ///
-    /// - Parameter canDisplayInAppFeedback: If applicable, present the in-app feedback. The in-app
-    ///                                      feedback may still not be presented depending on the
-    ///                                      constraints. But setting this to `false`, will ensure
-    ///                                      that it will never be presented.
+    /// - Parameter canDisplayInAppFeedbackCard: If applicable, present the in-app feedback card.
+    ///     The in-app feedback card may still not be presented depending on the constraints. But
+    ///     setting this to `false`, will ensure that it will never be presented.
     ///
     init(timeRange: StatsTimeRangeV4,
          currentDate: Date,
-         canDisplayInAppFeedback: Bool,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         canDisplayInAppFeedbackCard: Bool) {
         self.timeRange = timeRange
         self.granularity = timeRange.intervalGranularity
         self.currentDate = currentDate
-        self.canDisplayInAppFeedback = canDisplayInAppFeedback
-        self.featureFlagService = featureFlagService
+        self.viewModel = StoreStatsAndTopPerformersPeriodViewModel(canDisplayInAppFeedbackCard: canDisplayInAppFeedbackCard)
+
         super.init(nibName: nil, bundle: nil)
+
+        configureInAppFeedbackCardViews()
         configureChildViewControllers()
     }
 
@@ -109,10 +109,21 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    deinit {
+        cancellables.forEach {
+            $0.cancel()
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         configureSubviews()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        viewModel.onViewDidAppear()
     }
 }
 
@@ -152,12 +163,41 @@ extension StoreStatsAndTopPerformersPeriodViewController: IndicatorInfoProvider 
     }
 }
 
+// MARK: - Provisioning and Utils
+
 private extension StoreStatsAndTopPerformersPeriodViewController {
     func configureChildViewControllers() {
         childViewContrllers.forEach { childViewController in
             addChild(childViewController)
             childViewController.view.translatesAutoresizingMaskIntoConstraints = false
         }
+    }
+
+    /// Observe and react to visibility events for the in-app feedback card.
+    func configureInAppFeedbackCardViews() {
+        guard viewModel.canDisplayInAppFeedbackCard else {
+            return
+        }
+
+        let cancellable = viewModel.isInAppFeedbackCardVisible.subscribe { [weak self] isVisible in
+            guard let self = self else {
+                return
+            }
+
+            let isHidden = !isVisible
+
+            self.inAppFeedbackCardViewsForStackView.forEach { subView in
+                // Check if the subView will change first. It looks like if we don't do this,
+                // then StackView will not animate the change correctly.
+                if subView.isHidden != isHidden {
+                    UIView.animate(withDuration: 0.2) {
+                        subView.isHidden = isHidden
+                        self.stackView.setNeedsLayout()
+                    }
+                }
+            }
+        }
+        cancellables.append(cancellable)
     }
 
     func configureSubviews() {
@@ -186,10 +226,7 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
             ])
 
         // In-app Feedback Card
-        let inAppFeedbackCardViews = createInAppFeedbackCardViewsForStackView()
-        inAppFeedbackCardViews.forEach {
-            stackView.addArrangedSubview($0)
-        }
+        stackView.addArrangedSubviews(inAppFeedbackCardViewsForStackView)
 
         // Top performers header.
         let topPerformersHeaderView = TopPerformersSectionHeaderView(title:
@@ -237,11 +274,10 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
     /// The views created are an empty space and the `inAppFeedbackCardViewController.view`.
     ///
     /// - SeeAlso: configureSubviews
-    /// - Returns: The views or empty array if we do not need in-app feedback from the user.
+    /// - Returns: The views or an empty array if something catastrophic happened.
     ///
     func createInAppFeedbackCardViewsForStackView() -> [UIView] {
-        guard canDisplayInAppFeedback,
-            featureFlagService.isFeatureFlagEnabled(.inAppFeedback),
+        guard viewModel.canDisplayInAppFeedbackCard,
             let cardView = inAppFeedbackCardViewController.view else {
             return []
         }

@@ -52,7 +52,8 @@ class AnalyticsTrackerTests: XCTestCase {
             }
         }
         
-        let tracker = AuthenticatorAnalyticsTracker(track: track)
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: true, siteAuthenticationEnabled: false)
+        let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
         
         tracker.set(source: source)
         tracker.set(flow: flow)
@@ -81,7 +82,8 @@ class AnalyticsTrackerTests: XCTestCase {
             }
         }
         
-        let tracker = AuthenticatorAnalyticsTracker(track: track)
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: true, siteAuthenticationEnabled: false)
+        let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
         
         tracker.set(source: source)
         tracker.set(flow: flow)
@@ -112,8 +114,9 @@ class AnalyticsTrackerTests: XCTestCase {
                 trackingIsOk.fulfill()
             }
         }
-        
-        let tracker = AuthenticatorAnalyticsTracker(track: track)
+
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: true, siteAuthenticationEnabled: false)
+        let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
         
         tracker.set(source: source)
         tracker.set(flow: flow)
@@ -146,12 +149,212 @@ class AnalyticsTrackerTests: XCTestCase {
             }
         }
         
-        let tracker = AuthenticatorAnalyticsTracker(track: track)
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: true, siteAuthenticationEnabled: false)
+        let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
         
         tracker.set(source: source)
         tracker.set(flow: flow)
         tracker.track(step: step)
         tracker.track(click: click)
+        
+        waitForExpectations(timeout: 0.1)
+    }
+    
+    // MARK: - Legacy Tracking Support Tests
+    
+    /// Tests legacy tracking for a step
+    ///
+    func testStepLegacyTracking() {
+        let source = AuthenticatorAnalyticsTracker.Source.default
+        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.appleLogin, .appleSignup, .googleLogin, .googleSignup, .loginWithSiteAddress]
+        let step = AuthenticatorAnalyticsTracker.Step.start
+        
+        let legacyTrackingExecuted = expectation(description: "The legacy tracking block was executed.")
+        legacyTrackingExecuted.expectedFulfillmentCount = flows.count
+        
+        let track = { (event: AnalyticsEvent) in
+            XCTFail()
+        }
+        
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: false, siteAuthenticationEnabled: false)
+        let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
+        
+        tracker.set(source: source)
+        
+        for flow in flows {
+            tracker.set(flow: flow)
+            tracker.track(step: step, ifTrackingNotEnabled: {
+                legacyTrackingExecuted.fulfill()
+            })
+        }
+        
+        waitForExpectations(timeout: 0.1)
+    }
+    
+    /// Tests the new  tracking for a step
+    ///
+    func testStepNewTracking() {
+        let source = AuthenticatorAnalyticsTracker.Source.default
+        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.appleLogin, .appleSignup, .googleLogin, .googleSignup, .loginWithSiteAddress]
+        let step = AuthenticatorAnalyticsTracker.Step.start
+        
+        let legacyTrackingExecuted = expectation(description: "The legacy tracking block was executed.")
+        legacyTrackingExecuted.expectedFulfillmentCount = flows.count
+        
+        let track = { (event: AnalyticsEvent) in
+            legacyTrackingExecuted.fulfill()
+        }
+        
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: true, googleEnabled: true, siteAuthenticationEnabled: true)
+        let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
+        
+        tracker.set(source: source)
+        
+        for flow in flows {
+            tracker.set(flow: flow)
+            tracker.track(step: step, ifTrackingNotEnabled: {
+                XCTFail()
+            })
+        }
+        
+        waitForExpectations(timeout: 0.1)
+    }
+    
+    /// Tests legacy tracking for a click interaction
+    ///
+    func testClickLegacyTracking() {
+        let source = AuthenticatorAnalyticsTracker.Source.default
+        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.appleLogin, .appleSignup, .googleLogin, .googleSignup, .loginWithSiteAddress]
+        let click = AuthenticatorAnalyticsTracker.ClickTarget.connectSite
+        
+        let legacyTrackingExecuted = expectation(description: "The legacy tracking block was executed.")
+        legacyTrackingExecuted.expectedFulfillmentCount = flows.count
+        
+        let track = { (event: AnalyticsEvent) in
+            XCTFail()
+        }
+        
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: false, siteAuthenticationEnabled: false)
+        let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
+        
+        tracker.set(source: source)
+        
+        for flow in flows {
+            tracker.set(flow: flow)
+            tracker.track(click: click, ifTrackingNotEnabled: {
+                legacyTrackingExecuted.fulfill()
+            })
+        }
+        
+        waitForExpectations(timeout: 0.1)
+    }
+    
+    /// Tests the new  tracking for a click interaction
+    ///
+    func testClickNewTracking() {
+        let source = AuthenticatorAnalyticsTracker.Source.default
+        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.appleLogin, .appleSignup, .googleLogin, .googleSignup, .loginWithSiteAddress]
+        let click = AuthenticatorAnalyticsTracker.ClickTarget.connectSite
+        
+        let legacyTrackingExecuted = expectation(description: "The legacy tracking block was executed.")
+        legacyTrackingExecuted.expectedFulfillmentCount = flows.count
+        
+        let track = { (event: AnalyticsEvent) in
+            legacyTrackingExecuted.fulfill()
+        }
+        
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: true, googleEnabled: true, siteAuthenticationEnabled: true)
+        let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
+        
+        tracker.set(source: source)
+        
+        for flow in flows {
+            tracker.set(flow: flow)
+            tracker.track(click: click, ifTrackingNotEnabled: {
+                XCTFail()
+            })
+        }
+        
+        waitForExpectations(timeout: 0.1)
+    }
+    
+    /// Tests legacy tracking for a failure
+    ///
+    func testFailureLegacyTracking() {
+        let source = AuthenticatorAnalyticsTracker.Source.default
+        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.appleLogin, .appleSignup, .googleLogin, .googleSignup, .loginWithSiteAddress]
+        
+        let legacyTrackingExecuted = expectation(description: "The legacy tracking block was executed.")
+        legacyTrackingExecuted.expectedFulfillmentCount = flows.count
+        
+        let track = { (event: AnalyticsEvent) in
+            XCTFail()
+        }
+        
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: false, siteAuthenticationEnabled: false)
+        let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
+        
+        tracker.set(source: source)
+        
+        for flow in flows {
+            tracker.set(flow: flow)
+            tracker.track(failure: "error", ifTrackingNotEnabled: {
+                legacyTrackingExecuted.fulfill()
+            })
+        }
+        
+        waitForExpectations(timeout: 0.1)
+    }
+    
+    /// Tests the new  tracking for a failure
+    ///
+    func testFailureNewTracking() {
+        let source = AuthenticatorAnalyticsTracker.Source.default
+        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.appleLogin, .appleSignup, .googleLogin, .googleSignup, .loginWithSiteAddress]
+        
+        let legacyTrackingExecuted = expectation(description: "The legacy tracking block was executed.")
+        legacyTrackingExecuted.expectedFulfillmentCount = flows.count
+        
+        let track = { (event: AnalyticsEvent) in
+            legacyTrackingExecuted.fulfill()
+        }
+        
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: true, googleEnabled: true, siteAuthenticationEnabled: true)
+        let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
+        
+        tracker.set(source: source)
+        
+        for flow in flows {
+            tracker.set(flow: flow)
+            tracker.track(failure: "error", ifTrackingNotEnabled: {
+                XCTFail()
+            })
+        }
+        
+        waitForExpectations(timeout: 0.1)
+    }
+    
+    /// Tests that we're using legacy tracking for all unsupported flows.
+    ///
+    func testStepLegacyTrackingForAllUnsupportedFlows() {
+        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.iCloudKeychainLogin, .loginWithPassword, .magicLink, .signup, .wpCom]
+        
+        let legacyTrackingUsed = expectation(description: "All unsupported flows should use legacy tracking")
+        legacyTrackingUsed.expectedFulfillmentCount = flows.count
+        
+        let track = { (event: AnalyticsEvent) in
+            XCTFail()
+        }
+        
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: true, googleEnabled: true, siteAuthenticationEnabled: true)
+        let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
+        
+        for flow in flows {
+            tracker.set(flow: flow)
+            tracker.track(step: .start, ifTrackingNotEnabled: {
+                legacyTrackingUsed.fulfill()
+            })
+        }
         
         waitForExpectations(timeout: 0.1)
     }

@@ -39,6 +39,7 @@ public class AuthenticatorAnalyticsTracker {
     
     public enum Flow: String {
         /// The initial flow before we decide whether the user is logging in or signing up
+        ///
         case wpCom = "wordpress_com"
         
         /// Flow for Google login
@@ -220,7 +221,20 @@ public class AuthenticatorAnalyticsTracker {
     
     /// Shared Instance.
     ///
-    public static var shared = AuthenticatorAnalyticsTracker()
+    public static var shared: AuthenticatorAnalyticsTracker = {
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(
+            appleEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedApple,
+            googleEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedGoogle,
+            siteAuthenticationEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress)
+        
+        return AuthenticatorAnalyticsTracker(configuration: configuration)
+    }()
+    
+    struct Configuration {
+        let appleEnabled: Bool
+        let googleEnabled: Bool
+        let siteAuthenticationEnabled: Bool
+    }
     
     /// State for the analytics tracker.
     ///
@@ -236,6 +250,12 @@ public class AuthenticatorAnalyticsTracker {
         }
     }
     
+    /// The tracking configuration.
+    ///
+    private let configuration: Configuration
+    
+    /// The state of this tracker.
+    ///
     private let state = State()
     
     /// The backing analytics tracking method.  Can be overridden for testing purposes.
@@ -243,9 +263,42 @@ public class AuthenticatorAnalyticsTracker {
     let track: TrackerMethod
 
     // MARK: - Initializers
-    
-    init(track: @escaping TrackerMethod = WPAnalytics.track) {
+
+    init(configuration: Configuration, track: @escaping TrackerMethod = WPAnalytics.track) {
+        self.configuration = configuration
         self.track = track
+    }
+    
+    // MARK: - Legacy vs Unified tracking
+    
+    /// This method will reply whether, for the current flow in the state, tracking is enabled.
+    ///
+    /// It's the responsibility of the class calling the tracking methods to check this before attempting to actually do the tracking.
+    ///
+    /// - Returns: `true` if the
+    ///
+    public func canTrackInCurrentFlow() -> Bool {
+        return isInSiteAuthenticationFlowAndCanTrack()
+            || isInAppleFlowAndCanTrack()
+            || isInGoogleFlowAndCanTrack()
+    }
+    
+    public func shouldUseLegacyTracker() -> Bool {
+        return !canTrackInCurrentFlow()
+    }
+
+    // MARK: - Legacy vs Unified tracking: Support Methods
+    
+    private func isInSiteAuthenticationFlowAndCanTrack() -> Bool {
+        return configuration.siteAuthenticationEnabled && state.lastFlow == .loginWithSiteAddress
+    }
+    
+    private func isInAppleFlowAndCanTrack() -> Bool {
+        return configuration.appleEnabled && [Flow.appleLogin, .appleSignup].contains(state.lastFlow)
+    }
+    
+    private func isInGoogleFlowAndCanTrack() -> Bool {
+        return configuration.googleEnabled && [Flow.googleLogin, .googleSignup].contains(state.lastFlow)
     }
     
     // MARK: - Tracking
@@ -253,33 +306,56 @@ public class AuthenticatorAnalyticsTracker {
     /// Track a step within a flow.
     ///
     public func track(step: Step) {
-        // This is a temporary guard, until the unified flows are enabled for all users
-        guard WordPressAuthenticator.shared.configuration.enableUnifiedAuth else {
-            return
-        }
-        
         track(event(step: step))
     }
     
     /// Track a click interaction.
     ///
     public func track(click: ClickTarget) {
-        // This is a temporary guard, until the unified flows are enabled for all users
-        guard WordPressAuthenticator.shared.configuration.enableUnifiedAuth else {
-            return
-        }
-        
         track(event(click: click))
     }
     
     /// Track a failure.
     ///
     public func track(failure: String) {
-        // This is a temporary guard, until the unified flows are enabled for all users
-        guard WordPressAuthenticator.shared.configuration.enableUnifiedAuth else {
+        track(event(failure: failure))
+    }
+    
+    // MARK: - Tracking: Legacy Tracking Support
+    
+    /// Tracks a step within a flow if tracking is enabled for that flow, or executes the specified block if tracking is not enabled
+    /// for the flow..
+    ///
+    public func track(step: Step, ifTrackingNotEnabled legacyTracking: () -> ()) {
+        guard canTrackInCurrentFlow() else {
+            legacyTracking()
             return
         }
-        
+
+        track(step: step)
+    }
+    
+    /// Track a click interaction if tracking is enabled for that flow, or executes the specified block if tracking is not enabled
+    /// for the flow.
+    ///
+    public func track(click: ClickTarget, ifTrackingNotEnabled legacyTracking: () -> ()) {
+        guard canTrackInCurrentFlow() else {
+            legacyTracking()
+            return
+        }
+
+        track(event(click: click))
+    }
+    
+    /// Track a failure if tracking is enabled for that flow, or executes the specified block if tracking is not enabled
+    /// for the flow.
+    ///
+    public func track(failure: String, ifTrackingNotEnabled legacyTracking: () -> ()) {
+        guard canTrackInCurrentFlow() else {
+            legacyTracking()
+            return
+        }
+
         track(event(failure: failure))
     }
     

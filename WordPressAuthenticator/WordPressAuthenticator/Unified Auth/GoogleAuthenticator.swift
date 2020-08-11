@@ -165,7 +165,6 @@ private extension GoogleAuthenticator {
     ///   - viewController: The UIViewController that Google is being presented from.
     ///                     Required by Google SDK.
     func requestAuthorization(from viewController: UIViewController) {
-
         switch authType {
         case .login:
             track(.loginSocialButtonClick)

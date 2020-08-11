@@ -50,7 +50,7 @@ final class StoreStatsAndTopPerformersPeriodViewModel {
     private func updateIsInAppFeedbackCardVisibleValue() {
         // Abort right away if we don't need to calculate the real value.
         let isEnabled = canDisplayInAppFeedbackCard && featureFlagService.isFeatureFlagEnabled(.inAppFeedback)
-        if !isEnabled {
+        guard isEnabled else {
             return isInAppFeedbackCardVisibleSubject.send(isEnabled)
         }
 

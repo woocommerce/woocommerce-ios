@@ -54,7 +54,11 @@ final class StoreStatsAndTopPerformersPeriodViewModel {
             return isInAppFeedbackCardVisibleSubject.send(isEnabled)
         }
 
-        let action = AppSettingsAction.loadInAppFeedbackCardVisibility { result in
+        let action = AppSettingsAction.loadInAppFeedbackCardVisibility { [weak self] result in
+            guard let self = self else {
+                return
+            }
+
             switch result {
             case .success(let shouldBeVisible):
                 self.isInAppFeedbackCardVisibleSubject.send(shouldBeVisible)

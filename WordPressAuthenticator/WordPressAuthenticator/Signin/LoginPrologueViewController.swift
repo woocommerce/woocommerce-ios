@@ -8,14 +8,33 @@ class LoginPrologueViewController: LoginViewController {
 
     private var buttonViewController: NUXButtonViewController?
     var showCancel = false
+    var onLoginButtonTapped: (() -> Void)?
+
     private let configuration = WordPressAuthenticator.shared.configuration
+    private let style = WordPressAuthenticator.shared.style
+
+    @IBOutlet private weak var topContainerView: UIView!
 
     // MARK: - Lifecycle Methods
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        if let topContainerChildViewController = style.prologueTopContainerChildViewController {
+            topContainerView.subviews.forEach { $0.removeFromSuperview() }
+            addChild(topContainerChildViewController)
+            topContainerView.addSubview(topContainerChildViewController.view)
+            topContainerChildViewController.didMove(toParent: self)
+
+            topContainerChildViewController.view.translatesAutoresizingMaskIntoConstraints = false
+            topContainerView.pinSubviewToAllEdges(topContainerChildViewController.view)
+        }
+    }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         configureButtonVC()
-        self.navigationController?.setNavigationBarHidden(true, animated: false)
+        navigationController?.setNavigationBarHidden(true, animated: false)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -52,6 +71,7 @@ class LoginPrologueViewController: LoginViewController {
         let createTitle = NSLocalizedString("Sign up for WordPress.com", comment: "Button title. Tapping begins the process of creating a WordPress.com account.")
 
         buttonViewController.setupTopButton(title: loginTitle, isPrimary: false, accessibilityIdentifier: "Prologue Log In Button") { [weak self] in
+            self?.onLoginButtonTapped?()
             self?.loginTapped()
         }
 
@@ -66,13 +86,13 @@ class LoginPrologueViewController: LoginViewController {
                 self?.dismiss(animated: true, completion: nil)
             }
         }
-        buttonViewController.backgroundColor = WordPressAuthenticator.shared.style.buttonViewBackgroundColor
+        buttonViewController.backgroundColor = style.buttonViewBackgroundColor
     }
 
     // MARK: - Actions
 
     private func loginTapped() {
-        if WordPressAuthenticator.shared.configuration.showLoginOptions {
+        if configuration.showLoginOptions {
             guard let vc = LoginPrologueLoginMethodViewController.instantiate(from: .login) else {
                 DDLogError("Failed to navigate to LoginPrologueLoginMethodViewController from LoginPrologueViewController")
                 return

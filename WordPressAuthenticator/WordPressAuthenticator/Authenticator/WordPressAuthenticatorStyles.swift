@@ -62,6 +62,8 @@ public struct WordPressAuthenticatorStyle {
     // If not specified, falls back to viewControllerBackgroundColor.
     public let buttonViewBackgroundColor: UIColor
 
+    public let buttonViewTopShadowImage: UIImage?
+
     /// Style: nav bar
     ///
     public let navBarImage: UIImage
@@ -79,6 +81,10 @@ public struct WordPressAuthenticatorStyle {
     /// Style: prologue background colors
     ///
     public let prologueTitleColor: UIColor
+
+    /// Style: prologue top container child view controller
+    ///
+    public let prologueTopContainerChildViewController: UIViewController?
 
     /// Style: status bar style
     ///
@@ -107,12 +113,14 @@ public struct WordPressAuthenticatorStyle {
                 viewControllerBackgroundColor: UIColor,
                 textFieldBackgroundColor: UIColor,
                 buttonViewBackgroundColor: UIColor? = nil,
+                buttonViewTopShadowImage: UIImage? = UIImage(named: "darkgrey-shadow"),
                 navBarImage: UIImage,
                 navBarBadgeColor: UIColor,
                 navBarBackgroundColor: UIColor,
                 navButtonTextColor: UIColor = .white,
                 prologueBackgroundColor: UIColor = WPStyleGuide.wordPressBlue(),
                 prologueTitleColor: UIColor = .white,
+                prologueTopContainerChildViewController: UIViewController? = nil,
                 statusBarStyle: UIStatusBarStyle = .lightContent) {
         self.primaryNormalBackgroundColor = primaryNormalBackgroundColor
         self.primaryNormalBorderColor = primaryNormalBorderColor
@@ -135,12 +143,14 @@ public struct WordPressAuthenticatorStyle {
         self.viewControllerBackgroundColor = viewControllerBackgroundColor
         self.textFieldBackgroundColor = textFieldBackgroundColor
         self.buttonViewBackgroundColor = buttonViewBackgroundColor ?? viewControllerBackgroundColor
+        self.buttonViewTopShadowImage = buttonViewTopShadowImage
         self.navBarImage = navBarImage
         self.navBarBadgeColor = navBarBadgeColor
         self.navBarBackgroundColor = navBarBackgroundColor
         self.navButtonTextColor = navButtonTextColor
         self.prologueBackgroundColor = prologueBackgroundColor
         self.prologueTitleColor = prologueTitleColor
+        self.prologueTopContainerChildViewController = prologueTopContainerChildViewController
         self.statusBarStyle = statusBarStyle
     }
 }

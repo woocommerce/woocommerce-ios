@@ -150,7 +150,7 @@ import AuthenticationServices
         showLogin(from: presenter, animated: animated)
     }
 
-    public class func showLogin(from presenter: UIViewController, animated: Bool, showCancel: Bool = false, restrictToWPCom: Bool = false) {
+    public class func showLogin(from presenter: UIViewController, animated: Bool, showCancel: Bool = false, restrictToWPCom: Bool = false, onLoginButtonTapped: (() -> Void)? = nil) {
         defer {
             trackOpenedLogin()
         }
@@ -160,6 +160,7 @@ import AuthenticationServices
             if let childController = controller.children.first as? LoginPrologueViewController {
                 childController.loginFields.restrictToWPCom = restrictToWPCom
                 childController.showCancel = showCancel
+                childController.onLoginButtonTapped = onLoginButtonTapped
             }
             controller.modalPresentationStyle = .fullScreen
             presenter.present(controller, animated: animated, completion: nil)

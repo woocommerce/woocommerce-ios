@@ -29,10 +29,6 @@ final class LoginPrologueViewController: UIViewController {
     ///
     @IBOutlet var jetpackImageView: UIImageView!
 
-    /// Default Action Button.
-    ///
-    @IBOutlet var loginButton: UIButton!
-
 
     // MARK: - Overridden Properties
 
@@ -58,7 +54,6 @@ final class LoginPrologueViewController: UIViewController {
     private func setupLabels() {
         setupDisclaimerLabel()
         setupUpperLabel()
-        setupLoginButton()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -109,18 +104,6 @@ private extension LoginPrologueViewController {
             .underlineColor: UIColor.white,
             .underlineStyle: NSUnderlineStyle.single.rawValue
         ]
-    }
-
-    func setupLoginButton() {
-        let title = NSLocalizedString("Log In", comment: "Authentication Login Button")
-        loginButton.titleLabel?.adjustsFontForContentSizeCategory = true
-        loginButton.setTitle(title, for: .normal)
-        loginButton.accessibilityIdentifier = "login-prologue-login-with-jetpack"
-        loginButton.applySecondaryButtonStyle()
-        // This is an exception where we always show the Log In button in the Light color scheme to have a better constrast to the background.
-        if #available(iOS 13.0, *) {
-            loginButton.overrideUserInterfaceStyle = .light
-        }
     }
 }
 

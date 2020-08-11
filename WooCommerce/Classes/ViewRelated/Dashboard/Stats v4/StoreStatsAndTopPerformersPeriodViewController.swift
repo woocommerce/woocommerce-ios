@@ -82,6 +82,9 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
     private let viewModel: StoreStatsAndTopPerformersPeriodViewModel
 
+    /// Subscriptions that should be cancelled on `deinit`.
+    private var cancellables = [ObservationToken]()
+
     /// Create an instance of `self`.
     ///
     /// - Parameter canDisplayInAppFeedbackCard: If applicable, present the in-app feedback card.
@@ -104,6 +107,12 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit {
+        cancellables.forEach {
+            $0.cancel()
+        }
     }
 
     override func viewDidLoad() {
@@ -170,7 +179,7 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
             return
         }
 
-        _ = viewModel.isInAppFeedbackCardVisible.subscribe { [weak self] isVisible in
+        let cancellable = viewModel.isInAppFeedbackCardVisible.subscribe { [weak self] isVisible in
             guard let self = self else {
                 return
             }
@@ -188,6 +197,7 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
                 }
             }
         }
+        cancellables.append(cancellable)
     }
 
     func configureSubviews() {

@@ -1,6 +1,6 @@
 import UIKit
 
-/// UnifiedSignUpViewController: sign up to .com with an email address.
+/// UnifiedSignupViewController: sign up to .com with an email address.
 ///
 class UnifiedSignupViewController: LoginViewController {
 

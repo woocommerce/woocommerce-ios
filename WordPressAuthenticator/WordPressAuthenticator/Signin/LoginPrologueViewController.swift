@@ -134,7 +134,7 @@ class LoginPrologueViewController: LoginViewController {
                 return
             }
 
-            self?.presentUnifiedSignUpView()
+            self?.presentUnifiedSignupView()
         }
 
         vc.googleTapped = { [weak self] in
@@ -188,9 +188,9 @@ class LoginPrologueViewController: LoginViewController {
         navigationController?.pushViewController(toVC, animated: true)
     }
 
-    private func presentUnifiedSignUpView() {
+    private func presentUnifiedSignupView() {
         guard let toVC = UnifiedSignupViewController.instantiate(from: .unifiedSignUp) else {
-            DDLogError("Failed to navigate to UnifiedSignUpViewController")
+            DDLogError("Failed to navigate to UnifiedSignupViewController")
             return
         }
 

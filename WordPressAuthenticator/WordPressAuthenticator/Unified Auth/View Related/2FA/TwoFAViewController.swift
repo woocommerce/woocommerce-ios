@@ -40,6 +40,7 @@ final class TwoFAViewController: LoginViewController {
         localizePrimaryButton()
         registerTableViewCells()
         loadRows()
+        configureForAccessibility()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -51,7 +52,6 @@ final class TwoFAViewController: LoginViewController {
         
         configureSubmitButton(animating: false)
         configureViewForEditingIfNeeded()
-        configureForAccessibility()
         
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(applicationBecameInactive), name: UIApplication.willResignActiveNotification, object: nil)
@@ -99,13 +99,20 @@ final class TwoFAViewController: LoginViewController {
         )
     }
 
-    /// Sets up the order in which accessibility elements should be read aloud.
+    /// Sets up accessibility elements in the order which they should be read aloud
+    /// and quiets repetitive elements.
     ///
     private func configureForAccessibility() {
         view.accessibilityElements = [
             tableView,
             submitButton as Any
         ]
+
+        UIAccessibility.post(notification: .screenChanged, argument: codeField)
+
+        if UIAccessibility.isVoiceOverRunning {
+            codeField?.placeholder = nil
+        }
     }
 
     override func configureViewLoading(_ loading: Bool) {

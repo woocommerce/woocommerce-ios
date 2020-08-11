@@ -41,6 +41,7 @@ final class SiteAddressViewController: LoginViewController {
         registerTableViewCells()
         loadRows()
         configureSubmitButton(animating: false)
+        configureForAccessibility()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -48,7 +49,6 @@ final class SiteAddressViewController: LoginViewController {
 
         siteURLField?.text = loginFields.siteAddress
         configureSubmitButton(animating: false)
-        configureForAccessibility()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -89,13 +89,20 @@ final class SiteAddressViewController: LoginViewController {
         )
     }
 
-    /// Sets up the order in which accessibility elements should be read aloud.
+    /// Sets up accessibility elements in the order which they should be read aloud
+    /// and quiets repetitive elements.
     ///
     private func configureForAccessibility() {
         view.accessibilityElements = [
             tableView,
             submitButton as Any
         ]
+
+        UIAccessibility.post(notification: .screenChanged, argument: siteURLField)
+
+        if UIAccessibility.isVoiceOverRunning {
+            siteURLField?.placeholder = nil
+        }
     }
 
     /// Sets the view's state to loading or not loading.

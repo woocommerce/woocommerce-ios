@@ -105,6 +105,22 @@ final class SiteCredentialsViewController: LoginViewController {
         )
     }
 
+    /// Sets up accessibility elements in the order which they should be read aloud
+    /// and quiets repetitive elements.
+    ///
+    private func configureForAccessibility() {
+        view.accessibilityElements = [
+            tableView,
+            submitButton as Any
+        ]
+
+        UIAccessibility.post(notification: .screenChanged, argument: usernameField)
+
+        if UIAccessibility.isVoiceOverRunning {
+            usernameField?.placeholder = nil
+        }
+    }
+
     /// Sets the view's state to loading or not loading.
     ///
     /// - Parameter loading: True if the form should be configured to a "loading" state.
@@ -338,16 +354,6 @@ private extension SiteCredentialsViewController {
         if shouldChangeVoiceOverFocus {
             UIAccessibility.post(notification: .layoutChanged, argument: cell)
         }
-    }
-
-    /// Sets up accessibility elements in the order which they should be read aloud
-    /// and quiets repetitive elements.
-    ///
-    func configureForAccessibility() {
-        view.accessibilityElements = [
-            tableView,
-            submitButton as Any
-        ]
     }
 
     /// Configure the view for an editing state.

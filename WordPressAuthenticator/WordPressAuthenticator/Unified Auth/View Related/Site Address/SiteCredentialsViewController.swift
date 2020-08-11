@@ -362,13 +362,6 @@ private extension SiteCredentialsViewController {
         // Check the helper to determine whether an editing state should be assumed.
         adjustViewForKeyboard(SigninEditingState.signinEditingStateActive)
         if SigninEditingState.signinEditingStateActive {
-            if UIAccessibility.isVoiceOverRunning {
-                // Remove the placeholder if VoiceOver is running. VoiceOver speaks the label and the
-                // placeholder together. In this case, both labels and placeholders are the same so it's
-                // like VoiceOver is reading the same thing twice.
-                usernameField?.placeholder = nil
-            }
-
             usernameField?.becomeFirstResponder()
         }
     }

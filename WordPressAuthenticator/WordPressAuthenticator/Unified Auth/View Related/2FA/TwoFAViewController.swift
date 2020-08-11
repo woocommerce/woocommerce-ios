@@ -100,7 +100,7 @@ final class TwoFAViewController: LoginViewController {
     }
 
     /// Sets up accessibility elements in the order which they should be read aloud
-    /// and quiets repetitive elements.
+    /// and chooses which element to focus on at the beginning.
     ///
     private func configureForAccessibility() {
         view.accessibilityElements = [
@@ -109,10 +109,6 @@ final class TwoFAViewController: LoginViewController {
         ]
 
         UIAccessibility.post(notification: .screenChanged, argument: codeField)
-
-        if UIAccessibility.isVoiceOverRunning {
-            codeField?.placeholder = nil
-        }
     }
 
     override func configureViewLoading(_ loading: Bool) {
@@ -399,6 +395,10 @@ private extension TwoFAViewController {
         cell.textField.delegate = self
 
         SigninEditingState.signinEditingStateActive = true
+        if UIAccessibility.isVoiceOverRunning {
+            // Quiet repetitive VoiceOver elements.
+            codeField?.placeholder = nil
+        }
     }
 
     /// Configure the link cell.

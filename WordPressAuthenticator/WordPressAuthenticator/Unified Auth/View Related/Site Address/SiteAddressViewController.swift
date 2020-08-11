@@ -101,6 +101,9 @@ final class SiteAddressViewController: LoginViewController {
         UIAccessibility.post(notification: .screenChanged, argument: siteURLField)
 
         if UIAccessibility.isVoiceOverRunning {
+            // Remove the placeholder if VoiceOver is running, because it speaks the label
+            // and the placeholder together. Since the placeholder matches the label, it's
+            // like VoiceOver is reading the same thing twice.
             siteURLField?.placeholder = nil
         }
     }

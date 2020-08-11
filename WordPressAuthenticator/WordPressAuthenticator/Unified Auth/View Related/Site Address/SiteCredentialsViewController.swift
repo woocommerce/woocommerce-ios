@@ -106,19 +106,16 @@ final class SiteCredentialsViewController: LoginViewController {
     }
 
     /// Sets up accessibility elements in the order which they should be read aloud
-    /// and quiets repetitive elements.
+    /// and chooses which element to focus on at the beginning.
     ///
     private func configureForAccessibility() {
         view.accessibilityElements = [
+            usernameField,
             tableView,
             submitButton as Any
         ]
 
         UIAccessibility.post(notification: .screenChanged, argument: usernameField)
-
-        if UIAccessibility.isVoiceOverRunning {
-            usernameField?.placeholder = nil
-        }
     }
 
     /// Sets the view's state to loading or not loading.
@@ -289,7 +286,6 @@ private extension SiteCredentialsViewController {
         // Save a reference to the textField so it can becomeFirstResponder.
         usernameField = cell.textField
         cell.textField.delegate = self
-        SigninEditingState.signinEditingStateActive = true
         cell.onePasswordHandler = { [weak self] in
             guard let self = self else {
                 return
@@ -312,6 +308,12 @@ private extension SiteCredentialsViewController {
             self?.loginFields.username = textfield.nonNilTrimmedText()
             self?.configureSubmitButton(animating: false)
         }
+
+        SigninEditingState.signinEditingStateActive = true
+        if UIAccessibility.isVoiceOverRunning {
+            // Quiet repetitive elements in VoiceOver.
+            usernameField?.placeholder = nil
+        }
     }
 
     /// Configure the password textfield cell.
@@ -324,6 +326,11 @@ private extension SiteCredentialsViewController {
         cell.onChangeSelectionHandler = { [weak self] textfield in
             self?.loginFields.password = textfield.nonNilTrimmedText()
             self?.configureSubmitButton(animating: false)
+        }
+
+        if UIAccessibility.isVoiceOverRunning {
+            // Quiet repetitive elements in VoiceOver.
+            passwordField?.placeholder = nil
         }
     }
 

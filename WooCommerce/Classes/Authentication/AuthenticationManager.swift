@@ -48,7 +48,7 @@ class AuthenticationManager: Authentication {
                                                 placeholderColor: .placeholderImage,
                                                 viewControllerBackgroundColor: .listBackground,
                                                 textFieldBackgroundColor: .listForeground,
-                                                buttonViewBackgroundColor: .init(light: .brand, dark: .withColorStudio(.brand, shade: .shade80)),
+                                                buttonViewBackgroundColor: .primary,
                                                 buttonViewTopShadowImage: nil,
                                                 navBarImage: StyleManager.navBarImage,
                                                 navBarBadgeColor: .primary,

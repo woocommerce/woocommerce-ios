@@ -122,11 +122,11 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
             appearance.shadowColor = hideBottomBorder ? .clear : .separator
             appearance.backgroundColor = backgroundColor
             appearance.titleTextAttributes = [.foregroundColor: titleTextColor]
-            UIBarButtonItem.appearance().tintColor = buttonTextColor
+            UIBarButtonItem.appearance(whenContainedInInstancesOf: [LoginNavigationController.self]).tintColor = buttonTextColor
             
-            UINavigationBar.appearance().standardAppearance = appearance
-            UINavigationBar.appearance().compactAppearance = appearance
-            UINavigationBar.appearance().scrollEdgeAppearance = appearance
+            UINavigationBar.appearance(whenContainedInInstancesOf: [LoginNavigationController.self]).standardAppearance = appearance
+            UINavigationBar.appearance(whenContainedInInstancesOf: [LoginNavigationController.self]).compactAppearance = appearance
+            UINavigationBar.appearance(whenContainedInInstancesOf: [LoginNavigationController.self]).scrollEdgeAppearance = appearance
         } else {
             let appearance = UINavigationBar.appearance()
             appearance.barTintColor = backgroundColor

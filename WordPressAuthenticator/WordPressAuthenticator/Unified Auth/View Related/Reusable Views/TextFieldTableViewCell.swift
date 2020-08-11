@@ -90,19 +90,23 @@ private extension TextFieldTableViewCell {
             textField.keyboardType = .URL
             textField.returnKeyType = .continue
             registerTextFieldAction()
+            textField.accessibilityLabel = Constants.siteAddress
         case .username:
             textField.keyboardType = .default
             textField.returnKeyType = .next
             setupOnePasswordButtonIfNeeded()
+            textField.accessibilityLabel = Constants.username
         case .password:
             textField.keyboardType = .default
             textField.returnKeyType = .continue
             setSecureTextEntry(true)
             showSecureTextEntryToggle = true
             configureSecureTextEntryToggle()
+            textField.accessibilityLabel = Constants.password
         case .numericCode:
             textField.keyboardType = .numberPad
             textField.returnKeyType = .continue
+            textField.accessibilityLabel = Constants.otp
         }
     }
 
@@ -217,6 +221,13 @@ extension TextFieldTableViewCell {
                                                      comment: "Accessibility value if login page's password field is displaying the password.")
         static let showPassword = NSLocalizedString("Show password",
                                                     comment:"Accessibility label for the 'Show password' button in the login page's password field.")
-
+        static let siteAddress = NSLocalizedString("Site address",
+                                                   comment: "Accessibility label of the site address field shown when adding a self-hosted site.")
+        static let username = NSLocalizedString("Username",
+                                                comment: "Accessibility label for the username text field in the self-hosted login page.")
+        static let password = NSLocalizedString("Password",
+                                                comment: "Accessibility label for the password text field in the self-hosted login page.")
+        static let otp = NSLocalizedString("Authentication code",
+                                           comment: "Accessibility label for the 2FA text field.")
     }
 }

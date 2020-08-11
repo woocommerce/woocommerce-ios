@@ -197,7 +197,7 @@ class LoginPrologueViewController: LoginViewController {
     }
 
     private func presentUnifiedSignUpView() {
-        guard let toVC = UnifiedSignUpViewController.instantiate(from: .unifiedSignUp) else {
+        guard let toVC = UnifiedSignupViewController.instantiate(from: .unifiedSignUp) else {
             DDLogError("Failed to navigate to UnifiedSignUpViewController")
             return
         }

@@ -11,7 +11,7 @@
         <!--Site Address View Controller-->
         <scene sceneID="7Rf-Qz-qsw">
             <objects>
-                <viewController storyboardIdentifier="SiteAddressViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="aQT-Gx-U3x" customClass="SiteAddressViewController" customModule="WordPressAuthenticatorResources" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SiteAddressViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="aQT-Gx-U3x" customClass="SiteAddressViewController" customModule="WordPressAuthenticator" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ljV-kF-TaY">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -30,8 +30,9 @@
                                     <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xwA-rd-6jO" userLabel="Button background view">
                                         <rect key="frame" x="0.0" y="591" width="375" height="76"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ClH-Cn-49d" userLabel="Primary Button" customClass="NUXButton" customModule="WordPressAuthenticatorResources" customModuleProvider="target">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ClH-Cn-49d" userLabel="Primary Button" customClass="NUXButton" customModule="WordPressAuthenticator" customModuleProvider="target">
                                                 <rect key="frame" x="16" y="16" width="343" height="44"/>
+                                                <accessibility key="accessibilityConfiguration" identifier="submitButton"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="44" id="iBk-Pi-8cv"/>
                                                 </constraints>
@@ -90,7 +91,7 @@
         <!--Site Credentials View Controller-->
         <scene sceneID="SNM-jM-Hwx">
             <objects>
-                <viewController storyboardIdentifier="SiteCredentialsViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="y6V-vh-KSr" customClass="SiteCredentialsViewController" customModule="WordPressAuthenticatorResources" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SiteCredentialsViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="y6V-vh-KSr" customClass="SiteCredentialsViewController" customModule="WordPressAuthenticator" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="rzp-ZY-4sV">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -109,8 +110,9 @@
                                     <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YGp-eK-oRp" userLabel="Button background view">
                                         <rect key="frame" x="0.0" y="591" width="375" height="76"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bUY-a5-oHJ" userLabel="Primary Button" customClass="NUXButton" customModule="WordPressAuthenticatorResources" customModuleProvider="target">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bUY-a5-oHJ" userLabel="Primary Button" customClass="NUXButton" customModule="WordPressAuthenticator" customModuleProvider="target">
                                                 <rect key="frame" x="16" y="16" width="343" height="44"/>
+                                                <accessibility key="accessibilityConfiguration" identifier="submitButton"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="44" id="v9D-Cw-nFD"/>
                                                 </constraints>

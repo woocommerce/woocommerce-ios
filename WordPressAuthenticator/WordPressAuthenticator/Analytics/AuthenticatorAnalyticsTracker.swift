@@ -283,6 +283,11 @@ public class AuthenticatorAnalyticsTracker {
             || isInGoogleFlowAndCanTrack()
     }
     
+    /// This is a convenience method, that's useful for cases where we simply want to check if the legacy tracking should be
+    /// enabled.  It can be particularly useful in cases where we don't have a matching tracking call in the new flow.
+    ///
+    ///  - Returns: `true` if we must use legacy tracking, `false` otherwise.
+    ///
     public func shouldUseLegacyTracker() -> Bool {
         return !canTrackInCurrentFlow()
     }

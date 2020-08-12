@@ -151,7 +151,7 @@ private extension UnifiedSignupViewController {
     /// Configure the instruction cell.
     ///
     func configureInstructionLabel(_ cell: TextLabelTableViewCell) {
-        cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.magicLinkInstructions, style: .body)
+        cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.magicLinkSignupInstructions, style: .body)
     }
 
     /// Configure the error message cell.

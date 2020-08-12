@@ -1,5 +1,1 @@
-We have a couple of things to fill you in on: 
-
-Sometimes there was a crash when you sent an SMS from the app, no one wants to miss an SMS, so we went right ahead and fixed that. 
-
-Love stats? We sure do! We have been beavering away to make your stats experience even better. As long as you have WooCommerce 4.0 or WooCommerce Admin your stats graph will now match what you see in wp-admin. Snap! If you are on an older version of WooCommerce you’ll want to update so you don’t miss out!
+The WooCommerce app you know and love, now with swiping right/left enabled on product images. (Yes, that’s it!)

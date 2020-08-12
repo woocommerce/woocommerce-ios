@@ -50,6 +50,9 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
     ///
     public func setupCancelButtonIfNeeded() {
         if !shouldShowCancelButton() {
+            navigationItem.backBarButtonItem?.on(call: { [weak self] barButtonItem in
+                self?.handleBackButtonTapped()
+            })
             return
         }
 
@@ -124,6 +127,12 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
             self?.handleBackgroundTapGesture()
         }
         view.addGestureRecognizer(tgr)
+    }
+    
+    func handleBackButtonTapped() {
+        AuthenticatorAnalyticsTracker.shared.track(click: .dismiss)
+        
+        dismiss(cancelled: false)
     }
 
     func handleCancelButtonTapped() {

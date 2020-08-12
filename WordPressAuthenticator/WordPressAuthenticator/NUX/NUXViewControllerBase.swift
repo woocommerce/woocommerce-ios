@@ -127,6 +127,8 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
     }
 
     func handleCancelButtonTapped() {
+        AuthenticatorAnalyticsTracker.shared.track(click: .dismiss)
+        
         dismiss(cancelled: true)
         NotificationCenter.default.post(name: .wordpressLoginCancelled, object: nil)
     }

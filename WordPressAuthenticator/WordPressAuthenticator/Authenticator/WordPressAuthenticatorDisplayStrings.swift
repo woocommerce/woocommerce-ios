@@ -111,7 +111,7 @@ public extension WordPressAuthenticatorDisplayStrings {
                                                      comment: "Instruction text on the two-factor screen."),
             magicLinkSignupInstructions: NSLocalizedString("We'll email you a magic link to create your new WordPress.com account.",
                                                      comment: "Instruction text on the Sign Up screen."),
-            openMailSignupInstructions: NSLocalizedString("Check your email on this device, and tap the link in the email you receive from WordPress.com",
+            openMailSignupInstructions: NSLocalizedString("We’ve emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com.",
                                                     comment: "Instruction text after a Magic Link was requested."),
             checkSpamInstructions: NSLocalizedString("Not seeing the email? Check your Spam or Junk Mail folder.", comment: "Instructions after a Magic Link was sent, but the email can't be found in their inbox."),
             googlePasswordInstructions: NSLocalizedString("To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once.",

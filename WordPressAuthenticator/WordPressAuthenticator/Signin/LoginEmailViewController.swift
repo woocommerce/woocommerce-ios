@@ -213,12 +213,16 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
             }
 
             vc.googleTapped = { [weak self] in
+                guard let self = self else { return }
+                
+                self.tracker.track(click: .signUpWithGoogle)
+                
                 guard WordPressAuthenticator.shared.configuration.enableUnifiedGoogle else {
-                    self?.presentGoogleSignupView()
+                    self.presentGoogleSignupView()
                     return
                 }
 
-                self?.presentUnifiedGoogleView()
+                self.presentUnifiedGoogleView()
             }
 
             vc.appleTapped = { [weak self] in
@@ -480,6 +484,8 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     }
 
     @objc func googleTapped() {
+        self.tracker.track(click: .loginWithGoogle)
+        
         guard WordPressAuthenticator.shared.configuration.enableUnifiedGoogle else {
             GoogleAuthenticator.sharedInstance.loginDelegate = self
             GoogleAuthenticator.sharedInstance.showFrom(viewController: self, loginFields: loginFields, for: .login)

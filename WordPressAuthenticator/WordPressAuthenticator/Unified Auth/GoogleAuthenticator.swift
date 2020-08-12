@@ -92,9 +92,9 @@ class GoogleAuthenticator: NSObject {
     private let authConfig = WordPressAuthenticator.shared.configuration
     private var authType: GoogleAuthType = .login
     
-    /// The analytics tracker for the Google sign in flows.
-    ///
-    private let tracker: GoogleAuthenticatorTracker?
+    private var tracker: AuthenticatorAnalyticsTracker {
+        AuthenticatorAnalyticsTracker.shared
+    }
     
     private lazy var loginFacade: LoginFacade = {
         let facade = LoginFacade(dotcomClientID: authConfig.wpcomClientId,
@@ -110,16 +110,6 @@ class GoogleAuthenticator: NSObject {
         }
         return delegate
     }()
-    
-    // MARK: - Initializers
-    
-    private override init() {
-        if WordPressAuthenticator.shared.configuration.enableUnifiedGoogle {
-            tracker = GoogleAuthenticatorTracker(analyticsTracker: AuthenticatorAnalyticsTracker.shared)
-        } else {
-            tracker = nil
-        }
-    }
 
     // MARK: - Start Authentication
     
@@ -165,14 +155,19 @@ private extension GoogleAuthenticator {
     ///   - viewController: The UIViewController that Google is being presented from.
     ///                     Required by Google SDK.
     func requestAuthorization(from viewController: UIViewController) {
+        tracker.set(flow: .googleLogin)
+        
         switch authType {
         case .login:
-            track(.loginSocialButtonClick)
+            tracker.track(step: .start, ifTrackingNotEnabled: {
+                track(.loginSocialButtonClick)
+            })
         case .signup:
+            tracker.set(flow: <#T##AuthenticatorAnalyticsTracker.Flow#>)
             track(.createAccountInitiated)
         }
 
-        tracker?.trackSigninStart(authType: authType)
+        tracker.trackSigninStart(authType: authType)
 
         guard let googleInstance = GIDSignIn.sharedInstance() else {
             DDLogError("GoogleAuthenticator: Failed to get `GIDSignIn.sharedInstance()`.")

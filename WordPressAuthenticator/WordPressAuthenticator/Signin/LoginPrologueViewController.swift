@@ -147,12 +147,13 @@ class LoginPrologueViewController: LoginViewController {
         vc.googleTapped = { [weak self] in
             guard let self = self else { return }
             
+            self.tracker.track(click: .signUpWithGoogle)
+            
             guard WordPressAuthenticator.shared.configuration.enableUnifiedGoogle else {
                 self.presentGoogleSignupView()
                 return
             }
 
-            self.tracker.track(click: .signUpWithGoogle)
             self.presentUnifiedGoogleView()
         }
 
@@ -169,13 +170,14 @@ class LoginPrologueViewController: LoginViewController {
     }
 
     private func googleTapped() {
+        self.tracker.track(click: .loginWithGoogle)
+        
         guard WordPressAuthenticator.shared.configuration.enableUnifiedGoogle else {
             GoogleAuthenticator.sharedInstance.loginDelegate = self
             GoogleAuthenticator.sharedInstance.showFrom(viewController: self, loginFields: loginFields, for: .login)
             return
         }
-
-        self.tracker.track(click: .loginWithGoogle)
+        
         presentUnifiedGoogleView()
     }
 

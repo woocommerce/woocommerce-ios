@@ -13,6 +13,7 @@ public struct WordPressAuthenticatorDisplayStrings {
     public let twoFactorInstructions: String
     public let magicLinkSignupInstructions: String
     public let openMailSignupInstructions: String
+    public let checkSpamInstructions: String
     public let googlePasswordInstructions: String
     public let applePasswordInstructions: String
 
@@ -20,6 +21,7 @@ public struct WordPressAuthenticatorDisplayStrings {
     ///
     public let continueButtonTitle: String
     public let magicLinkButtonTitle: String
+    public let openMailButtonTitle: String
     
     /// Large titles displayed in unified auth flows.
     ///
@@ -50,10 +52,12 @@ public struct WordPressAuthenticatorDisplayStrings {
                 twoFactorInstructions: String,
                 magicLinkSignupInstructions: String,
                 openMailSignupInstructions: String,
+                checkSpamInstructions: String,
                 googlePasswordInstructions: String,
                 applePasswordInstructions: String,
                 continueButtonTitle: String,
                 magicLinkButtonTitle: String,
+                openMailButtonTitle: String,
                 findSiteButtonTitle: String,
                 resetPasswordButtonTitle: String,
                 textCodeButtonTitle: String,
@@ -72,10 +76,12 @@ public struct WordPressAuthenticatorDisplayStrings {
         self.twoFactorInstructions = twoFactorInstructions
         self.magicLinkSignupInstructions = magicLinkSignupInstructions
         self.openMailSignupInstructions = openMailSignupInstructions
+        self.checkSpamInstructions = checkSpamInstructions
         self.googlePasswordInstructions = googlePasswordInstructions
         self.applePasswordInstructions = applePasswordInstructions
         self.continueButtonTitle = continueButtonTitle
         self.magicLinkButtonTitle = magicLinkButtonTitle
+        self.openMailButtonTitle = openMailButtonTitle
         self.findSiteButtonTitle = findSiteButtonTitle
         self.resetPasswordButtonTitle = resetPasswordButtonTitle
         self.textCodeButtonTitle = textCodeButtonTitle
@@ -106,6 +112,8 @@ public extension WordPressAuthenticatorDisplayStrings {
             magicLinkSignupInstructions: NSLocalizedString("We'll email you a magic link to create your new WordPress.com account.",
                                                      comment: "Instruction text on the Sign Up screen."),
             openMailSignupInstructions: NSLocalizedString("Check your email on this device, and tap the link in the email you receive from WordPress.com",
+                                                    comment: "Instruction text after a Magic Link was requested."),
+            checkSpamInstructions: NSLocalizedString("Not seeing the email? Check your Spam or Junk Mail folder.", comment: "Instructions after a Magic Link was sent, but the email can't be found in their inbox."),
             googlePasswordInstructions: NSLocalizedString("To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once.",
                                                           comment: "Instructional text shown when requesting the user's password for Google login."),
             applePasswordInstructions: NSLocalizedString("To proceed with this Apple ID, please first log in with your WordPress.com password. This will only be asked once.",
@@ -114,6 +122,8 @@ public extension WordPressAuthenticatorDisplayStrings {
                                                     comment: "The button title text when there is a next step for logging in or signing up."),
             magicLinkButtonTitle: NSLocalizedString("Send Link by Email",
                                                     comment: "The button title text for sending a magic link."),
+            openMailButtonTitle: NSLocalizedString("Open Mail",
+                                                   comment: "The button title text for opening the user's preferred email app."),
             findSiteButtonTitle: NSLocalizedString("Find your site address",
                                                    comment: "The hint button's title text to help users find their site address."),
             resetPasswordButtonTitle: NSLocalizedString("Reset your password",

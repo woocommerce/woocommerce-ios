@@ -107,7 +107,7 @@ public struct WordPressAuthenticatorConfiguration {
                  googleLoginScheme: String,
                  userAgent: String,
                  showLoginOptions: Bool = false,
-                 enabledSignUp: Bool = true,
+                 enableSignUp: Bool = true,
                  enableSignInWithApple: Bool = false,
                  enableSignupWithGoogle: Bool = false,
                  enableUnifiedAuth: Bool = false,
@@ -128,7 +128,7 @@ public struct WordPressAuthenticatorConfiguration {
         self.googleLoginScheme = googleLoginScheme
         self.userAgent = userAgent
         self.showLoginOptions = showLoginOptions
-        self.enableSignUp = enabledSignUp
+        self.enableSignUp = enableSignUp
         self.enableSignInWithApple = enableSignInWithApple
         self.enableUnifiedAuth = enableUnifiedAuth
         self.displayHintButtons = displayHintButtons

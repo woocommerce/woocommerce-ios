@@ -76,7 +76,7 @@ private extension LoginPrologueViewController {
     }
 
     func setupContainerView() {
-        containerView.backgroundColor = .primary
+        containerView.backgroundColor = .primaryDark
     }
 
     func setupUpperLabel() {
@@ -88,7 +88,7 @@ private extension LoginPrologueViewController {
 
     func setupSlantedRectangle() {
         slantedRectangle.image = UIImage.slantedRectangle.withRenderingMode(.alwaysTemplate)
-        slantedRectangle.tintColor = .primary
+        slantedRectangle.tintColor = .primaryDark
     }
 
     func setupJetpackImage() {

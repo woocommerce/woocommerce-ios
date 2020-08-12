@@ -195,7 +195,21 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Presents the Signup Epilogue, in the specified NavigationController.
     ///
     func presentSignupEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, service: SocialService?) {
-        // NO-OP: The current WC version does not support Signup.
+        // NO-OP: The current WC version does not support Signup. Let SIWA through.
+        guard case .apple(_) = service else {
+            return
+        }
+
+        // For SIWA, signups are treating like signing in for now.
+        // Signup code in Authenticator normally synchronizes the auth credentials but
+        // since we're hacking in SIWA, that's never called in the pod. Call here so the
+        // person's name and user ID show up on the picker screen.
+        //
+        // This is effectively a useless screen for them other than telling them to install Jetpack.
+        sync(credentials: credentials) {
+            self.storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
+            self.storePickerCoordinator?.start()
+        }
     }
 
     /// Presents the Support Interface from a given ViewController, with a specified SourceTag.

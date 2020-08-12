@@ -187,8 +187,7 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
             // Ref: https://git.io/JJSUM
             if loginFields.meta.socialService != nil {
                 emailLabel?.text = loginFields.username
-            }
-            else {
+            } else {
                 loginFields.username = sender.nonNilTrimmedText()
             }
         default:
@@ -211,7 +210,15 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
         view.endEditing(true)
 
         WordPressAuthenticator.fetchOnePasswordCredentials(self, sourceView: sender, loginFields: loginFields) { [weak self] (loginFields) in
-            self?.emailLabel?.text = loginFields.username
+            
+            // The email can only be changed via a password manager.
+            // In this case, don't update username for social accounts.
+            // This prevents inadvertent account linking.
+            // Ref: https://git.io/JJSUM
+            if loginFields.meta.socialService == nil {
+                self?.emailLabel?.text = loginFields.username
+            }
+
             self?.passwordField?.text = loginFields.password
             self?.validateForm()
         }

@@ -12,6 +12,7 @@ public struct WordPressAuthenticatorDisplayStrings {
 	public let siteCredentialInstructions: String
     public let twoFactorInstructions: String
     public let magicLinkSignupInstructions: String
+    public let openMailSignupInstructions: String
     public let googlePasswordInstructions: String
     public let applePasswordInstructions: String
 
@@ -48,6 +49,7 @@ public struct WordPressAuthenticatorDisplayStrings {
 				siteCredentialInstructions: String,
                 twoFactorInstructions: String,
                 magicLinkSignupInstructions: String,
+                openMailSignupInstructions: String,
                 googlePasswordInstructions: String,
                 applePasswordInstructions: String,
                 continueButtonTitle: String,
@@ -69,6 +71,7 @@ public struct WordPressAuthenticatorDisplayStrings {
 		self.siteCredentialInstructions = siteCredentialInstructions
         self.twoFactorInstructions = twoFactorInstructions
         self.magicLinkSignupInstructions = magicLinkSignupInstructions
+        self.openMailSignupInstructions = openMailSignupInstructions
         self.googlePasswordInstructions = googlePasswordInstructions
         self.applePasswordInstructions = applePasswordInstructions
         self.continueButtonTitle = continueButtonTitle
@@ -102,6 +105,7 @@ public extension WordPressAuthenticatorDisplayStrings {
                                                      comment: "Instruction text on the two-factor screen."),
             magicLinkSignupInstructions: NSLocalizedString("We'll email you a magic link to create your new WordPress.com account.",
                                                      comment: "Instruction text on the Sign Up screen."),
+            openMailSignupInstructions: NSLocalizedString("Check your email on this device, and tap the link in the email you receive from WordPress.com",
             googlePasswordInstructions: NSLocalizedString("To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once.",
                                                           comment: "Instructional text shown when requesting the user's password for Google login."),
             applePasswordInstructions: NSLocalizedString("To proceed with this Apple ID, please first log in with your WordPress.com password. This will only be asked once.",

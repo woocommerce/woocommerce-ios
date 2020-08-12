@@ -268,7 +268,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 let variationsViewController = ProductVariationsViewController(product: product.product,
                                                                                isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
                 show(variationsViewController, sender: self)
-            case .status:
+            case .status, .noPriceWarning:
                 break
             }
         }

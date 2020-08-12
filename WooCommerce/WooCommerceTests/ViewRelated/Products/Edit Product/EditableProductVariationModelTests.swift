@@ -50,6 +50,76 @@ final class EditableProductVariationModelTests: XCTestCase {
         XCTAssertEqual(name, expectedName)
     }
 
+    // MARK: - `isEnabled`
+
+    func test_a_variation_is_enabled_with_publish_status() {
+        // Arrange
+        let variation = MockProductVariation().productVariation().copy(status: .publish)
+
+        // Action
+        let model = EditableProductVariationModel(productVariation: variation)
+
+        // Assert
+        XCTAssertTrue(model.isEnabled)
+    }
+
+    func test_a_variation_is_disabled_with_private_status() {
+        // Arrange
+        let variation = MockProductVariation().productVariation().copy(status: .privateStatus)
+
+        // Action
+        let model = EditableProductVariationModel(productVariation: variation)
+
+        // Assert
+        XCTAssertFalse(model.isEnabled)
+    }
+
+    func test_a_variation_is_disabled_with_other_status() {
+        // Arrange
+        let variation = MockProductVariation().productVariation().copy(status: .pending)
+
+        // Action
+        let model = EditableProductVariationModel(productVariation: variation)
+
+        // Assert
+        XCTAssertFalse(model.isEnabled)
+    }
+
+    // MARK: - `isEnabledAndMissingPrice`
+
+    func test_a_variation_is_enabled_and_missing_price() {
+        // Arrange
+        let variation = MockProductVariation().productVariation().copy(status: .publish, regularPrice: nil)
+
+        // Action
+        let model = EditableProductVariationModel(productVariation: variation)
+
+        // Assert
+        XCTAssertTrue(model.isEnabledAndMissingPrice)
+    }
+
+    func test_a_variation_is_not_enabled_and_missing_price_when_it_is_disabled() {
+        // Arrange
+        let variation = MockProductVariation().productVariation().copy(status: .privateStatus, regularPrice: nil)
+
+        // Action
+        let model = EditableProductVariationModel(productVariation: variation)
+
+        // Assert
+        XCTAssertFalse(model.isEnabledAndMissingPrice)
+    }
+
+    func test_a_variation_is_not_enabled_and_missing_price_when_it_is_enabled_and_has_a_price() {
+        // Arrange
+        let variation = MockProductVariation().productVariation().copy(status: .privateStatus, regularPrice: "6")
+
+        // Action
+        let model = EditableProductVariationModel(productVariation: variation)
+
+        // Assert
+        XCTAssertFalse(model.isEnabledAndMissingPrice)
+    }
+
     // MARK: - `sku`
 
     func test_a_variation_with_the_same_sku_as_parent_product_has_nil_sku_after_form_model_init() {

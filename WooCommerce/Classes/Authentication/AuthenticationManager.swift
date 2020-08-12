@@ -25,7 +25,7 @@ class AuthenticationManager: Authentication {
                                                                 googleLoginScheme: ApiCredentials.googleAuthScheme,
                                                                 userAgent: UserAgent.defaultUserAgent,
                                                                 showLoginOptions: true,
-                                                                enabledSignUp: false,
+                                                                enableSignUp: false,
                                                                 enableSignInWithApple: true)
 
         let style = WordPressAuthenticatorStyle(primaryNormalBackgroundColor: .primaryButtonBackground,
@@ -57,25 +57,7 @@ class AuthenticationManager: Authentication {
 
         let displayStrings = WordPressAuthenticatorDisplayStrings(emailLoginInstructions: AuthenticationConstants.emailInstructions,
                                                                   jetpackLoginInstructions: AuthenticationConstants.jetpackInstructions,
-                                                                  siteLoginInstructions: AuthenticationConstants.siteInstructions,
-                                                                  siteCredentialInstructions: WordPressAuthenticatorDisplayStrings.defaultStrings.siteCredentialInstructions,
-                                                                  twoFactorInstructions: WordPressAuthenticatorDisplayStrings.defaultStrings.twoFactorInstructions,
-                                                                  magicLinkInstructions: WordPressAuthenticatorDisplayStrings.defaultStrings.magicLinkInstructions,
-                                                                  googlePasswordInstructions: WordPressAuthenticatorDisplayStrings.defaultStrings.googlePasswordInstructions,
-                                                                  applePasswordInstructions: WordPressAuthenticatorDisplayStrings.defaultStrings.applePasswordInstructions,
-                                                                  continueButtonTitle: WordPressAuthenticatorDisplayStrings.defaultStrings.continueButtonTitle,
-                                                                  magicLinkButtonTitle: WordPressAuthenticatorDisplayStrings.defaultStrings.magicLinkButtonTitle,
-                                                                  findSiteButtonTitle: WordPressAuthenticatorDisplayStrings.defaultStrings.findSiteButtonTitle,
-                                                                  resetPasswordButtonTitle: WordPressAuthenticatorDisplayStrings.defaultStrings.resetPasswordButtonTitle,
-                                                                  textCodeButtonTitle: WordPressAuthenticatorDisplayStrings.defaultStrings.textCodeButtonTitle,
-                                                                  gettingStartedTitle: WordPressAuthenticatorDisplayStrings.defaultStrings.gettingStartedTitle,
-                                                                  logInTitle: WordPressAuthenticatorDisplayStrings.defaultStrings.logInTitle,
-                                                                  signUpTitle: WordPressAuthenticatorDisplayStrings.defaultStrings.signUpTitle,
-                                                                  waitingForGoogleTitle: WordPressAuthenticatorDisplayStrings.defaultStrings.waitingForGoogleTitle,
-                                                                  usernamePlaceholder: WordPressAuthenticatorDisplayStrings.defaultStrings.usernamePlaceholder,
-                                                                  passwordPlaceholder: WordPressAuthenticatorDisplayStrings.defaultStrings.passwordPlaceholder,
-                                                                  siteAddressPlaceholder: WordPressAuthenticatorDisplayStrings.defaultStrings.siteAddressPlaceholder,
-                                                                  twoFactorCodePlaceholder: WordPressAuthenticatorDisplayStrings.defaultStrings.twoFactorCodePlaceholder)
+                                                                  siteLoginInstructions: AuthenticationConstants.siteInstructions)
 
         let unifiedStyle = WordPressAuthenticatorUnifiedStyle(borderColor: .divider,
                                                               errorColor: .error,

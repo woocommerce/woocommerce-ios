@@ -183,7 +183,7 @@ class LoginPrologueViewController: LoginViewController {
     }
 
     private func googleTapped() {
-        guard WordPressAuthenticator.shared.configuration.enableUnifiedGoogle else {
+        guard configuration.enableUnifiedGoogle else {
             GoogleAuthenticator.sharedInstance.loginDelegate = self
             GoogleAuthenticator.sharedInstance.showFrom(viewController: self, loginFields: loginFields, for: .login)
             return
@@ -195,7 +195,7 @@ class LoginPrologueViewController: LoginViewController {
     /// Determines which view to present for the site address form.
     ///
     private func loginToSelfHostedSite() {
-        guard WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress else {
+        guard configuration.enableUnifiedSiteAddress else {
             presentSelfHostedView()
             return
         }

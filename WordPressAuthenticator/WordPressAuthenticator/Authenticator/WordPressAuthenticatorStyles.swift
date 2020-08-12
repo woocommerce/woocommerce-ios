@@ -62,6 +62,9 @@ public struct WordPressAuthenticatorStyle {
     // If not specified, falls back to viewControllerBackgroundColor.
     public let buttonViewBackgroundColor: UIColor
 
+    /// Style: shadow image view on top of the button view like a divider.
+    /// If not specified, falls back to image "darkgrey-shadow".
+    ///
     public let buttonViewTopShadowImage: UIImage?
 
     /// Style: nav bar

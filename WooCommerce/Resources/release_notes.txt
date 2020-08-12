@@ -1,1 +1,1 @@
-WooCommerce for iOS, version 4.8: the WooCommerce app you know and love, now with swiping right/left enabled on product images. (Yes, that’s it!)
+The WooCommerce app you know and love, now with swiping right/left enabled on product images. (Yes, that’s it!)

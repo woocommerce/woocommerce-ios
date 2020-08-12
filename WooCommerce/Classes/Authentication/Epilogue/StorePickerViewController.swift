@@ -1,4 +1,5 @@
 import Foundation
+import SafariServices
 import UIKit
 import WordPressAuthenticator
 import WordPressUI
@@ -550,7 +551,15 @@ extension StorePickerViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let site = state.site(at: indexPath) else {
             hideActionButton()
-            return tableView.dequeueReusableCell(withIdentifier: EmptyStoresTableViewCell.reuseIdentifier, for: indexPath)
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: EmptyStoresTableViewCell.reuseIdentifier,
+                                                           for: indexPath) as? EmptyStoresTableViewCell else {
+                fatalError()
+            }
+            cell.onJetpackSetupButtonTapped = { [weak self] in
+                let safariViewController = SFSafariViewController(url: WooConstants.URLs.emptyStoresJetpackSetup.asURL())
+                self?.present(safariViewController, animated: true, completion: nil)
+            }
+            return cell
         }
         guard let cell = tableView.dequeueReusableCell(withIdentifier: StoreTableViewCell.reuseIdentifier, for: indexPath) as? StoreTableViewCell else {
             fatalError()

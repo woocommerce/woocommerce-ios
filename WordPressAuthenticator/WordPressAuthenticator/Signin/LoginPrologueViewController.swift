@@ -119,11 +119,9 @@ class LoginPrologueViewController: LoginViewController {
     private func signupTapped() {
         tracker.set(source: .default)
         
-        if tracker.shouldUseLegacyTracker() {
-            // This stat is part of a funnel that provides critical information.
-            // Before making ANY modification to this stat please refer to: p4qSXL-35X-p2
-            WordPressAuthenticator.track(.signupButtonTapped)
-        }
+        // This stat is part of a funnel that provides critical information.
+        // Before making ANY modification to this stat please refer to: p4qSXL-35X-p2
+        WordPressAuthenticator.track(.signupButtonTapped)
 
         guard let vc = LoginPrologueSignupMethodViewController.instantiate(from: .login) else {
             DDLogError("Failed to navigate to LoginPrologueSignupMethodViewController")

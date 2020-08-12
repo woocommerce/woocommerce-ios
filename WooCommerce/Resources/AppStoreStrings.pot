@@ -51,7 +51,7 @@ msgstr ""
 
 msgctxt "v4.8-whats-new"
 msgid ""
-"WooCommerce for iOS, version 4.8: the WooCommerce app you know and love, now with swiping right/left enabled on product images. (Yes, that’s it!)\n"
+"The WooCommerce app you know and love, now with swiping right/left enabled on product images. (Yes, that’s it!)\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

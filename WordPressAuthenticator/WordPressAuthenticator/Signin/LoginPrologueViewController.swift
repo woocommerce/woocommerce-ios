@@ -75,7 +75,7 @@ class LoginPrologueViewController: LoginViewController {
             self?.loginTapped()
         }
 
-        if configuration.enabledSignUp {
+        if configuration.enableSignUp {
             buttonViewController.setupBottomButton(title: createTitle, isPrimary: true, accessibilityIdentifier: "Prologue Signup Button") { [weak self] in
                 self?.signupTapped()
             }

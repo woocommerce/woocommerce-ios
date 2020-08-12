@@ -60,8 +60,15 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
     }
 
     func restartAuthentication() {
-        onDismiss?()
-        navigationController.popToRootViewController(animated: true)
+        switch selectedConfiguration {
+        case .standard, .switchingStores:
+            navigationController.dismiss(animated: false) { [weak self] in
+                self?.onDismiss?()
+            }
+        case .login:
+            navigationController.popToRootViewController(animated: true)
+            onDismiss?()
+        }
     }
 }
 

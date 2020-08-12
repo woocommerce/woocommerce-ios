@@ -85,19 +85,6 @@ class StorePickerViewController: UIViewController {
         }
     }
 
-    /// No Results Placeholder Image
-    ///
-    @IBOutlet private var noResultsImageView: UIImageView!
-
-    /// No Results Placeholder Text
-    ///
-    @IBOutlet private var noResultsLabel: UILabel! {
-        didSet {
-            noResultsLabel.font = StyleManager.subheadlineFont
-            noResultsLabel.textColor = .textSubtle
-        }
-    }
-
     /// Main tableView
     ///
     @IBOutlet private var tableView: UITableView! {

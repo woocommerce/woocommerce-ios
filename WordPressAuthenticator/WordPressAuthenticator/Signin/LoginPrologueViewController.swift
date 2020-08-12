@@ -20,9 +20,7 @@ class LoginPrologueViewController: LoginViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if tracker.shouldUseLegacyTracker() {
-            WordPressAuthenticator.track(.loginPrologueViewed)
-        }
+        WordPressAuthenticator.track(.loginPrologueViewed)
     }
 
     override func viewWillDisappear(_ animated: Bool) {

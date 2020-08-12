@@ -181,7 +181,16 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
         case passwordField:
             loginFields.password = sender.nonNilTrimmedText()
         case emailLabel:
-            loginFields.username = sender.nonNilTrimmedText()
+            // The email can only be changed via a password manager.
+            // In this case, don't update username for social accounts.
+            // This prevents inadvertent account linking.
+            // Ref: https://git.io/JJSUM
+            if loginFields.meta.socialService != nil {
+                emailLabel?.text = loginFields.username
+            }
+            else {
+                loginFields.username = sender.nonNilTrimmedText()
+            }
         default:
             break
         }

@@ -231,8 +231,8 @@ extension UnifiedSignupViewController {
         // TODO: add new Tracks event. Old: .signupMagicLinkRequested
         WordPressAuthenticator.storeLoginInfoForTokenAuth(loginFields)
 
-        guard let vc = NUXLinkMailViewController.instantiate(from: .emailMagicLink) else {
-            DDLogError("Failed to navigate to NUXLinkMailViewController")
+        guard let vc = SignupMagicLinkViewController.instantiate(from: .unifiedSignUp) else {
+            DDLogError("Failed to navigate from UnifiedSignupViewController to SignupMagicLinkViewController")
             return
         }
 

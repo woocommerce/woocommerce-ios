@@ -54,7 +54,7 @@ PODS:
   - WordPress-Aztec-iOS (1.11.0)
   - WordPress-Editor-iOS (1.11.0):
     - WordPress-Aztec-iOS (= 1.11.0)
-  - WordPressAuthenticator (1.23.0-beta.2):
+  - WordPressAuthenticator (1.23.0-beta.5):
     - 1PasswordExtension (= 1.8.6)
     - Alamofire (= 4.8)
     - CocoaLumberjack (~> 3.5)
@@ -163,7 +163,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   WordPressAuthenticator:
-    :commit: da23033641b9b36b67e4a1b77cfeadb479f2d20e
+    :commit: 69505af0ec594428b591eb3238eda2225e8c7549
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 SPEC CHECKSUMS:
@@ -191,7 +191,7 @@ SPEC CHECKSUMS:
   UIDeviceIdentifier: 44f805037d21b94394821828f4fcaba34b38c2d0
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
-  WordPressAuthenticator: 04fdbd520564aba888e282761b956fa3a4d3ebf4
+  WordPressAuthenticator: 262baefef34b2a967d5e72bdde1e7836ec4a1456
   WordPressKit: dcab41057f0c39af3280b7c0d17bdc36271e01ae
   WordPressShared: b56046080c99d41519d097c970df663fda48e218
   WordPressUI: 1cf47a3b78154faf69caa18569ee7ece1e510fa0

@@ -11,7 +11,7 @@ public struct WordPressAuthenticatorDisplayStrings {
     public let siteLoginInstructions: String
 	public let siteCredentialInstructions: String
     public let twoFactorInstructions: String
-    public let magicLinkInstructions: String
+    public let magicLinkSignupInstructions: String
     public let googlePasswordInstructions: String
     public let applePasswordInstructions: String
 
@@ -47,7 +47,7 @@ public struct WordPressAuthenticatorDisplayStrings {
                 siteLoginInstructions: String,
 				siteCredentialInstructions: String,
                 twoFactorInstructions: String,
-                magicLinkInstructions: String,
+                magicLinkSignupInstructions: String,
                 googlePasswordInstructions: String,
                 applePasswordInstructions: String,
                 continueButtonTitle: String,
@@ -68,7 +68,7 @@ public struct WordPressAuthenticatorDisplayStrings {
         self.siteLoginInstructions = siteLoginInstructions
 		self.siteCredentialInstructions = siteCredentialInstructions
         self.twoFactorInstructions = twoFactorInstructions
-        self.magicLinkInstructions = magicLinkInstructions
+        self.magicLinkSignupInstructions = magicLinkSignupInstructions
         self.googlePasswordInstructions = googlePasswordInstructions
         self.applePasswordInstructions = applePasswordInstructions
         self.continueButtonTitle = continueButtonTitle
@@ -100,7 +100,7 @@ public extension WordPressAuthenticatorDisplayStrings {
 														  comment: "Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site."),
             twoFactorInstructions: NSLocalizedString("Please enter the verification code from your authenticator app, or tap the link below to receive a code via SMS.",
                                                      comment: "Instruction text on the two-factor screen."),
-            magicLinkInstructions: NSLocalizedString("We'll email you a magic link to create your new WordPress.com account.",
+            magicLinkSignupInstructions: NSLocalizedString("We'll email you a magic link to create your new WordPress.com account.",
                                                      comment: "Instruction text on the Sign Up screen."),
             googlePasswordInstructions: NSLocalizedString("To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once.",
                                                           comment: "Instructional text shown when requesting the user's password for Google login."),

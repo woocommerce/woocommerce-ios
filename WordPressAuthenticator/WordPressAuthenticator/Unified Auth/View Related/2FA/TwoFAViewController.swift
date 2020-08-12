@@ -137,6 +137,7 @@ private extension TwoFAViewController {
     // MARK: - Button Actions
 
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
+        tracker.track(click: .submitTwoFactorCode)
         validateForm()
     }
 

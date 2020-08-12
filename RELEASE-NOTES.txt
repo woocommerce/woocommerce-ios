@@ -1,5 +1,6 @@
 4.9
 -----
+- [*] Edit Products: the update action now shows up on the product details after updating just the sale price.
  
 4.8
 -----

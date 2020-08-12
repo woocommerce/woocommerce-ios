@@ -13,6 +13,10 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
     open var emailTapped: (() -> Void)?
     open var googleTapped: (() -> Void)?
     open var appleTapped: (() -> Void)?
+    
+    private var tracker: AuthenticatorAnalyticsTracker {
+        AuthenticatorAnalyticsTracker.shared
+    }
 
     /// The big transparent (dismiss) button behind the buttons
     @IBOutlet private weak var dismissButton: UIButton!
@@ -55,7 +59,9 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
         let termsButton = WPStyleGuide.termsButton()
         termsButton.on(.touchUpInside) { [weak self] button in
             defer {
-                WordPressAuthenticator.track(.signupTermsButtonTapped)
+                self?.tracker.track(click: .termsOfService, ifTrackingNotEnabled: {
+                    WordPressAuthenticator.track(.signupTermsButtonTapped)
+                })
             }
             guard let url = URL(string: WordPressAuthenticator.shared.configuration.wpcomTermsOfServiceURL) else {
                 return

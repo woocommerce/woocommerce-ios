@@ -233,6 +233,8 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     dynamic open func displayRemoteError(_ error: Error) {
         configureViewLoading(false)
 
+        tracker.track(failure: error.localizedDescription)
+        
         let err = error as NSError
         guard err.code != 403 else {
             let message = LocalizedText.loginError

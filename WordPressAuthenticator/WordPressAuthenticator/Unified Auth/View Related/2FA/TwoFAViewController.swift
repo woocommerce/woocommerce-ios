@@ -387,7 +387,10 @@ private extension TwoFAViewController {
         cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.textCodeButtonTitle)
 
         cell.actionHandler = { [weak self] in
-            self?.requestCode()
+            guard let self = self else { return }
+            
+            self.tracker.track(click: .sendCodeWithText)
+            self.requestCode()
         }
     }
 

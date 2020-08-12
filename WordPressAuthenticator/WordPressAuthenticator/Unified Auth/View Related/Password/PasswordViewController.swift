@@ -103,6 +103,8 @@ class PasswordViewController: LoginViewController {
     }
 
     override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
+        tracker.track(failure: message)
+        
         if errorMessage != message {
             errorMessage = message
             tableView.reloadData()
@@ -282,8 +284,7 @@ private extension PasswordViewController {
             }
 
             WordPressAuthenticator.openForgotPasswordURL(self.loginFields)
-
-            // TODO: add new tracks. Old track: WordPressAuthenticator.track(.loginForgotPasswordClicked)
+            self.tracker.track(click: .forgottenPassword)
         }
     }
     

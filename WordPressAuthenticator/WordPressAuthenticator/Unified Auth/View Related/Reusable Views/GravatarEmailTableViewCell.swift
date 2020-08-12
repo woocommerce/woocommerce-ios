@@ -86,7 +86,7 @@ private extension GravatarEmailTableViewCell {
     /// because the delegate method `textFieldDidChangeSelection(_ textField: UITextField)`
     /// is only available to iOS 13+. When we no longer support iOS 12,
     /// `textFieldDidChangeSelection`, and `onChangeSelectionHandler` can
-    /// be deleted in favor of adding the delegate method to SiteAddressViewController.
+    /// be deleted in favor of adding the delegate method to view controllers.
     ///
     @IBAction func textFieldDidChangeSelection() {
         onChangeSelectionHandler?(emailLabel)

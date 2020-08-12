@@ -209,7 +209,7 @@ private extension StorePickerViewController {
         accountHeaderView.username = "@" + defaultAccount.username
         accountHeaderView.fullname = defaultAccount.displayName
         accountHeaderView.downloadGravatar(with: defaultAccount.email)
-        accountHeaderView.isHelpButtonEnabled = configuration == .login
+        accountHeaderView.isHelpButtonEnabled = configuration == .login || configuration == .standard
         accountHeaderView.onHelpRequested = { ServiceLocator.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin) }
     }
 

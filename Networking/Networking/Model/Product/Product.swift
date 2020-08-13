@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a Product Entity.
 ///
-public struct Product: Codable, GeneratedCopiable {
+public struct Product: Codable, GeneratedCopiable, Equatable {
     public let siteID: Int64
     public let productID: Int64
     public let name: String
@@ -573,73 +573,6 @@ private extension Product {
 // MARK: - Comparable Conformance
 //
 extension Product: Comparable {
-    public static func == (lhs: Product, rhs: Product) -> Bool {
-        return lhs.siteID == rhs.siteID &&
-            lhs.productID == rhs.productID &&
-            lhs.name == rhs.name &&
-            lhs.slug == rhs.slug &&
-            lhs.permalink == rhs.permalink &&
-            lhs.dateCreated == rhs.dateCreated &&
-            lhs.dateModified == rhs.dateModified &&
-            lhs.dateOnSaleStart == rhs.dateOnSaleStart &&
-            lhs.dateOnSaleEnd == rhs.dateOnSaleEnd &&
-            lhs.productTypeKey == rhs.productTypeKey &&
-            lhs.statusKey == rhs.statusKey &&
-            lhs.featured == rhs.featured &&
-            lhs.catalogVisibilityKey == rhs.catalogVisibilityKey &&
-            lhs.fullDescription == rhs.fullDescription &&
-            lhs.briefDescription == rhs.briefDescription &&
-            lhs.sku == rhs.sku &&
-            // lhs.price == rhs.price &&    // can't compare because object type unknown
-            lhs.regularPrice == rhs.regularPrice &&
-            // lhs.salePrice == rhs.salePrice && // can't compare because object type unknown
-            lhs.onSale == rhs.onSale &&
-            lhs.purchasable == rhs.purchasable &&
-            lhs.totalSales == rhs.totalSales &&
-            lhs.virtual == rhs.virtual &&
-            lhs.downloadable == rhs.downloadable &&
-            lhs.downloadLimit == rhs.downloadLimit &&
-            lhs.downloadExpiry == rhs.downloadExpiry &&
-            lhs.buttonText == rhs.buttonText &&
-            lhs.externalURL == rhs.externalURL &&
-            lhs.taxStatusKey == rhs.taxStatusKey &&
-            lhs.taxClass == rhs.taxClass &&
-            lhs.manageStock == rhs.manageStock &&
-            lhs.stockQuantity == rhs.stockQuantity &&
-            lhs.stockStatusKey == rhs.stockStatusKey &&
-            lhs.backordersKey == rhs.backordersKey &&
-            lhs.backordersAllowed == rhs.backordersAllowed &&
-            lhs.backordered == rhs.backordered &&
-            lhs.soldIndividually == rhs.soldIndividually &&
-            lhs.weight == rhs.weight &&
-            lhs.dimensions == rhs.dimensions &&
-            lhs.shippingRequired == rhs.shippingRequired &&
-            lhs.shippingTaxable == rhs.shippingTaxable &&
-            lhs.shippingClass == rhs.shippingClass &&
-            lhs.shippingClassID == rhs.shippingClassID &&
-            lhs.productShippingClass == rhs.productShippingClass &&
-            lhs.reviewsAllowed == rhs.reviewsAllowed &&
-            lhs.averageRating == rhs.averageRating &&
-            lhs.ratingCount == rhs.ratingCount &&
-            lhs.relatedIDs == rhs.relatedIDs &&
-            lhs.upsellIDs == rhs.upsellIDs &&
-            lhs.parentID == rhs.parentID &&
-            lhs.purchaseNote == rhs.purchaseNote &&
-            lhs.categories.count == rhs.categories.count &&
-            lhs.categories.sorted() == rhs.categories.sorted() &&
-            lhs.tags.count == rhs.tags.count &&
-            lhs.tags.sorted() == rhs.tags.sorted() &&
-            lhs.images.count == rhs.images.count &&
-            lhs.images.sorted() == rhs.images.sorted() &&
-            lhs.attributes.count == rhs.attributes.count &&
-            lhs.attributes.sorted() == rhs.attributes.sorted() &&
-            lhs.defaultAttributes.count == rhs.defaultAttributes.count &&
-            lhs.defaultAttributes.sorted() == rhs.defaultAttributes.sorted() &&
-            lhs.variations == rhs.variations &&
-            lhs.groupedProducts == rhs.groupedProducts &&
-            lhs.menuOrder == rhs.menuOrder
-    }
-
     public static func < (lhs: Product, rhs: Product) -> Bool {
         /// Note: stockQuantity can be `null` in the API,
         /// which is why we are unable to sort by it here.

@@ -1314,7 +1314,7 @@ private extension ProductStoreTests {
                        totalSales: 66,
                        virtual: false,
                        downloadable: true,
-                       downloads: sampleDownloads(),
+                       downloads: [],
                        downloadLimit: 1,
                        downloadExpiry: 1,
                        buttonText: "",

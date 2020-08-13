@@ -63,6 +63,10 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
         productVariation.status
     }
 
+    var virtual: Bool {
+        productVariation.virtual
+    }
+
     var images: [ProductImage] {
         [productVariation.image].compactMap { $0 }
     }
@@ -98,6 +102,11 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
     var ratingCount: Int {
         0
     }
+
+    var productType: ProductType {
+        .variable
+    }
+
     var weight: String? {
         productVariation.weight
     }

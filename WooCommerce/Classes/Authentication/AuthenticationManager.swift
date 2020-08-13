@@ -185,7 +185,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     ///
     func presentSignupEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, service: SocialService?) {
         // NO-OP: The current WC version does not support Signup. Let SIWA through.
-        guard case .apple(_) = service else {
+        guard case .apple = service else {
             return
         }
 
@@ -195,9 +195,9 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         // person's name and user ID show up on the picker screen.
         //
         // This is effectively a useless screen for them other than telling them to install Jetpack.
-        sync(credentials: credentials) {
-            self.storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
-            self.storePickerCoordinator?.start()
+        sync(credentials: credentials) { [weak self] in
+            self?.storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
+            self?.storePickerCoordinator?.start()
         }
     }
 

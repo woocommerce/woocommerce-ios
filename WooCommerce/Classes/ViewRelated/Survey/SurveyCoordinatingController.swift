@@ -15,7 +15,7 @@ final class SurveyCoordinatingController: WooNavigationController {
          viewControllersFactory: SurveyViewControllersFactoryProtocol = SurveyViewControllersFactory()) {
         self.zendeskManager = zendeskManager
         self.viewControllersFactory = viewControllersFactory
-        super.init(navigationBarClass: nil, toolbarClass: nil)
+        super.init(nibName: nil, bundle: nil)
         startSurveyNavigation(survey: survey)
     }
 

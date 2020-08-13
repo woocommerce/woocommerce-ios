@@ -20,7 +20,7 @@ final class InAppFeedbackCardViewController: UIViewController {
     @IBOutlet private var didNotLikeButton: UIButton!
     @IBOutlet private var likeButton: UIButton!
 
-    /// Closure invoked after the user has choose what kind feedback to give.
+    /// Closure invoked after the user has chosen what kind feedback to give.
     var onFeedbackGiven: (() -> Void)?
 
     /// The stackview containing the `titleLabel` and the horizontal view for the buttons.

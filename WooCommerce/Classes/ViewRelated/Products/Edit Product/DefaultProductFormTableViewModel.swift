@@ -214,11 +214,9 @@ private extension DefaultProductFormTableViewModel {
         if product.productType == .simple {
             switch product.virtual {
             case true:
-                details = NSLocalizedString("Virtual",
-                                            comment: "Display label for simple virtual product type.")
+                details = Constants.virtualProductType
             case false:
-                details = NSLocalizedString("Physical",
-                                            comment: "Display label for simple physical product type.")
+                details = Constants.physicalProductType
             }
         }
 
@@ -447,6 +445,12 @@ private extension DefaultProductFormTableViewModel {
                                                  comment: "Format of the SKU on the Inventory Settings row")
         static let stockQuantityFormat = NSLocalizedString("Quantity: %ld",
                                                            comment: "Format of the stock quantity on the Inventory Settings row")
+
+        // Product Type
+        static let virtualProductType = NSLocalizedString("Virtual",
+                                                          comment: "Display label for simple virtual product type.")
+        static let physicalProductType = NSLocalizedString("Physical",
+                                                           comment: "Display label for simple physical product type.")
 
         // Shipping
         static let weightFormat = NSLocalizedString("Weight: %1$@%2$@",

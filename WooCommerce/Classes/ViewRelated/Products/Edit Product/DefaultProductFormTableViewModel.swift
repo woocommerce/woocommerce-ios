@@ -205,7 +205,7 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func productTypeRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.productPlaceholderImage
+        let icon = UIImage.productImage
         let title = Constants.productTypeTitle
 
 

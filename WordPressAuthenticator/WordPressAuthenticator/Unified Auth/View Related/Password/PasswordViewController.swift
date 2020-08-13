@@ -103,7 +103,12 @@ class PasswordViewController: LoginViewController {
     }
 
     override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
-        tracker.track(failure: message)
+        // The reason why this check is necessary is that we're calling this method
+        // with an empty error message when setting up the VC.  We don't want to track
+        // an empty error when that happens.
+        if message.count > 0 {
+            tracker.track(failure: message)
+        }
         
         if errorMessage != message {
             errorMessage = message

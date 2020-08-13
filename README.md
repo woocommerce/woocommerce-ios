@@ -10,6 +10,11 @@ A Jetpack-powered companion app for WooCommerce.
 1. Download Xcode
 
     At the moment *WooCommerce for iOS* uses Swift 5 and requires Xcode 11.2.1 or newer. Previous versions of Xcode can be [downloaded from Apple](https://developer.apple.com/downloads/index.action)
+
+2. Install Ruby. We recommend using [rbenv](https://github.com/rbenv/rbenv) to install it. Please refer to the [`.ruby-version` file](.ruby-version) for the required Ruby version.
+
+    We use Ruby to manage the third party dependencies and other tools and automation. 
+
 2. Clone project in the folder of your preference
 
     ```bash
@@ -22,9 +27,8 @@ A Jetpack-powered companion app for WooCommerce.
     cd woocommerce-ios
     ```
     
-4. Install the third party dependencies and tools required to run the project
+4. Install the third party dependencies and tools required to run the project.
     
-    We use a few tools to help with development. To install or update the required dependencies, run:
     
     ```bash
     rake dependencies

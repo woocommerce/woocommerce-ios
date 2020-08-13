@@ -241,8 +241,6 @@ extension ProductDetailsViewModel {
             configureProductName(cell)
         case let cell as OldProductReviewsTableViewCell:
             configureReviews(cell)
-        case let cell as TitleBodyTableViewCell where row == .productType:
-            configureProductType(cell)
         case let cell as WooBasicTableViewCell where row == .permalink:
             configurePermalink(cell)
         case let cell as WooBasicTableViewCell where row == .affiliateLink:
@@ -301,26 +299,6 @@ extension ProductDetailsViewModel {
         cell.reviewTotalsLabel?.text = ratingCount.humanReadableString()
         let averageRating = Double(product.averageRating)
         cell.starRatingView.rating = CGFloat(averageRating ?? 0)
-    }
-
-    /// Product Type cell.
-    ///
-    func configureProductType(_ cell: TitleBodyTableViewCell) {
-        let title = NSLocalizedString("Product type",
-                                      comment: "Product Details > descriptive label for the Product Type cell.")
-        cell.titleLabel?.text = title
-        if product.productType == .simple {
-            switch product.virtual {
-            case true:
-                cell.bodyLabel?.text = NSLocalizedString("Virtual",
-                                                         comment: "Display label for simple virtual product type.")
-            case false:
-                cell.bodyLabel?.text = NSLocalizedString("Physical",
-                                                         comment: "Display label for simple physical product type.")
-            }
-            return
-        }
-        cell.bodyLabel?.text = product.productType.description
     }
 
     /// Product permalink cell.
@@ -803,7 +781,6 @@ extension ProductDetailsViewModel {
         case productImages
         case productName
         case reviews
-        case productType
         case productVariants
         case permalink
         case affiliateLink
@@ -823,8 +800,6 @@ extension ProductDetailsViewModel {
                 return TitleBodyTableViewCell.reuseIdentifier
             case .reviews:
                 return OldProductReviewsTableViewCell.reuseIdentifier
-            case .productType:
-                return TitleBodyTableViewCell.reuseIdentifier
             case .productVariants:
                 return TitleBodyTableViewCell.reuseIdentifier
             case .permalink:

@@ -4,7 +4,7 @@ import XCTest
 final class WelcomeScreen: BaseScreen {
 
     private struct ElementStringIDs {
-        static let loginButton = "login-prologue-login-with-jetpack"
+        static let loginButton = "Prologue Log In Button"
     }
 
     private let logInButton: XCUIElement

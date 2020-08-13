@@ -209,16 +209,14 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
     @objc func handleOnePasswordButtonTapped(_ sender: UIButton) {
         view.endEditing(true)
 
-        WordPressAuthenticator.fetchOnePasswordCredentials(self, sourceView: sender, loginFields: loginFields) { [weak self] (loginFields) in
-            
-            // The email can only be changed via a password manager.
-            // In this case, don't update username for social accounts.
-            // This prevents inadvertent account linking.
-            // Ref: https://git.io/JJSUM
-            if loginFields.meta.socialService == nil {
-                self?.emailLabel?.text = loginFields.username
-            }
+        // Don't update username for social accounts.
+        // This prevents inadvertent account linking.
+        // Ref: https://git.io/JJSUM
+        let allowUsernameChange = (loginFields.meta.socialService == nil)
 
+        WordPressAuthenticator.fetchOnePasswordCredentials(self, sourceView: sender, loginFields: loginFields, allowUsernameChange: allowUsernameChange) { [weak self] (loginFields) in
+            
+            self?.emailLabel?.text = loginFields.username
             self?.passwordField?.text = loginFields.password
             self?.validateForm()
         }

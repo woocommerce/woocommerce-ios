@@ -242,7 +242,30 @@ class LoginPrologueViewController: LoginViewController {
 
         navigationController?.pushViewController(vc, animated: true)
     }
+ 
+    private func presentWPLogin() {
+        guard let vc = LoginWPComViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from LoginPrologueViewController to LoginWPComViewController")
+            return
+        }
+        
+        vc.loginFields = self.loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+        
+        navigationController?.pushViewController(vc, animated: true)
+    }
     
+    private func presentUnifiedPassword() {
+        guard let vc = PasswordViewController.instantiate(from: .password) else {
+            DDLogError("Failed to navigate from LoginPrologueViewController to PasswordViewController")
+            return
+        }
+        
+        vc.loginFields = loginFields
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
 }
 
 // MARK: - LoginFacadeDelegate
@@ -264,16 +287,13 @@ extension LoginPrologueViewController: AppleAuthenticatorDelegate {
 
     func showWPComLogin(loginFields: LoginFields) {
         self.loginFields = loginFields
-        guard let vc = LoginWPComViewController.instantiate(from: .login) else {
-            DDLogError("Failed to navigate from Prologue > Sign in with Apple to LoginWPComViewController")
+
+        guard WordPressAuthenticator.shared.configuration.enableUnifiedApple else {
+            presentWPLogin()
             return
         }
 
-        vc.loginFields = self.loginFields
-        vc.dismissBlock = dismissBlock
-        vc.errorToPresent = errorToPresent
-
-        navigationController?.pushViewController(vc, animated: true)
+        presentUnifiedPassword()
     }
 
     func showApple2FA(loginFields: LoginFields) {

@@ -9,6 +9,8 @@ final class ProductSettingsViewController: UIViewController {
 
     private let viewModel: ProductSettingsViewModel
 
+    private let isEditProductsRelease3Enabled: Bool
+
     // Completion callback
     //
     typealias Completion = (_ productSettings: ProductSettings) -> Void
@@ -21,8 +23,13 @@ final class ProductSettingsViewController: UIViewController {
 
     /// Init
     ///
-    init(product: Product, password: String?, completion: @escaping Completion, onPasswordRetrieved: @escaping PasswordRetrievedCompletion) {
-        viewModel = ProductSettingsViewModel(product: product, password: password)
+    init(product: Product,
+         password: String?,
+         isEditProductsRelease3Enabled: Bool,
+         completion: @escaping Completion,
+         onPasswordRetrieved: @escaping PasswordRetrievedCompletion) {
+        viewModel = ProductSettingsViewModel(product: product, password: password, isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+        self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
         onCompletion = completion
         onPasswordCompletion = onPasswordRetrieved
         super.init(nibName: nil, bundle: nil)

@@ -8,10 +8,12 @@ struct ProductsTopBannerFactory {
     ///   - expandedStateChangeHandler: called when the top banner expanded state changes.
     ///   - onCompletion: called when the view controller is created and ready for display.
     static func topBanner(isExpanded: Bool,
+                          stores: StoresManager = ServiceLocator.stores,
                           expandedStateChangeHandler: @escaping () -> Void,
                           onCompletion: @escaping (TopBannerView) -> Void) {
+        let action = AppSettingsAction.loadProductsFeatureSwitch { isEditProductsRelease3Enabled in
             let title = Strings.title
-            let infoText = Strings.info
+            let infoText = isEditProductsRelease3Enabled ? Strings.infoWhenRelease3IsEnabled: Strings.info
             let viewModel = TopBannerViewModel(title: title,
                                                infoText: infoText,
                                                icon: .workInProgressBanner,
@@ -20,6 +22,8 @@ struct ProductsTopBannerFactory {
             let topBannerView = TopBannerView(viewModel: viewModel)
             topBannerView.translatesAutoresizingMaskIntoConstraints = false
             onCompletion(topBannerView)
+        }
+        stores.dispatch(action)
     }
 }
 
@@ -31,5 +35,8 @@ private extension ProductsTopBannerFactory {
         static let info =
             NSLocalizedString("We've added more editing functionalities to products! You can now update images, see previews and share your products.",
                               comment: "The info of the Work In Progress top banner on the Products tab.")
+        static let infoWhenRelease3IsEnabled =
+            NSLocalizedString("You can now edit grouped, external and variable products, change product type and update categories and tag",
+                              comment: "The info of the Work In Progress top banner on the Products tab when Products feature switch is enabled.")
     }
 }

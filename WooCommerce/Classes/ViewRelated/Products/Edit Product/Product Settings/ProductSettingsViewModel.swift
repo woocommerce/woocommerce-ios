@@ -11,7 +11,7 @@ final class ProductSettingsViewModel {
 
     var productSettings: ProductSettings {
         didSet {
-            sections = Self.configureSections(productSettings, productType: product.productType)
+            sections = Self.configureSections(productSettings, productType: product.productType, isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
         }
     }
 
@@ -27,11 +27,14 @@ final class ProductSettingsViewModel {
     var onReload: (() -> Void)?
     var onPasswordRetrieved: ((_ password: String) -> Void)?
 
-    init(product: Product, password: String?) {
+    private let isEditProductsRelease3Enabled: Bool
+
+    init(product: Product, password: String?, isEditProductsRelease3Enabled: Bool) {
         self.product = product
         self.password = password
+        self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
         productSettings = ProductSettings(from: product, password: password)
-        sections = Self.configureSections(productSettings, productType: product.productType)
+        sections = Self.configureSections(productSettings, productType: product.productType, isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
 
         /// If nil, we fetch the password from site post API because it was never fetched
         if password == nil {
@@ -45,7 +48,9 @@ final class ProductSettingsViewModel {
                 self.onPasswordRetrieved?(password)
                 self.password = password
                 self.productSettings.password = password
-                self.sections = Self.configureSections(self.productSettings, productType: product.productType)
+                self.sections = Self.configureSections(self.productSettings,
+                                                       productType: product.productType,
+                                                       isEditProductsRelease3Enabled: self.isEditProductsRelease3Enabled)
             }
         }
     }
@@ -89,9 +94,11 @@ private extension ProductSettingsViewModel {
 // MARK: Configure sections and rows in Product Settings
 //
 private extension ProductSettingsViewModel {
-    static func configureSections(_ settings: ProductSettings, productType: ProductType) -> [ProductSettingsSectionMediator] {
-        return [ProductSettingsSections.PublishSettings(settings, productType: productType),
-                ProductSettingsSections.MoreOptions(settings, productType: productType)
+    static func configureSections(_ settings: ProductSettings,
+                                  productType: ProductType,
+                                  isEditProductsRelease3Enabled: Bool) -> [ProductSettingsSectionMediator] {
+        return [ProductSettingsSections.PublishSettings(settings, productType: productType, isEditProductsRelease3Enabled: isEditProductsRelease3Enabled),
+                ProductSettingsSections.MoreOptions(settings, productType: productType, isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
         ]
     }
 }

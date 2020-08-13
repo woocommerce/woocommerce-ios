@@ -105,6 +105,19 @@ final class SiteCredentialsViewController: LoginViewController {
         )
     }
 
+    /// Sets up accessibility elements in the order which they should be read aloud
+    /// and chooses which element to focus on at the beginning.
+    ///
+    private func configureForAccessibility() {
+        view.accessibilityElements = [
+            usernameField as Any,
+            tableView,
+            submitButton as Any
+        ]
+
+        UIAccessibility.post(notification: .screenChanged, argument: usernameField)
+    }
+
     /// Sets the view's state to loading or not loading.
     ///
     /// - Parameter loading: True if the form should be configured to a "loading" state.
@@ -273,7 +286,6 @@ private extension SiteCredentialsViewController {
         // Save a reference to the textField so it can becomeFirstResponder.
         usernameField = cell.textField
         cell.textField.delegate = self
-        SigninEditingState.signinEditingStateActive = true
         cell.onePasswordHandler = { [weak self] in
             guard let self = self else {
                 return
@@ -296,6 +308,12 @@ private extension SiteCredentialsViewController {
             self?.loginFields.username = textfield.nonNilTrimmedText()
             self?.configureSubmitButton(animating: false)
         }
+
+        SigninEditingState.signinEditingStateActive = true
+        if UIAccessibility.isVoiceOverRunning {
+            // Quiet repetitive elements in VoiceOver.
+            usernameField?.placeholder = nil
+        }
     }
 
     /// Configure the password textfield cell.
@@ -308,6 +326,11 @@ private extension SiteCredentialsViewController {
         cell.onChangeSelectionHandler = { [weak self] textfield in
             self?.loginFields.password = textfield.nonNilTrimmedText()
             self?.configureSubmitButton(animating: false)
+        }
+
+        if UIAccessibility.isVoiceOverRunning {
+            // Quiet repetitive elements in VoiceOver.
+            passwordField?.placeholder = nil
         }
     }
 
@@ -340,29 +363,12 @@ private extension SiteCredentialsViewController {
         }
     }
 
-    /// Sets up accessibility elements in the order which they should be read aloud
-    /// and quiets repetitive elements.
-    ///
-    func configureForAccessibility() {
-        view.accessibilityElements = [
-            tableView,
-            submitButton as Any
-        ]
-    }
-
     /// Configure the view for an editing state.
     ///
     func configureViewForEditingIfNeeded() {
         // Check the helper to determine whether an editing state should be assumed.
         adjustViewForKeyboard(SigninEditingState.signinEditingStateActive)
         if SigninEditingState.signinEditingStateActive {
-            if UIAccessibility.isVoiceOverRunning {
-                // Remove the placeholder if VoiceOver is running. VoiceOver speaks the label and the
-                // placeholder together. In this case, both labels and placeholders are the same so it's
-                // like VoiceOver is reading the same thing twice.
-                usernameField?.placeholder = nil
-            }
-
             usernameField?.becomeFirstResponder()
         }
     }

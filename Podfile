@@ -27,7 +27,7 @@ target 'WooCommerce' do
 
   # Use the latest bugfix for coretelephony
   #pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => 'add/application-state-tag'
-  pod 'Automattic-Tracks-iOS', '~> 0.4.5'
+  pod 'Automattic-Tracks-iOS', '~> 0.5.1-beta.1'
 
   pod 'Gridicons', '~> 1.0'
 
@@ -43,7 +43,7 @@ target 'WooCommerce' do
 
   aztec
 
-  pod 'WPMediaPicker', '~> 1.7.1-beta'
+  pod 'WPMediaPicker', '~> 1.7.1'
 
   # External Libraries
   # ==================

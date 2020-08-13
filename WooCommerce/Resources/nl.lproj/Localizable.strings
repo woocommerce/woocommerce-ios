@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-07-10 09:54:04+0000 */
+/* Translation-Revision-Date: 2020-08-06 18:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -51,6 +51,9 @@
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
 "%@ via %@" = "%1$@ via %2$@";
 
+/* Navigation bar title for selecting multiple products when more multiple products have been selected. */
+"%ld Products Selected" = "%ld Producten geselecteerd";
+
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld op voorraad";
 
@@ -65,6 +68,9 @@
 
 /* Label about number of variations shown on Products tab */
 "%ld variants" = "%ld varianten";
+
+/* Navigation bar title for selecting multiple products when one product has been selected. */
+"1 Product Selected" = "1 product geselecteerd";
 
 /* Shown when there are more than 99 items of something (e.g. Processing Orders). */
 "99+" = "99+";
@@ -100,11 +106,19 @@
    A button title used for a unit test - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
 "Add" = "Voeg toe";
 
+/* Action to add category on the Product Categories screen
+   Product Add Category navigation title */
+"Add Category" = "Categorie toevoegen";
+
 /* Action to add photos on the Product images screen */
 "Add Photos" = "Foto's toevoegen";
 
 /* Title for adding the price settings row on Product main screen */
 "Add Price" = "Prijs toevoegen";
+
+/* Action to add products to a grouped product on the Grouped Products screen
+   Navigation bar title for selecting multiple products. */
+"Add Products" = "Producten toevoegen";
 
 /* A title used for a shipment tracking unit test
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
@@ -284,9 +298,12 @@
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "Kan link niet aanvragen";
 
-/* Button title Cancel in Discard Changes Action Sheet
-   Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links */
+/* Action title to cancel selecting products to add to a grouped product from search results
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links */
 "Cancel" = "Annuleren";
+
+/* Title of the alert when there is an error creating a new product category */
+"Cannot Add Category" = "Categorie toevoegen mislukt";
 
 /* The title of the alert when there is an error updating the product */
 "Cannot update product" = "Kan product niet bijwerken";
@@ -313,7 +330,7 @@
 "Certificate error" = "Certificaat fout";
 
 /* Instructional text on how to open the email containing a magic link. */
-"Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder." = "Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder.";
+"Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder." = "Kan je de e-mail niet vinden? Controleer je spam map.";
 
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "Controleer je e-mail!";
@@ -491,7 +508,8 @@
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Heb je geen account? _Aanmelden_";
 
-/* Edit product categories screen - button title to apply categories selection */
+/* Action title to select products to add to a grouped product from search results
+   Edit product categories screen - button title to apply categories selection */
 "Done" = "Klaar";
 
 /* WordPress.com (unmapped!) error */
@@ -553,6 +571,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "Lege URL";
+
+/* Enable Reviews label in Product Settings */
+"Enable Reviews" = "Beoordelingen inschakelen";
 
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "Voer URL in";
@@ -653,6 +674,9 @@
 
 /* Display label for grouped product type. */
 "Grouped" = "Gegroepeerd";
+
+/* Navigation bar title for editing linked products for a grouped product */
+"Grouped Products" = "Gegroepeerd product";
 
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "Gegroepeerde producten";
@@ -819,9 +843,6 @@
 /* 'Limit: 2 downloads', for example. */
 "Limit: %ld downloads" = "Limiet: %ld downloads";
 
-/* The title of the Work In Progress top banner on the Products tab. */
-"Limited editing available" = "Beperkte bewerkingsmogelijkheden beschikbaar";
-
 /* Title for screen in editor that allows to configure link options */
 "Link Settings" = "Link-instellingen";
 
@@ -869,6 +890,12 @@
 
 /* Option to select the Apple Mail app when logging in with magic links */
 "Mail (Default)" = "Mail (Standaard)";
+
+/* Text that explains how to update VC to get the latest stats */
+"Make sure you are running the latest version of WooCommerce on your site and that you have WooCommerce Admin activated." = "Zorg dat je de nieuwste versie van WooCommerce gebruikt op je site en dat WooCommerce Admin geactiveerd is.";
+
+/* Subtitle of the product form bottom sheet action for editing tags. */
+"Make your products easier to find with tags" = "Maak je producten eenvoudiger te vinden met tags";
 
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "Beheer bestellingen, houd de verkoop bij en bewaak de winkelactiviteit met waarschuwingen in real time.";
@@ -960,6 +987,9 @@
 /* The title for the net amount paid cell */
 "Net" = "Netto";
 
+/* The title of the Work In Progress top banner on the Products tab. */
+"New editing options available" = "Nieuwe bewerkingsopties beschikbaar";
+
 /* Title of a button.
    Title of a button. The text should be capitalized. */
 "Next" = "Volgende";
@@ -983,7 +1013,8 @@
 /* The text on the placeholder overlay when there are no product variations on the Products tab */
 "No product variations yet" = "Nog geen productvariaties";
 
-/* The text on the placeholder overlay when there are no products on the Products tab */
+/* Placeholder for editing linked products for a grouped product
+   Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "Nog geen producten";
 
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier' */
@@ -995,8 +1026,14 @@
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "Nog geen verzendingsklassen";
 
+/* Placeholder of the Product Tags row on Product main screen */
+"No tags" = "Geen tags";
+
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
 "No tax classes yet" = "Nog geen belastinggroepen";
+
+/* Placeholder of the Product Variations row on Product main screen for a variable product */
+"No variations yet" = "Nog geen variaties";
 
 /* Display label for the product's tax status setting option */
 "None" = "Geen";
@@ -1011,7 +1048,7 @@
 "Number of files:" = "Aantal bestanden:";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "OK";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -1050,7 +1087,8 @@
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "Opent een lijst met beschikbare statussen.";
 
-/* Placeholder of the cell text field in Product Inventory Settings > SKU */
+/* Add Product Category. Placeholder of cell presenting the parent category.
+   Placeholder of the cell text field in Product Inventory Settings > SKU */
 "Optional" = "Optioneel";
 
 /* No comment provided by engineer. */
@@ -1103,6 +1141,9 @@
 
 /* The title for the customer payment cell */
 "Paid By Customer" = "Betaald door klant";
+
+/* Add Product Category. Title of cell presenting the parent category. */
+"Parent Category" = "Bovenliggende categorie";
 
 /* Accessibility label for the password text field in the self-hosted login page.
    Login dialog password placeholder - Password field title in Product Visibility - Password placeholder */
@@ -1340,6 +1381,9 @@
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Reguliere prijs: %@";
 
+/* Banner action button text in my store when stats will be deprecated */
+"Remind me later" = "Herinner mij hier later aan";
+
 /* Confirm button on the alert when the user taps to delete a Product image */
 "Remove" = "Verwijderen";
 
@@ -1417,6 +1461,9 @@
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "Prijs tijdens de sale: %@";
 
+/* Add Product Category. Save button title in navbar. */
+"Save" = "Opslaan";
+
 /* Scan Products */
 "Scan products" = "Producten scannen";
 
@@ -1440,6 +1487,9 @@
 
 /* Display label for the product's catalog visibility */
 "Search results only" = "Alleen zoekresultaten";
+
+/* Select parent category screen - Screen title */
+"Select Parent Category" = "Bovenliggende categorie selecteren";
 
 /* Page title for the select a different store screen */
 "Select Store" = "Winkel selecteren";
@@ -1649,6 +1699,9 @@
    Status label in Product Settings */
 "Status" = "Status";
 
+/* Button title to contact support to get help with deprecated stats */
+"Still need help? Contact us" = "Meer hulp nodig? Contact";
+
 /* Row title for filtering products by stock status. */
 "Stock Status" = "Voorraadstatus";
 
@@ -1706,6 +1759,10 @@
 
 /* Accessibility Identifier for the Default Font Aztec Style. */
 "Switches to the default Font Size" = "Schakelt over naar de standaard lettertypegrootte";
+
+/* Title of the product form bottom sheet action for editing tags.
+   Title of the Tags row on Product main screen */
+"Tags" = "Tags";
 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "Een foto maken";
@@ -1927,8 +1984,8 @@
 /* Footer text for editing external product button text */
 "This text will be shown on the button linking to the external product." = "Deze tekst wordt weergegeven op de knop die naar het externe product doorverwijst.";
 
-/* Placeholder in the Product Title row on Product form screen.
-   Product details screen — product title descriptive label */
+/* Add Product Category. Placeholder of cell presenting the title of the category.
+   Placeholder in the Product Title row on Product form screen. - Product details screen — product title descriptive label */
 "Title" = "Titel";
 
 /* Action sheet option to sort products by ascending product name */
@@ -2151,7 +2208,7 @@
 "Variable" = "Variabele";
 
 /* Product Details > descriptive label for the Product Variants cell.
-   Title that appears on top of the Product Variation List screen. */
+   Title of the Product Variations row on Product main screen for a variable product - Title that appears on top of the Product Variation List screen. */
 "Variations" = "Variaties";
 
 /* two factor code placeholder */
@@ -2188,6 +2245,9 @@
 /* User role badge */
 "Viewer" = "Lezer";
 
+/* Virtual Product label in Product Settings */
+"Virtual Product" = "Virtueel product";
+
 /* Product Visibility navigation title
    Visibility label in Product Settings */
 "Visibility" = "Zichtbaarheid";
@@ -2206,6 +2266,9 @@
 
 /* shown in promotional screens during first launch */
 "Watch readers from around the world read and interact with your site — in real time." = "Kijk in realtime hoe lezers overal ter wereld je site lezen en bekijken.";
+
+/* Title when we can't show stats because user is on a deprecated WC Version */
+"We can’t display your store’s analytics" = "We kunnen de analyses van je winkel niet weergeven";
 
 /* message to ask a user to check their email for a WordPress.com email */
 "We just emailed a link to %@. Please check your mail app and tap the link to log in." = "We hebben zojuist een link gestuurd naar %@. Controleer je mail-app en tik op de link om in te loggen.";
@@ -2236,7 +2299,7 @@
 "We're sorry, we couldn't find results for “%@”" = "Sorry, we kunnen geen resultaten vinden voor '%@'";
 
 /* The info of the Work In Progress top banner on the Products tab. */
-"We've added editing functionality to simple products. Keep an eye out for more options soon!" = "We hebben bewerkingsfuncties toegevoegd aan simpele producten. Houd de nieuwe functies in de gaten!";
+"We've added more editing functionalities to products! You can now update images, see previews and share your products." = "We hebben meer bewerkingsfuncties aan producten toegevoegd! Je kan nu afbeeldingen bijwerken, voorbeeldweergaven bekijken en je producten delen!";
 
 /* Statistical unit - a single week */
 "Week" = "Week";

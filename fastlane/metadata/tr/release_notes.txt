@@ -1,3 +1,5 @@
-Yeni uyarılar: Basit bir ürün için fiyat ayarlanmadığında, fiyat satırındaki ürün ayrıntıları ekranında bir "Fiyat Ekle" yer tutucusu görünür. Henüz WooCommerce 4.0 sürümüne geçmemiş uygulama kullanıcıları, yeni sürüme geçişin mevcut olduğunu belirten bir banner görür. Önceden yeni sürüme geçmiş olan kullanıcılar yeni istatistik panelini görür. Henüz yeni sürüme geçmediyseniz hemen yapmanızı öneririz.
+Sizi bilgilendirmemiz gereken birkaç konu var:
 
-Düzeltmeler ve ayarlamalar: Negatif bir değerin gösterge tablosu grafiklerinde neden olduğu görsel bozukluk hatasını düzelttik. Ayrıca, toplam sipariş satırını basit ürünler için düzenlenebilir formda göstermediğimizden, karışıklığı önlemek için satırı Ürünler sekmesinden kaldırdık.
+Bazen uygulamadan SMS gönderdiğinizde kilitlenme yaşandığından ve hiç kimse bir SMS'i kaçırmak istemediğinden hemen gereken adımları attık ve bu sorunu düzelttik.
+
+İstatistikleri beğeniyor musunuz? Biz kesinlikle beğeniyoruz. İstatistik deneyiminizi daha da iyi hale getirmek için elimizden geleni yapıyoruz. WooCommerce 4.0 veya WooCommerce Admin'e sahip olduğunuz sürece, istatistik grafiğiniz artık wp-admin'de gördüğünüzle aynı olacak. Şipşak! WooCommerce'ın daha eski bir sürümünü kullanıyorsanız kaçırmamak için güncelleyebilirsiniz.

@@ -52,15 +52,18 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
     }
 
     private let allAttributes: [ProductAttribute]
+    private let parentProductSKU: String?
     private let productImageActionHandler: ProductImageActionHandler
     private let storesManager: StoresManager
     private var cancellable: ObservationToken?
 
     init(productVariation: EditableProductVariationModel,
          allAttributes: [ProductAttribute],
+         parentProductSKU: String?,
          productImageActionHandler: ProductImageActionHandler,
          storesManager: StoresManager = ServiceLocator.stores) {
         self.allAttributes = allAttributes
+        self.parentProductSKU = parentProductSKU
         self.productImageActionHandler = productImageActionHandler
         self.storesManager = storesManager
         self.originalProductVariation = productVariation
@@ -118,12 +121,14 @@ extension ProductVariationFormViewModel {
             return
         }
         productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(image: images.first),
-                                                         allAttributes: allAttributes)
+                                                         allAttributes: allAttributes,
+                                                         parentProductSKU: parentProductSKU)
     }
 
     func updateDescription(_ newDescription: String) {
         productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(description: newDescription),
-                                                         allAttributes: allAttributes)
+                                                         allAttributes: allAttributes,
+                                                         parentProductSKU: parentProductSKU)
     }
 
     func updatePriceSettings(regularPrice: String?,
@@ -138,7 +143,8 @@ extension ProductVariationFormViewModel {
                                                                                                                   salePrice: salePrice,
                                                                                                                   taxStatusKey: taxStatus.rawValue,
                                                                                                                   taxClass: taxClass?.slug),
-                                                         allAttributes: allAttributes)
+                                                         allAttributes: allAttributes,
+                                                         parentProductSKU: parentProductSKU)
     }
 
     func updateInventorySettings(sku: String?,
@@ -152,7 +158,8 @@ extension ProductVariationFormViewModel {
                                                                                                                   stockQuantity: stockQuantity,
                                                                                                                   stockStatus: stockStatus,
                                                                                                                   backordersKey: backordersSetting?.rawValue),
-                                                         allAttributes: allAttributes)
+                                                         allAttributes: allAttributes,
+                                                         parentProductSKU: parentProductSKU)
     }
 
     func updateShippingSettings(weight: String?, dimensions: ProductDimensions, shippingClass: ProductShippingClass?) {
@@ -160,7 +167,8 @@ extension ProductVariationFormViewModel {
                                                  dimensions: dimensions,
                                                  shippingClass: shippingClass?.slug ?? "",
                                                  shippingClassID: shippingClass?.shippingClassID ?? 0),
-                                                         allAttributes: allAttributes)
+                                                         allAttributes: allAttributes,
+                                                         parentProductSKU: parentProductSKU)
     }
 
     func updateProductCategories(_ categories: [ProductCategory]) {
@@ -194,7 +202,8 @@ extension ProductVariationFormViewModel {
     func updateStatus(_ isEnabled: Bool) {
         let status: ProductStatus = isEnabled ? .publish: .privateStatus
         productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(status: status),
-                                                         allAttributes: allAttributes)
+                                                         allAttributes: allAttributes,
+                                                         parentProductSKU: parentProductSKU)
     }
 }
 
@@ -210,7 +219,9 @@ extension ProductVariationFormViewModel {
             case .failure(let error):
                 onCompletion(.failure(error))
             case .success(let productVariation):
-                let model = EditableProductVariationModel(productVariation: productVariation, allAttributes: self.allAttributes)
+                let model = EditableProductVariationModel(productVariation: productVariation,
+                                                          allAttributes: self.allAttributes,
+                                                          parentProductSKU: self.parentProductSKU)
                 self.resetProductVariation(model)
                 onCompletion(.success(model))
             }

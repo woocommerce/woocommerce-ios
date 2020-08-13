@@ -132,6 +132,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.jetpackLogoImage)
     }
 
+    func testInfoOutlineImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.infoOutlineImage)
+    }
+
     func testInvisibleImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.invisibleImage)
     }

@@ -5,10 +5,17 @@ private extension ProductFormSection.SettingsRow.ViewModel {
     func toCellViewModel() -> ImageAndTitleAndTextTableViewCell.ViewModel {
         return ImageAndTitleAndTextTableViewCell.ViewModel(title: title,
                                                            text: details,
+                                                           textTintColor: tintColor,
                                                            image: icon,
-                                                           imageTintColor: .textSubtle,
+                                                           imageTintColor: tintColor ?? .textSubtle,
                                                            numberOfLinesForText: numberOfLinesForDetails,
                                                            isActionable: isActionable)
+    }
+}
+
+private extension ProductFormSection.SettingsRow.WarningViewModel {
+    func toCellViewModel() -> ImageAndTitleAndTextTableViewCell.WarningViewModel {
+        return ImageAndTitleAndTextTableViewCell.WarningViewModel(icon: icon, title: title)
     }
 }
 
@@ -192,6 +199,8 @@ private extension ProductFormTableViewDataSource {
             configureReviews(cell: cell, viewModel: viewModel, ratingCount: ratingCount, averageRating: averageRating)
         case .status(let viewModel):
             configureSettingsRowWithASwitch(cell: cell, viewModel: viewModel)
+        case .noPriceWarning(let viewModel):
+            configureWarningRow(cell: cell, viewModel: viewModel)
         }
     }
 
@@ -230,5 +239,12 @@ private extension ProductFormTableViewDataSource {
                                                                                             self?.onStatusChange?(isSwitchOn)
         }
         cell.updateUI(switchableViewModel: switchableViewModel)
+    }
+
+    func configureWarningRow(cell warningCell: UITableViewCell, viewModel: ProductFormSection.SettingsRow.WarningViewModel) {
+        guard let cell = warningCell as? ImageAndTitleAndTextTableViewCell else {
+            fatalError("Unexpected cell type \(warningCell) for view model: \(viewModel)")
+        }
+        cell.updateUI(warningViewModel: viewModel.toCellViewModel())
     }
 }

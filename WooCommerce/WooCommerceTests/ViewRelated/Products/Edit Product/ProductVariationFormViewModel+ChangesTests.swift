@@ -151,7 +151,7 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
 // Helper in unit tests
 extension EditableProductVariationModel {
     convenience init(productVariation: ProductVariation) {
-        self.init(productVariation: productVariation, allAttributes: [])
+        self.init(productVariation: productVariation, allAttributes: [], parentProductSKU: nil)
     }
 }
 
@@ -160,6 +160,10 @@ extension ProductVariationFormViewModel {
     convenience init(productVariation: EditableProductVariationModel,
                      productImageActionHandler: ProductImageActionHandler,
                      storesManager: StoresManager = ServiceLocator.stores) {
-        self.init(productVariation: productVariation, allAttributes: [], productImageActionHandler: productImageActionHandler, storesManager: storesManager)
+        self.init(productVariation: productVariation,
+                  allAttributes: [],
+                  parentProductSKU: nil,
+                  productImageActionHandler: productImageActionHandler,
+                  storesManager: storesManager)
     }
 }

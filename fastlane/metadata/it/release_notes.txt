@@ -1,3 +1,5 @@
-Nuovi avvisi: quando un prodotto semplice non ha un prezzo impostato, viene visualizzato un segnaposto "Aggiungi prezzo" nella schermata dei dettagli del prodotto nella riga del prezzo. Gli utenti dell'app che non hanno ancora effettuato l'aggiornamento a WooCommerce 4.0 visualizzeranno un banner in cui viene indicato un aggiornamento disponibile. Gli utenti che hanno già effettuato l'aggiornamento visualizzeranno la nuova bacheca delle statistiche. Se non hai ancora effettuato l'aggiornamento, ti incoraggiamo a farlo.
+Abbiamo un paio di informazioni da darti:
 
-Correzioni e modifiche: abbiamo corretto un bug in cui un valore negativo poteva comportare la visualizzazione di un problema tecnico visivo nei grafici della bacheca. Abbiamo anche rimosso la riga degli ordini totali dalla scheda Prodotti per evitare confusione in quanto non veniva visualizzata sul modulo modificabile per i prodotti semplici.
+Si verificava un arresto anomalo quando inviavi un SMS dall'app. Nessuno desidera perdere un SMS, perciò siamo andati avanti e abbiamo risolto il problema.
+
+Ami le statistiche? Noi si! Abbiamo lavorato duramente per assicurarti un'esperienza ancora migliore con le statistiche. Se disponi di WooCommerce 4.0 o WooCommerce Admin il tuo grafico delle statistiche ora corrisponde a ciò che puoi visualizzare in wp-admin. Scatta! Se possiedi una versione meno recente di WooCommerce desidererai aggiornarla in modo da non lasciarti scappare l'occasione.

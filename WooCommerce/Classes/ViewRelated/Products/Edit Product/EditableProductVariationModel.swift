@@ -7,9 +7,14 @@ final class EditableProductVariationModel {
     private let allAttributes: [ProductAttribute]
     private lazy var variationName: String = generateName(variationAttributes: productVariation.attributes, allAttributes: allAttributes)
 
-    init(productVariation: ProductVariation, allAttributes: [ProductAttribute]) {
-        self.productVariation = productVariation
+    init(productVariation: ProductVariation, allAttributes: [ProductAttribute], parentProductSKU: String?) {
         self.allAttributes = allAttributes
+
+        // API sets a variation's SKU to be its parent product's SKU by default.
+        // However, variation API update will fail if we send the variation's SKU as its parent product's SKU (duplicate SKU error).
+        // As a workaround, we set a variation's SKU to nil if it has the same SKU as its parent product during initialization.
+        let sku = parentProductSKU == productVariation.sku ? nil: productVariation.sku
+        self.productVariation = productVariation.copy(sku: sku)
     }
 }
 
@@ -149,6 +154,26 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
 
     func isShippingEnabled() -> Bool {
         productVariation.downloadable == false && productVariation.virtual == false
+    }
+}
+
+extension EditableProductVariationModel {
+    /// Whether the variation is enabled based on its status.
+    var isEnabled: Bool {
+        switch status {
+        case .publish:
+            return true
+        case .privateStatus:
+            return false
+        default:
+            DDLogError("Unexpected product variation status: \(status)")
+            return false
+        }
+    }
+
+    /// Whether the variation is enabled but doesn't have a price so that it is still not visible.
+    var isEnabledAndMissingPrice: Bool {
+        isEnabled && regularPrice.isNilOrEmpty
     }
 }
 

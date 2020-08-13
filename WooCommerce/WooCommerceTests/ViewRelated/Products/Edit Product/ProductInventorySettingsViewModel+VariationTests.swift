@@ -59,7 +59,7 @@ final class ProductInventorySettingsViewModel_VariationTests: XCTestCase {
         // Assert
         let expectedSections: [Section] = [
             .init(rows: [.sku]),
-            .init(rows: [.manageStock, .stockStatus])
+            .init(rows: [.manageStock])
         ]
         XCTAssertEqual(sections, expectedSections)
         XCTAssertEqual(viewModel.sku, sku)

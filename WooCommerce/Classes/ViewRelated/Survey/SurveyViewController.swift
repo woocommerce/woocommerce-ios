@@ -1,9 +1,17 @@
 import UIKit
 import WebKit
 
+/// Outputs of the the SurveyViewController
+///
+protocol SurveyViewControllerOutputs: UIViewController {
+    /// Handler invoked when the survey has been completed
+    ///
+    var onCompletion: () -> Void { get }
+}
+
 /// Shows a web-based survey
 ///
-final class SurveyViewController: UIViewController {
+final class SurveyViewController: UIViewController, SurveyViewControllerOutputs {
 
     /// Internal web view to render the survey
     ///
@@ -15,7 +23,7 @@ final class SurveyViewController: UIViewController {
 
     /// Handler invoked when the survey has been completed
     ///
-    private let onCompletion: () -> Void
+    let onCompletion: () -> Void
 
     /// Loading view displayed while the survey loads
     ///

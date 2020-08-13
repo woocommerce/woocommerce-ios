@@ -18,9 +18,10 @@ enum ProductFormEditAction {
     // Grouped products only
     case groupedProducts
     // Variable products only
-    case variationName
     case variations
     // Variation only
+    case variationName
+    case noPriceWarning
     case status
 }
 

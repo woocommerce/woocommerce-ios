@@ -218,8 +218,10 @@ private extension ProductInventorySettingsViewModel {
             let stockSection: Section
             if manageStockEnabled {
                 stockSection = Section(rows: [.manageStock, .stockQuantity, .backorders])
-            } else {
+            } else if isStockStatusEnabled {
                 stockSection = Section(rows: [.manageStock, .stockStatus])
+            } else {
+                stockSection = Section(rows: [.manageStock])
             }
 
             switch productModel {

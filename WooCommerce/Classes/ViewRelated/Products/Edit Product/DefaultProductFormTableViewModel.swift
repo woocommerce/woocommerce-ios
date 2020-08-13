@@ -93,13 +93,15 @@ private extension DefaultProductFormTableViewModel {
         return actions.compactMap { action in
             switch action {
             case .priceSettings:
-                return .price(viewModel: priceSettingsRow(product: productVariation))
+                return .price(viewModel: variationPriceSettingsRow(productVariation: productVariation))
             case .shippingSettings:
                 return .shipping(viewModel: shippingSettingsRow(product: productVariation))
             case .inventorySettings:
                 return .inventory(viewModel: inventorySettingsRow(product: productVariation))
             case .status:
                 return .status(viewModel: variationStatusRow(productVariation: productVariation))
+            case .noPriceWarning:
+                return .noPriceWarning(viewModel: noPriceWarningRow())
             default:
                 assertionFailure("Unexpected action in the settings section: \(action)")
                 return nil
@@ -149,6 +151,12 @@ private extension DefaultProductFormTableViewModel {
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
                                                         details: details)
+    }
+
+    func variationPriceSettingsRow(productVariation: EditableProductVariationModel) -> ProductFormSection.SettingsRow.ViewModel {
+        let priceViewModel = priceSettingsRow(product: productVariation)
+        let tintColor = productVariation.isEnabledAndMissingPrice ? UIColor.warning: nil
+        return .init(icon: priceViewModel.icon, title: priceViewModel.title, details: priceViewModel.details, tintColor: tintColor)
     }
 
     func reviewsRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {
@@ -344,8 +352,14 @@ private extension DefaultProductFormTableViewModel {
                                                                  title: title,
                                                                  details: nil,
                                                                  isActionable: false)
-        let isSwitchOn = productVariation.productVariation.isVisible
+        let isSwitchOn = productVariation.isEnabled
         return ProductFormSection.SettingsRow.SwitchableViewModel(viewModel: viewModel, isSwitchOn: isSwitchOn)
+    }
+
+    func noPriceWarningRow() -> ProductFormSection.SettingsRow.WarningViewModel {
+        let icon = UIImage.infoOutlineImage
+        let title = Constants.noPriceWarningTitle
+        return ProductFormSection.SettingsRow.WarningViewModel(icon: icon, title: title)
     }
 }
 
@@ -444,19 +458,10 @@ private extension DefaultProductFormTableViewModel {
         static let variationStatusTitle =
             NSLocalizedString("Enabled",
                               comment: "Title of the status row on Product Variation main screen to enable/disable a variation")
-    }
-}
 
-private extension ProductVariation {
-    var isVisible: Bool {
-        switch status {
-        case .publish:
-            return true
-        case .privateStatus:
-            return false
-        default:
-            DDLogError("Unexpected product variation status: \(status)")
-            return false
-        }
+        // No price warning row
+        static let noPriceWarningTitle =
+            NSLocalizedString("Variations without price won’t be shown in your store",
+                              comment: "Title of the no price warning row on Product Variation main screen when a variation is enabled without a price")
     }
 }

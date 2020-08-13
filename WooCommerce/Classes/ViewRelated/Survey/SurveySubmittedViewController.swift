@@ -1,8 +1,20 @@
 import UIKit
 
+/// Outputs of the the `SurveySubmittedViewController`
+///
+protocol SurveySubmittedViewControllerOutputs: UIViewController {
+    /// Closure invoked when tapping the contact us button
+    ///
+    var onContactUsAction: (() -> Void)? { get }
+
+    /// Closure invoked when tapping the back to store button
+    ///
+    var onBackToStoreAction: (() -> Void)? { get }
+}
+
 /// Shows a completion screen once a survey has been submitted
 ///
-final class SurveySubmittedViewController: UIViewController {
+final class SurveySubmittedViewController: UIViewController, SurveySubmittedViewControllerOutputs {
 
     /// Thank you label at the top
     ///
@@ -32,11 +44,15 @@ final class SurveySubmittedViewController: UIViewController {
     ///
     @IBOutlet private weak var poweredLabel: UILabel!
 
-    /// Used to present the Contact Support dialog
-    private let zendeskManager: ZendeskManagerProtocol
+    /// Closure invoked when tapping the contact us button
+    ///
+    var onContactUsAction: (() -> Void)?
 
-    init(zendeskManager: ZendeskManagerProtocol = ZendeskManager.shared) {
-        self.zendeskManager = zendeskManager
+    /// Closure invoked when tapping the back to store button
+    ///
+    var onBackToStoreAction: (() -> Void)?
+
+    init() {
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -54,14 +70,12 @@ final class SurveySubmittedViewController: UIViewController {
     }
 
     @IBAction private func contactUsButtonTapped(_ sender: Any) {
-        zendeskManager.showNewRequestIfPossible(from: self, with: nil)
+        onContactUsAction?()
     }
 
     @IBAction private func backToStoreButtonPressed(_ sender: Any) {
-        // Assumes it's in a presentation context. To be addressed in a following PR.
-        dismiss(animated: true, completion: nil)
+        onBackToStoreAction?()
     }
-
 }
 
 // MARK: View Configuration

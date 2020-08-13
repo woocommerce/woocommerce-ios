@@ -1,3 +1,5 @@
-Nuevas alertas: cuando un producto sencillo no tiene establecido un precio, el marcador de posición "Añadir precio" se muestra en la pantalla de detalles del producto en la fila de precios. Los usuarios de la aplicación que no hayan actualizado a WooCommerce 4.0 verán un banner que indica que hay una actualización disponible. Los usuarios que ya lo han actualizado verán el escritorio de estadísticas. Si aún no has hecho la actualización, te recomendamos que lo hagas.
+Tenemos novedades:
 
-Correcciones y ajustes: hemos corregido un error en que un valor negativo podía causar un error visual en los gráficos del escritorio. También hemos eliminado la fila de total de pedidos de la pestaña Productos para evitar confusión, ya que no lo mostramos en el formulario editable para los productos sencillos.
+a veces se producía un error al enviar un SMS desde la aplicación; a nadie le gusta perderse un SMS, así que lo hemos resuelto.
+
+¿Te gustan las estadísticas? ¡A nosotros sí! Hemos estado trabajando para que tu experiencia con las estadísticas sea aún mejor. Siempre y cuando tengas WooCommerce 4.0 o WooCommerce Admin, tu gráfico de estadísticas coincidirá con lo que ves en wp-admin. ¡Vaya! Si estás utilizando una versión anterior de WooCommerce, recomendamos que la actualices para no perderte las novedades.

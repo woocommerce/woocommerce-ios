@@ -15,6 +15,7 @@ final class TwoFAViewController: LoginViewController {
     private var rows = [Row]()
     private var errorMessage: String?
     private var pasteboardBeforeBackground: String? = nil
+    private var shouldChangeVoiceOverFocus: Bool = false
 
     override var sourceTag: WordPressSupportSourceTag {
         get {
@@ -39,6 +40,7 @@ final class TwoFAViewController: LoginViewController {
         localizePrimaryButton()
         registerTableViewCells()
         loadRows()
+        configureForAccessibility()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -97,6 +99,19 @@ final class TwoFAViewController: LoginViewController {
         )
     }
 
+    /// Sets up accessibility elements in the order which they should be read aloud
+    /// and chooses which element to focus on at the beginning.
+    ///
+    private func configureForAccessibility() {
+        view.accessibilityElements = [
+            codeField as Any,
+            tableView,
+            submitButton as Any
+        ]
+
+        UIAccessibility.post(notification: .screenChanged, argument: codeField)
+    }
+
     override func configureViewLoading(_ loading: Bool) {
         super.configureViewLoading(loading)
         codeField?.isEnabled = !loading
@@ -109,13 +124,13 @@ final class TwoFAViewController: LoginViewController {
         let err = error as NSError
         if err.domain == "WordPressComOAuthError" && err.code == WordPressComOAuthError.invalidOneTimePassword.rawValue {
             // Invalid verification code.
-            displayError(message: LocalizedText.bad2FAMessage)
+            displayError(message: LocalizedText.bad2FAMessage, moveVoiceOverFocus: true)
         } else if err.domain == "WordPressComOAuthError" && err.code == WordPressComOAuthError.invalidTwoStepCode.rawValue {
             // Invalid 2FA during social login
             if let newNonce = (error as NSError).userInfo[WordPressComOAuthClient.WordPressComOAuthErrorNewNonceKey] as? String {
                 loginFields.nonceInfo?.updateNonce(with: newNonce)
             }
-            displayError(message: LocalizedText.bad2FAMessage)
+            displayError(message: LocalizedText.bad2FAMessage, moveVoiceOverFocus: true)
         } else {
             displayError(error as NSError, sourceTag: sourceTag)
         }
@@ -124,6 +139,8 @@ final class TwoFAViewController: LoginViewController {
     override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
         if errorMessage != message {
             errorMessage = message
+            shouldChangeVoiceOverFocus = moveVoiceOverFocus
+            loadRows()
             tableView.reloadData()
         }
     }
@@ -338,9 +355,9 @@ private extension TwoFAViewController {
     func loadRows() {
         rows = [.instructions, .code]
 
-        if errorMessage != nil {
-             rows.append(.errorMessage)
-         }
+        if let errorText = errorMessage, !errorText.isEmpty {
+            rows.append(.errorMessage)
+        }
 
         rows.append(.sendCode)
     }
@@ -379,6 +396,10 @@ private extension TwoFAViewController {
         cell.textField.delegate = self
 
         SigninEditingState.signinEditingStateActive = true
+        if UIAccessibility.isVoiceOverRunning {
+            // Quiet repetitive VoiceOver elements.
+            codeField?.placeholder = nil
+        }
     }
 
     /// Configure the link cell.
@@ -395,6 +416,9 @@ private extension TwoFAViewController {
     ///
     func configureErrorLabel(_ cell: TextLabelTableViewCell) {
         cell.configureLabel(text: errorMessage, style: .error)
+        if shouldChangeVoiceOverFocus {
+            UIAccessibility.post(notification: .layoutChanged, argument: cell)
+        }
     }
 
     /// Configure the view for an editing state.

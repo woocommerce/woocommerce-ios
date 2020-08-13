@@ -50,9 +50,6 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
     ///
     public func setupCancelButtonIfNeeded() {
         if !shouldShowCancelButton() {
-            navigationItem.backBarButtonItem?.on(call: { [weak self] barButtonItem in
-                self?.handleBackButtonTapped()
-            })
             return
         }
 
@@ -128,16 +125,8 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
         }
         view.addGestureRecognizer(tgr)
     }
-    
-    func handleBackButtonTapped() {
-        AuthenticatorAnalyticsTracker.shared.track(click: .dismiss)
-        
-        dismiss(cancelled: false)
-    }
 
-    func handleCancelButtonTapped() {
-        AuthenticatorAnalyticsTracker.shared.track(click: .dismiss)
-        
+    func handleCancelButtonTapped() {        
         dismiss(cancelled: true)
         NotificationCenter.default.post(name: .wordpressLoginCancelled, object: nil)
     }

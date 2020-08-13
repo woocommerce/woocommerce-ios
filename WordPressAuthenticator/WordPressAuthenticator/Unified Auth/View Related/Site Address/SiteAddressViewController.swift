@@ -94,6 +94,7 @@ final class SiteAddressViewController: LoginViewController {
     ///
     private func configureForAccessibility() {
         view.accessibilityElements = [
+            siteURLField as Any,
             tableView,
             submitButton as Any
         ]

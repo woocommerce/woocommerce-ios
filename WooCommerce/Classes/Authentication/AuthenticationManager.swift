@@ -115,6 +115,7 @@ class AuthenticationManager: Authentication {
 //
 extension AuthenticationManager: WordPressAuthenticatorDelegate {
     func userAuthenticatedWithAppleUserID(_ appleUserID: String) {
+        // Sign in with Apple is not supported yet.
     }
 
     var allowWPComLogin: Bool {

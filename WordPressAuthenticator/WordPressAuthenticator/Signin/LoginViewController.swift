@@ -362,10 +362,13 @@ extension LoginViewController {
                         serviceToken: serviceToken,
                         connectParameters: appleConnectParameters,
                         success: {
-                            let source = appleConnectParameters != nil ? "apple" : "google"
-                            WordPressAuthenticator.track(.signedIn, properties: ["source": source])
-                            WordPressAuthenticator.track(.loginSocialConnectSuccess)
-                            WordPressAuthenticator.track(.loginSocialSuccess)
+                            AuthenticatorAnalyticsTracker.shared.track(step: .success, ifTrackingNotEnabled: {
+
+                                let source = appleConnectParameters != nil ? "apple" : "google"
+                                WordPressAuthenticator.track(.signedIn, properties: ["source": source])
+                                WordPressAuthenticator.track(.loginSocialConnectSuccess)
+                                WordPressAuthenticator.track(.loginSocialSuccess)
+                            })
         }, failure: { error in
             DDLogError("Social Link Error: \(error)")
             WordPressAuthenticator.track(.loginSocialConnectFailure, error: error)

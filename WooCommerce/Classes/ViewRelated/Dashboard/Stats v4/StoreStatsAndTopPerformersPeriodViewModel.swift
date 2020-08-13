@@ -46,6 +46,23 @@ final class StoreStatsAndTopPerformersPeriodViewModel {
         updateIsInAppFeedbackCardVisibleValue()
     }
 
+    /// Updates the card visibility state stored in `isInAppFeedbackCardVisibleSubject` by updating the app last feedback date.
+    ///
+    func onInAppFeedbackCardAction() {
+        let action = AppSettingsAction.setLastFeedbackDate(date: Date()) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+
+            if let error = result.failure {
+                CrashLogging.logError(error)
+            }
+
+            self.updateIsInAppFeedbackCardVisibleValue()
+        }
+        storesManager.dispatch(action)
+    }
+
     /// Calculates and updates the value of `isInAppFeedbackCardVisibleSubject`.
     private func updateIsInAppFeedbackCardVisibleValue() {
         // Abort right away if we don't need to calculate the real value.

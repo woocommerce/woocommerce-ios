@@ -58,8 +58,8 @@ private extension EmptyStoresTableViewCell {
 
 private extension EmptyStoresTableViewCell {
     enum Localization {
-        static let actionTitle = NSLocalizedString("Connect your app with Jetpack",
-                                                   comment: "Link on the store picker when there are no stores available. Opens a website about Jetpack setup.")
+        static let actionTitle = NSLocalizedString("Connect your store with Jetpack",
+                                                   comment: "Link on the store picker when there are no stores available. Opens a webview about Jetpack setup.")
         static let legend = NSLocalizedString("Unable to find WooCommerce stores connected to this account",
                                               comment: "Displayed during the Login flow, whenever the user has no woo stores associated.")
     }

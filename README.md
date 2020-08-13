@@ -55,7 +55,9 @@ We use [SwiftLint](https://github.com/realm/SwiftLint) to enforce a common style
 
 If your code has any style violations, you can try to automatically correct them by running:
 
-`rake lint:autocorrect`
+```
+rake lint:autocorrect
+```
 
 Otherwise, you can also fix them manually.
 

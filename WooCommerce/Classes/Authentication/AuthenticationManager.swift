@@ -114,18 +114,7 @@ class AuthenticationManager: Authentication {
 // MARK: - WordPressAuthenticator Delegate
 //
 extension AuthenticationManager: WordPressAuthenticatorDelegate {
-    /// When an Apple account is used during the Auth flow, save the Apple user id to the keychain.
-    /// It will be used on app launch to check the user id state.
-    ///
     func userAuthenticatedWithAppleUserID(_ appleUserID: String) {
-//        do {
-//            try SFHFKeychainUtils.storeUsername(WPAppleIDKeychainUsernameKey,
-//                                                andPassword: appleUserID,
-//                                                forServiceName: WPAppleIDKeychainServiceName,
-//                                                updateExisting: true)
-//        } catch {
-//            DDLogInfo("Error while saving Apple User ID: \(error)")
-//        }
     }
 
     var allowWPComLogin: Bool {

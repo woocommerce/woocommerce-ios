@@ -816,12 +816,11 @@ private extension ProductFormViewController {
     }
 
     func onEditProdyctTypeCompletion(productType: ProductType) {
-
         defer {
             navigationController?.popViewController(animated: true)
         }
         let hasChangedData: Bool = {
-            productType != self.product.productType
+            productType != product.productType
         }()
 
         // TODO-2509 Edit Product M3 analytics

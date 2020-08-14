@@ -15,12 +15,13 @@ public struct GeneralAppSettings: Codable, Equatable {
     ///
     public let installationDate: Date?
 
-    /// The last time that the user interacted with the in-app feedback (https://git.io/JJ8i0).
-    ///
-    public let lastFeedbackDate: Date?
+    /// Key/Value type to store feedback settings
+    /// Key: A `String` to identify the feedback
+    /// Value: A `FeedbackSetting` to store the feedback state
+    public let feedbacks: [String: FeedbackSettings]
 
-    public init(installationDate: Date?, lastFeedbackDate: Date?) {
+    public init(installationDate: Date?, feedbacks: [String: FeedbackSettings]) {
         self.installationDate = installationDate
-        self.lastFeedbackDate = lastFeedbackDate
+        self.feedbacks = feedbacks
     }
 }

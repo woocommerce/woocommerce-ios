@@ -157,10 +157,12 @@ private extension GoogleAuthenticator {
     func requestAuthorization(from viewController: UIViewController) {
         switch authType {
         case .login:
+            tracker.set(flow: .googleLogin)
             tracker.track(step: .start) {
                 track(.loginSocialButtonClick)
             }
         case .signup:
+            tracker.set(flow: .googleSignup)
             tracker.track(step: .start) {
                 track(.createAccountInitiated)
             }

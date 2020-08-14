@@ -215,7 +215,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
             vc.googleTapped = { [weak self] in
                 guard let self = self else { return }
                 
-                self.tracker.track(click: .signUpWithGoogle)
+                self.tracker.track(click: .signupWithGoogle)
                 
                 guard WordPressAuthenticator.shared.configuration.enableUnifiedGoogle else {
                     self.presentGoogleSignupView()

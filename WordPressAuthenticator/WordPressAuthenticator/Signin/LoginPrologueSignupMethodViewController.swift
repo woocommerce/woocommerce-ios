@@ -94,7 +94,9 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
     }
 
     @objc func handleGoogleButtonTapped() {
-        WordPressAuthenticator.track(.signupSocialButtonTapped, properties: ["source": "google"])
+        tracker.track(click: .signupWithGoogle, ifTrackingNotEnabled: {
+            WordPressAuthenticator.track(.signupSocialButtonTapped, properties: ["source": "google"])
+        })
 
         dismiss(animated: true)
         googleTapped?()

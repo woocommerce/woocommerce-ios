@@ -148,15 +148,15 @@ public class AuthenticatorAnalyticsTracker {
         
         /// When the user tries to sign up with email from the confirmation screen
         ///
-        case signUpWithEmail = "signup_with_email"
+        case signupWithEmail = "signup_with_email"
         
         /// When the user tries to sign up with Apple from the confirmation screen
         ///
-        case signUpWithApple = "signup_with_apple"
+        case signupWithApple = "signup_with_apple"
         
         /// When the user tries to sign up with Google from the confirmation screen
         ///
-        case signUpWithGoogle = "signup_with_google"
+        case signupWithGoogle = "signup_with_google"
         
         /// When the user opens the email client from the magic link screen
         ///

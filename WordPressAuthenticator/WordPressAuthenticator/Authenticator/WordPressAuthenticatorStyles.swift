@@ -88,7 +88,7 @@ public struct WordPressAuthenticatorStyle {
     /// Style: prologue top container child view controller
     /// When nil, `LoginProloguePageViewController` is displayed in the top container
     ///
-    public let prologueTopContainerChildViewController: UIViewController?
+    public let prologueTopContainerChildViewController: () -> UIViewController?
 
     /// Style: status bar style
     ///
@@ -124,7 +124,7 @@ public struct WordPressAuthenticatorStyle {
                 navButtonTextColor: UIColor = .white,
                 prologueBackgroundColor: UIColor = WPStyleGuide.wordPressBlue(),
                 prologueTitleColor: UIColor = .white,
-                prologueTopContainerChildViewController: UIViewController? = nil,
+                prologueTopContainerChildViewController: @autoclosure @escaping () -> UIViewController? = nil,
                 statusBarStyle: UIStatusBarStyle = .lightContent) {
         self.primaryNormalBackgroundColor = primaryNormalBackgroundColor
         self.primaryNormalBorderColor = primaryNormalBorderColor

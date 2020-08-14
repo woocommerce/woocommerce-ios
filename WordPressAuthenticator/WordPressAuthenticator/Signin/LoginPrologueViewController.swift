@@ -22,7 +22,7 @@ class LoginPrologueViewController: LoginViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        if let topContainerChildViewController = style.prologueTopContainerChildViewController {
+        if let topContainerChildViewController = style.prologueTopContainerChildViewController() {
             topContainerView.subviews.forEach { $0.removeFromSuperview() }
             addChild(topContainerChildViewController)
             topContainerView.addSubview(topContainerChildViewController.view)

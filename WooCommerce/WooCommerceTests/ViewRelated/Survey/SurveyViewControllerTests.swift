@@ -21,7 +21,7 @@ final class SurveyViewControllerTests: XCTestCase {
         XCTAssertEqual(mirror.webView.url, WooConstants.URLs.inAppFeedback.asURL())
     }
 
-    func test_it_completes_after_receiving_a_form_submitted_POST_callback_request() throws {
+    func test_it_completes_after_receiving_a_form_submitted_completed_callback_request() throws {
         // Given
         var surveyCompleted = false
         let viewController = SurveyViewController(survey: .inAppFeedback, onCompletion: {
@@ -32,8 +32,8 @@ final class SurveyViewControllerTests: XCTestCase {
         _ = try XCTUnwrap(viewController.view)
         let mirror = try self.mirror(of: viewController)
 
-        // Fakes a form submission POST navigation
-        let navigationAction = FormSubmittedNavigationAction(httpMethod: "POST")
+        // Fakes a form submission "completed" action navigation
+        let navigationAction = FormSubmittedNavigationAction.completedAction
         viewController.webView(mirror.webView, decidePolicyFor: navigationAction, decisionHandler: { _ in })
 
         // Then
@@ -42,7 +42,7 @@ final class SurveyViewControllerTests: XCTestCase {
         }
     }
 
-    func test_it_does_not_complete_after_receiving_a_form_submitted_GET_callback_request() throws {
+    func test_it_does_not_complete_after_receiving_a_form_submitted_non_completed_callback_request() throws {
         // Given
         let exp = expectation(description: #function)
         exp.isInverted = true
@@ -57,7 +57,30 @@ final class SurveyViewControllerTests: XCTestCase {
         let mirror = try self.mirror(of: viewController)
 
         // Fakes a form submission GET navigation
-        let navigationAction = FormSubmittedNavigationAction(httpMethod: "GET")
+        let navigationAction = FormSubmittedNavigationAction.nonCompletedAction
+        viewController.webView(mirror.webView, decidePolicyFor: navigationAction, decisionHandler: { _ in })
+        waitForExpectations(timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertFalse(surveyCompleted)
+    }
+
+    func test_it_does_not_complete_after_receiving_a_form_submitted_empty_callback_request() throws {
+        // Given
+        let exp = expectation(description: #function)
+        exp.isInverted = true
+        var surveyCompleted = false
+        let viewController = SurveyViewController(survey: .inAppFeedback, onCompletion: {
+            surveyCompleted = true
+            exp.fulfill()
+        })
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+        let mirror = try self.mirror(of: viewController)
+
+        // Fakes a form submission GET navigation
+        let navigationAction = FormSubmittedNavigationAction.emptyAction
         viewController.webView(mirror.webView, decidePolicyFor: navigationAction, decisionHandler: { _ in })
         waitForExpectations(timeout: Constants.expectationTimeout)
 
@@ -118,9 +141,21 @@ private extension SurveyViewControllerTests {
 private extension SurveyViewControllerTests {
     final class FormSubmittedNavigationAction: WKNavigationAction {
 
-        private let httpMethod: String
-        init(httpMethod: String) {
-            self.httpMethod = httpMethod
+        static var emptyAction: FormSubmittedNavigationAction {
+            return FormSubmittedNavigationAction(messageTag: nil)
+        }
+
+        static var nonCompletedAction: FormSubmittedNavigationAction {
+            return FormSubmittedNavigationAction(messageTag: "other")
+        }
+
+        static var completedAction: FormSubmittedNavigationAction {
+            return FormSubmittedNavigationAction(messageTag: "done")
+        }
+
+        private let messageTag: String?
+        private init(messageTag: String?) {
+            self.messageTag = messageTag
         }
 
         override var navigationType: WKNavigationType {
@@ -128,9 +163,14 @@ private extension SurveyViewControllerTests {
         }
 
         override var request: URLRequest {
-            var request = URLRequest(url: WooConstants.URLs.inAppFeedback.asURL())
-            request.httpMethod = httpMethod
-            return request
+            var urlComponents = URLComponents(url: WooConstants.URLs.inAppFeedback.asURL(), resolvingAgainstBaseURL: false) ?? URLComponents()
+            if let messageTag = messageTag {
+                let item = URLQueryItem(name: "msg", value: messageTag)
+                urlComponents.queryItems = [item]
+            }
+
+            let finalURL = (try? urlComponents.asURL()) ?? WooConstants.URLs.inAppFeedback.asURL()
+            return URLRequest(url: finalURL)
         }
     }
 }

@@ -248,8 +248,24 @@ private extension PasswordViewController {
             
             self?.configureSubmitButton(animating: false)
         }
-
-        // TODO: - add onePasswordHandler
+        
+        cell.onePasswordHandler = { [weak self] sourceView in
+            guard let self = self else {
+                return
+            }
+            
+            self.view.endEditing(true)
+            
+            // Don't update username for social accounts.
+            // This prevents inadvertent account linking.
+            let allowUsernameChange = (self.loginFields.meta.socialService == nil)
+            
+            WordPressAuthenticator.fetchOnePasswordCredentials(self, sourceView: sourceView, loginFields: self.loginFields, allowUsernameChange: allowUsernameChange) { [weak self] (loginFields) in
+                cell.updateEmailAddress(loginFields.username)
+                self?.passwordField?.text = loginFields.password
+                self?.validateForm()
+            }
+        }
     }
     
     /// Configure the instruction cell.

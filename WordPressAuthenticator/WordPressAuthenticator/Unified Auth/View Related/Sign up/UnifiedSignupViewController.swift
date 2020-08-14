@@ -1,6 +1,6 @@
 import UIKit
 
-/// UnifiedSignUpViewController: sign up to .com with an email address.
+/// UnifiedSignupViewController: sign up to .com with an email address.
 ///
 class UnifiedSignupViewController: LoginViewController {
 
@@ -151,7 +151,7 @@ private extension UnifiedSignupViewController {
     /// Configure the instruction cell.
     ///
     func configureInstructionLabel(_ cell: TextLabelTableViewCell) {
-        cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.magicLinkInstructions, style: .body)
+        cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.magicLinkSignupInstructions, style: .body)
     }
 
     /// Configure the error message cell.
@@ -231,8 +231,8 @@ extension UnifiedSignupViewController {
         // TODO: add new Tracks event. Old: .signupMagicLinkRequested
         WordPressAuthenticator.storeLoginInfoForTokenAuth(loginFields)
 
-        guard let vc = NUXLinkMailViewController.instantiate(from: .emailMagicLink) else {
-            DDLogError("Failed to navigate to NUXLinkMailViewController")
+        guard let vc = SignupMagicLinkViewController.instantiate(from: .unifiedSignUp) else {
+            DDLogError("Failed to navigate from UnifiedSignupViewController to SignupMagicLinkViewController")
             return
         }
 

@@ -141,7 +141,7 @@ private extension AppSettingsStore {
                 return onCompletion(.success(false))
             }
 
-            let settingsToSave = GeneralAppSettings(installationDate: date, lastFeedbackDate: settings.lastFeedbackDate)
+            let settingsToSave = GeneralAppSettings(installationDate: date, feedbacks: settings.feedbacks)
             try saveGeneralAppSettings(settingsToSave)
 
             onCompletion(.success(true))
@@ -150,13 +150,12 @@ private extension AppSettingsStore {
         }
     }
 
-    /// Save the `date` in `GeneralAppSettings.lastFeedbackDate`.
+    /// Save the `date` in `GeneralAppSettings` for the general feedback..
     ///
     func setLastFeedbackDate(date: Date, onCompletion: ((Result<Void, Error>) -> Void)) {
         do {
             let settings = loadOrCreateGeneralAppSettings()
-
-            let settingsToSave = GeneralAppSettings(installationDate: settings.installationDate, lastFeedbackDate: date)
+            let settingsToSave = replaceGeneralFeedbackDate(date, on: settings)
             try saveGeneralAppSettings(settingsToSave)
 
             onCompletion(.success(()))
@@ -177,7 +176,7 @@ private extension AppSettingsStore {
     /// Load the `GeneralAppSettings` from file or create an empty one if it doesn't exist.
     func loadOrCreateGeneralAppSettings() -> GeneralAppSettings {
         guard let settings: GeneralAppSettings = try? fileStorage.data(for: generalAppSettingsFileURL) else {
-            return GeneralAppSettings(installationDate: nil, lastFeedbackDate: nil)
+            return GeneralAppSettings(installationDate: nil, feedbacks: [:])
         }
 
         return settings
@@ -188,6 +187,25 @@ private extension AppSettingsStore {
         try fileStorage.write(settings, to: generalAppSettingsFileURL)
     }
 }
+
+// MARK: - Feedback Settings
+//
+private extension AppSettingsStore {
+    /// Adds or replaces the general feedback given date on the provided `GeneralAppSettings` value type.
+    /// Returns a new `GeneralAppSettings`type with the general feedback data updated.
+    ///
+    func replaceGeneralFeedbackDate(_ date: Date, on appSettings: GeneralAppSettings) -> GeneralAppSettings {
+        // Creates a new general feedback setting
+        let feedback = FeedbackSettings(name: Constants.generalFeedbackName, status: .given(date))
+
+        // Merges thew new setting with the existing feedback settings
+        let feedbackStore = appSettings.feedbacks.merging([feedback.name: feedback]) { _, new in new }
+
+        // Returns a new app setting with the updated feedback values
+        return GeneralAppSettings(installationDate: appSettings.installationDate, feedbacks: feedbackStore)
+    }
+}
+
 // MARK: - Shipment tracking providers!
 //
 private extension AppSettingsStore {
@@ -461,10 +479,15 @@ enum AppSettingsStoreErrors: Error {
 /// Constants
 ///
 private enum Constants {
+
+    // MARK: File Names
     static let shipmentProvidersFileName = "shipment-providers.plist"
     static let customShipmentProvidersFileName = "custom-shipment-providers.plist"
     static let statsVersionBannerVisibilityFileName = "stats-version-banner-visibility.plist"
     static let statsVersionLastShownFileName = "stats-version-last-shown.plist"
     static let productsFeatureSwitchFileName = "products-feature-switch.plist"
     static let generalAppSettingsFileName = "general-app-settings.plist"
+
+    // MARK: Feedback Names
+    static let generalFeedbackName = "general-in-app-feedback"
 }

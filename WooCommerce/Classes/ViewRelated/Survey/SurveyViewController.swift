@@ -110,11 +110,11 @@ extension SurveyViewController: WKNavigationDelegate {
         guard case .formSubmitted = navigationAction.navigationType,
             let url = navigationAction.request.url,
             let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems,
-            let surveyMessageTag = queryItems.first(where: { $0.name == Constants.surveyMessageTagKey })?.value else {
+            let surveyMessageValue = queryItems.first(where: { $0.name == Constants.surveyMessageParameterKey })?.value else {
                 return
         }
 
-        if surveyMessageTag == Constants.surveyCompletionTagValue {
+        if surveyMessageValue == Constants.surveyCompletionParameterValue {
             onCompletion()
         }
     }
@@ -128,7 +128,7 @@ extension SurveyViewController: WKNavigationDelegate {
 //
 private extension SurveyViewController {
     enum Constants {
-        static let surveyMessageTagKey = "msg"
-        static let surveyCompletionTagValue = "done"
+        static let surveyMessageParameterKey = "msg"
+        static let surveyCompletionParameterValue = "done"
     }
 }

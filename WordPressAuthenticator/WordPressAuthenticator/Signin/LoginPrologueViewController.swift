@@ -8,6 +8,8 @@ class LoginPrologueViewController: LoginViewController {
 
     private var buttonViewController: NUXButtonViewController?
     var showCancel = false
+
+    // Called when login button is tapped
     var onLoginButtonTapped: (() -> Void)?
 
     private let configuration = WordPressAuthenticator.shared.configuration

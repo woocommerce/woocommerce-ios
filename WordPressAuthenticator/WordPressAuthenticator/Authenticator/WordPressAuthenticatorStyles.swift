@@ -86,6 +86,7 @@ public struct WordPressAuthenticatorStyle {
     public let prologueTitleColor: UIColor
 
     /// Style: prologue top container child view controller
+    /// When nil, `LoginProloguePageViewController` is displayed in the top container
     ///
     public let prologueTopContainerChildViewController: UIViewController?
 

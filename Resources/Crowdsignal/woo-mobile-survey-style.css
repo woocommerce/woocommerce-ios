@@ -299,6 +299,9 @@ iframe
 	font-weight:400;
 	line-height:24px;
 	padding:4px 5px;
+
+    /* remove the drop shadow */
+    -webkit-appearance: none;
 }
 
 /* line 273, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */

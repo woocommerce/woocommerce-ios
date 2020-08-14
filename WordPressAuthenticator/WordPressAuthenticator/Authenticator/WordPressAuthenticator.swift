@@ -150,7 +150,7 @@ import AuthenticationServices
         showLogin(from: presenter, animated: animated)
     }
 
-    public class func showLogin(from presenter: UIViewController, animated: Bool, showCancel: Bool = false, restrictToWPCom: Bool = false) {
+    public class func showLogin(from presenter: UIViewController, animated: Bool, showCancel: Bool = false, restrictToWPCom: Bool = false, onLoginButtonTapped: (() -> Void)? = nil) {
         defer {
             trackOpenedLogin()
         }
@@ -160,6 +160,7 @@ import AuthenticationServices
             if let childController = controller.children.first as? LoginPrologueViewController {
                 childController.loginFields.restrictToWPCom = restrictToWPCom
                 childController.showCancel = showCancel
+                childController.onLoginButtonTapped = onLoginButtonTapped
             }
             controller.modalPresentationStyle = .fullScreen
             presenter.present(controller, animated: animated, completion: nil)
@@ -458,12 +459,19 @@ import AuthenticationServices
     ///
     /// - Parameter sender: A UIView. Typically the button the user tapped on.
     ///
-    class func fetchOnePasswordCredentials(_ controller: UIViewController, sourceView: UIView, loginFields: LoginFields, success: @escaping ((_ loginFields: LoginFields) -> Void)) {
+    class func fetchOnePasswordCredentials(_ controller: UIViewController,
+                                           sourceView: UIView,
+                                           loginFields: LoginFields,
+                                           allowUsernameChange: Bool = true,
+                                           success: @escaping ((_ loginFields: LoginFields) -> Void)) {
 
         let loginURL = loginFields.meta.userIsDotCom ? OnePasswordDefaults.dotcomURL : loginFields.siteAddress
 
         OnePasswordFacade().findLogin(for: loginURL, viewController: controller, sender: sourceView, success: { (username, password, otp) in
-            loginFields.username = username
+            if allowUsernameChange {
+                loginFields.username = username
+            }
+            
             loginFields.password = password
             loginFields.multifactorCode = otp ?? String()
 

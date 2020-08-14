@@ -9,12 +9,34 @@ class LoginPrologueViewController: LoginViewController {
     private var buttonViewController: NUXButtonViewController?
     var showCancel = false
 
+    // Called when login button is tapped
+    var onLoginButtonTapped: (() -> Void)?
+
+    private let configuration = WordPressAuthenticator.shared.configuration
+    private let style = WordPressAuthenticator.shared.style
+
+    @IBOutlet private weak var topContainerView: UIView!
+
     // MARK: - Lifecycle Methods
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        if let topContainerChildViewController = style.prologueTopContainerChildViewController() {
+            topContainerView.subviews.forEach { $0.removeFromSuperview() }
+            addChild(topContainerChildViewController)
+            topContainerView.addSubview(topContainerChildViewController.view)
+            topContainerChildViewController.didMove(toParent: self)
+
+            topContainerChildViewController.view.translatesAutoresizingMaskIntoConstraints = false
+            topContainerView.pinSubviewToAllEdges(topContainerChildViewController.view)
+        }
+    }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         configureButtonVC()
-        self.navigationController?.setNavigationBarHidden(true, animated: false)
+        navigationController?.setNavigationBarHidden(true, animated: false)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -51,10 +73,14 @@ class LoginPrologueViewController: LoginViewController {
         let createTitle = NSLocalizedString("Sign up for WordPress.com", comment: "Button title. Tapping begins the process of creating a WordPress.com account.")
 
         buttonViewController.setupTopButton(title: loginTitle, isPrimary: false, accessibilityIdentifier: "Prologue Log In Button") { [weak self] in
+            self?.onLoginButtonTapped?()
             self?.loginTapped()
         }
-        buttonViewController.setupBottomButton(title: createTitle, isPrimary: true, accessibilityIdentifier: "Prologue Signup Button") { [weak self] in
-            self?.signupTapped()
+
+        if configuration.enableSignUp {
+            buttonViewController.setupBottomButton(title: createTitle, isPrimary: true, accessibilityIdentifier: "Prologue Signup Button") { [weak self] in
+                self?.signupTapped()
+            }
         }
         if showCancel {
             let cancelTitle = NSLocalizedString("Cancel", comment: "Button title. Tapping it cancels the login flow.")
@@ -62,13 +88,13 @@ class LoginPrologueViewController: LoginViewController {
                 self?.dismiss(animated: true, completion: nil)
             }
         }
-        buttonViewController.backgroundColor = WordPressAuthenticator.shared.style.buttonViewBackgroundColor
+        buttonViewController.backgroundColor = style.buttonViewBackgroundColor
     }
 
     // MARK: - Actions
 
     private func loginTapped() {
-        if WordPressAuthenticator.shared.configuration.showLoginOptions {
+        if configuration.showLoginOptions {
             guard let vc = LoginPrologueLoginMethodViewController.instantiate(from: .login) else {
                 DDLogError("Failed to navigate to LoginPrologueLoginMethodViewController from LoginPrologueViewController")
                 return
@@ -129,21 +155,29 @@ class LoginPrologueViewController: LoginViewController {
         vc.modalPresentationStyle = .custom
 
         vc.emailTapped = { [weak self] in
-            guard WordPressAuthenticator.shared.configuration.enableUnifiedSignup else {
-                self?.presentSignUpEmailView()
+            guard let self = self else {
                 return
             }
 
-            self?.presentUnifiedSignupView()
+            guard self.configuration.enableUnifiedSignup else {
+                self.presentSignUpEmailView()
+                return
+            }
+
+            self.presentUnifiedSignupView()
         }
 
         vc.googleTapped = { [weak self] in
-            guard WordPressAuthenticator.shared.configuration.enableUnifiedGoogle else {
-                self?.presentGoogleSignupView()
+            guard let self = self else {
                 return
             }
 
-            self?.presentUnifiedGoogleView()
+            guard self.configuration.enableUnifiedGoogle else {
+                self.presentGoogleSignupView()
+                return
+            }
+
+            self.presentUnifiedGoogleView()
         }
 
         vc.appleTapped = { [weak self] in
@@ -159,7 +193,7 @@ class LoginPrologueViewController: LoginViewController {
     }
 
     private func googleTapped() {
-        guard WordPressAuthenticator.shared.configuration.enableUnifiedGoogle else {
+        guard configuration.enableUnifiedGoogle else {
             GoogleAuthenticator.sharedInstance.loginDelegate = self
             GoogleAuthenticator.sharedInstance.showFrom(viewController: self, loginFields: loginFields, for: .login)
             return
@@ -171,7 +205,7 @@ class LoginPrologueViewController: LoginViewController {
     /// Determines which view to present for the site address form.
     ///
     private func loginToSelfHostedSite() {
-        guard WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress else {
+        guard configuration.enableUnifiedSiteAddress else {
             presentSelfHostedView()
             return
         }

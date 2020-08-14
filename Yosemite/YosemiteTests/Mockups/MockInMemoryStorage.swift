@@ -13,22 +13,22 @@ final class MockInMemoryStorage: FileStorage {
     ///
     var deleteIsHit: Bool = false
 
-    private(set) var data: Codable?
+    private(set) var data: [URL: Codable] = [:]
 
     func data<T>(for fileURL: URL) throws -> T where T: Decodable {
-        guard let data = data as? T else {
+        guard let data = data[fileURL] as? T else {
             throw Error.readFailed
         }
         return data
     }
 
     func write<T>(_ data: T, to fileURL: URL) throws where T: Encodable {
-        self.data = data as? Codable
+        self.data[fileURL] = data as? Codable
         dataWriteIsHit = true
     }
 
     func deleteFile(at fileURL: URL) throws {
-        data = nil
+        data.removeValue(forKey: fileURL)
         deleteIsHit = true
     }
 }

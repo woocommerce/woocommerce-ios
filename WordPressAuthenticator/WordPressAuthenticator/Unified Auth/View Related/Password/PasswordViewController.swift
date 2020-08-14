@@ -13,6 +13,7 @@ class PasswordViewController: LoginViewController {
     private weak var passwordField: UITextField?
     private var rows = [Row]()
     private var errorMessage: String?
+    private var shouldChangeVoiceOverFocus: Bool = false
 
     override var loginFields: LoginFields {
         didSet {
@@ -43,6 +44,7 @@ class PasswordViewController: LoginViewController {
         localizePrimaryButton()
         registerTableViewCells()
         loadRows()
+        configureForAccessibility()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -96,7 +98,7 @@ class PasswordViewController: LoginViewController {
         let errorDomain = (error as NSError).domain
         if errorDomain == WordPressComOAuthClient.WordPressComOAuthErrorDomain, errorCode == WordPressComOAuthError.invalidRequest.rawValue {
             let message = NSLocalizedString("It seems like you've entered an incorrect password. Want to give it another try?", comment: "An error message shown when a wpcom user provides the wrong password.")
-            displayError(message: message)
+            displayError(message: message, moveVoiceOverFocus: true)
         } else {
             super.displayRemoteError(error)
         }
@@ -106,6 +108,8 @@ class PasswordViewController: LoginViewController {
         configureViewLoading(false)
         if errorMessage != message {
             errorMessage = message
+            shouldChangeVoiceOverFocus = moveVoiceOverFocus
+            loadRows()
             tableView.reloadData()
         }
     }
@@ -204,7 +208,7 @@ private extension PasswordViewController {
         
         rows.append(.password)
         
-        if errorMessage != nil {
+        if let errorText = errorMessage, !errorText.isEmpty {
             rows.append(.errorMessage)
         }
         
@@ -290,7 +294,7 @@ private extension PasswordViewController {
                                      and: WordPressAuthenticator.shared.displayStrings.passwordPlaceholder)
         // Save a reference to the first textField so it can becomeFirstResponder.
         passwordField = cell.textField
-         cell.textField.delegate = self
+        cell.textField.delegate = self
         
         cell.onChangeSelectionHandler = { [weak self] textfield in
             self?.loginFields.password = textfield.nonNilTrimmedText()
@@ -298,6 +302,11 @@ private extension PasswordViewController {
         }
         
         SigninEditingState.signinEditingStateActive = true
+        
+        if UIAccessibility.isVoiceOverRunning {
+            // Quiet repetitive VoiceOver elements.
+            passwordField?.placeholder = nil
+        }
     }
     
     /// Configure the forgot password link cell.
@@ -324,6 +333,9 @@ private extension PasswordViewController {
     ///
     func configureErrorLabel(_ cell: TextLabelTableViewCell) {
         cell.configureLabel(text: errorMessage, style: .error)
+        if shouldChangeVoiceOverFocus {
+            UIAccessibility.post(notification: .layoutChanged, argument: cell)
+        }
     }
     
     /// Configure the view for an editing state.
@@ -334,6 +346,19 @@ private extension PasswordViewController {
        if SigninEditingState.signinEditingStateActive {
            passwordField?.becomeFirstResponder()
        }
+    }
+    
+    /// Sets up accessibility elements in the order which they should be read aloud
+    /// and chooses which element to focus on at the beginning.
+    ///
+    func configureForAccessibility() {
+        view.accessibilityElements = [
+            passwordField as Any,
+            tableView,
+            submitButton as Any
+        ]
+
+        UIAccessibility.post(notification: .screenChanged, argument: passwordField)
     }
     
     /// Rows listed in the order they were created.

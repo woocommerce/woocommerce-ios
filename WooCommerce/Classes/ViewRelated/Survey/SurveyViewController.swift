@@ -99,16 +99,36 @@ extension SurveyViewController {
 extension SurveyViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
 
-        // The condition for the POST HTTP method is necessary, since the `formSubmitted` callback is triggered when showing the Crowdsignal completion screen
-        // (a GET request).
-        if case .formSubmitted = navigationAction.navigationType, navigationAction.request.httpMethod == "POST" {
-            onCompletion()
+        defer {
+            decisionHandler(.allow)
         }
 
-        decisionHandler(.allow)
+        // To consider the survey as completed, the following conditions need to occur:
+        // - Survey Form is submitted.
+        // - The request URL contains a `msg` parameter key with `done` as it's value
+        //
+        guard case .formSubmitted = navigationAction.navigationType,
+            let url = navigationAction.request.url,
+            let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems,
+            let surveyMessageValue = queryItems.first(where: { $0.name == Constants.surveyMessageParameterKey })?.value else {
+                return
+        }
+
+        if surveyMessageValue == Constants.surveyCompletionParameterValue {
+            onCompletion()
+        }
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation) {
         removeLoadingView()
+    }
+}
+
+// MARK: Constants
+//
+private extension SurveyViewController {
+    enum Constants {
+        static let surveyMessageParameterKey = "msg"
+        static let surveyCompletionParameterValue = "done"
     }
 }

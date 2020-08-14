@@ -84,6 +84,7 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
     }
 
     @objc func handleGoogleButtonTapped() {
+        tracker.set(flow: .googleLogin)
         tracker.track(click: .loginWithGoogle)
         
         dismiss(animated: true)

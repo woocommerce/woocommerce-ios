@@ -44,12 +44,9 @@ final class SurveyViewControllerTests: XCTestCase {
 
     func test_it_does_not_complete_after_receiving_a_form_submitted_non_completed_callback_request() throws {
         // Given
-        let exp = expectation(description: #function)
-        exp.isInverted = true
         var surveyCompleted = false
         let viewController = SurveyViewController(survey: .inAppFeedback, onCompletion: {
             surveyCompleted = true
-            exp.fulfill()
         })
 
         // When
@@ -57,9 +54,12 @@ final class SurveyViewControllerTests: XCTestCase {
         let mirror = try self.mirror(of: viewController)
 
         // Fakes a form submission GET navigation
-        let navigationAction = FormSubmittedNavigationAction.nonCompletedAction
-        viewController.webView(mirror.webView, decidePolicyFor: navigationAction, decisionHandler: { _ in })
-        waitForExpectations(timeout: Constants.expectationTimeout)
+        waitForExpectation { exp in
+            let navigationAction = FormSubmittedNavigationAction.nonCompletedAction
+            viewController.webView(mirror.webView, decidePolicyFor: navigationAction, decisionHandler: { _ in
+                exp.fulfill()
+            })
+        }
 
         // Then
         XCTAssertFalse(surveyCompleted)
@@ -67,12 +67,9 @@ final class SurveyViewControllerTests: XCTestCase {
 
     func test_it_does_not_complete_after_receiving_a_form_submitted_empty_callback_request() throws {
         // Given
-        let exp = expectation(description: #function)
-        exp.isInverted = true
         var surveyCompleted = false
         let viewController = SurveyViewController(survey: .inAppFeedback, onCompletion: {
             surveyCompleted = true
-            exp.fulfill()
         })
 
         // When
@@ -80,9 +77,12 @@ final class SurveyViewControllerTests: XCTestCase {
         let mirror = try self.mirror(of: viewController)
 
         // Fakes a form submission GET navigation
-        let navigationAction = FormSubmittedNavigationAction.emptyAction
-        viewController.webView(mirror.webView, decidePolicyFor: navigationAction, decisionHandler: { _ in })
-        waitForExpectations(timeout: Constants.expectationTimeout)
+        waitForExpectation { exp in
+            let navigationAction = FormSubmittedNavigationAction.emptyAction
+            viewController.webView(mirror.webView, decidePolicyFor: navigationAction, decisionHandler: { _ in
+                exp.fulfill()
+            })
+        }
 
         // Then
         XCTAssertFalse(surveyCompleted)

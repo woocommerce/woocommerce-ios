@@ -68,9 +68,12 @@ private extension GravatarEmailTableViewCell {
     /// Sets up a 1Password button if 1Password is available and user is on iOS 12.
     ///
     func setupOnePasswordButtonIfNeeded() {
-        if #available(iOS 13, *) {
-            // no-op, we rely on the key icon in the keyboard to initiate a password manager.
-        } else {
+
+        // TODO: re-enable version check before merging.
+        
+//        if #available(iOS 13, *) {
+//            // no-op, we rely on the key icon in the keyboard to initiate a password manager.
+//        } else {
             guard let emailStackView = emailStackView else {
                 return
             }
@@ -78,7 +81,7 @@ private extension GravatarEmailTableViewCell {
             WPStyleGuide.configureOnePasswordButtonForStackView(emailStackView,
                                                                 target: self,
                                                                 selector: #selector(onePasswordTapped(_:)))
-        }
+//        }
     }
     
     @objc func onePasswordTapped(_ sender: UIButton) {

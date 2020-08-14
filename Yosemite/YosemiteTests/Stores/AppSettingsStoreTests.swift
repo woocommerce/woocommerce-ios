@@ -134,7 +134,7 @@ final class AppSettingsStoreTests: XCTestCase {
             .addTrackingProvider(siteID: TestConstants.siteID,
                                  providerName: TestConstants.newProviderName) { error in
                                     XCTAssertNil(error)
-                                    let fileData = self.fileStorage?.data as? [PreselectedProvider]
+                                    let fileData = self.fileStorage?.data.values.first as? [PreselectedProvider]
                                     let updatedProvider = fileData?.filter({ $0.siteID == TestConstants.siteID}).first
 
                                     if updatedProvider?.providerName == TestConstants.newProviderName {
@@ -156,7 +156,7 @@ final class AppSettingsStoreTests: XCTestCase {
                                  providerName: TestConstants.newProviderName,
                                  providerURL: TestConstants.newProviderURL) { error in
                                     XCTAssertNil(error)
-                                    let fileData = self.fileStorage?.data as? [PreselectedProvider]
+                                    let fileData = self.fileStorage?.data.values.first as? [PreselectedProvider]
                                     let updatedProvider = fileData?.filter({ $0.siteID == TestConstants.siteID}).first
 
                                     if updatedProvider?.providerName == TestConstants.newProviderName {

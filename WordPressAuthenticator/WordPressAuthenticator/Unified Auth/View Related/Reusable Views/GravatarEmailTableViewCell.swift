@@ -50,6 +50,13 @@ class GravatarEmailTableViewCell: UITableViewCell {
         emailLabel?.text = email
     }
     
+    override func prepareForReuse() {
+        emailLabel.text = nil
+        gravatarImageView?.image = nil
+        
+        // Remove 1Password icon.
+        emailStackView?.arrangedSubviews.last?.removeFromSuperview()
+    }
 }
 
 // MARK: - Password Manager Handling

@@ -107,6 +107,9 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="42E-2e-kOq"/>
+                    <connections>
+                        <outlet property="topContainerView" destination="6cw-FO-hjb" id="rCh-90-6d1"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ieq-Ar-5OF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

@@ -42,27 +42,27 @@ public struct WordPressAuthenticatorDisplayStrings {
 
     /// Designated initializer.
     ///
-    public init(emailLoginInstructions: String,
-                jetpackLoginInstructions: String,
-                siteLoginInstructions: String,
-				siteCredentialInstructions: String,
-                twoFactorInstructions: String,
-                magicLinkInstructions: String,
-                googlePasswordInstructions: String,
-                applePasswordInstructions: String,
-                continueButtonTitle: String,
-                magicLinkButtonTitle: String,
-                findSiteButtonTitle: String,
-                resetPasswordButtonTitle: String,
-                textCodeButtonTitle: String,
-                gettingStartedTitle: String,
-                logInTitle: String,
-                signUpTitle: String,
-                waitingForGoogleTitle: String,
-				usernamePlaceholder: String,
-				passwordPlaceholder: String,
-                siteAddressPlaceholder: String,
-                twoFactorCodePlaceholder: String) {
+    public init(emailLoginInstructions: String = defaultStrings.emailLoginInstructions,
+                jetpackLoginInstructions: String = defaultStrings.jetpackLoginInstructions,
+                siteLoginInstructions: String = defaultStrings.siteLoginInstructions,
+                siteCredentialInstructions: String = defaultStrings.siteCredentialInstructions,
+                twoFactorInstructions: String = defaultStrings.twoFactorInstructions,
+                magicLinkInstructions: String = defaultStrings.magicLinkInstructions,
+                googlePasswordInstructions: String = defaultStrings.googlePasswordInstructions,
+                applePasswordInstructions: String = defaultStrings.applePasswordInstructions,
+                continueButtonTitle: String = defaultStrings.continueButtonTitle,
+                magicLinkButtonTitle: String = defaultStrings.magicLinkButtonTitle,
+                findSiteButtonTitle: String = defaultStrings.findSiteButtonTitle,
+                resetPasswordButtonTitle: String = defaultStrings.resetPasswordButtonTitle,
+                textCodeButtonTitle: String = defaultStrings.textCodeButtonTitle,
+                gettingStartedTitle: String = defaultStrings.gettingStartedTitle,
+                logInTitle: String = defaultStrings.logInTitle,
+                signUpTitle: String = defaultStrings.signUpTitle,
+                waitingForGoogleTitle: String = defaultStrings.waitingForGoogleTitle,
+                usernamePlaceholder: String = defaultStrings.usernamePlaceholder,
+                passwordPlaceholder: String = defaultStrings.passwordPlaceholder,
+                siteAddressPlaceholder: String = defaultStrings.siteAddressPlaceholder,
+                twoFactorCodePlaceholder: String = defaultStrings.twoFactorCodePlaceholder) {
         self.emailLoginInstructions = emailLoginInstructions
         self.jetpackLoginInstructions = jetpackLoginInstructions
         self.siteLoginInstructions = siteLoginInstructions

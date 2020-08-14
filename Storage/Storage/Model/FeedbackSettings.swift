@@ -19,6 +19,10 @@ public struct FeedbackSettings: Codable, Equatable {
     ///
     public let status: Status
 
+    public init(name: String, status: Status) {
+        self.name = name
+        self.status = status
+    }
 }
 
 // MARK: Codable Conformance

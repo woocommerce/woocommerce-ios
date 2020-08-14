@@ -142,20 +142,20 @@ private extension SurveyViewControllerTests {
     final class FormSubmittedNavigationAction: WKNavigationAction {
 
         static var emptyAction: FormSubmittedNavigationAction {
-            return FormSubmittedNavigationAction(messageTag: nil)
+            return FormSubmittedNavigationAction(messageParameterValue: nil)
         }
 
         static var nonCompletedAction: FormSubmittedNavigationAction {
-            return FormSubmittedNavigationAction(messageTag: "other")
+            return FormSubmittedNavigationAction(messageParameterValue: "other")
         }
 
         static var completedAction: FormSubmittedNavigationAction {
-            return FormSubmittedNavigationAction(messageTag: "done")
+            return FormSubmittedNavigationAction(messageParameterValue: "done")
         }
 
-        private let messageTag: String?
-        private init(messageTag: String?) {
-            self.messageTag = messageTag
+        private let messageParameterValue: String?
+        private init(messageParameterValue: String?) {
+            self.messageParameterValue = messageParameterValue
         }
 
         override var navigationType: WKNavigationType {
@@ -164,8 +164,8 @@ private extension SurveyViewControllerTests {
 
         override var request: URLRequest {
             var urlComponents = URLComponents(url: WooConstants.URLs.inAppFeedback.asURL(), resolvingAgainstBaseURL: false) ?? URLComponents()
-            if let messageTag = messageTag {
-                let item = URLQueryItem(name: "msg", value: messageTag)
+            if let messageParameterValue = messageParameterValue {
+                let item = URLQueryItem(name: "msg", value: messageParameterValue)
                 urlComponents.queryItems = [item]
             }
 

@@ -169,8 +169,7 @@ private extension SurveyViewControllerTests {
                 urlComponents.queryItems = [item]
             }
 
-            let finalURL = (try? urlComponents.asURL()) ?? WooConstants.URLs.inAppFeedback.asURL()
-            return URLRequest(url: finalURL)
+            return URLRequest(url: try! urlComponents.asURL())
         }
     }
 }

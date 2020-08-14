@@ -37,7 +37,7 @@ final class SurveyViewControllerTests: XCTestCase {
         viewController.webView(mirror.webView, decidePolicyFor: navigationAction, decisionHandler: { _ in })
 
         // Then
-        waitUntil(timeout: 1) {
+        waitUntil {
             surveyCompleted
         }
     }
@@ -59,7 +59,7 @@ final class SurveyViewControllerTests: XCTestCase {
         // Fakes a form submission GET navigation
         let navigationAction = FormSubmittedNavigationAction(httpMethod: "GET")
         viewController.webView(mirror.webView, decidePolicyFor: navigationAction, decisionHandler: { _ in })
-        waitForExpectations(timeout: 1)
+        waitForExpectations(timeout: Constants.expectationTimeout)
 
         // Then
         XCTAssertFalse(surveyCompleted)
@@ -90,8 +90,8 @@ final class SurveyViewControllerTests: XCTestCase {
         viewController.webView(mirror.webView, didFinish: navigation)
 
         // Then
-        waitUntil(timeout: 1) {
-            return mirror.loadingView.isHidden
+        waitUntil {
+            mirror.loadingView.isHidden
         }
     }
 }

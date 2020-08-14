@@ -7,12 +7,11 @@ struct ProductDetailsFactory {
     ///   - product: product model.
     ///   - presentationStyle: how the product details are presented.
     ///   - currencySettings: site currency settings.
-    ///   - featureFlagService: where edit product feature flags are read.
+    ///   - stores: where the Products feature switch value can be read.
     ///   - onCompletion: called when the view controller is created and ready for display.
     static func productDetails(product: Product,
                                presentationStyle: ProductFormPresentationStyle,
                                currencySettings: CurrencySettings = CurrencySettings.shared,
-                               featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
                                stores: StoresManager = ServiceLocator.stores,
                                onCompletion: @escaping (UIViewController) -> Void) {
         let action = AppSettingsAction.loadProductsFeatureSwitch { isFeatureSwitchOn in

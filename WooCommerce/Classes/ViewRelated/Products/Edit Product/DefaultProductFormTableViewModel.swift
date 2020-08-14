@@ -208,7 +208,6 @@ private extension DefaultProductFormTableViewModel {
         let icon = UIImage.productImage
         let title = Constants.productTypeTitle
 
-
         var details = product.productType.description
 
         if product.productType == .simple {

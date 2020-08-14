@@ -249,7 +249,9 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         displayError(message: "")
         configureViewLoading(false)
 
-        WordPressAuthenticator.track(.twoFactorCodeRequested)
+        tracker.track(step: .twoFactorAuthentication, ifTrackingNotEnabled: {
+            WordPressAuthenticator.track(.twoFactorCodeRequested)
+        })
 
         guard WordPressAuthenticator.shared.configuration.enableUnifiedGoogle,
             loginFields.meta.socialService == .google else {

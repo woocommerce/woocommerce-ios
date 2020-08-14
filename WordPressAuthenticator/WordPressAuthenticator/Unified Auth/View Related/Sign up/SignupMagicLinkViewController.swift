@@ -13,14 +13,9 @@ final class SignupMagicLinkViewController: LoginViewController {
     private var errorMessage: String?
     private var shouldChangeVoiceOverFocus: Bool = false
 
-    var emailMagicLinkSource: EmailMagicLinkSource?
     override var sourceTag: WordPressSupportSourceTag {
         get {
-            if let emailMagicLinkSource = emailMagicLinkSource,
-                emailMagicLinkSource == .signup {
-                return .wpComSignupMagicLink
-            }
-            return .loginMagicLink
+            return .wpComSignupMagicLink
         }
     }
 
@@ -51,12 +46,8 @@ final class SignupMagicLinkViewController: LoginViewController {
     ///
     func validationCheck() {
         let email = loginFields.username
-        if !email.isValidEmail() {
-            assert(email.isValidEmail(), "The value of loginFields.username was not a valid email address.")
-        }
-
-        emailMagicLinkSource = loginFields.meta.emailMagicLinkSource
-        assert(emailMagicLinkSource != nil, "Must have an email link source.")
+        // We want to fail fast if a dev has bypassed the email validation in the email login & signup view.
+        assert(email.isValidEmail(), "The value of loginFields.username was not a valid email address.")
     }
 
     // MARK: - Overrides

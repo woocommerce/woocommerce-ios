@@ -153,21 +153,29 @@ class LoginPrologueViewController: LoginViewController {
         vc.modalPresentationStyle = .custom
 
         vc.emailTapped = { [weak self] in
-            guard WordPressAuthenticator.shared.configuration.enableUnifiedSignup else {
-                self?.presentSignUpEmailView()
+            guard let self = self else {
                 return
             }
 
-            self?.presentUnifiedSignUpView()
+            guard self.configuration.enableUnifiedSignup else {
+                self.presentSignUpEmailView()
+                return
+            }
+
+            self.presentUnifiedSignUpView()
         }
 
         vc.googleTapped = { [weak self] in
-            guard WordPressAuthenticator.shared.configuration.enableUnifiedGoogle else {
-                self?.presentGoogleSignupView()
+            guard let self = self else {
                 return
             }
 
-            self?.presentUnifiedGoogleView()
+            guard self.configuration.enableUnifiedGoogle else {
+                self.presentGoogleSignupView()
+                return
+            }
+
+            self.presentUnifiedGoogleView()
         }
 
         vc.appleTapped = { [weak self] in

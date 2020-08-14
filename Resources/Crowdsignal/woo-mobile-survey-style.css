@@ -317,6 +317,8 @@ iframe
 
     /* remove the drop shadow */
     -webkit-appearance: none;
+    /* add spacing before the text content */
+    padding: 15px;
 }
 
 /* line 286, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */

@@ -117,4 +117,28 @@ final class AppSettingsStoreTests_ProductsFeatureSwitch: XCTestCase {
         // Assert
         XCTAssertEqual(isFeatureSwitchEnabled, true)
     }
+
+    func test_resetting_feature_switches_after_setting_product_switch_to_true_results_in_products_feature_switch_off() {
+        // Action
+        var isFeatureSwitchEnabled: Bool?
+        waitForExpectation { expectation in
+            // Turns on products feature switch
+            let setAction = AppSettingsAction.setProductsFeatureSwitch(isEnabled: true) {
+                // Resets feature switches
+                let resetAction = AppSettingsAction.resetFeatureSwitches
+                self.subject.onAction(resetAction)
+
+                // Loads products feature switch
+                let loadAction = AppSettingsAction.loadProductsFeatureSwitch() { isEnabled in
+                    isFeatureSwitchEnabled = isEnabled
+                    expectation.fulfill()
+                }
+                self.subject.onAction(loadAction)
+            }
+            subject.onAction(setAction)
+        }
+
+        // Assert
+        XCTAssertEqual(isFeatureSwitchEnabled, false)
+    }
 }

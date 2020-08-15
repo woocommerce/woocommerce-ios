@@ -422,7 +422,6 @@ input[type="text"]
 
 .PDF_QT400 li input[type=radio]
 {
-	vertical-align:middle;
 	border:solid #aaa 1px;
 	-webkit-appearance:none; /* hide the ugly gradient on iOS Safari */
 }
@@ -437,7 +436,7 @@ input[type="text"]
 .PDF_QT400 li > label
 {
 	display:inline-block;
-	margin-left:4px;
+	margin-left:12px;
 	width:calc(100% - 30px);
 }
 

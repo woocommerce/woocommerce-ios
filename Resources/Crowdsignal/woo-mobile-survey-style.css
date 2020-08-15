@@ -143,8 +143,8 @@ iframe
 /* line 122, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
 .qContent
 {
-	font-size:14px;
-	line-height:20px;
+	font-size:17px;
+	line-height:18px;
 }
 
 /* line 127, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
@@ -394,9 +394,7 @@ input[type="text"]
 /* line 352, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
 .PDF_QT400
 {
-	font-size:14px;
-	font-weight:bold;
-	color:#666;
+	color:#000;
 }
 
 /* line 358, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */

@@ -277,7 +277,7 @@ iframe
 /* line 227, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
 .PDF_errMain::before,.PDF_err::before,.PDF_noteMain::before
 {
-	content:'\\\\\\\\f071';
+	content:'\f071';
 	font-family:'Font Awesome 5 Free';
 	margin:0 10px 0 0;
 }
@@ -427,6 +427,7 @@ input[type="text"] {
 
 .PDF_QT400 li input[type=radio]
 {
+    vertical-align: middle;
     border: solid #aaa 1px;
     /* hide the ugly gradient on iOS Safari */
     -webkit-appearance: none;
@@ -1031,7 +1032,7 @@ input[type="text"] {
 .PDF_QT1300 .rank-label::before
 {
 	font-family:"Font Awesome 5 Free";
-	content:"\\\\\\\\f0c9";
+	content:"\f0c9";
 	padding-right:15px;
 	font-weight:bold;
 }

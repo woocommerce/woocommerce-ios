@@ -302,7 +302,7 @@ iframe
 
 input[type="text"]
 {
-    -webkit-appearance:none; /* remove the drop shadow */
+	-webkit-appearance:none; /* remove the drop shadow */
 }
 
 /* line 273, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */

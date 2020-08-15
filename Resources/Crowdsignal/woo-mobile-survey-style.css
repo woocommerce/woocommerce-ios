@@ -300,11 +300,6 @@ iframe
 	padding:4px 5px;
 }
 
-input[type="text"]
-{
-	-webkit-appearance:none; /* remove the drop shadow */
-}
-
 /* line 273, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
 .PDF_QT200 textarea,.PDF_QT400 textarea
 {
@@ -333,9 +328,7 @@ input[type="text"]
 /* line 300, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
 .PDF_QT800 label,.PDF_QT900 label,.PDF_QT950 label,.PDF_QT1000 label,.PDF_QT1400 label,.PDF_QT1500 label
 {
-	color:#666;
-	font-size:11px;
-	line-height:25px;
+
 }
 
 /* ---------------------- Free Text (single) QT 100 ---------------------------------- */
@@ -1737,8 +1730,10 @@ li.question-block-400__choice-other input[type="text"]
 
 input[type="text"],
 input[type="password"],
-input[type="submit"]
+input[type="submit"],
+input[type="email"]
 {
+    -webkit-appearance:none; /* Remove the drop shadow and gradient on button. All ugliness. */
 	font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"!important;
 	font-size: 17px;
 	color: #000;
@@ -1746,7 +1741,6 @@ input[type="submit"]
 
 .PDF_pagination div.button input[type="submit"]
 {
-    -webkit-appearance: none; /* disable gradient */
     width: 100%;
     background-color: #C9356E;
     height: 50px;
@@ -1754,4 +1748,12 @@ input[type="submit"]
     border-radius: 8px;
     font-weight: bold;
     color: white;
+}
+
+/* Add margin between the label and text fields */
+.PDF_QT1400 input[type="text"],
+.PDF_QT1400 input[type="email"],
+.PDF_QT1400 input[type="password"]
+{
+    margin-top: 8px;
 }

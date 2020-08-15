@@ -425,6 +425,19 @@ input[type="text"] {
 	display:inline-block;
 }
 
+.PDF_QT400 li input[type=radio]
+{
+    border: solid #aaa 1px;
+    /* hide the ugly gradient on iOS Safari */
+    -webkit-appearance: none;
+}
+
+.PDF_QT400 li input[type=radio]:checked
+{
+    -webkit-appearance: radio;
+    border: none;
+}
+
 /* line 376, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
 .PDF_QT400 li > label
 {

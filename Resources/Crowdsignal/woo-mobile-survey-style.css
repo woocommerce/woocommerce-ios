@@ -309,8 +309,8 @@ input[type="text"]
 .PDF_QT200 textarea,.PDF_QT400 textarea
 {
 	border:1px solid #E1E2E2;
-	color:#666;
-	font-size:14px;
+	color:#000;
+	font-size:17px;
 	font-weight:400;
 	line-height:21px;
 	padding:4px 8px;
@@ -1723,4 +1723,22 @@ body.is-single-question-body
 .survey.with-vertical-animation .PDF_navigation-button.is-previous,.survey.with-vertical-animation .PDF_navigation-button.is-next
 {
 	left:calc(50% - 25px);
+}
+
+/* Other Custom Changes */
+
+/* Make the "Other" textbox look underlined */
+li.question-block-400__choice-other input[type="text"]
+{
+    border-top: 0px;
+    border-left: 0px;
+    border-right: 0px;
+}
+
+input[type="text"],
+input[type="password"]
+{
+	font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"!important;
+	font-size: 17px;
+	color: #000;
 }

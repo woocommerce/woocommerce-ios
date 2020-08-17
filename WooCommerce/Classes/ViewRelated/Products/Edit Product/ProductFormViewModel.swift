@@ -161,10 +161,6 @@ extension ProductFormViewModel {
                                                                      taxClass: taxClass?.slug))
     }
 
-    func updateReviews(averageRating: String, ratingCount: Int) {
-        product = EditableProductModel(product: product.product.copy(averageRating: averageRating, ratingCount: ratingCount))
-    }
-
     func updateProductType(productType: ProductType) {
         product = EditableProductModel(product: product.product.copy(productTypeKey: productType.rawValue))
     }

@@ -42,6 +42,23 @@ private extension ProductType {
             return title
         }
     }
+
+    /// Image shown on the action sheet.
+    ///
+    var actionSheetImage: UIImage {
+        switch self {
+        case .simple:
+            return UIImage.productImage
+        case .variable:
+            return UIImage.variationsImage
+        case .grouped:
+            return UIImage.widgetsImage
+        case .affiliate:
+            return UIImage.externalProductImage
+        case .custom:
+            return UIImage.productImage
+        }
+    }
 }
 
 /// `BottomSheetListSelectorCommand` for selecting a product type for the selected Product.
@@ -68,6 +85,8 @@ final class ProductTypeBottomSheetListSelectorCommand: BottomSheetListSelectorCo
     func configureCell(cell: ImageAndTitleAndTextTableViewCell, model: ProductType) {
         let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: model.actionSheetTitle,
                                                                     text: model.actionSheetDescription,
+                                                                    image: model.actionSheetImage,
+                                                                    imageTintColor: .gray(.shade20),
                                                                     numberOfLinesForText: 0,
                                                                     isActionable: false)
         cell.updateUI(viewModel: viewModel)

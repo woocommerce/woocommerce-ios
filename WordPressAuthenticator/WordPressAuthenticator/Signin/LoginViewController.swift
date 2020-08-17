@@ -158,6 +158,9 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
             errorLabel?.isHidden = true
             return
         }
+        
+        tracker.track(failure: message)
+        
         errorLabel?.isHidden = false
         errorLabel?.text = message
         errorToPresent = nil
@@ -238,8 +241,6 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     /// Overridden here to direct these errors to the login screen's error label
     dynamic open func displayRemoteError(_ error: Error) {
         configureViewLoading(false)
-
-        tracker.track(failure: error.localizedDescription)
         
         let err = error as NSError
         guard err.code != 403 else {

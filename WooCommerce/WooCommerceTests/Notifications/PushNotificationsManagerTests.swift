@@ -359,7 +359,7 @@ final class PushNotificationsManagerTests: XCTestCase {
     /// state is inactive.
     ///
     func testHandleNotificationDisplaysDetailsForTheNewNotificationWheneverTheAppStateIsInactive() {
-        let payload = notificationPayload()
+        let payload = notificationPayload(type: .storeOrder)
         var handleNotificationCallbackWasExecuted = false
 
         application.applicationState = .inactive

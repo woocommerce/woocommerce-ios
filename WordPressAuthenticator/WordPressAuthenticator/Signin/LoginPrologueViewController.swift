@@ -173,7 +173,9 @@ class LoginPrologueViewController: LoginViewController {
         }
 
         vc.googleTapped = { [weak self] in
-            guard let self = self else { return }
+            guard let self = self else {
+                return
+            }
             
             guard self.configuration.enableUnifiedGoogle else {
                 self.presentGoogleSignupView()

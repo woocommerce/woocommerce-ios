@@ -14,6 +14,11 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
     private var notificationsRemote: MockNotificationsRemote!
     private var productReviewsRemote: MockProductReviewsRemote!
     private var productsRemote: MockProductsRemote!
+    private var storageManager: MockupStorageManager!
+
+    private var viewStorage: StorageType {
+        storageManager.viewStorage
+    }
 
     override func setUp() {
         super.setUp()
@@ -21,9 +26,11 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         notificationsRemote = MockNotificationsRemote()
         productReviewsRemote = MockProductReviewsRemote()
         productsRemote = MockProductsRemote()
+        storageManager = MockupStorageManager()
     }
 
     override func tearDown() {
+        storageManager = nil
         productsRemote = nil
         productReviewsRemote = nil
         notificationsRemote = nil
@@ -33,8 +40,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
 
     func testItFetchesAllEntitiesAndReturnsTheParcel() throws {
         // Given
-        let storageManager = MockupStorageManager()
-        let useCase = makeUseCase(storage: storageManager.viewStorage)
+        let useCase = makeUseCase()
         let note = TestData.note
         let productReview = TestData.productReview
         let product = TestData.product
@@ -61,10 +67,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
 
     func testWhenSuccessfulThenItSavesTheProductReviewToStorage() throws {
         // Given
-        let storageManager = MockupStorageManager()
-        let storage = storageManager.viewStorage
-
-        let useCase = makeUseCase(storage: storage)
+        let useCase = makeUseCase()
 
         let note = TestData.note
         let productReview = TestData.productReview
@@ -78,16 +81,16 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
                                           productID: product.productID,
                                           thenReturn: .success(product))
 
-        XCTAssertEqual(storage.countObjects(ofType: StorageProductReview.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageProductReview.self), 0)
 
         // When
         let result = try retrieveAndWait(using: useCase, noteID: note.noteID)
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        XCTAssertEqual(storage.countObjects(ofType: StorageProductReview.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageProductReview.self), 1)
 
-        let reviewFromStorage = storage.loadProductReview(siteID: productReview.siteID, reviewID: productReview.reviewID)
+        let reviewFromStorage = viewStorage.loadProductReview(siteID: productReview.siteID, reviewID: productReview.reviewID)
         XCTAssertNotNil(reviewFromStorage)
     }
 
@@ -96,9 +99,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
     ///
     func testWhenSuccessfulButStorageIsNoLongerAvailableThenItReturnsAFailure() throws {
         // Given
-        var storageManager: StorageManagerType? = MockupStorageManager()
-
-        let useCase = makeUseCase(storage: try XCTUnwrap(storageManager?.viewStorage))
+        let useCase = makeUseCase()
 
         let note = TestData.note
         let productReview = TestData.productReview
@@ -128,8 +129,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
 
     func testWhenNoteFetchFailsThenAllOtherFetchesAreAborted() throws {
         // Given
-        let storageManager = MockupStorageManager()
-        let useCase = makeUseCase(storage: storageManager.viewStorage)
+        let useCase = makeUseCase()
 
         let note = TestData.note
 
@@ -149,8 +149,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
 
     func testWhenProductReviewFetchFailsThenAllOtherFetchesAreAborted() throws {
         // Given
-        let storageManager = MockupStorageManager()
-        let useCase = makeUseCase(storage: storageManager.viewStorage)
+        let useCase = makeUseCase()
 
         let note = TestData.note
         let productReview = TestData.productReview
@@ -174,8 +173,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
 
     func testWhenNoteHasMissingMetaThenItReturnsAFailure() throws {
         // Given
-        let storageManager = MockupStorageManager()
-        let useCase = makeUseCase(storage: storageManager.viewStorage)
+        let useCase = makeUseCase()
 
         // No `.comment` identifier. This can mean that we fetched the incorrect notification.
         let note = MockNote().make(noteID: 9_135, metaSiteID: TestData.siteID)
@@ -202,8 +200,8 @@ private extension RetrieveProductReviewFromNoteUseCaseTests {
 
     /// Create a UseCase using the mocks
     ///
-    func makeUseCase(storage: StorageType) -> RetrieveProductReviewFromNoteUseCase {
-        RetrieveProductReviewFromNoteUseCase(derivedStorage: storage,
+    func makeUseCase() -> RetrieveProductReviewFromNoteUseCase {
+        RetrieveProductReviewFromNoteUseCase(derivedStorage: viewStorage,
                                              notificationsRemote: notificationsRemote,
                                              productReviewsRemote: productReviewsRemote,
                                              productsRemote: productsRemote)

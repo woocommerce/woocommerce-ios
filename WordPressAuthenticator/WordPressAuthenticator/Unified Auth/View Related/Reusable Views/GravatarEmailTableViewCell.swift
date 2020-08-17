@@ -50,6 +50,13 @@ class GravatarEmailTableViewCell: UITableViewCell {
         emailLabel?.text = email
     }
     
+    override func prepareForReuse() {
+        emailLabel.text = nil
+        gravatarImageView?.image = nil
+        
+        // Remove 1Password icon.
+        emailStackView?.arrangedSubviews.last?.removeFromSuperview()
+    }
 }
 
 // MARK: - Password Manager Handling
@@ -61,6 +68,7 @@ private extension GravatarEmailTableViewCell {
     /// Sets up a 1Password button if 1Password is available and user is on iOS 12.
     ///
     func setupOnePasswordButtonIfNeeded() {
+        
         if #available(iOS 13, *) {
             // no-op, we rely on the key icon in the keyboard to initiate a password manager.
         } else {

@@ -66,9 +66,10 @@ final class ProductTypeBottomSheetListSelectorCommand: BottomSheetListSelectorCo
     }
 
     func configureCell(cell: ImageAndTitleAndTextTableViewCell, model: ProductType) {
-//        cell.selectionStyle = .none
-//        cell.accessoryType = .none
-        let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: model.actionSheetTitle, text: model.actionSheetDescription, numberOfLinesForText: 0, isActionable = false)
+        let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: model.actionSheetTitle,
+                                                                    text: model.actionSheetDescription,
+                                                                    numberOfLinesForText: 0,
+                                                                    isActionable: false)
         cell.updateUI(viewModel: viewModel)
     }
 

@@ -2,10 +2,12 @@ import Foundation
 
 extension LoginFacade {
     func requestOneTimeCode(with loginFields: LoginFields) {
-        wordpressComOAuthClientFacade.requestOneTimeCode(withUsername: loginFields.username, password: loginFields.password, success: {
-            if AuthenticatorAnalyticsTracker.shared.shouldUseLegacyTracker() {
-                WordPressAuthenticator.track(.twoFactorSentSMS)
-            }
+        wordpressComOAuthClientFacade.requestOneTimeCode(
+            withUsername: loginFields.username, 
+            password: loginFields.password, success: {
+                if AuthenticatorAnalyticsTracker.shared.shouldUseLegacyTracker() {
+                    WordPressAuthenticator.track(.twoFactorSentSMS)
+                }
         }) { _ in
             DDLogError("Failed to request one time code")
         }

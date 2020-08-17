@@ -341,7 +341,7 @@ public class AuthenticatorAnalyticsTracker {
     // MARK: - Tracking: Legacy Tracking Support
     
     /// Tracks a step within a flow if tracking is enabled for that flow, or executes the specified block if tracking is not enabled
-    /// for the flow..
+    /// for the flow.
     ///
     public func track(step: Step, ifTrackingNotEnabled legacyTracking: () -> ()) {
         guard canTrackInCurrentFlow() else {

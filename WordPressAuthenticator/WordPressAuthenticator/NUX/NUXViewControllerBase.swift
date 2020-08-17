@@ -126,7 +126,7 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
         view.addGestureRecognizer(tgr)
     }
 
-    func handleCancelButtonTapped() {        
+    func handleCancelButtonTapped() {
         dismiss(cancelled: true)
         NotificationCenter.default.post(name: .wordpressLoginCancelled, object: nil)
     }

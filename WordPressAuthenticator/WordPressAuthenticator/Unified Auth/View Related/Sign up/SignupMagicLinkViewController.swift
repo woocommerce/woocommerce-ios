@@ -21,7 +21,11 @@ final class SignupMagicLinkViewController: LoginViewController {
 
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
-        // TODO: add the action once the button is tapped.
+        // TODO: - Tracks.
+        // WordPressAuthenticator.track(.signupMagicLinkOpenEmailClientViewed)
+        let linkMailPresenter = LinkMailPresenter(emailAddress: loginFields.username)
+        let appSelector = AppSelector(sourceView: sender)
+        linkMailPresenter.presentEmailClients(on: self, appSelector: appSelector)
     }
 
     // MARK: - View lifecycle

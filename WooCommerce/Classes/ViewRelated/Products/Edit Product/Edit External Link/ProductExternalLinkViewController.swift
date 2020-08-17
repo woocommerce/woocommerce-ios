@@ -25,7 +25,7 @@ final class ProductExternalLinkViewController: UIViewController {
     init(product: Product, onCompletion: @escaping Completion) {
         self.product = product
         self.externalURL = product.externalURL
-        self.buttonText = product.buttonText
+        self.buttonText = product.buttonText.isNotEmpty ? product.buttonText : Strings.buyProductPlaceholder
         self.onCompletion = onCompletion
 
         super.init(nibName: nil, bundle: nil)
@@ -345,7 +345,7 @@ private extension ProductExternalLinkViewController {
                                                        comment: "Title of the text field for editing the button text for an external/affiliate product")
         static let buttonTextFooter = NSLocalizedString("This text will be shown on the button linking to the external product.",
                                                  comment: "Footer text for editing external product button text")
-        static let buyProductPlaceholder = NSLocalizedString("Buy product",
+        static let buyProductPlaceholder = NSLocalizedString("Buy Product",
         comment: "Placeholder of the text field for editing the button text for an external/affiliate product")
     }
 }

@@ -812,24 +812,28 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func editProductType() {
-        //TODO-2198: present the bottom action sheet
-    }
+        let title = NSLocalizedString("Select a product type",
+                                      comment: "Message title for select a product type action bottom sheet")
+        let viewProperties = BottomSheetListSelectorViewProperties(title: title)
+        let command = ProductTypeBottomSheetListSelectorCommand { [weak self] (selectedProductType) in
+            defer {
+                self?.dismiss(animated: true, completion: nil)
+            }
 
-    func onEditProdyctTypeCompletion(productType: ProductType) {
-        defer {
-            navigationController?.popViewController(animated: true)
+            // TODO-2509 Edit Product M3 analytics
+            //  let hasChangedData: Bool = {
+            //      self?.product.productType != selectedProductType
+            //  }()
+
+
+            self?.viewModel.updateProductType(productType: selectedProductType)
+
         }
-        let hasChangedData: Bool = {
-            productType != product.productType
-        }()
-
-        // TODO-2509 Edit Product M3 analytics
-
-        guard hasChangedData else {
-            return
+        let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties,
+                                                                      command: command) { [weak self] _ in
+                                                                            self?.dismiss(animated: true, completion: nil)
         }
-        // TODO-2198: update product type in viewModel
-        // viewModel.updateProductType(productType: productType)
+        productTypesListPresenter.show(from: self, sourceView: self.view, arrowDirections: .up)
     }
 }
 

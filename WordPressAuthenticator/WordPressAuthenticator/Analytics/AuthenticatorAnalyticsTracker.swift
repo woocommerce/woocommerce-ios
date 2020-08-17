@@ -2,19 +2,19 @@ import Foundation
 
 /// Implements the analytics tracking logic for our sign in flow.
 ///
-public class AnalyticsTracker {
+public class AuthenticatorAnalyticsTracker {
     
     /// The method used for analytics tracking.  Useful for overriding in automated tests.
     ///
     typealias TrackerMethod = (_ event: AnalyticsEvent) -> ()
 
-    enum EventType: String {
+    public enum EventType: String {
         case step = "unified_login_step"
         case interaction = "unified_login_interaction"
         case failure = "unified_login_failure"
     }
     
-    enum Property: String {
+    public enum Property: String {
         case failure
         case flow
         case click
@@ -22,8 +22,11 @@ public class AnalyticsTracker {
         case step
     }
     
-    enum Source: String {
+    public enum Source: String {
+        /// Starts when the user logs in / sign up from the prologue screen
+        ///
         case `default`
+        
         case jetpack
         case share
         case deeplink
@@ -34,8 +37,9 @@ public class AnalyticsTracker {
         case selfHosted
     }
     
-    enum Flow: String {
+    public enum Flow: String {
         /// The initial flow before we decide whether the user is logging in or signing up
+        ///
         case wpCom = "wordpress_com"
         
         /// Flow for Google login
@@ -75,7 +79,7 @@ public class AnalyticsTracker {
         case signup
     }
     
-    enum Step: String {
+    public enum Step: String {
         /// Gets shown on the Prologue screen
         ///
         case prologue
@@ -107,7 +111,7 @@ public class AnalyticsTracker {
         case twoFactorAuthentication = "2fa"
     }
     
-    enum ClickTarget: String {
+    public enum ClickTarget: String {
         /// Tracked when submitting the email form, the email & password form, site address form,
         /// username & password form and signup email form
         ///
@@ -144,15 +148,15 @@ public class AnalyticsTracker {
         
         /// When the user tries to sign up with email from the confirmation screen
         ///
-        case signUpWithEmail = "signup_with_email"
+        case signupWithEmail = "signup_with_email"
         
         /// When the user tries to sign up with Apple from the confirmation screen
         ///
-        case signUpWithApple = "signup_with_apple"
+        case signupWithApple = "signup_with_apple"
         
         /// When the user tries to sign up with Google from the confirmation screen
         ///
-        case signUpWithGoogle = "signup_with_google"
+        case signupWithGoogle = "signup_with_google"
         
         /// When the user opens the email client from the magic link screen
         ///
@@ -217,7 +221,20 @@ public class AnalyticsTracker {
     
     /// Shared Instance.
     ///
-    public static var shared = AnalyticsTracker()
+    public static var shared: AuthenticatorAnalyticsTracker = {
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(
+            appleEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedApple,
+            googleEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedGoogle,
+            siteAuthenticationEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress)
+        
+        return AuthenticatorAnalyticsTracker(configuration: configuration)
+    }()
+    
+    struct Configuration {
+        let appleEnabled: Bool
+        let googleEnabled: Bool
+        let siteAuthenticationEnabled: Bool
+    }
     
     /// State for the analytics tracker.
     ///
@@ -233,6 +250,12 @@ public class AnalyticsTracker {
         }
     }
     
+    /// The tracking configuration.
+    ///
+    private let configuration: Configuration
+    
+    /// The state of this tracker.
+    ///
     private let state = State()
     
     /// The backing analytics tracking method.  Can be overridden for testing purposes.
@@ -240,28 +263,116 @@ public class AnalyticsTracker {
     let track: TrackerMethod
 
     // MARK: - Initializers
-    
-    init(track: @escaping TrackerMethod = WPAnalytics.track) {
+
+    init(configuration: Configuration, track: @escaping TrackerMethod = WPAnalytics.track) {
+        self.configuration = configuration
         self.track = track
+    }
+    
+    // MARK: - Legacy vs Unified tracking
+    
+    /// This method will reply whether, for the current flow in the state, tracking is enabled.
+    ///
+    /// It's the responsibility of the class calling the tracking methods to check this before attempting to actually do the tracking.
+    ///
+    /// - Returns: `true` if the
+    ///
+    public func canTrackInCurrentFlow() -> Bool {
+        return isInSiteAuthenticationFlowAndCanTrack()
+            || isInAppleFlowAndCanTrack()
+            || isInGoogleFlowAndCanTrack()
+    }
+    
+    /// This is a convenience method, that's useful for cases where we simply want to check if the legacy tracking should be
+    /// enabled.  It can be particularly useful in cases where we don't have a matching tracking call in the new flow.
+    ///
+    ///  - Returns: `true` if we must use legacy tracking, `false` otherwise.
+    ///
+    public func shouldUseLegacyTracker() -> Bool {
+        return !canTrackInCurrentFlow()
+    }
+
+    // MARK: - Legacy vs Unified tracking: Support Methods
+    
+    private func isInSiteAuthenticationFlowAndCanTrack() -> Bool {
+        return configuration.siteAuthenticationEnabled && state.lastFlow == .loginWithSiteAddress
+    }
+    
+    private func isInAppleFlowAndCanTrack() -> Bool {
+        return configuration.appleEnabled && [Flow.appleLogin, .appleSignup].contains(state.lastFlow)
+    }
+    
+    private func isInGoogleFlowAndCanTrack() -> Bool {
+        return configuration.googleEnabled && [Flow.googleLogin, .googleSignup].contains(state.lastFlow)
     }
     
     // MARK: - Tracking
     
     /// Track a step within a flow.
     ///
-    func track(step: Step) {
+    public func track(step: Step) {
+        guard canTrackInCurrentFlow() else {
+            return
+        }
+        
         track(event(step: step))
     }
     
     /// Track a click interaction.
     ///
-    func track(click: ClickTarget) {
+    public func track(click: ClickTarget) {
+        guard canTrackInCurrentFlow() else {
+            return
+        }
+        
         track(event(click: click))
     }
     
     /// Track a failure.
     ///
-    func track(failure: String) {
+    public func track(failure: String) {
+        guard canTrackInCurrentFlow() else {
+            return
+        }
+        
+        track(event(failure: failure))
+    }
+    
+    // MARK: - Tracking: Legacy Tracking Support
+    
+    /// Tracks a step within a flow if tracking is enabled for that flow, or executes the specified block if tracking is not enabled
+    /// for the flow.
+    ///
+    public func track(step: Step, ifTrackingNotEnabled legacyTracking: () -> ()) {
+        guard canTrackInCurrentFlow() else {
+            legacyTracking()
+            return
+        }
+
+        track(step: step)
+    }
+    
+    /// Track a click interaction if tracking is enabled for that flow, or executes the specified block if tracking is not enabled
+    /// for the flow.
+    ///
+    public func track(click: ClickTarget, ifTrackingNotEnabled legacyTracking: () -> ()) {
+        guard canTrackInCurrentFlow() else {
+            legacyTracking()
+            return
+        }
+
+        track(event(click: click))
+    }
+    
+    /// Track a failure if tracking is enabled for that flow, or executes the specified block if tracking is not enabled
+    /// for the flow.
+    ///
+    public func track(failure: String, ifTrackingNotEnabled legacyTracking: () -> ()) {
+        guard canTrackInCurrentFlow() else {
+            legacyTracking()
+            return
+        }
+
         track(event(failure: failure))
     }
     

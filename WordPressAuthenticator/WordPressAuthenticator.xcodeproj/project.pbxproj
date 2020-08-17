@@ -143,9 +143,9 @@
 		CEDE0D952420121D00CB3345 /* UIStoryboard+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDE0D942420121D00CB3345 /* UIStoryboard+Helpers.swift */; };
 		CEDE0D972420126900CB3345 /* UIViewController+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDE0D962420126900CB3345 /* UIViewController+Helpers.swift */; };
 		E8AF6B9EF50902F2117DFAF9 /* Pods_WordPressAuthenticatorTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A441EC80D2B8D2209C2E228 /* Pods_WordPressAuthenticatorTests.framework */; };
-		F12F9FB424D8A68E00771BCE /* AnalyticsTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12F9FB324D8A68E00771BCE /* AnalyticsTracker.swift */; };
+		F12F9FB424D8A68E00771BCE /* AuthenticatorAnalyticsTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12F9FB324D8A68E00771BCE /* AuthenticatorAnalyticsTracker.swift */; };
 		F12F9FB824D8A7FC00771BCE /* AnalyticsTrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12F9FB724D8A7FC00771BCE /* AnalyticsTrackerTests.swift */; };
-		F1B9D82224DB393B00429147 /* GoogleAuthenticatorTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1B9D82124DB393B00429147 /* GoogleAuthenticatorTracker.swift */; };
+		F1AF1BEF24E4A80F00BA453E /* LoginFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1AF1BEE24E4A80F00BA453E /* LoginFacade.swift */; };
 		FF629D9622393500004C4106 /* WordPressAuthenticator.podspec in Resources */ = {isa = PBXBuildFile; fileRef = FF629D9522393500004C4106 /* WordPressAuthenticator.podspec */; };
 /* End PBXBuildFile section */
 
@@ -326,9 +326,9 @@
 		CEDE0D942420121D00CB3345 /* UIStoryboard+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStoryboard+Helpers.swift"; sourceTree = "<group>"; };
 		CEDE0D962420126900CB3345 /* UIViewController+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Helpers.swift"; sourceTree = "<group>"; };
 		E9414A95E29F3297555AC92B /* Pods-WordPressAuthenticator.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticator.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WordPressAuthenticator/Pods-WordPressAuthenticator.debug.xcconfig"; sourceTree = "<group>"; };
-		F12F9FB324D8A68E00771BCE /* AnalyticsTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsTracker.swift; sourceTree = "<group>"; };
+		F12F9FB324D8A68E00771BCE /* AuthenticatorAnalyticsTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticatorAnalyticsTracker.swift; sourceTree = "<group>"; };
 		F12F9FB724D8A7FC00771BCE /* AnalyticsTrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsTrackerTests.swift; sourceTree = "<group>"; };
-		F1B9D82124DB393B00429147 /* GoogleAuthenticatorTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoogleAuthenticatorTracker.swift; sourceTree = "<group>"; };
+		F1AF1BEE24E4A80F00BA453E /* LoginFacade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginFacade.swift; sourceTree = "<group>"; };
 		FF475C5056EB60A277696BA9 /* Pods-WordPressAuthenticatorTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticatorTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-WordPressAuthenticatorTests/Pods-WordPressAuthenticatorTests.release.xcconfig"; sourceTree = "<group>"; };
 		FF629D9522393500004C4106 /* WordPressAuthenticator.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = WordPressAuthenticator.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 /* End PBXFileReference section */
@@ -584,6 +584,7 @@
 			children = (
 				B5609103208A54F800399AE4 /* LoginFacade.h */,
 				B5609100208A54F800399AE4 /* LoginFacade.m */,
+				F1AF1BEE24E4A80F00BA453E /* LoginFacade.swift */,
 				B5609105208A54F800399AE4 /* OnePasswordFacade.swift */,
 				B5609104208A54F800399AE4 /* SafariCredentialsService.swift */,
 				B56090FE208A54F700399AE4 /* SignupService.swift */,
@@ -788,8 +789,7 @@
 		F12F9FB624D8A7E800771BCE /* Analytics */ = {
 			isa = PBXGroup;
 			children = (
-				F12F9FB324D8A68E00771BCE /* AnalyticsTracker.swift */,
-				F1B9D82124DB393B00429147 /* GoogleAuthenticatorTracker.swift */,
+				F12F9FB324D8A68E00771BCE /* AuthenticatorAnalyticsTracker.swift */,
 			);
 			path = Analytics;
 			sourceTree = "<group>";
@@ -1083,7 +1083,7 @@
 				B56090F7208A533200399AE4 /* WordPressAuthenticator+Errors.swift in Sources */,
 				B56090D2208A4F5400399AE4 /* NUXButton.swift in Sources */,
 				CE1B18C920EEC2C200BECC3F /* SocialService.swift in Sources */,
-				F12F9FB424D8A68E00771BCE /* AnalyticsTracker.swift in Sources */,
+				F12F9FB424D8A68E00771BCE /* AuthenticatorAnalyticsTracker.swift in Sources */,
 				988AD8A324CB839900BD045E /* TwoFAViewController.swift in Sources */,
 				CE6BCD2E24A3A235001BCDC5 /* TextLabelTableViewCell.swift in Sources */,
 				B56090D3208A4F5400399AE4 /* NUXLinkAuthViewController.swift in Sources */,
@@ -1104,7 +1104,6 @@
 				B5609135208A563800399AE4 /* LoginWPComViewController.swift in Sources */,
 				CEDE0D972420126900CB3345 /* UIViewController+Helpers.swift in Sources */,
 				B5609119208A555600399AE4 /* SiteInfoHeaderView.swift in Sources */,
-				F1B9D82224DB393B00429147 /* GoogleAuthenticatorTracker.swift in Sources */,
 				B560913E208A563800399AE4 /* SigninEditingState.swift in Sources */,
 				CE2D03E024E5DD4500D18942 /* UnifiedSignupViewController.swift in Sources */,
 				B56090CF208A4F5400399AE4 /* NUXCollectionViewController.swift in Sources */,
@@ -1145,6 +1144,7 @@
 				B5609141208A563800399AE4 /* LoginPrologueViewController.swift in Sources */,
 				B56090EB208A51D000399AE4 /* LoginFields.swift in Sources */,
 				B56090FB208A533200399AE4 /* WordPressSupportSourceTag.swift in Sources */,
+				F1AF1BEF24E4A80F00BA453E /* LoginFacade.swift in Sources */,
 				B56090C6208A4F5400399AE4 /* NUXButtonViewController.swift in Sources */,
 				B5609121208A555E00399AE4 /* SignupEmailViewController.swift in Sources */,
 				B5609107208A54F800399AE4 /* WordPressComBlogService.swift in Sources */,

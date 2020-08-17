@@ -38,7 +38,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         super.tearDown()
     }
 
-    func testItFetchesAllEntitiesAndReturnsTheParcel() throws {
+    func test_it_fetches_all_entities_and_returns_the_Parcel() throws {
         // Given
         let useCase = makeUseCase()
         let note = TestData.note
@@ -121,7 +121,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         XCTAssertEqual(parcel.product, product)
     }
 
-    func testWhenSuccessfulThenItSavesTheProductReviewToStorage() throws {
+    func test_when_successful_then_it_saves_the_ProductReview_to_Storage() throws {
         // Given
         let useCase = makeUseCase()
 
@@ -153,7 +153,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
     /// Simulate a scenario where the StorageType is no longer available, which may happen
     /// if the owning `ProductReviewStore` is deallocated during user log out.
     ///
-    func testWhenSuccessfulButStorageIsNoLongerAvailableThenItReturnsAFailure() throws {
+    func test_when_successful_but_Storage_is_no_longer_available_then_it_returns_a_failure() throws {
         // Given
         let useCase = makeUseCase()
 
@@ -183,7 +183,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         XCTAssertEqual(productsRemote.invocationCountOfLoadProduct, 0)
     }
 
-    func testWhenNoteFetchFailsThenAllOtherFetchesAreAborted() throws {
+    func test_when_Note_fetch_fails_then_all_other_fetches_are_aborted() throws {
         // Given
         let useCase = makeUseCase()
 
@@ -203,7 +203,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         XCTAssertEqual(productsRemote.invocationCountOfLoadProduct, 0)
     }
 
-    func testWhenProductReviewFetchFailsThenAllOtherFetchesAreAborted() throws {
+    func test_when_ProductReview_fetch_fails_then_all_other_fetches_are_aborted() throws {
         // Given
         let useCase = makeUseCase()
 
@@ -227,7 +227,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         XCTAssertEqual(productsRemote.invocationCountOfLoadProduct, 0)
     }
 
-    func testWhenNoteHasMissingMetaThenItReturnsAFailure() throws {
+    func test_when_Note_has_missing_meta_then_it_returns_a_failure() throws {
         // Given
         let useCase = makeUseCase()
 

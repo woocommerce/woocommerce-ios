@@ -42,12 +42,13 @@ final class SignupMagicLinkViewController: LoginViewController {
         loadRows()
     }
 
-    /// Some last-minute gatekeeping.
+    /// Validation check while we are bypassing screens.
     ///
     func validationCheck() {
         let email = loginFields.username
-        // We want to fail fast if a dev has bypassed the email validation in the email login & signup view.
-        assert(email.isValidEmail(), "The value of loginFields.username was not a valid email address.")
+        if !email.isValidEmail() {
+            DDLogError("The value of loginFields.username was not a valid email address.")
+        }
     }
 
     // MARK: - Overrides

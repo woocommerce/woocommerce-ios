@@ -65,6 +65,62 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         XCTAssertEqual(parcel.product, product)
     }
 
+    func test_it_uses_the_existing_Note_in_Storage_if_it_is_available() throws {
+        // Given
+        let useCase = makeUseCase()
+        let note = TestData.note
+        let productReview = TestData.productReview
+        let product = TestData.product
+
+        let storageNote = viewStorage.insertNewObject(ofType: StorageNote.self)
+        storageNote.update(with: note)
+        viewStorage.saveIfNeeded()
+
+        productReviewsRemote.whenLoadingProductReview(siteID: productReview.siteID,
+                                                      reviewID: productReview.reviewID,
+                                                      thenReturn: .success(productReview))
+        productsRemote.whenLoadingProduct(siteID: product.siteID,
+                                          productID: product.productID,
+                                          thenReturn: .success(product))
+
+        // When
+        let result = try retrieveAndWait(using: useCase, noteID: note.noteID)
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(notificationsRemote.invocationCountOfLoadNotes, 0)
+
+        let parcel = try XCTUnwrap(result.get())
+        XCTAssertEqual(parcel.note.noteID, note.noteID)
+    }
+
+    func test_it_uses_the_existing_Product_in_Storage_if_it_is_available() throws {
+        // Given
+        let useCase = makeUseCase()
+        let note = TestData.note
+        let productReview = TestData.productReview
+        let product = TestData.product
+
+        let storageProduct = viewStorage.insertNewObject(ofType: StorageProduct.self)
+        storageProduct.update(with: product)
+        viewStorage.saveIfNeeded()
+
+        notificationsRemote.whenLoadingNotes(noteIDs: [note.noteID], thenReturn: .success([note]))
+        productReviewsRemote.whenLoadingProductReview(siteID: productReview.siteID,
+                                                      reviewID: productReview.reviewID,
+                                                      thenReturn: .success(productReview))
+
+        // When
+        let result = try retrieveAndWait(using: useCase, noteID: note.noteID)
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(productsRemote.invocationCountOfLoadProduct, 0)
+
+        let parcel = try XCTUnwrap(result.get())
+        XCTAssertEqual(parcel.product, product)
+    }
+
     func testWhenSuccessfulThenItSavesTheProductReviewToStorage() throws {
         // Given
         let useCase = makeUseCase()

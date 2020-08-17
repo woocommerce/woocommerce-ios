@@ -121,10 +121,6 @@ private extension SignupMagicLinkViewController {
     ///
     func loadRows() {
         rows = [.persona, .instructions, .checkSpam]
-
-        if let errorText = errorMessage, !errorText.isEmpty {
-            rows.append(.errorMessage)
-        }
     }
 
     /// Configure cells.
@@ -137,8 +133,6 @@ private extension SignupMagicLinkViewController {
             configureInstructionLabel(cell)
         case let cell as TextLabelTableViewCell where row == .checkSpam:
             configureCheckSpamLabel(cell)
-        case let cell as TextLabelTableViewCell where row == .errorMessage:
-            configureErrorLabel(cell)
         default:
             DDLogError("Error: Unidentified tableViewCell type found.")
         }
@@ -162,15 +156,6 @@ private extension SignupMagicLinkViewController {
         cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.checkSpamInstructions, style: .body)
     }
 
-    /// Configure the error message cell.
-    ///
-    func configureErrorLabel(_ cell: TextLabelTableViewCell) {
-        cell.configureLabel(text: errorMessage, style: .error)
-        if shouldChangeVoiceOverFocus {
-            UIAccessibility.post(notification: .layoutChanged, argument: cell)
-        }
-    }
-
     // MARK: - Private Constants
 
     /// Rows listed in the order they were created.
@@ -179,13 +164,12 @@ private extension SignupMagicLinkViewController {
         case persona
         case instructions
         case checkSpam
-        case errorMessage
 
         var reuseIdentifier: String {
             switch self {
             case .persona:
                 return GravatarEmailTableViewCell.reuseIdentifier
-            case .instructions, .checkSpam, .errorMessage:
+            case .instructions, .checkSpam:
                 return TextLabelTableViewCell.reuseIdentifier
             }
         }

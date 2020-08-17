@@ -1,11 +1,3 @@
-//
-//  LoginFacade.swift
-//  WordPressAuthenticator
-//
-//  Created by Diego Rey Mendez on 12/08/2020.
-//  Copyright © 2020 Automattic. All rights reserved.
-//
-
 import Foundation
 
 extension LoginFacade {

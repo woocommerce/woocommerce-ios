@@ -340,21 +340,21 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
 
         let action = ProductVariationAction
             .synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] error in
-                                    guard let self = self else {
-                                        return
-                                    }
+                guard let self = self else {
+                    return
+                }
 
-                                    if let error = error {
-                                        ServiceLocator.analytics.track(.productVariationListLoadError, withError: error)
+                if let error = error {
+                    ServiceLocator.analytics.track(.productVariationListLoadError, withError: error)
 
-                                        DDLogError("⛔️ Error synchronizing product variations: \(error)")
-                                        self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
-                                    } else {
-                                        ServiceLocator.analytics.track(.productVariationListLoaded)
-                                    }
+                    DDLogError("⛔️ Error synchronizing product variations: \(error)")
+                    self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
+                } else {
+                    ServiceLocator.analytics.track(.productVariationListLoaded)
+                }
 
-                                    self.transitionToResultsUpdatedState()
-                                    onCompletion?(error == nil)
+                self.transitionToResultsUpdatedState()
+                onCompletion?(error == nil)
         }
 
         ServiceLocator.stores.dispatch(action)

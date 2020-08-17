@@ -1,7 +1,8 @@
 4.9
 -----
 - [*] Edit Products: the update action now shows up on the product details after updating just the sale price.
- 
+- [*] Fix a crash that sometimes happen when tapping on a Product Review push notification.
+
 4.8
 -----
 - [*] Enabled right/left swipe on product images.

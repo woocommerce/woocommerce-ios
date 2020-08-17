@@ -8,7 +8,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     @IBOutlet var instructionLabel: UILabel?
     @objc var errorToPresent: Error?
     
-    let tracker = AnalyticsTracker.shared
+    let tracker = AuthenticatorAnalyticsTracker.shared
 
     /// Constraints on the table view container.
     /// Used to adjust the table width in unified views.
@@ -233,6 +233,8 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     dynamic open func displayRemoteError(_ error: Error) {
         configureViewLoading(false)
 
+        tracker.track(failure: error.localizedDescription)
+        
         let err = error as NSError
         guard err.code != 403 else {
             let message = LocalizedText.loginError
@@ -246,8 +248,10 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     open func needsMultifactorCode() {
         displayError(message: "")
         configureViewLoading(false)
-        
-        WordPressAuthenticator.track(.twoFactorCodeRequested)
+
+        tracker.track(step: .twoFactorAuthentication, ifTrackingNotEnabled: {
+            WordPressAuthenticator.track(.twoFactorCodeRequested)
+        })
         
         let unifiedGoogle = WordPressAuthenticator.shared.configuration.enableUnifiedGoogle && loginFields.meta.socialService == .google
         let unifiedApple = WordPressAuthenticator.shared.configuration.enableUnifiedApple && loginFields.meta.socialService == .apple
@@ -362,10 +366,13 @@ extension LoginViewController {
                         serviceToken: serviceToken,
                         connectParameters: appleConnectParameters,
                         success: {
-                            let source = appleConnectParameters != nil ? "apple" : "google"
-                            WordPressAuthenticator.track(.signedIn, properties: ["source": source])
-                            WordPressAuthenticator.track(.loginSocialConnectSuccess)
-                            WordPressAuthenticator.track(.loginSocialSuccess)
+                            AuthenticatorAnalyticsTracker.shared.track(step: .success, ifTrackingNotEnabled: {
+
+                                let source = appleConnectParameters != nil ? "apple" : "google"
+                                WordPressAuthenticator.track(.signedIn, properties: ["source": source])
+                                WordPressAuthenticator.track(.loginSocialConnectSuccess)
+                                WordPressAuthenticator.track(.loginSocialSuccess)
+                            })
         }, failure: { error in
             DDLogError("Social Link Error: \(error)")
             WordPressAuthenticator.track(.loginSocialConnectFailure, error: error)

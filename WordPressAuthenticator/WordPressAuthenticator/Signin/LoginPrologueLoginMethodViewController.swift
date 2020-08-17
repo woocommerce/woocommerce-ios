@@ -13,6 +13,10 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
     open var selfHostedTapped: (() -> Void)?
     open var appleTapped: (() -> Void)?
 
+    private var tracker: AuthenticatorAnalyticsTracker {
+        AuthenticatorAnalyticsTracker.shared
+    }
+    
     /// The big transparent (dismiss) button behind the buttons
     @IBOutlet private weak var dismissButton: UIButton!
 
@@ -80,6 +84,9 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
     }
 
     @objc func handleGoogleButtonTapped() {
+        tracker.set(flow: .googleLogin)
+        tracker.track(click: .loginWithGoogle)
+        
         dismiss(animated: true)
         googleTapped?()
     }

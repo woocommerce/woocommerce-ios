@@ -41,6 +41,7 @@ class LoginPrologueViewController: LoginViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
         WordPressAuthenticator.track(.loginPrologueViewed)
     }
 
@@ -94,6 +95,8 @@ class LoginPrologueViewController: LoginViewController {
     // MARK: - Actions
 
     private func loginTapped() {
+        tracker.set(source: .default)
+        
         if configuration.showLoginOptions {
             guard let vc = LoginPrologueLoginMethodViewController.instantiate(from: .login) else {
                 DDLogError("Failed to navigate to LoginPrologueLoginMethodViewController from LoginPrologueViewController")
@@ -140,6 +143,8 @@ class LoginPrologueViewController: LoginViewController {
     }
 
     private func signupTapped() {
+        tracker.set(source: .default)
+        
         // This stat is part of a funnel that provides critical information.
         // Before making ANY modification to this stat please refer to: p4qSXL-35X-p2
         WordPressAuthenticator.track(.signupButtonTapped)
@@ -171,7 +176,7 @@ class LoginPrologueViewController: LoginViewController {
             guard let self = self else {
                 return
             }
-
+            
             guard self.configuration.enableUnifiedGoogle else {
                 self.presentGoogleSignupView()
                 return
@@ -198,7 +203,7 @@ class LoginPrologueViewController: LoginViewController {
             GoogleAuthenticator.sharedInstance.showFrom(viewController: self, loginFields: loginFields, for: .login)
             return
         }
-
+        
         presentUnifiedGoogleView()
     }
 

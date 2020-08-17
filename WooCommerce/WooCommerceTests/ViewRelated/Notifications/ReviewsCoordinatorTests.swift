@@ -78,9 +78,12 @@ final class ReviewsCoordinatorTests: XCTestCase {
 
     func testWhenReceivingAReviewNotificationWhileInactiveThenItWillPresentTheReviewDetails() throws {
         // Given
-        let coordinator = makeReviewsCoordinator()
         let pushNotification = PushNotification(noteID: 1_234, kind: .comment, message: "")
 
+        var willPresentReviewDetailsFromPushNotificationCallCount: Int = 0
+        let coordinator = makeReviewsCoordinator(willPresentReviewDetailsFromPushNotification: {
+            willPresentReviewDetailsFromPushNotificationCallCount += 1
+        })
         coordinator.start()
 
         // When
@@ -97,6 +100,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
         waitUntil {
             coordinator.navigationController.viewControllers.count > 1
         }
+        XCTAssertEqual(willPresentReviewDetailsFromPushNotificationCallCount, 1)
 
         // A ReviewDetailsViewController should be pushed
         XCTAssertEqual(coordinator.navigationController.viewControllers.count, 2)

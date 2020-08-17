@@ -14,12 +14,6 @@ final class ReviewsCoordinatorTests: XCTestCase {
     private var noticePresenter: MockNoticePresenter!
     private var switchStoreUseCase: MockSwitchStoreUseCase!
 
-    private var reviewsCoordinator: ReviewsCoordinator!
-
-    private var navigationController: UINavigationController! {
-        reviewsCoordinator.navigationController
-    }
-
     override func setUp() {
         super.setUp()
 
@@ -32,19 +26,9 @@ final class ReviewsCoordinatorTests: XCTestCase {
 
         noticePresenter = MockNoticePresenter()
         switchStoreUseCase = MockSwitchStoreUseCase()
-
-        reviewsCoordinator =
-            ReviewsCoordinator(pushNotificationsManager: pushNotificationsManager,
-                               storesManager: storesManager,
-                               noticePresenter: noticePresenter,
-                               switchStoreUseCase: switchStoreUseCase,
-                               willPresentReviewDetailsFromPushNotification: {
-                                // noop
-            })
     }
 
     override func tearDown() {
-        reviewsCoordinator = nil
         switchStoreUseCase = nil
         noticePresenter = nil
         storesManager = nil
@@ -56,11 +40,12 @@ final class ReviewsCoordinatorTests: XCTestCase {
 
     func testWhenReceivingANonReviewNotificationThenItWillNotDoAnything() throws {
         // Given
+        let coordinator = makeReviewsCoordinator()
         let pushNotification = PushNotification(noteID: 1_234, kind: .storeOrder, message: "")
 
-        reviewsCoordinator.start()
+        coordinator.start()
 
-        XCTAssertEqual(navigationController.viewControllers.count, 1)
+        XCTAssertEqual(coordinator.navigationController.viewControllers.count, 1)
 
         // When
         pushNotificationsManager.sendInactiveNotification(pushNotification)
@@ -69,15 +54,16 @@ final class ReviewsCoordinatorTests: XCTestCase {
         assertEmpty(storesManager.receivedActions)
 
         // Only the Reviews list is shown
-        XCTAssertEqual(navigationController.viewControllers.count, 1)
-        assertThat(navigationController.topViewController, isAnInstanceOf: ReviewsViewController.self)
+        XCTAssertEqual(coordinator.navigationController.viewControllers.count, 1)
+        assertThat(coordinator.navigationController.topViewController, isAnInstanceOf: ReviewsViewController.self)
     }
 
     func testWhenReceivingANotificationWhileInForegroundThenItWillNotDoAnything() throws {
         // Given
+        let coordinator = makeReviewsCoordinator()
         let pushNotification = PushNotification(noteID: 1_234, kind: .comment, message: "")
 
-        reviewsCoordinator.start()
+        coordinator.start()
 
         // When
         pushNotificationsManager.sendForegroundNotification(pushNotification)
@@ -86,15 +72,16 @@ final class ReviewsCoordinatorTests: XCTestCase {
         assertEmpty(storesManager.receivedActions)
 
         // Only the Reviews list is shown
-        XCTAssertEqual(navigationController.viewControllers.count, 1)
-        assertThat(navigationController.topViewController, isAnInstanceOf: ReviewsViewController.self)
+        XCTAssertEqual(coordinator.navigationController.viewControllers.count, 1)
+        assertThat(coordinator.navigationController.topViewController, isAnInstanceOf: ReviewsViewController.self)
     }
 
     func testWhenReceivingAReviewNotificationWhileInactiveThenItWillPresentTheReviewDetails() throws {
         // Given
+        let coordinator = makeReviewsCoordinator()
         let pushNotification = PushNotification(noteID: 1_234, kind: .comment, message: "")
 
-        reviewsCoordinator.start()
+        coordinator.start()
 
         // When
         pushNotificationsManager.sendInactiveNotification(pushNotification)
@@ -108,19 +95,20 @@ final class ReviewsCoordinatorTests: XCTestCase {
 
         // Then
         waitUntil {
-            self.navigationController.viewControllers.count > 1
+            coordinator.navigationController.viewControllers.count > 1
         }
 
         // A ReviewDetailsViewController should be pushed
-        XCTAssertEqual(navigationController.viewControllers.count, 2)
-        assertThat(navigationController.topViewController, isAnInstanceOf: ReviewDetailsViewController.self)
+        XCTAssertEqual(coordinator.navigationController.viewControllers.count, 2)
+        assertThat(coordinator.navigationController.topViewController, isAnInstanceOf: ReviewDetailsViewController.self)
     }
 
     func testWhenFailingToRetrieveProductReviewDetailsThenItWillPresentANotice() throws {
         // Given
+        let coordinator = makeReviewsCoordinator()
         let pushNotification = PushNotification(noteID: 1_234, kind: .comment, message: "")
 
-        reviewsCoordinator.start()
+        coordinator.start()
 
         assertEmpty(noticePresenter.queuedNotices)
 
@@ -146,18 +134,19 @@ final class ReviewsCoordinatorTests: XCTestCase {
         XCTAssertEqual(notice.title, ReviewsCoordinator.Localization.failedToRetrieveNotificationDetails)
 
         // Only the Reviews list should still be visible
-        XCTAssertEqual(navigationController.viewControllers.count, 1)
-        assertThat(navigationController.topViewController, isAnInstanceOf: ReviewsViewController.self)
+        XCTAssertEqual(coordinator.navigationController.viewControllers.count, 1)
+        assertThat(coordinator.navigationController.topViewController, isAnInstanceOf: ReviewsViewController.self)
     }
 
     func testWhenReceivingAReviewNotificationFromADifferentSiteThenItWillSwitchTheCurrentSite() throws {
         // Given
         sessionManager.setStoreId(1_000)
 
+        let coordinator = makeReviewsCoordinator()
         let pushNotification = PushNotification(noteID: 1_234, kind: .comment, message: "")
         let differentSiteID: Int64 = 2_000_111
 
-        reviewsCoordinator.start()
+        coordinator.start()
 
         // When
         pushNotificationsManager.sendInactiveNotification(pushNotification)
@@ -171,11 +160,11 @@ final class ReviewsCoordinatorTests: XCTestCase {
 
         // Then
         waitUntil {
-            self.navigationController.viewControllers.count >= 2
+            coordinator.navigationController.viewControllers.count >= 2
         }
 
         // A ReviewDetailsViewController should be pushed
-        assertThat(navigationController.topViewController, isAnInstanceOf: ReviewDetailsViewController.self)
+        assertThat(coordinator.navigationController.topViewController, isAnInstanceOf: ReviewDetailsViewController.self)
         // We should have switched to the other site
         XCTAssertEqual(switchStoreUseCase.destinationStoreIDs, [differentSiteID])
     }
@@ -184,6 +173,14 @@ final class ReviewsCoordinatorTests: XCTestCase {
 // MARK: - Utils
 
 private extension ReviewsCoordinatorTests {
+    func makeReviewsCoordinator(willPresentReviewDetailsFromPushNotification: (@escaping () -> Void) = { }) -> ReviewsCoordinator {
+        return ReviewsCoordinator(pushNotificationsManager: pushNotificationsManager,
+                                  storesManager: storesManager,
+                                  noticePresenter: noticePresenter,
+                                  switchStoreUseCase: switchStoreUseCase,
+                                  willPresentReviewDetailsFromPushNotification: willPresentReviewDetailsFromPushNotification)
+    }
+
     /// Create a dummy Parcel.
     func makeParcel(metaSiteID: Int64 = 0) -> ProductReviewFromNoteParcel {
         let metaAsData: Data = {

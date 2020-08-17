@@ -99,19 +99,6 @@ final class TwoFAViewController: LoginViewController {
         )
     }
 
-    /// Sets up accessibility elements in the order which they should be read aloud
-    /// and chooses which element to focus on at the beginning.
-    ///
-    private func configureForAccessibility() {
-        view.accessibilityElements = [
-            codeField as Any,
-            tableView,
-            submitButton as Any
-        ]
-
-        UIAccessibility.post(notification: .screenChanged, argument: codeField)
-    }
-
     override func configureViewLoading(_ loading: Bool) {
         super.configureViewLoading(loading)
         codeField?.isEnabled = !loading
@@ -431,6 +418,19 @@ private extension TwoFAViewController {
        }
     }
 
+    /// Sets up accessibility elements in the order which they should be read aloud
+    /// and chooses which element to focus on at the beginning.
+    ///
+    func configureForAccessibility() {
+        view.accessibilityElements = [
+            codeField as Any,
+            tableView,
+            submitButton as Any
+        ]
+
+        UIAccessibility.post(notification: .screenChanged, argument: codeField)
+    }
+    
     /// Rows listed in the order they were created.
     ///
     enum Row {

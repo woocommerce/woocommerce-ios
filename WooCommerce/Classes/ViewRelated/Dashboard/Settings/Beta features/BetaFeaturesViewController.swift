@@ -82,7 +82,6 @@ private extension BetaFeaturesViewController {
     /// Configure sections for table view.
     ///
     func configureSections() {
-        // This is empty because there aren't any ongoing experiments
         self.sections = [
             productsSection()
         ]

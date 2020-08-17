@@ -825,9 +825,7 @@ private extension ProductFormViewController {
             //      self?.product.productType != selectedProductType
             //  }()
 
-
             self?.viewModel.updateProductType(productType: selectedProductType)
-
         }
         let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties,
                                                                       command: command) { [weak self] _ in

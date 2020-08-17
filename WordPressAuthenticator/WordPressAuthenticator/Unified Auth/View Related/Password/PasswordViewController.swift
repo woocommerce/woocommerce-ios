@@ -33,7 +33,7 @@ class PasswordViewController: LoginViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         navigationItem.title = WordPressAuthenticator.shared.displayStrings.logInTitle
         styleNavigationBar(forUnified: true)
         
@@ -60,7 +60,7 @@ class PasswordViewController: LoginViewController {
 
         configureViewForEditingIfNeeded()
         
-        // TODO: add new tracks. Old track: WordPressAuthenticator.track(.loginPasswordFormViewed)
+        // TODO: - Tracks. Old track: WordPressAuthenticator.track(.loginPasswordFormViewed)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -110,6 +110,8 @@ class PasswordViewController: LoginViewController {
             tracker.track(failure: message)
         }
         
+        configureViewLoading(false)
+
         if errorMessage != message {
             errorMessage = message
             tableView.reloadData()
@@ -235,11 +237,27 @@ private extension PasswordViewController {
             DDLogError("Error: Unidentified tableViewCell type found.")
         }
     }
-    
+
     /// Configure the gravatar + email cell.
     ///
     func configureGravatarEmail(_ cell: GravatarEmailTableViewCell) {
         cell.configure(withEmail: loginFields.username)
+        
+        cell.onChangeSelectionHandler = { [weak self] textfield in
+            // The email can only be changed via a password manager.
+            // In this case, don't update username for social accounts.
+            // This prevents inadvertent account linking.
+            if self?.loginFields.meta.socialService != nil {
+                cell.updateEmailAddress(self?.loginFields.username)
+            } else {
+                self?.loginFields.username = textfield.nonNilTrimmedText()
+                self?.loginFields.emailAddress = textfield.nonNilTrimmedText()
+            }
+            
+            self?.configureSubmitButton(animating: false)
+        }
+
+        // TODO: - add onePasswordHandler
     }
     
     /// Configure the instruction cell.

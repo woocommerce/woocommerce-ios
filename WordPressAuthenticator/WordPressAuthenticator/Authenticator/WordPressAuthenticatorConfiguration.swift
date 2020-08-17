@@ -51,6 +51,10 @@ public struct WordPressAuthenticatorConfiguration {
     ///
     let showLoginOptions: Bool
 
+    /// Flag indicating if Sign Up UX is enabled for all services.
+    ///
+    let enableSignUp: Bool
+
     /// Flag indicating if the Sign In With Apple option should be displayed.
     ///
     let enableSignInWithApple: Bool
@@ -103,6 +107,7 @@ public struct WordPressAuthenticatorConfiguration {
                  googleLoginScheme: String,
                  userAgent: String,
                  showLoginOptions: Bool = false,
+                 enableSignUp: Bool = true,
                  enableSignInWithApple: Bool = false,
                  enableSignupWithGoogle: Bool = false,
                  enableUnifiedAuth: Bool = false,
@@ -123,6 +128,7 @@ public struct WordPressAuthenticatorConfiguration {
         self.googleLoginScheme = googleLoginScheme
         self.userAgent = userAgent
         self.showLoginOptions = showLoginOptions
+        self.enableSignUp = enableSignUp
         self.enableSignInWithApple = enableSignInWithApple
         self.enableUnifiedAuth = enableUnifiedAuth
         self.displayHintButtons = displayHintButtons

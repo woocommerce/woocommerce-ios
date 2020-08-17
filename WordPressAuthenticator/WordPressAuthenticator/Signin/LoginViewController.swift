@@ -252,13 +252,15 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         tracker.track(step: .twoFactorAuthentication, ifTrackingNotEnabled: {
             WordPressAuthenticator.track(.twoFactorCodeRequested)
         })
-
-        guard WordPressAuthenticator.shared.configuration.enableUnifiedGoogle,
-            loginFields.meta.socialService == .google else {
+        
+        let unifiedGoogle = WordPressAuthenticator.shared.configuration.enableUnifiedGoogle && loginFields.meta.socialService == .google
+        let unifiedApple = WordPressAuthenticator.shared.configuration.enableUnifiedApple && loginFields.meta.socialService == .apple
+        
+        guard (unifiedGoogle || unifiedApple) else {
             presentLogin2FA()
             return
         }
-
+        
         presentUnified2FA()
     }
 

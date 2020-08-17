@@ -11,7 +11,7 @@
         <!--Unified Signup View Controller-->
         <scene sceneID="tlG-zZ-6we">
             <objects>
-                <viewController storyboardIdentifier="UnifiedSignUpViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="eEV-Dl-qyz" customClass="UnifiedSignupViewController" customModule="WordPressAuthenticator" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="UnifiedSignupViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="eEV-Dl-qyz" customClass="UnifiedSignupViewController" customModule="WordPressAuthenticatorResources" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="48f-x8-Uiu">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -30,7 +30,7 @@
                                     <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UFq-9y-0cn" userLabel="Button background view">
                                         <rect key="frame" x="0.0" y="547" width="375" height="76"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4e9-BU-PNb" userLabel="Primary Button" customClass="NUXButton" customModule="WordPressAuthenticator" customModuleProvider="target">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4e9-BU-PNb" userLabel="Primary Button" customClass="NUXButton" customModule="WordPressAuthenticatorResources" customModuleProvider="target">
                                                 <rect key="frame" x="16" y="16" width="343" height="44"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="submitButton"/>
                                                 <constraints>
@@ -105,6 +105,86 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Tw2-A9-Og2" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-34.399999999999999" y="-33.733133433283363"/>
+        </scene>
+        <!--Signup Magic Link View Controller-->
+        <scene sceneID="wC4-bu-Drv">
+            <objects>
+                <viewController storyboardIdentifier="SignupMagicLinkViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="XmN-dr-9CJ" customClass="SignupMagicLinkViewController" customModule="WordPressAuthenticatorResources" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Mfx-ev-teh">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xra-W4-ZE5" userLabel="Containing View">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <subviews>
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" bounces="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="ENM-ow-V9N">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="591"/>
+                                        <sections/>
+                                        <connections>
+                                            <outlet property="dataSource" destination="XmN-dr-9CJ" id="DdS-Hm-4G4"/>
+                                            <outlet property="delegate" destination="XmN-dr-9CJ" id="jax-k9-UjV"/>
+                                        </connections>
+                                    </tableView>
+                                    <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ip0-bN-Hx1" userLabel="Button background view">
+                                        <rect key="frame" x="0.0" y="591" width="375" height="76"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CrF-zC-jXz" userLabel="Primary Button" customClass="NUXButton" customModule="WordPressAuthenticatorResources" customModuleProvider="target">
+                                                <rect key="frame" x="16" y="16" width="343" height="44"/>
+                                                <accessibility key="accessibilityConfiguration" identifier="submitButton"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="44" id="lFG-K5-twQ"/>
+                                                </constraints>
+                                                <state key="normal" title="Button"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="isPrimary" value="YES"/>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="handleContinueButtonTapped:" destination="XmN-dr-9CJ" eventType="touchUpInside" id="vpr-k6-QPZ"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                        <constraints>
+                                            <constraint firstAttribute="bottomMargin" secondItem="CrF-zC-jXz" secondAttribute="bottom" constant="8" id="5EM-ip-9xE"/>
+                                            <constraint firstItem="CrF-zC-jXz" firstAttribute="top" secondItem="ip0-bN-Hx1" secondAttribute="topMargin" constant="8" id="oDN-pR-K7w"/>
+                                        </constraints>
+                                        <viewLayoutGuide key="safeArea" id="Twj-up-Pl8"/>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <constraints>
+                                    <constraint firstItem="ip0-bN-Hx1" firstAttribute="leading" secondItem="xra-W4-ZE5" secondAttribute="leading" id="GrI-Cg-S11"/>
+                                    <constraint firstItem="ip0-bN-Hx1" firstAttribute="top" secondItem="ENM-ow-V9N" secondAttribute="bottom" id="eFD-Ly-Sp9"/>
+                                    <constraint firstItem="ip0-bN-Hx1" firstAttribute="trailing" secondItem="xra-W4-ZE5" secondAttribute="trailing" id="fNA-XH-11n"/>
+                                    <constraint firstItem="CrF-zC-jXz" firstAttribute="leading" secondItem="ENM-ow-V9N" secondAttribute="leading" constant="16" id="hhO-WG-Xci"/>
+                                    <constraint firstItem="ENM-ow-V9N" firstAttribute="trailing" secondItem="CrF-zC-jXz" secondAttribute="trailing" constant="16" id="moM-Fh-P8a"/>
+                                    <constraint firstItem="ip0-bN-Hx1" firstAttribute="bottom" secondItem="xra-W4-ZE5" secondAttribute="bottomMargin" constant="8" id="qIT-dZ-yaP"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="ENM-ow-V9N" firstAttribute="leading" secondItem="9WS-Pn-DU7" secondAttribute="leading" id="Etd-5H-u0b"/>
+                            <constraint firstItem="9WS-Pn-DU7" firstAttribute="bottom" secondItem="xra-W4-ZE5" secondAttribute="bottom" id="Gaf-bD-fan"/>
+                            <constraint firstItem="xra-W4-ZE5" firstAttribute="trailing" secondItem="Mfx-ev-teh" secondAttribute="trailing" id="OXX-AQ-oJw"/>
+                            <constraint firstItem="ENM-ow-V9N" firstAttribute="top" secondItem="9WS-Pn-DU7" secondAttribute="top" id="Ofs-47-IhL"/>
+                            <constraint firstItem="xra-W4-ZE5" firstAttribute="top" secondItem="9WS-Pn-DU7" secondAttribute="top" id="Ojd-jN-fOY"/>
+                            <constraint firstItem="9WS-Pn-DU7" firstAttribute="trailing" secondItem="ENM-ow-V9N" secondAttribute="trailing" id="PLQ-gW-0QM"/>
+                            <constraint firstItem="xra-W4-ZE5" firstAttribute="leading" secondItem="Mfx-ev-teh" secondAttribute="leading" id="ddR-fd-wIp"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="9WS-Pn-DU7"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="AON-RJ-6DJ"/>
+                    <connections>
+                        <outlet property="submitButton" destination="CrF-zC-jXz" id="zZy-2v-8kS"/>
+                        <outlet property="tableView" destination="ENM-ow-V9N" id="N0t-yM-rVd"/>
+                        <outlet property="tableViewLeadingConstraint" destination="Etd-5H-u0b" id="f0p-Yl-M0Q"/>
+                        <outlet property="tableViewTrailingConstraint" destination="PLQ-gW-0QM" id="2Wk-Fe-Ig1"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="5tI-BM-UnB" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1702" y="-34"/>
         </scene>
     </scenes>
 </document>

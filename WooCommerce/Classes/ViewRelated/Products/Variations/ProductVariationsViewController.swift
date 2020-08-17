@@ -185,7 +185,6 @@ private extension ProductVariationsViewController {
     func updateTopBannerView() {
         let hasVariationsMissingPrice = resultsController.fetchedObjects.contains { $0.price.isEmpty }
         topBannerView.isHidden = hasVariationsMissingPrice == false
-        tableView.layoutIfNeeded()
         tableView.updateHeaderHeight()
     }
 }

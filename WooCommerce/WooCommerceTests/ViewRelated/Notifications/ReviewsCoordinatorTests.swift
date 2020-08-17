@@ -1,4 +1,3 @@
-
 import Foundation
 import XCTest
 
@@ -34,10 +33,14 @@ final class ReviewsCoordinatorTests: XCTestCase {
         noticePresenter = MockNoticePresenter()
         switchStoreUseCase = MockSwitchStoreUseCase()
 
-        reviewsCoordinator = ReviewsCoordinator(pushNotificationsManager: pushNotificationsManager,
-                                                storesManager: storesManager,
-                                                noticePresenter: noticePresenter,
-                                                switchStoreUseCase: switchStoreUseCase)
+        reviewsCoordinator =
+            ReviewsCoordinator(pushNotificationsManager: pushNotificationsManager,
+                               storesManager: storesManager,
+                               noticePresenter: noticePresenter,
+                               switchStoreUseCase: switchStoreUseCase,
+                               willPresentReviewDetailsFromPushNotification: {
+                                // noop
+            })
     }
 
     override func tearDown() {

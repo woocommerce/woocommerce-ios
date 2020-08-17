@@ -98,7 +98,9 @@ final class MainTabBarController: UITabBarController {
         return navController
     }()
 
-    private lazy var reviewsCoordinator: Coordinator = ReviewsCoordinator()
+    private lazy var reviewsCoordinator: Coordinator = ReviewsCoordinator(willPresentReviewDetailsFromPushNotification: { [weak self] in
+        self?.navigateTo(.reviews)
+    })
 
     // MARK: - Overridden Methods
 

@@ -1,4 +1,3 @@
-
 import Foundation
 import UIKit
 
@@ -18,22 +17,28 @@ final class ReviewsCoordinator: Coordinator {
 
     private var observationToken: ObservationToken?
 
+    private let willPresentReviewDetailsFromPushNotification: () -> Void
+
     init(pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          storesManager: StoresManager = ServiceLocator.stores,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
-         switchStoreUseCase: SwitchStoreUseCaseProtocol) {
+         switchStoreUseCase: SwitchStoreUseCaseProtocol,
+         willPresentReviewDetailsFromPushNotification: @escaping () -> Void) {
 
         self.pushNotificationsManager = pushNotificationsManager
         self.storesManager = storesManager
         self.noticePresenter = noticePresenter
         self.switchStoreUseCase = switchStoreUseCase
+        self.willPresentReviewDetailsFromPushNotification = willPresentReviewDetailsFromPushNotification
 
         self.navigationController = WooNavigationController(rootViewController: ReviewsViewController())
     }
 
-    convenience init() {
+    convenience init(willPresentReviewDetailsFromPushNotification: @escaping () -> Void) {
         let storesManager = ServiceLocator.stores
-        self.init(storesManager: storesManager, switchStoreUseCase: SwitchStoreUseCase(stores: storesManager))
+        self.init(storesManager: storesManager,
+                  switchStoreUseCase: SwitchStoreUseCase(stores: storesManager),
+                  willPresentReviewDetailsFromPushNotification: willPresentReviewDetailsFromPushNotification)
     }
 
     deinit {
@@ -71,6 +76,7 @@ final class ReviewsCoordinator: Coordinator {
                         return
                     }
 
+                    self.willPresentReviewDetailsFromPushNotification()
                     self.pushReviewDetailsViewController(using: parcel)
 
                     if siteChanged {

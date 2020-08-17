@@ -1,6 +1,7 @@
 4.9
 -----
 - [*] Edit Products: the update action now shows up on the product details after updating just the sale price.
+- [*] Variable product > variation list: a warning banner is shown if any variations do not have a price, and warning text is shown on these variation rows.
  
 4.8
 -----

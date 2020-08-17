@@ -38,7 +38,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
         super.tearDown()
     }
 
-    func testWhenReceivingANonReviewNotificationThenItWillNotDoAnything() throws {
+    func test_when_receiving_a_non_review_notification_then_it_will_not_do_anything() throws {
         // Given
         let coordinator = makeReviewsCoordinator()
         let pushNotification = PushNotification(noteID: 1_234, kind: .storeOrder, message: "")
@@ -58,7 +58,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
         assertThat(coordinator.navigationController.topViewController, isAnInstanceOf: ReviewsViewController.self)
     }
 
-    func testWhenReceivingANotificationWhileInForegroundThenItWillNotDoAnything() throws {
+    func test_when_receiving_a_notification_while_in_foreground_then_it_will_not_do_anything() throws {
         // Given
         let coordinator = makeReviewsCoordinator()
         let pushNotification = PushNotification(noteID: 1_234, kind: .comment, message: "")
@@ -76,7 +76,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
         assertThat(coordinator.navigationController.topViewController, isAnInstanceOf: ReviewsViewController.self)
     }
 
-    func testWhenReceivingAReviewNotificationWhileInactiveThenItWillPresentTheReviewDetails() throws {
+    func test_when_receiving_a_review_notification_while_inactive_then_it_will_present_the_review_details() throws {
         // Given
         let pushNotification = PushNotification(noteID: 1_234, kind: .comment, message: "")
 
@@ -107,7 +107,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
         assertThat(coordinator.navigationController.topViewController, isAnInstanceOf: ReviewDetailsViewController.self)
     }
 
-    func testWhenFailingToRetrieveProductReviewDetailsThenItWillPresentANotice() throws {
+    func test_when_failing_to_retrieve_ProductReview_details_then_it_will_present_a_notice() throws {
         // Given
         let coordinator = makeReviewsCoordinator()
         let pushNotification = PushNotification(noteID: 1_234, kind: .comment, message: "")
@@ -142,7 +142,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
         assertThat(coordinator.navigationController.topViewController, isAnInstanceOf: ReviewsViewController.self)
     }
 
-    func testWhenReceivingAReviewNotificationFromADifferentSiteThenItWillSwitchTheCurrentSite() throws {
+    func test_when_receiving_a_review_notification_from_a_different_site_then_it_will_switch_the_current_site() throws {
         // Given
         sessionManager.setStoreId(1_000)
 

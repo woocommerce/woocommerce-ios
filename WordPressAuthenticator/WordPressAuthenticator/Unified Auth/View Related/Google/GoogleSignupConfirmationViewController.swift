@@ -101,8 +101,6 @@ private extension GoogleSignupConfirmationViewController {
         
         configureSubmitButton(animating: true)
         GoogleAuthenticator.sharedInstance.delegate = self
-        
-        // here
         GoogleAuthenticator.sharedInstance.createGoogleAccount(loginFields: loginFields)
     }
 

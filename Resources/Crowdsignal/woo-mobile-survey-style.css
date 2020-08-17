@@ -1731,23 +1731,21 @@ li.question-block-400__choice-other input[type="text"]
 /* For "Other" options with a text field, make the label be 100% of the width. */
 li.question-block-400__choice-other > label
 {
-    flex: 1;
+	flex:1;
 }
 
 /* For "Other" options with a text field, make the textfield show below the label. */
-li.question-block-400__choice-other > input[type="text"],
-li.question-block-400__choice-other > input[type="email"]
+li.question-block-400__choice-other > input[type="text"],li.question-block-400__choice-other > input[type="email"]
 {
-    flex-basis: 100%;
-    margin-left: 28px;
-    margin-top: 8px;
+	flex-basis:100%;
+	margin-left:28px;
+	margin-top:8px;
 }
 
 input[type="text"],input[type="password"],input[type="submit"],input[type="email"]
 {
 /* Remove the drop shadow and gradient on button. All ugliness. */
 	-webkit-appearance:none;
-
 	font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"!important;
 	font-size:17px;
 	color:#000;

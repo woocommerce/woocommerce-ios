@@ -4,7 +4,8 @@ extension LoginFacade {
     func requestOneTimeCode(with loginFields: LoginFields) {
         wordpressComOAuthClientFacade.requestOneTimeCode(
             withUsername: loginFields.username, 
-            password: loginFields.password, success: {
+            password: loginFields.password,
+            success: {
                 if AuthenticatorAnalyticsTracker.shared.shouldUseLegacyTracker() {
                     WordPressAuthenticator.track(.twoFactorSentSMS)
                 }

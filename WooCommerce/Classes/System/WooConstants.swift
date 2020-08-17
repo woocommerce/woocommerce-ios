@@ -74,7 +74,7 @@ extension WooConstants {
         /// URL for in-app feedback survey
         ///
 #if DEBUG
-        case inAppFeedback = "https://wasseryi.survey.fm/woo-mobile-app-test-survey"
+        case inAppFeedback = "https://automattic.survey.fm/woo-app-general-feedback-test-survey"
 #else
         case inAppFeedback = "https://automattic.survey.fm/woo-app-general-feedback-user-survey"
 #endif

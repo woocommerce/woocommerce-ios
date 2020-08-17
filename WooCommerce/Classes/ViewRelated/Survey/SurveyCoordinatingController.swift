@@ -15,7 +15,7 @@ final class SurveyCoordinatingController: WooNavigationController {
          viewControllersFactory: SurveyViewControllersFactoryProtocol = SurveyViewControllersFactory()) {
         self.zendeskManager = zendeskManager
         self.viewControllersFactory = viewControllersFactory
-        super.init(navigationBarClass: nil, toolbarClass: nil)
+        super.init(nibName: nil, bundle: nil)
         startSurveyNavigation(survey: survey)
     }
 
@@ -47,7 +47,7 @@ private extension SurveyCoordinatingController {
         }, onBackToStoreAction: { [weak self] in
             self?.finishSurveyNavigation()
         })
-        show(completionViewController, sender: self)
+        setViewControllers([completionViewController], animated: true)
     }
 
     /// Dismisses the flow modally

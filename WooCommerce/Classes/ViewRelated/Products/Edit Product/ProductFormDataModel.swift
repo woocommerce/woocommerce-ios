@@ -12,6 +12,7 @@ protocol ProductFormDataModel {
     // Settings
     var permalink: String { get }
     var status: ProductStatus { get }
+    var virtual: Bool { get }
 
     // Images
     var images: [ProductImage] { get }
@@ -32,6 +33,9 @@ protocol ProductFormDataModel {
     // Reviews
     var averageRating: String { get }
     var ratingCount: Int { get }
+
+    // Product Type
+    var productType: ProductType { get }
 
     // Shipping
     var weight: String? { get }

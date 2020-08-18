@@ -15,7 +15,9 @@ class LoginSocialErrorViewController: NUXTableViewController {
     fileprivate var errorTitle: String
     fileprivate var errorDescription: String
     @objc var delegate: LoginSocialErrorViewControllerDelegate?
-
+    
+    private var forUnified: Bool = false
+    
     fileprivate enum Sections: Int {
         case titleAndDescription = 0
         case buttons = 1
@@ -57,10 +59,23 @@ class LoginSocialErrorViewController: NUXTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = WordPressAuthenticator.shared.style.viewControllerBackgroundColor
-        addAppLogoToNavController()
+        let unifiedGoogle = WordPressAuthenticator.shared.configuration.enableUnifiedGoogle && loginFields.meta.socialService == .google
+        let unifiedApple = WordPressAuthenticator.shared.configuration.enableUnifiedApple && loginFields.meta.socialService == .apple
+        forUnified = unifiedGoogle || unifiedApple
+
+        styleNavigationBar(forUnified: forUnified)
+        styleBackground()
     }
 
+    private func styleBackground() {
+        guard let unifiedBackgroundColor = WordPressAuthenticator.shared.unifiedStyle?.viewControllerBackgroundColor else {
+            view.backgroundColor = WordPressAuthenticator.shared.style.viewControllerBackgroundColor
+            return
+        }
+
+        view.backgroundColor = forUnified ? unifiedBackgroundColor : WordPressAuthenticator.shared.style.viewControllerBackgroundColor
+    }
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard indexPath.section == Sections.buttons.rawValue,
             let delegate = delegate else {
@@ -149,7 +164,7 @@ extension LoginSocialErrorViewController {
     }
 
     private func titleAndDescriptionCell() -> UITableViewCell {
-        return LoginSocialErrorCell(title: errorTitle, description: errorDescription)
+        return LoginSocialErrorCell(title: errorTitle, description: errorDescription, forUnified: forUnified)
     }
 
     private func buttonCell(index: Int) -> UITableViewCell {

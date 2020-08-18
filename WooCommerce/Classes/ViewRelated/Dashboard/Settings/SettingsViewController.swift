@@ -360,8 +360,8 @@ private extension SettingsViewController {
     }
 
     func presentSurveyForFeedback() {
-        let safariViewController = SFSafariViewController(url: WooConstants.URLs.featureRequest.asURL())
-        present(safariViewController, animated: true, completion: nil)
+        let surveyNavigation = SurveyCoordinatingController(survey: .inAppFeedback)
+        present(surveyNavigation, animated: true, completion: nil)
     }
 
     func appSettingsWasPressed() {

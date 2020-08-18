@@ -47,7 +47,7 @@ private extension SurveyCoordinatingController {
         }, onBackToStoreAction: { [weak self] in
             self?.finishSurveyNavigation()
         })
-        show(completionViewController, sender: self)
+        setViewControllers([completionViewController], animated: true)
     }
 
     /// Dismisses the flow modally

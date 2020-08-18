@@ -39,6 +39,10 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
         product.productStatus
     }
 
+    var virtual: Bool {
+        product.virtual
+    }
+
     var images: [ProductImage] {
         product.images
     }
@@ -73,6 +77,10 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
 
     var ratingCount: Int {
         product.ratingCount
+    }
+
+    var productType: ProductType {
+        product.productType
     }
 
     var weight: String? {

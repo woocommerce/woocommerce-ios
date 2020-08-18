@@ -64,6 +64,8 @@ private extension DefaultProductFormTableViewModel {
                 return .price(viewModel: priceSettingsRow(product: product))
             case .reviews:
                 return .reviews(viewModel: reviewsRow(product: product), ratingCount: product.ratingCount, averageRating: product.averageRating)
+            case .productType:
+                return .productType(viewModel: productTypeRow(product: product))
             case .shippingSettings:
                 return .shipping(viewModel: shippingSettingsRow(product: product))
             case .inventorySettings:
@@ -196,6 +198,27 @@ private extension DefaultProductFormTableViewModel {
         }
 
         let details = inventoryDetails.isEmpty ? nil: inventoryDetails.joined(separator: "\n")
+
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon,
+                                                        title: title,
+                                                        details: details)
+    }
+
+    func productTypeRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {
+        let icon = UIImage.productImage
+        let title = Constants.productTypeTitle
+
+        var details = product.productType.description
+
+        if product.productType == .simple {
+            switch product.virtual {
+            case true:
+                details = Constants.virtualProductType
+            case false:
+                details = Constants.physicalProductType
+            }
+        }
+
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
@@ -373,6 +396,8 @@ private extension DefaultProductFormTableViewModel {
                                                     comment: "Title of the Reviews row on Product main screen")
         static let inventorySettingsTitle = NSLocalizedString("Inventory",
                                                               comment: "Title of the Inventory Settings row on Product main screen")
+        static let productTypeTitle = NSLocalizedString("Product type",
+                                                              comment: "Title of the Product Type row on Product main screen")
         static let shippingSettingsTitle = NSLocalizedString("Shipping",
                                                              comment: "Title of the Shipping Settings row on Product main screen")
         static let categoriesTitle = NSLocalizedString("Categories",
@@ -419,6 +444,12 @@ private extension DefaultProductFormTableViewModel {
                                                  comment: "Format of the SKU on the Inventory Settings row")
         static let stockQuantityFormat = NSLocalizedString("Quantity: %ld",
                                                            comment: "Format of the stock quantity on the Inventory Settings row")
+
+        // Product Type
+        static let virtualProductType = NSLocalizedString("Virtual",
+                                                          comment: "Display label for simple virtual product type.")
+        static let physicalProductType = NSLocalizedString("Physical",
+                                                           comment: "Display label for simple physical product type.")
 
         // Shipping
         static let weightFormat = NSLocalizedString("Weight: %1$@%2$@",

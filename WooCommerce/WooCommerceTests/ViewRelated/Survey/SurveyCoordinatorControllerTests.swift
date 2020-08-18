@@ -30,9 +30,8 @@ final class SurveyCoordinatingControllerTests: XCTestCase {
 
         // Then
         waitUntil {
-            coordinator.viewControllers.count > 1
+            coordinator.topViewController is SurveySubmittedViewControllerOutputs
         }
-        XCTAssertTrue(coordinator.topViewController is SurveySubmittedViewControllerOutputs)
     }
 
     func test_it_gets_dismissed_on_backToStore_action() throws {

@@ -23,7 +23,8 @@ class AuthenticationManager: Authentication {
                                                                 googleLoginClientId: ApiCredentials.googleClientId,
                                                                 googleLoginServerClientId: ApiCredentials.googleServerId,
                                                                 googleLoginScheme: ApiCredentials.googleAuthScheme,
-                                                                userAgent: UserAgent.defaultUserAgent)
+                                                                userAgent: UserAgent.defaultUserAgent,
+                                                                showLoginOptions: true)
 
         let style = WordPressAuthenticatorStyle(primaryNormalBackgroundColor: .primaryButtonBackground,
                                                 primaryNormalBorderColor: .primaryButtonDownBackground,

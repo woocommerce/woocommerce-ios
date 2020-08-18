@@ -359,7 +359,7 @@ private extension SettingsViewController {
         navigationController?.pushViewController(betaFeaturesViewController, animated: true)
     }
 
-    func featureRequestWasPressed() {
+    func presentSurveyForFeedback() {
         let safariViewController = SFSafariViewController(url: WooConstants.URLs.featureRequest.asURL())
         present(safariViewController, animated: true, completion: nil)
     }
@@ -466,7 +466,7 @@ extension SettingsViewController: UITableViewDelegate {
         case .betaFeatures:
             betaFeaturesWasPressed()
         case .sendFeedback:
-            featureRequestWasPressed()
+            presentSurveyForFeedback()
         case .about:
             aboutWasPressed()
         case .licenses:

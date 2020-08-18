@@ -20,11 +20,11 @@ struct InAppFeedbackCardVisibilityUseCase {
     private let calendar: Calendar
 
     private let settings: GeneralAppSettings
-    private let feedbackSettings: FeedbackSettings
+    private let feedbackType: FeedbackType
 
-    init(settings: GeneralAppSettings, feedbackSettings: FeedbackSettings, fileManager: FileManager = FileManager.default, calendar: Calendar = .current) {
+    init(settings: GeneralAppSettings, feedbackType: FeedbackType, fileManager: FileManager = FileManager.default, calendar: Calendar = .current) {
         self.settings = settings
-        self.feedbackSettings = feedbackSettings
+        self.feedbackType = feedbackType
         self.fileManager = fileManager
         self.calendar = calendar
     }
@@ -42,7 +42,7 @@ struct InAppFeedbackCardVisibilityUseCase {
             return false
         }
 
-        guard case let .given(lastFeedbackDate) = feedbackSettings.status else {
+        guard case let .given(lastFeedbackDate) = settings.feedbackStatus(of: feedbackType) else {
             return true
         }
 

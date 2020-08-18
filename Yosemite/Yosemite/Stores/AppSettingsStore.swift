@@ -166,8 +166,7 @@ private extension AppSettingsStore {
 
     func loadInAppFeedbackCardVisibility(onCompletion: (Result<Bool, Error>) -> Void) {
         let settings = loadOrCreateGeneralAppSettings()
-        let generalFeedback = loadsOrCreateGeneralFeedbackSetting(from: settings)
-        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackSettings: generalFeedback)
+        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .general)
 
         onCompletion(Result {
             try useCase.shouldBeVisible()
@@ -192,15 +191,6 @@ private extension AppSettingsStore {
 // MARK: - Feedback Settings
 //
 private extension AppSettingsStore {
-    /// Load the  general feedback setting  from the provided `appSettings` or create an empty one if it doesn't exist.
-    ///
-    func loadsOrCreateGeneralFeedbackSetting(from appSettings: GeneralAppSettings) -> FeedbackSettings {
-        guard let feedback = appSettings.feedbacks[.general] else {
-            return FeedbackSettings(name: .general, status: .pending)
-        }
-        return feedback
-    }
-
     /// Adds or replaces the general feedback given date on the provided `GeneralAppSettings` value type.
     /// Returns a new `GeneralAppSettings`type with the general feedback data updated.
     ///

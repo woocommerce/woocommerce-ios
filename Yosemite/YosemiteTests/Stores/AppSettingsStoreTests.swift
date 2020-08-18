@@ -362,7 +362,7 @@ private extension AppSettingsStoreTests {
     }
 
     func createAppSettingAndGeneralFeedback(instalationDate: Date?, feedbackSatus: FeedbackSettings.Status) -> (GeneralAppSettings, FeedbackSettings) {
-        let feedback = FeedbackSettings(name: "general-in-app-feedback", status: feedbackSatus)
+        let feedback = FeedbackSettings(name: .general, status: feedbackSatus)
         let settings = GeneralAppSettings(installationDate: instalationDate, feedbacks: [feedback.name: feedback])
         return (settings, feedback)
     }

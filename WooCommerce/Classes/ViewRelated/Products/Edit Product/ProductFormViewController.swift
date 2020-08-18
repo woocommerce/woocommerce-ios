@@ -236,7 +236,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 showReviews()
             case .productType:
                 // TODO-2509 Edit Product M3 analytics
-                editProductType()
+                let cell = tableView.cellForRow(at: indexPath)
+                editProductType(cell: cell)
             case .shipping:
                 ServiceLocator.analytics.track(.productDetailViewShippingSettingsTapped)
                 editShippingSettings()
@@ -811,7 +812,7 @@ private extension ProductFormViewController {
 // MARK: Action - Edit Product Type Settings
 //
 private extension ProductFormViewController {
-    func editProductType() {
+    func editProductType(cell: UITableViewCell?) {
         let title = NSLocalizedString("Change product type",
                                       comment: "Message title of bottom sheet for selecting a product type")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
@@ -831,7 +832,7 @@ private extension ProductFormViewController {
                                                                       command: command) { [weak self] _ in
                                                                             self?.dismiss(animated: true, completion: nil)
         }
-        productTypesListPresenter.show(from: self, sourceView: self.view, arrowDirections: .up)
+        productTypesListPresenter.show(from: self, sourceView: cell, arrowDirections: .any)
     }
 }
 

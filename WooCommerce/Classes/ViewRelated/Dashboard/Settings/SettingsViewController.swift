@@ -8,7 +8,7 @@ import WordPressAuthenticator
 
 // MARK: - SettingsViewController
 //
-class SettingsViewController: UIViewController {
+final class SettingsViewController: UIViewController {
 
     /// Main TableView
     ///

@@ -44,7 +44,7 @@ final class MainTabViewModel {
 
 private extension MainTabViewModel {
     @objc func requestBadgeCount() {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+        guard let siteID = storesManager.sessionManager.defaultStoreID else {
             DDLogError("# Error: Cannot fetch order count")
             return
         }
@@ -57,7 +57,7 @@ private extension MainTabViewModel {
             self?.processBadgeCount(orderCount)
         }
 
-        ServiceLocator.stores.dispatch(action)
+        storesManager.dispatch(action)
     }
 
     func processBadgeCount(_ orderCount: OrderCount?) {

@@ -16,6 +16,16 @@ extension NSNotification.Name {
 }
 
 final class MainTabViewModel {
+
+    private let storesManager: StoresManager
+    private let featureFlagService: FeatureFlagService
+
+    init(storesManager: StoresManager = ServiceLocator.stores,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+        self.storesManager = storesManager
+        self.featureFlagService = featureFlagService
+    }
+
     /// Callback to be executed when this view model receives new data
     /// passing the string to be presented in the badge as a parameter
     ///

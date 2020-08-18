@@ -38,12 +38,6 @@ final class TopBannerView: UIView {
         return button
     }()
 
-    private lazy var actionButton: UIButton = {
-        let button = UIButton(frame: .zero)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-
     private lazy var actionStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -57,12 +51,10 @@ final class TopBannerView: UIView {
     private(set) var isExpanded: Bool
 
     private let onTopButtonTapped: (() -> Void)?
-    private let onAction: (() -> Void)?
 
     init(viewModel: TopBannerViewModel) {
-        isActionEnabled = viewModel.actionHandler != nil
+        isActionEnabled = viewModel.actionButtons.isNotEmpty
         isExpanded = viewModel.isExpanded
-        onAction = viewModel.actionHandler
         onTopButtonTapped = viewModel.topButton.handler
         actionButtons = viewModel.actionButtons.map { _ in UIButton() }
         super.init(frame: .zero)
@@ -90,11 +82,6 @@ private extension TopBannerView {
         infoLabel.applyBodyStyle()
         infoLabel.numberOfLines = 0
 
-        if isActionEnabled {
-            actionButton.applyLinkButtonStyle()
-            actionButton.addTarget(self, action: #selector(onActionButtonTapped), for: .touchUpInside)
-        }
-
         renderContent(of: viewModel)
     }
 
@@ -115,7 +102,6 @@ private extension TopBannerView {
 
         iconImageView.image = viewModel.icon
 
-        actionButton.setTitle(viewModel.actionButtonTitle, for: .normal)
         zip(viewModel.actionButtons, actionButtons).forEach { buttonInfo, button in
             button.setTitle(buttonInfo.title, for: .normal)
             button.on(.touchUpInside, call: { _ in buttonInfo.action() })
@@ -221,12 +207,6 @@ private extension TopBannerView {
         return separatorBackground
     }
 
-    func createActionStackView() -> UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [actionButton, createBorderView()])
-        stackView.axis = .vertical
-        return stackView
-    }
-
     func createBorderView() -> UIView {
         return UIView.createBorderView()
     }
@@ -244,10 +224,6 @@ private extension TopBannerView {
 private extension TopBannerView {
     @objc func onDismissButtonTapped() {
         onTopButtonTapped?()
-    }
-
-    @objc func onActionButtonTapped() {
-        onAction?()
     }
 
     @objc func onExpandCollapseButtonTapped() {

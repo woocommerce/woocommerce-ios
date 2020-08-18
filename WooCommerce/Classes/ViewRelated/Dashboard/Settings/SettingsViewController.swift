@@ -145,7 +145,7 @@ private extension SettingsViewController {
             sections = [
                 Section(title: selectedStoreTitle, rows: storeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
                 Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
-                Section(title: improveTheAppTitle, rows: [.privacy, .betaFeatures, .featureRequest], footerHeight: UITableView.automaticDimension),
+                Section(title: improveTheAppTitle, rows: [.privacy, .betaFeatures, .sendFeedback], footerHeight: UITableView.automaticDimension),
                 Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
                 otherSection,
                 Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
@@ -154,7 +154,7 @@ private extension SettingsViewController {
             sections = [
                 Section(title: selectedStoreTitle, rows: storeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
                 Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
-                Section(title: improveTheAppTitle, rows: [.privacy, .featureRequest], footerHeight: UITableView.automaticDimension),
+                Section(title: improveTheAppTitle, rows: [.privacy, .sendFeedback], footerHeight: UITableView.automaticDimension),
                 Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
                 otherSection,
                 Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
@@ -182,7 +182,7 @@ private extension SettingsViewController {
             configurePrivacy(cell: cell)
         case let cell as BasicTableViewCell where row == .betaFeatures:
             configureBetaFeatures(cell: cell)
-        case let cell as BasicTableViewCell where row == .featureRequest:
+        case let cell as BasicTableViewCell where row == .sendFeedback:
             configureFeatureSuggestions(cell: cell)
         case let cell as BasicTableViewCell where row == .about:
             configureAbout(cell: cell)
@@ -465,7 +465,7 @@ extension SettingsViewController: UITableViewDelegate {
             privacyWasPressed()
         case .betaFeatures:
             betaFeaturesWasPressed()
-        case .featureRequest:
+        case .sendFeedback:
             featureRequestWasPressed()
         case .about:
             aboutWasPressed()
@@ -504,7 +504,7 @@ private enum Row: CaseIterable {
     case logout
     case privacy
     case betaFeatures
-    case featureRequest
+    case sendFeedback
     case about
     case licenses
     case appSettings
@@ -524,7 +524,7 @@ private enum Row: CaseIterable {
             return BasicTableViewCell.self
         case .betaFeatures:
             return BasicTableViewCell.self
-        case .featureRequest:
+        case .sendFeedback:
             return BasicTableViewCell.self
         case .about:
             return BasicTableViewCell.self

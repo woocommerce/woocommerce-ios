@@ -195,8 +195,8 @@ private extension AppSettingsStore {
     /// Load the  general feedback setting  from the provided `appSettings` or create an empty one if it doesn't exist.
     ///
     func loadsOrCreateGeneralFeedbackSetting(from appSettings: GeneralAppSettings) -> FeedbackSettings {
-        guard let feedback = appSettings.feedbacks[Constants.generalFeedbackName] else {
-            return FeedbackSettings(name: Constants.generalFeedbackName, status: .pending)
+        guard let feedback = appSettings.feedbacks[.general] else {
+            return FeedbackSettings(name: .general, status: .pending)
         }
         return feedback
     }
@@ -206,7 +206,7 @@ private extension AppSettingsStore {
     ///
     func replaceGeneralFeedbackDate(_ date: Date, on appSettings: GeneralAppSettings) -> GeneralAppSettings {
         // Creates a new general feedback setting
-        let feedback = FeedbackSettings(name: Constants.generalFeedbackName, status: .given(date))
+        let feedback = FeedbackSettings(name: .general, status: .given(date))
 
         // Merges thew new setting with the existing feedback settings
         let feedbackStore = appSettings.feedbacks.merging([feedback.name: feedback]) { _, new in new }
@@ -497,7 +497,4 @@ private enum Constants {
     static let statsVersionLastShownFileName = "stats-version-last-shown.plist"
     static let productsFeatureSwitchFileName = "products-feature-switch.plist"
     static let generalAppSettingsFileName = "general-app-settings.plist"
-
-    // MARK: Feedback Names
-    static let generalFeedbackName = "general-in-app-feedback"
 }

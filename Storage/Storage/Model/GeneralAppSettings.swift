@@ -16,11 +16,11 @@ public struct GeneralAppSettings: Codable, Equatable {
     public let installationDate: Date?
 
     /// Key/Value type to store feedback settings
-    /// Key: A `String` to identify the feedback
+    /// Key: A `FeedbackType` to identify the feedback
     /// Value: A `FeedbackSetting` to store the feedback state
-    public let feedbacks: [String: FeedbackSettings]
+    public let feedbacks: [FeedbackType: FeedbackSettings]
 
-    public init(installationDate: Date?, feedbacks: [String: FeedbackSettings]) {
+    public init(installationDate: Date?, feedbacks: [FeedbackType: FeedbackSettings]) {
         self.installationDate = installationDate
         self.feedbacks = feedbacks
     }

@@ -1,5 +1,5 @@
 import Foundation
 
-public enum FeedbackType {
+public enum FeedbackType: String, Codable {
     case general
 }

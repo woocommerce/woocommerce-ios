@@ -13,13 +13,13 @@ public struct FeedbackSettings: Codable, Equatable {
 
     /// Name of the feedback, for identity purposes
     ///
-    public let name: String
+    public let name: FeedbackType
 
     /// State of the feedback
     ///
     public let status: Status
 
-    public init(name: String, status: Status) {
+    public init(name: FeedbackType, status: Status) {
         self.name = name
         self.status = status
     }

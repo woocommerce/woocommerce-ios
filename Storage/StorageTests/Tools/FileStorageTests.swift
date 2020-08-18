@@ -20,25 +20,25 @@ final class FileStorageTests: XCTestCase {
         super.tearDown()
     }
 
-    func testFileIsLoaded() {
+    func test_file_is_loaded() {
         var data: [PreselectedProvider]?
         XCTAssertNoThrow(data = try subject?.data(for: fileURL!))
         XCTAssertNotNil(data)
     }
 
-    func testErrorIsTriggeredWhenFileFailsToLoad() {
+    func test_error_is_triggered_when_file_fails_to_load() {
         var data: Data?
         XCTAssertThrowsError(data = try subject?.data(for: nonExistingFileURL))
         XCTAssertNil(data)
     }
 
-    func testErrorIsTriggeredWhenWritingFails() {
+    func test_error_is_triggered_when_writing_fails() {
         let data = Data(count: 0)
 
         XCTAssertThrowsError(try subject?.write(data, to: nonExistingFileURL))
     }
 
-    func testErrorIsTriggeredWhenFileFailsToDelete() {
-        XCTAssertThrowsError(try subject?.deleteFile(at: nonExistingFileURL))
+    func test_no_error_is_thrown_when_deleting_a_file_that_does_not_exist() {
+        XCTAssertNoThrow(try subject?.deleteFile(at: nonExistingFileURL))
     }
 }

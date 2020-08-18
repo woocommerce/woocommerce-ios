@@ -183,7 +183,7 @@ private extension SettingsViewController {
         case let cell as BasicTableViewCell where row == .betaFeatures:
             configureBetaFeatures(cell: cell)
         case let cell as BasicTableViewCell where row == .sendFeedback:
-            configureFeatureSuggestions(cell: cell)
+            configureSendFeedback(cell: cell)
         case let cell as BasicTableViewCell where row == .about:
             configureAbout(cell: cell)
         case let cell as BasicTableViewCell where row == .licenses:
@@ -232,10 +232,10 @@ private extension SettingsViewController {
         cell.accessibilityIdentifier = "settings-beta-features-button"
     }
 
-    func configureFeatureSuggestions(cell: BasicTableViewCell) {
+    func configureSendFeedback(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Feature Request", comment: "Navigates to the feature request screen")
+        cell.textLabel?.text = NSLocalizedString("Send Feedback", comment: "Presents a survey to gather feedback from the user.")
     }
 
     func configureAbout(cell: BasicTableViewCell) {

@@ -77,9 +77,9 @@ public enum AppSettingsAction: Action {
 
     /// Updates or stores a feedback setting with the provided `type` and `status`.
     ///
-    case updateFeedbackStatus(feedbackType: FeedbackType, feedbackStatus: FeedbackSettings.Status, onCompletion: ((Result<Void, Error>) -> Void))
+    case updateFeedbackStatus(type: FeedbackType, status: FeedbackSettings.Status, onCompletion: ((Result<Void, Error>) -> Void))
 
     /// Returns whether a specific feedback request should be shown to the user.
     ///
-    case loadFeedbackVisibility(feedbackType: FeedbackType, onCompletion: (Result<Bool, Error>) -> Void)
+    case loadFeedbackVisibility(type: FeedbackType, onCompletion: (Result<Bool, Error>) -> Void)
 }

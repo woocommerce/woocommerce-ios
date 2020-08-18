@@ -115,10 +115,10 @@ public class AppSettingsStore: Store {
             resetStatsVersionStates()
         case .setInstallationDateIfNecessary(let date, let onCompletion):
             setInstallationDateIfNecessary(date: date, onCompletion: onCompletion)
-        case .updateFeedbackStatus(let feedbackType, let feedbackStatus, let onCompletion):
-            updateFeedbackStatus(feedbackType: feedbackType, feedbackstatus: feedbackStatus, onCompletion: onCompletion)
-        case .loadFeedbackVisibility(let feedbackType, let onCompletion):
-            loadFeedbackVisibility(feedbackType: feedbackType, onCompletion: onCompletion)
+        case .updateFeedbackStatus(let type, let status, let onCompletion):
+            updateFeedbackStatus(type: type, status: status, onCompletion: onCompletion)
+        case .loadFeedbackVisibility(let type, let onCompletion):
+            loadFeedbackVisibility(type: type, onCompletion: onCompletion)
         }
     }
 }
@@ -152,10 +152,10 @@ private extension AppSettingsStore {
 
     /// Updates the feedback store  in `GeneralAppSettings` with the given `type` and `status`.
     ///
-    func updateFeedbackStatus(feedbackType: FeedbackType, feedbackstatus: FeedbackSettings.Status, onCompletion: ((Result<Void, Error>) -> Void)) {
+    func updateFeedbackStatus(type: FeedbackType, status: FeedbackSettings.Status, onCompletion: ((Result<Void, Error>) -> Void)) {
         do {
             let settings = loadOrCreateGeneralAppSettings()
-            let newFeedback = FeedbackSettings(name: feedbackType, status: feedbackstatus)
+            let newFeedback = FeedbackSettings(name: type, status: status)
             let settingsToSave = settings.replacing(feedback: newFeedback)
             try saveGeneralAppSettings(settingsToSave)
 
@@ -165,9 +165,9 @@ private extension AppSettingsStore {
         }
     }
 
-    func loadFeedbackVisibility(feedbackType: FeedbackType, onCompletion: (Result<Bool, Error>) -> Void) {
+    func loadFeedbackVisibility(type: FeedbackType, onCompletion: (Result<Bool, Error>) -> Void) {
         let settings = loadOrCreateGeneralAppSettings()
-        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: feedbackType)
+        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: type)
 
         onCompletion(Result {
             try useCase.shouldBeVisible()

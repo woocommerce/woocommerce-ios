@@ -311,7 +311,7 @@ final class AppSettingsStoreTests: XCTestCase {
 
         // When
         var result: Result<Void, Error>?
-        let action = AppSettingsAction.updateFeedbackStatus(feedbackType: .general, feedbackStatus: .given(date)) { aResult in
+        let action = AppSettingsAction.updateFeedbackStatus(type: .general, status: .given(date)) { aResult in
             result = aResult
         }
         subject?.onAction(action)
@@ -342,7 +342,7 @@ final class AppSettingsStoreTests: XCTestCase {
 
         // When
         var shouldBeVisibleResult: Result<Bool, Error>?
-        let action = AppSettingsAction.loadFeedbackVisibility(feedbackType: .general) { result in
+        let action = AppSettingsAction.loadFeedbackVisibility(type: .general) { result in
             shouldBeVisibleResult = result
         }
         subject?.onAction(action)

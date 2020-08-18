@@ -7,16 +7,16 @@ private extension ProductType {
         switch self {
         case .simple:
             return NSLocalizedString("Simple product",
-                                     comment: "Action sheet option Simple when the user wants to change the Product type")
+                                     comment: "Action sheet option when the user wants to change the Product type to simple product")
         case .variable:
             return NSLocalizedString("Variable product",
-                                     comment: "Action sheet option Variable when the user wants to change the Product type")
+                                     comment: "Action sheet option when the user wants to change the Product type to varible product")
         case .grouped:
             return NSLocalizedString("Grouped product",
-                                     comment: "Action sheet option Grouped when the user wants to change the Product type")
+                                     comment: "Action sheet option when the user wants to change the Product type to grouped product")
         case .affiliate:
             return NSLocalizedString("External product",
-                                     comment: "Action sheet option External when the user wants to change the Product type")
+                                     comment: "Action sheet option when the user wants to change the Product type to external product")
         case .custom(let title):
             return title
         }
@@ -28,16 +28,16 @@ private extension ProductType {
         switch self {
         case .simple:
             return NSLocalizedString("A unique item to sell",
-                                     comment: "Description of the Action sheet option  for the product type Simple")
+                                     comment: "Description of the Action sheet option when the user wants to change the Product type to simple product")
         case .variable:
             return NSLocalizedString("A product with variations like color or size",
-                                     comment: "Description of the Action sheet option  for the product type Variable")
+                                     comment: "Description of the Action sheet option when the user wants to change the Product type to variable product")
         case .grouped:
             return NSLocalizedString("A collection of related products",
-                                     comment: "Description of the Action sheet option  for the product type Grouped")
+                                     comment: "Description of the Action sheet option when the user wants to change the Product type to grouped product")
         case .affiliate:
             return NSLocalizedString("Link a product to an external website",
-                                     comment: "Description of the Action sheet option  for the product type External")
+                                     comment: "Description of the Action sheet option when the user wants to change the Product type to external product")
         case .custom(let title):
             return title
         }

@@ -73,6 +73,10 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
 
     @IBAction func handleSelfHostedButtonTapped(_ sender: UIButton) {
         dismiss(animated: true)
+        
+        tracker.set(flow: .loginWithSiteAddress)
+        tracker.track(click: .loginWithSiteAddress)
+        
         selfHostedTapped?()
     }
 
@@ -84,7 +88,7 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
     }
 
     @objc func handleGoogleButtonTapped() {
-        tracker.set(flow: .googleLogin)
+        tracker.set(flow: .loginWithGoogle)
         tracker.track(click: .loginWithGoogle)
         
         dismiss(animated: true)

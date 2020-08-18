@@ -22,6 +22,8 @@ final class SiteAddressViewController: LoginViewController {
 
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
+        tracker.track(click: .submit)
+        
         validateForm()
     }
 
@@ -287,6 +289,8 @@ private extension SiteAddressViewController {
             guard let self = self else {
                 return
             }
+            
+            self.tracker.track(click: .helpFindingSiteAddress)
 
             let alert = FancyAlertViewController.siteAddressHelpController(loginFields: self.loginFields, sourceTag: self.sourceTag)
             alert.modalPresentationStyle = .custom

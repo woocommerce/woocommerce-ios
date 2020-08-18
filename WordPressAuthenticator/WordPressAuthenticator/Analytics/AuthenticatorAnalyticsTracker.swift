@@ -44,27 +44,27 @@ public class AuthenticatorAnalyticsTracker {
         
         /// Flow for Google login
         ///
-        case googleLogin = "google_login"
+        case loginWithGoogle = "google_login"
         
         /// Flow for Google  signup
         ///
-        case googleSignup = "google_signup"
+        case signupWithGoogle = "google_signup"
         
         /// Flow for Apple login
         ///
-        case appleLogin = "siwa_login"
+        case loginWithApple = "siwa_login"
         
         /// Flow for Apple signup
         ///
-        case appleSignup = "siwa_signup"
+        case signupWithApple = "siwa_signup"
         
         /// Flow for iCloud Keychain login
         ///
-        case iCloudKeychainLogin = "icloud_keychain_login"
+        case loginWithiCloudKeychain = "icloud_keychain_login"
         
         /// The flow that starts when we offer the user the magic link login
         ///
-        case magicLink = "login_magic_link"
+        case loginWithMagicLink = "login_magic_link"
         
         /// This flow starts when the user decides to login with a password instead
         ///
@@ -299,11 +299,11 @@ public class AuthenticatorAnalyticsTracker {
     }
     
     private func isInAppleFlowAndCanTrack() -> Bool {
-        return configuration.appleEnabled && [Flow.appleLogin, .appleSignup].contains(state.lastFlow)
+        return configuration.appleEnabled && [Flow.loginWithApple, .signupWithApple].contains(state.lastFlow)
     }
     
     private func isInGoogleFlowAndCanTrack() -> Bool {
-        return configuration.googleEnabled && [Flow.googleLogin, .googleSignup].contains(state.lastFlow)
+        return configuration.googleEnabled && [Flow.loginWithGoogle, .signupWithGoogle].contains(state.lastFlow)
     }
     
     // MARK: - Tracking

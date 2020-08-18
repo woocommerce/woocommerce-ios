@@ -54,7 +54,9 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
         nc.addObserver(self, selector: #selector(applicationBecameInactive), name: UIApplication.willResignActiveNotification, object: nil)
         nc.addObserver(self, selector: #selector(applicationBecameActive), name: UIApplication.didBecomeActiveNotification, object: nil)
 
-        WordPressAuthenticator.track(.loginTwoFactorFormViewed)
+        if tracker.shouldUseLegacyTracker() {
+            WordPressAuthenticator.track(.loginTwoFactorFormViewed)
+        }
     }
 
 
@@ -260,6 +262,8 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
 
 
     @IBAction func handleSendVerificationButtonTapped(_ sender: UIButton) {
+        self.tracker.track(click: .sendCodeWithText)
+        
         let message = NSLocalizedString("SMS Sent", comment: "One Time Code has been sent via SMS")
         SVProgressHUD.showSuccess(withStatus: message)
         SVProgressHUD.dismiss(withDelay: Constants.headsUpDismissDelay)

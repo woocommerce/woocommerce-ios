@@ -493,7 +493,9 @@ extension LoginViewController {
             properties["source"] = service
         }
         
-        WordPressAuthenticator.track(.loginSocial2faNeeded, properties: properties)
+        if tracker.shouldUseLegacyTracker() {
+            WordPressAuthenticator.track(.loginSocial2faNeeded, properties: properties)
+        }
         
         guard let vc = Login2FAViewController.instantiate(from: .login) else {
             DDLogError("Failed to navigate from LoginViewController to Login2FAViewController")
@@ -508,9 +510,6 @@ extension LoginViewController {
     }
     
     private func presentUnified2FA() {
-        
-        // TODO: add Tracks. Old event:
-        // WordPressAuthenticator.track(.loginSocial2faNeeded, properties: properties)
         
         guard let vc = TwoFAViewController.instantiate(from: .twoFA) else {
             DDLogError("Failed to navigate from LoginViewController to TwoFAViewController")

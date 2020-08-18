@@ -35,6 +35,8 @@ final class SiteCredentialsViewController: LoginViewController {
 
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
+        tracker.track(click: .submit)
+        
         validateForm()
     }
 
@@ -342,6 +344,8 @@ private extension SiteCredentialsViewController {
             guard let self = self else {
                 return
             }
+            
+            self.tracker.track(click: .forgottenPassword)
 
             // If information is currently processing, ignore button tap.
             guard self.enableSubmit(animating: false) else {
@@ -349,8 +353,6 @@ private extension SiteCredentialsViewController {
             }
 
             WordPressAuthenticator.openForgotPasswordURL(self.loginFields)
-            // TODO: - Tracks.
-            // WordPressAuthenticator.track(.loginForgotPasswordClicked)
         }
     }
 

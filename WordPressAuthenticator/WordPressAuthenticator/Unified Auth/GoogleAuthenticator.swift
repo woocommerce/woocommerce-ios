@@ -157,12 +157,12 @@ private extension GoogleAuthenticator {
     func requestAuthorization(from viewController: UIViewController) {
         switch authType {
         case .login:
-            tracker.set(flow: .googleLogin)
+            tracker.set(flow: .loginWithGoogle)
             tracker.track(step: .start) {
                 track(.loginSocialButtonClick)
             }
         case .signup:
-            tracker.set(flow: .googleSignup)
+            tracker.set(flow: .signupWithGoogle)
             tracker.track(step: .start) {
                 track(.createAccountInitiated)
             }
@@ -351,7 +351,7 @@ private extension GoogleAuthenticator {
         SVProgressHUD.show(withStatus: LocalizedText.processing)
         let service = SignupService()
         
-        tracker.set(flow: .googleSignup)
+        tracker.set(flow: .signupWithGoogle)
         tracker.track(step: .start)
 
         service.createWPComUserWithGoogle(token: token, success: { [weak self] accountCreated, wpcomUsername, wpcomToken in
@@ -400,7 +400,7 @@ private extension GoogleAuthenticator {
     }
     
     func logInInstead(credentials: AuthenticatorCredentials) {
-        tracker.set(flow: .googleLogin)
+        tracker.set(flow: .loginWithGoogle)
         tracker.track(step: .start)
         tracker.track(step: .success, ifTrackingNotEnabled: {
             track(.signedIn)

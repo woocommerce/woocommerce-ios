@@ -31,7 +31,7 @@ final class TwoFAViewController: LoginViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        removeGoogleView()
+        removeGoogleWaitingView()
         
         navigationItem.title = WordPressAuthenticator.shared.displayStrings.logInTitle
         styleNavigationBar(forUnified: true)

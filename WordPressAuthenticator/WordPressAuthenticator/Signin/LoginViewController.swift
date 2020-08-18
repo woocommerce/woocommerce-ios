@@ -447,7 +447,7 @@ extension LoginViewController {
 
 extension LoginViewController {
 
-    func removeGoogleView() {
+    func removeGoogleWaitingView() {
         // Remove the Waiting for Google view so it doesn't reappear when backing through the navigation stack.
         navigationController?.viewControllers.removeAll(where: { $0 is GoogleAuthViewController })
     }

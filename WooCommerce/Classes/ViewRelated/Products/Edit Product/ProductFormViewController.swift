@@ -209,6 +209,33 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         present(actionSheet, animated: true)
     }
 
+    // MARK: - Alert
+
+    /// Product Type Change alert
+    ///
+    func presentProductTypeChangeAlert(completion: @escaping (Bool) -> ()) {
+        let title = NSLocalizedString("Are you sure you want to change the product type?",
+                                      comment: "Title of the alert when a user is changing the product type")
+        let body = NSLocalizedString("Changing the product type will modify some of the product data",
+                                     comment: "Body of the alert when a user is changing the product type")
+        let cancelButton = NSLocalizedString("Cancel", comment: "Cancel button on the alert when the user is cancelling the action on changing product type")
+        let confirmButton = NSLocalizedString("Yes, change", comment: "Confirmation button on the alert when the user is changing product type")
+        let alertController = UIAlertController(title: title,
+                                                message: body,
+                                                preferredStyle: .alert)
+        let cancel = UIAlertAction(title: cancelButton,
+                                   style: .cancel) { (action) in
+                                       completion(false)
+                                   }
+        let confirm = UIAlertAction(title: confirmButton,
+                                    style: .default) { (action) in
+                                        completion(true)
+                                    }
+        alertController.addAction(cancel)
+        alertController.addAction(confirm)
+        present(alertController, animated: true)
+    }
+
     // MARK: - UITableViewDelegate
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -817,16 +844,18 @@ private extension ProductFormViewController {
                                       comment: "Message title of bottom sheet for selecting a product type")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
         let command = ProductTypeBottomSheetListSelectorCommand(selected: viewModel.productModel.productType) { [weak self] (selectedProductType) in
-            defer {
-                self?.dismiss(animated: true, completion: nil)
-            }
+            self?.dismiss(animated: true, completion: nil)
 
             // TODO-2509 Edit Product M3 analytics
             //  let hasChangedData: Bool = {
             //      self?.product.productType != selectedProductType
             //  }()
-
-            self?.viewModel.updateProductType(productType: selectedProductType)
+            self?.presentProductTypeChangeAlert(completion: { (change) in
+                guard change == true else {
+                    return
+                }
+                self?.viewModel.updateProductType(productType: selectedProductType)
+            })
         }
         let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties,
                                                                       command: command) { [weak self] _ in

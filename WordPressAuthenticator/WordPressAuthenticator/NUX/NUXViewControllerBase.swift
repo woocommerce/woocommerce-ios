@@ -142,6 +142,57 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
 
     // MARK: - Navbar Help and App Logo methods
 
+    func styleNavigationBar(forUnified: Bool = false) {
+        var backgroundColor: UIColor
+        var buttonTextColor: UIColor
+        var titleTextColor: UIColor
+        var hideBottomBorder: Bool
+        
+        if forUnified {
+            // Unified nav bar style
+            setupNavBarIcon(showIcon: false)
+            setHelpButtonTextColor(forUnified: true)
+            backgroundColor = WordPressAuthenticator.shared.unifiedStyle?.navBarBackgroundColor ??
+                              WordPressAuthenticator.shared.style.navBarBackgroundColor
+            buttonTextColor = WordPressAuthenticator.shared.unifiedStyle?.navButtonTextColor ??
+                              WordPressAuthenticator.shared.style.navButtonTextColor
+            titleTextColor = WordPressAuthenticator.shared.unifiedStyle?.navTitleTextColor ??
+                             WordPressAuthenticator.shared.style.primaryTitleColor
+            hideBottomBorder = true
+        } else {
+            // Original nav bar style
+            setupNavBarIcon()
+            setHelpButtonTextColor(forUnified: false)
+            backgroundColor = WordPressAuthenticator.shared.style.navBarBackgroundColor
+            buttonTextColor = WordPressAuthenticator.shared.style.navButtonTextColor
+            titleTextColor = WordPressAuthenticator.shared.style.primaryTitleColor
+            hideBottomBorder = false
+        }
+
+        if #available(iOS 13.0, *) {
+            let appearance = UINavigationBarAppearance()
+            appearance.shadowColor = hideBottomBorder ? .clear : .separator
+            appearance.backgroundColor = backgroundColor
+            appearance.titleTextAttributes = [.foregroundColor: titleTextColor]
+            UIBarButtonItem.appearance(whenContainedInInstancesOf: [LoginNavigationController.self]).tintColor = buttonTextColor
+            
+            UINavigationBar.appearance(whenContainedInInstancesOf: [LoginNavigationController.self]).standardAppearance = appearance
+            UINavigationBar.appearance(whenContainedInInstancesOf: [LoginNavigationController.self]).compactAppearance = appearance
+            UINavigationBar.appearance(whenContainedInInstancesOf: [LoginNavigationController.self]).scrollEdgeAppearance = appearance
+        } else {
+            let appearance = UINavigationBar.appearance()
+            appearance.barTintColor = backgroundColor
+            appearance.titleTextAttributes = [.foregroundColor: titleTextColor]
+            UIBarButtonItem.appearance().tintColor = buttonTextColor
+        }
+    }
+    
+    /// Add/remove the nav bar app logo.
+    ///
+    func setupNavBarIcon(showIcon: Bool = true) {
+        showIcon ? addAppLogoToNavController() : removeAppLogoFromNavController()
+    }
+    
     /// Adds the app logo to the nav controller
     ///
     public func addAppLogoToNavController() {

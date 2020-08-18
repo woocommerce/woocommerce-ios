@@ -44,7 +44,13 @@ final class TopBannerView: UIView {
         return button
     }()
 
-    private lazy var actionStackView = createActionStackView()
+    private lazy var actionStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        return stackView
+    }()
+
+    private let actionButtons: [UIButton]
 
     private let isActionEnabled: Bool
 
@@ -58,6 +64,7 @@ final class TopBannerView: UIView {
         isExpanded = viewModel.isExpanded
         onAction = viewModel.actionHandler
         onTopButtonTapped = viewModel.topButton.handler
+        actionButtons = viewModel.actionButtons.map { _ in UIButton() }
         super.init(frame: .zero)
         configureSubviews(with: viewModel)
     }
@@ -109,6 +116,10 @@ private extension TopBannerView {
         iconImageView.image = viewModel.icon
 
         actionButton.setTitle(viewModel.actionButtonTitle, for: .normal)
+        zip(viewModel.actionButtons, actionButtons).forEach { buttonInfo, button in
+            button.setTitle(buttonInfo.title, for: .normal)
+            button.on(.touchUpInside, call: { _ in buttonInfo.action() })
+        }
     }
 
     func configureTopButton(viewModel: TopBannerViewModel, onContentView contentView: UIView) {
@@ -136,6 +147,7 @@ private extension TopBannerView {
         let iconInformationStackView = createIconInformationStackView(with: viewModel)
         let mainStackView = UIStackView(arrangedSubviews: [iconInformationStackView, createBorderView()])
         if isActionEnabled {
+            configureActionStackView()
             mainStackView.addArrangedSubview(actionStackView)
         }
 
@@ -177,6 +189,36 @@ private extension TopBannerView {
         expandCollapseButton.setContentCompressionResistancePriority(.required, for: .horizontal)
 
         return informationStackView
+    }
+
+    func configureActionStackView() {
+        // StackView to hold the action buttons
+        let buttonsStackView = UIStackView()
+        buttonsStackView.distribution = .fillEqually
+        buttonsStackView.spacing = 0.5
+
+        // Background to simulate a separator by giving the buttons some spacing
+        let separatorBackground = createButtonsBackgroundView()
+        buttonsStackView.addSubview(separatorBackground)
+        buttonsStackView.pinSubviewToAllEdges(separatorBackground)
+
+        // Style buttons
+        buttonsStackView.addArrangedSubviews(actionButtons)
+        actionButtons.forEach { button in
+            button.applyLinkButtonStyle()
+            button.backgroundColor = backgroundColor
+            buttonsStackView.addArrangedSubview(button)
+        }
+
+        // Bundle everything with a vertical separator
+        actionStackView.addArrangedSubviews([buttonsStackView, createBorderView()])
+    }
+
+    func createButtonsBackgroundView() -> UIView {
+        let separatorBackground = UIView()
+        separatorBackground.translatesAutoresizingMaskIntoConstraints = false
+        separatorBackground.backgroundColor = .systemColor(.separator)
+        return separatorBackground
     }
 
     func createActionStackView() -> UIStackView {

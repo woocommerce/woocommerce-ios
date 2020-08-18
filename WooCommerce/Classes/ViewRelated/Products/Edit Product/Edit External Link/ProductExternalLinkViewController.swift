@@ -136,10 +136,9 @@ private extension ProductExternalLinkViewController {
                                                                  textFieldAlignment: .trailing,
                                                                  onTextChange: { [weak self] text in
                                                                     self?.externalURL = text
-                                                                    if text?.isValidURL() == true {
+                                                                    if text?.isValidURL() == true || text?.isEmpty == true {
                                                                         self?.hideError()
-                                                                    }
-                                                                    else {
+                                                                    } else {
                                                                         self?.displayError(error: Strings.errorMalformedURL)
                                                                     }
         })
@@ -164,9 +163,6 @@ private extension ProductExternalLinkViewController {
 // MARK: - UITableViewDelegate Conformance
 //
 extension ProductExternalLinkViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-
-    }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let section = sections[section]

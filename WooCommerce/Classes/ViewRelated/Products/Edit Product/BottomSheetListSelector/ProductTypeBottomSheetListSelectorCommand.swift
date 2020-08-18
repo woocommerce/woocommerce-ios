@@ -67,7 +67,7 @@ final class ProductTypeBottomSheetListSelectorCommand: BottomSheetListSelectorCo
     typealias Model = ProductType
     typealias Cell = ImageAndTitleAndTextTableViewCell
 
-    let data: [ProductType] = [
+    var data: [ProductType] = [
         .simple,
         .variable,
         .grouped,
@@ -78,8 +78,13 @@ final class ProductTypeBottomSheetListSelectorCommand: BottomSheetListSelectorCo
 
     private let onSelection: (ProductType) -> Void
 
-    init(onSelection: @escaping (ProductType) -> Void) {
+    init(selected: ProductType, onSelection: @escaping (ProductType) -> Void) {
         self.onSelection = onSelection
+
+        /// Remove from `data` the selected product type, so that it is not shown in the list.
+        data.removeAll { (productType) -> Bool in
+            productType == selected
+        }
     }
 
     func configureCell(cell: ImageAndTitleAndTextTableViewCell, model: ProductType) {

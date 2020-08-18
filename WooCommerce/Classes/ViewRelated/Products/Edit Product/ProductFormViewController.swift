@@ -812,10 +812,10 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func editProductType() {
-        let title = NSLocalizedString("Select a product type",
+        let title = NSLocalizedString("Change product type",
                                       comment: "Message title for select a product type action bottom sheet")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
-        let command = ProductTypeBottomSheetListSelectorCommand { [weak self] (selectedProductType) in
+        let command = ProductTypeBottomSheetListSelectorCommand(selected: viewModel.productModel.productType) { [weak self] (selectedProductType) in
             defer {
                 self?.dismiss(animated: true, completion: nil)
             }

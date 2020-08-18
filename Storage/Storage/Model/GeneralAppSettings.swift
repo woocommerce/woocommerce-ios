@@ -25,7 +25,6 @@ public struct GeneralAppSettings: Codable, Equatable {
         self.feedbacks = feedbacks
     }
 
-    /// TODO: Needs testing
     /// Returns the status of a given feedback type. If the feedback is not stored in the feedback array. it is assumed that it has a pending status.
     ///
     public func feedbackStatus(of feedbackType: FeedbackType) -> FeedbackSettings.Status {

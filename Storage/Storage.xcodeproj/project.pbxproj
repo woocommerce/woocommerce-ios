@@ -26,6 +26,7 @@
 		26577519243D808B003168A5 /* WooCommerceModelV26toV27.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 26577518243D808B003168A5 /* WooCommerceModelV26toV27.xcmappingmodel */; };
 		267439D624E5D45A0090696C /* FeedbackSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267439D524E5D45A0090696C /* FeedbackSettings.swift */; };
 		26EA01D124EC3AEA00176A57 /* FeedbackType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26EA01D024EC3AEA00176A57 /* FeedbackType.swift */; };
+		26EA01D524EC44B300176A57 /* GeneralAppSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26EA01D424EC44B300176A57 /* GeneralAppSettingsTests.swift */; };
 		450106892399AC7400E24722 /* TaxClass+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106882399AC7400E24722 /* TaxClass+CoreDataClass.swift */; };
 		4501068B2399AC9B00E24722 /* TaxClass+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4501068A2399AC9B00E24722 /* TaxClass+CoreDataProperties.swift */; };
 		454005AA24AE4D350087FDD1 /* WooCommerceModelV28toV29.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 454005A924AE4D350087FDD1 /* WooCommerceModelV28toV29.xcmappingmodel */; };
@@ -182,6 +183,7 @@
 		26577518243D808B003168A5 /* WooCommerceModelV26toV27.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = WooCommerceModelV26toV27.xcmappingmodel; sourceTree = "<group>"; };
 		267439D524E5D45A0090696C /* FeedbackSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackSettings.swift; sourceTree = "<group>"; };
 		26EA01D024EC3AEA00176A57 /* FeedbackType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackType.swift; sourceTree = "<group>"; };
+		26EA01D424EC44B300176A57 /* GeneralAppSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralAppSettingsTests.swift; sourceTree = "<group>"; };
 		450106882399AC7400E24722 /* TaxClass+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxClass+CoreDataClass.swift"; sourceTree = "<group>"; };
 		4501068A2399AC9B00E24722 /* TaxClass+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxClass+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		453227B523C4CE9C00D816B3 /* Model 25.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 25.xcdatamodel"; sourceTree = "<group>"; };
@@ -371,6 +373,22 @@
 			path = Testing;
 			sourceTree = "<group>";
 		};
+		26EA01D224EC449C00176A57 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				26EA01D324EC449C00176A57 /* AppSettings */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		26EA01D324EC449C00176A57 /* AppSettings */ = {
+			isa = PBXGroup;
+			children = (
+				26EA01D424EC44B300176A57 /* GeneralAppSettingsTests.swift */,
+			);
+			path = AppSettings;
+			sourceTree = "<group>";
+		};
 		4DD3D0BDDE216A90FC1335D7 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -514,6 +532,7 @@
 			children = (
 				D87F61582265AED70031A13B /* Mock data */,
 				02A098252480D155002F8C7A /* Mocks */,
+				26EA01D224EC449C00176A57 /* Model */,
 				B54CA5C520A4BFC800F38CD1 /* Tools */,
 				B52B0F7D20AA2F1200477698 /* Extensions */,
 				B59E11DC20A9F1E6004121A4 /* CoreData */,
@@ -974,6 +993,7 @@
 				5736879024AABE4D00B528FE /* ManagedObjectModelsInventoryTests.swift in Sources */,
 				D87F61572265AD980031A13B /* FileStorageTests.swift in Sources */,
 				B59E11DE20A9F1FB004121A4 /* CoreDataManagerTests.swift in Sources */,
+				26EA01D524EC44B300176A57 /* GeneralAppSettingsTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

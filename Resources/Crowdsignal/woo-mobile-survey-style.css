@@ -84,9 +84,7 @@ iframe
 /* line 79, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
 .PDF_questionErr
 {
-	background-color:#FEE;
 	margin:0 0 30px;
-	padding:20px;
 	width:100%;
 }
 
@@ -1764,4 +1762,10 @@ input[type="text"],input[type="password"],input[type="submit"],input[type="email
 .PDF_QT1400 input[type="text"],.PDF_QT1400 input[type="email"],.PDF_QT1400 input[type="password"]
 {
 	margin-top:8px;
+}
+
+/* Remove background color from field-specific errors. */
+.PDF_err
+{
+	background-color: transparent;
 }

@@ -189,7 +189,7 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
                 onCompletion(.success(shouldShowFeedbackCard))
             }
 
-            if case let AppSettingsAction.setLastFeedbackDate(_, onCompletion) = action {
+            if case let AppSettingsAction.updateFeedbackStatus(_, _, onCompletion) = action {
                 shouldShowFeedbackCard = false
                 onCompletion(.success(Void()))
             }

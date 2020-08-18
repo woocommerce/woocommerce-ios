@@ -75,10 +75,9 @@ public enum AppSettingsAction: Action {
     ///
     case setInstallationDateIfNecessary(date: Date, onCompletion: ((Result<Bool, Error>) -> Void))
 
-    /// Saves the `date` as the last known date that the user interacted with the in-app
-    /// feedback prompt (https://git.io/JJ8i0).
+    /// Updates or stores a feedback setting with the provided `type` and `status`.
     ///
-    case setLastFeedbackDate(date: Date, onCompletion: ((Result<Void, Error>) -> Void))
+    case updateFeedbackStatus(feedbackType: FeedbackType, feedbackStatus: FeedbackSettings.Status, onCompletion: ((Result<Void, Error>) -> Void))
 
     /// Returns whether a specific feedback request should be shown to the user.
     ///

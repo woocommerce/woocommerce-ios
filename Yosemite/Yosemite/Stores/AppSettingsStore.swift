@@ -115,8 +115,8 @@ public class AppSettingsStore: Store {
             resetStatsVersionStates()
         case .setInstallationDateIfNecessary(let date, let onCompletion):
             setInstallationDateIfNecessary(date: date, onCompletion: onCompletion)
-        case .setLastFeedbackDate(let date, let onCompletion):
-            setLastFeedbackDate(date: date, onCompletion: onCompletion)
+        case .updateFeedbackStatus(let feedbackType, let feedbackStatus, let onCompletion):
+            updateFeedbackStatus(feedbackType: feedbackType, feedbackstatus: feedbackStatus, onCompletion: onCompletion)
         case .loadFeedbackVisibility(let feedbackType, let onCompletion):
             loadFeedbackVisibility(feedbackType: feedbackType, onCompletion: onCompletion)
         }
@@ -150,12 +150,12 @@ private extension AppSettingsStore {
         }
     }
 
-    /// Save the `date` in `GeneralAppSettings` for the general feedback..
+    /// Updates the feedback store  in `GeneralAppSettings` with the given `type` and `status`.
     ///
-    func setLastFeedbackDate(date: Date, onCompletion: ((Result<Void, Error>) -> Void)) {
+    func updateFeedbackStatus(feedbackType: FeedbackType, feedbackstatus: FeedbackSettings.Status, onCompletion: ((Result<Void, Error>) -> Void)) {
         do {
             let settings = loadOrCreateGeneralAppSettings()
-            let newFeedback = FeedbackSettings(name: .general, status: .given(date))
+            let newFeedback = FeedbackSettings(name: feedbackType, status: feedbackstatus)
             let settingsToSave = settings.replacing(feedback: newFeedback)
             try saveGeneralAppSettings(settingsToSave)
 

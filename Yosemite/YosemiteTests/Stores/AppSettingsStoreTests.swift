@@ -300,7 +300,7 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertTrue(savedSettings.feedbacks.isEmpty)
     }
 
-    func testItCanSaveTheLastFeedbackDate() throws {
+    func test_it_can_update_the_general_feedback_given_date() throws {
         // Given
         let date = Date(timeIntervalSince1970: 300)
 
@@ -311,7 +311,7 @@ final class AppSettingsStoreTests: XCTestCase {
 
         // When
         var result: Result<Void, Error>?
-        let action = AppSettingsAction.setLastFeedbackDate(date: date) { aResult in
+        let action = AppSettingsAction.updateFeedbackStatus(feedbackType: .general, feedbackStatus: .given(date)) { aResult in
             result = aResult
         }
         subject?.onAction(action)

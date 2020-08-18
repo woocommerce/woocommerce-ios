@@ -342,7 +342,7 @@ final class AppSettingsStoreTests: XCTestCase {
 
         // When
         var shouldBeVisibleResult: Result<Bool, Error>?
-        let action = AppSettingsAction.loadInAppFeedbackCardVisibility { result in
+        let action = AppSettingsAction.loadFeedbackVisibility(feedbackType: .general) { result in
             shouldBeVisibleResult = result
         }
         subject?.onAction(action)

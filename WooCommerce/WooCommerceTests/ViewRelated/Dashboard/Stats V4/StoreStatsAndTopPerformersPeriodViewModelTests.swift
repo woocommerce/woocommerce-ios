@@ -80,7 +80,7 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
                                                                   storesManager: storesManager)
 
         storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            if case let AppSettingsAction.loadInAppFeedbackCardVisibility(onCompletion) = action {
+            if case let AppSettingsAction.loadFeedbackVisibility(_, onCompletion) = action {
                 onCompletion(.success(true))
             }
         }
@@ -105,7 +105,7 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
                                                                   storesManager: storesManager)
 
         storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            if case let AppSettingsAction.loadInAppFeedbackCardVisibility(onCompletion) = action {
+            if case let AppSettingsAction.loadFeedbackVisibility(_, onCompletion) = action {
                 onCompletion(.success(false))
             }
         }
@@ -130,7 +130,7 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
                                                                   storesManager: storesManager)
 
         storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            if case let AppSettingsAction.loadInAppFeedbackCardVisibility(onCompletion) = action {
+            if case let AppSettingsAction.loadFeedbackVisibility(_, onCompletion) = action {
                 onCompletion(.failure(NSError(domain: "", code: 0, userInfo: nil)))
             }
         }
@@ -155,7 +155,7 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
                                                                   storesManager: storesManager)
 
         storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            if case let AppSettingsAction.loadInAppFeedbackCardVisibility(onCompletion) = action {
+            if case let AppSettingsAction.loadFeedbackVisibility(_, onCompletion) = action {
                 onCompletion(.success(true))
             }
         }
@@ -185,7 +185,7 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
         // Default `loadInAppFeedbackCardVisibility` to true until `setLastFeedbackDate` action sets it to `false`
         var shouldShowFeedbackCard = true
         storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            if case let AppSettingsAction.loadInAppFeedbackCardVisibility(onCompletion) = action {
+            if case let AppSettingsAction.loadFeedbackVisibility(_, onCompletion) = action {
                 onCompletion(.success(shouldShowFeedbackCard))
             }
 

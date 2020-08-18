@@ -80,12 +80,7 @@ public enum AppSettingsAction: Action {
     ///
     case setLastFeedbackDate(date: Date, onCompletion: ((Result<Void, Error>) -> Void))
 
-    /// Returns whether the In-app Feedback Card should be shown to the user.
+    /// Returns whether a specific feedback request should be shown to the user.
     ///
-    /// The result is only `true` if these conditions are met:
-    ///
-    /// - The known installation date is more than 3 months ago
-    /// - The user has not given feedback for more than 6 months ago.
-    ///
-    case loadInAppFeedbackCardVisibility(onCompletion: (Result<Bool, Error>) -> Void)
+    case loadFeedbackVisibility(feedbackType: FeedbackType, onCompletion: (Result<Bool, Error>) -> Void)
 }

@@ -25,4 +25,29 @@ class GeneralAppSettingsTests: XCTestCase {
         // Then
         XCTAssertEqual(loadedStatus, .pending)
     }
+
+    func test_it_replaces_feedback_when_feedback_exists() {
+        // Given
+        let existingFeedback = FeedbackSettings(name: .general, status: .dismissed)
+        let settings = GeneralAppSettings(installationDate: nil, feedbacks: [.general: existingFeedback])
+
+        // When
+        let newFeedback = FeedbackSettings(name: .general, status: .given(Date()))
+        let newSettings = settings.replacing(feedback: newFeedback)
+
+        // Then
+        XCTAssertEqual(newSettings.feedbacks[.general], newFeedback)
+    }
+
+    func test_it_adds_new_feedback_when_replacing_empty_feedback_store() {
+        // Given
+        let settings = GeneralAppSettings(installationDate: nil, feedbacks: [:])
+
+        // When
+        let newFeedback = FeedbackSettings(name: .general, status: .given(Date()))
+        let newSettings = settings.replacing(feedback: newFeedback)
+
+        // Then
+        XCTAssertEqual(newSettings.feedbacks[.general], newFeedback)
+    }
 }

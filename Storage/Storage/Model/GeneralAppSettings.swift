@@ -34,4 +34,14 @@ public struct GeneralAppSettings: Codable, Equatable {
 
         return feedbackSeeting.status
     }
+
+    /// Returns a new instance of `GeneralAppSettings` with the provided feedback seetings updated.
+    ///
+    public func replacing(feedback: FeedbackSettings) -> GeneralAppSettings {
+        let updatedFeedbacks = feedbacks.merging([feedback.name: feedback]) {
+            _, new in new
+        }
+
+        return GeneralAppSettings(installationDate: installationDate, feedbacks: updatedFeedbacks)
+    }
 }

@@ -72,7 +72,7 @@ private extension MainTabViewModel {
         onBadgeReload?(NumberFormatter.localizedOrNinetyNinePlus(processingCount))
     }
 
-    private func observeBadgeRefreshNotifications() {
+    func observeBadgeRefreshNotifications() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(requestBadgeCount),
                                                name: .ordersBadgeReloadRequired,

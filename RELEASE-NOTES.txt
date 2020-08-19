@@ -1,8 +1,8 @@
 4.9
 -----
+- [**] In Settings > Experimental Features, a Products switch is now available for turning Products M3 features on and off for core products (default off for beta testing). Products M3 features: edit grouped, external and variable products, enable/disable reviews, change product type and update categories and tags.
 - [*] Edit Products: the update action now shows up on the product details after updating just the sale price.
 - [*] Variable product > variation list: a warning banner is shown if any variations do not have a price, and warning text is shown on these variation rows.
-- [**] In Settings > Experimental Features, a Products switch is now available for turning Products M3 features on and off for core products (default off for beta testing). Products M3 features: edit grouped, external and variable products, enable/disable reviews, change product type and update categories and tag.
  
 4.8
 -----

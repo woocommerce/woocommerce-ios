@@ -92,7 +92,7 @@ class ProductListMapperTests: XCTestCase {
 
     /// Test that ProductTypeKey converts to
     /// a ProductType enum properly.
-    func test_that_product_type_key_converts_to_enum_properly() {
+    func test_that_productTypeKey_converts_to_enum_properly() {
         let products = mapLoadAllProductsResponse()
 
         let firstProduct = products[0]

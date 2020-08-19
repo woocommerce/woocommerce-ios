@@ -15,7 +15,7 @@ final class ProductVariationListMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductVariation Fields are parsed correctly.
     ///
-    func testProductVariationFieldsAreProperlyParsed() throws {
+    func test_ProductVariation_fields_are_properly_parsed() throws {
         let productVariation = try XCTUnwrap(mapLoadProductVariationListResponse()?.first)
 
         XCTAssertEqual(productVariation.siteID, dummySiteID)
@@ -69,7 +69,7 @@ final class ProductVariationListMapperTests: XCTestCase {
     /// Verifies that the fields of the ProductVariation with alternative types are parsed correctly when they have different types than in the struct.
     /// Currently, `price`, `salePrice` and `manageStock` allow alternative types.
     ///
-    func testThatProductVariationAlternativeTypesAreProperlyParsed() throws {
+    func test_that_ProductVariation_alternative_types_are_properly_parsed() throws {
         let productVariation = try XCTUnwrap(mapLoadProductVariationListResponseWithAlternativeTypes()?.first)
 
         XCTAssertEqual(productVariation.price, "16")
@@ -79,7 +79,7 @@ final class ProductVariationListMapperTests: XCTestCase {
 
     /// Verifies that the `salePrice` field of the ProductVariation is parsed to "0" when the product variation is on sale and the sale price is an empty string
     ///
-    func testThatProductVariationSalePriceIsProperlyParsedWhenOnSale() throws {
+    func test_that_ProductVariation_salePrice_is_properly_parsed_when_on_sale() throws {
         let productVariation = try XCTUnwrap(mapLoadProductVariationOnSaleWithEmptySalePriceResponse()?.first)
 
         XCTAssertEqual(productVariation.salePrice, "0")
@@ -89,7 +89,7 @@ final class ProductVariationListMapperTests: XCTestCase {
     /// Verifies that the `manageStock` field of the ProductVariation is parsed to `false` when the product variation has the same stock
     /// management as its parent product (API value for `manage_stock` is `parent`).
     ///
-    func testThatProductVariationManageStockIsFalseWhenTheAPIValueIsParent() throws {
+    func test_that_ProductVariation_manageStock_is_false_when_the_API_value_is_parent() throws {
         let productVariation = try XCTUnwrap(mapLoadProductVariationListResponseWithTwoManageStockStates()?[1])
 
         XCTAssertFalse(productVariation.manageStock)
@@ -98,7 +98,7 @@ final class ProductVariationListMapperTests: XCTestCase {
     /// Verifies that the `manageStock` field of the ProductVariation is parsed to `true` when the product variation's stock management is enabled
     /// (API value for `manage_stock` is `true`).
     ///
-    func testThatProductVariationManageStockIsTrueWhenTheAPIValueIsTrue() throws {
+    func test_that_ProductVariation_manageStock_is_true_when_the_API_value_is_true() throws {
         let productVariation = try XCTUnwrap(mapLoadProductVariationListResponseWithTwoManageStockStates()?.first)
 
         XCTAssertTrue(productVariation.manageStock)

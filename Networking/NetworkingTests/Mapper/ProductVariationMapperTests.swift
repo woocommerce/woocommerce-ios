@@ -14,7 +14,7 @@ final class ProductVariationMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductVariation Fields are parsed correctly.
     ///
-    func testProductVariationFieldsAreProperlyParsed() throws {
+    func test_ProductVariation_fields_are_properly_parsed() throws {
         let productVariation = try XCTUnwrap(mapLoadProductVariationResponse())
 
         XCTAssertEqual(productVariation, sampleProductVariation(siteID: dummySiteID, productID: dummyProductID, id: 2783))

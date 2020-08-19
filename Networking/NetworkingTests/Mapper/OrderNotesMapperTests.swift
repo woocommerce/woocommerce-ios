@@ -8,7 +8,7 @@ class OrderNotesMapperTests: XCTestCase {
 
     /// Verifies that all of the OrderNote Fields are parsed correctly.
     ///
-    func testNoteFieldsAreProperlyParsed() {
+    func test_Note_fields_are_properly_parsed() {
         let notes = mapLoadAllOrderNotesResponse()
         XCTAssertEqual(notes.count, 19)
 
@@ -33,7 +33,7 @@ class OrderNotesMapperTests: XCTestCase {
 
     /// Verifies that an Note in a broken state does [gets default values] | [gets skipped while parsing]
     ///
-    func testNoteHasDefaultDateCreatedWhenNullDateReceived() {
+    func test_Note_has_default_dateCreated_when_null_date_received() {
         let notes = mapLoadBrokenOrderNotesResponse()
         XCTAssert(notes.count == 1)
 

@@ -16,7 +16,7 @@ class ShipmentTrackingListMapperTests: XCTestCase {
 
     /// Verifies that all of the ShipmentTracking Fields are parsed correctly for multiple tracking JSON objects.
     ///
-    func testTrackingFieldsAreProperlyParsedForMultiple() {
+    func test_tracking_fields_are_properly_parsed_for_multiple() {
         let shipmentTrackings = mapLoadMultipleTrackingsResponse()
         XCTAssertEqual(shipmentTrackings.count, 4)
 
@@ -42,7 +42,7 @@ class ShipmentTrackingListMapperTests: XCTestCase {
 
     /// Verifies that all of the ShipmentTracking Fields are parsed correctly for a single tracking JSON object.
     ///
-    func testTrackingFieldsAreProperlyParsedForSingle() {
+    func test_tracking_fields_are_properly_parsed_for_single() {
         let shipmentTrackings = mapLoadSingleTrackingsResponse()
         XCTAssertEqual(shipmentTrackings.count, 1)
 
@@ -59,7 +59,7 @@ class ShipmentTrackingListMapperTests: XCTestCase {
 
     /// Verifies that all of the ShipmentTracking Fields are parsed correctly an empty JSON array.
     ///
-    func testTrackingFieldsAreProperlyParsedForEmpty() {
+    func test_tracking_fields_are_properly_parsed_for_empty() {
         let shipmentTrackings = mapLoadEmptyTrackingsResponse()
         XCTAssertEqual(shipmentTrackings.count, 0)
     }

@@ -8,7 +8,7 @@ final class ProductCategoryListMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductCategory Fields are parsed correctly.
     ///
-    func testProductCategoryFieldsAreProperlyParsed() throws {
+    func test_ProductCategory_fields_are_properly_parsed() throws {
         let productCategories = try mapLoadAllProductCategoriesResponse()
         XCTAssertEqual(productCategories.count, 2)
 

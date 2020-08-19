@@ -20,7 +20,7 @@ class SiteAPIMapperTests: XCTestCase {
 
     /// Verifies the SiteSetting fields are parsed correctly.
     ///
-    func testSiteSettingFieldsAreProperlyParsed() {
+    func test_SiteSetting_fields_are_properly_parsed() {
         let apiSettings = mapLoadSiteAPIResponse()
 
         XCTAssertNotNil(apiSettings)
@@ -32,7 +32,7 @@ class SiteAPIMapperTests: XCTestCase {
 
     /// Verifies the SiteSetting fields are parsed correctly.
     ///
-    func testBrokenSiteSettingFieldsAreProperlyParsed() {
+    func test_broken_SiteSetting_fields_are_properly_parsed() {
         let apiSettings = mapLoadBrokenSiteAPIResponse()
 
         XCTAssertNotNil(apiSettings)

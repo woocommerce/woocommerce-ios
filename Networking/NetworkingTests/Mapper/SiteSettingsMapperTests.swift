@@ -12,7 +12,7 @@ class SiteSettingsMapperTests: XCTestCase {
 
     /// Verifies the SiteSetting fields are parsed correctly.
     ///
-    func testSiteSettingFieldsAreProperlyParsed() {
+    func test_SiteSetting_fields_are_properly_parsed() {
         let settings = mapLoadGeneralSiteSettingsResponse()
         XCTAssertEqual(settings.count, 20)
 
@@ -44,7 +44,7 @@ class SiteSettingsMapperTests: XCTestCase {
 
     /// Verifies that a SiteSetting in a broken state gets default values
     ///
-    func testSiteSettingsAreProperlyParsedWhenNullsReceived() {
+    func test_SiteSettings_are_properly_parsed_when_nulls_received() {
         let settings = mapLoadBrokenGeneralSiteSettingsResponse()
         XCTAssertEqual(settings.count, 1)
 

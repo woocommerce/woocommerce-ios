@@ -8,7 +8,7 @@ class AccountMapperTests: XCTestCase {
 
     /// Verifies that all of the Account fields are properly parsed.
     ///
-    func testAccountFieldsArePropertlyParsed() {
+    func test_Account_fields_are_propertly_parsed() {
         guard let account = mapLoadAccountResponse() else {
             XCTFail()
             return
@@ -23,7 +23,7 @@ class AccountMapperTests: XCTestCase {
 
     /// Verifies that all of the Site fields are properly parsed.
     ///
-    func testSiteFieldsAreProperlyParsed() {
+    func test_Site_fields_are_properly_parsed() {
         let sites = mapLoadSitesResponse()
         XCTAssert(sites?.count == 2)
 
@@ -50,7 +50,7 @@ class AccountMapperTests: XCTestCase {
 
     /// Verifies that the Plan field for Site is properly parsed.
     ///
-    func testSitePlanFieldIsProperlyParsed() {
+    func test_SitePlan_field_is_properly_parsed() {
         let site = mapLoadSitePlanResponse()
 
         XCTAssertEqual(site!.siteID, 1112233334444555)

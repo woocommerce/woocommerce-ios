@@ -16,7 +16,7 @@ final class RefundListMapperTests: XCTestCase {
 
     /// Verifies that all the Refund fields are parsed correctly.
     ///
-    func testRefundFieldsAreProperlyParsed() {
+    func test_Refund_fields_are_properly_parsed() {
         let refunds = mapLoadAllRefundsResponse()
         XCTAssertEqual(refunds.count, 2)
 
@@ -55,7 +55,7 @@ final class RefundListMapperTests: XCTestCase {
 
     /// Verifies that all of the Refunded Order Items are parsed correctly.
     ///
-    func testRefundItemsAreCorrectlyParsed() {
+    func test_Refund_items_are_correctly_parsed() {
         let refunds = mapLoadAllRefundsResponse()
         XCTAssertEqual(refunds.count, 2)
 
@@ -104,7 +104,7 @@ final class RefundListMapperTests: XCTestCase {
 
     /// Verifies that a created refund object is encoded properly.
     ///
-    func testRefundIsEncodedProperly() {
+    func test_Refund_is_encoded_properly() {
         // test to come in future updates.
     }
 }

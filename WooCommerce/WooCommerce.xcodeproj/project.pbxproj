@@ -428,6 +428,7 @@
 		5778E00A24DB1D8600B65CBF /* BehaviorSubjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5778E00924DB1D8600B65CBF /* BehaviorSubjectTests.swift */; };
 		5778E00E24DB2BA200B65CBF /* BehaviorSubject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5778E00D24DB2BA200B65CBF /* BehaviorSubject.swift */; };
 		578187B22481D9290063B46B /* XCTestCase+Assertions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578187B12481D9290063B46B /* XCTestCase+Assertions.swift */; };
+		5791FB4224EC834300117FD6 /* MainTabViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5791FB4124EC834300117FD6 /* MainTabViewModelTests.swift */; };
 		5795F22C23E26A8D00F6707C /* OrderSearchStarterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5795F22B23E26A8D00F6707C /* OrderSearchStarterViewController.xib */; };
 		5795F22E23E26A9E00F6707C /* OrderSearchStarterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5795F22D23E26A9E00F6707C /* OrderSearchStarterViewController.swift */; };
 		5795F23023E26B5300F6707C /* OrderSearchStarterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5795F22F23E26B5300F6707C /* OrderSearchStarterViewModel.swift */; };
@@ -1367,6 +1368,7 @@
 		5778E00924DB1D8600B65CBF /* BehaviorSubjectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BehaviorSubjectTests.swift; sourceTree = "<group>"; };
 		5778E00D24DB2BA200B65CBF /* BehaviorSubject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BehaviorSubject.swift; sourceTree = "<group>"; };
 		578187B12481D9290063B46B /* XCTestCase+Assertions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+Assertions.swift"; sourceTree = "<group>"; };
+		5791FB4124EC834300117FD6 /* MainTabViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabViewModelTests.swift; sourceTree = "<group>"; };
 		5795F22B23E26A8D00F6707C /* OrderSearchStarterViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderSearchStarterViewController.xib; sourceTree = "<group>"; };
 		5795F22D23E26A9E00F6707C /* OrderSearchStarterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSearchStarterViewController.swift; sourceTree = "<group>"; };
 		5795F22F23E26B5300F6707C /* OrderSearchStarterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSearchStarterViewModel.swift; sourceTree = "<group>"; };
@@ -2852,6 +2854,14 @@
 			path = "Stats V4";
 			sourceTree = "<group>";
 		};
+		5791FB4024EC833200117FD6 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				5791FB4124EC834300117FD6 /* MainTabViewModelTests.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
 		5798191124526FC7000817F8 /* Observables */ = {
 			isa = PBXGroup;
 			children = (
@@ -3270,6 +3280,7 @@
 		B56DB3E02049BFAA00D4AA8E /* WooCommerceTests */ = {
 			isa = PBXGroup;
 			children = (
+				5791FB4024EC833200117FD6 /* ViewModels */,
 				57C2F6E324C27B0C00131012 /* Authentication */,
 				CCDC49F1240060F3003166BA /* UnitTests.xctestplan */,
 				D816DDBA22265D8000903E59 /* ViewRelated */,
@@ -5507,6 +5518,7 @@
 				45AE1B9C2417C10C00A9E8BD /* UserAgentTests.swift in Sources */,
 				D85136CD231E15B800DD0539 /* MockReviews.swift in Sources */,
 				D8053BCE231F98DA00CE60C2 /* ReviewAgeTests.swift in Sources */,
+				5791FB4224EC834300117FD6 /* MainTabViewModelTests.swift in Sources */,
 				020BE76D23B4A404007FE54C /* AztecStrikethroughFormatBarCommandTests.swift in Sources */,
 				02404EE02314FE5900FF1170 /* DashboardUIFactoryTests.swift in Sources */,
 				571E4674249D1615002ADCB8 /* XCTestCase+Wait.swift in Sources */,

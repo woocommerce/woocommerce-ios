@@ -139,6 +139,12 @@ final class MainTabBarController: UITabBarController {
         startListeningToOrdersBadge()
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        viewModel.onViewDidAppear()
+    }
+
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         let currentlySelectedTab = WooTab(visibleIndex: selectedIndex)
         guard let userSelectedIndex = tabBar.items?.firstIndex(of: item) else {

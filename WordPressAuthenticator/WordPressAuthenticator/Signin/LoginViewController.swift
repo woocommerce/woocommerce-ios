@@ -330,6 +330,11 @@ extension LoginViewController {
     /// Tracks the SignIn Event
     ///
     func trackSignIn(credentials: AuthenticatorCredentials) {
+        // Once we remove legacy tracking, this whole method can go away.
+        guard tracker.shouldUseLegacyTracker() else {
+            return
+        }
+        
         var properties = [String: String]()
 
         if let wpcom = credentials.wpcom {
@@ -339,9 +344,7 @@ extension LoginViewController {
             ]
         }
 
-        tracker.track(step: .success, ifTrackingNotEnabled: {
-            WordPressAuthenticator.track(.signedIn, properties: properties)
-        })
+        WordPressAuthenticator.track(.signedIn, properties: properties)
     }
 
     /// Links the current WordPress Account to a Social Service (if possible!!).

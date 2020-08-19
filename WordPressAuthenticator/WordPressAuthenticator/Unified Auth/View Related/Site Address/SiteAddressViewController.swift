@@ -48,6 +48,10 @@ final class SiteAddressViewController: LoginViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        if isMovingToParent {
+            tracker.track(step: .start)
+        }
 
         siteURLField?.text = loginFields.siteAddress
         configureSubmitButton(animating: false)

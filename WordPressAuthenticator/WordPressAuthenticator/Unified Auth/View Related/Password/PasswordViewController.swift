@@ -57,12 +57,14 @@ class PasswordViewController: LoginViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        if isMovingToParent {
+            tracker.track(step: .userPasswordScreenShown)
+        }
+        
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
 
         configureViewForEditingIfNeeded()
-        
-        // TODO: - Tracks. Old track: WordPressAuthenticator.track(.loginPasswordFormViewed)
     }
     
     override func viewWillDisappear(_ animated: Bool) {

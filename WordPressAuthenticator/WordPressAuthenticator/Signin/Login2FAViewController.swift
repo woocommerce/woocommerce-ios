@@ -38,6 +38,10 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        if isMovingToParent {
+            tracker.track(step: .twoFactorAuthentication)
+        }
 
         configureViewForEditingIfNeeded()
         styleSendCodeButton()
@@ -257,6 +261,8 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
 
 
     @IBAction func handleSubmitButtonTapped(_ sender: UIButton) {
+        tracker.track(click: .submit)
+        
         validateForm()
     }
 

@@ -51,7 +51,7 @@ extension LoginFacade {
     }
     
     @objc
-    public trackSuccess() {
+    public func trackSuccess() {
         tracker.track(step: .success)
     }
 }

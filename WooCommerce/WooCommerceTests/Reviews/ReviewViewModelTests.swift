@@ -36,7 +36,7 @@ final class ReviewViewModelTests: XCTestCase {
     }
 
     func testReviewViewModelReturnsSubjectWithAnonymousForUnknownReviewerName() {
-        let viewModel = ReviewViewModel(review: mocks.anonyousReview(), product: product, notification: notification)
+        let viewModel = ReviewViewModel(review: mocks.anonymousReview(), product: product, notification: notification)
 
         let reviewSubject = viewModel.subject
         let anon = NSLocalizedString("Someone",

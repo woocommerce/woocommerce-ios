@@ -29,6 +29,12 @@ class GoogleAuthViewController: LoginViewController {
         showGoogleScreenIfNeeded()
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        if isMovingFromParent {
+            AuthenticatorAnalyticsTracker.shared.track(click: .dismiss)
+        }
+    }
+    
     // MARK: - Overrides
 
     /// Style individual ViewController backgrounds, for now.

@@ -1,9 +1,9 @@
 // MARK: - NUXTableViewController
 /// Base class to use for NUX view controllers that are also a table view controller
-/// Note: shares most of its code with NUXViewController and NUXCollectionViewController.
+/// Note: shares most of its code with NUXViewController.
 open class NUXTableViewController: UITableViewController, NUXViewControllerBase, UIViewControllerTransitioningDelegate {
     // MARK: NUXViewControllerBase properties
-    /// these properties comply with NUXViewControllerBase and are duplicated with NUXTableViewController
+    /// these properties comply with NUXViewControllerBase and are duplicated with NUXViewController
     public var helpNotificationIndicator: WPHelpIndicatorView = WPHelpIndicatorView()
     public var helpButton: UIButton = UIButton(type: .custom)
     public var dismissBlock: ((_ cancelled: Bool) -> Void)?

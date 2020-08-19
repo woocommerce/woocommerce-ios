@@ -35,6 +35,8 @@ class PasswordViewController: LoginViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        removeGoogleWaitingView()
+        
         navigationItem.title = WordPressAuthenticator.shared.displayStrings.logInTitle
         styleNavigationBar(forUnified: true)
         

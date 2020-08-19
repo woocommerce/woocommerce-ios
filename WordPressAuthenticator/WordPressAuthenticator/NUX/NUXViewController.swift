@@ -3,7 +3,7 @@ import WordPressUI
 
 // MARK: - NUXViewController
 /// Base class to use for NUX view controllers that aren't a table view
-/// Note: shares most of its code with NUXTableViewController and NUXCollectionViewController. Look to make
+/// Note: shares most of its code with NUXTableViewController. Look to make
 ///       most changes in either the base protocol NUXViewControllerBase or further subclasses like LoginViewController
 open class NUXViewController: UIViewController, NUXViewControllerBase, UIViewControllerTransitioningDelegate {
     // MARK: NUXViewControllerBase properties

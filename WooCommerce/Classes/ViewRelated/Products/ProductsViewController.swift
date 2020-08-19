@@ -361,6 +361,8 @@ private extension ProductsViewController {
         }
     }
 
+    /// Fetches products feedback visibility from AppSettingsStore and update products top banner accordingly
+    ///
     func updateTopBannerView() {
         let action = AppSettingsAction.loadFeedbackVisibility(type: .productsM3) { [weak self] result in
             switch result {
@@ -378,6 +380,8 @@ private extension ProductsViewController {
         ServiceLocator.stores.dispatch(action)
     }
 
+    /// Request a new product banner from `ProductsTopBannerFactory` and wire actionButtons actions
+    ///
     func requestAndShowNewTopBannerView() {
         let isExpanded = topBannerView?.isExpanded ?? false
         let isInAppFeedbackEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.inAppFeedback)
@@ -385,10 +389,10 @@ private extension ProductsViewController {
                                            isInAppFeedbackFeatureEnabled: isInAppFeedbackEnabled,
                                            expandedStateChangeHandler: { [weak self] in
             self?.tableView.updateHeaderHeight()
-        }, onGiveFeedbackButtonPressed: {
-            print("launch feedback")
-        }, onDismisskButtonPressed: {
-            print("dismiss banner")
+        }, onGiveFeedbackButtonPressed: { [weak self] in
+            self?.presentProductsFeedback()
+        }, onDismisskButtonPressed: { [weak self] in
+            self?.dismissProductsBanner()
         }, onCompletion: { [weak self] topBannerView in
             self?.topBannerContainerView.updateSubview(topBannerView)
             self?.topBannerView = topBannerView
@@ -555,6 +559,36 @@ private extension ProductsViewController {
             ServiceLocator.analytics.track(.productFilterListDismissButtonTapped)
         })
         present(filterProductListViewController, animated: true, completion: nil)
+    }
+
+    /// Presents products survey and mark feedback as given to update banner visibility
+    ///
+    func presentProductsFeedback() {
+        // Present survey
+        let navigationController = SurveyCoordinatingController(survey: .productsM3Feedback)
+        present(navigationController, animated: true) { [weak self] in
+
+            // Mark survey as given and update top banner view
+            let action = AppSettingsAction.updateFeedbackStatus(type: .productsM3, status: .given(Date())) { result in
+                if let error = result.failure {
+                    CrashLogging.logError(error)
+                }
+                self?.hideTopBannerView()
+            }
+            ServiceLocator.stores.dispatch(action)
+        }
+    }
+
+    /// Mark feedback request as dismissed and update banner visibility
+    ///
+    func dismissProductsBanner() {
+        let action = AppSettingsAction.updateFeedbackStatus(type: .productsM3, status: .dismissed) { [weak self] result in
+            if let error = result.failure {
+                CrashLogging.logError(error)
+            }
+            self?.hideTopBannerView()
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 }
 

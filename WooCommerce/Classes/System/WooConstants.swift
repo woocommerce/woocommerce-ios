@@ -79,6 +79,10 @@ extension WooConstants {
         case inAppFeedback = "https://automattic.survey.fm/woo-app-general-feedback-user-survey"
 #endif
 
+        /// URL for the productsM3 feedback survey
+        ///
+        case productsM3Feedback = "https://automattic.survey.fm/woo-app-feature-feedback-products"
+
         /// Returns the URL version of the receiver
         ///
         func asURL() -> URL {

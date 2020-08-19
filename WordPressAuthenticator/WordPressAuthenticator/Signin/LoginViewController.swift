@@ -255,15 +255,16 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     open func needsMultifactorCode() {
         displayError(message: "")
         configureViewLoading(false)
-
+        
         tracker.track(step: .twoFactorAuthentication, ifTrackingNotEnabled: {
             WordPressAuthenticator.track(.twoFactorCodeRequested)
         })
         
         let unifiedGoogle = WordPressAuthenticator.shared.configuration.enableUnifiedGoogle && loginFields.meta.socialService == .google
         let unifiedApple = WordPressAuthenticator.shared.configuration.enableUnifiedApple && loginFields.meta.socialService == .apple
+        let unifiedSiteAddress = WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress && !loginFields.siteAddress.isEmpty
         
-        guard (unifiedGoogle || unifiedApple) else {
+        guard (unifiedGoogle || unifiedApple || unifiedSiteAddress) else {
             presentLogin2FA()
             return
         }

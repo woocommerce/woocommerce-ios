@@ -75,17 +75,11 @@ public enum AppSettingsAction: Action {
     ///
     case setInstallationDateIfNecessary(date: Date, onCompletion: ((Result<Bool, Error>) -> Void))
 
-    /// Saves the `date` as the last known date that the user interacted with the in-app
-    /// feedback prompt (https://git.io/JJ8i0).
+    /// Updates or stores a feedback setting with the provided `type` and `status`.
     ///
-    case setLastFeedbackDate(date: Date, onCompletion: ((Result<Void, Error>) -> Void))
+    case updateFeedbackStatus(type: FeedbackType, status: FeedbackSettings.Status, onCompletion: ((Result<Void, Error>) -> Void))
 
-    /// Returns whether the In-app Feedback Card should be shown to the user.
+    /// Returns whether a specific feedback request should be shown to the user.
     ///
-    /// The result is only `true` if these conditions are met:
-    ///
-    /// - The known installation date is more than 3 months ago
-    /// - The user has not given feedback for more than 6 months ago.
-    ///
-    case loadInAppFeedbackCardVisibility(onCompletion: (Result<Bool, Error>) -> Void)
+    case loadFeedbackVisibility(type: FeedbackType, onCompletion: (Result<Bool, Error>) -> Void)
 }

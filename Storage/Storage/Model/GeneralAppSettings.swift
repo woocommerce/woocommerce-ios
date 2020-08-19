@@ -15,12 +15,33 @@ public struct GeneralAppSettings: Codable, Equatable {
     ///
     public let installationDate: Date?
 
-    /// The last time that the user interacted with the in-app feedback (https://git.io/JJ8i0).
-    ///
-    public let lastFeedbackDate: Date?
+    /// Key/Value type to store feedback settings
+    /// Key: A `FeedbackType` to identify the feedback
+    /// Value: A `FeedbackSetting` to store the feedback state
+    public let feedbacks: [FeedbackType: FeedbackSettings]
 
-    public init(installationDate: Date?, lastFeedbackDate: Date?) {
+    public init(installationDate: Date?, feedbacks: [FeedbackType: FeedbackSettings]) {
         self.installationDate = installationDate
-        self.lastFeedbackDate = lastFeedbackDate
+        self.feedbacks = feedbacks
+    }
+
+    /// Returns the status of a given feedback type. If the feedback is not stored in the feedback array. it is assumed that it has a pending status.
+    ///
+    public func feedbackStatus(of type: FeedbackType) -> FeedbackSettings.Status {
+        guard let feedbackSeeting = feedbacks[type] else {
+            return .pending
+        }
+
+        return feedbackSeeting.status
+    }
+
+    /// Returns a new instance of `GeneralAppSettings` with the provided feedback seetings updated.
+    ///
+    public func replacing(feedback: FeedbackSettings) -> GeneralAppSettings {
+        let updatedFeedbacks = feedbacks.merging([feedback.name: feedback]) {
+            _, new in new
+        }
+
+        return GeneralAppSettings(installationDate: installationDate, feedbacks: updatedFeedbacks)
     }
 }

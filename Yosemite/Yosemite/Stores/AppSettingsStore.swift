@@ -115,10 +115,10 @@ public class AppSettingsStore: Store {
             resetStatsVersionStates()
         case .setInstallationDateIfNecessary(let date, let onCompletion):
             setInstallationDateIfNecessary(date: date, onCompletion: onCompletion)
-        case .setLastFeedbackDate(let date, let onCompletion):
-            setLastFeedbackDate(date: date, onCompletion: onCompletion)
-        case .loadInAppFeedbackCardVisibility(let onCompletion):
-            loadInAppFeedbackCardVisibility(onCompletion: onCompletion)
+        case .updateFeedbackStatus(let type, let status, let onCompletion):
+            updateFeedbackStatus(type: type, status: status, onCompletion: onCompletion)
+        case .loadFeedbackVisibility(let type, let onCompletion):
+            loadFeedbackVisibility(type: type, onCompletion: onCompletion)
         }
     }
 }
@@ -141,7 +141,7 @@ private extension AppSettingsStore {
                 return onCompletion(.success(false))
             }
 
-            let settingsToSave = GeneralAppSettings(installationDate: date, lastFeedbackDate: settings.lastFeedbackDate)
+            let settingsToSave = GeneralAppSettings(installationDate: date, feedbacks: settings.feedbacks)
             try saveGeneralAppSettings(settingsToSave)
 
             onCompletion(.success(true))
@@ -150,13 +150,13 @@ private extension AppSettingsStore {
         }
     }
 
-    /// Save the `date` in `GeneralAppSettings.lastFeedbackDate`.
+    /// Updates the feedback store  in `GeneralAppSettings` with the given `type` and `status`.
     ///
-    func setLastFeedbackDate(date: Date, onCompletion: ((Result<Void, Error>) -> Void)) {
+    func updateFeedbackStatus(type: FeedbackType, status: FeedbackSettings.Status, onCompletion: ((Result<Void, Error>) -> Void)) {
         do {
             let settings = loadOrCreateGeneralAppSettings()
-
-            let settingsToSave = GeneralAppSettings(installationDate: settings.installationDate, lastFeedbackDate: date)
+            let newFeedback = FeedbackSettings(name: type, status: status)
+            let settingsToSave = settings.replacing(feedback: newFeedback)
             try saveGeneralAppSettings(settingsToSave)
 
             onCompletion(.success(()))
@@ -165,9 +165,9 @@ private extension AppSettingsStore {
         }
     }
 
-    func loadInAppFeedbackCardVisibility(onCompletion: (Result<Bool, Error>) -> Void) {
+    func loadFeedbackVisibility(type: FeedbackType, onCompletion: (Result<Bool, Error>) -> Void) {
         let settings = loadOrCreateGeneralAppSettings()
-        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings)
+        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: type)
 
         onCompletion(Result {
             try useCase.shouldBeVisible()
@@ -177,7 +177,7 @@ private extension AppSettingsStore {
     /// Load the `GeneralAppSettings` from file or create an empty one if it doesn't exist.
     func loadOrCreateGeneralAppSettings() -> GeneralAppSettings {
         guard let settings: GeneralAppSettings = try? fileStorage.data(for: generalAppSettingsFileURL) else {
-            return GeneralAppSettings(installationDate: nil, lastFeedbackDate: nil)
+            return GeneralAppSettings(installationDate: nil, feedbacks: [:])
         }
 
         return settings
@@ -188,6 +188,7 @@ private extension AppSettingsStore {
         try fileStorage.write(settings, to: generalAppSettingsFileURL)
     }
 }
+
 // MARK: - Shipment tracking providers!
 //
 private extension AppSettingsStore {
@@ -461,6 +462,8 @@ enum AppSettingsStoreErrors: Error {
 /// Constants
 ///
 private enum Constants {
+
+    // MARK: File Names
     static let shipmentProvidersFileName = "shipment-providers.plist"
     static let customShipmentProvidersFileName = "custom-shipment-providers.plist"
     static let statsVersionBannerVisibilityFileName = "stats-version-banner-visibility.plist"

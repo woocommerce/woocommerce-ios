@@ -49,7 +49,7 @@ final class StoreStatsAndTopPerformersPeriodViewModel {
     /// Updates the card visibility state stored in `isInAppFeedbackCardVisibleSubject` by updating the app last feedback date.
     ///
     func onInAppFeedbackCardAction() {
-        let action = AppSettingsAction.setLastFeedbackDate(date: Date()) { [weak self] result in
+        let action = AppSettingsAction.updateFeedbackStatus(type: .general, status: .given(Date())) { [weak self] result in
             guard let self = self else {
                 return
             }
@@ -71,7 +71,7 @@ final class StoreStatsAndTopPerformersPeriodViewModel {
             return isInAppFeedbackCardVisibleSubject.send(isEnabled)
         }
 
-        let action = AppSettingsAction.loadInAppFeedbackCardVisibility { [weak self] result in
+        let action = AppSettingsAction.loadFeedbackVisibility(type: .general) { [weak self] result in
             guard let self = self else {
                 return
             }

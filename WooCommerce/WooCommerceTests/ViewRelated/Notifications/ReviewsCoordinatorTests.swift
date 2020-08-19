@@ -98,7 +98,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
 
         // Then
         waitUntil {
-            coordinator.navigationController.viewControllers.count > 1
+            coordinator.navigationController.viewControllers.count == 2
         }
         XCTAssertEqual(willPresentReviewDetailsFromPushNotificationCallCount, 1)
 
@@ -164,7 +164,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
 
         // Then
         waitUntil {
-            coordinator.navigationController.viewControllers.count >= 2
+            coordinator.navigationController.viewControllers.count == 2
         }
 
         // A ReviewDetailsViewController should be pushed

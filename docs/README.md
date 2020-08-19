@@ -42,6 +42,18 @@ final class ProductsRemote: Remote, ProductsRemoteProtocol { }
 
 We usually end up with cases like this when we _have_ to create a protocol to support mocking unit tests.
 
+#### String constants in nested enum
+
+When a class/struct that contains localization, we generally group the string constants in a nested enum called `Localization`. In the past, we had other names like `Constants` or `Strings` and it is fine to leave them and follow this naming for new code. For example:
+
+```swift
+final class ViewController: UIViewController {
+    enum Localization {
+        static let title = NSLocalizedString("Products", comment: "Navigation bar title of the products tab.")
+    }
+}
+```
+
 ### Coding Style
 
 The guidelines for how Swift should be written and formatted can be found in the [Coding Style Guide](coding-style-guide.md).

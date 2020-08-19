@@ -15,7 +15,7 @@ final class ManagedObjectModelsInventoryTests: XCTestCase {
     private let bundle = Bundle(for: CoreDataManager.self)
     private let packageName = "WooCommerce"
 
-    func testItLoadsTheMOMDUsingTheGivenPackageName() throws {
+    func test_it_loads_the_momd_using_the_given_packageName() throws {
         // Given
         let inventory = try ManagedObjectModelsInventory.from(packageName: packageName, bundle: bundle)
 
@@ -26,7 +26,7 @@ final class ManagedObjectModelsInventoryTests: XCTestCase {
         XCTAssertEqual(packageURL.lastPathComponent, "\(packageName).momd")
     }
 
-    func testItCanLoadTheExpectedModelVersions() throws {
+    func test_it_can_load_the_expected_model_versions() throws {
         // Given
         let expectedVersionNames = [
             "Model",
@@ -76,7 +76,7 @@ final class ManagedObjectModelsInventoryTests: XCTestCase {
 
     /// Tests that the model versions are sorted according to our convention of incrementing
     /// the number names.
-    func testItSortsTheModelsUsingTheConvention() throws {
+    func test_it_sorts_the_models_using_the_convention() throws {
         // Given
         let modelVersions = [
             ModelVersion(name: "Model 301"),
@@ -118,7 +118,7 @@ final class ManagedObjectModelsInventoryTests: XCTestCase {
         XCTAssertEqual(sortedModelVersions.map { $0.name }, expectedSortedNames)
     }
 
-    func testItThrowsAnErrorIfThePackageNameDoesNotPointToAnMomdDirectory() {
+    func test_it_throws_an_error_if_the_packageName_does_not_point_to_an_momd_directory() {
         // Given
         let packageName = "InvalidPackageName"
 
@@ -128,7 +128,7 @@ final class ManagedObjectModelsInventoryTests: XCTestCase {
         }
     }
 
-    func testItCanLoadTheCurrentManagedObjectModel() throws {
+    func test_it_can_load_the_current_ManagedObjectModel() throws {
         // Given
         let inventory = try ManagedObjectModelsInventory.from(packageName: packageName, bundle: bundle)
 

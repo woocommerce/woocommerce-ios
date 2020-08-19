@@ -362,6 +362,23 @@ private extension ProductsViewController {
     }
 
     func updateTopBannerView() {
+        let action = AppSettingsAction.loadFeedbackVisibility(type: .productsM3) { [weak self] result in
+            switch result {
+            case .success(let visible):
+                if visible {
+                    self?.requestAndShowNewTopBannerView()
+                } else {
+                    self?.hideTopBannerView()
+                }
+            case.failure(let error):
+                self?.hideTopBannerView()
+                CrashLogging.logError(error)
+            }
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    func requestAndShowNewTopBannerView() {
         let isExpanded = topBannerView?.isExpanded ?? false
         let isInAppFeedbackEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.inAppFeedback)
         ProductsTopBannerFactory.topBanner(isExpanded: isExpanded,
@@ -377,6 +394,12 @@ private extension ProductsViewController {
             self?.topBannerView = topBannerView
             self?.tableView.updateHeaderHeight()
         })
+    }
+
+    func hideTopBannerView() {
+        topBannerView?.removeFromSuperview()
+        topBannerView = nil
+        tableView.updateHeaderHeight()
     }
 
     func updateResultsController(siteID: Int64) {

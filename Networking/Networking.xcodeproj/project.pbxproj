@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -101,6 +101,7 @@
 		5726F159248E9D88005AE9B4 /* Models+Copiable.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5726F158248E9D88005AE9B4 /* Models+Copiable.generated.swift */; };
 		5726F72E2460A2820031CAAC /* Copiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5726F72D2460A2820031CAAC /* Copiable.swift */; };
 		5726F7342460A8F00031CAAC /* CopiableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5726F7332460A8F00031CAAC /* CopiableTests.swift */; };
+		57A8D09D24EDEAD0008ED611 /* Testing in Frameworks */ = {isa = PBXBuildFile; productRef = 57A8D09C24EDEAD0008ED611 /* Testing */; };
 		57BE08D82409B63800F6DCED /* reviews-missing-avatar-urls.json in Resources */ = {isa = PBXBuildFile; fileRef = 57BE08D72409B63700F6DCED /* reviews-missing-avatar-urls.json */; };
 		57E8FED3246616AC0057CD68 /* Result+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E8FED2246616AC0057CD68 /* Result+Extensions.swift */; };
 		6647C0161DAC6AB6570C53A7 /* Pods_Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */; };
@@ -751,6 +752,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				57A8D09D24EDEAD0008ED611 /* Testing in Frameworks */,
 				B557D9ED209753AA005962F4 /* Networking.framework in Frameworks */,
 				21DB5B99C4107CF69C0A57EC /* Pods_NetworkingTests.framework in Frameworks */,
 			);
@@ -1434,6 +1436,9 @@
 				B557D9EF209753AA005962F4 /* PBXTargetDependency */,
 			);
 			name = NetworkingTests;
+			packageProductDependencies = (
+				57A8D09C24EDEAD0008ED611 /* Testing */,
+			);
 			productName = NetworkingTests;
 			productReference = B557D9EC209753AA005962F4 /* NetworkingTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -2291,6 +2296,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		57A8D09C24EDEAD0008ED611 /* Testing */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Testing;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B557D9DA209753AA005962F4 /* Project object */;
 }

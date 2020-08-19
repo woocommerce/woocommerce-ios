@@ -36,7 +36,7 @@ private extension ProductsTopBannerFactory {
             NSLocalizedString("We've added more editing functionalities to products! You can now update images, see previews and share your products.",
                               comment: "The info of the Work In Progress top banner on the Products tab.")
         static let infoWhenRelease3IsEnabled =
-            NSLocalizedString("You can now edit grouped, external and variable products, change product type and update categories and tag",
+            NSLocalizedString("You can now edit grouped, external and variable products, change product type and update categories and tags",
                               comment: "The info of the Work In Progress top banner on the Products tab when Products feature switch is enabled.")
     }
 }

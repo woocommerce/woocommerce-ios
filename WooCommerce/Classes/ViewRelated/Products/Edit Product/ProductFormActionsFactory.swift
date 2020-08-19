@@ -97,12 +97,12 @@ private extension ProductFormActionsFactory {
         let actions: [ProductFormEditAction?] = [
             .priceSettings,
             shouldShowReviewsRow ? .reviews: nil,
-            shouldShowProductTypeRow ? .productType : nil,
             shouldShowShippingSettingsRow ? .shippingSettings: nil,
             .inventorySettings,
             shouldShowCategoriesRow ? .categories: nil,
             shouldShowTagsRow ? .tags: nil,
-            shouldShowBriefDescriptionRow ? .briefDescription: nil
+            shouldShowBriefDescriptionRow ? .briefDescription: nil,
+            shouldShowProductTypeRow ? .productType : nil
         ]
         return actions.compactMap { $0 }
     }
@@ -117,12 +117,12 @@ private extension ProductFormActionsFactory {
         let actions: [ProductFormEditAction?] = [
             .priceSettings,
             shouldShowReviewsRow ? .reviews: nil,
-            shouldShowProductTypeRow ? .productType : nil,
             .externalURL,
             .sku,
             shouldShowCategoriesRow ? .categories: nil,
             shouldShowTagsRow ? .tags: nil,
-            shouldShowBriefDescriptionRow ? .briefDescription: nil
+            shouldShowBriefDescriptionRow ? .briefDescription: nil,
+            shouldShowProductTypeRow ? .productType : nil
         ]
         return actions.compactMap { $0 }
     }
@@ -137,11 +137,11 @@ private extension ProductFormActionsFactory {
         let actions: [ProductFormEditAction?] = [
             .groupedProducts,
             shouldShowReviewsRow ? .reviews: nil,
-            shouldShowProductTypeRow ? .productType : nil,
             .sku,
             shouldShowCategoriesRow ? .categories: nil,
             shouldShowTagsRow ? .tags: nil,
-            shouldShowBriefDescriptionRow ? .briefDescription: nil
+            shouldShowBriefDescriptionRow ? .briefDescription: nil,
+            shouldShowProductTypeRow ? .productType : nil
         ]
         return actions.compactMap { $0 }
     }
@@ -156,10 +156,10 @@ private extension ProductFormActionsFactory {
         let actions: [ProductFormEditAction?] = [
             .variations,
             shouldShowReviewsRow ? .reviews: nil,
-            shouldShowProductTypeRow ? .productType : nil,
             shouldShowCategoriesRow ? .categories: nil,
             shouldShowTagsRow ? .tags: nil,
-            shouldShowBriefDescriptionRow ? .briefDescription: nil
+            shouldShowBriefDescriptionRow ? .briefDescription: nil,
+            shouldShowProductTypeRow ? .productType : nil
         ]
         return actions.compactMap { $0 }
     }

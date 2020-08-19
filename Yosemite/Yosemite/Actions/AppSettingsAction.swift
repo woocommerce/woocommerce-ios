@@ -51,6 +51,10 @@ public enum AppSettingsAction: Action {
     case setStatsVersionLastShown(siteID: Int64,
         statsVersion: StatsVersion)
 
+    /// Clears all the states related to stats version
+    ///
+    case resetStatsVersionStates
+
     /// Loads the user preferred Product feature switch given the latest app settings
     ///
     case loadProductsFeatureSwitch(onCompletion: (Bool) -> Void)
@@ -60,9 +64,9 @@ public enum AppSettingsAction: Action {
     ///
     case setProductsFeatureSwitch(isEnabled: Bool, onCompletion: () -> Void)
 
-    /// Clears all the states related to stats version
+    /// Clears all the app settings on feature switches
     ///
-    case resetStatsVersionStates
+    case resetFeatureSwitches
 
     // MARK: - General App Settings
 

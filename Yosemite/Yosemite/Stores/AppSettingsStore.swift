@@ -58,6 +58,13 @@ public class AppSettingsStore: Store {
         return documents!.appendingPathComponent(Constants.productsFeatureSwitchFileName)
     }()
 
+    /// URL to the plist file that we use to determine the visibility for Product features M3.
+    ///
+    private lazy var productsRelease3FeatureSwitchURL: URL = {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent(Constants.productsRelease3FeatureSwitchFileName)
+    }()
+
     private lazy var generalAppSettingsFileURL: URL! = {
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
         return documents!.appendingPathComponent(Constants.generalAppSettingsFileName)
@@ -107,12 +114,14 @@ public class AppSettingsStore: Store {
             loadStatsVersionBannerVisibility(banner: banner, onCompletion: onCompletion)
         case .setStatsVersionBannerVisibility(let banner, let shouldShowBanner):
             setStatsVersionBannerVisibility(banner: banner, shouldShowBanner: shouldShowBanner)
+        case .resetStatsVersionStates:
+            resetStatsVersionStates()
         case .loadProductsFeatureSwitch(let onCompletion):
             loadProductsFeatureSwitch(onCompletion: onCompletion)
         case .setProductsFeatureSwitch(let isEnabled, let onCompletion):
             setProductsFeatureSwitch(isEnabled: isEnabled, onCompletion: onCompletion)
-        case .resetStatsVersionStates:
-            resetStatsVersionStates()
+        case .resetFeatureSwitches:
+            resetFeatureSwitches()
         case .setInstallationDateIfNecessary(let date, let onCompletion):
             setInstallationDateIfNecessary(date: date, onCompletion: onCompletion)
         case .updateFeedbackStatus(let type, let status, let onCompletion):
@@ -410,8 +419,18 @@ private extension AppSettingsStore {
         try? fileStorage.write(StatsVersionBannerVisibility(visibilityByBanner: visibilityByBanner), to: fileURL)
     }
 
+    func resetStatsVersionStates() {
+        do {
+            try fileStorage.deleteFile(at: statsVersionBannerVisibilityURL)
+            try fileStorage.deleteFile(at: statsVersionLastShownURL)
+        } catch {
+            let error = AppSettingsStoreErrors.deleteStatsVersionStates
+            DDLogError("⛔️ Deleting the stats version files failed. Error: \(error)")
+        }
+    }
+
     func loadProductsFeatureSwitch(onCompletion: (Bool) -> Void) {
-        guard let existingData: ProductsFeatureSwitchPListWrapper = try? fileStorage.data(for: productsFeatureSwitchURL) else {
+        guard let existingData: ProductsFeatureSwitchPListWrapper = try? fileStorage.data(for: productsRelease3FeatureSwitchURL) else {
             onCompletion(false)
             return
         }
@@ -419,7 +438,7 @@ private extension AppSettingsStore {
     }
 
     func setProductsFeatureSwitch(isEnabled: Bool, onCompletion: () -> Void) {
-        let fileURL = productsFeatureSwitchURL
+        let fileURL = productsRelease3FeatureSwitchURL
         let wrapper = ProductsFeatureSwitchPListWrapper(isEnabled: isEnabled)
         do {
             try fileStorage.write(wrapper, to: fileURL)
@@ -430,13 +449,12 @@ private extension AppSettingsStore {
         }
     }
 
-    func resetStatsVersionStates() {
+    func resetFeatureSwitches() {
         do {
-            try fileStorage.deleteFile(at: statsVersionBannerVisibilityURL)
-            try fileStorage.deleteFile(at: statsVersionLastShownURL)
+            try fileStorage.deleteFile(at: productsFeatureSwitchURL)
+            try fileStorage.deleteFile(at: productsRelease3FeatureSwitchURL)
         } catch {
-            let error = AppSettingsStoreErrors.deleteStatsVersionStates
-            DDLogError("⛔️ Deleting the stats version files failed. Error: \(error)")
+            DDLogError("⛔️ Deleting the product feature switch files failed. Error: \(error)")
         }
     }
 }
@@ -469,5 +487,6 @@ private enum Constants {
     static let statsVersionBannerVisibilityFileName = "stats-version-banner-visibility.plist"
     static let statsVersionLastShownFileName = "stats-version-last-shown.plist"
     static let productsFeatureSwitchFileName = "products-feature-switch.plist"
+    static let productsRelease3FeatureSwitchFileName = "products-m3-feature-switch.plist"
     static let generalAppSettingsFileName = "general-app-settings.plist"
 }

@@ -483,22 +483,7 @@ extension LoginViewController: LoginSocialErrorViewControllerDelegate {
     private func cleanupAfterSocialErrors() {
         dismiss(animated: true) {}
     }
-
-    /// Displays the self-hosted login form.
-    ///
-    private func loginToSelfHostedSite() {
-        guard let vc = LoginSiteAddressViewController.instantiate(from: .login) else {
-            DDLogError("Failed to navigate from LoginViewController to LoginSiteAddressViewController")
-            return
-        }
-
-        vc.loginFields = loginFields
-        vc.dismissBlock = dismissBlock
-        vc.errorToPresent = errorToPresent
-
-        navigationController?.pushViewController(vc, animated: true)
-    }
-
+    
     func retryWithEmail() {
         loginFields.username = ""
         cleanupAfterSocialErrors()
@@ -517,4 +502,41 @@ extension LoginViewController: LoginSocialErrorViewControllerDelegate {
             navigationController?.pushViewController(controller, animated: true)
         }
     }
+    /// Displays the self-hosted login form.
+    ///
+    @objc func loginToSelfHostedSite() {
+        guard WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress else {
+            presentSelfHostedView()
+            return
+        }
+
+        presentUnifiedSiteAddressView()
+    }
+    
+    /// Navigates to the unified site address login flow.
+    ///
+    func presentUnifiedSiteAddressView() {
+        guard let vc = SiteAddressViewController.instantiate(from: .siteAddress) else {
+            DDLogError("Failed to navigate from LoginViewController to SiteAddressViewController")
+            return
+        }
+
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
+    /// Navigates to the old self-hosted login flow.
+    ///
+    func presentSelfHostedView() {
+        guard let vc = LoginSiteAddressViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from LoginViewController to LoginSiteAddressViewController")
+            return
+        }
+
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
 }

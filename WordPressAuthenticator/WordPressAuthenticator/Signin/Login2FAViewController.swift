@@ -37,10 +37,6 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        if isMovingToParent {
-            tracker.track(step: .twoFactorAuthentication)
-        }
 
         configureViewForEditingIfNeeded()
         styleSendCodeButton()
@@ -57,9 +53,7 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
         nc.addObserver(self, selector: #selector(applicationBecameInactive), name: UIApplication.willResignActiveNotification, object: nil)
         nc.addObserver(self, selector: #selector(applicationBecameActive), name: UIApplication.didBecomeActiveNotification, object: nil)
 
-        if tracker.shouldUseLegacyTracker() {
-            WordPressAuthenticator.track(.loginTwoFactorFormViewed)
-        }
+        WordPressAuthenticator.track(.loginTwoFactorFormViewed)
     }
 
 

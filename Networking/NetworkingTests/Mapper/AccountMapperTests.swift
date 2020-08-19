@@ -8,7 +8,7 @@ class AccountMapperTests: XCTestCase {
 
     /// Verifies that all of the Account fields are properly parsed.
     ///
-    func test_Account_fields_are_propertly_parsed() {
+    func test_Account_fields_are_properly_parsed() {
         guard let account = mapLoadAccountResponse() else {
             XCTFail()
             return

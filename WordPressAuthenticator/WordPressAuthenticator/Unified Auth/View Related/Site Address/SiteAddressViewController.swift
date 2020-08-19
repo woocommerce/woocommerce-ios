@@ -30,6 +30,8 @@ final class SiteAddressViewController: LoginViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        removeGoogleWaitingView()
+        
         navigationItem.title = WordPressAuthenticator.shared.displayStrings.logInTitle
         styleNavigationBar(forUnified: true)
 

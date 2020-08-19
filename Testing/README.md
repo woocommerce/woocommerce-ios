@@ -1,3 +1,3 @@
 # Testing
 
-A description of this package.
+General assert functions and async-testing helpers for unit tests.

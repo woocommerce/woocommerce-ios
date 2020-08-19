@@ -363,8 +363,15 @@ private extension ProductsViewController {
 
     func updateTopBannerView() {
         let isExpanded = topBannerView?.isExpanded ?? false
-        ProductsTopBannerFactory.topBanner(isExpanded: isExpanded, expandedStateChangeHandler: { [weak self] in
+        let isInAppFeedbackEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.inAppFeedback)
+        ProductsTopBannerFactory.topBanner(isExpanded: isExpanded,
+                                           isInAppFeedbackFeatureEnabled: isInAppFeedbackEnabled,
+                                           expandedStateChangeHandler: { [weak self] in
             self?.tableView.updateHeaderHeight()
+        }, onGiveFeedbackButtonPressed: {
+            print("launch feedback")
+        }, onDismisskButtonPressed: {
+            print("dismiss banner")
         }, onCompletion: { [weak self] topBannerView in
             self?.topBannerContainerView.updateSubview(topBannerView)
             self?.topBannerView = topBannerView

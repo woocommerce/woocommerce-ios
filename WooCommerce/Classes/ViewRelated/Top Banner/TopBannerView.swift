@@ -38,7 +38,7 @@ final class TopBannerView: UIView {
         return button
     }()
 
-    private lazy var actionStackView: UIStackView = {
+    private let actionStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
         return stackView

@@ -185,8 +185,6 @@ private extension TwoFAViewController {
         let wpcom = WordPressComCredentials(authToken: authToken, isJetpackLogin: isJetpackLogin, multifactor: true, siteURL: loginFields.siteAddress)
         let credentials = AuthenticatorCredentials(wpcom: wpcom)
         syncWPComAndPresentEpilogue(credentials: credentials)
-        
-        tracker.track(step: .success)
     }
     
     // MARK: - Code Validation

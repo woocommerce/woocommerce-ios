@@ -268,10 +268,10 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
         SVProgressHUD.dismiss()
         GIDSignIn.sharedInstance().disconnect()
 
-        tracker.track(step: .success, ifTrackingNotEnabled: {
+        if tracker.shouldUseLegacyTracker() {
             track(.signedIn)
             track(.loginSocialSuccess)
-        })
+        }
         
         let wpcom = WordPressComCredentials(authToken: authToken,
                                             isJetpackLogin: loginFields.meta.jetpackLogin,
@@ -390,10 +390,10 @@ private extension GoogleAuthenticator {
         // making ANY modification to this stat please refer to: p4qSXL-35X-p2
         track(.createdAccount)
         
-        tracker.track(step: .success, ifTrackingNotEnabled: {
+        if tracker.shouldUseLegacyTracker() {
             track(.signedIn)
             track(.signupSocialSuccess)
-        })
+        }
 
         signupDelegate?.googleFinishedSignup(credentials: credentials, loginFields: loginFields)
         delegate?.googleFinishedSignup(credentials: credentials, loginFields: loginFields)
@@ -402,11 +402,12 @@ private extension GoogleAuthenticator {
     func logInInstead(credentials: AuthenticatorCredentials) {
         tracker.set(flow: .loginWithGoogle)
         tracker.track(step: .start)
-        tracker.track(step: .success, ifTrackingNotEnabled: {
+        
+        if tracker.shouldUseLegacyTracker() {
             track(.signedIn)
             track(.signupSocialToLogin)
             track(.loginSocialSuccess)
-        })
+        }
 
         signupDelegate?.googleLoggedInInstead(credentials: credentials, loginFields: loginFields)
         delegate?.googleLoggedInInstead(credentials: credentials, loginFields: loginFields)

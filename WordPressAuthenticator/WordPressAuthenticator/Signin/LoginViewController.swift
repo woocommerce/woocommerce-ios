@@ -256,9 +256,9 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         displayError(message: "")
         configureViewLoading(false)
 
-        tracker.track(step: .twoFactorAuthentication, ifTrackingNotEnabled: {
+        if tracker.shouldUseLegacyTracker() {
             WordPressAuthenticator.track(.twoFactorCodeRequested)
-        })
+        }
         
         let unifiedGoogle = WordPressAuthenticator.shared.configuration.enableUnifiedGoogle && loginFields.meta.socialService == .google
         let unifiedApple = WordPressAuthenticator.shared.configuration.enableUnifiedApple && loginFields.meta.socialService == .apple
@@ -338,7 +338,9 @@ extension LoginViewController {
             ]
         }
 
-        WordPressAuthenticator.track(.signedIn, properties: properties)
+        tracker.track(step: .success, ifTrackingNotEnabled: {
+            WordPressAuthenticator.track(.signedIn, properties: properties)
+        })
     }
 
     /// Links the current WordPress Account to a Social Service (if possible!!).

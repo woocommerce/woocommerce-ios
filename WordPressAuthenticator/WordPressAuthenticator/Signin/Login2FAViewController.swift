@@ -35,7 +35,6 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
         configureSubmitButton(animating: false)
     }
 
-
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         

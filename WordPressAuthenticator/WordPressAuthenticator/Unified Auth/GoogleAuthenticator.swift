@@ -291,9 +291,9 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
         loginFields.nonceInfo = nonceInfo
         loginFields.nonceUserID = userID
 
-        tracker.track(step: .twoFactorAuthentication, ifTrackingNotEnabled: {
+        if tracker.shouldUseLegacyTracker() {
             track(.loginSocial2faNeeded)
-        })
+        }
         
         loginDelegate?.googleNeedsMultifactorCode(loginFields: loginFields)
         delegate?.googleNeedsMultifactorCode(loginFields: loginFields)
@@ -307,9 +307,9 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
         loginFields.username = email
         loginFields.emailAddress = email
         
-        tracker.track(step: .userPasswordScreenShown, ifTrackingNotEnabled: {
+        if tracker.shouldUseLegacyTracker() {
             track(.loginSocialAccountsNeedConnecting)
-        })
+        }
         
         loginDelegate?.googleExistingUserNeedsConnection(loginFields: loginFields)
         delegate?.googleExistingUserNeedsConnection(loginFields: loginFields)

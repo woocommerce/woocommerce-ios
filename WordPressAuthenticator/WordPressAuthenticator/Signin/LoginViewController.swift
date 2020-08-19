@@ -480,28 +480,31 @@ extension LoginViewController {
 // MARK: - LoginSocialError delegate methods
 
 extension LoginViewController: LoginSocialErrorViewControllerDelegate {
-    private func cleanupAfterSocialErrors() {
-        dismiss(animated: true) {}
-    }
     
     func retryWithEmail() {
         loginFields.username = ""
         cleanupAfterSocialErrors()
+        navigationController?.popToRootViewController(animated: true)
     }
-
+    
     func retryWithAddress() {
         cleanupAfterSocialErrors()
         loginToSelfHostedSite()
     }
-
+    
     func retryAsSignup() {
         cleanupAfterSocialErrors()
-
+        
         if let controller = SignupEmailViewController.instantiate(from: .signup) {
             controller.loginFields = loginFields
             navigationController?.pushViewController(controller, animated: true)
         }
     }
+    
+    private func cleanupAfterSocialErrors() {
+        dismiss(animated: true) {}
+    }
+    
     /// Displays the self-hosted login form.
     ///
     @objc func loginToSelfHostedSite() {
@@ -509,7 +512,7 @@ extension LoginViewController: LoginSocialErrorViewControllerDelegate {
             presentSelfHostedView()
             return
         }
-
+        
         presentUnifiedSiteAddressView()
     }
     

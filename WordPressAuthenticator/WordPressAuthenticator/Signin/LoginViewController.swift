@@ -455,6 +455,11 @@ extension LoginViewController {
 
 extension LoginViewController {
 
+    func removeGoogleWaitingView() {
+        // Remove the Waiting for Google view so it doesn't reappear when backing through the navigation stack.
+        navigationController?.viewControllers.removeAll(where: { $0 is GoogleAuthViewController })
+    }
+    
     func signInAppleAccount() {
         guard let token = loginFields.meta.socialServiceIDToken else {
             WordPressAuthenticator.track(.loginSocialButtonFailure, properties: ["source": SocialServiceName.apple.rawValue])

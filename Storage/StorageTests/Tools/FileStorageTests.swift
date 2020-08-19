@@ -38,7 +38,7 @@ final class FileStorageTests: XCTestCase {
         XCTAssertThrowsError(try subject?.write(data, to: nonExistingFileURL))
     }
 
-    func test_error_is_triggered_when_file_fails_to_delete() {
-        XCTAssertThrowsError(try subject?.deleteFile(at: nonExistingFileURL))
+    func test_no_error_is_thrown_when_deleting_a_file_that_does_not_exist() {
+        XCTAssertNoThrow(try subject?.deleteFile(at: nonExistingFileURL))
     }
 }

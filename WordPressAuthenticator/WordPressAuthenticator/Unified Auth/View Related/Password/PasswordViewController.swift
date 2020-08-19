@@ -133,6 +133,8 @@ private extension PasswordViewController {
     // MARK: - Button Actions
     
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
+        tracker.track(click: .submit)
+        
         configureViewLoading(true)
         validateForm()
     }

@@ -1,4 +1,6 @@
 import XCTest
+import Testing
+
 @testable import Networking
 
 final class String_HTMLTests: XCTestCase {

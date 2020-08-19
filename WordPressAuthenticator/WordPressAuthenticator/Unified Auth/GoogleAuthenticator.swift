@@ -389,11 +389,11 @@ private extension GoogleAuthenticator {
         // This stat is part of a funnel that provides critical information.  Before
         // making ANY modification to this stat please refer to: p4qSXL-35X-p2
         track(.createdAccount)
-        
-        if tracker.shouldUseLegacyTracker() {
+
+        tracker.track(step: .success, ifTrackingNotEnabled: {
             track(.signedIn)
             track(.signupSocialSuccess)
-        }
+        })
 
         signupDelegate?.googleFinishedSignup(credentials: credentials, loginFields: loginFields)
         delegate?.googleFinishedSignup(credentials: credentials, loginFields: loginFields)

@@ -50,8 +50,8 @@
         if ([service isEqualToString:@"google"] && [self.delegate respondsToSelector:@selector(finishedLoginWithGoogleIDToken:authToken:)]) {
             // Apple is handled in AppleAuthenticator
             [self.delegate finishedLoginWithGoogleIDToken:token authToken:authToken];
-            [self trackLoginSuccess];
         }
+        [self trackSuccess];
     } needsMultiFactor:^(NSInteger userID, SocialLogin2FANonceInfo *nonceInfo){
         if ([self.delegate respondsToSelector:@selector(needsMultifactorCodeForUserID:andNonceInfo:)]) {
             [self.delegate needsMultifactorCodeForUserID:userID andNonceInfo:nonceInfo];
@@ -86,8 +86,8 @@
                                                             success:^(NSString *authToken) {
                                                                 if ([self.delegate respondsToSelector:@selector(finishedLoginWithNonceAuthToken:)]) {
                                                                     [self.delegate finishedLoginWithNonceAuthToken:authToken];
-                                                                    [self trackLoginSuccess];
                                                                 }
+                                                                [self trackSuccess];
                                                             } failure:^(NSError *error) {
                                                                 [self track:WPAnalyticsStatLoginFailed error:error];
                                                                 if ([self.delegate respondsToSelector:@selector(displayRemoteError:)]) {
@@ -105,8 +105,8 @@
     [self.wordpressComOAuthClientFacade authenticateWithUsername:loginFields.username password:loginFields.password multifactorCode:loginFields.multifactorCode success:^(NSString *authToken) {
         if ([self.delegate respondsToSelector:@selector(finishedLoginWithAuthToken:requiredMultifactorCode:)]) {
             [self.delegate finishedLoginWithAuthToken:authToken requiredMultifactorCode:loginFields.meta.requiredMultifactor];
-            [self trackLoginSuccess];
         }
+        [self trackSuccess];
     } needsMultiFactor:^{
         if ([self.delegate respondsToSelector:@selector(needsMultifactorCode)]) {
             [self.delegate needsMultifactorCode];
@@ -160,7 +160,7 @@
             }
             NSString *xmlrpc = [xmlRPCURL absoluteString];
             [self.delegate finishedLoginWithUsername:loginFields.username password:loginFields.password xmlrpc:xmlrpc options:options];
-            [self trackLoginSuccess];
+            [self trackSuccess];
         }
     } failure:^(NSError *error) {
         [self track:WPAnalyticsStatLoginFailed error:error];

@@ -16,6 +16,13 @@ struct TopBannerViewModel {
         }
     }
 
+    /// Represents an actionable button with a title and an action
+    ///
+    struct ActionButton {
+        let title: String
+        let action: () -> Void
+    }
+
     let title: String?
     let infoText: String?
     let icon: UIImage?
@@ -37,9 +44,4 @@ struct TopBannerViewModel {
         self.topButton = topButton
         self.actionButtons = actionButtons
     }
-}
-
-struct ActionButton {
-    let title: String
-    let action: () -> Void
 }

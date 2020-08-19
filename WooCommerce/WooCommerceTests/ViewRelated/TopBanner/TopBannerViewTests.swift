@@ -18,8 +18,8 @@ final class TopBannerViewTests: XCTestCase {
 
     func test_it_shows_actionStackView_if_actionButtons_are_provided() throws {
         // Given
-        let actionButton = ActionButton(title: "Button", action: {})
-        let actionButton2 = ActionButton(title: "Button2", action: {})
+        let actionButton = TopBannerViewModel.ActionButton(title: "Button", action: {})
+        let actionButton2 = TopBannerViewModel.ActionButton(title: "Button2", action: {})
         let viewModel = createViewModel(with: [actionButton, actionButton2])
         let topBannerView = TopBannerView(viewModel: viewModel)
 
@@ -34,7 +34,7 @@ final class TopBannerViewTests: XCTestCase {
     func test_it_forwards_actionButtons_actions_correctly() throws {
         // Given
         var actionInvoked = false
-        let actionButton = ActionButton(title: "Button", action: {
+        let actionButton = TopBannerViewModel.ActionButton(title: "Button", action: {
             actionInvoked = true
         })
         let viewModel = createViewModel(with: [actionButton])
@@ -50,7 +50,7 @@ final class TopBannerViewTests: XCTestCase {
 }
 
 private extension TopBannerViewTests {
-    func createViewModel(with actionButtons: [ActionButton]) -> TopBannerViewModel {
+    func createViewModel(with actionButtons: [TopBannerViewModel.ActionButton]) -> TopBannerViewModel {
         TopBannerViewModel(title: "", infoText: "", icon: nil, isExpanded: true, topButton: .chevron(handler: nil), actionButtons: actionButtons)
     }
 }

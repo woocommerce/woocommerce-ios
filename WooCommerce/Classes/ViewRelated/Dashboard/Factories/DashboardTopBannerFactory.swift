@@ -11,7 +11,7 @@ final class DashboardTopBannerFactory {
                                            isExpanded: true,
                                            topButton: .chevron(handler: nil),
                                            actionButtons: [
-                                              ActionButton(title: DeprecatedStatsConstants.actionTitle, action: actionHandler),
+                                            .init(title: DeprecatedStatsConstants.actionTitle, action: actionHandler),
                                            ])
         return TopBannerView(viewModel: viewModel)
     }

@@ -351,6 +351,66 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(shouldBeVisibleResult).isSuccess)
         XCTAssertTrue(try XCTUnwrap(shouldBeVisibleResult).get())
     }
+
+    func test_loadFeedbackVisibility_for_productsM3_returns_false_after_marking_it_as_pending() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let updateAction = AppSettingsAction.updateFeedbackStatus(type: .productsM3, status: .pending) { _ in }
+        subject?.onAction(updateAction)
+
+        // When
+        var visibilityResult: Result<Bool, Error>?
+        let queryAction = AppSettingsAction.loadFeedbackVisibility(type: .productsM3) { result in
+            visibilityResult = result
+        }
+        subject?.onAction(queryAction)
+
+        // Then
+        let result = try XCTUnwrap(visibilityResult)
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertTrue(try result.get())
+
+    }
+
+    func test_loadFeedbackVisibility_for_productsM3_returns_false_after_marking_it_as_dismissed() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let updateAction = AppSettingsAction.updateFeedbackStatus(type: .productsM3, status: .dismissed) { _ in }
+        subject?.onAction(updateAction)
+
+        // When
+        var visibilityResult: Result<Bool, Error>?
+        let queryAction = AppSettingsAction.loadFeedbackVisibility(type: .productsM3) { result in
+            visibilityResult = result
+        }
+        subject?.onAction(queryAction)
+
+        // Then
+        let result = try XCTUnwrap(visibilityResult)
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertFalse(try result.get())
+
+    }
+
+    func test_loadFeedbackVisibility_for_productsM3_returns_false_after_marking_it_as_given() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let updateAction = AppSettingsAction.updateFeedbackStatus(type: .productsM3, status: .given(Date())) { _ in }
+        subject?.onAction(updateAction)
+
+        // When
+        var visibilityResult: Result<Bool, Error>?
+        let queryAction = AppSettingsAction.loadFeedbackVisibility(type: .productsM3) { result in
+            visibilityResult = result
+        }
+        subject?.onAction(queryAction)
+
+        // Then
+        let result = try XCTUnwrap(visibilityResult)
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertFalse(try result.get())
+
+    }
 }
 
 // MARK: - Utils

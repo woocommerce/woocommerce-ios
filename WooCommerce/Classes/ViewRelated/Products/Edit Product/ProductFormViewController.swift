@@ -598,7 +598,10 @@ private extension ProductFormViewController {
             return
         }
 
-        let viewController = ProductSettingsViewController(product: product.product, password: password, completion: { [weak self] (productSettings) in
+        let viewController = ProductSettingsViewController(product: product.product,
+                                                           password: password,
+                                                           isEditProductsRelease3Enabled: isEditProductsRelease3Enabled,
+                                                           completion: { [weak self] (productSettings) in
             guard let self = self else {
                 return
             }

@@ -2,6 +2,7 @@ import XCTest
 
 @testable import Yosemite
 import struct Storage.GeneralAppSettings
+import struct Storage.FeedbackSettings
 
 private typealias InferenceError = InAppFeedbackCardVisibilityUseCase.InferenceError
 
@@ -35,8 +36,8 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
 
         fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path, thenReturn: [:])
 
-        let settings = GeneralAppSettings(installationDate: installationDate, lastFeedbackDate: nil)
-        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, fileManager: fileManager, calendar: calendar)
+        let settings = createAppSetting(instalationDate: installationDate, feedbackSatus: .pending)
+        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .general, fileManager: fileManager, calendar: calendar)
 
         // When
         let shouldBeVisible = try useCase.shouldBeVisible(currentDate: currentDate)
@@ -52,8 +53,8 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
 
         fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path, thenReturn: [:])
 
-        let settings = GeneralAppSettings(installationDate: installationDate, lastFeedbackDate: nil)
-        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, fileManager: fileManager, calendar: calendar)
+        let settings = createAppSetting(instalationDate: installationDate, feedbackSatus: .pending)
+        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .general, fileManager: fileManager, calendar: calendar)
 
         // When
         let shouldBeVisible = try useCase.shouldBeVisible(currentDate: currentDate)
@@ -70,8 +71,8 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
 
         fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path, thenReturn: [:])
 
-        let settings = GeneralAppSettings(installationDate: installationDate, lastFeedbackDate: lastFeedbackDate)
-        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, fileManager: fileManager, calendar: calendar)
+        let settings = createAppSetting(instalationDate: installationDate, feedbackSatus: .given(lastFeedbackDate))
+        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .general, fileManager: fileManager, calendar: calendar)
 
         // When
         let shouldBeVisible = try useCase.shouldBeVisible(currentDate: currentDate)
@@ -88,8 +89,8 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
 
         fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path, thenReturn: [:])
 
-        let settings = GeneralAppSettings(installationDate: installationDate, lastFeedbackDate: lastFeedbackDate)
-        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, fileManager: fileManager, calendar: calendar)
+        let settings = createAppSetting(instalationDate: installationDate, feedbackSatus: .given(lastFeedbackDate))
+        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .general, fileManager: fileManager, calendar: calendar)
 
         // When
         let shouldBeVisible = try useCase.shouldBeVisible(currentDate: currentDate)
@@ -106,8 +107,8 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path,
                                                    thenReturn: [.creationDate: documentDirCreationDate])
 
-        let settings = GeneralAppSettings(installationDate: nil, lastFeedbackDate: nil)
-        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, fileManager: fileManager, calendar: calendar)
+        let settings = createAppSetting(instalationDate: nil, feedbackSatus: .pending)
+        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .general, fileManager: fileManager, calendar: calendar)
 
         // When
         let shouldBeVisible = try useCase.shouldBeVisible(currentDate: currentDate)
@@ -126,8 +127,8 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path,
                                                    thenReturn: [.creationDate: documentDirCreationDate])
 
-        let settings = GeneralAppSettings(installationDate: installationDate, lastFeedbackDate: nil)
-        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, fileManager: fileManager, calendar: calendar)
+        let settings = createAppSetting(instalationDate: installationDate, feedbackSatus: .pending)
+        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .general, fileManager: fileManager, calendar: calendar)
 
         // When
         let shouldBeVisible = try useCase.shouldBeVisible(currentDate: currentDate)
@@ -140,8 +141,8 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         // Given
         fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path, thenReturn: [:])
 
-        let settings = GeneralAppSettings(installationDate: nil, lastFeedbackDate: nil)
-        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, fileManager: fileManager, calendar: calendar)
+        let settings = createAppSetting(instalationDate: nil, feedbackSatus: .pending)
+        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .general, fileManager: fileManager, calendar: calendar)
 
         // When
         var error: Error?
@@ -163,5 +164,11 @@ private extension InAppFeedbackCardVisibilityUseCaseTests {
 
     func documentDirectoryURL() throws -> URL {
         try XCTUnwrap(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last)
+    }
+
+    func createAppSetting(instalationDate: Date?, feedbackSatus: FeedbackSettings.Status) -> GeneralAppSettings {
+        let feedback = FeedbackSettings(name: .general, status: feedbackSatus)
+        let settings = GeneralAppSettings(installationDate: instalationDate, feedbacks: [feedback.name: feedback])
+        return settings
     }
 }

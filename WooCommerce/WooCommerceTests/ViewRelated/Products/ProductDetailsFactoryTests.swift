@@ -7,14 +7,14 @@ final class ProductDetailsFactoryTests: XCTestCase {
     func testFactoryCreatesProductFormForSimpleProductWhenProductsFeatureSwitchIsOn() {
         // Arrange
         let mockStoresManager = MockProductsAppSettingsStoresManager(isProductsFeatureSwitchEnabled: true, sessionManager: SessionManager.testingInstance)
-        ServiceLocator.setStores(mockStoresManager)
 
         let product = MockProduct().product(productType: .simple)
 
         let expectation = self.expectation(description: "Wait for loading Products feature switch from app settings")
         // Action
         ProductDetailsFactory.productDetails(product: product,
-                                             presentationStyle: .navigationStack) { viewController in
+                                             presentationStyle: .navigationStack,
+                                             stores: mockStoresManager) { viewController in
                                                 // Assert
                                                 XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
                                                 expectation.fulfill()
@@ -25,14 +25,14 @@ final class ProductDetailsFactoryTests: XCTestCase {
     func testFactoryCreatesProductFormForSimpleProductWhenProductsFeatureSwitchIsOff() {
         // Arrange
         let mockStoresManager = MockProductsAppSettingsStoresManager(isProductsFeatureSwitchEnabled: false, sessionManager: SessionManager.testingInstance)
-        ServiceLocator.setStores(mockStoresManager)
 
         let product = MockProduct().product(productType: .simple)
 
         let expectation = self.expectation(description: "Wait for loading Products feature switch from app settings")
         // Action
         ProductDetailsFactory.productDetails(product: product,
-                                             presentationStyle: .navigationStack) { viewController in
+                                             presentationStyle: .navigationStack,
+                                             stores: mockStoresManager) { viewController in
                                                 // Assert
                                                 XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
                                                 expectation.fulfill()
@@ -44,14 +44,15 @@ final class ProductDetailsFactoryTests: XCTestCase {
 
     func testFactoryCreatesProductFormForAffiliateProductWhenProductsRelease3IsOn() {
         // Arrange
-        let featureFlagService = MockFeatureFlagService(isEditProductsRelease2On: true, isEditProductsRelease3On: true)
+        let mockStoresManager = MockProductsAppSettingsStoresManager(isProductsFeatureSwitchEnabled: true, sessionManager: SessionManager.testingInstance)
+
         let product = MockProduct().product(productType: .affiliate)
         let expectation = self.expectation(description: "Wait for loading Products feature switch from app settings")
 
         // Action
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .navigationStack,
-                                             featureFlagService: featureFlagService) { viewController in
+                                             stores: mockStoresManager) { viewController in
                                                 // Assert
                                                 XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
                                                 expectation.fulfill()
@@ -61,14 +62,14 @@ final class ProductDetailsFactoryTests: XCTestCase {
 
     func testFactoryCreatesReadonlyProductDetailsForAffiliateProductWhenProductsRelease3IsOff() {
         // Arrange
-        let featureFlagService = MockFeatureFlagService(isEditProductsRelease2On: true, isEditProductsRelease3On: false)
+        let mockStoresManager = MockProductsAppSettingsStoresManager(isProductsFeatureSwitchEnabled: false, sessionManager: SessionManager.testingInstance)
         let product = MockProduct().product(productType: .affiliate)
         let expectation = self.expectation(description: "Wait for loading Products feature switch from app settings")
 
         // Action
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .navigationStack,
-                                             featureFlagService: featureFlagService) { viewController in
+                                             stores: mockStoresManager) { viewController in
                                                 // Assert
                                                 XCTAssertTrue(viewController is ProductDetailsViewController)
                                                 expectation.fulfill()
@@ -80,14 +81,14 @@ final class ProductDetailsFactoryTests: XCTestCase {
 
     func testFactoryCreatesProductFormForGroupedProductWhenProductsRelease3IsOn() {
         // Arrange
-        let featureFlagService = MockFeatureFlagService(isEditProductsRelease2On: true, isEditProductsRelease3On: true)
+        let mockStoresManager = MockProductsAppSettingsStoresManager(isProductsFeatureSwitchEnabled: true, sessionManager: SessionManager.testingInstance)
         let product = MockProduct().product(productType: .grouped)
         let expectation = self.expectation(description: "Wait for loading Products feature switch from app settings")
 
         // Action
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .navigationStack,
-                                             featureFlagService: featureFlagService) { viewController in
+                                             stores: mockStoresManager) { viewController in
                                                 // Assert
                                                 XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
                                                 expectation.fulfill()
@@ -97,14 +98,14 @@ final class ProductDetailsFactoryTests: XCTestCase {
 
     func testFactoryCreatesReadonlyProductDetailsForGroupedProductWhenProductsRelease3IsOff() {
         // Arrange
-        let featureFlagService = MockFeatureFlagService(isEditProductsRelease2On: true, isEditProductsRelease3On: false)
+        let mockStoresManager = MockProductsAppSettingsStoresManager(isProductsFeatureSwitchEnabled: false, sessionManager: SessionManager.testingInstance)
         let product = MockProduct().product(productType: .grouped)
         let expectation = self.expectation(description: "Wait for loading Products feature switch from app settings")
 
         // Action
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .navigationStack,
-                                             featureFlagService: featureFlagService) { viewController in
+                                             stores: mockStoresManager) { viewController in
                                                 // Assert
                                                 XCTAssertTrue(viewController is ProductDetailsViewController)
                                                 expectation.fulfill()
@@ -116,14 +117,14 @@ final class ProductDetailsFactoryTests: XCTestCase {
 
     func testFactoryCreatesProductFormForVariableProductWhenProductsRelease3IsOn() {
         // Arrange
-        let featureFlagService = MockFeatureFlagService(isEditProductsRelease2On: true, isEditProductsRelease3On: true)
+        let mockStoresManager = MockProductsAppSettingsStoresManager(isProductsFeatureSwitchEnabled: true, sessionManager: SessionManager.testingInstance)
         let product = MockProduct().product(productType: .variable)
         let expectation = self.expectation(description: "Wait for loading Products feature switch from app settings")
 
         // Action
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .navigationStack,
-                                             featureFlagService: featureFlagService) { viewController in
+                                             stores: mockStoresManager) { viewController in
                                                 // Assert
                                                 XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
                                                 expectation.fulfill()
@@ -133,14 +134,14 @@ final class ProductDetailsFactoryTests: XCTestCase {
 
     func testFactoryCreatesReadonlyProductDetailsForVariableProductWhenProductsRelease3IsOff() {
         // Arrange
-        let featureFlagService = MockFeatureFlagService(isEditProductsRelease2On: true, isEditProductsRelease3On: false)
+        let mockStoresManager = MockProductsAppSettingsStoresManager(isProductsFeatureSwitchEnabled: false, sessionManager: SessionManager.testingInstance)
         let product = MockProduct().product(productType: .variable)
         let expectation = self.expectation(description: "Wait for loading Products feature switch from app settings")
 
         // Action
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .navigationStack,
-                                             featureFlagService: featureFlagService) { viewController in
+                                             stores: mockStoresManager) { viewController in
                                                 // Assert
                                                 XCTAssertTrue(viewController is ProductDetailsViewController)
                                                 expectation.fulfill()

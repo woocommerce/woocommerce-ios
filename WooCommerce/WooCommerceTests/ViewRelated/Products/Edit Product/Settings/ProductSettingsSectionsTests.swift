@@ -20,7 +20,7 @@ final class ProductSettingsSectionsTests: XCTestCase {
         let productType = ProductType.grouped
 
         // When
-        let section = ProductSettingsSections.PublishSettings(settings, productType: productType)
+        let section = ProductSettingsSections.PublishSettings(settings, productType: productType, isEditProductsRelease3Enabled: true)
 
         // Then
         XCTAssertNil(section.rows.first(where: {
@@ -42,7 +42,7 @@ final class ProductSettingsSectionsTests: XCTestCase {
         let productType = ProductType.simple
 
         // When
-        let section = ProductSettingsSections.PublishSettings(settings, productType: productType)
+        let section = ProductSettingsSections.PublishSettings(settings, productType: productType, isEditProductsRelease3Enabled: true)
 
         // Then
         XCTAssertNotNil(section.rows.first(where: {

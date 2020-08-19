@@ -107,12 +107,16 @@ class LoginPrologueViewController: LoginViewController {
 
             // Continue with WordPress.com button action
             vc.emailTapped = { [weak self] in
-                guard let toVC = LoginEmailViewController.instantiate(from: .login) else {
-                    DDLogError("Failed to navigate to LoginEmailVC from LoginPrologueVC")
+                guard let self = self else {
                     return
                 }
 
-                self?.navigationController?.pushViewController(toVC, animated: true)
+                guard self.configuration.enableUnifiedLoginLink else {
+                    self.presentLoginEmailView()
+                    return
+                }
+
+                self.presentUnifiedLoginMagicLinkView()
             }
 
             // Continue with Google button action
@@ -230,6 +234,24 @@ class LoginPrologueViewController: LoginViewController {
     private func presentUnifiedSignupView() {
         guard let toVC = UnifiedSignupViewController.instantiate(from: .unifiedSignup) else {
             DDLogError("Failed to navigate to UnifiedSignupViewController")
+            return
+        }
+
+        navigationController?.pushViewController(toVC, animated: true)
+    }
+
+    private func presentLoginEmailView() {
+        guard let toVC = LoginEmailViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate to LoginEmailVC from LoginPrologueVC")
+            return
+        }
+
+        navigationController?.pushViewController(toVC, animated: true)
+    }
+
+    private func presentUnifiedLoginMagicLinkView() {
+        guard let toVC = LoginMagicLinkViewController.instantiate(from: .unifiedLoginMagicLink) else {
+            DDLogError("Failed to navigate to LoginMagicLinkViewController")
             return
         }
 

@@ -63,6 +63,12 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         }
     }
 
+    override open func viewWillDisappear(_ animated: Bool) {
+        if isMovingFromParent {
+            tracker.track(click: .dismiss)
+        }
+    }
+
     func didChangePreferredContentSize() {
         styleInstructions()
     }
@@ -152,6 +158,9 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
             errorLabel?.isHidden = true
             return
         }
+        
+        tracker.track(failure: message)
+        
         errorLabel?.isHidden = false
         errorLabel?.text = message
         errorToPresent = nil
@@ -232,8 +241,6 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     /// Overridden here to direct these errors to the login screen's error label
     dynamic open func displayRemoteError(_ error: Error) {
         configureViewLoading(false)
-
-        tracker.track(failure: error.localizedDescription)
         
         let err = error as NSError
         guard err.code != 403 else {
@@ -248,15 +255,16 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     open func needsMultifactorCode() {
         displayError(message: "")
         configureViewLoading(false)
-
+        
         tracker.track(step: .twoFactorAuthentication, ifTrackingNotEnabled: {
             WordPressAuthenticator.track(.twoFactorCodeRequested)
         })
         
         let unifiedGoogle = WordPressAuthenticator.shared.configuration.enableUnifiedGoogle && loginFields.meta.socialService == .google
         let unifiedApple = WordPressAuthenticator.shared.configuration.enableUnifiedApple && loginFields.meta.socialService == .apple
+        let unifiedSiteAddress = WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress && !loginFields.siteAddress.isEmpty
         
-        guard (unifiedGoogle || unifiedApple) else {
+        guard (unifiedGoogle || unifiedApple || unifiedSiteAddress) else {
             presentLogin2FA()
             return
         }

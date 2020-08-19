@@ -21,7 +21,11 @@ final class SignupMagicLinkViewController: LoginViewController {
 
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
-        // TODO: add the action once the button is tapped.
+        // TODO: - Tracks.
+        // WordPressAuthenticator.track(.signupMagicLinkOpenEmailClientViewed)
+        let linkMailPresenter = LinkMailPresenter(emailAddress: loginFields.username)
+        let appSelector = AppSelector(sourceView: sender)
+        linkMailPresenter.presentEmailClients(on: self, appSelector: appSelector)
     }
 
     // MARK: - View lifecycle
@@ -42,12 +46,13 @@ final class SignupMagicLinkViewController: LoginViewController {
         loadRows()
     }
 
-    /// Some last-minute gatekeeping.
+    /// Validation check while we are bypassing screens.
     ///
     func validationCheck() {
         let email = loginFields.username
-        // We want to fail fast if a dev has bypassed the email validation in the email login & signup view.
-        assert(email.isValidEmail(), "The value of loginFields.username was not a valid email address.")
+        if !email.isValidEmail() {
+            DDLogError("The value of loginFields.username was not a valid email address.")
+        }
     }
 
     // MARK: - Overrides
@@ -116,10 +121,6 @@ private extension SignupMagicLinkViewController {
     ///
     func loadRows() {
         rows = [.persona, .instructions, .checkSpam]
-
-        if let errorText = errorMessage, !errorText.isEmpty {
-            rows.append(.errorMessage)
-        }
     }
 
     /// Configure cells.
@@ -132,8 +133,6 @@ private extension SignupMagicLinkViewController {
             configureInstructionLabel(cell)
         case let cell as TextLabelTableViewCell where row == .checkSpam:
             configureCheckSpamLabel(cell)
-        case let cell as TextLabelTableViewCell where row == .errorMessage:
-            configureErrorLabel(cell)
         default:
             DDLogError("Error: Unidentified tableViewCell type found.")
         }
@@ -157,15 +156,6 @@ private extension SignupMagicLinkViewController {
         cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.checkSpamInstructions, style: .body)
     }
 
-    /// Configure the error message cell.
-    ///
-    func configureErrorLabel(_ cell: TextLabelTableViewCell) {
-        cell.configureLabel(text: errorMessage, style: .error)
-        if shouldChangeVoiceOverFocus {
-            UIAccessibility.post(notification: .layoutChanged, argument: cell)
-        }
-    }
-
     // MARK: - Private Constants
 
     /// Rows listed in the order they were created.
@@ -174,13 +164,12 @@ private extension SignupMagicLinkViewController {
         case persona
         case instructions
         case checkSpam
-        case errorMessage
 
         var reuseIdentifier: String {
             switch self {
             case .persona:
                 return GravatarEmailTableViewCell.reuseIdentifier
-            case .instructions, .checkSpam, .errorMessage:
+            case .instructions, .checkSpam:
                 return TextLabelTableViewCell.reuseIdentifier
             }
         }

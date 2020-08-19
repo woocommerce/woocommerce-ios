@@ -1,12 +1,12 @@
 PODS:
   - 1PasswordExtension (1.8.6)
   - Alamofire (4.8.0)
-  - AppAuth (1.4.0):
-    - AppAuth/Core (= 1.4.0)
-    - AppAuth/ExternalUserAgent (= 1.4.0)
-  - AppAuth/Core (1.4.0)
-  - AppAuth/ExternalUserAgent (1.4.0)
-  - Automattic-Tracks-iOS (0.4.5):
+  - AppAuth (1.3.1):
+    - AppAuth/Core (= 1.3.1)
+    - AppAuth/ExternalUserAgent (= 1.3.1)
+  - AppAuth/Core (1.3.1)
+  - AppAuth/ExternalUserAgent (1.3.1)
+  - Automattic-Tracks-iOS (0.5.1-beta.1):
     - CocoaLumberjack (~> 3)
     - Reachability (~> 3)
     - Sentry (~> 4)
@@ -50,7 +50,7 @@ PODS:
   - Sodium (0.8.0)
   - Sourcery (0.18.0)
   - SVProgressHUD (2.2.5)
-  - UIDeviceIdentifier (1.4.0)
+  - UIDeviceIdentifier (1.5.0)
   - WordPress-Aztec-iOS (1.11.0)
   - WordPress-Editor-iOS (1.11.0):
     - WordPress-Aztec-iOS (= 1.11.0)
@@ -77,7 +77,7 @@ PODS:
     - CocoaLumberjack (~> 3.4)
     - FormatterKit/TimeIntervalFormatter (= 1.8.2)
   - WordPressUI (1.7.0)
-  - Wormholy (1.6.0)
+  - Wormholy (1.6.2)
   - WPMediaPicker (1.7.1)
   - wpxmlrpc (0.8.5)
   - XLPagerTabStrip (9.0.0)
@@ -98,7 +98,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.8)
-  - Automattic-Tracks-iOS (~> 0.4.5)
+  - Automattic-Tracks-iOS (~> 0.5.1-beta.1)
   - Charts (~> 3.3.0)
   - CocoaLumberjack (~> 3.5)
   - CocoaLumberjack/Swift (~> 3.5)
@@ -110,7 +110,7 @@ DEPENDENCIES:
   - WordPressAuthenticator (~> 1.23.0-beta)
   - WordPressShared (~> 1.11-beta)
   - WordPressUI (~> 1.7.0)
-  - Wormholy (~> 1.6.0)
+  - Wormholy (~> 1.6.2)
   - WPMediaPicker (~> 1.7.1)
   - XLPagerTabStrip (~> 9.0)
   - ZendeskSupportSDK (~> 5.0)
@@ -160,8 +160,8 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   1PasswordExtension: f97cc80ae58053c331b2b6dc8843ba7103b33794
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
-  AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
-  Automattic-Tracks-iOS: 7475e8e77cd142ddd1d10c0a3a7a04ac39a8cdb3
+  AppAuth: 8803ba1aec6d00d9afd30093f82e600307eaa6ea
+  Automattic-Tracks-iOS: 044b34f28f6584d36faa64d1183d353198ed3bd6
   Charts: e0dd4cd8f257bccf98407b58183ddca8e8d5b578
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
   FormatterKit: 4b8f29acc9b872d5d12a63efb560661e8f2e1b98
@@ -179,14 +179,14 @@ SPEC CHECKSUMS:
   Sodium: 63c0ca312a932e6da481689537d4b35568841bdc
   Sourcery: e0e8658a1ce6d9f475156ad3ffce4c68f1261b3e
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
-  UIDeviceIdentifier: 44f805037d21b94394821828f4fcaba34b38c2d0
+  UIDeviceIdentifier: a79ccdfc940373835a7d8e9fc7541e6bf61b6319
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
   WordPressAuthenticator: 2788e77ebda73a512ff78e230ccccde1f484e94b
   WordPressKit: dcab41057f0c39af3280b7c0d17bdc36271e01ae
   WordPressShared: b56046080c99d41519d097c970df663fda48e218
   WordPressUI: 1cf47a3b78154faf69caa18569ee7ece1e510fa0
-  Wormholy: f52cd3c384fb49ae3e8fdb2b1398b66746a65104
+  Wormholy: 5a186f877829e7d488963b09f204e0186b40c9a8
   WPMediaPicker: 46ae5807c8f64d30a39c28812ad150837a424ed2
   wpxmlrpc: 6a9bdd6ab9d1b159b384b0df0f3f39de9af4fecf
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
@@ -198,6 +198,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: 83c8784d8e86c4ae2937fab2cdee21621177f3c2
+PODFILE CHECKSUM: 9d403552d4973ec5354b53c3cf300dc8b03de822
 
 COCOAPODS: 1.9.1

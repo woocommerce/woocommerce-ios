@@ -64,6 +64,8 @@ private extension DefaultProductFormTableViewModel {
                 return .price(viewModel: priceSettingsRow(product: product))
             case .reviews:
                 return .reviews(viewModel: reviewsRow(product: product), ratingCount: product.ratingCount, averageRating: product.averageRating)
+            case .productType:
+                return .productType(viewModel: productTypeRow(product: product))
             case .shippingSettings:
                 return .shipping(viewModel: shippingSettingsRow(product: product))
             case .inventorySettings:
@@ -93,13 +95,15 @@ private extension DefaultProductFormTableViewModel {
         return actions.compactMap { action in
             switch action {
             case .priceSettings:
-                return .price(viewModel: priceSettingsRow(product: productVariation))
+                return .price(viewModel: variationPriceSettingsRow(productVariation: productVariation))
             case .shippingSettings:
                 return .shipping(viewModel: shippingSettingsRow(product: productVariation))
             case .inventorySettings:
                 return .inventory(viewModel: inventorySettingsRow(product: productVariation))
             case .status:
                 return .status(viewModel: variationStatusRow(productVariation: productVariation))
+            case .noPriceWarning:
+                return .noPriceWarning(viewModel: noPriceWarningRow())
             default:
                 assertionFailure("Unexpected action in the settings section: \(action)")
                 return nil
@@ -151,6 +155,12 @@ private extension DefaultProductFormTableViewModel {
                                                         details: details)
     }
 
+    func variationPriceSettingsRow(productVariation: EditableProductVariationModel) -> ProductFormSection.SettingsRow.ViewModel {
+        let priceViewModel = priceSettingsRow(product: productVariation)
+        let tintColor = productVariation.isEnabledAndMissingPrice ? UIColor.warning: nil
+        return .init(icon: priceViewModel.icon, title: priceViewModel.title, details: priceViewModel.details, tintColor: tintColor)
+    }
+
     func reviewsRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.productReviewsImage
         let title = Constants.reviewsTitle
@@ -188,6 +198,27 @@ private extension DefaultProductFormTableViewModel {
         }
 
         let details = inventoryDetails.isEmpty ? nil: inventoryDetails.joined(separator: "\n")
+
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon,
+                                                        title: title,
+                                                        details: details)
+    }
+
+    func productTypeRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {
+        let icon = UIImage.productImage
+        let title = Constants.productTypeTitle
+
+        var details = product.productType.description
+
+        if product.productType == .simple {
+            switch product.virtual {
+            case true:
+                details = Constants.virtualProductType
+            case false:
+                details = Constants.physicalProductType
+            }
+        }
+
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
@@ -344,8 +375,14 @@ private extension DefaultProductFormTableViewModel {
                                                                  title: title,
                                                                  details: nil,
                                                                  isActionable: false)
-        let isSwitchOn = productVariation.productVariation.isVisible
+        let isSwitchOn = productVariation.isEnabled
         return ProductFormSection.SettingsRow.SwitchableViewModel(viewModel: viewModel, isSwitchOn: isSwitchOn)
+    }
+
+    func noPriceWarningRow() -> ProductFormSection.SettingsRow.WarningViewModel {
+        let icon = UIImage.infoOutlineImage
+        let title = Constants.noPriceWarningTitle
+        return ProductFormSection.SettingsRow.WarningViewModel(icon: icon, title: title)
     }
 }
 
@@ -359,6 +396,8 @@ private extension DefaultProductFormTableViewModel {
                                                     comment: "Title of the Reviews row on Product main screen")
         static let inventorySettingsTitle = NSLocalizedString("Inventory",
                                                               comment: "Title of the Inventory Settings row on Product main screen")
+        static let productTypeTitle = NSLocalizedString("Product type",
+                                                              comment: "Title of the Product Type row on Product main screen")
         static let shippingSettingsTitle = NSLocalizedString("Shipping",
                                                              comment: "Title of the Shipping Settings row on Product main screen")
         static let categoriesTitle = NSLocalizedString("Categories",
@@ -406,6 +445,12 @@ private extension DefaultProductFormTableViewModel {
         static let stockQuantityFormat = NSLocalizedString("Quantity: %ld",
                                                            comment: "Format of the stock quantity on the Inventory Settings row")
 
+        // Product Type
+        static let virtualProductType = NSLocalizedString("Virtual",
+                                                          comment: "Display label for simple virtual product type.")
+        static let physicalProductType = NSLocalizedString("Physical",
+                                                           comment: "Display label for simple physical product type.")
+
         // Shipping
         static let weightFormat = NSLocalizedString("Weight: %1$@%2$@",
                                                     comment: "Format of the weight on the Shipping Settings row - weight[unit]")
@@ -444,19 +489,10 @@ private extension DefaultProductFormTableViewModel {
         static let variationStatusTitle =
             NSLocalizedString("Enabled",
                               comment: "Title of the status row on Product Variation main screen to enable/disable a variation")
-    }
-}
 
-private extension ProductVariation {
-    var isVisible: Bool {
-        switch status {
-        case .publish:
-            return true
-        case .privateStatus:
-            return false
-        default:
-            DDLogError("Unexpected product variation status: \(status)")
-            return false
-        }
+        // No price warning row
+        static let noPriceWarningTitle =
+            NSLocalizedString("Variations without price won’t be shown in your store",
+                              comment: "Title of the no price warning row on Product Variation main screen when a variation is enabled without a price")
     }
 }

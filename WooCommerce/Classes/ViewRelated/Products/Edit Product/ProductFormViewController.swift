@@ -234,6 +234,9 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             case .reviews:
                 // TODO-2509 Edit Product M3 analytics
                 showReviews()
+            case .productType:
+                // TODO-2509 Edit Product M3 analytics
+                editProductType()
             case .shipping:
                 ServiceLocator.analytics.track(.productDetailViewShippingSettingsTapped)
                 editShippingSettings()
@@ -268,7 +271,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 let variationsViewController = ProductVariationsViewController(product: product.product,
                                                                                isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
                 show(variationsViewController, sender: self)
-            case .status:
+            case .status, .noPriceWarning:
                 break
             }
         }
@@ -802,6 +805,31 @@ private extension ProductFormViewController {
 
         let productReviewsViewController = ProductReviewsViewController(product: product.product)
         navigationController?.show(productReviewsViewController, sender: self)
+    }
+}
+
+// MARK: Action - Edit Product Type Settings
+//
+private extension ProductFormViewController {
+    func editProductType() {
+        //TODO-2198: present the bottom action sheet
+    }
+
+    func onEditProdyctTypeCompletion(productType: ProductType) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+        let hasChangedData: Bool = {
+            productType != product.productType
+        }()
+
+        // TODO-2509 Edit Product M3 analytics
+
+        guard hasChangedData else {
+            return
+        }
+        // TODO-2198: update product type in viewModel
+        // viewModel.updateProductType(productType: productType)
     }
 }
 

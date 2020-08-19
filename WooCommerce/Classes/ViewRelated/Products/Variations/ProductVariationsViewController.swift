@@ -204,10 +204,7 @@ extension ProductVariationsViewController: UITableViewDataSource {
                                                   allAttributes: allAttributes,
                                                   parentProductSKU: parentProductSKU)
 
-        let currencyCode = CurrencySettings.shared.currencyCode
-        let currency = CurrencySettings.shared.symbol(from: currencyCode)
-        let viewModel = ProductsTabProductViewModel(productVariationModel: model,
-                                                    currency: currency)
+        let viewModel = ProductsTabProductViewModel(productVariationModel: model)
         cell.update(viewModel: viewModel, imageService: imageService)
         cell.selectionStyle = .none
         cell.accessoryType = .none

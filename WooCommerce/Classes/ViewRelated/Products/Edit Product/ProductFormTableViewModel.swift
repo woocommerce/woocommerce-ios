@@ -24,6 +24,7 @@ enum ProductFormSection: Equatable {
     enum SettingsRow: Equatable {
         case price(viewModel: ViewModel)
         case reviews(viewModel: ViewModel, ratingCount: Int, averageRating: String)
+        case productType(viewModel: ViewModel)
         case shipping(viewModel: ViewModel)
         case inventory(viewModel: ViewModel)
         case categories(viewModel: ViewModel)
@@ -33,19 +34,23 @@ enum ProductFormSection: Equatable {
         case sku(viewModel: ViewModel)
         case groupedProducts(viewModel: ViewModel)
         case variations(viewModel: ViewModel)
+        case noPriceWarning(viewModel: WarningViewModel)
         case status(viewModel: SwitchableViewModel)
 
         struct ViewModel {
             let icon: UIImage
             let title: String?
             let details: String?
+            /// If not nil, the color is applied to icon and text labels.
+            let tintColor: UIColor?
             let numberOfLinesForDetails: Int
             let isActionable: Bool
 
-            init(icon: UIImage, title: String?, details: String?, numberOfLinesForDetails: Int = 0, isActionable: Bool = true) {
+            init(icon: UIImage, title: String?, details: String?, tintColor: UIColor? = nil, numberOfLinesForDetails: Int = 0, isActionable: Bool = true) {
                 self.icon = icon
                 self.title = title
                 self.details = details
+                self.tintColor = tintColor
                 self.numberOfLinesForDetails = numberOfLinesForDetails
                 self.isActionable = isActionable
             }
@@ -61,6 +66,12 @@ enum ProductFormSection: Equatable {
                 self.viewModel = viewModel
                 self.isSwitchOn = isSwitchOn
             }
+        }
+
+        /// View model for warning UI
+        struct WarningViewModel: Equatable {
+            let icon: UIImage
+            let title: String?
         }
     }
 }

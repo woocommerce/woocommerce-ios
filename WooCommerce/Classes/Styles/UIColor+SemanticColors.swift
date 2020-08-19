@@ -55,11 +55,18 @@ extension UIColor {
                        dark: .withColorStudio(.green, shade: .shade30))
     }
 
-    /// Warning. Yellow-50 (< iOS 13 and Light Mode) and Yellow-30 (Dark Mode)
+    /// Warning. Orange-30 (< iOS 13 and Light Mode) and Orange-50 (Dark Mode)
     ///
     static var warning: UIColor {
-        return UIColor(light: .withColorStudio(.yellow, shade: .shade50),
-                       dark: .withColorStudio(.yellow, shade: .shade30))
+        return UIColor(light: .withColorStudio(.orange, shade: .shade30),
+                       dark: .withColorStudio(.orange, shade: .shade50))
+    }
+
+    /// Warning. Orange-5 (< iOS 13 and Light Mode) and Orange-90 (Dark Mode)
+    ///
+    static var warningBackground: UIColor {
+        return UIColor(light: .withColorStudio(.orange, shade: .shade5),
+                       dark: .withColorStudio(.orange, shade: .shade90))
     }
 
     /// Blue. Blue-50 (< iOS 13 and Light Mode) and Blue-30 (Dark Mode)

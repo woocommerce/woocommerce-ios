@@ -256,10 +256,10 @@ private extension StoreStatsAndTopPerformersViewController {
 
     func configurePeriodViewControllers() {
         let currentDate = Date()
-        let dayVC = StoreStatsAndTopPerformersPeriodViewController(timeRange: .today, currentDate: currentDate, canDisplayInAppFeedback: true)
-        let weekVC = StoreStatsAndTopPerformersPeriodViewController(timeRange: .thisWeek, currentDate: currentDate, canDisplayInAppFeedback: false)
-        let monthVC = StoreStatsAndTopPerformersPeriodViewController(timeRange: .thisMonth, currentDate: currentDate, canDisplayInAppFeedback: false)
-        let yearVC = StoreStatsAndTopPerformersPeriodViewController(timeRange: .thisYear, currentDate: currentDate, canDisplayInAppFeedback: false)
+        let dayVC = StoreStatsAndTopPerformersPeriodViewController(timeRange: .today, currentDate: currentDate, canDisplayInAppFeedbackCard: true)
+        let weekVC = StoreStatsAndTopPerformersPeriodViewController(timeRange: .thisWeek, currentDate: currentDate, canDisplayInAppFeedbackCard: false)
+        let monthVC = StoreStatsAndTopPerformersPeriodViewController(timeRange: .thisMonth, currentDate: currentDate, canDisplayInAppFeedbackCard: false)
+        let yearVC = StoreStatsAndTopPerformersPeriodViewController(timeRange: .thisYear, currentDate: currentDate, canDisplayInAppFeedbackCard: false)
 
         periodVCs.append(dayVC)
         periodVCs.append(weekVC)

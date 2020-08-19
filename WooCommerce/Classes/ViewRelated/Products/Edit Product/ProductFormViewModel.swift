@@ -165,6 +165,10 @@ extension ProductFormViewModel {
         product = EditableProductModel(product: product.product.copy(averageRating: averageRating, ratingCount: ratingCount))
     }
 
+    func updateProductType(productType: ProductType) {
+        product = EditableProductModel(product: product.product.copy(productTypeKey: productType.rawValue))
+    }
+
     func updateInventorySettings(sku: String?,
                                  manageStock: Bool,
                                  soldIndividually: Bool?,

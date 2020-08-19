@@ -27,7 +27,7 @@ target 'WooCommerce' do
 
   # Use the latest bugfix for coretelephony
   #pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => 'add/application-state-tag'
-  pod 'Automattic-Tracks-iOS', '~> 0.4.5'
+  pod 'Automattic-Tracks-iOS', '~> 0.5.1-beta.1'
 
   pod 'Gridicons', '~> 1.0'
 
@@ -56,7 +56,7 @@ target 'WooCommerce' do
   pod 'Charts', '~> 3.3.0'
   pod 'ZendeskSupportSDK', '~> 5.0'
   pod 'Kingfisher', '~> 5.11.0'
-  pod 'Wormholy', '~> 1.6.0', :configurations => ['Debug']
+  pod 'Wormholy', '~> 1.6.2', :configurations => ['Debug']
 
   # Unit Tests
   # ==========

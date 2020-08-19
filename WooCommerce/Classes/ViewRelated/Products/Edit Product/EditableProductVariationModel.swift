@@ -63,6 +63,10 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
         productVariation.status
     }
 
+    var virtual: Bool {
+        productVariation.virtual
+    }
+
     var images: [ProductImage] {
         [productVariation.image].compactMap { $0 }
     }
@@ -98,6 +102,11 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
     var ratingCount: Int {
         0
     }
+
+    var productType: ProductType {
+        .variable
+    }
+
     var weight: String? {
         productVariation.weight
     }
@@ -154,6 +163,26 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
 
     func isShippingEnabled() -> Bool {
         productVariation.downloadable == false && productVariation.virtual == false
+    }
+}
+
+extension EditableProductVariationModel {
+    /// Whether the variation is enabled based on its status.
+    var isEnabled: Bool {
+        switch status {
+        case .publish:
+            return true
+        case .privateStatus:
+            return false
+        default:
+            DDLogError("Unexpected product variation status: \(status)")
+            return false
+        }
+    }
+
+    /// Whether the variation is enabled but doesn't have a price so that it is still not visible.
+    var isEnabledAndMissingPrice: Bool {
+        isEnabled && regularPrice.isNilOrEmpty
     }
 }
 

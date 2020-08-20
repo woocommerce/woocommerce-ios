@@ -337,7 +337,7 @@ class AnalyticsTrackerTests: XCTestCase {
     /// Tests that we're using legacy tracking for all unsupported flows.
     ///
     func testStepLegacyTrackingForAllUnsupportedFlows() {
-        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.iCloudKeychainLogin, .passwordLogin, .magicLink, .signup, .wpCom]
+        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.loginWithiCloudKeychain, .loginWithPassword, .loginWithMagicLink, .signup, .wpCom]
         
         let legacyTrackingUsed = expectation(description: "All unsupported flows should use legacy tracking")
         legacyTrackingUsed.expectedFulfillmentCount = flows.count

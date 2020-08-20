@@ -21,6 +21,7 @@ final class StoreStatsAndTopPerformersPeriodViewModel {
 
     private let featureFlagService: FeatureFlagService
     private let storesManager: StoresManager
+    private let analytics: Analytics
 
     /// Create an instance of `self`.
     ///
@@ -30,10 +31,12 @@ final class StoreStatsAndTopPerformersPeriodViewModel {
     ///
     init(canDisplayInAppFeedbackCard: Bool,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         storesManager: StoresManager = ServiceLocator.stores) {
+         storesManager: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.canDisplayInAppFeedbackCard = canDisplayInAppFeedbackCard
         self.featureFlagService = featureFlagService
         self.storesManager = storesManager
+        self.analytics = analytics
     }
 
     /// Must be called by the `ViewController` during the `viewDidAppear()` event. This will

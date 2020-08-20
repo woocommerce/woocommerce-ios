@@ -46,7 +46,7 @@ final class StoreStatsAndTopPerformersPeriodViewModel {
     /// never terminated.
     ///
     func onViewDidAppear() {
-        updateIsInAppFeedbackCardVisibleValue()
+        refreshIsInAppFeedbackCardVisibleValue()
     }
 
     /// Updates the card visibility state stored in `isInAppFeedbackCardVisibleSubject` by updating the app last feedback date.
@@ -61,13 +61,13 @@ final class StoreStatsAndTopPerformersPeriodViewModel {
                 CrashLogging.logError(error)
             }
 
-            self.updateIsInAppFeedbackCardVisibleValue()
+            self.refreshIsInAppFeedbackCardVisibleValue()
         }
         storesManager.dispatch(action)
     }
 
     /// Calculates and updates the value of `isInAppFeedbackCardVisibleSubject`.
-    private func updateIsInAppFeedbackCardVisibleValue() {
+    private func refreshIsInAppFeedbackCardVisibleValue() {
         // Abort right away if we don't need to calculate the real value.
         let isEnabled = canDisplayInAppFeedbackCard && featureFlagService.isFeatureFlagEnabled(.inAppFeedback)
         guard isEnabled else {

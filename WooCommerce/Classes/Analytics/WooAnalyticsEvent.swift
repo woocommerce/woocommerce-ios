@@ -1,32 +1,33 @@
 import Foundation
 
 /// This struct represents an analytics event.
+///
 /// Declaring this class as final is a design choice to promote a simpler usage and implement events
 /// through parametrization of the `name` and `properties` properties.
 ///
 /// An example of a static event definition (in the client App or Pod):
 ///
 /// ~~~
-/// extension AnalyticsEvent {
-///     static let loginStart = AnalyticsEvent(name: "login", properties: ["step": "start"])
+/// extension WooAnalyticsEvent {
+///     static let loginStart = WooAnalyticsEvent(name: "login", properties: ["step": "start"])
 /// }
 /// ~~~
 ///
 /// An example of a dynamic / parametrized event definition (in the client App or Pod):
 ///
 /// ~~~
-/// extension AnalyticsEvent {
+/// extension WooAnalyticsEvent {
 ///     enum LoginStep: String {
 ///         case start
 ///         case success
 ///     }
 ///
-///     static func login(step: LoginStep) -> AnalyticsEvent {
+///     static func login(step: LoginStep) -> WooAnalyticsEvent {
 ///         let properties = [
 ///             "step": step.rawValue
 ///         ]
 ///
-///         return AnalyticsEvent(name: "login", properties: properties)
+///         return WooAnalyticsEvent(name: "login", properties: properties)
 ///     }
 /// }
 /// ~~~
@@ -38,7 +39,7 @@ import Foundation
 /// WPAnalytics.track(.loginStart)
 /// ~~~
 ///
-public final class AnalyticsEvent {
+public final class WooAnalyticsEvent {
     let name: String
     let properties: [String: String]
 

@@ -100,6 +100,12 @@ import AuthenticationServices
                                                  displayImages: displayImages,
                                                  displayStrings: displayStrings)
     }
+    
+    // MARK: - Testing Support
+    
+    class func isInitialized() -> Bool {
+        return privateInstance != nil
+    }
 
     // MARK: - Public Methods
     

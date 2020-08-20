@@ -52,7 +52,7 @@ class AnalyticsTrackerTests: XCTestCase {
             }
         }
         
-        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: true, siteAuthenticationEnabled: false)
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: true, siteAddressEnabled: false)
         let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
         
         tracker.set(source: source)
@@ -82,7 +82,7 @@ class AnalyticsTrackerTests: XCTestCase {
             }
         }
         
-        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: true, siteAuthenticationEnabled: false)
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: true, siteAddressEnabled: false)
         let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
         
         tracker.set(source: source)
@@ -115,7 +115,7 @@ class AnalyticsTrackerTests: XCTestCase {
             }
         }
 
-        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: true, siteAuthenticationEnabled: false)
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: true, siteAddressEnabled: false)
         let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
         
         tracker.set(source: source)
@@ -149,7 +149,7 @@ class AnalyticsTrackerTests: XCTestCase {
             }
         }
         
-        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: true, siteAuthenticationEnabled: false)
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: true, siteAddressEnabled: false)
         let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
         
         tracker.set(source: source)
@@ -176,7 +176,7 @@ class AnalyticsTrackerTests: XCTestCase {
             XCTFail()
         }
         
-        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: false, siteAuthenticationEnabled: false)
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: false, siteAddressEnabled: false)
         let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
         
         tracker.set(source: source)
@@ -205,7 +205,7 @@ class AnalyticsTrackerTests: XCTestCase {
             legacyTrackingExecuted.fulfill()
         }
         
-        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: true, googleEnabled: true, siteAuthenticationEnabled: true)
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: true, googleEnabled: true, siteAddressEnabled: true)
         let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
         
         tracker.set(source: source)
@@ -234,7 +234,7 @@ class AnalyticsTrackerTests: XCTestCase {
             XCTFail()
         }
         
-        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: false, siteAuthenticationEnabled: false)
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: false, siteAddressEnabled: false)
         let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
         
         tracker.set(source: source)
@@ -263,7 +263,7 @@ class AnalyticsTrackerTests: XCTestCase {
             legacyTrackingExecuted.fulfill()
         }
         
-        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: true, googleEnabled: true, siteAuthenticationEnabled: true)
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: true, googleEnabled: true, siteAddressEnabled: true)
         let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
         
         tracker.set(source: source)
@@ -291,7 +291,7 @@ class AnalyticsTrackerTests: XCTestCase {
             XCTFail()
         }
         
-        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: false, siteAuthenticationEnabled: false)
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: false, siteAddressEnabled: false)
         let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
         
         tracker.set(source: source)
@@ -319,7 +319,7 @@ class AnalyticsTrackerTests: XCTestCase {
             legacyTrackingExecuted.fulfill()
         }
         
-        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: true, googleEnabled: true, siteAuthenticationEnabled: true)
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: true, googleEnabled: true, siteAddressEnabled: true)
         let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
         
         tracker.set(source: source)
@@ -346,7 +346,7 @@ class AnalyticsTrackerTests: XCTestCase {
             XCTFail()
         }
         
-        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: true, googleEnabled: true, siteAuthenticationEnabled: true)
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: true, googleEnabled: true, siteAddressEnabled: true)
         let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
         
         for flow in flows {

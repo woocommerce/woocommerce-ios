@@ -222,18 +222,26 @@ public class AuthenticatorAnalyticsTracker {
     /// Shared Instance.
     ///
     public static var shared: AuthenticatorAnalyticsTracker = {
-        let configuration = AuthenticatorAnalyticsTracker.Configuration(
-            appleEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedApple,
-            googleEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedGoogle,
-            siteAuthenticationEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress)
-        
-        return AuthenticatorAnalyticsTracker(configuration: configuration)
+        return AuthenticatorAnalyticsTracker(configuration: defaultConfiguration())
     }()
     
     struct Configuration {
         let appleEnabled: Bool
         let googleEnabled: Bool
-        let siteAuthenticationEnabled: Bool
+        let siteAddressEnabled: Bool
+    }
+    
+    private class func defaultConfiguration() -> Configuration{
+        // When unit testing, WordPressAuthenticator is not always initialized.
+        // The following code ensures we have configuration defaults even if that's the case.
+        guard WordPressAuthenticator.isInitialized() else {
+            return Configuration(appleEnabled: false, googleEnabled: false, siteAddressEnabled: false)
+        }
+        
+        return Configuration(
+            appleEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedApple,
+            googleEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedGoogle,
+            siteAddressEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress)
     }
     
     /// State for the analytics tracker.
@@ -295,7 +303,7 @@ public class AuthenticatorAnalyticsTracker {
     // MARK: - Legacy vs Unified tracking: Support Methods
     
     private func isInSiteAuthenticationFlowAndCanTrack() -> Bool {
-        return configuration.siteAuthenticationEnabled && state.lastFlow == .loginWithSiteAddress
+        return configuration.siteAddressEnabled && state.lastFlow == .loginWithSiteAddress
     }
     
     private func isInAppleFlowAndCanTrack() -> Bool {

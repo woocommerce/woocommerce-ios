@@ -333,6 +333,8 @@ public enum WooAnalyticsStat: String {
     case productSettingsSlugTapped = "product_settings_slug_tapped"
     case productSettingsPurchaseNoteTapped = "product_settings_purchase_note_tapped"
     case productSettingsMenuOrderTapped = "product_settings_menu_order_tapped"
+    case productSettingsVirtualToggled = "product_settings_virtual_toggled"
+    case productSettingsReviewsToggled = "product_settings_reviews_toggled"
 
     // Product List Sorting/Filtering
     //

@@ -166,7 +166,7 @@ class AnalyticsTrackerTests: XCTestCase {
     ///
     func testStepLegacyTracking() {
         let source = AuthenticatorAnalyticsTracker.Source.default
-        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.appleLogin, .appleSignup, .loginWithGoogle, .googleSignup, .loginWithSiteAddress]
+        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.loginWithApple, .signupWithApple, .loginWithGoogle, .signupWithGoogle, .loginWithSiteAddress]
         let step = AuthenticatorAnalyticsTracker.Step.start
         
         let legacyTrackingExecuted = expectation(description: "The legacy tracking block was executed.")
@@ -195,7 +195,7 @@ class AnalyticsTrackerTests: XCTestCase {
     ///
     func testStepNewTracking() {
         let source = AuthenticatorAnalyticsTracker.Source.default
-        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.appleLogin, .appleSignup, .loginWithGoogle, .googleSignup, .loginWithSiteAddress]
+        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.loginWithApple, .signupWithApple, .loginWithGoogle, .signupWithGoogle, .loginWithSiteAddress]
         let step = AuthenticatorAnalyticsTracker.Step.start
         
         let legacyTrackingExecuted = expectation(description: "The legacy tracking block was executed.")
@@ -224,7 +224,7 @@ class AnalyticsTrackerTests: XCTestCase {
     ///
     func testClickLegacyTracking() {
         let source = AuthenticatorAnalyticsTracker.Source.default
-        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.appleLogin, .appleSignup, .loginWithGoogle, .googleSignup, .loginWithSiteAddress]
+        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.loginWithApple, .signupWithApple, .loginWithGoogle, .signupWithGoogle, .loginWithSiteAddress]
         let click = AuthenticatorAnalyticsTracker.ClickTarget.connectSite
         
         let legacyTrackingExecuted = expectation(description: "The legacy tracking block was executed.")
@@ -253,7 +253,7 @@ class AnalyticsTrackerTests: XCTestCase {
     ///
     func testClickNewTracking() {
         let source = AuthenticatorAnalyticsTracker.Source.default
-        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.appleLogin, .appleSignup, .loginWithGoogle, .googleSignup, .loginWithSiteAddress]
+        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.loginWithApple, .signupWithApple, .loginWithGoogle, .signupWithGoogle, .loginWithSiteAddress]
         let click = AuthenticatorAnalyticsTracker.ClickTarget.connectSite
         
         let legacyTrackingExecuted = expectation(description: "The legacy tracking block was executed.")
@@ -282,7 +282,7 @@ class AnalyticsTrackerTests: XCTestCase {
     ///
     func testFailureLegacyTracking() {
         let source = AuthenticatorAnalyticsTracker.Source.default
-        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.appleLogin, .appleSignup, .loginWithGoogle, .googleSignup, .loginWithSiteAddress]
+        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.loginWithApple, .signupWithApple, .loginWithGoogle, .signupWithGoogle, .loginWithSiteAddress]
         
         let legacyTrackingExecuted = expectation(description: "The legacy tracking block was executed.")
         legacyTrackingExecuted.expectedFulfillmentCount = flows.count
@@ -310,7 +310,7 @@ class AnalyticsTrackerTests: XCTestCase {
     ///
     func testFailureNewTracking() {
         let source = AuthenticatorAnalyticsTracker.Source.default
-        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.appleLogin, .appleSignup, .loginWithGoogle, .googleSignup, .loginWithSiteAddress]
+        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.loginWithApple, .signupWithApple, .loginWithGoogle, .signupWithGoogle, .loginWithSiteAddress]
         
         let legacyTrackingExecuted = expectation(description: "The legacy tracking block was executed.")
         legacyTrackingExecuted.expectedFulfillmentCount = flows.count

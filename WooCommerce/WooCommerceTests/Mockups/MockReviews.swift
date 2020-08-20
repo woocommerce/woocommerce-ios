@@ -32,7 +32,7 @@ final class MockReviews {
                              verified: verified)
     }
 
-    func anonyousReview() -> Networking.ProductReview {
+    func anonymousReview() -> Networking.ProductReview {
         return ProductReview(siteID: siteID,
                              reviewID: reviewID,
                              productID: productID,

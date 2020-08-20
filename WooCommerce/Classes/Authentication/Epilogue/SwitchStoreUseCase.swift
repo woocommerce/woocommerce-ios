@@ -1,10 +1,13 @@
 import UIKit
 import Yosemite
 
+protocol SwitchStoreUseCaseProtocol {
+    func switchStore(with storeID: Int64, onCompletion: @escaping (Bool) -> Void)
+}
 
 /// Simplifies and decouples the store picker from the caller
 ///
-final class SwitchStoreUseCase {
+final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
 
     private let stores: StoresManager
 

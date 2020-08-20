@@ -98,10 +98,9 @@ final class MainTabBarController: UITabBarController {
         return navController
     }()
 
-    private lazy var reviewsTabViewController: UIViewController = {
-        let rootViewController = ReviewsViewController()
-        return WooNavigationController(rootViewController: rootViewController)
-    }()
+    private lazy var reviewsCoordinator: Coordinator = ReviewsCoordinator(willPresentReviewDetailsFromPushNotification: { [weak self] in
+        self?.navigateTo(.reviews)
+    })
 
     // MARK: - Overridden Methods
 
@@ -120,12 +119,14 @@ final class MainTabBarController: UITabBarController {
             controllers.insert(productsTabViewController, at: productsTabIndex)
 
             let reviewsTabIndex = WooTab.reviews.visibleIndex()
-            controllers.insert(reviewsTabViewController, at: reviewsTabIndex)
+            controllers.insert(reviewsCoordinator.navigationController, at: reviewsTabIndex)
 
             return controllers
         }()
 
         loadReviewsTabNotificationCountAndUpdateBadge()
+
+        reviewsCoordinator.start()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -306,6 +307,11 @@ extension MainTabBarController {
         ServiceLocator.stores.dispatch(action)
     }
 
+    /// Presents the order details if the `note` is for an order push notification.
+    ///
+    /// For Product Review notifications, that is now handled by `ReviewsCoordinator`. This method
+    /// should also be moved to a similar `Coordinator` in the future too.
+    ///
     private static func presentNotificationDetails(for note: Note) {
         switch note.kind {
         case .storeOrder:
@@ -315,13 +321,6 @@ extension MainTabBarController {
                 }
 
                 ordersVC.presentDetails(for: note)
-            }
-        case .comment:
-            switchToReviewsTab {
-                guard let reviewsViewController: ReviewsViewController = childViewController() else {
-                    return
-                }
-                reviewsViewController.presentDetails(for: note.noteID)
             }
         default:
             break

@@ -5,7 +5,6 @@ import UIKit
 /// See: http://khanlou.com/2015/01/the-coordinator/
 ///
 protocol Coordinator {
-
     var navigationController: UINavigationController { get set }
 
     func start()

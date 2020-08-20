@@ -480,13 +480,56 @@ extension LoginViewController {
 // MARK: - LoginSocialError delegate methods
 
 extension LoginViewController: LoginSocialErrorViewControllerDelegate {
+    
+    func retryWithEmail() {
+        loginFields.username = ""
+        cleanupAfterSocialErrors()
+        navigationController?.popToRootViewController(animated: true)
+    }
+    
+    func retryWithAddress() {
+        cleanupAfterSocialErrors()
+        loginToSelfHostedSite()
+    }
+    
+    func retryAsSignup() {
+        cleanupAfterSocialErrors()
+        
+        if let controller = SignupEmailViewController.instantiate(from: .signup) {
+            controller.loginFields = loginFields
+            navigationController?.pushViewController(controller, animated: true)
+        }
+    }
+    
     private func cleanupAfterSocialErrors() {
         dismiss(animated: true) {}
     }
-
+    
     /// Displays the self-hosted login form.
     ///
-    private func loginToSelfHostedSite() {
+    @objc func loginToSelfHostedSite() {
+        guard WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress else {
+            presentSelfHostedView()
+            return
+        }
+        
+        presentUnifiedSiteAddressView()
+    }
+    
+    /// Navigates to the unified site address login flow.
+    ///
+    func presentUnifiedSiteAddressView() {
+        guard let vc = SiteAddressViewController.instantiate(from: .siteAddress) else {
+            DDLogError("Failed to navigate from LoginViewController to SiteAddressViewController")
+            return
+        }
+
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
+    /// Navigates to the old self-hosted login flow.
+    ///
+    func presentSelfHostedView() {
         guard let vc = LoginSiteAddressViewController.instantiate(from: .login) else {
             DDLogError("Failed to navigate from LoginViewController to LoginSiteAddressViewController")
             return
@@ -498,23 +541,5 @@ extension LoginViewController: LoginSocialErrorViewControllerDelegate {
 
         navigationController?.pushViewController(vc, animated: true)
     }
-
-    func retryWithEmail() {
-        loginFields.username = ""
-        cleanupAfterSocialErrors()
-    }
-
-    func retryWithAddress() {
-        cleanupAfterSocialErrors()
-        loginToSelfHostedSite()
-    }
-
-    func retryAsSignup() {
-        cleanupAfterSocialErrors()
-
-        if let controller = SignupEmailViewController.instantiate(from: .signup) {
-            controller.loginFields = loginFields
-            navigationController?.pushViewController(controller, animated: true)
-        }
-    }
+    
 }

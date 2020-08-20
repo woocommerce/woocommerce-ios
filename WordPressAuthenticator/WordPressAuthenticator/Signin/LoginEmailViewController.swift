@@ -94,7 +94,21 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         unregisterForKeyboardEvents()
     }
 
+    /// Displays the self-hosted login form.
+    ///
+    override func loginToSelfHostedSite() {
+        guard let vc = LoginSiteAddressViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from LoginEmailViewController to LoginSiteAddressViewController")
+            return
+        }
 
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
     // MARK: - Setup and Configuration
 
 
@@ -515,21 +529,6 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         }
 
         navigationController?.pushViewController(toVC, animated: true)
-    }
-
-    /// Displays the self-hosted login form.
-    ///
-    private func loginToSelfHostedSite() {
-        guard let vc = LoginSiteAddressViewController.instantiate(from: .login) else {
-            DDLogError("Failed to navigate from LoginEmailViewController to LoginSiteAddressViewController")
-            return
-        }
-
-        vc.loginFields = loginFields
-        vc.dismissBlock = dismissBlock
-        vc.errorToPresent = errorToPresent
-
-        navigationController?.pushViewController(vc, animated: true)
     }
 
     @IBAction func handleTextFieldDidChange(_ sender: UITextField) {

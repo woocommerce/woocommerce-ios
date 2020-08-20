@@ -80,6 +80,7 @@ private extension InAppFeedbackCardViewController {
             let surveyNavigation = SurveyCoordinatingController(survey: .inAppFeedback)
             self.present(surveyNavigation, animated: true, completion: nil)
             self.onFeedbackGiven?()
+            self.analytics.track(event: .appFeedbackPrompt(action: .didntLike))
         }
     }
 
@@ -93,6 +94,7 @@ private extension InAppFeedbackCardViewController {
 
             self.storeReviewControllerType.requestReview()
             self.onFeedbackGiven?()
+            self.analytics.track(event: .appFeedbackPrompt(action: .liked))
         }
     }
 }

@@ -301,6 +301,13 @@ public enum WooAnalyticsStat: String {
     case productReviewListLoaded = "product_reviews_loaded"
     case productReviewListLoadFailed = "product_reviews_load_failed"
 
+    // Edit Grouped Product Events
+    //
+    case groupdProductLinkedProductsDeleteButtonTapped = "grouped_product_linked_products_delete_tapped"
+    case groupdProductLinkedProductsAddButtonTapped = "grouped_product_linked_products_add_tapped"
+    case groupdProductLinkedProductsAdded = "grouped_product_linked_products_added"
+    case groupdProductLinkedProductsDoneButtonTapped = "grouped_product_linked_products_done_button_tapped"
+
     // Product Type Event
     //
     case productTypeChanged = "product_type_change_tapped"

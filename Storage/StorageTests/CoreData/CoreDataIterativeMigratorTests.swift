@@ -18,7 +18,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         super.tearDown()
     }
 
-    func testItWillNotMigrateIfTheDatabaseFileDoesNotExist() throws {
+    func test_it_will_not_migrate_if_the_database_file_does_not_exist() throws {
         // Given
         let targetModel = try managedObjectModel(for: "Model 28")
         let databaseURL = documentsDirectory.appendingPathComponent("database-file-that-does-not-exist")
@@ -40,7 +40,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         XCTAssertEqual(fileManager.allMethodsInvocationCount, 1)
     }
 
-    func testModel0to10MigrationFails() throws {
+    func test_model_0_to_10_migration_fails() throws {
         let model0URL = urlForModel(name: "Model")
         let model10URL = urlForModel(name: "Model 10")
         let storeURL = urlForStore(withName: "Woo Test 10.sqlite", deleteIfExists: true)
@@ -63,7 +63,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         XCTAssertNil(ps)
     }
 
-    func testModelMigrationPassed() throws {
+    func test_model_migration_passed() throws {
         let model0URL = urlForModel(name: "Model")
         let model10URL = urlForModel(name: "Model 10")
         let storeURL = urlForStore(withName: "Woo Test 10.sqlite", deleteIfExists: true)
@@ -97,7 +97,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         XCTAssertNotNil(ps)
     }
 
-    func testModel26To27MigrationPassed() throws {
+    func test_model_26_to_27_migration_passed() throws {
         // Arrange
         let model26URL = urlForModel(name: "Model 26")
         let model26 = NSManagedObjectModel(contentsOf: model26URL)!
@@ -177,7 +177,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         XCTAssertEqual(model27Container.viewContext.countObjects(ofType: ProductCategory.self), 0)
     }
 
-  func testModel28To29MigrationPassed() throws {
+  func test_model_28_to_29_migration_passed() throws {
         // Arrange
         let model28URL = urlForModel(name: "Model 28")
         let model28 = NSManagedObjectModel(contentsOf: model28URL)!
@@ -257,7 +257,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         XCTAssertEqual(model29Container.viewContext.countObjects(ofType: ProductTag.self), 0)
     }
 
-    func testModel20To28MigrationWithTransformableAttributesPassed() throws {
+    func test_model_20_to_28_migration_with_transformable_attributes_passed() throws {
         // Arrange
         let sourceModelURL = urlForModel(name: "Model 20")
         let sourceModel = NSManagedObjectModel(contentsOf: sourceModelURL)!

@@ -12,14 +12,14 @@ class ReportOrderMapperTests: XCTestCase {
 
     /// Verifies that the broken response causes the mapper to return an unknown status
     ///
-    func testBrokenResponseReturnsUnknownStatus() {
+    func test_broken_response_returns_unknown_status() {
         let reportTotals = try? mapLoadBrokenResponse()
         XCTAssertNil(reportTotals)
     }
 
     /// Verifies that a valid report totals response is properly parsed (YAY!).
     ///
-    func testSampleResponseLoaded() {
+    func test_sample_response_loaded() {
         guard let results = try? mapSuccessfulResponse() else {
             XCTFail("Sample order report totals didn't load.")
             return

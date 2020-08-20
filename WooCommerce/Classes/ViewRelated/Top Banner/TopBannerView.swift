@@ -68,13 +68,9 @@ final class TopBannerView: UIView {
 
 private extension TopBannerView {
     func configureSubviews(with viewModel: TopBannerViewModel) {
-        configureBackground()
-
         let mainStackView = createMainStackView(with: viewModel)
         addSubview(mainStackView)
         pinSubviewToAllEdges(mainStackView)
-
-        iconImageView.tintColor = .textSubtle
 
         titleLabel.applyHeadlineStyle()
         titleLabel.numberOfLines = 0
@@ -83,6 +79,7 @@ private extension TopBannerView {
         infoLabel.numberOfLines = 0
 
         renderContent(of: viewModel)
+        configureBannerType(type: viewModel.type)
     }
 
     func renderContent(of viewModel: TopBannerViewModel) {
@@ -122,18 +119,17 @@ private extension TopBannerView {
             dismissButton.setImage(UIImage.gridicon(.cross, size: CGSize(width: 24, height: 24)), for: .normal)
             dismissButton.tintColor = .textSubtle
             dismissButton.addTarget(self, action: #selector(onDismissButtonTapped), for: .touchUpInside)
-        }
-    }
 
-    func configureBackground() {
-        backgroundColor = .systemColor(.secondarySystemGroupedBackground)
+        case .none:
+            break
+        }
     }
 
     func createMainStackView(with viewModel: TopBannerViewModel) -> UIStackView {
         let iconInformationStackView = createIconInformationStackView(with: viewModel)
         let mainStackView = UIStackView(arrangedSubviews: [iconInformationStackView, createBorderView()])
         if isActionEnabled {
-            configureActionStackView()
+            configureActionStackView(with: viewModel)
             mainStackView.addArrangedSubview(actionStackView)
         }
 
@@ -159,7 +155,7 @@ private extension TopBannerView {
 
     func createInformationStackView(with viewModel: TopBannerViewModel) -> UIStackView {
         let topActionButton = topButton(for: viewModel.topButton)
-        let titleStackView = UIStackView(arrangedSubviews: [titleLabel, topActionButton])
+        let titleStackView = UIStackView(arrangedSubviews: [titleLabel, topActionButton].compactMap { $0 })
         titleStackView.axis = .horizontal
         titleStackView.spacing = 16
 
@@ -177,7 +173,7 @@ private extension TopBannerView {
         return informationStackView
     }
 
-    func configureActionStackView() {
+    func configureActionStackView(with viewModel: TopBannerViewModel) {
         // StackView to hold the action buttons
         let buttonsStackView = UIStackView()
         buttonsStackView.distribution = .fillEqually
@@ -192,7 +188,7 @@ private extension TopBannerView {
         buttonsStackView.addArrangedSubviews(actionButtons)
         actionButtons.forEach { button in
             button.applyLinkButtonStyle()
-            button.backgroundColor = backgroundColor
+            button.backgroundColor = backgroundColor(for: viewModel.type)
             buttonsStackView.addArrangedSubview(button)
         }
 
@@ -211,12 +207,33 @@ private extension TopBannerView {
         return UIView.createBorderView()
     }
 
-    func topButton(for buttonType: TopBannerViewModel.TopButtonType) -> UIButton {
+    func topButton(for buttonType: TopBannerViewModel.TopButtonType) -> UIButton? {
         switch buttonType {
         case .chevron:
             return expandCollapseButton
         case .dismiss:
             return dismissButton
+        case .none:
+            return nil
+        }
+    }
+
+    func configureBannerType(type: TopBannerViewModel.BannerType) {
+        switch type {
+        case .normal:
+            iconImageView.tintColor = .textSubtle
+        case .warning:
+            iconImageView.tintColor = .warning
+        }
+        backgroundColor = backgroundColor(for: type)
+    }
+
+    func backgroundColor(for bannerType: TopBannerViewModel.BannerType) -> UIColor {
+        switch bannerType {
+        case .normal:
+            return .systemColor(.secondarySystemGroupedBackground)
+        case .warning:
+            return .warningBackground
         }
     }
 }

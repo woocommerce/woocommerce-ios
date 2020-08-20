@@ -13,7 +13,7 @@ class DotcomDeviceMapperTests: XCTestCase {
 
     /// Verifies that DotcomDeviceMapper correctly parses the DeviceSettings Entity
     ///
-    func testDeviceSettingsMapperCorrectlyParsesDeviceIdentifier() {
+    func test_device_settings_mapper_correctly_parses_device_identifier() {
         let settings = try? mapDotcomDevice(from: sampleDeviceSettings)
 
         XCTAssertNotNil(settings)

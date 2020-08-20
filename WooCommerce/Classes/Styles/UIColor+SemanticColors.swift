@@ -27,32 +27,11 @@ extension UIColor {
                         dark: withColorStudio(.red, shade: .shade30))
     }
 
-    /// Error Dark. Red-70 (< iOS 13 and Light Mode) and Red-50 (Dark Mode)
-    ///
-    static var errorDark: UIColor {
-        return UIColor(light: .withColorStudio(.red, shade: .shade70),
-                       dark: .withColorStudio(.red, shade: .shade50))
-    }
-
     /// Primary. WooCommercePurple-60 (< iOS 13 and Light Mode) and WooCommercePurple-30 (Dark Mode)
     ///
     static var primary: UIColor {
         return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60),
                        dark: .withColorStudio(.wooCommercePurple, shade: .shade30))
-    }
-
-    /// Primary Dark. WooCommercePurple-80 (< iOS 13 and Light Mode) and WooCommercePurple-50 (Dark Mode)
-    ///
-    static var primaryDark: UIColor {
-        return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade80),
-                       dark: .withColorStudio(.wooCommercePurple, shade: .shade50))
-    }
-
-    /// Success. Green-50 (< iOS 13 and Light Mode) and Green-30 (Dark Mode)
-    ///
-    static var success: UIColor {
-        return UIColor(light: .withColorStudio(.green, shade: .shade50),
-                       dark: .withColorStudio(.green, shade: .shade30))
     }
 
     /// Warning. Orange-30 (< iOS 13 and Light Mode) and Orange-50 (Dark Mode)
@@ -206,13 +185,6 @@ extension UIColor {
         dark: .systemColor(.secondarySystemGroupedBackground))
     }
 
-    /// Tab Unselected. Gray-20 (< iOS 13 and Light Mode) and Gray-60 (Dark Mode)
-    ///
-    static var tabUnselected: UIColor {
-        return UIColor(light: .withColorStudio(.gray, shade: .shade20),
-                       dark: .withColorStudio(.gray, shade: .shade60))
-    }
-
     /// Divider. Gray-10 (< iOS 13) and `UIColor.separator` (> iOS 13)
     ///
     static var divider: UIColor {
@@ -292,25 +264,6 @@ extension UIColor {
     ///
     static var buttonDisabledBorder: UIColor {
         return .systemColor(.systemGray3)
-    }
-
-    /// Filter Bar Selected. `primary` (< iOS 13 and Light Mode) and `UIColor.label` (Dark Mode)
-    ///
-    static var filterBarSelected: UIColor {
-        if #available(iOS 13, *) {
-            return UIColor(light: .primary,
-                           dark: .label)
-        }
-
-
-        return .primary
-    }
-
-    /// Filter Bar Background. `white` (< iOS 13 and Light Mode) and Gray-90 (Dark Mode)
-    ///
-    static var filterBarBackground: UIColor {
-        return UIColor(light: .white,
-                       dark: .withColorStudio(.gray, shade: .shade90))
     }
 
     /// Ghost cell animation end color. `Gray-5` (Light Mode) and Gray-10 (Dark Mode)
@@ -401,16 +354,6 @@ extension UIColor {
 
         return .white
     }
-
-    /// List ForeGround Unread. Blue-0 (< iOS 13) and `UIColor.tertiarySystemGroupedBackground` (> iOS 13)
-    ///
-    static var listForegroundUnread: UIColor {
-        if #available(iOS 13, *) {
-            return .tertiarySystemGroupedBackground
-        }
-
-        return .withColorStudio(.blue, shade: .shade0)
-    }
 }
 
 
@@ -433,9 +376,6 @@ extension UIColor {
 
     /// Muriel neutral colors, which invert in dark mode
     /// - Parameter shade: a MurielColorShade of the desired neutral shade
-    static var neutral: UIColor {
-        return neutral(.shade50)
-    }
     class func neutral(_ shade: ColorStudioShade) -> UIColor {
         switch shade {
         case .shade0:

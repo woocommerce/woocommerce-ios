@@ -12,7 +12,7 @@ final class TaxClassListMapperTest: XCTestCase {
 
     /// Verifies that all of the Tax Class Fields are parsed correctly.
     ///
-    func testTaxClassFieldsAreProperlyParsed() {
+    func test_TaxClass_fields_are_properly_parsed() {
         let taxClasses = mapLoadAllTaxClassResponse()
         XCTAssertEqual(taxClasses.count, 3)
 

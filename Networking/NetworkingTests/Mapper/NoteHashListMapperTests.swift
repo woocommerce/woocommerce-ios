@@ -8,13 +8,13 @@ class NoteHashListMapperTests: XCTestCase {
 
     /// Verifies that the Broken Response causes the mapper to throw an error.
     ///
-    func testBrokenResponseForcesMapperToThrowAnError() {
+    func test_broken_response_forces_mapper_to_throw_an_error() {
         XCTAssertThrowsError(try mapLoadBrokenResponse())
     }
 
     /// Verifies that a proper response is properly parsed (YAY!).
     ///
-    func testSampleHashesAreProperlyLoaded() {
+    func test_sample_hashes_are_properly_loaded() {
         let hashes = try? mapLoadAllHashesResponse()
 
         XCTAssertNotNil(hashes)
@@ -23,7 +23,7 @@ class NoteHashListMapperTests: XCTestCase {
 
     /// Verifies that a sample NoteHash entity is properly deserialized.
     ///
-    func testNoteHashEntityIsProperlyParsed() {
+    func test_NoteHash_entity_is_properly_parsed() {
         let hashes = try? mapLoadAllHashesResponse()
         let hashZero = hashes![0]
 

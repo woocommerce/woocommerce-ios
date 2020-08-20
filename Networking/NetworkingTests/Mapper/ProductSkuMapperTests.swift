@@ -8,7 +8,7 @@ final class ProductSkuMapperTests: XCTestCase {
 
     /// Verifies that SKU are parsed correctly.
     ///
-    func testSkuIsProperlyParsed() {
+    func test_sku_is_properly_parsed() {
         let sku = mapLoadSkuResponse()
 
         XCTAssertEqual(sku, "T-SHIRT-HAPPY-NINJA")

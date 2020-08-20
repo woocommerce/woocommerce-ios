@@ -13,7 +13,7 @@ class OrderMapperTests: XCTestCase {
 
     /// Verifies that all of the Order Fields are parsed correctly.
     ///
-    func testOrderFieldsAreProperlyParsed() {
+    func test_Order_fields_are_properly_parsed() {
         guard let order = mapLoadOrderResponse() else {
             XCTFail()
             return
@@ -44,7 +44,7 @@ class OrderMapperTests: XCTestCase {
 
     /// Verifies that all of the Order Address fields are parsed correctly.
     ///
-    func testOrderAddressesAreCorrectlyParsed() {
+    func test_Order_addresses_are_correctly_parsed() {
         guard let order = mapLoadOrderResponse() else {
             XCTFail()
             return
@@ -68,7 +68,7 @@ class OrderMapperTests: XCTestCase {
 
     /// Verifies that all of the Order Items are parsed correctly.
     ///
-    func testOrderItemsAreCorrectlyParsed() {
+    func test_Order_items_are_correctly_parsed() {
         guard let order = mapLoadOrderResponse() else {
             XCTFail()
             return
@@ -91,7 +91,7 @@ class OrderMapperTests: XCTestCase {
 
     /// Verifies that Order Items with a decimal quantity are parsed properly
     ///
-    func testOrderItemsWithDecimalQuantityAreCorrectlyParsed() {
+    func test_Order_items_with_decimal_quantity_are_correctly_parsed() {
         guard let order = mapLoadOrderResponse() else {
             XCTFail()
             return
@@ -104,7 +104,7 @@ class OrderMapperTests: XCTestCase {
 
     /// Verifies that an Order in a broken state does [gets default values] | [gets skipped while parsing]
     ///
-    func testOrderHasDefaultDateCreatedWhenNullDateReceived() {
+    func test_Order_has_default_dateCreated_when_null_date_received() {
         guard let brokenOrder = mapLoadBrokenOrderResponse() else {
             XCTFail()
             return
@@ -123,7 +123,7 @@ class OrderMapperTests: XCTestCase {
 
     /// Verifies that the coupon fields for an Order are correctly parsed.
     ///
-    func testOrderCouponFieldsAreCorrectlyParsed() {
+    func test_Order_coupon_fields_are_correctly_parsed() {
         guard let order = mapLoadOrderResponse() else {
             XCTFail()
             return
@@ -145,7 +145,7 @@ class OrderMapperTests: XCTestCase {
 
     /// Verifies that an Order with no refunds is correctly parsed to an empty array.
     ///
-    func testOrderRefundCondensedFieldsDoNotExistAreParsedCorrectly() {
+    func test_Order_refund_condensed_fields_do_not_exist_are_parsed_correctly() {
         guard let order = mapLoadOrderResponse() else {
             XCTFail()
             return
@@ -156,7 +156,7 @@ class OrderMapperTests: XCTestCase {
 
     /// Verifies that an Order with refund fields are correctly parsed.
     ///
-    func testOrderFullRefundFieldsAreParsedCorrectly() {
+    func test_Order_full_refund_fields_are_parsed_correctly() {
         guard let order = mapLoadFullyRefundedOrderResponse() else {
             XCTFail()
             return
@@ -177,7 +177,7 @@ class OrderMapperTests: XCTestCase {
 
     /// Verifies that an Order with multiple, partial refunds have the refunds fields correctly parsed.
     ///
-    func testOrderPartialRefundFieldsAreParsedCorrectly() {
+    func test_Order_partial_refund_fields_are_parsed_correctly() {
         guard let order = mapLoadPartiallRefundedOrderResponse() else {
             XCTFail()
             return

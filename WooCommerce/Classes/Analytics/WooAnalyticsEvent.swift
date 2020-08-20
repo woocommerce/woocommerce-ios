@@ -3,7 +3,15 @@ import Foundation
 /// This struct represents an analytics event. It is a combination of `WooAnalyticsStat` and
 /// its properties.
 ///
-/// An example of a dynamic / parameterized event definition:
+/// This was mostly created to promote static-typing via constructors.
+///
+/// ## Adding New Events
+///
+/// 1. Add the event name (`String`) to `WooAnalyticsStat`.
+/// 2. Create an `extension` of `WooAnalyticsStat` if necessary for grouping.
+/// 3. Add a `static func` constructor.
+///
+/// Here is an example:
 ///
 /// ~~~
 /// extension WooAnalyticsEvent {
@@ -25,8 +33,8 @@ import Foundation
 /// Examples of tracking calls (in the client App or Pod):
 ///
 /// ~~~
-/// Analytics.track(.login(step: .start))
-/// Analytics.track(.loginStart)
+/// Analytics.track(event: .login(step: .start))
+/// Analytics.track(event: .loginStart)
 /// ~~~
 ///
 public struct WooAnalyticsEvent {

@@ -8,7 +8,7 @@ class OrderStatsMapperTests: XCTestCase {
 
     /// Verifies that all of the day unit OrderStats fields are parsed correctly.
     ///
-    func testDayUnitStatFieldsAreProperlyParsed() {
+    func test_day_unit_stat_fields_are_properly_parsed() {
         guard let dayStats = mapOrderStatsWithDayUnitResponse() else {
             XCTFail()
             return
@@ -70,7 +70,7 @@ class OrderStatsMapperTests: XCTestCase {
 
     /// Verifies that all of the week unit OrderStats fields are parsed correctly.
     ///
-    func testWeekUnitStatFieldsAreProperlyParsed() {
+    func test_week_unit_stat_fields_are_properly_parsed() {
         guard let weekStats = mapOrderStatsWithWeekUnitResponse() else {
             XCTFail()
             return
@@ -152,7 +152,7 @@ class OrderStatsMapperTests: XCTestCase {
 
     /// Verifies that all of the month unit OrderStats fields are parsed correctly.
     ///
-    func testMonthUnitStatFieldsAreProperlyParsed() {
+    func test_month_unit_stat_fields_are_properly_parsed() {
         guard let monthStats = mapOrderStatsWithMonthUnitResponse() else {
             XCTFail()
             return
@@ -214,7 +214,7 @@ class OrderStatsMapperTests: XCTestCase {
 
     /// Verifies that all of the year unit OrderStats fields are parsed correctly.
     ///
-    func testYearUnitStatFieldsAreProperlyParsed() {
+    func test_year_unit_stat_fields_are_properly_parsed() {
         guard let yearStats = mapOrderStatsWithYearUnitResponse() else {
             XCTFail()
             return

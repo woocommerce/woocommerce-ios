@@ -7,41 +7,33 @@ struct ProductDetailsFactory {
     ///   - product: product model.
     ///   - presentationStyle: how the product details are presented.
     ///   - currencySettings: site currency settings.
-    ///   - featureFlagService: where edit product feature flags are read.
+    ///   - stores: where the Products feature switch value can be read.
     ///   - onCompletion: called when the view controller is created and ready for display.
     static func productDetails(product: Product,
                                presentationStyle: ProductFormPresentationStyle,
                                currencySettings: CurrencySettings = CurrencySettings.shared,
-                               featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+                               stores: StoresManager = ServiceLocator.stores,
                                onCompletion: @escaping (UIViewController) -> Void) {
-        let isEditProductsEnabled: Bool
+        let action = AppSettingsAction.loadProductsFeatureSwitch { isFeatureSwitchOn in
+            let isEditProductsEnabled: Bool
+            switch product.productType {
+            case .simple:
+                isEditProductsEnabled = true
+            case .affiliate, .grouped, .variable:
+                isEditProductsEnabled = isFeatureSwitchOn
+            default:
+                isEditProductsEnabled = false
+            }
 
-        switch product.productType {
-        case .simple:
-            isEditProductsEnabled = true
-        case .affiliate, .grouped, .variable:
-            isEditProductsEnabled = featureFlagService.isFeatureFlagEnabled(.editProductsRelease3)
-        default:
-            isEditProductsEnabled = false
-        }
-
-        if isEditProductsEnabled {
-                let vc = productDetails(product: product,
-                                        presentationStyle: presentationStyle,
-                                        currencySettings: currencySettings,
-                                        isEditProductsEnabled: isEditProductsEnabled,
-                                        isEditProductsRelease2Enabled: featureFlagService.isFeatureFlagEnabled(.editProductsRelease2),
-                                        isEditProductsRelease3Enabled: featureFlagService.isFeatureFlagEnabled(.editProductsRelease3))
-                onCompletion(vc)
-        } else {
             let vc = productDetails(product: product,
                                     presentationStyle: presentationStyle,
                                     currencySettings: currencySettings,
-                                    isEditProductsEnabled: false,
-                                    isEditProductsRelease2Enabled: false,
-                                    isEditProductsRelease3Enabled: false)
+                                    isEditProductsEnabled: isEditProductsEnabled,
+                                    isEditProductsRelease2Enabled: true,
+                                    isEditProductsRelease3Enabled: isFeatureSwitchOn)
             onCompletion(vc)
         }
+        stores.dispatch(action)
     }
 }
 

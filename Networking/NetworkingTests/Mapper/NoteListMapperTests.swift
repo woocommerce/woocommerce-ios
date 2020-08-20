@@ -23,19 +23,19 @@ class NoteListMapperTests: XCTestCase {
 
     /// Verifies that all of the Sample Notifications are properly parsed.
     ///
-    func testSampleNotificationsAreProperlyDecoded() {
+    func test_sample_notifications_are_properly_decoded() {
         XCTAssertEqual(sampleNotes.count, 40)
     }
 
     /// Verifies that the Broken Notification documents are properly parsed.
     ///
-    func testBrokenNotificationsAreGracefullyHandled() {
+    func test_broken_notifications_are_gracefully_handled() {
         XCTAssertEqual(brokenNotes.count, 2)
     }
 
     /// Verifies that all of the plain Notification fields are parsed correctly.
     ///
-    func testSampleNotificationGetsAllOfItsPlainFieldsProperlyParsed() {
+    func test_sample_notification_gets_all_of_its_plain_fields_properly_parsed() {
         // Sample Note: Zero
         let note = sampleNotes[0]
 
@@ -64,7 +64,7 @@ class NoteListMapperTests: XCTestCase {
 
     /// Verifies that the Timestamp is properly mapped into a Swift Date
     ///
-    func testSampleNotificationGetsItsDateProperlyConvertedIntoASwiftDate() {
+    func test_sample_notification_gets_its_date_properly_converted_into_a_swift_date() {
         // Sample Note: Zero
         let note = sampleNotes[0]
 
@@ -82,7 +82,7 @@ class NoteListMapperTests: XCTestCase {
     ///   - Faulty encoded types are processed correctly (anyways)
     ///   - Parsing does not break completely for a broken nested entity.
     ///
-    func testBrokenNotificationGetsDefaultValuesSet() {
+    func test_broken_notification_gets_default_values_set() {
         // Broken Note: Zero
         let note = brokenNotes[0]
 
@@ -104,21 +104,21 @@ class NoteListMapperTests: XCTestCase {
 
     /// Verifies that whenever the Read flag is encoded as a JSON boolean, it gets properly mapped into a Swift Bool.
     ///
-    func testReadFlagEncodedAsBooleanIsProperlyMappedIntoSwiftBooleans() {
+    func test_read_flag_encoded_as_boolean_is_properly_mapped_into_swift_booleans() {
         XCTAssertFalse(sampleNotes[0].read)
         XCTAssertTrue(sampleNotes[1].read)
     }
 
     /// Verifies that whenever the Read flag is encoded as a JSON Integer, it gets properly mapped into a Swift Bool.
     ///
-    func testReadFlagEncodedAsIntegerIsProperlyMappedIntoSwiftBooleans() {
+    func test_read_flag_encoded_as_integer_is_properly_mapped_into_swift_booleans() {
         XCTAssertFalse(sampleNotes[2].read)
         XCTAssertTrue(sampleNotes[3].read)
     }
 
     /// Verifies that Notifications with unknown Types are mapped into the `.unknown` kind.
     ///
-    func testUnsupportedNoteTypeIsParsedAsUnknownKind() {
+    func test_unsupported_note_type_is_parsed_as_unknown_kind() {
         let achievement = sampleNotes.first { $0.type == "like_milestone_achievement" }
         XCTAssertNotNil(achievement)
         XCTAssertEqual(achievement!.kind, .unknown)
@@ -126,7 +126,7 @@ class NoteListMapperTests: XCTestCase {
 
     /// Verifies that all of the NoteMedia fields are properly parsed.
     ///
-    func testNoteMediaIsProperlyParsed() {
+    func test_note_media_is_properly_parsed() {
         let media = sampleNotes[0].body[0].media[0]
 
         let expectedRange = NSRange(location: 0, length: 3)
@@ -142,21 +142,21 @@ class NoteListMapperTests: XCTestCase {
 
     /// Verifies that a NoteMedia with missing size doesn't break parsing (and is treated as an optional).
     ///
-    func testNoteMediaIsParsedEvenWhenOptionalFieldsAreMissing() {
+    func test_note_media_is_parsed_even_when_optional_fields_are_missing() {
         let media = sampleNotes[0].body[0].media[1]
         XCTAssertNil(media.size)
     }
 
     /// Verifies that any NoteMedia entry of an unknown `type` is properly mapped into the `.unknown` Kind.
     ///
-    func testNoteMediaGetUnknownKindForUnsupportedTypeStrings() {
+    func test_note_media_get_unknown_kind_for_unsupported_type_strings() {
         let media = sampleNotes[0].body[0].media[2]
         XCTAssertEqual(media.kind, .unknown)
     }
 
     /// Verifies that NoteRange of the `.comment` kind is properly parsed.
     ///
-    func testCommentRangeIsProperlyParsed() {
+    func test_comment_range_is_properly_parsed() {
         let comment = sampleNotes[0].body[0].ranges[0]
 
         XCTAssertEqual(comment.kind, .comment)
@@ -167,7 +167,7 @@ class NoteListMapperTests: XCTestCase {
 
     /// Verifies that NoteRange of the `.post` kind is properly parsed.
     ///
-    func testPostRangeIsProperlyParsed() {
+    func test_post_range_is_properly_parsed() {
         let post = sampleNotes[0].body[0].ranges[1]
 
         XCTAssertEqual(post.kind, .post)
@@ -177,7 +177,7 @@ class NoteListMapperTests: XCTestCase {
 
     /// Verifies that NoteRange of the `.site` kind is properly parsed.
     ///
-    func testSiteRangeIsProperlyParsed() {
+    func test_site_range_is_properly_parsed() {
         let site = sampleNotes[0].body[0].ranges[2]
 
         XCTAssertEqual(site.kind, .site)
@@ -186,7 +186,7 @@ class NoteListMapperTests: XCTestCase {
 
     /// Verifies that NoteRange of the `.user` kind is properly parsed.
     ///
-    func testUserRangeIsProperlyParsed() {
+    func test_user_range_is_properly_parsed() {
         let user = sampleNotes[0].body[0].ranges[3]
 
         XCTAssertEqual(user.kind, .user)
@@ -195,7 +195,7 @@ class NoteListMapperTests: XCTestCase {
 
     /// Verifies that NoteRange of the `.link` kind is properly parsed.
     ///
-    func testLinkRangeWithNonExplicitTypeIsProperlyProcessed() {
+    func test_link_range_with_non_explicit_type_is_properly_processed() {
         let link = sampleNotes[0].body[0].ranges[4]
 
         XCTAssertEqual(link.kind, .link)
@@ -204,7 +204,7 @@ class NoteListMapperTests: XCTestCase {
 
     /// Verifies that NoteRange of the `.site` kind is properly parsed (when the type is not explicit).
     ///
-    func testSiteRangeWithNonExplicitTypeIsProperlyProcessed() {
+    func test_site_range_with_non_explicit_type_is_properly_processed() {
         let site = sampleNotes[0].body[0].ranges[5]
 
         XCTAssertEqual(site.kind, .site)
@@ -213,7 +213,7 @@ class NoteListMapperTests: XCTestCase {
 
     /// Verifies that NoteBlock of the `.user` kind is properly parsed.
     ///
-    func testUserBlockIsProperlyParsed() {
+    func test_user_block_is_properly_parsed() {
         let user = sampleNotes[0].body[0]
 
         XCTAssertEqual(user.kind, .user)
@@ -232,21 +232,21 @@ class NoteListMapperTests: XCTestCase {
 
     /// Verifies that NoteBlock of the `.image` kind is properly parsed.
     ///
-    func testImageBlockIsProperlyParsed() {
+    func test_image_block_is_properly_parsed() {
         let surgeNote = sampleNotes.first(where: { $0.type == "traffic_surge" })
         XCTAssertEqual(surgeNote?.body[0].kind, .image)
     }
 
     /// Verifies that NoteBlock of the `.text` kind is properly parsed.
     ///
-    func testTextBlockIsProperlyParsed() {
+    func test_text_block_is_properly_parsed() {
         let surgeNote = sampleNotes.first(where: { $0.type == "traffic_surge" })
         XCTAssertEqual(surgeNote?.body[1].kind, .text)
     }
 
     /// Verifies that NoteBlock of the `.comment` kind is properly parsed.
     ///
-    func testCommentBlockIsProperlyParsed() {
+    func test_comment_block_is_properly_parsed() {
         let commentNote = sampleNotes.first(where: { $0.kind == .comment })
         XCTAssertEqual(commentNote?.body[1].kind, .comment)
     }
@@ -254,7 +254,7 @@ class NoteListMapperTests: XCTestCase {
 
     /// Verifies that the Notification's subtype is properly parsed.
     ///
-    func testStoreReviewSubtypeIsProperlyParsed() {
+    func test_store_review_subtype_is_properly_parsed() {
         let storeReview = sampleNotes.first(where: { $0.noteID == 100009 })
         XCTAssertEqual(storeReview?.subtype, "store_review")
         XCTAssertEqual(storeReview?.subkind, .storeReview)

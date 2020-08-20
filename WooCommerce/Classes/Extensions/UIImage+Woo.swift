@@ -182,6 +182,12 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// External Product
+    ///
+    static var externalProductImage: UIImage {
+        return UIImage(named: "icon-external-product")!.withRenderingMode(.alwaysTemplate)
+    }
+
     /// Filter Icon
     ///
     static var filterImage: UIImage {

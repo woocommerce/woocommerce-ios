@@ -8,7 +8,7 @@ class CommentResultMapperTests: XCTestCase {
 
     /// Verifies that the broken response causes the mapper to return an unknown status
     ///
-    func testBrokenResponseReturnsUnknownStatus() {
+    func test_broken_response_returns_unknown_status() {
         let commentStatus = try? mapLoadBrokenResponse()
 
         XCTAssertNotNil(commentStatus)
@@ -17,7 +17,7 @@ class CommentResultMapperTests: XCTestCase {
 
     /// Verifies that an approved status response is properly parsed (YAY!).
     ///
-    func testSampleApprovedResponseLoaded() {
+    func test_sample_approved_response_loaded() {
         let commentStatus = try? mapApprovedResponse()
 
         XCTAssertNotNil(commentStatus)
@@ -26,7 +26,7 @@ class CommentResultMapperTests: XCTestCase {
 
     /// Verifies that an unapproved status response is properly parsed (YAY!).
     ///
-    func testSampleUnapprovedResponseLoaded() {
+    func test_sample_unapproved_response_loaded() {
         let commentStatus = try? mapUnapprovedResponse()
 
         XCTAssertNotNil(commentStatus)
@@ -35,7 +35,7 @@ class CommentResultMapperTests: XCTestCase {
 
     /// Verifies that a spam status response is properly parsed (YAY!).
     ///
-    func testSampleSpamResponseLoaded() {
+    func test_sample_spam_response_loaded() {
         let commentStatus = try? mapSpamResponse()
 
         XCTAssertNotNil(commentStatus)
@@ -44,7 +44,7 @@ class CommentResultMapperTests: XCTestCase {
 
     /// Verifies that a trash status response is properly parsed (YAY!).
     ///
-    func testSampleTrashResponseLoaded() {
+    func test_sample_trash_response_loaded() {
         let commentStatus = try? mapTrashResponse()
 
         XCTAssertNotNil(commentStatus)

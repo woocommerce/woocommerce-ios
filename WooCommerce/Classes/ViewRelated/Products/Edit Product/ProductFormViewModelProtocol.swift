@@ -59,6 +59,8 @@ protocol ProductFormViewModelProtocol {
                                  backordersSetting: ProductBackordersSetting?,
                                  stockStatus: ProductStockStatus?)
 
+    func updateProductType(productType: ProductType)
+
     func updateShippingSettings(weight: String?, dimensions: ProductDimensions, shippingClass: ProductShippingClass?)
 
     func updateProductCategories(_ categories: [ProductCategory])

@@ -229,7 +229,9 @@ private extension ProductTagsViewController {
     }
 
     @objc func addTagsRemotely() {
-        ServiceLocator.analytics.track(.productTagSettingsDoneButtonTapped)
+        ServiceLocator.analytics.track(.productTagSettingsDoneButtonTapped, withProperties: [
+            "has_changed_data": hasUnsavedChanges()
+        ])
 
         textView.resignFirstResponder()
         configureRightBarButtonItemAsSpinner()

@@ -29,8 +29,8 @@ import Foundation
 /// Analytics.track(.loginStart)
 /// ~~~
 ///
-    let name: String
 public struct WooAnalyticsEvent {
+    let statName: WooAnalyticsStat
     let properties: [String: String]
 
     public init(name: String, properties: [String: String]) {

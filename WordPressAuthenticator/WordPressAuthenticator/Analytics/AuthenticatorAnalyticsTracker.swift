@@ -134,6 +134,10 @@ public class AuthenticatorAnalyticsTracker {
         ///
         case loginWithSiteAddress = "login_with_site_address"
         
+        /// When the user tries to login with Apple from the confirmation screen
+        ///
+        case loginWithApple = "login_with_apple"
+        
         /// Tracked when the user clicks “Login with Google” on the WordPress.com flow screen
         ///
         case loginWithGoogle = "login_with_google"
@@ -229,19 +233,21 @@ public class AuthenticatorAnalyticsTracker {
         let appleEnabled: Bool
         let googleEnabled: Bool
         let siteAddressEnabled: Bool
+        let wpComEnabled: Bool
     }
     
     private class func defaultConfiguration() -> Configuration{
         // When unit testing, WordPressAuthenticator is not always initialized.
         // The following code ensures we have configuration defaults even if that's the case.
         guard WordPressAuthenticator.isInitialized() else {
-            return Configuration(appleEnabled: false, googleEnabled: false, siteAddressEnabled: false)
+            return Configuration(appleEnabled: false, googleEnabled: false, siteAddressEnabled: false, wpComEnabled: false)
         }
         
         return Configuration(
-            appleEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedApple,
+            appleEnabled: false,
             googleEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedGoogle,
-            siteAddressEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress)
+            siteAddressEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress,
+            wpComEnabled: false)
     }
     
     /// State for the analytics tracker.
@@ -289,6 +295,7 @@ public class AuthenticatorAnalyticsTracker {
         return isInSiteAuthenticationFlowAndCanTrack()
             || isInAppleFlowAndCanTrack()
             || isInGoogleFlowAndCanTrack()
+            || isInWPComFlowAndCanTrack()
     }
     
     /// This is a convenience method, that's useful for cases where we simply want to check if the legacy tracking should be
@@ -312,6 +319,10 @@ public class AuthenticatorAnalyticsTracker {
     
     private func isInGoogleFlowAndCanTrack() -> Bool {
         return configuration.googleEnabled && [Flow.loginWithGoogle, .signupWithGoogle].contains(state.lastFlow)
+    }
+    
+    private func isInWPComFlowAndCanTrack() -> Bool {
+        return configuration.wpComEnabled && state.lastFlow == .wpCom
     }
     
     // MARK: - Tracking

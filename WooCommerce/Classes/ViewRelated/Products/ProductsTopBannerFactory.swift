@@ -18,13 +18,14 @@ struct ProductsTopBannerFactory {
                           onCompletion: @escaping (TopBannerView) -> Void) {
         let action = AppSettingsAction.loadProductsFeatureSwitch { isEditProductsRelease3Enabled in
             let title = Strings.title
+            let icon: UIImage = isInAppFeedbackFeatureEnabled ? .megaphoneIcon : .workInProgressBanner
             let infoText = isEditProductsRelease3Enabled ? Strings.infoWhenRelease3IsEnabled: Strings.info
             let giveFeedbackAction = TopBannerViewModel.ActionButton(title: Strings.giveFeedback, action: onGiveFeedbackButtonPressed)
             let dismissAction = TopBannerViewModel.ActionButton(title: Strings.dismiss, action: onDismisskButtonPressed)
             let actions: [TopBannerViewModel.ActionButton] = isInAppFeedbackFeatureEnabled ? [giveFeedbackAction, dismissAction] : []
             let viewModel = TopBannerViewModel(title: title,
                                                infoText: infoText,
-                                               icon: .workInProgressBanner,
+                                               icon: icon,
                                                isExpanded: isExpanded,
                                                topButton: .chevron(handler: expandedStateChangeHandler),
                                                actionButtons: actions)

@@ -458,6 +458,12 @@ extension UIImage {
         return UIImage(imageLiteralResourceName: "woo-no-store").imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Megaphone Icon
+    ///
+    static var megaphoneIcon: UIImage {
+        return UIImage(imageLiteralResourceName: "megaphone").imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Creates a bitmap image of the Woo "bubble" logo based on a vector image in our asset catalog.
     ///
     /// - Parameters:

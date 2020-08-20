@@ -314,6 +314,14 @@ public enum WooAnalyticsStat: String {
     // MARK: Jetpack Tunnel Events
     //
     case jetpackTunnelTimeout                   = "jetpack_tunnel_timeout"
+
+    // MARK: In-app Feedback and Survey Events
+    //
+    // (https://git.io/JJpb2)
+    //
+    case appFeedbackPrompt = "app_feedback_prompt"
+    case surveyScreen = "survey_screen"
+    case featureFeedbackBanner = "feature_feedback_banner"
 }
 
 public extension WooAnalyticsStat {

@@ -208,9 +208,12 @@ private extension ProductTagsViewController {
 
         let action = ProductTagAction.synchronizeAllProductTags(siteID: product.siteID) { [weak self] error in
             guard error == nil else {
+                ServiceLocator.analytics.track(.productTagListLoadFailed)
                 self?.tagsFailedLoading()
                 return
             }
+
+            ServiceLocator.analytics.track(.productTagListLoaded)
 
             if let tagNames = self?.fetchedTags.map({ $0.name }) {
                 self?.tagsLoaded(tags: tagNames)
@@ -226,6 +229,8 @@ private extension ProductTagsViewController {
     }
 
     @objc func addTagsRemotely() {
+        ServiceLocator.analytics.track(.productTagSettingsDoneButtonTapped)
+
         textView.resignFirstResponder()
         configureRightBarButtonItemAsSpinner()
 

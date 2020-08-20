@@ -92,9 +92,9 @@ extension ProductReviewsViewModel {
                                                                    status: .approved) { error in
                                                                     if let error = error {
             DDLogError("⛔️ Error synchronizing reviews for product ID :\(productID). Error: \(error)")
-                                                                        // TODO: Analytics Products M3. Failed
+                                                                        ServiceLocator.analytics.track(.productReviewListLoadFailed)
                                                                     } else {
-                                                                        // TODO: Analytics Products M3. Loading more
+                                                                        ServiceLocator.analytics.track(.productReviewListLoaded)
                                                                     }
 
                                                                     onCompletion?()

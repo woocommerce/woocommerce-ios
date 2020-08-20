@@ -8,10 +8,11 @@ final class DashboardTopBannerFactory {
         let viewModel = TopBannerViewModel(title: DeprecatedStatsConstants.title,
                                            infoText: DeprecatedStatsConstants.info,
                                            icon: DeprecatedStatsConstants.icon,
-                                           actionButtonTitle: DeprecatedStatsConstants.actionTitle,
                                            isExpanded: true,
-                                           actionHandler: actionHandler,
-                                           topButton: .chevron(handler: nil))
+                                           topButton: .chevron(handler: nil),
+                                           actionButtons: [
+                                            .init(title: DeprecatedStatsConstants.actionTitle, action: actionHandler),
+                                           ])
         return TopBannerView(viewModel: viewModel)
     }
 }

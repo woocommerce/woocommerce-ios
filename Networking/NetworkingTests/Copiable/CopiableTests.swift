@@ -8,7 +8,7 @@ import XCTest
 ///
 final class CopiableTests: XCTestCase {
 
-    func testItCanReplaceAllPropertyValues() {
+    func test_it_can_replace_all_property_values() {
         // Given
         let original = ProductImage(
             imageID: 1_000,
@@ -38,7 +38,7 @@ final class CopiableTests: XCTestCase {
         XCTAssertEqual(copy.alt, "_alt_copy_")
     }
 
-    func testItCanReplaceSomePropertyValues() {
+    func test_it_can_replace_some_property_values() {
         // Given
         let original = ProductImage(
             imageID: 1_000,
@@ -65,7 +65,7 @@ final class CopiableTests: XCTestCase {
         XCTAssertEqual(copy.alt, "_alt_copy_")
     }
 
-    func testItCanSetNonNilPropertiesBackToNilUsingSomeNil() {
+    func test_it_can_set_non_nil_properties_back_to_nil_using_some_nil() {
         // Given
         let original = ProductImage(
             imageID: 1_000,
@@ -83,7 +83,7 @@ final class CopiableTests: XCTestCase {
         XCTAssertNil(copy.name)
     }
 
-    func testWhenPassingNilItWillCopyThePropertyInsteadOfSettingItToNil() {
+    func test_when_passing_nil_it_will_copy_the_property_instead_of_setting_it_to_nil() {
         // Given
         let original = ProductImage(
             imageID: 1_000,
@@ -101,7 +101,7 @@ final class CopiableTests: XCTestCase {
         XCTAssertEqual(copy.name, "_name_original_")
     }
 
-    func testItCanSetNonNilPropertiesBackToNilUsingAStructValueSource() {
+    func test_it_can_set_non_nil_properties_back_to_nil_using_a_struct_value_source() {
         // Given
         struct ValueSource {
             let alt: String?
@@ -127,7 +127,7 @@ final class CopiableTests: XCTestCase {
         XCTAssertNil(copy.alt)
     }
 
-    func testItCanSetNonNilPropertiesBackToNilUsingAVariableValueSource() {
+    func test_it_can_set_non_nil_properties_back_to_nil_using_a_variable_value_source() {
         // Given
         let original = ProductImage(
             imageID: 1_000,
@@ -149,7 +149,7 @@ final class CopiableTests: XCTestCase {
         XCTAssertNil(copy.dateModified)
     }
 
-    func testItWillLeaveTheUnspecifiedPropertiesUnchanged() {
+    func test_it_will_leave_the_unspecified_properties_unchanged() {
         // Given
         let original = ProductImage(
             imageID: 1_000,

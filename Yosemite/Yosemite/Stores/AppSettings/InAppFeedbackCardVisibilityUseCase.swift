@@ -20,18 +20,31 @@ struct InAppFeedbackCardVisibilityUseCase {
     private let calendar: Calendar
 
     private let settings: GeneralAppSettings
+    private let feedbackType: FeedbackType
 
-    init(settings: GeneralAppSettings, fileManager: FileManager = FileManager.default, calendar: Calendar = .current) {
+    init(settings: GeneralAppSettings, feedbackType: FeedbackType, fileManager: FileManager = FileManager.default, calendar: Calendar = .current) {
         self.settings = settings
+        self.feedbackType = feedbackType
         self.fileManager = fileManager
         self.calendar = calendar
     }
 
-    /// Returns whether the In-app Feedback Card should be displayed.
+    /// Returns whether the feedback request should be displayed.
     ///
     /// - Parameter currentDate The current date. This is only used for consistency in unit tests.
     ///
     func shouldBeVisible(currentDate: Date = Date()) throws -> Bool {
+        switch feedbackType {
+        case .general:
+            return try shouldGeneralFeedbackBeVisible(currentDate: currentDate)
+        case .productsM3:
+            return shouldProductsFeedbackBeVisible()
+        }
+    }
+
+    /// Returns whether the In-app Feedback Card should be displayed.
+    ///
+    private func shouldGeneralFeedbackBeVisible(currentDate: Date) throws -> Bool {
         guard let installationDate = inferInstallationDate() else {
             throw InferenceError.failedToInferInstallationDate
         }
@@ -40,7 +53,7 @@ struct InAppFeedbackCardVisibilityUseCase {
             return false
         }
 
-        guard let lastFeedbackDate = settings.lastFeedbackDate else {
+        guard case let .given(lastFeedbackDate) = settings.feedbackStatus(of: feedbackType) else {
             return true
         }
 
@@ -49,6 +62,12 @@ struct InAppFeedbackCardVisibilityUseCase {
         }
 
         return true
+    }
+
+    /// Returns whether the productsM3 feedback request should be displayed
+    ///
+    private func shouldProductsFeedbackBeVisible() -> Bool {
+        return settings.feedbackStatus(of: feedbackType) == .pending
     }
 
     /// Returns the total number of days between `from` and `to`.

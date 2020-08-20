@@ -8,7 +8,7 @@ final class PostMapperTests: XCTestCase {
 
     /// Verifies that all of the Post fields are parsed correctly.
     ///
-    func testFieldsAreProperlyParsed() {
+    func test_fields_are_properly_parsed() {
         guard let sitePost = mapSitePost() else {
             XCTFail()
             return

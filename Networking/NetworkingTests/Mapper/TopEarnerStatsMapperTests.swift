@@ -8,7 +8,7 @@ class TopEarnerStatsMapperTests: XCTestCase {
 
     /// Verifies that all of the day unit TopEarnerStats fields are parsed correctly.
     ///
-    func testDayUnitStatFieldsAreProperlyParsed() {
+    func test_day_unit_stat_fields_are_properly_parsed() {
         guard let dayStats = mapTopEarnerStatsWithDayUnitResponse() else {
             XCTFail()
             return
@@ -31,7 +31,7 @@ class TopEarnerStatsMapperTests: XCTestCase {
 
     /// Verifies that all of the week unit TopEarnerStats fields are parsed correctly.
     ///
-    func testWeekUnitStatFieldsAreProperlyParsed() {
+    func test_week_unit_stat_fields_are_properly_parsed() {
         guard let weekStats = mapTopEarnerStatsWithWeekUnitResponse() else {
             XCTFail()
             return
@@ -63,7 +63,7 @@ class TopEarnerStatsMapperTests: XCTestCase {
 
     /// Verifies that all of the month unit TopEarnerStats fields are parsed correctly.
     ///
-    func testMonthUnitStatFieldsAreProperlyParsed() {
+    func test_month_unit_stat_fields_are_properly_parsed() {
         guard let monthStats = mapTopEarnerStatsWithMonthUnitResponse() else {
             XCTFail()
             return
@@ -95,7 +95,7 @@ class TopEarnerStatsMapperTests: XCTestCase {
 
     /// Verifies that all of the year unit TopEarnerStats fields are parsed correctly.
     ///
-    func testYearUnitStatFieldsAreProperlyParsed() {
+    func test_year_unit_stat_fields_are_properly_parsed() {
         guard let yearStats = mapTopEarnerStatsWithYearUnitResponse() else {
             XCTFail()
             return

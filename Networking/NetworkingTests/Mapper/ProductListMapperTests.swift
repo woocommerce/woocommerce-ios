@@ -11,7 +11,7 @@ class ProductListMapperTests: XCTestCase {
 
     /// Verifies that all of the Product Fields are parsed correctly.
     ///
-    func testProductFieldsAreProperlyParsed() {
+    func test_Product_fields_are_properly_parsed() {
         let products = mapLoadAllProductsResponse()
         XCTAssertEqual(products.count, 10)
 
@@ -92,7 +92,7 @@ class ProductListMapperTests: XCTestCase {
 
     /// Test that ProductTypeKey converts to
     /// a ProductType enum properly.
-    func testThatProductTypeKeyConvertsToEnumProperly() {
+    func test_that_productTypeKey_converts_to_enum_properly() {
         let products = mapLoadAllProductsResponse()
 
         let firstProduct = products[0]
@@ -123,7 +123,7 @@ class ProductListMapperTests: XCTestCase {
 
     /// Test that categories are properly mapped.
     ///
-    func testThatProductCategoriesAreProperlyMapped() {
+    func test_that_product_categories_are_properly_mapped() {
         let products = mapLoadAllProductsResponse()
         let firstProduct = products[0]
         let categories = firstProduct.categories
@@ -138,7 +138,7 @@ class ProductListMapperTests: XCTestCase {
 
     /// Test that tags are properly mapped.
     ///
-    func testThatProductTagsAreProperlyMapped() {
+    func test_that_product_tags_are_properly_mapped() {
         let products = mapLoadAllProductsResponse()
         let firstProduct = products[0]
         let tags = firstProduct.tags
@@ -152,7 +152,7 @@ class ProductListMapperTests: XCTestCase {
 
     /// Test that product images are properly mapped.
     ///
-    func testThatProductImagesAreProperlyMapped() {
+    func test_that_product_images_are_properly_mapped() {
         let products = mapLoadAllProductsResponse()
         let product = products[1]
         let images = product.images
@@ -172,7 +172,7 @@ class ProductListMapperTests: XCTestCase {
 
     /// Test that product attributes are properly mapped
     ///
-    func testThatProductAttributesAreProperlyMapped() {
+    func test_that_product_attributes_are_properly_mapped() {
         let products = mapLoadAllProductsResponse()
         let product = products[4]
         let attributes = product.attributes
@@ -195,7 +195,7 @@ class ProductListMapperTests: XCTestCase {
 
     /// Test that the default product attributes map properly
     ///
-    func testThatDefaultProductAttributesMapProperly() {
+    func test_that_default_product_attributes_map_properly() {
         let products = mapLoadAllProductsResponse()
         let product = products[4]
         let defaultAttributes = product.defaultAttributes

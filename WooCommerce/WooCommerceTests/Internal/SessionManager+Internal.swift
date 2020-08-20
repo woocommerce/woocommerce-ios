@@ -13,6 +13,16 @@ extension SessionManager {
         return SessionManager(defaults: SessionSettings.defaults, keychainServiceName: SessionSettings.keychainServiceName)
     }
 
+    /// Create an instance of unit testing.
+    ///
+    static func makeForTesting(authenticated: Bool = false) -> SessionManager {
+        var manager = SessionManager.testingInstance
+        // Force setting to `nil` if `authenticated` is `false` so that any auto-loaded credentials
+        // will be removed.
+        manager.defaultCredentials = authenticated ? SessionSettings.credentials : nil
+        return manager
+    }
+
     func setStoreId(_ id: Int?) {
         UserDefaults(suiteName: "storesManagerTests")!.set(id, forKey: .defaultStoreID)
     }

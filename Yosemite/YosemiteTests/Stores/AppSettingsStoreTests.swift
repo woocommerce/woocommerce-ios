@@ -134,7 +134,7 @@ final class AppSettingsStoreTests: XCTestCase {
             .addTrackingProvider(siteID: TestConstants.siteID,
                                  providerName: TestConstants.newProviderName) { error in
                                     XCTAssertNil(error)
-                                    let fileData = self.fileStorage?.data as? [PreselectedProvider]
+                                    let fileData = self.fileStorage?.data.values.first as? [PreselectedProvider]
                                     let updatedProvider = fileData?.filter({ $0.siteID == TestConstants.siteID}).first
 
                                     if updatedProvider?.providerName == TestConstants.newProviderName {
@@ -156,7 +156,7 @@ final class AppSettingsStoreTests: XCTestCase {
                                  providerName: TestConstants.newProviderName,
                                  providerURL: TestConstants.newProviderURL) { error in
                                     XCTAssertNil(error)
-                                    let fileData = self.fileStorage?.data as? [PreselectedProvider]
+                                    let fileData = self.fileStorage?.data.values.first as? [PreselectedProvider]
                                     let updatedProvider = fileData?.filter({ $0.siteID == TestConstants.siteID}).first
 
                                     if updatedProvider?.providerName == TestConstants.newProviderName {
@@ -192,8 +192,8 @@ final class AppSettingsStoreTests: XCTestCase {
         // Given
         let date = Date(timeIntervalSince1970: 100)
 
-        let existingSettings = GeneralAppSettings(installationDate: Date(timeIntervalSince1970: 4_810),
-                                                  lastFeedbackDate: Date(timeIntervalSince1970: 9_971_311))
+        let (existingSettings, feedback) = createAppSettingAndGeneralFeedback(instalationDate: Date(timeIntervalSince1970: 4_810),
+                                                                              feedbackSatus: .given(Date(timeIntervalSince1970: 9_971_311)))
         try fileStorage?.write(existingSettings, to: expectedGeneralAppSettingsFileURL)
 
         // When
@@ -211,7 +211,7 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertEqual(date, savedSettings.installationDate)
 
         // The other properties should be kept
-        XCTAssertEqual(savedSettings.lastFeedbackDate, existingSettings.lastFeedbackDate)
+        XCTAssertEqual(savedSettings.feedbacks[feedback.name], feedback)
     }
 
     /// Test that the installationDate can still be saved even if there is no existing
@@ -297,20 +297,21 @@ final class AppSettingsStoreTests: XCTestCase {
 
         let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
         XCTAssertEqual(date, savedSettings.installationDate)
-        XCTAssertNil(savedSettings.lastFeedbackDate)
+        XCTAssertTrue(savedSettings.feedbacks.isEmpty)
     }
 
-    func testItCanSaveTheLastFeedbackDate() throws {
+    func test_it_can_update_the_general_feedback_given_date() throws {
         // Given
         let date = Date(timeIntervalSince1970: 300)
 
-        let existingSettings = GeneralAppSettings(installationDate: Date(timeIntervalSince1970: 1),
-                                                  lastFeedbackDate: Date(timeIntervalSince1970: 999))
+        let (existingSettings, feedback) = createAppSettingAndGeneralFeedback(instalationDate: Date(timeIntervalSince1970: 1),
+                                                                              feedbackSatus: .given(Date(timeIntervalSince1970: 999)))
+
         try fileStorage?.write(existingSettings, to: expectedGeneralAppSettingsFileURL)
 
         // When
         var result: Result<Void, Error>?
-        let action = AppSettingsAction.setLastFeedbackDate(date: date) { aResult in
+        let action = AppSettingsAction.updateFeedbackStatus(type: .general, status: .given(date)) { aResult in
             result = aResult
         }
         subject?.onAction(action)
@@ -319,7 +320,8 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(result).isSuccess)
 
         let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
-        XCTAssertEqual(date, savedSettings.lastFeedbackDate)
+        let savedFeedback = try XCTUnwrap(savedSettings.feedbacks[feedback.name])
+        XCTAssertEqual(.given(date), savedFeedback.status)
 
         // The other properties should be kept
         XCTAssertEqual(savedSettings.installationDate, existingSettings.installationDate)
@@ -340,7 +342,7 @@ final class AppSettingsStoreTests: XCTestCase {
 
         // When
         var shouldBeVisibleResult: Result<Bool, Error>?
-        let action = AppSettingsAction.loadInAppFeedbackCardVisibility { result in
+        let action = AppSettingsAction.loadFeedbackVisibility(type: .general) { result in
             shouldBeVisibleResult = result
         }
         subject?.onAction(action)
@@ -348,6 +350,66 @@ final class AppSettingsStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(try XCTUnwrap(shouldBeVisibleResult).isSuccess)
         XCTAssertTrue(try XCTUnwrap(shouldBeVisibleResult).get())
+    }
+
+    func test_loadFeedbackVisibility_for_productsM3_returns_true_after_marking_it_as_pending() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let updateAction = AppSettingsAction.updateFeedbackStatus(type: .productsM3, status: .pending) { _ in }
+        subject?.onAction(updateAction)
+
+        // When
+        var visibilityResult: Result<Bool, Error>?
+        let queryAction = AppSettingsAction.loadFeedbackVisibility(type: .productsM3) { result in
+            visibilityResult = result
+        }
+        subject?.onAction(queryAction)
+
+        // Then
+        let result = try XCTUnwrap(visibilityResult)
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertTrue(try result.get())
+
+    }
+
+    func test_loadFeedbackVisibility_for_productsM3_returns_false_after_marking_it_as_dismissed() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let updateAction = AppSettingsAction.updateFeedbackStatus(type: .productsM3, status: .dismissed) { _ in }
+        subject?.onAction(updateAction)
+
+        // When
+        var visibilityResult: Result<Bool, Error>?
+        let queryAction = AppSettingsAction.loadFeedbackVisibility(type: .productsM3) { result in
+            visibilityResult = result
+        }
+        subject?.onAction(queryAction)
+
+        // Then
+        let result = try XCTUnwrap(visibilityResult)
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertFalse(try result.get())
+
+    }
+
+    func test_loadFeedbackVisibility_for_productsM3_returns_false_after_marking_it_as_given() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let updateAction = AppSettingsAction.updateFeedbackStatus(type: .productsM3, status: .given(Date())) { _ in }
+        subject?.onAction(updateAction)
+
+        // When
+        var visibilityResult: Result<Bool, Error>?
+        let queryAction = AppSettingsAction.loadFeedbackVisibility(type: .productsM3) { result in
+            visibilityResult = result
+        }
+        subject?.onAction(queryAction)
+
+        // Then
+        let result = try XCTUnwrap(visibilityResult)
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertFalse(try result.get())
+
     }
 }
 
@@ -357,5 +419,11 @@ private extension AppSettingsStoreTests {
     var expectedGeneralAppSettingsFileURL: URL {
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
         return documents!.appendingPathComponent("general-app-settings.plist")
+    }
+
+    func createAppSettingAndGeneralFeedback(instalationDate: Date?, feedbackSatus: FeedbackSettings.Status) -> (GeneralAppSettings, FeedbackSettings) {
+        let feedback = FeedbackSettings(name: .general, status: feedbackSatus)
+        let settings = GeneralAppSettings(installationDate: instalationDate, feedbacks: [feedback.name: feedback])
+        return (settings, feedback)
     }
 }

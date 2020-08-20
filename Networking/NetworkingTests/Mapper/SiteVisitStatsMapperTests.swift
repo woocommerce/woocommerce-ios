@@ -8,7 +8,7 @@ class SiteVisitStatsMapperTests: XCTestCase {
 
     /// Verifies that all of the day unit SiteVisitStats fields are parsed correctly.
     ///
-    func testDayUnitStatFieldsAreProperlyParsed() {
+    func test_day_unit_stat_fields_are_properly_parsed() {
         guard let dayStats = mapSiteVisitStatsWithDayUnitResponse() else {
             XCTFail()
             return
@@ -30,7 +30,7 @@ class SiteVisitStatsMapperTests: XCTestCase {
 
     /// Verifies that all of the week unit SiteVisitStats fields are parsed correctly.
     ///
-    func testWeekUnitStatFieldsAreProperlyParsed() {
+    func test_week_unit_stat_fields_are_properly_parsed() {
         guard let weekStats = mapSiteVisitStatsWithWeekUnitResponse() else {
             XCTFail()
             return
@@ -52,7 +52,7 @@ class SiteVisitStatsMapperTests: XCTestCase {
 
     /// Verifies that all of the month unit SiteVisitStats fields are parsed correctly.
     ///
-    func testMonthUnitStatFieldsAreProperlyParsed() {
+    func test_month_unit_stat_fields_are_properly_parsed() {
         guard let monthStats = mapSiteVisitStatsWithMonthUnitResponse() else {
             XCTFail()
             return
@@ -74,7 +74,7 @@ class SiteVisitStatsMapperTests: XCTestCase {
 
     /// Verifies that all of the year unit SiteVisitStats fields are parsed correctly.
     ///
-    func testYearUnitStatFieldsAreProperlyParsed() {
+    func test_year_unit_stat_fields_are_properly_parsed() {
         guard let yearStats = mapSiteVisitStatsWithYearUnitResponse() else {
             XCTFail()
             return

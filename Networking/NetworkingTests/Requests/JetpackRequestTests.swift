@@ -32,7 +32,7 @@ final class JetpackRequestTests: XCTestCase {
 
     /// Verifies that a POST JetpackRequest will query the Jetpack Tunneled WordPress.com API.
     ///
-    func testPostRequestQueriesDotcomJetpackTunnelEndpointWithNoExtraQueryParameters() {
+    func test_post_request_queries_DotCom_Jetpack_tunnel_endpoint_with_no_extra_query_parameters() {
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: sampleSiteID, path: sampleRPC, parameters: sampleParameters)
 
         let expectedURL = URL(string: jetpackEndpointBaseURL)!
@@ -42,7 +42,7 @@ final class JetpackRequestTests: XCTestCase {
 
     /// Verifies that a POST JetpackRequest will serialize all of the Tunneling Parameters in the request body.
     ///
-    func testPostRequestQueriesDotcomJetpackTunnelEndpointWithItsParametersInTheBody() {
+    func test_post_request_queries_DotCom_Jetpack_tunnel_endpoint_with_its_parameters_in_the_body() {
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: sampleSiteID, path: sampleRPC, parameters: sampleParameters)
 
         guard let urlRequest = try? request.asURLRequest(),
@@ -59,7 +59,7 @@ final class JetpackRequestTests: XCTestCase {
 
     /// Verifies that a GET JetpackRequest will query the Jetpack Tunneled WordPress.com API, with the expected query parameters.
     ///
-    func testGetRequestQueriesDotcomJetpackTunnelEndpointWithExpectedQueryParameters() {
+    func test_get_request_queries_DotCom_Jetpack_tunnel_endpoint_with_expected_query_parameters() {
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: sampleSiteID, path: sampleRPC)
 
         let expectedURL = URL(string: jetpackEndpointBaseURL + queryParameters(for: request))!
@@ -69,7 +69,7 @@ final class JetpackRequestTests: XCTestCase {
 
     /// Verifies that a GET JetpackRequest will not serialize anything in the body.
     ///
-    func testGetRequestDoesNotSerializeAnythingInTheBody() {
+    func test_get_request_does_not_serialize_anything_in_the_body() {
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: sampleSiteID, path: sampleRPC, parameters: sampleParameters)
 
         let output = try! request.asURLRequest()
@@ -78,7 +78,7 @@ final class JetpackRequestTests: XCTestCase {
 
     /// Verifies that a DELETE JetpackRequest will actually become a GET with a `&_method=delete` query string parameter.
     ///
-    func testDeleteRequestBecomesGetRequest() {
+    func test_delete_request_becomes_get_request() {
         let request = JetpackRequest(wooApiVersion: .mark3, method: .delete, siteID: sampleSiteID, path: sampleRPC, parameters: sampleParameters)
 
         let output = try! request.asURLRequest()

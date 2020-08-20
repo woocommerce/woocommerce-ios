@@ -29,8 +29,14 @@ public final class PListFileStorage: FileStorage {
     }
 
     public func deleteFile(at fileURL: URL) throws {
+        let fileManager = FileManager.default
+
+        guard fileManager.fileExists(atPath: fileURL.path) else {
+            return
+        }
+
         do {
-            try FileManager.default.removeItem(at: fileURL)
+            try fileManager.removeItem(at: fileURL)
         } catch {
             let error = PListFileStorageErrors.fileDeleteFailed
             throw error

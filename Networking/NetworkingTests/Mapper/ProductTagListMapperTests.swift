@@ -8,7 +8,7 @@ final class ProductTagListMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductTag Fields are parsed correctly.
     ///
-    func testProductTagFieldsAreProperlyParsed() throws {
+    func test_ProductTag_fields_are_properly_parsed() throws {
         let tags = try mapLoadAllProductTagsResponse()
         XCTAssertEqual(tags.count, 4)
 
@@ -20,7 +20,7 @@ final class ProductTagListMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductTag Fields under `create` field are parsed correctly.
     ///
-    func testProductTagFieldsWhenCreatedAreProperlyParsed() throws {
+    func test_ProductTag_fields_when_created_are_properly_parsed() throws {
         let tags = try mapLoadProductTagsCreatedResponse()
         XCTAssertEqual(tags.count, 2)
 
@@ -32,7 +32,7 @@ final class ProductTagListMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductTag Fields under `delete` field are parsed correctly.
     ///
-    func testProductTagFieldsWhenDeletedAreProperlyParsed() throws {
+    func test_ProductTag_fields_when_deleted_are_properly_parsed() throws {
         let tags = try mapLoadProductTagsDeletedResponse()
         XCTAssertEqual(tags.count, 1)
 

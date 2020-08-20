@@ -16,7 +16,7 @@ final class RefundMapperTests: XCTestCase {
 
     /// Verifies that all of the Refund fields are parsed correctly.
     ///
-    func testRefundFieldsAreProperlyParsed() {
+    func test_Refund_fields_are_properly_parsed() {
         guard let refund = mapLoadRefundResponse() else {
             XCTFail("No `refund-single.json` file found.")
             return
@@ -36,7 +36,7 @@ final class RefundMapperTests: XCTestCase {
 
     /// Verifies that all of the Refunded Order Items are parsed correctly.
     ///
-    func testRefundItemsAreCorrectlyParsed() {
+    func test_Refund_items_are_correctly_parsed() {
         guard let refund = mapLoadRefundResponse() else {
             XCTFail("Failed to load `refund-single.json` file.")
             return

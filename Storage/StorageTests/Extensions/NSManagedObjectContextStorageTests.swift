@@ -20,7 +20,7 @@ class NSManagedObjectContextStorageTests: XCTestCase {
 
     /// Verifies that allObjects returns all of the entities of the specialized kind.
     ///
-    func testAllObjectsReturnsAllOfTheAvableEntitiesSortedByValue() {
+    func test_allObjects_returns_all_of_the_avable_entities_sorted_by_value() {
         insertDummyEntities(100)
 
         let descriptor = NSSortDescriptor(key: "value", ascending: true)
@@ -35,7 +35,7 @@ class NSManagedObjectContextStorageTests: XCTestCase {
     /// Verifies that allObjects returns all of the entities of the specialized kind that match a given
     /// predicate.
     ///
-    func testAllObjectsMatchingPredicateEffectivelyFiltersEntities() {
+    func test_allObjects_matching_predicate_effectively_filters_entities() {
         insertDummyEntities(100)
 
         let minValue = 50
@@ -53,7 +53,7 @@ class NSManagedObjectContextStorageTests: XCTestCase {
 
     /// Verifies that countObjects returns the expected entity count
     ///
-    func testCountObjectsReturnsTheRightEntityCount() {
+    func test_countObjects_returns_the_right_entity_count() {
         let expected = 80
         insertDummyEntities(expected)
 
@@ -63,7 +63,7 @@ class NSManagedObjectContextStorageTests: XCTestCase {
 
     /// Verifies that countObjects returns the expected entity count matching a given predicate
     ///
-    func testCountObjectsReturnsTheRightEntityCountMatchingTheSpecifiedPredicate() {
+    func test_countObjects_returns_the_right_entity_count_matching_the_specified_predicate() {
         let inserted = 42
         let expected = 3
         insertDummyEntities(inserted)
@@ -75,7 +75,7 @@ class NSManagedObjectContextStorageTests: XCTestCase {
 
     /// Verifies that deleteObject effectively nukes the object from the context
     ///
-    func testDeleteObjectEffectivelyNukesTheObjectFromContext() {
+    func test_deleteObject_effectively_nukes_the_object_from_context() {
         let count = 30
 
         insertDummyEntities(count)
@@ -89,7 +89,7 @@ class NSManagedObjectContextStorageTests: XCTestCase {
 
     /// Verifies that deleteAllObjects effectively nukes the entire bucket
     ///
-    func testDeleteAllObjectsEffectivelyNukesAllOfTheEntities() {
+    func test_deleteAllObjects_effectively_nukes_all_of_the_entities() {
         let count = 50
 
         insertDummyEntities(count)
@@ -103,7 +103,7 @@ class NSManagedObjectContextStorageTests: XCTestCase {
 
     /// Verifies that firstObject effectively retrieves a single instance, when applicable
     ///
-    func testFirstObjectMatchingPredicateReturnsTheExpectedObject() {
+    func test_firstObject_matching_predicate_returns_the_expected_object() {
         let count = 50
         let targetKey = "5"
         insertDummyEntities(count)
@@ -117,7 +117,7 @@ class NSManagedObjectContextStorageTests: XCTestCase {
 
     /// Verifies that firstObject effectively retrieves nil, when applicable
     ///
-    func testFirstObjectMatchingPredicateReturnsNilIfNothingWasFound() {
+    func test_firstObject_matching_predicate_returns_nil_if_nothing_was_found() {
         let count = 5
         let targetKey = "50"
         insertDummyEntities(count)
@@ -130,7 +130,7 @@ class NSManagedObjectContextStorageTests: XCTestCase {
 
     /// Verifies that insertNewObject returns a new entity of the specialized kind
     ///
-    func testInsertEntityReturnsNewManagedObjectOfTheExpectedKind() {
+    func test_insertNewObject_returns_new_managed_object_of_the_expected_kind() {
         let entity = context.insertNewObject(ofType: DummyEntity.self)
 
         // Upcast to AnyObject to make really sure this works
@@ -140,7 +140,7 @@ class NSManagedObjectContextStorageTests: XCTestCase {
 
     /// Verifies that the `saveIfNeeded` persists changes (if any)
     ///
-    func testSaveIfNeededEffectivelyPersistChangesIfAny() {
+    func test_saveIfNeeded_effectively_persist_changes_if_any() {
         XCTAssertFalse(context.hasChanges)
 
         _ = context.insertNewObject(ofType: DummyEntity.self)
@@ -152,7 +152,7 @@ class NSManagedObjectContextStorageTests: XCTestCase {
 
     /// Verifies that loadObject returns nil whenever the entity was deleted
     ///
-    func testLoadObjectReturnsNilIfTheObjectWasDeleted() {
+    func test_loadObject_returns_nil_if_the_object_was_deleted() {
         let entity = context.insertNewObject(ofType: DummyEntity.self)
         let objectID = entity.objectID
 
@@ -167,7 +167,7 @@ class NSManagedObjectContextStorageTests: XCTestCase {
 
     /// Verifies that loadObject retrieves the expected entity
     ///
-    func testLoadObjectReturnsTheExpectedObject() {
+    func test_loadObject_returns_the_expected_object() {
         let entity = context.insertNewObject(ofType: DummyEntity.self)
         entity.key = "YEAH!"
         entity.value = 42

@@ -8,10 +8,12 @@ final class ProductExternalLinkViewController: UIViewController {
     }()
 
     private let product: Product
-    private let sections: [Section]
+    private var sections: [Section] = []
 
     private var externalURL: String?
     private var buttonText: String
+
+    private var error: String?
 
     private lazy var keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
         self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
@@ -23,19 +25,12 @@ final class ProductExternalLinkViewController: UIViewController {
     init(product: Product, onCompletion: @escaping Completion) {
         self.product = product
         self.externalURL = product.externalURL
-        self.buttonText = product.buttonText
+        self.buttonText = product.buttonText.isNotEmpty ? product.buttonText : Strings.buyProductPlaceholder
         self.onCompletion = onCompletion
 
-        let externalURLFooter = NSLocalizedString("Enter the external URL to the product.",
-                                                  comment: "Footer text for editing product external URL")
-        let buttonTextFooter = NSLocalizedString("This text will be shown on the button linking to the external product.",
-                                                 comment: "Footer text for editing external product button text")
-        self.sections = [
-            Section(footer: externalURLFooter, rows: [.externalURL]),
-            Section(footer: buttonTextFooter, rows: [.buttonText])
-        ]
-
         super.init(nibName: nil, bundle: nil)
+
+        reloadSections()
     }
 
     required init?(coder: NSCoder) {
@@ -108,6 +103,16 @@ extension ProductExternalLinkViewController: UITableViewDataSource {
 // MARK: - Support for UITableViewDataSource
 //
 private extension ProductExternalLinkViewController {
+    func reloadSections() {
+        sections = [
+            Section(errorTitle: error, footer: Strings.externalURLFooter, rows: [.externalURL]),
+            Section(footer: Strings.buttonTextFooter, rows: [.buttonText])
+        ]
+
+        tableView.reloadData()
+        configureTextFieldFirstResponder()
+    }
+
     /// Configure cellForRowAtIndexPath:
     ///
    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
@@ -122,24 +127,28 @@ private extension ProductExternalLinkViewController {
     }
 
     func configureExternalURL(cell: TitleAndTextFieldTableViewCell) {
-        let title = NSLocalizedString("Product URL", comment: "Title of the text field for editing the external URL for an external/affiliate product")
-        let placeholder = NSLocalizedString("Enter URL",
-                                            comment: "Placeholder of the text field for editing the external URL for an external/affiliate product")
-        let viewModel = TitleAndTextFieldTableViewCell.ViewModel(title: title,
+        let title = Strings.productURLTitle
+        let placeholder = Strings.enterURLPlaceholder
+        var viewModel = TitleAndTextFieldTableViewCell.ViewModel(title: title,
                                                                  text: externalURL,
                                                                  placeholder: placeholder,
                                                                  keyboardType: .URL,
                                                                  textFieldAlignment: .trailing,
                                                                  onTextChange: { [weak self] text in
                                                                     self?.externalURL = text
+                                                                    if text?.isValidURL() == true || text?.isEmpty == true {
+                                                                        self?.hideError()
+                                                                    } else {
+                                                                        self?.displayError(error: Strings.errorMalformedURL)
+                                                                    }
         })
+        viewModel = viewModel.stateUpdated(state: error == nil ? .normal : .error)
         cell.configure(viewModel: viewModel)
     }
 
     func configureButtonText(cell: TitleAndTextFieldTableViewCell) {
-        let title = NSLocalizedString("Button Text", comment: "Title of the text field for editing the button text for an external/affiliate product")
-        let placeholder = NSLocalizedString("Buy product",
-                                            comment: "Placeholder of the text field for editing the button text for an external/affiliate product")
+        let title = Strings.buttonTextTitle
+        let placeholder = Strings.buyProductPlaceholder
         let viewModel = TitleAndTextFieldTableViewCell.ViewModel(title: title,
                                                                  text: buttonText,
                                                                  placeholder: placeholder,
@@ -151,11 +160,47 @@ private extension ProductExternalLinkViewController {
     }
 }
 
+// MARK: - UITableViewDelegate Conformance
+//
+extension ProductExternalLinkViewController: UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let section = sections[section]
+        guard let errorTitle = section.errorTitle else {
+            return nil
+        }
+
+        let headerID = ErrorSectionHeaderView.reuseIdentifier
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerID) as? ErrorSectionHeaderView else {
+            fatalError()
+        }
+        headerView.configure(title: errorTitle)
+        UIAccessibility.post(notification: .layoutChanged, argument: headerView)
+        return headerView
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let section = sections[section]
+        guard let errorTitle = section.errorTitle, errorTitle.isEmpty == false else {
+            return 0
+        }
+        return UITableView.automaticDimension
+    }
+
+    func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
+        let section = sections[section]
+        guard let errorTitle = section.errorTitle, errorTitle.isEmpty == false else {
+            return 0
+        }
+        return Constants.estimatedSectionHeaderHeight
+    }
+}
+
 // MARK: - View Configuration
 //
 private extension ProductExternalLinkViewController {
     func configureNavigation() {
-        title = NSLocalizedString("Product Link", comment: "Edit Product External Link navigation title")
+        title = Strings.screenTitle
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(completeEditing))
     }
@@ -166,6 +211,7 @@ private extension ProductExternalLinkViewController {
 
     func configureTableView() {
         tableView.dataSource = self
+        tableView.delegate = self
 
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
@@ -176,10 +222,31 @@ private extension ProductExternalLinkViewController {
         view.pinSubviewToSafeArea(tableView)
 
         registerTableViewCells()
+        registerTableViewHeaderFooters()
     }
 
     func registerTableViewCells() {
         tableView.register(TitleAndTextFieldTableViewCell.loadNib(), forCellReuseIdentifier: TitleAndTextFieldTableViewCell.reuseIdentifier)
+    }
+
+    func registerTableViewHeaderFooters() {
+        let headersAndFooters = [ErrorSectionHeaderView.self]
+
+        for kind in headersAndFooters {
+            tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
+        }
+    }
+
+    func enableDoneButton(_ enabled: Bool) {
+        navigationItem.rightBarButtonItem?.isEnabled = enabled
+    }
+
+    // Configure the text field as first responder
+    func configureTextFieldFirstResponder() {
+        if let indexPath = sections.indexPathForRow(.externalURL) {
+            let cell = tableView.cellForRow(at: indexPath) as? TitleAndTextFieldTableViewCell
+            cell?.textFieldBecomeFirstResponder()
+        }
     }
 }
 
@@ -196,6 +263,28 @@ private extension ProductExternalLinkViewController {
 extension ProductExternalLinkViewController: KeyboardScrollable {
     var scrollable: UIScrollView {
         return tableView
+    }
+}
+
+// MARK: - Error handling
+//
+private extension ProductExternalLinkViewController {
+    func displayError(error: String) {
+        // This check is useful so we don't reload while typing each letter in the sections
+        if self.error == nil {
+            self.error = error
+            reloadSections()
+            enableDoneButton(false)
+        }
+    }
+
+    func hideError() {
+        // This check is useful so we don't reload while typing each letter in the sections
+        if error != nil {
+            error = nil
+            reloadSections()
+            enableDoneButton(true)
+        }
     }
 }
 
@@ -220,12 +309,39 @@ private extension ProductExternalLinkViewController {
     /// Table Sections
     ///
     struct Section: RowIterable {
+        let errorTitle: String?
         let footer: String?
         let rows: [Row]
 
-        init(footer: String? = nil, rows: [Row]) {
+        init(errorTitle: String? = nil, footer: String? = nil, rows: [Row]) {
+            self.errorTitle = errorTitle
             self.footer = footer
             self.rows = rows
         }
+    }
+}
+
+private extension ProductExternalLinkViewController {
+    enum Constants {
+        static let estimatedSectionHeaderHeight: CGFloat = 44
+    }
+
+    enum Strings {
+        static let screenTitle = NSLocalizedString("Product Link",
+                                                   comment: "Edit Product External Link navigation title")
+        static let productURLTitle = NSLocalizedString("Product URL",
+                                                       comment: "Title of the text field for editing the external URL for an external/affiliate product")
+        static let enterURLPlaceholder = NSLocalizedString("Enter URL",
+                                         comment: "Placeholder of the text field for editing the external URL for an external/affiliate product")
+        static let errorMalformedURL = NSLocalizedString("Check that the URL entered is valid",
+                                                         comment: "The message of the alert when there is an error in the URL of an external product")
+        static let externalURLFooter = NSLocalizedString("Enter the external URL to the product.",
+                                                  comment: "Footer text for editing product external URL")
+        static let buttonTextTitle = NSLocalizedString("Button Text",
+                                                       comment: "Title of the text field for editing the button text for an external/affiliate product")
+        static let buttonTextFooter = NSLocalizedString("This text will be shown on the button linking to the external product.",
+                                                 comment: "Footer text for editing external product button text")
+        static let buyProductPlaceholder = NSLocalizedString("Buy Product",
+        comment: "Placeholder of the text field for editing the button text for an external/affiliate product")
     }
 }

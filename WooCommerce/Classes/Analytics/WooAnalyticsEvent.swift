@@ -70,7 +70,7 @@ extension WooAnalyticsEvent {
 
     public enum FeatureFeedbackBannerAction: String {
         case gaveFeedback = "gave_feedback"
-        case dismissed = "dismissed"
+        case dismissed
     }
 
     static func appFeedbackPrompt(action: AppFeedbackPromptAction) -> WooAnalyticsEvent {

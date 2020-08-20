@@ -29,8 +29,12 @@ final class InAppFeedbackCardViewController: UIViewController {
     /// SKStoreReviewController type wrapper. Needed for testing
     private let storeReviewControllerType: SKStoreReviewControllerProtocol.Type
 
-    init(storeReviewControllerType: SKStoreReviewControllerProtocol.Type = SKStoreReviewController.self) {
+    private let analytics: Analytics
+
+    init(storeReviewControllerType: SKStoreReviewControllerProtocol.Type = SKStoreReviewController.self,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.storeReviewControllerType = storeReviewControllerType
+        self.analytics = analytics
         super.init(nibName: nil, bundle: nil)
     }
 

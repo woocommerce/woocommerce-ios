@@ -312,6 +312,10 @@ public enum WooAnalyticsStat: String {
     //
     case externalProductLinkSettingsDoneButtonTapped = "external_product_link_settings_done_button_tapped"
 
+    // Edit Product SKU Events
+    //
+    case productSKUDoneButtonTapped = "product_sku_done_button_tapped"
+
     // Product Type Event
     //
     case productTypeChanged = "product_type_change_tapped"

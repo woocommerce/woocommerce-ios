@@ -982,7 +982,6 @@ private extension ProductFormViewController {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        //TODO: Edit Product M3 analytics
         let hasChangedData = categories.sorted() != product.product.categories.sorted()
         guard hasChangedData else {
             return
@@ -1014,7 +1013,6 @@ private extension ProductFormViewController {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        // TODO-2509: Edit Product M3 analytics
         let hasChangedData = tags.sorted() != product.product.tags.sorted()
         guard hasChangedData else {
             return
@@ -1041,8 +1039,8 @@ private extension ProductFormViewController {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        // TODO-2509: Edit Product M3 analytics
         let hasChangedData = sku != product.sku
+        ServiceLocator.analytics.track(.productSKUDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
         guard hasChangedData else {
             return
         }
@@ -1072,7 +1070,6 @@ private extension ProductFormViewController {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        // TODO-2000: Edit Product M3 analytics
         let hasChangedData = groupedProductIDs != product.product.groupedProducts
         guard hasChangedData else {
             return
@@ -1103,7 +1100,6 @@ private extension ProductFormViewController {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        // TODO-2000: Edit Product M3 analytics
         let hasChangedData = externalURL != product.product.externalURL || buttonText != product.product.buttonText
         guard hasChangedData else {
             return

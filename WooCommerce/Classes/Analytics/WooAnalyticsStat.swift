@@ -261,6 +261,14 @@ public enum WooAnalyticsStat: String {
     case productDetailViewPriceSettingsTapped   = "product_detail_view_price_settings_tapped"
     case productDetailViewShippingSettingsTapped = "product_detail_view_shipping_settings_tapped"
     case productDetailViewInventorySettingsTapped = "product_detail_view_inventory_settings_tapped"
+    case productDetailViewCategoriesTapped = "product_detail_view_categories_tapped"
+    case productDetailViewTagsTapped = "product_detail_view_tags_tapped"
+    case productDetailViewReviewsTapped = "product_detail_view_product_reviews_tapped"
+    case productDetailViewProductTypeTapped = "product_detail_view_product_type_tapped"
+    case productDetailViewGroupedProductsTapped = "product_detail_view_grouped_products_tapped"
+    case productDetailViewExternalProductLinkTapped = "product_detail_view_external_product_link_tapped"
+    case productDetailViewSKUTapped = "product_detail_view_sku_tapped"
+    case productDetailViewVariationsTapped = "product_detail_view_product_variants_tapped"
     case productDescriptionDoneButtonTapped     = "product_description_done_button_tapped"
     case productPriceSettingsDoneButtonTapped   = "product_price_settings_done_button_tapped"
     case productShippingSettingsDoneButtonTapped = "product_shipping_settings_done_button_tapped"
@@ -303,7 +311,6 @@ public enum WooAnalyticsStat: String {
 
     // Readonly Product Variations Events
     //
-    case productDetailsProductVariantsTapped    = "product_detail_view_product_variants_tapped"
     case productVariationListLoaded             = "product_variants_loaded"
     case productVariationListLoadError          = "product_variants_load_error"
     case productVariationListPulledToRefresh    = "product_variants_pulled_to_refresh"

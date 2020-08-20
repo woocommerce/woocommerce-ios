@@ -259,10 +259,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 ServiceLocator.analytics.track(.productDetailViewPriceSettingsTapped)
                 editPriceSettings()
             case .reviews:
-                // TODO-2509 Edit Product M3 analytics
+                ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
                 showReviews()
             case .productType:
-                // TODO-2509 Edit Product M3 analytics
+                ServiceLocator.analytics.track(.productDetailViewProductTypeTapped)
                 let cell = tableView.cellForRow(at: indexPath)
                 editProductType(cell: cell)
             case .shipping:
@@ -272,27 +272,28 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 ServiceLocator.analytics.track(.productDetailViewInventorySettingsTapped)
                 editInventorySettings()
             case .categories:
-                // TODO-2509 Edit Product M3 analytics
+                ServiceLocator.analytics.track(.productDetailViewCategoriesTapped)
                 editCategories()
             case .tags:
-                // TODO-2509 Edit Product M3 analytics
+                ServiceLocator.analytics.track(.productDetailViewTagsTapped)
                 editTags()
             case .briefDescription:
                 ServiceLocator.analytics.track(.productDetailViewShortDescriptionTapped)
                 editShortDescription()
             case .externalURL:
-                // TODO-2509 Edit Product M3 analytics
+                ServiceLocator.analytics.track(.productDetailViewExternalProductLinkTapped)
                 editExternalLink()
                 break
             case .sku:
-                // TODO-2509 Edit Product M3 analytics
+                ServiceLocator.analytics.track(.productDetailViewSKUTapped)
                 editSKU()
                 break
             case .groupedProducts:
+                ServiceLocator.analytics.track(.productDetailViewGroupedProductsTapped)
                 editGroupedProducts()
                 break
             case .variations:
-                // TODO-2509 Edit Product M3 analytics
+                ServiceLocator.analytics.track(.productDetailViewVariationsTapped)
                 guard let product = product as? EditableProductModel, product.product.variations.isNotEmpty else {
                     return
                 }
@@ -475,16 +476,22 @@ private extension ProductFormViewController {
                                                                     self?.dismiss(animated: true) { [weak self] in
                                                                         switch action {
                                                                         case .editInventorySettings:
+                                                                            ServiceLocator.analytics.track(.productDetailViewInventorySettingsTapped)
                                                                             self?.editInventorySettings()
                                                                         case .editShippingSettings:
+                                                                            ServiceLocator.analytics.track(.productDetailViewShippingSettingsTapped)
                                                                             self?.editShippingSettings()
                                                                         case .editCategories:
+                                                                            ServiceLocator.analytics.track(.productDetailViewCategoriesTapped)
                                                                             self?.editCategories()
                                                                         case .editTags:
+                                                                            ServiceLocator.analytics.track(.productDetailViewTagsTapped)
                                                                             self?.editTags()
                                                                         case .editBriefDescription:
+                                                                            ServiceLocator.analytics.track(.productDetailViewShortDescriptionTapped)
                                                                             self?.editShortDescription()
                                                                         case .editSKU:
+                                                                            ServiceLocator.analytics.track(.productDetailViewSKUTapped)
                                                                             self?.editSKU()
                                                                             break
                                                                         }

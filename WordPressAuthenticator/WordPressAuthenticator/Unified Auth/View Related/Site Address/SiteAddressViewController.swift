@@ -32,6 +32,9 @@ final class SiteAddressViewController: LoginViewController {
 
         removeGoogleWaitingView()
         
+        // Nav bar could be hidden from the host app, so reshow it.
+        navigationController?.setNavigationBarHidden(false, animated: false)
+        
         navigationItem.title = WordPressAuthenticator.shared.displayStrings.logInTitle
         styleNavigationBar(forUnified: true)
 
@@ -467,7 +470,7 @@ extension SiteAddressViewController {
         configureViewLoading(false)
 
         guard let vc = LoginUsernamePasswordViewController.instantiate(from: .login) else {
-            DDLogError("Failed to navigate from LoginSiteAddressViewController to LoginUsernamePasswordViewController")
+            DDLogError("Failed to navigate from SiteAddressViewController to LoginUsernamePasswordViewController")
             return
         }
 

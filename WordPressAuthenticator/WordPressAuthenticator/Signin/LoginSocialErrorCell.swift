@@ -9,18 +9,21 @@ open class LoginSocialErrorCell: UITableViewCell {
     private let descriptionLabel: UILabel
     private let labelStack: UIStackView
 
+    private var forUnified: Bool = false
+    
     private struct Constants {
         static let labelSpacing: CGFloat = 15.0
         static let labelVerticalMargin: CGFloat = 20.0
         static let descriptionMinHeight: CGFloat = 14.0
     }
 
-    @objc public init(title: String, description: String) {
+    @objc public init(title: String, description: String, forUnified: Bool = false) {
         errorTitle = title
         errorDescription = description
         titleLabel = UILabel()
         descriptionLabel = UILabel()
         labelStack = UIStackView()
+        self.forUnified = forUnified
 
         super.init(style: .default, reuseIdentifier: "LoginSocialErrorCell")
 
@@ -81,7 +84,12 @@ open class LoginSocialErrorCell: UITableViewCell {
         } else {
             descriptionLabel.text = errorDescription
         }
-
-        backgroundColor = WordPressAuthenticator.shared.style.viewControllerBackgroundColor
+        
+        guard let unifiedBackgroundColor = WordPressAuthenticator.shared.unifiedStyle?.viewControllerBackgroundColor else {
+            backgroundColor = WordPressAuthenticator.shared.style.viewControllerBackgroundColor
+            return
+        }
+        
+        backgroundColor = forUnified ? unifiedBackgroundColor : WordPressAuthenticator.shared.style.viewControllerBackgroundColor
     }
 }

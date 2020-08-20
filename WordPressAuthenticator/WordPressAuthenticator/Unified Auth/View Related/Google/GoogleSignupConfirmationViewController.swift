@@ -20,6 +20,8 @@ class GoogleSignupConfirmationViewController: LoginViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        removeGoogleWaitingView()
+        
         navigationItem.title = WordPressAuthenticator.shared.displayStrings.signUpTitle
         styleNavigationBar(forUnified: true)
 

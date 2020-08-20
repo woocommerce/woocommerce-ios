@@ -856,10 +856,12 @@ private extension ProductFormViewController {
         let command = ProductTypeBottomSheetListSelectorCommand(selected: viewModel.productModel.productType) { [weak self] (selectedProductType) in
             self?.dismiss(animated: true, completion: nil)
 
-            // TODO-2509 Edit Product M3 analytics
-            //  let hasChangedData: Bool = {
-            //      self?.product.productType != selectedProductType
-            //  }()
+            if let originalProductType = self?.product.productType {
+                ServiceLocator.analytics.track(.productTypeChanged, withProperties: [
+                    "from": originalProductType.rawValue,
+                    "to": selectedProductType.rawValue
+                ])
+            }
             self?.presentProductTypeChangeAlert(completion: { (change) in
                 guard change == true else {
                     return

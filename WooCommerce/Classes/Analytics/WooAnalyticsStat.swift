@@ -301,6 +301,10 @@ public enum WooAnalyticsStat: String {
     case productReviewListLoaded = "product_reviews_loaded"
     case productReviewListLoadFailed = "product_reviews_load_failed"
 
+    // Product Type Event
+    //
+    case productTypeChanged = "product_type_change_tapped"
+
     // Product More Menu
     //
     case productDetailViewProductButtonTapped = "product_detail_view_external_tapped"

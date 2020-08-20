@@ -39,8 +39,8 @@ import Foundation
 /// WPAnalytics.track(.loginStart)
 /// ~~~
 ///
-public final class WooAnalyticsEvent {
     let name: String
+public struct WooAnalyticsEvent {
     let properties: [String: String]
 
     public init(name: String, properties: [String: String]) {

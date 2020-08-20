@@ -38,26 +38,25 @@ final class TopBannerView: UIView {
         return button
     }()
 
-    private lazy var actionButton: UIButton = {
-        let button = UIButton(frame: .zero)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
+    private let actionStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        return stackView
     }()
 
-    private lazy var actionStackView = createActionStackView()
+    private let actionButtons: [UIButton]
 
     private let isActionEnabled: Bool
 
     private(set) var isExpanded: Bool
 
     private let onTopButtonTapped: (() -> Void)?
-    private let onAction: (() -> Void)?
 
     init(viewModel: TopBannerViewModel) {
-        isActionEnabled = viewModel.actionHandler != nil
+        isActionEnabled = viewModel.actionButtons.isNotEmpty
         isExpanded = viewModel.isExpanded
-        onAction = viewModel.actionHandler
         onTopButtonTapped = viewModel.topButton.handler
+        actionButtons = viewModel.actionButtons.map { _ in UIButton() }
         super.init(frame: .zero)
         configureSubviews(with: viewModel)
     }
@@ -78,11 +77,6 @@ private extension TopBannerView {
 
         infoLabel.applyBodyStyle()
         infoLabel.numberOfLines = 0
-
-        if isActionEnabled {
-            actionButton.applyLinkButtonStyle()
-            actionButton.addTarget(self, action: #selector(onActionButtonTapped), for: .touchUpInside)
-        }
 
         renderContent(of: viewModel)
         configureBannerType(type: viewModel.type)
@@ -105,7 +99,10 @@ private extension TopBannerView {
 
         iconImageView.image = viewModel.icon
 
-        actionButton.setTitle(viewModel.actionButtonTitle, for: .normal)
+        zip(viewModel.actionButtons, actionButtons).forEach { buttonInfo, button in
+            button.setTitle(buttonInfo.title, for: .normal)
+            button.on(.touchUpInside, call: { _ in buttonInfo.action() })
+        }
     }
 
     func configureTopButton(viewModel: TopBannerViewModel, onContentView contentView: UIView) {
@@ -122,6 +119,7 @@ private extension TopBannerView {
             dismissButton.setImage(UIImage.gridicon(.cross, size: CGSize(width: 24, height: 24)), for: .normal)
             dismissButton.tintColor = .textSubtle
             dismissButton.addTarget(self, action: #selector(onDismissButtonTapped), for: .touchUpInside)
+
         case .none:
             break
         }
@@ -131,6 +129,7 @@ private extension TopBannerView {
         let iconInformationStackView = createIconInformationStackView(with: viewModel)
         let mainStackView = UIStackView(arrangedSubviews: [iconInformationStackView, createBorderView()])
         if isActionEnabled {
+            configureActionStackView(with: viewModel)
             mainStackView.addArrangedSubview(actionStackView)
         }
 
@@ -174,10 +173,34 @@ private extension TopBannerView {
         return informationStackView
     }
 
-    func createActionStackView() -> UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [actionButton, createBorderView()])
-        stackView.axis = .vertical
-        return stackView
+    func configureActionStackView(with viewModel: TopBannerViewModel) {
+        // StackView to hold the action buttons
+        let buttonsStackView = UIStackView()
+        buttonsStackView.distribution = .fillEqually
+        buttonsStackView.spacing = 0.5
+
+        // Background to simulate a separator by giving the buttons some spacing
+        let separatorBackground = createButtonsBackgroundView()
+        buttonsStackView.addSubview(separatorBackground)
+        buttonsStackView.pinSubviewToAllEdges(separatorBackground)
+
+        // Style buttons
+        buttonsStackView.addArrangedSubviews(actionButtons)
+        actionButtons.forEach { button in
+            button.applyLinkButtonStyle()
+            button.backgroundColor = backgroundColor(for: viewModel.type)
+            buttonsStackView.addArrangedSubview(button)
+        }
+
+        // Bundle everything with a vertical separator
+        actionStackView.addArrangedSubviews([buttonsStackView, createBorderView()])
+    }
+
+    func createButtonsBackgroundView() -> UIView {
+        let separatorBackground = UIView()
+        separatorBackground.translatesAutoresizingMaskIntoConstraints = false
+        separatorBackground.backgroundColor = .systemColor(.separator)
+        return separatorBackground
     }
 
     func createBorderView() -> UIView {
@@ -199,10 +222,18 @@ private extension TopBannerView {
         switch type {
         case .normal:
             iconImageView.tintColor = .textSubtle
-            backgroundColor = .systemColor(.secondarySystemGroupedBackground)
         case .warning:
             iconImageView.tintColor = .warning
-            backgroundColor = .warningBackground
+        }
+        backgroundColor = backgroundColor(for: type)
+    }
+
+    func backgroundColor(for bannerType: TopBannerViewModel.BannerType) -> UIColor {
+        switch bannerType {
+        case .normal:
+            return .systemColor(.secondarySystemGroupedBackground)
+        case .warning:
+            return .warningBackground
         }
     }
 }
@@ -210,10 +241,6 @@ private extension TopBannerView {
 private extension TopBannerView {
     @objc func onDismissButtonTapped() {
         onTopButtonTapped?()
-    }
-
-    @objc func onActionButtonTapped() {
-        onAction?()
     }
 
     @objc func onExpandCollapseButtonTapped() {

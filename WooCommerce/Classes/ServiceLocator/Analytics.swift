@@ -49,3 +49,13 @@ protocol Analytics {
     ///
     var analyticsProvider: AnalyticsProvider { get }
 }
+
+extension Analytics {
+    /// Track a specific event.
+    ///
+    /// - Parameter event: The event to track along with its properties.
+    ///
+    func track(event: WooAnalyticsEvent) {
+        track(event.statName, withProperties: event.properties)
+    }
+}

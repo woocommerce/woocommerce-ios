@@ -68,6 +68,7 @@ extension WooAnalyticsEvent {
         case completed
     }
 
+    /// The action performed on "New Features" banners like in Products.
     public enum FeatureFeedbackBannerAction: String {
         case gaveFeedback = "gave_feedback"
         case dismissed

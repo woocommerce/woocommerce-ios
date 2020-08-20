@@ -69,13 +69,9 @@ final class TopBannerView: UIView {
 
 private extension TopBannerView {
     func configureSubviews(with viewModel: TopBannerViewModel) {
-        configureBackground()
-
         let mainStackView = createMainStackView(with: viewModel)
         addSubview(mainStackView)
         pinSubviewToAllEdges(mainStackView)
-
-        iconImageView.tintColor = .textSubtle
 
         titleLabel.applyHeadlineStyle()
         titleLabel.numberOfLines = 0
@@ -89,6 +85,7 @@ private extension TopBannerView {
         }
 
         renderContent(of: viewModel)
+        configureBannerType(type: viewModel.type)
     }
 
     func renderContent(of viewModel: TopBannerViewModel) {
@@ -125,11 +122,9 @@ private extension TopBannerView {
             dismissButton.setImage(UIImage.gridicon(.cross, size: CGSize(width: 24, height: 24)), for: .normal)
             dismissButton.tintColor = .textSubtle
             dismissButton.addTarget(self, action: #selector(onDismissButtonTapped), for: .touchUpInside)
+        case .none:
+            break
         }
-    }
-
-    func configureBackground() {
-        backgroundColor = .systemColor(.secondarySystemGroupedBackground)
     }
 
     func createMainStackView(with viewModel: TopBannerViewModel) -> UIStackView {
@@ -161,7 +156,7 @@ private extension TopBannerView {
 
     func createInformationStackView(with viewModel: TopBannerViewModel) -> UIStackView {
         let topActionButton = topButton(for: viewModel.topButton)
-        let titleStackView = UIStackView(arrangedSubviews: [titleLabel, topActionButton])
+        let titleStackView = UIStackView(arrangedSubviews: [titleLabel, topActionButton].compactMap { $0 })
         titleStackView.axis = .horizontal
         titleStackView.spacing = 16
 
@@ -189,12 +184,25 @@ private extension TopBannerView {
         return UIView.createBorderView()
     }
 
-    func topButton(for buttonType: TopBannerViewModel.TopButtonType) -> UIButton {
+    func topButton(for buttonType: TopBannerViewModel.TopButtonType) -> UIButton? {
         switch buttonType {
         case .chevron:
             return expandCollapseButton
         case .dismiss:
             return dismissButton
+        case .none:
+            return nil
+        }
+    }
+
+    func configureBannerType(type: TopBannerViewModel.BannerType) {
+        switch type {
+        case .normal:
+            iconImageView.tintColor = .textSubtle
+            backgroundColor = .systemColor(.secondarySystemGroupedBackground)
+        case .warning:
+            iconImageView.tintColor = .warning
+            backgroundColor = .warningBackground
         }
     }
 }

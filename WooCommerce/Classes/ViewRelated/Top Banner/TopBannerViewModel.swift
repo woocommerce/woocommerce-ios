@@ -7,13 +7,21 @@ struct TopBannerViewModel {
     enum TopButtonType {
         case chevron(handler: (() -> Void)?)
         case dismiss(handler: (() -> Void)?)
+        case none
 
         var handler: (() -> Void)? {
             switch self {
             case let .chevron(handler), let .dismiss(handler):
                 return handler
+            case .none:
+                return nil
             }
         }
+    }
+
+    enum BannerType {
+        case normal
+        case warning
     }
 
     let title: String?
@@ -23,6 +31,7 @@ struct TopBannerViewModel {
     let isExpanded: Bool
     let actionHandler: (() -> Void)?
     let topButton: TopButtonType
+    let type: BannerType
 
     /// Used when the top banner is not actionable.
     ///
@@ -30,7 +39,8 @@ struct TopBannerViewModel {
          infoText: String?,
          icon: UIImage?,
          isExpanded: Bool,
-         topButton: TopButtonType) {
+         topButton: TopButtonType,
+         type: BannerType = .normal) {
         self.title = title
         self.infoText = infoText
         self.icon = icon
@@ -38,6 +48,7 @@ struct TopBannerViewModel {
         self.actionButtonTitle = nil
         self.actionHandler = nil
         self.topButton = topButton
+        self.type = type
     }
 
     /// Used when the top banner is actionable.
@@ -48,7 +59,8 @@ struct TopBannerViewModel {
          actionButtonTitle: String,
          isExpanded: Bool = true,
          actionHandler: @escaping () -> Void,
-         topButton: TopButtonType) {
+         topButton: TopButtonType,
+         type: BannerType = .normal) {
         self.title = title
         self.infoText = infoText
         self.icon = icon
@@ -56,5 +68,6 @@ struct TopBannerViewModel {
         self.isExpanded = isExpanded
         self.actionHandler = actionHandler
         self.topButton = topButton
+        self.type = type
     }
 }

@@ -15,6 +15,12 @@ class AuthenticationManager: Authentication {
     /// Initializes the WordPress Authenticator.
     ///
     func initialize() {
+        let isSignInWithAppleEnabled: Bool
+        if #available(iOS 13.0, *) {
+            isSignInWithAppleEnabled = true
+        } else {
+            isSignInWithAppleEnabled = false
+        }
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
@@ -26,7 +32,7 @@ class AuthenticationManager: Authentication {
                                                                 userAgent: UserAgent.defaultUserAgent,
                                                                 showLoginOptions: true,
                                                                 enableSignUp: false,
-                                                                enableSignInWithApple: true)
+                                                                enableSignInWithApple: isSignInWithAppleEnabled)
 
         let systemGray3LightModeColor = UIColor(red: 199/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1)
         let systemLabelLightModeColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)

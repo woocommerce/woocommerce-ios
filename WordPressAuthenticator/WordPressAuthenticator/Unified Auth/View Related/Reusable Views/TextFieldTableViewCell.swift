@@ -91,11 +91,13 @@ private extension TextFieldTableViewCell {
             textField.returnKeyType = .continue
             registerTextFieldAction()
             textField.accessibilityLabel = Constants.siteAddress
+            textField.accessibilityIdentifier = Constants.siteAddress
         case .username:
             textField.keyboardType = .default
             textField.returnKeyType = .next
             setupOnePasswordButtonIfNeeded()
             textField.accessibilityLabel = Constants.username
+            textField.accessibilityIdentifier = Constants.username
         case .password:
             textField.keyboardType = .default
             textField.returnKeyType = .continue
@@ -103,10 +105,12 @@ private extension TextFieldTableViewCell {
             showSecureTextEntryToggle = true
             configureSecureTextEntryToggle()
             textField.accessibilityLabel = Constants.password
+            textField.accessibilityIdentifier = Constants.password
         case .numericCode:
             textField.keyboardType = .numberPad
             textField.returnKeyType = .continue
             textField.accessibilityLabel = Constants.otp
+            textField.accessibilityIdentifier = Constants.otp
         }
     }
 
@@ -195,6 +199,7 @@ private extension TextFieldTableViewCell {
 
     func updateSecureTextEntryForAccessibility() {
         secureTextEntryToggle?.accessibilityLabel = Constants.showPassword
+        secureTextEntryToggle?.accessibilityIdentifier = Constants.showPassword
         secureTextEntryToggle?.accessibilityValue = textField.isSecureTextEntry ? Constants.passwordHidden : Constants.passwordShown
     }
 }

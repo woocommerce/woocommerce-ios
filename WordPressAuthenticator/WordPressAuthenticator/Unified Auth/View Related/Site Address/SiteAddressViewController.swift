@@ -84,6 +84,9 @@ final class SiteAddressViewController: LoginViewController {
     /// Configures the appearance and state of the submit button.
     ///
     override func configureSubmitButton(animating: Bool) {
+        // This matches the string in WPiOS UI tests.
+        submitButton?.accessibilityIdentifier = "Site Address Next Button"
+        
         submitButton?.showActivityIndicator(animating)
 
         submitButton?.isEnabled = (

@@ -36,6 +36,7 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual([false], emittedValues)
+        assertEmpty(analyticsProvider.receivedProperties)
     }
 
     func test_isInAppFeedbackCardVisible_is_false_if_feature_flag_is_off() {
@@ -53,6 +54,7 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual([false, false], emittedValues)
+        assertEmpty(analyticsProvider.receivedProperties)
     }
 
     func test_isInAppFeedbackCardVisible_is_false_if_canDisplayInAppFeedbackCard_is_false() {
@@ -69,6 +71,7 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual([false, false], emittedValues)
+        assertEmpty(analyticsProvider.receivedProperties)
     }
 
     func test_isInAppFeedbackCardVisible_is_true_if_the_AppSettingsAction_returns_true() {
@@ -93,6 +96,29 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
         XCTAssertEqual([false, true], emittedValues)
     }
 
+    func test_shown_event_action_is_tracked_when_isInAppFeedbackCardVisible_returns_true() throws {
+        // Given
+        let viewModel = makeViewModel()
+
+        storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            if case let AppSettingsAction.loadFeedbackVisibility(_, onCompletion) = action {
+                onCompletion(.success(true))
+            }
+        }
+
+        assertEmpty(analyticsProvider.receivedEvents)
+
+        // When
+        viewModel.onViewDidAppear()
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.count, 1)
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, "app_feedback_prompt")
+
+        let firstPropertiesBatch = try XCTUnwrap(analyticsProvider.receivedProperties.first)
+        XCTAssertEqual(firstPropertiesBatch["action"] as? String, "shown")
+    }
+
     func test_isInAppFeedbackCardVisible_is_false_if_the_AppSettingsAction_returns_false() {
         // Given
         let viewModel = makeViewModel()
@@ -113,6 +139,7 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual([false, false], emittedValues)
+        assertEmpty(analyticsProvider.receivedProperties)
     }
 
     func test_isInAppFeedbackCardVisible_is_false_if_the_AppSettingsAction_returns_an_error() {
@@ -135,6 +162,7 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual([false, false], emittedValues)
+        assertEmpty(analyticsProvider.receivedProperties)
     }
 
     func test_isInAppFeedbackCardVisible_is_recomputed_on_viewDidAppear() throws {

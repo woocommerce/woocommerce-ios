@@ -71,7 +71,7 @@ final class StoreStatsAndTopPerformersPeriodViewModel {
         // Abort right away if we don't need to calculate the real value.
         let isEnabled = canDisplayInAppFeedbackCard && featureFlagService.isFeatureFlagEnabled(.inAppFeedback)
         guard isEnabled else {
-            return isInAppFeedbackCardVisibleSubject.send(isEnabled)
+            return sendIsInAppFeedbackCardVisibleValueAndTrackIfNeeded(isEnabled)
         }
 
         let action = AppSettingsAction.loadFeedbackVisibility(type: .general) { [weak self] result in
@@ -81,13 +81,24 @@ final class StoreStatsAndTopPerformersPeriodViewModel {
 
             switch result {
             case .success(let shouldBeVisible):
-                self.isInAppFeedbackCardVisibleSubject.send(shouldBeVisible)
+                self.sendIsInAppFeedbackCardVisibleValueAndTrackIfNeeded(shouldBeVisible)
             case .failure(let error):
                 CrashLogging.logError(error)
                 // We'll just send a `false` value. I think this is the safer bet.
-                self.isInAppFeedbackCardVisibleSubject.send(false)
+                self.sendIsInAppFeedbackCardVisibleValueAndTrackIfNeeded(false)
             }
         }
         storesManager.dispatch(action)
+    }
+
+    /// Updates the value of `isInAppFeedbackCardVisibileSubject` and tracks a "shown" event
+    /// if the value changed from `false` to `true`.
+    private func sendIsInAppFeedbackCardVisibleValueAndTrackIfNeeded(_ newValue: Bool) {
+        let trackEvent = isInAppFeedbackCardVisibleSubject.value == false && newValue == true
+
+        isInAppFeedbackCardVisibleSubject.send(newValue)
+        if trackEvent {
+            analytics.track(event: .appFeedbackPrompt(action: .shown))
+        }
     }
 }

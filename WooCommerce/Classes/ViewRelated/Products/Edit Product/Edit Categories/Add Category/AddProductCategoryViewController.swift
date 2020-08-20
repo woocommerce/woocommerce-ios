@@ -118,6 +118,8 @@ private extension AddProductCategoryViewController {
 extension AddProductCategoryViewController {
 
     @objc private func saveNewCategory() {
+        ServiceLocator.analytics.track(.productCategorySettingsSaveNewCategoryTapped)
+
         titleCategoryTextFieldResignFirstResponder()
         configureRightButtonItemAsSpinner()
 

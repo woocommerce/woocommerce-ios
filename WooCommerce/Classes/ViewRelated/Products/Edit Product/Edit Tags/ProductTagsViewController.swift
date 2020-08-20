@@ -207,8 +207,8 @@ private extension ProductTagsViewController {
         dataSource = LoadingDataSource()
 
         let action = ProductTagAction.synchronizeAllProductTags(siteID: product.siteID) { [weak self] error in
-            guard error == nil else {
-                ServiceLocator.analytics.track(.productTagListLoadFailed)
+            if let error = error {
+                ServiceLocator.analytics.track(.productTagListLoadFailed, withError: error)
                 self?.tagsFailedLoading()
                 return
             }

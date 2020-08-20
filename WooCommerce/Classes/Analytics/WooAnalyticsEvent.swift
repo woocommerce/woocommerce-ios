@@ -40,9 +40,48 @@ import Foundation
 public struct WooAnalyticsEvent {
     let statName: WooAnalyticsStat
     let properties: [String: String]
+}
 
-    public init(name: String, properties: [String: String]) {
-        self.name = name
-        self.properties = properties
+// MARK: - In-app Feedback and Survey
+
+extension WooAnalyticsEvent {
+
+    /// The action performed on the In-app Feedback Card.
+    public enum AppFeedbackPromptAction: String {
+        case shown
+        case liked
+        case didntLike = "didnt_like"
+    }
+
+    /// Where the feedback was shown. This is shared by a couple of events.
+    public enum FeedbackContext: String {
+        /// Shown in Stats but is for asking general feedback.
+        case general
+        /// Shown in products banner.
+        case products
+    }
+
+    /// The action performed on the survey screen.
+    public enum SurveyScreenAction: String {
+        case opened
+        case canceled
+        case completed
+    }
+
+    public enum FeatureFeedbackBannerAction: String {
+        case gaveFeedback = "gave_feedback"
+        case dismissed = "dismissed"
+    }
+
+    static func appFeedbackPrompt(action: AppFeedbackPromptAction) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .appFeedbackPrompt, properties: ["action": action.rawValue])
+    }
+
+    static func surveyScreen(context: FeedbackContext, action: SurveyScreenAction) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .surveyScreen, properties: ["context": context.rawValue, "action": action.rawValue])
+    }
+
+    static func featureFeedbackBanner(context: FeedbackContext, action: FeatureFeedbackBannerAction) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .featureFeedbackBanner, properties: ["context": context.rawValue, "action": action.rawValue])
     }
 }

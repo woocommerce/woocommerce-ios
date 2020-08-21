@@ -107,6 +107,24 @@ final class SurveyCoordinatingControllerTests: XCTestCase {
         XCTAssertEqual(properties["context"] as? String, "general")
         XCTAssertEqual(properties["action"] as? String, "completed")
     }
+
+    func test_it_tracks_a_surveyScreen_opened_event_when_started() throws {
+        // Given
+        let factory = MockSurveyViewControllersFactory()
+
+        // When
+        _ = SurveyCoordinatingController(survey: .inAppFeedback,
+                                         viewControllersFactory: factory,
+                                         analytics: analytics)
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.count, 1)
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, "survey_screen")
+
+        let properties = try XCTUnwrap(analyticsProvider.receivedProperties.first)
+        XCTAssertEqual(properties["context"] as? String, "general")
+        XCTAssertEqual(properties["action"] as? String, "opened")
+    }
 }
 
 private final class MockSurveyViewControllersFactory: SurveyViewControllersFactoryProtocol {

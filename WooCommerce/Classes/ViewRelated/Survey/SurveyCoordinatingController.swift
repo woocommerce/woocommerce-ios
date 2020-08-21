@@ -38,6 +38,8 @@ private extension SurveyCoordinatingController {
     /// Starts navigation with `SurveyViewController` as root view controller.
     ///
     func startSurveyNavigation() {
+        analytics.track(event: .surveyScreen(context: survey.feedbackContextForEvents, action: .opened))
+
         let surveyViewController = viewControllersFactory.makeSurveyViewController(survey: survey) { [weak self] in
             guard let self = self else {
                 return

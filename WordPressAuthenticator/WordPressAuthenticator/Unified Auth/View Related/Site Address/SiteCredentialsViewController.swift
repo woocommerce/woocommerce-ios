@@ -35,6 +35,8 @@ final class SiteCredentialsViewController: LoginViewController {
 
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
+        tracker.track(click: .submit)
+        
         validateForm()
     }
 
@@ -60,14 +62,15 @@ final class SiteCredentialsViewController: LoginViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
+        if isMovingToParent {
+            tracker.track(step: .userPasswordScreenShown)
+        }
+        
         configureSubmitButton(animating: false)
 
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
         configureViewForEditingIfNeeded()
-
-        // TODO: - Tracks.
-        // WordPressAuthenticator.track(.loginUsernamePasswordFormViewed)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -134,6 +137,10 @@ final class SiteCredentialsViewController: LoginViewController {
     ///
     override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
         if errorMessage != message {
+            if !message.isEmpty {
+                tracker.track(failure: message)
+            }
+            
             errorMessage = message
             shouldChangeVoiceOverFocus = moveVoiceOverFocus
             loadRows()
@@ -342,6 +349,8 @@ private extension SiteCredentialsViewController {
             guard let self = self else {
                 return
             }
+            
+            self.tracker.track(click: .forgottenPassword)
 
             // If information is currently processing, ignore button tap.
             guard self.enableSubmit(animating: false) else {
@@ -349,8 +358,6 @@ private extension SiteCredentialsViewController {
             }
 
             WordPressAuthenticator.openForgotPasswordURL(self.loginFields)
-            // TODO: - Tracks.
-            // WordPressAuthenticator.track(.loginForgotPasswordClicked)
         }
     }
 

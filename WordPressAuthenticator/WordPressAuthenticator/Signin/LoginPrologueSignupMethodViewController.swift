@@ -47,6 +47,9 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
 
         let loginTitle = NSLocalizedString("Sign up with Email", comment: "Button title. Tapping begins our normal sign up process.")
         buttonViewController.setupTopButton(title: loginTitle, isPrimary: false, accessibilityIdentifier: "Sign up with Email Button") { [weak self] in
+            
+            self?.tracker.set(flow: .wpCom)
+            
             defer {
                 WordPressAuthenticator.track(.signupEmailButtonTapped)
             }
@@ -87,14 +90,17 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
     }
 
     @objc func handleAppleButtonTapped() {
-        WordPressAuthenticator.track(.signupSocialButtonTapped, properties: ["source": "apple"])
+        tracker.set(flow: .signupWithApple)
+        tracker.track(click: .signupWithApple, ifTrackingNotEnabled: {
+            WordPressAuthenticator.track(.signupSocialButtonTapped, properties: ["source": "apple"])
+        })
         
         dismiss(animated: true)
         appleTapped?()
     }
 
     @objc func handleGoogleButtonTapped() {
-        tracker.set(flow: .googleSignup)
+        tracker.set(flow: .signupWithGoogle)
         tracker.track(click: .signupWithGoogle, ifTrackingNotEnabled: {
             WordPressAuthenticator.track(.signupSocialButtonTapped, properties: ["source": "google"])
         })

@@ -157,12 +157,12 @@ private extension GoogleAuthenticator {
     func requestAuthorization(from viewController: UIViewController) {
         switch authType {
         case .login:
-            tracker.set(flow: .googleLogin)
+            tracker.set(flow: .loginWithGoogle)
             tracker.track(step: .start) {
                 track(.loginSocialButtonClick)
             }
         case .signup:
-            tracker.set(flow: .googleSignup)
+            tracker.set(flow: .signupWithGoogle)
             tracker.track(step: .start) {
                 track(.createAccountInitiated)
             }
@@ -268,10 +268,10 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
         SVProgressHUD.dismiss()
         GIDSignIn.sharedInstance().disconnect()
 
-        tracker.track(step: .success, ifTrackingNotEnabled: {
+        if tracker.shouldUseLegacyTracker() {
             track(.signedIn)
             track(.loginSocialSuccess)
-        })
+        }
         
         let wpcom = WordPressComCredentials(authToken: authToken,
                                             isJetpackLogin: loginFields.meta.jetpackLogin,
@@ -291,9 +291,9 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
         loginFields.nonceInfo = nonceInfo
         loginFields.nonceUserID = userID
 
-        tracker.track(step: .twoFactorAuthentication, ifTrackingNotEnabled: {
+        if tracker.shouldUseLegacyTracker() {
             track(.loginSocial2faNeeded)
-        })
+        }
         
         loginDelegate?.googleNeedsMultifactorCode(loginFields: loginFields)
         delegate?.googleNeedsMultifactorCode(loginFields: loginFields)
@@ -307,9 +307,9 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
         loginFields.username = email
         loginFields.emailAddress = email
         
-        tracker.track(step: .userPasswordScreenShown, ifTrackingNotEnabled: {
+        if tracker.shouldUseLegacyTracker() {
             track(.loginSocialAccountsNeedConnecting)
-        })
+        }
         
         loginDelegate?.googleExistingUserNeedsConnection(loginFields: loginFields)
         delegate?.googleExistingUserNeedsConnection(loginFields: loginFields)
@@ -351,7 +351,7 @@ private extension GoogleAuthenticator {
         SVProgressHUD.show(withStatus: LocalizedText.processing)
         let service = SignupService()
         
-        tracker.set(flow: .googleSignup)
+        tracker.set(flow: .signupWithGoogle)
         tracker.track(step: .start)
 
         service.createWPComUserWithGoogle(token: token, success: { [weak self] accountCreated, wpcomUsername, wpcomToken in
@@ -389,7 +389,7 @@ private extension GoogleAuthenticator {
         // This stat is part of a funnel that provides critical information.  Before
         // making ANY modification to this stat please refer to: p4qSXL-35X-p2
         track(.createdAccount)
-        
+
         tracker.track(step: .success, ifTrackingNotEnabled: {
             track(.signedIn)
             track(.signupSocialSuccess)
@@ -400,13 +400,14 @@ private extension GoogleAuthenticator {
     }
     
     func logInInstead(credentials: AuthenticatorCredentials) {
-        tracker.set(flow: .googleLogin)
+        tracker.set(flow: .loginWithGoogle)
         tracker.track(step: .start)
-        tracker.track(step: .success, ifTrackingNotEnabled: {
+        
+        if tracker.shouldUseLegacyTracker() {
             track(.signedIn)
             track(.signupSocialToLogin)
             track(.loginSocialSuccess)
-        })
+        }
 
         signupDelegate?.googleLoggedInInstead(credentials: credentials, loginFields: loginFields)
         delegate?.googleLoggedInInstead(credentials: credentials, loginFields: loginFields)

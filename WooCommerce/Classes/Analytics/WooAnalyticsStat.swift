@@ -261,6 +261,14 @@ public enum WooAnalyticsStat: String {
     case productDetailViewPriceSettingsTapped   = "product_detail_view_price_settings_tapped"
     case productDetailViewShippingSettingsTapped = "product_detail_view_shipping_settings_tapped"
     case productDetailViewInventorySettingsTapped = "product_detail_view_inventory_settings_tapped"
+    case productDetailViewCategoriesTapped = "product_detail_view_categories_tapped"
+    case productDetailViewTagsTapped = "product_detail_view_tags_tapped"
+    case productDetailViewReviewsTapped = "product_detail_view_product_reviews_tapped"
+    case productDetailViewProductTypeTapped = "product_detail_view_product_type_tapped"
+    case productDetailViewGroupedProductsTapped = "product_detail_view_grouped_products_tapped"
+    case productDetailViewExternalProductLinkTapped = "product_detail_view_external_product_link_tapped"
+    case productDetailViewSKUTapped = "product_detail_view_sku_tapped"
+    case productDetailViewVariationsTapped = "product_detail_view_product_variants_tapped"
     case productDescriptionDoneButtonTapped     = "product_description_done_button_tapped"
     case productPriceSettingsDoneButtonTapped   = "product_price_settings_done_button_tapped"
     case productShippingSettingsDoneButtonTapped = "product_shipping_settings_done_button_tapped"
@@ -273,6 +281,44 @@ public enum WooAnalyticsStat: String {
     case productImageSettingsAddImagesButtonTapped = "product_image_settings_add_images_button_tapped"
     case productImageSettingsAddImagesSourceTapped = "product_image_settings_add_images_source_tapped"
     case productImageSettingsDeleteImageButtonTapped = "product_image_settings_delete_image_button_tapped"
+
+    // Product Categories Events
+    //
+    case productCategoriyListLoaded = "product_categories_loaded"
+    case productCategoriyListLoadFailed = "product_categories_load_failed"
+    case productCategorySettingsDoneButtonTapped = "product_category_settings_done_button_tapped"
+    case productCategorySettingsAddButtonTapped = "product_category_settings_add_button_tapped"
+    case productCategorySettingsSaveNewCategoryTapped = "add_product_category_save_tapped"
+
+    // Product Tags Events
+    //
+    case productTagListLoaded = "product_tags_loaded"
+    case productTagListLoadFailed = "product_tags_load_failed"
+    case productTagSettingsDoneButtonTapped = "product_tag_settings_done_button_tapped"
+
+    // Product Reviews Events
+    //
+    case productReviewListLoaded = "product_reviews_loaded"
+    case productReviewListLoadFailed = "product_reviews_load_failed"
+
+    // Edit Grouped Product Events
+    //
+    case groupedProductLinkedProductsDeleteButtonTapped = "grouped_product_linked_products_delete_tapped"
+    case groupedProductLinkedProductsAddButtonTapped = "grouped_product_linked_products_add_tapped"
+    case groupedProductLinkedProductsAdded = "grouped_product_linked_products_added"
+    case groupedProductLinkedProductsDoneButtonTapped = "grouped_product_linked_products_done_button_tapped"
+
+    // Edit External/Affiliate Product Event
+    //
+    case externalProductLinkSettingsDoneButtonTapped = "external_product_link_settings_done_button_tapped"
+
+    // Edit Product SKU Events
+    //
+    case productSKUDoneButtonTapped = "product_sku_done_button_tapped"
+
+    // Product Type Event
+    //
+    case productTypeChanged = "product_type_change_tapped"
 
     // Product More Menu
     //
@@ -291,6 +337,8 @@ public enum WooAnalyticsStat: String {
     case productSettingsSlugTapped = "product_settings_slug_tapped"
     case productSettingsPurchaseNoteTapped = "product_settings_purchase_note_tapped"
     case productSettingsMenuOrderTapped = "product_settings_menu_order_tapped"
+    case productSettingsVirtualToggled = "product_settings_virtual_toggled"
+    case productSettingsReviewsToggled = "product_settings_reviews_toggled"
 
     // Product List Sorting/Filtering
     //
@@ -303,7 +351,6 @@ public enum WooAnalyticsStat: String {
 
     // Readonly Product Variations Events
     //
-    case productDetailsProductVariantsTapped    = "product_detail_view_product_variants_tapped"
     case productVariationListLoaded             = "product_variants_loaded"
     case productVariationListLoadError          = "product_variants_load_error"
     case productVariationListPulledToRefresh    = "product_variants_pulled_to_refresh"

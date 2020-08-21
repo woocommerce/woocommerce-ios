@@ -70,6 +70,7 @@ final class GroupedProductListSelectorDataSource: PaginatedListSelectorDataSourc
         cell.update(viewModel: viewModel, imageService: imageService)
 
         cell.configureAccessoryDeleteButton { [weak self] in
+            ServiceLocator.analytics.track(.groupedProductLinkedProductsDeleteButtonTapped)
             self?.deleteProduct(model)
         }
     }

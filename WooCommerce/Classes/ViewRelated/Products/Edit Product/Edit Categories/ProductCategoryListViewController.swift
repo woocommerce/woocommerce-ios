@@ -137,10 +137,12 @@ extension ProductCategoryListViewController {
     }
 
     @objc private func doneButtonTapped() {
+        ServiceLocator.analytics.track(.productCategorySettingsDoneButtonTapped)
         onCompletion(viewModel.selectedCategories)
     }
 
     @objc private func addButtonTapped() {
+        ServiceLocator.analytics.track(.productCategorySettingsAddButtonTapped)
         let addCategoryViewController = AddProductCategoryViewController(siteID: siteID) { [weak self] (newCategory) in
             defer {
                 self?.dismiss(animated: true, completion: nil)

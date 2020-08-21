@@ -391,7 +391,7 @@ private extension ProductsViewController {
             self?.tableView.updateHeaderHeight()
         }, onGiveFeedbackButtonPressed: { [weak self] in
             self?.presentProductsFeedback()
-        }, onDismisskButtonPressed: { [weak self] in
+        }, onDismissButtonPressed: { [weak self] in
             self?.dismissProductsBanner()
         }, onCompletion: { [weak self] topBannerView in
             self?.topBannerContainerView.updateSubview(topBannerView)
@@ -403,6 +403,7 @@ private extension ProductsViewController {
     func hideTopBannerView() {
         topBannerView?.removeFromSuperview()
         topBannerView = nil
+        tableView.tableHeaderView = nil
         tableView.updateHeaderHeight()
     }
 

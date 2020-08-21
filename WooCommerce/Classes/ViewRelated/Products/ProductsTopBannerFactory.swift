@@ -7,21 +7,21 @@ struct ProductsTopBannerFactory {
     ///   - isExpanded: whether the top banner is expanded by default.
     ///   - expandedStateChangeHandler: called when the top banner expanded state changes.
     ///   - onGiveFeedbackButtonPressed: called the give feedbak button is pressed.
-    ///   - onDismisskButtonPressed: called the dismiss button is pressed
+    ///   - onDismissButtonPressed: called the dismiss button is pressed
     ///   - onCompletion: called when the view controller is created and ready for display.
     static func topBanner(isExpanded: Bool,
                           stores: StoresManager = ServiceLocator.stores,
                           isInAppFeedbackFeatureEnabled: Bool,
                           expandedStateChangeHandler: @escaping () -> Void,
                           onGiveFeedbackButtonPressed: @escaping () -> Void,
-                          onDismisskButtonPressed: @escaping () -> Void,
+                          onDismissButtonPressed: @escaping () -> Void,
                           onCompletion: @escaping (TopBannerView) -> Void) {
         let action = AppSettingsAction.loadProductsFeatureSwitch { isEditProductsRelease3Enabled in
             let title = Strings.title
             let icon: UIImage = isInAppFeedbackFeatureEnabled ? .megaphoneIcon : .workInProgressBanner
             let infoText = isEditProductsRelease3Enabled ? Strings.infoWhenRelease3IsEnabled: Strings.info
             let giveFeedbackAction = TopBannerViewModel.ActionButton(title: Strings.giveFeedback, action: onGiveFeedbackButtonPressed)
-            let dismissAction = TopBannerViewModel.ActionButton(title: Strings.dismiss, action: onDismisskButtonPressed)
+            let dismissAction = TopBannerViewModel.ActionButton(title: Strings.dismiss, action: onDismissButtonPressed)
             let actions: [TopBannerViewModel.ActionButton] = isInAppFeedbackFeatureEnabled ? [giveFeedbackAction, dismissAction] : []
             let viewModel = TopBannerViewModel(title: title,
                                                infoText: infoText,

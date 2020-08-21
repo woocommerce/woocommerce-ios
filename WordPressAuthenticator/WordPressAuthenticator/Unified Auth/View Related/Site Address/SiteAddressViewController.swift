@@ -29,26 +29,17 @@ final class SiteAddressViewController: LoginViewController {
     // MARK: - View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         removeGoogleWaitingView()
-        
-        // Nav bar could be hidden from the host app, so reshow it.
-        navigationController?.setNavigationBarHidden(false, animated: false)
-        
-        navigationItem.title = WordPressAuthenticator.shared.displayStrings.logInTitle
-        styleNavigationBar(forUnified: true)
-
-        // Store default margin, and size table for the view.
-        defaultTableViewMargin = tableViewLeadingConstraint?.constant ?? 0
-        setTableViewMargins(forWidth: view.frame.width)
-
+        configureNavBar()
+        setupTable()
         localizePrimaryButton()
         registerTableViewCells()
         loadRows()
         configureSubmitButton(animating: false)
         configureForAccessibility()
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
@@ -219,6 +210,23 @@ extension SiteAddressViewController: UITextFieldDelegate {
 // MARK: - Private methods
 private extension SiteAddressViewController {
 
+    // MARK: - Configuration
+    
+    func configureNavBar() {
+        navigationItem.title = WordPressAuthenticator.shared.displayStrings.logInTitle
+        styleNavigationBar(forUnified: true)
+        
+        // Nav bar could be hidden from the host app, so reshow it.
+        navigationController?.setNavigationBarHidden(false, animated: false)
+    }
+    
+    func setupTable() {
+        defaultTableViewMargin = tableViewLeadingConstraint?.constant ?? 0
+        setTableViewMargins(forWidth: view.frame.width)
+    }
+    
+    // MARK: - Table Management
+    
     /// Registers all of the available TableViewCells.
     ///
     func registerTableViewCells() {
@@ -341,6 +349,7 @@ private extension SiteAddressViewController {
 
 
 // MARK: - Instance Methods
+
 extension SiteAddressViewController {
 
     /// Validates what is entered in the various form fields and, if valid,

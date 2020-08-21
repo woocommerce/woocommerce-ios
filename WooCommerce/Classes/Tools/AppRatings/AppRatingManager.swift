@@ -13,11 +13,6 @@ public class AppRatingManager {
     ///
     var systemWideSignificantEventCountRequiredForPrompt: Int = 1
 
-    /// The App Review URL that we send off to UIApplication to open up the app
-    /// store review page.
-    ///
-    var appReviewUrl: URL = Constants.defaultAppReviewURL
-
     /// Sets the number of days that have to pass between AppReview prompts
     /// Apple only allows 3 prompts per year. We're trying to be a bit more conservative and are doing
     /// up to 2 times a year (183 = round(365/2)).
@@ -186,12 +181,6 @@ public class AppRatingManager {
         let events = defaults.integer(forKey: key)
         let required = section.significantEventCount
         return events >= required
-    }
-
-    /// Records a prompt for a review
-    ///
-    func userWasPromptedToReview() {
-        defaults.set(Date(), forKey: Key.lastPromptToRateDate)
     }
 
     /// Checks if the user has ever indicated that they like the app.

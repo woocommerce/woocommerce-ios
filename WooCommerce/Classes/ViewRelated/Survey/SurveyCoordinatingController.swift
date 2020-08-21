@@ -39,7 +39,14 @@ private extension SurveyCoordinatingController {
     ///
     func startSurveyNavigation() {
         let surveyViewController = viewControllersFactory.makeSurveyViewController(survey: survey) { [weak self] in
-            self?.navigateToSurveySubmitted()
+            guard let self = self else {
+                return
+            }
+
+            self.analytics.track(event: .surveyScreen(context: self.survey.feedbackContextForEvents,
+                                                      action: .completed))
+
+            self.navigateToSurveySubmitted()
         }
         setViewControllers([surveyViewController], animated: false)
     }

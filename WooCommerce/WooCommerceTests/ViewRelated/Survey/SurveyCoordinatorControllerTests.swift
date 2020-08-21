@@ -8,6 +8,21 @@ import XCTest
 ///
 final class SurveyCoordinatingControllerTests: XCTestCase {
 
+    private var analyticsProvider: MockupAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
+    override func setUp() {
+        super.setUp()
+        analyticsProvider = MockupAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+    }
+
+    override func tearDown() {
+        analytics = nil
+        analyticsProvider = nil
+        super.tearDown()
+    }
+
     func test_it_loads_SurveyViewController_on_start() {
         // Given
         let factory = MockSurveyViewControllersFactory()
@@ -17,7 +32,6 @@ final class SurveyCoordinatingControllerTests: XCTestCase {
 
         // Then
         XCTAssertTrue(coordinator.topViewController is SurveyViewControllerOutputs)
-
     }
 
     func test_it_navigates_to_SurveySubmittedViewController_when_survey_is_submitted() throws {
@@ -71,6 +85,27 @@ final class SurveyCoordinatingControllerTests: XCTestCase {
         let invocation = try XCTUnwrap(zendeskManager.newRequestIfPossibleInvocations.first)
         XCTAssertEqual(invocation.controller, coordinator)
         XCTAssertNil(invocation.sourceTag)
+    }
+
+    func test_it_tracks_a_surveyScreen_completed_event_when_the_survey_is_submitted() throws {
+        // Given
+        let factory = MockSurveyViewControllersFactory()
+        _ = SurveyCoordinatingController(survey: .inAppFeedback,
+                                         viewControllersFactory: factory,
+                                         analytics: analytics)
+
+        assertEmpty(analyticsProvider.receivedEvents)
+
+        // When
+        factory.surveyViewController.onCompletion()
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.count, 1)
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, "survey_screen")
+
+        let properties = try XCTUnwrap(analyticsProvider.receivedProperties.first)
+        XCTAssertEqual(properties["context"] as? String, "general")
+        XCTAssertEqual(properties["action"] as? String, "completed")
     }
 }
 

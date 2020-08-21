@@ -303,10 +303,10 @@ public enum WooAnalyticsStat: String {
 
     // Edit Grouped Product Events
     //
-    case groupdProductLinkedProductsDeleteButtonTapped = "grouped_product_linked_products_delete_tapped"
-    case groupdProductLinkedProductsAddButtonTapped = "grouped_product_linked_products_add_tapped"
-    case groupdProductLinkedProductsAdded = "grouped_product_linked_products_added"
-    case groupdProductLinkedProductsDoneButtonTapped = "grouped_product_linked_products_done_button_tapped"
+    case groupedProductLinkedProductsDeleteButtonTapped = "grouped_product_linked_products_delete_tapped"
+    case groupedProductLinkedProductsAddButtonTapped = "grouped_product_linked_products_add_tapped"
+    case groupedProductLinkedProductsAdded = "grouped_product_linked_products_added"
+    case groupedProductLinkedProductsDoneButtonTapped = "grouped_product_linked_products_done_button_tapped"
 
     // Edit External/Affiliate Product Event
     //

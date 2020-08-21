@@ -354,6 +354,7 @@ public enum WooAnalyticsStat: String {
     case productVariationListLoaded             = "product_variants_loaded"
     case productVariationListLoadError          = "product_variants_load_error"
     case productVariationListPulledToRefresh    = "product_variants_pulled_to_refresh"
+    case productVariationListVariationTapped    = "product_variation_view_variation_detail_tapped"
 
     // Azted editor
     //

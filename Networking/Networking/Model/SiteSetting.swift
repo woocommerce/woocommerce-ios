@@ -11,12 +11,6 @@ public struct SiteSetting: Decodable {
     public let value: String
     public let settingGroupKey: String
 
-    // MARK: Computed Properties
-
-    public var settingGroup: SiteSettingGroup {
-        return SiteSettingGroup(rawValue: settingGroupKey)
-    }
-
     /// OrderNote struct initializer.
     ///
     public init(siteID: Int64, settingID: String, label: String, description: String, value: String, settingGroupKey: String) {

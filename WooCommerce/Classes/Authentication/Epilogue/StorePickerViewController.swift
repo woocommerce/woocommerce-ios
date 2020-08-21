@@ -1,4 +1,5 @@
 import Foundation
+import SafariServices
 import UIKit
 import WordPressAuthenticator
 import WordPressUI
@@ -16,6 +17,9 @@ protocol StorePickerViewControllerDelegate: AnyObject {
     /// - Returns: a closure to be executed after the store selection
     ///
     func didSelectStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure)
+
+    /// Notifies the delegate to dismiss the store picker and restart authentication.
+    func restartAuthentication()
 }
 
 
@@ -79,19 +83,6 @@ class StorePickerViewController: UIViewController {
             secondaryActionButton.setTitle(NSLocalizedString("Try another account",
                                                              comment: "Button to trigger connection to another account in store picker"),
                                            for: .normal)
-        }
-    }
-
-    /// No Results Placeholder Image
-    ///
-    @IBOutlet private var noResultsImageView: UIImageView!
-
-    /// No Results Placeholder Text
-    ///
-    @IBOutlet private var noResultsLabel: UILabel! {
-        didSet {
-            noResultsLabel.font = StyleManager.subheadlineFont
-            noResultsLabel.textColor = .textSubtle
         }
     }
 
@@ -218,7 +209,7 @@ private extension StorePickerViewController {
         accountHeaderView.username = "@" + defaultAccount.username
         accountHeaderView.fullname = defaultAccount.displayName
         accountHeaderView.downloadGravatar(with: defaultAccount.email)
-        accountHeaderView.isHelpButtonEnabled = configuration == .login
+        accountHeaderView.isHelpButtonEnabled = configuration == .login || configuration == .standard
         accountHeaderView.onHelpRequested = { ServiceLocator.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin) }
     }
 
@@ -399,15 +390,8 @@ private extension StorePickerViewController {
             return
         }
 
-        let loginViewController = ServiceLocator.authenticationManager.loginForWordPressDotCom()
-
-        guard let navigationController = navigationController else {
-            assertionFailure("Navigation error: one of the login / logout states is not correctly handling navigation. No navigationController found.")
-            return
-        }
-
         ServiceLocator.stores.deauthenticate()
-        navigationController.setViewControllers([loginViewController], animated: true)
+        delegate?.restartAuthentication()
     }
 
     /// If the provided site's WC version is not valid, display a warning to the user.
@@ -567,7 +551,15 @@ extension StorePickerViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let site = state.site(at: indexPath) else {
             hideActionButton()
-            return tableView.dequeueReusableCell(withIdentifier: EmptyStoresTableViewCell.reuseIdentifier, for: indexPath)
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: EmptyStoresTableViewCell.reuseIdentifier,
+                                                           for: indexPath) as? EmptyStoresTableViewCell else {
+                fatalError()
+            }
+            cell.onJetpackSetupButtonTapped = { [weak self] in
+                let safariViewController = SFSafariViewController(url: WooConstants.URLs.emptyStoresJetpackSetup.asURL())
+                self?.present(safariViewController, animated: true, completion: nil)
+            }
+            return cell
         }
         guard let cell = tableView.dequeueReusableCell(withIdentifier: StoreTableViewCell.reuseIdentifier, for: indexPath) as? StoreTableViewCell else {
             fatalError()

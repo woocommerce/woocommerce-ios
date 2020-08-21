@@ -369,7 +369,7 @@ extension AppDelegate {
         guard ServiceLocator.stores.isAuthenticated, ServiceLocator.stores.needsDefaultStore else {
             return
         }
-        guard let tabBar = AppDelegate.shared.tabBarController,
+        guard let tabBar = tabBarController,
             let navigationController = tabBar.selectedViewController as? UINavigationController else {
                 DDLogError("⛔️ Unable to locate navigationController in order to launch the store picker.")
             return
@@ -378,6 +378,9 @@ extension AppDelegate {
         DDLogInfo("💬 Authenticated user does not have a Woo store selected — launching store picker.")
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .standard)
         storePickerCoordinator?.start()
+        storePickerCoordinator?.onDismiss = { [weak self] in
+            self?.displayAuthenticator()
+        }
     }
 
     /// Whenever we're in an Authenticated state, let's Sync all of the WC-Y entities.

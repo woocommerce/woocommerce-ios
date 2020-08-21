@@ -29,10 +29,6 @@ final class LoginPrologueViewController: UIViewController {
     ///
     @IBOutlet var jetpackImageView: UIImageView!
 
-    /// Default Action Button.
-    ///
-    @IBOutlet var loginButton: UIButton!
-
 
     // MARK: - Overridden Properties
 
@@ -58,7 +54,6 @@ final class LoginPrologueViewController: UIViewController {
     private func setupLabels() {
         setupDisclaimerLabel()
         setupUpperLabel()
-        setupLoginButton()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -81,7 +76,7 @@ private extension LoginPrologueViewController {
     }
 
     func setupContainerView() {
-        containerView.backgroundColor = .init(light: .brand, dark: .withColorStudio(.brand, shade: .shade80))
+        containerView.backgroundColor = .authPrologueBottomBackgroundColor
     }
 
     func setupUpperLabel() {
@@ -93,7 +88,7 @@ private extension LoginPrologueViewController {
 
     func setupSlantedRectangle() {
         slantedRectangle.image = UIImage.slantedRectangle.withRenderingMode(.alwaysTemplate)
-        slantedRectangle.tintColor = .init(light: .brand, dark: .withColorStudio(.brand, shade: .shade80))
+        slantedRectangle.tintColor = .authPrologueBottomBackgroundColor
     }
 
     func setupJetpackImage() {
@@ -109,18 +104,6 @@ private extension LoginPrologueViewController {
             .underlineColor: UIColor.white,
             .underlineStyle: NSUnderlineStyle.single.rawValue
         ]
-    }
-
-    func setupLoginButton() {
-        let title = NSLocalizedString("Log In", comment: "Authentication Login Button")
-        loginButton.titleLabel?.adjustsFontForContentSizeCategory = true
-        loginButton.setTitle(title, for: .normal)
-        loginButton.accessibilityIdentifier = "login-prologue-login-with-jetpack"
-        loginButton.applySecondaryButtonStyle()
-        // This is an exception where we always show the Log In button in the Light color scheme to have a better constrast to the background.
-        if #available(iOS 13.0, *) {
-            loginButton.overrideUserInterfaceStyle = .light
-        }
     }
 }
 
@@ -148,16 +131,6 @@ extension LoginPrologueViewController {
 
         safariViewController.modalPresentationStyle = .pageSheet
         present(safariViewController, animated: true, completion: nil)
-    }
-
-    /// Proceeds with the Login Flow.
-    ///
-    @IBAction func loginWasPressed() {
-        ServiceLocator.analytics.track(.loginPrologueContinueTapped)
-        let loginViewController = ServiceLocator.authenticationManager.loginForWordPressDotCom()
-
-        navigationController?.pushViewController(loginViewController, animated: true)
-        navigationController?.setNavigationBarHidden(false, animated: true)
     }
 }
 

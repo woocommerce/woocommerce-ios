@@ -401,9 +401,7 @@ private extension GoogleAuthenticator {
     
     func logInInstead(credentials: AuthenticatorCredentials) {
         tracker.set(flow: .loginWithGoogle)
-        tracker.track(step: .start)
-        
-        if tracker.shouldUseLegacyTracker() {
+        tracker.track(step: .start) {
             track(.signedIn)
             track(.signupSocialToLogin)
             track(.loginSocialSuccess)

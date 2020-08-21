@@ -22,6 +22,8 @@ final class SiteAddressViewController: LoginViewController {
 
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
+        tracker.track(click: .submit)
+        
         validateForm()
     }
 
@@ -30,6 +32,8 @@ final class SiteAddressViewController: LoginViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        removeGoogleWaitingView()
+        
         navigationItem.title = WordPressAuthenticator.shared.displayStrings.logInTitle
         styleNavigationBar(forUnified: true)
 
@@ -53,7 +57,11 @@ final class SiteAddressViewController: LoginViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
+        
+        if isMovingToParent {
+            tracker.track(step: .start)
+        }
+        
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
         configureViewForEditingIfNeeded()
@@ -82,6 +90,9 @@ final class SiteAddressViewController: LoginViewController {
     /// Configures the appearance and state of the submit button.
     ///
     override func configureSubmitButton(animating: Bool) {
+        // This matches the string in WPiOS UI tests.
+        submitButton?.accessibilityIdentifier = "Site Address Next Button"
+        
         submitButton?.showActivityIndicator(animating)
 
         submitButton?.isEnabled = (
@@ -134,7 +145,11 @@ final class SiteAddressViewController: LoginViewController {
     /// Reload the tableview and show errors, if any.
     ///
     override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
-        if errorMessage != message {
+        if errorMessage != message {            
+            if !message.isEmpty {
+                tracker.track(failure: message)
+            }
+            
             errorMessage = message
             shouldChangeVoiceOverFocus = moveVoiceOverFocus
             loadRows()
@@ -287,6 +302,8 @@ private extension SiteAddressViewController {
             guard let self = self else {
                 return
             }
+            
+            self.tracker.track(click: .helpFindingSiteAddress)
 
             let alert = FancyAlertViewController.siteAddressHelpController(loginFields: self.loginFields, sourceTag: self.sourceTag)
             alert.modalPresentationStyle = .custom

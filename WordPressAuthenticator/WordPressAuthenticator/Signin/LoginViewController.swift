@@ -203,10 +203,10 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     open func needsMultifactorCode() {
         displayError(message: "")
         configureViewLoading(false)
-        
-        tracker.track(step: .twoFactorAuthentication, ifTrackingNotEnabled: {
+
+        if tracker.shouldUseLegacyTracker() {
             WordPressAuthenticator.track(.twoFactorCodeRequested)
-        })
+        }
         
         let unifiedGoogle = WordPressAuthenticator.shared.configuration.enableUnifiedGoogle && loginFields.meta.socialService == .google
         let unifiedApple = WordPressAuthenticator.shared.configuration.enableUnifiedApple && loginFields.meta.socialService == .apple
@@ -278,6 +278,11 @@ extension LoginViewController {
     /// Tracks the SignIn Event
     ///
     func trackSignIn(credentials: AuthenticatorCredentials) {
+        // Once we remove legacy tracking, this whole method can go away.
+        guard tracker.shouldUseLegacyTracker() else {
+            return
+        }
+        
         var properties = [String: String]()
 
         if let wpcom = credentials.wpcom {
@@ -322,13 +327,12 @@ extension LoginViewController {
                         serviceToken: serviceToken,
                         connectParameters: appleConnectParameters,
                         success: {
-                            AuthenticatorAnalyticsTracker.shared.track(step: .success, ifTrackingNotEnabled: {
-
+                            if AuthenticatorAnalyticsTracker.shared.shouldUseLegacyTracker() {
                                 let source = appleConnectParameters != nil ? "apple" : "google"
                                 WordPressAuthenticator.track(.signedIn, properties: ["source": source])
                                 WordPressAuthenticator.track(.loginSocialConnectSuccess)
                                 WordPressAuthenticator.track(.loginSocialSuccess)
-                            })
+                            }
         }, failure: { error in
             DDLogError("Social Link Error: \(error)")
             WordPressAuthenticator.track(.loginSocialConnectFailure, error: error)
@@ -447,7 +451,9 @@ extension LoginViewController {
             properties["source"] = service
         }
         
-        WordPressAuthenticator.track(.loginSocial2faNeeded, properties: properties)
+        if tracker.shouldUseLegacyTracker() {
+            WordPressAuthenticator.track(.loginSocial2faNeeded, properties: properties)
+        }
         
         guard let vc = Login2FAViewController.instantiate(from: .login) else {
             DDLogError("Failed to navigate from LoginViewController to Login2FAViewController")
@@ -463,9 +469,6 @@ extension LoginViewController {
     
     private func presentUnified2FA() {
         
-        // TODO: add Tracks. Old event:
-        // WordPressAuthenticator.track(.loginSocial2faNeeded, properties: properties)
-        
         guard let vc = TwoFAViewController.instantiate(from: .twoFA) else {
             DDLogError("Failed to navigate from LoginViewController to TwoFAViewController")
             return
@@ -480,13 +483,56 @@ extension LoginViewController {
 // MARK: - LoginSocialError delegate methods
 
 extension LoginViewController: LoginSocialErrorViewControllerDelegate {
+    
+    func retryWithEmail() {
+        loginFields.username = ""
+        cleanupAfterSocialErrors()
+        navigationController?.popToRootViewController(animated: true)
+    }
+    
+    func retryWithAddress() {
+        cleanupAfterSocialErrors()
+        loginToSelfHostedSite()
+    }
+    
+    func retryAsSignup() {
+        cleanupAfterSocialErrors()
+        
+        if let controller = SignupEmailViewController.instantiate(from: .signup) {
+            controller.loginFields = loginFields
+            navigationController?.pushViewController(controller, animated: true)
+        }
+    }
+    
     private func cleanupAfterSocialErrors() {
         dismiss(animated: true) {}
     }
-
+    
     /// Displays the self-hosted login form.
     ///
-    private func loginToSelfHostedSite() {
+    @objc func loginToSelfHostedSite() {
+        guard WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress else {
+            presentSelfHostedView()
+            return
+        }
+        
+        presentUnifiedSiteAddressView()
+    }
+    
+    /// Navigates to the unified site address login flow.
+    ///
+    func presentUnifiedSiteAddressView() {
+        guard let vc = SiteAddressViewController.instantiate(from: .siteAddress) else {
+            DDLogError("Failed to navigate from LoginViewController to SiteAddressViewController")
+            return
+        }
+
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
+    /// Navigates to the old self-hosted login flow.
+    ///
+    func presentSelfHostedView() {
         guard let vc = LoginSiteAddressViewController.instantiate(from: .login) else {
             DDLogError("Failed to navigate from LoginViewController to LoginSiteAddressViewController")
             return
@@ -498,23 +544,5 @@ extension LoginViewController: LoginSocialErrorViewControllerDelegate {
 
         navigationController?.pushViewController(vc, animated: true)
     }
-
-    func retryWithEmail() {
-        loginFields.username = ""
-        cleanupAfterSocialErrors()
-    }
-
-    func retryWithAddress() {
-        cleanupAfterSocialErrors()
-        loginToSelfHostedSite()
-    }
-
-    func retryAsSignup() {
-        cleanupAfterSocialErrors()
-
-        if let controller = SignupEmailViewController.instantiate(from: .signup) {
-            controller.loginFields = loginFields
-            navigationController?.pushViewController(controller, animated: true)
-        }
-    }
+    
 }

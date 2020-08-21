@@ -37,7 +37,7 @@ class AnalyticsTrackerTests: XCTestCase {
     ///
     func testEventTracking() {
         let source = AuthenticatorAnalyticsTracker.Source.reauthentication
-        let flow = AuthenticatorAnalyticsTracker.Flow.googleLogin
+        let flow = AuthenticatorAnalyticsTracker.Flow.loginWithGoogle
         let step = AuthenticatorAnalyticsTracker.Step.start
         
         let expectedEventName = AuthenticatorAnalyticsTracker.EventType.step.rawValue
@@ -52,7 +52,7 @@ class AnalyticsTrackerTests: XCTestCase {
             }
         }
         
-        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: true, siteAuthenticationEnabled: false)
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: true, siteAddressEnabled: false, wpComEnabled: false)
         let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
         
         tracker.set(source: source)
@@ -67,7 +67,7 @@ class AnalyticsTrackerTests: XCTestCase {
     ///
     func testBackingTracker() {
         let source = AuthenticatorAnalyticsTracker.Source.reauthentication
-        let flow = AuthenticatorAnalyticsTracker.Flow.googleLogin
+        let flow = AuthenticatorAnalyticsTracker.Flow.loginWithGoogle
         let step = AuthenticatorAnalyticsTracker.Step.start
         
         let expectedEventName = AuthenticatorAnalyticsTracker.EventType.step.rawValue
@@ -82,7 +82,7 @@ class AnalyticsTrackerTests: XCTestCase {
             }
         }
         
-        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: true, siteAuthenticationEnabled: false)
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: true, siteAddressEnabled: false, wpComEnabled: false)
         let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
         
         tracker.set(source: source)
@@ -98,7 +98,7 @@ class AnalyticsTrackerTests: XCTestCase {
     ///
     func testFailure() {
         let source = AuthenticatorAnalyticsTracker.Source.default
-        let flow = AuthenticatorAnalyticsTracker.Flow.googleLogin
+        let flow = AuthenticatorAnalyticsTracker.Flow.loginWithGoogle
         let step = AuthenticatorAnalyticsTracker.Step.start
         let failure = "some error"
         
@@ -115,7 +115,7 @@ class AnalyticsTrackerTests: XCTestCase {
             }
         }
 
-        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: true, siteAuthenticationEnabled: false)
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: true, siteAddressEnabled: false, wpComEnabled: false)
         let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
         
         tracker.set(source: source)
@@ -132,7 +132,7 @@ class AnalyticsTrackerTests: XCTestCase {
     ///
     func testClick() {
         let source = AuthenticatorAnalyticsTracker.Source.default
-        let flow = AuthenticatorAnalyticsTracker.Flow.googleLogin
+        let flow = AuthenticatorAnalyticsTracker.Flow.loginWithGoogle
         let step = AuthenticatorAnalyticsTracker.Step.start
         let click = AuthenticatorAnalyticsTracker.ClickTarget.dismiss
         
@@ -149,7 +149,7 @@ class AnalyticsTrackerTests: XCTestCase {
             }
         }
         
-        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: true, siteAuthenticationEnabled: false)
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: true, siteAddressEnabled: false, wpComEnabled: false)
         let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
         
         tracker.set(source: source)
@@ -166,7 +166,7 @@ class AnalyticsTrackerTests: XCTestCase {
     ///
     func testStepLegacyTracking() {
         let source = AuthenticatorAnalyticsTracker.Source.default
-        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.appleLogin, .appleSignup, .googleLogin, .googleSignup, .loginWithSiteAddress]
+        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.loginWithApple, .signupWithApple, .loginWithGoogle, .signupWithGoogle, .loginWithSiteAddress]
         let step = AuthenticatorAnalyticsTracker.Step.start
         
         let legacyTrackingExecuted = expectation(description: "The legacy tracking block was executed.")
@@ -176,7 +176,7 @@ class AnalyticsTrackerTests: XCTestCase {
             XCTFail()
         }
         
-        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: false, siteAuthenticationEnabled: false)
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: false, siteAddressEnabled: false, wpComEnabled: false)
         let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
         
         tracker.set(source: source)
@@ -195,7 +195,7 @@ class AnalyticsTrackerTests: XCTestCase {
     ///
     func testStepNewTracking() {
         let source = AuthenticatorAnalyticsTracker.Source.default
-        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.appleLogin, .appleSignup, .googleLogin, .googleSignup, .loginWithSiteAddress]
+        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.loginWithApple, .signupWithApple, .loginWithGoogle, .signupWithGoogle, .loginWithSiteAddress]
         let step = AuthenticatorAnalyticsTracker.Step.start
         
         let legacyTrackingExecuted = expectation(description: "The legacy tracking block was executed.")
@@ -205,7 +205,7 @@ class AnalyticsTrackerTests: XCTestCase {
             legacyTrackingExecuted.fulfill()
         }
         
-        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: true, googleEnabled: true, siteAuthenticationEnabled: true)
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: true, googleEnabled: true, siteAddressEnabled: true, wpComEnabled: false)
         let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
         
         tracker.set(source: source)
@@ -224,7 +224,7 @@ class AnalyticsTrackerTests: XCTestCase {
     ///
     func testClickLegacyTracking() {
         let source = AuthenticatorAnalyticsTracker.Source.default
-        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.appleLogin, .appleSignup, .googleLogin, .googleSignup, .loginWithSiteAddress]
+        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.loginWithApple, .signupWithApple, .loginWithGoogle, .signupWithGoogle, .loginWithSiteAddress]
         let click = AuthenticatorAnalyticsTracker.ClickTarget.connectSite
         
         let legacyTrackingExecuted = expectation(description: "The legacy tracking block was executed.")
@@ -234,7 +234,7 @@ class AnalyticsTrackerTests: XCTestCase {
             XCTFail()
         }
         
-        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: false, siteAuthenticationEnabled: false)
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: false, siteAddressEnabled: false, wpComEnabled: false)
         let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
         
         tracker.set(source: source)
@@ -253,7 +253,7 @@ class AnalyticsTrackerTests: XCTestCase {
     ///
     func testClickNewTracking() {
         let source = AuthenticatorAnalyticsTracker.Source.default
-        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.appleLogin, .appleSignup, .googleLogin, .googleSignup, .loginWithSiteAddress]
+        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.loginWithApple, .signupWithApple, .loginWithGoogle, .signupWithGoogle, .loginWithSiteAddress]
         let click = AuthenticatorAnalyticsTracker.ClickTarget.connectSite
         
         let legacyTrackingExecuted = expectation(description: "The legacy tracking block was executed.")
@@ -263,7 +263,7 @@ class AnalyticsTrackerTests: XCTestCase {
             legacyTrackingExecuted.fulfill()
         }
         
-        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: true, googleEnabled: true, siteAuthenticationEnabled: true)
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: true, googleEnabled: true, siteAddressEnabled: true, wpComEnabled: false)
         let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
         
         tracker.set(source: source)
@@ -282,7 +282,7 @@ class AnalyticsTrackerTests: XCTestCase {
     ///
     func testFailureLegacyTracking() {
         let source = AuthenticatorAnalyticsTracker.Source.default
-        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.appleLogin, .appleSignup, .googleLogin, .googleSignup, .loginWithSiteAddress]
+        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.loginWithApple, .signupWithApple, .loginWithGoogle, .signupWithGoogle, .loginWithSiteAddress]
         
         let legacyTrackingExecuted = expectation(description: "The legacy tracking block was executed.")
         legacyTrackingExecuted.expectedFulfillmentCount = flows.count
@@ -291,7 +291,7 @@ class AnalyticsTrackerTests: XCTestCase {
             XCTFail()
         }
         
-        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: false, siteAuthenticationEnabled: false)
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: false, googleEnabled: false, siteAddressEnabled: false, wpComEnabled: false)
         let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
         
         tracker.set(source: source)
@@ -310,7 +310,7 @@ class AnalyticsTrackerTests: XCTestCase {
     ///
     func testFailureNewTracking() {
         let source = AuthenticatorAnalyticsTracker.Source.default
-        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.appleLogin, .appleSignup, .googleLogin, .googleSignup, .loginWithSiteAddress]
+        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.loginWithApple, .signupWithApple, .loginWithGoogle, .signupWithGoogle, .loginWithSiteAddress]
         
         let legacyTrackingExecuted = expectation(description: "The legacy tracking block was executed.")
         legacyTrackingExecuted.expectedFulfillmentCount = flows.count
@@ -319,7 +319,7 @@ class AnalyticsTrackerTests: XCTestCase {
             legacyTrackingExecuted.fulfill()
         }
         
-        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: true, googleEnabled: true, siteAuthenticationEnabled: true)
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: true, googleEnabled: true, siteAddressEnabled: true, wpComEnabled: false)
         let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
         
         tracker.set(source: source)
@@ -337,7 +337,7 @@ class AnalyticsTrackerTests: XCTestCase {
     /// Tests that we're using legacy tracking for all unsupported flows.
     ///
     func testStepLegacyTrackingForAllUnsupportedFlows() {
-        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.iCloudKeychainLogin, .loginWithPassword, .magicLink, .signup, .wpCom]
+        let flows: [AuthenticatorAnalyticsTracker.Flow] = [.loginWithiCloudKeychain, .loginWithPassword, .loginWithMagicLink, .signup, .wpCom]
         
         let legacyTrackingUsed = expectation(description: "All unsupported flows should use legacy tracking")
         legacyTrackingUsed.expectedFulfillmentCount = flows.count
@@ -346,7 +346,7 @@ class AnalyticsTrackerTests: XCTestCase {
             XCTFail()
         }
         
-        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: true, googleEnabled: true, siteAuthenticationEnabled: true)
+        let configuration = AuthenticatorAnalyticsTracker.Configuration(appleEnabled: true, googleEnabled: true, siteAddressEnabled: true, wpComEnabled: false)
         let tracker = AuthenticatorAnalyticsTracker(configuration: configuration, track: track)
         
         for flow in flows {

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-08-06 17:54:48+0000 */
+/* Translation-Revision-Date: 2020-08-19 08:54:04+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -23,6 +23,9 @@
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (خاص بالعميل)";
+
+/* Review title. Reads as {Review author} left a review */
+"%1$@ left a review" = "تَرَكَ %1$@ مراجعة";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "تركَ %1$@ مراجعة حول %2$@";
@@ -62,6 +65,12 @@
 
 /* Format of the number of grouped products in plural form */
 "%ld products" = "%ld المنتجات";
+
+/* Format of the number of product review in singular form */
+"%ld review" = "%ld مراجعة";
+
+/* Format of the number of product reviews in plural form */
+"%ld reviews" = "%ld مراجعات";
 
 /* Label about one product variation shown on Products tab */
 "%ld variant" = "%ld من المتغيرات";
@@ -110,6 +119,9 @@
    Product Add Category navigation title */
 "Add Category" = "إضافة فئة";
 
+/* Action to add one photo on the Product images screen */
+"Add Photo" = "إضافة صورة";
+
 /* Action to add photos on the Product images screen */
 "Add Photos" = "إضافة صور";
 
@@ -140,6 +152,9 @@
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
 "Add more details" = "إضافة مزيد من التفاصيل";
+
+/* Voiceover accessibility label for the tags field in product tags. */
+"Add new tags, separated by commas." = "إضافة وسوم جديدة، مفصولة بفاصلة.";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "إضافة رابط المنتج";
@@ -201,6 +216,9 @@
 /* Title when there is no filter set. */
 "Any" = "أي";
 
+/* Format of a product varition attribute description where the attribute is set to any value. */
+"Any %@" = "أي من %@";
+
 /* Message shown when Apple authentication fails. */
 "Apple authentication failed." = "فشلت مصادقة Apple.";
 
@@ -250,6 +268,9 @@
 
 /* Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "رجوع";
+
+/* Title of a button to dismiss the survey complete screen */
+"Back to store" = "العودة إلى المتجر";
 
 /* Application's Background State */
 "Background" = "الخلفية";
@@ -304,6 +325,9 @@
 
 /* Title of the alert when there is an error creating a new product category */
 "Cannot Add Category" = "تتعذر إضافة تصنيف";
+
+/* Title of the alert when there is an error adding new product tags. */
+"Cannot Add Tags" = "تتعذر إضافة وسوم";
 
 /* The title of the alert when there is an error updating the product */
 "Cannot update product" = "يتعذر تحديث المنتج";
@@ -368,6 +392,9 @@
 /* Contact Support title */
 "Contact Support" = "اتصل بالدعم";
 
+/* Title of a button to contact support in the survey complete screen */
+"Contact us here" = "التواصل معنا هنا";
+
 /* No comment provided by engineer. */
 "Continue" = "المتابعة";
 
@@ -395,6 +422,9 @@
 /* Copy email address button title */
 "Copy email address" = "نسخ عنوان البريد الإلكتروني";
 
+/* The title of the button for giving a negative feedback for the app. */
+"Could Be Better" = "قد يكون أفضل";
+
 /* Message shown when site purchases API failed */
 "Could not check site purchases." = "تعذر التحقق من عمليات شراء الموقع.";
 
@@ -415,6 +445,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "تعذر الاتصال. يحظر مضيفك طلبات POST، ويحتاج التطبيق إلى ذلك للاتصال بموقعك. يُرجى الاتصال بالمضيف لحل هذه المشكلة.";
+
+/* Error message when tag loading failed */
+"Couldn't load tags." = "تعذّر تحميل الوسوم.";
 
 /* Cell title: the current date. */
 "Current" = "الحالي";
@@ -575,6 +608,12 @@
 /* Enable Reviews label in Product Settings */
 "Enable Reviews" = "تمكين المراجعات";
 
+/* Title of the status row on Product Variation main screen to enable/disable a variation */
+"Enabled" = "مُفعل";
+
+/* The title used when asking the user for feedback for the app. */
+"Enjoying the WooCommerce app?" = "هل تستمتع بتطبيق WooCommerce؟";
+
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "إدخال عنوان URL";
 
@@ -631,6 +670,9 @@
 
 /* Featured Product switch in Product Catalog Visibility */
 "Featured Product" = "منتج مميز";
+
+/* Title in the navigation bar when the survey is completed */
+"Feedback Sent!" = "تم إرسال الملاحظات!";
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "التعبئة باستخدام مدير كلمات المرور";
@@ -747,6 +789,12 @@
    Display label for the product's catalog visibility - Shown in a Product Variation cell if the variation is not visible (purchasable is false) */
 "Hidden" = "مخفي";
 
+/* Title on the navigation bar for the in-app feedback survey */
+"How can we improve?" = "كيف يمكننا تحسين ذلك؟";
+
+/* The title of the button for giving a positive feedback for the app. */
+"I Like It" = "يعجبني هذا";
+
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "في حالة تعطيلها، فستكون الملاحظة خاصة";
 
@@ -812,6 +860,9 @@
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "متابعة التحرير";
 
+/* Information text when the survey is completed */
+"Keep in mind that this is not a support ticket and we won’t be able to address individual feedback" = "ضع في الحسبان أنَّ هذه ليست تذكرة دعم، وأنَّنا لن نتمكن من معالجة الملاحظات الفردية";
+
 /* Last 24 hours section header */
 "Last 24 hours" = "آخر 24 ساعة";
 
@@ -855,6 +906,9 @@
 
 /* Displayed when an Product is being retrieved */
 "Loading Product" = "تحميل المنتج";
+
+/* Loading tags in Product Tags screen */
+"Loading..." = "جاري التحميل ...";
 
 /* Authentication Login Button
    Button title.  Tapping takes the user to the login form. - Log In button label. */
@@ -984,6 +1038,9 @@
 /* Title of the more help button on alert helping users understand their site address */
 "Need more help?" = "هل تحتاج إلى مزيد من المساعدة؟";
 
+/* Text preceding the Contact Us button in the survey completed screen */
+"Need some help?" = "هل تحتاج المساعدة؟";
+
 /* The title for the net amount paid cell */
 "Net" = "صافٍ";
 
@@ -993,6 +1050,9 @@
 /* Title of a button.
    Title of a button. The text should be capitalized. */
 "Next" = "التالي";
+
+/* Empty Product Reviews List Message */
+"No Reviews Yet for this Product!" = "لا توجد أي مراجعات حتى الآن لهذا المنتج!";
 
 /* Empty Reviews List Message */
 "No Reviews Yet!" = "لا توجد مراجعات حتى الآن!";
@@ -1023,6 +1083,9 @@
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "لا يوجد أي عائد في هذه الفترة";
 
+/* Placeholder for empty product reviews */
+"No reviews yet" = "لا توجد مراجعات حتى الآن";
+
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "لا توجد فئات للشحن حتى الآن";
 
@@ -1048,7 +1111,7 @@
 "Number of files:" = "عدد الملفات:";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "موافق";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -1219,8 +1282,14 @@
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "يُرجى المحاولة مرة أخرى.";
 
+/* Text on the loading view of the survey screen indicating the user to wait */
+"Please wait" = "يُرجى الانتظار";
+
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "يرجى الانتظار بينما ننشر هذا المنتج في المخزن الخاص بك";
+
+/* Info text saying that crowdsignal in an Automattic product */
+"Powered by Automattic" = "مدعوم من Automattic";
 
 /* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
    Product Price Settings navigation title - Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
@@ -1396,6 +1465,9 @@
 /* Label action for removing a link from the editor */
 "Remove end date" = "إزالة تاريخ الانتهاء";
 
+/* Action to replace one photo on the Product images screen */
+"Replace Photo" = "استبدال صورة";
+
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "الإبلاغ عن الأعطال";
 
@@ -1419,7 +1491,7 @@
 "Review marked as %@" = "Review marked as %@";
 
 /* Reviews descriptive label
-   Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
+   Title of the Reviews row on Product main screen - Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). - Title that appears on top of the Product Reviews screen. */
 "Reviews" = "مراجعات";
 
 /* Post Rich content */
@@ -1461,7 +1533,8 @@
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "سعر البيع: %@";
 
-/* Add Product Category. Save button title in navbar. */
+/* Add Product Category. Save button title in navbar.
+   Add Product Tags. Save button title in navbar. */
 "Save" = "حفظ";
 
 /* Scan Products */
@@ -1760,8 +1833,8 @@
 /* Accessibility Identifier for the Default Font Aztec Style. */
 "Switches to the default Font Size" = "يقوم بالتبديل إلى حجم الخط الافتراضي";
 
-/* Title of the product form bottom sheet action for editing tags.
-   Title of the Tags row on Product main screen */
+/* Product Tags navigation title
+   Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
 "Tags" = "وسوم";
 
 /* Menu option for taking an image or video with the device's camera. */
@@ -1856,6 +1929,9 @@
 
 /* Button title */
 "Text me a code instead" = "اكتب رمزًا لي بدلاً من ذلك";
+
+/* Text thanking the user when the survey is completed */
+"Thank you for sharing your thoughts with us" = "شكرًا لك على مشاركة أفكارك معنا";
 
 /* Shown when a user pastes a code into the two factor field that contains letters or is the wrong length */
 "That doesn't appear to be a valid verification code." = "لا يبدو هذا رمز تحقيق صالحًا.";

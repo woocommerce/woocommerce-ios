@@ -91,6 +91,14 @@ extension SurveyViewController {
                 return NSLocalizedString("How can we improve?", comment: "Title on the navigation bar for the in-app feedback survey")
             }
         }
+
+        /// The corresponding `FeedbackContext` for event tracking purposes.
+        var feedbackContextForEvents: WooAnalyticsEvent.FeedbackContext {
+            switch self {
+            case .inAppFeedback:
+                return .general
+            }
+        }
     }
 }
 

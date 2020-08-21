@@ -131,6 +131,10 @@ final class TwoFAViewController: LoginViewController {
     
     override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
         if errorMessage != message {
+            if !message.isEmpty {
+                tracker.track(failure: message)
+            }
+            
             errorMessage = message
             shouldChangeVoiceOverFocus = moveVoiceOverFocus
             loadRows()

@@ -12,15 +12,19 @@ final class SurveyCoordinatingController: WooNavigationController {
 
     private let analytics: Analytics
 
+    /// What kind of survey to present.
+    private let survey: SurveyViewController.Source
+
     init(survey: SurveyViewController.Source,
          zendeskManager: ZendeskManagerProtocol = ZendeskManager.shared,
          viewControllersFactory: SurveyViewControllersFactoryProtocol = SurveyViewControllersFactory(),
          analytics: Analytics = ServiceLocator.analytics) {
+        self.survey = survey
         self.zendeskManager = zendeskManager
         self.viewControllersFactory = viewControllersFactory
         self.analytics = analytics
         super.init(nibName: nil, bundle: nil)
-        startSurveyNavigation(survey: survey)
+        startSurveyNavigation()
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -33,7 +37,7 @@ private extension SurveyCoordinatingController {
 
     /// Starts navigation with `SurveyViewController` as root view controller.
     ///
-    func startSurveyNavigation(survey: SurveyViewController.Source) {
+    func startSurveyNavigation() {
         let surveyViewController = viewControllersFactory.makeSurveyViewController(survey: survey) { [weak self] in
             self?.navigateToSurveySubmitted()
         }

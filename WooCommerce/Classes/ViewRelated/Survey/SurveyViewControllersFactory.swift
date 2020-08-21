@@ -3,9 +3,13 @@ import Foundation
 /// Declares functions to create appropiate view controllers for the in-app Survey flow
 ///
 protocol SurveyViewControllersFactoryProtocol {
-    /// Creates a `ViewController` that conforms to `SurveyViewControllerOutputs` based on a given suvery source and a completion block
+    /// Creates a `ViewController` that conforms to `SurveyViewControllerOutputs` based on a given
+    /// survey source and a completion block
     ///
-    func makeSurveyViewController(survey: SurveyViewController.Source, onCompletion: @escaping () -> Void) -> SurveyViewControllerOutputs
+    /// - Parameter onCompletion: Called when the user successfully submitted the survey.
+    ///
+    func makeSurveyViewController(survey: SurveyViewController.Source,
+                                  onCompletion: @escaping () -> Void) -> SurveyViewControllerOutputs
 
     /// Creates a `ViewController` that conforms to`SurveySubmittedViewControllerOutputs` by providing the necesary actions
     ///

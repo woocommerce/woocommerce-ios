@@ -120,11 +120,9 @@ private extension ProductFormTableViewDataSource {
         }
 
         cell.onImageSelected = { [weak self] (productImage, indexPath) in
-            ServiceLocator.analytics.track(.productDetailAddImageTapped)
             self?.onAddImage?()
         }
         cell.onAddImage = { [weak self] in
-            ServiceLocator.analytics.track(.productDetailAddImageTapped)
             self?.onAddImage?()
         }
     }

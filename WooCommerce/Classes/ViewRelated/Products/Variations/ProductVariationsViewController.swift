@@ -296,6 +296,7 @@ extension ProductVariationsViewController: UITableViewDelegate {
                                                           parentProductSKU: parentProductSKU,
                                                           productImageActionHandler: productImageActionHandler)
             let viewController = ProductFormViewController(viewModel: viewModel,
+                                                           eventLogger: ProductVariationFormEventLogger(),
                                                            productImageActionHandler: productImageActionHandler,
                                                            currency: currency,
                                                            presentationStyle: .navigationStack,

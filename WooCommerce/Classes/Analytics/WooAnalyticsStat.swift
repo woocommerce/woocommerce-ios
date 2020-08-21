@@ -274,6 +274,18 @@ public enum WooAnalyticsStat: String {
     case productShippingSettingsDoneButtonTapped = "product_shipping_settings_done_button_tapped"
     case productInventorySettingsDoneButtonTapped = "product_inventory_settings_done_button_tapped"
 
+    // Edit Product Variation Events
+    //
+    case productVariationDetailViewDescriptionTapped = "product_variation_view_variation_description_tapped"
+    case productVariationDetailViewImageTapped = "product_variation_image_tapped"
+    case productVariationDetailViewStatusSwitchTapped = "product_variation_view_variation_visibility_switch_tapped"
+    case productVariationDetailViewPriceSettingsTapped = "product_variation_view_price_settings_tapped"
+    case productVariationDetailViewInventorySettingsTapped = "product_variation_view_inventory_settings_tapped"
+    case productVariationDetailViewShippingSettingsTapped = "product_variation_view_shipping_settings_tapped"
+    case productVariationDetailUpdateButtonTapped = "product_variation_update_button_tapped"
+    case productVariationDetailUpdateSuccess = "product_variation_update_success"
+    case productVariationDetailUpdateError = "product_variation_update_error"
+
     // Product Images Events
     //
     case productImageSettingsDoneButtonTapped = "product_image_settings_done_button_tapped"

@@ -18,6 +18,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     }()
 
     private let viewModel: ViewModel
+    private let eventLogger: ProductFormEventLoggerProtocol
     private var product: ProductModel {
         viewModel.productModel
     }
@@ -50,12 +51,14 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private var cancellableUpdateEnabled: ObservationToken?
 
     init(viewModel: ViewModel,
+         eventLogger: ProductFormEventLoggerProtocol,
          productImageActionHandler: ProductImageActionHandler,
          currency: String = CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode),
          presentationStyle: ProductFormPresentationStyle,
          isEditProductsRelease2Enabled: Bool,
          isEditProductsRelease3Enabled: Bool) {
         self.viewModel = viewModel
+        self.eventLogger = eventLogger
         self.currency = currency
         self.presentationStyle = presentationStyle
         self.isEditProductsRelease2Enabled = isEditProductsRelease2Enabled
@@ -76,6 +79,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         }, onStatusChange: { [weak self] isVisible in
             self?.onEditStatusCompletion(isEnabled: isVisible)
         }, onAddImage: { [weak self] in
+            self?.eventLogger.logImageTapped()
             self?.showProductImages()
         })
     }
@@ -148,7 +152,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     // MARK: Navigation actions
 
     @objc func updateProduct() {
-        ServiceLocator.analytics.track(.productDetailUpdateButtonTapped)
+        eventLogger.logUpdateButtonTapped()
         let title = NSLocalizedString("Publishing your product...", comment: "Title of the in-progress UI while updating the Product remotely")
         let message = NSLocalizedString("Please wait while we publish this product to your store",
                                         comment: "Message of the in-progress UI while updating the Product remotely")
@@ -247,7 +251,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             let row = rows[indexPath.row]
             switch row {
             case .description:
-                ServiceLocator.analytics.track(.productDetailViewProductDescriptionTapped)
+                eventLogger.logDescriptionTapped()
                 editProductDescription()
             default:
                 break
@@ -256,7 +260,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             let row = rows[indexPath.row]
             switch row {
             case .price:
-                ServiceLocator.analytics.track(.productDetailViewPriceSettingsTapped)
+                eventLogger.logPriceSettingsTapped()
                 editPriceSettings()
             case .reviews:
                 ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
@@ -266,10 +270,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 let cell = tableView.cellForRow(at: indexPath)
                 editProductType(cell: cell)
             case .shipping:
-                ServiceLocator.analytics.track(.productDetailViewShippingSettingsTapped)
+                eventLogger.logShippingSettingsTapped()
                 editShippingSettings()
             case .inventory:
-                ServiceLocator.analytics.track(.productDetailViewInventorySettingsTapped)
+                eventLogger.logInventorySettingsTapped()
                 editInventorySettings()
             case .categories:
                 ServiceLocator.analytics.track(.productDetailViewCategoriesTapped)
@@ -441,6 +445,7 @@ private extension ProductFormViewController {
         }, onStatusChange: { [weak self] isEnabled in
             self?.onEditStatusCompletion(isEnabled: isEnabled)
         }, onAddImage: { [weak self] in
+            self?.eventLogger.logImageTapped()
             self?.showProductImages()
         })
         tableView.dataSource = tableViewDataSource
@@ -476,10 +481,10 @@ private extension ProductFormViewController {
                                                                     self?.dismiss(animated: true) { [weak self] in
                                                                         switch action {
                                                                         case .editInventorySettings:
-                                                                            ServiceLocator.analytics.track(.productDetailViewInventorySettingsTapped)
+                                                                            self?.eventLogger.logInventorySettingsTapped()
                                                                             self?.editInventorySettings()
                                                                         case .editShippingSettings:
-                                                                            ServiceLocator.analytics.track(.productDetailViewShippingSettingsTapped)
+                                                                            self?.eventLogger.logShippingSettingsTapped()
                                                                             self?.editShippingSettings()
                                                                         case .editCategories:
                                                                             ServiceLocator.analytics.track(.productDetailViewCategoriesTapped)
@@ -556,13 +561,12 @@ private extension ProductFormViewController {
                 case .failure(let error):
                     let errorDescription = error.localizedDescription
                     DDLogError("⛔️ Error updating Product: \(errorDescription)")
-                    ServiceLocator.analytics.track(.productDetailUpdateError)
                     // Dismisses the in-progress UI then presents the error alert.
                     self?.navigationController?.dismiss(animated: true) {
                         self?.displayError(error: error)
                     }
                 case .success:
-                    ServiceLocator.analytics.track(.productDetailUpdateSuccess)
+                    break
                 }
                 group.leave()
             }

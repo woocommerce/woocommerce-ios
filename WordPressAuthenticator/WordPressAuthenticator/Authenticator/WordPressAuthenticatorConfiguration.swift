@@ -94,6 +94,10 @@ public struct WordPressAuthenticatorConfiguration {
     ///
     let enableUnifiedSignup: Bool
 
+    /// Flag indicating if Login by Magic Link should display.
+    ///
+    let enableUnifiedLoginLink: Bool
+
     /// Designated Initializer
     ///
     public init (wpcomClientId: String,
@@ -115,7 +119,8 @@ public struct WordPressAuthenticatorConfiguration {
                  enableUnifiedSiteAddress: Bool = false,
                  enableUnifiedGoogle: Bool = false,
                  enableUnifiedApple: Bool = false,
-                 enableUnifiedSignup: Bool = false) {
+                 enableUnifiedSignup: Bool = false,
+                 enableUnifiedLoginLink: Bool = false) {
 
         self.wpcomClientId = wpcomClientId
         self.wpcomSecret = wpcomSecret
@@ -137,5 +142,6 @@ public struct WordPressAuthenticatorConfiguration {
         self.enableSignupWithGoogle = enableSignupWithGoogle
         self.enableUnifiedApple = enableUnifiedAuth && enableUnifiedApple
         self.enableUnifiedSignup = enableUnifiedAuth && enableUnifiedSignup
+        self.enableUnifiedLoginLink = enableUnifiedAuth && enableUnifiedLoginLink
     }
 }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-08-06 18:54:04+0000 */
+/* Translation-Revision-Date: 2020-08-18 12:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -23,6 +23,9 @@
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (au client)";
+
+/* Review title. Reads as {Review author} left a review */
+"%1$@ left a review" = "%1$@ a laissé un avis";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ a laissé un avis sur %2$@";
@@ -62,6 +65,12 @@
 
 /* Format of the number of grouped products in plural form */
 "%ld products" = "%ld produits";
+
+/* Format of the number of product review in singular form */
+"%ld review" = "%ld avis";
+
+/* Format of the number of product reviews in plural form */
+"%ld reviews" = "%ld avis";
 
 /* Label about one product variation shown on Products tab */
 "%ld variant" = "%ld variante";
@@ -110,6 +119,9 @@
    Product Add Category navigation title */
 "Add Category" = "Ajouter une catégorie";
 
+/* Action to add one photo on the Product images screen */
+"Add Photo" = "Ajouter une photo";
+
 /* Action to add photos on the Product images screen */
 "Add Photos" = "Ajouter des images";
 
@@ -140,6 +152,9 @@
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
 "Add more details" = "Ajouter des détails supplémentaires";
+
+/* Voiceover accessibility label for the tags field in product tags. */
+"Add new tags, separated by commas." = "Ajouter des nouvelles étiquettes séparées par des virgules.";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "Ajouter un lien vers le produit";
@@ -201,6 +216,9 @@
 /* Title when there is no filter set. */
 "Any" = "Tous";
 
+/* Format of a product varition attribute description where the attribute is set to any value. */
+"Any %@" = "N’importe quel %@";
+
 /* Message shown when Apple authentication fails. */
 "Apple authentication failed." = "L’authentification à Apple a échoué.";
 
@@ -250,6 +268,9 @@
 
 /* Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "Retour";
+
+/* Title of a button to dismiss the survey complete screen */
+"Back to store" = "Retour à la boutique";
 
 /* Application's Background State */
 "Background" = "Arrière-plan";
@@ -304,6 +325,9 @@
 
 /* Title of the alert when there is an error creating a new product category */
 "Cannot Add Category" = "Impossible d’ajouer une catégorie";
+
+/* Title of the alert when there is an error adding new product tags. */
+"Cannot Add Tags" = "Impossible d’ajouter des étiquettes";
 
 /* The title of the alert when there is an error updating the product */
 "Cannot update product" = "Impossible de mettre le produit à jour";
@@ -368,6 +392,9 @@
 /* Contact Support title */
 "Contact Support" = "Contacter le support";
 
+/* Title of a button to contact support in the survey complete screen */
+"Contact us here" = "Nous contacter ici";
+
 /* No comment provided by engineer. */
 "Continue" = "Continuez";
 
@@ -395,6 +422,9 @@
 /* Copy email address button title */
 "Copy email address" = "Copiez l’adresse email";
 
+/* The title of the button for giving a negative feedback for the app. */
+"Could Be Better" = "Pourrait être améliorée";
+
 /* Message shown when site purchases API failed */
 "Could not check site purchases." = "Nous ne pouvons pas vérifier les achats du site.";
 
@@ -415,6 +445,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Impossible de se connecter. Votre hébergeur bloque les requêtes POST et l’app a besoin de cela pour communiquer avec votre site. Contactez votre hébergeur pour résoudre ce problème.";
+
+/* Error message when tag loading failed */
+"Couldn't load tags." = "Impossible de charger les étiquettes";
 
 /* Cell title: the current date. */
 "Current" = "Actuel";
@@ -575,6 +608,12 @@
 /* Enable Reviews label in Product Settings */
 "Enable Reviews" = "Activer les avis";
 
+/* Title of the status row on Product Variation main screen to enable/disable a variation */
+"Enabled" = "Activé";
+
+/* The title used when asking the user for feedback for the app. */
+"Enjoying the WooCommerce app?" = "Vous appréciez l’application WooCommerce ?";
+
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "Saisir l’URL";
 
@@ -631,6 +670,9 @@
 
 /* Featured Product switch in Product Catalog Visibility */
 "Featured Product" = "Produit mis en avant";
+
+/* Title in the navigation bar when the survey is completed */
+"Feedback Sent!" = "Commentaire envoyé !";
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "Remplir à l'aide du gestionnaire de mots de passe";
@@ -747,6 +789,12 @@
    Display label for the product's catalog visibility - Shown in a Product Variation cell if the variation is not visible (purchasable is false) */
 "Hidden" = "Caché";
 
+/* Title on the navigation bar for the in-app feedback survey */
+"How can we improve?" = "Comment nous améliorer ?";
+
+/* The title of the button for giving a positive feedback for the app. */
+"I Like It" = "J’aime";
+
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Si cette option est désactivée, la note sera privée";
 
@@ -812,6 +860,9 @@
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "Poursuivez la modification";
 
+/* Information text when the survey is completed */
+"Keep in mind that this is not a support ticket and we won’t be able to address individual feedback" = "Gardez à l’esprit qu’il ne s’agit pas d’un ticket d’assistance et que nous ne pourrons pas répondre aux commentaires individuels";
+
 /* Last 24 hours section header */
 "Last 24 hours" = "24 dernières heures";
 
@@ -855,6 +906,9 @@
 
 /* Displayed when an Product is being retrieved */
 "Loading Product" = "Chargement du produit";
+
+/* Loading tags in Product Tags screen */
+"Loading..." = "Chargement...";
 
 /* Authentication Login Button
    Button title.  Tapping takes the user to the login form. - Log In button label. */
@@ -984,6 +1038,9 @@
 /* Title of the more help button on alert helping users understand their site address */
 "Need more help?" = "Besoin de plus d’aide ?";
 
+/* Text preceding the Contact Us button in the survey completed screen */
+"Need some help?" = "Besoin d’aide ?";
+
 /* The title for the net amount paid cell */
 "Net" = "Net";
 
@@ -993,6 +1050,9 @@
 /* Title of a button.
    Title of a button. The text should be capitalized. */
 "Next" = "Suivant";
+
+/* Empty Product Reviews List Message */
+"No Reviews Yet for this Product!" = "Pas encore d’avis pour ce produit !";
 
 /* Empty Reviews List Message */
 "No Reviews Yet!" = "Pas encore d'avis !";
@@ -1023,6 +1083,9 @@
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "Pas de revenus durant cette période";
 
+/* Placeholder for empty product reviews */
+"No reviews yet" = "Pas encore d’avis";
+
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "Pas encore de classes de livraison";
 
@@ -1048,7 +1111,7 @@
 "Number of files:" = "Nombre de fichiers :";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "OK";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -1219,8 +1282,14 @@
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "Veuillez réessayer.";
 
+/* Text on the loading view of the survey screen indicating the user to wait */
+"Please wait" = "Veuillez patienter";
+
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "Veuillez patienter pendant que nous publions ce produit dans votre boutique.";
+
+/* Info text saying that crowdsignal in an Automattic product */
+"Powered by Automattic" = "Propulsé par Automattic";
 
 /* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
    Product Price Settings navigation title - Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
@@ -1396,6 +1465,9 @@
 /* Label action for removing a link from the editor */
 "Remove end date" = "Supprimer la date de fin";
 
+/* Action to replace one photo on the Product images screen */
+"Replace Photo" = "Remplacer une photo";
+
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "Signaler les incidents";
 
@@ -1419,7 +1491,7 @@
 "Review marked as %@" = "Avis marqué comme %@";
 
 /* Reviews descriptive label
-   Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
+   Title of the Reviews row on Product main screen - Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). - Title that appears on top of the Product Reviews screen. */
 "Reviews" = "Avis";
 
 /* Post Rich content */
@@ -1461,7 +1533,8 @@
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "Tarif promo : %@";
 
-/* Add Product Category. Save button title in navbar. */
+/* Add Product Category. Save button title in navbar.
+   Add Product Tags. Save button title in navbar. */
 "Save" = "Enregistrer";
 
 /* Scan Products */
@@ -1760,8 +1833,8 @@
 /* Accessibility Identifier for the Default Font Aztec Style. */
 "Switches to the default Font Size" = "Bascule sur la taille de police par défaut";
 
-/* Title of the product form bottom sheet action for editing tags.
-   Title of the Tags row on Product main screen */
+/* Product Tags navigation title
+   Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
 "Tags" = "Étiquettes";
 
 /* Menu option for taking an image or video with the device's camera. */
@@ -1856,6 +1929,9 @@
 
 /* Button title */
 "Text me a code instead" = "Envoyez-moi un code à la place.";
+
+/* Text thanking the user when the survey is completed */
+"Thank you for sharing your thoughts with us" = "Nous vous remercions d’avoir partagé vos idées avec nous";
 
 /* Shown when a user pastes a code into the two factor field that contains letters or is the wrong length */
 "That doesn't appear to be a valid verification code." = "Cela ne semble pas être un code de vérification valide.";

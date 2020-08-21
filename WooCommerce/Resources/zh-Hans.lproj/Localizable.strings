@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-08-06 18:54:04+0000 */
+/* Translation-Revision-Date: 2020-08-20 10:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -23,6 +23,9 @@
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@（对客户可见）";
+
+/* Review title. Reads as {Review author} left a review */
+"%1$@ left a review" = "%1$@ 发表了评论";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ 对 %2$@ 发表了评论";
@@ -62,6 +65,12 @@
 
 /* Format of the number of grouped products in plural form */
 "%ld products" = "%ld 个产品";
+
+/* Format of the number of product review in singular form */
+"%ld review" = "%ld 个评论";
+
+/* Format of the number of product reviews in plural form */
+"%ld reviews" = "%ld 个评论";
 
 /* Label about one product variation shown on Products tab */
 "%ld variant" = "%ld 个参数";
@@ -110,6 +119,9 @@
    Product Add Category navigation title */
 "Add Category" = "添加类别";
 
+/* Action to add one photo on the Product images screen */
+"Add Photo" = "添加照片";
+
 /* Action to add photos on the Product images screen */
 "Add Photos" = "添加照片";
 
@@ -140,6 +152,9 @@
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
 "Add more details" = "添加更多详情";
+
+/* Voiceover accessibility label for the tags field in product tags. */
+"Add new tags, separated by commas." = "添加新标签（以逗号分隔）。";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "添加产品链接";
@@ -201,6 +216,9 @@
 /* Title when there is no filter set. */
 "Any" = "任何";
 
+/* Format of a product varition attribute description where the attribute is set to any value. */
+"Any %@" = "任意 %@";
+
 /* Message shown when Apple authentication fails. */
 "Apple authentication failed." = "Apple 验证失败。";
 
@@ -250,6 +268,9 @@
 
 /* Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "返回";
+
+/* Title of a button to dismiss the survey complete screen */
+"Back to store" = "返回商店";
 
 /* Application's Background State */
 "Background" = "背景";
@@ -304,6 +325,9 @@
 
 /* Title of the alert when there is an error creating a new product category */
 "Cannot Add Category" = "无法添加类别";
+
+/* Title of the alert when there is an error adding new product tags. */
+"Cannot Add Tags" = "无法添加标签";
 
 /* The title of the alert when there is an error updating the product */
 "Cannot update product" = "无法更新产品";
@@ -368,6 +392,9 @@
 /* Contact Support title */
 "Contact Support" = "联系支持人员";
 
+/* Title of a button to contact support in the survey complete screen */
+"Contact us here" = "点击此处联系我们";
+
 /* No comment provided by engineer. */
 "Continue" = "继续";
 
@@ -395,6 +422,9 @@
 /* Copy email address button title */
 "Copy email address" = "复制电子邮件地址";
 
+/* The title of the button for giving a negative feedback for the app. */
+"Could Be Better" = "还可以更好";
+
 /* Message shown when site purchases API failed */
 "Could not check site purchases." = "无法检测站点购买内容。";
 
@@ -415,6 +445,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "无法连接。您的主机会阻止 POST 请求，而应用程序需要通过该请求与您的站点通信。请联系您的托管服务提供商以解决此问题。";
+
+/* Error message when tag loading failed */
+"Couldn't load tags." = "无法加载标签。";
 
 /* Cell title: the current date. */
 "Current" = "当前";
@@ -575,6 +608,12 @@
 /* Enable Reviews label in Product Settings */
 "Enable Reviews" = "启用评论";
 
+/* Title of the status row on Product Variation main screen to enable/disable a variation */
+"Enabled" = "启用";
+
+/* The title used when asking the user for feedback for the app. */
+"Enjoying the WooCommerce app?" = "喜欢 WooCommerce 应用程序？";
+
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "输入 URL";
 
@@ -631,6 +670,9 @@
 
 /* Featured Product switch in Product Catalog Visibility */
 "Featured Product" = "推荐产品";
+
+/* Title in the navigation bar when the survey is completed */
+"Feedback Sent!" = "反馈已发送！";
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "使用密码管理器填写";
@@ -747,6 +789,12 @@
    Display label for the product's catalog visibility - Shown in a Product Variation cell if the variation is not visible (purchasable is false) */
 "Hidden" = "已隐藏";
 
+/* Title on the navigation bar for the in-app feedback survey */
+"How can we improve?" = "我们应该如何改善？";
+
+/* The title of the button for giving a positive feedback for the app. */
+"I Like It" = "我喜欢";
+
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "如果禁用，备注将不会公开";
 
@@ -812,6 +860,9 @@
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "继续编辑";
 
+/* Information text when the survey is completed */
+"Keep in mind that this is not a support ticket and we won’t be able to address individual feedback" = "请注意，这不是支持请求，我们将无法处理个人反馈";
+
 /* Last 24 hours section header */
 "Last 24 hours" = "过去 24 小时";
 
@@ -855,6 +906,9 @@
 
 /* Displayed when an Product is being retrieved */
 "Loading Product" = "正在加载产品";
+
+/* Loading tags in Product Tags screen */
+"Loading..." = "正在载入...";
 
 /* Authentication Login Button
    Button title.  Tapping takes the user to the login form. - Log In button label. */
@@ -984,6 +1038,9 @@
 /* Title of the more help button on alert helping users understand their site address */
 "Need more help?" = "需要更多帮助？";
 
+/* Text preceding the Contact Us button in the survey completed screen */
+"Need some help?" = "需要一些帮助？";
+
 /* The title for the net amount paid cell */
 "Net" = "净额";
 
@@ -993,6 +1050,9 @@
 /* Title of a button.
    Title of a button. The text should be capitalized. */
 "Next" = "下一步";
+
+/* Empty Product Reviews List Message */
+"No Reviews Yet for this Product!" = "此产品暂无评论！";
 
 /* Empty Reviews List Message */
 "No Reviews Yet!" = "尚无评论！";
@@ -1023,6 +1083,9 @@
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "此时期没有收入";
 
+/* Placeholder for empty product reviews */
+"No reviews yet" = "暂无评论";
+
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "尚无运费类";
 
@@ -1048,7 +1111,7 @@
 "Number of files:" = "文件数：";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "确定";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -1219,8 +1282,14 @@
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "请重试。";
 
+/* Text on the loading view of the survey screen indicating the user to wait */
+"Please wait" = "请稍候";
+
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "我们正在将此产品发布到您的商店，请稍候";
+
+/* Info text saying that crowdsignal in an Automattic product */
+"Powered by Automattic" = "由 Automattic 提供支持";
 
 /* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
    Product Price Settings navigation title - Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
@@ -1396,6 +1465,9 @@
 /* Label action for removing a link from the editor */
 "Remove end date" = "移除结束日期";
 
+/* Action to replace one photo on the Product images screen */
+"Replace Photo" = "替换照片";
+
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "报告崩溃问题";
 
@@ -1419,7 +1491,7 @@
 "Review marked as %@" = "评论已标记为%@";
 
 /* Reviews descriptive label
-   Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
+   Title of the Reviews row on Product main screen - Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). - Title that appears on top of the Product Reviews screen. */
 "Reviews" = "评论";
 
 /* Post Rich content */
@@ -1461,7 +1533,8 @@
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "促销价格：%@";
 
-/* Add Product Category. Save button title in navbar. */
+/* Add Product Category. Save button title in navbar.
+   Add Product Tags. Save button title in navbar. */
 "Save" = "保存";
 
 /* Scan Products */
@@ -1760,8 +1833,8 @@
 /* Accessibility Identifier for the Default Font Aztec Style. */
 "Switches to the default Font Size" = "切换为默认字体大小";
 
-/* Title of the product form bottom sheet action for editing tags.
-   Title of the Tags row on Product main screen */
+/* Product Tags navigation title
+   Title of the product form bottom sheet action for editing tags. - Title of the Tags row on Product main screen */
 "Tags" = "标签";
 
 /* Menu option for taking an image or video with the device's camera. */
@@ -1856,6 +1929,9 @@
 
 /* Button title */
 "Text me a code instead" = "通过短信向我发送代码";
+
+/* Text thanking the user when the survey is completed */
+"Thank you for sharing your thoughts with us" = "感谢您与我们分享您的想法";
 
 /* Shown when a user pastes a code into the two factor field that contains letters or is the wrong length */
 "That doesn't appear to be a valid verification code." = "验证码好像无效。";

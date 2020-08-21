@@ -94,16 +94,16 @@ final class SurveyCoordinatingControllerTests: XCTestCase {
                                          viewControllersFactory: factory,
                                          analytics: analytics)
 
-        assertEmpty(analyticsProvider.receivedEvents)
+        XCTAssertEqual(analyticsProvider.receivedEvents.count, 1)
 
         // When
         factory.surveyViewController.onCompletion()
 
         // Then
-        XCTAssertEqual(analyticsProvider.receivedEvents.count, 1)
-        XCTAssertEqual(analyticsProvider.receivedEvents.first, "survey_screen")
+        XCTAssertEqual(analyticsProvider.receivedEvents.count, 2)
+        XCTAssertEqual(analyticsProvider.receivedEvents.last, "survey_screen")
 
-        let properties = try XCTUnwrap(analyticsProvider.receivedProperties.first)
+        let properties = try XCTUnwrap(analyticsProvider.receivedProperties.last)
         XCTAssertEqual(properties["context"] as? String, "general")
         XCTAssertEqual(properties["action"] as? String, "completed")
     }

@@ -131,6 +131,8 @@
 		CE6BCD3824A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6BCD3624A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.swift */; };
 		CE6BCD3924A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE6BCD3724A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.xib */; };
 		CE73475624B77A3800A22660 /* SiteCredentialsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE73475524B77A3800A22660 /* SiteCredentialsViewController.swift */; };
+		CE811D6724EDC0FB00F4CCD6 /* LoginMagicLinkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE811D6624EDC0FB00F4CCD6 /* LoginMagicLinkViewController.swift */; };
+		CE811D6924EDC14A00F4CCD6 /* LoginMagicLink.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE811D6824EDC14A00F4CCD6 /* LoginMagicLink.storyboard */; };
 		CE9091F72499549500AB50BD /* TextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9091F52499549500AB50BD /* TextFieldTableViewCell.swift */; };
 		CE9091F82499549500AB50BD /* TextFieldTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE9091F62499549500AB50BD /* TextFieldTableViewCell.xib */; };
 		CE9091FE249A720E00AB50BD /* UIView+AuthHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9091FD249A720E00AB50BD /* UIView+AuthHelpers.swift */; };
@@ -313,6 +315,8 @@
 		CE6BCD3624A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextLinkButtonTableViewCell.swift; sourceTree = "<group>"; };
 		CE6BCD3724A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextLinkButtonTableViewCell.xib; sourceTree = "<group>"; };
 		CE73475524B77A3800A22660 /* SiteCredentialsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteCredentialsViewController.swift; sourceTree = "<group>"; };
+		CE811D6624EDC0FB00F4CCD6 /* LoginMagicLinkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginMagicLinkViewController.swift; sourceTree = "<group>"; };
+		CE811D6824EDC14A00F4CCD6 /* LoginMagicLink.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LoginMagicLink.storyboard; sourceTree = "<group>"; };
 		CE9091F52499549500AB50BD /* TextFieldTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldTableViewCell.swift; sourceTree = "<group>"; };
 		CE9091F62499549500AB50BD /* TextFieldTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TextFieldTableViewCell.xib; sourceTree = "<group>"; };
 		CE9091FD249A720E00AB50BD /* UIView+AuthHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+AuthHelpers.swift"; sourceTree = "<group>"; };
@@ -740,6 +744,8 @@
 		CE2402A524EB2B0D00DCB11E /* Login */ = {
 			isa = PBXGroup;
 			children = (
+				CE811D6624EDC0FB00F4CCD6 /* LoginMagicLinkViewController.swift */,
+				CE811D6824EDC14A00F4CCD6 /* LoginMagicLink.storyboard */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -921,6 +927,7 @@
 				988AD8A724CB8C0400BD045E /* TwoFA.storyboard in Resources */,
 				B5609118208A555600399AE4 /* SearchTableViewCell.xib in Resources */,
 				984D508424D4B24500251A63 /* Password.storyboard in Resources */,
+				CE811D6924EDC14A00F4CCD6 /* LoginMagicLink.storyboard in Resources */,
 				98ED48392480300500992B2D /* GoogleAuth.storyboard in Resources */,
 				CE1BBF8D24D48580001D2E3E /* GravatarEmailTableViewCell.xib in Resources */,
 				B560913F208A563800399AE4 /* Login.storyboard in Resources */,
@@ -1103,6 +1110,7 @@
 				B560910F208A54F800399AE4 /* SafariCredentialsService.swift in Sources */,
 				B5CDBED420B4714500BC1EF2 /* UIImage+Assets.swift in Sources */,
 				B5609116208A555600399AE4 /* LoginTextField.swift in Sources */,
+				CE811D6724EDC0FB00F4CCD6 /* LoginMagicLinkViewController.swift in Sources */,
 				B56090E2208A4F9D00399AE4 /* WPNUXSecondaryButton.m in Sources */,
 				B56090E6208A4F9D00399AE4 /* WPNUXPrimaryButton.m in Sources */,
 				CE9091F72499549500AB50BD /* TextFieldTableViewCell.swift in Sources */,

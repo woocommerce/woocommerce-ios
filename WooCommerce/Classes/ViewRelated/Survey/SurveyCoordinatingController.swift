@@ -10,11 +10,15 @@ final class SurveyCoordinatingController: WooNavigationController {
     /// Factory that creates view controllers needed for this flow
     private let viewControllersFactory: SurveyViewControllersFactoryProtocol
 
+    private let analytics: Analytics
+
     init(survey: SurveyViewController.Source,
          zendeskManager: ZendeskManagerProtocol = ZendeskManager.shared,
-         viewControllersFactory: SurveyViewControllersFactoryProtocol = SurveyViewControllersFactory()) {
+         viewControllersFactory: SurveyViewControllersFactoryProtocol = SurveyViewControllersFactory(),
+         analytics: Analytics = ServiceLocator.analytics) {
         self.zendeskManager = zendeskManager
         self.viewControllersFactory = viewControllersFactory
+        self.analytics = analytics
         super.init(nibName: nil, bundle: nil)
         startSurveyNavigation(survey: survey)
     }

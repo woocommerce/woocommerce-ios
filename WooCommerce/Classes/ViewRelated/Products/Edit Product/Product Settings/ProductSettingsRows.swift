@@ -171,7 +171,7 @@ enum ProductSettingsRows {
             cell.title = title
             cell.isOn = settings.virtual
             cell.onChange = { newValue in
-                // TODO-2509 Edit Product M3 analytics
+                ServiceLocator.analytics.track(.productSettingsVirtualToggled)
                 self.settings.virtual = newValue
             }
         }
@@ -202,7 +202,7 @@ enum ProductSettingsRows {
             cell.title = title
             cell.isOn = settings.reviewsAllowed
             cell.onChange = { newValue in
-                // TODO-2509 Edit Product M3 analytics
+                ServiceLocator.analytics.track(.productSettingsReviewsToggled)
                 self.settings.reviewsAllowed = newValue
             }
         }

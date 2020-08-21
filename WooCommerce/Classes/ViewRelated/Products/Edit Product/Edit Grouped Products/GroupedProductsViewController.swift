@@ -64,9 +64,14 @@ final class GroupedProductsViewController: UIViewController {
 //
 private extension GroupedProductsViewController {
     @objc func addTapped() {
+        ServiceLocator.analytics.track(.groupedProductLinkedProductsAddButtonTapped)
+
         let excludedProductIDs = dataSource.groupedProductIDs + [productID]
         let listSelector = ProductListSelectorViewController(excludedProductIDs: excludedProductIDs,
                                                              siteID: siteID) { [weak self] selectedProductIDs in
+                                                                if selectedProductIDs.isNotEmpty {
+                                                                    ServiceLocator.analytics.track(.groupedProductLinkedProductsAdded)
+                                                                }
                                                                 self?.dataSource.addProducts(selectedProductIDs)
                                                                 self?.navigationController?.popViewController(animated: true)
         }
@@ -74,6 +79,11 @@ private extension GroupedProductsViewController {
     }
 
     @objc func doneButtonTapped() {
+        let hasChangedData = dataSource.hasUnsavedChanges()
+        ServiceLocator.analytics.track(.groupedProductLinkedProductsDoneButtonTapped, withProperties: [
+            "has_changed_data": hasChangedData
+        ])
+
         completeUpdating()
     }
 }

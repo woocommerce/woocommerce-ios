@@ -26,7 +26,7 @@ public enum ProductTagAction: Action {
 
 /// Defines all errors that a `ProductTagAction` can return
 ///
-public enum ProductTagActionError {
+public enum ProductTagActionError: Error {
     /// Represents a product tag synchronization failed state
     ///
     case tagsSynchronization(pageNumber: Int, rawError: Error)

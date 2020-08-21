@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -12,8 +12,6 @@
             <connections>
                 <outlet property="actionBackgroundView" destination="H5J-Qa-DXp" id="aj6-RY-z7g"/>
                 <outlet property="actionButton" destination="0KD-hY-YaS" id="mJR-Pi-S0z"/>
-                <outlet property="noResultsImageView" destination="Bm8-4s-4Cg" id="5TG-sO-2h6"/>
-                <outlet property="noResultsLabel" destination="1qT-mX-0SF" id="L6b-My-936"/>
                 <outlet property="secondaryActionButton" destination="Slo-h4-7qY" id="YFU-eL-sGS"/>
                 <outlet property="tableView" destination="oVs-XS-592" id="tgt-K5-nCu"/>
                 <outlet property="view" destination="jLk-oK-hVZ" id="6Kv-ov-h6s"/>
@@ -24,18 +22,6 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="woo-no-store" translatesAutoresizingMaskIntoConstraints="NO" id="Bm8-4s-4Cg">
-                    <rect key="frame" x="0.0" y="219" width="414" height="207"/>
-                    <constraints>
-                        <constraint firstAttribute="width" secondItem="Bm8-4s-4Cg" secondAttribute="height" multiplier="2:1" id="0tK-4I-r0m"/>
-                    </constraints>
-                </imageView>
-                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Unable to find WooCommerce stores connected to this account" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1qT-mX-0SF">
-                    <rect key="frame" x="10" y="448" width="394" height="40.666666666666686"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                    <nil key="textColor"/>
-                    <nil key="highlightedColor"/>
-                </label>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" contentInsetAdjustmentBehavior="never" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="oVs-XS-592" userLabel="Sites Table View">
                     <rect key="frame" x="0.0" y="44" width="414" height="658"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -93,25 +79,16 @@
                 </view>
             </subviews>
             <constraints>
-                <constraint firstAttribute="trailing" secondItem="1qT-mX-0SF" secondAttribute="trailing" constant="10" id="28r-Y1-luC"/>
                 <constraint firstItem="oVs-XS-592" firstAttribute="top" secondItem="t7O-Ph-IKW" secondAttribute="top" id="2Y8-wP-jSa"/>
                 <constraint firstItem="t7O-Ph-IKW" firstAttribute="trailing" secondItem="oVs-XS-592" secondAttribute="trailing" id="Mr3-k9-GG9"/>
-                <constraint firstItem="1qT-mX-0SF" firstAttribute="leading" secondItem="t7O-Ph-IKW" secondAttribute="leading" constant="10" id="OAu-kM-52v"/>
                 <constraint firstItem="H5J-Qa-DXp" firstAttribute="top" secondItem="oVs-XS-592" secondAttribute="bottom" id="VGs-Zq-OOi"/>
-                <constraint firstItem="Bm8-4s-4Cg" firstAttribute="top" secondItem="t7O-Ph-IKW" secondAttribute="top" constant="175" id="Wt5-9Y-bb1"/>
-                <constraint firstItem="Bm8-4s-4Cg" firstAttribute="leading" secondItem="t7O-Ph-IKW" secondAttribute="leading" id="exG-7x-7xe"/>
-                <constraint firstItem="Bm8-4s-4Cg" firstAttribute="trailing" secondItem="t7O-Ph-IKW" secondAttribute="trailing" id="fvk-bR-p20"/>
                 <constraint firstItem="H5J-Qa-DXp" firstAttribute="leading" secondItem="t7O-Ph-IKW" secondAttribute="leading" id="hj7-UB-iIW"/>
                 <constraint firstItem="oVs-XS-592" firstAttribute="leading" secondItem="t7O-Ph-IKW" secondAttribute="leading" id="hu9-s1-iSg"/>
                 <constraint firstItem="t7O-Ph-IKW" firstAttribute="trailing" secondItem="H5J-Qa-DXp" secondAttribute="trailing" id="iDf-P9-Du1"/>
-                <constraint firstItem="1qT-mX-0SF" firstAttribute="top" secondItem="Bm8-4s-4Cg" secondAttribute="bottom" constant="22" id="qa1-Pc-Opa"/>
                 <constraint firstAttribute="bottom" secondItem="H5J-Qa-DXp" secondAttribute="bottom" id="vIo-fJ-O96"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="t7O-Ph-IKW"/>
             <point key="canvasLocation" x="-476" y="19.211822660098523"/>
         </view>
     </objects>
-    <resources>
-        <image name="woo-no-store" width="320" height="180"/>
-    </resources>
 </document>

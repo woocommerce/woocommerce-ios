@@ -48,11 +48,14 @@ class StoresManagerTests: XCTestCase {
     /// Verifies that `deauthenticate` effectively switches the Manager to a Deauthenticated State.
     ///
     func testDeauthenticateEffectivelyTogglesStoreManagerToDeauthenticatedState() {
+        let mockAuthenticationManager = MockAuthenticationManager()
+        ServiceLocator.setAuthenticationManager(mockAuthenticationManager)
         let manager = DefaultStoresManager.testingInstance
         manager.authenticate(credentials: SessionSettings.credentials)
         manager.deauthenticate()
 
         XCTAssertFalse(manager.isAuthenticated)
+        XCTAssertTrue(mockAuthenticationManager.displayAuthenticationInvoked)
     }
 
 
@@ -101,5 +104,13 @@ extension DefaultStoresManager {
     ///
     static var testingInstance: DefaultStoresManager {
         return DefaultStoresManager(sessionManager: .testingInstance)
+    }
+}
+
+private final class MockAuthenticationManager: AuthenticationManager {
+    private(set) var displayAuthenticationInvoked: Bool = false
+
+    override func displayAuthentication(from presenter: UIViewController) {
+        displayAuthenticationInvoked = true
     }
 }

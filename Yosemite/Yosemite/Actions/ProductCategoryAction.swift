@@ -19,7 +19,7 @@ public enum ProductCategoryAction: Action {
 
 /// Defines all errors that a `ProductCategoryAction` can return
 ///
-public enum ProductCategoryActionError {
+public enum ProductCategoryActionError: Error {
     /// Represents a product category synchronization failed state
     ///
     case categoriesSynchronization(pageNumber: Int, rawError: Error)

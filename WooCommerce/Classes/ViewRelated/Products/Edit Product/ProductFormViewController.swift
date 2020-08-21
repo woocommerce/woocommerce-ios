@@ -259,10 +259,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 ServiceLocator.analytics.track(.productDetailViewPriceSettingsTapped)
                 editPriceSettings()
             case .reviews:
-                // TODO-2509 Edit Product M3 analytics
+                ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
                 showReviews()
             case .productType:
-                // TODO-2509 Edit Product M3 analytics
+                ServiceLocator.analytics.track(.productDetailViewProductTypeTapped)
                 let cell = tableView.cellForRow(at: indexPath)
                 editProductType(cell: cell)
             case .shipping:
@@ -272,27 +272,28 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 ServiceLocator.analytics.track(.productDetailViewInventorySettingsTapped)
                 editInventorySettings()
             case .categories:
-                // TODO-2509 Edit Product M3 analytics
+                ServiceLocator.analytics.track(.productDetailViewCategoriesTapped)
                 editCategories()
             case .tags:
-                // TODO-2509 Edit Product M3 analytics
+                ServiceLocator.analytics.track(.productDetailViewTagsTapped)
                 editTags()
             case .briefDescription:
                 ServiceLocator.analytics.track(.productDetailViewShortDescriptionTapped)
                 editShortDescription()
             case .externalURL:
-                // TODO-2509 Edit Product M3 analytics
+                ServiceLocator.analytics.track(.productDetailViewExternalProductLinkTapped)
                 editExternalLink()
                 break
             case .sku:
-                // TODO-2509 Edit Product M3 analytics
+                ServiceLocator.analytics.track(.productDetailViewSKUTapped)
                 editSKU()
                 break
             case .groupedProducts:
+                ServiceLocator.analytics.track(.productDetailViewGroupedProductsTapped)
                 editGroupedProducts()
                 break
             case .variations:
-                // TODO-2509 Edit Product M3 analytics
+                ServiceLocator.analytics.track(.productDetailViewVariationsTapped)
                 guard let product = product as? EditableProductModel, product.product.variations.isNotEmpty else {
                     return
                 }
@@ -475,16 +476,22 @@ private extension ProductFormViewController {
                                                                     self?.dismiss(animated: true) { [weak self] in
                                                                         switch action {
                                                                         case .editInventorySettings:
+                                                                            ServiceLocator.analytics.track(.productDetailViewInventorySettingsTapped)
                                                                             self?.editInventorySettings()
                                                                         case .editShippingSettings:
+                                                                            ServiceLocator.analytics.track(.productDetailViewShippingSettingsTapped)
                                                                             self?.editShippingSettings()
                                                                         case .editCategories:
+                                                                            ServiceLocator.analytics.track(.productDetailViewCategoriesTapped)
                                                                             self?.editCategories()
                                                                         case .editTags:
+                                                                            ServiceLocator.analytics.track(.productDetailViewTagsTapped)
                                                                             self?.editTags()
                                                                         case .editBriefDescription:
+                                                                            ServiceLocator.analytics.track(.productDetailViewShortDescriptionTapped)
                                                                             self?.editShortDescription()
                                                                         case .editSKU:
+                                                                            ServiceLocator.analytics.track(.productDetailViewSKUTapped)
                                                                             self?.editSKU()
                                                                             break
                                                                         }
@@ -849,10 +856,12 @@ private extension ProductFormViewController {
         let command = ProductTypeBottomSheetListSelectorCommand(selected: viewModel.productModel.productType) { [weak self] (selectedProductType) in
             self?.dismiss(animated: true, completion: nil)
 
-            // TODO-2509 Edit Product M3 analytics
-            //  let hasChangedData: Bool = {
-            //      self?.product.productType != selectedProductType
-            //  }()
+            if let originalProductType = self?.product.productType {
+                ServiceLocator.analytics.track(.productTypeChanged, withProperties: [
+                    "from": originalProductType.rawValue,
+                    "to": selectedProductType.rawValue
+                ])
+            }
             self?.presentProductTypeChangeAlert(completion: { (change) in
                 guard change == true else {
                     return
@@ -973,7 +982,6 @@ private extension ProductFormViewController {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        //TODO: Edit Product M3 analytics
         let hasChangedData = categories.sorted() != product.product.categories.sorted()
         guard hasChangedData else {
             return
@@ -1005,7 +1013,6 @@ private extension ProductFormViewController {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        // TODO-2509: Edit Product M3 analytics
         let hasChangedData = tags.sorted() != product.product.tags.sorted()
         guard hasChangedData else {
             return
@@ -1032,8 +1039,8 @@ private extension ProductFormViewController {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        // TODO-2509: Edit Product M3 analytics
         let hasChangedData = sku != product.sku
+        ServiceLocator.analytics.track(.productSKUDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
         guard hasChangedData else {
             return
         }
@@ -1063,7 +1070,6 @@ private extension ProductFormViewController {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        // TODO-2000: Edit Product M3 analytics
         let hasChangedData = groupedProductIDs != product.product.groupedProducts
         guard hasChangedData else {
             return
@@ -1094,7 +1100,6 @@ private extension ProductFormViewController {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        // TODO-2000: Edit Product M3 analytics
         let hasChangedData = externalURL != product.product.externalURL || buttonText != product.product.buttonText
         guard hasChangedData else {
             return

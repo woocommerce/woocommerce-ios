@@ -63,6 +63,9 @@ extension ProductExternalLinkViewController {
     }
 
     @objc private func completeEditing() {
+        ServiceLocator.analytics.track(.externalProductLinkSettingsDoneButtonTapped, withProperties: [
+            "has_changed_data": hasUnsavedChanges()
+        ])
         onCompletion(externalURL, buttonText)
     }
 

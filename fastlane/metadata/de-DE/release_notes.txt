@@ -1,5 +1,1 @@
-Es gibt ein paar Dinge, die wir dir mitteilen möchten:
-
-Manchmal kam es zu einem Absturz, wenn du in der App eine SMS gesendet hast. Niemand möchte eine SMS verpassen. Daher haben wir das Problem sofort behoben.
-
-Du magst Statistiken? Wir auch! Wir haben uns bemüht, Statistiken für dich noch weiter zu verbessern. Solange du WooCommerce 4.0 oder WooCommerce Admin verwendest, entspricht dein Statistikdiagramm jetzt deiner Anzeige in wp-admin. Voilà! Wenn du eine ältere Version von WooCommerce verwendest, solltest du ein Update durchführen, damit du nichts verpasst!
+In der beliebten WooCommerce-App ist nun das Wischen nach rechts und links für Produktbilder aktiviert. (Ja, ganz genau!)

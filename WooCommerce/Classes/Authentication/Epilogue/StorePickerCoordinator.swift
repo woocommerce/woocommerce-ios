@@ -58,6 +58,18 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
             self?.onDismiss?()
         }
     }
+
+    func restartAuthentication() {
+        switch selectedConfiguration {
+        case .standard, .switchingStores:
+            navigationController.dismiss(animated: false) { [weak self] in
+                self?.onDismiss?()
+            }
+        case .login:
+            navigationController.popToRootViewController(animated: true)
+            onDismiss?()
+        }
+    }
 }
 
 // MARK: - Private Helpers

@@ -1,5 +1,1 @@
-Esteja a par de algumas informações:
-
-Às vezes, ocorria uma falha ao enviar um SMS pelo aplicativo. Para você não perder nenhum SMS, corrigimos esse problema.
-
-Adora estatísticas? Nós com certeza sim! Temos nos empenhado para melhorar ainda mais sua experiência com estatísticas. Seu gráfico de estatísticas agora corresponde ao que é exibido no Painel WP Admin se você estiver usando o WooCommerce 4.0 ou o WooCommerce Admin. Dá no mesmo! Se você estiver usando uma versão antiga do WooCommerce, atualize-a para não perder essa novidade!
+O aplicativo WooCommerce que você conhece e adora, agora com a opção de deslizar imagens de produtos para os lados. (É isso aí!)

@@ -1,5 +1,1 @@
-Tenemos novedades:
-
-a veces se producía un error al enviar un SMS desde la aplicación; a nadie le gusta perderse un SMS, así que lo hemos resuelto.
-
-¿Te gustan las estadísticas? ¡A nosotros sí! Hemos estado trabajando para que tu experiencia con las estadísticas sea aún mejor. Siempre y cuando tengas WooCommerce 4.0 o WooCommerce Admin, tu gráfico de estadísticas coincidirá con lo que ves en wp-admin. ¡Vaya! Si estás utilizando una versión anterior de WooCommerce, recomendamos que la actualices para no perderte las novedades.
+La aplicación de WooCommerce que conoces y que te encanta ahora cuenta con la función de deslizamiento hacia la derecha o la izquierda en las imágenes de producto. (Sí, eso es).

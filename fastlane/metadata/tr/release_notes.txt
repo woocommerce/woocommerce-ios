@@ -1,5 +1,1 @@
-Sizi bilgilendirmemiz gereken birkaç konu var:
-
-Bazen uygulamadan SMS gönderdiğinizde kilitlenme yaşandığından ve hiç kimse bir SMS'i kaçırmak istemediğinden hemen gereken adımları attık ve bu sorunu düzelttik.
-
-İstatistikleri beğeniyor musunuz? Biz kesinlikle beğeniyoruz. İstatistik deneyiminizi daha da iyi hale getirmek için elimizden geleni yapıyoruz. WooCommerce 4.0 veya WooCommerce Admin'e sahip olduğunuz sürece, istatistik grafiğiniz artık wp-admin'de gördüğünüzle aynı olacak. Şipşak! WooCommerce'ın daha eski bir sürümünü kullanıyorsanız kaçırmamak için güncelleyebilirsiniz.
+Bildiğiniz ve sevdiğiniz WooCommerce uygulamasında artık ürün resimlerinde sağa/sola kaydırma özelliği etkin. (Evet, işte bu!)

@@ -1,5 +1,1 @@
-Ada beberapa hal yang perlu Anda ketahui:
-
-Terkadang terjadi crash saat Anda mengirim SMS dari aplikasi. Melewatkan SMS tentu menimbulkan risiko, jadi kami langsung memperbaikinya.
-
-Suka statistiknya? Kami suka! Kami senantiasa berusaha keras untuk membuat pengalaman statistik Anda lebih baik. Selama Anda memiliki WooCommerce 4.0 atau WooCommerce Admin, grafik statistik Anda sekarang akan cocok dengan yang Anda lihat di wp-admin. Sekejap! Jika Anda menggunakan WooCommerce versi lama, Anda perlu memperbaruinya supaya tidak ketinggalan!
+Kini ada fitur geser ke kanan/kiri pada gambar produk di aplikasi WooCommerce yang Anda gunakan. (Menarik, kan!)

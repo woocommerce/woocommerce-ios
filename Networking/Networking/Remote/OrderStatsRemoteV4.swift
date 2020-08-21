@@ -48,12 +48,5 @@ private extension OrderStatsRemoteV4 {
         static let after: String    = "after"
         static let before: String   = "before"
         static let quantity: String = "per_page"
-        static let fields: String   = "_fields"
-    }
-
-    enum ParameterValues {
-        static let fieldValues: String = """
-            date,unit,quantity,fields,data,total_gross_sales,total_net_sales,total_orders,total_products,avg_gross_sales,avg_net_sales,avg_orders,avg_products
-            """
     }
 }

@@ -29,8 +29,12 @@ final class InAppFeedbackCardViewController: UIViewController {
     /// SKStoreReviewController type wrapper. Needed for testing
     private let storeReviewControllerType: SKStoreReviewControllerProtocol.Type
 
-    init(storeReviewControllerType: SKStoreReviewControllerProtocol.Type = SKStoreReviewController.self) {
+    private let analytics: Analytics
+
+    init(storeReviewControllerType: SKStoreReviewControllerProtocol.Type = SKStoreReviewController.self,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.storeReviewControllerType = storeReviewControllerType
+        self.analytics = analytics
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -69,9 +73,14 @@ private extension InAppFeedbackCardViewController {
         didNotLikeButton.applySecondaryButtonStyle()
         didNotLikeButton.setTitle(Localization.couldBeBetter, for: .normal)
         didNotLikeButton.on(.touchUpInside) { [weak self] _ in
+            guard let self = self else {
+                return
+            }
+
             let surveyNavigation = SurveyCoordinatingController(survey: .inAppFeedback)
-            self?.present(surveyNavigation, animated: true, completion: nil)
-            self?.onFeedbackGiven?()
+            self.present(surveyNavigation, animated: true, completion: nil)
+            self.onFeedbackGiven?()
+            self.analytics.track(event: .appFeedbackPrompt(action: .didntLike))
         }
     }
 
@@ -79,8 +88,13 @@ private extension InAppFeedbackCardViewController {
         likeButton.applyPrimaryButtonStyle()
         likeButton.setTitle(Localization.iLikeIt, for: .normal)
         likeButton.on(.touchUpInside) { [weak self] _ in
-            self?.storeReviewControllerType.requestReview()
-            self?.onFeedbackGiven?()
+            guard let self = self else {
+                return
+            }
+
+            self.storeReviewControllerType.requestReview()
+            self.onFeedbackGiven?()
+            self.analytics.track(event: .appFeedbackPrompt(action: .liked))
         }
     }
 }

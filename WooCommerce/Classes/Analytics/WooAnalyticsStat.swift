@@ -1,22 +1,32 @@
 import WordPressShared
 
-
 /// This enum contains all of the events we track in the app. Please reference the "Woo Mobile Events Draft i2"
 /// spreadsheet for more details.
+///
+/// One of goals of this `enum` is to be able to list all the event names that we use throughout
+/// the app. We can also potentially make a parser to gather all the event names and automatically
+/// compare them with WCAndroid. With that, we can make sure both platforms are tracking the
+/// same events. Right now, we use the spreadsheet. XD
+///
+/// ### Type-Safe Properties
+///
+/// If an event has custom properties, add and use a constructor defined in `WooAnalyticsEvent`.
+///
+/// ### Excluding Site Properties
 ///
 /// Note: If you would like to exclude site properties (e.g. `blog_id`) for a given event, please
 /// add the event to the `WooAnalyticsStat.shouldSendSiteProperties` var.
 ///
 public enum WooAnalyticsStat: String {
 
-    // Application Events
+    // MARK: Application Events
     //
     case applicationInstalled                   = "application_installed"
     case applicationUpgraded                    = "application_upgraded"
     case applicationOpened                      = "application_opened"
     case applicationClosed                      = "application_closed"
 
-    // Authentication Events
+    // MARK: Authentication Events
     //
     case signedIn                               = "signed_in"
     case logout                                 = "account_logout"
@@ -58,7 +68,7 @@ public enum WooAnalyticsStat: String {
     case twoFactorCodeRequested                 = "two_factor_code_requested"
     case twoFactorSentSMS                       = "two_factor_sent_sms"
 
-    // Dashboard View Events
+    // MARK: Dashboard View Events
     //
     case dashboardSelected                      = "main_tab_dashboard_selected"
     case dashboardReselected                    = "main_tab_dashboard_reselected"
@@ -66,7 +76,7 @@ public enum WooAnalyticsStat: String {
     case dashboardNewOrdersButtonTapped         = "dashboard_unfulfilled_orders_button_tapped"
     case dashboardShareStoreButtonTapped        = "dashboard_share_your_store_button_tapped"
 
-    // Dashboard Data/Action Events
+    // MARK: Dashboard Data/Action Events
     //
     case dashboardMainStatsDate                 = "dashboard_main_stats_date"
     case dashboardMainStatsLoaded               = "dashboard_main_stats_loaded"
@@ -74,20 +84,20 @@ public enum WooAnalyticsStat: String {
     case dashboardTopPerformersLoaded           = "dashboard_top_performers_loaded"
     case dashboardUnfulfilledOrdersLoaded       = "dashboard_unfulfilled_orders_loaded"
 
-    // Dashboard Stats v3/v4 Events
+    // MARK: Dashboard Stats v3/v4 Events
     //
     case dashboardNewStatsAvailabilityBannerCancelTapped = "dashboard_new_stats_availability_banner_cancel_tapped"
     case dashboardNewStatsAvailabilityBannerTryTapped = "dashboard_new_stats_availability_banner_try_tapped"
     case dashboardNewStatsRevertedBannerDismissTapped = "dashboard_new_stats_reverted_banner_dismiss_tapped"
     case dashboardNewStatsRevertedBannerLearnMoreTapped = "dashboard_new_stats_reverted_banner_learn_more_tapped"
 
-    // Site picker. Can be triggered by login epilogue or settings.
+    // MARK: Site picker. Can be triggered by login epilogue or settings.
     //
     case sitePickerContinueTapped               = "site_picker_continue_tapped"
     case sitePickerStoresShown                  = "site_picker_stores_shown"
     case sitePickerHelpButtonTapped             = "site_picker_help_button_tapped"
 
-    // Help & Support Events
+    // MARK: Help & Support Events
     //
     case supportHelpCenterViewed                = "support_help_center_viewed"
     case supportNewRequestViewed                = "support_new_request_viewed"
@@ -105,9 +115,7 @@ public enum WooAnalyticsStat: String {
     case supportIdentityFormViewed              = "support_identity_form_viewed"
     case supportIdentitySet                     = "support_identity_set"
 
-
-
-    // Settings View Events
+    // MARK: Settings View Events
     //
     case settingsTapped                         = "main_menu_settings_tapped"
     case settingsSelectedStoreTapped            = "settings_selected_site_tapped"
@@ -129,7 +137,7 @@ public enum WooAnalyticsStat: String {
     case settingsLogoutConfirmation             = "settings_logout_confirmation_dialog_result"
     case settingsWereHiringTapped               = "settings_we_are_hiring_button_tapped"
 
-    // Order View Events
+    // MARK: Order View Events
     //
     case ordersSelected                         = "main_tab_orders_selected"
     case ordersReselected                       = "main_tab_orders_reselected"
@@ -165,7 +173,7 @@ public enum WooAnalyticsStat: String {
     case orderShipmentTrackingCustomProviderSelected = "order_shipment_tracking_custom_provider_selected"
     case orderStatusDialogApplyButtonTapped     = "set_order_status_dialog_apply_button_tapped"
 
-    // Order Data/Action Events
+    // MARK: Order Data/Action Events
     //
     case orderOpen                              = "order_open"
     case orderNotesLoaded                       = "order_notes_loaded"
@@ -188,7 +196,7 @@ public enum WooAnalyticsStat: String {
     case orderTrackingDeleteSuccess             = "order_tracking_delete_success"
     case orderTrackingProvidersLoaded           = "order_tracking_providers_loaded"
 
-    // Push Notifications Events
+    // MARK: Push Notifications Events
     //
     case pushNotificationReceived               = "push_notification_received"
     case pushNotificationAlertPressed           = "push_notification_alert_pressed"
@@ -196,7 +204,7 @@ public enum WooAnalyticsStat: String {
     case pushNotificationOSAlertDenied          = "push_notification_os_alert_denied"
     case pushNotificationOSAlertShown           = "push_notification_os_alert_shown"
 
-    // Notification View Events
+    // MARK: Notification View Events
     //
     case notificationsSelected                  = "main_tab_notifications_selected"
     case notificationsReselected                = "main_tab_notifications_reselected"
@@ -210,13 +218,13 @@ public enum WooAnalyticsStat: String {
     case notificationReviewSpamTapped           = "review_detail_spam_button_tapped"
     case notificationShareStoreButtonTapped     = "notifications_share_your_store_button_tapped"
 
-    // Review View Events
+    // MARK: Review View Events
     //
     case reviewsListPulledToRefresh             = "reviews_list_pulled_to_refresh"
     case reviewsListReadAllTapped               = "reviews_list_menu_mark_read_button_tapped"
     case reviewsShareStoreButtonTapped          = "reviews_share_your_store_button_tapped"
 
-    // Notification Data/Action Events
+    // MARK: Notification Data/Action Events
     //
     case notificationListLoaded                 = "notifications_loaded"
     case notificationsLoadFailed                = "notifications_load_failed"
@@ -226,7 +234,8 @@ public enum WooAnalyticsStat: String {
     case notificationReviewActionFailed         = "review_action_failed"
     case notificationReviewActionUndo           = "review_action_undo"
 
-    // Review Data/Action Events
+    // MARK: Review Data/Action Events
+    //
     case reviewLoaded                           = "review_loaded"
     case reviewLoadFailed                       = "review_load_failed"
     case reviewMarkRead                         = "review_mark_read"
@@ -240,7 +249,7 @@ public enum WooAnalyticsStat: String {
     case reviewsProductsLoaded                  = "reviews_products_loaded"
     case reviewsProductsLoadFailed              = "reviews_products_load_failed"
 
-    // Product List Events
+    // MARK: Product List Events
     //
     case productListSelected                    = "main_tab_products_selected"
     case productListReselected                  = "main_tab_products_reselected"
@@ -251,7 +260,7 @@ public enum WooAnalyticsStat: String {
     case productListSearched                    = "product_list_searched"
     case productListMenuSearchTapped            = "product_list_menu_search_tapped"
 
-    // Edit Product Events
+    // MARK: Edit Product Events
     //
     case productDetailUpdateButtonTapped        = "product_detail_update_button_tapped"
     case productDetailUpdateSuccess             = "product_detail_update_success"
@@ -274,7 +283,7 @@ public enum WooAnalyticsStat: String {
     case productShippingSettingsDoneButtonTapped = "product_shipping_settings_done_button_tapped"
     case productInventorySettingsDoneButtonTapped = "product_inventory_settings_done_button_tapped"
 
-    // Product Images Events
+    // MARK: Product Images Events
     //
     case productImageSettingsDoneButtonTapped = "product_image_settings_done_button_tapped"
     case productDetailAddImageTapped = "product_detail_add_image_tapped"
@@ -325,7 +334,7 @@ public enum WooAnalyticsStat: String {
     case productDetailViewProductButtonTapped = "product_detail_view_external_tapped"
     case productDetailShareButtonTapped = "product_detail_share_button_tapped"
 
-    // Product Settings
+    // MARK: Product Settings
     //
     case productDetailViewSettingsButtonTapped = "product_detail_view_settings_button_tapped"
     case productSettingsDoneButtonTapped = "product_settings_done_button_tapped"
@@ -340,7 +349,7 @@ public enum WooAnalyticsStat: String {
     case productSettingsVirtualToggled = "product_settings_virtual_toggled"
     case productSettingsReviewsToggled = "product_settings_reviews_toggled"
 
-    // Product List Sorting/Filtering
+    // MARK: Product List Sorting/Filtering
     //
     case productListViewSortingOptionsTapped = "product_list_view_sorting_options_tapped"
     case productSortingListOptionSelected = "product_sorting_list_option_selected"
@@ -349,19 +358,27 @@ public enum WooAnalyticsStat: String {
     case productFilterListClearMenuButtonTapped = "product_filter_list_clear_menu_button_tapped"
     case productFilterListDismissButtonTapped = "product_filter_list_dismiss_button_tapped"
 
-    // Readonly Product Variations Events
+    // MARK: Readonly Product Variations Events
     //
     case productVariationListLoaded             = "product_variants_loaded"
     case productVariationListLoadError          = "product_variants_load_error"
     case productVariationListPulledToRefresh    = "product_variants_pulled_to_refresh"
 
-    // Azted editor
+    // MARK: Aztec editor
     //
     case aztecEditorDoneButtonTapped            = "aztec_editor_done_button_tapped"
 
-    // Jetpack Tunnel Events
+    // MARK: Jetpack Tunnel Events
     //
     case jetpackTunnelTimeout                   = "jetpack_tunnel_timeout"
+
+    // MARK: In-app Feedback and Survey Events
+    //
+    // (https://git.io/JJpb2)
+    //
+    case appFeedbackPrompt = "app_feedback_prompt"
+    case surveyScreen = "survey_screen"
+    case featureFeedbackBanner = "feature_feedback_banner"
 }
 
 public extension WooAnalyticsStat {

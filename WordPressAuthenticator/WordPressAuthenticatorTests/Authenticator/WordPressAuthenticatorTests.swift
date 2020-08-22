@@ -66,7 +66,7 @@ class WordPressAuthenticatorTests: XCTestCase {
         XCTAssert(email != retrievedEmail, "Saved loginFields should be deleted after calling deleteLoginInfoForTokenAuth.")
     }
 
-//MARK: WordPressAuthenticator Notification Tests
+    // MARK: WordPressAuthenticator Notification Tests
     func testDispatchesSupportPushNotificationReceived() {
         let authenticator = MockWordpressAuthenticatorProvider.getWordpressAuthenticator()
         let _ = expectation(forNotification: .wordpressSupportNotificationReceived, object: nil, handler: nil)
@@ -85,7 +85,7 @@ class WordPressAuthenticatorTests: XCTestCase {
         waitForExpectations(timeout: timeInterval, handler: nil)
     }
 
-//MARK: View Tests
+    // MARK: View Tests
     func testWordpressAuthIsAuthenticationViewController() {
         let loginViewcontroller = LoginViewController()
         let nuxViewController = NUXViewController()
@@ -184,7 +184,7 @@ class WordPressAuthenticatorTests: XCTestCase {
         XCTAssertEqual(vc.loginFields.username, "")
     }
 
-//MARK: WordPressAuthenticator URL verification Tests
+    // MARK: WordPressAuthenticator URL verification Tests
     func testIsGoogleAuthURL() {
         let authenticator = MockWordpressAuthenticatorProvider.getWordpressAuthenticator()
         let googleURL = URL(string: "com.googleuserconsent.apps/82ekn2932nub23h23hn3")!
@@ -233,7 +233,7 @@ class WordPressAuthenticatorTests: XCTestCase {
         XCTAssertFalse(result)
     }
 
-//MARK: WordPressAuthenticator OnePassword Tests
+    // MARK: WordPressAuthenticator OnePassword Tests
     func testFetchOnePasswordCredentialsSucceeds() {
         let onePasswordFetcher = MockOnePasswordFacade(username: "username", password: "knockknock", otp: nil)
         let loginFields = LoginFields()

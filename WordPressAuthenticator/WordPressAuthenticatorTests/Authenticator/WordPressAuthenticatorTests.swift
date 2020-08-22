@@ -4,7 +4,7 @@ import XCTest
 // MARK: - WordPressAuthenticator Unit Tests
 //
 class WordPressAuthenticatorTests: XCTestCase {
-    let timeInterval = TimeInterval(3)
+    let timeout = TimeInterval(3)
 
     override class func setUp() {
         super.setUp()
@@ -73,7 +73,7 @@ class WordPressAuthenticatorTests: XCTestCase {
 
         authenticator.supportPushNotificationReceived()
 
-        waitForExpectations(timeout: timeInterval, handler: nil)
+        waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testDispatchesSupportPushNotificationCleared() {
@@ -82,7 +82,7 @@ class WordPressAuthenticatorTests: XCTestCase {
 
         authenticator.supportPushNotificationCleared()
 
-        waitForExpectations(timeout: timeInterval, handler: nil)
+        waitForExpectations(timeout: timeout, handler: nil)
     }
 
     // MARK: View Tests
@@ -106,7 +106,7 @@ class WordPressAuthenticatorTests: XCTestCase {
         }), object: .none)
 
         WordPressAuthenticator.showLoginFromPresenter(presenterSpy, animated: true)
-        wait(for: [expectation], timeout: 3)
+        wait(for: [expectation], timeout: timeout)
 
         XCTAssertTrue(presenterSpy.presentedVC is LoginNavigationController)
     }
@@ -118,7 +118,7 @@ class WordPressAuthenticatorTests: XCTestCase {
         }), object: .none)
 
         WordPressAuthenticator.showLoginForJustWPCom(from: presenterSpy)
-        wait(for: [expectation], timeout: 3)
+        wait(for: [expectation], timeout: timeout)
 
         XCTAssertTrue(presenterSpy.presentedVC is LoginNavigationController)
     }
@@ -143,7 +143,7 @@ class WordPressAuthenticatorTests: XCTestCase {
         let navController = try XCTUnwrap(presenterSpy.presentedVC as? LoginNavigationController)
         let controller = try XCTUnwrap(navController.viewControllers.first as? LoginEmailViewController)
 
-        wait(for: [expectation], timeout: 3)
+        wait(for: [expectation], timeout: timeout)
 
         XCTAssertEqual(controller.loginFields.restrictToWPCom, true)
         XCTAssertEqual(controller.loginFields.meta.jetpackBlogXMLRPC, "https://example.com/xmlrpc.php")
@@ -158,7 +158,7 @@ class WordPressAuthenticatorTests: XCTestCase {
         }), object: .none)
 
         WordPressAuthenticator.showLoginForSelfHostedSite(presenterSpy)
-        wait(for: [expectation], timeout: 3)
+        wait(for: [expectation], timeout: timeout)
 
         XCTAssertTrue(presenterSpy.presentedVC is LoginNavigationController)
     }
@@ -249,6 +249,6 @@ class WordPressAuthenticatorTests: XCTestCase {
             expect.fulfill()
         }
 
-        waitForExpectations(timeout: timeInterval, handler: nil)
+        waitForExpectations(timeout: timeout, handler: nil)
     }
 }

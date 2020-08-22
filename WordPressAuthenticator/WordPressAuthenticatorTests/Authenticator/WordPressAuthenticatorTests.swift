@@ -170,9 +170,9 @@ class WordPressAuthenticatorTests: XCTestCase {
         XCTAssertTrue(vc is LoginWPComViewController)
     }
 
-    func testSignInForWPComSetsEmptyLoginFields() {
-        let navController = WordPressAuthenticator.signinForWPCom(dotcomEmailAddress: nil, dotcomUsername: nil) as! UINavigationController
-        let vc = navController.topViewController as! LoginWPComViewController
+    func testSignInForWPComSetsEmptyLoginFields() throws {
+        let navController = try XCTUnwrap(WordPressAuthenticator.signinForWPCom(dotcomEmailAddress: nil, dotcomUsername: nil) as? UINavigationController)
+        let vc = try XCTUnwrap(navController.topViewController as? LoginWPComViewController)
 
         XCTAssertEqual(vc.loginFields.emailAddress, "")
         XCTAssertEqual(vc.loginFields.username, "")

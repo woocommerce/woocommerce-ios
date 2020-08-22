@@ -163,12 +163,6 @@ class WordPressAuthenticatorTests: XCTestCase {
         XCTAssertTrue(presenterSpy.presentedVC is LoginNavigationController)
     }
 
-    func testSignInForWPComReturnsVC() {
-        let vc = WordPressAuthenticator.signinForWPCom()
-
-        XCTAssertTrue((vc as Any) is LoginEmailViewController)
-    }
-
     func testSignInForWPComWithLoginFieldsReturnsVC() throws {
         let navController = try XCTUnwrap(WordPressAuthenticator.signinForWPCom(dotcomEmailAddress: "example@email.com", dotcomUsername: "username") as? UINavigationController)
         let vc = navController.topViewController

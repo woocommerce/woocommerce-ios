@@ -11,11 +11,7 @@ class MockOnePasswordFacade: OnePasswordResultsFetcher {
         self.error = nil
         self.username = username
         self.password = password
-        if let otp = otp {
-            self.otp = otp
-        } else {
-            self.otp = nil
-        }
+        self.otp = otp
     }
     
     init(error: OnePasswordError) {

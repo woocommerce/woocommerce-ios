@@ -361,15 +361,50 @@ private extension ProductsViewController {
         }
     }
 
+    /// Fetches products feedback visibility from AppSettingsStore and update products top banner accordingly
+    ///
     func updateTopBannerView() {
+        let action = AppSettingsAction.loadFeedbackVisibility(type: .productsM3) { [weak self] result in
+            switch result {
+            case .success(let visible):
+                if visible {
+                    self?.requestAndShowNewTopBannerView()
+                } else {
+                    self?.hideTopBannerView()
+                }
+            case.failure(let error):
+                self?.hideTopBannerView()
+                CrashLogging.logError(error)
+            }
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    /// Request a new product banner from `ProductsTopBannerFactory` and wire actionButtons actions
+    ///
+    func requestAndShowNewTopBannerView() {
         let isExpanded = topBannerView?.isExpanded ?? false
-        ProductsTopBannerFactory.topBanner(isExpanded: isExpanded, expandedStateChangeHandler: { [weak self] in
+        let isInAppFeedbackEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.inAppFeedback)
+        ProductsTopBannerFactory.topBanner(isExpanded: isExpanded,
+                                           isInAppFeedbackFeatureEnabled: isInAppFeedbackEnabled,
+                                           expandedStateChangeHandler: { [weak self] in
             self?.tableView.updateHeaderHeight()
+        }, onGiveFeedbackButtonPressed: { [weak self] in
+            self?.presentProductsFeedback()
+        }, onDismissButtonPressed: { [weak self] in
+            self?.dismissProductsBanner()
         }, onCompletion: { [weak self] topBannerView in
             self?.topBannerContainerView.updateSubview(topBannerView)
             self?.topBannerView = topBannerView
             self?.tableView.updateHeaderHeight()
         })
+    }
+
+    func hideTopBannerView() {
+        topBannerView?.removeFromSuperview()
+        topBannerView = nil
+        tableView.tableHeaderView = nil
+        tableView.updateHeaderHeight()
     }
 
     func updateResultsController(siteID: Int64) {
@@ -525,6 +560,36 @@ private extension ProductsViewController {
             ServiceLocator.analytics.track(.productFilterListDismissButtonTapped)
         })
         present(filterProductListViewController, animated: true, completion: nil)
+    }
+
+    /// Presents products survey and mark feedback as given to update banner visibility
+    ///
+    func presentProductsFeedback() {
+        // Present survey
+        let navigationController = SurveyCoordinatingController(survey: .productsM3Feedback)
+        present(navigationController, animated: true) { [weak self] in
+
+            // Mark survey as given and update top banner view
+            let action = AppSettingsAction.updateFeedbackStatus(type: .productsM3, status: .given(Date())) { result in
+                if let error = result.failure {
+                    CrashLogging.logError(error)
+                }
+                self?.hideTopBannerView()
+            }
+            ServiceLocator.stores.dispatch(action)
+        }
+    }
+
+    /// Mark feedback request as dismissed and update banner visibility
+    ///
+    func dismissProductsBanner() {
+        let action = AppSettingsAction.updateFeedbackStatus(type: .productsM3, status: .dismissed) { [weak self] result in
+            if let error = result.failure {
+                CrashLogging.logError(error)
+            }
+            self?.hideTopBannerView()
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 }
 

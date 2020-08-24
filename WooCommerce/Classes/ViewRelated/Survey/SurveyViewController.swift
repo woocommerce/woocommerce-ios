@@ -102,6 +102,8 @@ extension SurveyViewController {
             switch self {
             case .inAppFeedback:
                 return .general
+            case .productsM3Feedback:
+                return .productsM3
             }
         }
     }

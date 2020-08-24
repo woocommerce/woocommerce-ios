@@ -125,6 +125,43 @@ final class SurveyCoordinatingControllerTests: XCTestCase {
         XCTAssertEqual(properties["context"] as? String, "general")
         XCTAssertEqual(properties["action"] as? String, "opened")
     }
+
+    func test_it_tracks_a_surveyScreen_canceled_event_when_it_is_dimissed_without_finishing_the_survey() throws {
+        // Given
+        let factory = MockSurveyViewControllersFactory()
+
+        let rootViewController = UIViewController()
+
+        // Add the coordinator to a UIWindow and present from a UIViewController so that dismissal
+        // properties (e.g. `isBeingDismissed`) will get updated correctly.
+        let window = UIWindow(frame: .zero)
+        window.rootViewController = rootViewController
+        window.isHidden = false
+
+        let coordinator = SurveyCoordinatingController(survey: .inAppFeedback,
+                                                       viewControllersFactory: factory,
+                                                       analytics: analytics)
+        waitForExpectation { exp in
+            rootViewController.present(coordinator, animated: false) {
+                exp.fulfill()
+            }
+        }
+
+        // When
+        waitForExpectation { exp in
+            coordinator.dismiss(animated: false) {
+                exp.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.count, 2)
+        XCTAssertEqual(analyticsProvider.receivedEvents.last, "survey_screen")
+
+        let properties = try XCTUnwrap(analyticsProvider.receivedProperties.last)
+        XCTAssertEqual(properties["context"] as? String, "general")
+        XCTAssertEqual(properties["action"] as? String, "canceled")
+    }
 }
 
 private final class MockSurveyViewControllersFactory: SurveyViewControllersFactoryProtocol {

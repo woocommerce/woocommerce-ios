@@ -203,6 +203,48 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editBriefDescription]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
+
+    func test_actions_for_non_core_product_without_price() {
+        // Arrange
+        let product = Fixtures.nonCoreProductWithoutPrice
+        let model = EditableProductModel(product: product)
+
+        // Action
+        let factory = ProductFormActionsFactory(product: model,
+                                                isEditProductsRelease2Enabled: true,
+                                                isEditProductsRelease3Enabled: true)
+
+        // Assert
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
+        XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
+
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.reviews, .readonlyInventorySettings, .productType]
+        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
+
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editBriefDescription]
+        XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
+    }
+
+    func test_actions_for_non_core_product_with_price() {
+        // Arrange
+        let product = Fixtures.nonCoreProductWithPrice
+        let model = EditableProductModel(product: product)
+
+        // Action
+        let factory = ProductFormActionsFactory(product: model,
+                                                isEditProductsRelease2Enabled: true,
+                                                isEditProductsRelease3Enabled: true)
+
+        // Assert
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
+        XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
+
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.readonlyPriceSettings, .reviews, .readonlyInventorySettings, .productType]
+        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
+
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editBriefDescription]
+        XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
+    }
 }
 
 private extension ProductFormActionsFactory_EditProductsM3Tests {
@@ -264,5 +306,12 @@ private extension ProductFormActionsFactory_EditProductsM3Tests {
         static let variableProductWithVariations = MockProduct().product(briefDescription: "",
                                                            productType: .variable,
                                                            sku: "").copy(variations: [123])
+        // Non-core product, missing price/brief description/categories/tags
+        static let nonCoreProductWithoutPrice = MockProduct().product(briefDescription: "",
+                                                                      productType: .custom("other")).copy(regularPrice: "")
+
+        // Non-core product, missing brief description/categories/tags
+        static let nonCoreProductWithPrice = MockProduct().product(briefDescription: "",
+                                                                   productType: .custom("other")).copy(regularPrice: "2")
     }
 }

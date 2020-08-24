@@ -116,7 +116,7 @@
 		B5ED7920207E993E00A8FD8C /* WPAuthenticatorLogging.m in Sources */ = {isa = PBXBuildFile; fileRef = B5ED791B207E993E00A8FD8C /* WPAuthenticatorLogging.m */; };
 		BA53D64624DFDE1D001F1ABF /* CredentialsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA53D64524DFDE1D001F1ABF /* CredentialsTests.swift */; };
 		BA53D64824DFDF97001F1ABF /* WordPressSourceTagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA53D64724DFDF97001F1ABF /* WordPressSourceTagTests.swift */; };
-		BA53D64B24DFE07D001F1ABF /* MockWordpressAuthenticatorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA53D64A24DFE07D001F1ABF /* MockWordpressAuthenticatorProvider.swift */; };
+		BA53D64B24DFE07D001F1ABF /* WordpressAuthenticatorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA53D64A24DFE07D001F1ABF /* WordpressAuthenticatorProvider.swift */; };
 		BA53D64D24DFE4E6001F1ABF /* ModalViewControllerPresentingSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA53D64C24DFE4E6001F1ABF /* ModalViewControllerPresentingSpy.swift */; };
 		BA53D64F24DFE981001F1ABF /* MockOnePasswordFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA53D64E24DFE981001F1ABF /* MockOnePasswordFacade.swift */; };
 		BA53D65324DFEA58001F1ABF /* OnePasswordResultsFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA53D65224DFEA58001F1ABF /* OnePasswordResultsFetcher.swift */; };
@@ -303,7 +303,7 @@
 		B5ED791B207E993E00A8FD8C /* WPAuthenticatorLogging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WPAuthenticatorLogging.m; sourceTree = "<group>"; };
 		BA53D64524DFDE1D001F1ABF /* CredentialsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CredentialsTests.swift; sourceTree = "<group>"; };
 		BA53D64724DFDF97001F1ABF /* WordPressSourceTagTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordPressSourceTagTests.swift; sourceTree = "<group>"; };
-		BA53D64A24DFE07D001F1ABF /* MockWordpressAuthenticatorProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockWordpressAuthenticatorProvider.swift; sourceTree = "<group>"; };
+		BA53D64A24DFE07D001F1ABF /* WordpressAuthenticatorProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordpressAuthenticatorProvider.swift; sourceTree = "<group>"; };
 		BA53D64C24DFE4E6001F1ABF /* ModalViewControllerPresentingSpy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModalViewControllerPresentingSpy.swift; sourceTree = "<group>"; };
 		BA53D64E24DFE981001F1ABF /* MockOnePasswordFacade.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockOnePasswordFacade.swift; sourceTree = "<group>"; };
 		BA53D65224DFEA58001F1ABF /* OnePasswordResultsFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnePasswordResultsFetcher.swift; sourceTree = "<group>"; };
@@ -746,7 +746,7 @@
 			children = (
 				BA53D64E24DFE981001F1ABF /* MockOnePasswordFacade.swift */,
 				BA53D64C24DFE4E6001F1ABF /* ModalViewControllerPresentingSpy.swift */,
-				BA53D64A24DFE07D001F1ABF /* MockWordpressAuthenticatorProvider.swift */,
+				BA53D64A24DFE07D001F1ABF /* WordpressAuthenticatorProvider.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -1215,7 +1215,7 @@
 				BA53D64624DFDE1D001F1ABF /* CredentialsTests.swift in Sources */,
 				BA53D64F24DFE981001F1ABF /* MockOnePasswordFacade.swift in Sources */,
 				3F550D4E23DA429B007E5897 /* AppSelectorTests.swift in Sources */,
-				BA53D64B24DFE07D001F1ABF /* MockWordpressAuthenticatorProvider.swift in Sources */,
+				BA53D64B24DFE07D001F1ABF /* WordpressAuthenticatorProvider.swift in Sources */,
 				CE16177821B70C1A00B82A47 /* WordPressAuthenticatorDisplayTextTests.swift in Sources */,
 				B501C048208FC79C00D1E58F /* LoginFacadeTests.m in Sources */,
 				F12F9FB824D8A7FC00771BCE /* AnalyticsTrackerTests.swift in Sources */,

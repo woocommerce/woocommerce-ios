@@ -10,9 +10,9 @@ class WordPressAuthenticatorTests: XCTestCase {
         super.setUp()
 
         WordPressAuthenticator.initialize(
-          configuration: MockWordpressAuthenticatorProvider.wordPressAuthenticatorConfiguration(),
-          style: MockWordpressAuthenticatorProvider.wordPressAuthenticatorStyle(.random),
-          unifiedStyle: MockWordpressAuthenticatorProvider.wordPressAuthenticatorUnifiedStyle(.random)
+          configuration: WordpressAuthenticatorProvider.wordPressAuthenticatorConfiguration(),
+          style: WordpressAuthenticatorProvider.wordPressAuthenticatorStyle(.random),
+          unifiedStyle: WordpressAuthenticatorProvider.wordPressAuthenticatorUnifiedStyle(.random)
         )
     }
 
@@ -68,7 +68,7 @@ class WordPressAuthenticatorTests: XCTestCase {
 
     // MARK: WordPressAuthenticator Notification Tests
     func testDispatchesSupportPushNotificationReceived() {
-        let authenticator = MockWordpressAuthenticatorProvider.getWordpressAuthenticator()
+        let authenticator = WordpressAuthenticatorProvider.getWordpressAuthenticator()
         let _ = expectation(forNotification: .wordpressSupportNotificationReceived, object: nil, handler: nil)
 
         authenticator.supportPushNotificationReceived()
@@ -77,7 +77,7 @@ class WordPressAuthenticatorTests: XCTestCase {
     }
 
     func testDispatchesSupportPushNotificationCleared() {
-        let authenticator = MockWordpressAuthenticatorProvider.getWordpressAuthenticator()
+        let authenticator = WordpressAuthenticatorProvider.getWordpressAuthenticator()
         let _ = expectation(forNotification: .wordpressSupportNotificationCleared, object: nil, handler: nil)
 
         authenticator.supportPushNotificationCleared()
@@ -180,7 +180,7 @@ class WordPressAuthenticatorTests: XCTestCase {
 
     // MARK: WordPressAuthenticator URL verification Tests
     func testIsGoogleAuthURL() {
-        let authenticator = MockWordpressAuthenticatorProvider.getWordpressAuthenticator()
+        let authenticator = WordpressAuthenticatorProvider.getWordpressAuthenticator()
         let googleURL = URL(string: "com.googleuserconsent.apps/82ekn2932nub23h23hn3")!
         let magicLinkURL = URL(string: "https://magic-login")!
         let wordpressComURL = URL(string: "https://WordPress.com")!
@@ -191,7 +191,7 @@ class WordPressAuthenticatorTests: XCTestCase {
     }
 
     func testIsWordPressAuthURL() {
-        let authenticator = MockWordpressAuthenticatorProvider.getWordpressAuthenticator()
+        let authenticator = WordpressAuthenticatorProvider.getWordpressAuthenticator()
         let magicLinkURL = URL(string: "https://magic-login")!
         let googleURL = URL(string: "https://google.com")!
         let wordpressComURL = URL(string: "https://WordPress.com")!
@@ -202,7 +202,7 @@ class WordPressAuthenticatorTests: XCTestCase {
     }
 
     func testHandleWordPressAuthURLReturnsTrueOnSucceed() {
-        let authenticator = MockWordpressAuthenticatorProvider.getWordpressAuthenticator()
+        let authenticator = WordpressAuthenticatorProvider.getWordpressAuthenticator()
         let url = URL(string: "https://wordpress.com/wp-login.php?token=1234567890%26action&magic-login&sr=1&signature=1234567890oienhdtsra")
 
         XCTAssertTrue(authenticator.handleWordPressAuthUrl(url!, allowWordPressComAuth: true, rootViewController: UIViewController()))

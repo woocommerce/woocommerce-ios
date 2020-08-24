@@ -1,6 +1,6 @@
 @testable import WordPressAuthenticator
 
-struct MockWordpressAuthenticatorProvider {
+struct WordpressAuthenticatorProvider {
     static func wordPressAuthenticatorConfiguration() -> WordPressAuthenticatorConfiguration {
         return WordPressAuthenticatorConfiguration(wpcomClientId: "23456",
                                                    wpcomSecret: "arfv35dj57l3g2323",

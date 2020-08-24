@@ -22,11 +22,11 @@ struct ProductsTopBannerFactory {
             let icon: UIImage = isInAppFeedbackFeatureEnabled ? .megaphoneIcon : .workInProgressBanner
             let infoText = isEditProductsRelease3Enabled ? Strings.infoWhenRelease3IsEnabled: Strings.info
             let giveFeedbackAction = TopBannerViewModel.ActionButton(title: Strings.giveFeedback) {
-                analytics.track(event: .featureFeedbackBanner(context: .products, action: .gaveFeedback))
+                analytics.track(event: .featureFeedbackBanner(context: .productsM3, action: .gaveFeedback))
                 onGiveFeedbackButtonPressed()
             }
             let dismissAction = TopBannerViewModel.ActionButton(title: Strings.dismiss) {
-                analytics.track(event: .featureFeedbackBanner(context: .products, action: .dismissed))
+                analytics.track(event: .featureFeedbackBanner(context: .productsM3, action: .dismissed))
                 onDismissButtonPressed()
             }
             let actions: [TopBannerViewModel.ActionButton] = isInAppFeedbackFeatureEnabled ? [giveFeedbackAction, dismissAction] : []

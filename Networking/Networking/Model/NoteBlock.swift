@@ -88,12 +88,6 @@ extension NoteBlock {
 
         return .text
     }
-
-    /// Returns YES if the associated comment (if any) is approved. NO otherwise.
-    ///
-    var isCommentApproved: Bool {
-        return isActionOn(.approve) || !isActionEnabled(.approve)
-    }
 }
 
 

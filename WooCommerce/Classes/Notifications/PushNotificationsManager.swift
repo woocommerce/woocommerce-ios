@@ -520,7 +520,6 @@ private extension PushNotification {
 private enum APNSKey {
     static let aps = "aps"
     static let alert = "alert"
-    static let badge = "badge"
     static let identifier = "note_id"
     static let type = "type"
 }

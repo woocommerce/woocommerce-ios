@@ -7,11 +7,6 @@ import XCTest
 final class OrderStatsV4MapperTests: XCTestCase {
     private struct Constants {
         static let siteID: Int64 = 1234
-        static let hourlyGranularity = StatsGranularityV4.hourly
-        static let dailyGranularity = StatsGranularityV4.daily
-        static let weeklyGranularity = StatsGranularityV4.weekly
-        static let monthlyGranularity = StatsGranularityV4.monthly
-        static let yearlyGranularity = StatsGranularityV4.yearly
     }
 
     /// Verifies that all of the hourly unit OrderStatsV4 fields are parsed correctly.

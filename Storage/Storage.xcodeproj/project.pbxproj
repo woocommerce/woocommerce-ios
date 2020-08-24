@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -31,6 +31,7 @@
 		454005AA24AE4D350087FDD1 /* WooCommerceModelV28toV29.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 454005A924AE4D350087FDD1 /* WooCommerceModelV28toV29.xcmappingmodel */; };
 		45E1862E2370450C009241F3 /* ShippingLine+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E1862D2370450C009241F3 /* ShippingLine+CoreDataClass.swift */; };
 		45E1863023704519009241F3 /* ShippingLine+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E1862F23704519009241F3 /* ShippingLine+CoreDataProperties.swift */; };
+		57150E1324F462DF00E81611 /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 57150E1224F462DF00E81611 /* TestKit */; };
 		5736878E24AAADAE00B528FE /* ManagedObjectModelsInventory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5736878D24AAADAE00B528FE /* ManagedObjectModelsInventory.swift */; };
 		5736879024AABE4D00B528FE /* ManagedObjectModelsInventoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5736878F24AABE4D00B528FE /* ManagedObjectModelsInventoryTests.swift */; };
 		574B774C24AA87FA0042116F /* FileManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574B774B24AA87FA0042116F /* FileManagerProtocol.swift */; };
@@ -346,6 +347,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				57150E1324F462DF00E81611 /* TestKit in Frameworks */,
 				B54CA5A320A4BBA600F38CD1 /* Storage.framework in Frameworks */,
 				68BC97FB41770051C287D1A8 /* Pods_StorageTests.framework in Frameworks */,
 			);
@@ -724,6 +726,7 @@
 			);
 			name = StorageTests;
 			packageProductDependencies = (
+				57150E1224F462DF00E81611 /* TestKit */,
 			);
 			productName = StorageTests;
 			productReference = B54CA5A220A4BBA600F38CD1 /* StorageTests.xctest */;
@@ -1373,6 +1376,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		57150E1224F462DF00E81611 /* TestKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TestKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */ = {

@@ -54,6 +54,7 @@ private extension ProductDetailsFactory {
                                                  isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
                                                  isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
             vc = ProductFormViewController(viewModel: viewModel,
+                                           eventLogger: ProductFormEventLogger(),
                                            productImageActionHandler: productImageActionHandler,
                                            presentationStyle: presentationStyle,
                                            isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,

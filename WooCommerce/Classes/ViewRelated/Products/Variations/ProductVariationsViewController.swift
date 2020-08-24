@@ -280,6 +280,8 @@ extension ProductVariationsViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         if isEditProductsRelease3Enabled {
+            ServiceLocator.analytics.track(.productVariationListVariationTapped)
+
             let productVariation = resultsController.object(at: indexPath)
             let model = EditableProductVariationModel(productVariation: productVariation,
                                                       allAttributes: allAttributes,
@@ -294,6 +296,7 @@ extension ProductVariationsViewController: UITableViewDelegate {
                                                           parentProductSKU: parentProductSKU,
                                                           productImageActionHandler: productImageActionHandler)
             let viewController = ProductFormViewController(viewModel: viewModel,
+                                                           eventLogger: ProductVariationFormEventLogger(),
                                                            productImageActionHandler: productImageActionHandler,
                                                            currency: currency,
                                                            presentationStyle: .navigationStack,

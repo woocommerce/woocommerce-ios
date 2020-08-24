@@ -243,8 +243,10 @@ extension ProductFormViewModel {
         let updateProductAction = ProductAction.updateProduct(product: product.product) { [weak self] result in
             switch result {
             case .failure(let error):
+                ServiceLocator.analytics.track(.productDetailUpdateError, withError: error)
                 onCompletion(.failure(error))
             case .success(let product):
+                ServiceLocator.analytics.track(.productDetailUpdateSuccess)
                 let model = EditableProductModel(product: product)
                 self?.resetProduct(model)
                 onCompletion(.success(model))

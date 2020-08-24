@@ -180,10 +180,10 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
             UINavigationBar.appearance(whenContainedInInstancesOf: [LoginNavigationController.self]).compactAppearance = appearance
             UINavigationBar.appearance(whenContainedInInstancesOf: [LoginNavigationController.self]).scrollEdgeAppearance = appearance
         } else {
-            let appearance = UINavigationBar.appearance()
+            let appearance = UINavigationBar.appearance(whenContainedInInstancesOf: [LoginNavigationController.self])
             appearance.barTintColor = backgroundColor
             appearance.titleTextAttributes = [.foregroundColor: titleTextColor]
-            UIBarButtonItem.appearance().tintColor = buttonTextColor
+            UIBarButtonItem.appearance(whenContainedInInstancesOf: [LoginNavigationController.self]).tintColor = buttonTextColor
         }
     }
     

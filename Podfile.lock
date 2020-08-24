@@ -1,11 +1,11 @@
 PODS:
   - 1PasswordExtension (1.8.6)
   - Alamofire (4.8.0)
-  - AppAuth (1.3.1):
-    - AppAuth/Core (= 1.3.1)
-    - AppAuth/ExternalUserAgent (= 1.3.1)
-  - AppAuth/Core (1.3.1)
-  - AppAuth/ExternalUserAgent (1.3.1)
+  - AppAuth (1.4.0):
+    - AppAuth/Core (= 1.4.0)
+    - AppAuth/ExternalUserAgent (= 1.4.0)
+  - AppAuth/Core (1.4.0)
+  - AppAuth/ExternalUserAgent (1.4.0)
   - Automattic-Tracks-iOS (0.5.1-beta.1):
     - CocoaLumberjack (~> 3)
     - Reachability (~> 3)
@@ -54,7 +54,7 @@ PODS:
   - WordPress-Aztec-iOS (1.11.0)
   - WordPress-Editor-iOS (1.11.0):
     - WordPress-Aztec-iOS (= 1.11.0)
-  - WordPressAuthenticator (1.23.0-beta.8):
+  - WordPressAuthenticator (1.23.0-beta.27):
     - 1PasswordExtension (= 1.8.6)
     - Alamofire (= 4.8)
     - CocoaLumberjack (~> 3.5)
@@ -66,7 +66,7 @@ PODS:
     - WordPressKit (~> 4.14-beta)
     - WordPressShared (~> 1.11-beta)
     - WordPressUI (~> 1.7.0)
-  - WordPressKit (4.14.0):
+  - WordPressKit (4.15.0-beta.2):
     - Alamofire (~> 4.8.0)
     - CocoaLumberjack (~> 3.4)
     - NSObject-SafeExpectations (= 0.0.4)
@@ -160,7 +160,7 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   1PasswordExtension: f97cc80ae58053c331b2b6dc8843ba7103b33794
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
-  AppAuth: 8803ba1aec6d00d9afd30093f82e600307eaa6ea
+  AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
   Automattic-Tracks-iOS: 044b34f28f6584d36faa64d1183d353198ed3bd6
   Charts: e0dd4cd8f257bccf98407b58183ddca8e8d5b578
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
@@ -182,8 +182,8 @@ SPEC CHECKSUMS:
   UIDeviceIdentifier: a79ccdfc940373835a7d8e9fc7541e6bf61b6319
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
-  WordPressAuthenticator: 2788e77ebda73a512ff78e230ccccde1f484e94b
-  WordPressKit: dcab41057f0c39af3280b7c0d17bdc36271e01ae
+  WordPressAuthenticator: ca0bf92bc475c7b9db7a6dbb26c8f252a71b09d3
+  WordPressKit: 97b56c5b1e443fd75676a8b079fe676e194d1fbd
   WordPressShared: b56046080c99d41519d097c970df663fda48e218
   WordPressUI: 1cf47a3b78154faf69caa18569ee7ece1e510fa0
   Wormholy: 5a186f877829e7d488963b09f204e0186b40c9a8

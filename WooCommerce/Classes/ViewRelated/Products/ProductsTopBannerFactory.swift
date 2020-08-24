@@ -11,6 +11,7 @@ struct ProductsTopBannerFactory {
     ///   - onCompletion: called when the view controller is created and ready for display.
     static func topBanner(isExpanded: Bool,
                           stores: StoresManager = ServiceLocator.stores,
+                          analytics: Analytics = ServiceLocator.analytics,
                           isInAppFeedbackFeatureEnabled: Bool,
                           expandedStateChangeHandler: @escaping () -> Void,
                           onGiveFeedbackButtonPressed: @escaping () -> Void,
@@ -20,8 +21,14 @@ struct ProductsTopBannerFactory {
             let title = Strings.title
             let icon: UIImage = isInAppFeedbackFeatureEnabled ? .megaphoneIcon : .workInProgressBanner
             let infoText = isEditProductsRelease3Enabled ? Strings.infoWhenRelease3IsEnabled: Strings.info
-            let giveFeedbackAction = TopBannerViewModel.ActionButton(title: Strings.giveFeedback, action: onGiveFeedbackButtonPressed)
-            let dismissAction = TopBannerViewModel.ActionButton(title: Strings.dismiss, action: onDismissButtonPressed)
+            let giveFeedbackAction = TopBannerViewModel.ActionButton(title: Strings.giveFeedback) {
+                analytics.track(event: .featureFeedbackBanner(context: .productsM3, action: .gaveFeedback))
+                onGiveFeedbackButtonPressed()
+            }
+            let dismissAction = TopBannerViewModel.ActionButton(title: Strings.dismiss) {
+                analytics.track(event: .featureFeedbackBanner(context: .productsM3, action: .dismissed))
+                onDismissButtonPressed()
+            }
             let actions: [TopBannerViewModel.ActionButton] = isInAppFeedbackFeatureEnabled ? [giveFeedbackAction, dismissAction] : []
             let viewModel = TopBannerViewModel(title: title,
                                                infoText: infoText,

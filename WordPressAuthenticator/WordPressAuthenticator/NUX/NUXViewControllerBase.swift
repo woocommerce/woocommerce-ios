@@ -150,8 +150,6 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
         
         if forUnified {
             // Unified nav bar style
-            setupNavBarIcon(showIcon: false)
-            setHelpButtonTextColor(forUnified: true)
             backgroundColor = WordPressAuthenticator.shared.unifiedStyle?.navBarBackgroundColor ??
                               WordPressAuthenticator.shared.style.navBarBackgroundColor
             buttonTextColor = WordPressAuthenticator.shared.unifiedStyle?.navButtonTextColor ??
@@ -161,20 +159,24 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
             hideBottomBorder = true
         } else {
             // Original nav bar style
-            setupNavBarIcon()
-            setHelpButtonTextColor(forUnified: false)
             backgroundColor = WordPressAuthenticator.shared.style.navBarBackgroundColor
             buttonTextColor = WordPressAuthenticator.shared.style.navButtonTextColor
             titleTextColor = WordPressAuthenticator.shared.style.primaryTitleColor
             hideBottomBorder = false
         }
 
+        setupNavBarIcon(showIcon: !forUnified)
+        setHelpButtonTextColor(forUnified: forUnified)
+        
+        let buttonItemAppearance = UIBarButtonItem.appearance(whenContainedInInstancesOf: [LoginNavigationController.self])
+        buttonItemAppearance.tintColor = buttonTextColor
+        buttonItemAppearance.setTitleTextAttributes([.foregroundColor: buttonTextColor], for: .normal)
+        
         if #available(iOS 13.0, *) {
             let appearance = UINavigationBarAppearance()
             appearance.shadowColor = hideBottomBorder ? .clear : .separator
             appearance.backgroundColor = backgroundColor
             appearance.titleTextAttributes = [.foregroundColor: titleTextColor]
-            UIBarButtonItem.appearance(whenContainedInInstancesOf: [LoginNavigationController.self]).tintColor = buttonTextColor
             
             UINavigationBar.appearance(whenContainedInInstancesOf: [LoginNavigationController.self]).standardAppearance = appearance
             UINavigationBar.appearance(whenContainedInInstancesOf: [LoginNavigationController.self]).compactAppearance = appearance
@@ -183,7 +185,6 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
             let appearance = UINavigationBar.appearance(whenContainedInInstancesOf: [LoginNavigationController.self])
             appearance.barTintColor = backgroundColor
             appearance.titleTextAttributes = [.foregroundColor: titleTextColor]
-            UIBarButtonItem.appearance(whenContainedInInstancesOf: [LoginNavigationController.self]).tintColor = buttonTextColor
         }
     }
     

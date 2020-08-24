@@ -250,7 +250,7 @@ extension AppleAuthenticator: ASAuthorizationControllerDelegate {
         }
         
         DDLogError("Apple Authenticator: didCompleteWithError: \(error.localizedDescription)")
-        let message = NSLocalizedString("Apple authentication failed.", comment: "Message shown when Apple authentication fails.")
+        let message = NSLocalizedString("Apple authentication failed.\nPlease make sure you are signed in to iCloud with an Apple ID that uses two-factor authentication.", comment: "Message shown when Apple authentication fails.")
         delegate?.authFailedWithError(message: message)
     }
 

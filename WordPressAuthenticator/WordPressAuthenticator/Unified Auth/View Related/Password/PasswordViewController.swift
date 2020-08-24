@@ -45,7 +45,7 @@ class PasswordViewController: LoginViewController {
 
         // TODO: Delete this when the unified login & signup by email view is completed.
         // It assists with bypassing screens for testing purposes.
-        if loginFields.username.isEmpty && WordPressAuthenticator.shared.configuration.enableUnifiedLoginLink {
+        if loginFields.username.isEmpty {
             loginFields.username = "pamela.nguyen@example.com"
         }
 

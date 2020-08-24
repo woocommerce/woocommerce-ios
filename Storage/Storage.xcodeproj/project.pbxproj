@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -37,7 +37,6 @@
 		574B774E24AA883D0042116F /* MockFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574B774D24AA883D0042116F /* MockFileManager.swift */; };
 		574B775024AA897E0042116F /* FileManager+FileManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574B774F24AA897E0042116F /* FileManager+FileManagerProtocol.swift */; };
 		575CD4DC24ABE77800755B2B /* Collection+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575CD4DB24ABE77800755B2B /* Collection+Extensions.swift */; };
-		577B6D1A24DE2E4F00D645E5 /* Testing in Frameworks */ = {isa = PBXBuildFile; productRef = 577B6D1924DE2E4F00D645E5 /* Testing */; };
 		57A881A024CA396D00AE0943 /* GeneralAppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A8819F24CA396D00AE0943 /* GeneralAppSettings.swift */; };
 		68BC97FB41770051C287D1A8 /* Pods_StorageTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47556EE256120BEE49FF5FD3 /* Pods_StorageTests.framework */; };
 		7028A41485A08AC748206184 /* Pods_Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF3D3B298350F68191CD1DAD /* Pods_Storage.framework */; };
@@ -347,7 +346,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				577B6D1A24DE2E4F00D645E5 /* Testing in Frameworks */,
 				B54CA5A320A4BBA600F38CD1 /* Storage.framework in Frameworks */,
 				68BC97FB41770051C287D1A8 /* Pods_StorageTests.framework in Frameworks */,
 			);
@@ -726,7 +724,6 @@
 			);
 			name = StorageTests;
 			packageProductDependencies = (
-				577B6D1924DE2E4F00D645E5 /* Testing */,
 			);
 			productName = StorageTests;
 			productReference = B54CA5A220A4BBA600F38CD1 /* StorageTests.xctest */;
@@ -1376,13 +1373,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		577B6D1924DE2E4F00D645E5 /* Testing */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Testing;
-		};
-/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */ = {

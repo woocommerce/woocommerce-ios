@@ -326,7 +326,9 @@ private extension PasswordViewController {
     /// Configure the forgot password link cell.
     ///
     func configureTextLinkButton(_ cell: TextLinkButtonTableViewCell) {
-        cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.resetPasswordButtonTitle, accessibilityTrait: .link)
+        cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.resetPasswordButtonTitle,
+                             accessibilityTrait: .link,
+                             showBorder: true)
         cell.actionHandler = { [weak self] in
             guard let self = self else {
                 return

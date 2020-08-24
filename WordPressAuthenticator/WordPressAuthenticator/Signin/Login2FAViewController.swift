@@ -35,7 +35,6 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
         configureSubmitButton(animating: false)
     }
 
-
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
@@ -255,11 +254,15 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
 
 
     @IBAction func handleSubmitButtonTapped(_ sender: UIButton) {
+        tracker.track(click: .submit)
+        
         validateForm()
     }
 
 
     @IBAction func handleSendVerificationButtonTapped(_ sender: UIButton) {
+        self.tracker.track(click: .sendCodeWithText)
+        
         let message = NSLocalizedString("SMS Sent", comment: "One Time Code has been sent via SMS")
         SVProgressHUD.showSuccess(withStatus: message)
         SVProgressHUD.dismiss(withDelay: Constants.headsUpDismissDelay)

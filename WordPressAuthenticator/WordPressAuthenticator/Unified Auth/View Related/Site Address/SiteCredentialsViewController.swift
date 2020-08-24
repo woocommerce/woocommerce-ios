@@ -35,6 +35,8 @@ final class SiteCredentialsViewController: LoginViewController {
 
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
+        tracker.track(click: .submit)
+        
         validateForm()
     }
 
@@ -60,13 +62,15 @@ final class SiteCredentialsViewController: LoginViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
+        if isMovingToParent {
+            tracker.track(step: .userPasswordScreenShown)
+        }
+        
         configureSubmitButton(animating: false)
 
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
         configureViewForEditingIfNeeded()
-
-        // Tracks go here. Old event: WordPressAuthenticator.track(.loginUsernamePasswordFormViewed)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -104,6 +108,19 @@ final class SiteCredentialsViewController: LoginViewController {
         )
     }
 
+    /// Sets up accessibility elements in the order which they should be read aloud
+    /// and chooses which element to focus on at the beginning.
+    ///
+    private func configureForAccessibility() {
+        view.accessibilityElements = [
+            usernameField as Any,
+            tableView,
+            submitButton as Any
+        ]
+
+        UIAccessibility.post(notification: .screenChanged, argument: usernameField)
+    }
+
     /// Sets the view's state to loading or not loading.
     ///
     /// - Parameter loading: True if the form should be configured to a "loading" state.
@@ -120,8 +137,13 @@ final class SiteCredentialsViewController: LoginViewController {
     ///
     override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
         if errorMessage != message {
+            if !message.isEmpty {
+                tracker.track(failure: message)
+            }
+            
             errorMessage = message
             shouldChangeVoiceOverFocus = moveVoiceOverFocus
+            loadRows()
             tableView.reloadData()
         }
     }
@@ -161,9 +183,13 @@ extension SiteCredentialsViewController: UITableViewDelegate {
     /// After a textfield cell is done displaying, remove the textfield reference.
     ///
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if rows[indexPath.row] == .username {
+        guard let row = rows[safe: indexPath.row] else {
+            return
+        }
+
+        if row == .username {
             usernameField = nil
-        } else if rows[indexPath.row] == .password {
+        } else if row == .password {
             passwordField = nil
         }
     }
@@ -189,6 +215,9 @@ extension SiteCredentialsViewController: UITextFieldDelegate {
     ///
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == usernameField {
+            if UIAccessibility.isVoiceOverRunning {
+                passwordField?.placeholder = nil
+            }
             passwordField?.becomeFirstResponder()
         } else if textField == passwordField {
             validateForm()
@@ -220,7 +249,7 @@ private extension SiteCredentialsViewController {
     func loadRows() {
         rows = [.instructions, .username, .password]
 
-        if errorMessage != nil {
+        if let errorText = errorMessage, !errorText.isEmpty {
             rows.append(.errorMessage)
         }
 
@@ -264,7 +293,6 @@ private extension SiteCredentialsViewController {
         // Save a reference to the textField so it can becomeFirstResponder.
         usernameField = cell.textField
         cell.textField.delegate = self
-        SigninEditingState.signinEditingStateActive = true
         cell.onePasswordHandler = { [weak self] in
             guard let self = self else {
                 return
@@ -287,6 +315,12 @@ private extension SiteCredentialsViewController {
             self?.loginFields.username = textfield.nonNilTrimmedText()
             self?.configureSubmitButton(animating: false)
         }
+
+        SigninEditingState.signinEditingStateActive = true
+        if UIAccessibility.isVoiceOverRunning {
+            // Quiet repetitive elements in VoiceOver.
+            usernameField?.placeholder = nil
+        }
     }
 
     /// Configure the password textfield cell.
@@ -300,6 +334,11 @@ private extension SiteCredentialsViewController {
             self?.loginFields.password = textfield.nonNilTrimmedText()
             self?.configureSubmitButton(animating: false)
         }
+
+        if UIAccessibility.isVoiceOverRunning {
+            // Quiet repetitive elements in VoiceOver.
+            passwordField?.placeholder = nil
+        }
     }
 
     /// Configure the forgot password cell.
@@ -310,6 +349,8 @@ private extension SiteCredentialsViewController {
             guard let self = self else {
                 return
             }
+            
+            self.tracker.track(click: .forgottenPassword)
 
             // If information is currently processing, ignore button tap.
             guard self.enableSubmit(animating: false) else {
@@ -317,7 +358,6 @@ private extension SiteCredentialsViewController {
             }
 
             WordPressAuthenticator.openForgotPasswordURL(self.loginFields)
-            // TODO: add new tracks. Old track: WordPressAuthenticator.track(.loginForgotPasswordClicked)
         }
     }
 
@@ -325,22 +365,8 @@ private extension SiteCredentialsViewController {
     ///
     func configureErrorLabel(_ cell: TextLabelTableViewCell) {
         cell.configureLabel(text: errorMessage, style: .error)
-    }
-
-    /// Sets up necessary accessibility labels and attributes for the all the UI elements in self.
-    ///
-    func configureForAccessibility() {
-        usernameField?.accessibilityLabel =
-            NSLocalizedString("Username", comment: "Accessibility label for the username text field in the self-hosted login page.")
-        passwordField?.accessibilityLabel =
-            NSLocalizedString("Password", comment: "Accessibility label for the password text field in the self-hosted login page.")
-
-        if UIAccessibility.isVoiceOverRunning {
-            // Remove the placeholder if VoiceOver is running. VoiceOver speaks the label and the
-            // placeholder together. In this case, both labels and placeholders are the same so it's
-            // like VoiceOver is reading the same thing twice.
-            usernameField?.placeholder = nil
-            passwordField?.placeholder = nil
+        if shouldChangeVoiceOverFocus {
+            UIAccessibility.post(notification: .layoutChanged, argument: cell)
         }
     }
 

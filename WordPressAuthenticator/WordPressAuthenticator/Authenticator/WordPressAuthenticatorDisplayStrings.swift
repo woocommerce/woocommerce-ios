@@ -11,7 +11,11 @@ public struct WordPressAuthenticatorDisplayStrings {
     public let siteLoginInstructions: String
 	public let siteCredentialInstructions: String
     public let twoFactorInstructions: String
-    public let magicLinkInstructions: String
+    public let magicLinkSignupInstructions: String
+    public let openMailSignupInstructions: String
+    public let openMailLoginInstructions: String
+    public let checkSpamInstructions: String
+    public let googleSignupInstructions: String
     public let googlePasswordInstructions: String
     public let applePasswordInstructions: String
 
@@ -19,6 +23,8 @@ public struct WordPressAuthenticatorDisplayStrings {
     ///
     public let continueButtonTitle: String
     public let magicLinkButtonTitle: String
+    public let openMailButtonTitle: String
+    public let createAccountButtonTitle: String
     
     /// Large titles displayed in unified auth flows.
     ///
@@ -42,37 +48,49 @@ public struct WordPressAuthenticatorDisplayStrings {
 
     /// Designated initializer.
     ///
-    public init(emailLoginInstructions: String,
-                jetpackLoginInstructions: String,
-                siteLoginInstructions: String,
-				siteCredentialInstructions: String,
-                twoFactorInstructions: String,
-                magicLinkInstructions: String,
-                googlePasswordInstructions: String,
-                applePasswordInstructions: String,
-                continueButtonTitle: String,
-                magicLinkButtonTitle: String,
-                findSiteButtonTitle: String,
-                resetPasswordButtonTitle: String,
-                textCodeButtonTitle: String,
-                gettingStartedTitle: String,
-                logInTitle: String,
-                signUpTitle: String,
-                waitingForGoogleTitle: String,
-				usernamePlaceholder: String,
-				passwordPlaceholder: String,
-                siteAddressPlaceholder: String,
-                twoFactorCodePlaceholder: String) {
+    public init(emailLoginInstructions: String = defaultStrings.emailLoginInstructions,
+                jetpackLoginInstructions: String = defaultStrings.jetpackLoginInstructions,
+                siteLoginInstructions: String = defaultStrings.siteLoginInstructions,
+                siteCredentialInstructions: String = defaultStrings.siteCredentialInstructions,
+                twoFactorInstructions: String = defaultStrings.twoFactorInstructions,
+                magicLinkSignupInstructions: String = defaultStrings.magicLinkSignupInstructions,
+                openMailSignupInstructions: String = defaultStrings.openMailSignupInstructions,
+                openMailLoginInstructions: String = defaultStrings.openMailLoginInstructions,
+                checkSpamInstructions: String = defaultStrings.checkSpamInstructions,
+                googleSignupInstructions: String = defaultStrings.googleSignupInstructions,
+                googlePasswordInstructions: String = defaultStrings.googlePasswordInstructions,
+                applePasswordInstructions: String = defaultStrings.applePasswordInstructions,
+                continueButtonTitle: String = defaultStrings.continueButtonTitle,
+                magicLinkButtonTitle: String = defaultStrings.magicLinkButtonTitle,
+                openMailButtonTitle: String = defaultStrings.openMailButtonTitle,
+                createAccountButtonTitle: String = defaultStrings.createAccountButtonTitle,
+                findSiteButtonTitle: String = defaultStrings.findSiteButtonTitle,
+                resetPasswordButtonTitle: String = defaultStrings.resetPasswordButtonTitle,
+                textCodeButtonTitle: String = defaultStrings.textCodeButtonTitle,
+                gettingStartedTitle: String = defaultStrings.gettingStartedTitle,
+                logInTitle: String = defaultStrings.logInTitle,
+                signUpTitle: String = defaultStrings.signUpTitle,
+                waitingForGoogleTitle: String = defaultStrings.waitingForGoogleTitle,
+                usernamePlaceholder: String = defaultStrings.usernamePlaceholder,
+                passwordPlaceholder: String = defaultStrings.passwordPlaceholder,
+                siteAddressPlaceholder: String = defaultStrings.siteAddressPlaceholder,
+                twoFactorCodePlaceholder: String = defaultStrings.twoFactorCodePlaceholder) {
         self.emailLoginInstructions = emailLoginInstructions
         self.jetpackLoginInstructions = jetpackLoginInstructions
         self.siteLoginInstructions = siteLoginInstructions
 		self.siteCredentialInstructions = siteCredentialInstructions
         self.twoFactorInstructions = twoFactorInstructions
-        self.magicLinkInstructions = magicLinkInstructions
+        self.magicLinkSignupInstructions = magicLinkSignupInstructions
+        self.openMailSignupInstructions = openMailSignupInstructions
+        self.openMailLoginInstructions = openMailLoginInstructions
+        self.checkSpamInstructions = checkSpamInstructions
+        self.googleSignupInstructions = googleSignupInstructions
         self.googlePasswordInstructions = googlePasswordInstructions
         self.applePasswordInstructions = applePasswordInstructions
         self.continueButtonTitle = continueButtonTitle
         self.magicLinkButtonTitle = magicLinkButtonTitle
+        self.openMailButtonTitle = openMailButtonTitle
+        self.createAccountButtonTitle = createAccountButtonTitle
         self.findSiteButtonTitle = findSiteButtonTitle
         self.resetPasswordButtonTitle = resetPasswordButtonTitle
         self.textCodeButtonTitle = textCodeButtonTitle
@@ -100,8 +118,14 @@ public extension WordPressAuthenticatorDisplayStrings {
 														  comment: "Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site."),
             twoFactorInstructions: NSLocalizedString("Please enter the verification code from your authenticator app, or tap the link below to receive a code via SMS.",
                                                      comment: "Instruction text on the two-factor screen."),
-            magicLinkInstructions: NSLocalizedString("We'll email you a magic link to create your new WordPress.com account.",
+            magicLinkSignupInstructions: NSLocalizedString("We'll email you a magic link to create your new WordPress.com account.",
                                                      comment: "Instruction text on the Sign Up screen."),
+            openMailSignupInstructions: NSLocalizedString("We’ve emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com.",
+                                                    comment: "Instruction text after a signup Magic Link was requested."),
+            openMailLoginInstructions: NSLocalizedString("Check your email on this device, and tap the link in the email you receive from WordPress.com.",
+                                                         comment: "Instruction text after a login Magic Link was requested."),
+            checkSpamInstructions: NSLocalizedString("Not seeing the email? Check your Spam or Junk Mail folder.", comment: "Instructions after a Magic Link was sent, but the email can't be found in their inbox."),
+            googleSignupInstructions: NSLocalizedString("We'll use this email address to create your new WordPress.com account.", comment: "Text confirming email address to be used for new account."),
             googlePasswordInstructions: NSLocalizedString("To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once.",
                                                           comment: "Instructional text shown when requesting the user's password for Google login."),
             applePasswordInstructions: NSLocalizedString("To proceed with this Apple ID, please first log in with your WordPress.com password. This will only be asked once.",
@@ -110,6 +134,10 @@ public extension WordPressAuthenticatorDisplayStrings {
                                                     comment: "The button title text when there is a next step for logging in or signing up."),
             magicLinkButtonTitle: NSLocalizedString("Send Link by Email",
                                                     comment: "The button title text for sending a magic link."),
+            openMailButtonTitle: NSLocalizedString("Open Mail",
+                                                   comment: "The button title text for opening the user's preferred email app."),
+            createAccountButtonTitle: NSLocalizedString("Create Account",
+                                                        comment: "The button title text for creating a new account."),
             findSiteButtonTitle: NSLocalizedString("Find your site address",
                                                    comment: "The hint button's title text to help users find their site address."),
             resetPasswordButtonTitle: NSLocalizedString("Reset your password",

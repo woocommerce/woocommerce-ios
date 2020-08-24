@@ -71,6 +71,10 @@ extension WPStyleGuide {
         onePasswordButton.sizeToFit()
         onePasswordButton.setContentHuggingPriority(.required, for: .horizontal)
         onePasswordButton.setContentCompressionResistancePriority(.required, for: .horizontal)
+        
+        onePasswordButton.accessibilityTraits = .button
+        onePasswordButton.accessibilityLabel = NSLocalizedString("One Password button", comment: "Accessibility label for 1 password button")
+        onePasswordButton.accessibilityHint = NSLocalizedString("Opens One Password manager", comment: "Accessibility hint for 1 password button")
 
         stack.addArrangedSubview(onePasswordButton)
 

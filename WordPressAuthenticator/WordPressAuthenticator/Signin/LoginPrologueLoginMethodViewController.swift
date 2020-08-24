@@ -13,6 +13,10 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
     open var selfHostedTapped: (() -> Void)?
     open var appleTapped: (() -> Void)?
 
+    private var tracker: AuthenticatorAnalyticsTracker {
+        AuthenticatorAnalyticsTracker.shared
+    }
+    
     /// The big transparent (dismiss) button behind the buttons
     @IBOutlet private weak var dismissButton: UIButton!
 
@@ -42,8 +46,14 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
         
         let wordpressTitle = NSLocalizedString("Continue with WordPress.com", comment: "Button title. Tapping begins our normal log in process.")
         buttonViewController.setupTopButton(title: wordpressTitle, isPrimary: false, accessibilityIdentifier: "Log in with Email Button") { [weak self] in
-            self?.dismiss(animated: true)
-            self?.emailTapped?()
+            
+            guard let self = self else {
+                return
+            }
+            
+            self.tracker.set(flow: .wpCom)
+            self.dismiss(animated: true)
+            self.emailTapped?()
         }
         
         buttonViewController.setupButtomButtonFor(socialService: .google, onTap: handleGoogleButtonTapped)
@@ -69,17 +79,27 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
 
     @IBAction func handleSelfHostedButtonTapped(_ sender: UIButton) {
         dismiss(animated: true)
+        
+        tracker.set(flow: .loginWithSiteAddress)
+        tracker.track(click: .loginWithSiteAddress)
+        
         selfHostedTapped?()
     }
 
     @objc func handleAppleButtonTapped() {
-        WordPressAuthenticator.track(.loginSocialButtonClick, properties: ["source": "apple"])
+        tracker.set(flow: .loginWithApple)
+        tracker.track(click: .loginWithApple, ifTrackingNotEnabled: {
+            WordPressAuthenticator.track(.loginSocialButtonClick, properties: ["source": "apple"])
+        })
         
         dismiss(animated: true)
         appleTapped?()
     }
 
     @objc func handleGoogleButtonTapped() {
+        tracker.set(flow: .loginWithGoogle)
+        tracker.track(click: .loginWithGoogle)
+        
         dismiss(animated: true)
         googleTapped?()
     }

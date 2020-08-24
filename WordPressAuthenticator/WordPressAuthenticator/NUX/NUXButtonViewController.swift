@@ -32,7 +32,7 @@ open class NUXButtonViewController: UIViewController {
 
     // MARK: - Properties
 
-    @IBOutlet var shadowView: UIView?
+    @IBOutlet private var shadowView: UIImageView?
     @IBOutlet var stackView: UIStackView?
     @IBOutlet var bottomButton: NUXButton?
     @IBOutlet var topButton: NUXButton?
@@ -46,11 +46,15 @@ open class NUXButtonViewController: UIViewController {
     private var bottomButtonConfig: NUXButtonConfig?
     private var tertiaryButtonConfig: NUXButtonConfig?
 
+    private let style = WordPressAuthenticator.shared.style
+
     // MARK: - View
 
     override open func viewDidLoad() {
         super.viewDidLoad()
         view.translatesAutoresizingMaskIntoConstraints = false
+
+        shadowView?.image = style.buttonViewTopShadowImage
     }
 
     override open func viewWillAppear(_ animated: Bool) {

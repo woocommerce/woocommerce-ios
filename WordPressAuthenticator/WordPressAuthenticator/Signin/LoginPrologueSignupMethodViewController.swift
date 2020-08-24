@@ -13,6 +13,10 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
     open var emailTapped: (() -> Void)?
     open var googleTapped: (() -> Void)?
     open var appleTapped: (() -> Void)?
+    
+    private var tracker: AuthenticatorAnalyticsTracker {
+        AuthenticatorAnalyticsTracker.shared
+    }
 
     /// The big transparent (dismiss) button behind the buttons
     @IBOutlet private weak var dismissButton: UIButton!
@@ -43,6 +47,9 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
 
         let loginTitle = NSLocalizedString("Sign up with Email", comment: "Button title. Tapping begins our normal sign up process.")
         buttonViewController.setupTopButton(title: loginTitle, isPrimary: false, accessibilityIdentifier: "Sign up with Email Button") { [weak self] in
+            
+            self?.tracker.set(flow: .wpCom)
+            
             defer {
                 WordPressAuthenticator.track(.signupEmailButtonTapped)
             }
@@ -55,7 +62,9 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
         let termsButton = WPStyleGuide.termsButton()
         termsButton.on(.touchUpInside) { [weak self] button in
             defer {
-                WordPressAuthenticator.track(.signupTermsButtonTapped)
+                self?.tracker.track(click: .termsOfService, ifTrackingNotEnabled: {
+                    WordPressAuthenticator.track(.signupTermsButtonTapped)
+                })
             }
             guard let url = URL(string: WordPressAuthenticator.shared.configuration.wpcomTermsOfServiceURL) else {
                 return
@@ -81,14 +90,20 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
     }
 
     @objc func handleAppleButtonTapped() {
-        WordPressAuthenticator.track(.signupSocialButtonTapped, properties: ["source": "apple"])
+        tracker.set(flow: .signupWithApple)
+        tracker.track(click: .signupWithApple, ifTrackingNotEnabled: {
+            WordPressAuthenticator.track(.signupSocialButtonTapped, properties: ["source": "apple"])
+        })
         
         dismiss(animated: true)
         appleTapped?()
     }
 
     @objc func handleGoogleButtonTapped() {
-        WordPressAuthenticator.track(.signupSocialButtonTapped, properties: ["source": "google"])
+        tracker.set(flow: .signupWithGoogle)
+        tracker.track(click: .signupWithGoogle, ifTrackingNotEnabled: {
+            WordPressAuthenticator.track(.signupSocialButtonTapped, properties: ["source": "google"])
+        })
 
         dismiss(animated: true)
         googleTapped?()

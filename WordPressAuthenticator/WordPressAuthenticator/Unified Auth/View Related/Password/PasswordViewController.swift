@@ -227,6 +227,7 @@ private extension PasswordViewController {
         }
         
         rows.append(.forgotPassword)
+        rows.append(.sendMagicLink)
     }
     
     /// Configure cells.
@@ -239,8 +240,10 @@ private extension PasswordViewController {
             configureInstructionLabel(cell)
         case let cell as TextFieldTableViewCell where row == .password:
             configurePasswordTextField(cell)
-        case let cell as TextLinkButtonTableViewCell:
-            configureTextLinkButton(cell)
+        case let cell as TextLinkButtonTableViewCell where row == .forgotPassword:
+            configureForgotPasswordButton(cell)
+        case let cell as TextLinkButtonTableViewCell where row == .sendMagicLink:
+            configureSendMagicLinkButton(cell)
         case let cell as TextLabelTableViewCell where row == .errorMessage:
             configureErrorLabel(cell)
         default:
@@ -325,7 +328,7 @@ private extension PasswordViewController {
     
     /// Configure the forgot password link cell.
     ///
-    func configureTextLinkButton(_ cell: TextLinkButtonTableViewCell) {
+    func configureForgotPasswordButton(_ cell: TextLinkButtonTableViewCell) {
         cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.resetPasswordButtonTitle,
                              accessibilityTrait: .link,
                              showBorder: true)
@@ -342,6 +345,12 @@ private extension PasswordViewController {
             WordPressAuthenticator.openForgotPasswordURL(self.loginFields)
             self.tracker.track(click: .forgottenPassword)
         }
+    }
+
+    /// Configure the "send magic link" cell.
+    ///
+    func configureSendMagicLinkButton(_ cell: TextLinkButtonTableViewCell) {
+//        cell.configureButton(text: <#T##String?#>)
     }
     
     /// Configure the error message cell.
@@ -383,6 +392,7 @@ private extension PasswordViewController {
         case instructions
         case password
         case forgotPassword
+        case sendMagicLink
         case errorMessage
         
         var reuseIdentifier: String {
@@ -393,6 +403,8 @@ private extension PasswordViewController {
                 return TextLabelTableViewCell.reuseIdentifier
             case .password:
                 return TextFieldTableViewCell.reuseIdentifier
+            case .sendMagicLink:
+                return TextLinkButtonTableViewCell.reuseIdentifier
             case .forgotPassword:
                 return TextLinkButtonTableViewCell.reuseIdentifier
             case .errorMessage:

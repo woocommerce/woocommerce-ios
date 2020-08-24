@@ -11,6 +11,7 @@ struct ProductsTopBannerFactory {
     ///   - onCompletion: called when the view controller is created and ready for display.
     static func topBanner(isExpanded: Bool,
                           stores: StoresManager = ServiceLocator.stores,
+                          analytics: Analytics = ServiceLocator.analytics,
                           isInAppFeedbackFeatureEnabled: Bool,
                           expandedStateChangeHandler: @escaping () -> Void,
                           onGiveFeedbackButtonPressed: @escaping () -> Void,

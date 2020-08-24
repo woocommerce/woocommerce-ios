@@ -103,7 +103,7 @@ extension SurveyViewController {
             case .inAppFeedback:
                 return .general
             case .productsM3Feedback:
-                return .products
+                return .productsM3
             }
         }
     }

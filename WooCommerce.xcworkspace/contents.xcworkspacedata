@@ -2,9 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:TestKit">
-   </FileRef>
-   <FileRef
       location = "group:WooCommerce/WooCommerce.xcodeproj">
    </FileRef>
    <FileRef
@@ -15,6 +12,9 @@
    </FileRef>
    <FileRef
       location = "group:Networking/Networking.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:TestKit">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">

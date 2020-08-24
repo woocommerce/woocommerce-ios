@@ -1,3 +1,6 @@
+5.0
+-----
+ 
 4.9
 -----
 - [**] Sign in with Apple is now available in the log in process.

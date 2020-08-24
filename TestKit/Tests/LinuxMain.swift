@@ -1,7 +1,7 @@
 import XCTest
 
-import TestingTests
+import TestKitTests
 
 var tests = [XCTestCaseEntry]()
-tests += TestingTests.allTests()
+tests += TestKitTests.allTests()
 XCTMain(tests)

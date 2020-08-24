@@ -22,11 +22,11 @@ enum ProductFormSection: Equatable {
     }
 
     enum SettingsRow: Equatable {
-        case price(viewModel: ViewModel)
+        case price(viewModel: ViewModel, isEditable: Bool)
         case reviews(viewModel: ViewModel, ratingCount: Int, averageRating: String)
         case productType(viewModel: ViewModel)
         case shipping(viewModel: ViewModel)
-        case inventory(viewModel: ViewModel)
+        case inventory(viewModel: ViewModel, isEditable: Bool)
         case categories(viewModel: ViewModel)
         case tags(viewModel: ViewModel)
         case briefDescription(viewModel: ViewModel)

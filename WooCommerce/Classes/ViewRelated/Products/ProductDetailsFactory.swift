@@ -19,10 +19,8 @@ struct ProductDetailsFactory {
             switch product.productType {
             case .simple:
                 isEditProductsEnabled = true
-            case .affiliate, .grouped, .variable:
-                isEditProductsEnabled = isFeatureSwitchOn
             default:
-                isEditProductsEnabled = false
+                isEditProductsEnabled = isFeatureSwitchOn
             }
 
             let vc = productDetails(product: product,

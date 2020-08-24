@@ -113,13 +113,13 @@ class CredentialsTests: XCTestCase {
                                                                 wporg: wporgCredentials)
         
         
-        XCTAssertEqual(authenticatorCredentials.wpcom!.authToken, token)
-        XCTAssertEqual(authenticatorCredentials.wpcom!.isJetpackLogin, false)
-        XCTAssertEqual(authenticatorCredentials.wpcom!.multifactor, false)
-        XCTAssertEqual(authenticatorCredentials.wpcom!.siteURL, siteURL)
-        XCTAssertEqual(authenticatorCredentials.wporg!.username, username)
-        XCTAssertEqual(authenticatorCredentials.wporg!.password, password)
-        XCTAssertEqual(authenticatorCredentials.wporg!.xmlrpc, xmlrpc)
+        XCTAssertEqual(authenticatorCredentials.wpcom?.authToken, token)
+        XCTAssertEqual(authenticatorCredentials.wpcom?.isJetpackLogin, false)
+        XCTAssertEqual(authenticatorCredentials.wpcom?.multifactor, false)
+        XCTAssertEqual(authenticatorCredentials.wpcom?.siteURL, siteURL)
+        XCTAssertEqual(authenticatorCredentials.wporg?.username, username)
+        XCTAssertEqual(authenticatorCredentials.wporg?.password, password)
+        XCTAssertEqual(authenticatorCredentials.wporg?.xmlrpc, xmlrpc)
     }
 
     

@@ -3,6 +3,16 @@
     {
       "filename" : "megaphone.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "megaphone-dark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

@@ -13,6 +13,7 @@ public struct WordPressAuthenticatorDisplayStrings {
     public let twoFactorInstructions: String
     public let magicLinkSignupInstructions: String
     public let openMailSignupInstructions: String
+    public let openMailLoginInstructions: String
     public let checkSpamInstructions: String
     public let googleSignupInstructions: String
     public let googlePasswordInstructions: String
@@ -54,6 +55,7 @@ public struct WordPressAuthenticatorDisplayStrings {
                 twoFactorInstructions: String = defaultStrings.twoFactorInstructions,
                 magicLinkSignupInstructions: String = defaultStrings.magicLinkSignupInstructions,
                 openMailSignupInstructions: String = defaultStrings.openMailSignupInstructions,
+                openMailLoginInstructions: String = defaultStrings.openMailLoginInstructions,
                 checkSpamInstructions: String = defaultStrings.checkSpamInstructions,
                 googleSignupInstructions: String = defaultStrings.googleSignupInstructions,
                 googlePasswordInstructions: String = defaultStrings.googlePasswordInstructions,
@@ -80,6 +82,7 @@ public struct WordPressAuthenticatorDisplayStrings {
         self.twoFactorInstructions = twoFactorInstructions
         self.magicLinkSignupInstructions = magicLinkSignupInstructions
         self.openMailSignupInstructions = openMailSignupInstructions
+        self.openMailLoginInstructions = openMailLoginInstructions
         self.checkSpamInstructions = checkSpamInstructions
         self.googleSignupInstructions = googleSignupInstructions
         self.googlePasswordInstructions = googlePasswordInstructions
@@ -118,7 +121,9 @@ public extension WordPressAuthenticatorDisplayStrings {
             magicLinkSignupInstructions: NSLocalizedString("We'll email you a magic link to create your new WordPress.com account.",
                                                      comment: "Instruction text on the Sign Up screen."),
             openMailSignupInstructions: NSLocalizedString("We’ve emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com.",
-                                                    comment: "Instruction text after a Magic Link was requested."),
+                                                    comment: "Instruction text after a signup Magic Link was requested."),
+            openMailLoginInstructions: NSLocalizedString("Check your email on this device, and tap the link in the email you receive from WordPress.com.",
+                                                         comment: "Instruction text after a login Magic Link was requested."),
             checkSpamInstructions: NSLocalizedString("Not seeing the email? Check your Spam or Junk Mail folder.", comment: "Instructions after a Magic Link was sent, but the email can't be found in their inbox."),
             googleSignupInstructions: NSLocalizedString("We'll use this email address to create your new WordPress.com account.", comment: "Text confirming email address to be used for new account."),
             googlePasswordInstructions: NSLocalizedString("To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once.",

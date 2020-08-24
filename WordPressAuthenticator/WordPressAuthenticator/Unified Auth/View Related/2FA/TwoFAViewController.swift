@@ -49,6 +49,10 @@ final class TwoFAViewController: LoginViewController {
         
         super.viewDidAppear(animated)
         
+        if isMovingToParent {
+            tracker.track(step: .twoFactorAuthentication)
+        }
+        
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
         
@@ -127,6 +131,10 @@ final class TwoFAViewController: LoginViewController {
     
     override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
         if errorMessage != message {
+            if !message.isEmpty {
+                tracker.track(failure: message)
+            }
+            
             errorMessage = message
             shouldChangeVoiceOverFocus = moveVoiceOverFocus
             loadRows()
@@ -183,8 +191,6 @@ private extension TwoFAViewController {
         let wpcom = WordPressComCredentials(authToken: authToken, isJetpackLogin: isJetpackLogin, multifactor: true, siteURL: loginFields.siteAddress)
         let credentials = AuthenticatorCredentials(wpcom: wpcom)
         syncWPComAndPresentEpilogue(credentials: credentials)
-        
-        tracker.track(step: .success)
     }
     
     // MARK: - Code Validation

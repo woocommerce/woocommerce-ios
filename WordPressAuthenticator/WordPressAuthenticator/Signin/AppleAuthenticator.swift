@@ -18,9 +18,13 @@ class AppleAuthenticator: NSObject {
     private var showFromViewController: UIViewController?
     private let loginFields = LoginFields()
     weak var delegate: AppleAuthenticatorDelegate?
-    
+
     @available(iOS 13.0, *)
     static let credentialRevokedNotification = ASAuthorizationAppleIDProvider.credentialRevokedNotification
+
+    private var tracker: AuthenticatorAnalyticsTracker {
+        AuthenticatorAnalyticsTracker.shared
+    }
 
     private var authenticationDelegate: WordPressAuthenticatorDelegate {
         guard let delegate = WordPressAuthenticator.shared.delegate else {
@@ -28,7 +32,7 @@ class AppleAuthenticator: NSObject {
         }
         return delegate
     }
-    
+
     // MARK: - Start Authentication
 
     func showFrom(viewController: UIViewController) {
@@ -36,8 +40,19 @@ class AppleAuthenticator: NSObject {
         showFromViewController = viewController
         requestAuthorization()
     }
-
 }
+
+// MARK: - Tracking
+
+private extension AppleAuthenticator {
+    func track(_ event: WPAnalyticsStat, properties: [AnyHashable: Any] = [:]) {
+        var trackProperties = properties
+        trackProperties["source"] = "apple"
+        WordPressAuthenticator.track(event, properties: trackProperties)
+    }
+}
+
+// MARK: - Authentication Flow
 
 private extension AppleAuthenticator {
 
@@ -66,7 +81,11 @@ private extension AppleAuthenticator {
                 return
         }
         
-        WordPressAuthenticator.track(.createAccountInitiated, properties: ["source": "apple"])
+        tracker.set(flow: .signupWithApple)
+        tracker.track(step: .start) {
+            track(.createAccountInitiated)
+        }
+        
         SVProgressHUD.show(withStatus: NSLocalizedString("Continuing with Apple", comment: "Shown while logging in with Apple and the app waits for the site creation process to complete."))
         
         let email = appleCredentials.email ?? ""
@@ -117,14 +136,23 @@ private extension AppleAuthenticator {
     }
 
     func signupSuccessful(with credentials: AuthenticatorCredentials) {
-        WordPressAuthenticator.track(.createdAccount, properties: ["source": "apple"])
-        WordPressAuthenticator.track(.signupSocialSuccess, properties: ["source": "apple"])
+        // This stat is part of a funnel that provides critical information.  Before
+        // making ANY modification to this stat please refer to: p4qSXL-35X-p2
+        track(.createdAccount)
+        
+        tracker.track(step: .success) {
+            track(.signupSocialSuccess)
+        }
+        
         showSignupEpilogue(for: credentials)
     }
     
     func loginSuccessful(with credentials: AuthenticatorCredentials) {
-        WordPressAuthenticator.track(.signedIn, properties: ["source": "apple"])
-        WordPressAuthenticator.track(.loginSocialSuccess, properties: ["source": "apple"])
+        tracker.track(step: .success) {
+            track(.signedIn)
+            track(.loginSocialSuccess)
+        }
+        
         showLoginEpilogue(for: credentials)
     }
     
@@ -151,22 +179,31 @@ private extension AppleAuthenticator {
     func signupFailed(with error: Error) {
         DDLogError("Apple Authenticator: Signup failed. error: \(error.localizedDescription)")
 
-        let properties = [ "source": "apple",
-                           "error": error.localizedDescription
-        ]
+        let errorMessage = error.localizedDescription
 
-        WordPressAuthenticator.track(.signupSocialFailure, properties: properties)
+        tracker.track(failure: errorMessage) {
+            let properties = ["error": errorMessage]
+            track(.signupSocialFailure, properties: properties)
+        }
+        
         delegate?.authFailedWithError(message: error.localizedDescription)
     }
     
     func logInInstead() {
-        WordPressAuthenticator.track(.signupSocialToLogin, properties: ["source": "apple"])
-        WordPressAuthenticator.track(.loginSocialSuccess, properties: ["source": "apple"])
+        tracker.set(flow: .loginWithApple)
+        tracker.track(step: .start) {
+            track(.signupSocialToLogin)
+            track(.loginSocialSuccess)
+        }
+        
         delegate?.showWPComLogin(loginFields: loginFields)
     }
     
     func show2FA() {
-        WordPressAuthenticator.track(.signupSocialToLogin, properties: ["source": "apple"])
+        if tracker.shouldUseLegacyTracker() {
+            track(.signupSocialToLogin)
+        }
+        
         delegate?.showApple2FA(loginFields: loginFields)
     }
     

@@ -1,3 +1,7 @@
+5.0
+-----
+- [*] If the Products switch is on in Settings > Experimental Features, product editing for basic fields are enabled for non-core products (whose product type is not simple/external/variable/grouped) - images, name, description, readonly price, readonly inventory, tags, categories, short description, and product settings.
+
 4.9
 -----
 - [**] Sign in with Apple is now available in the log in process.

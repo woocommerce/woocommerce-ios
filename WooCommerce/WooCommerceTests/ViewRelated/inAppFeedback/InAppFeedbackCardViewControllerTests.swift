@@ -4,9 +4,24 @@ import XCTest
 
 final class InAppFeedbackCardViewControllerTests: XCTestCase {
 
+    private var analyticsProvider: MockupAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
     override class func setUp() {
         super.setUp()
         MockStoreReviewController.resetInvocationState()
+    }
+
+    override func setUp() {
+        super.setUp()
+        analyticsProvider = MockupAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+    }
+
+    override func tearDown() {
+        analytics = nil
+        analyticsProvider = nil
+        super.tearDown()
     }
 
     func test_it_presents_appStore_review_form_when_tapping_like_button() throws {
@@ -73,6 +88,46 @@ final class InAppFeedbackCardViewControllerTests: XCTestCase {
         waitUntil {
             feedbackGivenInvoked == true
         }
+    }
+
+    func test_liked_event_is_tracked_when_likeButton_is_tapped() throws {
+        // Given
+        let viewController = InAppFeedbackCardViewController(analytics: analytics)
+        _ = try XCTUnwrap(viewController.view)
+
+        let mirror = try self.mirror(of: viewController)
+
+        assertEmpty(analyticsProvider.receivedEvents)
+
+        // When
+        mirror.likeButton.sendActions(for: .touchUpInside)
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.count, 1)
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, "app_feedback_prompt")
+
+        let firstPropertiesBatch = try XCTUnwrap(analyticsProvider.receivedProperties.first)
+        XCTAssertEqual(firstPropertiesBatch["action"] as? String, "liked")
+    }
+
+    func test_didntLike_event_is_tracked_when_didNotLikeButton_is_tapped() throws {
+        // Given
+        let viewController = InAppFeedbackCardViewController(analytics: analytics)
+        _ = try XCTUnwrap(viewController.view)
+
+        let mirror = try self.mirror(of: viewController)
+
+        assertEmpty(analyticsProvider.receivedEvents)
+
+        // When
+        mirror.didNotLikeButton.sendActions(for: .touchUpInside)
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.count, 1)
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, "app_feedback_prompt")
+
+        let firstPropertiesBatch = try XCTUnwrap(analyticsProvider.receivedProperties.first)
+        XCTAssertEqual(firstPropertiesBatch["action"] as? String, "didnt_like")
     }
 }
 

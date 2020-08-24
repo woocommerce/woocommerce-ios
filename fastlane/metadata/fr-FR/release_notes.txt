@@ -1,5 +1,1 @@
-Nous souhaitons vous informer sur différents points :
-
-il se produisait parfois un incident lorsque vous envoyiez un SMS à partir de l’application. Étant donné que personne ne souhaite manquer un SMS, nous avons pris les devants et corrigé le problème.
-
-Vous aimez les statistiques ? Nous, assurément ! Nous avons travaillé d’arrache-pied pour améliorer davantage votre expérience avec les statistiques. Pour autant que vous disposiez de WooCommerce 4.0 ou de WooCommerce Admin, votre graphique des statistiques correspondra désormais à ce que vous voyez dans wp-admin. Tout simplement ! Si vous utilisez une version plus ancienne de WooCommerce, pensez à effectuer la mise à jour afin de ne rien rater !
+L’application WooCommerce que vous connaissez et appréciez propose désormais le glissement vers la droite et la gauche sur les images produit. (Oui, c’est bien ça !)

@@ -8,24 +8,26 @@ import Yosemite
 final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
 
     private var storesManager: MockupStoresManager!
+    private var analyticsProvider: MockupAnalyticsProvider!
+    private var analytics: WooAnalytics!
 
     override func setUp() {
         super.setUp()
         storesManager = MockupStoresManager(sessionManager: SessionManager.testingInstance)
+        analyticsProvider = MockupAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
     override func tearDown() {
+        analytics = nil
+        analyticsProvider = nil
         storesManager = nil
         super.tearDown()
     }
 
     func test_isInAppFeedbackCardVisible_is_false_by_default() {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isInAppFeedbackOn: true)
-
         // When
-        let viewModel = StoreStatsAndTopPerformersPeriodViewModel(canDisplayInAppFeedbackCard: true,
-                                                                  featureFlagService: featureFlagService)
+        let viewModel = makeViewModel()
 
         var emittedValues = [Bool]()
         _ = viewModel.isInAppFeedbackCardVisible.subscribe { value in
@@ -34,13 +36,13 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual([false], emittedValues)
+        assertEmpty(analyticsProvider.receivedProperties)
     }
 
     func test_isInAppFeedbackCardVisible_is_false_if_feature_flag_is_off() {
         // Given
         let featureFlagService = MockFeatureFlagService(isInAppFeedbackOn: false)
-        let viewModel = StoreStatsAndTopPerformersPeriodViewModel(canDisplayInAppFeedbackCard: true,
-                                                                  featureFlagService: featureFlagService)
+        let viewModel = makeViewModel(featureFlagService: featureFlagService)
 
         var emittedValues = [Bool]()
         _ = viewModel.isInAppFeedbackCardVisible.subscribe { value in
@@ -52,13 +54,12 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual([false, false], emittedValues)
+        assertEmpty(analyticsProvider.receivedProperties)
     }
 
     func test_isInAppFeedbackCardVisible_is_false_if_canDisplayInAppFeedbackCard_is_false() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isInAppFeedbackOn: true)
-        let viewModel = StoreStatsAndTopPerformersPeriodViewModel(canDisplayInAppFeedbackCard: false,
-                                                                  featureFlagService: featureFlagService)
+        let viewModel = makeViewModel(canDisplayInAppFeedbackCard: false)
 
         var emittedValues = [Bool]()
         _ = viewModel.isInAppFeedbackCardVisible.subscribe { value in
@@ -70,14 +71,12 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual([false, false], emittedValues)
+        assertEmpty(analyticsProvider.receivedProperties)
     }
 
     func test_isInAppFeedbackCardVisible_is_true_if_the_AppSettingsAction_returns_true() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isInAppFeedbackOn: true)
-        let viewModel = StoreStatsAndTopPerformersPeriodViewModel(canDisplayInAppFeedbackCard: true,
-                                                                  featureFlagService: featureFlagService,
-                                                                  storesManager: storesManager)
+        let viewModel = makeViewModel()
 
         storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             if case let AppSettingsAction.loadFeedbackVisibility(_, onCompletion) = action {
@@ -97,12 +96,32 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
         XCTAssertEqual([false, true], emittedValues)
     }
 
+    func test_shown_event_action_is_tracked_when_isInAppFeedbackCardVisible_returns_true() throws {
+        // Given
+        let viewModel = makeViewModel()
+
+        storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            if case let AppSettingsAction.loadFeedbackVisibility(_, onCompletion) = action {
+                onCompletion(.success(true))
+            }
+        }
+
+        assertEmpty(analyticsProvider.receivedEvents)
+
+        // When
+        viewModel.onViewDidAppear()
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.count, 1)
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, "app_feedback_prompt")
+
+        let firstPropertiesBatch = try XCTUnwrap(analyticsProvider.receivedProperties.first)
+        XCTAssertEqual(firstPropertiesBatch["action"] as? String, "shown")
+    }
+
     func test_isInAppFeedbackCardVisible_is_false_if_the_AppSettingsAction_returns_false() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isInAppFeedbackOn: true)
-        let viewModel = StoreStatsAndTopPerformersPeriodViewModel(canDisplayInAppFeedbackCard: true,
-                                                                  featureFlagService: featureFlagService,
-                                                                  storesManager: storesManager)
+        let viewModel = makeViewModel()
 
         storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             if case let AppSettingsAction.loadFeedbackVisibility(_, onCompletion) = action {
@@ -120,14 +139,12 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual([false, false], emittedValues)
+        assertEmpty(analyticsProvider.receivedProperties)
     }
 
     func test_isInAppFeedbackCardVisible_is_false_if_the_AppSettingsAction_returns_an_error() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isInAppFeedbackOn: true)
-        let viewModel = StoreStatsAndTopPerformersPeriodViewModel(canDisplayInAppFeedbackCard: true,
-                                                                  featureFlagService: featureFlagService,
-                                                                  storesManager: storesManager)
+        let viewModel = makeViewModel()
 
         storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             if case let AppSettingsAction.loadFeedbackVisibility(_, onCompletion) = action {
@@ -145,14 +162,12 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual([false, false], emittedValues)
+        assertEmpty(analyticsProvider.receivedProperties)
     }
 
     func test_isInAppFeedbackCardVisible_is_recomputed_on_viewDidAppear() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isInAppFeedbackOn: true)
-        let viewModel = StoreStatsAndTopPerformersPeriodViewModel(canDisplayInAppFeedbackCard: true,
-                                                                  featureFlagService: featureFlagService,
-                                                                  storesManager: storesManager)
+        let viewModel = makeViewModel()
 
         storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             if case let AppSettingsAction.loadFeedbackVisibility(_, onCompletion) = action {
@@ -177,10 +192,7 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
 
     func test_isInAppFedbackCardVisible_is_false_after_tapping_on_card_CTAs() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isInAppFeedbackOn: true)
-        let viewModel = StoreStatsAndTopPerformersPeriodViewModel(canDisplayInAppFeedbackCard: true,
-                                                                  featureFlagService: featureFlagService,
-                                                                  storesManager: storesManager)
+        let viewModel = makeViewModel()
 
         // Default `loadInAppFeedbackCardVisibility` to true until `setLastFeedbackDate` action sets it to `false`
         var shouldShowFeedbackCard = true
@@ -206,5 +218,15 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual([false, true, false], emittedValues)
+    }
+}
+
+private extension StoreStatsAndTopPerformersPeriodViewModelTests {
+    func makeViewModel(canDisplayInAppFeedbackCard: Bool = true,
+                       featureFlagService: MockFeatureFlagService = .init(isInAppFeedbackOn: true)) -> StoreStatsAndTopPerformersPeriodViewModel {
+        StoreStatsAndTopPerformersPeriodViewModel(canDisplayInAppFeedbackCard: canDisplayInAppFeedbackCard,
+                                                  featureFlagService: featureFlagService,
+                                                  storesManager: storesManager,
+                                                  analytics: analytics)
     }
 }

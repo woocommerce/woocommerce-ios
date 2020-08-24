@@ -1,5 +1,1 @@
-We willen je van een paar dingen op de hoogte stellen:
-
-Er vond soms een crash plaats wanneer je een sms vanuit de app verzond. Niemand wil een sms'je missen, dus hebben we dat opgelost.
-
-Hou je van statistieken? Wij wel in ieder geval! We hebben hard gewerkt om je statistieken nog beter te maken. Zolang je over WooCommerce 4.0 of WooCommerce Admin beschikt, komt je statistiekengrafiek nu overeen met wat je ziet in wp-admin. Jammer! Als je een oudere versie van WooCommerce gebruikt, wil je deze ongetwijfeld bijwerken zodat je niets mist!
+De geweldige WooCommerce-app, nu beschikbaar met naar links/rechts swipen bij productafbeeldingen. (Meer hoef je niet te doen!)

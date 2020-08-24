@@ -42,6 +42,25 @@ final class ProductsTopBannerFactoryTests: XCTestCase {
         XCTAssertEqual(properties["context"] as? String, "products_m3")
         XCTAssertEqual(properties["action"] as? String, "gave_feedback")
     }
+
+    func test_it_tracks_featureFeedbackBanner_dismissed_event_when_dismiss_button_is_pressed() throws {
+        // Given
+        let bannerMirror = try makeBannerViewMirror()
+        let dismissButton = try XCTUnwrap(bannerMirror.actionButtons.last)
+
+        assertEmpty(analyticsProvider.receivedEvents)
+
+        // When
+        dismissButton.sendActions(for: .touchUpInside)
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.count, 1)
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, "feature_feedback_banner")
+
+        let properties = try XCTUnwrap(analyticsProvider.receivedProperties.first)
+        XCTAssertEqual(properties["context"] as? String, "products_m3")
+        XCTAssertEqual(properties["action"] as? String, "dismissed")
+    }
 }
 
 private extension ProductsTopBannerFactoryTests {

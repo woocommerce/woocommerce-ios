@@ -1,5 +1,5 @@
 import XCTest
-import Testing
+import TestKit
 
 @testable import Networking
 

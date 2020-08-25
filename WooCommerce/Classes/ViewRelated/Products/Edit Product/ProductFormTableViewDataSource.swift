@@ -128,19 +128,24 @@ private extension ProductFormTableViewDataSource {
     }
 
     func configureName(cell: UITableViewCell, name: String?) {
-        guard let cell = cell as? TextFieldTableViewCell else {
+        guard let cell = cell as? TextViewTableViewCell else {
             fatalError()
         }
 
         cell.accessoryType = .none
 
         let placeholder = NSLocalizedString("Title", comment: "Placeholder in the Product Title row on Product form screen.")
-        let viewModel = TextFieldTableViewCell.ViewModel(text: name, placeholder: placeholder, onTextChange: { [weak self] newName in
+
+        let cellViewModel = TextViewTableViewCell.ViewModel(text: name,
+                                                            placeholder: placeholder,
+                                                            textViewMinimumHeight: 10.0,
+                                                            isScrollEnabled: false,
+                                                            onTextChange: { [weak self] (newName) in
             self?.onNameChange?(newName)
-            }, onTextDidBeginEditing: {
-                ServiceLocator.analytics.track(.productDetailViewProductNameTapped)
-        }, inputFormatter: nil, keyboardType: .default)
-        cell.configure(viewModel: viewModel)
+            },
+                                                            style: .headline)
+
+        cell.configure(viewModel: cellViewModel)
     }
 
     func configureVariationName(cell: UITableViewCell, name: String) {

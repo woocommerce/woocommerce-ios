@@ -104,7 +104,7 @@ class PasswordViewController: LoginViewController {
             let message = NSLocalizedString("It seems like you've entered an incorrect password. Want to give it another try?", comment: "An error message shown when a wpcom user provides the wrong password.")
             displayError(message: message, moveVoiceOverFocus: true)
         } else {
-            super.displayRemoteError(error)
+            displayError(error as NSError, sourceTag: sourceTag)
         }
     }
 
@@ -125,7 +125,23 @@ class PasswordViewController: LoginViewController {
             tableView.reloadData()
         }
     }
-    
+
+    override func validateFormAndLogin() {
+        view.endEditing(true)
+        displayError(message: "", moveVoiceOverFocus: true)
+
+        // Is everything filled out?
+        if !loginFields.validateFieldsPopulatedForSignin() {
+            let errorMsg = Constants.missingInfoError
+            displayError(message: errorMsg, moveVoiceOverFocus: true)
+
+            return
+        }
+
+        configureViewLoading(true)
+
+        loginFacade.signIn(with: loginFields)
+    }
 }
 
 // MARK: - Validation and Continue
@@ -144,7 +160,6 @@ private extension PasswordViewController {
     func validateForm() {
         validateFormAndLogin()
     }
-    
 }
 
 // MARK: - UITextFieldDelegate
@@ -478,4 +493,10 @@ private extension PasswordViewController {
         }
     }
 
+    /// Constants
+    ///
+    struct Constants {
+        static let missingInfoError = NSLocalizedString("Please fill out all the fields",
+                                                        comment: "A short prompt asking the user to properly fill out all login fields.")
+    }
 }

@@ -132,18 +132,20 @@ private extension NewNoteViewController {
             fatalError()
         }
 
-        cell.iconImage = .asideImage
-        cell.iconTint = isCustomerNote ? .primary : .textSubtle
-        cell.iconImage?.accessibilityLabel = isCustomerNote ?
-            NSLocalizedString("Note to customer",
-                              comment: "Spoken accessibility label for an icon image that indicates it's a note to the customer.") :
-            NSLocalizedString("Private note",
-                              comment: "Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer.")
+        let iconAccessibilityLabel = isCustomerNote ?
+        NSLocalizedString("Note to customer",
+                          comment: "Spoken accessibility label for an icon image that indicates it's a note to the customer.") :
+        NSLocalizedString("Private note",
+                          comment: "Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer.")
+        let cellViewModel = TextViewTableViewCell.ViewModel(icon: .asideImage,
+                                                            iconAccessibilityLabel: iconAccessibilityLabel,
+                                        iconTint: isCustomerNote ? .primary : .textSubtle,
+                                        onTextChange: { [weak self] (text) in
+                                            self?.navigationItem.rightBarButtonItem?.isEnabled = !text.isEmpty
+                                            self?.noteText = text
+        })
 
-        cell.noteTextView.onTextChange = { [weak self] (text) in
-            self?.navigationItem.rightBarButtonItem?.isEnabled = !text.isEmpty
-            self?.noteText = text
-        }
+        cell.configure(viewModel: cellViewModel)
     }
 
     private func setupEmailCustomerCell(_ cell: UITableViewCell) {

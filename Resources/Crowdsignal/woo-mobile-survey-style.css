@@ -412,8 +412,6 @@ iframe
 .PDF_QT400 li input[type=radio]
 {
 	border:solid #aaa 1px;
-/* hide the ugly gradient on iOS Safari */
-	-webkit-appearance:none;
 }
 
 .PDF_QT400 li input[type=radio]:checked

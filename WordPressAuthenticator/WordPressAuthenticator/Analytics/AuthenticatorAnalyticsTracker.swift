@@ -97,7 +97,7 @@ public class AuthenticatorAnalyticsTracker {
         
         /// The screen with a username and password visible
         ///
-        case userPasswordScreenShown = "username_password"
+        case userPasswordScreenShown = "password_challenge"
         
         /// Triggered on the epilogue screen
         ///

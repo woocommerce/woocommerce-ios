@@ -231,3 +231,9 @@ Please refer to the [Sourcery reference](https://cdn.rawgit.com/krzysztofzablock
 
 - [UI Tests](UI-TESTS.md)
 - [Beta Testing](https://woocommercehalo.wordpress.com/setup/join-ios-beta/)
+
+## Features
+
+The following are some information about specific features of the app.
+
+- [In-app Feedback](in-app-feedback.md)

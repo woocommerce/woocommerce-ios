@@ -502,12 +502,8 @@ private extension ProductFormViewController {
                                                                         }
                                                                     }
         }
-        let listSelectorViewController = BottomSheetListSelectorViewController(viewProperties: viewProperties,
-                                                                               command: dataSource) { [weak self] selectedSortOrder in
-                                                                                self?.dismiss(animated: true, completion: nil)
-        }
-        let bottomSheet = BottomSheetViewController(childViewController: listSelectorViewController)
-        bottomSheet.show(from: self, sourceView: button, arrowDirections: .down)
+        let listSelectorPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: dataSource)
+        listSelectorPresenter.show(from: self, sourceView: button, arrowDirections: .down)
     }
 
     func updateMoreDetailsButtonVisibility() {
@@ -873,10 +869,7 @@ private extension ProductFormViewController {
                 self?.viewModel.updateProductType(productType: selectedProductType)
             })
         }
-        let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties,
-                                                                      command: command) { [weak self] _ in
-                                                                            self?.dismiss(animated: true, completion: nil)
-        }
+        let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
         productTypesListPresenter.show(from: self, sourceView: cell, arrowDirections: .any)
     }
 }

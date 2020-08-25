@@ -10,14 +10,6 @@ enum FeatureFlag: Int {
     ///
     case barcodeScanner
 
-    /// Edit products
-    ///
-    case editProducts
-
-    /// Edit products - release 2
-    ///
-    case editProductsRelease2
-
     /// Edit products - release 3
     ///
     case editProductsRelease3
@@ -27,10 +19,6 @@ enum FeatureFlag: Int {
     /// - SeeAlso: https://github.com/woocommerce/woocommerce-ios/projects/18
     ///
     case inAppFeedback
-
-    /// Readonly Product variants
-    ///
-    case readonlyProductVariants
 
     /// Product Reviews
     ///

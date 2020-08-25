@@ -491,8 +491,7 @@ extension ProductsViewController: UITableViewDelegate {
 
         let product = resultsController.object(at: indexPath)
 
-        let isEditProductsFeatureFlagOn = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts)
-        didSelectProduct(product: product, isEditProductsEnabled: isEditProductsFeatureFlagOn)
+        didSelectProduct(product: product)
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -509,7 +508,7 @@ extension ProductsViewController: UITableViewDelegate {
 }
 
 private extension ProductsViewController {
-    func didSelectProduct(product: Product, isEditProductsEnabled: Bool) {
+    func didSelectProduct(product: Product) {
         ProductDetailsFactory.productDetails(product: product, presentationStyle: .navigationStack) { [weak self] viewController in
             self?.navigationController?.pushViewController(viewController, animated: true)
         }

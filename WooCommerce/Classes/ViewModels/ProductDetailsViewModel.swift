@@ -744,9 +744,7 @@ extension ProductDetailsViewModel {
 //
 private extension ProductDetailsViewModel {
     func shouldShowProductVariantsInfo() -> Bool {
-        let isFeatureEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readonlyProductVariants)
-        let hasVariations = product.variations.isEmpty == false
-        return isFeatureEnabled && hasVariations
+        product.variations.isEmpty == false
     }
 }
 

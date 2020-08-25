@@ -111,7 +111,7 @@ class LoginPrologueViewController: LoginViewController {
                     return
                 }
 
-                guard self.configuration.enableUnifiedLoginLink else {
+                guard self.configuration.enableUnifiedWordPress else {
                     self.presentLoginEmailView()
                     return
                 }
@@ -168,7 +168,7 @@ class LoginPrologueViewController: LoginViewController {
                 return
             }
 
-            guard self.configuration.enableUnifiedSignup else {
+            guard self.configuration.enableUnifiedWordPress else {
                 self.presentSignUpEmailView()
                 return
             }

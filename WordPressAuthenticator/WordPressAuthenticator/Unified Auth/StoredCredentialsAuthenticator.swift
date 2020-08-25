@@ -1,8 +1,10 @@
 import Foundation
 import AuthenticationServices
 
-/// This class  implements the logic to present a UI so that our users can quickly log in with credentials stored
-/// in their iCloud Keychain, or with their Apple ID if the user has previously used SIWA with the App.
+/// The authorization flow handled by this class starts by showing Apple's `ASAuthorizationController`
+/// through our class `StoredCredentialsPicker`.  This controller lets the user pick the credentials they
+/// want to login with.  This class handles both showing that controller and executing the remaining flow to
+/// complete the login process.
 ///
 @available(iOS 13, *)
 class StoredCredentialsAuthenticator: NSObject {

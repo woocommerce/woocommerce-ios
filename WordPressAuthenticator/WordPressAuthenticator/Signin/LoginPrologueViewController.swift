@@ -15,6 +15,8 @@ class LoginPrologueViewController: LoginViewController {
     private let configuration = WordPressAuthenticator.shared.configuration
     private let style = WordPressAuthenticator.shared.style
 
+    private let storedCredentialsAuthenticator = StoredCredentialsAuthenticator()
+    
     @IBOutlet private weak var topContainerView: UIView!
 
     // MARK: - Lifecycle Methods
@@ -43,6 +45,8 @@ class LoginPrologueViewController: LoginViewController {
         super.viewDidAppear(animated)
         
         WordPressAuthenticator.track(.loginPrologueViewed)
+        
+        storedCredentialsAuthenticator.showPicker(in: view.window)
     }
 
     override func viewWillDisappear(_ animated: Bool) {

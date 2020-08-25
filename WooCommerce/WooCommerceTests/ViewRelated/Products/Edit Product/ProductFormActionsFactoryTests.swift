@@ -4,7 +4,7 @@ import XCTest
 @testable import Yosemite
 
 final class ProductFormActionsFactoryTests: XCTestCase {
-    func testViewModelForSimplePhysicalProductWithoutImagesWhenM2FeatureFlagIsOff() {
+    func testViewModelForPhysicalSimpleProductWithoutImages() {
         // Arrange
         let product = MockProduct().product(downloadable: false,
                                             name: "woo",
@@ -14,21 +14,20 @@ final class ProductFormActionsFactoryTests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
-                                                isEditProductsRelease2Enabled: false,
                                                 isEditProductsRelease3Enabled: false)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.name, .description]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .shippingSettings, .inventorySettings]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .shippingSettings, .inventorySettings, .briefDescription]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
-    func testViewModelForVirtualProductWithImages() {
+    func testViewModelForVirtualSimpleProductWithImages() {
         // Arrange
         let product = MockProduct().product(downloadable: false,
                                             name: "woo",
@@ -39,14 +38,13 @@ final class ProductFormActionsFactoryTests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
-                                                isEditProductsRelease2Enabled: false,
                                                 isEditProductsRelease3Enabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .inventorySettings]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .inventorySettings, .briefDescription]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
@@ -62,21 +60,20 @@ final class ProductFormActionsFactoryTests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
-                                                isEditProductsRelease2Enabled: false,
                                                 isEditProductsRelease3Enabled: false)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.name, .description]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .inventorySettings]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .inventorySettings, .briefDescription]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
-    func testViewModelForVirtualProductWithoutImages() {
+    func testViewModelForVirtualSimpleProduct() {
         // Arrange
         let product = MockProduct().product(downloadable: false,
                                             name: "woo",
@@ -86,14 +83,13 @@ final class ProductFormActionsFactoryTests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
-                                                isEditProductsRelease2Enabled: false,
                                                 isEditProductsRelease3Enabled: false)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.name, .description]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .inventorySettings]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .inventorySettings, .briefDescription]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []

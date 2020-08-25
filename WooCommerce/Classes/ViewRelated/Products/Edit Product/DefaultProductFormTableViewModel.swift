@@ -214,17 +214,20 @@ private extension DefaultProductFormTableViewModel {
         let icon = UIImage.productImage
         let title = Constants.productTypeTitle
 
-        var details = product.productType.description
-
-        if product.productType == .simple {
+        let details: String
+        switch product.productType {
+        case .simple:
             switch product.virtual {
             case true:
                 details = Constants.virtualProductType
             case false:
                 details = Constants.physicalProductType
             }
+        case .custom(let customProductType):
+            details = customProductType.description.capitalized
+        default:
+            details = product.productType.description
         }
-
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,

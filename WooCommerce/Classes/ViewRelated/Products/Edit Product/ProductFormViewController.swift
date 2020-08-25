@@ -498,7 +498,6 @@ private extension ProductFormViewController {
                                                                         case .editSKU:
                                                                             ServiceLocator.analytics.track(.productDetailViewSKUTapped)
                                                                             self?.editSKU()
-                                                                            break
                                                                         }
                                                                     }
         }
@@ -717,6 +716,19 @@ extension ProductFormViewController: KeyboardScrollable {
     }
 }
 
+// MARK: - Navigation actions handling
+//
+private extension ProductFormViewController {
+    func presentBackNavigationActionSheet() {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+            guard let self = self else {
+                return
+            }
+            self.exitForm()
+        })
+    }
+}
+
 // MARK: Action - Edit Product Images
 //
 private extension ProductFormViewController {
@@ -749,22 +761,7 @@ private extension ProductFormViewController {
     }
 }
 
-
-// MARK: - Navigation actions handling
-//
-private extension ProductFormViewController {
-    func presentBackNavigationActionSheet() {
-        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
-            guard let self = self else {
-                return
-            }
-            self.exitForm()
-        })
-    }
-}
-
-
-// MARK: Action - Edit Product Parameters
+// MARK: Action - Edit Product Description
 //
 private extension ProductFormViewController {
     func editProductDescription() {

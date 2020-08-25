@@ -26,7 +26,8 @@ final class ProductPriceSettingsViewController: UIViewController {
         _ dateOnSaleStart: Date?,
         _ dateOnSaleEnd: Date?,
         _ taxStatus: ProductTaxStatus,
-        _ taxClass: TaxClass?) -> Void
+        _ taxClass: TaxClass?,
+        _ hasUnsavedChanges: Bool) -> Void
     private let onCompletion: Completion
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
@@ -138,8 +139,9 @@ extension ProductPriceSettingsViewController {
     }
 
     @objc private func completeUpdating() {
-        viewModel.completeUpdating(onCompletion: { [weak self] (regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass) in
-            self?.onCompletion(regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass)
+        viewModel.completeUpdating(
+            onCompletion: { [weak self] (regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass, hasUnsavedChanges) in
+                self?.onCompletion(regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass, hasUnsavedChanges)
             }, onError: { [weak self] error in
                 switch error {
                 case .salePriceWithoutRegularPrice:

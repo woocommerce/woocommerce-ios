@@ -6,7 +6,7 @@
 - [Coding Guidelines](#coding-guidelines)
     - [Naming Conventions](#naming-conventions)
         - [Protocols](#protocols)
-        - [String Constants in Nested Enums](#string-constants-in-nested-enum)
+        - [String Constants in Nested Enums](#string-constants-in-nested-enums)
     - [Coding Style](#coding-style)
     - [Choosing Between Structures and Classes](#choosing-between-structures-and-classes)
 - [Design Patterns](#design-patterns)

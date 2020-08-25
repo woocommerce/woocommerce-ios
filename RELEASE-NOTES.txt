@@ -1,3 +1,7 @@
+5.0
+-----
+- [*] Order details > product details: tapping outside of the bottom sheet from "Add more details" menu does not dismiss the whole product details anymore.
+
 4.9
 -----
 - [**] Sign in with Apple is now available in the log in process.

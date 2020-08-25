@@ -128,17 +128,6 @@ final class ReviewsViewController: UIViewController {
             displayRatingPrompt()
         }
     }
-
-    func presentDetails(for noteID: Int64) {
-        syncingCoordinator.synchronizeFirstPage()
-        viewModel.loadReview(for: noteID) { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            self.viewModel.delegate.presentReviewDetails(for: noteID, in: self)
-        }
-    }
 }
 
 

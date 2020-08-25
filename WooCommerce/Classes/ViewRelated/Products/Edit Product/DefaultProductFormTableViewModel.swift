@@ -224,7 +224,8 @@ private extension DefaultProductFormTableViewModel {
                 details = Constants.physicalProductType
             }
         case .custom(let customProductType):
-            details = customProductType.description.capitalized
+            // Custom product type description is the slug, thus we replace the dash with space and capitalize the string.
+            details = customProductType.description.replacingOccurrences(of: "-", with: " ").capitalized
         default:
             details = product.productType.description
         }

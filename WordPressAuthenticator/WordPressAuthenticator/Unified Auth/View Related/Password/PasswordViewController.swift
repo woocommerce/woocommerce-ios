@@ -43,12 +43,6 @@ class PasswordViewController: LoginViewController {
         defaultTableViewMargin = tableViewLeadingConstraint?.constant ?? 0
         setTableViewMargins(forWidth: view.frame.width)
 
-        // TODO: Delete this when the unified login & signup by email view is completed.
-        // It assists with bypassing screens for testing purposes.
-        if loginFields.username.isEmpty {
-            loginFields.username = "pamela.nguyen@example.com"
-        }
-
         localizePrimaryButton()
         registerTableViewCells()
         loadRows()

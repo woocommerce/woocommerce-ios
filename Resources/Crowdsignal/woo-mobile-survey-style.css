@@ -243,7 +243,7 @@ iframe
 /* line 205, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
 .PDF_err
 {
-    margin-bottom: 14px;
+	margin-bottom:14px;
 }
 
 /* line 209, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
@@ -275,7 +275,7 @@ iframe
 {
 	content:'\f071';
 	font-family:'Font Awesome 5 Free';
-	margin: 0 4px 0 0;
+	margin:0 4px 0 0;
 }
 
 /* line 245, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
@@ -1767,5 +1767,5 @@ input[type="text"],input[type="password"],input[type="submit"],input[type="email
 /* Remove background color from field-specific errors. */
 .PDF_err
 {
-	background-color: transparent;
+	background-color:transparent;
 }

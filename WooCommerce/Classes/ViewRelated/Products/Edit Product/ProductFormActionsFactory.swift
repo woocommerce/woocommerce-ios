@@ -24,7 +24,7 @@ enum ProductFormEditAction {
     case variationName
     case noPriceWarning
     case status
-    // Non-core products only
+    // Non-core products only (e.g. subscription products, booking products)
     case readonlyPriceSettings
     case readonlyInventorySettings
 }

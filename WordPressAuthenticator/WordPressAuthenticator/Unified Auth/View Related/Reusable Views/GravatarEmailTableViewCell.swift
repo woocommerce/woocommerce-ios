@@ -14,7 +14,7 @@ class GravatarEmailTableViewCell: UITableViewCell {
     // This results in the 1Password button being disabled as well.
     // So we add the 1Password button to a stack view instead of the email field.
     // When iOS12 support is removed, the emailStackView can be removed as it only facilitates 1Password.
-    @IBOutlet private weak var emailLabel: UITextField!
+    @IBOutlet private weak var emailLabel: UITextField?
     @IBOutlet private weak var emailStackView: UIStackView?
     
     private let gridiconSize = CGSize(width: 48, height: 48)
@@ -49,14 +49,7 @@ class GravatarEmailTableViewCell: UITableViewCell {
     func updateEmailAddress(_ email: String?) {
         emailLabel?.text = email
     }
-    
-    override func prepareForReuse() {
-        emailLabel.text = nil
-        gravatarImageView?.image = nil
-        
-        // Remove 1Password icon.
-        emailStackView?.arrangedSubviews.last?.removeFromSuperview()
-    }
+
 }
 
 // MARK: - Password Manager Handling
@@ -83,7 +76,11 @@ private extension GravatarEmailTableViewCell {
     }
     
     @objc func onePasswordTapped(_ sender: UIButton) {
-        onePasswordHandler?(emailLabel)
+        guard let emailTextField = emailLabel else {
+            return
+        }
+
+        onePasswordHandler?(emailTextField)
     }
     
     // MARK: - All Password Managers
@@ -97,7 +94,11 @@ private extension GravatarEmailTableViewCell {
     /// be deleted in favor of adding the delegate method to view controllers.
     ///
     @IBAction func textFieldDidChangeSelection() {
-        onChangeSelectionHandler?(emailLabel)
+        guard let emailTextField = emailLabel else {
+            return
+        }
+
+        onChangeSelectionHandler?(emailTextField)
     }
 
 }

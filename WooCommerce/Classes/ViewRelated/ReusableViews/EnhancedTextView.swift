@@ -5,6 +5,7 @@ import UIKit
 final class EnhancedTextView: UITextView {
 
     var onTextChange: ((String) -> Void)?
+    var onTextDidBeginEditing: (() -> Void)?
 
     var placeholder: String? {
         didSet {
@@ -72,6 +73,7 @@ extension EnhancedTextView: UITextViewDelegate {
 
     func textViewDidBeginEditing(_ textView: UITextView) {
         hidePlaceholder()
+        onTextDidBeginEditing?()
     }
 
     func textViewDidEndEditing(_ textView: UITextView) {

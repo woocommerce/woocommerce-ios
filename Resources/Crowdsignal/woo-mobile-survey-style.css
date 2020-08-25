@@ -272,7 +272,6 @@ iframe
 /* line 227, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
 .PDF_errMain::before,.PDF_err::before,.PDF_noteMain::before
 {
-	content:'\f071';
 	font-family:'Font Awesome 5 Free';
 	margin:0 4px 0 0;
 }

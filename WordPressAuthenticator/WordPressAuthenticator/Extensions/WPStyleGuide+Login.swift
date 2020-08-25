@@ -61,9 +61,9 @@ extension WPStyleGuide {
     /// - Note: this is for the old UI.
 	///
     class func configureOnePasswordButtonForStackView(_ stack: UIStackView, target: NSObject, selector: Selector) {
-        guard OnePasswordFacade.isOnePasswordEnabled else {
-            return
-        }
+//        guard OnePasswordFacade.isOnePasswordEnabled else {
+//            return
+//        }
 
         let onePasswordButton = UIButton(type: .custom)
         onePasswordButton.setImage(.onePasswordImage, for: .normal)

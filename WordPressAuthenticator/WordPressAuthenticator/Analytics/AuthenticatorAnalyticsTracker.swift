@@ -95,7 +95,7 @@ public class AuthenticatorAnalyticsTracker {
         /// This represents the user opening their mail. It’s not strictly speaking an in-app screen but for the user it is part of the flow.
         case emailOpened = "email_opened"
         
-        /// The screen with a username and password visible
+        /// The password challenge screen after connecting a social account to a WordPress account
         ///
         case userPasswordScreenShown = "password_challenge"
         

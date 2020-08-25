@@ -143,7 +143,8 @@ private extension ProductFormTableViewDataSource {
                                                             onTextChange: { [weak self] (newName) in
             self?.onNameChange?(newName)
             },
-                                                            style: .headline)
+                                                            style: .headline,
+                                                            edgeInsets: UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16))
 
         cell.configure(viewModel: cellViewModel)
     }

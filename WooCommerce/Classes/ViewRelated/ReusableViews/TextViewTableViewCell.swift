@@ -14,6 +14,7 @@ class TextViewTableViewCell: UITableViewCell {
         var onTextDidBeginEditing: (() -> Void)? = nil
         var keyboardType: UIKeyboardType = .default
         var style: Style = .body
+        var edgeInsets: UIEdgeInsets?
     }
 
     @IBOutlet private weak var noteIconView: UIView!
@@ -21,7 +22,12 @@ class TextViewTableViewCell: UITableViewCell {
 
     @IBOutlet private var noteTextView: EnhancedTextView!
 
+    /// Constraints
     @IBOutlet private weak var textViewHeightConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var bottomContraint: NSLayoutConstraint!
+    @IBOutlet private weak var trailingContraint: NSLayoutConstraint!
+    @IBOutlet private weak var leadingContraint: NSLayoutConstraint!
+    @IBOutlet private weak var topContraint: NSLayoutConstraint!
 
     private var viewModel: ViewModel?
 
@@ -71,6 +77,12 @@ class TextViewTableViewCell: UITableViewCell {
         noteTextView.onTextDidBeginEditing = viewModel.onTextDidBeginEditing
         noteTextView.keyboardType = viewModel.keyboardType
         self.applyStyle(style: viewModel.style)
+        if let edgeInsets = viewModel.edgeInsets {
+            bottomContraint.constant = edgeInsets.bottom
+            trailingContraint.constant = edgeInsets.right
+            leadingContraint.constant = edgeInsets.left
+            topContraint.constant = edgeInsets.top
+        }
     }
 
     @discardableResult

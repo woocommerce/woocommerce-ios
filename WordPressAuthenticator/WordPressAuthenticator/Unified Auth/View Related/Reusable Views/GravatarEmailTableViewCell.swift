@@ -65,7 +65,8 @@ private extension GravatarEmailTableViewCell {
         if #available(iOS 13, *) {
             // no-op, we rely on the key icon in the keyboard to initiate a password manager.
         } else {
-            guard let emailStackView = emailStackView else {
+            guard let emailStackView = emailStackView,
+                !(emailStackView.arrangedSubviews.last is UIButton) else {
                 return
             }
             

@@ -266,6 +266,9 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 eventLogger.logPriceSettingsTapped()
                 editPriceSettings()
             case .reviews:
+                guard product.ratingCount > 0 else {
+                    return
+                }
                 ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
                 showReviews()
             case .productType:

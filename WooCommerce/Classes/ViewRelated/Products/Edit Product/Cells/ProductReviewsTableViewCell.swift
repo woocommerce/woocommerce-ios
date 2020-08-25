@@ -33,6 +33,7 @@ final class ProductReviewsTableViewCell: UITableViewCell {
         reviewsLabel.text = details
         ratingView.isHidden = ratingCount == 0
         starRating = Double(averageRating)
+        selectionStyle = ratingCount > 0 ? .default: .none
     }
 }
 

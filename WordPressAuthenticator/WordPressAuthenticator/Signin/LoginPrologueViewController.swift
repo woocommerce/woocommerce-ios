@@ -130,12 +130,12 @@ class LoginPrologueViewController: LoginViewController {
                     return
                 }
 
-                guard self.configuration.enableUnifiedLoginLink else {
+                guard self.configuration.enableUnifiedWordPress else {
                     self.presentLoginEmailView()
                     return
                 }
 
-                self.presentUnifiedLoginMagicLinkView()
+                self.presentGetStartedView()
             }
 
             // Continue with Google button action
@@ -156,8 +156,8 @@ class LoginPrologueViewController: LoginViewController {
             vc.modalPresentationStyle = .custom
             navigationController?.present(vc, animated: true, completion: nil)
         } else {
-            guard let vc = LoginEmailViewController.instantiate(from: .login) else {
-                DDLogError("Failed to navigate to LoginEmailViewController from LoginPrologueViewController")
+            guard let vc = GetStartedViewController.instantiate(from: .getStarted) else {
+                DDLogError("Failed to navigate from LoginPrologueViewController to GetStartedViewController")
                 return
             }
 
@@ -187,7 +187,7 @@ class LoginPrologueViewController: LoginViewController {
                 return
             }
 
-            guard self.configuration.enableUnifiedSignup else {
+            guard self.configuration.enableUnifiedWordPress else {
                 self.presentSignUpEmailView()
                 return
             }
@@ -257,9 +257,9 @@ class LoginPrologueViewController: LoginViewController {
         navigationController?.pushViewController(toVC, animated: true)
     }
 
-    private func presentUnifiedLoginMagicLinkView() {
-        guard let toVC = LoginMagicLinkViewController.instantiate(from: .unifiedLoginMagicLink) else {
-            DDLogError("Failed to navigate to LoginMagicLinkViewController")
+    private func presentGetStartedView() {
+        guard let toVC = GetStartedViewController.instantiate(from: .getStarted) else {
+            DDLogError("Failed to navigate to GetStartedViewController")
             return
         }
 

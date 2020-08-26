@@ -48,6 +48,15 @@ public class LoginFields: NSObject {
         storedCredentials?.storedUserameHash = usernameHash
         storedCredentials?.storedPasswordHash = passwordHash
     }
+    
+    class func makeForWPCom(username: String, password: String) -> LoginFields {
+        let loginFields = LoginFields()
+        
+        loginFields.username = username
+        loginFields.password = password
+        
+        return loginFields
+    }
 }
 
 /// A helper class for storing safari saved password information.

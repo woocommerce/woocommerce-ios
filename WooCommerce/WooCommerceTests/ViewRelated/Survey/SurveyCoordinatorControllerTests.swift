@@ -43,7 +43,7 @@ final class SurveyCoordinatingControllerTests: XCTestCase {
         factory.surveyViewController.onCompletion()
 
         // Then
-        waitUntil(timeout: 3.0) {
+        waitUntil {
             coordinator.topViewController is SurveySubmittedViewControllerOutputs
         }
     }

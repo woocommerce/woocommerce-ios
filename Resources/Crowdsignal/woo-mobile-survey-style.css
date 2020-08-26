@@ -307,9 +307,8 @@ iframe
 	padding:4px 8px;
 	font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 	-webkit-appearance:none;
-/* remove the drop shadow */
 	padding:15px;
-/* add spacing before the text content */
+    font:-apple-system-body;
 }
 
 /* line 286, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */

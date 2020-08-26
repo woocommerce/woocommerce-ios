@@ -156,7 +156,6 @@ private extension ProductFormActionsFactory {
         let shouldShowPriceSettingsRow = product.regularPrice.isNilOrEmpty == false
         let shouldShowReviewsRow = isEditProductsRelease3Enabled
         let shouldShowProductTypeRow = isEditProductsRelease3Enabled
-        let shouldShowBriefDescriptionRow = isEditProductsRelease2Enabled
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
         let shouldShowTagsRow = isEditProductsRelease3Enabled
 
@@ -166,7 +165,7 @@ private extension ProductFormActionsFactory {
             .readonlyInventorySettings,
             shouldShowCategoriesRow ? .categories: nil,
             shouldShowTagsRow ? .tags: nil,
-            shouldShowBriefDescriptionRow ? .briefDescription: nil,
+            .briefDescription,
             shouldShowProductTypeRow ? .productType : nil
         ]
         return actions.compactMap { $0 }

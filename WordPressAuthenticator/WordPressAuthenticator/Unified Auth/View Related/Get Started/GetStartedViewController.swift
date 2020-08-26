@@ -51,9 +51,6 @@ private extension GetStartedViewController {
     func configureNavBar() {
         navigationItem.title = WordPressAuthenticator.shared.displayStrings.getStartedTitle
         styleNavigationBar(forUnified: true)
-        
-        // Nav bar could be hidden from the host app, so reshow it.
-        navigationController?.setNavigationBarHidden(false, animated: false)
     }
     
     func setupTable() {

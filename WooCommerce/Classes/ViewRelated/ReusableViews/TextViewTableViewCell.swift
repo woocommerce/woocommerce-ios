@@ -1,7 +1,9 @@
 import UIKit
 import Gridicons
 
-class TextViewTableViewCell: UITableViewCell {
+/// A table view cell that containt an icon and a text view.
+///
+final class TextViewTableViewCell: UITableViewCell {
     struct ViewModel {
         var icon: UIImage? = nil
         var iconAccessibilityLabel: String? = nil

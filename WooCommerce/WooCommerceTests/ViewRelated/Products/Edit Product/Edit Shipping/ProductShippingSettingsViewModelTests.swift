@@ -36,7 +36,7 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
 
     // MARK: - `completeUpdating`
 
-    func test_shipping_values_remain_the_same_after_completing_update_before_shippig_class_API_sync() {
+    func test_shipping_values_remain_the_same_after_completing_update_before_shipping_class_API_sync() {
         // Arrange
         let dimensions = ProductDimensions(length: "2.9", width: "", height: "1116")
         let product = MockProduct().product()
@@ -61,7 +61,7 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
         }
     }
 
-    func test_shipping_values_remain_the_same_after_completing_update_following_shippig_class_API_sync_with_a_different_slug() {
+    func test_shipping_values_remain_the_same_after_completing_update_following_shipping_class_API_sync_with_a_different_slug() {
         // Arrange
         let dimensions = ProductDimensions(length: "2.9", width: "", height: "1116")
         let product = MockProduct().product()
@@ -80,7 +80,7 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
                 // Assert
                 XCTAssertEqual(weight, product.weight)
                 XCTAssertEqual(dimensions, product.dimensions)
-                XCTAssertEqual(shippingClass, retrievedShippingClass.slug)
+                XCTAssertEqual(shippingClass, product.shippingClass)
                 XCTAssertEqual(shippingClassID, product.shippingClassID)
                 XCTAssertFalse(hasUnsavedChanges)
                 expectation.fulfill()
@@ -116,5 +116,75 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
                 expectation.fulfill()
             }
         }
+    }
+
+    // MARK: `hasUnsavedChanges`
+
+    func test_shipping_class_API_sync_with_a_different_slug_results_in_no_unsaved_changes() {
+        // Arrange
+        let dimensions = ProductDimensions(length: "2.9", width: "", height: "1116")
+        let product = MockProduct().product()
+            .copy(weight: "1.6",
+                  dimensions: dimensions,
+                  shippingClass: "60-day",
+                  shippingClassID: 2)
+        let model = EditableProductModel(product: product)
+
+        // Act
+        let viewModel = ProductShippingSettingsViewModel(product: model)
+        let retrievedShippingClass = ProductShippingClass(count: 0, descriptionHTML: nil, name: "60 Days", shippingClassID: 2, siteID: 0, slug: "90-day")
+        viewModel.onShippingClassRetrieved(shippingClass: retrievedShippingClass)
+        let hasUnsavedChanges = viewModel.hasUnsavedChanges()
+
+        // Assert
+        XCTAssertFalse(hasUnsavedChanges)
+    }
+
+    func test_updating_with_the_same_values_results_in_no_unsaved_changes() {
+        // Arrange
+        let dimensions = ProductDimensions(length: "2.9", width: "", height: "1116")
+        let product = MockProduct().product()
+            .copy(weight: "1.6",
+                  dimensions: dimensions,
+                  shippingClass: "60-day",
+                  shippingClassID: 2)
+        let model = EditableProductModel(product: product)
+
+        // Act
+        let viewModel = ProductShippingSettingsViewModel(product: model)
+        viewModel.handleWeightChange("1.6")
+        viewModel.handleWidthChange("")
+        viewModel.handleHeightChange("1116")
+        viewModel.handleLengthChange("2.9")
+        let retrievedShippingClass = ProductShippingClass(count: 0, descriptionHTML: nil, name: "60 Days", shippingClassID: 2, siteID: 0, slug: "90-day")
+        viewModel.onShippingClassRetrieved(shippingClass: retrievedShippingClass)
+        viewModel.handleShippingClassChange(retrievedShippingClass)
+        let hasUnsavedChanges = viewModel.hasUnsavedChanges()
+
+        // Assert
+        XCTAssertFalse(hasUnsavedChanges)
+    }
+
+    func test_updating_with_different_values_results_in_unsaved_changes() {
+        // Arrange
+        let dimensions = ProductDimensions(length: "2.9", width: "", height: "1116")
+        let product = MockProduct().product()
+            .copy(weight: "1.6",
+                  dimensions: dimensions,
+                  shippingClass: "60-day",
+                  shippingClassID: 2)
+        let model = EditableProductModel(product: product)
+
+        // Act
+        let viewModel = ProductShippingSettingsViewModel(product: model)
+        viewModel.handleWeightChange("-1.2")
+        viewModel.handleWidthChange("3.2")
+        viewModel.handleHeightChange("9.888")
+        viewModel.handleLengthChange("")
+        viewModel.handleShippingClassChange(nil)
+        let hasUnsavedChanges = viewModel.hasUnsavedChanges()
+
+        // Assert
+        XCTAssertTrue(hasUnsavedChanges)
     }
 }

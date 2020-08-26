@@ -109,8 +109,6 @@ extension ProductShippingSettingsViewModel: ProductShippingSettingsActionHandler
 
     func onShippingClassRetrieved(shippingClass: ProductShippingClass) {
         self.shippingClass = shippingClass
-        shippingClassSlug = shippingClass.slug
-        shippingClassID = shippingClass.shippingClassID
         originalShippingClass = shippingClass
     }
 

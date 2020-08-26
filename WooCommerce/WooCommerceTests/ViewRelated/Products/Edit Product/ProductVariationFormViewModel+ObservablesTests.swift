@@ -65,7 +65,7 @@ final class ProductVariationFormViewModel_ObservablesTests: XCTestCase {
                                           stockQuantity: productVariation.stockQuantity,
                                           backordersSetting: model.backordersSetting,
                                           stockStatus: productVariation.stockStatus)
-        viewModel.updateShippingSettings(weight: productVariation.weight, dimensions: productVariation.dimensions, shippingClass: nil)
+        viewModel.updateShippingSettings(weight: productVariation.weight, dimensions: productVariation.dimensions, shippingClass: nil, shippingClassID: nil)
     }
 
     func testObservablesFromUploadingAnImage() {

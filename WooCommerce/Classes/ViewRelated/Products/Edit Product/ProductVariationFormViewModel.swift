@@ -162,11 +162,11 @@ extension ProductVariationFormViewModel {
                                                          parentProductSKU: parentProductSKU)
     }
 
-    func updateShippingSettings(weight: String?, dimensions: ProductDimensions, shippingClass: ProductShippingClass?) {
+    func updateShippingSettings(weight: String?, dimensions: ProductDimensions, shippingClass: String?, shippingClassID: Int64?) {
         productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(weight: weight,
                                                  dimensions: dimensions,
-                                                 shippingClass: shippingClass?.slug ?? "",
-                                                 shippingClassID: shippingClass?.shippingClassID ?? 0),
+                                                 shippingClass: shippingClass ?? "",
+                                                 shippingClassID: shippingClassID ?? 0),
                                                          allAttributes: allAttributes,
                                                          parentProductSKU: parentProductSKU)
     }

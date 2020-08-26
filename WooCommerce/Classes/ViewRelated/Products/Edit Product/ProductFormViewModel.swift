@@ -187,12 +187,11 @@ extension ProductFormViewModel {
                                                                      soldIndividually: soldIndividually))
     }
 
-    func updateShippingSettings(weight: String?, dimensions: ProductDimensions, shippingClass: ProductShippingClass?) {
+    func updateShippingSettings(weight: String?, dimensions: ProductDimensions, shippingClass: String?, shippingClassID: Int64?) {
         product = EditableProductModel(product: product.product.copy(weight: weight,
                                                                      dimensions: dimensions,
-                                                                     shippingClass: shippingClass?.slug ?? "",
-                                                                     shippingClassID: shippingClass?.shippingClassID ?? 0,
-                                                                     productShippingClass: shippingClass))
+                                                                     shippingClass: shippingClass ?? "",
+                                                                     shippingClassID: shippingClassID ?? 0))
     }
 
     func updateProductCategories(_ categories: [ProductCategory]) {

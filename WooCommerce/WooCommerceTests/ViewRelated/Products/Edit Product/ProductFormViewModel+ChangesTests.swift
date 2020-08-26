@@ -36,7 +36,10 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
                                           stockQuantity: product.stockQuantity,
                                           backordersSetting: product.backordersSetting,
                                           stockStatus: product.productStockStatus)
-        viewModel.updateShippingSettings(weight: product.weight, dimensions: product.dimensions, shippingClass: product.productShippingClass)
+        viewModel.updateShippingSettings(weight: product.weight,
+                                         dimensions: product.dimensions,
+                                         shippingClass: product.shippingClass,
+                                         shippingClassID: product.shippingClassID)
         viewModel.updateProductCategories(product.categories)
         viewModel.updateProductTags(product.tags)
 
@@ -270,7 +273,10 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
                                              isEditProductsRelease3Enabled: false)
 
         // Action
-        viewModel.updateShippingSettings(weight: "88888", dimensions: product.dimensions, shippingClass: product.productShippingClass)
+        viewModel.updateShippingSettings(weight: "88888",
+                                         dimensions: product.dimensions,
+                                         shippingClass: product.shippingClass,
+                                         shippingClassID: product.shippingClassID)
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())

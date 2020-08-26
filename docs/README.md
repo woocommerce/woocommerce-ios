@@ -4,11 +4,11 @@
 
 - [Architecture](#architecture)
 - [Coding Guidelines](#coding-guidelines)
+    - [Coding Style](#coding-style)
     - [Naming Conventions](#naming-conventions)
         - [Protocols](#protocols)
         - [String Constants in Nested Enums](#string-constants-in-nested-enums)
         - [Test Methods](#test-methods)
-    - [Coding Style](#coding-style)
     - [Choosing Between Structures and Classes](#choosing-between-structures-and-classes)
 - [Design Patterns](#design-patterns)
     - [Copiable](#copiable)
@@ -27,6 +27,14 @@
 - [Yosemite](YOSEMITE.md)
 
 ## Coding Guidelines
+
+
+
+### Coding Style
+
+The guidelines for how Swift should be written and formatted can be found in the [Coding Style Guide](coding-style-guide.md).
+
+
 
 ### Naming Conventions
 
@@ -90,13 +98,6 @@ func test_evolvePokemon_when_passed_a_Pikachu_then_it_returns_Raichu()
 ```
 
 Please refer to [Unit Test Naming: The 3 Most Important Parts](https://qualitycoding.org/unit-test-naming/) for some rationale on why this can be a good idea.
-
-
-
-### Coding Style
-
-The guidelines for how Swift should be written and formatted can be found in the [Coding Style Guide](coding-style-guide.md).
-
 
 
 ### Choosing Between Structures and Classes

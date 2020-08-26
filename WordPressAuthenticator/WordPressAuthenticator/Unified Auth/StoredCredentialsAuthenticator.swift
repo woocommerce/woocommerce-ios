@@ -62,8 +62,11 @@ class StoredCredentialsAuthenticator: NSObject {
             // by implementing the logic here.
             break
         case let credential as ASPasswordCredential:
-            let loginFields = LoginFields.makeForWPCom(username: credential.user, password: credential.password)
-            loginFacade.signIn(with: loginFields)
+            // TODO: No-op for now.  The code below will be enabled in my next PR.
+            //
+            //let loginFields = LoginFields.makeForWPCom(username: credential.user, password: credential.password)
+            //loginFacade.signIn(with: loginFields)
+            break
         default:
             // There aren't any other known methods for us to handle here, but we still need to complete the switch
             // statement.

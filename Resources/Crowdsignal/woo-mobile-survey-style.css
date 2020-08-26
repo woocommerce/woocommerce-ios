@@ -1712,13 +1712,6 @@ body.is-single-question-body
 }
 
 /* Other Custom Changes */
-/* Make the "Other" textbox look underlined */
-li.question-block-400__choice-other input[type="text"]
-{
-	border-top:0;
-	border-left:0;
-	border-right:0;
-}
 
 /* For "Other" options with a text field, make the label be 100% of the width. */
 li.question-block-400__choice-other > label

@@ -1175,9 +1175,8 @@ iframe
 	cursor:pointer;
 	font-size:16px;
 	font-weight:900;
-	line-height:32px!important;
 	margin:0;
-	padding:4px 24px;
+	padding:14px 24px;
 }
 
 /* line 912, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
@@ -1741,7 +1740,6 @@ input[type="text"],input[type="password"],input[type="submit"],input[type="email
 {
 	width:100%;
 	background-color:#C9356E;
-	height:50px;
 	border-style:none;
 	border-radius:8px;
 	font-weight:bold;

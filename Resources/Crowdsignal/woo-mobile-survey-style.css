@@ -40,7 +40,7 @@ iframe
 /* line 42, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
 .PDF_pageOuter
 {
-	padding:26px !important;
+	padding:26px!important;
 	width:100%;
 }
 
@@ -142,7 +142,7 @@ iframe
 {
 	font-size:17px;
 	line-height:18px;
-    font:-apple-system-body;
+	font:-apple-system-body;
 }
 
 /* line 127, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
@@ -1713,7 +1713,6 @@ body.is-single-question-body
 }
 
 /* Other Custom Changes */
-
 /* For "Other" options with a text field, make the label be 100% of the width. */
 li.question-block-400__choice-other > label
 {

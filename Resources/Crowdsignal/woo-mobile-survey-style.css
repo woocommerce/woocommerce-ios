@@ -119,7 +119,7 @@ iframe
 	font-style:normal;
 	font-weight:600;
 	line-height:22px;
-    font:-apple-system-headline;
+	font:-apple-system-headline;
 }
 
 /* line 110, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
@@ -308,7 +308,7 @@ iframe
 	font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 	-webkit-appearance:none;
 	padding:15px;
-    font:-apple-system-body;
+	font:-apple-system-body;
 }
 
 /* line 286, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
@@ -1734,7 +1734,7 @@ input[type="text"],input[type="password"],input[type="submit"],input[type="email
 	font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"!important;
 	font-size:17px;
 	color:#000;
-    font:-apple-system-body;
+	font:-apple-system-body;
 }
 
 .PDF_pagination div.button input[type="submit"]

@@ -15,9 +15,9 @@ extension XCTestCase {
     /// ```
     ///
     public func waitForExpectation(description: String? = nil,
-                            count: Int = 1,
-                            timeout: TimeInterval = 5.0,
-                            _ block: (XCTestExpectation) -> ()) {
+                                   count: Int = 1,
+                                   timeout: TimeInterval = 5.0,
+                                   _ block: (XCTestExpectation) -> ()) {
         let exp = expectation(description: description ?? "")
         exp.expectedFulfillmentCount = count
         block(exp)
@@ -37,9 +37,9 @@ extension XCTestCase {
     /// ```
     ///
     public func waitUntil(file: StaticString = #file,
-                   line: UInt = #line,
-                   timeout: TimeInterval = 5.0,
-                   condition: @escaping (() -> Bool)) {
+                          line: UInt = #line,
+                          timeout: TimeInterval = 5.0,
+                          condition: @escaping (() -> Bool)) {
         let predicate = NSPredicate { _, _ -> Bool in
             return condition()
         }

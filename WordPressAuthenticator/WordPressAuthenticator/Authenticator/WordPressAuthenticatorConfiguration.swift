@@ -89,14 +89,10 @@ public struct WordPressAuthenticatorConfiguration {
     /// Flag indicating if the unified Apple flow should display.
     ///
     let enableUnifiedApple: Bool
-    
-    /// Flag indicating if signing up via Email should display.
-    ///
-    let enableUnifiedSignup: Bool
 
-    /// Flag indicating if Login by Magic Link should display.
+    /// Flag indicating if the unified WordPress flow should display.
     ///
-    let enableUnifiedLoginLink: Bool
+    let enableUnifiedWordPress: Bool
     
     /// Flag indicating if keychain login is enabled
     ///
@@ -123,8 +119,7 @@ public struct WordPressAuthenticatorConfiguration {
                  enableUnifiedSiteAddress: Bool = false,
                  enableUnifiedGoogle: Bool = false,
                  enableUnifiedApple: Bool = false,
-                 enableUnifiedSignup: Bool = false,
-                 enableUnifiedLoginLink: Bool = false,
+                 enableUnifiedWordPress: Bool = false,
                  enableUnifiedKeychainLogin: Bool = false) {
 
         self.wpcomClientId = wpcomClientId
@@ -146,8 +141,7 @@ public struct WordPressAuthenticatorConfiguration {
         self.enableUnifiedGoogle = enableUnifiedAuth && enableUnifiedGoogle
         self.enableSignupWithGoogle = enableSignupWithGoogle
         self.enableUnifiedApple = enableUnifiedAuth && enableUnifiedApple
-        self.enableUnifiedSignup = enableUnifiedAuth && enableUnifiedSignup
-        self.enableUnifiedLoginLink = enableUnifiedAuth && enableUnifiedLoginLink
+        self.enableUnifiedWordPress = enableUnifiedAuth && enableUnifiedWordPress
         self.enableUnifiedKeychainLogin = enableUnifiedAuth && enableUnifiedKeychainLogin
     }
 }

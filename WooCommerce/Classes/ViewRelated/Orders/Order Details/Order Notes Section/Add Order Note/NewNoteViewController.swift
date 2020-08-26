@@ -139,13 +139,13 @@ private extension NewNoteViewController {
                           comment: "Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer.")
         let cellViewModel = TextViewTableViewCell.ViewModel(icon: .asideImage,
                                                             iconAccessibilityLabel: iconAccessibilityLabel,
-                                        iconTint: isCustomerNote ? .primary : .textSubtle,
-                                        onTextChange: { [weak self] (text) in
-                                            self?.navigationItem.rightBarButtonItem?.isEnabled = !text.isEmpty
-                                            self?.noteText = text
+                                                            iconTint: isCustomerNote ? .primary : .textSubtle,
+                                                            onTextChange: { [weak self] (text) in
+                                                                self?.navigationItem.rightBarButtonItem?.isEnabled = !text.isEmpty
+                                                                self?.noteText = text
         })
 
-        cell.configure(viewModel: cellViewModel)
+        cell.configure(with: cellViewModel)
     }
 
     private func setupEmailCustomerCell(_ cell: UITableViewCell) {

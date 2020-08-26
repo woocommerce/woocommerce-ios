@@ -156,7 +156,7 @@ private extension ProductPurchaseNoteViewController {
                                                             onTextChange: { [weak self] (text) in
             self?.productSettings.purchaseNote = text
         })
-        cell.configure(viewModel: cellViewModel)
+        cell.configure(with: cellViewModel)
     }
 }
 

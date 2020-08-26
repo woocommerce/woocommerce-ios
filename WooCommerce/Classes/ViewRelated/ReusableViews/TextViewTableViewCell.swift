@@ -31,8 +31,6 @@ final class TextViewTableViewCell: UITableViewCell {
     @IBOutlet private weak var leadingContraint: NSLayoutConstraint!
     @IBOutlet private weak var topContraint: NSLayoutConstraint!
 
-    private var viewModel: ViewModel?
-
     private var iconImage: UIImage? {
         get {
             return noteIconButton.image(for: .normal)
@@ -63,8 +61,7 @@ final class TextViewTableViewCell: UITableViewCell {
         noteIconButton.accessibilityTraits = .image
     }
 
-    func configure(viewModel: ViewModel) {
-        self.viewModel = viewModel
+    func configure(with viewModel: ViewModel) {
 
         iconImage = viewModel.icon
         iconImage?.accessibilityLabel = viewModel.iconAccessibilityLabel

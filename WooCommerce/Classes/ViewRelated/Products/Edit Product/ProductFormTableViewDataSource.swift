@@ -146,7 +146,7 @@ private extension ProductFormTableViewDataSource {
                                                             style: .headline,
                                                             edgeInsets: UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16))
 
-        cell.configure(viewModel: cellViewModel)
+        cell.configure(with: cellViewModel)
     }
 
     func configureVariationName(cell: UITableViewCell, name: String) {

@@ -260,5 +260,8 @@ private extension TopBannerView {
         if isActionEnabled {
             actionStackView.isHidden = !isExpanded
         }
+
+        let accessibleView = isExpanded ? infoLabel : nil
+        UIAccessibility.post(notification: .layoutChanged, argument: accessibleView)
     }
 }

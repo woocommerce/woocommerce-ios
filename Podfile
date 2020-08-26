@@ -39,7 +39,7 @@ target 'WooCommerce' do
 
   pod 'WordPressShared', '~> 1.11'
 
-  pod 'WordPressUI', '~> 1.7.0'
+  pod 'WordPressUI', '~> 1.7.1'
 
   aztec
 

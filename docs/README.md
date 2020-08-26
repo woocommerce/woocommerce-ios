@@ -7,6 +7,7 @@
     - [Naming Conventions](#naming-conventions)
         - [Protocols](#protocols)
         - [String Constants in Nested Enums](#string-constants-in-nested-enums)
+        - [Test Methods](#test-methods)
     - [Coding Style](#coding-style)
     - [Choosing Between Structures and Classes](#choosing-between-structures-and-classes)
 - [Design Patterns](#design-patterns)
@@ -58,9 +59,45 @@ final class ViewController: UIViewController {
 }
 ```
 
+#### Test Methods
+
+Contrary to the standard [Camel case](https://en.wikipedia.org/wiki/Camel_case) style in Swift functions, test methods should use [Snake case](https://en.wikipedia.org/wiki/Snake_case). We concluded that this helps with readability especially since test methods can be quite long.
+
+**Preferred:**
+
+```swift
+func test_tapping_ScheduleSaleToRow_toggles_PickerRow_in_Sales_section()
+```
+
+**Not Preferred:**
+
+```swift
+func testTappingScheduleSaleToRowTogglesPickerRowInSalesSection()
+```
+
+Note that when referring to a property or a class, we can still use the appropriate Camel or Pascal case for it.
+
+Also, consider writing the test method name in a way that incorporates these three things:
+
+1. What operation are we testing
+2. Under what circumstances
+3. What is the expected result?
+
+For example:
+
+```swift
+func test_evolvePokemon_when_passed_a_Pikachu_then_it_returns_Raichu()
+```
+
+Please refer to [Unit Test Naming: The 3 Most Important Parts](https://qualitycoding.org/unit-test-naming/) for some rationale on why this can be a good idea.
+
+
+
 ### Coding Style
 
 The guidelines for how Swift should be written and formatted can be found in the [Coding Style Guide](coding-style-guide.md).
+
+
 
 ### Choosing Between Structures and Classes
 
@@ -73,6 +110,8 @@ But consider using `class` instead if:
 
 - You need to manage mutable states. Especially if there are more than a few `mutating` functions, the `struct` becomes harder to reason about.
 - You have to set a `struct` property declaration as `var` because it has a `mutating` function. In this case, a constant (`let`) `class` property may be easier to reason about.
+
+
 
 ## Design Patterns
 

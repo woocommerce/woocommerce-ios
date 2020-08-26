@@ -47,6 +47,7 @@ public struct WordPressAuthenticatorDisplayStrings {
 	public let passwordPlaceholder: String
     public let siteAddressPlaceholder: String
     public let twoFactorCodePlaceholder: String
+    public let emailAddressPlaceholder: String
 
     /// Designated initializer.
     ///
@@ -78,7 +79,8 @@ public struct WordPressAuthenticatorDisplayStrings {
                 usernamePlaceholder: String = defaultStrings.usernamePlaceholder,
                 passwordPlaceholder: String = defaultStrings.passwordPlaceholder,
                 siteAddressPlaceholder: String = defaultStrings.siteAddressPlaceholder,
-                twoFactorCodePlaceholder: String = defaultStrings.twoFactorCodePlaceholder) {
+                twoFactorCodePlaceholder: String = defaultStrings.twoFactorCodePlaceholder,
+                emailAddressPlaceholder: String = defaultStrings.emailAddressPlaceholder) {
         self.emailLoginInstructions = emailLoginInstructions
         self.getStartedInstructions = getStartedInstructions
         self.jetpackLoginInstructions = jetpackLoginInstructions
@@ -108,6 +110,7 @@ public struct WordPressAuthenticatorDisplayStrings {
 		self.passwordPlaceholder = passwordPlaceholder
         self.siteAddressPlaceholder = siteAddressPlaceholder
         self.twoFactorCodePlaceholder = twoFactorCodePlaceholder
+        self.emailAddressPlaceholder = emailAddressPlaceholder
     }
 }
 
@@ -117,19 +120,19 @@ public extension WordPressAuthenticatorDisplayStrings {
             emailLoginInstructions: NSLocalizedString("Log in to your WordPress.com account with your email address.",
                                                       comment: "Instruction text on the login's email address screen."),
             getStartedInstructions: NSLocalizedString("Enter your email address to log in or create a WordPress.com account.",
-            comment: "Instruction text on the initial email address entry screen."),
+                                                      comment: "Instruction text on the initial email address entry screen."),
             jetpackLoginInstructions: NSLocalizedString("Log in to the WordPress.com account you used to connect Jetpack.",
                                                         comment: "Instruction text on the login's email address screen."),
             siteLoginInstructions: NSLocalizedString("Enter the address of the WordPress site you'd like to connect.",
                                                      comment: "Instruction text on the login's site addresss screen."),
-			siteCredentialInstructions: NSLocalizedString("Enter your account information for %@.",
-														  comment: "Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site."),
+            siteCredentialInstructions: NSLocalizedString("Enter your account information for %@.",
+                                                          comment: "Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site."),
             twoFactorInstructions: NSLocalizedString("Please enter the verification code from your authenticator app, or tap the link below to receive a code via SMS.",
                                                      comment: "Instruction text on the two-factor screen."),
             magicLinkSignupInstructions: NSLocalizedString("We'll email you a magic link to create your new WordPress.com account.",
-                                                     comment: "Instruction text on the Sign Up screen."),
+                                                           comment: "Instruction text on the Sign Up screen."),
             openMailSignupInstructions: NSLocalizedString("We’ve emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com.",
-                                                    comment: "Instruction text after a signup Magic Link was requested."),
+                                                          comment: "Instruction text after a signup Magic Link was requested."),
             openMailLoginInstructions: NSLocalizedString("Check your email on this device, and tap the link in the email you receive from WordPress.com.",
                                                          comment: "Instruction text after a login Magic Link was requested."),
             checkSpamInstructions: NSLocalizedString("Not seeing the email? Check your Spam or Junk Mail folder.", comment: "Instructions after a Magic Link was sent, but the email can't be found in their inbox."),
@@ -139,7 +142,7 @@ public extension WordPressAuthenticatorDisplayStrings {
             applePasswordInstructions: NSLocalizedString("To proceed with this Apple ID, please first log in with your WordPress.com password. This will only be asked once.",
                                                          comment: "Instructional text shown when requesting the user's password for Apple login."),
             continueButtonTitle: NSLocalizedString("Continue",
-                                                    comment: "The button title text when there is a next step for logging in or signing up."),
+                                                   comment: "The button title text when there is a next step for logging in or signing up."),
             magicLinkButtonTitle: NSLocalizedString("Send Link by Email",
                                                     comment: "The button title text for sending a magic link."),
             openMailButtonTitle: NSLocalizedString("Open Mail",
@@ -161,14 +164,16 @@ public extension WordPressAuthenticatorDisplayStrings {
                                            comment: "View title during the sign up process."),
             waitingForGoogleTitle: NSLocalizedString("Waiting...",
                                                      comment: "View title during the Google auth process."),
-			usernamePlaceholder: NSLocalizedString("Username",
-												   comment: "Placeholder for the username textfield."),
-			passwordPlaceholder: NSLocalizedString("Password",
-												   comment: "Placeholder for the password textfield."),
+            usernamePlaceholder: NSLocalizedString("Username",
+                                                   comment: "Placeholder for the username textfield."),
+            passwordPlaceholder: NSLocalizedString("Password",
+                                                   comment: "Placeholder for the password textfield."),
             siteAddressPlaceholder: NSLocalizedString("example.com",
-                                                  comment: "Placeholder for the site url textfield."),
+                                                      comment: "Placeholder for the site url textfield."),
             twoFactorCodePlaceholder: NSLocalizedString("Authentication code",
-                                                  comment: "Placeholder for the 2FA code textfield.")
+                                                        comment: "Placeholder for the 2FA code textfield."),
+            emailAddressPlaceholder: NSLocalizedString("Email address",
+                                                       comment: "Placeholder for the email address textfield.")
         )
     }
 }

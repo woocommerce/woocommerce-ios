@@ -39,6 +39,7 @@ public struct WordPressAuthenticatorDisplayStrings {
     public let findSiteButtonTitle: String
     public let resetPasswordButtonTitle: String
     public let textCodeButtonTitle: String
+    public let loginTermsOfService: String
 
 	/// Placeholder text for textfields.
 	///
@@ -69,6 +70,7 @@ public struct WordPressAuthenticatorDisplayStrings {
                 findSiteButtonTitle: String = defaultStrings.findSiteButtonTitle,
                 resetPasswordButtonTitle: String = defaultStrings.resetPasswordButtonTitle,
                 textCodeButtonTitle: String = defaultStrings.textCodeButtonTitle,
+                loginTermsOfService: String = defaultStrings.loginTermsOfService,
                 getStartedTitle: String = defaultStrings.getStartedTitle,
                 logInTitle: String = defaultStrings.logInTitle,
                 signUpTitle: String = defaultStrings.signUpTitle,
@@ -97,6 +99,7 @@ public struct WordPressAuthenticatorDisplayStrings {
         self.findSiteButtonTitle = findSiteButtonTitle
         self.resetPasswordButtonTitle = resetPasswordButtonTitle
         self.textCodeButtonTitle = textCodeButtonTitle
+        self.loginTermsOfService = loginTermsOfService
         self.getStartedTitle = getStartedTitle
         self.logInTitle = logInTitle
         self.signUpTitle = signUpTitle
@@ -149,7 +152,7 @@ public extension WordPressAuthenticatorDisplayStrings {
                                                         comment: "The secondary call-to-action button title text, for when the user can't remember their password."),
             textCodeButtonTitle: NSLocalizedString("Text me a code instead",
                                                    comment: "The button's title text to send a 2FA code via SMS text message."),
-            
+            loginTermsOfService:NSLocalizedString("By continuing, you agree to our _Terms of Service_.", comment: "Legal disclaimer for logging in. The underscores _..._ denote underline."),
             getStartedTitle: NSLocalizedString("Get Started",
                                                comment: "View title for initial auth views."),
             logInTitle: NSLocalizedString("Log In",

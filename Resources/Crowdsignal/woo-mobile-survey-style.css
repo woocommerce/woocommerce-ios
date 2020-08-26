@@ -21,6 +21,7 @@ body
 	line-height:18px;
 	margin:0;
 	overscroll-behavior:none;
+    font:-apple-system-body;
 }
 
 /* line 30, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */

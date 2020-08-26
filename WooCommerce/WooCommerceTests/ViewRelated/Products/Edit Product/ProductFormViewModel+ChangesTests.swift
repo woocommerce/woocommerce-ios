@@ -15,7 +15,6 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease2Enabled: true,
                                              isEditProductsRelease3Enabled: false)
         let taxClass = TaxClass(siteID: product.siteID, name: "standard", slug: product.taxClass ?? "standard")
 
@@ -56,7 +55,6 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease2Enabled: true,
                                              isEditProductsRelease3Enabled: false)
 
         // Action
@@ -75,7 +73,6 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease2Enabled: true,
                                              isEditProductsRelease3Enabled: false)
 
         // Action
@@ -95,7 +92,6 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease2Enabled: true,
                                              isEditProductsRelease3Enabled: false)
         let expectation = self.expectation(description: "Wait for image upload")
         productImageActionHandler.addUpdateObserver(self) { statuses in
@@ -121,7 +117,6 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease2Enabled: true,
                                              isEditProductsRelease3Enabled: false)
 
         // Action
@@ -146,7 +141,6 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease2Enabled: true,
                                              isEditProductsRelease3Enabled: false)
 
         // Action
@@ -165,7 +159,6 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease2Enabled: true,
                                              isEditProductsRelease3Enabled: true)
 
         // Action
@@ -189,7 +182,6 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease2Enabled: true,
                                              isEditProductsRelease3Enabled: true)
 
         // Action
@@ -212,7 +204,6 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease2Enabled: true,
                                              isEditProductsRelease3Enabled: false)
 
         // Action
@@ -231,7 +222,6 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease2Enabled: true,
                                              isEditProductsRelease3Enabled: false)
 
         // Action
@@ -250,7 +240,6 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease2Enabled: true,
                                              isEditProductsRelease3Enabled: false)
 
         // Action
@@ -269,7 +258,6 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease2Enabled: true,
                                              isEditProductsRelease3Enabled: false)
 
         // Action

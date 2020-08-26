@@ -55,7 +55,6 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
             }
 
             actionsFactory = ProductFormActionsFactory(product: product,
-                                                       isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
                                                        isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
             productSubject.send(product)
         }
@@ -77,22 +76,18 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     }
 
     private let productImageActionHandler: ProductImageActionHandler
-    private let isEditProductsRelease2Enabled: Bool
     private let isEditProductsRelease3Enabled: Bool
 
     private var cancellable: ObservationToken?
 
     init(product: EditableProductModel,
          productImageActionHandler: ProductImageActionHandler,
-         isEditProductsRelease2Enabled: Bool,
          isEditProductsRelease3Enabled: Bool) {
         self.productImageActionHandler = productImageActionHandler
-        self.isEditProductsRelease2Enabled = isEditProductsRelease2Enabled
         self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
         self.originalProduct = product
         self.product = product
         self.actionsFactory = ProductFormActionsFactory(product: product,
-                                                        isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
                                                         isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
         self.isUpdateEnabledSubject = PublishSubject<Bool>()
 

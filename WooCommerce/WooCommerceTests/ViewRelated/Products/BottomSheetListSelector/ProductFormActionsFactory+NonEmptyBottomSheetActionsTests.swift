@@ -4,62 +4,6 @@ import XCTest
 
 final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCase {
 
-    // M3 feature flag off & M2 feature flag off
-
-    func testDataHasNoEditProductsRelease2And3ActionsForAPhysicalProductWhenBothFeatureFlagsAreOff() {
-        // Arrange
-        let product = Fixtures.physicalProduct
-        let model = EditableProductModel(product: product)
-
-        // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                isEditProductsRelease2Enabled: false,
-                                                isEditProductsRelease3Enabled: false)
-
-        // Assert
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings]
-        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
-
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editShippingSettings, .editInventorySettings]
-        XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
-    }
-
-    func testDataHasNoEditProductsRelease2And3AndShippingActionsForAVirtualProductWhenBothFeatureFlagsAreOff() {
-        // Arrange
-        let product = Fixtures.virtualProduct
-        let model = EditableProductModel(product: product)
-
-        // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                isEditProductsRelease2Enabled: false,
-                                                isEditProductsRelease3Enabled: false)
-
-        // Assert
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings]
-        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
-
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editInventorySettings]
-        XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
-    }
-
-    func testDataHasNoEditProductsRelease2And3AndShippingActionsForADownloadableProductWhenBothFeatureFlagsAreOff() {
-        // Arrange
-        let product = Fixtures.downloadableProduct
-        let model = EditableProductModel(product: product)
-
-        // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                isEditProductsRelease2Enabled: false,
-                                                isEditProductsRelease3Enabled: false)
-
-        // Assert
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings]
-        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
-
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editInventorySettings]
-        XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
-    }
-
     // M3 feature flag off & M2 feature flag on
 
     func testDataHasNoEditProductsRelease3ActionsForAPhysicalProductWhenM3FeatureFlagIsOff() {
@@ -69,7 +13,6 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
-                                                isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: false)
 
         // Assert
@@ -87,7 +30,6 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
-                                                isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: false)
 
         // Assert
@@ -105,7 +47,6 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
-                                                isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: false)
 
         // Assert
@@ -125,7 +66,6 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
-                                                isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
@@ -147,7 +87,6 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
-                                                isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
@@ -165,7 +104,6 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
-                                                isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert

@@ -19,17 +19,14 @@ struct ProductDetailsFactory {
             switch product.productType {
             case .simple:
                 isEditProductsEnabled = true
-            case .affiliate, .grouped, .variable:
-                isEditProductsEnabled = isFeatureSwitchOn
             default:
-                isEditProductsEnabled = false
+                isEditProductsEnabled = isFeatureSwitchOn
             }
 
             let vc = productDetails(product: product,
                                     presentationStyle: presentationStyle,
                                     currencySettings: currencySettings,
                                     isEditProductsEnabled: isEditProductsEnabled,
-                                    isEditProductsRelease2Enabled: true,
                                     isEditProductsRelease3Enabled: isFeatureSwitchOn)
             onCompletion(vc)
         }
@@ -42,7 +39,6 @@ private extension ProductDetailsFactory {
                                presentationStyle: ProductFormPresentationStyle,
                                currencySettings: CurrencySettings,
                                isEditProductsEnabled: Bool,
-                               isEditProductsRelease2Enabled: Bool,
                                isEditProductsRelease3Enabled: Bool) -> UIViewController {
         let vc: UIViewController
         let productModel = EditableProductModel(product: product)
@@ -51,13 +47,11 @@ private extension ProductDetailsFactory {
         if isEditProductsEnabled {
             let viewModel = ProductFormViewModel(product: productModel,
                                                  productImageActionHandler: productImageActionHandler,
-                                                 isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
                                                  isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
             vc = ProductFormViewController(viewModel: viewModel,
                                            eventLogger: ProductFormEventLogger(),
                                            productImageActionHandler: productImageActionHandler,
                                            presentationStyle: presentationStyle,
-                                           isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
                                            isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
             // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
             vc.hidesBottomBarWhenPushed = true

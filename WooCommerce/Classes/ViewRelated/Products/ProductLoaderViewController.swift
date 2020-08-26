@@ -152,11 +152,6 @@ private extension ProductLoaderViewController {
     /// Presents the ProductDetailsViewController or the ProductFormViewController, as a childViewController, for a given Product.
     ///
     func presentProductDetails(for product: Product) {
-        let isEditProductsFeatureFlagOn = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts)
-        presentProductDetails(for: product, isEditProductsEnabled: isEditProductsFeatureFlagOn)
-    }
-
-    func presentProductDetails(for product: Product, isEditProductsEnabled: Bool) {
         ProductDetailsFactory.productDetails(product: product, presentationStyle: .contained(containerViewController: self)) { [weak self] viewController in
             self?.attachProductDetailsChildViewController(viewController)
         }

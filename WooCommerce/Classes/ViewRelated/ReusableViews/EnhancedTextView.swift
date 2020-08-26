@@ -57,7 +57,8 @@ final class EnhancedTextView: UITextView {
 //
 private extension EnhancedTextView {
     func configurePlaceholderLabel() {
-        placeholderLabel = UILabel(frame: bounds)
+        let frameRect = CGRect(x: Constants.margin, y: Constants.margin, width: bounds.width, height: bounds.height)
+        placeholderLabel = UILabel(frame: frameRect)
         if let unwrappedLabel = placeholderLabel {
             addSubview(unwrappedLabel)
         }
@@ -91,6 +92,7 @@ extension EnhancedTextView: UITextViewDelegate {
 private extension EnhancedTextView {
 
     enum Constants {
-        static let animationDuration    = 0.2
+        static let animationDuration = 0.2
+        static let margin = 0.0
     }
 }

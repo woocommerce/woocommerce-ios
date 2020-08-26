@@ -1,0 +1,1760 @@
+/**
+ * Woo Mobile Survey Theme by Automattic
+ *
+ * See documentation at: https://crowdsignal.com/support/custom-survey-css/
+ */
+/* line 13, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+*
+{
+	box-sizing:border-box;
+	margin:0;
+	padding:0;
+}
+
+/* line 19, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+body
+{
+	background:#fff;
+	color:#333;
+	font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"!important;
+	font-size:17px;
+	line-height:18px;
+	margin:0;
+	overscroll-behavior:none;
+    font:-apple-system-body;
+}
+
+/* line 30, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+img
+{
+	height:auto;
+	max-width:100%;
+}
+
+/* line 35, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+iframe
+{
+	max-width:100%;
+}
+
+/* ---------------------- Outside Container ---------------------------------- */
+/* line 42, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_pageOuter
+{
+	padding:26px!important;
+	width:100%;
+}
+
+@media screen and (min-width: 720px) {
+	/* line 47, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+	.PDF_pageOuter .PDF_pageOuter
+	{
+		margin:0 auto;
+		padding:30px 0;
+		width:600px;
+	}
+}
+
+/* ---------------------- Content Container ---------------------------------- */
+/* line 57, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_pageInner
+{
+	display:flex;
+	flex-direction:column;
+	max-width:1000px;
+	max-width:62.5rem;
+	width:100%;
+	margin:0 auto;
+}
+
+/* line 66, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_question
+{
+	background-color:#fff;
+	margin:0 0 21px;
+	width:100%;
+}
+
+/* line 75, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_questionDivide
+{
+	display:none;
+}
+
+/* line 79, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_questionErr
+{
+	margin:0 0 30px;
+	width:100%;
+}
+
+/* line 87, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_question.PDF_heading:first-child,#pd-question-10000
+{
+	border:none;
+}
+
+/* line 91, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_question.PDF_pagination
+{
+	border:none;
+	padding:0;
+}
+
+/* line 95, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.survey.is-single-question .PDF_question.PDF_pagination
+{
+	display:none;
+}
+
+/* line 100, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_button
+{
+	margin:0 0 30px;
+}
+
+/* line 104, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.qText
+{
+	font-size:17px;
+	font-style:normal;
+	font-weight:600;
+	line-height:22px;
+	font:-apple-system-headline;
+}
+
+/* line 110, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.qNote
+{
+	color:#333;
+	font-size:14px;
+	font-style:italic;
+	padding:5px 0 0;
+}
+
+/* line 117, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.qNote img,.qMedia img
+{
+	height:auto;
+	max-width:100%;
+}
+
+/* line 122, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.qContent
+{
+	font-size:17px;
+	line-height:18px;
+	font:-apple-system-body;
+}
+
+/* line 127, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.qContent h1
+{
+	font-size:2em;
+	margin-top:28px;
+	margin-bottom:14px;
+	line-height:1.1em;
+}
+
+/* line 134, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.qContent h2
+{
+	font-size:1.5em;
+	margin-top:21px;
+	margin-bottom:14px;
+	line-height:1.1em;
+}
+
+/* line 141, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.qNumber
+{
+	background-color:#333;
+	color:#fff;
+	float:right;
+	font-size:12px;
+	font-weight:bold;
+	margin-left:20px;
+	padding:5px;
+}
+
+@media screen and (min-width: 960px) {
+	/* line 153, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+	.PDF_question,.PDF_questionErr,.PDF_button
+	{
+		margin:0 0 21px;
+	}
+}
+
+/* line 159, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_mand
+{
+	color:#D00;
+}
+
+/* line 163, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.qMedia
+{
+	margin-bottom:16px;
+}
+
+/* line 166, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.qMedia div.qMedia__image-container
+{
+	height:300px;
+}
+
+/* line 170, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.qMedia audio
+{
+	width:100%;
+}
+
+/* line 176, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.sBut
+{
+	background-image:url('/S_But.gif');
+	height:33px;
+	text-align:center;
+	width:154px;
+}
+
+/* line 183, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.sBut p
+{
+	margin:0;
+	padding-top:6px;
+}
+
+/* line 188, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.sBut a
+{
+	color:#FFF;
+	display:block;
+	font-size:18px;
+	text-decoration:none;
+}
+
+/* ---------------------- All Questions ---------------------------------- */
+/* line 198, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_err,.PDF_errMain
+{
+	background-color:#fee;
+	color:#C00;
+}
+
+/* line 205, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_err
+{
+	margin-bottom:14px;
+}
+
+/* line 209, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_noteMain
+{
+	background:#FDFFD9;
+	color:#333;
+	font-size:12px;
+}
+
+/* line 215, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_errMain,.PDF_noteMain
+{
+	margin:0 0 30px;
+	padding:20px;
+}
+
+@media screen and (min-width: 960px) {
+	/* line 215, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+	.PDF_errMain,.PDF_noteMain
+	{
+		margin:0 0 50px;
+		padding:20px;
+	}
+}
+
+/* line 227, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_errMain::before,.PDF_err::before,.PDF_noteMain::before
+{
+	font-family:'Font Awesome 5 Free';
+	margin:0 4px 0 0;
+}
+
+/* line 245, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT100,.PDF_QT200,.PDF_QT400,.PDF_QT800,.PDF_QT900,.PDF_QT950,.PDF_QT1000,.PDF_QT1100,.PDF_QT1200,.PDF_QT1300,.PDF_QT1400,.PDF_QT1500,.PDF_QT1600
+{
+	margin:20px 0 0;
+}
+
+/* ---------------------- All Input Fields ---------------------------------- */
+/* line 263, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT100 input,.PDF_QT200 input,.PDF_QT400 input,.PDF_QT800 input,.PDF_QT900 input,.PDF_QT950 input,.PDF_QT1000 input,.PDF_QT1100 input,.PDF_QT1200 input,.PDF_QT1300 input,.PDF_QT1400 input,.PDF_QT1500 input,.PDF_QT1600 input
+{
+	border:1px solid #E1E2E2;
+	color:#666;
+	font-size:14px;
+	font-weight:400;
+	line-height:24px;
+	padding:4px 5px;
+}
+
+/* line 273, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT200 textarea,.PDF_QT400 textarea
+{
+	border:1px solid #E1E2E2;
+	color:#000;
+	font-size:17px;
+	font-weight:400;
+	line-height:21px;
+	padding:4px 8px;
+	font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+	-webkit-appearance:none;
+	padding:15px;
+	font:-apple-system-body;
+}
+
+/* line 286, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT400 select,.PDF_QT900 select,.PDF_QT950 select,.PDF_QT1000 select
+{
+	background-color:#fff;
+	border:1px solid #e1e2e2;
+	border-radius:0;
+	height:34px;
+}
+
+/* ---------------------- All Labels of Input Fields ---------------------------------- */
+/* line 300, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT800 label,.PDF_QT900 label,.PDF_QT950 label,.PDF_QT1000 label,.PDF_QT1400 label,.PDF_QT1500 label
+{
+}
+
+/* ---------------------- Free Text (single) QT 100 ---------------------------------- */
+/* line 308, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT100
+{
+	display:flex;
+	flex-direction:row;
+	width:100%;
+}
+
+/* line 316, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT100 .small,.PDF_QT100 .medium,.PDF_QT100 .large
+{
+	flex:1;
+}
+
+@media screen and (min-width: 960px) {
+	/* line 320, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+	.PDF_QT100 .small
+	{
+		flex:.3;
+	}
+}
+
+@media screen and (min-width: 960px) {
+	/* line 326, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+	.PDF_QT100 .medium
+	{
+		flex:.5;
+	}
+}
+
+/* ---------------------- Free Text (multiline)  QT 200 ---------------------------------- */
+/* line 336, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT200 .small,.PDF_QT200 .medium,.PDF_QT200 .large
+{
+	border:1px solid #e1e2e2;
+	height:60px;
+	width:100%;
+}
+
+/* line 342, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT200 .medium
+{
+	height:90px;
+}
+
+/* line 346, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT200 .large
+{
+	height:120px;
+}
+
+/* ---------------------- Multiple Choice - QT 400 ---------------------------------- */
+/* line 352, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT400
+{
+	color:#000;
+}
+
+/* line 358, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT400 ul
+{
+	list-style:none;
+	margin:0;
+	padding:0;
+}
+
+/* line 364, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT400 li
+{
+	align-items:baseline;
+	margin:20px 0 0;
+	display:flex;
+	flex-wrap:wrap;
+}
+
+/* line 372, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT400 li input[type=checkbox],.PDF_QT400 li input[type=radio]
+{
+	display:inline-block;
+}
+
+.PDF_QT400 li input[type=radio]
+{
+	border:solid #aaa 1px;
+}
+
+.PDF_QT400 li input[type=radio]:checked
+{
+	-webkit-appearance:radio;
+	border:none;
+}
+
+/* line 376, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT400 li > label
+{
+	display:inline-block;
+	margin-left:12px;
+	width:calc(100% - 30px);
+}
+
+/* line 382, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT400 li:first-child
+{
+	margin-top:0;
+}
+
+/* line 386, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT400 select
+{
+	border-color:#e1e2e2;
+	font-size:12px;
+	min-width:200px;
+	padding:2px;
+	width:100%;
+}
+
+/* line 394, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT400 select[multiple="true"]
+{
+	min-height:100px;
+}
+
+/* line 398, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT400 .other
+{
+	flex:1;
+	width:100%;
+}
+
+/* line 403, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT400 fieldset
+{
+	border:0;
+}
+
+/* line 407, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT400 > label
+{
+	display:block;
+	margin:20px 0 0;
+	padding:0;
+	width:calc(100% - 30px);
+	color:#666;
+	font-size:11px;
+	line-height:25px;
+	font-weight:400;
+}
+
+/* line 418, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT400 textarea
+{
+	margin:0;
+	width:100%!important;
+}
+
+/* line 423, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT400 .question-block__answer-media-public
+{
+	display:inline-block;
+	max-width:150px;
+	max-height:90px;
+	overflow:hidden;
+	display:block;
+	min-width:100%;
+	margin-bottom:8px;
+}
+
+/* line 8, ../../../../../stylesheets/partials/_mixins.scss */
+.PDF_QT400 .question-block__answer-media-public::after
+{
+	content:'';
+	display:block;
+	clear:both;
+}
+
+/* line 13, ../../../../../stylesheets/partials/_mixins.scss */
+.PDF_QT400 .question-block__answer-media-public audio,.PDF_QT400 .question-block__answer-media-public span
+{
+	vertical-align:top;
+	max-width:150px;
+}
+
+/* line 18, ../../../../../stylesheets/partials/_mixins.scss */
+.PDF_QT400 .question-block__answer-media-public iframe
+{
+	max-width:150px;
+	max-height:90px;
+}
+
+/* line 23, ../../../../../stylesheets/partials/_mixins.scss */
+.PDF_QT400 .question-block__answer-media-public div
+{
+	background-size:cover;
+	display:inline-block;
+	width:150px;
+	height:90px;
+	position:relative;
+	overflow:hidden;
+}
+
+/* line 32, ../../../../../stylesheets/partials/_mixins.scss */
+.PDF_QT400 .question-block__answer-media-public div img
+{
+	position:absolute;
+	max-width:unset;
+	vertical-align:top;
+}
+
+/* line 432, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT400 li.question-block-400__choice-other > label.question-block-400__choice-label,.PDF_QT400 li.question-block-400__choice-other > label.question-block-400__choice-label
+{
+	width:auto;
+}
+
+/* ---------------------- Name - QT 800 ---------------------------------- */
+/* line 438, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT800
+{
+	display:flex;
+	flex-direction:column;
+}
+
+@media screen and (min-width: 960px) {
+	/* line 438, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+	.PDF_QT800
+	{
+		flex-direction:row;
+	}
+}
+
+/* line 447, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT800 div
+{
+	margin:0 0 10px;
+	width:100%;
+}
+
+@media screen and (min-width: 960px) {
+	/* line 447, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+	.PDF_QT800 div
+	{
+		flex:1;
+		margin:0 0 0 20px;
+		width:initial;
+	}
+
+	/* line 456, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+	.PDF_QT800 div:first-child
+	{
+		margin-left:0;
+	}
+
+	/* line 461, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+	.PDF_QT800 div:first-child:not(:nth-last-child(2)),.PDF_QT800 div:nth-child(4)
+	{
+		flex:initial;
+		width:40px;
+	}
+}
+
+/* line 471, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT800 .title,.PDF_QT800 .firstName,.PDF_QT800 .lastName,.PDF_QT800 .suffix
+{
+	font-size:14px;
+	width:100%;
+}
+
+/* ---------------------- Address - QT 900 ---------------------------------- */
+/* line 478, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT900
+{
+	display:flex;
+	flex-direction:column;
+}
+
+@media screen and (min-width: 960px) {
+	/* line 478, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+	.PDF_QT900
+	{
+		column-gap:20px;
+		display:grid;
+		grid-auto-rows:auto;
+		grid-template-columns:1fr 1fr;
+	}
+}
+
+/* line 490, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT900 .cf
+{
+	display:none;
+}
+
+/* line 494, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT900 div
+{
+	margin:0 0 10px;
+}
+
+@media screen and (min-width: 960px) {
+	/* line 499, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+	.PDF_QT900 div:nth-child(1),.PDF_QT900 div:nth-child(2),.PDF_QT900 div:nth-child(3)
+	{
+		grid-column:span 2;
+	}
+}
+
+/* line 511, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT900 .a,.PDF_QT900 .b,.PDF_QT900 .c,.PDF_QT900 .d,.PDF_QT900 .e,.PDF_QT900 select
+{
+	padding:3px;
+	font-size:14px;
+	width:100%;
+}
+
+/* line 517, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT900 select
+{
+	height:33px;
+}
+
+/* ---------------------- Phone - - QT 950 ---------------------------------- */
+/* line 523, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT950
+{
+	display:flex;
+	flex-direction:column;
+}
+
+@media screen and (min-width: 960px) {
+	/* line 523, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+	.PDF_QT950
+	{
+		flex-direction:row;
+	}
+}
+
+/* line 532, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT950 .cf
+{
+	display:none;
+}
+
+/* line 536, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT950 div
+{
+	margin:0 0 20px;
+	width:100%;
+}
+
+/* line 541, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT950 select
+{
+	font-size:14px;
+	width:100%;
+}
+
+/* line 546, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT950 input
+{
+	width:100%;
+}
+
+@media screen and (min-width: 960px) {
+	/* line 551, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+	.PDF_QT950
+	{
+		flex-direction:row;
+	}
+
+	/* line 555, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+	.PDF_QT950 select
+	{
+		margin:25px 0 0;
+	}
+
+	/* line 559, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+	.PDF_QT950 div
+	{
+		flex:1;
+		margin:0 0 0 20px;
+	}
+
+	/* line 564, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+	.PDF_QT950 div:first-child
+	{
+		flex:.4;
+		margin-left:0;
+	}
+}
+
+/* ---------------------- Date/Time - QT 1000 ---------------------------------- */
+/* line 572, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1000
+{
+	display:flex;
+	flex-direction:row;
+	flex-wrap:wrap;
+	justify-content:flex-start;
+}
+
+/* line 579, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1000::before
+{
+	content:"";
+	display:block;
+	order:2;
+	width:100%;
+}
+
+@media screen and (min-width: 560px) {
+	/* line 579, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+	.PDF_QT1000::before
+	{
+		display:none;
+	}
+}
+
+/* line 590, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1000 cf
+{
+	display:none;
+}
+
+/* line 598, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1000 .mm,.PDF_QT1000 .dd,.PDF_QT1000 .yyyy,.PDF_QT1000 .h,.PDF_QT1000 .mins
+{
+	font-size:12px;
+	text-align:center;
+	width:60px;
+}
+
+/* line 606, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1000 div:nth-child(1),.PDF_QT1000 div:nth-child(2),.PDF_QT1000 div:nth-child(3)
+{
+	order:1;
+}
+
+/* line 611, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1000 div:nth-child(4),.PDF_QT1000 div:nth-child(5)
+{
+	margin-top:20px;
+	order:3;
+}
+
+@media screen and (min-width: 560px) {
+	/* line 611, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+	.PDF_QT1000 div:nth-child(4),.PDF_QT1000 div:nth-child(5)
+	{
+		margin-top:0;
+	}
+}
+
+/* line 623, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1000 .dd,.PDF_QT1000 .mm,.PDF_QT1000 .h,.PDF_QT1000 .mins
+{
+	border-radius:0;
+	border:1px solid #E1E2E2;
+	height:34px;
+}
+
+/* line 629, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1000 img
+{
+	padding:0 0 0 5px;
+}
+
+@media screen and (min-width: 560px) {
+	/* line 633, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+	.PDF_QT1000 .yyyy
+	{
+		margin:0 20px 0 0;
+	}
+}
+
+/* ---------------------- Number - QT 1100 ---------------------------------- */
+/* line 641, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1100 input
+{
+	width:50%;
+	min-width:100px;
+}
+
+/* line 646, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1100 .slider
+{
+	padding:10px 5px;
+}
+
+/* line 650, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1100 .slider-value
+{
+	font-size:16px;
+	font-weight:bold;
+	margin-top:30px;
+	text-align:center;
+}
+
+/* ---------------------- Matrix/Likert - QT 1200 ---------------------------------- */
+/* line 659, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1200
+{
+	font-size:14px;
+	font-weight:bold;
+	color:#666;
+}
+
+/* line 665, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1200 table
+{
+	width:100%;
+}
+
+/* line 669, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1200 th
+{
+	text-align:center;
+}
+
+/* line 673, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1200 td
+{
+	text-align:center;
+	padding:10px 8px;
+	color:#333;
+}
+
+/* line 679, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1200 .alt
+{
+	background-color:#EEE;
+}
+
+/* line 683, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1200 .title
+{
+	text-align:left;
+}
+
+/* line 687, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1200 .is-mobile
+{
+	border-bottom:1px solid #e1e2e2;
+	padding:0 0 15px;
+	margin:0 0 15px;
+}
+
+/* line 692, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1200 .is-mobile:last-child
+{
+	border-bottom:0;
+	margin:0;
+	padding:0;
+}
+
+/* line 699, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1200 .is-mobile .title
+{
+	margin:0 0 15px;
+}
+
+/*--------------------------------------------------------------
+## QT 2100: Rating
+--------------------------------------------------------------*/
+/* line 707, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT2100
+{
+	font-size:14px;
+	font-weight:bold;
+	color:#666;
+	margin-top:20px;
+}
+
+/* line 713, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT2100 table
+{
+	width:100%;
+	table-layout:fixed;
+}
+
+/* line 718, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT2100 th
+{
+	text-align:center;
+}
+
+/* line 722, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT2100 td
+{
+	text-align:center;
+	padding:10px 8px;
+	color:#333;
+}
+
+/* line 728, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT2100 .alt
+{
+	background-color:#EEE;
+}
+
+/* line 732, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT2100 .title
+{
+	text-align:left;
+}
+
+/* line 736, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT2100 .is-mobile
+{
+	border-bottom:1px solid #e1e2e2;
+	padding:0 0 15px;
+	margin:0 0 15px;
+}
+
+/* line 741, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT2100 .is-mobile:last-child
+{
+	border-bottom:0;
+	margin:0;
+	padding:0;
+}
+
+/* line 747, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT2100 .is-mobile .title
+{
+	margin:0 0 15px;
+}
+
+@media screen and (min-width: 560px) {
+	/* line 753, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+	.PDF_QT2100 .question-block-nps__label
+	{
+		font-size:1em;
+		margin:0;
+	}
+
+	/* line 758, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+	.PDF_QT2100 .question-block-nps__input
+	{
+		text-align:center;
+		font-size:1em;
+	}
+
+	/* line 763, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+	.PDF_QT2100 .question-block-nps__input input
+	{
+		vertical-align:baseline;
+	}
+}
+
+/* ---------------------- Ranking - QT https://fontawesome.com/cheatsheet?from=io ----------------------------------- */
+/* line 771, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1300
+{
+	font-size:14px;
+	font-weight:bold;
+	color:#666;
+}
+
+/* line 777, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1300 .rank-label
+{
+	display:inline-flex;
+	flex:1;
+	padding:16px 0 12px;
+	transition:all .25s ease-in-out;
+}
+
+/* line 784, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1300 .rank-label:hover
+{
+	cursor:move;
+	background-color:#EFEFEF;
+	background-color:rgba(255,255,255,0.5);
+}
+
+/* line 790, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1300 .rank-label:active
+{
+	box-shadow:0 0 10px #2b81c1;
+}
+
+/* line 794, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1300 .rank-label::before
+{
+	font-family:"Font Awesome 5 Free";
+	content:"\f0c9";
+	padding-right:15px;
+	font-weight:bold;
+}
+
+/* line 805, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1300 ul.rank
+{
+	margin-top:20px;
+	padding:0;
+}
+
+/* line 810, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1300 ul.rank li
+{
+	margin-bottom:8px;
+}
+
+/* line 814, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1300 ul.rank li:last-child
+{
+	margin-bottom:0;
+}
+
+/* line 818, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1300 .rank-value
+{
+	height:42px;
+	margin:0 10px 0 0;
+	padding:10px;
+	text-align:center;
+	width:50px;
+}
+
+/* line 826, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1300 .question-block__answer-media-public
+{
+	display:inline-block;
+	max-width:150px;
+	max-height:90px;
+	overflow:hidden;
+	display:block;
+}
+
+/* line 8, ../../../../../stylesheets/partials/_mixins.scss */
+.PDF_QT1300 .question-block__answer-media-public::after
+{
+	content:'';
+	display:block;
+	clear:both;
+}
+
+/* line 13, ../../../../../stylesheets/partials/_mixins.scss */
+.PDF_QT1300 .question-block__answer-media-public audio,.PDF_QT1300 .question-block__answer-media-public span
+{
+	vertical-align:top;
+	max-width:150px;
+}
+
+/* line 18, ../../../../../stylesheets/partials/_mixins.scss */
+.PDF_QT1300 .question-block__answer-media-public iframe
+{
+	max-width:150px;
+	max-height:90px;
+}
+
+/* line 23, ../../../../../stylesheets/partials/_mixins.scss */
+.PDF_QT1300 .question-block__answer-media-public div
+{
+	background-size:cover;
+	display:inline-block;
+	width:150px;
+	height:90px;
+	position:relative;
+	overflow:hidden;
+}
+
+/* line 32, ../../../../../stylesheets/partials/_mixins.scss */
+.PDF_QT1300 .question-block__answer-media-public div img
+{
+	position:absolute;
+	max-width:unset;
+	vertical-align:top;
+}
+
+/* ---------------------- Email -  QT 1400 ---------------------------------- */
+/* line 833, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1400 input
+{
+	width:100%;
+}
+
+/* ---------------------- URL - QT 1500 ---------------------------------- */
+/* line 839, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1500 input
+{
+	width:100%;
+}
+
+/* ---------------------- File Upload - .PDF_QT1600 ---------------------------------- */
+/* line 845, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1600 input
+{
+	width:100%;
+}
+
+/* ---------------------- Page Header - .PDF_QT1900 ---------------------------------- */
+/* line 851, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1900 h2
+{
+	font-size:32px;
+	font-weight:900;
+	line-height:48px!important;
+	border:none;
+}
+
+/* line 858, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT1900 p
+{
+	margin:20px 0 0;
+}
+
+/* ---------------------- HTML/Markdown - .PDF_QT2000 ---------------------------------- */
+/* line 866, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT2000 h1,.PDF_QT2000 h2
+{
+	margin:1em 0;
+}
+
+/* line 870, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_QT2000 p
+{
+	margin:1em 0;
+}
+
+/*-----------System Styles --------------------*/
+/* line 877, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.cf
+{
+	margin:0;
+	padding:0;
+	clear:both;
+}
+
+/*-----------Start Page--------------------*/
+/*----------- BUTTONS --------------------*/
+/* line 893, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.button
+{
+	vertical-align:top;
+}
+
+/* line 898, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.button input,.button a.previous-page
+{
+	background:#333;
+	border-radius:1px;
+	border:1px solid #999;
+	box-shadow:none;
+	color:#fff;
+	cursor:pointer;
+	font-size:16px;
+	font-weight:900;
+	margin:0;
+	padding:14px 24px;
+}
+
+/* line 912, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.button a.previous-page
+{
+	background:#fff;
+	color:#666;
+	display:inline-block;
+	font-weight:normal;
+	margin-right:8px;
+	text-decoration:none;
+}
+
+/* line 922, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.button input:hover,.button a.previous-page:hover
+{
+	border:1px solid #666;
+}
+
+/* line 926, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.button input::-moz-focus-inner
+{
+	padding:0;
+	border:none;
+}
+
+/* line 931, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_progress
+{
+	color:#666;
+	font-size:10px;
+	margin:5px auto;
+	padding-right:10px;
+	text-align:right;
+	text-transform:uppercase;
+}
+
+/* line 940, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_progress:last-of-type
+{
+	padding-right:32px;
+}
+
+/*--------------------------------------------------------------
+# One question per page stuff
+--------------------------------------------------------------*/
+/* line 4, ../../../../../stylesheets/partials/_oaat-base.scss */
+body.is-single-question-body
+{
+	overflow:hidden;
+}
+
+/* line 9, ../../../../../stylesheets/partials/_oaat-base.scss */
+.survey.is-single-question .PDF_pageOuter
+{
+	height:100vh;
+	display:flex;
+	flex-direction:column;
+	align-items:center;
+	justify-content:center;
+	overflow:hidden;
+	padding-bottom:56px;
+}
+
+@media screen and (min-width: 720px) {
+	/* line 9, ../../../../../stylesheets/partials/_oaat-base.scss */
+	.survey.is-single-question .PDF_pageOuter
+	{
+		padding-bottom:0;
+	}
+}
+
+/* line 22, ../../../../../stylesheets/partials/_oaat-base.scss */
+.survey.is-single-question.with-vertical-animation .PDF_pageOuter
+{
+	padding-top:40px;
+	padding-bottom:40px;
+}
+
+/* line 29, ../../../../../stylesheets/partials/_oaat-base.scss */
+.survey.is-single-question .PDF_pageInner
+{
+	position:relative;
+	display:flex;
+	height:100%;
+	flex-direction:row;
+	align-items:center;
+	justify-content:center;
+}
+
+/* line 38, ../../../../../stylesheets/partials/_oaat-base.scss */
+.survey.is-single-question.with-vertical-animation .PDF_pageInner
+{
+	flex-direction:column;
+}
+
+/* line 43, ../../../../../stylesheets/partials/_oaat-base.scss */
+.PDF_fieldset
+{
+	transition:.2s all ease-in-out;
+}
+
+/* line 46, ../../../../../stylesheets/partials/_oaat-base.scss */
+.survey.is-single-question .PDF_fieldset
+{
+	position:absolute;
+	max-height:100%;
+	width:100%;
+	flex-shrink:0;
+	box-sizing:content-box;
+	display:none;
+}
+
+@media screen and (min-width: 720px) {
+	/* line 46, ../../../../../stylesheets/partials/_oaat-base.scss */
+	.survey.is-single-question .PDF_fieldset
+	{
+		padding:20px;
+	}
+}
+
+/* line 58, ../../../../../stylesheets/partials/_oaat-base.scss */
+.survey.is-single-question .PDF_fieldset > *
+{
+	width:100%;
+}
+
+@media screen and (min-width: 720px) {
+	/* line 58, ../../../../../stylesheets/partials/_oaat-base.scss */
+	.survey.is-single-question .PDF_fieldset > *
+	{
+		width:600px;
+	}
+}
+
+@media screen and (min-width: 720px) {
+	/* line 67, ../../../../../stylesheets/partials/_oaat-base.scss */
+	.survey.is-single-question.with-vertical-animation .PDF_fieldset
+	{
+		padding:20px;
+	}
+}
+
+/* line 73, ../../../../../stylesheets/partials/_oaat-base.scss */
+.survey.is-single-question .PDF_fieldset.is-active
+{
+	display:flex;
+	justify-content:center;
+	align-items:center;
+	flex-direction:column;
+}
+
+/* line 81, ../../../../../stylesheets/partials/_oaat-base.scss */
+.survey.is-single-question .PDF_fieldset.is-active.is-next,.survey.is-single-question .PDF_fieldset.is-active.is-prev
+{
+	opacity:0;
+}
+
+/* line 85, ../../../../../stylesheets/partials/_oaat-base.scss */
+.survey.is-single-question.with-horizontal-animation .PDF_fieldset.is-active.is-next
+{
+	transform:translateX(100%);
+}
+
+/* line 89, ../../../../../stylesheets/partials/_oaat-base.scss */
+.survey.is-single-question.with-horizontal-animation .PDF_fieldset.is-active.is-prev
+{
+	transform:translateX(-100%);
+}
+
+/* line 93, ../../../../../stylesheets/partials/_oaat-base.scss */
+.survey.is-single-question.with-vertical-animation .PDF_fieldset.is-active.is-next
+{
+	transform:translateY(100%);
+}
+
+/* line 97, ../../../../../stylesheets/partials/_oaat-base.scss */
+.survey.is-single-question.with-vertical-animation .PDF_fieldset.is-active.is-prev
+{
+	transform:translateY(-100%);
+}
+
+/* line 106, ../../../../../stylesheets/partials/_oaat-base.scss */
+.survey.is-single-question .PDF_fieldset-scrollbox
+{
+	overflow:auto;
+	max-height:100%;
+	padding-left:8px;
+	padding-right:8px;
+}
+
+/* line 114, ../../../../../stylesheets/partials/_oaat-base.scss */
+.PDF_progress-container
+{
+	position:fixed;
+	bottom:26px;
+	height:16px;
+	padding:0;
+	left:80px;
+	width:calc(100% - 160px);
+	display:none;
+}
+
+/* line 123, ../../../../../stylesheets/partials/_oaat-base.scss */
+.survey.is-single-question .PDF_progress-container
+{
+	display:flex;
+	align-items:center;
+}
+
+@media screen and (min-width: 720px) {
+	/* line 114, ../../../../../stylesheets/partials/_oaat-base.scss */
+	.PDF_progress-container
+	{
+		bottom:28px;
+		width:50%;
+		left:calc(50% / 2);
+	}
+}
+
+/* line 134, ../../../../../stylesheets/partials/_oaat-base.scss */
+.survey.with-vertical-animation .PDF_progress-container
+{
+	height:100%;
+	left:initial;
+	width:56px;
+	right:8px;
+	top:0;
+	flex-direction:column;
+	align-items:flex-end;
+}
+
+@media screen and (min-width: 720px) {
+	/* line 134, ../../../../../stylesheets/partials/_oaat-base.scss */
+	.survey.with-vertical-animation .PDF_progress-container
+	{
+		right:16px;
+		height:440px;
+		left:initial;
+		top:calc(50% - 220px);
+		align-items:center;
+	}
+}
+
+/* line 153, ../../../../../stylesheets/partials/_oaat-base.scss */
+.PDF_progress-bar-track
+{
+	height:4px;
+	background-color:#c3c4c7;
+	padding:0;
+	flex-grow:100;
+}
+
+/* line 160, ../../../../../stylesheets/partials/_oaat-base.scss */
+.survey.is-single-question .PDF_progress-bar-track
+{
+	display:block;
+}
+
+/* line 164, ../../../../../stylesheets/partials/_oaat-base.scss */
+.survey.with-vertical-animation .PDF_progress-bar-track
+{
+	position:absolute;
+	height:50%;
+	width:4px;
+	bottom:initial;
+	left:initial;
+	right:0;
+	top:25%;
+}
+
+@media screen and (min-width: 720px) {
+	/* line 164, ../../../../../stylesheets/partials/_oaat-base.scss */
+	.survey.with-vertical-animation .PDF_progress-bar-track
+	{
+		height:400px;
+		left:initial;
+		top:20px;
+	}
+}
+
+/* line 181, ../../../../../stylesheets/partials/_oaat-base.scss */
+.PDF_progress-bar
+{
+	height:4px;
+	background-color:#001d2d;
+	transition:width .2s ease-out;
+}
+
+/* line 186, ../../../../../stylesheets/partials/_oaat-base.scss */
+.with-dots .PDF_progress-bar
+{
+	background:repeating-linear-gradient(90deg,transparent,#001d2d,#001d2d 4px,transparent 4px,transparent 8px);
+}
+
+/* line 190, ../../../../../stylesheets/partials/_oaat-base.scss */
+.survey.with-vertical-animation .with-dots .PDF_progress-bar
+{
+	background:repeating-linear-gradient(0deg,transparent,#001d2d,#001d2d 4px,transparent 4px,transparent 8px);
+}
+
+/* line 194, ../../../../../stylesheets/partials/_oaat-base.scss */
+.survey.with-vertical-animation .PDF_progress-bar
+{
+	height:initial;
+	width:4px;
+	transition:height .2s ease-out;
+}
+
+/* line 201, ../../../../../stylesheets/partials/_oaat-base.scss */
+.PDF_progress-label
+{
+	padding-left:8px;
+	font-size:12px;
+	flex-grow:1;
+	text-align:center;
+}
+
+/* line 207, ../../../../../stylesheets/partials/_oaat-base.scss */
+.survey.with-vertical-animation .PDF_progress-label
+{
+	padding:0;
+	position:absolute;
+	bottom:16px;
+	width:100%;
+	text-align:right;
+	overflow:visible;
+}
+
+@media screen and (min-width: 720px) {
+	/* line 207, ../../../../../stylesheets/partials/_oaat-base.scss */
+	.survey.with-vertical-animation .PDF_progress-label
+	{
+		bottom:0;
+	}
+}
+
+/* line 221, ../../../../../stylesheets/partials/_oaat-base.scss */
+.PDF_fieldset-buttons
+{
+	display:none;
+}
+
+/* line 224, ../../../../../stylesheets/partials/_oaat-base.scss */
+.survey.is-single-question .PDF_fieldset-buttons
+{
+	display:flex;
+	justify-content:flex-end;
+}
+
+/* line 230, ../../../../../stylesheets/partials/_oaat-base.scss */
+.PDF_fieldset-buttons .PDF_button
+{
+	-webkit-appearance:none;
+	border-radius:1px;
+	border:2px solid #ccc;
+	box-shadow:none;
+	cursor:pointer;
+	font-size:16px;
+	font-weight:900;
+	line-height:32px!important;
+	margin:0 0 0 20px;
+	padding:4px 24px;
+	position:relative;
+	text-decoration:none;
+	text-transform:uppercase;
+	overflow:hidden;
+}
+
+/* line 246, ../../../../../stylesheets/partials/_oaat-base.scss */
+.PDF_fieldset-buttons .PDF_button::after
+{
+	width:0;
+	height:0;
+	z-index:-1;
+	overflow:hidden;
+	display:block;
+	content:;
+}
+
+/* line 255, ../../../../../stylesheets/partials/_oaat-base.scss */
+.PDF_fieldset.is-loading .PDF_fieldset-buttons .PDF_button::before
+{
+	background-color:#333;
+	background-image:url('//app.crowdsignal.com/images/loading-bar.svg');
+	background-position:center;
+	background-size:50px;
+	background-repeat:no-repeat;
+	content:"";
+	display:block;
+	position:absolute;
+	top:0;
+	left:0;
+	height:100%;
+	width:100%;
+}
+
+/* line 271, ../../../../../stylesheets/partials/_oaat-base.scss */
+.PDF_navigation
+{
+	display:none;
+}
+
+/* line 274, ../../../../../stylesheets/partials/_oaat-base.scss */
+.survey.is-single-question .PDF_navigation
+{
+	display:block;
+}
+
+/* line 279, ../../../../../stylesheets/partials/_oaat-base.scss */
+.PDF_navigation-button
+{
+	background:transparent!important;
+	border:2px solid transparent!important;
+	cursor:pointer;
+	outline:0;
+	position:fixed;
+	bottom:10px;
+	line-height:0;
+	padding:8px;
+}
+
+@media screen and (min-width: 720px) {
+	/* line 279, ../../../../../stylesheets/partials/_oaat-base.scss */
+	.PDF_navigation-button
+	{
+		bottom:calc(50% - 25px);
+	}
+}
+
+/* line 293, ../../../../../stylesheets/partials/_oaat-base.scss */
+.PDF_navigation-button:hover
+{
+	opacity:.5;
+}
+
+/* line 297, ../../../../../stylesheets/partials/_oaat-base.scss */
+.PDF_navigation-button img
+{
+	height:30px;
+	width:30px;
+}
+
+/* line 302, ../../../../../stylesheets/partials/_oaat-base.scss */
+.PDF_navigation-button.is-disabled
+{
+	display:none;
+}
+
+/* line 306, ../../../../../stylesheets/partials/_oaat-base.scss */
+.PDF_navigation-button.is-previous
+{
+	left:0;
+}
+
+@media screen and (min-width: 720px) {
+	/* line 306, ../../../../../stylesheets/partials/_oaat-base.scss */
+	.PDF_navigation-button.is-previous
+	{
+		left:20px;
+	}
+}
+
+/* line 314, ../../../../../stylesheets/partials/_oaat-base.scss */
+.PDF_navigation-button.is-next
+{
+	right:0;
+}
+
+@media screen and (min-width: 720px) {
+	/* line 314, ../../../../../stylesheets/partials/_oaat-base.scss */
+	.PDF_navigation-button.is-next
+	{
+		right:20px;
+	}
+}
+
+/* line 322, ../../../../../stylesheets/partials/_oaat-base.scss */
+.survey.with-vertical-animation .PDF_navigation-button.is-previous
+{
+	left:calc(50% - 25px);
+	top:0;
+	bottom:initial;
+	transform:rotateZ(90deg);
+}
+
+@media screen and (min-width: 720px) {
+	/* line 322, ../../../../../stylesheets/partials/_oaat-base.scss */
+	.survey.with-vertical-animation .PDF_navigation-button.is-previous
+	{
+		top:20px;
+	}
+}
+
+/* line 333, ../../../../../stylesheets/partials/_oaat-base.scss */
+.survey.with-vertical-animation .PDF_navigation-button.is-next
+{
+	left:calc(50% - 25px);
+	right:initial;
+	bottom:0;
+	top:initial;
+	transform:rotateZ(90deg);
+}
+
+@media screen and (min-width: 720px) {
+	/* line 333, ../../../../../stylesheets/partials/_oaat-base.scss */
+	.survey.with-vertical-animation .PDF_navigation-button.is-next
+	{
+		bottom:20px;
+	}
+}
+
+/* line 947, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.PDF_fieldset-buttons .PDF_button
+{
+	background-color:#333;
+	border-color:#999;
+	color:#FFF;
+}
+
+@media screen and (min-width: 720px) {
+	/* line 953, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+	.PDF_navigation-button
+	{
+		bottom:calc(50% - 25px);
+	}
+}
+
+/* line 960, ../../../../../stylesheets/app.crowdsignal.com/survey-style/117.scss */
+.survey.with-vertical-animation .PDF_navigation-button.is-previous,.survey.with-vertical-animation .PDF_navigation-button.is-next
+{
+	left:calc(50% - 25px);
+}
+
+/* Other Custom Changes */
+/* For "Other" options with a text field, make the label be 100% of the width. */
+li.question-block-400__choice-other > label
+{
+	flex:1;
+}
+
+/* For "Other" options with a text field, make the textfield show below the label. */
+li.question-block-400__choice-other > input[type="text"],li.question-block-400__choice-other > input[type="email"]
+{
+	flex-basis:100%;
+	margin-left:28px;
+	margin-top:8px;
+}
+
+input[type="text"],input[type="password"],input[type="submit"],input[type="email"]
+{
+/* Remove the drop shadow and gradient on button. All ugliness. */
+	-webkit-appearance:none;
+	font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"!important;
+	font-size:17px;
+	color:#000;
+	font:-apple-system-body;
+}
+
+.PDF_pagination div.button input[type="submit"]
+{
+	width:100%;
+	background-color:#C9356E;
+	border-style:none;
+	border-radius:8px;
+	font-weight:bold;
+	color:#fff;
+}
+
+/* Add margin between the label and text fields */
+.PDF_QT1400 input[type="text"],.PDF_QT1400 input[type="email"],.PDF_QT1400 input[type="password"]
+{
+	margin-top:8px;
+}
+
+/* Remove background color from field-specific errors. */
+.PDF_err
+{
+	background-color:transparent;
+}

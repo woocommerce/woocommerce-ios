@@ -7,7 +7,7 @@ final class BottomSheetListSelectorViewController<Command: BottomSheetListSelect
 UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model == Model, Command.Cell == Cell {
     private let viewProperties: BottomSheetListSelectorViewProperties
     private let command: Command
-    private let onDismiss: (_ selected: Model?) -> Void
+    private let onDismiss: ((_ selected: Model?) -> Void)?
 
     private let rowType = Cell.self
 
@@ -26,7 +26,7 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
 
     init(viewProperties: BottomSheetListSelectorViewProperties,
          command: Command,
-         onDismiss: @escaping (_ selected: Model?) -> Void) {
+         onDismiss: ((_ selected: Model?) -> Void)?) {
         self.viewProperties = viewProperties
         self.command = command
         self.onDismiss = onDismiss
@@ -46,7 +46,7 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
     }
 
     override func viewWillDisappear(_ animated: Bool) {
-        onDismiss(command.selected)
+        onDismiss?(command.selected)
         super.viewWillDisappear(animated)
     }
 

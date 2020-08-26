@@ -10,7 +10,7 @@ final class BottomSheetListSelectorPresenter<Command: BottomSheetListSelectorCom
     ///   - onDismiss: Called when the bottom sheet is dismissed. Useful when tapping on each bottom sheet row does not trigger navigation changes.
     init(viewProperties: BottomSheetListSelectorViewProperties,
          command: Command,
-         onDismiss: @escaping (_ selected: Command.Model?) -> Void = { _ in }) {
+         onDismiss: ((_ selected: Command.Model?) -> Void)? = nil) {
         bottomSheetChildViewController = BottomSheetListSelectorViewController(viewProperties: viewProperties,
                                                                                command: command,
                                                                                onDismiss: onDismiss)

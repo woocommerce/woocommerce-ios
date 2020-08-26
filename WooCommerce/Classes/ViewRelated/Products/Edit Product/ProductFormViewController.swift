@@ -34,7 +34,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private let productUIImageLoader: ProductUIImageLoader
 
     private let currency: String
-    private let isEditProductsRelease2Enabled: Bool
     private let isEditProductsRelease3Enabled: Bool
 
     private lazy var exitForm: () -> Void = {
@@ -55,13 +54,11 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
          productImageActionHandler: ProductImageActionHandler,
          currency: String = CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode),
          presentationStyle: ProductFormPresentationStyle,
-         isEditProductsRelease2Enabled: Bool,
          isEditProductsRelease3Enabled: Bool) {
         self.viewModel = viewModel
         self.eventLogger = eventLogger
         self.currency = currency
         self.presentationStyle = presentationStyle
-        self.isEditProductsRelease2Enabled = isEditProductsRelease2Enabled
         self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
         self.productImageActionHandler = productImageActionHandler
         self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler,
@@ -72,7 +69,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
                                                                   productUIImageLoader: productUIImageLoader,
-                                                                  canEditImages: isEditProductsRelease2Enabled)
+                                                                  canEditImages: true)
         super.init(nibName: "ProductFormViewController", bundle: nil)
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
             self?.onEditProductNameCompletion(newName: name ?? "")
@@ -259,10 +256,16 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         case .settings(let rows):
             let row = rows[indexPath.row]
             switch row {
-            case .price:
+            case .price(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
                 eventLogger.logPriceSettingsTapped()
                 editPriceSettings()
             case .reviews:
+                guard product.ratingCount > 0 else {
+                    return
+                }
                 ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
                 showReviews()
             case .productType:
@@ -272,7 +275,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             case .shipping:
                 eventLogger.logShippingSettingsTapped()
                 editShippingSettings()
-            case .inventory:
+            case .inventory(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
                 eventLogger.logInventorySettingsTapped()
                 editInventorySettings()
             case .categories:
@@ -439,7 +445,7 @@ private extension ProductFormViewController {
         tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                              productImageStatuses: productImageActionHandler.productImageStatuses,
                                                              productUIImageLoader: productUIImageLoader,
-                                                             canEditImages: isEditProductsRelease2Enabled)
+                                                             canEditImages: true)
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
             self?.onEditProductNameCompletion(newName: name ?? "")
         }, onStatusChange: { [weak self] isEnabled in
@@ -456,7 +462,7 @@ private extension ProductFormViewController {
         tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                              productImageStatuses: statuses,
                                                              productUIImageLoader: productUIImageLoader,
-                                                             canEditImages: isEditProductsRelease2Enabled)
+                                                             canEditImages: true)
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
             self?.onEditProductNameCompletion(newName: name ?? "")
         }, onStatusChange: { [weak self] isEnabled in
@@ -498,7 +504,6 @@ private extension ProductFormViewController {
                                                                         case .editSKU:
                                                                             ServiceLocator.analytics.track(.productDetailViewSKUTapped)
                                                                             self?.editSKU()
-                                                                            break
                                                                         }
                                                                     }
         }
@@ -668,7 +673,7 @@ private extension ProductFormViewController {
             rightBarButtonItems.append(createUpdateBarButtonItem())
         }
 
-        if isEditProductsRelease2Enabled && viewModel.canEditProductSettings() {
+        if viewModel.canEditProductSettings() {
             rightBarButtonItems.insert(createMoreOptionsBarButtonItem(), at: 0)
         }
 
@@ -713,6 +718,19 @@ extension ProductFormViewController: KeyboardScrollable {
     }
 }
 
+// MARK: - Navigation actions handling
+//
+private extension ProductFormViewController {
+    func presentBackNavigationActionSheet() {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+            guard let self = self else {
+                return
+            }
+            self.exitForm()
+        })
+    }
+}
+
 // MARK: Action - Edit Product Images
 //
 private extension ProductFormViewController {
@@ -745,22 +763,7 @@ private extension ProductFormViewController {
     }
 }
 
-
-// MARK: - Navigation actions handling
-//
-private extension ProductFormViewController {
-    func presentBackNavigationActionSheet() {
-        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
-            guard let self = self else {
-                return
-            }
-            self.exitForm()
-        })
-    }
-}
-
-
-// MARK: Action - Edit Product Parameters
+// MARK: Action - Edit Product Description
 //
 private extension ProductFormViewController {
     func editProductDescription() {
@@ -789,13 +792,14 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     func editPriceSettings() {
         let priceSettingsViewController = ProductPriceSettingsViewController(product: product) { [weak self]
-            (regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass) in
+            (regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass, hasUnsavedChanges) in
             self?.onEditPriceSettingsCompletion(regularPrice: regularPrice,
                                                 salePrice: salePrice,
                                                 dateOnSaleStart: dateOnSaleStart,
                                                 dateOnSaleEnd: dateOnSaleEnd,
                                                 taxStatus: taxStatus,
-                                                taxClass: taxClass)
+                                                taxClass: taxClass,
+                                                hasUnsavedChanges: hasUnsavedChanges)
         }
         navigationController?.pushViewController(priceSettingsViewController, animated: true)
     }
@@ -805,22 +809,14 @@ private extension ProductFormViewController {
                                        dateOnSaleStart: Date?,
                                        dateOnSaleEnd: Date?,
                                        taxStatus: ProductTaxStatus,
-                                       taxClass: TaxClass?) {
+                                       taxClass: TaxClass?,
+                                       hasUnsavedChanges: Bool) {
         defer {
             navigationController?.popViewController(animated: true)
         }
 
-        let hasChangedData: Bool = {
-                getDecimalPrice(regularPrice) != getDecimalPrice(product.regularPrice) ||
-                getDecimalPrice(salePrice) != getDecimalPrice(product.salePrice) ||
-                dateOnSaleStart != product.dateOnSaleStart ||
-                dateOnSaleEnd != product.dateOnSaleEnd ||
-                taxStatus != product.productTaxStatus ||
-                taxClass?.slug != product.taxClass
-        }()
-
-        ServiceLocator.analytics.track(.productPriceSettingsDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
-        guard hasChangedData else {
+        ServiceLocator.analytics.track(.productPriceSettingsDoneButtonTapped, withProperties: ["has_changed_data": hasUnsavedChanges])
+        guard hasUnsavedChanges else {
             return
         }
 
@@ -1110,18 +1106,6 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     func onEditStatusCompletion(isEnabled: Bool) {
         viewModel.updateStatus(isEnabled)
-    }
-}
-
-// MARK: Convenience Methods
-//
-private extension ProductFormViewController {
-    func getDecimalPrice(_ price: String?) -> NSDecimalNumber? {
-        guard let price = price else {
-            return nil
-        }
-        let currencyFormatter = CurrencyFormatter()
-        return currencyFormatter.convertToDecimal(from: price)
     }
 }
 

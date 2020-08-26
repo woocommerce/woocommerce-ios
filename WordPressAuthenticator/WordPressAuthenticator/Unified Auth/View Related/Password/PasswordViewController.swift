@@ -165,7 +165,7 @@ private extension PasswordViewController {
 // MARK: - UITextFieldDelegate
 
 extension PasswordViewController: UITextFieldDelegate {
-        
+
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if enableSubmit(animating: false) {
             validateForm()
@@ -314,7 +314,7 @@ private extension PasswordViewController {
 
         let displayStrings = WordPressAuthenticator.shared.displayStrings
         let instructions = (service == .google) ? displayStrings.googlePasswordInstructions :
-                                                  displayStrings.applePasswordInstructions
+            displayStrings.applePasswordInstructions
 
         cell.configureLabel(text: instructions)
     }
@@ -392,11 +392,11 @@ private extension PasswordViewController {
     /// Configure the view for an editing state.
     ///
     func configureViewForEditingIfNeeded() {
-       // Check the helper to determine whether an editing state should be assumed.
-       adjustViewForKeyboard(SigninEditingState.signinEditingStateActive)
-       if SigninEditingState.signinEditingStateActive {
-           passwordField?.becomeFirstResponder()
-       }
+        // Check the helper to determine whether an editing state should be assumed.
+        adjustViewForKeyboard(SigninEditingState.signinEditingStateActive)
+        if SigninEditingState.signinEditingStateActive {
+            passwordField?.becomeFirstResponder()
+        }
     }
     
     /// Sets up accessibility elements in the order which they should be read aloud
@@ -419,13 +419,9 @@ private extension PasswordViewController {
 
         let email = loginFields.username
         guard email.isValidEmail() else {
-            // This is a bit of paranoia as in practice it should never happen.
-            // However, let's make sure we give the user some useful feedback just in case.
             DDLogError("Attempted to request authentication link, but the email address did not appear valid.")
-            let alert = UIAlertController(title: NSLocalizedString("Can Not Request Link", comment: "Title of an alert letting the user know"), message: NSLocalizedString("A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address.", comment: "An error message."), preferredStyle: .alert)
-            alert.addActionWithTitle(NSLocalizedString("Need help?", comment: "Takes the user to get help"), style: .cancel, handler: { _ in WordPressAuthenticator.shared.delegate?.presentSupportRequest(from: self, sourceTag: .loginEmail) })
-            alert.addActionWithTitle(NSLocalizedString("OK", comment: "Dismisses the alert"), style: .default, handler: nil)
-            self.present(alert, animated: true, completion: nil)
+            let alert = buildInvalidEmailAlert()
+            present(alert, animated: true, completion: nil)
             return
         }
 
@@ -463,6 +459,27 @@ private extension PasswordViewController {
         vc.loginFields = self.loginFields
         vc.loginFields.restrictToWPCom = true
         navigationController?.pushViewController(vc, animated: true)
+    }
+
+    /// Build the alert message when the email address is invalid.
+    ///
+    func buildInvalidEmailAlert() -> UIAlertController {
+        let title = NSLocalizedString("Can Not Request Link",
+                                      comment: "Title of an alert letting the user know")
+        let message = NSLocalizedString("A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address.",
+                                        comment: "An error message.")
+        let helpActionTitle = NSLocalizedString("Need help?",
+                                                comment: "Takes the user to get help")
+        let okActionTitle = NSLocalizedString("OK",
+                                              comment: "Dismisses the alert")
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addActionWithTitle(helpActionTitle,
+                                 style: .cancel,
+                                 handler: { _ in
+                                    WordPressAuthenticator.shared.delegate?.presentSupportRequest(from: self, sourceTag: .loginEmail)
+        })
+        alert.addActionWithTitle(okActionTitle, style: .default, handler: nil)
+        return alert
     }
     
     /// Rows listed in the order they were created.

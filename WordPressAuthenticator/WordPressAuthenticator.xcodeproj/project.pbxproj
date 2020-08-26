@@ -428,7 +428,6 @@
 		98655A56247F2AEA005EF9CC /* Unified Auth */ = {
 			isa = PBXGroup;
 			children = (
-				98BC47E124F5B959000275AD /* Get Started */,
 				98D9A4B02474A526002E491C /* GoogleAuthenticator.swift */,
 				CEC77C6424854EE400FB9050 /* View Related */,
 			);
@@ -767,6 +766,7 @@
 		CEC77C6424854EE400FB9050 /* View Related */ = {
 			isa = PBXGroup;
 			children = (
+				98BC47E124F5B959000275AD /* Get Started */,
 				984D508024D4B1FD00251A63 /* Password */,
 				988AD89F24CB820200BD045E /* 2FA */,
 				98CF18F5248725130047B66C /* Google */,

@@ -7,6 +7,7 @@ public struct WordPressAuthenticatorDisplayStrings {
     /// Strings: Login instructions.
     ///
     public let emailLoginInstructions: String
+    public let getStartedInstructions: String
     public let jetpackLoginInstructions: String
     public let siteLoginInstructions: String
 	public let siteCredentialInstructions: String
@@ -28,7 +29,7 @@ public struct WordPressAuthenticatorDisplayStrings {
     
     /// Large titles displayed in unified auth flows.
     ///
-    public let gettingStartedTitle: String
+    public let getStartedTitle: String
     public let logInTitle: String
     public let signUpTitle: String
     public let waitingForGoogleTitle: String
@@ -50,6 +51,7 @@ public struct WordPressAuthenticatorDisplayStrings {
     /// Designated initializer.
     ///
     public init(emailLoginInstructions: String = defaultStrings.emailLoginInstructions,
+                getStartedInstructions: String = defaultStrings.getStartedInstructions,
                 jetpackLoginInstructions: String = defaultStrings.jetpackLoginInstructions,
                 siteLoginInstructions: String = defaultStrings.siteLoginInstructions,
                 siteCredentialInstructions: String = defaultStrings.siteCredentialInstructions,
@@ -69,7 +71,7 @@ public struct WordPressAuthenticatorDisplayStrings {
                 resetPasswordButtonTitle: String = defaultStrings.resetPasswordButtonTitle,
                 getLoginLinkButtonTitle: String = defaultStrings.getLoginLinkButtonTitle,
                 textCodeButtonTitle: String = defaultStrings.textCodeButtonTitle,
-                gettingStartedTitle: String = defaultStrings.gettingStartedTitle,
+                getStartedTitle: String = defaultStrings.getStartedTitle,
                 logInTitle: String = defaultStrings.logInTitle,
                 signUpTitle: String = defaultStrings.signUpTitle,
                 waitingForGoogleTitle: String = defaultStrings.waitingForGoogleTitle,
@@ -78,6 +80,7 @@ public struct WordPressAuthenticatorDisplayStrings {
                 siteAddressPlaceholder: String = defaultStrings.siteAddressPlaceholder,
                 twoFactorCodePlaceholder: String = defaultStrings.twoFactorCodePlaceholder) {
         self.emailLoginInstructions = emailLoginInstructions
+        self.getStartedInstructions = getStartedInstructions
         self.jetpackLoginInstructions = jetpackLoginInstructions
         self.siteLoginInstructions = siteLoginInstructions
 		self.siteCredentialInstructions = siteCredentialInstructions
@@ -97,7 +100,7 @@ public struct WordPressAuthenticatorDisplayStrings {
         self.resetPasswordButtonTitle = resetPasswordButtonTitle
         self.getLoginLinkButtonTitle = getLoginLinkButtonTitle
         self.textCodeButtonTitle = textCodeButtonTitle
-        self.gettingStartedTitle = gettingStartedTitle
+        self.getStartedTitle = getStartedTitle
         self.logInTitle = logInTitle
         self.signUpTitle = signUpTitle
         self.waitingForGoogleTitle = waitingForGoogleTitle
@@ -113,6 +116,8 @@ public extension WordPressAuthenticatorDisplayStrings {
         return WordPressAuthenticatorDisplayStrings(
             emailLoginInstructions: NSLocalizedString("Log in to your WordPress.com account with your email address.",
                                                       comment: "Instruction text on the login's email address screen."),
+            getStartedInstructions: NSLocalizedString("Enter your email address to log in or create a WordPress.com account.",
+            comment: "Instruction text on the initial email address entry screen."),
             jetpackLoginInstructions: NSLocalizedString("Log in to the WordPress.com account you used to connect Jetpack.",
                                                         comment: "Instruction text on the login's email address screen."),
             siteLoginInstructions: NSLocalizedString("Enter the address of the WordPress site you'd like to connect.",
@@ -150,8 +155,8 @@ public extension WordPressAuthenticatorDisplayStrings {
             textCodeButtonTitle: NSLocalizedString("Text me a code instead",
                                                    comment: "The button's title text to send a 2FA code via SMS text message."),
             
-            gettingStartedTitle: NSLocalizedString("Getting Started",
-                                                   comment: "View title for initial auth views."),
+            getStartedTitle: NSLocalizedString("Get Started",
+                                               comment: "View title for initial auth views."),
             logInTitle: NSLocalizedString("Log In",
                                           comment: "View title during the log in process."),
             signUpTitle: NSLocalizedString("Sign Up",

@@ -30,6 +30,8 @@
 		98D9A4B12474A526002E491C /* GoogleAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D9A4B02474A526002E491C /* GoogleAuthenticator.swift */; };
 		98ED483624802F8F00992B2D /* GoogleAuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98ED483424802F8F00992B2D /* GoogleAuthViewController.swift */; };
 		98ED48392480300500992B2D /* GoogleAuth.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 98ED48382480300500992B2D /* GoogleAuth.storyboard */; };
+		98F40AF024F5E13200A72911 /* TextWithLinkTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 98F40AEE24F5E13200A72911 /* TextWithLinkTableViewCell.xib */; };
+		98F40AF124F5E13200A72911 /* TextWithLinkTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F40AEF24F5E13200A72911 /* TextWithLinkTableViewCell.swift */; };
 		B501C045208FC68700D1E58F /* LoginFieldsValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B501C03C208FC52400D1E58F /* LoginFieldsValidationTests.swift */; };
 		B501C046208FC6A700D1E58F /* WordPressAuthenticatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B501C03E208FC52500D1E58F /* WordPressAuthenticatorTests.swift */; };
 		B501C048208FC79C00D1E58F /* LoginFacadeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B501C040208FC52500D1E58F /* LoginFacadeTests.m */; };
@@ -207,6 +209,8 @@
 		98D9A4B02474A526002E491C /* GoogleAuthenticator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoogleAuthenticator.swift; sourceTree = "<group>"; };
 		98ED483424802F8F00992B2D /* GoogleAuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAuthViewController.swift; sourceTree = "<group>"; };
 		98ED48382480300500992B2D /* GoogleAuth.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = GoogleAuth.storyboard; sourceTree = "<group>"; };
+		98F40AEE24F5E13200A72911 /* TextWithLinkTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextWithLinkTableViewCell.xib; sourceTree = "<group>"; };
+		98F40AEF24F5E13200A72911 /* TextWithLinkTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextWithLinkTableViewCell.swift; sourceTree = "<group>"; };
 		AE612958059F9E80B54138B3 /* Pods-WordPressAuthenticatorTests.release-internal.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticatorTests.release-internal.xcconfig"; path = "Pods/Target Support Files/Pods-WordPressAuthenticatorTests/Pods-WordPressAuthenticatorTests.release-internal.xcconfig"; sourceTree = "<group>"; };
 		B0D7D40BC1DE2D367761AD86 /* Pods-WordPressAuthenticatorTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticatorTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WordPressAuthenticatorTests/Pods-WordPressAuthenticatorTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B501C03C208FC52400D1E58F /* LoginFieldsValidationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginFieldsValidationTests.swift; sourceTree = "<group>"; };
@@ -783,12 +787,14 @@
 			children = (
 				CE1BBF8A24D4857F001D2E3E /* GravatarEmailTableViewCell.swift */,
 				CE1BBF8B24D48580001D2E3E /* GravatarEmailTableViewCell.xib */,
-				CE6BCD3624A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.swift */,
-				CE6BCD3724A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.xib */,
-				CE6BCD2C24A3A235001BCDC5 /* TextLabelTableViewCell.swift */,
-				CE6BCD2D24A3A235001BCDC5 /* TextLabelTableViewCell.xib */,
 				CE9091F52499549500AB50BD /* TextFieldTableViewCell.swift */,
 				CE9091F62499549500AB50BD /* TextFieldTableViewCell.xib */,
+				CE6BCD2C24A3A235001BCDC5 /* TextLabelTableViewCell.swift */,
+				CE6BCD2D24A3A235001BCDC5 /* TextLabelTableViewCell.xib */,
+				CE6BCD3624A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.swift */,
+				CE6BCD3724A3CB5E001BCDC5 /* TextLinkButtonTableViewCell.xib */,
+				98F40AEF24F5E13200A72911 /* TextWithLinkTableViewCell.swift */,
+				98F40AEE24F5E13200A72911 /* TextWithLinkTableViewCell.xib */,
 			);
 			path = "Reusable Views";
 			sourceTree = "<group>";
@@ -933,6 +939,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B5E07FF4208FD13800657A9A /* Assets.xcassets in Resources */,
+				98F40AF024F5E13200A72911 /* TextWithLinkTableViewCell.xib in Resources */,
 				B56090CA208A4F5400399AE4 /* NUXButtonView.storyboard in Resources */,
 				B560911E208A555E00399AE4 /* Signup.storyboard in Resources */,
 				CEA2DBFE24E5DEEC00EC2AD6 /* UnifiedSignup.storyboard in Resources */,
@@ -1178,6 +1185,7 @@
 				B5609107208A54F800399AE4 /* WordPressComBlogService.swift in Sources */,
 				B560910D208A54F800399AE4 /* WordPressXMLRPCAPIFacade.m in Sources */,
 				B5ED791F207E993E00A8FD8C /* CocoaLumberjack.swift in Sources */,
+				98F40AF124F5E13200A72911 /* TextWithLinkTableViewCell.swift in Sources */,
 				B5609123208A557700399AE4 /* WordPressComSiteInfo.swift in Sources */,
 				B56090CC208A4F5400399AE4 /* NUXTableViewController.swift in Sources */,
 				CE30A2A722579F4100DF3CDA /* LoginUsernamePasswordViewController.swift in Sources */,

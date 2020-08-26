@@ -24,6 +24,9 @@ enum ProductFormEditAction {
     case variationName
     case noPriceWarning
     case status
+    // Non-core products only (e.g. subscription products, booking products)
+    case readonlyPriceSettings
+    case readonlyInventorySettings
 }
 
 /// Creates actions for different sections/UI on the product form.
@@ -81,8 +84,7 @@ private extension ProductFormActionsFactory {
         case .variable:
             return allSettingsSectionActionsForVariableProduct()
         default:
-            assertionFailure("Product of type \(product.product.productType) should not be editable.")
-            return []
+            return allSettingsSectionActionsForNonCoreProduct()
         }
     }
 
@@ -163,6 +165,26 @@ private extension ProductFormActionsFactory {
         ]
         return actions.compactMap { $0 }
     }
+
+    func allSettingsSectionActionsForNonCoreProduct() -> [ProductFormEditAction] {
+        let shouldShowPriceSettingsRow = product.regularPrice.isNilOrEmpty == false
+        let shouldShowReviewsRow = isEditProductsRelease3Enabled
+        let shouldShowProductTypeRow = isEditProductsRelease3Enabled
+        let shouldShowBriefDescriptionRow = isEditProductsRelease2Enabled
+        let shouldShowCategoriesRow = isEditProductsRelease3Enabled
+        let shouldShowTagsRow = isEditProductsRelease3Enabled
+
+        let actions: [ProductFormEditAction?] = [
+            shouldShowPriceSettingsRow ? .readonlyPriceSettings: nil,
+            shouldShowReviewsRow ? .reviews: nil,
+            .readonlyInventorySettings,
+            shouldShowCategoriesRow ? .categories: nil,
+            shouldShowTagsRow ? .tags: nil,
+            shouldShowBriefDescriptionRow ? .briefDescription: nil,
+            shouldShowProductTypeRow ? .productType : nil
+        ]
+        return actions.compactMap { $0 }
+    }
 }
 
 private extension ProductFormActionsFactory {
@@ -206,6 +228,10 @@ private extension ProductFormActionsFactory {
         // Variable products only.
         case .variations:
             // The variations row is always visible in the settings section for a variable product.
+            return true
+        // Non-core products only.
+        case .readonlyPriceSettings, .readonlyInventorySettings:
+            // The readonly rows are always visible in the settings section for a non-core product.
             return true
         default:
             return false

@@ -259,10 +259,16 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         case .settings(let rows):
             let row = rows[indexPath.row]
             switch row {
-            case .price:
+            case .price(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
                 eventLogger.logPriceSettingsTapped()
                 editPriceSettings()
             case .reviews:
+                guard product.ratingCount > 0 else {
+                    return
+                }
                 ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
                 showReviews()
             case .productType:
@@ -272,7 +278,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             case .shipping:
                 eventLogger.logShippingSettingsTapped()
                 editShippingSettings()
-            case .inventory:
+            case .inventory(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
                 eventLogger.logInventorySettingsTapped()
                 editInventorySettings()
             case .categories:

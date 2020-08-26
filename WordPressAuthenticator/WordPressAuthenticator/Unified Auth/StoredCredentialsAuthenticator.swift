@@ -61,7 +61,7 @@ class StoredCredentialsAuthenticator: NSObject {
             // No-op for now, but we can decide to implement AppleID login through this authenticator
             // by implementing the logic here.
             break
-        case let credential as ASPasswordCredential:
+        case _ as ASPasswordCredential:
             // TODO: No-op for now.  The code below will be enabled in my next PR.
             //
             //let loginFields = LoginFields.makeForWPCom(username: credential.user, password: credential.password)
@@ -87,13 +87,7 @@ class StoredCredentialsAuthenticator: NSObject {
             // The user cancelling the flow is not really an error, so we're not reporting or tracking
             // this as an error.  We're only tracking this as a regular UI dismissal.
             tracker.track(click: .dismiss)
-        case .failed:
-            fallthrough
-        case .invalidResponse:
-            fallthrough
-        case .notHandled:
-            fallthrough
-        case .unknown:
+        case .failed, .invalidResponse, .notHandled, .unknown:
             tracker.track(failure: authError.localizedDescription)
             DDLogError("ASAuthorizationError: \(authError.localizedDescription)")
         }

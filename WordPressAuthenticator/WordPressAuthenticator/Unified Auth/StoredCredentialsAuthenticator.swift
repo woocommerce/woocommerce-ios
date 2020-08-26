@@ -30,6 +30,9 @@ class StoredCredentialsAuthenticator: NSObject {
     // Showing the UI
     
     func showPicker(in window: UIWindow) {
+        tracker.set(flow: .loginWithiCloudKeychain)
+        tracker.track(step: .start)
+        
         picker.show(in: window) { [weak self] result in
             guard let self = self else {
                 return
@@ -59,9 +62,6 @@ class StoredCredentialsAuthenticator: NSObject {
             // by implementing the logic here.
             break
         case let credential as ASPasswordCredential:
-            tracker.set(flow: .loginWithiCloudKeychain)
-            tracker.track(step: .start)
-            
             let loginFields = LoginFields.makeForWPCom(username: credential.user, password: credential.password)
             loginFacade.signIn(with: loginFields)
         default:

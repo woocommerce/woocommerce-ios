@@ -15,7 +15,8 @@ class LoginPrologueViewController: LoginViewController {
     private let configuration = WordPressAuthenticator.shared.configuration
     private let style = WordPressAuthenticator.shared.style
 
-    private let storedCredentialsAuthenticator = StoredCredentialsAuthenticator()
+    @available(iOS 13, *)
+    private lazy var storedCredentialsAuthenticator = StoredCredentialsAuthenticator()
     
     @IBOutlet private weak var topContainerView: UIView!
 
@@ -46,7 +47,10 @@ class LoginPrologueViewController: LoginViewController {
         
         WordPressAuthenticator.track(.loginPrologueViewed)
         
-        storedCredentialsAuthenticator.showPicker(in: view.window)
+        if #available(iOS 13, *),
+            let window = view.window {
+                storedCredentialsAuthenticator.showPicker(in: window)
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {

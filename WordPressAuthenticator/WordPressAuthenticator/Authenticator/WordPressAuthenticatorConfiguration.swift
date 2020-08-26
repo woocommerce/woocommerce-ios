@@ -97,6 +97,10 @@ public struct WordPressAuthenticatorConfiguration {
     /// Flag indicating if Login by Magic Link should display.
     ///
     let enableUnifiedLoginLink: Bool
+    
+    /// Flag indicating if keychain login is enabled
+    ///
+    let enableUnifiedKeychainLogin: Bool
 
     /// Designated Initializer
     ///
@@ -120,7 +124,8 @@ public struct WordPressAuthenticatorConfiguration {
                  enableUnifiedGoogle: Bool = false,
                  enableUnifiedApple: Bool = false,
                  enableUnifiedSignup: Bool = false,
-                 enableUnifiedLoginLink: Bool = false) {
+                 enableUnifiedLoginLink: Bool = false,
+                 enableUnifiedKeychainLogin: Bool = false) {
 
         self.wpcomClientId = wpcomClientId
         self.wpcomSecret = wpcomSecret
@@ -143,5 +148,6 @@ public struct WordPressAuthenticatorConfiguration {
         self.enableUnifiedApple = enableUnifiedAuth && enableUnifiedApple
         self.enableUnifiedSignup = enableUnifiedAuth && enableUnifiedSignup
         self.enableUnifiedLoginLink = enableUnifiedAuth && enableUnifiedLoginLink
+        self.enableUnifiedKeychainLogin = enableUnifiedAuth && enableUnifiedKeychainLogin
     }
 }

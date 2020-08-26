@@ -32,26 +32,16 @@ enum ProductFormEditAction {
 /// Creates actions for different sections/UI on the product form.
 struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let product: EditableProductModel
-    private let isEditProductsRelease2Enabled: Bool
     private let isEditProductsRelease3Enabled: Bool
 
     init(product: EditableProductModel,
-         isEditProductsRelease2Enabled: Bool,
          isEditProductsRelease3Enabled: Bool) {
         self.product = product
-        self.isEditProductsRelease2Enabled = isEditProductsRelease2Enabled
         self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
     func primarySectionActions() -> [ProductFormEditAction] {
-        guard isEditProductsRelease2Enabled || product.images.isEmpty == false else {
-            return [
-                .name,
-                .description
-            ]
-        }
-
         return [
             .images,
             .name,
@@ -92,7 +82,6 @@ private extension ProductFormActionsFactory {
         let shouldShowReviewsRow = isEditProductsRelease3Enabled
         let shouldShowProductTypeRow = isEditProductsRelease3Enabled
         let shouldShowShippingSettingsRow = product.isShippingEnabled()
-        let shouldShowBriefDescriptionRow = isEditProductsRelease2Enabled
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
         let shouldShowTagsRow = isEditProductsRelease3Enabled
 
@@ -103,7 +92,7 @@ private extension ProductFormActionsFactory {
             .inventorySettings,
             shouldShowCategoriesRow ? .categories: nil,
             shouldShowTagsRow ? .tags: nil,
-            shouldShowBriefDescriptionRow ? .briefDescription: nil,
+            .briefDescription,
             shouldShowProductTypeRow ? .productType : nil
         ]
         return actions.compactMap { $0 }
@@ -112,7 +101,6 @@ private extension ProductFormActionsFactory {
     func allSettingsSectionActionsForAffiliateProduct() -> [ProductFormEditAction] {
         let shouldShowReviewsRow = isEditProductsRelease3Enabled
         let shouldShowProductTypeRow = isEditProductsRelease3Enabled
-        let shouldShowBriefDescriptionRow = isEditProductsRelease2Enabled
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
         let shouldShowTagsRow = isEditProductsRelease3Enabled
 
@@ -123,7 +111,7 @@ private extension ProductFormActionsFactory {
             .sku,
             shouldShowCategoriesRow ? .categories: nil,
             shouldShowTagsRow ? .tags: nil,
-            shouldShowBriefDescriptionRow ? .briefDescription: nil,
+            .briefDescription,
             shouldShowProductTypeRow ? .productType : nil
         ]
         return actions.compactMap { $0 }
@@ -132,7 +120,6 @@ private extension ProductFormActionsFactory {
     func allSettingsSectionActionsForGroupedProduct() -> [ProductFormEditAction] {
         let shouldShowReviewsRow = isEditProductsRelease3Enabled
         let shouldShowProductTypeRow = isEditProductsRelease3Enabled
-        let shouldShowBriefDescriptionRow = isEditProductsRelease2Enabled
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
         let shouldShowTagsRow = isEditProductsRelease3Enabled
 
@@ -142,7 +129,7 @@ private extension ProductFormActionsFactory {
             .sku,
             shouldShowCategoriesRow ? .categories: nil,
             shouldShowTagsRow ? .tags: nil,
-            shouldShowBriefDescriptionRow ? .briefDescription: nil,
+            .briefDescription,
             shouldShowProductTypeRow ? .productType : nil
         ]
         return actions.compactMap { $0 }
@@ -151,7 +138,6 @@ private extension ProductFormActionsFactory {
     func allSettingsSectionActionsForVariableProduct() -> [ProductFormEditAction] {
         let shouldShowReviewsRow = isEditProductsRelease3Enabled
         let shouldShowProductTypeRow = isEditProductsRelease3Enabled
-        let shouldShowBriefDescriptionRow = isEditProductsRelease2Enabled
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
         let shouldShowTagsRow = isEditProductsRelease3Enabled
 
@@ -160,7 +146,7 @@ private extension ProductFormActionsFactory {
             shouldShowReviewsRow ? .reviews: nil,
             shouldShowCategoriesRow ? .categories: nil,
             shouldShowTagsRow ? .tags: nil,
-            shouldShowBriefDescriptionRow ? .briefDescription: nil,
+            .briefDescription,
             shouldShowProductTypeRow ? .productType : nil
         ]
         return actions.compactMap { $0 }

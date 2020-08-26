@@ -3,8 +3,8 @@ import XCTest
 @testable import WooCommerce
 @testable import Yosemite
 
-/// The same tests as `ProductFormActionsFactory_EditProductsM2Tests`, but with Edit Products M2 and M3 feature flag on.
-/// When we fully launch Edit Products M2 and M3, we can replace `ProductFormActionsFactoryTests` with the test cases here.
+/// The same tests as `ProductFormActionsFactoryTests`, but with Edit Products M3 feature flag on.
+/// When we fully launch Edit Products M3, we can replace `ProductFormActionsFactoryTests` with the test cases here.
 ///
 final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
     func testViewModelForPhysicalSimpleProductWithoutImages() {
@@ -14,7 +14,6 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
-                                                isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
@@ -42,7 +41,6 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
-                                                isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
@@ -70,7 +68,6 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
-                                                isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
@@ -97,7 +94,6 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
-                                                isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
@@ -124,7 +120,6 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
-                                                isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
@@ -148,7 +143,6 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
-                                                isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
@@ -169,7 +163,6 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
-                                                isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
@@ -190,7 +183,6 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
-                                                isEditProductsRelease2Enabled: true,
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert

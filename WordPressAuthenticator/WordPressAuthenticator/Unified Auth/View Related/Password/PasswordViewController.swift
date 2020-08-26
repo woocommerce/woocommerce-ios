@@ -436,11 +436,12 @@ private extension PasswordViewController {
                 // TODO: Tracks.
                 // WordPressAuthenticator.track(.loginMagicLinkFailed)
                 // WordPressAuthenticator.track(.loginFailed, error: error)
-                guard let strongSelf = self else {
+                guard let self = self else {
                     return
                 }
-                strongSelf.displayError(error as NSError, sourceTag: strongSelf.sourceTag)
-                strongSelf.configureViewLoading(false)
+
+                self.displayError(error as NSError, sourceTag: self.sourceTag)
+                self.configureViewLoading(false)
         })
     }
 
@@ -473,12 +474,15 @@ private extension PasswordViewController {
         let okActionTitle = NSLocalizedString("OK",
                                               comment: "Dismisses the alert")
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+
         alert.addActionWithTitle(helpActionTitle,
                                  style: .cancel,
                                  handler: { _ in
                                     WordPressAuthenticator.shared.delegate?.presentSupportRequest(from: self, sourceTag: .loginEmail)
         })
+
         alert.addActionWithTitle(okActionTitle, style: .default, handler: nil)
+
         return alert
     }
     

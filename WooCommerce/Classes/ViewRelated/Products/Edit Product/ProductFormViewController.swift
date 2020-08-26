@@ -504,7 +504,6 @@ private extension ProductFormViewController {
                                                                         case .editSKU:
                                                                             ServiceLocator.analytics.track(.productDetailViewSKUTapped)
                                                                             self?.editSKU()
-                                                                            break
                                                                         }
                                                                     }
         }
@@ -723,6 +722,19 @@ extension ProductFormViewController: KeyboardScrollable {
     }
 }
 
+// MARK: - Navigation actions handling
+//
+private extension ProductFormViewController {
+    func presentBackNavigationActionSheet() {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+            guard let self = self else {
+                return
+            }
+            self.exitForm()
+        })
+    }
+}
+
 // MARK: Action - Edit Product Images
 //
 private extension ProductFormViewController {
@@ -755,22 +767,7 @@ private extension ProductFormViewController {
     }
 }
 
-
-// MARK: - Navigation actions handling
-//
-private extension ProductFormViewController {
-    func presentBackNavigationActionSheet() {
-        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
-            guard let self = self else {
-                return
-            }
-            self.exitForm()
-        })
-    }
-}
-
-
-// MARK: Action - Edit Product Parameters
+// MARK: Action - Edit Product Description
 //
 private extension ProductFormViewController {
     func editProductDescription() {
@@ -799,13 +796,14 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     func editPriceSettings() {
         let priceSettingsViewController = ProductPriceSettingsViewController(product: product) { [weak self]
-            (regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass) in
+            (regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass, hasUnsavedChanges) in
             self?.onEditPriceSettingsCompletion(regularPrice: regularPrice,
                                                 salePrice: salePrice,
                                                 dateOnSaleStart: dateOnSaleStart,
                                                 dateOnSaleEnd: dateOnSaleEnd,
                                                 taxStatus: taxStatus,
-                                                taxClass: taxClass)
+                                                taxClass: taxClass,
+                                                hasUnsavedChanges: hasUnsavedChanges)
         }
         navigationController?.pushViewController(priceSettingsViewController, animated: true)
     }
@@ -815,22 +813,14 @@ private extension ProductFormViewController {
                                        dateOnSaleStart: Date?,
                                        dateOnSaleEnd: Date?,
                                        taxStatus: ProductTaxStatus,
-                                       taxClass: TaxClass?) {
+                                       taxClass: TaxClass?,
+                                       hasUnsavedChanges: Bool) {
         defer {
             navigationController?.popViewController(animated: true)
         }
 
-        let hasChangedData: Bool = {
-                getDecimalPrice(regularPrice) != getDecimalPrice(product.regularPrice) ||
-                getDecimalPrice(salePrice) != getDecimalPrice(product.salePrice) ||
-                dateOnSaleStart != product.dateOnSaleStart ||
-                dateOnSaleEnd != product.dateOnSaleEnd ||
-                taxStatus != product.productTaxStatus ||
-                taxClass?.slug != product.taxClass
-        }()
-
-        ServiceLocator.analytics.track(.productPriceSettingsDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
-        guard hasChangedData else {
+        ServiceLocator.analytics.track(.productPriceSettingsDoneButtonTapped, withProperties: ["has_changed_data": hasUnsavedChanges])
+        guard hasUnsavedChanges else {
             return
         }
 
@@ -1123,18 +1113,6 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     func onEditStatusCompletion(isEnabled: Bool) {
         viewModel.updateStatus(isEnabled)
-    }
-}
-
-// MARK: Convenience Methods
-//
-private extension ProductFormViewController {
-    func getDecimalPrice(_ price: String?) -> NSDecimalNumber? {
-        guard let price = price else {
-            return nil
-        }
-        let currencyFormatter = CurrencyFormatter()
-        return currencyFormatter.convertToDecimal(from: price)
     }
 }
 

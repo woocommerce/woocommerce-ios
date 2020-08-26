@@ -106,7 +106,6 @@ public extension ProductReviewsRemote {
         static let page: String       = "page"
         static let perPage: String    = "per_page"
         static let contextKey: String = "context"
-        static let include: String    = "include"
         static let product: String    = "product"
         static let status: String     = "status"
     }

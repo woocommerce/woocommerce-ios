@@ -314,4 +314,8 @@ final class IconsTests: XCTestCase {
     func testNoStoreImageIsNotNil() {
         XCTAssertNotNil(UIImage.noStoreImage)
     }
+
+    func test_megaphoneIcon_is_not_nil() {
+        XCTAssertNotNil(UIImage.megaphoneIcon)
+    }
 }

@@ -77,11 +77,14 @@ final class SurveyViewController: UIViewController, SurveyViewControllerOutputs 
 extension SurveyViewController {
     enum Source {
         case inAppFeedback
+        case productsM3Feedback
 
         fileprivate var url: URL {
             switch self {
             case .inAppFeedback:
                 return WooConstants.URLs.inAppFeedback.asURL()
+            case .productsM3Feedback:
+                return WooConstants.URLs.productsM3Feedback.asURL()
             }
         }
 
@@ -89,6 +92,18 @@ extension SurveyViewController {
             switch self {
             case .inAppFeedback:
                 return NSLocalizedString("How can we improve?", comment: "Title on the navigation bar for the in-app feedback survey")
+            case .productsM3Feedback:
+                return NSLocalizedString("Give feedback", comment: "Title on the navigation bar for the products feedback survey")
+            }
+        }
+
+        /// The corresponding `FeedbackContext` for event tracking purposes.
+        var feedbackContextForEvents: WooAnalyticsEvent.FeedbackContext {
+            switch self {
+            case .inAppFeedback:
+                return .general
+            case .productsM3Feedback:
+                return .productsM3
             }
         }
     }

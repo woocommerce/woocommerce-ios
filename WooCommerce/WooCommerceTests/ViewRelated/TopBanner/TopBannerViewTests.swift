@@ -9,7 +9,7 @@ final class TopBannerViewTests: XCTestCase {
         let topBannerView = TopBannerView(viewModel: viewModel)
 
         // When
-        let mirrorView = try mirror(of: topBannerView)
+        let mirrorView = try TopBannerViewMirror(from: topBannerView)
 
         // Then
         XCTAssertTrue(mirrorView.actionButtons.isEmpty)
@@ -24,7 +24,7 @@ final class TopBannerViewTests: XCTestCase {
         let topBannerView = TopBannerView(viewModel: viewModel)
 
         // When
-        let mirrorView = try mirror(of: topBannerView)
+        let mirrorView = try TopBannerViewMirror(from: topBannerView)
 
         // Then
         XCTAssertEqual(mirrorView.actionButtons.count, 2)
@@ -41,7 +41,7 @@ final class TopBannerViewTests: XCTestCase {
         let topBannerView = TopBannerView(viewModel: viewModel)
 
         // When
-        let mirrorView = try mirror(of: topBannerView)
+        let mirrorView = try TopBannerViewMirror(from: topBannerView)
         mirrorView.actionButtons[0].sendActions(for: .touchUpInside)
 
         // Then
@@ -52,23 +52,5 @@ final class TopBannerViewTests: XCTestCase {
 private extension TopBannerViewTests {
     func createViewModel(with actionButtons: [TopBannerViewModel.ActionButton]) -> TopBannerViewModel {
         TopBannerViewModel(title: "", infoText: "", icon: nil, isExpanded: true, topButton: .chevron(handler: nil), actionButtons: actionButtons)
-    }
-}
-
-
-// MARK: - Mirroring
-
-private extension TopBannerViewTests {
-    struct TopBannerViewMirror {
-        let actionStackView: UIStackView
-        let actionButtons: [UIButton]
-    }
-
-    func mirror(of view: TopBannerView) throws -> TopBannerViewMirror {
-        let mirror = Mirror(reflecting: view)
-        return TopBannerViewMirror(
-            actionStackView: try XCTUnwrap(mirror.descendant("actionStackView") as? UIStackView),
-            actionButtons: try XCTUnwrap(mirror.descendant("actionButtons") as? [UIButton])
-        )
     }
 }

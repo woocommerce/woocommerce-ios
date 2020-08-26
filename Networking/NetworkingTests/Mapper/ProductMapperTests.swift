@@ -267,10 +267,4 @@ private extension ProductMapperTests {
     func mapLoadProductOnSaleWithEmptySalePriceResponse() -> Product? {
         return mapProduct(from: "product-on-sale-with-empty-sale-price")
     }
-
-    /// Returns the ProductMapper output upon receiving `variation-as-product`
-    ///
-    func mapLoadVariationProductResponse() -> Product? {
-        return mapProduct(from: "variation-as-product")
-    }
 }

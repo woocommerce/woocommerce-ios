@@ -33,19 +33,6 @@ public enum CommentStatus: String {
     /// Unknown status. Note: this specific case is only used locally when parsing the response from the server.
     ///
     case unknown
-
-
-    public var description: String {
-        switch self {
-        case .approved:     return NSLocalizedString("approved", comment: "Notification status description for 'approved'")
-        case .unapproved:   return NSLocalizedString("unapproved", comment: "Notification status description for 'unapproved'")
-        case .spam:         return NSLocalizedString("spam", comment: "Notification status description for 'spam'")
-        case .unspam:       return NSLocalizedString("not spam", comment: "Notification status description for 'unspam' (opposite of spam)")
-        case .trash:        return NSLocalizedString("trash", comment: "Notification status description for 'trash'")
-        case .untrash:      return NSLocalizedString("not trash", comment: "Notification status description for 'untrash' (opposite of trash)")
-        default:            return self.rawValue
-        }
-    }
 }
 
 /// Comment: Remote Endpoints

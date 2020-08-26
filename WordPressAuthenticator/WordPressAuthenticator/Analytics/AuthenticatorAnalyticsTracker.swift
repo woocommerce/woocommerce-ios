@@ -232,6 +232,7 @@ public class AuthenticatorAnalyticsTracker {
     struct Configuration {
         let appleEnabled: Bool
         let googleEnabled: Bool
+        let iCloudKeychainEnabled: Bool
         let siteAddressEnabled: Bool
         let wpComEnabled: Bool
     }
@@ -240,12 +241,13 @@ public class AuthenticatorAnalyticsTracker {
         // When unit testing, WordPressAuthenticator is not always initialized.
         // The following code ensures we have configuration defaults even if that's the case.
         guard WordPressAuthenticator.isInitialized() else {
-            return Configuration(appleEnabled: false, googleEnabled: false, siteAddressEnabled: false, wpComEnabled: false)
+            return Configuration(appleEnabled: false, googleEnabled: false, iCloudKeychainEnabled: false, siteAddressEnabled: false, wpComEnabled: false)
         }
         
         return Configuration(
             appleEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedApple,
             googleEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedGoogle,
+            iCloudKeychainEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedKeychainLogin,
             siteAddressEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress,
             wpComEnabled: false)
     }
@@ -289,13 +291,14 @@ public class AuthenticatorAnalyticsTracker {
     ///
     /// It's the responsibility of the class calling the tracking methods to check this before attempting to actually do the tracking.
     ///
-    /// - Returns: `true` if the
+    /// - Returns: `true` if we can track using the state machine.
     ///
     public func canTrackInCurrentFlow() -> Bool {
         return isInSiteAuthenticationFlowAndCanTrack()
             || isInAppleFlowAndCanTrack()
             || isInGoogleFlowAndCanTrack()
             || isInWPComFlowAndCanTrack()
+            || isInKeychainFlowAndCanTrack()
     }
     
     /// This is a convenience method, that's useful for cases where we simply want to check if the legacy tracking should be
@@ -323,6 +326,10 @@ public class AuthenticatorAnalyticsTracker {
     
     private func isInWPComFlowAndCanTrack() -> Bool {
         return configuration.wpComEnabled && state.lastFlow == .wpCom
+    }
+    
+    private func isInKeychainFlowAndCanTrack() -> Bool {
+        return configuration.iCloudKeychainEnabled && state.lastFlow == .loginWithiCloudKeychain
     }
     
     // MARK: - Tracking

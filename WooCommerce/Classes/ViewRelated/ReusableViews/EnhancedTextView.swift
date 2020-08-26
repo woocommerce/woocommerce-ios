@@ -93,6 +93,6 @@ private extension EnhancedTextView {
 
     enum Constants {
         static let animationDuration = 0.2
-        static let margin = 0.0
+        static let margin: CGFloat = 8.0
     }
 }

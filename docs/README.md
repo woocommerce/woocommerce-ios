@@ -19,12 +19,16 @@
 - [Testing](#testing)
 - [Features](#features)
 
+
+
 ## Architecture
 
 - [Architecture](ARCHITECTURE.md)
 - [Networking](NETWORKING.md)
 - [Storage](STORAGE.md)
 - [Yosemite](YOSEMITE.md)
+
+
 
 ## Coding Guidelines
 
@@ -100,6 +104,7 @@ func test_evolvePokemon_when_passed_a_Pikachu_then_it_returns_Raichu()
 Please refer to [Unit Test Naming: The 3 Most Important Parts](https://qualitycoding.org/unit-test-naming/) for some rationale on why this can be a good idea.
 
 
+
 ### Choosing Between Structures and Classes
 
 In addition to the [Apple guidelines](https://developer.apple.com/documentation/swift/choosing_between_structures_and_classes), we generally prefer to use `struct` for:
@@ -115,6 +120,8 @@ But consider using `class` instead if:
 
 
 ## Design Patterns
+
+
 
 ### Copiable
 
@@ -223,6 +230,8 @@ let lukeWithNoAddress = luke.copy(address: nil)
 let lukeWithNoAddress = luke.copy(address: .some(nil))
 ```
 
+
+
 ### Generating Copiable Methods
 
 The `copy()` methods are generated using [Sourcery](https://github.com/krzysztofzablocki/Sourcery). For now, only the classes or structs in the WooCommerce, Yosemite, and Networking modules are supported.
@@ -269,6 +278,8 @@ Yosemite module → Yosemite-Copiable.sourcery.yaml
 All of them use a single template, [`Models+Copiable.swifttemplate`](../CodeGeneration/Models+Copiable.swifttemplate), to generate the code. It's written using [Swift templates](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/writing-templates.html).
 
 Please refer to the [Sourcery reference](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/index.html) for more info about how to write templates.
+
+
 
 ### Tracking Events
 
@@ -321,10 +332,14 @@ Organizing events and their custom properties this way helps us with:
 - Answering what custom properties are available for an event and what the valid values are.
 - Decreasing the risk of costly typos. A typo in an event name or its property would set us back in analyzing the correct data.
 
+
+
 ## Testing
 
 - [UI Tests](UI-TESTS.md)
 - [Beta Testing](https://woocommercehalo.wordpress.com/setup/join-ios-beta/)
+
+
 
 ## Features
 

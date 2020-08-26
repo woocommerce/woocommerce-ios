@@ -100,10 +100,8 @@ class StoredCredentialsAuthenticator: NSObject {
 @available(iOS 13, *)
 extension StoredCredentialsAuthenticator: LoginFacadeDelegate {
     func needsMultifactorCode() {
-        print(">>>>>>>>>>>>>>>>> Needs multifactor code!")
     }
     
     func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {
-        print(">>>>>>>>>>>>>>>>> Success!!!!")
     }
 }

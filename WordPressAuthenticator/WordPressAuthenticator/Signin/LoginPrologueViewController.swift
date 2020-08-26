@@ -65,11 +65,13 @@ class LoginPrologueViewController: LoginViewController {
     /// Starts the iCloud Keychain login flow if the conditions are given.
     ///
     private func showiCloudKeychainLoginFlow() {
-        if #available(iOS 13, *),
+        guard #available(iOS 13, *),
             WordPressAuthenticator.shared.configuration.enableUnifiedKeychainLogin,
-            let window = view.window {
-                storedCredentialsAuthenticator.showPicker(in: window)
+            let navigationController = navigationController else {
+                return
         }
+
+        storedCredentialsAuthenticator.showPicker(from: navigationController)
     }
 
     // MARK: - Segue

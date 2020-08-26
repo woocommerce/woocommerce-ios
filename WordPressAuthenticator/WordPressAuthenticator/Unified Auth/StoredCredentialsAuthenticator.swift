@@ -8,10 +8,23 @@ import AuthenticationServices
 ///
 @available(iOS 13, *)
 class StoredCredentialsAuthenticator: NSObject {
+
+    // MARK: - Delegates
     
+    private var authenticationDelegate: WordPressAuthenticatorDelegate {
+        guard let delegate = WordPressAuthenticator.shared.delegate else {
+            fatalError()
+        }
+        return delegate
+    }
+    
+    // MARK: - Configuration
+
     private var authConfig: WordPressAuthenticatorConfiguration {
         WordPressAuthenticator.shared.configuration
     }
+
+    // MARK: - Login Support
     
     private lazy var loginFacade: LoginFacade = {
         let facade = LoginFacade(dotcomClientID: authConfig.wpcomClientId,
@@ -21,15 +34,29 @@ class StoredCredentialsAuthenticator: NSObject {
         return facade
     }()
     
+    // MARK: - UI
+    
+    private let picker = StoredCredentialsPicker()
+    private var navigationController: UINavigationController?
+    
+    // MARK: - Tracking Support
+
     private var tracker: AuthenticatorAnalyticsTracker {
         AuthenticatorAnalyticsTracker.shared
     }
     
-    private let picker = StoredCredentialsPicker()
-
-    // Showing the UI
+    // MARK: - Picker
     
-    func showPicker(in window: UIWindow) {
+    /// Shows the UI for picking stored credentials for the user to log into their account.
+    ///
+    func showPicker(from navigationController: UINavigationController) {
+        self.navigationController = navigationController
+        
+        guard let window = navigationController.view.window else {
+            DDLogError("Can't obtain window for navigation controller")
+            return
+        }
+        
         tracker.set(flow: .loginWithiCloudKeychain)
         tracker.track(step: .start)
         
@@ -47,8 +74,6 @@ class StoredCredentialsAuthenticator: NSObject {
         }
     }
     
-    // MARK: - Picker Interactions
-    
     /// The selection of credentials and subsequent authorization by the OS succeeded.  This method processes the credentials
     /// and proceeds with the login operation.
     ///
@@ -62,10 +87,8 @@ class StoredCredentialsAuthenticator: NSObject {
             // by implementing the logic here.
             break
         case let credential as ASPasswordCredential:
-            // TODO: No-op for now.  The code below will be enabled in my next PR.
-            //
-            //let loginFields = LoginFields.makeForWPCom(username: credential.user, password: credential.password)
-            //loginFacade.signIn(with: loginFields)
+            let loginFields = LoginFields.makeForWPCom(username: credential.user, password: credential.password)
+            loginFacade.signIn(with: loginFields)
             break
         default:
             // There aren't any other known methods for us to handle here, but we still need to complete the switch
@@ -87,13 +110,7 @@ class StoredCredentialsAuthenticator: NSObject {
             // The user cancelling the flow is not really an error, so we're not reporting or tracking
             // this as an error.  We're only tracking this as a regular UI dismissal.
             tracker.track(click: .dismiss)
-        case .failed:
-            fallthrough
-        case .invalidResponse:
-            fallthrough
-        case .notHandled:
-            fallthrough
-        case .unknown:
+        case .failed, .invalidResponse, .notHandled, .unknown:
             tracker.track(failure: authError.localizedDescription)
             DDLogError("ASAuthorizationError: \(authError.localizedDescription)")
         }
@@ -104,7 +121,31 @@ class StoredCredentialsAuthenticator: NSObject {
 extension StoredCredentialsAuthenticator: LoginFacadeDelegate {
     func needsMultifactorCode() {
     }
-    
+
     func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {
+        let wpcom = WordPressComCredentials(
+            authToken: authToken,
+            isJetpackLogin: false,
+            multifactor: requiredMultifactorCode,
+            siteURL: "")
+        let credentials = AuthenticatorCredentials(wpcom: wpcom)
+        
+        authenticationDelegate.sync(credentials: credentials) { [weak self] in
+            self?.presentLoginEpilogue(credentials: credentials)
+        }
+    }
+}
+
+// MARK: - UI Flow
+
+@available(iOS 13, *)
+extension StoredCredentialsAuthenticator {
+    func presentLoginEpilogue(credentials: AuthenticatorCredentials) {
+        guard let navigationController = self.navigationController else {
+            DDLogError("No navigation controller to present the login epilogue from")
+            return
+        }
+        
+        authenticationDelegate.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: {})
     }
 }

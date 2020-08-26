@@ -231,7 +231,6 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         static let missingInfoError = NSLocalizedString("Please fill out all the fields", comment: "A short prompt asking the user to properly fill out all login fields.")
         static let gettingAccountInfo = NSLocalizedString("Getting account information", comment: "Alerts the user that wpcom account information is being retrieved.")
     }
-
 }
 
 // MARK: - Sync Helpers

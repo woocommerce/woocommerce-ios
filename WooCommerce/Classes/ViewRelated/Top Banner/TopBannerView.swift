@@ -44,6 +44,9 @@ final class TopBannerView: UIView {
         return stackView
     }()
 
+    // StackView to hold the action buttons. Needed to change the axis on larger accessibility traits
+    private let buttonsStackView = UIStackView()
+
     private let actionButtons: [UIButton]
 
     private let isActionEnabled: Bool
@@ -80,6 +83,7 @@ private extension TopBannerView {
 
         renderContent(of: viewModel)
         configureBannerType(type: viewModel.type)
+        updateStackViewsAxis()
     }
 
     func renderContent(of viewModel: TopBannerViewModel) {
@@ -174,8 +178,6 @@ private extension TopBannerView {
     }
 
     func configureActionStackView(with viewModel: TopBannerViewModel) {
-        // StackView to hold the action buttons
-        let buttonsStackView = UIStackView()
         buttonsStackView.distribution = .fillEqually
         buttonsStackView.spacing = 0.5
 
@@ -236,6 +238,12 @@ private extension TopBannerView {
             return .warningBackground
         }
     }
+
+    /// Changes the axis of the stack views that need special treatment on larger size categories
+    ///
+    func updateStackViewsAxis() {
+        buttonsStackView.axis = traitCollection.preferredContentSizeCategory > .extraExtraExtraLarge ? .vertical : .horizontal
+    }
 }
 
 private extension TopBannerView {
@@ -247,6 +255,15 @@ private extension TopBannerView {
         self.isExpanded = !isExpanded
         updateExpandCollapseState(isExpanded: isExpanded)
         onTopButtonTapped?()
+    }
+}
+
+// MARK: Accessibility Handling
+//
+extension TopBannerView {
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        updateStackViewsAxis()
     }
 }
 

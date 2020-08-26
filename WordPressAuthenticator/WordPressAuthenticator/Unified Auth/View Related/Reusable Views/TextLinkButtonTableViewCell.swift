@@ -24,14 +24,14 @@ class TextLinkButtonTableViewCell: UITableViewCell {
         button.titleLabel?.adjustsFontForContentSizeCategory = true
     }
     
-    public func configureButton(text: String?, accessibilityTrait: UIAccessibilityTraits? = .button) {
+    public func configureButton(text: String?, accessibilityTrait: UIAccessibilityTraits = .button) {
         button.setTitle(text, for: .normal)
         
         let buttonTitleColor = WordPressAuthenticator.shared.unifiedStyle?.textButtonColor ?? WordPressAuthenticator.shared.style.textButtonColor
         let buttonHighlightColor = WordPressAuthenticator.shared.unifiedStyle?.textButtonHighlightColor ?? WordPressAuthenticator.shared.style.textButtonHighlightColor
         button.setTitleColor(buttonTitleColor, for: .normal)
         button.setTitleColor(buttonHighlightColor, for: .highlighted)
-        button.accessibilityTraits = accessibilityTraits
+        button.accessibilityTraits = accessibilityTrait
     }
     
     /// Toggle button enabled / disabled
@@ -39,4 +39,5 @@ class TextLinkButtonTableViewCell: UITableViewCell {
     public func toggleButton(_ isEnabled: Bool) {
         button.isEnabled = isEnabled
     }
+
 }

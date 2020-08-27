@@ -8,8 +8,16 @@ class TextLinkButtonTableViewCell: UITableViewCell {
     /// Private properties
     ///
     @IBOutlet private weak var button: UIButton!
+    @IBOutlet private weak var borderView: UIView!
+    @IBOutlet private weak var borderWidth: NSLayoutConstraint!
     @IBAction private func textLinkButtonTapped(_ sender: UIButton) {
         actionHandler?()
+    }
+
+    /// Calculate the border based on the display
+    ///
+    private var hairlineBorderWidth: CGFloat {
+        return 1.0 / UIScreen.main.scale
     }
     
     /// Public properties
@@ -20,8 +28,9 @@ class TextLinkButtonTableViewCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        
+
         button.titleLabel?.adjustsFontForContentSizeCategory = true
+        styleBorder()
     }
     
     public func configureButton(text: String?, accessibilityTrait: UIAccessibilityTraits = .button) {
@@ -32,6 +41,7 @@ class TextLinkButtonTableViewCell: UITableViewCell {
         button.setTitleColor(buttonTitleColor, for: .normal)
         button.setTitleColor(buttonHighlightColor, for: .highlighted)
         button.accessibilityTraits = accessibilityTrait
+        borderView.isHidden = !showBorder
     }
     
     /// Toggle button enabled / disabled
@@ -40,4 +50,17 @@ class TextLinkButtonTableViewCell: UITableViewCell {
         button.isEnabled = isEnabled
     }
 
+}
+
+
+// MARK: - Private methods
+private extension TextLinkButtonTableViewCell {
+
+    /// Style the bottom cell border, called borderView.
+    ///
+    func styleBorder() {
+        let borderColor = WordPressAuthenticator.shared.unifiedStyle?.borderColor ?? WordPressAuthenticator.shared.style.primaryNormalBorderColor
+        borderView.backgroundColor = borderColor
+        borderWidth.constant = hairlineBorderWidth
+    }
 }

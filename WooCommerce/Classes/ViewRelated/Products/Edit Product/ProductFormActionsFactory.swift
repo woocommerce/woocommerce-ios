@@ -183,8 +183,8 @@ private extension ProductFormActionsFactory {
             // The price settings action is always visible in the settings section.
             return true
         case .reviews:
-            // The reviews action is always visible in the settings section.
-            return true
+            // The reviews action is visible only if reviews are enabled in product settings.
+            return product.reviewsAllowed
         case .productType:
             // The product type action is always visible in the settings section.
             return true

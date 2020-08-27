@@ -95,6 +95,10 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
         productVariation.taxClass
     }
 
+    var reviewsAllowed: Bool {
+        false
+    }
+
     var averageRating: String {
         "0.00"
     }

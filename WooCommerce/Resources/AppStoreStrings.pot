@@ -49,9 +49,13 @@ msgctxt "app_store_promo_text"
 msgid "Run your store wherever you are. The WooCommerce app makes it easy to manage orders and inventory, track sales, and monitor store activity like new orders and reviews."
 msgstr ""
 
-msgctxt "v4.8-whats-new"
+msgctxt "v4.9-whats-new"
 msgid ""
-"The WooCommerce app you know and love, now with swiping right/left enabled on product images. (Yes, that’s it!)\n"
+"- Sign in with Apple at login.\n"
+"- Experiment with new features in the Products section! Go to Settings to enable them.\n"
+"- Edit products with ease: updates are now displayed in the product details after adjusting the sale price.\n"
+"- Better manage your products: receive clear warnings when at least one variation does not have a price.\n"
+"- Crash, be gone! Tap on a Product Review push notification with no issues.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

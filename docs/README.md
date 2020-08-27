@@ -4,10 +4,11 @@
 
 - [Architecture](#architecture)
 - [Coding Guidelines](#coding-guidelines)
+    - [Coding Style](#coding-style)
     - [Naming Conventions](#naming-conventions)
         - [Protocols](#protocols)
         - [String Constants in Nested Enums](#string-constants-in-nested-enums)
-    - [Coding Style](#coding-style)
+        - [Test Methods](#test-methods)
     - [Choosing Between Structures and Classes](#choosing-between-structures-and-classes)
 - [Design Patterns](#design-patterns)
     - [Copiable](#copiable)
@@ -18,6 +19,8 @@
 - [Testing](#testing)
 - [Features](#features)
 
+
+
 ## Architecture
 
 - [Architecture](ARCHITECTURE.md)
@@ -25,7 +28,17 @@
 - [Storage](STORAGE.md)
 - [Yosemite](YOSEMITE.md)
 
+
+
 ## Coding Guidelines
+
+
+
+### Coding Style
+
+The guidelines for how Swift should be written and formatted can be found in the [Coding Style Guide](coding-style-guide.md).
+
+
 
 ### Naming Conventions
 
@@ -58,9 +71,39 @@ final class ViewController: UIViewController {
 }
 ```
 
-### Coding Style
+#### Test Methods
 
-The guidelines for how Swift should be written and formatted can be found in the [Coding Style Guide](coding-style-guide.md).
+Contrary to the standard [Camel case](https://en.wikipedia.org/wiki/Camel_case) style in Swift functions, test methods should use [Snake case](https://en.wikipedia.org/wiki/Snake_case). We concluded that this helps with readability especially since test methods can be quite long.
+
+**Preferred:**
+
+```swift
+func test_tapping_ScheduleSaleToRow_toggles_PickerRow_in_Sales_section()
+```
+
+**Not Preferred:**
+
+```swift
+func testTappingScheduleSaleToRowTogglesPickerRowInSalesSection()
+```
+
+Note that when referring to a property or a class, we can still use the appropriate Camel or Pascal case for it.
+
+Also, consider writing the test method name in a way that incorporates these three things:
+
+1. What operation are we testing
+2. Under what circumstances
+3. What is the expected result?
+
+For example:
+
+```swift
+func test_evolvePokemon_when_passed_a_Pikachu_then_it_returns_Raichu()
+```
+
+Please refer to [Unit Test Naming: The 3 Most Important Parts](https://qualitycoding.org/unit-test-naming/) for some rationale on why this can be a good idea.
+
+
 
 ### Choosing Between Structures and Classes
 
@@ -74,7 +117,11 @@ But consider using `class` instead if:
 - You need to manage mutable states. Especially if there are more than a few `mutating` functions, the `struct` becomes harder to reason about.
 - You have to set a `struct` property declaration as `var` because it has a `mutating` function. In this case, a constant (`let`) `class` property may be easier to reason about.
 
+
+
 ## Design Patterns
+
+
 
 ### Copiable
 
@@ -183,6 +230,8 @@ let lukeWithNoAddress = luke.copy(address: nil)
 let lukeWithNoAddress = luke.copy(address: .some(nil))
 ```
 
+
+
 ### Generating Copiable Methods
 
 The `copy()` methods are generated using [Sourcery](https://github.com/krzysztofzablocki/Sourcery). For now, only the classes or structs in the WooCommerce, Yosemite, and Networking modules are supported.
@@ -229,6 +278,8 @@ Yosemite module → Yosemite-Copiable.sourcery.yaml
 All of them use a single template, [`Models+Copiable.swifttemplate`](../CodeGeneration/Models+Copiable.swifttemplate), to generate the code. It's written using [Swift templates](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/writing-templates.html).
 
 Please refer to the [Sourcery reference](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/index.html) for more info about how to write templates.
+
+
 
 ### Tracking Events
 
@@ -281,10 +332,14 @@ Organizing events and their custom properties this way helps us with:
 - Answering what custom properties are available for an event and what the valid values are.
 - Decreasing the risk of costly typos. A typo in an event name or its property would set us back in analyzing the correct data.
 
+
+
 ## Testing
 
 - [UI Tests](UI-TESTS.md)
 - [Beta Testing](https://woocommercehalo.wordpress.com/setup/join-ios-beta/)
+
+
 
 ## Features
 

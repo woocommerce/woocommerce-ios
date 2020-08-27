@@ -8,7 +8,7 @@ import WordPressAuthenticator
 
 // MARK: - SettingsViewController
 //
-class SettingsViewController: UIViewController {
+final class SettingsViewController: UIViewController {
 
     /// Main TableView
     ///
@@ -145,7 +145,7 @@ private extension SettingsViewController {
             sections = [
                 Section(title: selectedStoreTitle, rows: storeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
                 Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
-                Section(title: improveTheAppTitle, rows: [.privacy, .betaFeatures, .featureRequest], footerHeight: UITableView.automaticDimension),
+                Section(title: improveTheAppTitle, rows: [.privacy, .betaFeatures, .sendFeedback], footerHeight: UITableView.automaticDimension),
                 Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
                 otherSection,
                 Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
@@ -154,7 +154,7 @@ private extension SettingsViewController {
             sections = [
                 Section(title: selectedStoreTitle, rows: storeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
                 Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
-                Section(title: improveTheAppTitle, rows: [.privacy, .featureRequest], footerHeight: UITableView.automaticDimension),
+                Section(title: improveTheAppTitle, rows: [.privacy, .sendFeedback], footerHeight: UITableView.automaticDimension),
                 Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
                 otherSection,
                 Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
@@ -182,8 +182,8 @@ private extension SettingsViewController {
             configurePrivacy(cell: cell)
         case let cell as BasicTableViewCell where row == .betaFeatures:
             configureBetaFeatures(cell: cell)
-        case let cell as BasicTableViewCell where row == .featureRequest:
-            configureFeatureSuggestions(cell: cell)
+        case let cell as BasicTableViewCell where row == .sendFeedback:
+            configureSendFeedback(cell: cell)
         case let cell as BasicTableViewCell where row == .about:
             configureAbout(cell: cell)
         case let cell as BasicTableViewCell where row == .licenses:
@@ -232,10 +232,10 @@ private extension SettingsViewController {
         cell.accessibilityIdentifier = "settings-beta-features-button"
     }
 
-    func configureFeatureSuggestions(cell: BasicTableViewCell) {
+    func configureSendFeedback(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Feature Request", comment: "Navigates to the feature request screen")
+        cell.textLabel?.text = NSLocalizedString("Send Feedback", comment: "Presents a survey to gather feedback from the user.")
     }
 
     func configureAbout(cell: BasicTableViewCell) {
@@ -359,9 +359,9 @@ private extension SettingsViewController {
         navigationController?.pushViewController(betaFeaturesViewController, animated: true)
     }
 
-    func featureRequestWasPressed() {
-        let safariViewController = SFSafariViewController(url: WooConstants.URLs.featureRequest.asURL())
-        present(safariViewController, animated: true, completion: nil)
+    func presentSurveyForFeedback() {
+        let surveyNavigation = SurveyCoordinatingController(survey: .inAppFeedback)
+        present(surveyNavigation, animated: true, completion: nil)
     }
 
     func appSettingsWasPressed() {
@@ -465,8 +465,8 @@ extension SettingsViewController: UITableViewDelegate {
             privacyWasPressed()
         case .betaFeatures:
             betaFeaturesWasPressed()
-        case .featureRequest:
-            featureRequestWasPressed()
+        case .sendFeedback:
+            presentSurveyForFeedback()
         case .about:
             aboutWasPressed()
         case .licenses:
@@ -504,7 +504,7 @@ private enum Row: CaseIterable {
     case logout
     case privacy
     case betaFeatures
-    case featureRequest
+    case sendFeedback
     case about
     case licenses
     case appSettings
@@ -524,7 +524,7 @@ private enum Row: CaseIterable {
             return BasicTableViewCell.self
         case .betaFeatures:
             return BasicTableViewCell.self
-        case .featureRequest:
+        case .sendFeedback:
             return BasicTableViewCell.self
         case .about:
             return BasicTableViewCell.self

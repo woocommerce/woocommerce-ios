@@ -8,6 +8,7 @@ protocol LoginSocialErrorViewControllerDelegate {
     func retryWithEmail()
     func retryWithAddress()
     func retryAsSignup()
+    func errorDismissed()
 }
 
 /// ViewController for presenting recovery options when social login fails
@@ -17,6 +18,7 @@ class LoginSocialErrorViewController: NUXTableViewController {
     @objc var delegate: LoginSocialErrorViewControllerDelegate?
     
     private var forUnified: Bool = false
+    private var actionButtonTapped: Bool = false
     
     fileprivate enum Sections: Int {
         case titleAndDescription = 0
@@ -67,6 +69,14 @@ class LoginSocialErrorViewController: NUXTableViewController {
         styleBackground()
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        if !actionButtonTapped {
+            delegate?.errorDismissed()
+        }
+    }
+    
     private func styleBackground() {
         guard let unifiedBackgroundColor = WordPressAuthenticator.shared.unifiedStyle?.viewControllerBackgroundColor else {
             view.backgroundColor = WordPressAuthenticator.shared.style.viewControllerBackgroundColor
@@ -82,6 +92,8 @@ class LoginSocialErrorViewController: NUXTableViewController {
             return
         }
 
+        actionButtonTapped = true
+        
         switch indexPath.row {
         case Buttons.tryEmail.rawValue:
             delegate.retryWithEmail()

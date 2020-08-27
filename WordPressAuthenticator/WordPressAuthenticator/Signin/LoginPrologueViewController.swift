@@ -15,6 +15,9 @@ class LoginPrologueViewController: LoginViewController {
     private let configuration = WordPressAuthenticator.shared.configuration
     private let style = WordPressAuthenticator.shared.style
 
+    @available(iOS 13, *)
+    private lazy var storedCredentialsAuthenticator = StoredCredentialsAuthenticator()
+    
     @IBOutlet private weak var topContainerView: UIView!
 
     // MARK: - Lifecycle Methods
@@ -43,6 +46,8 @@ class LoginPrologueViewController: LoginViewController {
         super.viewDidAppear(animated)
         
         WordPressAuthenticator.track(.loginPrologueViewed)
+        
+        showiCloudKeychainLoginFlow()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -53,6 +58,18 @@ class LoginPrologueViewController: LoginViewController {
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return UIDevice.isPad() ? .all : .portrait
+    }
+    
+    // MARK: - iCloud Keychain Login
+    
+    /// Starts the iCloud Keychain login flow if the conditions are given.
+    ///
+    private func showiCloudKeychainLoginFlow() {
+        if #available(iOS 13, *),
+            WordPressAuthenticator.shared.configuration.enableUnifiedKeychainLogin,
+            let window = view.window {
+                storedCredentialsAuthenticator.showPicker(in: window)
+        }
     }
 
     // MARK: - Segue

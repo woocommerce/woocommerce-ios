@@ -134,7 +134,19 @@ extension LoginSocialErrorViewController {
 
 extension LoginSocialErrorViewController {
     private func numberOfButtonsToShow() -> Int {
-        return loginFields.restrictToWPCom ? Buttons.count - 1 : Buttons.count
+        
+        var buttonCount = loginFields.restrictToWPCom ? Buttons.count - 1 : Buttons.count
+        
+        // Don't show the Signup Retry if showing unified social flows.
+        // At this point, we've already tried signup and are past it.
+        let unifiedGoogle = WordPressAuthenticator.shared.configuration.enableUnifiedGoogle && loginFields.meta.socialService == .google
+        let unifiedApple = WordPressAuthenticator.shared.configuration.enableUnifiedApple && loginFields.meta.socialService == .apple
+
+        if unifiedGoogle || unifiedApple {
+            buttonCount -= 1
+        }
+        
+        return buttonCount
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {

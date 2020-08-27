@@ -165,7 +165,7 @@ private extension PasswordViewController {
 // MARK: - UITextFieldDelegate
 
 extension PasswordViewController: UITextFieldDelegate {
-        
+
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if enableSubmit(animating: false) {
             validateForm()
@@ -242,6 +242,7 @@ private extension PasswordViewController {
         }
         
         rows.append(.forgotPassword)
+        rows.append(.sendMagicLink)
     }
     
     /// Configure cells.
@@ -254,8 +255,10 @@ private extension PasswordViewController {
             configureInstructionLabel(cell)
         case let cell as TextFieldTableViewCell where row == .password:
             configurePasswordTextField(cell)
-        case let cell as TextLinkButtonTableViewCell:
-            configureTextLinkButton(cell)
+        case let cell as TextLinkButtonTableViewCell where row == .forgotPassword:
+            configureForgotPasswordButton(cell)
+        case let cell as TextLinkButtonTableViewCell where row == .sendMagicLink:
+            configureSendMagicLinkButton(cell)
         case let cell as TextLabelTableViewCell where row == .errorMessage:
             configureErrorLabel(cell)
         default:
@@ -311,7 +314,7 @@ private extension PasswordViewController {
 
         let displayStrings = WordPressAuthenticator.shared.displayStrings
         let instructions = (service == .google) ? displayStrings.googlePasswordInstructions :
-                                                  displayStrings.applePasswordInstructions
+            displayStrings.applePasswordInstructions
 
         cell.configureLabel(text: instructions)
     }
@@ -340,8 +343,10 @@ private extension PasswordViewController {
     
     /// Configure the forgot password link cell.
     ///
-    func configureTextLinkButton(_ cell: TextLinkButtonTableViewCell) {
-        cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.resetPasswordButtonTitle, accessibilityTrait: .link)
+    func configureForgotPasswordButton(_ cell: TextLinkButtonTableViewCell) {
+        cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.resetPasswordButtonTitle,
+                             accessibilityTrait: .link,
+                             showBorder: true)
         cell.actionHandler = { [weak self] in
             guard let self = self else {
                 return
@@ -354,6 +359,24 @@ private extension PasswordViewController {
 
             WordPressAuthenticator.openForgotPasswordURL(self.loginFields)
             self.tracker.track(click: .forgottenPassword)
+        }
+    }
+
+    /// Configure the "send magic link" cell.
+    ///
+    func configureSendMagicLinkButton(_ cell: TextLinkButtonTableViewCell) {
+        cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.getLoginLinkButtonTitle,
+                             accessibilityTrait: .link,
+                             showBorder: true)
+
+        cell.actionHandler = { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            self.requestAuthenticationLink()
+            // TODO: Tracks.
+            // Track the "login magic link requested" event
         }
     }
     
@@ -369,11 +392,11 @@ private extension PasswordViewController {
     /// Configure the view for an editing state.
     ///
     func configureViewForEditingIfNeeded() {
-       // Check the helper to determine whether an editing state should be assumed.
-       adjustViewForKeyboard(SigninEditingState.signinEditingStateActive)
-       if SigninEditingState.signinEditingStateActive {
-           passwordField?.becomeFirstResponder()
-       }
+        // Check the helper to determine whether an editing state should be assumed.
+        adjustViewForKeyboard(SigninEditingState.signinEditingStateActive)
+        if SigninEditingState.signinEditingStateActive {
+            passwordField?.becomeFirstResponder()
+        }
     }
     
     /// Sets up accessibility elements in the order which they should be read aloud
@@ -388,6 +411,80 @@ private extension PasswordViewController {
 
         UIAccessibility.post(notification: .screenChanged, argument: passwordField)
     }
+
+    /// Makes the call to request a magic authentication link be emailed to the user.
+    ///
+    func requestAuthenticationLink() {
+        loginFields.meta.emailMagicLinkSource = .login
+
+        let email = loginFields.username
+        guard email.isValidEmail() else {
+            DDLogError("Attempted to request authentication link, but the email address did not appear valid.")
+            let alert = buildInvalidEmailAlert()
+            present(alert, animated: true, completion: nil)
+            return
+        }
+
+        configureViewLoading(true)
+        let service = WordPressComAccountService()
+        service.requestAuthenticationLink(for: email,
+                                          success: { [weak self] in
+                                            self?.didRequestAuthenticationLink()
+                                            self?.configureViewLoading(false)
+
+            }, failure: { [weak self] (error: Error) in
+                // TODO: Tracks.
+                // WordPressAuthenticator.track(.loginMagicLinkFailed)
+                // WordPressAuthenticator.track(.loginFailed, error: error)
+                guard let self = self else {
+                    return
+                }
+
+                self.displayError(error as NSError, sourceTag: self.sourceTag)
+                self.configureViewLoading(false)
+        })
+    }
+
+    /// When a magic link successfully sends, navigate the user to the next step.
+    ///
+    func didRequestAuthenticationLink() {
+        // TODO: Tracks.
+        // WordPressAuthenticator.track(.loginMagicLinkRequested)
+        WordPressAuthenticator.storeLoginInfoForTokenAuth(loginFields)
+
+        guard let vc = LoginMagicLinkViewController.instantiate(from: .unifiedLoginMagicLink) else {
+            DDLogError("Failed to navigate to LoginMagicLinkViewController")
+            return
+        }
+
+        vc.loginFields = self.loginFields
+        vc.loginFields.restrictToWPCom = true
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
+    /// Build the alert message when the email address is invalid.
+    ///
+    func buildInvalidEmailAlert() -> UIAlertController {
+        let title = NSLocalizedString("Can Not Request Link",
+                                      comment: "Title of an alert letting the user know")
+        let message = NSLocalizedString("A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address.",
+                                        comment: "An error message.")
+        let helpActionTitle = NSLocalizedString("Need help?",
+                                                comment: "Takes the user to get help")
+        let okActionTitle = NSLocalizedString("OK",
+                                              comment: "Dismisses the alert")
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+
+        alert.addActionWithTitle(helpActionTitle,
+                                 style: .cancel,
+                                 handler: { _ in
+                                    WordPressAuthenticator.shared.delegate?.presentSupportRequest(from: self, sourceTag: .loginEmail)
+        })
+
+        alert.addActionWithTitle(okActionTitle, style: .default, handler: nil)
+
+        return alert
+    }
     
     /// Rows listed in the order they were created.
     ///
@@ -396,6 +493,7 @@ private extension PasswordViewController {
         case instructions
         case password
         case forgotPassword
+        case sendMagicLink
         case errorMessage
         
         var reuseIdentifier: String {
@@ -406,6 +504,8 @@ private extension PasswordViewController {
                 return TextLabelTableViewCell.reuseIdentifier
             case .password:
                 return TextFieldTableViewCell.reuseIdentifier
+            case .sendMagicLink:
+                return TextLinkButtonTableViewCell.reuseIdentifier
             case .forgotPassword:
                 return TextLinkButtonTableViewCell.reuseIdentifier
             case .errorMessage:

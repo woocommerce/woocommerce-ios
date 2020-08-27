@@ -38,6 +38,7 @@ public struct WordPressAuthenticatorDisplayStrings {
     ///
     public let findSiteButtonTitle: String
     public let resetPasswordButtonTitle: String
+    public let getLoginLinkButtonTitle: String
     public let textCodeButtonTitle: String
     public let loginTermsOfService: String
 
@@ -70,6 +71,7 @@ public struct WordPressAuthenticatorDisplayStrings {
                 createAccountButtonTitle: String = defaultStrings.createAccountButtonTitle,
                 findSiteButtonTitle: String = defaultStrings.findSiteButtonTitle,
                 resetPasswordButtonTitle: String = defaultStrings.resetPasswordButtonTitle,
+                getLoginLinkButtonTitle: String = defaultStrings.getLoginLinkButtonTitle,
                 textCodeButtonTitle: String = defaultStrings.textCodeButtonTitle,
                 loginTermsOfService: String = defaultStrings.loginTermsOfService,
                 getStartedTitle: String = defaultStrings.getStartedTitle,
@@ -100,6 +102,7 @@ public struct WordPressAuthenticatorDisplayStrings {
         self.createAccountButtonTitle = createAccountButtonTitle
         self.findSiteButtonTitle = findSiteButtonTitle
         self.resetPasswordButtonTitle = resetPasswordButtonTitle
+        self.getLoginLinkButtonTitle = getLoginLinkButtonTitle
         self.textCodeButtonTitle = textCodeButtonTitle
         self.loginTermsOfService = loginTermsOfService
         self.getStartedTitle = getStartedTitle
@@ -152,7 +155,9 @@ public extension WordPressAuthenticatorDisplayStrings {
             findSiteButtonTitle: NSLocalizedString("Find your site address",
                                                    comment: "The hint button's title text to help users find their site address."),
             resetPasswordButtonTitle: NSLocalizedString("Reset your password",
-                                                        comment: "The secondary call-to-action button title text, for when the user can't remember their password."),
+                                                        comment: "The button title for a secondary call-to-action button. When the user can't remember their password."),
+            getLoginLinkButtonTitle: NSLocalizedString("Get a login link by email",
+                                                       comment: "The button title for a secondary call-to-action button. When the user wants to try sending a magic link instead of entering a password."),
             textCodeButtonTitle: NSLocalizedString("Text me a code instead",
                                                    comment: "The button's title text to send a 2FA code via SMS text message."),
             loginTermsOfService:NSLocalizedString("By continuing, you agree to our _Terms of Service_.", comment: "Legal disclaimer for logging in. The underscores _..._ denote underline."),

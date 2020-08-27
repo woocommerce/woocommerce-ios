@@ -31,10 +31,6 @@ final class LoginMagicLinkViewController: LoginViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // TODO: - Delete this line when unified login by email exists.
-        // Bypasses the login by email view.
-        loginFields.username = "pamelanguyen@example.com"
-
         navigationItem.title = WordPressAuthenticator.shared.displayStrings.logInTitle
         styleNavigationBar(forUnified: true)
 

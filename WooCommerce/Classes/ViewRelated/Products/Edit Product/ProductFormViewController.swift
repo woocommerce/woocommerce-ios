@@ -760,6 +760,10 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     func onEditProductNameCompletion(newName: String) {
         viewModel.updateName(newName)
+
+        /// This refresh is used to adapt the size of the cell to the text
+        tableView.beginUpdates()
+        tableView.endUpdates()
     }
 }
 

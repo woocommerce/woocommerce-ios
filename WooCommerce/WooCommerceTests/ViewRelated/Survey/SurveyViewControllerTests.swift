@@ -1,6 +1,7 @@
 import Foundation
 import WebKit
 import XCTest
+import TestKit
 
 @testable import WooCommerce
 

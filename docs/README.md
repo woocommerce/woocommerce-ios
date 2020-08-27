@@ -6,6 +6,7 @@
 - [Coding Guidelines](#coding-guidelines)
     - [Naming Conventions](#naming-conventions)
         - [Protocols](#protocols)
+        - [String Constants in Nested Enums](#string-constants-in-nested-enums)
     - [Coding Style](#coding-style)
     - [Choosing Between Structures and Classes](#choosing-between-structures-and-classes)
 - [Design Patterns](#design-patterns)
@@ -13,6 +14,7 @@
         - [Generating Copiable Methods](#generating-copiable-methods)
         - [Modifying The Copiable Code Generation](#modifying-the-copiable-code-generation)
 - [Testing](#testing)
+- [Features](#features)
 
 ## Architecture
 
@@ -42,7 +44,7 @@ final class ProductsRemote: Remote, ProductsRemoteProtocol { }
 
 We usually end up with cases like this when we _have_ to create a protocol to support mocking unit tests.
 
-#### String constants in nested enum
+#### String Constants in Nested Enums
 
 When a class/struct that contains localization, we generally group the string constants in a nested enum called `Localization`. In the past, we had other names like `Constants` or `Strings` and it is fine to leave them and follow this naming for new code. For example:
 
@@ -231,3 +233,9 @@ Please refer to the [Sourcery reference](https://cdn.rawgit.com/krzysztofzablock
 
 - [UI Tests](UI-TESTS.md)
 - [Beta Testing](https://woocommercehalo.wordpress.com/setup/join-ios-beta/)
+
+## Features
+
+The following are some information about specific features of the app.
+
+- [In-app Feedback](in-app-feedback.md)

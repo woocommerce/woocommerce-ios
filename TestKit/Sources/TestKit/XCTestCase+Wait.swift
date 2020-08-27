@@ -14,10 +14,12 @@ extension XCTestCase {
     /// }
     /// ```
     ///
-    func waitForExpectation(description: String? = nil,
-                            timeout: TimeInterval = Constants.expectationTimeout,
-                            _ block: (XCTestExpectation) -> ()) {
+    public func waitForExpectation(description: String? = nil,
+                                   count: Int = 1,
+                                   timeout: TimeInterval = 5.0,
+                                   _ block: (XCTestExpectation) -> ()) {
         let exp = expectation(description: description ?? "")
+        exp.expectedFulfillmentCount = count
         block(exp)
         wait(for: [exp], timeout: timeout)
     }
@@ -34,10 +36,10 @@ extension XCTestCase {
     /// }
     /// ```
     ///
-    func waitUntil(file: StaticString = #file,
-                   line: UInt = #line,
-                   timeout: TimeInterval = Constants.expectationTimeout,
-                   condition: @escaping (() -> Bool)) {
+    public func waitUntil(file: StaticString = #file,
+                          line: UInt = #line,
+                          timeout: TimeInterval = 5.0,
+                          condition: @escaping (() -> Bool)) {
         let predicate = NSPredicate { _, _ -> Bool in
             return condition()
         }

@@ -1,4 +1,5 @@
 import XCTest
+import TestKit
 import CocoaLumberjack
 import CoreData
 @testable import Storage

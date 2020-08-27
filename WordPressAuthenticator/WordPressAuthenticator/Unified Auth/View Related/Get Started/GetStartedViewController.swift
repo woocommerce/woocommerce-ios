@@ -66,6 +66,7 @@ private extension GetStartedViewController {
     func registerTableViewCells() {
         let cells = [
             TextLabelTableViewCell.reuseIdentifier: TextLabelTableViewCell.loadNib(),
+            TextFieldTableViewCell.reuseIdentifier: TextFieldTableViewCell.loadNib(),
             TextWithLinkTableViewCell.reuseIdentifier: TextWithLinkTableViewCell.loadNib()
         ]
         
@@ -77,7 +78,7 @@ private extension GetStartedViewController {
     /// Describes how the tableView rows should be rendered.
     ///
     func loadRows() {
-        rows = [.instructions, .tos]
+        rows = [.instructions, .email, .tos]
     }
     
     /// Configure cells.
@@ -86,6 +87,8 @@ private extension GetStartedViewController {
         switch cell {
         case let cell as TextLabelTableViewCell:
             configureInstructionLabel(cell)
+        case let cell as TextFieldTableViewCell:
+            configureEmailField(cell)
         case let cell as TextWithLinkTableViewCell:
             configureTextWithLink(cell)
         default:
@@ -97,6 +100,13 @@ private extension GetStartedViewController {
     ///
     func configureInstructionLabel(_ cell: TextLabelTableViewCell) {
         cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.getStartedInstructions)
+    }
+    
+    /// Configure the textfield cell.
+    ///
+    func configureEmailField(_ cell: TextFieldTableViewCell) {
+        cell.configureTextFieldStyle(with: .email,
+                                     and: WordPressAuthenticator.shared.displayStrings.emailAddressPlaceholder)
     }
     
     /// Configure the link cell.
@@ -123,12 +133,15 @@ private extension GetStartedViewController {
     ///
     enum Row {
         case instructions
+        case email
         case tos
         
         var reuseIdentifier: String {
             switch self {
             case .instructions:
                 return TextLabelTableViewCell.reuseIdentifier
+            case .email:
+                return TextFieldTableViewCell.reuseIdentifier
             case .tos:
                 return TextWithLinkTableViewCell.reuseIdentifier
                 

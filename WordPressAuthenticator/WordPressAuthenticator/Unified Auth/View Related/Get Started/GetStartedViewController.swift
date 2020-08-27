@@ -1,4 +1,5 @@
 import UIKit
+import SafariServices
 
 class GetStartedViewController: LoginViewController {
 
@@ -64,7 +65,9 @@ private extension GetStartedViewController {
     ///
     func registerTableViewCells() {
         let cells = [
-            TextLabelTableViewCell.reuseIdentifier: TextLabelTableViewCell.loadNib()
+            TextLabelTableViewCell.reuseIdentifier: TextLabelTableViewCell.loadNib(),
+            TextFieldTableViewCell.reuseIdentifier: TextFieldTableViewCell.loadNib(),
+            TextWithLinkTableViewCell.reuseIdentifier: TextWithLinkTableViewCell.loadNib()
         ]
         
         for (reuseIdentifier, nib) in cells {
@@ -75,15 +78,19 @@ private extension GetStartedViewController {
     /// Describes how the tableView rows should be rendered.
     ///
     func loadRows() {
-        rows = [.instructions]
+        rows = [.instructions, .email, .tos]
     }
     
     /// Configure cells.
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as TextLabelTableViewCell where row == .instructions:
+        case let cell as TextLabelTableViewCell:
             configureInstructionLabel(cell)
+        case let cell as TextFieldTableViewCell:
+            configureEmailField(cell)
+        case let cell as TextWithLinkTableViewCell:
+            configureTextWithLink(cell)
         default:
             DDLogError("Error: Unidentified tableViewCell type found.")
         }
@@ -95,15 +102,49 @@ private extension GetStartedViewController {
         cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.getStartedInstructions)
     }
     
+    /// Configure the textfield cell.
+    ///
+    func configureEmailField(_ cell: TextFieldTableViewCell) {
+        cell.configureTextFieldStyle(with: .email,
+                                     and: WordPressAuthenticator.shared.displayStrings.emailAddressPlaceholder)
+    }
+    
+    /// Configure the link cell.
+    ///
+    func configureTextWithLink(_ cell: TextWithLinkTableViewCell) {
+        cell.configureButton(markedText: WordPressAuthenticator.shared.displayStrings.loginTermsOfService)
+        
+        cell.actionHandler = { [weak self] in
+            guard let self = self,
+            let url = URL(string: WordPressAuthenticator.shared.configuration.wpcomTermsOfServiceURL) else {
+                return
+            }
+            
+            self.tracker.track(click: .termsOfService)
+
+            let safariViewController = SFSafariViewController(url: url)
+            safariViewController.modalPresentationStyle = .pageSheet
+            self.present(safariViewController, animated: true, completion: nil)
+        }
+    }
+
+    
     /// Rows listed in the order they were created.
     ///
     enum Row {
         case instructions
+        case email
+        case tos
         
         var reuseIdentifier: String {
             switch self {
             case .instructions:
                 return TextLabelTableViewCell.reuseIdentifier
+            case .email:
+                return TextFieldTableViewCell.reuseIdentifier
+            case .tos:
+                return TextWithLinkTableViewCell.reuseIdentifier
+                
             }
         }
     }

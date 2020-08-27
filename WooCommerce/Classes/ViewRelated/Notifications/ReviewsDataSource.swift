@@ -13,10 +13,6 @@ protocol ReviewsInteractionDelegate: UITableViewDelegate {
     /// to trigger a new page load if necessary
     ///
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath, with syncingCoordinator: SyncingCoordinator)
-
-    /// Called when we want to present a review after receiving a push notification
-    ///
-    func presentReviewDetails(for noteID: Int64, in viewController: UIViewController)
 }
 
 

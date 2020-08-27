@@ -157,10 +157,6 @@ extension ProductReviewsDataSource: ReviewsInteractionDelegate {
         // no-op: we don't want to catch the selected item in Products
     }
 
-    func presentReviewDetails(for noteID: Int64, in viewController: UIViewController) {
-        // no-op: we don't want to present the review details in Products
-    }
-
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return UITableView.automaticDimension
     }

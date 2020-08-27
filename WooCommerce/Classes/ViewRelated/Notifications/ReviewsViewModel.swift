@@ -79,12 +79,6 @@ final class ReviewsViewModel {
         markAsRead(notes: unreadNotifications, onCompletion: onCompletion)
     }
 
-    func loadReview(for noteID: Int64, onCompletion: @escaping () -> Void) {
-        synchronizeReviews() {
-            onCompletion()
-        }
-    }
-
     func containsMorePages(_ highestVisibleReview: Int) -> Bool {
         return highestVisibleReview > data.reviewCount
     }

@@ -19,12 +19,9 @@ extension NSNotification.Name {
 final class MainTabViewModel {
 
     private let storesManager: StoresManager
-    private let featureFlagService: FeatureFlagService
 
-    init(storesManager: StoresManager = ServiceLocator.stores,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+    init(storesManager: StoresManager = ServiceLocator.stores) {
         self.storesManager = storesManager
-        self.featureFlagService = featureFlagService
     }
 
     /// Callback to be executed when this view model receives new data
@@ -89,10 +86,6 @@ private extension MainTabViewModel {
 
     /// Persists the installation date if it hasn't been done already.
     func saveInstallationDateIfNecessary() {
-        guard featureFlagService.isFeatureFlagEnabled(.inAppFeedback) else {
-            return
-        }
-
         // Unfortunately, our `StoresManager` cannot handle actions (e.g. `AppSettingsAction`) if
         // the user is not logged in. That's because the state will be a `DeauthenticatedState`
         // which just ignores all dispatched actions.

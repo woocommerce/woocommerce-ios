@@ -39,24 +39,6 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
         assertEmpty(analyticsProvider.receivedProperties)
     }
 
-    func test_isInAppFeedbackCardVisible_is_false_if_feature_flag_is_off() {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isInAppFeedbackOn: false)
-        let viewModel = makeViewModel(featureFlagService: featureFlagService)
-
-        var emittedValues = [Bool]()
-        _ = viewModel.isInAppFeedbackCardVisible.subscribe { value in
-            emittedValues.append(value)
-        }
-
-        // When
-        viewModel.onViewDidAppear()
-
-        // Then
-        XCTAssertEqual([false, false], emittedValues)
-        assertEmpty(analyticsProvider.receivedProperties)
-    }
-
     func test_isInAppFeedbackCardVisible_is_false_if_canDisplayInAppFeedbackCard_is_false() {
         // Given
         let viewModel = makeViewModel(canDisplayInAppFeedbackCard: false)
@@ -222,10 +204,8 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
 }
 
 private extension StoreStatsAndTopPerformersPeriodViewModelTests {
-    func makeViewModel(canDisplayInAppFeedbackCard: Bool = true,
-                       featureFlagService: MockFeatureFlagService = .init(isInAppFeedbackOn: true)) -> StoreStatsAndTopPerformersPeriodViewModel {
+    func makeViewModel(canDisplayInAppFeedbackCard: Bool = true) -> StoreStatsAndTopPerformersPeriodViewModel {
         StoreStatsAndTopPerformersPeriodViewModel(canDisplayInAppFeedbackCard: canDisplayInAppFeedbackCard,
-                                                  featureFlagService: featureFlagService,
                                                   storesManager: storesManager,
                                                   analytics: analytics)
     }

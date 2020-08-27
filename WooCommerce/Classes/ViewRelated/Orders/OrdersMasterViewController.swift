@@ -87,26 +87,23 @@ final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
         // We're intentionally not using `processingOrderStatus` as the source of the "Processing"
         // text in here. We want the string to be translated.
         let processingOrdersVC = OrdersViewController(
-            title: NSLocalizedString("Processing", comment: "Title for the first page in the Orders tab."),
+            title: Localization.processingTitle,
             viewModel: OrdersViewModel(statusFilter: processingOrderStatus),
             emptyStateConfig: .simple(
-                message: NSAttributedString(string: NSLocalizedString("All orders have been fulfilled",
-                                                                      comment: "The message shown in the Orders → Processing tab if the list is empty.")),
+                message: NSAttributedString(string: Localization.processingEmptyStateMessage),
                 image: .waitingForCustomersImage
             )
         )
         processingOrdersVC.delegate = self
 
         let allOrdersVC = OrdersViewController(
-            title: NSLocalizedString("All Orders", comment: "Title for the second page in the Orders tab."),
+            title: Localization.allOrdersTitle,
             viewModel: OrdersViewModel(statusFilter: nil, includesFutureOrders: false),
             emptyStateConfig: .withLink(
-                message: NSAttributedString(string: NSLocalizedString("Waiting for your first order",
-                                                                      comment: "The message shown in the Orders → All Orders tab if the list is empty.")),
+                message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
                 image: .emptyOrdersImage,
-                details: NSLocalizedString("We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales.",
-                                           comment: "The detailed message shown in the Orders → All Orders tab if the list is empty."),
-                linkTitle: NSLocalizedString("Learn more", comment: "Title of button shown in the Orders → All Orders tab if the list is empty."),
+                details: Localization.allOrdersEmptyStateDetail,
+                linkTitle: Localization.learnMore,
                 linkURL: WooConstants.URLs.blog.asURL()
             )
         )
@@ -198,3 +195,23 @@ extension OrdersMasterViewController {
         return button
     }
 }
+
+// MARK: - Localization
+
+private extension OrdersMasterViewController {
+    enum Localization {
+        static let processingTitle = NSLocalizedString("Processing", comment: "Title for the first page in the Orders tab.")
+        static let processingEmptyStateMessage =
+            NSLocalizedString("All orders have been fulfilled",
+                              comment: "The message shown in the Orders → Processing tab if the list is empty.")
+        static let allOrdersTitle = NSLocalizedString("All Orders", comment: "Title for the second page in the Orders tab.")
+        static let allOrdersEmptyStateMessage =
+            NSLocalizedString("Waiting for your first order",
+                              comment: "The message shown in the Orders → All Orders tab if the list is empty.")
+        static let allOrdersEmptyStateDetail =
+            NSLocalizedString("We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales.",
+                              comment: "The detailed message shown in the Orders → All Orders tab if the list is empty.")
+        static let learnMore = NSLocalizedString("Learn more", comment: "Title of button shown in the Orders → All Orders tab if the list is empty.")
+    }
+}
+

@@ -30,7 +30,7 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
                                           stockQuantity: productVariation.stockQuantity,
                                           backordersSetting: model.backordersSetting,
                                           stockStatus: productVariation.stockStatus)
-        viewModel.updateShippingSettings(weight: productVariation.weight, dimensions: productVariation.dimensions, shippingClass: nil)
+        viewModel.updateShippingSettings(weight: productVariation.weight, dimensions: productVariation.dimensions, shippingClass: nil, shippingClassID: nil)
 
         // Assert
         XCTAssertFalse(viewModel.hasUnsavedChanges())
@@ -139,7 +139,7 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
         let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
 
         // Action
-        viewModel.updateShippingSettings(weight: "88888", dimensions: productVariation.dimensions, shippingClass: nil)
+        viewModel.updateShippingSettings(weight: "88888", dimensions: productVariation.dimensions, shippingClass: nil, shippingClassID: nil)
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())

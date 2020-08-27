@@ -36,7 +36,10 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
                                                     shippingClassID: 2022,
                                                     siteID: productVariation.siteID,
                                                     slug: "2-days")
-        viewModel.updateShippingSettings(weight: newWeight, dimensions: newDimensions, shippingClass: newShippingClass)
+        viewModel.updateShippingSettings(weight: newWeight,
+                                         dimensions: newDimensions,
+                                         shippingClass: newShippingClass.slug,
+                                         shippingClassID: newShippingClass.shippingClassID)
 
         // Assert
         XCTAssertEqual(viewModel.productModel.description, productVariation.description)

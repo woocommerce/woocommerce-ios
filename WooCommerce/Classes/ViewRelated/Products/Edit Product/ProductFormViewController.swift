@@ -874,27 +874,31 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func editShippingSettings() {
-        let shippingSettingsViewController = ProductShippingSettingsViewController(product: product) { [weak self] (weight, dimensions, shippingClass) in
-            self?.onEditShippingSettingsCompletion(weight: weight, dimensions: dimensions, shippingClass: shippingClass)
+        let shippingSettingsViewController = ProductShippingSettingsViewController(product: product) {
+            [weak self] (weight, dimensions, shippingClass, shippingClassID, hasUnsavedChanges) in
+            self?.onEditShippingSettingsCompletion(weight: weight,
+                                                   dimensions: dimensions,
+                                                   shippingClass: shippingClass,
+                                                   shippingClassID: shippingClassID,
+                                                   hasUnsavedChanges: hasUnsavedChanges)
         }
         navigationController?.pushViewController(shippingSettingsViewController, animated: true)
     }
 
-    func onEditShippingSettingsCompletion(weight: String?, dimensions: ProductDimensions, shippingClass: ProductShippingClass?) {
+    func onEditShippingSettingsCompletion(weight: String?,
+                                          dimensions: ProductDimensions,
+                                          shippingClass: String?,
+                                          shippingClassID: Int64?,
+                                          hasUnsavedChanges: Bool) {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        let hasChangedData: Bool = {
-            weight != self.product.weight ||
-                dimensions != self.product.dimensions ||
-                shippingClass?.slug != product.shippingClass
-        }()
-        ServiceLocator.analytics.track(.productShippingSettingsDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
+        ServiceLocator.analytics.track(.productShippingSettingsDoneButtonTapped, withProperties: ["has_changed_data": hasUnsavedChanges])
 
-        guard hasChangedData else {
+        guard hasUnsavedChanges else {
             return
         }
-        viewModel.updateShippingSettings(weight: weight, dimensions: dimensions, shippingClass: shippingClass)
+        viewModel.updateShippingSettings(weight: weight, dimensions: dimensions, shippingClass: shippingClass, shippingClassID: shippingClassID)
     }
 }
 

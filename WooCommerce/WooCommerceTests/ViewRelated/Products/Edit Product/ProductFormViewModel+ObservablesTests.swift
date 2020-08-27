@@ -61,7 +61,10 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
                                           stockQuantity: product.stockQuantity,
                                           backordersSetting: product.backordersSetting,
                                           stockStatus: product.productStockStatus)
-        viewModel.updateShippingSettings(weight: product.weight, dimensions: product.dimensions, shippingClass: product.productShippingClass)
+        viewModel.updateShippingSettings(weight: product.weight,
+                                         dimensions: product.dimensions,
+                                         shippingClass: product.shippingClass,
+                                         shippingClassID: product.shippingClassID)
         viewModel.updateProductCategories(product.categories)
         viewModel.updateProductTags(product.tags)
     }

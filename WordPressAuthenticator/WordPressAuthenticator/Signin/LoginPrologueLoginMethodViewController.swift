@@ -1,6 +1,11 @@
 import WordPressUI
 import WordPressShared
 
+
+/// This class houses the "3 button view":
+/// Continue with WordPress.com, Continue with Google, Continue with Apple
+/// and a text link - Or log in by entering your site address.
+///
 class LoginPrologueLoginMethodViewController: NUXViewController {
     /// Buttons at bottom of screen
     private var buttonViewController: NUXButtonViewController?

@@ -111,6 +111,11 @@ private extension TextFieldTableViewCell {
             textField.returnKeyType = .continue
             textField.accessibilityLabel = Constants.otp
             textField.accessibilityIdentifier = Constants.otp
+        case .email:
+            textField.keyboardType = .emailAddress
+            textField.returnKeyType = .continue
+            textField.accessibilityLabel = Constants.email
+            textField.accessibilityIdentifier = Constants.email
         }
     }
 
@@ -215,6 +220,7 @@ extension TextFieldTableViewCell {
         case username
         case password
         case numericCode
+        case email
     }
 
     struct Constants {
@@ -234,5 +240,7 @@ extension TextFieldTableViewCell {
                                                 comment: "Accessibility label for the password text field in the self-hosted login page.")
         static let otp = NSLocalizedString("Authentication code",
                                            comment: "Accessibility label for the 2FA text field.")
+        static let email = NSLocalizedString("Email address",
+                                             comment: "Accessibility label for the email address text field.")
     }
 }

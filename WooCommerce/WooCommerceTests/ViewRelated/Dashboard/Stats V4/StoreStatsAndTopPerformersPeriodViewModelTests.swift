@@ -222,10 +222,8 @@ final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
 }
 
 private extension StoreStatsAndTopPerformersPeriodViewModelTests {
-    func makeViewModel(canDisplayInAppFeedbackCard: Bool = true,
-                       featureFlagService: MockFeatureFlagService = .init(isInAppFeedbackOn: true)) -> StoreStatsAndTopPerformersPeriodViewModel {
+    func makeViewModel(canDisplayInAppFeedbackCard: Bool = true) -> StoreStatsAndTopPerformersPeriodViewModel {
         StoreStatsAndTopPerformersPeriodViewModel(canDisplayInAppFeedbackCard: canDisplayInAppFeedbackCard,
-                                                  featureFlagService: featureFlagService,
                                                   storesManager: storesManager,
                                                   analytics: analytics)
     }

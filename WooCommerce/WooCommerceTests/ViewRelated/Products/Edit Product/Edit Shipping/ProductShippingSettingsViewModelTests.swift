@@ -120,7 +120,7 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
 
     // MARK: `hasUnsavedChanges`
 
-    func test_shipping_class_API_sync_with_a_different_slug_results_in_no_unsaved_changes() {
+    func test_shipping_class_API_sync_with_a_different_slug_has_no_unsaved_changes() {
         // Arrange
         let dimensions = ProductDimensions(length: "2.9", width: "", height: "1116")
         let product = MockProduct().product()
@@ -140,7 +140,7 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
         XCTAssertFalse(hasUnsavedChanges)
     }
 
-    func test_updating_with_the_same_values_results_in_no_unsaved_changes() {
+    func test_updating_with_the_same_values_has_no_unsaved_changes() {
         // Arrange
         let dimensions = ProductDimensions(length: "2.9", width: "", height: "1116")
         let product = MockProduct().product()
@@ -165,7 +165,7 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
         XCTAssertFalse(hasUnsavedChanges)
     }
 
-    func test_updating_with_different_values_results_in_unsaved_changes() {
+    func test_updating_with_different_values_has_unsaved_changes() {
         // Arrange
         let dimensions = ProductDimensions(length: "2.9", width: "", height: "1116")
         let product = MockProduct().product()

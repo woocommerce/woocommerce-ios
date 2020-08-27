@@ -60,12 +60,12 @@ final class ProductShippingSettingsViewModel: ProductShippingSettingsViewModelOu
 
     init(product: ProductFormDataModel) {
         self.product = product
-        self.weight = product.weight
-        self.length = product.dimensions.length
-        self.width = product.dimensions.width
-        self.height = product.dimensions.height
-        self.shippingClassSlug = product.shippingClass
-        self.shippingClassID = product.shippingClassID
+        weight = product.weight
+        length = product.dimensions.length
+        width = product.dimensions.width
+        height = product.dimensions.height
+        shippingClassSlug = product.shippingClass
+        shippingClassID = product.shippingClassID
 
         // TODO-2580: re-enable shipping class for `ProductVariation` when the API issue is fixed.
         switch product {

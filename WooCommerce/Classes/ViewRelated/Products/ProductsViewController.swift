@@ -171,7 +171,7 @@ final class ProductsViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        tableView.updateHeaderHeight()
+        updateTableHeaderView()
     }
 }
 
@@ -388,7 +388,7 @@ private extension ProductsViewController {
         ProductsTopBannerFactory.topBanner(isExpanded: isExpanded,
                                            isInAppFeedbackFeatureEnabled: isInAppFeedbackEnabled,
                                            expandedStateChangeHandler: { [weak self] in
-            self?.tableView.updateHeaderHeight()
+            self?.updateTableHeaderView()
         }, onGiveFeedbackButtonPressed: { [weak self] in
             self?.presentProductsFeedback()
         }, onDismissButtonPressed: { [weak self] in
@@ -396,14 +396,20 @@ private extension ProductsViewController {
         }, onCompletion: { [weak self] topBannerView in
             self?.topBannerContainerView.updateSubview(topBannerView)
             self?.topBannerView = topBannerView
-            self?.tableView.updateHeaderHeight()
+            self?.updateTableHeaderView()
         })
     }
 
     func hideTopBannerView() {
         topBannerView?.removeFromSuperview()
         topBannerView = nil
-        tableView.tableHeaderView = nil
+        updateTableHeaderView()
+    }
+
+    /// Updates table header view with the correct spacing / edges depending if `topBannerContainerView` is empty or not.
+    ///
+    func updateTableHeaderView() {
+        topStackView.spacing = topBannerContainerView.subviews.isNotEmpty ? 8 : 0
         tableView.updateHeaderHeight()
     }
 

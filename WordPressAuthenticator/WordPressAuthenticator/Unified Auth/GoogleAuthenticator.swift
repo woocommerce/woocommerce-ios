@@ -196,7 +196,6 @@ private extension GoogleAuthenticator {
         static let googleConnected = NSLocalizedString("Connected But…", comment: "Title shown when a user logs in with Google but no matching WordPress.com account is found")
         static let googleConnectedError = NSLocalizedString("The Google account \"%@\" doesn't match any account on WordPress.com", comment: "Description shown when a user logs in with Google but no matching WordPress.com account is found")
         static let googleUnableToConnect = NSLocalizedString("Unable To Connect", comment: "Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com")
-        static let processing = NSLocalizedString("Processing Account", comment: "Shown while the app waits for the account process to complete.")
     }
 
 }
@@ -243,7 +242,7 @@ extension GoogleAuthenticator: GIDSignInDelegate {
             // Initiate separate WP login / signup paths.
             switch authType {
             case .login:
-                SVProgressHUD.show(withStatus: LocalizedText.processing)
+                SVProgressHUD.show()
                 loginFacade.loginToWordPressDotCom(withSocialIDToken: token, service: SocialServiceName.google.rawValue)
             case .signup:
                 createWordPressComUser(user: user, token: token, email: email)
@@ -253,7 +252,7 @@ extension GoogleAuthenticator: GIDSignInDelegate {
         }
 
         // Initiate unified path by attempting to login first.
-        SVProgressHUD.show(withStatus: LocalizedText.processing)
+        SVProgressHUD.show()
         loginFacade.loginToWordPressDotCom(withSocialIDToken: token, service: SocialServiceName.google.rawValue)
     }
     
@@ -348,7 +347,7 @@ private extension GoogleAuthenticator {
     /// Creates a WordPress.com account with the associated Google User + Google Token + Google Email.
     ///
     func createWordPressComUser(user: GIDGoogleUser, token: String, email: String) {
-        SVProgressHUD.show(withStatus: LocalizedText.processing)
+        SVProgressHUD.show()
         let service = SignupService()
         
         tracker.set(flow: .signupWithGoogle)

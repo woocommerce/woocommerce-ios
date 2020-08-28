@@ -123,6 +123,15 @@ class StoredCredentialsAuthenticator: NSObject {
 
 @available(iOS 13, *)
 extension StoredCredentialsAuthenticator: LoginFacadeDelegate {
+    func displayRemoteError(_ error: Error) {
+        guard authConfig.enableUnifiedWordPress else {
+            presentLoginEmailView(error: error)
+            return
+        }
+        
+        presentGetStartedView(error: error)
+    }
+    
     func needsMultifactorCode() {
         guard let loginFields = loginFields else {
             return
@@ -156,12 +165,40 @@ extension StoredCredentialsAuthenticator: LoginFacadeDelegate {
 
 @available(iOS 13, *)
 extension StoredCredentialsAuthenticator {
-    func presentLoginEpilogue(credentials: AuthenticatorCredentials) {
+    private func presentLoginEpilogue(credentials: AuthenticatorCredentials) {
         guard let navigationController = self.navigationController else {
             DDLogError("No navigation controller to present the login epilogue from")
             return
         }
         
         authenticationDelegate.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: {})
+    }
+    
+    private func presentLoginEmailView(error: Error) {
+        guard let toVC = LoginEmailViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate to LoginEmailVC from LoginPrologueVC")
+            return
+        }
+        
+        if let loginFields = loginFields {
+            toVC.loginFields = loginFields
+        }
+        toVC.errorToPresent = error
+
+        navigationController?.pushViewController(toVC, animated: true)
+    }
+
+    private func presentGetStartedView(error: Error) {
+        guard let toVC = GetStartedViewController.instantiate(from: .getStarted) else {
+            DDLogError("Failed to navigate to GetStartedViewController")
+            return
+        }
+        
+        if let loginFields = loginFields {
+            toVC.loginFields = loginFields
+        }
+        toVC.errorToPresent = error
+
+        navigationController?.pushViewController(toVC, animated: true)
     }
 }

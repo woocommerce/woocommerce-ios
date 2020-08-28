@@ -195,7 +195,8 @@ extension WPStyleGuide {
     /// - Returns: A properly styled NSAttributedString to be displayed on a NUXButton.
     ///
     class func formattedAppleString() -> NSAttributedString {
-        let appleTitle = "  " + NSLocalizedString("Continue with Apple", comment: "Button title. Tapping begins log in using Apple.")
+        // Add leading non-breaking space to separate the button text from the Apple symbol.
+        let appleTitle = "\u{00a0}\u{00a0}" + NSLocalizedString("Continue with Apple", comment: "Button title. Tapping begins log in using Apple.")
         return NSAttributedString(string: appleTitle)
     }
     

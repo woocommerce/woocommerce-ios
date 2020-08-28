@@ -124,6 +124,8 @@ class StoredCredentialsAuthenticator: NSObject {
 @available(iOS 13, *)
 extension StoredCredentialsAuthenticator: LoginFacadeDelegate {
     func displayRemoteError(_ error: Error) {
+        tracker.track(failure: error.localizedDescription)
+        
         guard authConfig.enableUnifiedWordPress else {
             presentLoginEmailView(error: error)
             return

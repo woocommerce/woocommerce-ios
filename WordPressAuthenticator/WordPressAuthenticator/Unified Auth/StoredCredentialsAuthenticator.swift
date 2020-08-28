@@ -45,6 +45,10 @@ class StoredCredentialsAuthenticator: NSObject {
         AuthenticatorAnalyticsTracker.shared
     }
     
+    // MARK: - Login Fields
+    
+    private var loginFields: LoginFields?
+    
     // MARK: - Picker
     
     /// Shows the UI for picking stored credentials for the user to log into their account.
@@ -89,7 +93,7 @@ class StoredCredentialsAuthenticator: NSObject {
         case let credential as ASPasswordCredential:
             let loginFields = LoginFields.makeForWPCom(username: credential.user, password: credential.password)
             loginFacade.signIn(with: loginFields)
-            break
+            self.loginFields = loginFields
         default:
             // There aren't any other known methods for us to handle here, but we still need to complete the switch
             // statement.
@@ -120,6 +124,18 @@ class StoredCredentialsAuthenticator: NSObject {
 @available(iOS 13, *)
 extension StoredCredentialsAuthenticator: LoginFacadeDelegate {
     func needsMultifactorCode() {
+        guard let loginFields = loginFields else {
+            return
+        }
+        
+        guard let vc = Login2FAViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from LoginViewController to Login2FAViewController")
+            return
+        }
+
+        vc.loginFields = loginFields
+
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {

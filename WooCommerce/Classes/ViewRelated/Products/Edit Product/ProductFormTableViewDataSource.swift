@@ -229,6 +229,7 @@ private extension ProductFormTableViewDataSource {
                        details: viewModel.details ?? "",
                        ratingCount: ratingCount,
                        averageRating: averageRating)
+        cell.accessoryType = .disclosureIndicator
     }
 
     func configureSettingsRowWithASwitch(cell: UITableViewCell, viewModel: ProductFormSection.SettingsRow.SwitchableViewModel) {

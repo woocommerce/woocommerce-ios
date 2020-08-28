@@ -36,7 +36,7 @@ final class EmptyStateViewControllerTests: XCTestCase {
         let mirror = try self.mirror(of: viewController)
 
         // When
-        viewController.configure(.simple(message: NSAttributedString(string: "Ola"), image: .appleIcon))
+        viewController.configure(.simple(message: NSAttributedString(string: "Ola"), image: .infoImage))
 
         // Then
         XCTAssertFalse(mirror.messageLabel.isHidden)
@@ -44,7 +44,7 @@ final class EmptyStateViewControllerTests: XCTestCase {
         XCTAssertTrue(mirror.actionButton.isHidden)
 
         XCTAssertEqual(mirror.messageLabel.attributedText, NSAttributedString(string: "Ola"))
-        XCTAssertEqual(mirror.imageView.image, UIImage.appleIcon)
+        XCTAssertEqual(mirror.imageView.image, UIImage.infoImage)
     }
 
     func test_given_a_link_config_it_shows_all_the_elements() throws {
@@ -57,7 +57,7 @@ final class EmptyStateViewControllerTests: XCTestCase {
         // When
         viewController.configure(.withLink(
             message: NSAttributedString(string: "Ola"),
-            image: .appleIcon,
+            image: .infoImage,
             details: "Dolores eum",
             linkTitle: "Bakero!",
             linkURL: WooConstants.URLs.blog.asURL()
@@ -69,7 +69,7 @@ final class EmptyStateViewControllerTests: XCTestCase {
         XCTAssertFalse(mirror.actionButton.isHidden)
 
         XCTAssertEqual(mirror.messageLabel.attributedText, NSAttributedString(string: "Ola"))
-        XCTAssertEqual(mirror.imageView.image, UIImage.appleIcon)
+        XCTAssertEqual(mirror.imageView.image, UIImage.infoImage)
         XCTAssertEqual(mirror.detailsLabel.text, "Dolores eum")
         XCTAssertEqual(mirror.actionButton.titleLabel?.text, "Bakero!")
     }
@@ -85,7 +85,7 @@ final class EmptyStateViewControllerTests: XCTestCase {
         XCTAssertTrue(mirror.imageView.isHidden)
 
         // When
-        viewController.configure(.simple(message: NSAttributedString(string: "Ola"), image: .appleIcon))
+        viewController.configure(.simple(message: NSAttributedString(string: "Ola"), image: .infoImage))
 
         // Then
 
@@ -104,7 +104,7 @@ final class EmptyStateViewControllerTests: XCTestCase {
 
         let mirror = try self.mirror(of: viewController)
 
-        viewController.configure(.simple(message: NSAttributedString(string: ""), image: .appleIcon))
+        viewController.configure(.simple(message: NSAttributedString(string: ""), image: .infoImage))
 
         // When
         viewController.willTransition(to: UITraitCollection(verticalSizeClass: .compact),
@@ -121,7 +121,7 @@ final class EmptyStateViewControllerTests: XCTestCase {
 
         let mirror = try self.mirror(of: viewController)
 
-        viewController.configure(.simple(message: NSAttributedString(string: ""), image: .appleIcon))
+        viewController.configure(.simple(message: NSAttributedString(string: ""), image: .infoImage))
 
         // When
         viewController.willTransition(to: UITraitCollection(verticalSizeClass: .regular),
@@ -167,7 +167,7 @@ final class EmptyStateViewControllerTests: XCTestCase {
 
         viewController.configure(.withSupportRequest(
             message: NSAttributedString(string: ""),
-            image: .appleIcon,
+            image: .infoImage,
             details: "",
             buttonTitle: "Dolores"
         ))

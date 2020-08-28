@@ -137,8 +137,8 @@ extension StoredCredentialsAuthenticator: LoginFacadeDelegate {
             return
         }
         
-        guard let vc = Login2FAViewController.instantiate(from: .login) else {
-            DDLogError("Failed to navigate from LoginViewController to Login2FAViewController")
+        guard let vc = TwoFAViewController.instantiate(from: .twoFA) else {
+            DDLogError("Failed to navigate from LoginViewController to TwoFAViewController")
             return
         }
 

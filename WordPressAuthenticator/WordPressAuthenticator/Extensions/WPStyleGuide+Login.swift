@@ -196,23 +196,8 @@ extension WPStyleGuide {
     /// - Returns: A properly styled NSAttributedString to be displayed on a NUXButton.
     ///
     class func formattedAppleString() -> NSAttributedString {
-        
-        let appleAttachment = NSTextAttachment()
-        let appleIcon = UIImage.appleIcon
-        appleAttachment.image = appleIcon
-        
-        let imageSize = CGSize(width: appleIcon.size.width * Constants.appleIconSizeModifier,
-                               height: appleIcon.size.height * Constants.appleIconSizeModifier)
-
-        appleAttachment.bounds = CGRect(x: 0, y: floor((NUXButton.titleFont.capHeight - imageSize.height) / 2),
-                                        width: imageSize.width, height: imageSize.height)
-
-        let buttonString = NSMutableAttributedString(attachment: appleAttachment)
-        // Add leading non-breaking space to separate the button text from the Apple logo.
-        let appleTitle = "\u{00a0}" + NSLocalizedString("Continue with Apple", comment: "Button title. Tapping begins log in using Apple.")
-        buttonString.append(NSAttributedString(string: appleTitle))
-
-        return buttonString
+        let appleTitle = "  " + NSLocalizedString("Continue with Apple", comment: "Button title. Tapping begins log in using Apple.")
+        return NSAttributedString(string: appleTitle)
     }
     
     /// Creates a button for Self-hosted Login

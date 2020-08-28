@@ -37,21 +37,6 @@ extension UIImage {
         return UIImage(named: "google", in: bundle, compatibleWith: nil) ?? UIImage()
     }
 
-    /// Returns the Apple Logo Image.
-    ///
-    public static var appleIcon: UIImage {
-
-        let imageName: String = {
-            if #available(iOS 13, *) {
-                return UITraitCollection.current.userInterfaceStyle == .dark ? "apple-white" : "apple-black"
-            }
-
-            return "apple-black"
-        }()
-
-        return UIImage(named: imageName, in: bundle, compatibleWith: nil) ?? UIImage()
-    }
-
     /// Returns WordPressAuthenticator's Bundle
     ///
     private static var bundle: Bundle {

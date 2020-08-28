@@ -20,7 +20,6 @@ extension WPStyleGuide {
         static let textButtonMinHeight: CGFloat = 40.0
         static let googleIconOffset: CGFloat = -1.0
         static let googleIconButtonSize: CGFloat = 15.0
-        static let appleIconSizeModifier: CGFloat = 0.66
         static let domainsIconPaddingToRemove: CGFloat = 2.0
         static let domainsIconSize = CGSize(width: 18, height: 18)
         static let verticalLabelSpacing: CGFloat = 10.0

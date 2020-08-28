@@ -504,6 +504,11 @@ extension LoginViewController: LoginSocialErrorViewControllerDelegate {
         }
     }
     
+    func errorDismissed() {
+        loginFields.username = ""
+        navigationController?.popToRootViewController(animated: true)
+    }
+    
     private func cleanupAfterSocialErrors() {
         dismiss(animated: true) {}
     }

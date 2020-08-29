@@ -10,11 +10,25 @@ class GetStartedViewController: LoginViewController {
 
     private var rows = [Row]()
 
+    // Submit button displayed in the table footer.
+    private let continueButton: NUXButton = {
+        let button = NUXButton()
+        button.isPrimary = true
+        
+        let title = WordPressAuthenticator.shared.displayStrings.continueButtonTitle
+        button.setTitle(title, for: .normal)
+        button.setTitle(title, for: .highlighted)
+        
+        return button
+    }()
+    
     override open var sourceTag: WordPressSupportSourceTag {
         get {
             return .loginEmail
         }
     }
+    
+    // MARK: - View
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,6 +37,7 @@ class GetStartedViewController: LoginViewController {
         setupTable()
         registerTableViewCells()
         loadRows()
+        setupContinueButton()
     }
 
     // MARK: - Overrides
@@ -59,6 +74,22 @@ private extension GetStartedViewController {
         setTableViewMargins(forWidth: view.frame.width)
     }
 
+    func setupContinueButton() {
+        let tableFooter = UIView(frame: Constants.footerFrame)
+        tableFooter.addSubview(continueButton)
+        tableFooter.pinSubviewToSafeArea(continueButton, insets: Constants.footerButtonInsets)
+        continueButton.translatesAutoresizingMaskIntoConstraints = false
+        continueButton.isEnabled = false
+        continueButton.addTarget(self, action: #selector(handleSubmitButtonTapped(_:)), for: .touchUpInside)
+        tableView.tableFooterView = tableFooter
+    }
+
+    // MARK: - Button Actions
+    
+    @IBAction func handleSubmitButtonTapped(_ sender: UIButton) {
+        // TODO: validateForm()
+    }
+    
     // MARK: - Table Management
     
     /// Registers all of the available TableViewCells.
@@ -128,7 +159,6 @@ private extension GetStartedViewController {
         }
     }
 
-    
     /// Rows listed in the order they were created.
     ///
     enum Row {
@@ -147,6 +177,11 @@ private extension GetStartedViewController {
                 
             }
         }
+    }
+    
+    enum Constants {
+        static let footerFrame = CGRect(x: 0, y: 0, width: 0, height: 44)
+        static let footerButtonInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
     }
     
 }

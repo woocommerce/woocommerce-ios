@@ -33,32 +33,37 @@ class CredentialsTests: XCTestCase {
         XCTAssertEqual(wpcomCredentials.siteURL, expected)
     }
     
-    func testWordPressComCredentialsEquatable() {
-        let lhs = WordPressComCredentials(authToken: token,
-                                          isJetpackLogin: false,
-                                          multifactor: false,
-                                          siteURL: siteURL)
-        
-        let rhs = WordPressComCredentials(authToken: token,
-                                          isJetpackLogin: false,
-                                          multifactor: false,
-                                          siteURL: siteURL)
-        
-        XCTAssertTrue(lhs == rhs)
-    }
-    
-    func testWordPressComCredentialsNotEquatable() {
-        let lhs = WordPressComCredentials(authToken: token,
-                                          isJetpackLogin: false,
-                                          multifactor: false,
-                                          siteURL: siteURL)
-        
-        let rhs = WordPressComCredentials(authToken: token,
-                                          isJetpackLogin: false,
-                                          multifactor: false,
-                                          siteURL: "")
-        
-        XCTAssertFalse(lhs == rhs)
+    func testWordPressComCredentialsEquatableReturnsCorrectValue() {
+        let credential = WordPressComCredentials(authToken: token,
+                                                 isJetpackLogin: false,
+                                                 multifactor: false,
+                                                 siteURL: siteURL)
+        let match = WordPressComCredentials(authToken: token,
+                                                 isJetpackLogin: false,
+                                                 multifactor: false,
+                                                 siteURL: siteURL)
+        let differentJetpack = WordPressComCredentials(authToken: token,
+                                                 isJetpackLogin: true,
+                                                 multifactor: false,
+                                                 siteURL: siteURL)
+        let differentMultifactor = WordPressComCredentials(authToken: token,
+                                                 isJetpackLogin: false,
+                                                 multifactor: true,
+                                                 siteURL: siteURL)
+        let differentSiteURL = WordPressComCredentials(authToken: token,
+                                                       isJetpackLogin: false,
+                                                       multifactor: false,
+                                                       siteURL: "")
+        let differentAuthToken = WordPressComCredentials(authToken: "ARSTDBVCXZ(*&^%$",
+                                                         isJetpackLogin: false,
+                                                         multifactor: false,
+                                                         siteURL: siteURL)
+
+        XCTAssertTrue(credential == match)
+        XCTAssertTrue(credential == differentJetpack)
+        XCTAssertTrue(credential == differentMultifactor)
+        XCTAssertFalse(credential == differentSiteURL)
+        XCTAssertFalse(credential == differentAuthToken)
     }
     
     func testWordpressOrgCredentialsInit() {

@@ -19,7 +19,6 @@ final class StoreStatsAndTopPerformersPeriodViewModel {
     }
     private let isInAppFeedbackCardVisibleSubject = BehaviorSubject(false)
 
-    private let featureFlagService: FeatureFlagService
     private let storesManager: StoresManager
     private let analytics: Analytics
 
@@ -30,11 +29,9 @@ final class StoreStatsAndTopPerformersPeriodViewModel {
     ///     But setting this to `false`, will ensure that it will never be presented.
     ///
     init(canDisplayInAppFeedbackCard: Bool,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          storesManager: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.canDisplayInAppFeedbackCard = canDisplayInAppFeedbackCard
-        self.featureFlagService = featureFlagService
         self.storesManager = storesManager
         self.analytics = analytics
     }
@@ -69,9 +66,8 @@ final class StoreStatsAndTopPerformersPeriodViewModel {
     /// Calculates and updates the value of `isInAppFeedbackCardVisibleSubject`.
     private func refreshIsInAppFeedbackCardVisibleValue() {
         // Abort right away if we don't need to calculate the real value.
-        let isEnabled = canDisplayInAppFeedbackCard && featureFlagService.isFeatureFlagEnabled(.inAppFeedback)
-        guard isEnabled else {
-            return sendIsInAppFeedbackCardVisibleValueAndTrackIfNeeded(isEnabled)
+        guard canDisplayInAppFeedbackCard else {
+            return sendIsInAppFeedbackCardVisibleValueAndTrackIfNeeded(false)
         }
 
         let action = AppSettingsAction.loadFeedbackVisibility(type: .general) { [weak self] result in

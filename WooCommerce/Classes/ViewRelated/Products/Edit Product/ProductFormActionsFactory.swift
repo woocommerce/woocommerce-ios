@@ -144,6 +144,8 @@ private extension ProductFormActionsFactory {
         let actions: [ProductFormEditAction?] = [
             .variations,
             shouldShowReviewsRow ? .reviews: nil,
+            .shippingSettings,
+            .inventorySettings,
             shouldShowCategoriesRow ? .categories: nil,
             shouldShowTagsRow ? .tags: nil,
             .briefDescription,

@@ -59,10 +59,6 @@ extension WooConstants {
         ///
         case helpCenter = "https://docs.woocommerce.com/document/woocommerce-ios/"
 
-        /// Feature Request URL
-        ///
-        case featureRequest = "http://ideas.woocommerce.com/forums/133476-woocommerce?category_id=84283"
-
         /// URL used for Learn More button in Orders empty state.
         ///
         case blog = "https://woocommerce.com/blog/"

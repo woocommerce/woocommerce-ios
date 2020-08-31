@@ -298,6 +298,7 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable {
         // Inventory Settings.
         try container.encode(sku, forKey: .sku)
         try container.encode(manageStock, forKey: .manageStock)
+        try container.encode(stockStatus.rawValue, forKey: .stockStatusKey)
         try container.encode(stockQuantity, forKey: .stockQuantity)
         try container.encode(backordersKey, forKey: .backordersKey)
     }

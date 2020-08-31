@@ -39,7 +39,7 @@ final class ProductsViewController: UIViewController {
         let subviews = [topBannerContainerView, toolbar]
         let stackView = UIStackView(arrangedSubviews: subviews)
         stackView.axis = .vertical
-        stackView.spacing = 8
+        stackView.spacing = Constants.headerViewSpacing
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
@@ -171,7 +171,7 @@ final class ProductsViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        tableView.updateHeaderHeight()
+        updateTableHeaderViewHeight()
     }
 }
 
@@ -384,11 +384,9 @@ private extension ProductsViewController {
     ///
     func requestAndShowNewTopBannerView() {
         let isExpanded = topBannerView?.isExpanded ?? false
-        let isInAppFeedbackEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.inAppFeedback)
         ProductsTopBannerFactory.topBanner(isExpanded: isExpanded,
-                                           isInAppFeedbackFeatureEnabled: isInAppFeedbackEnabled,
                                            expandedStateChangeHandler: { [weak self] in
-            self?.tableView.updateHeaderHeight()
+            self?.updateTableHeaderViewHeight()
         }, onGiveFeedbackButtonPressed: { [weak self] in
             self?.presentProductsFeedback()
         }, onDismissButtonPressed: { [weak self] in
@@ -396,14 +394,20 @@ private extension ProductsViewController {
         }, onCompletion: { [weak self] topBannerView in
             self?.topBannerContainerView.updateSubview(topBannerView)
             self?.topBannerView = topBannerView
-            self?.tableView.updateHeaderHeight()
+            self?.updateTableHeaderViewHeight()
         })
     }
 
     func hideTopBannerView() {
         topBannerView?.removeFromSuperview()
         topBannerView = nil
-        tableView.tableHeaderView = nil
+        updateTableHeaderViewHeight()
+    }
+
+    /// Updates table header view with the correct spacing / edges depending if `topBannerContainerView` is empty or not.
+    ///
+    func updateTableHeaderViewHeight() {
+        topStackView.spacing = topBannerContainerView.subviews.isNotEmpty ? Constants.headerViewSpacing : 0
         tableView.updateHeaderHeight()
     }
 
@@ -793,6 +797,7 @@ extension ProductsViewController {
 private extension ProductsViewController {
 
     enum Constants {
+        static let headerViewSpacing = CGFloat(8)
         static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
         static let headerDefaultHeight = CGFloat(130)

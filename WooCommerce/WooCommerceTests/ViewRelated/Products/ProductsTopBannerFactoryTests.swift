@@ -76,7 +76,6 @@ private extension ProductsTopBannerFactoryTests {
             ProductsTopBannerFactory.topBanner(isExpanded: false,
                                                stores: storesManager,
                                                analytics: analytics,
-                                               isInAppFeedbackFeatureEnabled: true,
                                                expandedStateChangeHandler: {
 
             }, onGiveFeedbackButtonPressed: {

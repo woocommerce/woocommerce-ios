@@ -79,7 +79,7 @@ private extension ProductFormActionsFactory {
     }
 
     func allSettingsSectionActionsForSimpleProduct() -> [ProductFormEditAction] {
-        let shouldShowReviewsRow = isEditProductsRelease3Enabled
+        let shouldShowReviewsRow = isEditProductsRelease3Enabled && product.reviewsAllowed
         let shouldShowProductTypeRow = isEditProductsRelease3Enabled
         let shouldShowShippingSettingsRow = product.isShippingEnabled()
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
@@ -99,7 +99,7 @@ private extension ProductFormActionsFactory {
     }
 
     func allSettingsSectionActionsForAffiliateProduct() -> [ProductFormEditAction] {
-        let shouldShowReviewsRow = isEditProductsRelease3Enabled
+        let shouldShowReviewsRow = isEditProductsRelease3Enabled && product.reviewsAllowed
         let shouldShowProductTypeRow = isEditProductsRelease3Enabled
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
         let shouldShowTagsRow = isEditProductsRelease3Enabled
@@ -118,7 +118,7 @@ private extension ProductFormActionsFactory {
     }
 
     func allSettingsSectionActionsForGroupedProduct() -> [ProductFormEditAction] {
-        let shouldShowReviewsRow = isEditProductsRelease3Enabled
+        let shouldShowReviewsRow = isEditProductsRelease3Enabled && product.reviewsAllowed
         let shouldShowProductTypeRow = isEditProductsRelease3Enabled
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
         let shouldShowTagsRow = isEditProductsRelease3Enabled
@@ -136,7 +136,7 @@ private extension ProductFormActionsFactory {
     }
 
     func allSettingsSectionActionsForVariableProduct() -> [ProductFormEditAction] {
-        let shouldShowReviewsRow = isEditProductsRelease3Enabled
+        let shouldShowReviewsRow = isEditProductsRelease3Enabled && product.reviewsAllowed
         let shouldShowProductTypeRow = isEditProductsRelease3Enabled
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
         let shouldShowTagsRow = isEditProductsRelease3Enabled
@@ -144,6 +144,8 @@ private extension ProductFormActionsFactory {
         let actions: [ProductFormEditAction?] = [
             .variations,
             shouldShowReviewsRow ? .reviews: nil,
+            .shippingSettings,
+            .inventorySettings,
             shouldShowCategoriesRow ? .categories: nil,
             shouldShowTagsRow ? .tags: nil,
             .briefDescription,
@@ -154,7 +156,7 @@ private extension ProductFormActionsFactory {
 
     func allSettingsSectionActionsForNonCoreProduct() -> [ProductFormEditAction] {
         let shouldShowPriceSettingsRow = product.regularPrice.isNilOrEmpty == false
-        let shouldShowReviewsRow = isEditProductsRelease3Enabled
+        let shouldShowReviewsRow = isEditProductsRelease3Enabled && product.reviewsAllowed
         let shouldShowProductTypeRow = isEditProductsRelease3Enabled
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
         let shouldShowTagsRow = isEditProductsRelease3Enabled

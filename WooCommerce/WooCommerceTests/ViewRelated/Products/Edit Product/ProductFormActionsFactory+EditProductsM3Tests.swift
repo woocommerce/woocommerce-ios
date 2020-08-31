@@ -61,6 +61,32 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
+    func test_viewModel_for_physical_simple_product_with_reviews_disabled() {
+        // Arrange
+        let product = Fixtures.physicalSimpleProductWithReviewsDisabled
+        let model = EditableProductModel(product: product)
+
+        // Action
+        let factory = ProductFormActionsFactory(product: model,
+                                                isEditProductsRelease3Enabled: true)
+
+        // Assert
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
+        XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
+
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings,
+                                                                       .shippingSettings,
+                                                                       .inventorySettings,
+                                                                       .categories,
+                                                                       .tags,
+                                                                       .briefDescription,
+                                                                       .productType]
+        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
+
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
+        XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
+    }
+
     func testViewModelForDownloadableSimpleProduct() {
         // Arrange
         let product = Fixtures.downloadableSimpleProduct
@@ -169,7 +195,7 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.variations, .reviews, .productType]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.variations, .reviews, .shippingSettings, .inventorySettings, .productType]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editBriefDescription]
@@ -189,7 +215,7 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.variations, .reviews, .productType]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.variations, .reviews, .shippingSettings, .inventorySettings, .productType]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editBriefDescription]
@@ -260,6 +286,15 @@ private extension ProductFormActionsFactory_EditProductsM3Tests {
                                                                               manageStock: true, sku: "uks", stockQuantity: nil,
                                                                               dimensions: ProductDimensions(length: "", width: "", height: ""), weight: "2",
                                                                               virtual: false,
+                                                                              categories: [category],
+                                                                              tags: [tag],
+                                                                              images: [image])
+        // downloadable: false, virtual: true, reviews: false, with inventory/shipping/categories/tags/brief description
+        static let physicalSimpleProductWithReviewsDisabled = MockProduct().product(downloadable: false, briefDescription: "desc", productType: .simple,
+                                                                              manageStock: true, sku: "uks", stockQuantity: nil,
+                                                                              dimensions: ProductDimensions(length: "", width: "", height: ""), weight: "2",
+                                                                              virtual: false,
+                                                                              reviewsAllowed: false,
                                                                               categories: [category],
                                                                               tags: [tag],
                                                                               images: [image])

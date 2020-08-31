@@ -2,7 +2,14 @@
 -----
 - [*] Order details > product details: tapping outside of the bottom sheet from "Add more details" menu does not dismiss the whole product details anymore.
 - [*] If the Products switch is on in Settings > Experimental Features, product editing for basic fields are enabled for non-core products (whose product type is not simple/external/variable/grouped) - images, name, description, readonly price, readonly inventory, tags, categories, short description, and product settings.
-- [*] Edit Product: now it's possible to open the product's reviews screen also if there are no reviews.
+- [*] Order Detail: added "Guest" placeholder on Order Details card when there's no customer name.
+- [*] If the Products switch is on in Settings > Experimental Features:
+  - Product editing for basic fields are enabled for non-core products (whose product type is not simple/external/variable/grouped) - images, name, description, readonly price, readonly inventory, tags, categories, short description, and product settings.
+  - Inventory and shipping settings are now editable for a variable product.
+  - A product variation's stock status is now editable in inventory settings.
+  - Reviews row is now hidden if reviews are disabled.
+  - Now it's possible to open the product's reviews screen also if there are no reviews.
+
 
 4.9
 -----
@@ -11,7 +18,8 @@
 - [*] Edit Products: the update action now shows up on the product details after updating just the sale price.
 - [*] Fix a crash that sometimes happen when tapping on a Product Review push notification.
 - [*] Variable product > variation list: a warning banner is shown if any variations do not have a price, and warning text is shown on these variation rows.
- 
+
+
 4.8
 -----
 - [*] Enabled right/left swipe on product images.

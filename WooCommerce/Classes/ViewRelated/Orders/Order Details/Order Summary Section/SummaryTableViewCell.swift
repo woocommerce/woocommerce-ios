@@ -39,11 +39,12 @@ struct SummaryTableViewCellViewModel {
     /// The full name from the billing address
     ///
     var billedPersonName: String {
-        if let billingAddress = billingAddress {
+        if let billingAddress = billingAddress,
+            billingAddress.firstName.isNotEmpty || billingAddress.lastName.isNotEmpty {
             return Localization.billedPerson(firstName: billingAddress.firstName,
                                              lastName: billingAddress.lastName)
         } else {
-            return ""
+            return Localization.guestName
         }
     }
 
@@ -199,5 +200,8 @@ private extension SummaryTableViewCellViewModel {
 
             return String.localizedStringWithFormat(format, firstName, lastName)
         }
+
+        static let guestName: String = NSLocalizedString("Guest",
+                                                         comment: "In Order Details, the name of the billed person when there are no name and last name.")
     }
 }

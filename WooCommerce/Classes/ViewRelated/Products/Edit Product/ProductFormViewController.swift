@@ -28,7 +28,11 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     }
 
     private var tableViewModel: ProductFormTableViewModel
-    private var tableViewDataSource: ProductFormTableViewDataSource
+    private var tableViewDataSource: ProductFormTableViewDataSource {
+        didSet {
+            registerTableViewCells()
+        }
+    }
 
     private let productImageActionHandler: ProductImageActionHandler
     private let productUIImageLoader: ProductUIImageLoader

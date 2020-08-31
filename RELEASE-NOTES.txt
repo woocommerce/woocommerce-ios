@@ -7,6 +7,7 @@
   - Product editing for basic fields are enabled for non-core products (whose product type is not simple/external/variable/grouped) - images, name, description, readonly price, readonly inventory, tags, categories, short description, and product settings.
   - Inventory and shipping settings are now editable for a variable product.
   - A product variation's stock status is now editable in inventory settings.
+  - Reviews row is now hidden if reviews are disabled.
 
 
 4.9

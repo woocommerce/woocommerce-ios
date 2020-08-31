@@ -39,7 +39,7 @@ final class ProductInventorySettingsViewModel_VariationTests: XCTestCase {
         XCTAssertEqual(viewModel.soldIndividually, nil)
         XCTAssertEqual(viewModel.stockQuantity, 12)
         XCTAssertEqual(viewModel.backordersSetting, .allowed)
-        XCTAssertFalse(viewModel.isStockStatusEnabled)
+        XCTAssertTrue(viewModel.isStockStatusEnabled)
     }
 
     func testReadonlyValuesAreAsExpectedAfterInitializingAProductVariationWithManageStockDisabled() {
@@ -59,13 +59,13 @@ final class ProductInventorySettingsViewModel_VariationTests: XCTestCase {
         // Assert
         let expectedSections: [Section] = [
             .init(rows: [.sku]),
-            .init(rows: [.manageStock])
+            .init(rows: [.manageStock, .stockStatus])
         ]
         XCTAssertEqual(sections, expectedSections)
         XCTAssertEqual(viewModel.sku, sku)
         XCTAssertFalse(viewModel.manageStockEnabled)
         XCTAssertEqual(viewModel.soldIndividually, nil)
         XCTAssertEqual(viewModel.stockStatus, .onBackOrder)
-        XCTAssertFalse(viewModel.isStockStatusEnabled)
+        XCTAssertTrue(viewModel.isStockStatusEnabled)
     }
 }

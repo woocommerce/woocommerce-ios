@@ -71,6 +71,27 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isStockStatusEnabled)
     }
 
+    func test_a_variable_product_with_manage_stock_disabled_has_no_stock_status_row() {
+        // Arrange
+        let product = MockProduct().product().copy(productTypeKey: ProductType.variable.rawValue, sku: "134")
+        let model = EditableProductModel(product: product)
+
+        // Act
+        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
+        var sections: [Section] = []
+        cancellable = viewModel.sections.subscribe { sectionsValue in
+            sections = sectionsValue
+        }
+
+        // Assert
+        let expectedSections: [Section] = [
+            .init(rows: [.sku]),
+            .init(rows: [.manageStock]),
+            .init(rows: [.limitOnePerOrder])
+        ]
+        XCTAssertEqual(sections, expectedSections)
+    }
+
     func testOnlySKUSectionIsVisibleForSKUFormType() {
         // Arrange
         let product = MockProduct().product().copy(sku: "134")

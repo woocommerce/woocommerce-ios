@@ -124,7 +124,8 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
     }
 
     func isStockStatusEnabled() -> Bool {
-        true
+        // Only a variable product's stock status is not editable.
+        productType != .variable
     }
 
     // Visibility logic

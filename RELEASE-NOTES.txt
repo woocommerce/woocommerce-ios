@@ -1,7 +1,10 @@
 5.0
 -----
 - [*] Order details > product details: tapping outside of the bottom sheet from "Add more details" menu does not dismiss the whole product details anymore.
-- [*] If the Products switch is on in Settings > Experimental Features, product editing for basic fields are enabled for non-core products (whose product type is not simple/external/variable/grouped) - images, name, description, readonly price, readonly inventory, tags, categories, short description, and product settings.
+- [*] If the Products switch is on in Settings > Experimental Features:
+  - Product editing for basic fields are enabled for non-core products (whose product type is not simple/external/variable/grouped) - images, name, description, readonly price, readonly inventory, tags, categories, short description, and product settings.
+  - Inventory and shipping settings are now editable for a variable product.
+  - A product variation's stock status is now editable in inventory settings.
 
 4.9
 -----

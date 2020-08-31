@@ -133,7 +133,6 @@ class LoginPrologueViewController: LoginViewController {
                                                  comment: "Button title. Takes the user to the login by site address flow.")
 
         buttonViewController.setupTopButton(title: loginTitle, isPrimary: true, accessibilityIdentifier: "Prologue Log In Button") { [weak self] in
-            self?.onLoginButtonTapped?()
             self?.continueWithDotCom()
         }
 

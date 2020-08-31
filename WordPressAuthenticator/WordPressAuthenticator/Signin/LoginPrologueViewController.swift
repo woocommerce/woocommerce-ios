@@ -89,6 +89,17 @@ class LoginPrologueViewController: LoginViewController {
             return
         }
 
+        guard configuration.enableUnifiedWordPress else {
+            buildPrologueButtons(buttonViewController)
+            return
+        }
+
+        buildUnifiedPrologueButtons(buttonViewController)
+    }
+
+    /// Displays the old UI prologue buttons.
+    ///
+    private func buildPrologueButtons(_ buttonViewController: NUXButtonViewController) {
         let loginTitle = NSLocalizedString("Log In", comment: "Button title.  Tapping takes the user to the login form.")
         let createTitle = NSLocalizedString("Sign up for WordPress.com", comment: "Button title. Tapping begins the process of creating a WordPress.com account.")
 
@@ -102,12 +113,43 @@ class LoginPrologueViewController: LoginViewController {
                 self?.signupTapped()
             }
         }
+
         if showCancel {
             let cancelTitle = NSLocalizedString("Cancel", comment: "Button title. Tapping it cancels the login flow.")
             buttonViewController.setupTertiaryButton(title: cancelTitle, isPrimary: false) { [weak self] in
                 self?.dismiss(animated: true, completion: nil)
             }
         }
+
+        buttonViewController.backgroundColor = style.buttonViewBackgroundColor
+    }
+
+    /// Displays the Unified prologue buttons.
+    ///
+    private func buildUnifiedPrologueButtons(_ buttonViewController: NUXButtonViewController) {
+        let loginTitle = NSLocalizedString("Continue with WordPress.com",
+                                           comment: "Button title. Takes the user to the login by email flow.")
+        let siteAddressTitle = NSLocalizedString("Enter your site address",
+                                                 comment: "Button title. Takes the user to the login by site address flow.")
+
+        buttonViewController.setupTopButton(title: loginTitle, isPrimary: true, accessibilityIdentifier: "Prologue Log In Button") { [weak self] in
+            self?.onLoginButtonTapped?()
+            self?.loginTapped()
+        }
+
+        if configuration.enableUnifiedSiteAddress {
+            buttonViewController.setupBottomButton(title: siteAddressTitle, isPrimary: false, accessibilityIdentifier: "Self Hosted Login Button") { [weak self] in
+                self?.siteAddressTapped()
+            }
+        }
+
+        if showCancel {
+            let cancelTitle = NSLocalizedString("Cancel", comment: "Button title. Tapping it cancels the login flow.")
+            buttonViewController.setupTertiaryButton(title: cancelTitle, isPrimary: false) { [weak self] in
+                self?.dismiss(animated: true, completion: nil)
+            }
+        }
+
         buttonViewController.backgroundColor = style.buttonViewBackgroundColor
     }
 
@@ -228,6 +270,15 @@ class LoginPrologueViewController: LoginViewController {
         }
         
         presentUnifiedGoogleView()
+    }
+
+    /// Unified prologue button "Enter your site address" tap action.
+    ///
+    private func siteAddressTapped() {
+        tracker.set(flow: .loginWithSiteAddress)
+        tracker.track(click: .loginWithSiteAddress)
+
+        loginToSelfHostedSite()
     }
 
     private func presentSignUpEmailView() {

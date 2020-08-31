@@ -135,18 +135,7 @@ extension StoredCredentialsAuthenticator: LoginFacadeDelegate {
     }
     
     func needsMultifactorCode() {
-        guard let loginFields = loginFields else {
-            return
-        }
-        
-        guard let vc = TwoFAViewController.instantiate(from: .twoFA) else {
-            DDLogError("Failed to navigate from LoginViewController to TwoFAViewController")
-            return
-        }
-
-        vc.loginFields = loginFields
-
-        navigationController?.pushViewController(vc, animated: true)
+        presentTwoFactorAuthenticationView()
     }
 
     func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {
@@ -176,6 +165,10 @@ extension StoredCredentialsAuthenticator {
         authenticationDelegate.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: {})
     }
     
+    /// Presents the login email screen, displaying the specified error.  This is useful
+    /// for example for iCloud Keychain in the case where there's an error logging the user
+    /// in with the stored credentials for whatever reason.
+    ///
     private func presentLoginEmailView(error: Error) {
         guard let toVC = LoginEmailViewController.instantiate(from: .login) else {
             DDLogError("Failed to navigate to LoginEmailVC from LoginPrologueVC")
@@ -190,6 +183,10 @@ extension StoredCredentialsAuthenticator {
         navigationController?.pushViewController(toVC, animated: true)
     }
 
+    /// Presents the get started screen, displaying the specified error.  This is useful
+    /// for example for iCloud Keychain in the case where there's an error logging the user
+    /// in with the stored credentials for whatever reason.
+    ///
     private func presentGetStartedView(error: Error) {
         guard let toVC = GetStartedViewController.instantiate(from: .getStarted) else {
             DDLogError("Failed to navigate to GetStartedViewController")
@@ -202,5 +199,20 @@ extension StoredCredentialsAuthenticator {
         toVC.errorToPresent = error
 
         navigationController?.pushViewController(toVC, animated: true)
+    }
+    
+    private func presentTwoFactorAuthenticationView() {
+        guard let loginFields = loginFields else {
+            return
+        }
+        
+        guard let vc = TwoFAViewController.instantiate(from: .twoFA) else {
+            DDLogError("Failed to navigate from LoginViewController to TwoFAViewController")
+            return
+        }
+
+        vc.loginFields = loginFields
+
+        navigationController?.pushViewController(vc, animated: true)
     }
 }

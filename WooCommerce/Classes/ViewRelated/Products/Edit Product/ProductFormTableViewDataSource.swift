@@ -144,7 +144,7 @@ private extension ProductFormTableViewDataSource {
             self?.onNameChange?(newName)
             },
                                                             style: .headline,
-                                                            edgeInsets: UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16))
+                                                            edgeInsets: UIEdgeInsets(top: 8, left: 11, bottom: 8, right: 11))
 
         cell.configure(with: cellViewModel)
     }

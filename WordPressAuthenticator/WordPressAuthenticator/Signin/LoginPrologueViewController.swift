@@ -144,11 +144,7 @@ class LoginPrologueViewController: LoginViewController {
 
         if configuration.enableUnifiedSiteAddress {
             buttonViewController.setupBottomButton(title: siteAddressTitle, isPrimary: false, accessibilityIdentifier: "Self Hosted Login Button") { [weak self] in
-                guard let self = self else {
-                    return
-                }
-                
-                self.siteAddressTapped()
+                self?.siteAddressTapped()
             }
         }
 

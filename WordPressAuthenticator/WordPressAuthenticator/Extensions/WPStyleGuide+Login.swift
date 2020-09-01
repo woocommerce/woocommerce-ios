@@ -285,7 +285,27 @@ extension WPStyleGuide {
         return textButton(normal: attrStrNormal, highlighted: attrStrHighlight, font: font, alignment: .center)
     }
 
-    private class func textButton(normal normalString: NSAttributedString, highlighted highlightString: NSAttributedString, font: UIFont, alignment: UIControl.NaturalContentHorizontalAlignment = .leading) -> UIButton {
+    /// Creates a button to open our T&C.
+    /// Specifically, the Sign Up verbiage on the Get Started view.
+    /// - Returns: A properly styled UIButton
+    ///
+    class func signupTermsButton() -> UIButton {
+        let unifiedStyle = WordPressAuthenticator.shared.unifiedStyle
+        let originalStyle = WordPressAuthenticator.shared.style
+        let baseString = WordPressAuthenticator.shared.displayStrings.signupTermsOfService
+        let textColor = unifiedStyle?.textSubtleColor ?? originalStyle.subheadlineColor
+        let linkColor = unifiedStyle?.textButtonColor ?? originalStyle.textButtonColor
+        
+        let attrStrNormal = baseString.underlined(color: textColor, underlineColor: linkColor)
+        let attrStrHighlight = baseString.underlined(color: textColor, underlineColor: linkColor)
+        let font = WPStyleGuide.mediumWeightFont(forStyle: .footnote)
+
+        let button = textButton(normal: attrStrNormal, highlighted: attrStrHighlight, font: font, alignment: .center, forUnified: true)
+        button.titleLabel?.textAlignment = .center
+        return button
+    }
+    
+    private class func textButton(normal normalString: NSAttributedString, highlighted highlightString: NSAttributedString, font: UIFont, alignment: UIControl.NaturalContentHorizontalAlignment = .leading, forUnified: Bool = false) -> UIButton {
         let button = SubheadlineButton()
         button.clipsToBounds = true
 
@@ -294,15 +314,16 @@ extension WPStyleGuide {
         button.titleLabel?.font = font
         button.titleLabel?.numberOfLines = 0
         button.titleLabel?.lineBreakMode = .byWordWrapping
-        button.setTitleColor(WordPressAuthenticator.shared.style.subheadlineColor, for: .normal) 
+        button.setTitleColor(WordPressAuthenticator.shared.style.subheadlineColor, for: .normal)
 
         // These constraints work around some issues with multiline buttons and
         // vertical layout.  Without them the button's height may not account
         // for the titleLabel's height.
-        button.titleLabel?.topAnchor.constraint(equalTo: button.topAnchor, constant: Constants.verticalLabelSpacing).isActive = true
-        button.titleLabel?.bottomAnchor.constraint(equalTo: button.bottomAnchor, constant: -Constants.verticalLabelSpacing).isActive = true
+        
+        let verticalLabelSpacing = forUnified ? 0 : Constants.verticalLabelSpacing
+        button.titleLabel?.topAnchor.constraint(equalTo: button.topAnchor, constant: verticalLabelSpacing).isActive = true
+        button.titleLabel?.bottomAnchor.constraint(equalTo: button.bottomAnchor, constant: -verticalLabelSpacing).isActive = true
         button.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.textButtonMinHeight).isActive = true
-
 
         button.setAttributedTitle(normalString, for: .normal)
         button.setAttributedTitle(highlightString, for: .highlighted)

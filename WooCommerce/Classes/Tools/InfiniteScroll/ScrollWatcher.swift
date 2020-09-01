@@ -1,0 +1,43 @@
+import UIKit
+
+/// Watches for scroll content offset changes and notifies its subscribers if the scroll position is over a threshold.
+///
+final class ScrollWatcher {
+    /// Emits a stream of scroll position percentages from 0.0 (the beginning) to 1.0 (the end) if over a given threshold whenever the user scrolls a
+    /// `UIScrollView` or subclass.
+    var scrollTrigger: Observable<Double> {
+        scrollTriggerSubject
+    }
+    private let scrollTriggerSubject: PublishSubject<Double>
+    private let scrollPositionThreshold: Double
+
+    private var offsetObservation: NSKeyValueObservation?
+
+    /// - Parameter scrollPositionThreshold: the threshold of scroll position percentage (from 0.0 to 1.0) to trigger an event.
+    init(scrollPositionThreshold: Double = 0.7) {
+        self.scrollPositionThreshold = scrollPositionThreshold
+        self.scrollTriggerSubject = PublishSubject<Double>()
+    }
+
+    deinit {
+        offsetObservation?.invalidate()
+    }
+
+    func startObservingScrollPosition(tableView: UITableView) {
+        offsetObservation = tableView.observe(\UITableView.contentOffset, options: .new) { [weak self] tableView, change in
+            guard let self = self else {
+                return
+            }
+            guard let newContentOffsetY = change.newValue?.y else {
+                return
+            }
+            // When scrolling to the bottom of the list, the maximum content offset is at the top of the table view and thus we deduct the table view's
+            // height.
+            let contentHeight = tableView.contentSize.height - tableView.frame.height
+            let scrollPosition = Double(1.0 * newContentOffsetY / contentHeight)
+            if scrollPosition >= self.scrollPositionThreshold {
+                self.scrollTriggerSubject.send(scrollPosition)
+            }
+        }
+    }
+}

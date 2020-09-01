@@ -227,6 +227,10 @@ private extension ProductsViewController {
     @objc func scanProducts() {
         // TODO-2407: scan barcodes for products
     }
+
+    @objc func addProduct() {
+        // TODO-2740: add product flow
+    }
 }
 
 // MARK: - View Configuration
@@ -257,8 +261,22 @@ private extension ProductsViewController {
             return button
         }()
 
+        var rightBarButtonItems = [UIBarButtonItem]()
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease4) {
+            let buttonItem: UIBarButtonItem = {
+                let button = UIBarButtonItem(image: .plusImage,
+                                             style: .plain,
+                                             target: self,
+                                             action: #selector(addProduct))
+                button.accessibilityTraits = .button
+                button.accessibilityLabel = NSLocalizedString("Add a product", comment: "The action to add a product")
+                return button
+            }()
+            rightBarButtonItems.append(buttonItem)
+        }
+
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.barcodeScanner) {
-            navigationItem.rightBarButtonItem = {
+            let buttonItem: UIBarButtonItem = {
                 let button = UIBarButtonItem(image: .scanImage,
                                              style: .plain,
                                              target: self,
@@ -272,7 +290,10 @@ private extension ProductsViewController {
 
                 return button
             }()
+            rightBarButtonItems.append(buttonItem)
         }
+
+        navigationItem.rightBarButtonItems = rightBarButtonItems
     }
 
     /// Apply Woo styles.

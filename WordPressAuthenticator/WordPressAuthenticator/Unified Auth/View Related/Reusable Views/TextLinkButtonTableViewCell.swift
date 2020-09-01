@@ -13,12 +13,6 @@ class TextLinkButtonTableViewCell: UITableViewCell {
     @IBAction private func textLinkButtonTapped(_ sender: UIButton) {
         actionHandler?()
     }
-
-    /// Calculate the border based on the display
-    ///
-    private var hairlineBorderWidth: CGFloat {
-        return 1.0 / UIScreen.main.scale
-    }
     
     /// Public properties
     ///
@@ -62,6 +56,6 @@ private extension TextLinkButtonTableViewCell {
     func styleBorder() {
         let borderColor = WordPressAuthenticator.shared.unifiedStyle?.borderColor ?? WordPressAuthenticator.shared.style.primaryNormalBorderColor
         borderView.backgroundColor = borderColor
-        borderWidth.constant = hairlineBorderWidth
+        borderWidth.constant = WPStyleGuide.hairlineBorderWidth
     }
 }

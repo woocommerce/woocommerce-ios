@@ -14,10 +14,6 @@ final class TextFieldTableViewCell: UITableViewCell {
     private var secureTextEntryImageHidden: UIImage?
     private var textfieldStyle: TextFieldStyle = .url
 
-    private var hairlineBorderWidth: CGFloat {
-        return 1.0 / UIScreen.main.scale
-    }
-
     /// Register an action for the SiteAddress URL textfield.
     /// - Note: we have to manually add an action to the textfield
     ///	        because the delegate method `textFieldDidChangeSelection(_ textField: UITextField)`
@@ -71,7 +67,7 @@ private extension TextFieldTableViewCell {
     func styleBorder() {
         let borderColor = WordPressAuthenticator.shared.unifiedStyle?.borderColor ?? WordPressAuthenticator.shared.style.primaryNormalBorderColor
         borderView.backgroundColor = borderColor
-        borderWidth.constant = hairlineBorderWidth
+        borderWidth.constant = WPStyleGuide.hairlineBorderWidth
     }
 
     /// Apply common keyboard traits and font styles.

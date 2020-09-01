@@ -44,11 +44,14 @@ struct PaginatedProductShippingClassListSelectorDataSource: PaginatedListSelecto
 
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
         let action = ProductShippingClassAction
-            .synchronizeProductShippingClassModels(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { error in
-                if let error = error {
+            .synchronizeProductShippingClassModels(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { result in
+                switch result {
+                case .failure(let error):
                     DDLogError("⛔️ Error synchronizing product shipping classes: \(error)")
+                    onCompletion?(false)
+                case .success:
+                    onCompletion?(true)
                 }
-                onCompletion?(error == nil)
         }
 
         ServiceLocator.stores.dispatch(action)

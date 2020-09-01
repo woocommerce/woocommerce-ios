@@ -67,7 +67,9 @@ private extension DefaultProductFormTableViewModel {
             case .reviews:
                 return .reviews(viewModel: reviewsRow(product: product), ratingCount: product.ratingCount, averageRating: product.averageRating)
             case .productType:
-                return .productType(viewModel: productTypeRow(product: product))
+                return .productType(viewModel: productTypeRow(product: product), isEditable: true)
+            case .readonlyProductType:
+                return .productType(viewModel: productTypeRow(product: product, isEditable: false), isEditable: false)
             case .shippingSettings:
                 return .shipping(viewModel: shippingSettingsRow(product: product))
             case .inventorySettings:
@@ -210,7 +212,7 @@ private extension DefaultProductFormTableViewModel {
                                                         isActionable: isEditable)
     }
 
-    func productTypeRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {
+    func productTypeRow(product: ProductFormDataModel, isEditable: Bool = true) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.productImage
         let title = Constants.productTypeTitle
 
@@ -232,7 +234,8 @@ private extension DefaultProductFormTableViewModel {
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
-                                                        details: details)
+                                                        details: details,
+                                                        isActionable: isEditable)
     }
 
     func shippingSettingsRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {

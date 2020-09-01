@@ -269,7 +269,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             case .reviews:
                 ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
                 showReviews()
-            case .productType:
+            case .productType(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
                 ServiceLocator.analytics.track(.productDetailViewProductTypeTapped)
                 let cell = tableView.cellForRow(at: indexPath)
                 editProductType(cell: cell)

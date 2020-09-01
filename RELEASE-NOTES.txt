@@ -9,7 +9,7 @@
   - A product variation's stock status is now editable in inventory settings.
   - Reviews row is now hidden if reviews are disabled.
   - Now it's possible to open the product's reviews screen also if there are no reviews.
-- [*] In Settings, the Feature Request button was replaced with a Feedback Survey (https://git.io/JUmUY)
+- [*] In Settings, the "Feature Request" button was replaced with "Send Feedback" (Survey) (https://git.io/JUmUY)
 
 
 4.9

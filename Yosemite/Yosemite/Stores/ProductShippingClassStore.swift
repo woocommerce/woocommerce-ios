@@ -48,12 +48,16 @@ private extension ProductShippingClassStore {
             case .failure(let error):
                 onCompletion(.failure(error))
             case .success(let models):
-                if pageNumber == Default.firstPageNumber {
-                    self?.deleteStoredProductShippingClassModels(siteID: siteID)
+                guard let self = self else {
+                    return
                 }
 
-                self?.upsertStoredProductShippingClassModelsInBackground(readOnlyProductShippingClassModels: models,
-                                                                         siteID: siteID) {
+                if pageNumber == Default.firstPageNumber {
+                    self.deleteStoredProductShippingClassModels(siteID: siteID)
+                }
+
+                self.upsertStoredProductShippingClassModelsInBackground(readOnlyProductShippingClassModels: models,
+                                                                        siteID: siteID) {
                                                                             let hasNextPage = models.count == pageSize
                                                                             onCompletion(.success(hasNextPage))
                 }

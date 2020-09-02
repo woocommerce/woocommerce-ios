@@ -145,11 +145,15 @@ private extension ProductStore {
                                 case .failure(let error):
                                     onCompletion(.failure(error))
                                 case .success(let products):
-                                    if pageNumber == Default.firstPageNumber && shouldDeleteStoredProductsOnFirstPage {
-                                        self?.deleteStoredProducts(siteID: siteID)
+                                    guard let self = self else {
+                                        return
                                     }
 
-                                    self?.upsertStoredProductsInBackground(readOnlyProducts: products) {
+                                    if pageNumber == Default.firstPageNumber && shouldDeleteStoredProductsOnFirstPage {
+                                        self.deleteStoredProducts(siteID: siteID)
+                                    }
+
+                                    self.upsertStoredProductsInBackground(readOnlyProducts: products) {
                                         let hasNextPage = products.count == pageSize
                                         onCompletion(.success(hasNextPage))
                                     }

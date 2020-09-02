@@ -7,6 +7,11 @@ class GetStartedViewController: LoginViewController {
     
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
+    @IBOutlet private weak var leadingDividerLine: UIView!
+    @IBOutlet private weak var leadingDividerLineWidth: NSLayoutConstraint!
+    @IBOutlet private weak var dividerLabel: UILabel!
+    @IBOutlet private weak var trailingDividerLine: UIView!
+    @IBOutlet private weak var trailingDividerLineWidth: NSLayoutConstraint!
 
     private var rows = [Row]()
 
@@ -38,6 +43,7 @@ class GetStartedViewController: LoginViewController {
         registerTableViewCells()
         loadRows()
         setupContinueButton()
+        configureDivider()
     }
 
     // MARK: - Overrides
@@ -84,6 +90,18 @@ private extension GetStartedViewController {
         tableView.tableFooterView = tableFooter
     }
 
+    /// Style the "OR" divider.
+    ///
+    func configureDivider() {
+        let color = WordPressAuthenticator.shared.unifiedStyle?.borderColor ?? WordPressAuthenticator.shared.style.primaryNormalBorderColor
+        leadingDividerLine.backgroundColor = color
+        leadingDividerLineWidth.constant = WPStyleGuide.hairlineBorderWidth
+        trailingDividerLine.backgroundColor = color
+        trailingDividerLineWidth.constant = WPStyleGuide.hairlineBorderWidth
+        dividerLabel.textColor = color
+        dividerLabel.text = NSLocalizedString("Or", comment: "Divider on initial auth view separating auth options.").localizedUppercase
+    }
+    
     // MARK: - Button Actions
     
     @IBAction func handleSubmitButtonTapped(_ sender: UIButton) {

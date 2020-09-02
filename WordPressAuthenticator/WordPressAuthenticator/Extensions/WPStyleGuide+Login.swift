@@ -26,6 +26,12 @@ extension WPStyleGuide {
         static let verticalLabelSpacing: CGFloat = 10.0
     }
 
+    /// Calculate the border based on the display
+    ///
+    class var hairlineBorderWidth: CGFloat {
+        return 1.0 / UIScreen.main.scale
+    }
+    
     /// Common view style for signin view controllers.
     ///
     /// - Parameters:

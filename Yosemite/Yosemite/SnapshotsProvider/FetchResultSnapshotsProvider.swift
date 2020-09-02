@@ -12,8 +12,22 @@ public final class FetchResultSnapshotsProvider<ResultType: FetchResultSnapshots
     public typealias ResultMutableType = NSManagedObject & ReadOnlyConvertible
 
     public struct Query {
-        let fetchRequest: NSFetchRequest<ResultType>
-        let sectionNameKeyPath: String
+        /// This needs to be extended to allow an array. However, we have to add protection that
+        /// there will always be at least one sort descriptor. It's required by ResultsController.
+        /// It'd be great if we can check this requirement during compile-time.
+        public let sortDescriptor: NSSortDescriptor
+        public let predicate: NSPredicate?
+        public let sectionNameKeyPath: String?
+
+        var entityName: String {
+            ResultType.entityName
+        }
+
+        init(sortDescriptor: NSSortDescriptor, predicate: NSPredicate? = nil, sectionNameKeyPath: String? = nil) {
+            self.sortDescriptor = sortDescriptor
+            self.predicate = predicate
+            self.sectionNameKeyPath = sectionNameKeyPath
+        }
     }
 
     private let storage: StorageType

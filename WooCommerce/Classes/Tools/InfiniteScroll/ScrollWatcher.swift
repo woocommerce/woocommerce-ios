@@ -11,6 +11,7 @@ final class ScrollWatcher {
     private let triggerSubject: PublishSubject<Double> = PublishSubject<Double>()
     private let positionThreshold: Double
 
+    private var lastPosition: Double = 0.0
     private var offsetObservation: NSKeyValueObservation?
 
     /// - Parameter positionThreshold: the threshold of scroll position percentage (from 0.0 to 1.0) to trigger an event.
@@ -34,9 +35,10 @@ final class ScrollWatcher {
             // top of the table view and thus we deduct the table view's height.
             let contentHeight = tableView.contentSize.height - tableView.frame.height
             let scrollPosition = Double(1.0 * newContentOffsetY / contentHeight)
-            if scrollPosition >= self.positionThreshold {
+            if scrollPosition >= self.positionThreshold && scrollPosition > self.lastPosition {
                 self.triggerSubject.send(scrollPosition)
             }
+            self.lastPosition = scrollPosition
         }
     }
 }

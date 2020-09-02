@@ -54,4 +54,33 @@ extension XCTestCase {
             break
         }
     }
+
+    public func waitFor<ValueType>(file: StaticString = #file,
+                                   line: UInt = #line,
+                                   timeout: TimeInterval = 5.0,
+                                   await: @escaping ((@escaping (ValueType) -> Void)) throws -> Void) throws -> ValueType {
+
+        var receivedValue: ValueType? = nil
+        let done: (ValueType) -> Void = { value in
+            receivedValue = value
+        }
+
+        try await(done)
+
+        let predicate = NSPredicate { _, _ -> Bool in
+            receivedValue != nil
+        }
+
+        let exp = expectation(for: predicate, evaluatedWith: nil)
+
+        let result = XCTWaiter.wait(for: [exp], timeout: timeout)
+        switch result {
+        case .timedOut:
+            XCTFail("Timed out waiting for done callback to be called.", file: file, line: line)
+        default:
+            break
+        }
+
+        return receivedValue!
+    }
 }

@@ -26,7 +26,7 @@ final class TopPerformerDataViewController: UIViewController {
     ///
     private lazy var resultsController: ResultsController<StorageTopEarnerStats> = {
         let storageManager = ServiceLocator.storageManager
-        let formattedDateString = StatsStore.buildDateString(from: Date(), with: granularity)
+        let formattedDateString = StatsStoreV4.buildDateString(from: Date(), with: granularity)
         let predicate = NSPredicate(format: "granularity = %@ AND date = %@", granularity.rawValue, formattedDateString)
         let descriptor = NSSortDescriptor(key: "date", ascending: true)
 
@@ -92,31 +92,6 @@ final class TopPerformerDataViewController: UIViewController {
 // MARK: - Public Interface
 //
 extension TopPerformerDataViewController {
-
-    func syncTopPerformers(onCompletion: ((Error?) -> Void)? = nil) {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            onCompletion?(nil)
-            return
-        }
-
-        let action = StatsAction.retrieveTopEarnerStats(siteID: siteID,
-                                                        granularity: granularity,
-                                                        latestDateToInclude: Date()) { [weak self] error in
-
-            guard let `self` = self else {
-                return
-            }
-
-            if let error = error {
-                DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
-            } else {
-                ServiceLocator.analytics.track(.dashboardTopPerformersLoaded, withProperties: ["granularity": self.granularity.rawValue])
-            }
-            onCompletion?(error)
-        }
-
-        ServiceLocator.stores.dispatch(action)
-    }
 
     /// Renders Placeholder Content.
     ///

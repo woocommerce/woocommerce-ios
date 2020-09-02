@@ -50,12 +50,6 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
         let group = DispatchGroup()
 
         group.enter()
-        let statsAction = StatsAction.resetStoredStats {
-            group.leave()
-        }
-        stores.dispatch(statsAction)
-
-        group.enter()
         let statsV4Action = StatsActionV4.resetStoredStats {
             group.leave()
         }

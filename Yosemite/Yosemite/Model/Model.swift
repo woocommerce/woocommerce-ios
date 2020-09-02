@@ -33,7 +33,6 @@ public typealias OrderStatusEnum = Networking.OrderStatusEnum
 public typealias OrderCouponLine = Networking.OrderCouponLine
 public typealias OrderNote = Networking.OrderNote
 public typealias OrderRefundCondensed = Networking.OrderRefundCondensed
-public typealias OrderStats = Networking.OrderStats
 public typealias OrderStatsItem = Networking.OrderStatsItem
 public typealias OrderStatsV4 = Networking.OrderStatsV4
 public typealias OrderStatsV4Interval = Networking.OrderStatsV4Interval

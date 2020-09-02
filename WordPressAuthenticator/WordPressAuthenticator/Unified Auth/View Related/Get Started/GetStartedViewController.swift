@@ -50,6 +50,11 @@ class GetStartedViewController: LoginViewController {
         configureSocialButtons()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        configureSubmitButton(animating: false)
+    }
+    
     // MARK: - Overrides
     
     override func styleBackground() {
@@ -74,6 +79,15 @@ class GetStartedViewController: LoginViewController {
         }
     }
     
+    override func configureViewLoading(_ loading: Bool) {
+        configureContinueButton(animating: loading)
+        navigationItem.hidesBackButton = loading
+    }
+
+    override func enableSubmit(animating: Bool) -> Bool {
+        return !animating && canSubmit()
+    }
+
 }
 
 // MARK: - UITableViewDataSource
@@ -134,7 +148,7 @@ private extension GetStartedViewController {
     // MARK: - Continue Button Action
     
     @IBAction func handleSubmitButtonTapped(_ sender: UIButton) {
-        // TODO: validateForm()
+        validateForm()
     }
     
     // MARK: - Table Management
@@ -183,8 +197,15 @@ private extension GetStartedViewController {
     /// Configure the textfield cell.
     ///
     func configureEmailField(_ cell: TextFieldTableViewCell) {
-        cell.configureTextFieldStyle(with: .email,
-                                     and: WordPressAuthenticator.shared.displayStrings.emailAddressPlaceholder)
+        cell.configure(withStyle: .email,
+                       placeholder: WordPressAuthenticator.shared.displayStrings.emailAddressPlaceholder,
+                       text: loginFields.username)
+        cell.textField.delegate = self
+        
+        cell.onChangeSelectionHandler = { [weak self] textfield in
+            self?.loginFields.username = textfield.nonNilTrimmedText()
+            self?.configureContinueButton(animating: false)
+        }
     }
     
     /// Configure the link cell.
@@ -220,6 +241,186 @@ private extension GetStartedViewController {
     enum Constants {
         static let footerFrame = CGRect(x: 0, y: 0, width: 0, height: 44)
         static let footerButtonInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+    }
+    
+}
+
+// MARK: - Validation
+
+private extension GetStartedViewController {
+    
+    /// Configures appearance of the submit button.
+    ///
+    func configureContinueButton(animating: Bool) {
+        continueButton.showActivityIndicator(animating)
+        continueButton.isEnabled = enableSubmit(animating: animating)
+    }
+
+    /// Whether the form can be submitted.
+    ///
+    func canSubmit() -> Bool {
+        return EmailFormatValidator.validate(string: loginFields.username)
+    }
+
+    /// Validates email address and proceeds with the submit action.
+    /// Empties loginFields.meta.socialService as
+    /// social signin does not require form validation.
+    ///
+    func validateForm() {
+        
+        loginFields.meta.socialService = nil
+        displayError(message: "")
+
+        guard EmailFormatValidator.validate(string: loginFields.username) else {
+            present(buildInvalidEmailAlert(), animated: true, completion: nil)
+            return
+        }
+
+        configureViewLoading(true)
+        let service = WordPressComAccountService()
+        service.isPasswordlessAccount(username: loginFields.username,
+                                      success: { [weak self] passwordless in
+                                        self?.configureViewLoading(false)
+                                        self?.loginFields.meta.passwordless = passwordless
+                                        passwordless ? self?.requestAuthenticationLink() : self?.showPasswordView()
+            },
+                                      failure: { [weak self] error in
+                                        WordPressAuthenticator.track(.loginFailed, error: error)
+                                        DDLogError(error.localizedDescription)
+                                        guard let self = self else {
+                                            return
+                                        }
+                                        self.configureViewLoading(false)
+
+                                        let userInfo = (error as NSError).userInfo
+                                        let errorCode = userInfo[WordPressComRestApi.ErrorKeyErrorCode] as? String
+
+                                        if errorCode == "unknown_user" {
+                                            self.showSignupView()
+                                        } else if errorCode == "email_login_not_allowed" {
+                                                // If we get this error, we know we have a WordPress.com user but their
+                                                // email address is flagged as suspicious.  They need to login via their
+                                                // username instead.
+                                                self.showSelfHostedWithError(error)
+                                        } else {
+                                            self.displayError(error as NSError, sourceTag: self.sourceTag)
+                                        }
+        })
+    }
+    
+    /// Show the Password entry view.
+    ///
+    func showPasswordView() {
+        guard let vc = PasswordViewController.instantiate(from: .password) else {
+            DDLogError("Failed to navigate to PasswordViewController from GetStartedViewController")
+            return
+        }
+        
+        vc.loginFields = loginFields
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    /// Show the Sign Up view.
+    ///
+    func showSignupView() {
+        guard let vc = UnifiedSignupViewController.instantiate(from: .unifiedSignup) else {
+            DDLogError("Failed to navigate to UnifiedSignupViewController from GetStartedViewController")
+            return
+        }
+        
+        vc.loginFields = loginFields
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    /// Makes the call to request a magic authentication link be emailed to the user.
+    ///
+    func requestAuthenticationLink() {
+        loginFields.meta.emailMagicLinkSource = .login
+
+        let email = loginFields.username
+        guard email.isValidEmail() else {
+            present(buildInvalidEmailAlert(), animated: true, completion: nil)
+            return
+        }
+
+        configureViewLoading(true)
+        let service = WordPressComAccountService()
+        service.requestAuthenticationLink(for: email,
+                                          success: { [weak self] in
+                                            self?.didRequestAuthenticationLink()
+                                            self?.configureViewLoading(false)
+
+            }, failure: { [weak self] (error: Error) in
+                // TODO: Tracks.
+                // WordPressAuthenticator.track(.loginMagicLinkFailed)
+                // WordPressAuthenticator.track(.loginFailed, error: error)
+                guard let self = self else {
+                    return
+                }
+
+                self.displayError(error as NSError, sourceTag: self.sourceTag)
+                self.configureViewLoading(false)
+        })
+    }
+
+    /// When a magic link successfully sends, navigate the user to the next step.
+    ///
+    func didRequestAuthenticationLink() {
+        // TODO: Tracks.
+        // WordPressAuthenticator.track(.loginMagicLinkRequested)
+        WordPressAuthenticator.storeLoginInfoForTokenAuth(loginFields)
+
+        guard let vc = LoginMagicLinkViewController.instantiate(from: .unifiedLoginMagicLink) else {
+            DDLogError("Failed to navigate to LoginMagicLinkViewController from GetStartedViewController")
+            return
+        }
+
+        vc.loginFields = self.loginFields
+        vc.loginFields.restrictToWPCom = true
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    /// Build the alert message when the email address is invalid.
+    ///
+    func buildInvalidEmailAlert() -> UIAlertController {
+        let title = NSLocalizedString("Can Not Request Link",
+                                      comment: "Title of an alert letting the user know")
+        let message = NSLocalizedString("A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address.",
+                                        comment: "An error message.")
+        let helpActionTitle = NSLocalizedString("Need help?",
+                                                comment: "Takes the user to get help")
+        let okActionTitle = NSLocalizedString("OK",
+                                              comment: "Dismisses the alert")
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+
+        alert.addActionWithTitle(helpActionTitle,
+                                 style: .cancel,
+                                 handler: { _ in
+                                    WordPressAuthenticator.shared.delegate?.presentSupportRequest(from: self, sourceTag: .loginEmail)
+        })
+
+        alert.addActionWithTitle(okActionTitle, style: .default, handler: nil)
+
+        return alert
+    }
+    
+    /// Configures loginFields to log into wordpress.com and navigates to the selfhosted username/password form.
+    /// Displays the specified error message when the new view controller appears.
+    ///
+    func showSelfHostedWithError(_ error: Error) {
+        loginFields.siteAddress = "https://wordpress.com"
+        errorToPresent = error
+
+        guard let vc = SiteCredentialsViewController.instantiate(from: .siteAddress) else {
+            DDLogError("Failed to navigate to SiteCredentialsViewController from GetStartedViewController")
+            return
+        }
+
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
     }
     
 }
@@ -269,12 +470,12 @@ private extension GetStartedViewController {
     }
     
     @objc func termsTapped() {
+        tracker.track(click: .termsOfService)
+
         guard let url = URL(string: configuration.wpcomTermsOfServiceURL) else {
             DDLogError("GetStartedViewController: wpcomTermsOfServiceURL unavailable.")
             return
         }
-        
-        self.tracker.track(click: .termsOfService)
         
         let safariViewController = SFSafariViewController(url: url)
         safariViewController.modalPresentationStyle = .pageSheet
@@ -288,14 +489,7 @@ extension GetStartedViewController: AppleAuthenticatorDelegate {
     
     func showWPComLogin(loginFields: LoginFields) {
         self.loginFields = loginFields
-        
-        guard let vc = PasswordViewController.instantiate(from: .password) else {
-            DDLogError("Failed to navigate to PasswordViewController from GetStartedViewController")
-            return
-        }
-        
-        vc.loginFields = loginFields
-        navigationController?.pushViewController(vc, animated: true)
+        showPasswordView()
     }
     
     func showApple2FA(loginFields: LoginFields) {
@@ -320,4 +514,17 @@ extension GetStartedViewController {
         socialNeedsMultifactorCode(forUserID: userID, andNonceInfo: nonceInfo)
     }
     
+}
+
+// MARK: - UITextFieldDelegate
+
+extension GetStartedViewController: UITextFieldDelegate {
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if canSubmit() {
+            validateForm()
+        }
+        return true
+    }
+
 }

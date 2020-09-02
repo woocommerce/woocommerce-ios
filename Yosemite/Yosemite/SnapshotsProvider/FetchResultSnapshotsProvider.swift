@@ -2,20 +2,30 @@ import Storage
 import CoreData
 import Combine
 
+public typealias FetchResultSnapshotsProviderResultType = NSManagedObject & ReadOnlyConvertible
+
 @available(iOS 13.0, *)
-public final class FetchResultSnapshotsProvider: NSObject {
+public final class FetchResultSnapshotsProvider<ResultType: FetchResultSnapshotsProviderResultType>: NSObject, NSFetchedResultsControllerDelegate {
 
     public typealias ObjectID = NSManagedObjectID
     public typealias Snapshot = NSDiffableDataSourceSnapshot<String, ObjectID>
+    public typealias ResultMutableType = NSManagedObject & ReadOnlyConvertible
+
+    public struct Query {
+        let fetchRequest: NSFetchRequest<ResultType>
+        let sectionNameKeyPath: String
+    }
 
     private let storage: StorageType
+    private let query: Query
 
     private lazy var wrappedController: NSFetchedResultsController<StorageOrder> = {
         let sortDescriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
         let fetchRequest = NSFetchRequest<StorageOrder>(entityName: StorageOrder.entityName)
         fetchRequest.sortDescriptors = [sortDescriptor]
 
-        let sectionNameKeyPath = #selector(StorageOrder.normalizedAgeAsString)
+        #warning("FIXME")
+        let sectionNameKeyPath = "ola"
         let resultsController = storage.createFetchedResultsController(
             fetchRequest: fetchRequest,
             sectionNameKeyPath: "\(sectionNameKeyPath)",
@@ -32,8 +42,9 @@ public final class FetchResultSnapshotsProvider: NSObject {
         snapshotSubject.eraseToAnyPublisher()
     }
 
-    public init(storage: StorageType) {
+    public init(storage: StorageType, query: Query) {
         self.storage = storage
+        self.query = query
     }
 
     public func start() throws {
@@ -81,12 +92,9 @@ public final class FetchResultSnapshotsProvider: NSObject {
             return nil
         }
     }
-}
 
-@available(iOS 13.0, *)
-extension FetchResultSnapshotsProvider: NSFetchedResultsControllerDelegate {
     public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
-                           didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
+                    didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
         let snapshot = snapshot as Snapshot
         snapshotSubject.send(snapshot)
     }

@@ -322,8 +322,9 @@ private extension PasswordViewController {
     /// Configure the password textfield cell.
     ///
     func configurePasswordTextField(_ cell: TextFieldTableViewCell) {
-        cell.configureTextFieldStyle(with: .password,
-                                     and: WordPressAuthenticator.shared.displayStrings.passwordPlaceholder)
+        cell.configure(withStyle: .password,
+                       placeholder: WordPressAuthenticator.shared.displayStrings.passwordPlaceholder)
+
         // Save a reference to the first textField so it can becomeFirstResponder.
         passwordField = cell.textField
         cell.textField.delegate = self

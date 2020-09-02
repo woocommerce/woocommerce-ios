@@ -291,11 +291,7 @@ final class ProductStoreTests: XCTestCase {
         }
 
         // Assert
-        guard case let .success(hasNextPage) = result else {
-            XCTFail("Unexpected result: \(String(describing: result))")
-            return
-        }
-        XCTAssertTrue(hasNextPage)
+        XCTAssertTrue(try XCTUnwrap(result).get())
     }
 
     func test_synchronizing_products_of_smaller_size_than_page_size_has_no_next_page() {
@@ -320,11 +316,7 @@ final class ProductStoreTests: XCTestCase {
         }
 
         // Assert
-        guard case let .success(hasNextPage) = result else {
-            XCTFail("Unexpected result: \(String(describing: result))")
-            return
-        }
-        XCTAssertFalse(hasNextPage)
+        XCTAssertFalse(try XCTUnwrap(result).get())
     }
 
     /// Verifies that ProductAction.synchronizeProducts returns an error whenever there is an error response from the backend.

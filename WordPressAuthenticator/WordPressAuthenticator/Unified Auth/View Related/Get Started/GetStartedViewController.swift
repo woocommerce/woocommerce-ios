@@ -1,5 +1,6 @@
 import UIKit
 import SafariServices
+import WordPressKit
 
 class GetStartedViewController: LoginViewController {
 
@@ -14,6 +15,8 @@ class GetStartedViewController: LoginViewController {
     @IBOutlet private weak var trailingDividerLineWidth: NSLayoutConstraint!
 
     private var rows = [Row]()
+    private var buttonViewController: NUXButtonViewController?
+    private let configuration = WordPressAuthenticator.shared.configuration
 
     // Submit button displayed in the table footer.
     private let continueButton: NUXButton = {
@@ -44,6 +47,7 @@ class GetStartedViewController: LoginViewController {
         loadRows()
         setupContinueButton()
         configureDivider()
+        configureSocialButtons()
     }
 
     // MARK: - Overrides
@@ -60,6 +64,31 @@ class GetStartedViewController: LoginViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return WordPressAuthenticator.shared.unifiedStyle?.statusBarStyle ??
             WordPressAuthenticator.shared.style.statusBarStyle
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        super.prepare(for: segue, sender: sender)
+        
+        if let vc = segue.destination as? NUXButtonViewController {
+            buttonViewController = vc
+        }
+    }
+    
+}
+
+// MARK: - UITableViewDataSource
+
+extension GetStartedViewController: UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return rows.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let row = rows[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
+        configure(cell, for: row, at: indexPath)
+        return cell
     }
     
 }
@@ -102,7 +131,7 @@ private extension GetStartedViewController {
         dividerLabel.text = NSLocalizedString("Or", comment: "Divider on initial auth view separating auth options.").localizedUppercase
     }
     
-    // MARK: - Button Actions
+    // MARK: - Continue Button Action
     
     @IBAction func handleSubmitButtonTapped(_ sender: UIButton) {
         // TODO: validateForm()
@@ -164,16 +193,7 @@ private extension GetStartedViewController {
         cell.configureButton(markedText: WordPressAuthenticator.shared.displayStrings.loginTermsOfService)
         
         cell.actionHandler = { [weak self] in
-            guard let self = self,
-            let url = URL(string: WordPressAuthenticator.shared.configuration.wpcomTermsOfServiceURL) else {
-                return
-            }
-            
-            self.tracker.track(click: .termsOfService)
-
-            let safariViewController = SFSafariViewController(url: url)
-            safariViewController.modalPresentationStyle = .pageSheet
-            self.present(safariViewController, animated: true, completion: nil)
+            self?.termsTapped()
         }
     }
 
@@ -204,19 +224,100 @@ private extension GetStartedViewController {
     
 }
 
-// MARK: - UITableViewDataSource
+// MARK: - Social Button Management
 
-extension GetStartedViewController: UITableViewDataSource {
+private extension GetStartedViewController {
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return rows.count
+    func configureSocialButtons() {
+        guard let buttonViewController = buttonViewController else {
+            return
+        }
+        
+        buttonViewController.hideShadowView()
+        
+        if WordPressAuthenticator.shared.configuration.enableSignInWithApple {
+            if #available(iOS 13.0, *) {
+                buttonViewController.setupTopButtonFor(socialService: .apple, onTap: appleTapped)
+            }
+        }
+        
+        buttonViewController.setupButtomButtonFor(socialService: .google, onTap: googleTapped)
+        
+        let termsButton = WPStyleGuide.signupTermsButton()
+        buttonViewController.stackView?.addArrangedSubview(termsButton)
+        termsButton.addTarget(self, action: #selector(termsTapped), for: .touchUpInside)
     }
+    
+    @objc func appleTapped() {
+        tracker.set(flow: .loginWithApple)
+        tracker.track(click: .loginWithApple)
+        
+        AppleAuthenticator.sharedInstance.delegate = self
+        AppleAuthenticator.sharedInstance.showFrom(viewController: self)
+    }
+    
+    @objc func googleTapped() {
+        tracker.set(flow: .loginWithGoogle)
+        tracker.track(click: .loginWithGoogle)
+        
+        guard let toVC = GoogleAuthViewController.instantiate(from: .googleAuth) else {
+            DDLogError("Failed to navigate to GoogleAuthViewController from GetStartedViewController")
+            return
+        }
+        
+        navigationController?.pushViewController(toVC, animated: true)
+    }
+    
+    @objc func termsTapped() {
+        guard let url = URL(string: configuration.wpcomTermsOfServiceURL) else {
+            DDLogError("GetStartedViewController: wpcomTermsOfServiceURL unavailable.")
+            return
+        }
+        
+        self.tracker.track(click: .termsOfService)
+        
+        let safariViewController = SFSafariViewController(url: url)
+        safariViewController.modalPresentationStyle = .pageSheet
+        self.present(safariViewController, animated: true, completion: nil)
+    }
+}
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let row = rows[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
-        configure(cell, for: row, at: indexPath)
-        return cell
+// MARK: - AppleAuthenticatorDelegate
+
+extension GetStartedViewController: AppleAuthenticatorDelegate {
+    
+    func showWPComLogin(loginFields: LoginFields) {
+        self.loginFields = loginFields
+        
+        guard let vc = PasswordViewController.instantiate(from: .password) else {
+            DDLogError("Failed to navigate to PasswordViewController from GetStartedViewController")
+            return
+        }
+        
+        vc.loginFields = loginFields
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func showApple2FA(loginFields: LoginFields) {
+        self.loginFields = loginFields
+        signInAppleAccount()
+    }
+    
+    func authFailedWithError(message: String) {
+        displayErrorAlert(message, sourceTag: .loginApple)
+    }
+    
+}
+
+// MARK: - LoginFacadeDelegate
+
+extension GetStartedViewController {
+    
+    // Used by SIWA when logging with with a passwordless, 2FA account.
+    //
+    func needsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
+        configureViewLoading(false)
+        socialNeedsMultifactorCode(forUserID: userID, andNonceInfo: nonceInfo)
     }
     
 }

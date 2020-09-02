@@ -20,7 +20,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <subviews>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" bounces="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="KLl-Uz-wEP">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="456"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="451"/>
                                         <sections/>
                                         <connections>
                                             <outlet property="dataSource" destination="aQT-Gx-U3x" id="Sct-0G-HTk"/>
@@ -28,7 +28,7 @@
                                         </connections>
                                     </tableView>
                                     <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="f1j-fj-w73" userLabel="Divider Stack View">
-                                        <rect key="frame" x="0.0" y="456" width="375" height="16"/>
+                                        <rect key="frame" x="0.0" y="451" width="375" height="16"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8Lc-Sw-Jlx" userLabel="Leading LIne">
                                                 <rect key="frame" x="0.0" y="7.5" width="173.5" height="1"/>
@@ -56,9 +56,9 @@
                                         </constraints>
                                     </stackView>
                                     <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c0A-wK-EYS" userLabel="Button Container View">
-                                        <rect key="frame" x="0.0" y="482" width="375" height="185"/>
+                                        <rect key="frame" x="0.0" y="467" width="375" height="200"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="185" id="yDo-SO-kax"/>
+                                            <constraint firstAttribute="height" constant="200" placeholder="YES" id="yDo-SO-kax"/>
                                         </constraints>
                                         <connections>
                                             <segue destination="X2o-oZ-7LG" kind="embed" id="FOr-lU-Bf2"/>
@@ -67,7 +67,7 @@
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <constraints>
-                                    <constraint firstItem="c0A-wK-EYS" firstAttribute="top" secondItem="f1j-fj-w73" secondAttribute="bottom" constant="10" id="OYW-cs-zFh"/>
+                                    <constraint firstItem="c0A-wK-EYS" firstAttribute="top" secondItem="f1j-fj-w73" secondAttribute="bottom" id="OYW-cs-zFh"/>
                                     <constraint firstItem="f1j-fj-w73" firstAttribute="top" secondItem="KLl-Uz-wEP" secondAttribute="bottom" id="RGk-wN-Zgt"/>
                                 </constraints>
                             </view>
@@ -82,8 +82,8 @@
                             <constraint firstItem="KLl-Uz-wEP" firstAttribute="top" secondItem="ihD-pY-rg9" secondAttribute="top" id="R3r-wt-ya5"/>
                             <constraint firstItem="dFS-Ic-byk" firstAttribute="top" secondItem="ihD-pY-rg9" secondAttribute="top" id="YEy-EW-XmD"/>
                             <constraint firstItem="ihD-pY-rg9" firstAttribute="trailing" secondItem="f1j-fj-w73" secondAttribute="trailing" id="ir4-hA-zeL"/>
-                            <constraint firstItem="c0A-wK-EYS" firstAttribute="leading" secondItem="ihD-pY-rg9" secondAttribute="leading" id="k1g-Ot-UbY"/>
-                            <constraint firstItem="ihD-pY-rg9" firstAttribute="trailing" secondItem="c0A-wK-EYS" secondAttribute="trailing" id="m0w-6D-5q6"/>
+                            <constraint firstItem="c0A-wK-EYS" firstAttribute="leading" secondItem="KLl-Uz-wEP" secondAttribute="leading" id="k1g-Ot-UbY"/>
+                            <constraint firstItem="KLl-Uz-wEP" firstAttribute="trailing" secondItem="c0A-wK-EYS" secondAttribute="trailing" id="m0w-6D-5q6"/>
                             <constraint firstItem="dFS-Ic-byk" firstAttribute="leading" secondItem="ljV-kF-TaY" secondAttribute="leading" id="msS-7X-Za9"/>
                             <constraint firstItem="dFS-Ic-byk" firstAttribute="trailing" secondItem="ljV-kF-TaY" secondAttribute="trailing" id="zY1-Yz-kTf"/>
                         </constraints>

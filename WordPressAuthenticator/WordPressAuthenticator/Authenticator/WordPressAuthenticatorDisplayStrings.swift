@@ -41,6 +41,7 @@ public struct WordPressAuthenticatorDisplayStrings {
     public let getLoginLinkButtonTitle: String
     public let textCodeButtonTitle: String
     public let loginTermsOfService: String
+    public let signupTermsOfService: String
 
 	/// Placeholder text for textfields.
 	///
@@ -74,6 +75,7 @@ public struct WordPressAuthenticatorDisplayStrings {
                 getLoginLinkButtonTitle: String = defaultStrings.getLoginLinkButtonTitle,
                 textCodeButtonTitle: String = defaultStrings.textCodeButtonTitle,
                 loginTermsOfService: String = defaultStrings.loginTermsOfService,
+                signupTermsOfService: String = defaultStrings.signupTermsOfService,
                 getStartedTitle: String = defaultStrings.getStartedTitle,
                 logInTitle: String = defaultStrings.logInTitle,
                 signUpTitle: String = defaultStrings.signUpTitle,
@@ -105,6 +107,7 @@ public struct WordPressAuthenticatorDisplayStrings {
         self.getLoginLinkButtonTitle = getLoginLinkButtonTitle
         self.textCodeButtonTitle = textCodeButtonTitle
         self.loginTermsOfService = loginTermsOfService
+        self.signupTermsOfService = signupTermsOfService
         self.getStartedTitle = getStartedTitle
         self.logInTitle = logInTitle
         self.signUpTitle = signUpTitle
@@ -161,6 +164,7 @@ public extension WordPressAuthenticatorDisplayStrings {
             textCodeButtonTitle: NSLocalizedString("Text me a code instead",
                                                    comment: "The button's title text to send a 2FA code via SMS text message."),
             loginTermsOfService:NSLocalizedString("By continuing, you agree to our _Terms of Service_.", comment: "Legal disclaimer for logging in. The underscores _..._ denote underline."),
+            signupTermsOfService: NSLocalizedString("If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_.", comment: "Legal disclaimer for signing up. The underscores _..._ denote underline."),
             getStartedTitle: NSLocalizedString("Get Started",
                                                comment: "View title for initial auth views."),
             logInTitle: NSLocalizedString("Log In",

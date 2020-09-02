@@ -1,5 +1,4 @@
 import Foundation
-import Alamofire
 
 /// ProductShippingClass: Remote Endpoints
 ///
@@ -19,7 +18,7 @@ public class ProductShippingClassRemote: Remote {
                         context: String? = nil,
                         pageNumber: Int = Default.pageNumber,
                         pageSize: Int = Default.pageSize,
-                        completion: @escaping ([ProductShippingClass]?, Error?) -> Void) {
+                        completion: @escaping (Result<[ProductShippingClass], Error>) -> Void) {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),

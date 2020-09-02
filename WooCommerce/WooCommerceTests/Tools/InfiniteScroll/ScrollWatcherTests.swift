@@ -4,6 +4,12 @@ import XCTest
 final class ScrollWatcherTests: XCTestCase {
     private var cancellable: ObservationToken?
 
+    override func tearDown() {
+        cancellable?.cancel()
+
+        super.tearDown()
+    }
+
     func test_scroll_trigger_is_emitted_only_after_scrolling_to_above_threshold() {
         // Arrange
         let frame = CGRect(origin: .zero, size: CGSize(width: 320, height: 100))
@@ -11,10 +17,10 @@ final class ScrollWatcherTests: XCTestCase {
         let contentSize = CGSize(width: 320, height: 1100)
         tableView.contentSize = contentSize
         let threshold = 0.8
-        let scrollWatcher = ScrollWatcher(scrollPositionThreshold: threshold)
+        let scrollWatcher = ScrollWatcher(positionThreshold: threshold)
         scrollWatcher.startObservingScrollPosition(tableView: tableView)
         var triggeredScrollPositions = [Double]()
-        cancellable = scrollWatcher.scrollTrigger.subscribe { scrollPosition in
+        cancellable = scrollWatcher.trigger.subscribe { scrollPosition in
             triggeredScrollPositions.append(scrollPosition)
         }
 

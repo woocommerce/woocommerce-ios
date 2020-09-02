@@ -114,20 +114,6 @@ public extension StorageType {
         return firstObject(ofType: SiteVisitStats.self, matching: predicate)
     }
 
-    /// Retrieves the Stored OrderStats.
-    ///
-    func loadOrderStats(granularity: String) -> OrderStats? {
-        let predicate = NSPredicate(format: "granularity ==[c] %@", granularity)
-        return firstObject(ofType: OrderStats.self, matching: predicate)
-    }
-
-    /// Retrieves the Stored OrderStatsItem.
-    ///
-    func loadOrderStatsItem(period: String) -> OrderStatsItem? {
-        let predicate = NSPredicate(format: "period ==[c] %@", period)
-        return firstObject(ofType: OrderStatsItem.self, matching: predicate)
-    }
-
     /// Retrieves the Stored OrderStats for V4 API.
     ///
     func loadOrderStatsV4(siteID: Int64, timeRange: String) -> OrderStatsV4? {

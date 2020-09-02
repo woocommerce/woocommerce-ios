@@ -14,6 +14,9 @@ class GetStartedViewController: LoginViewController {
     @IBOutlet private weak var trailingDividerLine: UIView!
     @IBOutlet private weak var trailingDividerLineWidth: NSLayoutConstraint!
 
+    // This is public so it can be set from StoredCredentialsAuthenticator.
+    var errorMessage: String?
+    
     private var rows = [Row]()
     private var buttonViewController: NUXButtonViewController?
     private let configuration = WordPressAuthenticator.shared.configuration
@@ -55,6 +58,11 @@ class GetStartedViewController: LoginViewController {
         configureSubmitButton(animating: false)
     }
     
+    override open func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        errorMessage = nil
+    }
+
     // MARK: - Overrides
     
     override func styleBackground() {
@@ -171,18 +179,24 @@ private extension GetStartedViewController {
     ///
     func loadRows() {
         rows = [.instructions, .email, .tos]
+        
+        if let errorText = errorMessage, !errorText.isEmpty {
+            rows.append(.errorMessage)
+        }
     }
     
     /// Configure cells.
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as TextLabelTableViewCell:
+        case let cell as TextLabelTableViewCell where row == .instructions:
             configureInstructionLabel(cell)
         case let cell as TextFieldTableViewCell:
             configureEmailField(cell)
         case let cell as TextWithLinkTableViewCell:
             configureTextWithLink(cell)
+        case let cell as TextLabelTableViewCell where row == .errorMessage:
+            configureErrorLabel(cell)
         default:
             DDLogError("Error: Unidentified tableViewCell type found.")
         }
@@ -218,22 +232,28 @@ private extension GetStartedViewController {
         }
     }
 
+    /// Configure the error message cell.
+    ///
+    func configureErrorLabel(_ cell: TextLabelTableViewCell) {
+        cell.configureLabel(text: errorMessage, style: .error)
+    }
+    
     /// Rows listed in the order they were created.
     ///
     enum Row {
         case instructions
         case email
         case tos
+        case errorMessage
         
         var reuseIdentifier: String {
             switch self {
-            case .instructions:
+            case .instructions, .errorMessage:
                 return TextLabelTableViewCell.reuseIdentifier
             case .email:
                 return TextFieldTableViewCell.reuseIdentifier
             case .tos:
                 return TextWithLinkTableViewCell.reuseIdentifier
-                
             }
         }
     }

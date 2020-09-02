@@ -48,7 +48,6 @@
 		020DD49123239DD6005822B1 /* PaginatedListViewControllerStateCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020DD49023239DD6005822B1 /* PaginatedListViewControllerStateCoordinator.swift */; };
 		020F41E523163C0100776C4D /* TopBannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020F41E323163C0100776C4D /* TopBannerViewModel.swift */; };
 		020F41E623163C0100776C4D /* TopBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020F41E423163C0100776C4D /* TopBannerView.swift */; };
-		020F41E823176F8E00776C4D /* TopBannerPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020F41E723176F8E00776C4D /* TopBannerPresenter.swift */; };
 		0212275C244972660042161F /* BottomSheetListSelectorSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0212275B244972660042161F /* BottomSheetListSelectorSectionHeaderView.swift */; };
 		0212275E2449728A0042161F /* BottomSheetListSelectorSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0212275D2449728A0042161F /* BottomSheetListSelectorSectionHeaderView.xib */; };
 		0212276124498A270042161F /* ProductFormBottomSheetListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0212276024498A270042161F /* ProductFormBottomSheetListSelectorCommand.swift */; };
@@ -994,7 +993,6 @@
 		020DD49023239DD6005822B1 /* PaginatedListViewControllerStateCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedListViewControllerStateCoordinator.swift; sourceTree = "<group>"; };
 		020F41E323163C0100776C4D /* TopBannerViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopBannerViewModel.swift; sourceTree = "<group>"; };
 		020F41E423163C0100776C4D /* TopBannerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopBannerView.swift; sourceTree = "<group>"; };
-		020F41E723176F8E00776C4D /* TopBannerPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBannerPresenter.swift; sourceTree = "<group>"; };
 		0212275B244972660042161F /* BottomSheetListSelectorSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetListSelectorSectionHeaderView.swift; sourceTree = "<group>"; };
 		0212275D2449728A0042161F /* BottomSheetListSelectorSectionHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BottomSheetListSelectorSectionHeaderView.xib; sourceTree = "<group>"; };
 		0212276024498A270042161F /* ProductFormBottomSheetListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormBottomSheetListSelectorCommand.swift; sourceTree = "<group>"; };
@@ -2159,7 +2157,6 @@
 			children = (
 				020F41E423163C0100776C4D /* TopBannerView.swift */,
 				020F41E323163C0100776C4D /* TopBannerViewModel.swift */,
-				020F41E723176F8E00776C4D /* TopBannerPresenter.swift */,
 			);
 			path = "Top Banner";
 			sourceTree = "<group>";
@@ -5083,7 +5080,6 @@
 				CECC758623D21AC200486676 /* AggregateOrderItem.swift in Sources */,
 				B53B3F39219C817800DF1EB6 /* UIStoryboard+Woo.swift in Sources */,
 				021E2A1723A9FE5A00B1DE07 /* ProductInventorySettingsViewController.swift in Sources */,
-				020F41E823176F8E00776C4D /* TopBannerPresenter.swift in Sources */,
 				0215320B24231D5A003F2BBD /* UIStackView+Subviews.swift in Sources */,
 				02F4F50B237AEB8A00E13A9C /* ProductFormTableViewDataSource.swift in Sources */,
 				B57C5C9621B80E5500FF82B2 /* Dictionary+Woo.swift in Sources */,

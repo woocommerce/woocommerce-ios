@@ -5,8 +5,8 @@ import Foundation
 /// The required methods are intentionally incomplete. Feel free to add the other ones.
 ///
 public protocol ProductsRemoteProtocol {
+    func addProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void)
     func loadProduct(for siteID: Int64, productID: Int64, completion: @escaping (Result<Product, Error>) -> Void)
-
     func loadProducts(for siteID: Int64, by productIDs: [Int64], pageNumber: Int, pageSize: Int, completion: @escaping (Result<[Product], Error>) -> Void)
 }
 
@@ -15,6 +15,25 @@ public protocol ProductsRemoteProtocol {
 public final class ProductsRemote: Remote, ProductsRemoteProtocol {
 
     // MARK: - Products
+
+    /// Adds a specific `Product`.
+    ///
+    /// - Parameters:
+    ///     - product: the Product to created remotely.
+    ///     - completion: executed upon completion.
+    ///
+    public func addProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void) {
+        do {
+            let parameters = try product.toDictionary()
+            let siteID = product.siteID
+            let path = "\(Path.products)"
+            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+            let mapper = ProductMapper(siteID: siteID)
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
+    }
 
     /// Retrieves all of the `Products` available.
     ///

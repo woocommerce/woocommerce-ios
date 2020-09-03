@@ -37,6 +37,8 @@ public class ProductStore: Store {
         }
 
         switch action {
+        case .addProduct(let product, let onCompletion):
+            addProduct(product: product, onCompletion: onCompletion)
         case .resetStoredProducts(let onCompletion):
             resetStoredProducts(onCompletion: onCompletion)
         case .retrieveProduct(let siteID, let productID, let onCompletion):
@@ -236,6 +238,25 @@ private extension ProductStore {
                 }
             }
 
+        }
+    }
+
+    /// Adds a product.
+    ///
+    func addProduct(product: Product, onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
+        remote.addProduct(product: product) { [weak self] result in
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(ProductUpdateError(error: error)))
+            case .success(let product):
+                self?.upsertStoredProductsInBackground(readOnlyProducts: [product]) { [weak self] in
+                    guard let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: product.siteID, productID: product.productID) else {
+                        onCompletion(.failure(.notFoundInStorage))
+                        return
+                    }
+                    onCompletion(.success(storageProduct.toReadOnly()))
+                }
+            }
         }
     }
 

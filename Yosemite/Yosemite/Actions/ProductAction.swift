@@ -48,6 +48,10 @@ public enum ProductAction: Action {
     ///
     case requestMissingProducts(for: Order, onCompletion: (Error?) -> Void)
 
+    /// Adds a new Product.
+    ///
+    case addProduct(product: Product, onCompletion: (Result<Product, ProductUpdateError>) -> Void)
+
     /// Updates a specified Product.
     ///
     case updateProduct(product: Product, onCompletion: (Result<Product, ProductUpdateError>) -> Void)

@@ -4,12 +4,12 @@ import Combine
 
 public typealias FetchResultSnapshotsProviderResultType = NSManagedObject & ReadOnlyConvertible
 
+public typealias FetchResultSnapshotObjectID = NSManagedObjectID
+
 @available(iOS 13.0, *)
 public final class FetchResultSnapshotsProvider<ResultType: FetchResultSnapshotsProviderResultType>: NSObject, NSFetchedResultsControllerDelegate {
 
-    public typealias ObjectID = NSManagedObjectID
-    public typealias Snapshot = NSDiffableDataSourceSnapshot<String, ObjectID>
-    public typealias ResultMutableType = NSManagedObject & ReadOnlyConvertible
+    public typealias Snapshot = NSDiffableDataSourceSnapshot<String, FetchResultSnapshotObjectID>
 
     public struct Query {
         /// This needs to be extended to allow an array. However, we have to add protection that
@@ -58,7 +58,7 @@ public final class FetchResultSnapshotsProvider<ResultType: FetchResultSnapshots
         try wrappedController.performFetch()
     }
 
-    public func object(withID objectID: ObjectID) -> Order? {
+    public func object(withID objectID: FetchResultSnapshotObjectID) -> Order? {
         let context = storage as! NSManagedObjectContext
         if let storageOrder = try? context.existingObject(with: objectID) as? StorageOrder {
             return storageOrder.toReadOnly()

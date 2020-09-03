@@ -291,9 +291,9 @@ private extension SiteAddressViewController {
     /// Configure the textfield cell.
     ///
     func configureTextField(_ cell: TextFieldTableViewCell) {
-        cell.configureTextFieldStyle(with: .url,
-                                     and: WordPressAuthenticator.shared.displayStrings.siteAddressPlaceholder)
-
+        cell.configure(withStyle: .url,
+                       placeholder: WordPressAuthenticator.shared.displayStrings.siteAddressPlaceholder)
+        
         // Save a reference to the first textField so it can becomeFirstResponder.
         siteURLField = cell.textField
         cell.textField.delegate = self

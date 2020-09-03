@@ -49,12 +49,14 @@ final class TextFieldTableViewCell: UITableViewCell {
 
     /// Configures the textfield for URL, username, or entering a password.
     /// - Parameter style: changes the textfield behavior and appearance.
-    /// - Parameter placeholder: the placeholder text, if any
+    /// - Parameter placeholder: the placeholder text, if any.
+    /// - Parameter text: the field text, if any.
     ///
-    public func configureTextFieldStyle(with style: TextFieldStyle = .url, and placeholder: String?) {
+    public func configure(withStyle style: TextFieldStyle = .url, placeholder: String? = nil, text: String? = nil) {
         textfieldStyle = style
         applyTextFieldStyle(style)
         textField.placeholder = placeholder
+        textField.text = text
     }
 }
 

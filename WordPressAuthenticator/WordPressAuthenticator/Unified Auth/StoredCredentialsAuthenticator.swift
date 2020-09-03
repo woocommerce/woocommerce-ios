@@ -196,8 +196,8 @@ extension StoredCredentialsAuthenticator {
         if let loginFields = loginFields {
             toVC.loginFields = loginFields
         }
-        toVC.errorToPresent = error
 
+        toVC.errorMessage = error.localizedDescription
         navigationController?.pushViewController(toVC, animated: true)
     }
     

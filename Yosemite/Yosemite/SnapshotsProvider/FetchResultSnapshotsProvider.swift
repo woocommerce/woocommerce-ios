@@ -5,11 +5,11 @@ import Combine
 public typealias FetchResultSnapshotsProviderResultType = NSManagedObject & ReadOnlyConvertible
 
 public typealias FetchResultSnapshotObjectID = NSManagedObjectID
+@available(iOS 13.0, *)
+public typealias FetchResultSnapshot = NSDiffableDataSourceSnapshot<String, FetchResultSnapshotObjectID>
 
 @available(iOS 13.0, *)
 public final class FetchResultSnapshotsProvider<ResultType: FetchResultSnapshotsProviderResultType>: NSObject, NSFetchedResultsControllerDelegate {
-
-    public typealias Snapshot = NSDiffableDataSourceSnapshot<String, FetchResultSnapshotObjectID>
 
     public struct Query {
         /// This needs to be extended to allow an array. However, we have to add protection that
@@ -43,9 +43,9 @@ public final class FetchResultSnapshotsProvider<ResultType: FetchResultSnapshots
         return resultsController
     }()
 
-    private let snapshotSubject = CurrentValueSubject<Snapshot, Never>(Snapshot())
+    private let snapshotSubject = CurrentValueSubject<FetchResultSnapshot, Never>(FetchResultSnapshot())
 
-    public var snapshot: AnyPublisher<Snapshot, Never> {
+    public var snapshot: AnyPublisher<FetchResultSnapshot, Never> {
         snapshotSubject.eraseToAnyPublisher()
     }
 
@@ -69,7 +69,7 @@ public final class FetchResultSnapshotsProvider<ResultType: FetchResultSnapshots
 
     public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
                     didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
-        let snapshot = snapshot as Snapshot
+        let snapshot = snapshot as FetchResultSnapshot
         snapshotSubject.send(snapshot)
     }
 }

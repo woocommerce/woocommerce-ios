@@ -128,16 +128,16 @@ private extension TextFieldTableViewCell {
     /// Sets up a 1Password button if 1Password is available and user is on iOS 12.
     ///
     @objc func setupOnePasswordButtonIfNeeded() {
-        if #available(iOS 13, *) {
-            // no-op, we rely on the key icon in the keyboard to initiate a password manager.
-        } else {
+//        if #available(iOS 13, *) {
+//            // no-op, we rely on the key icon in the keyboard to initiate a password manager.
+//        } else {
             let tintColor = WordPressAuthenticator.shared.unifiedStyle?.borderColor ?? WordPressAuthenticator.shared.style.primaryNormalBorderColor
             // iOS 12 and lower, display the OnePassword button.
             WPStyleGuide.configureOnePasswordButtonForTextfield(textField,
                                                                 tintColor: tintColor,
                                                                 target: self,
                                                                 selector: #selector(onePasswordTapped(_:)))
-        }
+//        }
     }
 
     @objc func onePasswordTapped(_ sender: UIButton) {

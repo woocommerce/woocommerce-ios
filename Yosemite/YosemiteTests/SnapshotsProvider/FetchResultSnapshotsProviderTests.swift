@@ -4,6 +4,7 @@ import CoreData
 import Combine
 
 @testable import Yosemite
+import Storage
 
 @available(iOS 13.0, *)
 final class FetchResultSnapshotsProviderTests: XCTestCase {
@@ -11,6 +12,10 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
     private var storageManager: MockupStorageManager!
 
     private var cancellables = Set<AnyCancellable>()
+
+    var viewStorage: StorageType {
+        storageManager.viewStorage
+    }
 
     override func setUp() {
         super.setUp()
@@ -33,7 +38,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
             sortDescriptor: .init(keyPath: \StorageAccount.displayName, ascending: true)
         )
-        let provider = FetchResultSnapshotsProvider(storage: storageManager.viewStorage, query: query)
+        let provider = FetchResultSnapshotsProvider(storage: viewStorage, query: query)
 
         // When
         let snapshot: FetchResultSnapshot = try waitFor { done in
@@ -57,7 +62,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
             sortDescriptor: .init(keyPath: \StorageAccount.displayName, ascending: true)
         )
-        let provider = FetchResultSnapshotsProvider(storage: storageManager.viewStorage, query: query)
+        let provider = FetchResultSnapshotsProvider(storage: viewStorage, query: query)
 
         // When
         let snapshot: FetchResultSnapshot = try waitFor { done in
@@ -92,7 +97,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
             sortDescriptor: .init(keyPath: \StorageAccount.username, ascending: false),
             sectionNameKeyPath: #keyPath(StorageAccount.displayName)
         )
-        let provider = FetchResultSnapshotsProvider(storage: storageManager.viewStorage, query: query)
+        let provider = FetchResultSnapshotsProvider(storage: viewStorage, query: query)
 
         // When
         let snapshot: FetchResultSnapshot = try waitFor { done in
@@ -131,7 +136,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
             predicate: .init(format: "%K CONTAINS %@", #keyPath(StorageAccount.username), "Elf"),
             sectionNameKeyPath: #keyPath(StorageAccount.displayName)
         )
-        let provider = FetchResultSnapshotsProvider(storage: storageManager.viewStorage, query: query)
+        let provider = FetchResultSnapshotsProvider(storage: viewStorage, query: query)
 
         // When
         let snapshot: FetchResultSnapshot = try waitFor { done in

@@ -4,6 +4,7 @@ import Combine
 
 @testable import Yosemite
 
+@available(iOS 13.0, *)
 final class FetchResultSnapshotsProviderTests: XCTestCase {
 
     private var storageManager: MockupStorageManager!
@@ -18,8 +19,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         super.tearDown()
     }
 
-    @available(iOS 13.0, *)
-    func test_it_works() throws {
+    func test_snapshot_can_emit_a_sorted_list() throws {
         // Given
         let accounts = [
             insertAccount(displayName: "Reina Feil", username: "reinafeil"),
@@ -50,6 +50,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
     }
 }
 
+@available(iOS 13.0, *)
 private extension FetchResultSnapshotsProviderTests {
     @discardableResult
     func insertAccount(displayName: String, username: String) -> StorageAccount {

@@ -77,6 +77,10 @@ public class AuthenticatorAnalyticsTracker {
         /// This flow represents the signup (when the user inputs an email that’s not registered with a .com account)
         ///
         case signup
+        
+        /// This flow represents the prologue screen.
+        ///
+        case prologue
     }
     
     public enum Step: String {
@@ -232,6 +236,7 @@ public class AuthenticatorAnalyticsTracker {
     struct Configuration {
         let appleEnabled: Bool
         let googleEnabled: Bool
+        let prologueEnabled: Bool
         let siteAddressEnabled: Bool
         let wpComEnabled: Bool
     }
@@ -240,12 +245,13 @@ public class AuthenticatorAnalyticsTracker {
         // When unit testing, WordPressAuthenticator is not always initialized.
         // The following code ensures we have configuration defaults even if that's the case.
         guard WordPressAuthenticator.isInitialized() else {
-            return Configuration(appleEnabled: false, googleEnabled: false, siteAddressEnabled: false, wpComEnabled: false)
+            return Configuration(appleEnabled: false, googleEnabled: false, prologueEnabled: false, siteAddressEnabled: false, wpComEnabled: false)
         }
         
         return Configuration(
             appleEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedApple,
             googleEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedGoogle,
+            prologueEnabled: false,
             siteAddressEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress,
             wpComEnabled: false)
     }
@@ -257,7 +263,7 @@ public class AuthenticatorAnalyticsTracker {
         var lastSource: Source
         var lastStep: Step
         
-        init(lastFlow: Flow = .wpCom, lastSource: Source = .default, lastStep: Step = .prologue) {
+        init(lastFlow: Flow = .prologue, lastSource: Source = .default, lastStep: Step = .prologue) {
             self.lastFlow = lastFlow
             self.lastSource = lastSource
             self.lastStep = lastStep
@@ -296,6 +302,7 @@ public class AuthenticatorAnalyticsTracker {
             || isInAppleFlowAndCanTrack()
             || isInGoogleFlowAndCanTrack()
             || isInWPComFlowAndCanTrack()
+            || isInPrologueFlow()
     }
     
     /// This is a convenience method, that's useful for cases where we simply want to check if the legacy tracking should be
@@ -323,6 +330,10 @@ public class AuthenticatorAnalyticsTracker {
     
     private func isInWPComFlowAndCanTrack() -> Bool {
         return configuration.wpComEnabled && state.lastFlow == .wpCom
+    }
+    
+    private func isInPrologueFlow() -> Bool {
+        return configuration.prologueEnabled && state.lastFlow == .prologue
     }
     
     // MARK: - Tracking
@@ -449,12 +460,22 @@ public class AuthenticatorAnalyticsTracker {
     
     // MARK: - Source & Flow
     
+    /// Allows the caller to set the flow without tracking.
+    ///
     func set(flow: Flow) {
         state.lastFlow = flow
     }
     
+    /// Allows the caller to set the source without tracking.
+    ///
     func set(source: Source) {
         state.lastSource = source
+    }
+    
+    /// Allows the caller to set the step without tracking.
+    ///
+    func set(step: Step) {
+        state.lastStep = step
     }
     
     // MARK: - Properties

@@ -20,7 +20,12 @@ extension FancyAlertViewController {
         }
     }
 
-    static func siteAddressHelpController(loginFields: LoginFields, sourceTag: WordPressSupportSourceTag) -> FancyAlertViewController {
+    static func siteAddressHelpController(
+        loginFields: LoginFields,
+        sourceTag: WordPressSupportSourceTag,
+        moreHelpTapped: (() -> Void)? = nil,
+        onDismiss: (() -> Void)? = nil) -> FancyAlertViewController {
+        
         let moreHelpButton = ButtonConfig(Strings.moreHelp) { controller, _ in
             controller.dismiss(animated: true) {
                 // Find the topmost view controller that we can present from
@@ -30,21 +35,27 @@ extension FancyAlertViewController {
                     return
                 }
 
+                moreHelpTapped?()
                 WordPressAuthenticator.shared.delegate?.presentSupportRequest(from: viewController, sourceTag: sourceTag)
             }
         }
 
         let image = WordPressAuthenticator.shared.displayImages.siteAddressModalPlaceholder
 
+        let okButton = ButtonConfig(Strings.OK) { controller, _ in
+            onDismiss?()
+            controller.dismiss(animated: true, completion: nil)
+        }
+        
         let config = FancyAlertViewController.Config(titleText: Strings.titleText,
                                                      bodyText: Strings.bodyText,
                                                      headerImage: image,
                                                      dividerPosition: .top,
-                                                     defaultButton: defaultButton(),
+                                                     defaultButton: okButton,
                                                      cancelButton: nil,
                                                      moreInfoButton: moreHelpButton,
                                                      titleAccessoryButton: nil,
-                                                     dismissAction: nil)
+                                                     dismissAction: onDismiss)
 
         let controller = FancyAlertViewController.controllerWithConfiguration(configuration: config)
         return controller

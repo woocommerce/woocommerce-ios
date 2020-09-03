@@ -19,14 +19,14 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     /// Adds a specific `Product`.
     ///
     /// - Parameters:
-    ///     - product: the Product to created remotely.
+    ///     - product: the Product to be created remotely.
     ///     - completion: executed upon completion.
     ///
     public func addProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void) {
         do {
             let parameters = try product.toDictionary()
             let siteID = product.siteID
-            let path = "\(Path.products)"
+            let path = Path.products
             let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
             let mapper = ProductMapper(siteID: siteID)
             enqueue(request, mapper: mapper, completion: completion)

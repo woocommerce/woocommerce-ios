@@ -18,6 +18,7 @@ final class MockProductsRemote {
     /// The results to return based on the given arguments in `loadProducts`
     private var productsLoadingResults = [ResultKey: Result<[Product], Error>]()
 
+    /// The results to return based on the given site ID in `addProduct`
     private var addProductResultsBySiteID = [Int64: Result<Product, Error>]()
 
     /// The number of times that `loadProduct()` was invoked.
@@ -52,8 +53,6 @@ extension MockProductsRemote: ProductsRemoteProtocol {
             guard let self = self else {
                 return
             }
-
-            self.invocationCountOfLoadProduct += 1
 
             if let result = self.addProductResultsBySiteID[product.siteID] {
                 completion(result)

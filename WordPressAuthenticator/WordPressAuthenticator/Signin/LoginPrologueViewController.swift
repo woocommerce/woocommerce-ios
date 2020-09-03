@@ -18,10 +18,10 @@ class LoginPrologueViewController: LoginViewController {
     @IBOutlet private weak var topContainerView: UIView!
     
     /// We can't rely on `isMovingToParent` to know if we need to track the `.prologue` step
-    /// because for the root view in an App, it's always `false`.  We're relying on a static variable
+    /// because for the root view in an App, it's always `false`.  We're relying this variiable
     /// instead, since the `.prologue` step only needs to be tracked once.
     ///
-    private static var prologueFlowTracked = false
+    private var prologueFlowTracked = false
 
     // MARK: - Lifecycle Methods
 
@@ -51,9 +51,9 @@ class LoginPrologueViewController: LoginViewController {
         
         tracker.set(flow: .prologue)
         
-        if !Self.prologueFlowTracked {
+        if !prologueFlowTracked {
             tracker.track(step: .prologue)
-            Self.prologueFlowTracked = true
+            prologueFlowTracked = true
         } else {
             tracker.set(step: .prologue)
         }

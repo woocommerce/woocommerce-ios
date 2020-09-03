@@ -208,17 +208,32 @@ private extension GetStartedViewController {
         cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.getStartedInstructions)
     }
     
-    /// Configure the textfield cell.
+    /// Configure the email cell.
     ///
     func configureEmailField(_ cell: TextFieldTableViewCell) {
         cell.configure(withStyle: .email,
                        placeholder: WordPressAuthenticator.shared.displayStrings.emailAddressPlaceholder,
                        text: loginFields.username)
         cell.textField.delegate = self
+        emailField = cell.textField
         
         cell.onChangeSelectionHandler = { [weak self] textfield in
             self?.loginFields.username = textfield.nonNilTrimmedText()
             self?.configureContinueButton(animating: false)
+        }
+        
+        cell.onePasswordHandler = { [weak self] in
+            guard let self = self,
+            let sourceView = self.emailField else {
+                return
+            }
+
+            self.view.endEditing(true)
+
+            WordPressAuthenticator.fetchOnePasswordCredentials(self, sourceView: sourceView, loginFields: self.loginFields) { [weak self] (loginFields) in
+                self?.emailField?.text = loginFields.username
+                self?.validateFormAndLogin()
+            }
         }
     }
     

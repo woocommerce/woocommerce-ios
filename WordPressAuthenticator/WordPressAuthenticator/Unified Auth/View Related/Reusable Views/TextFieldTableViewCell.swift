@@ -112,6 +112,8 @@ private extension TextFieldTableViewCell {
         case .email:
             textField.keyboardType = .emailAddress
             textField.returnKeyType = .continue
+            textField.textContentType = .username // So the password autofill appears on the keyboard
+            setupOnePasswordButtonIfNeeded()
             textField.accessibilityLabel = Constants.email
             textField.accessibilityIdentifier = Constants.email
         }

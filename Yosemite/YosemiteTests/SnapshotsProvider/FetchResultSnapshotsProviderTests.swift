@@ -35,6 +35,8 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         // Given
         insertAccount(displayName: "Reina Feil", username: "reinafeil")
 
+        viewStorage.saveIfNeeded()
+
         let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
             sortDescriptor: .init(keyPath: \StorageAccount.displayName, ascending: true)
         )
@@ -58,6 +60,8 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
             insertAccount(displayName: "Arvid Lowe", username: "arvidlowe"),
             insertAccount(displayName: "Lee Johns", username: "leejohns")
         ]
+
+        viewStorage.saveIfNeeded()
 
         let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
             sortDescriptor: .init(keyPath: \StorageAccount.displayName, ascending: true)
@@ -92,6 +96,8 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
             insertAccount(displayName: "Y", username: "Yahiko"),
             insertAccount(displayName: "Y", username: "Yagami"),
         ]
+
+        viewStorage.saveIfNeeded()
 
         let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
             sortDescriptor: .init(keyPath: \StorageAccount.username, ascending: false),
@@ -130,6 +136,8 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         ]
         insertAccount(displayName: "Y", username: "Yamada Human")
         insertAccount(displayName: "Y", username: "Yajiro Human")
+
+        viewStorage.saveIfNeeded()
 
         let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
             sortDescriptor: .init(keyPath: \StorageAccount.username, ascending: false),

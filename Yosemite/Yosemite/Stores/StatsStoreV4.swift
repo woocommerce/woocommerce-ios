@@ -378,7 +378,7 @@ private extension StatsStoreV4 {
                                                                          date: Date,
                                                                          topProducts: Leaderboard,
                                                                          storedProducts: [Product]) {
-        let statsDate = StatsStore.buildDateString(from: date, with: granularity)
+        let statsDate = Self.buildDateString(from: date, with: granularity)
         let statsItems = LeaderboardStatsConverter.topEarnerStatsItems(from: topProducts, using: storedProducts)
         let stats = TopEarnerStats(date: statsDate,
                                    granularity: granularity,
@@ -387,6 +387,26 @@ private extension StatsStoreV4 {
         )
 
         upsertStoredTopEarnerStats(readOnlyStats: stats)
+    }
+}
+
+// MARK: - Public Helpers
+//
+public extension StatsStoreV4 {
+
+    /// Converts a Date into the appropriately formatted string based on the `OrderStatGranularity`
+    ///
+    static func buildDateString(from date: Date, with granularity: StatGranularity) -> String {
+        switch granularity {
+        case .day:
+            return DateFormatter.Stats.statsDayFormatter.string(from: date)
+        case .week:
+            return DateFormatter.Stats.statsWeekFormatter.string(from: date)
+        case .month:
+            return DateFormatter.Stats.statsMonthFormatter.string(from: date)
+        case .year:
+            return DateFormatter.Stats.statsYearFormatter.string(from: date)
+        }
     }
 }
 
@@ -410,4 +430,31 @@ private extension StatsStoreV4 {
 //
 public enum StatsStoreV4Error: Error {
     case missingTopProducts
+}
+
+/// An error that occurs while fetching site visit stats.
+///
+/// - noPermission: the user has no permission to view site stats.
+/// - statsModuleDisabled: Jetpack site stats module is disabled for the site.
+/// - unknown: other error cases.
+///
+public enum SiteVisitStatsStoreError: Error {
+    case statsModuleDisabled
+    case noPermission
+    case unknown
+
+    init(error: Error) {
+        guard let dotcomError = error as? DotcomError else {
+            self = .unknown
+            return
+        }
+        switch dotcomError {
+        case .noStatsPermission:
+            self = .noPermission
+        case .statsModuleDisabled:
+            self = .statsModuleDisabled
+        default:
+            self = .unknown
+        }
+    }
 }

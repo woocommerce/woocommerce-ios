@@ -116,11 +116,10 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
 
         // Then
         XCTAssertEqual(snapshot.itemIdentifiers.count, 7)
+        XCTAssertEqual(snapshot.sectionIdentifiers, ["Z", "Y"])
         XCTAssertEqual(snapshot.sectionIdentifiers.count, 2)
-        XCTAssertEqual(snapshot.itemIdentifiers(inSection: snapshot.sectionIdentifiers[0]),
-                       expectedFirstSection.map(\.objectID))
-        XCTAssertEqual(snapshot.itemIdentifiers(inSection: snapshot.sectionIdentifiers[1]),
-                       expectedSecondSection.map(\.objectID))
+        XCTAssertEqual(snapshot.itemIdentifiers(inSection: "Z"), expectedFirstSection.map(\.objectID))
+        XCTAssertEqual(snapshot.itemIdentifiers(inSection: "Y"), expectedSecondSection.map(\.objectID))
     }
 
     func test_snapshot_can_emit_a_filtered_list() throws {
@@ -158,10 +157,8 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         // Then
         XCTAssertEqual(snapshot.itemIdentifiers.count, 3)
         XCTAssertEqual(snapshot.sectionIdentifiers.count, 2)
-        XCTAssertEqual(snapshot.itemIdentifiers(inSection: snapshot.sectionIdentifiers[0]),
-                       expectedFirstSection.map(\.objectID))
-        XCTAssertEqual(snapshot.itemIdentifiers(inSection: snapshot.sectionIdentifiers[1]),
-                       expectedSecondSection.map(\.objectID))
+        XCTAssertEqual(snapshot.itemIdentifiers(inSection: "Z"), expectedFirstSection.map(\.objectID))
+        XCTAssertEqual(snapshot.itemIdentifiers(inSection: "Y"), expectedSecondSection.map(\.objectID))
     }
 }
 

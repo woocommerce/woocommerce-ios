@@ -35,7 +35,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         // When
         let snapshot: FetchResultSnapshotsProvider<StorageAccount>.Snapshot = try waitFor { done in
             var cancellable: AnyCancellable?
-            cancellable = provider.snapshot.first().sink { snapshot in
+            cancellable = provider.snapshot.dropFirst().sink { snapshot in
                 done(snapshot)
                 cancellable?.cancel()
             }

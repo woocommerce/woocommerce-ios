@@ -19,10 +19,6 @@ public final class FetchResultSnapshotsProvider<ResultType: FetchResultSnapshots
         public let predicate: NSPredicate?
         public let sectionNameKeyPath: String?
 
-        var entityName: String {
-            ResultType.entityName
-        }
-
         init(sortDescriptor: NSSortDescriptor, predicate: NSPredicate? = nil, sectionNameKeyPath: String? = nil) {
             self.sortDescriptor = sortDescriptor
             self.predicate = predicate
@@ -33,16 +29,14 @@ public final class FetchResultSnapshotsProvider<ResultType: FetchResultSnapshots
     private let storage: StorageType
     private let query: Query
 
-    private lazy var wrappedController: NSFetchedResultsController<StorageOrder> = {
-        let sortDescriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
-        let fetchRequest = NSFetchRequest<StorageOrder>(entityName: StorageOrder.entityName)
-        fetchRequest.sortDescriptors = [sortDescriptor]
+    private lazy var wrappedController: NSFetchedResultsController<ResultType> = {
+        let fetchRequest = NSFetchRequest<ResultType>(entityName: ResultType.entityName)
+        fetchRequest.predicate = query.predicate
+        fetchRequest.sortDescriptors = [query.sortDescriptor]
 
-        #warning("FIXME")
-        let sectionNameKeyPath = "ola"
         let resultsController = storage.createFetchedResultsController(
             fetchRequest: fetchRequest,
-            sectionNameKeyPath: "\(sectionNameKeyPath)",
+            sectionNameKeyPath: query.sectionNameKeyPath,
             cacheName: nil
         )
         resultsController.delegate = self

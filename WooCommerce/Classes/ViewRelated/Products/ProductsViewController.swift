@@ -709,21 +709,22 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                                  stockStatus: filters.stockStatus,
                                  productStatus: filters.productStatus,
                                  productType: filters.productType,
-                                 sortOrder: sortOrder) { [weak self] error in
+                                 sortOrder: sortOrder) { [weak self] result in
                                     guard let self = self else {
                                         return
                                     }
 
-                                    if let error = error {
+                                    switch result {
+                                    case .failure(let error):
                                         ServiceLocator.analytics.track(.productListLoadError, withError: error)
                                         DDLogError("⛔️ Error synchronizing products: \(error)")
                                         self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
-                                    } else {
+                                    case .success:
                                         ServiceLocator.analytics.track(.productListLoaded)
                                     }
 
                                     self.transitionToResultsUpdatedState()
-                                    onCompletion?(error == nil)
+                                    onCompletion?(result.isSuccess)
         }
 
         ServiceLocator.stores.dispatch(action)

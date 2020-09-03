@@ -37,6 +37,8 @@ public class ProductStore: Store {
         }
 
         switch action {
+        case .addProduct(let product, let onCompletion):
+            addProduct(product: product, onCompletion: onCompletion)
         case .resetStoredProducts(let onCompletion):
             resetStoredProducts(onCompletion: onCompletion)
         case .retrieveProduct(let siteID, let productID, let onCompletion):
@@ -129,7 +131,7 @@ private extension ProductStore {
                              sortOrder: ProductsSortOrder,
                              excludedProductIDs: [Int64],
                              shouldDeleteStoredProductsOnFirstPage: Bool,
-                             onCompletion: @escaping (Error?) -> Void) {
+                             onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         let remote = ProductsRemote(network: network)
 
         remote.loadAllProducts(for: siteID,
@@ -143,14 +145,19 @@ private extension ProductStore {
                                excludedProductIDs: excludedProductIDs) { [weak self] result in
                                 switch result {
                                 case .failure(let error):
-                                    onCompletion(error)
+                                    onCompletion(.failure(error))
                                 case .success(let products):
-                                    if pageNumber == Default.firstPageNumber && shouldDeleteStoredProductsOnFirstPage {
-                                        self?.deleteStoredProducts(siteID: siteID)
+                                    guard let self = self else {
+                                        return
                                     }
 
-                                    self?.upsertStoredProductsInBackground(readOnlyProducts: products) {
-                                        onCompletion(nil)
+                                    if pageNumber == Default.firstPageNumber && shouldDeleteStoredProductsOnFirstPage {
+                                        self.deleteStoredProducts(siteID: siteID)
+                                    }
+
+                                    self.upsertStoredProductsInBackground(readOnlyProducts: products) {
+                                        let hasNextPage = products.count == pageSize
+                                        onCompletion(.success(hasNextPage))
                                     }
                                 }
         }
@@ -191,9 +198,9 @@ private extension ProductStore {
                           productIDs: [Int64],
                           pageNumber: Int,
                           pageSize: Int,
-                          onCompletion: @escaping (Result<[Product], Error>) -> Void) {
+                          onCompletion: @escaping (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void) {
         guard productIDs.isEmpty == false else {
-            onCompletion(.success([]))
+            onCompletion(.success((products: [], hasNextPage: false)))
             return
         }
 
@@ -201,10 +208,11 @@ private extension ProductStore {
             switch result {
             case .success(let products):
                 self?.upsertStoredProductsInBackground(readOnlyProducts: products, onCompletion: {
-                    onCompletion(result)
+                    let hasNextPage = products.count == pageSize
+                    onCompletion(.success((products: products, hasNextPage: hasNextPage)))
                 })
-            case .failure:
-                onCompletion(result)
+            case .failure(let error):
+                onCompletion(.failure(error))
             }
         }
     }
@@ -230,6 +238,25 @@ private extension ProductStore {
                 }
             }
 
+        }
+    }
+
+    /// Adds a product.
+    ///
+    func addProduct(product: Product, onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
+        remote.addProduct(product: product) { [weak self] result in
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(ProductUpdateError(error: error)))
+            case .success(let product):
+                self?.upsertStoredProductsInBackground(readOnlyProducts: [product]) { [weak self] in
+                    guard let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: product.siteID, productID: product.productID) else {
+                        onCompletion(.failure(.notFoundInStorage))
+                        return
+                    }
+                    onCompletion(.success(storageProduct.toReadOnly()))
+                }
+            }
         }
     }
 

@@ -186,7 +186,7 @@ final class MockReviewsStoresManager: DefaultStoresManager {
         switch action {
         case .retrieveProducts(_, _, _, _, onCompletion: let onCompletion):
             retrieveProductsIsHit = true
-            onCompletion(.success([]))
+            onCompletion(.success((products: [], hasNextPage: false)))
         default:
             return
         }

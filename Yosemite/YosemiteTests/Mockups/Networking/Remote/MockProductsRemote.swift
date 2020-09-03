@@ -18,8 +18,17 @@ final class MockProductsRemote {
     /// The results to return based on the given arguments in `loadProducts`
     private var productsLoadingResults = [ResultKey: Result<[Product], Error>]()
 
+    /// The results to return based on the given site ID in `addProduct`
+    private var addProductResultsBySiteID = [Int64: Result<Product, Error>]()
+
     /// The number of times that `loadProduct()` was invoked.
     private(set) var invocationCountOfLoadProduct: Int = 0
+
+    /// Set the value passed to the `completion` block if `addProduct()` is called.
+    ///
+    func whenAddingProduct(siteID: Int64, thenReturn result: Result<Product, Error>) {
+        addProductResultsBySiteID[siteID] = result
+    }
 
     /// Set the value passed to the `completion` block if `loadProduct()` is called.
     ///
@@ -39,6 +48,19 @@ final class MockProductsRemote {
 // MARK: - ProductsEndpointsProviding
 
 extension MockProductsRemote: ProductsRemoteProtocol {
+    func addProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            if let result = self.addProductResultsBySiteID[product.siteID] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for site ID \(product.siteID)")
+            }
+        }
+    }
 
     func loadProduct(for siteID: Int64,
                      productID: Int64,

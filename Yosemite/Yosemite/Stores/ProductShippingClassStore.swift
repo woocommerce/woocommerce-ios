@@ -40,22 +40,27 @@ private extension ProductShippingClassStore {
 
     /// Synchronizes the `ProductShippingClass`s associated with a given Site ID (if any!).
     ///
-    func synchronizeProductShippingClassModels(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
+    func synchronizeProductShippingClassModels(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         let remote = ProductShippingClassRemote(network: network)
 
-        remote.loadAll(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (models, error) in
-            guard let models = models else {
-                onCompletion(error)
-                return
-            }
+        remote.loadAll(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            case .success(let models):
+                guard let self = self else {
+                    return
+                }
 
-            if pageNumber == Default.firstPageNumber {
-                self?.deleteStoredProductShippingClassModels(siteID: siteID)
-            }
+                if pageNumber == Default.firstPageNumber {
+                    self.deleteStoredProductShippingClassModels(siteID: siteID)
+                }
 
-            self?.upsertStoredProductShippingClassModelsInBackground(readOnlyProductShippingClassModels: models,
-                                                                     siteID: siteID) {
-                                                                        onCompletion(nil)
+                self.upsertStoredProductShippingClassModelsInBackground(readOnlyProductShippingClassModels: models,
+                                                                        siteID: siteID) {
+                                                                            let hasNextPage = models.count == pageSize
+                                                                            onCompletion(.success(hasNextPage))
+                }
             }
         }
     }

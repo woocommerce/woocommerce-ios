@@ -21,9 +21,109 @@ final class ProductsRemoteTests: XCTestCase {
     /// Repeat always!
     ///
     override func setUp() {
+        super.setUp()
         network.removeAllSimulatedResponses()
     }
 
+    // MARK: - Add Product
+
+    func test_addProduct_with_success_mock_returns_a_product() {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "product-add")
+
+        // When
+        let product = sampleProduct()
+        var addedProduct: Product?
+        waitForExpectation { expectation in
+            remote.addProduct(product: product) { result in
+                addedProduct = try? result.get()
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        let expectedProduct = Product(siteID: sampleSiteID,
+                                      productID: 3007,
+                                      name: "Product",
+                                      slug: "product",
+                                      permalink: "https://example.com/product/product/",
+                                      dateCreated: date(with: "2020-09-03T02:52:44"),
+                                      dateModified: date(with: "2020-09-03T02:52:44"),
+                                      dateOnSaleStart: nil,
+                                      dateOnSaleEnd: nil,
+                                      productTypeKey: ProductType.simple.rawValue,
+                                      statusKey: ProductStatus.publish.rawValue,
+                                      featured: false,
+                                      catalogVisibilityKey: ProductCatalogVisibility.visible.rawValue,
+                                      fullDescription: "",
+                                      briefDescription: "",
+                                      sku: "",
+                                      price: "",
+                                      regularPrice: "",
+                                      salePrice: "",
+                                      onSale: false,
+                                      purchasable: false,
+                                      totalSales: 0,
+                                      virtual: false,
+                                      downloadable: false,
+                                      downloads: [],
+                                      downloadLimit: -1,
+                                      downloadExpiry: -1,
+                                      buttonText: "",
+                                      externalURL: "",
+                                      taxStatusKey: ProductTaxStatus.taxable.rawValue,
+                                      taxClass: "",
+                                      manageStock: false,
+                                      stockQuantity: nil,
+                                      stockStatusKey: ProductStockStatus.inStock.rawValue,
+                                      backordersKey: ProductBackordersSetting.notAllowed.rawValue,
+                                      backordersAllowed: false,
+                                      backordered: false,
+                                      soldIndividually: false,
+                                      weight: "",
+                                      dimensions: ProductDimensions(length: "", width: "", height: ""),
+                                      shippingRequired: true,
+                                      shippingTaxable: true,
+                                      shippingClass: "",
+                                      shippingClassID: 0,
+                                      productShippingClass: nil,
+                                      reviewsAllowed: true,
+                                      averageRating: "0",
+                                      ratingCount: 0,
+                                      relatedIDs: [],
+                                      upsellIDs: [],
+                                      crossSellIDs: [],
+                                      parentID: 0,
+                                      purchaseNote: "",
+                                      categories: [],
+                                      tags: [],
+                                      images: [],
+                                      attributes: [],
+                                      defaultAttributes: [],
+                                      variations: [],
+                                      groupedProducts: [],
+                                      menuOrder: 0)
+        XCTAssertEqual(addedProduct, expectedProduct)
+    }
+
+    func test_addProduct_relays_netwoking_error() {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When
+        let product = sampleProduct()
+        var result: Result<Product, Error>?
+        waitForExpectation { expectation in
+            remote.updateProduct(product: product) { aResult in
+                result = aResult
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertEqual(result?.isFailure, true)
+    }
 
     // MARK: - Load all products tests
 

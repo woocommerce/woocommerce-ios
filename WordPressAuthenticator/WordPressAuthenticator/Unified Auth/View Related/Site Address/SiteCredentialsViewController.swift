@@ -64,6 +64,8 @@ final class SiteCredentialsViewController: LoginViewController {
 
         if isMovingToParent {
             tracker.track(step: .userPasswordScreenShown)
+        } else {
+            tracker.set(step: .userPasswordScreenShown)
         }
         
         configureSubmitButton(animating: false)

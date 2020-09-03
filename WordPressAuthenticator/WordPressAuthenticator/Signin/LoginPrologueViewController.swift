@@ -19,6 +19,12 @@ class LoginPrologueViewController: LoginViewController {
     private lazy var storedCredentialsAuthenticator = StoredCredentialsAuthenticator()
     
     @IBOutlet private weak var topContainerView: UIView!
+    
+    /// We can't rely on `isMovingToParent` to know if we need to track the `.prologue` step
+    /// because for the root view in an App, it's always `false`.  We're relying this variiable
+    /// instead, since the `.prologue` step only needs to be tracked once.
+    ///
+    private var prologueFlowTracked = false
 
     // MARK: - Lifecycle Methods
 
@@ -38,12 +44,22 @@ class LoginPrologueViewController: LoginViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         configureButtonVC()
         navigationController?.setNavigationBarHidden(true, animated: false)
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
+        tracker.set(flow: .prologue)
+        
+        if !prologueFlowTracked {
+            tracker.track(step: .prologue)
+            prologueFlowTracked = true
+        } else {
+            tracker.set(step: .prologue)
+        }
         
         WordPressAuthenticator.track(.loginPrologueViewed)
         

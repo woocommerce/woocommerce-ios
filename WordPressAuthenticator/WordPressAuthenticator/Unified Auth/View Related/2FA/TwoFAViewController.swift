@@ -51,6 +51,8 @@ final class TwoFAViewController: LoginViewController {
         
         if isMovingToParent {
             tracker.track(step: .twoFactorAuthentication)
+        } else {
+            tracker.set(step: .twoFactorAuthentication)
         }
         
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),

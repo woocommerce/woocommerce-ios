@@ -61,6 +61,8 @@ class PasswordViewController: LoginViewController {
         
         if isMovingToParent {
             tracker.track(step: .userPasswordScreenShown)
+        } else {
+            tracker.set(step: .userPasswordScreenShown)
         }
         
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),

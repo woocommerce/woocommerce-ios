@@ -54,6 +54,8 @@ final class SiteAddressViewController: LoginViewController {
         
         if isMovingToParent {
             tracker.track(step: .start)
+        } else {
+            tracker.set(step: .start)
         }
         
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
@@ -314,14 +316,27 @@ private extension SiteAddressViewController {
                 return
             }
             
-            self.tracker.track(click: .helpFindingSiteAddress)
+            self.tracker.track(click: .showHelp)
 
-            let alert = FancyAlertViewController.siteAddressHelpController(loginFields: self.loginFields, sourceTag: self.sourceTag)
+            let alert = FancyAlertViewController.siteAddressHelpController(
+                loginFields: self.loginFields,
+                sourceTag: self.sourceTag,
+                moreHelpTapped: {
+                    self.tracker.track(click: .helpFindingSiteAddress)
+            },
+                onDismiss: {
+                    self.tracker.track(click: .dismiss)
+                    
+                    // Since we're showing an alert on top of this VC, `viewDidAppear` will not be called
+                    // once the alert is dismissed (which is where the step would be reset automagically),
+                    // so we need to manually reset the step here.
+                    self.tracker.set(step: .start)
+            })
             alert.modalPresentationStyle = .custom
             alert.transitioningDelegate = self
-            self.present(alert, animated: true, completion: nil)
-            // TODO: - Tracks.
-            // WordPressAuthenticator.track(.loginURLHelpScreenViewed)
+            self.present(alert, animated: true, completion: { [weak self] in
+                self?.tracker.track(step: .help)
+            })
         }
     }
 

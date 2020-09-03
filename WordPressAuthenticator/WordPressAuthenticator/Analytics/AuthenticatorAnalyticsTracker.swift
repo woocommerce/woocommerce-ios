@@ -236,6 +236,7 @@ public class AuthenticatorAnalyticsTracker {
     struct Configuration {
         let appleEnabled: Bool
         let googleEnabled: Bool
+        let prologueEnabled: Bool
         let siteAddressEnabled: Bool
         let wpComEnabled: Bool
     }
@@ -244,12 +245,13 @@ public class AuthenticatorAnalyticsTracker {
         // When unit testing, WordPressAuthenticator is not always initialized.
         // The following code ensures we have configuration defaults even if that's the case.
         guard WordPressAuthenticator.isInitialized() else {
-            return Configuration(appleEnabled: false, googleEnabled: false, siteAddressEnabled: false, wpComEnabled: false)
+            return Configuration(appleEnabled: false, googleEnabled: false, prologueEnabled: false, siteAddressEnabled: false, wpComEnabled: false)
         }
         
         return Configuration(
             appleEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedApple,
             googleEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedGoogle,
+            prologueEnabled: false,
             siteAddressEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress,
             wpComEnabled: false)
     }
@@ -331,7 +333,7 @@ public class AuthenticatorAnalyticsTracker {
     }
     
     private func isInPrologueFlow() -> Bool {
-        return state.lastFlow == .prologue
+        return configuration.prologueEnabled && state.lastFlow == .prologue
     }
     
     // MARK: - Tracking

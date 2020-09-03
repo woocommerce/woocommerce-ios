@@ -15,6 +15,9 @@ class LoginPrologueViewController: LoginViewController {
     private let configuration = WordPressAuthenticator.shared.configuration
     private let style = WordPressAuthenticator.shared.style
 
+    @available(iOS 13, *)
+    private lazy var storedCredentialsAuthenticator = StoredCredentialsAuthenticator()
+    
     @IBOutlet private weak var topContainerView: UIView!
     
     /// We can't rely on `isMovingToParent` to know if we need to track the `.prologue` step
@@ -59,6 +62,8 @@ class LoginPrologueViewController: LoginViewController {
         }
         
         WordPressAuthenticator.track(.loginPrologueViewed)
+        
+        showiCloudKeychainLoginFlow()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -69,6 +74,20 @@ class LoginPrologueViewController: LoginViewController {
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return UIDevice.isPad() ? .all : .portrait
+    }
+    
+    // MARK: - iCloud Keychain Login
+    
+    /// Starts the iCloud Keychain login flow if the conditions are given.
+    ///
+    private func showiCloudKeychainLoginFlow() {
+        guard #available(iOS 13, *),
+            WordPressAuthenticator.shared.configuration.enableUnifiedKeychainLogin,
+            let navigationController = navigationController else {
+                return
+        }
+
+        storedCredentialsAuthenticator.showPicker(from: navigationController)
     }
 
     // MARK: - Segue
@@ -86,6 +105,17 @@ class LoginPrologueViewController: LoginViewController {
             return
         }
 
+        guard configuration.enableUnifiedWordPress else {
+            buildPrologueButtons(buttonViewController)
+            return
+        }
+
+        buildUnifiedPrologueButtons(buttonViewController)
+    }
+
+    /// Displays the old UI prologue buttons.
+    ///
+    private func buildPrologueButtons(_ buttonViewController: NUXButtonViewController) {
         let loginTitle = NSLocalizedString("Log In", comment: "Button title.  Tapping takes the user to the login form.")
         let createTitle = NSLocalizedString("Sign up for WordPress.com", comment: "Button title. Tapping begins the process of creating a WordPress.com account.")
 
@@ -99,69 +129,95 @@ class LoginPrologueViewController: LoginViewController {
                 self?.signupTapped()
             }
         }
+
         if showCancel {
             let cancelTitle = NSLocalizedString("Cancel", comment: "Button title. Tapping it cancels the login flow.")
             buttonViewController.setupTertiaryButton(title: cancelTitle, isPrimary: false) { [weak self] in
                 self?.dismiss(animated: true, completion: nil)
             }
         }
+
+        buttonViewController.backgroundColor = style.buttonViewBackgroundColor
+    }
+
+    /// Displays the Unified prologue buttons.
+    ///
+    private func buildUnifiedPrologueButtons(_ buttonViewController: NUXButtonViewController) {
+        let loginTitle = NSLocalizedString("Continue with WordPress.com",
+                                           comment: "Button title. Takes the user to the login by email flow.")
+        let siteAddressTitle = NSLocalizedString("Enter your site address",
+                                                 comment: "Button title. Takes the user to the login by site address flow.")
+
+        buttonViewController.setupTopButton(title: loginTitle, isPrimary: true, accessibilityIdentifier: "Prologue Log In Button") { [weak self] in
+            guard let self = self else {
+                return
+            }
+            
+            self.tracker.set(flow: .wpCom)
+            self.tracker.track(click: .continueWithWordPressCom)
+            self.continueWithDotCom()
+        }
+
+        if configuration.enableUnifiedSiteAddress {
+            buttonViewController.setupBottomButton(title: siteAddressTitle, isPrimary: false, accessibilityIdentifier: "Self Hosted Login Button") { [weak self] in
+                self?.siteAddressTapped()
+            }
+        }
+
+        if showCancel {
+            let cancelTitle = NSLocalizedString("Cancel", comment: "Button title. Tapping it cancels the login flow.")
+            buttonViewController.setupTertiaryButton(title: cancelTitle, isPrimary: false) { [weak self] in
+                self?.dismiss(animated: true, completion: nil)
+            }
+        }
+
         buttonViewController.backgroundColor = style.buttonViewBackgroundColor
     }
 
     // MARK: - Actions
 
+    /// Old UI. "Log In" button action.
+    ///
     private func loginTapped() {
         tracker.set(source: .default)
-        
-        if configuration.showLoginOptions {
-            guard let vc = LoginPrologueLoginMethodViewController.instantiate(from: .login) else {
-                DDLogError("Failed to navigate to LoginPrologueLoginMethodViewController from LoginPrologueViewController")
-                return
-            }
 
-            vc.transitioningDelegate = self
-
-            // Continue with WordPress.com button action
-            vc.emailTapped = { [weak self] in
-                guard let self = self else {
-                    return
-                }
-
-                guard self.configuration.enableUnifiedLoginLink else {
-                    self.presentLoginEmailView()
-                    return
-                }
-
-                self.presentUnifiedLoginMagicLinkView()
-            }
-
-            // Continue with Google button action
-            vc.googleTapped = { [weak self] in
-                self?.googleTapped()
-            }
-
-            // Site address text link button action
-            vc.selfHostedTapped = { [weak self] in
-                self?.loginToSelfHostedSite()
-            }
-
-            // Sign In With Apple (SIWA) button action
-            vc.appleTapped = { [weak self] in
-                self?.appleTapped()
-            }
-
-            vc.modalPresentationStyle = .custom
-            navigationController?.present(vc, animated: true, completion: nil)
-        } else {
-            guard let vc = LoginEmailViewController.instantiate(from: .login) else {
-                DDLogError("Failed to navigate to LoginEmailViewController from LoginPrologueViewController")
-                return
-            }
-
-            navigationController?.pushViewController(vc, animated: true)
+        guard let vc = LoginPrologueLoginMethodViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate to LoginPrologueLoginMethodViewController from LoginPrologueViewController")
+            return
         }
+
+        vc.transitioningDelegate = self
+
+        // Continue with WordPress.com button action
+        vc.emailTapped = { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            self.presentLoginEmailView()
+        }
+
+        // Continue with Google button action
+        vc.googleTapped = { [weak self] in
+            self?.googleTapped()
+        }
+
+        // Site address text link button action
+        vc.selfHostedTapped = { [weak self] in
+            self?.loginToSelfHostedSite()
+        }
+
+        // Sign In With Apple (SIWA) button action
+        vc.appleTapped = { [weak self] in
+            self?.appleTapped()
+        }
+
+        vc.modalPresentationStyle = .custom
+        navigationController?.present(vc, animated: true, completion: nil)
     }
 
+    /// Old UI. "Sign up with WordPress.com" button action.
+    ///
     private func signupTapped() {
         tracker.set(source: .default)
         
@@ -184,7 +240,7 @@ class LoginPrologueViewController: LoginViewController {
                 return
             }
 
-            guard self.configuration.enableUnifiedSignup else {
+            guard self.configuration.enableUnifiedWordPress else {
                 self.presentSignUpEmailView()
                 return
             }
@@ -227,6 +283,26 @@ class LoginPrologueViewController: LoginViewController {
         presentUnifiedGoogleView()
     }
 
+    /// Unified "Continue with WordPress.com" prologue button action.
+    ///
+    private func continueWithDotCom() {
+        guard let vc = GetStartedViewController.instantiate(from: .getStarted) else {
+            DDLogError("Failed to navigate from LoginPrologueViewController to GetStartedViewController")
+            return
+        }
+
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
+    /// Unified "Enter your site address" prologue button action.
+    ///
+    private func siteAddressTapped() {
+        tracker.set(flow: .loginWithSiteAddress)
+        tracker.track(click: .loginWithSiteAddress)
+
+        loginToSelfHostedSite()
+    }
+
     private func presentSignUpEmailView() {
         guard let toVC = SignupEmailViewController.instantiate(from: .signup) else {
             DDLogError("Failed to navigate to SignupEmailViewController")
@@ -254,9 +330,9 @@ class LoginPrologueViewController: LoginViewController {
         navigationController?.pushViewController(toVC, animated: true)
     }
 
-    private func presentUnifiedLoginMagicLinkView() {
-        guard let toVC = LoginMagicLinkViewController.instantiate(from: .unifiedLoginMagicLink) else {
-            DDLogError("Failed to navigate to LoginMagicLinkViewController")
+    private func presentGetStartedView() {
+        guard let toVC = GetStartedViewController.instantiate(from: .getStarted) else {
+            DDLogError("Failed to navigate to GetStartedViewController")
             return
         }
 

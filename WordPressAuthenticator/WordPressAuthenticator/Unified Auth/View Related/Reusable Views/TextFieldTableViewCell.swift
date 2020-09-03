@@ -14,10 +14,6 @@ final class TextFieldTableViewCell: UITableViewCell {
     private var secureTextEntryImageHidden: UIImage?
     private var textfieldStyle: TextFieldStyle = .url
 
-    private var hairlineBorderWidth: CGFloat {
-        return 1.0 / UIScreen.main.scale
-    }
-
     /// Register an action for the SiteAddress URL textfield.
     /// - Note: we have to manually add an action to the textfield
     ///	        because the delegate method `textFieldDidChangeSelection(_ textField: UITextField)`
@@ -53,12 +49,14 @@ final class TextFieldTableViewCell: UITableViewCell {
 
     /// Configures the textfield for URL, username, or entering a password.
     /// - Parameter style: changes the textfield behavior and appearance.
-    /// - Parameter placeholder: the placeholder text, if any
+    /// - Parameter placeholder: the placeholder text, if any.
+    /// - Parameter text: the field text, if any.
     ///
-    public func configureTextFieldStyle(with style: TextFieldStyle = .url, and placeholder: String?) {
+    public func configure(withStyle style: TextFieldStyle = .url, placeholder: String? = nil, text: String? = nil) {
         textfieldStyle = style
         applyTextFieldStyle(style)
         textField.placeholder = placeholder
+        textField.text = text
     }
 }
 
@@ -71,7 +69,7 @@ private extension TextFieldTableViewCell {
     func styleBorder() {
         let borderColor = WordPressAuthenticator.shared.unifiedStyle?.borderColor ?? WordPressAuthenticator.shared.style.primaryNormalBorderColor
         borderView.backgroundColor = borderColor
-        borderWidth.constant = hairlineBorderWidth
+        borderWidth.constant = WPStyleGuide.hairlineBorderWidth
     }
 
     /// Apply common keyboard traits and font styles.
@@ -111,6 +109,11 @@ private extension TextFieldTableViewCell {
             textField.returnKeyType = .continue
             textField.accessibilityLabel = Constants.otp
             textField.accessibilityIdentifier = Constants.otp
+        case .email:
+            textField.keyboardType = .emailAddress
+            textField.returnKeyType = .continue
+            textField.accessibilityLabel = Constants.email
+            textField.accessibilityIdentifier = Constants.email
         }
     }
 
@@ -215,6 +218,7 @@ extension TextFieldTableViewCell {
         case username
         case password
         case numericCode
+        case email
     }
 
     struct Constants {
@@ -234,5 +238,7 @@ extension TextFieldTableViewCell {
                                                 comment: "Accessibility label for the password text field in the self-hosted login page.")
         static let otp = NSLocalizedString("Authentication code",
                                            comment: "Accessibility label for the 2FA text field.")
+        static let email = NSLocalizedString("Email address",
+                                             comment: "Accessibility label for the email address text field.")
     }
 }

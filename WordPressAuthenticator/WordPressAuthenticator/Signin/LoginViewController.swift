@@ -211,8 +211,9 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         let unifiedGoogle = WordPressAuthenticator.shared.configuration.enableUnifiedGoogle && loginFields.meta.socialService == .google
         let unifiedApple = WordPressAuthenticator.shared.configuration.enableUnifiedApple && loginFields.meta.socialService == .apple
         let unifiedSiteAddress = WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress && !loginFields.siteAddress.isEmpty
+        let unifiedWordPress = WordPressAuthenticator.shared.configuration.enableUnifiedWordPress && loginFields.meta.userIsDotCom
         
-        guard (unifiedGoogle || unifiedApple || unifiedSiteAddress) else {
+        guard (unifiedGoogle || unifiedApple || unifiedSiteAddress || unifiedWordPress) else {
             presentLogin2FA()
             return
         }
@@ -231,7 +232,6 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         static let missingInfoError = NSLocalizedString("Please fill out all the fields", comment: "A short prompt asking the user to properly fill out all login fields.")
         static let gettingAccountInfo = NSLocalizedString("Getting account information", comment: "Alerts the user that wpcom account information is being retrieved.")
     }
-
 }
 
 // MARK: - Sync Helpers

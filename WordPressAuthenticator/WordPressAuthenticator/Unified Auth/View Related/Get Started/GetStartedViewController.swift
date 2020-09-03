@@ -24,6 +24,7 @@ class GetStartedViewController: LoginViewController {
     private var rows = [Row]()
     private var buttonViewController: NUXButtonViewController?
     private let configuration = WordPressAuthenticator.shared.configuration
+    private var shouldChangeVoiceOverFocus: Bool = false
 
     // Submit button displayed in the table footer.
     private let continueButton: NUXButton = {
@@ -60,12 +61,17 @@ class GetStartedViewController: LoginViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         configureSubmitButton(animating: false)
+        
+        if errorMessage != nil {
+            shouldChangeVoiceOverFocus = true
+        }
     }
     
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         errorMessage = nil
         hiddenPasswordField?.text = nil
+        hiddenPasswordField?.isAccessibilityElement = false
     }
 
     // MARK: - Overrides
@@ -246,6 +252,11 @@ private extension GetStartedViewController {
                 self?.validateFormAndLogin()
             }
         }
+        
+        if UIAccessibility.isVoiceOverRunning {
+            // Quiet repetitive elements in VoiceOver.
+            emailField?.placeholder = nil
+        }
     }
     
     /// Configure the link cell.
@@ -262,6 +273,10 @@ private extension GetStartedViewController {
     ///
     func configureErrorLabel(_ cell: TextLabelTableViewCell) {
         cell.configureLabel(text: errorMessage, style: .error)
+        
+        if shouldChangeVoiceOverFocus {
+            UIAccessibility.post(notification: .layoutChanged, argument: cell)
+        }
     }
     
     /// Rows listed in the order they were created.

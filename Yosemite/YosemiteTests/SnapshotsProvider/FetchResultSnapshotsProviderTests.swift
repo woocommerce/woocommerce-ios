@@ -1,4 +1,5 @@
 import XCTest
+import TestKit
 import CoreData
 import Combine
 
@@ -9,6 +10,8 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
 
     private var storageManager: MockupStorageManager!
 
+    private var cancellables = Set<AnyCancellable>()
+
     override func setUp() {
         super.setUp()
         storageManager = MockupStorageManager()
@@ -16,7 +19,31 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
 
     override func tearDown() {
         storageManager = nil
+        cancellables.forEach {
+            $0.cancel()
+        }
+        cancellables.removeAll()
         super.tearDown()
+    }
+
+    func test_snapshot_emits_an_empty_list_if_SnapshotsProvider_is_not_started() throws {
+        // Given
+        insertAccount(displayName: "Reina Feil", username: "reinafeil")
+
+        let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
+            sortDescriptor: .init(keyPath: \StorageAccount.displayName, ascending: true)
+        )
+        let provider = FetchResultSnapshotsProvider(storage: storageManager.viewStorage, query: query)
+
+        // When
+        let snapshot: FetchResultSnapshotsProvider<StorageAccount>.Snapshot = try waitFor { done in
+            provider.snapshot.first().sink { snapshot in
+                done(snapshot)
+            }.store(in: &self.cancellables)
+        }
+
+        // Then
+        assertEmpty(snapshot.itemIdentifiers)
     }
 
     func test_snapshot_can_emit_a_sorted_list() throws {
@@ -34,11 +61,9 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
 
         // When
         let snapshot: FetchResultSnapshotsProvider<StorageAccount>.Snapshot = try waitFor { done in
-            var cancellable: AnyCancellable?
-            cancellable = provider.snapshot.dropFirst().sink { snapshot in
+            provider.snapshot.dropFirst().sink { snapshot in
                 done(snapshot)
-                cancellable?.cancel()
-            }
+            }.store(in: &self.cancellables)
 
             try provider.start()
         }

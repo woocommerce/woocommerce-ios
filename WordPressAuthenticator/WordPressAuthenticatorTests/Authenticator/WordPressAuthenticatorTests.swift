@@ -4,15 +4,15 @@ import XCTest
 // MARK: - WordPressAuthenticator Unit Tests
 //
 class WordPressAuthenticatorTests: XCTestCase {
-    let timeInterval = TimeInterval(3)
+    let timeout = TimeInterval(3)
 
     override class func setUp() {
         super.setUp()
 
         WordPressAuthenticator.initialize(
-          configuration: MockWordpressAuthenticatorProvider.wordPressAuthenticatorConfiguration(),
-          style: MockWordpressAuthenticatorProvider.wordPressAuthenticatorStyle(.random),
-          unifiedStyle: MockWordpressAuthenticatorProvider.wordPressAuthenticatorUnifiedStyle(.random)
+          configuration: WordpressAuthenticatorProvider.wordPressAuthenticatorConfiguration(),
+          style: WordpressAuthenticatorProvider.wordPressAuthenticatorStyle(.random),
+          unifiedStyle: WordpressAuthenticatorProvider.wordPressAuthenticatorUnifiedStyle(.random)
         )
     }
 
@@ -66,26 +66,26 @@ class WordPressAuthenticatorTests: XCTestCase {
         XCTAssert(email != retrievedEmail, "Saved loginFields should be deleted after calling deleteLoginInfoForTokenAuth.")
     }
 
-//MARK: WordPressAuthenticator Notification Tests
+    // MARK: WordPressAuthenticator Notification Tests
     func testDispatchesSupportPushNotificationReceived() {
-        let authenticator = MockWordpressAuthenticatorProvider.getWordpressAuthenticator()
+        let authenticator = WordpressAuthenticatorProvider.getWordpressAuthenticator()
         let _ = expectation(forNotification: .wordpressSupportNotificationReceived, object: nil, handler: nil)
 
         authenticator.supportPushNotificationReceived()
 
-        waitForExpectations(timeout: timeInterval, handler: nil)
+        waitForExpectations(timeout: timeout, handler: nil)
     }
 
     func testDispatchesSupportPushNotificationCleared() {
-        let authenticator = MockWordpressAuthenticatorProvider.getWordpressAuthenticator()
+        let authenticator = WordpressAuthenticatorProvider.getWordpressAuthenticator()
         let _ = expectation(forNotification: .wordpressSupportNotificationCleared, object: nil, handler: nil)
 
         authenticator.supportPushNotificationCleared()
 
-        waitForExpectations(timeout: timeInterval, handler: nil)
+        waitForExpectations(timeout: timeout, handler: nil)
     }
 
-//MARK: View Tests
+    // MARK: View Tests
     func testWordpressAuthIsAuthenticationViewController() {
         let loginViewcontroller = LoginViewController()
         let nuxViewController = NUXViewController()
@@ -106,7 +106,7 @@ class WordPressAuthenticatorTests: XCTestCase {
         }), object: .none)
 
         WordPressAuthenticator.showLoginFromPresenter(presenterSpy, animated: true)
-        wait(for: [expectation], timeout: 3)
+        wait(for: [expectation], timeout: timeout)
 
         XCTAssertTrue(presenterSpy.presentedVC is LoginNavigationController)
     }
@@ -118,7 +118,7 @@ class WordPressAuthenticatorTests: XCTestCase {
         }), object: .none)
 
         WordPressAuthenticator.showLoginForJustWPCom(from: presenterSpy)
-        wait(for: [expectation], timeout: 3)
+        wait(for: [expectation], timeout: timeout)
 
         XCTAssertTrue(presenterSpy.presentedVC is LoginNavigationController)
     }
@@ -143,7 +143,7 @@ class WordPressAuthenticatorTests: XCTestCase {
         let navController = try XCTUnwrap(presenterSpy.presentedVC as? LoginNavigationController)
         let controller = try XCTUnwrap(navController.viewControllers.first as? LoginEmailViewController)
 
-        wait(for: [expectation], timeout: 3)
+        wait(for: [expectation], timeout: timeout)
 
         XCTAssertEqual(controller.loginFields.restrictToWPCom, true)
         XCTAssertEqual(controller.loginFields.meta.jetpackBlogXMLRPC, "https://example.com/xmlrpc.php")
@@ -158,15 +158,9 @@ class WordPressAuthenticatorTests: XCTestCase {
         }), object: .none)
 
         WordPressAuthenticator.showLoginForSelfHostedSite(presenterSpy)
-        wait(for: [expectation], timeout: 3)
+        wait(for: [expectation], timeout: timeout)
 
         XCTAssertTrue(presenterSpy.presentedVC is LoginNavigationController)
-    }
-
-    func testSignInForWPComReturnsVC() {
-        let vc = WordPressAuthenticator.signinForWPCom()
-
-        XCTAssertTrue((vc as Any) is LoginEmailViewController)
     }
 
     func testSignInForWPComWithLoginFieldsReturnsVC() throws {
@@ -176,17 +170,17 @@ class WordPressAuthenticatorTests: XCTestCase {
         XCTAssertTrue(vc is LoginWPComViewController)
     }
 
-    func testSignInForWPComSetsEmptyLoginFields() {
-        let navController = WordPressAuthenticator.signinForWPCom(dotcomEmailAddress: nil, dotcomUsername: nil) as! UINavigationController
-        let vc = navController.topViewController as! LoginWPComViewController
+    func testSignInForWPComSetsEmptyLoginFields() throws {
+        let navController = try XCTUnwrap(WordPressAuthenticator.signinForWPCom(dotcomEmailAddress: nil, dotcomUsername: nil) as? UINavigationController)
+        let vc = try XCTUnwrap(navController.topViewController as? LoginWPComViewController)
 
         XCTAssertEqual(vc.loginFields.emailAddress, "")
         XCTAssertEqual(vc.loginFields.username, "")
     }
 
-//MARK: WordPressAuthenticator URL verification Tests
+    // MARK: WordPressAuthenticator URL verification Tests
     func testIsGoogleAuthURL() {
-        let authenticator = MockWordpressAuthenticatorProvider.getWordpressAuthenticator()
+        let authenticator = WordpressAuthenticatorProvider.getWordpressAuthenticator()
         let googleURL = URL(string: "com.googleuserconsent.apps/82ekn2932nub23h23hn3")!
         let magicLinkURL = URL(string: "https://magic-login")!
         let wordpressComURL = URL(string: "https://WordPress.com")!
@@ -197,7 +191,7 @@ class WordPressAuthenticatorTests: XCTestCase {
     }
 
     func testIsWordPressAuthURL() {
-        let authenticator = MockWordpressAuthenticatorProvider.getWordpressAuthenticator()
+        let authenticator = WordpressAuthenticatorProvider.getWordpressAuthenticator()
         let magicLinkURL = URL(string: "https://magic-login")!
         let googleURL = URL(string: "https://google.com")!
         let wordpressComURL = URL(string: "https://WordPress.com")!
@@ -208,7 +202,7 @@ class WordPressAuthenticatorTests: XCTestCase {
     }
 
     func testHandleWordPressAuthURLReturnsTrueOnSucceed() {
-        let authenticator = MockWordpressAuthenticatorProvider.getWordpressAuthenticator()
+        let authenticator = WordpressAuthenticatorProvider.getWordpressAuthenticator()
         let url = URL(string: "https://wordpress.com/wp-login.php?token=1234567890%26action&magic-login&sr=1&signature=1234567890oienhdtsra")
 
         XCTAssertTrue(authenticator.handleWordPressAuthUrl(url!, allowWordPressComAuth: true, rootViewController: UIViewController()))
@@ -233,7 +227,7 @@ class WordPressAuthenticatorTests: XCTestCase {
         XCTAssertFalse(result)
     }
 
-//MARK: WordPressAuthenticator OnePassword Tests
+    // MARK: WordPressAuthenticator OnePassword Tests
     func testFetchOnePasswordCredentialsSucceeds() {
         let onePasswordFetcher = MockOnePasswordFacade(username: "username", password: "knockknock", otp: nil)
         let loginFields = LoginFields()
@@ -249,6 +243,6 @@ class WordPressAuthenticatorTests: XCTestCase {
             expect.fulfill()
         }
 
-        waitForExpectations(timeout: timeInterval, handler: nil)
+        waitForExpectations(timeout: timeout, handler: nil)
     }
 }

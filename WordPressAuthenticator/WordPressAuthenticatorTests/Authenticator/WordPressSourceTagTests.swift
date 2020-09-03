@@ -6,170 +6,119 @@ class WordPressSourceTagTests: XCTestCase {
     func testGeneralLoginSourceTag() {
         let tag = WordPressSupportSourceTag.generalLogin
         
-        let nameExpectation = "generalLogin"
-        let originExpectation = "origin:login-screen"
-        
-        XCTAssertEqual(tag.name, nameExpectation)
-        XCTAssertEqual(tag.origin, originExpectation)
+        XCTAssertEqual(tag.name, "generalLogin")
+        XCTAssertEqual(tag.origin, "origin:login-screen")
     }
     
     func testJetpackLoginSourceTag() {
         let tag = WordPressSupportSourceTag.jetpackLogin
         
-        let nameExpectation = "jetpackLogin"
-        let originExpectation = "origin:jetpack-login-screen"
-        
-        XCTAssertEqual(tag.name, nameExpectation)
-        XCTAssertEqual(tag.origin, originExpectation)
+        XCTAssertEqual(tag.name, "jetpackLogin")
+        XCTAssertEqual(tag.origin, "origin:jetpack-login-screen")
     }
     
     func testLoginEmailSourceTag() {
         let tag = WordPressSupportSourceTag.loginEmail
         
-        let nameExpectation = "loginEmail"
-        let originExpectation = "origin:login-email"
-        
-        XCTAssertEqual(tag.name, nameExpectation)
-        XCTAssertEqual(tag.origin, originExpectation)
+        XCTAssertEqual(tag.name, "loginEmail")
+        XCTAssertEqual(tag.origin, "origin:login-email")
     }
     
     func testLoginAppleSourceTag() {
         let tag = WordPressSupportSourceTag.loginApple
-        
-        let nameExpectation = "loginApple"
-        let originExpectation = "origin:login-apple"
-        
-        XCTAssertEqual(tag.name, nameExpectation)
-        XCTAssertEqual(tag.origin, originExpectation)
+
+        XCTAssertEqual(tag.name, "loginApple")
+        XCTAssertEqual(tag.origin, "origin:login-apple")
     }
     
     func testlogin2FASourceTag() {
         let tag = WordPressSupportSourceTag.login2FA
-        
-        let nameExpectation = "login2FA"
-        let originExpectation = "origin:login-2fa"
-        
-        XCTAssertEqual(tag.name, nameExpectation)
-        XCTAssertEqual(tag.origin, originExpectation)
+
+        XCTAssertEqual(tag.name, "login2FA")
+        XCTAssertEqual(tag.origin, "origin:login-2fa")
     }
     
     func testLoginMagicLinkSourceTag() {
         let tag = WordPressSupportSourceTag.loginMagicLink
         
-        let nameExpectation = "loginMagicLink"
-        let originExpectation = "origin:login-magic-link"
-        
-        XCTAssertEqual(tag.name, nameExpectation)
-        XCTAssertEqual(tag.origin, originExpectation)
+        XCTAssertEqual(tag.name, "loginMagicLink")
+        XCTAssertEqual(tag.origin, "origin:login-magic-link")
     }
     
     func testSiteAddressSourceTag() {
         let tag = WordPressSupportSourceTag.loginSiteAddress
-        
-        let nameExpectation = "loginSiteAddress"
-        let originExpectation = "origin:login-site-address"
-        
-        XCTAssertEqual(tag.name, nameExpectation)
-        XCTAssertEqual(tag.origin, originExpectation)
+
+        XCTAssertEqual(tag.name, "loginSiteAddress")
+        XCTAssertEqual(tag.origin, "origin:login-site-address")
     }
     
     func testLoginUsernameSourceTag() {
         let tag = WordPressSupportSourceTag.loginUsernamePassword
-        
-        let nameExpectation = "loginUsernamePassword"
-        let originExpectation = "origin:login-username-password"
-        
-        XCTAssertEqual(tag.name, nameExpectation)
-        XCTAssertEqual(tag.origin, originExpectation)
+
+        XCTAssertEqual(tag.name, "loginUsernamePassword")
+        XCTAssertEqual(tag.origin, "origin:login-username-password")
     }
     
     func testLoginUsernamePasswordSourceTag() {
         let tag = WordPressSupportSourceTag.loginWPComUsernamePassword
-        
-        let nameExpectation = "loginWPComUsernamePassword"
-        let originExpectation = "origin:wpcom-login-username-password"
-        
-        XCTAssertEqual(tag.name, nameExpectation)
-        XCTAssertEqual(tag.origin, originExpectation)
+
+        XCTAssertEqual(tag.name, "loginWPComUsernamePassword")
+        XCTAssertEqual(tag.origin, "origin:wpcom-login-username-password")
     }
     
     func testLoginWPComPasswordSourceTag() {
         let tag = WordPressSupportSourceTag.loginWPComPassword
-        
-        let nameExpectation = "loginWPComPassword"
-        let originExpectation = "origin:login-wpcom-password"
-        
-        XCTAssertEqual(tag.name, nameExpectation)
-        XCTAssertEqual(tag.origin, originExpectation)
+
+        XCTAssertEqual(tag.name, "loginWPComPassword")
+        XCTAssertEqual(tag.origin, "origin:login-wpcom-password")
     }
     
     func testWPComSignupEmailSourceTag() {
         let tag = WordPressSupportSourceTag.wpComSignupEmail
-        
-        let nameExpectation = "wpComSignupEmail"
-        let originExpectation = "origin:wpcom-signup-email-entry"
-        
-        XCTAssertEqual(tag.name, nameExpectation)
-        XCTAssertEqual(tag.origin, originExpectation)
+
+        XCTAssertEqual(tag.name, "wpComSignupEmail")
+        XCTAssertEqual(tag.origin, "origin:wpcom-signup-email-entry")
     }
     
     func testWPComSignupSourceTag() {
         let tag = WordPressSupportSourceTag.wpComSignup
-        
-        let nameExpectation = "wpComSignup"
-        let originExpectation = "origin:signup-screen"
-        
-        XCTAssertEqual(tag.name, nameExpectation)
-        XCTAssertEqual(tag.origin, originExpectation)
+
+        XCTAssertEqual(tag.name, "wpComSignup")
+        XCTAssertEqual(tag.origin, "origin:signup-screen")
     }
     
     func testWPComSignupWaitingForGoogleSourceTag() {
         let tag = WordPressSupportSourceTag.wpComSignupWaitingForGoogle
-        
-        let nameExpectation = "wpComSignupWaitingForGoogle"
-        let originExpectation = "origin:signup-waiting-for-google"
-        
-        XCTAssertEqual(tag.name, nameExpectation)
-        XCTAssertEqual(tag.origin, originExpectation)
+
+        XCTAssertEqual(tag.name, "wpComSignupWaitingForGoogle")
+        XCTAssertEqual(tag.origin, "origin:signup-waiting-for-google")
     }
     
     func testWPComAuthGoogleSignupWaitingForGoogleSourceTag() {
         let tag = WordPressSupportSourceTag.wpComAuthWaitingForGoogle
-        
-        let nameExpectation = "wpComAuthWaitingForGoogle"
-        let originExpectation = "origin:auth-waiting-for-google"
-        
-        XCTAssertEqual(tag.name, nameExpectation)
-        XCTAssertEqual(tag.origin, originExpectation)
+
+        XCTAssertEqual(tag.name, "wpComAuthWaitingForGoogle")
+        XCTAssertEqual(tag.origin, "origin:auth-waiting-for-google")
     }
     
     func testWPComAuthGoogleSignupConfirmationSourceTag() {
         let tag = WordPressSupportSourceTag.wpComAuthGoogleSignupConfirmation
-        
-        let nameExpectation = "wpComAuthGoogleSignupConfirmation"
-        let originExpectation = "origin:auth-google-signup-confirmation"
-        
-        XCTAssertEqual(tag.name, nameExpectation)
-        XCTAssertEqual(tag.origin, originExpectation)
+
+        XCTAssertEqual(tag.name, "wpComAuthGoogleSignupConfirmation")
+        XCTAssertEqual(tag.origin, "origin:auth-google-signup-confirmation")
     }
     
     func testWPComSignupMagicLinkSourceTag() {
         let tag = WordPressSupportSourceTag.wpComSignupMagicLink
-        
-        let nameExpectation = "wpComSignupMagicLink"
-        let originExpectation = "origin:signup-magic-link"
-        
-        XCTAssertEqual(tag.name, nameExpectation)
-        XCTAssertEqual(tag.origin, originExpectation)
+
+        XCTAssertEqual(tag.name, "wpComSignupMagicLink")
+        XCTAssertEqual(tag.origin, "origin:signup-magic-link")
     }
     
     func testWPComSignupAppleSourceTag() {
         let tag = WordPressSupportSourceTag.wpComSignupApple
         
-        let nameExpectation = "wpComSignupApple"
-        let originExpectation = "origin:signup-apple"
-        
-        XCTAssertEqual(tag.name, nameExpectation)
-        XCTAssertEqual(tag.origin, originExpectation)
+        XCTAssertEqual(tag.name, "wpComSignupApple")
+        XCTAssertEqual(tag.origin, "origin:signup-apple")
     }
 }

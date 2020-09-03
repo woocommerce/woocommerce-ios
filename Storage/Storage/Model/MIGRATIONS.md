@@ -4,8 +4,8 @@ This file documents changes in the WCiOS Storage data model. Please explain any 
 
 ## Model 30 (Release 5.0.0.0)
 - @ecarrion 2020-09-02
-- Deletes `OrderStats` entity
-- Deletes `OrderStatsItem` entity
+- Delete `OrderStats` entity
+- Delete `OrderStatsItem` entity
 
 ## Model 29 (Release 4.7.0.0)
 - @pmusolino 2020-06-29

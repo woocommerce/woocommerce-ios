@@ -60,9 +60,9 @@ class PasswordViewController: LoginViewController {
         super.viewDidAppear(animated)
         
         if isMovingToParent {
-            tracker.track(step: .userPasswordScreenShown)
+            tracker.track(step: .passwordChallenge)
         } else {
-            tracker.set(step: .userPasswordScreenShown)
+            tracker.set(step: .passwordChallenge)
         }
         
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),

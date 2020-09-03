@@ -7,7 +7,6 @@ class GetStartedViewController: LoginViewController {
     // MARK: - Properties
     
     @IBOutlet private weak var tableView: UITableView!
-    @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
     @IBOutlet private weak var leadingDividerLine: UIView!
     @IBOutlet private weak var leadingDividerLineWidth: NSLayoutConstraint!
     @IBOutlet private weak var dividerLabel: UILabel!

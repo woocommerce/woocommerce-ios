@@ -14,6 +14,11 @@ class GetStartedViewController: LoginViewController {
     @IBOutlet private weak var trailingDividerLine: UIView!
     @IBOutlet private weak var trailingDividerLineWidth: NSLayoutConstraint!
 
+    private weak var emailField: UITextField?
+    // This is to contain the password selected by password auto-fill.
+    // When it is populated, login is attempted.
+    @IBOutlet private weak var hiddenPasswordField: UITextField?
+    
     // This is public so it can be set from StoredCredentialsAuthenticator.
     var errorMessage: String?
     
@@ -61,6 +66,7 @@ class GetStartedViewController: LoginViewController {
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         errorMessage = nil
+        hiddenPasswordField?.text = nil
     }
 
     // MARK: - Overrides
@@ -157,6 +163,12 @@ private extension GetStartedViewController {
     
     @IBAction func handleSubmitButtonTapped(_ sender: UIButton) {
         validateForm()
+    }
+    
+    // MARK: - Hidden Password Field Action
+    
+    @IBAction func handlePasswordFieldDidChange(_ sender: UITextField) {
+        attemptAutofillLogin()
     }
     
     // MARK: - Table Management
@@ -437,6 +449,15 @@ private extension GetStartedViewController {
         alert.addActionWithTitle(okActionTitle, style: .default, handler: nil)
 
         return alert
+    }
+    
+    /// When password autofill has entered a password on this screen, attempt to login immediately
+    ///
+    func attemptAutofillLogin() {
+        loginFields.password = hiddenPasswordField?.text ?? ""
+        loginFields.meta.socialService = nil
+        displayError(message: "")
+        validateFormAndLogin()
     }
     
     /// Configures loginFields to log into wordpress.com and navigates to the selfhosted username/password form.

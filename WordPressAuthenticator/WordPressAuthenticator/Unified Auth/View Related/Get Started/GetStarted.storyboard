@@ -19,6 +19,18 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dFS-Ic-byk" userLabel="Containing View">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <subviews>
+                                    <textField opaque="NO" alpha="0.10000000149011612" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="cym-N3-RXL" userLabel="Hidden Password Field">
+                                        <rect key="frame" x="187" y="333" width="1" height="1"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="1" id="Lbt-lI-oSV"/>
+                                            <constraint firstAttribute="height" constant="1" id="h4g-fQ-WSb"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" textContentType="password"/>
+                                        <connections>
+                                            <action selector="handlePasswordFieldDidChange:" destination="aQT-Gx-U3x" eventType="editingChanged" id="3Qy-5O-CqD"/>
+                                        </connections>
+                                    </textField>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" bounces="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="KLl-Uz-wEP">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="451"/>
                                         <sections/>
@@ -38,13 +50,13 @@
                                                 </constraints>
                                             </view>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="OR" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QDu-95-gF8" userLabel="Divider Label">
-                                                <rect key="frame" x="178.5" y="0.0" width="18.5" height="16"/>
+                                                <rect key="frame" x="178.5" y="0.0" width="18" height="16"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                                 <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GHG-oC-OAf" userLabel="Trailing LIne">
-                                                <rect key="frame" x="202" y="7.5" width="173" height="1"/>
+                                                <rect key="frame" x="201.5" y="7.5" width="173.5" height="1"/>
                                                 <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="1" id="2ZE-YT-ZFH"/>
@@ -67,8 +79,10 @@
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <constraints>
+                                    <constraint firstItem="cym-N3-RXL" firstAttribute="centerX" secondItem="dFS-Ic-byk" secondAttribute="centerX" id="N6H-Mc-YuY"/>
                                     <constraint firstItem="c0A-wK-EYS" firstAttribute="top" secondItem="f1j-fj-w73" secondAttribute="bottom" id="OYW-cs-zFh"/>
                                     <constraint firstItem="f1j-fj-w73" firstAttribute="top" secondItem="KLl-Uz-wEP" secondAttribute="bottom" id="RGk-wN-Zgt"/>
+                                    <constraint firstItem="cym-N3-RXL" firstAttribute="centerY" secondItem="dFS-Ic-byk" secondAttribute="centerY" id="VNM-Yh-kiW"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -92,6 +106,7 @@
                     <connections>
                         <outlet property="bottomContentConstraint" destination="Dva-c1-u2U" id="Mq1-PI-MuN"/>
                         <outlet property="dividerLabel" destination="QDu-95-gF8" id="Mjt-XK-h7a"/>
+                        <outlet property="hiddenPasswordField" destination="cym-N3-RXL" id="swd-6G-MKE"/>
                         <outlet property="leadingDividerLine" destination="8Lc-Sw-Jlx" id="EVQ-Jg-oKZ"/>
                         <outlet property="leadingDividerLineWidth" destination="Z6B-bC-BjQ" id="Tor-0G-bt8"/>
                         <outlet property="tableView" destination="KLl-Uz-wEP" id="MGk-sG-xGv"/>

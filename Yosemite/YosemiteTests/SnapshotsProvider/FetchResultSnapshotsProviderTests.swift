@@ -73,6 +73,43 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         let actualObjectIDs = snapshot.itemIdentifiers
         XCTAssertEqual(expectedObjectIDs, actualObjectIDs)
     }
+
+    func test_snapshot_can_emit_a_list_with_sections() throws {
+        // Given
+        let expectedFirstSection = [
+            insertAccount(displayName: "Z", username: "Zanza"),
+            insertAccount(displayName: "Z", username: "Zagato"),
+            insertAccount(displayName: "Z", username: "Zabuza"),
+        ]
+        let expectedSecondSection = [
+            insertAccount(displayName: "Y", username: "Yamada"),
+            insertAccount(displayName: "Y", username: "Yajiro"),
+            insertAccount(displayName: "Y", username: "Yahiko"),
+            insertAccount(displayName: "Y", username: "Yagami"),
+        ]
+
+        let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
+            sortDescriptor: .init(keyPath: \StorageAccount.username, ascending: false),
+            sectionNameKeyPath: #keyPath(StorageAccount.displayName)
+        )
+        let provider = FetchResultSnapshotsProvider(storage: storageManager.viewStorage, query: query)
+
+        // When
+        let snapshot: FetchResultSnapshotsProvider<StorageAccount>.Snapshot = try waitFor { done in
+            provider.snapshot.dropFirst().sink { snapshot in
+                done(snapshot)
+            }.store(in: &self.cancellables)
+
+            try provider.start()
+        }
+
+        // Then
+        XCTAssertEqual(snapshot.sectionIdentifiers.count, 2)
+        XCTAssertEqual(snapshot.itemIdentifiers(inSection: snapshot.sectionIdentifiers[0]),
+                       expectedFirstSection.map(\.objectID))
+        XCTAssertEqual(snapshot.itemIdentifiers(inSection: snapshot.sectionIdentifiers[1]),
+                       expectedSecondSection.map(\.objectID))
+    }
 }
 
 @available(iOS 13.0, *)

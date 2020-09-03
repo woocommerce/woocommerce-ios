@@ -111,6 +111,10 @@ open class NUXButtonViewController: UIViewController {
         topButtonConfig = NUXButtonConfig(title: title, isPrimary: isPrimary, accessibilityIdentifier: accessibilityIdentifier, callback: callback)
     }
 
+    func setupTopButtonFor(socialService: SocialServiceName, onTap callback: @escaping CallBackType) {
+        topButtonConfig = buttonConfigFor(socialService: socialService, onTap: callback)
+    }
+    
     func setupBottomButton(title: String, isPrimary: Bool = false, accessibilityIdentifier: String? = nil, onTap callback: @escaping CallBackType) {
         bottomButtonConfig = NUXButtonConfig(title: title, isPrimary: isPrimary, accessibilityIdentifier: accessibilityIdentifier, callback: callback)
     }
@@ -128,6 +132,10 @@ open class NUXButtonViewController: UIViewController {
         tertiaryButtonConfig = buttonConfigFor(socialService: socialService, onTap: callback)
     }
 
+    func hideShadowView() {
+        shadowView?.isHidden = true
+    }
+    
     // MARK: - Helpers
 
     private func buttonConfigFor(socialService: SocialServiceName, onTap callback: @escaping CallBackType) -> NUXButtonConfig {

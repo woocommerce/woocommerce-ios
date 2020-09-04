@@ -106,7 +106,8 @@ private extension AppleAuthenticator {
                                             self?.authenticationDelegate.userAuthenticatedWithAppleUserID(appleCredentials.user)
                                             
                                             guard !existingNonSocialAccount else {
-
+                                                self?.tracker.set(flow: .loginWithApple)
+                                                
                                                 if existing2faAccount {
                                                     self?.show2FA()
                                                     return

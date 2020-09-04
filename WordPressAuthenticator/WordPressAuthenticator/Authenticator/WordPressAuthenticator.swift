@@ -71,7 +71,7 @@ import AuthenticationServices
 
     /// Designated Initializer
     ///
-    private init(configuration: WordPressAuthenticatorConfiguration,
+    init(configuration: WordPressAuthenticatorConfiguration,
                  style: WordPressAuthenticatorStyle,
                  unifiedStyle: WordPressAuthenticatorUnifiedStyle?,
                  displayImages: WordPressAuthenticatorDisplayImages,
@@ -472,11 +472,12 @@ import AuthenticationServices
                                            sourceView: UIView,
                                            loginFields: LoginFields,
                                            allowUsernameChange: Bool = true,
+                                           onePasswordFetcher: OnePasswordResultsFetcher = OnePasswordFacade(),
                                            success: @escaping ((_ loginFields: LoginFields) -> Void)) {
 
         let loginURL = loginFields.meta.userIsDotCom ? OnePasswordDefaults.dotcomURL : loginFields.siteAddress
 
-        OnePasswordFacade().findLogin(for: loginURL, viewController: controller, sender: sourceView, success: { (username, password, otp) in
+        onePasswordFetcher.findLogin(for: loginURL, viewController: controller, sender: sourceView, success: { (username, password, otp) in
             if allowUsernameChange {
                 loginFields.username = username
             }

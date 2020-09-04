@@ -2,14 +2,14 @@ import Storage
 import CoreData
 import Combine
 
-public typealias FetchResultSnapshotsProviderResultType = NSManagedObject & ReadOnlyConvertible
+public typealias FetchResultSnapshotsProviderMutableType = NSManagedObject & ReadOnlyConvertible
 
 public typealias FetchResultSnapshotObjectID = NSManagedObjectID
 @available(iOS 13.0, *)
 public typealias FetchResultSnapshot = NSDiffableDataSourceSnapshot<String, FetchResultSnapshotObjectID>
 
 @available(iOS 13.0, *)
-public final class FetchResultSnapshotsProvider<ResultType: FetchResultSnapshotsProviderResultType>: NSObject, NSFetchedResultsControllerDelegate {
+public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshotsProviderMutableType>: NSObject, NSFetchedResultsControllerDelegate {
 
     public struct Query {
         /// This needs to be extended to allow an array. However, we have to add protection that
@@ -29,8 +29,8 @@ public final class FetchResultSnapshotsProvider<ResultType: FetchResultSnapshots
     private let storage: StorageType
     private let query: Query
 
-    private lazy var wrappedController: NSFetchedResultsController<ResultType> = {
-        let fetchRequest = NSFetchRequest<ResultType>(entityName: ResultType.entityName)
+    private lazy var wrappedController: NSFetchedResultsController<MutableType> = {
+        let fetchRequest = NSFetchRequest<MutableType>(entityName: MutableType.entityName)
         fetchRequest.predicate = query.predicate
         fetchRequest.sortDescriptors = [query.sortDescriptor]
 
@@ -58,12 +58,12 @@ public final class FetchResultSnapshotsProvider<ResultType: FetchResultSnapshots
         try wrappedController.performFetch()
     }
 
-    public func object(withID objectID: FetchResultSnapshotObjectID) -> ResultType.ReadOnlyType? {
+    public func object(withID objectID: FetchResultSnapshotObjectID) -> MutableType.ReadOnlyType? {
         assert(!objectID.isTemporaryID, "Expected objectID \(objectID) to be a permanent NSManagedObjectID.")
 
         #warning("FIX force cast")
         let context = storage as! NSManagedObjectContext
-        if let storageOrder = try? context.existingObject(with: objectID) as? ResultType {
+        if let storageOrder = try? context.existingObject(with: objectID) as? MutableType {
             return storageOrder.toReadOnly()
         } else {
             return nil

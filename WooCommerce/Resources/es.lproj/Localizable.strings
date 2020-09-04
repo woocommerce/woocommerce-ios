@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-08-20 10:54:04+0000 */
+/* Translation-Revision-Date: 2020-09-04 08:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -89,6 +89,15 @@
 
 /* Subtitle of the product form bottom sheet action for editing short description. */
 "A brief excerpt about your product" = "Un extracto breve sobre el producto";
+
+/* Description of the Action sheet option when the user wants to change the Product type to grouped product */
+"A collection of related products" = "Una colección de productos relacionados";
+
+/* Description of the Action sheet option when the user wants to change the Product type to variable product */
+"A product with variations like color or size" = "Un producto con variaciones, como el color o el tamaño";
+
+/* Description of the Action sheet option when the user wants to change the Product type to simple product */
+"A unique item to sell" = "Un único artículo que vender";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "Se requiere una dirección de correo electrónico válida a la cual enviar un enlace de verificación. Vuelve a la pantalla anterior y proporciona una dirección de correo electrónico válida.";
@@ -220,7 +229,7 @@
 "Any %@" = "Cualquier %@";
 
 /* Message shown when Apple authentication fails. */
-"Apple authentication failed." = "Identificación de Apple fallida.";
+"Apple authentication failed.\nPlease make sure you are signed in to iCloud with an Apple ID that uses two-factor authentication." = "Identificación de Apple fallida.\nAsegúrate de acceder a iCloud con un ID de Apple que use la autenticación de dos factores.";
 
 /* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
 "Application Logs" = "Registros de la aplicación";
@@ -238,6 +247,9 @@
 /* Approves a comment. Spoken Hint. */
 "Approves the comment" = "Aprueba el comentario";
 
+/* Title of the alert when a user is changing the product type */
+"Are you sure you want to change the product type?" = "¿Seguro que quieres cambiar el tipo de producto?";
+
 /* Message title for Discard Changes Action Sheet */
 "Are you sure you want to discard these changes?" = "¿Seguro que quieres descartar estos cambios?";
 
@@ -253,6 +265,10 @@
 /* No comment provided by engineer. */
 "Authenticating" = "Autenticando";
 
+/* Accessibility label for the 2FA text field.
+   Placeholder for the 2FA code textfield. */
+"Authentication code" = "Código de autenticación";
+
 /* Popup title to ask for user credentials. */
 "Authentication required for host: %@" = "Se requiere autenticación para el host: %@";
 
@@ -266,7 +282,8 @@
    Awaiting payment via (payment method title) */
 "Awaiting payment via %@" = "Pago pendiente a través de %@";
 
-/* Alert button title - dismisses alert, which cancels the log out attempt */
+/* Alert button title - dismisses alert, which cancels the log out attempt
+   Back button title. */
 "Back" = "Volver";
 
 /* Title of a button to dismiss the survey complete screen */
@@ -305,7 +322,7 @@
 "Button Text" = "Texto del botón";
 
 /* Placeholder of the text field for editing the button text for an external/affiliate product */
-"Buy product" = "Comprar producto";
+"Buy Product" = "Comprar producto";
 
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "Al registrarte aceptas nuestros _Términos del servicio_.";
@@ -320,7 +337,7 @@
 "Can Not Request Link" = "No se puede solicitar el enlace";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links */
 "Cancel" = "Cancelar";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -353,6 +370,18 @@
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "Error del certificado";
 
+/* Message title of bottom sheet for selecting a product type */
+"Change product type" = "Cambiar tipo de producto";
+
+/* Body of the alert when a user is changing the product type */
+"Changing the product type will modify some of the product data" = "Si cambias el tipo de producto, se modificarán algunos de los datos de producto";
+
+/* The message of the alert when there is an error in the URL of an external product */
+"Check that the URL entered is valid" = "Comprueba que la URL introducida es válida";
+
+/* Instruction text after a login Magic Link was requested. */
+"Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Consulta tu correo electrónico en este dispositivo y toca el enlace del mensaje que recibas de WordPress.com.";
+
 /* Instructional text on how to open the email containing a magic link. */
 "Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder." = "Comprueba tu correo electrónico en este dispositivo y toca el enlace del correo electrónico que has recibido de WordPress.com.\n\n¿No ves el correo electrónico? Comprueba tu carpeta de correo basura o spam.";
 
@@ -373,6 +402,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "Redacta una nueva nota de pedido.";
+
+/* Link on the store picker when there are no stores available. Opens a webview about Jetpack setup. */
+"Connect your store with Jetpack" = "Conecta tu tienda con Jetpack";
 
 /* Title shown when a user logs in with Google but no matching WordPress.com account is found */
 "Connected But…" = "Conectado pero…";
@@ -395,7 +427,7 @@
 /* Title of a button to contact support in the survey complete screen */
 "Contact us here" = "Ponte en contacto con nosotros aquí";
 
-/* No comment provided by engineer. */
+/* The button title text when there is a next step for logging in or signing up. */
 "Continue" = "Continuar";
 
 /* Part of a prompt suggesting that there is more content for the user to read. */
@@ -448,6 +480,9 @@
 
 /* Error message when tag loading failed */
 "Couldn't load tags." = "No se han podido cargar las etiquetas.";
+
+/* The button title text for creating a new account. */
+"Create Account" = "Crear una cuenta";
 
 /* Cell title: the current date. */
 "Current" = "Actual";
@@ -522,6 +557,9 @@
 /* Format of one dimension on the Shipping Settings row - dimension[unit] */
 "Dimensions: %1$@%2$@" = "Dimensiones: %1$@%2$@";
 
+/* Shown in a Product Variation cell if the variation is disabled */
+"Disabled" = "Desactivado";
+
 /* Alert button title - dismisses alert, which discard changes on Product Visibility screen */
 "Discard" = "Descartar";
 
@@ -532,7 +570,7 @@
 "Discount" = "Descuento";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner on the products tab */
 "Dismiss" = "Cancelar";
 
 /* Display label for the product's inventory backorders setting option */
@@ -642,6 +680,9 @@
 /* Add custom shipping carrier. Placeholder of cell presenting tracking number */
 "Enter tracking number" = "Introducir número de seguimiento";
 
+/* Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site. */
+"Enter your account information for %@." = "Introduce la información de tu cuenta de %@.";
+
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "Introduce tu contraseña.";
@@ -656,8 +697,14 @@
 /* For example: 'Expiry: 30 days' */
 "Expiry: %ld days" = "Caducidad: %ld días";
 
+/* Action sheet option when the user wants to change the Product type to external product */
+"External product" = "Producto externo";
+
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "Externo\/Afiliado";
+
+/* An error message shown when failing to retrieve information to present a view for a review push notification. */
+"Failed to retrieve the review notification details." = "No se han podido recuperar los detalles de la notificación de reseña.";
 
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "No se ha podido serializar la solicitud a la API REST.";
@@ -690,6 +737,9 @@
 /* Navigation bar title format for filtering a list of products with filters applied. */
 "Filters (%ld)" = "Filtros (%ld)";
 
+/* The hint button's title text to help users find their site address. */
+"Find your site address" = "Encuentra la dirección de tu sitio";
+
 /* User role badge */
 "Follower" = "Seguidor";
 
@@ -705,8 +755,15 @@
 /* Subtitle for Help Center */
 "Get answers to questions you have" = "Obtén respuestas a todas tus preguntas";
 
+/* View title for initial auth views. */
+"Getting Started" = "Primeros pasos";
+
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "Recuperando la información de la cuenta";
+
+/* The title of the button to give feedback about products beta features on the banner on the products tab
+   Title on the navigation bar for the products feedback survey */
+"Give feedback" = "Da tu opinión";
 
 /* Option to select the Gmail app when logging in with magic links */
 "Gmail" = "Gmail";
@@ -719,6 +776,9 @@
 
 /* Navigation bar title for editing linked products for a grouped product */
 "Grouped Products" = "Productos agrupados";
+
+/* Action sheet option when the user wants to change the Product type to grouped product */
+"Grouped product" = "Producto agrupado";
 
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "Productos agrupados";
@@ -786,7 +846,7 @@
 "Help Improve The App" = "Ayuda a mejorar la aplicación";
 
 /* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
-   Display label for the product's catalog visibility - Shown in a Product Variation cell if the variation is not visible (purchasable is false) */
+   Display label for the product's catalog visibility */
 "Hidden" = "Oculto";
 
 /* Title on the navigation bar for the in-app feedback survey */
@@ -797,6 +857,9 @@
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Si se desactiva, la nota será privada";
+
+/* Displayed during the Login flow, whenever the user has no woo stores associated. */
+"If you already have a store, you’ll need to install the free Jetpack plugin and connect it to your WordPress.com account." = "Si ya tienes una tienda, tendrás que instalar el plugin gratuito de Jetpack y conectarlo a tu cuenta de WordPress.com.";
 
 /* Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
@@ -901,6 +964,9 @@
    Navigation bar title for editing the text of a text link */
 "Link Text" = "Texto del enlace";
 
+/* Description of the Action sheet option when the user wants to change the Product type to external product */
+"Link a product to an external website" = "Vincula un producto a un sitio web externo";
+
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "Cargando el pedido";
 
@@ -910,8 +976,8 @@
 /* Loading tags in Product Tags screen */
 "Loading..." = "Cargando...";
 
-/* Authentication Login Button
-   Button title.  Tapping takes the user to the login form. - Log In button label. */
+/* Button title.  Tapping takes the user to the login form.
+   Log In button label. - View title during the log in process. */
 "Log In" = "Acceder";
 
 /* Alert button title - confirms and logs out the user
@@ -1070,6 +1136,9 @@
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "Todavía no hay imágenes";
 
+/* Shown in a Product Variation cell if the variation is enabled but does not have a price */
+"No price set" = "Sin precio";
+
 /* The text on the placeholder overlay when there are no product variations on the Products tab */
 "No product variations yet" = "No hay ninguna variación de producto";
 
@@ -1100,6 +1169,9 @@
 
 /* Display label for the product's tax status setting option */
 "None" = "Ninguno";
+
+/* Instructions after a Magic Link was sent, but the email can't be found in their inbox. */
+"Not seeing the email? Check your Spam or Junk Mail folder." = "¿No ves el correo electrónico? Mira en tu carpeta de spam.";
 
 /* Order details > tracking.  This is where the shipping date would normally display. */
 "Not shipped yet" = "Aún no se ha enviado";
@@ -1135,10 +1207,14 @@
 /* Display label for the product's inventory stock status */
 "On back order" = "Pedido en proceso";
 
+/* Accessibility label for 1 password button */
+"One Password button" = "Botón de 1Password";
+
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Abrir ajustes del dispositivo";
 
-/* Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
+/* The button title text for opening the user's preferred email app.
+   Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "Abrir correo electrónico";
 
 /* Navigates to screen about open source licenses */
@@ -1146,6 +1222,9 @@
 
 /* Label for the description of openening a link using a new window */
 "Open in a new Window\/Tab" = "Abrir en una nueva ventana\/pestaña";
+
+/* Accessibility hint for 1 password button */
+"Opens One Password manager" = "Se abre el gestor 1Password";
 
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "Muestra una lista de los estados disponibles.";
@@ -1209,7 +1288,7 @@
 "Parent Category" = "Categoría superior";
 
 /* Accessibility label for the password text field in the self-hosted login page.
-   Login dialog password placeholder - Password field title in Product Visibility - Password placeholder */
+   Login dialog password placeholder - Password field title in Product Visibility - Password placeholder - Placeholder for the password textfield. */
 "Password" = "Contraseña";
 
 /* One of the possible options in Product Visibility */
@@ -1237,6 +1316,9 @@
 /* Product images (Product images page title) */
 "Photos" = "Fotos";
 
+/* Display label for simple physical product type. */
+"Physical" = "Físico";
+
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "Elegir tienda para realizar la conexión";
 
@@ -1260,6 +1342,9 @@
 
 /* No comment provided by engineer. */
 "Please enter the password for your WordPress.com account to log in with your Apple ID." = "Introduce la contraseña de tu cuenta en WordPress.com para acceder con tu ID de Apple.";
+
+/* Instruction text on the two-factor screen. */
+"Please enter the verification code from your authenticator app, or tap the link below to receive a code via SMS." = "Introduce el código de verificación de tu aplicación de Autenticación o toca el enlace que se incluye más abajo para recibir un código a través de SMS.";
 
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "Introduce tus credenciales";
@@ -1358,8 +1443,11 @@
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "Enlace del producto";
 
-/* My Store > Settings > Experimental features > Switch Products
-   Product section title if there is more than one product. - Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
+/* Title of the Product Type row on Product main screen */
+"Product type" = "Product type";
+
+/* Product section title if there is more than one product.
+   Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "Productos";
 
 /* Label for computed value `product refunds + taxes = subtotal`. */
@@ -1474,6 +1562,9 @@
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Restablecer registros de actividad";
 
+/* The secondary call-to-action button title text, for when the user can't remember their password. */
+"Reset your password" = "Restablecer tu contraseña";
+
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
 "Retrieves a list of orders that contain a given keyword." = "Se obtiene una lista de los pedidos que contienen una palabra clave determinada.";
 
@@ -1585,6 +1676,9 @@
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
 "Send Link" = "Enviar enlace";
 
+/* The button title text for sending a magic link. */
+"Send Link by Email" = "Enviar enlace por correo electrónico";
+
 /* Tells user to set an email that support can use for replies */
 "Set email" = "Configurar correo electrónico";
 
@@ -1656,7 +1750,8 @@
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show a list of refunded order items for this order." = "Muestra una lista de elementos de pedido reembolsados para este pedido.";
 
-/* Accessibility label for the “Show password“ button in the login page's password field. */
+/* Accessibility label for the 'Show password' button in the login page's password field.
+   Accessibility label for the “Show password“ button in the login page's password field. */
 "Show password" = "Mostrar contraseña";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view refund detail information. */
@@ -1671,6 +1766,9 @@
 /* Accessibility hint for Delete Shipment button in Order details screen */
 "Shows more options." = "Muestra más opciones.";
 
+/* View title during the sign up process. */
+"Sign Up" = "Registrarse";
+
 /* When social login fails, this button offers to let them signup for a new WordPress.com account */
 "Sign up" = "Crear Cuenta";
 
@@ -1682,6 +1780,9 @@
 
 /* Display label for simple product type. */
 "Simple" = "Sencillo";
+
+/* Action sheet option when the user wants to change the Product type to simple product */
+"Simple product" = "Producto simple";
 
 /* Describes a site redirect domain */
 "Site Redirect" = "Redirección de sitio";
@@ -1698,6 +1799,9 @@
 /* Placeholder in the Product Slug row on Edit Product Slug screen.
    Product Slug navigation title - Slug label in Product Settings */
 "Slug" = "Slug";
+
+/* Banner title in product variation list top banner when some variations do not have a price */
+"Some variations do not have prices" = "Algunas variaciones no tienen precios";
 
 /* A unit test for reviews, checking that anonymous users are added as the author named `someone`
    Indicates the reviewer does not have a name. It reads { Someone left a review} */
@@ -1924,10 +2028,8 @@
 /* My Store > Settings > Experimental features > Product editing */
 "Test out new product editing functionalities as we get ready to launch them" = "Prueba las nuevas funciones de edición de productos mientras preparamos el lanzamiento";
 
-/* My Store > Settings > Experimental features > Switch Products */
-"Test out the new products section as we get ready to launch" = "Prueba la sección de nuevos productos mientras preparamos el lanzamiento";
-
-/* Button title */
+/* Button title
+   The button's title text to send a 2FA code via SMS text message. */
 "Text me a code instead" = "Envía un código por mensaje de texto";
 
 /* Text thanking the user when the survey is completed */
@@ -2079,7 +2181,10 @@
 /* Settings > Privacy Settings > report crashes section. Explains what the 'report crashes' toggle does */
 "To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports." = "Para mejorar el rendimiento de la aplicación y corregir errores puntuales, activa los informes automáticos sobre fallos.";
 
-/* No comment provided by engineer. */
+/* Instructional text shown when requesting the user's password for Apple login. */
+"To proceed with this Apple ID, please first log in with your WordPress.com password. This will only be asked once." = "Para continuar con este ID de Apple, primero debes acceder con tu contraseña de WordPress.com. Solo se te pedirá una vez.";
+
+/* Instructional text shown when requesting the user's password for Google login. */
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "Para seguir con esta cuenta de Google, por favor, primero accede con tu contraseña de WordPress.com. Esto solo se te pedirá una vez.";
 
 /* Tab selector title that shows the statistics for today
@@ -2157,9 +2262,6 @@
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number} */
 "Unable to delete tracking for order #(orderID)" = "No se ha podido eliminar el seguimiento del pedido n.º (orderID)";
-
-/* Displayed during the Login flow, whenever the user has no woo stores associated. */
-"Unable to find WooCommerce stores connected to this account" = "No se han podido encontrar tiendas WooCommerce conectadas a esta cuenta";
 
 /* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number} */
 "Unable to fulfill order #(orderID)" = "No se ha podido realizar el pedido n.º (orderID)";
@@ -2274,7 +2376,7 @@
 "Upgrade to keep seeing your stats" = "Actualiza para seguir viendo tus estadísticas";
 
 /* Accessibility label for the username text field in the self-hosted login page.
-   Login dialog username placeholder - Username placeholder */
+   Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */
 "Username" = "Usuario";
 
 /* No comment provided by engineer. */
@@ -2283,9 +2385,18 @@
 /* Display label for variable product type. */
 "Variable" = "Variable";
 
+/* Action sheet option when the user wants to change the Product type to varible product */
+"Variable product" = "Producto variable";
+
 /* Product Details > descriptive label for the Product Variants cell.
    Title of the Product Variations row on Product main screen for a variable product - Title that appears on top of the Product Variation List screen. */
 "Variations" = "Variaciones";
+
+/* Banner caption in my store when the stats will be deprecated */
+"Variations without price will not be shown in your store." = "Las variaciones sin precio no se mostrarán en tu tienda.";
+
+/* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
+"Variations without price won’t be shown in your store" = "Las variaciones sin precio no se mostrarán en tu tienda";
 
 /* two factor code placeholder */
 "Verification code" = "Código de verificación";
@@ -2321,6 +2432,9 @@
 /* User role badge */
 "Viewer" = "Lector";
 
+/* Display label for simple virtual product type. */
+"Virtual" = "Virtual";
+
 /* Virtual Product label in Product Settings */
 "Virtual Product" = "Producto virtual";
 
@@ -2340,6 +2454,9 @@
 /* The message shown in the Orders → All Orders tab if the list is empty. */
 "Waiting for your first order" = "Esperando tu primer pedido";
 
+/* View title during the Google auth process. */
+"Waiting..." = "Esperando...";
+
 /* shown in promotional screens during first launch */
 "Watch readers from around the world read and interact with your site — in real time." = "Ve lo que lectores de todo el mundo leen e interactúa con tu sitio - en tiempo real.";
 
@@ -2358,8 +2475,14 @@
 /* Instructional text for the magic link login flow. */
 "We'll email you a magic link that'll log you in instantly, no password needed. Hunt and peck no more!" = "Te enviaremos por correo electrónico un enlace mágico que te registrará al instante, sin necesidad de contraseña. ¡Sin errores!";
 
+/* Instruction text on the Sign Up screen. */
+"We'll email you a magic link to create your new WordPress.com account." = "Te enviaremos por correo electrónico un enlace mágico para crear tu cuenta de WordPress.com.";
+
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales." = "Te avisaremos cuando recibas un nuevo pedido. Mientras tanto, descubre cómo puedes aumentar las ventas de tu tienda.";
+
+/* Text confirming email address to be used for new account. */
+"We'll use this email address to create your new WordPress.com account." = "Usaremos esta dirección de correo electrónico para crear tu nueva cuenta de WordPress.com.";
 
 /* Error message shown when having trouble connecting to a Jetpack site. */
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "No podemos conectar con el sitio Jetpack en esa URL. Contacta con nosotros para que te ayudemos.";
@@ -2391,6 +2514,9 @@
 
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "Peso: %1$@%2$@";
+
+/* Instruction text after a signup Magic Link was requested. */
+"We’ve emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Te hemos enviado por correo electrónico un enlace de registro para crear tu cuenta de WordPress.com. Consulta tu correo electrónico en este dispositivo y toca el enlace del mensaje que recibas de WordPress.com.";
 
 /* Banner caption in my store when the stats will be deprecated */
 "We’ve rolled out improvements to our analytics. Upgrade to WooCommerce 4.0 or above or install WooCommerce Admin plugin to keep seeing your stats after September 1, 2020." = "Hemos implementado mejoras en nuestras analíticas. Actualiza a WooCommerce 4.0 o superior, o instala el plugin WooCommerce Admin para seguir viendo tus estadísticas después del 1 de setiembre de 2020.";
@@ -2429,8 +2555,14 @@
 /* Plural of 'year' — a statistical unit */
 "Years" = "Años";
 
+/* Confirmation button on the alert when the user is changing product type */
+"Yes, change" = "Sí, cambiar";
+
 /* Yesterday Section Header */
 "Yesterday" = "Ayer";
+
+/* The info of the Work In Progress top banner on the Products tab when Products feature switch is enabled. */
+"You can now edit grouped, external and variable products, change product type and update categories and tags" = "Ahora, puedes editar productos agrupados, externos y variables, cambiar el tipo de producto y actualizar categorías y etiquetas";
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "No puedes usar este correo electrónico para registrarte. Estamos teniendo problemas con él, bloquea nuestros correos electrónicos. Por favor, usa otro proveedor.";
@@ -2453,10 +2585,8 @@
 /* Backorders status. Example: 'Backorders: allowed' */
 "allowed" = "se permite";
 
-/* Notification status description for 'approved' */
-"approved" = "aprobada";
-
-/* Site Address placeholder */
+/* Placeholder for the site url textfield.
+   Site Address placeholder */
 "example.com" = "ejemplo.com";
 
 /* Later today */
@@ -2468,23 +2598,8 @@
 /* Backorders status. Example: 'Backorders: not allowed' */
 "not allowed" = "no se permite";
 
-/* Notification status description for 'unspam' (opposite of spam) */
-"not spam" = "sin spam";
-
-/* Notification status description for 'untrash' (opposite of trash) */
-"not trash" = "fuera de la papelera";
-
-/* Notification status description for 'spam' */
-"spam" = "spam";
-
 /* Today */
 "today" = "hoy";
-
-/* Notification status description for 'trash' */
-"trash" = "en la papelera";
-
-/* Notification status description for 'unapproved' */
-"unapproved" = "no aprobada";
 
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "url desconocida";

@@ -43,9 +43,9 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         let provider = FetchResultSnapshotsProvider(storageManager: storageManager, query: query)
 
         // When
-        let snapshot: FetchResultSnapshot = try waitFor { done in
+        let snapshot: FetchResultSnapshot = try waitFor { promise in
             provider.snapshot.dropFirst().sink { snapshot in
-                done(snapshot)
+                promise(snapshot)
             }.store(in: &self.cancellables)
 
             try provider.start()
@@ -67,9 +67,9 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         let provider = FetchResultSnapshotsProvider(storageManager: storageManager, query: query)
 
         // When
-        let snapshot: FetchResultSnapshot = try waitFor { done in
+        let snapshot: FetchResultSnapshot = try waitFor { promise in
             provider.snapshot.first().sink { snapshot in
-                done(snapshot)
+                promise(snapshot)
             }.store(in: &self.cancellables)
         }
 
@@ -91,9 +91,9 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         let provider = FetchResultSnapshotsProvider(storageManager: storageManager, query: query)
 
         // When
-        let snapshot: FetchResultSnapshot = try waitFor { done in
+        let snapshot: FetchResultSnapshot = try waitFor { promise in
             provider.snapshot.dropFirst().sink { snapshot in
-                done(snapshot)
+                promise(snapshot)
             }.store(in: &self.cancellables)
 
             try provider.start()
@@ -126,9 +126,9 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         let provider = FetchResultSnapshotsProvider(storageManager: storageManager, query: query)
 
         // When
-        let snapshot: FetchResultSnapshot = try waitFor { done in
+        let snapshot: FetchResultSnapshot = try waitFor { promise in
             provider.snapshot.dropFirst().sink { snapshot in
-                done(snapshot)
+                promise(snapshot)
             }.store(in: &self.cancellables)
 
             try provider.start()
@@ -164,9 +164,9 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         let provider = FetchResultSnapshotsProvider(storageManager: storageManager, query: query)
 
         // When
-        let snapshot: FetchResultSnapshot = try waitFor { done in
+        let snapshot: FetchResultSnapshot = try waitFor { promise in
             provider.snapshot.dropFirst().sink { snapshot in
-                done(snapshot)
+                promise(snapshot)
             }.store(in: &self.cancellables)
 
             try provider.start()

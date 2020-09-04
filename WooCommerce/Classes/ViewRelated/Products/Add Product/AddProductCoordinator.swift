@@ -32,6 +32,7 @@ private extension AddProductCoordinator {
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
         let command = ProductTypeBottomSheetListSelectorCommand(selected: nil) { selectedProductType in
             self.navigationController.dismiss(animated: true) {
+                // Strong reference to `self` is required since `AddProductCoordinator` is not strongly referenced by any class.
                 self.presentProductForm(productType: selectedProductType)
             }
         }
@@ -56,10 +57,8 @@ private extension AddProductCoordinator {
                                                        currency: currency,
                                                        presentationStyle: .navigationStack,
                                                        isEditProductsRelease3Enabled: true)
-        let productFormNavigationController = WooNavigationController(rootViewController: viewController)
-        navigationController.present(productFormNavigationController, animated: true) { [weak self] in
-            self?.navigationController = productFormNavigationController
-        }
-//        navigationController.pushViewController(viewController, animated: true)
+        // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
+        viewController.hidesBottomBarWhenPushed = true
+        navigationController.pushViewController(viewController, animated: true)
     }
 }

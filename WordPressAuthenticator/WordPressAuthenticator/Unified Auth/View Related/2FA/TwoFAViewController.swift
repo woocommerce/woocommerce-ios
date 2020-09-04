@@ -51,6 +51,8 @@ final class TwoFAViewController: LoginViewController {
         
         if isMovingToParent {
             tracker.track(step: .twoFactorAuthentication)
+        } else {
+            tracker.set(step: .twoFactorAuthentication)
         }
         
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
@@ -384,8 +386,8 @@ private extension TwoFAViewController {
     /// Configure the textfield cell.
     ///
     func configureTextField(_ cell: TextFieldTableViewCell) {
-        cell.configureTextFieldStyle(with: .numericCode,
-                                     and: WordPressAuthenticator.shared.displayStrings.twoFactorCodePlaceholder)
+        cell.configure(withStyle: .numericCode,
+                       placeholder: WordPressAuthenticator.shared.displayStrings.twoFactorCodePlaceholder)
 
         // Save a reference to the first textField so it can becomeFirstResponder.
         codeField = cell.textField

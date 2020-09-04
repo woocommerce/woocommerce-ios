@@ -20,23 +20,45 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <subviews>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" bounces="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="KLl-Uz-wEP">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="449"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="451"/>
                                         <sections/>
                                         <connections>
                                             <outlet property="dataSource" destination="aQT-Gx-U3x" id="Sct-0G-HTk"/>
                                             <outlet property="delegate" destination="aQT-Gx-U3x" id="2xB-Wr-Hdh"/>
                                         </connections>
                                     </tableView>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="n9k-F6-dyh" userLabel="Other Options Separator">
-                                        <rect key="frame" x="0.0" y="449" width="375" height="33"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="f1j-fj-w73" userLabel="Divider Stack View">
+                                        <rect key="frame" x="0.0" y="451" width="375" height="16"/>
+                                        <subviews>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8Lc-Sw-Jlx" userLabel="Leading LIne">
+                                                <rect key="frame" x="0.0" y="7.5" width="173.5" height="1"/>
+                                                <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="1" id="Z6B-bC-BjQ"/>
+                                                </constraints>
+                                            </view>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="OR" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QDu-95-gF8" userLabel="Divider Label">
+                                                <rect key="frame" x="178.5" y="0.0" width="18.5" height="16"/>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                                                <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GHG-oC-OAf" userLabel="Trailing LIne">
+                                                <rect key="frame" x="202" y="7.5" width="173" height="1"/>
+                                                <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="1" id="2ZE-YT-ZFH"/>
+                                                </constraints>
+                                            </view>
+                                        </subviews>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="33" id="RKT-f1-s6Z"/>
+                                            <constraint firstItem="QDu-95-gF8" firstAttribute="centerX" secondItem="f1j-fj-w73" secondAttribute="centerX" id="dze-LI-gGD"/>
                                         </constraints>
-                                    </view>
+                                    </stackView>
                                     <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c0A-wK-EYS" userLabel="Button Container View">
-                                        <rect key="frame" x="0.0" y="482" width="375" height="185"/>
+                                        <rect key="frame" x="0.0" y="467" width="375" height="200"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="185" id="yDo-SO-kax"/>
+                                            <constraint firstAttribute="height" constant="200" placeholder="YES" id="yDo-SO-kax"/>
                                         </constraints>
                                         <connections>
                                             <segue destination="X2o-oZ-7LG" kind="embed" id="FOr-lU-Bf2"/>
@@ -45,8 +67,8 @@
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <constraints>
-                                    <constraint firstItem="n9k-F6-dyh" firstAttribute="top" secondItem="KLl-Uz-wEP" secondAttribute="bottom" id="Odd-QL-CxQ"/>
-                                    <constraint firstItem="c0A-wK-EYS" firstAttribute="top" secondItem="n9k-F6-dyh" secondAttribute="bottom" id="gga-bc-wyq"/>
+                                    <constraint firstItem="c0A-wK-EYS" firstAttribute="top" secondItem="f1j-fj-w73" secondAttribute="bottom" id="OYW-cs-zFh"/>
+                                    <constraint firstItem="f1j-fj-w73" firstAttribute="top" secondItem="KLl-Uz-wEP" secondAttribute="bottom" id="RGk-wN-Zgt"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -55,13 +77,13 @@
                             <constraint firstItem="ihD-pY-rg9" firstAttribute="bottom" secondItem="c0A-wK-EYS" secondAttribute="bottom" id="73l-a1-EZl"/>
                             <constraint firstItem="KLl-Uz-wEP" firstAttribute="leading" secondItem="ihD-pY-rg9" secondAttribute="leading" id="7Fn-Eh-Xx9"/>
                             <constraint firstItem="ihD-pY-rg9" firstAttribute="trailing" secondItem="KLl-Uz-wEP" secondAttribute="trailing" id="7MD-ux-8i0"/>
+                            <constraint firstItem="f1j-fj-w73" firstAttribute="leading" secondItem="ihD-pY-rg9" secondAttribute="leading" id="DU0-wo-2QI"/>
                             <constraint firstItem="ihD-pY-rg9" firstAttribute="bottom" secondItem="dFS-Ic-byk" secondAttribute="bottom" id="Dva-c1-u2U"/>
                             <constraint firstItem="KLl-Uz-wEP" firstAttribute="top" secondItem="ihD-pY-rg9" secondAttribute="top" id="R3r-wt-ya5"/>
-                            <constraint firstItem="ihD-pY-rg9" firstAttribute="trailing" secondItem="n9k-F6-dyh" secondAttribute="trailing" id="UWa-K9-KOE"/>
                             <constraint firstItem="dFS-Ic-byk" firstAttribute="top" secondItem="ihD-pY-rg9" secondAttribute="top" id="YEy-EW-XmD"/>
-                            <constraint firstItem="n9k-F6-dyh" firstAttribute="leading" secondItem="ihD-pY-rg9" secondAttribute="leading" id="fYW-4x-6rp"/>
-                            <constraint firstItem="c0A-wK-EYS" firstAttribute="leading" secondItem="ihD-pY-rg9" secondAttribute="leading" id="k1g-Ot-UbY"/>
-                            <constraint firstItem="ihD-pY-rg9" firstAttribute="trailing" secondItem="c0A-wK-EYS" secondAttribute="trailing" id="m0w-6D-5q6"/>
+                            <constraint firstItem="ihD-pY-rg9" firstAttribute="trailing" secondItem="f1j-fj-w73" secondAttribute="trailing" id="ir4-hA-zeL"/>
+                            <constraint firstItem="c0A-wK-EYS" firstAttribute="leading" secondItem="KLl-Uz-wEP" secondAttribute="leading" id="k1g-Ot-UbY"/>
+                            <constraint firstItem="KLl-Uz-wEP" firstAttribute="trailing" secondItem="c0A-wK-EYS" secondAttribute="trailing" id="m0w-6D-5q6"/>
                             <constraint firstItem="dFS-Ic-byk" firstAttribute="leading" secondItem="ljV-kF-TaY" secondAttribute="leading" id="msS-7X-Za9"/>
                             <constraint firstItem="dFS-Ic-byk" firstAttribute="trailing" secondItem="ljV-kF-TaY" secondAttribute="trailing" id="zY1-Yz-kTf"/>
                         </constraints>
@@ -69,9 +91,14 @@
                     </view>
                     <connections>
                         <outlet property="bottomContentConstraint" destination="Dva-c1-u2U" id="Mq1-PI-MuN"/>
+                        <outlet property="dividerLabel" destination="QDu-95-gF8" id="Mjt-XK-h7a"/>
+                        <outlet property="leadingDividerLine" destination="8Lc-Sw-Jlx" id="EVQ-Jg-oKZ"/>
+                        <outlet property="leadingDividerLineWidth" destination="Z6B-bC-BjQ" id="Tor-0G-bt8"/>
                         <outlet property="tableView" destination="KLl-Uz-wEP" id="MGk-sG-xGv"/>
                         <outlet property="tableViewLeadingConstraint" destination="7Fn-Eh-Xx9" id="yKO-sE-7mh"/>
                         <outlet property="tableViewTrailingConstraint" destination="7MD-ux-8i0" id="jbD-Z7-rAn"/>
+                        <outlet property="trailingDividerLine" destination="GHG-oC-OAf" id="ObM-ec-SqR"/>
+                        <outlet property="trailingDividerLineWidth" destination="2ZE-YT-ZFH" id="Dul-FQ-qlg"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ipm-G3-kY7" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

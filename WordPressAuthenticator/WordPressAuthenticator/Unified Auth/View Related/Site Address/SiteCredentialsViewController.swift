@@ -64,6 +64,8 @@ final class SiteCredentialsViewController: LoginViewController {
 
         if isMovingToParent {
             tracker.track(step: .userPasswordScreenShown)
+        } else {
+            tracker.set(step: .userPasswordScreenShown)
         }
         
         configureSubmitButton(animating: false)
@@ -288,8 +290,9 @@ private extension SiteCredentialsViewController {
     /// Configure the username textfield cell.
     ///
     func configureUsernameTextField(_ cell: TextFieldTableViewCell) {
-        cell.configureTextFieldStyle(with: .username,
-                                     and: WordPressAuthenticator.shared.displayStrings.usernamePlaceholder)
+        cell.configure(withStyle: .email,
+                       placeholder: WordPressAuthenticator.shared.displayStrings.usernamePlaceholder)
+
         // Save a reference to the textField so it can becomeFirstResponder.
         usernameField = cell.textField
         cell.textField.delegate = self
@@ -326,8 +329,8 @@ private extension SiteCredentialsViewController {
     /// Configure the password textfield cell.
     ///
     func configurePasswordTextField(_ cell: TextFieldTableViewCell) {
-        cell.configureTextFieldStyle(with: .password,
-                                     and: WordPressAuthenticator.shared.displayStrings.passwordPlaceholder)
+        cell.configure(withStyle: .password,
+                       placeholder: WordPressAuthenticator.shared.displayStrings.passwordPlaceholder)
         passwordField = cell.textField
         cell.textField.delegate = self
         cell.onChangeSelectionHandler = { [weak self] textfield in

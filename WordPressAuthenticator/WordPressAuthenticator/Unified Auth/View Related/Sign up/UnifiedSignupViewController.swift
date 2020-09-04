@@ -21,11 +21,6 @@ class UnifiedSignupViewController: LoginViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // TODO: Delete these 2 lines when the new sign up by email VC is ready.
-        // Currently this helps us bypass the SignupEmailViewController.
-        loginFields.username = "unknownuser@example.com"
-        loginFields.meta.emailMagicLinkSource = .signup
-
         navigationItem.title = WordPressAuthenticator.shared.displayStrings.signUpTitle
         styleNavigationBar(forUnified: true)
 

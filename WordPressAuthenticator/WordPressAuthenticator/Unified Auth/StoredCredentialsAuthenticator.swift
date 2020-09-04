@@ -45,6 +45,10 @@ class StoredCredentialsAuthenticator: NSObject {
         AuthenticatorAnalyticsTracker.shared
     }
     
+    // MARK: - Login Fields
+    
+    private var loginFields: LoginFields?
+    
     // MARK: - Picker
     
     /// Shows the UI for picking stored credentials for the user to log into their account.
@@ -89,7 +93,7 @@ class StoredCredentialsAuthenticator: NSObject {
         case let credential as ASPasswordCredential:
             let loginFields = LoginFields.makeForWPCom(username: credential.user, password: credential.password)
             loginFacade.signIn(with: loginFields)
-            break
+            self.loginFields = loginFields
         default:
             // There aren't any other known methods for us to handle here, but we still need to complete the switch
             // statement.
@@ -119,7 +123,19 @@ class StoredCredentialsAuthenticator: NSObject {
 
 @available(iOS 13, *)
 extension StoredCredentialsAuthenticator: LoginFacadeDelegate {
+    func displayRemoteError(_ error: Error) {
+        tracker.track(failure: error.localizedDescription)
+        
+        guard authConfig.enableUnifiedWordPress else {
+            presentLoginEmailView(error: error)
+            return
+        }
+        
+        presentGetStartedView(error: error)
+    }
+    
     func needsMultifactorCode() {
+        presentTwoFactorAuthenticationView()
     }
 
     func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {
@@ -140,12 +156,63 @@ extension StoredCredentialsAuthenticator: LoginFacadeDelegate {
 
 @available(iOS 13, *)
 extension StoredCredentialsAuthenticator {
-    func presentLoginEpilogue(credentials: AuthenticatorCredentials) {
+    private func presentLoginEpilogue(credentials: AuthenticatorCredentials) {
         guard let navigationController = self.navigationController else {
             DDLogError("No navigation controller to present the login epilogue from")
             return
         }
         
         authenticationDelegate.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: {})
+    }
+    
+    /// Presents the login email screen, displaying the specified error.  This is useful
+    /// for example for iCloud Keychain in the case where there's an error logging the user
+    /// in with the stored credentials for whatever reason.
+    ///
+    private func presentLoginEmailView(error: Error) {
+        guard let toVC = LoginEmailViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate to LoginEmailVC from LoginPrologueVC")
+            return
+        }
+        
+        if let loginFields = loginFields {
+            toVC.loginFields = loginFields
+        }
+        toVC.errorToPresent = error
+
+        navigationController?.pushViewController(toVC, animated: true)
+    }
+
+    /// Presents the get started screen, displaying the specified error.  This is useful
+    /// for example for iCloud Keychain in the case where there's an error logging the user
+    /// in with the stored credentials for whatever reason.
+    ///
+    private func presentGetStartedView(error: Error) {
+        guard let toVC = GetStartedViewController.instantiate(from: .getStarted) else {
+            DDLogError("Failed to navigate to GetStartedViewController")
+            return
+        }
+        
+        if let loginFields = loginFields {
+            toVC.loginFields = loginFields
+        }
+
+        toVC.errorMessage = error.localizedDescription
+        navigationController?.pushViewController(toVC, animated: true)
+    }
+    
+    private func presentTwoFactorAuthenticationView() {
+        guard let loginFields = loginFields else {
+            return
+        }
+        
+        guard let vc = TwoFAViewController.instantiate(from: .twoFA) else {
+            DDLogError("Failed to navigate from LoginViewController to TwoFAViewController")
+            return
+        }
+
+        vc.loginFields = loginFields
+
+        navigationController?.pushViewController(vc, animated: true)
     }
 }

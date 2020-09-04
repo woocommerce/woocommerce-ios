@@ -2,9 +2,18 @@ import Storage
 import CoreData
 import Combine
 
+/// The mutable (`Storage` model) type that is used by `FetchResultSnapshotsProvider`.
 public typealias FetchResultSnapshotsProviderMutableType = NSManagedObject & ReadOnlyConvertible
 
+/// The type of the items emitted by `FetchResultSnapshot`.
+///
+/// This is only declared to _hide_ `NSManagedObjectID` from the UI.
 public typealias FetchResultSnapshotObjectID = NSManagedObjectID
+
+/// Emitted by `FetchResultSnapshotsProvider` to be consumed by a `DiffableDataSource`.
+///
+/// The `String` is the type of the `FetchResultSnapshot.sectionIdenfifiers` items. The
+/// `FetchResultSnapshotObjectID` is the type of the `FetchResultSnapshot.itemIdentifiers` items.
 @available(iOS 13.0, *)
 public typealias FetchResultSnapshot = NSDiffableDataSourceSnapshot<String, FetchResultSnapshotObjectID>
 
@@ -40,7 +49,7 @@ public typealias FetchResultSnapshot = NSDiffableDataSourceSnapshot<String, Fetc
 ///
 @available(iOS 13.0, *)
 public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshotsProviderMutableType>: NSObject, NSFetchedResultsControllerDelegate {
-    
+
     /// Defines the conditions for fetching the results.
     public struct Query {
         /// Defines how to sort the results.

@@ -20,7 +20,6 @@ extension WPStyleGuide {
         static let textButtonMinHeight: CGFloat = 40.0
         static let googleIconOffset: CGFloat = -1.0
         static let googleIconButtonSize: CGFloat = 15.0
-        static let appleIconSizeModifier: CGFloat = 0.66
         static let domainsIconPaddingToRemove: CGFloat = 2.0
         static let domainsIconSize = CGSize(width: 18, height: 18)
         static let verticalLabelSpacing: CGFloat = 10.0
@@ -202,23 +201,22 @@ extension WPStyleGuide {
     /// - Returns: A properly styled NSAttributedString to be displayed on a NUXButton.
     ///
     class func formattedAppleString() -> NSAttributedString {
-        
-        let appleAttachment = NSTextAttachment()
-        let appleIcon = UIImage.appleIcon
-        appleAttachment.image = appleIcon
-        
-        let imageSize = CGSize(width: appleIcon.size.width * Constants.appleIconSizeModifier,
-                               height: appleIcon.size.height * Constants.appleIconSizeModifier)
+        let attributedString = NSMutableAttributedString()
 
-        appleAttachment.bounds = CGRect(x: 0, y: floor((NUXButton.titleFont.capHeight - imageSize.height) / 2),
-                                        width: imageSize.width, height: imageSize.height)
+        let appleSymbol = ""
+        let appleSymbolAttributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 23)
+        ]
+        attributedString.append(NSAttributedString(string: appleSymbol, attributes: appleSymbolAttributes))
 
-        let buttonString = NSMutableAttributedString(attachment: appleAttachment)
-        // Add leading non-breaking space to separate the button text from the Apple logo.
-        let appleTitle = "\u{00a0}" + NSLocalizedString("Continue with Apple", comment: "Button title. Tapping begins log in using Apple.")
-        buttonString.append(NSAttributedString(string: appleTitle))
+        // Add leading non-breaking space to separate the button text from the Apple symbol.
+        let space = "\u{00a0}\u{00a0}"
+        attributedString.append(NSAttributedString(string: space))
 
-        return buttonString
+        let title = NSLocalizedString("Continue with Apple", comment: "Button title. Tapping begins log in using Apple.")
+        attributedString.append(NSAttributedString(string: title))
+
+        return NSAttributedString(attributedString: attributedString)
     }
     
     /// Creates a button for Self-hosted Login

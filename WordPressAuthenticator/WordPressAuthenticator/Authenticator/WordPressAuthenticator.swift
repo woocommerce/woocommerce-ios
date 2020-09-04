@@ -477,7 +477,7 @@ import AuthenticationServices
 
         let loginURL = loginFields.meta.userIsDotCom ? OnePasswordDefaults.dotcomURL : loginFields.siteAddress
 
-        onePasswordFetcher().findLogin(for: loginURL, viewController: controller, sender: sourceView, success: { (username, password, otp) in
+        onePasswordFetcher.findLogin(for: loginURL, viewController: controller, sender: sourceView, success: { (username, password, otp) in
             if allowUsernameChange {
                 loginFields.username = username
             }

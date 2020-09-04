@@ -46,6 +46,8 @@ public protocol StorageType: class {
     ///
     func loadObject<T: Object>(ofType type: T.Type, with objectID: T.ObjectID) -> T?
 
+    func obtainPermanentIDs(for objects: [NSManagedObject]) throws
+
     /// Persists unsaved changes, if needed.
     ///
     func saveIfNeeded()

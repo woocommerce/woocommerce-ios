@@ -59,11 +59,11 @@ class CredentialsTests: XCTestCase {
                                                          multifactor: false,
                                                          siteURL: siteURL)
 
-        XCTAssertTrue(credential == match)
-        XCTAssertTrue(credential == differentJetpack)
-        XCTAssertTrue(credential == differentMultifactor)
-        XCTAssertFalse(credential == differentSiteURL)
-        XCTAssertFalse(credential == differentAuthToken)
+        XCTAssertEqual(credential, match)
+        XCTAssertEqual(credential, differentJetpack)
+        XCTAssertEqual(credential, differentMultifactor)
+        XCTAssertNotEqual(credential, differentSiteURL)
+        XCTAssertNotEqual(credential, differentAuthToken)
     }
     
     func testWordpressOrgCredentialsInit() {

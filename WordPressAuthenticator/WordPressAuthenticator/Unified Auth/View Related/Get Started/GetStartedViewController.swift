@@ -7,19 +7,24 @@ class GetStartedViewController: LoginViewController {
     // MARK: - Properties
     
     @IBOutlet private weak var tableView: UITableView!
-    @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
     @IBOutlet private weak var leadingDividerLine: UIView!
     @IBOutlet private weak var leadingDividerLineWidth: NSLayoutConstraint!
     @IBOutlet private weak var dividerLabel: UILabel!
     @IBOutlet private weak var trailingDividerLine: UIView!
     @IBOutlet private weak var trailingDividerLineWidth: NSLayoutConstraint!
 
+    private weak var emailField: UITextField?
+    // This is to contain the password selected by password auto-fill.
+    // When it is populated, login is attempted.
+    @IBOutlet private weak var hiddenPasswordField: UITextField?
+    
     // This is public so it can be set from StoredCredentialsAuthenticator.
     var errorMessage: String?
     
     private var rows = [Row]()
     private var buttonViewController: NUXButtonViewController?
     private let configuration = WordPressAuthenticator.shared.configuration
+    private var shouldChangeVoiceOverFocus: Bool = false
 
     // Submit button displayed in the table footer.
     private let continueButton: NUXButton = {
@@ -56,11 +61,17 @@ class GetStartedViewController: LoginViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         configureSubmitButton(animating: false)
+        
+        if errorMessage != nil {
+            shouldChangeVoiceOverFocus = true
+        }
     }
     
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         errorMessage = nil
+        hiddenPasswordField?.text = nil
+        hiddenPasswordField?.isAccessibilityElement = false
     }
 
     // MARK: - Overrides
@@ -159,6 +170,12 @@ private extension GetStartedViewController {
         validateForm()
     }
     
+    // MARK: - Hidden Password Field Action
+    
+    @IBAction func handlePasswordFieldDidChange(_ sender: UITextField) {
+        attemptAutofillLogin()
+    }
+    
     // MARK: - Table Management
     
     /// Registers all of the available TableViewCells.
@@ -208,17 +225,37 @@ private extension GetStartedViewController {
         cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.getStartedInstructions)
     }
     
-    /// Configure the textfield cell.
+    /// Configure the email cell.
     ///
     func configureEmailField(_ cell: TextFieldTableViewCell) {
         cell.configure(withStyle: .email,
                        placeholder: WordPressAuthenticator.shared.displayStrings.emailAddressPlaceholder,
                        text: loginFields.username)
         cell.textField.delegate = self
+        emailField = cell.textField
         
         cell.onChangeSelectionHandler = { [weak self] textfield in
             self?.loginFields.username = textfield.nonNilTrimmedText()
             self?.configureContinueButton(animating: false)
+        }
+        
+        cell.onePasswordHandler = { [weak self] in
+            guard let self = self,
+            let sourceView = self.emailField else {
+                return
+            }
+
+            self.view.endEditing(true)
+
+            WordPressAuthenticator.fetchOnePasswordCredentials(self, sourceView: sourceView, loginFields: self.loginFields) { [weak self] (loginFields) in
+                self?.emailField?.text = loginFields.username
+                self?.validateFormAndLogin()
+            }
+        }
+        
+        if UIAccessibility.isVoiceOverRunning {
+            // Quiet repetitive elements in VoiceOver.
+            emailField?.placeholder = nil
         }
     }
     
@@ -236,6 +273,10 @@ private extension GetStartedViewController {
     ///
     func configureErrorLabel(_ cell: TextLabelTableViewCell) {
         cell.configureLabel(text: errorMessage, style: .error)
+        
+        if shouldChangeVoiceOverFocus {
+            UIAccessibility.post(notification: .layoutChanged, argument: cell)
+        }
     }
     
     /// Rows listed in the order they were created.
@@ -422,6 +463,15 @@ private extension GetStartedViewController {
         alert.addActionWithTitle(okActionTitle, style: .default, handler: nil)
 
         return alert
+    }
+    
+    /// When password autofill has entered a password on this screen, attempt to login immediately
+    ///
+    func attemptAutofillLogin() {
+        loginFields.password = hiddenPasswordField?.text ?? ""
+        loginFields.meta.socialService = nil
+        displayError(message: "")
+        validateFormAndLogin()
     }
     
     /// Configures loginFields to log into wordpress.com and navigates to the selfhosted username/password form.

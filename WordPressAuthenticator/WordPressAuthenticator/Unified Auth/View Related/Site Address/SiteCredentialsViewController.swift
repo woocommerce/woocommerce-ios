@@ -290,7 +290,7 @@ private extension SiteCredentialsViewController {
     /// Configure the username textfield cell.
     ///
     func configureUsernameTextField(_ cell: TextFieldTableViewCell) {
-        cell.configure(withStyle: .email,
+        cell.configure(withStyle: .username,
                        placeholder: WordPressAuthenticator.shared.displayStrings.usernamePlaceholder)
 
         // Save a reference to the textField so it can becomeFirstResponder.

@@ -178,6 +178,53 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         XCTAssertEqual(snapshot.itemIdentifiers(inSection: "Z"), expectedFirstSection.map(\.objectID))
         XCTAssertEqual(snapshot.itemIdentifiers(inSection: "Y"), expectedSecondSection.map(\.objectID))
     }
+
+    func test_snapshot_continuously_emits_values_for_structural_changes() throws {
+        // Given
+        let zanza = insertAccount(displayName: "Z", username: "Zanza")
+        let zagato = insertAccount(displayName: "Z", username: "Zagato")
+        let yamada = insertAccount(displayName: "Y", username: "Yamada")
+
+        try viewStorage.obtainPermanentIDs(for: [zanza, zagato, yamada])
+
+        let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
+            sortDescriptor: .init(keyPath: \StorageAccount.username, ascending: false),
+            sectionNameKeyPath: #keyPath(StorageAccount.displayName)
+        )
+        let provider = FetchResultSnapshotsProvider(storage: viewStorage, query: query)
+
+        var snapshots = [FetchResultSnapshot]()
+        provider.snapshot.dropFirst().sink { snapshot in
+            snapshots.append(snapshot)
+        }.store(in: &self.cancellables)
+
+        try provider.start()
+
+        // When
+        // Add new sections
+        let xiong = insertAccount(displayName: "X", username: "Xiong")
+        let wakaba = insertAccount(displayName: "W", username: "Wakaba")
+        try viewStorage.obtainPermanentIDs(for: [xiong, wakaba])
+
+        // Delete a section
+        viewStorage.deleteObject(yamada)
+
+        viewStorage.saveIfNeeded()
+
+        // Then
+        XCTAssertEqual(snapshots.count, 2)
+
+        // The first snapshot should have the first inserted accounts
+        let firstSnapshot = try XCTUnwrap(snapshots.first)
+        XCTAssertEqual(firstSnapshot.sectionIdentifiers, ["Z", "Y"])
+        XCTAssertEqual(firstSnapshot.itemIdentifiers, [zanza.objectID, zagato.objectID, yamada.objectID])
+
+        let secondSnapshot = try XCTUnwrap(snapshots.last)
+        XCTAssertEqual(secondSnapshot.sectionIdentifiers, ["Z", "X", "W"])
+        XCTAssertEqual(secondSnapshot.itemIdentifiers(inSection: "Z"), [zanza.objectID, zagato.objectID])
+        XCTAssertEqual(secondSnapshot.itemIdentifiers(inSection: "X"), [xiong.objectID])
+        XCTAssertEqual(secondSnapshot.itemIdentifiers(inSection: "W"), [wakaba.objectID])
+    }
 }
 
 @available(iOS 13.0, *)

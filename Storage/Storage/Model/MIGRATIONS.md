@@ -2,6 +2,11 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 30 (Release 5.0.0.0)
+- @ecarrion 2020-09-02
+- Delete `OrderStats` entity
+- Delete `OrderStatsItem` entity
+
 ## Model 29 (Release 4.7.0.0)
 - @pmusolino 2020-06-29
 - Add `siteID` attribute to `ProductTag` entity

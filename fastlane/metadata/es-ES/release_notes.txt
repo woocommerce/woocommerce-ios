@@ -1,1 +1,5 @@
-La aplicación de WooCommerce que conoces y que te encanta ahora cuenta con la función de deslizamiento hacia la derecha o la izquierda en las imágenes de producto. (Sí, eso es).
+- Conecta con Apple al acceder.
+- Prueba nuevas funciones en la sección Productos. Ve a Ajustes para habilitarlas.
+- Edita productos fácilmente: ahora, las actualizaciones se muestran en los detalles de producto tras ajustar el precio de venta.
+- Gestiona mejor tus productos: recibe advertencias claras cuando una variación como mínimo no tenga ningún precio.
+- Olvídate de los fallos. Toca una notificación push de reseña de producto sin errores.

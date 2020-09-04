@@ -1,1 +1,5 @@
-The WooCommerce app you know and love, now with swiping right/left enabled on product images. (Yes, that’s it!)
+- Sign in with Apple at login.
+- Experiment with new features in the Products section! Go to Settings to enable them.
+- Edit products with ease: updates are now displayed in the product details after adjusting the sale price.
+- Better manage your products: receive clear warnings when at least one variation does not have a price.
+- Crash, be gone! Tap on a Product Review push notification with no issues.

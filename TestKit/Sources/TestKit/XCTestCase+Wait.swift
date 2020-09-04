@@ -55,6 +55,20 @@ extension XCTestCase {
         }
     }
 
+    /// Waits until a value is provided by a promise (block) and returns that value.
+    ///
+    /// ## Example Usage
+    ///
+    /// ```
+    /// let value: String = try waitFor { promise in
+    ///     fetchFromAPI { responseString in
+    ///         promise(responseString)
+    ///     }
+    /// }
+    ///
+    /// XCTAssertEquals("expected_value", value)
+    /// ```
+    ///
     public func waitFor<ValueType>(file: StaticString = #file,
                                    line: UInt = #line,
                                    timeout: TimeInterval = 5.0,

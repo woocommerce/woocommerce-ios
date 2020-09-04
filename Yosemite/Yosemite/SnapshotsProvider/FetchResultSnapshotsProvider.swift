@@ -61,6 +61,7 @@ public final class FetchResultSnapshotsProvider<ResultType: FetchResultSnapshots
     public func object(withID objectID: FetchResultSnapshotObjectID) -> ResultType.ReadOnlyType? {
         assert(!objectID.isTemporaryID, "Expected objectID \(objectID) to be a permanent NSManagedObjectID.")
 
+        #warning("FIX force cast")
         let context = storage as! NSManagedObjectContext
         if let storageOrder = try? context.existingObject(with: objectID) as? ResultType {
             return storageOrder.toReadOnly()

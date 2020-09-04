@@ -1,1 +1,5 @@
-Kini ada fitur geser ke kanan/kiri pada gambar produk di aplikasi WooCommerce yang Anda gunakan. (Menarik, kan!)
+- Masuk dengan Apple saat login.
+- Bereksperimen dengan fitur baru di bagian Produk! Buka Pengaturan untuk mengaktifkannya.
+- Sunting produk dengan mudah: kini pembaruan ditampilkan pada rincian produk setelah menyesuaikan harga obral.
+- Kelola produk Anda dengan lebih baik: terima peringatan yang jelas saat setidaknya satu variasi belum memiliki harga.
+- Crash, enyah! Ketuk pemberitahuan push Ulasan Produk dengan tanpa masalah.

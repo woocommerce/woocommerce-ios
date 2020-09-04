@@ -1,1 +1,5 @@
-L’application WooCommerce que vous connaissez et appréciez propose désormais le glissement vers la droite et la gauche sur les images produit. (Oui, c’est bien ça !)
+- Connectez-vous avec Apple.
+- Testez les nouvelles fonctionnalités dans la section Produits ! Allez dans Réglages pour les activer.
+- Modifiez facilement les produits : les mises à jour s’affichent désormais dans les détails du produit une fois le prix de vente modifié.
+- Gérez mieux vos produits : recevez des avertissements clairs quand au moins une variante n’a pas de prix.
+- Plus d’incident ! Appuyez sur une notification push Avis sur le produit sans problèmes.

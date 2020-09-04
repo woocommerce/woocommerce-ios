@@ -49,8 +49,8 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
         snapshotSubject.eraseToAnyPublisher()
     }
 
-    public init(storage: StorageType, query: Query) {
-        self.storage = storage
+    public init(storageManager: StorageManagerType, query: Query) {
+        self.storage = storageManager.viewStorage
         self.query = query
     }
 

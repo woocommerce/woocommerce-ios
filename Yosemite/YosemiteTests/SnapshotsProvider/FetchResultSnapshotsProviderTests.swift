@@ -40,7 +40,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
             sortDescriptor: .init(keyPath: \StorageAccount.displayName, ascending: true)
         )
-        let provider = FetchResultSnapshotsProvider(storage: viewStorage, query: query)
+        let provider = FetchResultSnapshotsProvider(storageManager: storageManager, query: query)
 
         // When
         let snapshot: FetchResultSnapshot = try waitFor { done in
@@ -64,7 +64,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
             sortDescriptor: .init(keyPath: \StorageAccount.displayName, ascending: true)
         )
-        let provider = FetchResultSnapshotsProvider(storage: viewStorage, query: query)
+        let provider = FetchResultSnapshotsProvider(storageManager: storageManager, query: query)
 
         // When
         let snapshot: FetchResultSnapshot = try waitFor { done in
@@ -88,7 +88,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
             sortDescriptor: .init(keyPath: \StorageAccount.displayName, ascending: true)
         )
-        let provider = FetchResultSnapshotsProvider(storage: viewStorage, query: query)
+        let provider = FetchResultSnapshotsProvider(storageManager: storageManager, query: query)
 
         // When
         let snapshot: FetchResultSnapshot = try waitFor { done in
@@ -123,7 +123,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
             sortDescriptor: .init(keyPath: \StorageAccount.username, ascending: false),
             sectionNameKeyPath: #keyPath(StorageAccount.displayName)
         )
-        let provider = FetchResultSnapshotsProvider(storage: viewStorage, query: query)
+        let provider = FetchResultSnapshotsProvider(storageManager: storageManager, query: query)
 
         // When
         let snapshot: FetchResultSnapshot = try waitFor { done in
@@ -161,7 +161,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
             predicate: .init(format: "%K CONTAINS %@", #keyPath(StorageAccount.username), "Elf"),
             sectionNameKeyPath: #keyPath(StorageAccount.displayName)
         )
-        let provider = FetchResultSnapshotsProvider(storage: viewStorage, query: query)
+        let provider = FetchResultSnapshotsProvider(storageManager: storageManager, query: query)
 
         // When
         let snapshot: FetchResultSnapshot = try waitFor { done in
@@ -191,7 +191,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
             sortDescriptor: .init(keyPath: \StorageAccount.username, ascending: false),
             sectionNameKeyPath: #keyPath(StorageAccount.displayName)
         )
-        let provider = FetchResultSnapshotsProvider(storage: viewStorage, query: query)
+        let provider = FetchResultSnapshotsProvider(storageManager: storageManager, query: query)
 
         var snapshots = [FetchResultSnapshot]()
         provider.snapshot.dropFirst().sink { snapshot in

@@ -94,7 +94,21 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         unregisterForKeyboardEvents()
     }
 
+    /// Displays the self-hosted login form.
+    ///
+    override func loginToSelfHostedSite() {
+        guard let vc = LoginSiteAddressViewController.instantiate(from: .login) else {
+            DDLogError("Failed to navigate from LoginEmailViewController to LoginSiteAddressViewController")
+            return
+        }
 
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
     // MARK: - Setup and Configuration
 
 
@@ -213,12 +227,18 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
             }
 
             vc.googleTapped = { [weak self] in
+                guard let self = self else {
+                    return
+                }
+                
+                self.tracker.track(click: .signupWithGoogle)
+                
                 guard WordPressAuthenticator.shared.configuration.enableUnifiedGoogle else {
-                    self?.presentGoogleSignupView()
+                    self.presentGoogleSignupView()
                     return
                 }
 
-                self?.presentUnifiedGoogleView()
+                self.presentUnifiedGoogleView()
             }
 
             vc.appleTapped = { [weak self] in
@@ -480,6 +500,8 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     }
 
     @objc func googleTapped() {
+        self.tracker.track(click: .loginWithGoogle)
+        
         guard WordPressAuthenticator.shared.configuration.enableUnifiedGoogle else {
             GoogleAuthenticator.sharedInstance.loginDelegate = self
             GoogleAuthenticator.sharedInstance.showFrom(viewController: self, loginFields: loginFields, for: .login)
@@ -507,21 +529,6 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         }
 
         navigationController?.pushViewController(toVC, animated: true)
-    }
-
-    /// Displays the self-hosted login form.
-    ///
-    private func loginToSelfHostedSite() {
-        guard let vc = LoginSiteAddressViewController.instantiate(from: .login) else {
-            DDLogError("Failed to navigate from LoginEmailViewController to LoginSiteAddressViewController")
-            return
-        }
-
-        vc.loginFields = loginFields
-        vc.dismissBlock = dismissBlock
-        vc.errorToPresent = errorToPresent
-
-        navigationController?.pushViewController(vc, animated: true)
     }
 
     @IBAction func handleTextFieldDidChange(_ sender: UITextField) {

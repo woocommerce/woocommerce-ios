@@ -22,6 +22,8 @@ final class SiteAddressViewController: LoginViewController {
 
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
+        tracker.track(click: .submit)
+        
         validateForm()
     }
 
@@ -29,20 +31,17 @@ final class SiteAddressViewController: LoginViewController {
     // MARK: - View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        navigationItem.title = WordPressAuthenticator.shared.displayStrings.logInTitle
-        styleNavigationBar(forUnified: true)
-
-        // Store default margin, and size table for the view.
-        defaultTableViewMargin = tableViewLeadingConstraint?.constant ?? 0
-        setTableViewMargins(forWidth: view.frame.width)
-
+        
+        removeGoogleWaitingView()
+        configureNavBar()
+        setupTable()
         localizePrimaryButton()
         registerTableViewCells()
         loadRows()
         configureSubmitButton(animating: false)
+        configureForAccessibility()
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
@@ -52,7 +51,13 @@ final class SiteAddressViewController: LoginViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
+        
+        if isMovingToParent {
+            tracker.track(step: .start)
+        } else {
+            tracker.set(step: .start)
+        }
+        
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
         configureViewForEditingIfNeeded()
@@ -81,11 +86,34 @@ final class SiteAddressViewController: LoginViewController {
     /// Configures the appearance and state of the submit button.
     ///
     override func configureSubmitButton(animating: Bool) {
+        // This matches the string in WPiOS UI tests.
+        submitButton?.accessibilityIdentifier = "Site Address Next Button"
+        
         submitButton?.showActivityIndicator(animating)
 
         submitButton?.isEnabled = (
             !animating && canSubmit()
         )
+    }
+
+    /// Sets up accessibility elements in the order which they should be read aloud
+    /// and quiets repetitive elements.
+    ///
+    private func configureForAccessibility() {
+        view.accessibilityElements = [
+            siteURLField as Any,
+            tableView,
+            submitButton as Any
+        ]
+
+        UIAccessibility.post(notification: .screenChanged, argument: siteURLField)
+
+        if UIAccessibility.isVoiceOverRunning {
+            // Remove the placeholder if VoiceOver is running, because it speaks the label
+            // and the placeholder together. Since the placeholder matches the label, it's
+            // like VoiceOver is reading the same thing twice.
+            siteURLField?.placeholder = nil
+        }
     }
 
     /// Sets the view's state to loading or not loading.
@@ -113,9 +141,14 @@ final class SiteAddressViewController: LoginViewController {
     /// Reload the tableview and show errors, if any.
     ///
     override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
-        if errorMessage != message {
+        if errorMessage != message {            
+            if !message.isEmpty {
+                tracker.track(failure: message)
+            }
+            
             errorMessage = message
             shouldChangeVoiceOverFocus = moveVoiceOverFocus
+            loadRows()
             tableView.reloadData()
         }
     }
@@ -147,7 +180,11 @@ extension SiteAddressViewController: UITableViewDelegate {
     /// After the site address textfield cell is done displaying, remove the textfield reference.
     ///
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if rows[indexPath.row] == .siteAddress {
+        guard let row = rows[safe: indexPath.row] else {
+            return
+        }
+
+        if row == .siteAddress {
             siteURLField = nil
         }
     }
@@ -185,6 +222,23 @@ extension SiteAddressViewController: UITextFieldDelegate {
 // MARK: - Private methods
 private extension SiteAddressViewController {
 
+    // MARK: - Configuration
+    
+    func configureNavBar() {
+        navigationItem.title = WordPressAuthenticator.shared.displayStrings.logInTitle
+        styleNavigationBar(forUnified: true)
+        
+        // Nav bar could be hidden from the host app, so reshow it.
+        navigationController?.setNavigationBarHidden(false, animated: false)
+    }
+    
+    func setupTable() {
+        defaultTableViewMargin = tableViewLeadingConstraint?.constant ?? 0
+        setTableViewMargins(forWidth: view.frame.width)
+    }
+    
+    // MARK: - Table Management
+    
     /// Registers all of the available TableViewCells.
     ///
     func registerTableViewCells() {
@@ -204,7 +258,7 @@ private extension SiteAddressViewController {
     func loadRows() {
         rows = [.instructions, .siteAddress]
 
-        if errorMessage != nil {
+        if let errorText = errorMessage, !errorText.isEmpty {
             rows.append(.errorMessage)
         }
 
@@ -239,9 +293,9 @@ private extension SiteAddressViewController {
     /// Configure the textfield cell.
     ///
     func configureTextField(_ cell: TextFieldTableViewCell) {
-        cell.configureTextFieldStyle(with: .url,
-                                     and: WordPressAuthenticator.shared.displayStrings.siteAddressPlaceholder)
-
+        cell.configure(withStyle: .url,
+                       placeholder: WordPressAuthenticator.shared.displayStrings.siteAddressPlaceholder)
+        
         // Save a reference to the first textField so it can becomeFirstResponder.
         siteURLField = cell.textField
         cell.textField.delegate = self
@@ -261,12 +315,28 @@ private extension SiteAddressViewController {
             guard let self = self else {
                 return
             }
+            
+            self.tracker.track(click: .showHelp)
 
-            let alert = FancyAlertViewController.siteAddressHelpController(loginFields: self.loginFields, sourceTag: self.sourceTag)
+            let alert = FancyAlertViewController.siteAddressHelpController(
+                loginFields: self.loginFields,
+                sourceTag: self.sourceTag,
+                moreHelpTapped: {
+                    self.tracker.track(click: .helpFindingSiteAddress)
+            },
+                onDismiss: {
+                    self.tracker.track(click: .dismiss)
+                    
+                    // Since we're showing an alert on top of this VC, `viewDidAppear` will not be called
+                    // once the alert is dismissed (which is where the step would be reset automagically),
+                    // so we need to manually reset the step here.
+                    self.tracker.set(step: .start)
+            })
             alert.modalPresentationStyle = .custom
             alert.transitioningDelegate = self
-            self.present(alert, animated: true, completion: nil)
-            WordPressAuthenticator.track(.loginURLHelpScreenViewed)
+            self.present(alert, animated: true, completion: { [weak self] in
+                self?.tracker.track(step: .help)
+            })
         }
     }
 
@@ -274,6 +344,9 @@ private extension SiteAddressViewController {
     ///
     func configureErrorLabel(_ cell: TextLabelTableViewCell) {
         cell.configureLabel(text: errorMessage, style: .error)
+        if shouldChangeVoiceOverFocus {
+            UIAccessibility.post(notification: .layoutChanged, argument: cell)
+        }
     }
 
     // MARK: - Private Constants
@@ -303,6 +376,7 @@ private extension SiteAddressViewController {
 
 
 // MARK: - Instance Methods
+
 extension SiteAddressViewController {
 
     /// Validates what is entered in the various form fields and, if valid,
@@ -336,8 +410,9 @@ extension SiteAddressViewController {
                 }
 
                 DDLogError(error.localizedDescription)
-                WordPressAuthenticator.track(.loginFailedToGuessXMLRPC, error: error)
-                WordPressAuthenticator.track(.loginFailed, error: error)
+                // TODO: - Tracks.
+                // WordPressAuthenticator.track(.loginFailedToGuessXMLRPC, error: error)
+                // WordPressAuthenticator.track(.loginFailed, error: error)
                 self.configureViewLoading(false)
 
                 let err = self.originalErrorOrError(error: error as NSError)
@@ -431,7 +506,7 @@ extension SiteAddressViewController {
         configureViewLoading(false)
 
         guard let vc = LoginUsernamePasswordViewController.instantiate(from: .login) else {
-            DDLogError("Failed to navigate from LoginSiteAddressViewController to LoginUsernamePasswordViewController")
+            DDLogError("Failed to navigate from SiteAddressViewController to LoginUsernamePasswordViewController")
             return
         }
 

@@ -65,6 +65,17 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         unregisterForKeyboardEvents()
+        
+        if isMovingFromParent {
+            // There was a bug that was causing iOS's update password prompt to come up
+            // when this VC was being dismissed pressing the "< Back" button.  The following
+            // line ensures that such prompt doesn't come up anymore.
+            //
+            // More information can be found in the PR where this workaround is introduced:
+            //  https://git.io/JUkak
+            //
+            passwordField?.text = ""
+        }
     }
 
 
@@ -181,7 +192,15 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
         case passwordField:
             loginFields.password = sender.nonNilTrimmedText()
         case emailLabel:
-            loginFields.username = sender.nonNilTrimmedText()
+            // The email can only be changed via a password manager.
+            // In this case, don't update username for social accounts.
+            // This prevents inadvertent account linking.
+            // Ref: https://git.io/JJSUM
+            if loginFields.meta.socialService != nil {
+                emailLabel?.text = loginFields.username
+            } else {
+                loginFields.username = sender.nonNilTrimmedText()
+            }
         default:
             break
         }
@@ -201,7 +220,13 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
     @objc func handleOnePasswordButtonTapped(_ sender: UIButton) {
         view.endEditing(true)
 
-        WordPressAuthenticator.fetchOnePasswordCredentials(self, sourceView: sender, loginFields: loginFields) { [weak self] (loginFields) in
+        // Don't update username for social accounts.
+        // This prevents inadvertent account linking.
+        // Ref: https://git.io/JJSUM
+        let allowUsernameChange = (loginFields.meta.socialService == nil)
+
+        WordPressAuthenticator.fetchOnePasswordCredentials(self, sourceView: sender, loginFields: loginFields, allowUsernameChange: allowUsernameChange) { [weak self] (loginFields) in
+            
             self?.emailLabel?.text = loginFields.username
             self?.passwordField?.text = loginFields.password
             self?.validateForm()

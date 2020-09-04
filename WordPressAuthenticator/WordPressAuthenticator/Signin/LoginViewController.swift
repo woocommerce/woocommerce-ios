@@ -8,7 +8,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     @IBOutlet var instructionLabel: UILabel?
     @objc var errorToPresent: Error?
     
-    let tracker = AnalyticsTracker.shared
+    let tracker = AuthenticatorAnalyticsTracker.shared
 
     /// Constraints on the table view container.
     /// Used to adjust the table width in unified views.
@@ -63,21 +63,21 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         }
     }
 
+    override open func viewWillDisappear(_ animated: Bool) {
+        if isMovingFromParent {
+            tracker.track(click: .dismiss)
+        }
+    }
+
     func didChangePreferredContentSize() {
         styleInstructions()
     }
 
     // MARK: - Setup and Configuration
 
-    /// Places the WordPress logo in the navbar
-    ///
-    func setupNavBarIcon(showIcon: Bool = true) {
-        showIcon ? addAppLogoToNavController() : removeAppLogoFromNavController()
-    }
-
     /// Styles the view's background color. Defaults to WPStyleGuide.lightGrey()
     ///
-    @objc func styleBackground() {
+    func styleBackground() {
         view.backgroundColor = WordPressAuthenticator.shared.style.viewControllerBackgroundColor
     }
 
@@ -87,52 +87,6 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         instructionLabel?.font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
         instructionLabel?.adjustsFontForContentSizeCategory = true
         instructionLabel?.textColor = WordPressAuthenticator.shared.style.instructionColor
-    }
-
-    func styleNavigationBar(forUnified: Bool = false) {
-
-        var backgroundColor: UIColor
-        var buttonTextColor: UIColor
-        var titleTextColor: UIColor
-        var hideBottomBorder: Bool
-        
-        if forUnified {
-            // Unified nav bar style
-            setupNavBarIcon(showIcon: false)
-            setHelpButtonTextColor(forUnified: true)
-            backgroundColor = WordPressAuthenticator.shared.unifiedStyle?.navBarBackgroundColor ??
-                              WordPressAuthenticator.shared.style.navBarBackgroundColor
-            buttonTextColor = WordPressAuthenticator.shared.unifiedStyle?.navButtonTextColor ??
-                              WordPressAuthenticator.shared.style.navButtonTextColor
-            titleTextColor = WordPressAuthenticator.shared.unifiedStyle?.navTitleTextColor ??
-                             WordPressAuthenticator.shared.style.primaryTitleColor
-            hideBottomBorder = true
-        } else {
-            // Original nav bar style
-            setupNavBarIcon()
-            setHelpButtonTextColor(forUnified: false)
-            backgroundColor = WordPressAuthenticator.shared.style.navBarBackgroundColor
-            buttonTextColor = WordPressAuthenticator.shared.style.navButtonTextColor
-            titleTextColor = WordPressAuthenticator.shared.style.primaryTitleColor
-            hideBottomBorder = false
-        }
-
-        if #available(iOS 13.0, *) {
-            let appearance = UINavigationBarAppearance()
-            appearance.shadowColor = hideBottomBorder ? .clear : .separator
-            appearance.backgroundColor = backgroundColor
-            appearance.titleTextAttributes = [.foregroundColor: titleTextColor]
-            UIBarButtonItem.appearance().tintColor = buttonTextColor
-            
-            UINavigationBar.appearance().standardAppearance = appearance
-            UINavigationBar.appearance().compactAppearance = appearance
-            UINavigationBar.appearance().scrollEdgeAppearance = appearance
-        } else {
-            let appearance = UINavigationBar.appearance()
-            appearance.barTintColor = backgroundColor
-            appearance.titleTextAttributes = [.foregroundColor: titleTextColor]
-            UIBarButtonItem.appearance().tintColor = buttonTextColor
-        }
     }
 
     func configureViewLoading(_ loading: Bool) {
@@ -152,6 +106,9 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
             errorLabel?.isHidden = true
             return
         }
+        
+        tracker.track(failure: message)
+        
         errorLabel?.isHidden = false
         errorLabel?.text = message
         errorToPresent = nil
@@ -232,7 +189,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     /// Overridden here to direct these errors to the login screen's error label
     dynamic open func displayRemoteError(_ error: Error) {
         configureViewLoading(false)
-
+        
         let err = error as NSError
         guard err.code != 403 else {
             let message = LocalizedText.loginError
@@ -247,14 +204,20 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         displayError(message: "")
         configureViewLoading(false)
 
-        WordPressAuthenticator.track(.twoFactorCodeRequested)
-
-        guard WordPressAuthenticator.shared.configuration.enableUnifiedGoogle,
-            loginFields.meta.socialService == .google else {
+        if tracker.shouldUseLegacyTracker() {
+            WordPressAuthenticator.track(.twoFactorCodeRequested)
+        }
+        
+        let unifiedGoogle = WordPressAuthenticator.shared.configuration.enableUnifiedGoogle && loginFields.meta.socialService == .google
+        let unifiedApple = WordPressAuthenticator.shared.configuration.enableUnifiedApple && loginFields.meta.socialService == .apple
+        let unifiedSiteAddress = WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress && !loginFields.siteAddress.isEmpty
+        let unifiedWordPress = WordPressAuthenticator.shared.configuration.enableUnifiedWordPress && loginFields.meta.userIsDotCom
+        
+        guard (unifiedGoogle || unifiedApple || unifiedSiteAddress || unifiedWordPress) else {
             presentLogin2FA()
             return
         }
-
+        
         presentUnified2FA()
     }
 
@@ -269,7 +232,6 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         static let missingInfoError = NSLocalizedString("Please fill out all the fields", comment: "A short prompt asking the user to properly fill out all login fields.")
         static let gettingAccountInfo = NSLocalizedString("Getting account information", comment: "Alerts the user that wpcom account information is being retrieved.")
     }
-
 }
 
 // MARK: - Sync Helpers
@@ -316,6 +278,11 @@ extension LoginViewController {
     /// Tracks the SignIn Event
     ///
     func trackSignIn(credentials: AuthenticatorCredentials) {
+        // Once we remove legacy tracking, this whole method can go away.
+        guard tracker.shouldUseLegacyTracker() else {
+            return
+        }
+        
         var properties = [String: String]()
 
         if let wpcom = credentials.wpcom {
@@ -360,10 +327,12 @@ extension LoginViewController {
                         serviceToken: serviceToken,
                         connectParameters: appleConnectParameters,
                         success: {
-                            let source = appleConnectParameters != nil ? "apple" : "google"
-                            WordPressAuthenticator.track(.signedIn, properties: ["source": source])
-                            WordPressAuthenticator.track(.loginSocialConnectSuccess)
-                            WordPressAuthenticator.track(.loginSocialSuccess)
+                            if AuthenticatorAnalyticsTracker.shared.shouldUseLegacyTracker() {
+                                let source = appleConnectParameters != nil ? "apple" : "google"
+                                WordPressAuthenticator.track(.signedIn, properties: ["source": source])
+                                WordPressAuthenticator.track(.loginSocialConnectSuccess)
+                                WordPressAuthenticator.track(.loginSocialSuccess)
+                            }
         }, failure: { error in
             DDLogError("Social Link Error: \(error)")
             WordPressAuthenticator.track(.loginSocialConnectFailure, error: error)
@@ -438,6 +407,11 @@ extension LoginViewController {
 
 extension LoginViewController {
 
+    func removeGoogleWaitingView() {
+        // Remove the Waiting for Google view so it doesn't reappear when backing through the navigation stack.
+        navigationController?.viewControllers.removeAll(where: { $0 is GoogleAuthViewController })
+    }
+    
     func signInAppleAccount() {
         guard let token = loginFields.meta.socialServiceIDToken else {
             WordPressAuthenticator.track(.loginSocialButtonFailure, properties: ["source": SocialServiceName.apple.rawValue])
@@ -477,7 +451,9 @@ extension LoginViewController {
             properties["source"] = service
         }
         
-        WordPressAuthenticator.track(.loginSocial2faNeeded, properties: properties)
+        if tracker.shouldUseLegacyTracker() {
+            WordPressAuthenticator.track(.loginSocial2faNeeded, properties: properties)
+        }
         
         guard let vc = Login2FAViewController.instantiate(from: .login) else {
             DDLogError("Failed to navigate from LoginViewController to Login2FAViewController")
@@ -493,9 +469,6 @@ extension LoginViewController {
     
     private func presentUnified2FA() {
         
-        // TODO: add Tracks. Old event:
-        // WordPressAuthenticator.track(.loginSocial2faNeeded, properties: properties)
-        
         guard let vc = TwoFAViewController.instantiate(from: .twoFA) else {
             DDLogError("Failed to navigate from LoginViewController to TwoFAViewController")
             return
@@ -510,13 +483,61 @@ extension LoginViewController {
 // MARK: - LoginSocialError delegate methods
 
 extension LoginViewController: LoginSocialErrorViewControllerDelegate {
+    
+    func retryWithEmail() {
+        loginFields.username = ""
+        cleanupAfterSocialErrors()
+        navigationController?.popToRootViewController(animated: true)
+    }
+    
+    func retryWithAddress() {
+        cleanupAfterSocialErrors()
+        loginToSelfHostedSite()
+    }
+    
+    func retryAsSignup() {
+        cleanupAfterSocialErrors()
+        
+        if let controller = SignupEmailViewController.instantiate(from: .signup) {
+            controller.loginFields = loginFields
+            navigationController?.pushViewController(controller, animated: true)
+        }
+    }
+    
+    func errorDismissed() {
+        loginFields.username = ""
+        navigationController?.popToRootViewController(animated: true)
+    }
+    
     private func cleanupAfterSocialErrors() {
         dismiss(animated: true) {}
     }
-
+    
     /// Displays the self-hosted login form.
     ///
-    private func loginToSelfHostedSite() {
+    @objc func loginToSelfHostedSite() {
+        guard WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress else {
+            presentSelfHostedView()
+            return
+        }
+        
+        presentUnifiedSiteAddressView()
+    }
+    
+    /// Navigates to the unified site address login flow.
+    ///
+    func presentUnifiedSiteAddressView() {
+        guard let vc = SiteAddressViewController.instantiate(from: .siteAddress) else {
+            DDLogError("Failed to navigate from LoginViewController to SiteAddressViewController")
+            return
+        }
+
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
+    /// Navigates to the old self-hosted login flow.
+    ///
+    func presentSelfHostedView() {
         guard let vc = LoginSiteAddressViewController.instantiate(from: .login) else {
             DDLogError("Failed to navigate from LoginViewController to LoginSiteAddressViewController")
             return
@@ -528,23 +549,5 @@ extension LoginViewController: LoginSocialErrorViewControllerDelegate {
 
         navigationController?.pushViewController(vc, animated: true)
     }
-
-    func retryWithEmail() {
-        loginFields.username = ""
-        cleanupAfterSocialErrors()
-    }
-
-    func retryWithAddress() {
-        cleanupAfterSocialErrors()
-        loginToSelfHostedSite()
-    }
-
-    func retryAsSignup() {
-        cleanupAfterSocialErrors()
-
-        if let controller = SignupEmailViewController.instantiate(from: .signup) {
-            controller.loginFields = loginFields
-            navigationController?.pushViewController(controller, animated: true)
-        }
-    }
+    
 }

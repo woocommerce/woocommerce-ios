@@ -1,8 +1,8 @@
 import UIKit
 
-/// UnifiedSignUpViewController: sign up to .com with an email address.
+/// UnifiedSignupViewController: sign up to .com with an email address.
 ///
-class UnifiedSignUpViewController: LoginViewController {
+class UnifiedSignupViewController: LoginViewController {
 
     /// Private properties.
     ///
@@ -20,11 +20,6 @@ class UnifiedSignUpViewController: LoginViewController {
     // MARK: - View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // TODO: Delete these 2 lines when the new sign up by email VC is ready.
-        // Currently this helps us bypass the SignupEmailViewController.
-        loginFields.username = "unknownuser@example.com"
-        loginFields.meta.emailMagicLinkSource = .signup
 
         navigationItem.title = WordPressAuthenticator.shared.displayStrings.signUpTitle
         styleNavigationBar(forUnified: true)
@@ -69,6 +64,7 @@ class UnifiedSignUpViewController: LoginViewController {
         if errorMessage != message {
             errorMessage = message
             shouldChangeVoiceOverFocus = moveVoiceOverFocus
+            loadRows()
             tableView.reloadData()
         }
     }
@@ -76,7 +72,7 @@ class UnifiedSignUpViewController: LoginViewController {
 
 
 // MARK: - UITableViewDataSource
-extension UnifiedSignUpViewController: UITableViewDataSource {
+extension UnifiedSignupViewController: UITableViewDataSource {
 
     /// Returns the number of rows in a section.
     ///
@@ -97,11 +93,11 @@ extension UnifiedSignUpViewController: UITableViewDataSource {
 
 
 // MARK: - UITableViewDelegate conformance
-extension UnifiedSignUpViewController: UITableViewDelegate { }
+extension UnifiedSignupViewController: UITableViewDelegate { }
 
 
 // MARK: - Private methods
-private extension UnifiedSignUpViewController {
+private extension UnifiedSignupViewController {
 
     /// Registers all of the available TableViewCells.
     ///
@@ -121,7 +117,7 @@ private extension UnifiedSignUpViewController {
     func loadRows() {
         rows = [.gravatarEmail, .instructions]
 
-        if errorMessage != nil {
+        if let errorText = errorMessage, !errorText.isEmpty {
             rows.append(.errorMessage)
         }
     }
@@ -150,13 +146,16 @@ private extension UnifiedSignUpViewController {
     /// Configure the instruction cell.
     ///
     func configureInstructionLabel(_ cell: TextLabelTableViewCell) {
-        cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.magicLinkInstructions, style: .body)
+        cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.magicLinkSignupInstructions, style: .body)
     }
 
     /// Configure the error message cell.
     ///
     func configureErrorLabel(_ cell: TextLabelTableViewCell) {
         cell.configureLabel(text: errorMessage, style: .error)
+        if shouldChangeVoiceOverFocus {
+            UIAccessibility.post(notification: .layoutChanged, argument: cell)
+        }
     }
 
     // MARK: - Private Constants
@@ -200,7 +199,7 @@ private extension UnifiedSignUpViewController {
 // Mark: - Instance Methods
 /// Implementation methods imported from SignupEmailViewController.
 ///
-extension UnifiedSignUpViewController {
+extension UnifiedSignupViewController {
     // MARK: - Send email
 
     /// Makes the call to request a magic signup link be emailed to the user.
@@ -227,8 +226,8 @@ extension UnifiedSignUpViewController {
         // TODO: add new Tracks event. Old: .signupMagicLinkRequested
         WordPressAuthenticator.storeLoginInfoForTokenAuth(loginFields)
 
-        guard let vc = NUXLinkMailViewController.instantiate(from: .emailMagicLink) else {
-            DDLogError("Failed to navigate to NUXLinkMailViewController")
+        guard let vc = SignupMagicLinkViewController.instantiate(from: .unifiedSignup) else {
+            DDLogError("Failed to navigate from UnifiedSignupViewController to SignupMagicLinkViewController")
             return
         }
 

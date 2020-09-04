@@ -25,28 +25,39 @@
                             <constraint firstAttribute="width" constant="48" id="oKU-lB-dYx"/>
                         </constraints>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Email Label" textAlignment="natural" lineBreakMode="characterWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jle-eu-TeA" userLabel="Email Label">
-                        <rect key="frame" x="70" y="13" width="234" height="44"/>
-                        <constraints>
-                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="44" id="QBs-7U-E3W"/>
-                        </constraints>
-                        <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                        <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
-                    </label>
+                    <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Rp0-GT-dO4" userLabel="Email Stack View">
+                        <rect key="frame" x="70" y="13" width="239" height="44"/>
+                        <subviews>
+                            <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Email Label" textAlignment="natural" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="3kD-7a-MeN">
+                                <rect key="frame" x="0.0" y="0.0" width="239" height="44"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" staticText="YES"/>
+                                </accessibility>
+                                <constraints>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="44" id="axC-0i-jGu"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                <textInputTraits key="textInputTraits" textContentType="username"/>
+                                <connections>
+                                    <action selector="textFieldDidChangeSelection" destination="KGk-i7-Jjw" eventType="editingChanged" id="CBE-yc-dqf"/>
+                                </connections>
+                            </textField>
+                        </subviews>
+                    </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="jle-eu-TeA" firstAttribute="leading" secondItem="odI-Gb-fXa" secondAttribute="trailing" constant="11" id="8Wx-qB-Fs2"/>
-                    <constraint firstAttribute="trailingMargin" secondItem="jle-eu-TeA" secondAttribute="trailing" id="IUZ-dB-QnU"/>
+                    <constraint firstItem="Rp0-GT-dO4" firstAttribute="centerY" secondItem="odI-Gb-fXa" secondAttribute="centerY" id="OXm-Es-lay"/>
                     <constraint firstItem="odI-Gb-fXa" firstAttribute="bottom" secondItem="H2p-sc-9uM" secondAttribute="bottomMargin" constant="-2" id="YZD-yX-ic3"/>
                     <constraint firstItem="odI-Gb-fXa" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="hPB-Uy-lLS"/>
                     <constraint firstItem="odI-Gb-fXa" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="11" id="kVa-7e-I73"/>
-                    <constraint firstItem="jle-eu-TeA" firstAttribute="centerY" secondItem="odI-Gb-fXa" secondAttribute="centerY" id="zuD-0q-QlE"/>
+                    <constraint firstItem="Rp0-GT-dO4" firstAttribute="leading" secondItem="odI-Gb-fXa" secondAttribute="trailing" constant="11" id="txL-rW-VDL"/>
+                    <constraint firstAttribute="trailing" secondItem="Rp0-GT-dO4" secondAttribute="trailing" constant="11" id="zFn-2O-cyr"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
-                <outlet property="emailLabel" destination="jle-eu-TeA" id="qlq-dw-hT2"/>
+                <outlet property="emailLabel" destination="3kD-7a-MeN" id="8Ck-Rg-3Cw"/>
+                <outlet property="emailStackView" destination="Rp0-GT-dO4" id="E8B-ds-K8H"/>
                 <outlet property="gravatarImageView" destination="odI-Gb-fXa" id="eHP-78-0Fg"/>
             </connections>
             <point key="canvasLocation" x="131.8840579710145" y="126.5625"/>

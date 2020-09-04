@@ -15,6 +15,7 @@ final class TwoFAViewController: LoginViewController {
     private var rows = [Row]()
     private var errorMessage: String?
     private var pasteboardBeforeBackground: String? = nil
+    private var shouldChangeVoiceOverFocus: Bool = false
 
     override var sourceTag: WordPressSupportSourceTag {
         get {
@@ -30,6 +31,8 @@ final class TwoFAViewController: LoginViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        removeGoogleWaitingView()
+        
         navigationItem.title = WordPressAuthenticator.shared.displayStrings.logInTitle
         styleNavigationBar(forUnified: true)
 
@@ -39,11 +42,18 @@ final class TwoFAViewController: LoginViewController {
         localizePrimaryButton()
         registerTableViewCells()
         loadRows()
+        configureForAccessibility()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         
         super.viewDidAppear(animated)
+        
+        if isMovingToParent {
+            tracker.track(step: .twoFactorAuthentication)
+        } else {
+            tracker.set(step: .twoFactorAuthentication)
+        }
         
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
@@ -109,13 +119,13 @@ final class TwoFAViewController: LoginViewController {
         let err = error as NSError
         if err.domain == "WordPressComOAuthError" && err.code == WordPressComOAuthError.invalidOneTimePassword.rawValue {
             // Invalid verification code.
-            displayError(message: LocalizedText.bad2FAMessage)
+            displayError(message: LocalizedText.bad2FAMessage, moveVoiceOverFocus: true)
         } else if err.domain == "WordPressComOAuthError" && err.code == WordPressComOAuthError.invalidTwoStepCode.rawValue {
             // Invalid 2FA during social login
             if let newNonce = (error as NSError).userInfo[WordPressComOAuthClient.WordPressComOAuthErrorNewNonceKey] as? String {
                 loginFields.nonceInfo?.updateNonce(with: newNonce)
             }
-            displayError(message: LocalizedText.bad2FAMessage)
+            displayError(message: LocalizedText.bad2FAMessage, moveVoiceOverFocus: true)
         } else {
             displayError(error as NSError, sourceTag: sourceTag)
         }
@@ -123,7 +133,13 @@ final class TwoFAViewController: LoginViewController {
     
     override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
         if errorMessage != message {
+            if !message.isEmpty {
+                tracker.track(failure: message)
+            }
+            
             errorMessage = message
+            shouldChangeVoiceOverFocus = moveVoiceOverFocus
+            loadRows()
             tableView.reloadData()
         }
     }
@@ -137,6 +153,7 @@ private extension TwoFAViewController {
     // MARK: - Button Actions
 
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
+        tracker.track(click: .submitTwoFactorCode)
         validateForm()
     }
 
@@ -176,8 +193,6 @@ private extension TwoFAViewController {
         let wpcom = WordPressComCredentials(authToken: authToken, isJetpackLogin: isJetpackLogin, multifactor: true, siteURL: loginFields.siteAddress)
         let credentials = AuthenticatorCredentials(wpcom: wpcom)
         syncWPComAndPresentEpilogue(credentials: credentials)
-        
-        tracker.track(step: .success)
     }
     
     // MARK: - Code Validation
@@ -338,9 +353,9 @@ private extension TwoFAViewController {
     func loadRows() {
         rows = [.instructions, .code]
 
-        if errorMessage != nil {
-             rows.append(.errorMessage)
-         }
+        if let errorText = errorMessage, !errorText.isEmpty {
+            rows.append(.errorMessage)
+        }
 
         rows.append(.sendCode)
     }
@@ -371,14 +386,18 @@ private extension TwoFAViewController {
     /// Configure the textfield cell.
     ///
     func configureTextField(_ cell: TextFieldTableViewCell) {
-        cell.configureTextFieldStyle(with: .numericCode,
-                                     and: WordPressAuthenticator.shared.displayStrings.twoFactorCodePlaceholder)
+        cell.configure(withStyle: .numericCode,
+                       placeholder: WordPressAuthenticator.shared.displayStrings.twoFactorCodePlaceholder)
 
         // Save a reference to the first textField so it can becomeFirstResponder.
         codeField = cell.textField
         cell.textField.delegate = self
 
         SigninEditingState.signinEditingStateActive = true
+        if UIAccessibility.isVoiceOverRunning {
+            // Quiet repetitive VoiceOver elements.
+            codeField?.placeholder = nil
+        }
     }
 
     /// Configure the link cell.
@@ -387,7 +406,10 @@ private extension TwoFAViewController {
         cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.textCodeButtonTitle)
 
         cell.actionHandler = { [weak self] in
-            self?.requestCode()
+            guard let self = self else { return }
+            
+            self.tracker.track(click: .sendCodeWithText)
+            self.requestCode()
         }
     }
 
@@ -395,6 +417,9 @@ private extension TwoFAViewController {
     ///
     func configureErrorLabel(_ cell: TextLabelTableViewCell) {
         cell.configureLabel(text: errorMessage, style: .error)
+        if shouldChangeVoiceOverFocus {
+            UIAccessibility.post(notification: .layoutChanged, argument: cell)
+        }
     }
 
     /// Configure the view for an editing state.
@@ -407,6 +432,19 @@ private extension TwoFAViewController {
        }
     }
 
+    /// Sets up accessibility elements in the order which they should be read aloud
+    /// and chooses which element to focus on at the beginning.
+    ///
+    func configureForAccessibility() {
+        view.accessibilityElements = [
+            codeField as Any,
+            tableView,
+            submitButton as Any
+        ]
+
+        UIAccessibility.post(notification: .screenChanged, argument: codeField)
+    }
+    
     /// Rows listed in the order they were created.
     ///
     enum Row {

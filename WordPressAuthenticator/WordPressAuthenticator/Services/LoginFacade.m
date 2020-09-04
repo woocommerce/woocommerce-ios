@@ -37,32 +37,6 @@
     }
 }
 
-- (void)requestOneTimeCodeWithLoginFields:(LoginFields *)loginFields
-{
-    [self.wordpressComOAuthClientFacade requestOneTimeCodeWithUsername:loginFields.username password:loginFields.password success:^{
-        [self track:WPAnalyticsStatTwoFactorSentSMS];
-    } failure:^(NSError *error) {
-        DDLogError(@"Failed to request one time code");
-    }];
-}
-
-- (void)requestSocial2FACodeWithLoginFields:(LoginFields *)loginFields
-{
-    [self.wordpressComOAuthClientFacade requestSocial2FACodeWithUserID:loginFields.nonceUserID
-                                                                nonce:loginFields.nonceInfo.nonceSMS
-                                                                 success:^(NSString *newNonce) {
-                                                                     if (newNonce) {
-                                                                         loginFields.nonceInfo.nonceSMS = newNonce;
-                                                                     }
-                                                                     [WPAnalytics track:WPAnalyticsStatTwoFactorSentSMS];
-                                                                 } failure:^(NSError *error, NSString *newNonce) {
-                                                                     if (newNonce) {
-                                                                         loginFields.nonceInfo.nonceSMS = newNonce;
-                                                                     }
-                                                                     DDLogError(@"Failed to request one time code");
-                                                                 }];
-}
-
 - (void)loginToWordPressDotComWithSocialIDToken:(NSString *)token
                                         service:(NSString *)service
 {
@@ -77,6 +51,7 @@
             // Apple is handled in AppleAuthenticator
             [self.delegate finishedLoginWithGoogleIDToken:token authToken:authToken];
         }
+        [self trackSuccess];
     } needsMultiFactor:^(NSInteger userID, SocialLogin2FANonceInfo *nonceInfo){
         if ([self.delegate respondsToSelector:@selector(needsMultifactorCodeForUserID:andNonceInfo:)]) {
             [self.delegate needsMultifactorCodeForUserID:userID andNonceInfo:nonceInfo];
@@ -112,6 +87,7 @@
                                                                 if ([self.delegate respondsToSelector:@selector(finishedLoginWithNonceAuthToken:)]) {
                                                                     [self.delegate finishedLoginWithNonceAuthToken:authToken];
                                                                 }
+                                                                [self trackSuccess];
                                                             } failure:^(NSError *error) {
                                                                 [self track:WPAnalyticsStatLoginFailed error:error];
                                                                 if ([self.delegate respondsToSelector:@selector(displayRemoteError:)]) {
@@ -130,6 +106,7 @@
         if ([self.delegate respondsToSelector:@selector(finishedLoginWithAuthToken:requiredMultifactorCode:)]) {
             [self.delegate finishedLoginWithAuthToken:authToken requiredMultifactorCode:loginFields.meta.requiredMultifactor];
         }
+        [self trackSuccess];
     } needsMultiFactor:^{
         if ([self.delegate respondsToSelector:@selector(needsMultifactorCode)]) {
             [self.delegate needsMultifactorCode];
@@ -183,6 +160,7 @@
             }
             NSString *xmlrpc = [xmlRPCURL absoluteString];
             [self.delegate finishedLoginWithUsername:loginFields.username password:loginFields.password xmlrpc:xmlrpc options:options];
+            [self trackSuccess];
         }
     } failure:^(NSError *error) {
         [self track:WPAnalyticsStatLoginFailed error:error];

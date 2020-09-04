@@ -44,20 +44,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)loginToSelfHosted:(LoginFields *)loginFields;
 
 /**
- *  This method requests a one time code needed for 2fa.
- *
- *  @param loginFields the fields representing the site we need a 2fa code for.
- */
-- (void)requestOneTimeCodeWithLoginFields:(LoginFields *)loginFields;
-
-/**
- *  This method requests a one time code needed for 2fa when using social login
- *
- *  @param loginFields the fields representing the site we need a 2fa code for.
- */
-- (void)requestSocial2FACodeWithLoginFields:(LoginFields *)loginFields;
-
-/**
  * Social login.
  *
  * @param token Social id token.

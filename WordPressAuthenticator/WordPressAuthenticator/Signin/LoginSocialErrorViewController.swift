@@ -8,6 +8,7 @@ protocol LoginSocialErrorViewControllerDelegate {
     func retryWithEmail()
     func retryWithAddress()
     func retryAsSignup()
+    func errorDismissed()
 }
 
 /// ViewController for presenting recovery options when social login fails
@@ -15,7 +16,10 @@ class LoginSocialErrorViewController: NUXTableViewController {
     fileprivate var errorTitle: String
     fileprivate var errorDescription: String
     @objc var delegate: LoginSocialErrorViewControllerDelegate?
-
+    
+    private var forUnified: Bool = false
+    private var actionButtonTapped: Bool = false
+    
     fileprivate enum Sections: Int {
         case titleAndDescription = 0
         case buttons = 1
@@ -57,16 +61,39 @@ class LoginSocialErrorViewController: NUXTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = WordPressAuthenticator.shared.style.viewControllerBackgroundColor
-        addAppLogoToNavController()
+        let unifiedGoogle = WordPressAuthenticator.shared.configuration.enableUnifiedGoogle && loginFields.meta.socialService == .google
+        let unifiedApple = WordPressAuthenticator.shared.configuration.enableUnifiedApple && loginFields.meta.socialService == .apple
+        forUnified = unifiedGoogle || unifiedApple
+
+        styleNavigationBar(forUnified: forUnified)
+        styleBackground()
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        if !actionButtonTapped {
+            delegate?.errorDismissed()
+        }
+    }
+    
+    private func styleBackground() {
+        guard let unifiedBackgroundColor = WordPressAuthenticator.shared.unifiedStyle?.viewControllerBackgroundColor else {
+            view.backgroundColor = WordPressAuthenticator.shared.style.viewControllerBackgroundColor
+            return
+        }
+
+        view.backgroundColor = forUnified ? unifiedBackgroundColor : WordPressAuthenticator.shared.style.viewControllerBackgroundColor
+    }
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard indexPath.section == Sections.buttons.rawValue,
             let delegate = delegate else {
             return
         }
 
+        actionButtonTapped = true
+        
         switch indexPath.row {
         case Buttons.tryEmail.rawValue:
             delegate.retryWithEmail()
@@ -107,7 +134,19 @@ extension LoginSocialErrorViewController {
 
 extension LoginSocialErrorViewController {
     private func numberOfButtonsToShow() -> Int {
-        return loginFields.restrictToWPCom ? Buttons.count - 1 : Buttons.count
+        
+        var buttonCount = loginFields.restrictToWPCom ? Buttons.count - 1 : Buttons.count
+        
+        // Don't show the Signup Retry if showing unified social flows.
+        // At this point, we've already tried signup and are past it.
+        let unifiedGoogle = WordPressAuthenticator.shared.configuration.enableUnifiedGoogle && loginFields.meta.socialService == .google
+        let unifiedApple = WordPressAuthenticator.shared.configuration.enableUnifiedApple && loginFields.meta.socialService == .apple
+
+        if unifiedGoogle || unifiedApple {
+            buttonCount -= 1
+        }
+        
+        return buttonCount
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -149,7 +188,7 @@ extension LoginSocialErrorViewController {
     }
 
     private func titleAndDescriptionCell() -> UITableViewCell {
-        return LoginSocialErrorCell(title: errorTitle, description: errorDescription)
+        return LoginSocialErrorCell(title: errorTitle, description: errorDescription, forUnified: forUnified)
     }
 
     private func buttonCell(index: Int) -> UITableViewCell {

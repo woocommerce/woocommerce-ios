@@ -13,6 +13,7 @@ class PasswordViewController: LoginViewController {
     private weak var passwordField: UITextField?
     private var rows = [Row]()
     private var errorMessage: String?
+    private var shouldChangeVoiceOverFocus: Bool = false
 
     override var loginFields: LoginFields {
         didSet {
@@ -33,6 +34,8 @@ class PasswordViewController: LoginViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        removeGoogleWaitingView()
         
         navigationItem.title = WordPressAuthenticator.shared.displayStrings.logInTitle
         styleNavigationBar(forUnified: true)
@@ -43,6 +46,7 @@ class PasswordViewController: LoginViewController {
         localizePrimaryButton()
         registerTableViewCells()
         loadRows()
+        configureForAccessibility()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -55,12 +59,16 @@ class PasswordViewController: LoginViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        if isMovingToParent {
+            tracker.track(step: .passwordChallenge)
+        } else {
+            tracker.set(step: .passwordChallenge)
+        }
+        
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
 
         configureViewForEditingIfNeeded()
-        
-        // TODO: add new tracks. Old track: WordPressAuthenticator.track(.loginPasswordFormViewed)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -96,19 +104,46 @@ class PasswordViewController: LoginViewController {
         let errorDomain = (error as NSError).domain
         if errorDomain == WordPressComOAuthClient.WordPressComOAuthErrorDomain, errorCode == WordPressComOAuthError.invalidRequest.rawValue {
             let message = NSLocalizedString("It seems like you've entered an incorrect password. Want to give it another try?", comment: "An error message shown when a wpcom user provides the wrong password.")
-            displayError(message: message)
+            displayError(message: message, moveVoiceOverFocus: true)
         } else {
-            super.displayRemoteError(error)
+            displayError(error as NSError, sourceTag: sourceTag)
         }
     }
 
     override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
+        // The reason why this check is necessary is that we're calling this method
+        // with an empty error message when setting up the VC.  We don't want to track
+        // an empty error when that happens.
+        if !message.isEmpty {
+            tracker.track(failure: message)
+        }
+        
+        configureViewLoading(false)
+
         if errorMessage != message {
             errorMessage = message
+            shouldChangeVoiceOverFocus = moveVoiceOverFocus
+            loadRows()
             tableView.reloadData()
         }
     }
-    
+
+    override func validateFormAndLogin() {
+        view.endEditing(true)
+        displayError(message: "", moveVoiceOverFocus: true)
+
+        // Is everything filled out?
+        if !loginFields.validateFieldsPopulatedForSignin() {
+            let errorMsg = Constants.missingInfoError
+            displayError(message: errorMsg, moveVoiceOverFocus: true)
+
+            return
+        }
+
+        configureViewLoading(true)
+
+        loginFacade.signIn(with: loginFields)
+    }
 }
 
 // MARK: - Validation and Continue
@@ -118,6 +153,8 @@ private extension PasswordViewController {
     // MARK: - Button Actions
     
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
+        tracker.track(click: .submit)
+        
         configureViewLoading(true)
         validateForm()
     }
@@ -125,13 +162,12 @@ private extension PasswordViewController {
     func validateForm() {
         validateFormAndLogin()
     }
-    
 }
 
 // MARK: - UITextFieldDelegate
 
 extension PasswordViewController: UITextFieldDelegate {
-        
+
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if enableSubmit(animating: false) {
             validateForm()
@@ -203,11 +239,12 @@ private extension PasswordViewController {
         
         rows.append(.password)
         
-        if errorMessage != nil {
+        if let errorText = errorMessage, !errorText.isEmpty {
             rows.append(.errorMessage)
         }
         
         rows.append(.forgotPassword)
+        rows.append(.sendMagicLink)
     }
     
     /// Configure cells.
@@ -220,19 +257,53 @@ private extension PasswordViewController {
             configureInstructionLabel(cell)
         case let cell as TextFieldTableViewCell where row == .password:
             configurePasswordTextField(cell)
-        case let cell as TextLinkButtonTableViewCell:
-            configureTextLinkButton(cell)
+        case let cell as TextLinkButtonTableViewCell where row == .forgotPassword:
+            configureForgotPasswordButton(cell)
+        case let cell as TextLinkButtonTableViewCell where row == .sendMagicLink:
+            configureSendMagicLinkButton(cell)
         case let cell as TextLabelTableViewCell where row == .errorMessage:
             configureErrorLabel(cell)
         default:
             DDLogError("Error: Unidentified tableViewCell type found.")
         }
     }
-    
+
     /// Configure the gravatar + email cell.
     ///
     func configureGravatarEmail(_ cell: GravatarEmailTableViewCell) {
         cell.configure(withEmail: loginFields.username)
+        
+        cell.onChangeSelectionHandler = { [weak self] textfield in
+            // The email can only be changed via a password manager.
+            // In this case, don't update username for social accounts.
+            // This prevents inadvertent account linking.
+            if self?.loginFields.meta.socialService != nil {
+                cell.updateEmailAddress(self?.loginFields.username)
+            } else {
+                self?.loginFields.username = textfield.nonNilTrimmedText()
+                self?.loginFields.emailAddress = textfield.nonNilTrimmedText()
+            }
+            
+            self?.configureSubmitButton(animating: false)
+        }
+        
+        cell.onePasswordHandler = { [weak self] sourceView in
+            guard let self = self else {
+                return
+            }
+            
+            self.view.endEditing(true)
+            
+            // Don't update username for social accounts.
+            // This prevents inadvertent account linking.
+            let allowUsernameChange = (self.loginFields.meta.socialService == nil)
+            
+            WordPressAuthenticator.fetchOnePasswordCredentials(self, sourceView: sourceView, loginFields: self.loginFields, allowUsernameChange: allowUsernameChange) { [weak self] (loginFields) in
+                cell.updateEmailAddress(loginFields.username)
+                self?.passwordField?.text = loginFields.password
+                self?.validateForm()
+            }
+        }
     }
     
     /// Configure the instruction cell.
@@ -245,7 +316,7 @@ private extension PasswordViewController {
 
         let displayStrings = WordPressAuthenticator.shared.displayStrings
         let instructions = (service == .google) ? displayStrings.googlePasswordInstructions :
-                                                  displayStrings.applePasswordInstructions
+            displayStrings.applePasswordInstructions
 
         cell.configureLabel(text: instructions)
     }
@@ -253,11 +324,12 @@ private extension PasswordViewController {
     /// Configure the password textfield cell.
     ///
     func configurePasswordTextField(_ cell: TextFieldTableViewCell) {
-        cell.configureTextFieldStyle(with: .password,
-                                     and: WordPressAuthenticator.shared.displayStrings.passwordPlaceholder)
+        cell.configure(withStyle: .password,
+                       placeholder: WordPressAuthenticator.shared.displayStrings.passwordPlaceholder)
+
         // Save a reference to the first textField so it can becomeFirstResponder.
         passwordField = cell.textField
-         cell.textField.delegate = self
+        cell.textField.delegate = self
         
         cell.onChangeSelectionHandler = { [weak self] textfield in
             self?.loginFields.password = textfield.nonNilTrimmedText()
@@ -265,12 +337,19 @@ private extension PasswordViewController {
         }
         
         SigninEditingState.signinEditingStateActive = true
+        
+        if UIAccessibility.isVoiceOverRunning {
+            // Quiet repetitive VoiceOver elements.
+            passwordField?.placeholder = nil
+        }
     }
     
     /// Configure the forgot password link cell.
     ///
-    func configureTextLinkButton(_ cell: TextLinkButtonTableViewCell) {
-        cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.resetPasswordButtonTitle, accessibilityTrait: .link)
+    func configureForgotPasswordButton(_ cell: TextLinkButtonTableViewCell) {
+        cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.resetPasswordButtonTitle,
+                             accessibilityTrait: .link,
+                             showBorder: true)
         cell.actionHandler = { [weak self] in
             guard let self = self else {
                 return
@@ -282,8 +361,25 @@ private extension PasswordViewController {
             }
 
             WordPressAuthenticator.openForgotPasswordURL(self.loginFields)
+            self.tracker.track(click: .forgottenPassword)
+        }
+    }
 
-            // TODO: add new tracks. Old track: WordPressAuthenticator.track(.loginForgotPasswordClicked)
+    /// Configure the "send magic link" cell.
+    ///
+    func configureSendMagicLinkButton(_ cell: TextLinkButtonTableViewCell) {
+        cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.getLoginLinkButtonTitle,
+                             accessibilityTrait: .link,
+                             showBorder: true)
+
+        cell.actionHandler = { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            self.requestAuthenticationLink()
+            // TODO: Tracks.
+            // Track the "login magic link requested" event
         }
     }
     
@@ -291,16 +387,106 @@ private extension PasswordViewController {
     ///
     func configureErrorLabel(_ cell: TextLabelTableViewCell) {
         cell.configureLabel(text: errorMessage, style: .error)
+        if shouldChangeVoiceOverFocus {
+            UIAccessibility.post(notification: .layoutChanged, argument: cell)
+        }
     }
     
     /// Configure the view for an editing state.
     ///
     func configureViewForEditingIfNeeded() {
-       // Check the helper to determine whether an editing state should be assumed.
-       adjustViewForKeyboard(SigninEditingState.signinEditingStateActive)
-       if SigninEditingState.signinEditingStateActive {
-           passwordField?.becomeFirstResponder()
-       }
+        // Check the helper to determine whether an editing state should be assumed.
+        adjustViewForKeyboard(SigninEditingState.signinEditingStateActive)
+        if SigninEditingState.signinEditingStateActive {
+            passwordField?.becomeFirstResponder()
+        }
+    }
+    
+    /// Sets up accessibility elements in the order which they should be read aloud
+    /// and chooses which element to focus on at the beginning.
+    ///
+    func configureForAccessibility() {
+        view.accessibilityElements = [
+            passwordField as Any,
+            tableView,
+            submitButton as Any
+        ]
+
+        UIAccessibility.post(notification: .screenChanged, argument: passwordField)
+    }
+
+    /// Makes the call to request a magic authentication link be emailed to the user.
+    ///
+    func requestAuthenticationLink() {
+        loginFields.meta.emailMagicLinkSource = .login
+
+        let email = loginFields.username
+        guard email.isValidEmail() else {
+            DDLogError("Attempted to request authentication link, but the email address did not appear valid.")
+            let alert = buildInvalidEmailAlert()
+            present(alert, animated: true, completion: nil)
+            return
+        }
+
+        configureViewLoading(true)
+        let service = WordPressComAccountService()
+        service.requestAuthenticationLink(for: email,
+                                          success: { [weak self] in
+                                            self?.didRequestAuthenticationLink()
+                                            self?.configureViewLoading(false)
+
+            }, failure: { [weak self] (error: Error) in
+                // TODO: Tracks.
+                // WordPressAuthenticator.track(.loginMagicLinkFailed)
+                // WordPressAuthenticator.track(.loginFailed, error: error)
+                guard let self = self else {
+                    return
+                }
+
+                self.displayError(error as NSError, sourceTag: self.sourceTag)
+                self.configureViewLoading(false)
+        })
+    }
+
+    /// When a magic link successfully sends, navigate the user to the next step.
+    ///
+    func didRequestAuthenticationLink() {
+        // TODO: Tracks.
+        // WordPressAuthenticator.track(.loginMagicLinkRequested)
+        WordPressAuthenticator.storeLoginInfoForTokenAuth(loginFields)
+
+        guard let vc = LoginMagicLinkViewController.instantiate(from: .unifiedLoginMagicLink) else {
+            DDLogError("Failed to navigate to LoginMagicLinkViewController")
+            return
+        }
+
+        vc.loginFields = self.loginFields
+        vc.loginFields.restrictToWPCom = true
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
+    /// Build the alert message when the email address is invalid.
+    ///
+    func buildInvalidEmailAlert() -> UIAlertController {
+        let title = NSLocalizedString("Can Not Request Link",
+                                      comment: "Title of an alert letting the user know")
+        let message = NSLocalizedString("A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address.",
+                                        comment: "An error message.")
+        let helpActionTitle = NSLocalizedString("Need help?",
+                                                comment: "Takes the user to get help")
+        let okActionTitle = NSLocalizedString("OK",
+                                              comment: "Dismisses the alert")
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+
+        alert.addActionWithTitle(helpActionTitle,
+                                 style: .cancel,
+                                 handler: { _ in
+                                    WordPressAuthenticator.shared.delegate?.presentSupportRequest(from: self, sourceTag: .loginEmail)
+        })
+
+        alert.addActionWithTitle(okActionTitle, style: .default, handler: nil)
+
+        return alert
     }
     
     /// Rows listed in the order they were created.
@@ -310,6 +496,7 @@ private extension PasswordViewController {
         case instructions
         case password
         case forgotPassword
+        case sendMagicLink
         case errorMessage
         
         var reuseIdentifier: String {
@@ -320,6 +507,8 @@ private extension PasswordViewController {
                 return TextLabelTableViewCell.reuseIdentifier
             case .password:
                 return TextFieldTableViewCell.reuseIdentifier
+            case .sendMagicLink:
+                return TextLinkButtonTableViewCell.reuseIdentifier
             case .forgotPassword:
                 return TextLinkButtonTableViewCell.reuseIdentifier
             case .errorMessage:
@@ -328,4 +517,10 @@ private extension PasswordViewController {
         }
     }
 
+    /// Constants
+    ///
+    struct Constants {
+        static let missingInfoError = NSLocalizedString("Please fill out all the fields",
+                                                        comment: "A short prompt asking the user to properly fill out all login fields.")
+    }
 }

@@ -100,6 +100,12 @@ import AuthenticationServices
                                                  displayImages: displayImages,
                                                  displayStrings: displayStrings)
     }
+    
+    // MARK: - Testing Support
+    
+    class func isInitialized() -> Bool {
+        return privateInstance != nil
+    }
 
     // MARK: - Public Methods
     
@@ -150,7 +156,7 @@ import AuthenticationServices
         showLogin(from: presenter, animated: animated)
     }
 
-    public class func showLogin(from presenter: UIViewController, animated: Bool, showCancel: Bool = false, restrictToWPCom: Bool = false) {
+    public class func showLogin(from presenter: UIViewController, animated: Bool, showCancel: Bool = false, restrictToWPCom: Bool = false, onLoginButtonTapped: (() -> Void)? = nil) {
         defer {
             trackOpenedLogin()
         }
@@ -160,6 +166,7 @@ import AuthenticationServices
             if let childController = controller.children.first as? LoginPrologueViewController {
                 childController.loginFields.restrictToWPCom = restrictToWPCom
                 childController.showCancel = showCancel
+                childController.onLoginButtonTapped = onLoginButtonTapped
             }
             controller.modalPresentationStyle = .fullScreen
             presenter.present(controller, animated: animated, completion: nil)
@@ -196,24 +203,27 @@ import AuthenticationServices
         defer {
             trackOpenedLogin()
         }
-
-        let controller = signinForWPOrg()
+        
+        guard let controller = signinForWPOrg() else {
+            DDLogError("WordPressAuthenticator: Failed to instantiate Site Address view controller.")
+            return
+        }
+        
         let navController = LoginNavigationController(rootViewController: controller)
         navController.modalPresentationStyle = .fullScreen
         presenter.present(navController, animated: true, completion: nil)
     }
-
-    /// Returns an instance of LoginSiteAddressViewController: allows the user to log into a WordPress.org website.
+    
+    /// Returns a Site Address view controller: allows the user to log into a WordPress.org website.
     ///
-    @objc public class func signinForWPOrg() -> UIViewController {
-        guard let controller = LoginSiteAddressViewController.instantiate(from: .login) else {
-            fatalError("unable to create wpcom password screen")
+    @objc public class func signinForWPOrg() -> UIViewController? {
+        guard WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress else {
+            return LoginSiteAddressViewController.instantiate(from: .login)
         }
-
-        return controller
+        
+        return SiteAddressViewController.instantiate(from: .siteAddress)
     }
-
-
+    
     // Helper used by WPAuthTokenIssueSolver
     @objc
     public class func signinForWPCom(dotcomEmailAddress: String?, dotcomUsername: String?, onDismissed: ((_ cancelled: Bool) -> Void)? = nil) -> UIViewController {
@@ -458,12 +468,20 @@ import AuthenticationServices
     ///
     /// - Parameter sender: A UIView. Typically the button the user tapped on.
     ///
-    class func fetchOnePasswordCredentials(_ controller: UIViewController, sourceView: UIView, loginFields: LoginFields, onePasswordFetcher: OnePasswordResultsFetcher = OnePasswordFacade(), success: @escaping ((_ loginFields: LoginFields) -> Void)) {
+    class func fetchOnePasswordCredentials(_ controller: UIViewController,
+                                           sourceView: UIView,
+                                           loginFields: LoginFields,
+                                           allowUsernameChange: Bool = true,
+                                           onePasswordFetcher: OnePasswordResultsFetcher = OnePasswordFacade(),
+                                           success: @escaping ((_ loginFields: LoginFields) -> Void)) {
 
         let loginURL = loginFields.meta.userIsDotCom ? OnePasswordDefaults.dotcomURL : loginFields.siteAddress
 
-        onePasswordFetcher.findLogin(for: loginURL, viewController: controller, sender: sourceView, success: { (username, password, otp) in
-            loginFields.username = username
+        onePasswordFetcher().findLogin(for: loginURL, viewController: controller, sender: sourceView, success: { (username, password, otp) in
+            if allowUsernameChange {
+                loginFields.username = username
+            }
+            
             loginFields.password = password
             loginFields.multifactorCode = otp ?? String()
 

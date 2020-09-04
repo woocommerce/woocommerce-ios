@@ -32,7 +32,7 @@ open class NUXButtonViewController: UIViewController {
 
     // MARK: - Properties
 
-    @IBOutlet var shadowView: UIView?
+    @IBOutlet private var shadowView: UIImageView?
     @IBOutlet var stackView: UIStackView?
     @IBOutlet var bottomButton: NUXButton?
     @IBOutlet var topButton: NUXButton?
@@ -46,11 +46,15 @@ open class NUXButtonViewController: UIViewController {
     private var bottomButtonConfig: NUXButtonConfig?
     private var tertiaryButtonConfig: NUXButtonConfig?
 
+    private let style = WordPressAuthenticator.shared.style
+
     // MARK: - View
 
     override open func viewDidLoad() {
         super.viewDidLoad()
         view.translatesAutoresizingMaskIntoConstraints = false
+
+        shadowView?.image = style.buttonViewTopShadowImage
     }
 
     override open func viewWillAppear(_ animated: Bool) {
@@ -107,6 +111,10 @@ open class NUXButtonViewController: UIViewController {
         topButtonConfig = NUXButtonConfig(title: title, isPrimary: isPrimary, accessibilityIdentifier: accessibilityIdentifier, callback: callback)
     }
 
+    func setupTopButtonFor(socialService: SocialServiceName, onTap callback: @escaping CallBackType) {
+        topButtonConfig = buttonConfigFor(socialService: socialService, onTap: callback)
+    }
+    
     func setupBottomButton(title: String, isPrimary: Bool = false, accessibilityIdentifier: String? = nil, onTap callback: @escaping CallBackType) {
         bottomButtonConfig = NUXButtonConfig(title: title, isPrimary: isPrimary, accessibilityIdentifier: accessibilityIdentifier, callback: callback)
     }
@@ -124,6 +132,10 @@ open class NUXButtonViewController: UIViewController {
         tertiaryButtonConfig = buttonConfigFor(socialService: socialService, onTap: callback)
     }
 
+    func hideShadowView() {
+        shadowView?.isHidden = true
+    }
+    
     // MARK: - Helpers
 
     private func buttonConfigFor(socialService: SocialServiceName, onTap callback: @escaping CallBackType) -> NUXButtonConfig {

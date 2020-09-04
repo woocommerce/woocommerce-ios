@@ -5,7 +5,9 @@ import Foundation
 enum Storyboard: String {
     case login = "Login"
     case signup = "Signup"
-    case unifiedSignUp = "UnifiedSignUp"
+    case getStarted = "GetStarted"
+    case unifiedSignup = "UnifiedSignup"
+    case unifiedLoginMagicLink = "LoginMagicLink" 
     case emailMagicLink = "EmailMagicLink"
     case siteAddress = "SiteAddress"
     case googleAuth = "GoogleAuth"

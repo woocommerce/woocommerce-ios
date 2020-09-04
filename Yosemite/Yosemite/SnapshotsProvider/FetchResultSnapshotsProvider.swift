@@ -92,7 +92,7 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     }
     private let snapshotSubject = CurrentValueSubject<FetchResultSnapshot, Never>(FetchResultSnapshot())
 
-    private lazy var wrappedController: NSFetchedResultsController<MutableType> = {
+    private lazy var fetchedResultsController: NSFetchedResultsController<MutableType> = {
         let fetchRequest = NSFetchRequest<MutableType>(entityName: MutableType.entityName)
         fetchRequest.predicate = query.predicate
         fetchRequest.sortDescriptors = [query.sortDescriptor]
@@ -113,7 +113,7 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
 
     /// Start fetching and emitting snapshots.
     public func start() throws {
-        try wrappedController.performFetch()
+        try fetchedResultsController.performFetch()
     }
 
     /// Retrieve the immutable type pointed to by `objectID`.

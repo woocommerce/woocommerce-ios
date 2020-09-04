@@ -203,11 +203,11 @@ extension WPStyleGuide {
     class func formattedAppleString() -> NSAttributedString {
         let attributedString = NSMutableAttributedString()
 
-        let prefix = ""
-        let prefixAttributes: [NSAttributedString.Key: Any] = [
+        let appleSymbol = ""
+        let appleSymbolAttributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: 23)
         ]
-        attributedString.append(NSAttributedString(string: prefix, attributes: prefixAttributes))
+        attributedString.append(NSAttributedString(string: appleSymbol, attributes: appleSymbolAttributes))
 
         // Add leading non-breaking space to separate the button text from the Apple symbol.
         let space = "\u{00a0}\u{00a0}"

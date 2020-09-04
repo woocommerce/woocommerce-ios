@@ -58,20 +58,16 @@ extension XCTestCase {
     public func waitFor<ValueType>(file: StaticString = #file,
                                    line: UInt = #line,
                                    timeout: TimeInterval = 5.0,
-                                   await: @escaping ((@escaping (ValueType) -> Void)) throws -> Void) throws -> ValueType {
+                                   await: @escaping (_ promise: (@escaping (ValueType) -> Void)) throws -> Void) throws -> ValueType {
+        let exp = expectation(description: "Expect promise to be called.")
 
         var receivedValue: ValueType? = nil
-        let done: (ValueType) -> Void = { value in
+        let promise: (ValueType) -> Void = { value in
             receivedValue = value
+            exp.fulfill()
         }
 
-        try await(done)
-
-        let predicate = NSPredicate { _, _ -> Bool in
-            receivedValue != nil
-        }
-
-        let exp = expectation(for: predicate, evaluatedWith: nil)
+        try await(promise)
 
         let result = XCTWaiter.wait(for: [exp], timeout: timeout)
         switch result {

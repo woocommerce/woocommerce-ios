@@ -436,7 +436,6 @@
 		5778E00624DB0C3900B65CBF /* StoreStatsAndTopPerformersPeriodViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5778E00524DB0C3900B65CBF /* StoreStatsAndTopPerformersPeriodViewModel.swift */; };
 		5778E00A24DB1D8600B65CBF /* BehaviorSubjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5778E00924DB1D8600B65CBF /* BehaviorSubjectTests.swift */; };
 		5778E00E24DB2BA200B65CBF /* BehaviorSubject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5778E00D24DB2BA200B65CBF /* BehaviorSubject.swift */; };
-		578187B22481D9290063B46B /* XCTestCase+Assertions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578187B12481D9290063B46B /* XCTestCase+Assertions.swift */; };
 		5791FB4224EC834300117FD6 /* MainTabViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5791FB4124EC834300117FD6 /* MainTabViewModelTests.swift */; };
 		5795F22C23E26A8D00F6707C /* OrderSearchStarterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5795F22B23E26A8D00F6707C /* OrderSearchStarterViewController.xib */; };
 		5795F22E23E26A9E00F6707C /* OrderSearchStarterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5795F22D23E26A9E00F6707C /* OrderSearchStarterViewController.swift */; };
@@ -1381,7 +1380,6 @@
 		5778E00524DB0C3900B65CBF /* StoreStatsAndTopPerformersPeriodViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsAndTopPerformersPeriodViewModel.swift; sourceTree = "<group>"; };
 		5778E00924DB1D8600B65CBF /* BehaviorSubjectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BehaviorSubjectTests.swift; sourceTree = "<group>"; };
 		5778E00D24DB2BA200B65CBF /* BehaviorSubject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BehaviorSubject.swift; sourceTree = "<group>"; };
-		578187B12481D9290063B46B /* XCTestCase+Assertions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+Assertions.swift"; sourceTree = "<group>"; };
 		5791FB4124EC834300117FD6 /* MainTabViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabViewModelTests.swift; sourceTree = "<group>"; };
 		5795F22B23E26A8D00F6707C /* OrderSearchStarterViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderSearchStarterViewController.xib; sourceTree = "<group>"; };
 		5795F22D23E26A9E00F6707C /* OrderSearchStarterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSearchStarterViewController.swift; sourceTree = "<group>"; };
@@ -3025,7 +3023,6 @@
 			isa = PBXGroup;
 			children = (
 				6856D66A1963092C34D20674 /* Calendar+Extensions.swift */,
-				578187B12481D9290063B46B /* XCTestCase+Assertions.swift */,
 				571FDDAD24C768DC00D486A5 /* MockZendeskManager.swift */,
 			);
 			path = Testing;
@@ -5563,7 +5560,6 @@
 				45FBDF2B238BF8A300127F77 /* ProductImageCollectionViewCellTests.swift in Sources */,
 				57F2C6CD246DECC10074063B /* SummaryTableViewCellViewModelTests.swift in Sources */,
 				02A275C423FE5B64005C560F /* MockPHAssetImageLoader.swift in Sources */,
-				578187B22481D9290063B46B /* XCTestCase+Assertions.swift in Sources */,
 				029700EF24FE38F000D242F8 /* ScrollWatcherTests.swift in Sources */,
 				0225C42A24768CE900C5B4F0 /* FilterProductListViewModelProductListFilterTests.swift in Sources */,
 				02691780232600A6002AFC20 /* ProductsTabProductViewModelTests.swift in Sources */,

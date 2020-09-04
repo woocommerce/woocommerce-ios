@@ -31,6 +31,32 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         super.tearDown()
     }
 
+    func test_objectWithID_returns_the_expected_immutable_object() throws {
+        // Given
+        let insertedAccount = insertAccount(displayName: "Reina Feil", username: "reinafeil")
+
+        viewStorage.saveIfNeeded()
+
+        let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
+            sortDescriptor: .init(keyPath: \StorageAccount.displayName, ascending: true)
+        )
+        let provider = FetchResultSnapshotsProvider(storage: viewStorage, query: query)
+
+        // When
+        let snapshot: FetchResultSnapshot = try waitFor { done in
+            provider.snapshot.dropFirst().sink { snapshot in
+                done(snapshot)
+            }.store(in: &self.cancellables)
+
+            try provider.start()
+        }
+
+        // Then
+        let objectID = try XCTUnwrap(snapshot.itemIdentifiers.first)
+        let fetchedAccount = try XCTUnwrap(provider.object(withID: objectID))
+        XCTAssertEqual(fetchedAccount, insertedAccount.toReadOnly())
+    }
+
     func test_snapshot_emits_an_empty_list_if_SnapshotsProvider_is_not_started() throws {
         // Given
         insertAccount(displayName: "Reina Feil", username: "reinafeil")

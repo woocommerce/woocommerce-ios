@@ -58,9 +58,11 @@ public final class FetchResultSnapshotsProvider<ResultType: FetchResultSnapshots
         try wrappedController.performFetch()
     }
 
-    public func object(withID objectID: FetchResultSnapshotObjectID) -> Order? {
+    public func object(withID objectID: FetchResultSnapshotObjectID) -> ResultType.ReadOnlyType? {
+        assert(!objectID.isTemporaryID, "Expected objectID \(objectID) to be a permanent NSManagedObjectID.")
+
         let context = storage as! NSManagedObjectContext
-        if let storageOrder = try? context.existingObject(with: objectID) as? StorageOrder {
+        if let storageOrder = try? context.existingObject(with: objectID) as? ResultType {
             return storageOrder.toReadOnly()
         } else {
             return nil

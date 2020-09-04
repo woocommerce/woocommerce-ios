@@ -144,7 +144,7 @@ private extension ProductFormTableViewDataSource {
             self?.onNameChange?(newName)
             },
                                                             style: .headline,
-                                                            edgeInsets: UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16))
+                                                            edgeInsets: UIEdgeInsets(top: 8, left: 11, bottom: 8, right: 11))
 
         cell.configure(with: cellViewModel)
     }
@@ -190,7 +190,7 @@ private extension ProductFormTableViewDataSource {
         switch row {
         case .price(let viewModel, _),
              .inventory(let viewModel, _),
-             .productType(let viewModel),
+             .productType(let viewModel, _),
              .shipping(let viewModel),
              .categories(let viewModel),
              .tags(let viewModel),
@@ -229,9 +229,7 @@ private extension ProductFormTableViewDataSource {
                        details: viewModel.details ?? "",
                        ratingCount: ratingCount,
                        averageRating: averageRating)
-        if ratingCount > 0 {
-            cell.accessoryType = .disclosureIndicator
-        }
+        cell.accessoryType = .disclosureIndicator
     }
 
     func configureSettingsRowWithASwitch(cell: UITableViewCell, viewModel: ProductFormSection.SettingsRow.SwitchableViewModel) {

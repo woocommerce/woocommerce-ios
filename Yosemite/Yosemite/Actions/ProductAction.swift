@@ -12,6 +12,8 @@ public enum ProductAction: Action {
 
     /// Synchronizes the Products matching the specified criteria.
     ///
+    /// - Parameter onCompletion: called when sync completes, returns an error or a boolean that indicates whether there might be more products to sync.
+    ///
     case synchronizeProducts(siteID: Int64,
         pageNumber: Int,
         pageSize: Int,
@@ -21,7 +23,7 @@ public enum ProductAction: Action {
         sortOrder: ProductsSortOrder,
         excludedProductIDs: [Int64] = [],
         shouldDeleteStoredProductsOnFirstPage: Bool = true,
-        onCompletion: (Error?) -> Void)
+        onCompletion: (Result<Bool, Error>) -> Void)
 
     /// Retrieves the specified Product.
     ///
@@ -29,11 +31,14 @@ public enum ProductAction: Action {
 
     /// Retrieves a specified list of Products.
     ///
+    /// - Parameter onCompletion: called when retrieval for a page completes, returns an error or a tuple of a list of products and a boolean that
+    ///                           indicates whether there might be more products to fetch.
+    ///
     case retrieveProducts(siteID: Int64,
         productIDs: [Int64],
         pageNumber: Int = ProductsRemote.Default.pageNumber,
         pageSize: Int = ProductsRemote.Default.pageSize,
-        onCompletion: (Result<[Product], Error>) -> Void)
+        onCompletion: (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void)
 
     /// Deletes all of the cached products.
     ///

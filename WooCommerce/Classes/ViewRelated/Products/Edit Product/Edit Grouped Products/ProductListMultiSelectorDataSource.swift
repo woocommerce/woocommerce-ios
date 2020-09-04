@@ -67,13 +67,14 @@ final class ProductListMultiSelectorDataSource: PaginatedListSelectorDataSource 
                                  productType: nil,
                                  sortOrder: .nameAscending,
                                  excludedProductIDs: excludedProductIDs,
-                                 shouldDeleteStoredProductsOnFirstPage: false) { error in
-                                    if let error = error {
+                                 shouldDeleteStoredProductsOnFirstPage: false) { result in
+                                    switch result {
+                                    case .failure(let error):
                                         DDLogError("⛔️ Error synchronizing products on product list selector: \(error)")
                                         onCompletion?(false)
-                                        return
+                                    case .success:
+                                        onCompletion?(true)
                                     }
-                                    onCompletion?(true)
         }
         ServiceLocator.stores.dispatch(action)
     }

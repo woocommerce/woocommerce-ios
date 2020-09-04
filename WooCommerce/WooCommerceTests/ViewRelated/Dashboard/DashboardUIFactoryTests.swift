@@ -23,7 +23,7 @@ final class DashboardUIFactoryTests: XCTestCase {
         dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
 
         var dashboardUITypes: [UIViewController.Type] = []
-        let expectedDashboardUITypes: [UIViewController.Type] = [DashboardStatsV3ViewController.self,
+        let expectedDashboardUITypes: [UIViewController.Type] = [DeprecatedDashboardStatsViewController.self,
                                                                  // `StoreStatsAndTopPerformersViewController` is the VC for the v4 stats
                                                                  StoreStatsAndTopPerformersViewController.self]
         let expectation = self.expectation(description: "Wait for the stats v4")
@@ -52,7 +52,7 @@ final class DashboardUIFactoryTests: XCTestCase {
         expectation.expectedFulfillmentCount = 1
 
         dashboardUIFactory.reloadDashboardUI { dashboardUI in
-            XCTAssertTrue(dashboardUI is DashboardStatsV3ViewController)
+            XCTAssertTrue(dashboardUI is DeprecatedDashboardStatsViewController)
             expectation.fulfill()
         }
         waitForExpectations(timeout: 0.1, handler: nil)
@@ -95,7 +95,7 @@ final class DashboardUIFactoryTests: XCTestCase {
             // The first updated view controller is v4, and the second view controller is reverted back to v3.
             if dashboardUIArray.count >= 2 {
                 XCTAssertTrue(dashboardUIArray[0] is StoreStatsAndTopPerformersViewController)
-                XCTAssertTrue(dashboardUIArray[1] is DashboardStatsV3ViewController)
+                XCTAssertTrue(dashboardUIArray[1] is DeprecatedDashboardStatsViewController)
 
                 guard let self = self else {
                     XCTFail()
@@ -110,7 +110,7 @@ final class DashboardUIFactoryTests: XCTestCase {
 
                     // The first view controller is v4 -> v3 UI, and the second view controller is v3 -> v4 UI.
                     if dashboardUIArray.count >= 2 {
-                        XCTAssertTrue(dashboardUIArray[0] is DashboardStatsV3ViewController)
+                        XCTAssertTrue(dashboardUIArray[0] is DeprecatedDashboardStatsViewController)
                         XCTAssertTrue(dashboardUIArray[1] is StoreStatsAndTopPerformersViewController)
                         expectation.fulfill()
                     }

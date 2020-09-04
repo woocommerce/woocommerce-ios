@@ -31,6 +31,7 @@ protocol ProductFormDataModel {
     var taxClass: String? { get }
 
     // Reviews
+    var reviewsAllowed: Bool { get }
     var averageRating: String { get }
     var ratingCount: Int { get }
 

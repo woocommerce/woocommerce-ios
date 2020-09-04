@@ -27,6 +27,7 @@ enum ProductFormEditAction {
     // Non-core products only (e.g. subscription products, booking products)
     case readonlyPriceSettings
     case readonlyInventorySettings
+    case readonlyProductType
 }
 
 /// Creates actions for different sections/UI on the product form.
@@ -79,7 +80,7 @@ private extension ProductFormActionsFactory {
     }
 
     func allSettingsSectionActionsForSimpleProduct() -> [ProductFormEditAction] {
-        let shouldShowReviewsRow = isEditProductsRelease3Enabled
+        let shouldShowReviewsRow = isEditProductsRelease3Enabled && product.reviewsAllowed
         let shouldShowProductTypeRow = isEditProductsRelease3Enabled
         let shouldShowShippingSettingsRow = product.isShippingEnabled()
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
@@ -99,7 +100,7 @@ private extension ProductFormActionsFactory {
     }
 
     func allSettingsSectionActionsForAffiliateProduct() -> [ProductFormEditAction] {
-        let shouldShowReviewsRow = isEditProductsRelease3Enabled
+        let shouldShowReviewsRow = isEditProductsRelease3Enabled && product.reviewsAllowed
         let shouldShowProductTypeRow = isEditProductsRelease3Enabled
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
         let shouldShowTagsRow = isEditProductsRelease3Enabled
@@ -118,7 +119,7 @@ private extension ProductFormActionsFactory {
     }
 
     func allSettingsSectionActionsForGroupedProduct() -> [ProductFormEditAction] {
-        let shouldShowReviewsRow = isEditProductsRelease3Enabled
+        let shouldShowReviewsRow = isEditProductsRelease3Enabled && product.reviewsAllowed
         let shouldShowProductTypeRow = isEditProductsRelease3Enabled
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
         let shouldShowTagsRow = isEditProductsRelease3Enabled
@@ -136,7 +137,7 @@ private extension ProductFormActionsFactory {
     }
 
     func allSettingsSectionActionsForVariableProduct() -> [ProductFormEditAction] {
-        let shouldShowReviewsRow = isEditProductsRelease3Enabled
+        let shouldShowReviewsRow = isEditProductsRelease3Enabled && product.reviewsAllowed
         let shouldShowProductTypeRow = isEditProductsRelease3Enabled
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
         let shouldShowTagsRow = isEditProductsRelease3Enabled
@@ -144,6 +145,8 @@ private extension ProductFormActionsFactory {
         let actions: [ProductFormEditAction?] = [
             .variations,
             shouldShowReviewsRow ? .reviews: nil,
+            .shippingSettings,
+            .inventorySettings,
             shouldShowCategoriesRow ? .categories: nil,
             shouldShowTagsRow ? .tags: nil,
             .briefDescription,
@@ -154,7 +157,7 @@ private extension ProductFormActionsFactory {
 
     func allSettingsSectionActionsForNonCoreProduct() -> [ProductFormEditAction] {
         let shouldShowPriceSettingsRow = product.regularPrice.isNilOrEmpty == false
-        let shouldShowReviewsRow = isEditProductsRelease3Enabled
+        let shouldShowReviewsRow = isEditProductsRelease3Enabled && product.reviewsAllowed
         let shouldShowProductTypeRow = isEditProductsRelease3Enabled
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
         let shouldShowTagsRow = isEditProductsRelease3Enabled
@@ -166,7 +169,7 @@ private extension ProductFormActionsFactory {
             shouldShowCategoriesRow ? .categories: nil,
             shouldShowTagsRow ? .tags: nil,
             .briefDescription,
-            shouldShowProductTypeRow ? .productType : nil
+            shouldShowProductTypeRow ? .readonlyProductType : nil
         ]
         return actions.compactMap { $0 }
     }
@@ -215,7 +218,7 @@ private extension ProductFormActionsFactory {
             // The variations row is always visible in the settings section for a variable product.
             return true
         // Non-core products only.
-        case .readonlyPriceSettings, .readonlyInventorySettings:
+        case .readonlyPriceSettings, .readonlyInventorySettings, .readonlyProductType:
             // The readonly rows are always visible in the settings section for a non-core product.
             return true
         default:

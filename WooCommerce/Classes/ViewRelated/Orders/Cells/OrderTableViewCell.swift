@@ -128,7 +128,7 @@ private extension OrderTableViewCell {
     /// For example, #560 Pamela Nguyen
     ///
     func title(for order: Order) -> String {
-        if let billingAddress = order.billingAddress {
+        if let billingAddress = order.billingAddress, billingAddress.firstName.isNotEmpty || billingAddress.lastName.isNotEmpty {
             return Localization.title(orderNumber: order.number,
                                       firstName: billingAddress.firstName,
                                       lastName: billingAddress.lastName)
@@ -173,11 +173,13 @@ private extension OrderTableViewCell {
         }
 
         static func title(orderNumber: String) -> String {
-            let format = NSLocalizedString("#%@", comment: "In Order List,"
+            let format = NSLocalizedString("#%@ %@", comment: "In Order List,"
                 + " the pattern to show the order number. For example, “#123456”."
                 + " The %@ placeholder is the order number.")
 
-            return String.localizedStringWithFormat(format, orderNumber)
+            let guestName: String = NSLocalizedString("Guest", comment: "In Order List, the name of the billed person when there are no name and last name.")
+
+            return String.localizedStringWithFormat(format, orderNumber, guestName)
         }
     }
 }

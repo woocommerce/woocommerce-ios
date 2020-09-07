@@ -45,15 +45,16 @@ private extension SitePostStore {
 
     /// Update the password for a specific site post from WP.com
     ///
-    func updateSitePostPassword(siteID: Int64, postID: Int64, password: String, onCompletion: @escaping (_ password: String?, _ error: Error?) -> Void) {
+    func updateSitePostPassword(siteID: Int64, postID: Int64, password: String, onCompletion: @escaping (Result<String?, Error>) -> Void) {
         let remote = SitePostsRemote(network: network)
         let newSitePost = Post(siteID: siteID, password: password)
-        remote.updateSitePost(for: siteID, postID: postID, post: newSitePost) { (sitePost, error) in
-            guard error == nil else {
-                onCompletion(nil, error)
-                return
+        remote.updateSitePost(for: siteID, postID: postID, post: newSitePost) { result in
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            case .success(let post):
+                onCompletion(.success(post.password))
             }
-            onCompletion(sitePost?.password, nil)
         }
     }
 }

@@ -24,8 +24,8 @@ final class PaginationTrackerTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(syncedPages, [
-            PageInformation(pageNumber: 0, pageSize: 30, reason: nil),
-            PageInformation(pageNumber: 1, pageSize: 30, reason: nil)
+            .init(pageNumber: 0, pageSize: 30, reason: nil),
+            .init(pageNumber: 1, pageSize: 30, reason: nil)
         ])
     }
 
@@ -43,7 +43,7 @@ final class PaginationTrackerTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(syncedPages, [
-            PageInformation(pageNumber: 0, pageSize: 30, reason: nil)
+            .init(pageNumber: 0, pageSize: 30, reason: nil)
         ])
     }
 
@@ -61,8 +61,8 @@ final class PaginationTrackerTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(syncedPages, [
-            PageInformation(pageNumber: 0, pageSize: 30, reason: nil),
-            PageInformation(pageNumber: 0, pageSize: 30, reason: "Testing")
+            .init(pageNumber: 0, pageSize: 30, reason: nil),
+            .init(pageNumber: 0, pageSize: 30, reason: "Testing")
         ])
     }
 
@@ -78,7 +78,7 @@ final class PaginationTrackerTests: XCTestCase {
         paginationTracker.ensureNextPageIsSynced()
 
         // Assert
-        XCTAssertEqual(syncedPages, [PageInformation(pageNumber: 0, pageSize: 30, reason: nil)])
+        XCTAssertEqual(syncedPages, [.init(pageNumber: 0, pageSize: 30, reason: nil)])
     }
 
     func test_ensuring_next_page_after_syncing_first_page_with_failure_triggers_delegate_to_sync_the_first_page_twice() {
@@ -95,8 +95,8 @@ final class PaginationTrackerTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(syncedPages, [
-            PageInformation(pageNumber: 0, pageSize: 30, reason: nil),
-            PageInformation(pageNumber: 0, pageSize: 30, reason: nil)
+            .init(pageNumber: 0, pageSize: 30, reason: nil),
+            .init(pageNumber: 0, pageSize: 30, reason: nil)
         ])
     }
 }
@@ -115,6 +115,6 @@ private class MockPaginationTrackerDelegate: PaginationTrackerDelegate {
     var onSync: OnSyncClosure?
 
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
-        onSync?(PageInformation(pageNumber: pageNumber, pageSize: pageSize, reason: reason), onCompletion)
+        onSync?(.init(pageNumber: pageNumber, pageSize: pageSize, reason: reason), onCompletion)
     }
 }

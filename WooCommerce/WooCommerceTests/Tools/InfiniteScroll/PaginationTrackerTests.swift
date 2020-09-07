@@ -13,8 +13,8 @@ final class PaginationTrackerTests: XCTestCase {
     func test_ensuring_next_page_after_syncing_first_page_triggers_delegate_to_sync_two_pages() {
         // Arrange
         var syncedPages = [PageInformation]()
-        mockDelegate.onSync = { pageNumber, pageSize, reason, onCompletion in
-            syncedPages.append(PageInformation(pageNumber: pageNumber, pageSize: pageSize, reason: reason))
+        mockDelegate.onSync = { pageInformation, onCompletion in
+            syncedPages.append(pageInformation)
             onCompletion?(.success(true))
         }
 
@@ -29,11 +29,11 @@ final class PaginationTrackerTests: XCTestCase {
         ])
     }
 
-    func test_ensuring_next_page_after_syncing_first_page_without_next_page_is_noop() {
+    func test_ensuring_next_page_after_syncing_first_page_without_next_page_is_no_op() {
         // Arrange
         var syncedPages = [PageInformation]()
-        mockDelegate.onSync = { pageNumber, pageSize, reason, onCompletion in
-            syncedPages.append(PageInformation(pageNumber: pageNumber, pageSize: pageSize, reason: reason))
+        mockDelegate.onSync = { pageInformation, onCompletion in
+            syncedPages.append(pageInformation)
             onCompletion?(.success(false))
         }
 
@@ -50,8 +50,8 @@ final class PaginationTrackerTests: XCTestCase {
     func test_resyncing_after_syncing_first_page_triggers_delegate_to_sync_the_first_page_again() {
         // Arrange
         var syncedPages = [PageInformation]()
-        mockDelegate.onSync = { pageNumber, pageSize, reason, onCompletion in
-            syncedPages.append(PageInformation(pageNumber: pageNumber, pageSize: pageSize, reason: reason))
+        mockDelegate.onSync = { pageInformation, onCompletion in
+            syncedPages.append(pageInformation)
             onCompletion?(.success(true))
         }
 
@@ -69,8 +69,8 @@ final class PaginationTrackerTests: XCTestCase {
     func test_ensuring_next_page_without_syncing_first_page_triggers_delegate_to_sync_the_first_page() {
         // Arrange
         var syncedPages = [PageInformation]()
-        mockDelegate.onSync = { pageNumber, pageSize, reason, onCompletion in
-            syncedPages.append(PageInformation(pageNumber: pageNumber, pageSize: pageSize, reason: reason))
+        mockDelegate.onSync = { pageInformation, onCompletion in
+            syncedPages.append(pageInformation)
             onCompletion?(.success(true))
         }
 
@@ -84,8 +84,8 @@ final class PaginationTrackerTests: XCTestCase {
     func test_ensuring_next_page_after_syncing_first_page_with_failure_triggers_delegate_to_sync_the_first_page_twice() {
         // Arrange
         var syncedPages = [PageInformation]()
-        mockDelegate.onSync = { pageNumber, pageSize, reason, onCompletion in
-            syncedPages.append(PageInformation(pageNumber: pageNumber, pageSize: pageSize, reason: reason))
+        mockDelegate.onSync = { pageInformation, onCompletion in
+            syncedPages.append(pageInformation)
             onCompletion?(.failure(NSError(domain: "", code: 1, userInfo: nil)))
         }
 
@@ -110,11 +110,11 @@ private struct PageInformation: Equatable {
 /// `PaginationTrackerDelegate` Closure-based wrapper, for unit testing purposes.
 ///
 private class MockPaginationTrackerDelegate: PaginationTrackerDelegate {
-    typealias OnSyncClosure = (Int, Int, String?, SyncCompletion?) -> Void
+    typealias OnSyncClosure = (PageInformation, SyncCompletion?) -> Void
 
     var onSync: OnSyncClosure?
 
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
-        onSync?(pageNumber, pageSize, reason, onCompletion)
+        onSync?(PageInformation(pageNumber: pageNumber, pageSize: pageSize, reason: reason), onCompletion)
     }
 }

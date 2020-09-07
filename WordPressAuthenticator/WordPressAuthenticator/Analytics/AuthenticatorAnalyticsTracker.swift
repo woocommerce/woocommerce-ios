@@ -77,6 +77,10 @@ public class AuthenticatorAnalyticsTracker {
         /// This flow represents the signup (when the user inputs an email that’s not registered with a .com account)
         ///
         case signup
+        
+        /// This flow represents the prologue screen.
+        ///
+        case prologue
     }
     
     public enum Step: String {
@@ -97,7 +101,11 @@ public class AuthenticatorAnalyticsTracker {
         
         /// The screen with a username and password visible
         ///
-        case userPasswordScreenShown = "password_challenge"
+        case usernamePassword = "username_password"
+        
+        /// The screen that requests the password
+        ///
+        case passwordChallenge = "password_challenge"
         
         /// Triggered on the epilogue screen
         ///
@@ -232,6 +240,8 @@ public class AuthenticatorAnalyticsTracker {
     struct Configuration {
         let appleEnabled: Bool
         let googleEnabled: Bool
+        let iCloudKeychainEnabled: Bool
+        let prologueEnabled: Bool
         let siteAddressEnabled: Bool
         let wpComEnabled: Bool
     }
@@ -240,14 +250,16 @@ public class AuthenticatorAnalyticsTracker {
         // When unit testing, WordPressAuthenticator is not always initialized.
         // The following code ensures we have configuration defaults even if that's the case.
         guard WordPressAuthenticator.isInitialized() else {
-            return Configuration(appleEnabled: false, googleEnabled: false, siteAddressEnabled: false, wpComEnabled: false)
+            return Configuration(appleEnabled: false, googleEnabled: false, iCloudKeychainEnabled: false, prologueEnabled: false, siteAddressEnabled: false, wpComEnabled: false)
         }
         
         return Configuration(
             appleEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedApple,
             googleEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedGoogle,
+            iCloudKeychainEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedKeychainLogin,
+            prologueEnabled: false,
             siteAddressEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress,
-            wpComEnabled: false)
+            wpComEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedWordPress)
     }
     
     /// State for the analytics tracker.
@@ -257,7 +269,7 @@ public class AuthenticatorAnalyticsTracker {
         var lastSource: Source
         var lastStep: Step
         
-        init(lastFlow: Flow = .wpCom, lastSource: Source = .default, lastStep: Step = .prologue) {
+        init(lastFlow: Flow = .prologue, lastSource: Source = .default, lastStep: Step = .prologue) {
             self.lastFlow = lastFlow
             self.lastSource = lastSource
             self.lastStep = lastStep
@@ -289,13 +301,15 @@ public class AuthenticatorAnalyticsTracker {
     ///
     /// It's the responsibility of the class calling the tracking methods to check this before attempting to actually do the tracking.
     ///
-    /// - Returns: `true` if the
+    /// - Returns: `true` if we can track using the state machine.
     ///
     public func canTrackInCurrentFlow() -> Bool {
         return isInSiteAuthenticationFlowAndCanTrack()
             || isInAppleFlowAndCanTrack()
             || isInGoogleFlowAndCanTrack()
             || isInWPComFlowAndCanTrack()
+            || isInPrologueFlowAndCanTrack()
+            || isInKeychainFlowAndCanTrack()
     }
     
     /// This is a convenience method, that's useful for cases where we simply want to check if the legacy tracking should be
@@ -323,6 +337,14 @@ public class AuthenticatorAnalyticsTracker {
     
     private func isInWPComFlowAndCanTrack() -> Bool {
         return configuration.wpComEnabled && state.lastFlow == .wpCom
+    }
+    
+    private func isInPrologueFlowAndCanTrack() -> Bool {
+        return configuration.prologueEnabled && state.lastFlow == .prologue
+    }
+    
+    private func isInKeychainFlowAndCanTrack() -> Bool {
+        return configuration.iCloudKeychainEnabled && state.lastFlow == .loginWithiCloudKeychain
     }
     
     // MARK: - Tracking
@@ -449,12 +471,22 @@ public class AuthenticatorAnalyticsTracker {
     
     // MARK: - Source & Flow
     
+    /// Allows the caller to set the flow without tracking.
+    ///
     func set(flow: Flow) {
         state.lastFlow = flow
     }
     
+    /// Allows the caller to set the source without tracking.
+    ///
     func set(source: Source) {
         state.lastSource = source
+    }
+    
+    /// Allows the caller to set the step without tracking.
+    ///
+    func set(step: Step) {
+        state.lastStep = step
     }
     
     // MARK: - Properties

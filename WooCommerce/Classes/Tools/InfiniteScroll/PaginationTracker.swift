@@ -21,7 +21,7 @@ final class PaginationTracker {
         static let pageSize = 25
     }
 
-    /// First Page Index
+    /// The index of the first page in the API. So far, both Woo and WP.com API have the first page index at 1.
     private let pageFirstIndex: Int
 
     /// Number of elements retrieved per request.
@@ -30,23 +30,23 @@ final class PaginationTracker {
     /// Syncing delegate
     weak var delegate: PaginationTrackerDelegate?
 
-    /// Maps from a page number to the last synced date.
-    private var syncedDatesByPage = [Int: Date]()
+    /// Indexes of the pages that have been successfully synced.
+    private var pagesSynced = IndexSet()
 
-    /// Indexes of the pages being currently synced
+    /// Indexes of the pages being currently synced.
     private var pagesBeingSynced = IndexSet()
 
     /// Whether there might be more pages to fetch from the API, set by the sync completion.
     private var hasNextPage: Bool = true
 
+    /// Returns the highest page number that has been successfully synced, if any.
+    private var highestPageSynced: Int? {
+        pagesSynced.max()
+    }
+
     /// Returns the highest page number that is currently being synced, if any.
     private var highestPageBeingSynced: Int? {
         pagesBeingSynced.max()
-    }
-
-    /// Returns the highest page number that has been successfully synced.
-    private var highestPageSynced: Int? {
-        syncedDatesByPage.keys.max()
     }
 
     /// Designated Initializer
@@ -126,7 +126,7 @@ private extension PaginationTracker {
     /// Resets all of the internal structures.
     func resetInternalState() {
         pagesBeingSynced.removeAll()
-        syncedDatesByPage.removeAll()
+        pagesSynced.removeAll()
         hasNextPage = true
     }
 
@@ -137,7 +137,7 @@ private extension PaginationTracker {
 
     /// Marks the specified page number as synced with the current date.
     func markAsSynced(pageNumber: Int) {
-        syncedDatesByPage[pageNumber] = Date()
+        pagesSynced.insert(pageNumber)
     }
 
     /// Marks the specified page number as being synced.

@@ -2,12 +2,20 @@ import XCTest
 @testable import WooCommerce
 
 final class PaginationTrackerTests: XCTestCase {
-    private let paginationTracker = PaginationTracker(pageFirstIndex: 0, pageSize: 30)
-    private let mockDelegate = MockPaginationTrackerDelegate()
+    private var paginationTracker: PaginationTracker!
+    private var mockDelegate: MockPaginationTrackerDelegate!
 
     override func setUp() {
         super.setUp()
+        mockDelegate = MockPaginationTrackerDelegate()
+        paginationTracker = PaginationTracker(pageFirstIndex: 0, pageSize: 30)
         paginationTracker.delegate = mockDelegate
+    }
+
+    override func tearDown() {
+        paginationTracker = nil
+        mockDelegate = nil
+        super.tearDown()
     }
 
     func test_ensuring_next_page_after_syncing_first_page_triggers_delegate_to_sync_two_pages() {

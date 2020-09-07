@@ -24,6 +24,9 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         product
     }
 
+    /// The form type could change from .add to .edit after creation.
+    private(set) var formType: ProductFormType
+
     /// Creates actions available on the bottom sheet.
     private(set) var actionsFactory: ProductFormActionsFactoryProtocol
 
@@ -81,8 +84,10 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     private var cancellable: ObservationToken?
 
     init(product: EditableProductModel,
+         formType: ProductFormType,
          productImageActionHandler: ProductImageActionHandler,
          isEditProductsRelease3Enabled: Bool) {
+        self.formType = formType
         self.productImageActionHandler = productImageActionHandler
         self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
         self.originalProduct = product

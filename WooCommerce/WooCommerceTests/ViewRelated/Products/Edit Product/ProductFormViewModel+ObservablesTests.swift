@@ -28,6 +28,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
+                                             formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
                                              isEditProductsRelease3Enabled: false)
         let taxClass = TaxClass(siteID: product.siteID, name: "standard", slug: product.taxClass ?? "standard")
@@ -76,6 +77,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
+                                             formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
                                              isEditProductsRelease3Enabled: false)
         var isProductUpdated: Bool?
@@ -117,6 +119,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
+                                             formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
                                              isEditProductsRelease3Enabled: false)
         var isProductUpdated: Bool?
@@ -154,6 +157,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
+                                             formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
                                              isEditProductsRelease3Enabled: false)
         // The password is set from a separate DotCom API.
@@ -198,6 +202,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
+                                             formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
                                              isEditProductsRelease3Enabled: false)
         var isProductUpdated: Bool?

@@ -567,23 +567,9 @@ extension OrderDetailsDataSource {
                 return nil
             }
 
-            // Order Items section with Refunds hidden
-            guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.refunds) else {
-                var rows: [Row] = Array(repeating: .orderItem, count: items.count)
-
-                if isProcessingPayment {
-                    rows.append(.fulfillButton)
-                } else {
-                    rows.append(.details)
-                }
-
-                return Section(title: Localization.pluralizedProducts(count: items.count), rightTitle: nil, rows: rows, headerStyle: .primary)
-            }
-
             var rows = [Row]()
 
-            let refundsEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.refunds)
-            if refundedProductsCount > 0 && refundsEnabled {
+            if refundedProductsCount > 0 {
                 rows = Array(repeating: .aggregateOrderItem, count: aggregateOrderItems.count)
             } else {
                 rows = Array(repeating: .orderItem, count: items.count)
@@ -603,11 +589,6 @@ extension OrderDetailsDataSource {
         }()
 
         let refundedProducts: Section? = {
-            // Refunds off
-            guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.refunds) else {
-                return nil
-            }
-
             // Refunds on
             guard refundedProductsCount > 0 else {
                 return nil
@@ -642,13 +623,10 @@ extension OrderDetailsDataSource {
 
         let payment: Section = {
             var rows: [Row] = [.payment, .customerPaid]
-
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(. refunds) {
-                if order.refunds.count > 0 {
-                    let refunds = Array<Row>(repeating: .refund, count: order.refunds.count)
-                    rows.append(contentsOf: refunds)
-                    rows.append(.netAmount)
-                }
+            if order.refunds.count > 0 {
+                let refunds = Array<Row>(repeating: .refund, count: order.refunds.count)
+                rows.append(contentsOf: refunds)
+                rows.append(.netAmount)
             }
 
             return Section(title: Title.payment, rows: rows)

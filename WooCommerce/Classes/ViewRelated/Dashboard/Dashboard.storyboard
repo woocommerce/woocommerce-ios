@@ -1,85 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="z1L-hy-XB6">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="z1L-hy-XB6">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Store Stats View Controller-->
-        <scene sceneID="gpf-E1-UPO">
-            <objects>
-                <viewController storyboardIdentifier="StoreStatsViewController" id="zaY-no-5X6" customClass="StoreStatsViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="EgO-Cw-kVD">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="Y7g-5h-02N">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PBm-IO-eju">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="0.5"/>
-                                        <color key="backgroundColor" red="0.98541599999999996" green="0.0" blue="0.98173999999999995" alpha="1" colorSpace="calibratedRGB"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="0.5" id="hCW-AU-C7N"/>
-                                        </constraints>
-                                    </view>
-                                    <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="V2w-p4-txW" customClass="ButtonBarView" customModule="XLPagerTabStrip">
-                                        <rect key="frame" x="0.0" y="0.5" width="375" height="48"/>
-                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="48" id="3Mv-YT-dTc"/>
-                                        </constraints>
-                                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="czi-75-Rrf">
-                                            <size key="itemSize" width="50" height="50"/>
-                                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                        </collectionViewFlowLayout>
-                                        <cells/>
-                                    </collectionView>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cMR-ex-E4c">
-                                        <rect key="frame" x="0.0" y="48.5" width="375" height="0.5"/>
-                                        <color key="backgroundColor" red="0.98541599999999996" green="0.0" blue="0.98173999999999995" alpha="1" colorSpace="calibratedRGB"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="0.5" id="8O6-Qx-Y7L"/>
-                                        </constraints>
-                                    </view>
-                                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iZC-Gc-okA">
-                                        <rect key="frame" x="0.0" y="49" width="375" height="617.5"/>
-                                    </scrollView>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Kbr-bQ-njj">
-                                        <rect key="frame" x="0.0" y="666.5" width="375" height="0.5"/>
-                                        <color key="backgroundColor" red="0.98541599999999996" green="0.0" blue="0.98173999999999995" alpha="1" colorSpace="calibratedRGB"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="0.5" id="Co8-ct-oPM"/>
-                                        </constraints>
-                                    </view>
-                                </subviews>
-                            </stackView>
-                        </subviews>
-                        <constraints>
-                            <constraint firstItem="xqP-5J-FFo" firstAttribute="bottom" secondItem="Y7g-5h-02N" secondAttribute="bottom" id="CMJ-Vu-m6U"/>
-                            <constraint firstItem="xqP-5J-FFo" firstAttribute="trailing" secondItem="Y7g-5h-02N" secondAttribute="trailing" id="Ekh-QD-OJ9"/>
-                            <constraint firstItem="Y7g-5h-02N" firstAttribute="leading" secondItem="xqP-5J-FFo" secondAttribute="leading" id="PKQ-Qk-bgY"/>
-                            <constraint firstItem="Y7g-5h-02N" firstAttribute="top" secondItem="xqP-5J-FFo" secondAttribute="top" id="rY1-F6-QEI"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="xqP-5J-FFo"/>
-                    </view>
-                    <connections>
-                        <outlet property="bottomBorder" destination="Kbr-bQ-njj" id="STS-VL-hwE"/>
-                        <outlet property="buttonBarView" destination="V2w-p4-txW" id="VTs-KL-ctj"/>
-                        <outlet property="containerView" destination="iZC-Gc-okA" id="WQL-We-gId"/>
-                        <outlet property="middleBorder" destination="cMR-ex-E4c" id="kKu-oy-qVs"/>
-                        <outlet property="topBorder" destination="PBm-IO-eju" id="XRw-Fl-mDY"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="a6b-fg-tHy" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-1506" y="1794"/>
-        </scene>
         <!--Dashboard-->
         <scene sceneID="tne-QT-ifu">
             <objects>
@@ -293,88 +221,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ktB-5U-hFt" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-724" y="1056"/>
-        </scene>
-        <!--Top Performers View Controller-->
-        <scene sceneID="cVB-Jf-xe7">
-            <objects>
-                <viewController storyboardIdentifier="TopPerformersViewController" id="Djg-dC-a51" customClass="TopPerformersViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="1eR-hd-IG4">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="jSh-li-XP9">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0FA-ly-Gnf">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="55.5"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="TOP PERFORMERS" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2OX-cj-Py2" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="39.5" width="375" height="16"/>
-                                                <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
-                                                <nil key="textColor"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                        </subviews>
-                                        <constraints>
-                                            <constraint firstItem="2OX-cj-Py2" firstAttribute="leading" secondItem="0FA-ly-Gnf" secondAttribute="leading" id="9Qy-Da-dTo"/>
-                                            <constraint firstAttribute="height" constant="55.5" id="Cq2-5P-zlk"/>
-                                            <constraint firstAttribute="bottom" secondItem="2OX-cj-Py2" secondAttribute="bottom" id="OOQ-gi-t4S"/>
-                                            <constraint firstAttribute="trailing" secondItem="2OX-cj-Py2" secondAttribute="trailing" id="wAm-re-aDs"/>
-                                        </constraints>
-                                    </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dgI-UY-ci0">
-                                        <rect key="frame" x="0.0" y="55.5" width="375" height="0.5"/>
-                                        <color key="backgroundColor" red="0.98541599999999996" green="0.0" blue="0.98173999999999995" alpha="1" colorSpace="calibratedRGB"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="0.5" id="Ye0-Bd-X6z"/>
-                                        </constraints>
-                                    </view>
-                                    <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="2o3-iX-FHW" customClass="ButtonBarView" customModule="XLPagerTabStrip">
-                                        <rect key="frame" x="0.0" y="56" width="375" height="48"/>
-                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="48" id="mns-9X-6F7"/>
-                                        </constraints>
-                                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Szb-Y8-LcZ">
-                                            <size key="itemSize" width="50" height="50"/>
-                                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                        </collectionViewFlowLayout>
-                                        <cells/>
-                                    </collectionView>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Een-oy-QEG">
-                                        <rect key="frame" x="0.0" y="104" width="375" height="1"/>
-                                        <color key="backgroundColor" red="0.98541599999999996" green="0.0" blue="0.98173999999999995" alpha="1" colorSpace="calibratedRGB"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="1" id="xg4-Of-Qx7"/>
-                                        </constraints>
-                                    </view>
-                                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="r3q-NT-5cw">
-                                        <rect key="frame" x="0.0" y="105" width="375" height="562"/>
-                                    </scrollView>
-                                </subviews>
-                            </stackView>
-                        </subviews>
-                        <constraints>
-                            <constraint firstItem="jSh-li-XP9" firstAttribute="top" secondItem="9na-dZ-dmK" secondAttribute="top" id="4OS-6K-Qrl"/>
-                            <constraint firstItem="jSh-li-XP9" firstAttribute="leading" secondItem="9na-dZ-dmK" secondAttribute="leading" id="4bi-tV-sQb"/>
-                            <constraint firstItem="9na-dZ-dmK" firstAttribute="bottom" secondItem="jSh-li-XP9" secondAttribute="bottom" id="6IM-zP-D4e"/>
-                            <constraint firstItem="9na-dZ-dmK" firstAttribute="trailing" secondItem="jSh-li-XP9" secondAttribute="trailing" id="EE1-Qk-c4h"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="9na-dZ-dmK"/>
-                    </view>
-                    <connections>
-                        <outlet property="buttonBarView" destination="2o3-iX-FHW" id="0Ng-ui-dhd"/>
-                        <outlet property="containerView" destination="r3q-NT-5cw" id="Sel-D2-Nnl"/>
-                        <outlet property="headingLabel" destination="2OX-cj-Py2" id="DfC-5v-KzI"/>
-                        <outlet property="middleBorder" destination="Een-oy-QEG" id="xLy-wT-wtq"/>
-                        <outlet property="topBorder" destination="dgI-UY-ci0" id="NmM-bH-nGb"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="gCD-ad-GJB" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-1506" y="2532"/>
         </scene>
         <!--About View Controller-->
         <scene sceneID="YPr-jf-D90">

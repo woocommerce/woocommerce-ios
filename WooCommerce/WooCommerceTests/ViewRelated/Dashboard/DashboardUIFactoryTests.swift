@@ -120,19 +120,17 @@ final class DashboardUIFactoryTests: XCTestCase {
         waitForExpectations(timeout: 0.1, handler: nil)
     }
 
-    func testDeprecatedStatsScreenIsShownAfter1stOfSeptember2020AndV4IsUnAvailable() {
+    func test_deprecated_stats_screen_is_shown_if_V4_is_unavailable() {
         // Given
         mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v3,
                                                             sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = false
         ServiceLocator.setStores(mockStoresManager)
-        let dateProvider = TestDateProvider()
-        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID, currentDateProvider: dateProvider.currentDate)
+        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
 
         // When
         let exp = self.expectation(description: #function)
         var renderedDashboard: DashboardUI?
-        dateProvider.advanceAfter1stOfSeptember2020()
         dashboardUIFactory.reloadDashboardUI { dashboardUI in
             renderedDashboard = dashboardUI
             exp.fulfill()
@@ -141,48 +139,5 @@ final class DashboardUIFactoryTests: XCTestCase {
 
         //Then
         XCTAssertTrue(renderedDashboard is DeprecatedDashboardStatsViewController)
-    }
-
-    func testDeprecatedStatsScreenIsNotShownBefore1stOfSeptember2020AndV4IsUnAvailable() {
-        // Given
-        mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v3,
-                                                            sessionManager: SessionManager.testingInstance)
-        mockStoresManager.isStatsV4Available = false
-        ServiceLocator.setStores(mockStoresManager)
-        let dateProvider = TestDateProvider()
-        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID, currentDateProvider: dateProvider.currentDate)
-
-        // When
-        let exp = self.expectation(description: #function)
-        var renderedDashboard: DashboardUI?
-        dateProvider.goBackAfter1stOfSeptember2020()
-        dashboardUIFactory.reloadDashboardUI { dashboardUI in
-            renderedDashboard = dashboardUI
-            exp.fulfill()
-        }
-        waitForExpectations(timeout: 0.1, handler: nil)
-
-        //Then
-        XCTAssertTrue(renderedDashboard is DashboardStatsV3ViewController)
-    }
-}
-
-
-
-/// Test class that generates past and future dates
-///
-private class TestDateProvider {
-    private var date = Date()
-
-    func advanceAfter1stOfSeptember2020() {
-        date = Date.distantFuture
-    }
-
-    func goBackAfter1stOfSeptember2020() {
-        date = Date.distantPast
-    }
-
-    func currentDate() -> Date {
-        return date
     }
 }

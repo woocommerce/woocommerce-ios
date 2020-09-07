@@ -59,7 +59,7 @@ final class ScrollWatcherTests: XCTestCase {
         tableView.scrollRectToVisible(CGRect(origin: CGPoint(x: 0, y: 1000), size: frame.size), animated: false)
         // Scrolls to 99%
         tableView.scrollRectToVisible(CGRect(origin: CGPoint(x: 0, y: 990), size: frame.size), animated: false)
-        // Scrolls to 99%
+        // Scrolls to 80%
         tableView.scrollRectToVisible(CGRect(origin: CGPoint(x: 0, y: 800), size: frame.size), animated: false)
 
         // Assert

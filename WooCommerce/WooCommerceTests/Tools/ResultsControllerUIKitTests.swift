@@ -1,4 +1,5 @@
 import XCTest
+import TestKit
 import Yosemite
 
 import protocol Storage.StorageType

@@ -607,7 +607,7 @@ extension ProductUpdateError: Equatable {
         switch (lhs, rhs) {
         case (.duplicatedSKU, .duplicatedSKU):
             return true
-        case (.invalidSKU, .duplicatedSKU):
+        case (.invalidSKU, .invalidSKU):
             return true
         case (.notFoundInStorage, .notFoundInStorage):
             return true

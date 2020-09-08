@@ -17,7 +17,7 @@ class FeatureFlagRemoteTests: XCTestCase {
 
     /// Verifies that loadAllFeatureFlags properly parses the `feature-flags-load-all` sample response.
     ///
-    func testLoadAllOrdersProperlyReturnsParsedOrders() throws {
+    func testLoadAllFeatureFlagsProperlyReturnsParsedFeatureFlags() throws {
         // Given
         let remote = FeatureFlagsRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "mobile/feature-flags", filename: "feature-flags-load-all")
@@ -36,7 +36,7 @@ class FeatureFlagRemoteTests: XCTestCase {
         XCTAssert(featureFlags.count == 2)
     }
 
-    func testLoadAllOrdersProperlyHandlesErrors() throws {
+    func testLoadAllFeatureFlagsProperlyHandlesErrors() throws {
         // Given
         let remote = FeatureFlagsRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "mobile/feature-flags", filename: "generic_error")

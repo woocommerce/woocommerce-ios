@@ -198,7 +198,7 @@ import AuthenticationServices
         controller.loginFields.restrictToWPCom = true
         controller.loginFields.meta.jetpackBlogXMLRPC = xmlrpc
         controller.loginFields.meta.jetpackBlogUsername = username
-        controller.loginFields.username = connectedEmail ?? ""
+        controller.loginFields.username = connectedEmail ?? String()
         
         let navController = LoginNavigationController(rootViewController: controller)
         navController.modalPresentationStyle = .fullScreen
@@ -260,16 +260,28 @@ import AuthenticationServices
         loginFields.emailAddress = dotcomEmailAddress ?? String()
         loginFields.username = dotcomUsername ?? String()
 
-        guard let controller = LoginWPComViewController.instantiate(from: .login) else {
-            fatalError("unable to create wpcom password screen")
+        guard WordPressAuthenticator.shared.configuration.enableUnifiedWordPress else {
+            guard let controller = LoginWPComViewController.instantiate(from: .login) else {
+                DDLogError("WordPressAuthenticator: Failed to instantiate LoginWPComViewController")
+                return UIViewController()
+            }
+            
+            controller.loginFields = loginFields
+            controller.dismissBlock = onDismissed
+            
+            return NUXNavigationController(rootViewController: controller)
         }
-
+        
+        guard let controller = PasswordViewController.instantiate(from: .password) else {
+            DDLogError("WordPressAuthenticator: Failed to instantiate PasswordViewController")
+            return UIViewController()
+        }
+        
         controller.loginFields = loginFields
         controller.dismissBlock = onDismissed
-
+        
         return NUXNavigationController(rootViewController: controller)
     }
-
 
     /// Returns an instance of LoginEmailViewController.
     /// This allows the host app to configure the controller's features.

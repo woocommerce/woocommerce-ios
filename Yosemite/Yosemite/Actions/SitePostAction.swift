@@ -10,5 +10,5 @@ public enum SitePostAction: Action {
 
     /// Update site post password
     ///
-    case updateSitePostPassword(siteID: Int64, postID: Int64, password: String, onCompletion: (_ password: String?, _ error: Error?) -> Void)
+    case updateSitePostPassword(siteID: Int64, postID: Int64, password: String, onCompletion: (Result<String?, Error>) -> Void)
 }

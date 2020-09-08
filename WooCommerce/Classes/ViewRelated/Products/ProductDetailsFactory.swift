@@ -46,6 +46,7 @@ private extension ProductDetailsFactory {
                                                                   product: productModel)
         if isEditProductsEnabled {
             let viewModel = ProductFormViewModel(product: productModel,
+                                                 formType: .edit,
                                                  productImageActionHandler: productImageActionHandler,
                                                  isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
             vc = ProductFormViewController(viewModel: viewModel,

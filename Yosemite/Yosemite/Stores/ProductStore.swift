@@ -601,3 +601,23 @@ public enum ProductUpdateError: Error {
         }
     }
 }
+
+extension ProductUpdateError: Equatable {
+    public static func == (lhs: ProductUpdateError, rhs: ProductUpdateError) -> Bool {
+        switch (lhs, rhs) {
+        case (.duplicatedSKU, .duplicatedSKU):
+            return true
+        case (.invalidSKU, .duplicatedSKU):
+            return true
+        case (.notFoundInStorage, .notFoundInStorage):
+            return true
+        case (let .unknown(lhsError), let .unknown(rhsError)):
+            if let lhsDotcomError = lhsError as? DotcomError, let rhsDotcomError = rhsError as? DotcomError {
+                return lhsDotcomError == rhsDotcomError
+            }
+            return (lhsError as NSError) == (rhsError as NSError)
+        default:
+            return false
+        }
+    }
+}

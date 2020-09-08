@@ -179,6 +179,35 @@ import AuthenticationServices
             trackOpenedLogin()
         }
 
+        guard WordPressAuthenticator.shared.configuration.enableUnifiedWordPress else {
+            showEmailLogin(from: presenter, xmlrpc: xmlrpc, username: username, connectedEmail: connectedEmail)
+            return
+        }
+        
+        showGetStarted(from: presenter, xmlrpc: xmlrpc, username: username, connectedEmail: connectedEmail)
+    }
+
+    /// Shows the unified Login/Signup flow.
+    ///
+    private class func showGetStarted(from presenter: UIViewController, xmlrpc: String? = nil, username: String? = nil, connectedEmail: String? = nil) {
+        guard let controller = GetStartedViewController.instantiate(from: .getStarted) else {
+            DDLogError("Failed to navigate from LoginPrologueViewController to GetStartedViewController")
+            return
+        }
+        
+        controller.loginFields.restrictToWPCom = true
+        controller.loginFields.meta.jetpackBlogXMLRPC = xmlrpc
+        controller.loginFields.meta.jetpackBlogUsername = username
+        controller.loginFields.username = connectedEmail ?? ""
+        
+        let navController = LoginNavigationController(rootViewController: controller)
+        navController.modalPresentationStyle = .fullScreen
+        presenter.present(navController, animated: true, completion: nil)
+    }
+    
+    /// Shows the Email Login view with Signup option.
+    ///
+    private class func showEmailLogin(from presenter: UIViewController, xmlrpc: String? = nil, username: String? = nil, connectedEmail: String? = nil) {
         guard let controller = LoginEmailViewController.instantiate(from: .login) else {
             return
         }

@@ -571,22 +571,22 @@ public enum ProductUpdateError: Error {
     case duplicatedSKU
     case invalidSKU
     case notFoundInStorage
-    case unknown
+    case unknown(error: Error)
 
     init(error: Error) {
         guard let dotcomError = error as? DotcomError else {
-            self = .unknown
+            self = .unknown(error: error)
             return
         }
         switch dotcomError {
         case .unknown(let code, _):
             guard let errorCode = ErrorCode(rawValue: code) else {
-                self = .unknown
+                self = .unknown(error: dotcomError)
                 return
             }
             self = errorCode.error
         default:
-            self = .unknown
+            self = .unknown(error: dotcomError)
         }
     }
 

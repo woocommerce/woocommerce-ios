@@ -10,8 +10,10 @@ extension ProductUpdateError {
             return nil
         }
     }
+}
 
-    var alertMessage: String? {
+extension ProductUpdateError: LocalizedError {
+    public var errorDescription: String? {
         switch self {
         case .duplicatedSKU:
             return NSLocalizedString("SKU already in use by another product",
@@ -19,6 +21,8 @@ extension ProductUpdateError {
         case .invalidSKU:
             return NSLocalizedString("This SKU is used on another product or is invalid.",
                                      comment: "The message of the alert when there is an error updating the product SKU")
+        case .unknown:
+            return NSLocalizedString("Unexpected error", comment: "The message of the alert when there is an unexpected error updating the product")
         default:
             return nil
         }

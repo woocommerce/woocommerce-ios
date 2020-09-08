@@ -564,8 +564,7 @@ private extension ProductFormViewController {
             viewModel.updateProductRemotely { [weak self] result in
                 switch result {
                 case .failure(let error):
-                    let errorDescription = error.localizedDescription
-                    DDLogError("⛔️ Error updating Product: \(errorDescription)")
+                    DDLogError("⛔️ Error updating Product: \(error)")
                     // Dismisses the in-progress UI then presents the error alert.
                     self?.navigationController?.dismiss(animated: true) {
                         self?.displayError(error: error)
@@ -603,7 +602,7 @@ private extension ProductFormViewController {
     func displayError(error: ProductUpdateError?) {
         let title = NSLocalizedString("Cannot update product", comment: "The title of the alert when there is an error updating the product")
 
-        let message = error?.alertMessage
+        let message = error?.localizedDescription
 
         displayErrorAlert(title: title, message: message)
     }

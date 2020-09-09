@@ -186,6 +186,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         let zagato = insertAccount(displayName: "Z", username: "Zagato")
         let yamada = insertAccount(displayName: "Y", username: "Yamada")
 
+        // Obtain permanent IDs right away so we can use the permanent object IDs for assertions
         try viewStorage.obtainPermanentIDs(for: [zanza, zagato, yamada])
 
         let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
@@ -205,6 +206,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         // Add new sections
         let xiong = insertAccount(displayName: "X", username: "Xiong")
         let wakaba = insertAccount(displayName: "W", username: "Wakaba")
+        // Obtain permanent IDs right away so we can use the permanent object IDs for assertions
         try viewStorage.obtainPermanentIDs(for: [xiong, wakaba])
 
         // Delete a section

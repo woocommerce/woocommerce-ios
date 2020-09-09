@@ -3306,6 +3306,7 @@
 				B541B2182189F387008FE7C1 /* StringFormatter */,
 				02913E9323A774B000707A0C /* UnitInputFormatter */,
 				CE14452C2188C0EC00A991D8 /* Zendesk */,
+				45C11B7B2508E156006C2089 /* SelectedSiteSettings.swift */,
 				0272C00222EE9C3200D7CA2C /* AsyncDictionary.swift */,
 				74460D3F22289B7600D7316A /* Coordinator.swift */,
 				7459A6C521B0680300F83A78 /* RequirementsChecker.swift */,
@@ -4171,7 +4172,6 @@
 		CE9B7E3021C94685000F971C /* Currency */ = {
 			isa = PBXGroup;
 			children = (
-				45C11B7B2508E156006C2089 /* SelectedSiteSettings.swift */,
 				93FA787321CD7E9E00B663E5 /* CurrencySettings.swift */,
 				CE4DA5C521DD755E00074607 /* CurrencyFormatter.swift */,
 			);

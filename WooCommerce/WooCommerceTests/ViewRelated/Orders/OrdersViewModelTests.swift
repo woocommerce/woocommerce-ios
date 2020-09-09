@@ -37,34 +37,6 @@ final class OrdersViewModelTests: XCTestCase {
 
     // MARK: - Synchronization Spec
 
-    // Test that when pulling to refresh on a filtered list (e.g. Processing tab), the action
-    // returned will be for:
-    //
-    // 1. deleting all orders
-    // 2. fetching both the filtered list and the "all orders" list
-    //
-    func test_pulling_to_refresh_on_filtered_list_it_deletes_and_performs_dual_fetch() {
-        // Arrange
-        let viewModel = OrdersViewModel(statusFilter: orderStatus(with: .processing))
-
-        // Act
-        let action = viewModel.synchronizationAction(
-            siteID: siteID,
-            pageNumber: Defaults.pageFirstIndex,
-            pageSize: pageSize,
-            reason: SyncReason.pullToRefresh,
-            completionHandler: unimportantCompletionHandler)
-
-        // Assert
-        guard case .fetchFilteredAndAllOrders(_, let statusKey, _, let deleteAllBeforeSaving, _, _) = action else {
-            XCTFail("Unexpected OrderAction type: \(action)")
-            return
-        }
-
-        XCTAssertTrue(deleteAllBeforeSaving)
-        XCTAssertEqual(statusKey, OrderStatusEnum.processing.rawValue)
-    }
-
     // Test that when fetching the first page of a filtered list (e.g. Processing) for reasons
     // other than pull-to-refresh (e.g. `viewWillAppear`), the action returned will only be for
     // dual fetching of the filtered list and the all orders list.

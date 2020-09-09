@@ -448,6 +448,7 @@
 		57C503DE23E8CE0D00EC0790 /* OrdersMasterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 57C503DD23E8CE0D00EC0790 /* OrdersMasterViewController.xib */; };
 		57C503E023E8D4D600EC0790 /* OrdersMasterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C503DF23E8D4D600EC0790 /* OrdersMasterViewModel.swift */; };
 		57C5FF7A25091A350074EC26 /* OrderListSyncActionUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C5FF7925091A350074EC26 /* OrderListSyncActionUseCase.swift */; };
+		57C5FF7C25091DE50074EC26 /* OrderListSyncActionUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C5FF7B25091DE50074EC26 /* OrderListSyncActionUseCaseTests.swift */; };
 		57C9A8FC24C21BFB001E1C2F /* ReviewsCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C9A8FB24C21BFB001E1C2F /* ReviewsCoordinatorTests.swift */; };
 		57C9A8FE24C23335001E1C2F /* MockNoticePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C9A8FD24C23335001E1C2F /* MockNoticePresenter.swift */; };
 		57CFCD28248845B4003F51EC /* PrimarySectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CFCD27248845B4003F51EC /* PrimarySectionHeaderView.swift */; };
@@ -1393,6 +1394,7 @@
 		57C503DD23E8CE0D00EC0790 /* OrdersMasterViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrdersMasterViewController.xib; sourceTree = "<group>"; };
 		57C503DF23E8D4D600EC0790 /* OrdersMasterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersMasterViewModel.swift; sourceTree = "<group>"; };
 		57C5FF7925091A350074EC26 /* OrderListSyncActionUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListSyncActionUseCase.swift; sourceTree = "<group>"; };
+		57C5FF7B25091DE50074EC26 /* OrderListSyncActionUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListSyncActionUseCaseTests.swift; sourceTree = "<group>"; };
 		57C9A8FB24C21BFB001E1C2F /* ReviewsCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsCoordinatorTests.swift; sourceTree = "<group>"; };
 		57C9A8FD24C23335001E1C2F /* MockNoticePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNoticePresenter.swift; sourceTree = "<group>"; };
 		57CFCD27248845B4003F51EC /* PrimarySectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimarySectionHeaderView.swift; sourceTree = "<group>"; };
@@ -3017,6 +3019,7 @@
 				57F2C6C9246DEBB10074063B /* Order Details */,
 				570AAB042472FACB00516C0C /* OrderDetailsDataSourceTests.swift */,
 				57F34AA02423D45A00E38AFB /* OrdersViewModelTests.swift */,
+				57C5FF7B25091DE50074EC26 /* OrderListSyncActionUseCaseTests.swift */,
 			);
 			path = Orders;
 			sourceTree = "<group>";
@@ -5472,6 +5475,7 @@
 				B57C745120F56EE900EEFC87 /* UITableViewCellHelpersTests.swift in Sources */,
 				0225C42824768A4C00C5B4F0 /* FilterProductListViewModelTests.swift in Sources */,
 				D85136C9231E12B600DD0539 /* ReviewViewModelTests.swift in Sources */,
+				57C5FF7C25091DE50074EC26 /* OrderListSyncActionUseCaseTests.swift in Sources */,
 				D83A6A782379097A00419D48 /* MurielColorTests.swift in Sources */,
 				020BE77723B4A9D9007FE54C /* AztecLinkFormatBarCommandTests.swift in Sources */,
 				020BE77323B4A567007FE54C /* AztecInsertMoreFormatBarCommandTests.swift in Sources */,

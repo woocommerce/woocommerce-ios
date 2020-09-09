@@ -309,9 +309,7 @@ extension AboutViewController {
             "Cancel",
             comment: "The title for a button that dismisses the crash debug menu"
         )
-        return UIAlertAction(title: cancelTitle, style: .cancel) { _ in
-            // Do nothing – the alert will still be dismissed
-        }
+        return UIAlertAction(title: cancelTitle, style: .cancel, handler: nil)
     }
 }
 

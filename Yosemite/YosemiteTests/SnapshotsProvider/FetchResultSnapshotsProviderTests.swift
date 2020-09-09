@@ -35,8 +35,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         // Given
         let insertedAccount = insertAccount(displayName: "Reina Feil", username: "reinafeil")
 
-        // Save so that `FetchResultSnapshot` will not have temporary IDs.
-        viewStorage.saveIfNeeded()
+        try viewStorage.obtainPermanentIDs(for: [insertedAccount])
 
         let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
             sortDescriptor: .init(keyPath: \StorageAccount.displayName, ascending: true)
@@ -60,7 +59,9 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
 
     func test_snapshot_emits_an_empty_list_if_SnapshotsProvider_is_not_started() throws {
         // Given
-        insertAccount(displayName: "Reina Feil", username: "reinafeil")
+        let insertedAccount = insertAccount(displayName: "Reina Feil", username: "reinafeil")
+
+        try viewStorage.obtainPermanentIDs(for: [insertedAccount])
 
         let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
             sortDescriptor: .init(keyPath: \StorageAccount.displayName, ascending: true)
@@ -85,6 +86,8 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
             insertAccount(displayName: "Arvid Lowe", username: "arvidlowe"),
             insertAccount(displayName: "Lee Johns", username: "leejohns")
         ]
+
+        try viewStorage.obtainPermanentIDs(for: accounts)
 
         let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
             sortDescriptor: .init(keyPath: \StorageAccount.displayName, ascending: true)
@@ -120,6 +123,8 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
             insertAccount(displayName: "Y", username: "Yagami"),
         ]
 
+        try viewStorage.obtainPermanentIDs(for: expectedFirstSection + expectedSecondSection)
+
         let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
             sortDescriptor: .init(keyPath: \StorageAccount.username, ascending: false),
             sectionNameKeyPath: #keyPath(StorageAccount.displayName)
@@ -149,13 +154,18 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
             insertAccount(displayName: "Z", username: "Zanza Elf"),
             insertAccount(displayName: "Z", username: "Zabuza Elf"),
         ]
-        insertAccount(displayName: "Z", username: "Zagato Human")
 
         let expectedSecondSection = [
             insertAccount(displayName: "Y", username: "Yahiko Elf"),
         ]
-        insertAccount(displayName: "Y", username: "Yamada Human")
-        insertAccount(displayName: "Y", username: "Yajiro Human")
+
+        let excludedAccounts = [
+            insertAccount(displayName: "Z", username: "Zagato Human"),
+            insertAccount(displayName: "Y", username: "Yamada Human"),
+            insertAccount(displayName: "Y", username: "Yajiro Human")
+        ]
+
+        try viewStorage.obtainPermanentIDs(for: expectedFirstSection + expectedSecondSection + excludedAccounts)
 
         let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
             sortDescriptor: .init(keyPath: \StorageAccount.username, ascending: false),

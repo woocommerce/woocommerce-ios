@@ -220,6 +220,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         XCTAssertEqual(firstSnapshot.sectionIdentifiers, ["Z", "Y"])
         XCTAssertEqual(firstSnapshot.itemIdentifiers, [zanza.objectID, zagato.objectID, yamada.objectID])
 
+        // The second snapshot should have 3 sections (two added, one deleted).
         let secondSnapshot = try XCTUnwrap(snapshots.last)
         XCTAssertEqual(secondSnapshot.sectionIdentifiers, ["Z", "X", "W"])
         XCTAssertEqual(secondSnapshot.itemIdentifiers(inSection: "Z"), [zanza.objectID, zagato.objectID])

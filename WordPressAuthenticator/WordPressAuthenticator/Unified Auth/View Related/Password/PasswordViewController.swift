@@ -354,6 +354,8 @@ private extension PasswordViewController {
             guard let self = self else {
                 return
             }
+            
+            self.tracker.track(click: .forgottenPassword)
 
             // If information is currently processing, ignore button tap.
             guard self.enableSubmit(animating: false) else {
@@ -376,10 +378,9 @@ private extension PasswordViewController {
             guard let self = self else {
                 return
             }
-
+            
+            self.tracker.track(click: .requestMagicLink)
             self.requestAuthenticationLink()
-            // TODO: Tracks.
-            // Track the "login magic link requested" event
         }
     }
     

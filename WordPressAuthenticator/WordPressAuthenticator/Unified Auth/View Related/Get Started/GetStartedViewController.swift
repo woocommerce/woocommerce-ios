@@ -167,6 +167,7 @@ private extension GetStartedViewController {
     // MARK: - Continue Button Action
     
     @IBAction func handleSubmitButtonTapped(_ sender: UIButton) {
+        tracker.track(click: .submit)
         validateForm()
     }
     
@@ -468,6 +469,10 @@ private extension GetStartedViewController {
     /// When password autofill has entered a password on this screen, attempt to login immediately
     ///
     func attemptAutofillLogin() {
+        // Even though there was no explicit submit action by the user, we'll interpret
+        // the credentials selection as such.
+        tracker.track(click: .submit)
+        
         loginFields.password = hiddenPasswordField?.text ?? ""
         loginFields.meta.socialService = nil
         displayError(message: "")

@@ -205,6 +205,7 @@ extension UnifiedSignupViewController {
     /// Makes the call to request a magic signup link be emailed to the user.
     ///
     func requestAuthenticationLink() {
+        loginFields.meta.emailMagicLinkSource = .signup
 
         configureSubmitButton(animating: true)
 

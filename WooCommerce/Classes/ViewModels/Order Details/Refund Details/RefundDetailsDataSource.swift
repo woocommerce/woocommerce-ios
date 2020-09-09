@@ -27,7 +27,7 @@ final class RefundDetailsDataSource: NSObject {
 
     /// Currency Formatter
     ///
-    private let currencyFormatter = CurrencyFormatter()
+    private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
     /// Products from a Refund
     ///

@@ -328,7 +328,8 @@ private extension ProductPriceSettingsViewController {
     }
 
     func configurePrice(cell: UnitInputTableViewCell) {
-        let cellViewModel = Product.createRegularPriceViewModel(regularPrice: viewModel.regularPrice, using: CurrencySettings.shared) { [weak self] value in
+        let cellViewModel = Product.createRegularPriceViewModel(regularPrice: viewModel.regularPrice,
+                                                                using: ServiceLocator.currencySettings) { [weak self] value in
             self?.viewModel.handleRegularPriceChange(value)
         }
         cell.selectionStyle = .none
@@ -336,7 +337,7 @@ private extension ProductPriceSettingsViewController {
     }
 
     func configureSalePrice(cell: UnitInputTableViewCell) {
-        let cellViewModel = Product.createSalePriceViewModel(salePrice: viewModel.salePrice, using: CurrencySettings.shared) { [weak self] value in
+        let cellViewModel = Product.createSalePriceViewModel(salePrice: viewModel.salePrice, using: ServiceLocator.currencySettings) { [weak self] value in
             self?.viewModel.handleSalePriceChange(value)
         }
         cell.selectionStyle = .none

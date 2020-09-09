@@ -16,7 +16,7 @@ final class RefundDetailsViewModel {
 
     /// Currency Formatter
     ///
-    let currencyFormatter = CurrencyFormatter()
+    let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
     /// Designated Initializer
     ///

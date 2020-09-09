@@ -23,7 +23,7 @@ final class AggregateDataHelper {
         /// because multiple refunds cause orderItemIDs to be unique.
         /// Instead, we need to find duplicate *Products*.
         let items = refunds.flatMap { $0.items }
-        let currency = CurrencyFormatter()
+        let currency = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
         // Creates an array of dictionaries, with the hash value as the key.
         // Example: [hashValue: [item, item], hashvalue: [item]]
@@ -72,7 +72,7 @@ final class AggregateDataHelper {
             fatalError("Error: attemtpted to calculate aggregate order item data with no refunded products.")
         }
 
-        let currency = CurrencyFormatter()
+        let currency = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
         // Convert the order items into a mutable type
         let convertedItems = items.map { item -> AggregateOrderItem in
             let total = currency.convertToDecimal(from: item.total) ?? NSDecimalNumber.zero

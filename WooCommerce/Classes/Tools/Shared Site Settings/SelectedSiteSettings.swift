@@ -19,6 +19,8 @@ final class SelectedSiteSettings: NSObject {
         let descriptor = NSSortDescriptor(keyPath: \StorageSiteSetting.siteID, ascending: false)
         return ResultsController<StorageSiteSetting>(storageManager: storageManager, sortedBy: [descriptor])
     }()
+
+    public private(set) var siteSettings: [SiteSetting] = []
 }
 
 // MARK: - ResultsController
@@ -34,8 +36,9 @@ extension SelectedSiteSettings {
     /// Setup: ResultsController
     ///
     private func configureResultsController() {
-        resultsController.onDidChangeObject = { (object, indexPath, type, newIndexPath) in
+        resultsController.onDidChangeObject = { [weak self] (object, indexPath, type, newIndexPath) in
             ServiceLocator.currencySettings.updateCurrencyOptions(with: object)
+            self?.siteSettings = self?.resultsController.fetchedObjects ?? []
         }
         refreshResultsPredicate()
     }
@@ -50,7 +53,9 @@ extension SelectedSiteSettings {
         let settingTypePredicate = NSPredicate(format: "settingGroupKey ==[c] %@", SiteSettingGroup.general.rawValue)
         resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, settingTypePredicate])
         try? resultsController.performFetch()
-        resultsController.fetchedObjects.forEach {
+        let fetchedObjects = resultsController.fetchedObjects
+        siteSettings = fetchedObjects
+        fetchedObjects.forEach {
             ServiceLocator.currencySettings.updateCurrencyOptions(with: $0)
         }
     }

@@ -52,6 +52,18 @@ class LoginPrologueViewController: LoginViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        // We've found some instances where the iCloud Keychain login flow was being started
+        // when the device was idle and the app was logged out and in the background.  I couldn't
+        // find precise reproduction steps for this issue but my guess is that some background
+        // operation is triggering a call to this method while the app is in the background.
+        // The proposed solution is based off this StackOverflow reply:
+        //
+        // https://stackoverflow.com/questions/30584356/viewdidappear-is-called-when-app-is-started-due-to-significant-location-change
+        //
+        guard UIApplication.shared.applicationState != .background else {
+            return
+        }
+        
         tracker.set(flow: .prologue)
         
         if !prologueFlowTracked {

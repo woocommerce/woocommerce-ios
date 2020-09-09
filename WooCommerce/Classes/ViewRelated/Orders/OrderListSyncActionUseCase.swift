@@ -120,7 +120,7 @@ struct OrderListSyncActionUseCase {
     }
 }
 
-private extension OrderListSyncActionUseCase {
+extension OrderListSyncActionUseCase {
     enum Defaults {
         static let pageFirstIndex = SyncingCoordinator.Defaults.pageFirstIndex
     }

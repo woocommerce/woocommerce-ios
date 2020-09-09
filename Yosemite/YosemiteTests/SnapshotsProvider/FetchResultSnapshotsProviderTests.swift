@@ -13,7 +13,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
 
     private var cancellables = Set<AnyCancellable>()
 
-    var viewStorage: StorageType {
+    private var viewStorage: StorageType {
         storageManager.viewStorage
     }
 

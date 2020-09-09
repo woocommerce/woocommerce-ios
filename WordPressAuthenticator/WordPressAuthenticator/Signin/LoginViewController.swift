@@ -292,6 +292,8 @@ extension LoginViewController {
             ]
         }
 
+        // This stat is part of a funnel that provides critical information.  Please
+        // consult with your lead before removing this event.
         WordPressAuthenticator.track(.signedIn, properties: properties)
     }
 
@@ -327,9 +329,12 @@ extension LoginViewController {
                         serviceToken: serviceToken,
                         connectParameters: appleConnectParameters,
                         success: {
+                            // This stat is part of a funnel that provides critical information.  Please
+                            // consult with your lead before removing this event.
+                            let source = appleConnectParameters != nil ? "apple" : "google"
+                            WordPressAuthenticator.track(.signedIn, properties: ["source": source])
+                            
                             if AuthenticatorAnalyticsTracker.shared.shouldUseLegacyTracker() {
-                                let source = appleConnectParameters != nil ? "apple" : "google"
-                                WordPressAuthenticator.track(.signedIn, properties: ["source": source])
                                 WordPressAuthenticator.track(.loginSocialConnectSuccess)
                                 WordPressAuthenticator.track(.loginSocialSuccess)
                             }

@@ -22,10 +22,7 @@ protocol SyncingCoordinatorDelegate: class {
 /// Sync'ing of first page isn't really handled. Reason is: the first page of each collection must always be fresh,
 /// and the Sync OP is (usually) explicitly made in `viewWillAppear`. This may change in a future update, though!
 ///
-@available(*,
-deprecated,
-message: "The implementation assumes the same user-facing page size and API response page size. Consider using `ScrollWatcher` and `PaginationTracker`.")
-final class SyncingCoordinator {
+class SyncingCoordinator {
 
     /// Default Settings
     ///

@@ -97,7 +97,7 @@ private extension ProductFormRemoteActionUseCase {
     func editProductRemotely(product: EditableProductModel,
                                originalProduct: EditableProductModel,
                                onCompletion: @escaping (Result<EditableProductModel, ProductUpdateError>) -> Void) {
-        // Update product password if available
+        // Only update product if different.
         guard product != originalProduct else {
             onCompletion(.success(product))
             return
@@ -121,7 +121,7 @@ private extension ProductFormRemoteActionUseCase {
                                 password: String?,
                                 originalPassword: String?,
                                 onCompletion: @escaping (Result<String?, Error>) -> Void) {
-        // Update product password if available
+        // Only update product password if different.
         guard password != originalPassword else {
             onCompletion(.success(password))
             return
@@ -132,6 +132,7 @@ private extension ProductFormRemoteActionUseCase {
     func updatePasswordRemotely(product: EditableProductModel,
                                 password: String?,
                                 onCompletion: @escaping (Result<String?, Error>) -> Void) {
+        // Only update product password if available.
         guard let updatedPassword = password else {
             onCompletion(.success(password))
             return

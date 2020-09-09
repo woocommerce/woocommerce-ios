@@ -273,7 +273,7 @@ extension AboutViewController: UITableViewDelegate {
 //
 extension AboutViewController {
 
-    fileprivate var crashDebugMenuGestureRecognizer: UITapGestureRecognizer {
+    private var crashDebugMenuGestureRecognizer: UITapGestureRecognizer {
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didInvokeCrashDebugMenu))
         gestureRecognizer.numberOfTapsRequired = 4
         return gestureRecognizer

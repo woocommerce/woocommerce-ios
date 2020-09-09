@@ -110,14 +110,6 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     func hasUnsavedChanges() -> Bool {
         return product != originalProduct || productImageActionHandler.productImageStatuses.hasPendingUpload || password != originalPassword
     }
-
-    func hasProductChanged() -> Bool {
-        return product != originalProduct
-    }
-
-    func hasPasswordChanged() -> Bool {
-        return password != nil && password != originalPassword
-    }
 }
 
 // MARK: - More menu
@@ -239,19 +231,57 @@ extension ProductFormViewModel {
 //
 extension ProductFormViewModel {
     func updateProductRemotely(onCompletion: @escaping (Result<EditableProductModel, ProductUpdateError>) -> Void) {
-        let updateProductAction = ProductAction.updateProduct(product: product.product) { [weak self] result in
-            switch result {
-            case .failure(let error):
-                ServiceLocator.analytics.track(.productDetailUpdateError, withError: error)
-                onCompletion(.failure(error))
-            case .success(let product):
-                ServiceLocator.analytics.track(.productDetailUpdateSuccess)
-                let model = EditableProductModel(product: product)
-                self?.resetProduct(model)
-                onCompletion(.success(model))
+        let remoteActionUseCase = ProductFormRemoteActionUseCase()
+        switch formType {
+        case .add:
+            remoteActionUseCase.addProduct(product: product, password: password) { [weak self] productResult, passwordResult in
+                switch productResult {
+                case .failure(let productError):
+                    onCompletion(.failure(productError))
+                case .success(let product):
+                    guard let passwordResult = passwordResult else {
+                        assertionFailure("Password result is expected to be non-nil when product result is successful.")
+                        onCompletion(.failure(.unknown))
+                        return
+                    }
+                    switch passwordResult {
+                    case .failure(let passwordError):
+                        onCompletion(.failure(.password))
+                    case .success(let password):
+                        self?.formType = .edit
+                        self?.resetProduct(product)
+                        self?.resetPassword(password)
+                        onCompletion(.success(product))
+                    }
+                }
+            }
+        case .edit:
+            remoteActionUseCase.editProduct(product: product,
+                                              originalProduct: originalProduct,
+                                              password: password,
+                                              originalPassword: originalPassword) { [weak self] productResult, passwordResult in
+                                                do {
+                                                    let product = try productResult.get()
+                                                    let password = try passwordResult.get()
+                                                    self?.resetProduct(product)
+                                                    self?.resetPassword(password)
+                                                    onCompletion(.success(product))
+                                                } catch {
+                                                    if let productError = productResult.failure {
+                                                        onCompletion(.failure(productError))
+                                                        return
+                                                    }
+                                                    if let passwordError = passwordResult.failure {
+                                                        onCompletion(.failure(.password))
+                                                        return
+                                                    }
+                                                    assertionFailure("""
+                                                        Unexpected error with product result: \(productResult)\npassword result: \(passwordResult)
+                                                        """)
+                                                    onCompletion(.failure(.unknown))
+                                                }
             }
         }
-        ServiceLocator.stores.dispatch(updateProductAction)
     }
 }
 

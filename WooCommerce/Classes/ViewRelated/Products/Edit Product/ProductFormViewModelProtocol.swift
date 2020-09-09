@@ -36,10 +36,6 @@ protocol ProductFormViewModelProtocol {
 
     func hasUnsavedChanges() -> Bool
 
-    func hasProductChanged() -> Bool
-
-    func hasPasswordChanged() -> Bool
-
     // More menu
 
     func canEditProductSettings() -> Bool

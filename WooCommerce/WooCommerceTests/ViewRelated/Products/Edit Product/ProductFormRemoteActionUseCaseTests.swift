@@ -1,0 +1,310 @@
+import XCTest
+import Yosemite
+
+@testable import WooCommerce
+
+final class ProductFormRemoteActionUseCaseTests: XCTestCase {
+    private var storesManager: MockupStoresManager!
+
+    override func setUp() {
+        super.setUp()
+        storesManager = MockupStoresManager(sessionManager: SessionManager.testingInstance)
+    }
+
+    override func tearDown() {
+        storesManager = nil
+        super.tearDown()
+    }
+
+    // MARK: - Adding a product (`addProduct`)
+
+    func test_adding_product_with_a_password_successfully_returns_success_results() {
+        // Arrange
+        let product = MockProduct().product()
+        let model = EditableProductModel(product: product)
+        let password = "wo0oo!"
+        let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
+        mockAddProduct(result: .success(product))
+        mockUpdatePassword(result: .success(password))
+
+        // Action
+        var productResult: Result<EditableProductModel, ProductUpdateError>?
+        var passwordResult: Result<String?, Error>?
+        useCase.addProduct(product: model, password: password) { aProductResult, aPasswordResult in
+            productResult = aProductResult
+            passwordResult = aPasswordResult
+        }
+
+        // Assert
+        XCTAssertEqual(storesManager.receivedActions.count, 2)
+        XCTAssertNotNil(storesManager.receivedActions[0] as? ProductAction)
+        XCTAssertNotNil(storesManager.receivedActions[1] as? SitePostAction)
+        XCTAssertEqual(productResult, .success(model))
+        XCTAssertEqual(passwordResult?.isSuccess, true)
+        XCTAssertEqual(try passwordResult?.get(), password)
+    }
+
+    func test_adding_product_with_a_password_unsuccessfully_returns_success_product_result_and_failure_password_result() {
+        // Arrange
+        let product = MockProduct().product()
+        let model = EditableProductModel(product: product)
+        let password = "wo0oo!"
+        let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
+        mockAddProduct(result: .success(product))
+        mockUpdatePassword(result: .failure(NSError(domain: "", code: 100, userInfo: nil)))
+
+        // Action
+        var productResult: Result<EditableProductModel, ProductUpdateError>?
+        var passwordResult: Result<String?, Error>?
+        useCase.addProduct(product: model, password: password) { aProductResult, aPasswordResult in
+            productResult = aProductResult
+            passwordResult = aPasswordResult
+        }
+
+        // Assert
+        XCTAssertEqual(storesManager.receivedActions.count, 2)
+        XCTAssertNotNil(storesManager.receivedActions[0] as? ProductAction)
+        XCTAssertNotNil(storesManager.receivedActions[1] as? SitePostAction)
+        XCTAssertEqual(productResult, .success(model))
+        XCTAssertEqual(passwordResult?.isFailure, true)
+    }
+
+    func test_adding_product_without_a_password_successfully_does_not_trigger_password_action_and_returns_success_results() {
+        // Arrange
+        let product = MockProduct().product()
+        let model = EditableProductModel(product: product)
+        let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
+        mockAddProduct(result: .success(product))
+
+        // Action
+        var productResult: Result<EditableProductModel, ProductUpdateError>?
+        var passwordResult: Result<String?, Error>?
+        useCase.addProduct(product: model, password: nil) { aProductResult, aPasswordResult in
+            productResult = aProductResult
+            passwordResult = aPasswordResult
+        }
+
+        // Assert
+        XCTAssertEqual(storesManager.receivedActions.count, 1)
+        XCTAssertNotNil(storesManager.receivedActions.first as? ProductAction)
+        XCTAssertEqual(productResult, .success(model))
+        XCTAssertEqual(passwordResult?.isSuccess, true)
+        XCTAssertEqual(try passwordResult?.get(), nil)
+    }
+
+    func test_adding_product_unsuccessfully_does_not_trigger_password_action_and_returns_failure_product_result() {
+        // Arrange
+        let product = MockProduct().product()
+        let model = EditableProductModel(product: product)
+        mockAddProduct(result: .failure(.invalidSKU))
+        let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
+
+        // Action
+        var productResult: Result<EditableProductModel, ProductUpdateError>?
+        var passwordResult: Result<String?, Error>?
+        useCase.addProduct(product: model, password: nil) { aProductResult, aPasswordResult in
+            productResult = aProductResult
+            passwordResult = aPasswordResult
+        }
+
+        // Assert
+        XCTAssertEqual(storesManager.receivedActions.count, 1)
+        XCTAssertNotNil(storesManager.receivedActions.first as? ProductAction)
+        XCTAssertEqual(productResult, .failure(.invalidSKU))
+        XCTAssertNil(passwordResult)
+    }
+
+    // MARK: - Editing a product (`addProduct`)
+
+    func test_editing_product_and_password_without_edits_does_not_trigger_actions_and_returns_success_results() {
+        // Arrange
+        let product = MockProduct().product()
+        let model = EditableProductModel(product: product)
+        let password = "wo0oo!"
+        let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
+
+        // Action
+        var productResult: Result<EditableProductModel, ProductUpdateError>?
+        var passwordResult: Result<String?, Error>?
+        waitForExpectation { expectation in
+            useCase.editProduct(product: model,
+                                originalProduct: model,
+                                password: password,
+                                originalPassword: password) { aProductResult, aPasswordResult in
+                productResult = aProductResult
+                passwordResult = aPasswordResult
+                expectation.fulfill()
+            }
+        }
+
+        // Assert
+        XCTAssertEqual(storesManager.receivedActions.count, 0)
+        XCTAssertEqual(productResult, .success(model))
+        XCTAssertEqual(passwordResult?.isSuccess, true)
+        XCTAssertEqual(try passwordResult?.get(), password)
+    }
+
+    func test_editing_product_with_a_password_successfully_returns_success_results() {
+        // Arrange
+        let originalProduct = MockProduct().product()
+        let product = originalProduct.copy(name: "PRODUCT")
+        let originalModel = EditableProductModel(product: originalProduct)
+        let model = EditableProductModel(product: product)
+        let originalPassword: String? = nil
+        let password = "wo0oo!"
+        let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
+        mockUpdateProduct(result: .success(product))
+        mockUpdatePassword(result: .success(password))
+
+        // Action
+        var productResult: Result<EditableProductModel, ProductUpdateError>?
+        var passwordResult: Result<String?, Error>?
+        waitForExpectation { expectation in
+            useCase.editProduct(product: model,
+                                originalProduct: originalModel,
+                                password: password,
+                                originalPassword: originalPassword) { aProductResult, aPasswordResult in
+                productResult = aProductResult
+                passwordResult = aPasswordResult
+                expectation.fulfill()
+            }
+        }
+
+        // Assert
+        XCTAssertEqual(storesManager.receivedActions.count, 2)
+        XCTAssertNotNil(storesManager.receivedActions[0] as? ProductAction)
+        XCTAssertNotNil(storesManager.receivedActions[1] as? SitePostAction)
+        XCTAssertEqual(productResult, .success(model))
+        XCTAssertEqual(passwordResult?.isSuccess, true)
+        XCTAssertEqual(try passwordResult?.get(), password)
+    }
+
+    func test_editing_product_successfully_with_a_password_unsuccessfully_returns_success_product_result_and_failure_password_result() {
+        // Arrange
+        let originalProduct = MockProduct().product()
+        let product = originalProduct.copy(name: "PRODUCT")
+        let originalModel = EditableProductModel(product: originalProduct)
+        let model = EditableProductModel(product: product)
+        let originalPassword: String? = nil
+        let password = "wo0oo!"
+        let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
+        mockUpdateProduct(result: .success(product))
+        mockUpdatePassword(result: .failure(NSError(domain: "", code: 100, userInfo: nil)))
+
+        // Action
+        var productResult: Result<EditableProductModel, ProductUpdateError>?
+        var passwordResult: Result<String?, Error>?
+        waitForExpectation { expectation in
+            useCase.editProduct(product: model,
+                                originalProduct: originalModel,
+                                password: password,
+                                originalPassword: originalPassword) { aProductResult, aPasswordResult in
+                productResult = aProductResult
+                passwordResult = aPasswordResult
+                expectation.fulfill()
+            }
+        }
+
+        // Assert
+        XCTAssertEqual(storesManager.receivedActions.count, 2)
+        XCTAssertNotNil(storesManager.receivedActions[0] as? ProductAction)
+        XCTAssertNotNil(storesManager.receivedActions[1] as? SitePostAction)
+        XCTAssertEqual(productResult, .success(model))
+        XCTAssertEqual(passwordResult?.isFailure, true)
+    }
+
+    func test_editing_product_unsuccessfully_with_a_password_successfully_returns_failure_product_result_and_success_password_result() {
+        // Arrange
+        let originalProduct = MockProduct().product()
+        let product = originalProduct.copy(name: "PRODUCT")
+        let originalModel = EditableProductModel(product: originalProduct)
+        let model = EditableProductModel(product: product)
+        let originalPassword: String? = nil
+        let password = "wo0oo!"
+        let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
+        mockUpdateProduct(result: .failure(.invalidSKU))
+        mockUpdatePassword(result: .success(password))
+
+        // Action
+        var productResult: Result<EditableProductModel, ProductUpdateError>?
+        var passwordResult: Result<String?, Error>?
+        waitForExpectation { expectation in
+            useCase.editProduct(product: model,
+                                originalProduct: originalModel,
+                                password: password,
+                                originalPassword: originalPassword) { aProductResult, aPasswordResult in
+                productResult = aProductResult
+                passwordResult = aPasswordResult
+                expectation.fulfill()
+            }
+        }
+
+        // Assert
+        XCTAssertEqual(storesManager.receivedActions.count, 2)
+        XCTAssertNotNil(storesManager.receivedActions[0] as? ProductAction)
+        XCTAssertNotNil(storesManager.receivedActions[1] as? SitePostAction)
+        XCTAssertEqual(productResult, .failure(.invalidSKU))
+        XCTAssertEqual(passwordResult?.isSuccess, true)
+        XCTAssertEqual(try passwordResult?.get(), password)
+    }
+
+    func test_editing_product_unsuccessfully_with_a_password_unsuccessfully_returns_failure_results() {
+        // Arrange
+        let originalProduct = MockProduct().product()
+        let product = originalProduct.copy(name: "PRODUCT")
+        let originalModel = EditableProductModel(product: originalProduct)
+        let model = EditableProductModel(product: product)
+        let originalPassword: String? = nil
+        let password = "wo0oo!"
+        let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
+        mockUpdateProduct(result: .failure(.invalidSKU))
+        mockUpdatePassword(result: .failure(NSError(domain: "", code: 100, userInfo: nil)))
+
+        // Action
+        var productResult: Result<EditableProductModel, ProductUpdateError>?
+        var passwordResult: Result<String?, Error>?
+        waitForExpectation { expectation in
+            useCase.editProduct(product: model,
+                                originalProduct: originalModel,
+                                password: password,
+                                originalPassword: originalPassword) { aProductResult, aPasswordResult in
+                productResult = aProductResult
+                passwordResult = aPasswordResult
+                expectation.fulfill()
+            }
+        }
+
+        // Assert
+        XCTAssertEqual(storesManager.receivedActions.count, 2)
+        XCTAssertNotNil(storesManager.receivedActions[0] as? ProductAction)
+        XCTAssertNotNil(storesManager.receivedActions[1] as? SitePostAction)
+        XCTAssertEqual(productResult, .failure(.invalidSKU))
+        XCTAssertEqual(passwordResult?.isFailure, true)
+    }
+}
+
+private extension ProductFormRemoteActionUseCaseTests {
+    func mockAddProduct(result: Result<Product, ProductUpdateError>) {
+        storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
+            if case let ProductAction.addProduct(_, onCompletion) = action {
+                onCompletion(result)
+            }
+        }
+    }
+
+    func mockUpdateProduct(result: Result<Product, ProductUpdateError>) {
+        storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
+            if case let ProductAction.updateProduct(_, onCompletion) = action {
+                onCompletion(result)
+            }
+        }
+    }
+
+    func mockUpdatePassword(result: Result<String?, Error>) {
+        storesManager.whenReceivingAction(ofType: SitePostAction.self) { action in
+            if case let SitePostAction.updateSitePostPassword(_, _, _, onCompletion) = action {
+                onCompletion(result)
+            }
+        }
+    }
+}

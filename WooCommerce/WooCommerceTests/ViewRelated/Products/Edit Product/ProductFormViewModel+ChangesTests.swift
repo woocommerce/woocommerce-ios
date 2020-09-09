@@ -4,7 +4,7 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 
-/// Unit tests for unsaved changes (`hasUnsavedChanges`, `hasProductChanged`, `hasPasswordChanged`)
+/// Unit tests for unsaved changes (`hasUnsavedChanges`)
 final class ProductFormViewModel_ChangesTests: XCTestCase {
     private let defaultSiteID: Int64 = 134
 
@@ -45,8 +45,6 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
         // Assert
         XCTAssertFalse(viewModel.hasUnsavedChanges())
-        XCTAssertFalse(viewModel.hasProductChanged())
-        XCTAssertFalse(viewModel.hasPasswordChanged())
     }
 
     func testProductHasUnsavedChangesFromEditingProductName() {
@@ -64,8 +62,6 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
-        XCTAssertTrue(viewModel.hasProductChanged())
-        XCTAssertFalse(viewModel.hasPasswordChanged())
     }
 
     func testProductHasUnsavedChangesFromEditingPassword() {
@@ -84,8 +80,6 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
-        XCTAssertFalse(viewModel.hasProductChanged())
-        XCTAssertTrue(viewModel.hasPasswordChanged())
     }
 
     func testProductHasUnsavedChangesFromUploadingAnImage() {
@@ -110,8 +104,6 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         // Assert
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
         XCTAssertTrue(viewModel.hasUnsavedChanges())
-        XCTAssertFalse(viewModel.hasProductChanged())
-        XCTAssertFalse(viewModel.hasPasswordChanged())
     }
 
     func testProductHasUnsavedChangesFromEditingImages() {
@@ -135,8 +127,6 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
-        XCTAssertTrue(viewModel.hasProductChanged())
-        XCTAssertFalse(viewModel.hasPasswordChanged())
     }
 
     func testProductHasUnsavedChangesFromEditingProductDescription() {
@@ -154,8 +144,6 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
-        XCTAssertTrue(viewModel.hasProductChanged())
-        XCTAssertFalse(viewModel.hasPasswordChanged())
     }
 
     func testProductHasUnsavedChangesFromEditingProductCategories() {
@@ -178,8 +166,6 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
-        XCTAssertTrue(viewModel.hasProductChanged())
-        XCTAssertFalse(viewModel.hasPasswordChanged())
     }
 
     func testProductHasUnsavedChangesFromEditingProductTags() {
@@ -201,8 +187,6 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
-        XCTAssertTrue(viewModel.hasProductChanged())
-        XCTAssertFalse(viewModel.hasPasswordChanged())
     }
 
     func testProductHasUnsavedChangesFromEditingProductBriefDescription() {
@@ -220,8 +204,6 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
-        XCTAssertTrue(viewModel.hasProductChanged())
-        XCTAssertFalse(viewModel.hasPasswordChanged())
     }
 
     func testProductHasUnsavedChangesFromEditingPriceSettings() {
@@ -239,8 +221,6 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
-        XCTAssertTrue(viewModel.hasProductChanged())
-        XCTAssertFalse(viewModel.hasPasswordChanged())
     }
 
     func testProductHasUnsavedChangesFromEditingInventorySettings() {
@@ -258,8 +238,6 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
-        XCTAssertTrue(viewModel.hasProductChanged())
-        XCTAssertFalse(viewModel.hasPasswordChanged())
     }
 
     func testProductHasUnsavedChangesFromEditingShippingSettings() {
@@ -280,7 +258,5 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
-        XCTAssertTrue(viewModel.hasProductChanged())
-        XCTAssertFalse(viewModel.hasPasswordChanged())
     }
 }

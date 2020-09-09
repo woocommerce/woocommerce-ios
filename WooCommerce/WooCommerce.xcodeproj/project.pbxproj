@@ -2822,6 +2822,14 @@
 			path = "Edit Price";
 			sourceTree = "<group>";
 		};
+		45C11B7D2508E99A006C2089 /* Shared Site Settings */ = {
+			isa = PBXGroup;
+			children = (
+				45C11B7B2508E156006C2089 /* SelectedSiteSettings.swift */,
+			);
+			path = "Shared Site Settings";
+			sourceTree = "<group>";
+		};
 		45C8B25E23155C940002FA77 /* Billing Information */ = {
 			isa = PBXGroup;
 			children = (
@@ -3303,10 +3311,10 @@
 				B5A03699214C0E7000774E2C /* Logging */,
 				B58B4ABC2108F7F800076FDD /* Notices */,
 				575472792451F0A500A94C3C /* Observables */,
+				45C11B7D2508E99A006C2089 /* Shared Site Settings */,
 				B541B2182189F387008FE7C1 /* StringFormatter */,
 				02913E9323A774B000707A0C /* UnitInputFormatter */,
 				CE14452C2188C0EC00A991D8 /* Zendesk */,
-				45C11B7B2508E156006C2089 /* SelectedSiteSettings.swift */,
 				0272C00222EE9C3200D7CA2C /* AsyncDictionary.swift */,
 				74460D3F22289B7600D7316A /* Coordinator.swift */,
 				7459A6C521B0680300F83A78 /* RequirementsChecker.swift */,

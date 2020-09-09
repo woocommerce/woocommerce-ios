@@ -66,6 +66,7 @@ final class LoginMagicLinkViewController: LoginViewController {
     ///
     override func localizePrimaryButton() {
         submitButton?.setTitle(WordPressAuthenticator.shared.displayStrings.openMailButtonTitle, for: .normal)
+        submitButton?.accessibilityIdentifier = "Open Mail Button"
     }
 }
 

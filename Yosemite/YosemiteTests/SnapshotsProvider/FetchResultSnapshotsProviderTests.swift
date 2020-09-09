@@ -103,7 +103,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         // Then
         let expectedObjectIDs = [accounts[1].objectID, accounts[2].objectID, accounts[0].objectID]
         let actualObjectIDs = snapshot.itemIdentifiers
-        XCTAssertEqual(expectedObjectIDs, actualObjectIDs)
+        XCTAssertEqual(actualObjectIDs, expectedObjectIDs)
     }
 
     func test_snapshot_can_emit_a_list_with_sections() throws {

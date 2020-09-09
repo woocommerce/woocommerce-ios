@@ -42,12 +42,15 @@ struct ProductTaxClassListSelectorDataSource: PaginatedListSelectorDataSource {
         cell.accessoryType = isSelected(model: model) ? .checkmark: .none
     }
 
-    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
+    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Result<Bool, Error>) -> Void)?) {
         let action = TaxClassAction.retrieveTaxClasses(siteID: siteID) { (taxClasses, error) in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing tax classes: \(error)")
+                onCompletion?(.failure(error))
+                return
             }
-            onCompletion?(error == nil)
+            // Tax classes endpoint does not support pagination, thus we assume there is no next page on every retrieval.
+            onCompletion?(.success(false))
         }
 
         ServiceLocator.stores.dispatch(action)

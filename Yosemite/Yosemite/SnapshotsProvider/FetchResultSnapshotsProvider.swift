@@ -48,7 +48,7 @@ public typealias FetchResultSnapshot = NSDiffableDataSourceSnapshot<String, Fetc
 /// That's it! The `UITableView` should be automatically updated whenever the data changes.
 ///
 @available(iOS 13.0, *)
-public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshotsProviderMutableType>: NSObject, NSFetchedResultsControllerDelegate {
+public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshotsProviderMutableType> {
 
     /// Defines the conditions for fetching the results.
     public struct Query {
@@ -102,9 +102,12 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
             sectionNameKeyPath: query.sectionNameKeyPath,
             cacheName: nil
         )
-        resultsController.delegate = self
+        resultsController.delegate = self.hiddenFetchedResultsControllerDelegate
         return resultsController
     }()
+
+    /// The delgate for `fetchedResultsController`.
+    private lazy var hiddenFetchedResultsControllerDelegate = HiddenFetchedResultsControllerDelegate(self)
 
     public init(storageManager: StorageManagerType, query: Query) {
         self.storage = storageManager.viewStorage
@@ -143,14 +146,30 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
             return nil
         }
     }
+}
 
-    /// Converts the `NSFetchedResultsController` results to a snapshot that is then emitted
-    /// to observers.
+@available(iOS 13.0, *)
+private extension FetchResultSnapshotsProvider {
+    /// Part of `FetchResultSnapshotsProvider` which submits new `FetchResultSnapshot` objects to
+    /// `snapshotSubject` whenever `NSFetchedResultsController` receives changes.
     ///
-    /// This will be hidden later. It should not be publicly accessible.
-    public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
-                    didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
-        let snapshot = snapshot as FetchResultSnapshot
-        snapshotSubject.send(snapshot)
+    /// This class is used to hide the `controller:didChangeContentWith:` delegate method. If we
+    /// didn't have this, then we would have had to make that delegate method `public`. And
+    /// that throws encapsulation out of the window. :D
+    final class HiddenFetchedResultsControllerDelegate: NSObject, NSFetchedResultsControllerDelegate {
+
+        private weak var snapshotsProvider: FetchResultSnapshotsProvider?
+
+        init(_ snapshotsProvider: FetchResultSnapshotsProvider) {
+            self.snapshotsProvider = snapshotsProvider
+        }
+
+        /// Converts the `NSFetchedResultsController` results to a snapshot that is then emitted
+        /// to observers.
+        func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+                        didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
+            let snapshot = snapshot as FetchResultSnapshot
+            snapshotsProvider?.snapshotSubject.send(snapshot)
+        }
     }
 }

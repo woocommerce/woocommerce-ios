@@ -41,6 +41,10 @@ final class ServiceLocator {
     ///
     private static var _shippingSettingsService: ShippingSettingsService?
 
+    /// Currency Settings
+    ///
+    private static var _currencySettings: CurrencySettings = CurrencySettings()
+
     /// CoreData Stack
     ///
     private static var _storageManager = CoreDataManager(name: WooConstants.databaseStackName, crashLogger: SentryCrashLogger())
@@ -104,6 +108,12 @@ final class ServiceLocator {
             return service
         }
         return shippingSettingsService
+    }
+
+    /// Provides the access point to the Currency Settings for the current Site.
+    /// - Returns: An instance of CurrencySettings.
+    static var currencySettings: CurrencySettings {
+        return _currencySettings
     }
 
     /// Provides the access point to the StorageManager.
@@ -191,6 +201,14 @@ extension ServiceLocator {
         }
 
         _shippingSettingsService = mock
+    }
+
+    static func setCurrencySettings(_ mock: CurrencySettings) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _currencySettings = mock
     }
 
     static func setStorageManager(_ mock: CoreDataManager) {

@@ -35,7 +35,7 @@ extension SelectedSiteSettings {
     ///
     private func configureResultsController() {
         resultsController.onDidChangeObject = { (object, indexPath, type, newIndexPath) in
-            CurrencySettings.shared.updateCurrencyOptions(with: object)
+            ServiceLocator.currencySettings.updateCurrencyOptions(with: object)
         }
         refreshResultsPredicate()
     }
@@ -51,7 +51,7 @@ extension SelectedSiteSettings {
         resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, settingTypePredicate])
         try? resultsController.performFetch()
         resultsController.fetchedObjects.forEach {
-            CurrencySettings.shared.updateCurrencyOptions(with: $0)
+            ServiceLocator.currencySettings.updateCurrencyOptions(with: $0)
         }
     }
 }

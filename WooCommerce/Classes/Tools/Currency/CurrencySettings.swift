@@ -4,13 +4,6 @@ import Yosemite
 /// Site-wide settings for displaying prices/money
 ///
 public class CurrencySettings {
-    /// Shared Instance
-    ///
-    static let shared: CurrencySettings = {
-        let currencySettings = CurrencySettings()
-        return currencySettings
-    }()
-
 
     // MARK: - Enums
 

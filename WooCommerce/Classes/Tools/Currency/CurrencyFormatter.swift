@@ -7,7 +7,7 @@ import Yosemite
 public class CurrencyFormatter {
     private let currencySettings: CurrencySettings
 
-    init(currencySettings: CurrencySettings = CurrencySettings.shared) {
+    init(currencySettings: CurrencySettings) {
         self.currencySettings = currencySettings
     }
 

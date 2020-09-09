@@ -2,7 +2,8 @@ import UIKit
 import Yosemite
 
 extension ProductsTabProductViewModel {
-    init(productVariationModel: EditableProductVariationModel, currencySettings: CurrencySettings = .shared) {
+    init(productVariationModel: EditableProductVariationModel,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         imageUrl = productVariationModel.productVariation.image?.src
         name = productVariationModel.name
         detailsAttributedString = productVariationModel.createDetailsAttributedString(currencySettings: currencySettings)

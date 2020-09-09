@@ -453,6 +453,7 @@
 		57C503E023E8D4D600EC0790 /* OrdersMasterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C503DF23E8D4D600EC0790 /* OrdersMasterViewModel.swift */; };
 		57C5FF7A25091A350074EC26 /* OrderListSyncActionUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C5FF7925091A350074EC26 /* OrderListSyncActionUseCase.swift */; };
 		57C5FF7C25091DE50074EC26 /* OrderListSyncActionUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C5FF7B25091DE50074EC26 /* OrderListSyncActionUseCaseTests.swift */; };
+		57C5FF7F250925C90074EC26 /* OrderListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C5FF7D250925000074EC26 /* OrderListViewModel.swift */; };
 		57C9A8FC24C21BFB001E1C2F /* ReviewsCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C9A8FB24C21BFB001E1C2F /* ReviewsCoordinatorTests.swift */; };
 		57C9A8FE24C23335001E1C2F /* MockNoticePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C9A8FD24C23335001E1C2F /* MockNoticePresenter.swift */; };
 		57CFCD28248845B4003F51EC /* PrimarySectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CFCD27248845B4003F51EC /* PrimarySectionHeaderView.swift */; };
@@ -1403,6 +1404,7 @@
 		57C503DF23E8D4D600EC0790 /* OrdersMasterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersMasterViewModel.swift; sourceTree = "<group>"; };
 		57C5FF7925091A350074EC26 /* OrderListSyncActionUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListSyncActionUseCase.swift; sourceTree = "<group>"; };
 		57C5FF7B25091DE50074EC26 /* OrderListSyncActionUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListSyncActionUseCaseTests.swift; sourceTree = "<group>"; };
+		57C5FF7D250925000074EC26 /* OrderListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListViewModel.swift; sourceTree = "<group>"; };
 		57C9A8FB24C21BFB001E1C2F /* ReviewsCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsCoordinatorTests.swift; sourceTree = "<group>"; };
 		57C9A8FD24C23335001E1C2F /* MockNoticePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNoticePresenter.swift; sourceTree = "<group>"; };
 		57CFCD27248845B4003F51EC /* PrimarySectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimarySectionHeaderView.swift; sourceTree = "<group>"; };
@@ -3905,6 +3907,7 @@
 				B509112E2049E27A007D25DC /* OrdersViewController.swift */,
 				576F92212423C3C0003E5FEF /* OrdersViewModel.swift */,
 				57C5FF7925091A350074EC26 /* OrderListSyncActionUseCase.swift */,
+				57C5FF7D250925000074EC26 /* OrderListViewModel.swift */,
 			);
 			path = Orders;
 			sourceTree = "<group>";
@@ -5268,6 +5271,7 @@
 				5754727F24520B2A00A94C3C /* Observer.swift in Sources */,
 				027B8BBA23FE0D0C0040944E /* ObservationToken.swift in Sources */,
 				B517EA18218B232700730EC4 /* StringFormatter+Notes.swift in Sources */,
+				57C5FF7F250925C90074EC26 /* OrderListViewModel.swift in Sources */,
 				CE583A072107849F00D73C1C /* SwitchTableViewCell.swift in Sources */,
 				D8149F562251EE300006A245 /* UITextField+Helpers.swift in Sources */,
 				0212276124498A270042161F /* ProductFormBottomSheetListSelectorCommand.swift in Sources */,

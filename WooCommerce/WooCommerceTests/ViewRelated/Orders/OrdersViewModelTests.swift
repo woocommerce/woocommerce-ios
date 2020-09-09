@@ -5,7 +5,7 @@ import XCTest
 import Yosemite
 import Storage
 
-private typealias SyncReason = OrdersViewModel.SyncReason
+private typealias SyncReason = OrderListSyncActionUseCase.SyncReason
 private typealias Defaults = OrdersViewModel.Defaults
 
 /// Tests for `OrdersViewModel`.

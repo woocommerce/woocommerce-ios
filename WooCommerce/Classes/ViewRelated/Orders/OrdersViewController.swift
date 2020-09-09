@@ -8,7 +8,7 @@ import StoreKit
 // Used for protocol conformance of IndicatorInfoProvider only.
 import XLPagerTabStrip
 
-private typealias SyncReason = OrdersViewModel.SyncReason
+private typealias SyncReason = OrderListSyncActionUseCase.SyncReason
 
 protocol OrdersViewControllerDelegate: class {
     /// Called when `OrdersViewController` is about to fetch Orders from the API.

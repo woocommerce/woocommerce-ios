@@ -149,6 +149,7 @@ private extension GetStartedViewController {
         continueButton.translatesAutoresizingMaskIntoConstraints = false
         continueButton.isEnabled = false
         continueButton.addTarget(self, action: #selector(handleSubmitButtonTapped(_:)), for: .touchUpInside)
+        continueButton.accessibilityIdentifier = "Get Started Email Continue Button"
         tableView.tableFooterView = tableFooter
     }
 

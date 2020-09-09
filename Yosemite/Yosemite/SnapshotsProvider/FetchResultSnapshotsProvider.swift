@@ -132,7 +132,7 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     ///        cell.configure(using: order)
     ///        return cell
     ///    }
-    ///}
+    /// }
     /// ```
     public func object(withID objectID: FetchResultSnapshotObjectID) -> MutableType.ReadOnlyType? {
         assert(!objectID.isTemporaryID, "Expected objectID \(objectID) to be a permanent NSManagedObjectID.")

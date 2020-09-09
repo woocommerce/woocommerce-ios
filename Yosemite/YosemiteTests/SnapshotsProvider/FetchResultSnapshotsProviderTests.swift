@@ -35,6 +35,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         // Given
         let insertedAccount = insertAccount(displayName: "Reina Feil", username: "reinafeil")
 
+        // Save so that `FetchResultSnapshot` will not have temporary IDs.
         viewStorage.saveIfNeeded()
 
         let query = FetchResultSnapshotsProvider<StorageAccount>.Query(

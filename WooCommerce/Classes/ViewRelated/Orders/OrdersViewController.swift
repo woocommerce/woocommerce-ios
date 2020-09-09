@@ -18,6 +18,10 @@ protocol OrdersViewControllerDelegate: class {
 
 /// OrdersViewController: Displays the list of Orders associated to the active Store / Account.
 ///
+/// ## Deprecated
+///
+/// This will be replaced with `OrderListViewController` when the minimum iOS version is 13.0.
+///
 final class OrdersViewController: UIViewController {
 
     weak var delegate: OrdersViewControllerDelegate?

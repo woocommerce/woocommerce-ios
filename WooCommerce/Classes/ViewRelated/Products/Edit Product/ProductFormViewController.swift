@@ -582,15 +582,14 @@ private extension ProductFormViewController {
         if let password = viewModel.password, viewModel.hasPasswordChanged() {
             group.enter()
             let passwordUpdateAction = SitePostAction.updateSitePostPassword(siteID: product.siteID, postID: product.productID,
-                                                                             password: password) { [weak self] (password, error) in
-                guard let _ = password else {
-                    DDLogError("⛔️ Error updating product password: \(error.debugDescription)")
-                    group.leave()
-                    return
-                }
-
-                self?.viewModel.resetPassword(password)
-                group.leave()
+                                                                             password: password) { [weak self] result in
+                                                                                switch result {
+                                                                                case .failure(let error):
+                                                                                    DDLogError("⛔️ Error updating product password: \(error)")
+                                                                                case .success(let password):
+                                                                                    self?.viewModel.resetPassword(password)
+                                                                                }
+                                                                                group.leave()
             }
             ServiceLocator.stores.dispatch(passwordUpdateAction)
         }
@@ -644,6 +643,7 @@ private extension ProductFormViewController {
 
         let viewController = ProductSettingsViewController(product: product.product,
                                                            password: password,
+                                                           formType: viewModel.formType,
                                                            isEditProductsRelease3Enabled: isEditProductsRelease3Enabled,
                                                            completion: { [weak self] (productSettings) in
             guard let self = self else {

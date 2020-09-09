@@ -125,6 +125,10 @@ private extension ProductFormTableViewDataSource {
         cell.onAddImage = { [weak self] in
             self?.onAddImage?()
         }
+        cell.accessibilityLabel = NSLocalizedString(
+            "List of images of the product",
+            comment: "VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen."
+        )
     }
 
     func configureName(cell: UITableViewCell, name: String?) {
@@ -147,6 +151,10 @@ private extension ProductFormTableViewDataSource {
                                                             edgeInsets: UIEdgeInsets(top: 8, left: 11, bottom: 8, right: 11))
 
         cell.configure(with: cellViewModel)
+        cell.accessibilityLabel = NSLocalizedString(
+            "Title of the product",
+            comment: "VoiceOver accessibility hint, informing the user about the title of a product in product detail screen."
+        )
     }
 
     func configureVariationName(cell: UITableViewCell, name: String) {

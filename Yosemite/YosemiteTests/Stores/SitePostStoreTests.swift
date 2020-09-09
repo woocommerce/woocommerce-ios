@@ -56,23 +56,24 @@ final class SitePostStoreTests: XCTestCase {
     /// Verifies that SitePostAction.updateSitePostPassword returns the expected result.
     ///
     func testUpdateSitePostPasswordReturnsExpectedResult() {
-        let expectation = self.expectation(description: "Update site post password")
+        // Arrange
         let sitePostStore = SitePostStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-
         let postID: Int64 = 7
-
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/posts/\(postID)", filename: "site-post-update")
 
+        // Action
         let newPassword = "new-password"
-        let action = SitePostAction.updateSitePostPassword(siteID: sampleSiteID, postID: postID, password: newPassword) { (password, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(password)
-            XCTAssertEqual(password, newPassword)
-            expectation.fulfill()
+        var result: Result<String?, Error>?
+        waitForExpectation { expectation in
+            let action = SitePostAction.updateSitePostPassword(siteID: sampleSiteID, postID: postID, password: newPassword) { aResult in
+                result = aResult
+                expectation.fulfill()
+            }
+            sitePostStore.onAction(action)
         }
 
-        sitePostStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Assert
+        XCTAssertEqual(try XCTUnwrap(result?.get()), newPassword)
     }
 
 }

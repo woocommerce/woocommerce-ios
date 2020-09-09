@@ -14,6 +14,10 @@ import protocol Storage.StorageManagerType
 /// in here but grab it from the `SessionManager` when we need it. Hopefully, we will be able to
 /// fix this in the future.
 ///
+/// ## Deprecated
+///
+/// This will be replaced with `OrderListViewModel` when the minimum iOS version is 13.0.
+///
 final class OrdersViewModel {
     /// The reasons passed to `SyncCoordinator` when synchronizing.
     ///

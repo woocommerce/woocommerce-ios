@@ -114,6 +114,7 @@ final class ReviewsViewController: UIViewController {
         configureResultsController()
 
         startListeningToNotifications()
+        syncingCoordinator.resynchronize()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -121,8 +122,6 @@ final class ReviewsViewController: UIViewController {
 
         resetApplicationBadge()
         transitionToResultsUpdatedState()
-
-        syncingCoordinator.synchronizeFirstPage()
 
         if AppRatingManager.shared.shouldPromptForAppReview(section: Constants.section) {
             displayRatingPrompt()
@@ -209,7 +208,7 @@ private extension ReviewsViewController {
 
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.reviewsListPulledToRefresh)
-        syncingCoordinator.synchronizeFirstPage {
+        syncingCoordinator.resynchronize() {
             sender.endRefreshing()
         }
     }

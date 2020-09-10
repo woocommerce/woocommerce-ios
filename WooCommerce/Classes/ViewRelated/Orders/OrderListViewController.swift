@@ -512,12 +512,10 @@ extension OrderListViewController: UITableViewDelegate {
             return
         }
 
-        // WIP Replace with DiffableDataSource implementation later
-        //
-        // guard let orderDetailsViewModel = viewModel.detailsViewModel(at: indexPath) else {
-        //     return
-        // }
-        let orderDetailsViewModel: OrderDetailsViewModel? = nil
+        guard let objectID = dataSource.itemIdentifier(for: indexPath),
+            let orderDetailsViewModel = viewModel.detailsViewModel(withID: objectID) else {
+                return
+        }
 
         guard let orderDetailsVC = OrderDetailsViewController.instantiatedViewControllerFromStoryboard() else {
             assertionFailure("Expected OrderDetailsViewController to be instantiated")
@@ -526,10 +524,7 @@ extension OrderListViewController: UITableViewDelegate {
 
         orderDetailsVC.viewModel = orderDetailsViewModel
 
-        // WIP Remove guard later
-        guard let order = orderDetailsViewModel?.order else {
-            return
-        }
+        let order = orderDetailsViewModel.order
         ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID,
                                                                     "status": order.statusKey])
 

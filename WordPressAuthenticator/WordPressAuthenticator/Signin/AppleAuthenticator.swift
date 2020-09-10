@@ -149,8 +149,11 @@ private extension AppleAuthenticator {
     }
     
     func loginSuccessful(with credentials: AuthenticatorCredentials) {
+        // This stat is part of a funnel that provides critical information.  Please
+        // consult with your lead before removing this event.
+        track(.signedIn)
+        
         tracker.track(step: .success) {
-            track(.signedIn)
             track(.loginSocialSuccess)
         }
         

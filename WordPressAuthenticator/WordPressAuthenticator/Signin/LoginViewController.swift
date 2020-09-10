@@ -278,11 +278,6 @@ extension LoginViewController {
     /// Tracks the SignIn Event
     ///
     func trackSignIn(credentials: AuthenticatorCredentials) {
-        // Once we remove legacy tracking, this whole method can go away.
-        guard tracker.shouldUseLegacyTracker() else {
-            return
-        }
-        
         var properties = [String: String]()
 
         if let wpcom = credentials.wpcom {
@@ -292,6 +287,8 @@ extension LoginViewController {
             ]
         }
 
+        // This stat is part of a funnel that provides critical information.  Please
+        // consult with your lead before removing this event.
         WordPressAuthenticator.track(.signedIn, properties: properties)
     }
 
@@ -327,9 +324,12 @@ extension LoginViewController {
                         serviceToken: serviceToken,
                         connectParameters: appleConnectParameters,
                         success: {
+                            // This stat is part of a funnel that provides critical information.  Please
+                            // consult with your lead before removing this event.
+                            let source = appleConnectParameters != nil ? "apple" : "google"
+                            WordPressAuthenticator.track(.signedIn, properties: ["source": source])
+                            
                             if AuthenticatorAnalyticsTracker.shared.shouldUseLegacyTracker() {
-                                let source = appleConnectParameters != nil ? "apple" : "google"
-                                WordPressAuthenticator.track(.signedIn, properties: ["source": source])
                                 WordPressAuthenticator.track(.loginSocialConnectSuccess)
                                 WordPressAuthenticator.track(.loginSocialSuccess)
                             }

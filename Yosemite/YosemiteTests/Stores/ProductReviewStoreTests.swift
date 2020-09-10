@@ -77,7 +77,7 @@ final class ProductReviewStoreTests: XCTestCase {
 
     /// Verifies that ProductReviewAction.synchronizeProductReviews effectively persists any retrieved product reviews.
     ///
-    func testRetrieveProductReviewsEffectivelyPersistsRetrievedProductReviews() {
+    func test_retrieve_product_reviews_effectively_persists_retrieved_product_reviews() {
         let expectation = self.expectation(description: "Retrieve product review list")
 
         network.simulateResponse(requestUrlSuffix: "products/reviews", filename: "reviews-all")
@@ -99,7 +99,7 @@ final class ProductReviewStoreTests: XCTestCase {
     /// Verifies that `ProductReviewAction.synchronizeProductReviews` effectively persists all of the fields
     /// correctly across all of the related `ProductReview` entities
     ///
-    func testRetrieveProductReviewsEffectivelyPersistsProductReviewFields() {
+    func test_retrieve_product_reviews_effectively_persists_product_review_fields() {
         let expectation = self.expectation(description: "Persist product review list")
 
         let remoteProductReview = sampleProductReview()
@@ -125,7 +125,7 @@ final class ProductReviewStoreTests: XCTestCase {
 
     /// Tests that reviews with no `reviewer_avatar_urls` can be saved by Core Data.
     ///
-    func testItCanSaveReviewsWithNoAvatarURLs() {
+    func test_it_can_save_reviews_with_no_avatar_URLs() {
         // Given
         let expectation = self.expectation(description: "Persist product review list")
 
@@ -155,7 +155,7 @@ final class ProductReviewStoreTests: XCTestCase {
 
     /// Verifies that ProductReviewAction.synchronizeProductReviews returns an error whenever there is an error response from the backend.
     ///
-    func testRetrieveProductReviewsReturnsErrorUponReponseError() {
+    func test_retrieve_product_reviews_returns_error_upon_response_error() {
         let expectation = self.expectation(description: "Retrieve product reviews error response")
 
         network.simulateResponse(requestUrlSuffix: "products/reviews", filename: "generic_error")
@@ -170,7 +170,7 @@ final class ProductReviewStoreTests: XCTestCase {
 
     /// Verifies that ProductReviewAction.synchronizeProductReviews returns an error whenever there is no backend response.
     ///
-    func testRetrieveProductReviewsReturnsErrorUponEmptyResponse() {
+    func test_retrieve_product_reviews_returns_error_upon_empty_response() {
         let expectation = self.expectation(description: "Retrieve product reviews empty response")
 
         let action = ProductReviewAction.synchronizeProductReviews(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
@@ -187,7 +187,7 @@ final class ProductReviewStoreTests: XCTestCase {
 
     /// Verifies that `ProductReviewAction.retrieveProductReview` returns the expected `ProductReview`.
     ///
-    func testRetrieveSingleProductReviewReturnsExpectedFields() {
+    func test_retrieve_single_product_review_returns_expected_fields() {
         let expectation = self.expectation(description: "Retrieve single product review")
         let remoteProductReview = sampleProductReview()
 
@@ -206,7 +206,7 @@ final class ProductReviewStoreTests: XCTestCase {
 
     /// Verifies that `ProductReviewAction.retrieveProductReview` returns an error whenever there is an error response from the backend.
     ///
-    func testRetrieveSingleProductReviewReturnsErrorUponReponseError() {
+    func test_retrieve_single_product_review_returns_rrror_upon_reponse_error() {
         let expectation = self.expectation(description: "Retrieve single product review error response")
 
         network.simulateResponse(requestUrlSuffix: "products/reviews/173", filename: "generic_error")
@@ -221,7 +221,7 @@ final class ProductReviewStoreTests: XCTestCase {
 
     /// Verifies that `ProductReviewAction.retrieveProductReview` returns an error whenever there is no backend response.
     ///
-    func testRetrieveSingleProductReviewReturnsErrorUponEmptyResponse() {
+    func test_retrieve_single_product_review_returns_error_upon_empty_response() {
         let expectation = self.expectation(description: "Retrieve single product review empty response")
 
         let action = ProductReviewAction.retrieveProductReview(siteID: sampleSiteID, reviewID: sampleReviewID) { (product, error) in
@@ -236,7 +236,7 @@ final class ProductReviewStoreTests: XCTestCase {
 
     /// Verifies that `ProductReviewAction.retrieveProductReview` returns an error whenever there is no backend response.
     ///
-    func testRetrieveSingleProductReviewDeletesTheReviewWhenReceivingA404Response() throws {
+    func test_retrieve_single_product_review_deletes_the_review_when_receiving_a_404_response() throws {
         // Given
         let storageReview = viewStorage.insertNewObject(ofType: StorageProductReview.self)
         storageReview.update(with: sampleProductReview())
@@ -271,7 +271,7 @@ final class ProductReviewStoreTests: XCTestCase {
 
     /// Verifies that `ProductReviewAction.resetStoredProductReviews` deletes the Products from Storage
     ///
-    func testResetStoredProductReviewsEffectivelyNukesTheProductsCache() {
+    func test_reset_stored_product_reviews_effectively_nukes_the_products_cache() {
         let expectation = self.expectation(description: "Stored Product reviews Reset")
         let action = ProductReviewAction.resetStoredProductReviews() {
             self.store.upsertStoredProductReviews(readOnlyProductReviews: [self.sampleProductReview()], in: self.viewStorage, siteID: self.sampleSiteID)
@@ -287,7 +287,7 @@ final class ProductReviewStoreTests: XCTestCase {
 
     /// Verifies that `ProductReviewStore.upsertStoredProductReview` does not produce duplicate entries.
     ///
-    func testUpdateStoredProductReviewEffectivelyUpdatesPreexistantProductReview() {
+    func test_update_stored_product_review_effectively_updates_preexistant_product_review() {
 
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductReview.self), 0)
 

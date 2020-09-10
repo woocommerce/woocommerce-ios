@@ -179,6 +179,7 @@ private extension OrderListViewModel {
 
 @available(iOS 13.0, *)
 extension OrderListViewModel {
+    /// Creates an `OrderDetailsViewModel` for the `Order` pointed to by `objectID`.
     func detailsViewModel(withID objectID: FetchResultSnapshotObjectID) -> OrderDetailsViewModel? {
         guard let order = snapshotsProvider.object(withID: objectID) else {
             return nil
@@ -187,6 +188,7 @@ extension OrderListViewModel {
         return OrderDetailsViewModel(order: order)
     }
 
+    /// Returns the corresponding section title for the given identifier.
     func sectionTitleFor(sectionIdentifier: String) -> String? {
         Age(rawValue: sectionIdentifier)?.description
     }

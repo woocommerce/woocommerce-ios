@@ -555,7 +555,20 @@ private extension GetStartedViewController {
         
         let safariViewController = SFSafariViewController(url: url)
         safariViewController.modalPresentationStyle = .pageSheet
+        safariViewController.delegate = self
         self.present(safariViewController, animated: true, completion: nil)
+    }
+}
+
+// MARK: - SFSafariViewControllerDelegate
+
+extension GetStartedViewController: SFSafariViewControllerDelegate {
+    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+        // This will only work when the user taps "Done" in the terms of service screen.
+        // It won't be executed if the user dismisses the terms of service VC by sliding it out of view.
+        // Unfortunately I haven't found a way to track that scenario.
+        //
+        tracker.track(click: .dismiss)
     }
 }
 

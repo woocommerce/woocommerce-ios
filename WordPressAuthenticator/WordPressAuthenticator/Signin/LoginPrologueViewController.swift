@@ -16,7 +16,10 @@ class LoginPrologueViewController: LoginViewController {
     private let style = WordPressAuthenticator.shared.style
 
     @available(iOS 13, *)
-    private lazy var storedCredentialsAuthenticator = StoredCredentialsAuthenticator()
+    private lazy var storedCredentialsAuthenticator = StoredCredentialsAuthenticator(onCancel: {
+        // Since the authenticator has its own flow
+        self.tracker.resetState()
+    })
     
     @IBOutlet private weak var topContainerView: UIView!
 

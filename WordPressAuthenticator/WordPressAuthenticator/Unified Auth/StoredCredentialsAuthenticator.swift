@@ -34,6 +34,10 @@ class StoredCredentialsAuthenticator: NSObject {
         return facade
     }()
     
+    // MARK: - Cancellation
+    
+    private let onCancel: (() -> Void)?
+    
     // MARK: - UI
     
     private let picker = StoredCredentialsPicker()
@@ -49,6 +53,12 @@ class StoredCredentialsAuthenticator: NSObject {
     
     private var loginFields: LoginFields?
     
+    // MARK: - Initialization
+    
+    init(onCancel: (() -> Void)? = nil) {
+        self.onCancel = onCancel
+    }
+    
     // MARK: - Picker
     
     /// Shows the UI for picking stored credentials for the user to log into their account.
@@ -61,8 +71,11 @@ class StoredCredentialsAuthenticator: NSObject {
             return
         }
         
+        // We're silently setting the flow and step because if there's an error we want it to be
+        // recognized as an iCloud Keychain flow error.  At the same time we don't want to start
+        // this flow unless the user has selected a credential.
         tracker.set(flow: .loginWithiCloudKeychain)
-        tracker.track(step: .start)
+        tracker.set(step: .start)
         
         picker.show(in: window) { [weak self] result in
             guard let self = self else {
@@ -85,6 +98,8 @@ class StoredCredentialsAuthenticator: NSObject {
     ///         - authorization: The authorization by the OS, containing the credentials picked by the user.
     ///
     private func pickerSuccess(_ authorization: ASAuthorization) {
+        tracker.track(step: .start)
+        
         switch authorization.credential {
         case _ as ASAuthorizationAppleIDCredential:
             // No-op for now, but we can decide to implement AppleID login through this authenticator

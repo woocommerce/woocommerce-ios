@@ -363,7 +363,6 @@ private extension PasswordViewController {
             }
 
             WordPressAuthenticator.openForgotPasswordURL(self.loginFields)
-            self.tracker.track(click: .forgottenPassword)
         }
     }
 

@@ -4,6 +4,10 @@ import Foundation
 ///
 public class AuthenticatorAnalyticsTracker {
     
+    private static let defaultSource: Source = .default
+    private static let defaultFlow: Flow = .prologue
+    private static let defaultStep: Step = .prologue
+    
     /// The method used for analytics tracking.  Useful for overriding in automated tests.
     ///
     typealias TrackerMethod = (_ event: AnalyticsEvent) -> ()
@@ -269,7 +273,7 @@ public class AuthenticatorAnalyticsTracker {
         var lastSource: Source
         var lastStep: Step
         
-        init(lastFlow: Flow = .prologue, lastSource: Source = .default, lastStep: Step = .prologue) {
+        init(lastFlow: Flow = AuthenticatorAnalyticsTracker.defaultFlow, lastSource: Source = AuthenticatorAnalyticsTracker.defaultSource, lastStep: Step = AuthenticatorAnalyticsTracker.defaultStep) {
             self.lastFlow = lastFlow
             self.lastSource = lastSource
             self.lastStep = lastStep
@@ -293,6 +297,15 @@ public class AuthenticatorAnalyticsTracker {
     init(configuration: Configuration, track: @escaping TrackerMethod = WPAnalytics.track) {
         self.configuration = configuration
         self.track = track
+    }
+    
+    // MARK: - State
+    
+    /// Resets the flow and step to the defaults.  The source is left untouched, and should only be set explicitely.
+    ///
+    func resetState() {
+        set(flow: Self.defaultFlow)
+        set(step: Self.defaultStep)
     }
     
     // MARK: - Legacy vs Unified tracking

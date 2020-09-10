@@ -152,6 +152,7 @@ final class OrderListViewModel {
 }
 
 // MARK: - Remote Notifications Observation
+
 @available(iOS 13.0, *)
 private extension OrderListViewModel {
     /// Watch for "new order" Remote Notifications that are received while the app is in the
@@ -171,5 +172,18 @@ private extension OrderListViewModel {
 
     func stopObservingForegroundRemoteNotifications() {
         cancellable?.cancel()
+    }
+}
+
+// MARK: - TableView Support
+
+@available(iOS 13.0, *)
+extension OrderListViewModel {
+    func detailsViewModel(withID objectID: FetchResultSnapshotObjectID) -> OrderDetailsViewModel? {
+        guard let order = snapshotsProvider.object(withID: objectID) else {
+            return nil
+        }
+
+        return OrderDetailsViewModel(order: order)
     }
 }

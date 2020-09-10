@@ -157,7 +157,7 @@ final class OrderListViewController: UIViewController {
     }
 
     private func makeCellProvider() -> UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID>.CellProvider {
-        return { [weak self] tableView, indexPath, managedObjectID in
+        return { [weak self] tableView, indexPath, objectID in
             guard let cell = tableView.dequeueReusableCell(withIdentifier: OrderTableViewCell.reuseIdentifier, for: indexPath) as? OrderTableViewCell else {
                 fatalError("Failed to create cell \(OrderTableViewCell.reuseIdentifier)")
             }
@@ -165,11 +165,10 @@ final class OrderListViewController: UIViewController {
                 return cell
             }
 
-            // WIP FIXME later
-            // let detailsViewModel = self.viewModel.detailsViewModel(withID: managedObjectID)
-            // let orderStatus = self.lookUpOrderStatus(for: detailsViewModel?.order)
-            // cell.configureCell(viewModel: detailsViewModel, orderStatus: orderStatus)
-            // cell.layoutIfNeeded()
+            let detailsViewModel = self.viewModel.detailsViewModel(withID: objectID)
+            let orderStatus = self.lookUpOrderStatus(for: detailsViewModel?.order)
+            cell.configureCell(viewModel: detailsViewModel, orderStatus: orderStatus)
+            cell.layoutIfNeeded()
             return cell
         }
     }

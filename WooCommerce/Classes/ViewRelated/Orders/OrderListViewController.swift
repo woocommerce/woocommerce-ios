@@ -380,13 +380,11 @@ extension OrderListViewController {
     /// Whenever we're sync'ing an Orders Page that's beyond what we're currently displaying, this method will return *true*.
     ///
     private func mustStartFooterSpinner() -> Bool {
-        // WIP Replace with DiffableDataSource later
-        // guard let highestPageBeingSynced = syncingCoordinator.highestPageBeingSynced else {
-        //     return false
-        // }
-        //
-        // return highestPageBeingSynced * SyncingCoordinator.Defaults.pageSize > viewModel.numberOfObjects
-        return false
+        guard let highestPageBeingSynced = syncingCoordinator.highestPageBeingSynced else {
+            return false
+        }
+
+        return highestPageBeingSynced * SyncingCoordinator.Defaults.pageSize > dataSource.numberOfItems
     }
 
     /// Stops animating the Footer Spinner.

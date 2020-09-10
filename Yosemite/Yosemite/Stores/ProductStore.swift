@@ -565,7 +565,8 @@ extension ProductStore {
 ///
 /// - duplicatedSKU: the SKU is used by another Product.
 /// - invalidSKU: the SKU is invalid or duplicated.
-/// - password: the password of a product cannot be updated.
+/// - passwordCannotBeUpdated: the password of a product cannot be updated.
+/// - unexpected: an error that is not expected to occur.
 /// - unknown: other error cases.
 ///
 public enum ProductUpdateError: Error {
@@ -573,6 +574,7 @@ public enum ProductUpdateError: Error {
     case invalidSKU
     case passwordCannotBeUpdated
     case notFoundInStorage
+    case unexpected
     case unknown
 
     init(error: Error) {

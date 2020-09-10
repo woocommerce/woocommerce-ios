@@ -9,7 +9,7 @@ final class ProductFormRemoteActionUseCase {
         let password: String?
     }
     typealias AddProductCompletion = (_ result: Result<ResultData, ProductUpdateError>) -> Void
-    typealias EditProductCompletion = (_ productResult: Result<EditableProductModel, ProductUpdateError>, _ passwordResult: Result<String?, Error>) -> Void
+    typealias EditProductCompletion = (_ productResult: Result<ResultData, ProductUpdateError>) -> Void
 
     private let stores: StoresManager
 
@@ -78,9 +78,28 @@ final class ProductFormRemoteActionUseCase {
         group.notify(queue: .main) {
             guard let productResult = productResult, let passwordResult = passwordResult else {
                 assertionFailure("Unexpected nil result after updating product and password remotely")
+                onCompletion(.failure(.unexpected))
                 return
             }
-            onCompletion(productResult, passwordResult)
+
+            do {
+                let product = try productResult.get()
+                let password = try passwordResult.get()
+                onCompletion(.success(ResultData(product: product, password: password)))
+            } catch {
+                if let productError = productResult.failure {
+                    onCompletion(.failure(productError))
+                    return
+                }
+                if passwordResult.isFailure {
+                    onCompletion(.failure(.passwordCannotBeUpdated))
+                    return
+                }
+                assertionFailure("""
+                    Unexpected error with product result: \(productResult)\npassword result: \(passwordResult)
+                    """)
+                onCompletion(.failure(.unexpected))
+            }
         }
     }
 }

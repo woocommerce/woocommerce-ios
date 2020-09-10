@@ -252,26 +252,17 @@ extension ProductFormViewModel {
             remoteActionUseCase.editProduct(product: product,
                                               originalProduct: originalProduct,
                                               password: password,
-                                              originalPassword: originalPassword) { [weak self] productResult, passwordResult in
-                                                do {
-                                                    let product = try productResult.get()
-                                                    let password = try passwordResult.get()
-                                                    self?.resetProduct(product)
-                                                    self?.resetPassword(password)
-                                                    onCompletion(.success(product))
-                                                } catch {
-                                                    if let productError = productResult.failure {
-                                                        onCompletion(.failure(productError))
-                                                        return
-                                                    }
-                                                    if let passwordError = passwordResult.failure {
-                                                        onCompletion(.failure(.passwordCannotBeUpdated))
-                                                        return
-                                                    }
-                                                    assertionFailure("""
-                                                        Unexpected error with product result: \(productResult)\npassword result: \(passwordResult)
-                                                        """)
-                                                    onCompletion(.failure(.unknown))
+                                              originalPassword: originalPassword) { [weak self] result in
+                                                guard let self = self else {
+                                                    return
+                                                }
+                                                switch result {
+                                                case .success(let data):
+                                                    self.resetProduct(data.product)
+                                                    self.resetPassword(data.password)
+                                                    onCompletion(.success(data.product))
+                                                case .failure(let error):
+                                                    onCompletion(.failure(error))
                                                 }
             }
         }

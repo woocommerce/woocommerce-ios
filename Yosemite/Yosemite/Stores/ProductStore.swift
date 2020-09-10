@@ -571,7 +571,7 @@ extension ProductStore {
 public enum ProductUpdateError: Error {
     case duplicatedSKU
     case invalidSKU
-    case password
+    case passwordCannotBeUpdated
     case notFoundInStorage
     case unknown
 

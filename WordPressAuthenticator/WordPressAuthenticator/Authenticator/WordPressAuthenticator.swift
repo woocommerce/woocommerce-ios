@@ -302,8 +302,6 @@ import AuthenticationServices
                 WordPressAuthenticator.track(.loginMagicLinkOpened)
             }
         }
-        
-        WordPressAuthenticator.track(.signedIn)
 
         let navController = LoginNavigationController(rootViewController: controller)
         navController.modalPresentationStyle = .fullScreen

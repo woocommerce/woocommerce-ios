@@ -4,6 +4,7 @@ import Yosemite
 @testable import WooCommerce
 
 final class ProductFormRemoteActionUseCaseTests: XCTestCase {
+    typealias ResultData = ProductFormRemoteActionUseCase.ResultData
     private var storesManager: MockupStoresManager!
 
     override func setUp() {
@@ -18,7 +19,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
 
     // MARK: - Adding a product (`addProduct`)
 
-    func test_adding_product_with_a_password_successfully_returns_success_results() {
+    func test_adding_product_with_a_password_successfully_returns_success_result() {
         // Arrange
         let product = MockProduct().product()
         let model = EditableProductModel(product: product)
@@ -28,23 +29,19 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         mockUpdatePassword(result: .success(password))
 
         // Action
-        var productResult: Result<EditableProductModel, ProductUpdateError>?
-        var passwordResult: Result<String?, Error>?
-        useCase.addProduct(product: model, password: password) { aProductResult, aPasswordResult in
-            productResult = aProductResult
-            passwordResult = aPasswordResult
+        var result: Result<ResultData, ProductUpdateError>?
+        useCase.addProduct(product: model, password: password) { aResult in
+            result = aResult
         }
 
         // Assert
         XCTAssertEqual(storesManager.receivedActions.count, 2)
         XCTAssertNotNil(storesManager.receivedActions[0] as? ProductAction)
         XCTAssertNotNil(storesManager.receivedActions[1] as? SitePostAction)
-        XCTAssertEqual(productResult, .success(model))
-        XCTAssertEqual(passwordResult?.isSuccess, true)
-        XCTAssertEqual(try passwordResult?.get(), password)
+        XCTAssertEqual(result, .success(ResultData(product: model, password: password)))
     }
 
-    func test_adding_product_with_a_password_unsuccessfully_returns_success_product_result_and_failure_password_result() {
+    func test_adding_product_with_a_password_unsuccessfully_returns_failure_result_with_password_error() {
         // Arrange
         let product = MockProduct().product()
         let model = EditableProductModel(product: product)
@@ -54,22 +51,19 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         mockUpdatePassword(result: .failure(NSError(domain: "", code: 100, userInfo: nil)))
 
         // Action
-        var productResult: Result<EditableProductModel, ProductUpdateError>?
-        var passwordResult: Result<String?, Error>?
-        useCase.addProduct(product: model, password: password) { aProductResult, aPasswordResult in
-            productResult = aProductResult
-            passwordResult = aPasswordResult
+        var result: Result<ResultData, ProductUpdateError>?
+        useCase.addProduct(product: model, password: password) { aResult in
+            result = aResult
         }
 
         // Assert
         XCTAssertEqual(storesManager.receivedActions.count, 2)
         XCTAssertNotNil(storesManager.receivedActions[0] as? ProductAction)
         XCTAssertNotNil(storesManager.receivedActions[1] as? SitePostAction)
-        XCTAssertEqual(productResult, .success(model))
-        XCTAssertEqual(passwordResult?.isFailure, true)
+        XCTAssertEqual(result, .failure(.passwordCannotBeUpdated))
     }
 
-    func test_adding_product_without_a_password_successfully_does_not_trigger_password_action_and_returns_success_results() {
+    func test_adding_product_without_a_password_successfully_does_not_trigger_password_action_and_returns_success_result() {
         // Arrange
         let product = MockProduct().product()
         let model = EditableProductModel(product: product)
@@ -77,22 +71,18 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         mockAddProduct(result: .success(product))
 
         // Action
-        var productResult: Result<EditableProductModel, ProductUpdateError>?
-        var passwordResult: Result<String?, Error>?
-        useCase.addProduct(product: model, password: nil) { aProductResult, aPasswordResult in
-            productResult = aProductResult
-            passwordResult = aPasswordResult
+        var result: Result<ResultData, ProductUpdateError>?
+        useCase.addProduct(product: model, password: nil) { aResult in
+            result = aResult
         }
 
         // Assert
         XCTAssertEqual(storesManager.receivedActions.count, 1)
         XCTAssertNotNil(storesManager.receivedActions.first as? ProductAction)
-        XCTAssertEqual(productResult, .success(model))
-        XCTAssertEqual(passwordResult?.isSuccess, true)
-        XCTAssertEqual(try passwordResult?.get(), nil)
+        XCTAssertEqual(result, .success(ResultData(product: model, password: nil)))
     }
 
-    func test_adding_product_unsuccessfully_does_not_trigger_password_action_and_returns_failure_product_result() {
+    func test_adding_product_unsuccessfully_does_not_trigger_password_action_and_returns_failure_result_with_product_error() {
         // Arrange
         let product = MockProduct().product()
         let model = EditableProductModel(product: product)
@@ -100,18 +90,15 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
 
         // Action
-        var productResult: Result<EditableProductModel, ProductUpdateError>?
-        var passwordResult: Result<String?, Error>?
-        useCase.addProduct(product: model, password: nil) { aProductResult, aPasswordResult in
-            productResult = aProductResult
-            passwordResult = aPasswordResult
+        var result: Result<ResultData, ProductUpdateError>?
+        useCase.addProduct(product: model, password: nil) { aResult in
+            result = aResult
         }
 
         // Assert
         XCTAssertEqual(storesManager.receivedActions.count, 1)
         XCTAssertNotNil(storesManager.receivedActions.first as? ProductAction)
-        XCTAssertEqual(productResult, .failure(.invalidSKU))
-        XCTAssertNil(passwordResult)
+        XCTAssertEqual(result, .failure(.invalidSKU))
     }
 
     // MARK: - Editing a product (`addProduct`)

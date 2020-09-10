@@ -234,28 +234,18 @@ extension ProductFormViewModel {
         let remoteActionUseCase = ProductFormRemoteActionUseCase()
         switch formType {
         case .add:
-            remoteActionUseCase.addProduct(product: product, password: password) { [weak self] productResult, passwordResult in
-                switch productResult {
-                case .failure(let productError):
-                    onCompletion(.failure(productError))
-                case .success(let product):
+            remoteActionUseCase.addProduct(product: product, password: password) { [weak self] result in
+                switch result {
+                case .failure(let error):
+                    onCompletion(.failure(error))
+                case .success(let data):
                     guard let self = self else {
                         return
                     }
-                    guard let passwordResult = passwordResult else {
-                        assertionFailure("Password result is expected to be non-nil when product result is successful.")
-                        onCompletion(.failure(.unknown))
-                        return
-                    }
-                    switch passwordResult {
-                    case .failure:
-                        onCompletion(.failure(.passwordCannotBeUpdated))
-                    case .success(let password):
-                        self.formType = .edit
-                        self.resetProduct(product)
-                        self.resetPassword(password)
-                        onCompletion(.success(product))
-                    }
+                    self.formType = .edit
+                    self.resetProduct(data.product)
+                    self.resetPassword(data.password)
+                    onCompletion(.success(data.product))
                 }
             }
         case .edit:

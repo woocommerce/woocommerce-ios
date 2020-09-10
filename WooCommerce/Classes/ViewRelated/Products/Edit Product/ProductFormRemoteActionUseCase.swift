@@ -3,7 +3,12 @@ import Yosemite
 /// Makes network requests for each product form remote action that includes adding/editing a product and password.
 ///
 final class ProductFormRemoteActionUseCase {
-    typealias AddProductCompletion = (_ productResult: Result<EditableProductModel, ProductUpdateError>, _ passwordResult: Result<String?, Error>?) -> Void
+    /// A wrapper of product password in add/edit remote action's result.
+    struct ResultData: Equatable {
+        let product: EditableProductModel
+        let password: String?
+    }
+    typealias AddProductCompletion = (_ result: Result<ResultData, ProductUpdateError>) -> Void
     typealias EditProductCompletion = (_ productResult: Result<EditableProductModel, ProductUpdateError>, _ passwordResult: Result<String?, Error>) -> Void
 
     private let stores: StoresManager
@@ -24,17 +29,17 @@ final class ProductFormRemoteActionUseCase {
             switch productResult {
             case .failure(let error):
                 // TODO-2766: M4 analytics
-                onCompletion(.failure(error), nil)
+                onCompletion(.failure(error))
             case .success(let product):
                 // `self` is retained because the use case is not usually strongly held.
                 self.updatePasswordRemotely(product: product, password: password) { passwordResult in
                     switch passwordResult {
-                    case .failure(let error):
+                    case .failure:
                         // TODO-2766: M4 analytics
-                        onCompletion(.success(product), .failure(error))
+                        onCompletion(.failure(.passwordCannotBeUpdated))
                     case .success(let password):
                         // TODO-2766: M4 analytics
-                        onCompletion(.success(product), .success(password))
+                        onCompletion(.success(ResultData(product: product, password: password)))
                     }
                 }
             }

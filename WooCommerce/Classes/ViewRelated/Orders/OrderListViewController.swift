@@ -35,6 +35,7 @@ final class OrderListViewController: UIViewController {
     ///
     private lazy var tableView = UITableView(frame: .zero, style: .grouped)
 
+    /// The data source that is bound to `tableView`.
     private lazy var dataSource: UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID> = {
         let dataSource = UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID>(
             tableView: self.tableView,
@@ -157,6 +158,7 @@ final class OrderListViewController: UIViewController {
         tableView.reloadData()
     }
 
+    /// Returns a function that creates cells for `dataSource`.
     private func makeCellProvider() -> UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID>.CellProvider {
         return { [weak self] tableView, indexPath, objectID in
             guard let cell = tableView.dequeueReusableCell(withIdentifier: OrderTableViewCell.reuseIdentifier, for: indexPath) as? OrderTableViewCell else {
@@ -196,6 +198,7 @@ private extension OrderListViewController {
 
         viewModel.activate()
 
+        /// Update the `dataSource` whenever there are is a new snapshot.
         viewModel.snapshot.sink { snapshot in
             self.dataSource.apply(snapshot)
         }.store(in: &cancellables)

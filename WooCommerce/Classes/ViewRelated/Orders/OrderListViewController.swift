@@ -532,9 +532,11 @@ extension OrderListViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        // WIP Replace with new PaginationTracker logic later
-        // let orderIndex = viewModel.objectIndex(from: indexPath)
-        // syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: orderIndex)
+        guard let itemIndex = dataSource.indexOfItem(for: indexPath) else {
+            return
+        }
+
+        syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: itemIndex)
     }
 }
 

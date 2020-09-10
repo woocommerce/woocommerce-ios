@@ -153,6 +153,8 @@ final class OrderListViewController: UIViewController {
 
         // Fix any _incomplete_ animation if the orders were deleted and refetched from
         // a different location (or Orders tab).
+        //
+        // We can remove this once we've replaced XLPagerTabStrip.
         tableView.reloadData()
     }
 
@@ -198,9 +200,6 @@ private extension OrderListViewController {
         viewModel.snapshot.sink { snapshot in
             self.dataSource.apply(snapshot)
         }.store(in: &cancellables)
-
-        // Reload table because the activate call above executes a performFetch()
-        tableView.reloadData()
     }
 
     /// Setup: Order status predicate
@@ -419,7 +418,6 @@ private extension OrderListViewController {
         ghostableTableView.isHidden = true
         ghostableTableView.stopGhostAnimation()
         ghostableTableView.removeGhostContent()
-        tableView.reloadData()
     }
 
     /// Displays the Error Notice.

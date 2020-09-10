@@ -3404,7 +3404,7 @@
 				CED6021A20B35FBF0032C639 /* ReusableViews */,
 				CE85FD5120F677460080B73E /* Dashboard */,
 				CE1CCB4920570B05000EE3AC /* Orders */,
-				B59C09DA2188D6E800AB41D6 /* Notifications */,
+				B59C09DA2188D6E800AB41D6 /* Reviews */,
 				74EC34A3225FE1F3004BBC2E /* Products */,
 				022BF7FA23B9D681000A1DFB /* Progress */,
 				0282DD92233C9397006A5FDB /* Search */,
@@ -3535,7 +3535,7 @@
 			path = Notices;
 			sourceTree = "<group>";
 		};
-		B59C09DA2188D6E800AB41D6 /* Notifications */ = {
+		B59C09DA2188D6E800AB41D6 /* Reviews */ = {
 			isa = PBXGroup;
 			children = (
 				B59D1EDD219072B8009D1978 /* Cells */,
@@ -3549,7 +3549,7 @@
 				023A059924135F2600E3FC99 /* ReviewsViewController.xib */,
 				5718852B2465D9EC00E2486F /* ReviewsCoordinator.swift */,
 			);
-			path = Notifications;
+			path = Reviews;
 			sourceTree = "<group>";
 		};
 		B59D1EDD219072B8009D1978 /* Cells */ = {

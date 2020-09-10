@@ -567,26 +567,26 @@ extension ProductStore {
 /// - invalidSKU: the SKU is invalid or duplicated.
 /// - unknown: other error cases.
 ///
-public enum ProductUpdateError: Error {
+public enum ProductUpdateError: Error, Equatable {
     case duplicatedSKU
     case invalidSKU
     case notFoundInStorage
-    case unknown(error: Error)
+    case unknown(error: AnyError)
 
     init(error: Error) {
         guard let dotcomError = error as? DotcomError else {
-            self = .unknown(error: error)
+            self = .unknown(error: .init(error))
             return
         }
         switch dotcomError {
         case .unknown(let code, _):
             guard let errorCode = ErrorCode(rawValue: code) else {
-                self = .unknown(error: dotcomError)
+                self = .unknown(error: .init(dotcomError))
                 return
             }
             self = errorCode.error
         default:
-            self = .unknown(error: dotcomError)
+            self = .unknown(error: .init(dotcomError))
         }
     }
 
@@ -598,26 +598,6 @@ public enum ProductUpdateError: Error {
             case .invalidSKU:
                 return .invalidSKU
             }
-        }
-    }
-}
-
-extension ProductUpdateError: Equatable {
-    public static func == (lhs: ProductUpdateError, rhs: ProductUpdateError) -> Bool {
-        switch (lhs, rhs) {
-        case (.duplicatedSKU, .duplicatedSKU):
-            return true
-        case (.invalidSKU, .invalidSKU):
-            return true
-        case (.notFoundInStorage, .notFoundInStorage):
-            return true
-        case (let .unknown(lhsError), let .unknown(rhsError)):
-            if let lhsDotcomError = lhsError as? DotcomError, let rhsDotcomError = rhsError as? DotcomError {
-                return lhsDotcomError == rhsDotcomError
-            }
-            return (lhsError as NSError) == (rhsError as NSError)
-        default:
-            return false
         }
     }
 }

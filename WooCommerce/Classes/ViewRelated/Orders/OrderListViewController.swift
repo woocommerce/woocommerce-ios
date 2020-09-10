@@ -158,7 +158,7 @@ private extension OrderListViewController {
             self.syncingCoordinator.resynchronize()
         }
 
-        viewModel.activateAndForwardUpdates(to: tableView)
+        viewModel.activate()
 
         // Reload table because the activate call above executes a performFetch()
         tableView.reloadData()

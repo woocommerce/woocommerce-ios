@@ -68,7 +68,7 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
         /// those values can be converted to a user-friendly value.
         public let sectionNameKeyPath: String?
 
-        init(sortDescriptor: NSSortDescriptor, predicate: NSPredicate? = nil, sectionNameKeyPath: String? = nil) {
+        public init(sortDescriptor: NSSortDescriptor, predicate: NSPredicate? = nil, sectionNameKeyPath: String? = nil) {
             self.sortDescriptor = sortDescriptor
             self.predicate = predicate
             self.sectionNameKeyPath = sectionNameKeyPath

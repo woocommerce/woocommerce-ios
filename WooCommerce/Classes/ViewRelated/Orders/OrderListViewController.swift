@@ -575,8 +575,7 @@ private extension OrderListViewController {
     /// we've got cached results, or not.
     ///
     func transitionToSyncingState() {
-        // WIP Replace with DiffableDataSource logic later
-        // state = viewModel.isEmpty ? .placeholder : .syncing
+        state = dataSource.isEmpty ? .placeholder : .syncing
     }
 
     /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).

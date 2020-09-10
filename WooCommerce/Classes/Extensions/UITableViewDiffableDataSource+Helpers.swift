@@ -13,4 +13,8 @@ extension UITableViewDiffableDataSource {
     var numberOfItems: Int {
         snapshot().numberOfItems
     }
+
+    var isEmpty: Bool {
+        numberOfItems == 0
+    }
 }

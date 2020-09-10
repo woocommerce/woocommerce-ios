@@ -138,7 +138,8 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     /// }
     /// ```
     public func object(withID objectID: FetchResultSnapshotObjectID) -> MutableType.ReadOnlyType? {
-        assert(!objectID.isTemporaryID, "Expected objectID \(objectID) to be a permanent NSManagedObjectID.")
+        // WIP This assertion will be restored soon.
+        // assert(!objectID.isTemporaryID, "Expected objectID \(objectID) to be a permanent NSManagedObjectID.")
 
         if let storageOrder = storage.loadObject(ofType: MutableType.self, with: objectID) {
             return storageOrder.toReadOnly()

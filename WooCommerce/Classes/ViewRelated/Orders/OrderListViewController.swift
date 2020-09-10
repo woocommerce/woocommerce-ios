@@ -105,6 +105,8 @@ final class OrderListViewController: UIViewController {
         }
     }
 
+    private var cancellables = Set<AnyCancellable>()
+
     // MARK: - View Lifecycle
 
     /// Designated initializer.
@@ -120,6 +122,12 @@ final class OrderListViewController: UIViewController {
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("Not supported")
+    }
+
+    deinit {
+        cancellables.forEach {
+            $0.cancel()
+        }
     }
 
     override func viewDidLoad() {
@@ -187,6 +195,10 @@ private extension OrderListViewController {
         }
 
         viewModel.activate()
+
+        viewModel.snapshot.sink { snapshot in
+            self.dataSource.apply(snapshot)
+        }.store(in: &cancellables)
 
         // Reload table because the activate call above executes a performFetch()
         tableView.reloadData()

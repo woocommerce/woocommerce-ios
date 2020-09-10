@@ -582,8 +582,7 @@ private extension OrderListViewController {
     /// Transitions to `.results` or `.empty`.
     ///
     func transitionToResultsUpdatedState() {
-        // WIP Replace with DiffableDataSource logic later
-        // state = viewModel.isEmpty ? .empty : .results
+        state = dataSource.isEmpty ? .empty : .results
     }
 }
 

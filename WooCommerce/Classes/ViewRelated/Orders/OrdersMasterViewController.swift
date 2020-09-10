@@ -262,4 +262,3 @@ private extension OrdersMasterViewController {
         static let learnMore = NSLocalizedString("Learn more", comment: "Title of button shown in the Orders → All Orders tab if the list is empty.")
     }
 }
-

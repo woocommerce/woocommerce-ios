@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 import Gridicons
 import Yosemite
@@ -34,6 +35,15 @@ final class OrderListViewController: UIViewController {
     /// Main TableView.
     ///
     private lazy var tableView = UITableView(frame: .zero, style: .grouped)
+
+    private lazy var dataSource: UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID> = {
+        let dataSource = UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID>(
+            tableView: self.tableView,
+            cellProvider: self.makeCellProvider()
+        )
+        dataSource.defaultRowAnimation = .fade
+        return dataSource
+    }()
 
     /// Ghostable TableView.
     ///
@@ -137,6 +147,24 @@ final class OrderListViewController: UIViewController {
         // a different location (or Orders tab).
         tableView.reloadData()
     }
+
+    private func makeCellProvider() -> UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID>.CellProvider {
+        return { [weak self] tableView, indexPath, managedObjectID in
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: OrderTableViewCell.reuseIdentifier, for: indexPath) as? OrderTableViewCell else {
+                fatalError("Failed to create cell \(OrderTableViewCell.reuseIdentifier)")
+            }
+            guard let self = self else {
+                return cell
+            }
+
+            // WIP FIXME later
+            // let detailsViewModel = self.viewModel.detailsViewModel(withID: managedObjectID)
+            // let orderStatus = self.lookUpOrderStatus(for: detailsViewModel?.order)
+            // cell.configureCell(viewModel: detailsViewModel, orderStatus: orderStatus)
+            // cell.layoutIfNeeded()
+            return cell
+        }
+    }
 }
 
 
@@ -196,8 +224,7 @@ private extension OrderListViewController {
     ///
     func configureTableView() {
         tableView.delegate = self
-        // WIP Replace with DiffableDataSource later
-        // tableView.dataSource = self
+        tableView.dataSource = dataSource
 
         view.backgroundColor = .listBackground
         tableView.backgroundColor = .listBackground

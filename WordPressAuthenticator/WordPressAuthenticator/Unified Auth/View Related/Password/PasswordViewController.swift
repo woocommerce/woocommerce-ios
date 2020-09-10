@@ -371,7 +371,7 @@ private extension PasswordViewController {
         cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.getLoginLinkButtonTitle,
                              accessibilityTrait: .link,
                              showBorder: true)
-
+        cell.accessibilityIdentifier = "Get Login Link Button"
         cell.actionHandler = { [weak self] in
             guard let self = self else {
                 return
@@ -387,6 +387,7 @@ private extension PasswordViewController {
     ///
     func configureErrorLabel(_ cell: TextLabelTableViewCell) {
         cell.configureLabel(text: errorMessage, style: .error)
+        cell.accessibilityIdentifier = "Password Error"
         if shouldChangeVoiceOverFocus {
             UIAccessibility.post(notification: .layoutChanged, argument: cell)
         }

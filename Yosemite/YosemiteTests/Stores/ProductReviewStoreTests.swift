@@ -123,6 +123,131 @@ final class ProductReviewStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that `ProductReviewAction.synchronizeProductReviews` for the first page deletes stored Product Reviews for the given site ID.
+    ///
+    func test_syncing_product_reviews_on_the_first_page_resets_stored_product_reviews() {
+
+        // Given
+        let reviewID1: Int64 = 1
+        let reviewID2: Int64 = 2
+        let productReviews = [self.sampleProductReview(reviewID: reviewID1), self.sampleProductReview(reviewID: reviewID2)]
+        self.store.upsertStoredProductReviews(readOnlyProductReviews: productReviews,
+                                              in: self.viewStorage,
+                                              siteID: self.sampleSiteID)
+
+        // When
+        network.simulateResponse(requestUrlSuffix: "products/reviews", filename: "reviews-all")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductReview.self), 2)
+
+        // Then
+        waitForExpectation { exp in
+            let action = ProductReviewAction.synchronizeProductReviews(siteID: sampleSiteID,
+                                                                       pageNumber: defaultPageNumber,
+                                                                       pageSize: defaultPageSize) { error in
+                XCTAssertNil(error)
+
+                // The previously upserted Product Reviews should be deleted.
+                let storedProductReview1 = self.viewStorage.loadProductReview(
+                    siteID: self.sampleSiteID,
+                    reviewID: reviewID1)
+                XCTAssertNil(storedProductReview1)
+
+                let storedProductReview2 = self.viewStorage.loadProductReview(
+                    siteID: self.sampleSiteID,
+                    reviewID: reviewID2)
+                XCTAssertNil(storedProductReview2)
+
+                exp.fulfill()
+            }
+            store.onAction(action)
+        }
+    }
+
+    /// Verifies that `ProductReviewAction.synchronizeProductReviews` after the first page does not delete stored Product Reviews for the given
+     /// site ID.
+     ///
+    func test_syncing_product_reviews_after_the_first_page() {
+
+        // Given
+        let reviewID1: Int64 = 1
+        let reviewID2: Int64 = 2
+        let productReviews = [self.sampleProductReview(reviewID: reviewID1), self.sampleProductReview(reviewID: reviewID2)]
+        self.store.upsertStoredProductReviews(readOnlyProductReviews: productReviews,
+                                              in: self.viewStorage,
+                                              siteID: self.sampleSiteID)
+
+        // When
+        network.simulateResponse(requestUrlSuffix: "products/reviews", filename: "reviews-all")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductReview.self), 2)
+
+        // Then
+        waitForExpectation { exp in
+            let action = ProductReviewAction.synchronizeProductReviews(siteID: sampleSiteID,
+                                                                       pageNumber: 3,
+                                                                       pageSize: defaultPageSize) { error in
+                XCTAssertNil(error)
+
+                // The previously upserted Product Reviews should stay in storage.
+                let storedProductReview1 = self.viewStorage.loadProductReview(
+                    siteID: self.sampleSiteID,
+                    reviewID: reviewID1)
+                XCTAssertNotNil(storedProductReview1)
+
+                let storedProductReview2 = self.viewStorage.loadProductReview(
+                    siteID: self.sampleSiteID,
+                    reviewID: reviewID2)
+                XCTAssertNotNil(storedProductReview2)
+
+                XCTAssertGreaterThan(self.viewStorage.countObjects(ofType: Storage.ProductReview.self), 2)
+
+                exp.fulfill()
+            }
+            store.onAction(action)
+        }
+    }
+
+    /// Verifies that `ProductReviewAction.synchronizeProductReviews` for the first page does not delete stored Product Reviews if the API call fails.
+    ///
+    func test_syncing_product_reviews_on_the_first_page_doest_not_delete_stored_product_reviews_upon_response_error() {
+
+        // Given
+        let reviewID1: Int64 = 1
+        let reviewID2: Int64 = 2
+        let productReviews = [self.sampleProductReview(reviewID: reviewID1), self.sampleProductReview(reviewID: reviewID2)]
+        self.store.upsertStoredProductReviews(readOnlyProductReviews: productReviews,
+                                              in: self.viewStorage,
+                                              siteID: self.sampleSiteID)
+
+        // When
+        network.simulateResponse(requestUrlSuffix: "products/reviews", filename: "generic_error")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductReview.self), 2)
+
+        // Then
+        waitForExpectation { exp in
+            let action = ProductReviewAction.synchronizeProductReviews(siteID: sampleSiteID,
+                                                                       pageNumber: defaultPageNumber,
+                                                                       pageSize: defaultPageSize) { error in
+                XCTAssertNotNil(error)
+
+                // The previously upserted Product Reviews should stay in storage.
+                let storedProductReview1 = self.viewStorage.loadProductReview(
+                    siteID: self.sampleSiteID,
+                    reviewID: reviewID1)
+                XCTAssertNotNil(storedProductReview1)
+
+                let storedProductReview2 = self.viewStorage.loadProductReview(
+                    siteID: self.sampleSiteID,
+                    reviewID: reviewID2)
+                XCTAssertNotNil(storedProductReview2)
+
+                XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductReview.self), 2)
+
+                exp.fulfill()
+            }
+            store.onAction(action)
+        }
+    }
+
     /// Tests that reviews with no `reviewer_avatar_urls` can be saved by Core Data.
     ///
     func test_it_can_save_reviews_with_no_avatar_URLs() {
@@ -306,9 +431,9 @@ final class ProductReviewStoreTests: XCTestCase {
 //
 private extension ProductReviewStoreTests {
 
-    func sampleProductReview() -> Networking.ProductReview {
+    func sampleProductReview(reviewID: Int64? = nil) -> Networking.ProductReview {
         return Networking.ProductReview(siteID: sampleSiteID,
-                                        reviewID: sampleReviewID,
+                                        reviewID: reviewID ?? sampleReviewID,
                                         productID: sampleProductID,
                                         dateCreated: Date(),
                                         statusKey: "hold",

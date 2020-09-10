@@ -186,4 +186,8 @@ extension OrderListViewModel {
 
         return OrderDetailsViewModel(order: order)
     }
+
+    func sectionTitleFor(sectionIdentifier: String) -> String? {
+        Age(rawValue: sectionIdentifier)?.description
+    }
 }

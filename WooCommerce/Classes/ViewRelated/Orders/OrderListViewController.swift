@@ -538,6 +538,24 @@ extension OrderListViewController: UITableViewDelegate {
 
         syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: itemIndex)
     }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let reuseIdentifier = TwoColumnSectionHeaderView.reuseIdentifier
+        guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: reuseIdentifier) as? TwoColumnSectionHeaderView else {
+            return nil
+        }
+
+        header.leftText = {
+            guard let sectionIdentifier = dataSource.sectionIdentifier(for: section) else {
+                return nil
+            }
+
+            return viewModel.sectionTitleFor(sectionIdentifier: sectionIdentifier)
+        }()
+        header.rightText = nil
+
+        return header
+    }
 }
 
 // MARK: - Finite State Machine Management

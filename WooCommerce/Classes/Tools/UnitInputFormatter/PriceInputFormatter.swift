@@ -26,7 +26,7 @@ struct PriceInputFormatter: UnitInputFormatter {
         return numberFormatter
     }()
 
-    init(currencySettings: CurrencySettings = CurrencySettings.shared) {
+    init(currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.currencySettings = currencySettings
     }
 

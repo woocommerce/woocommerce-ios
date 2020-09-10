@@ -15,7 +15,7 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
     init(product: ProductFormDataModel,
          actionsFactory: ProductFormActionsFactoryProtocol,
          currency: String,
-         currencyFormatter: CurrencyFormatter = CurrencyFormatter()) {
+         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         self.currency = currency
         self.currencyFormatter = currencyFormatter
         configureSections(product: product, actionsFactory: actionsFactory)

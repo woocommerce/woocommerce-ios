@@ -29,7 +29,10 @@ protocol PaginatedListSelectorDataSource {
     func configureCell(cell: Cell, model: StorageModel.ReadOnlyType)
 
     /// Called when the UI is requesting to sync another page of data.
-    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?)
+    /// - Parameters:
+    ///   - onCompletion: called on sync completion that returns either an error or a boolean that indicates
+    ///                   whether there might be the next page to sync.
+    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Result<Bool, Error>) -> Void)?)
 }
 
 // Default implementation for optional variables/functions.
@@ -42,7 +45,7 @@ extension PaginatedListSelectorDataSource {
 /// Displays a paginated list (implemented by table view) for the user to select a generic model.
 ///
 final class PaginatedListSelectorViewController<DataSource: PaginatedListSelectorDataSource, Model, StorageModel, Cell>: UIViewController,
-    UITableViewDataSource, UITableViewDelegate, SyncingCoordinatorDelegate
+    UITableViewDataSource, UITableViewDelegate, PaginationTrackerDelegate
 where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.ReadOnlyType, Model: Equatable, DataSource.Cell == Cell {
     private let viewProperties: PaginatedListSelectorViewProperties
     private var dataSource: DataSource
@@ -80,9 +83,12 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
         return resultsController
     }()
 
-    /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
+    /// Infinite scroll support
     ///
-    private let syncingCoordinator = SyncingCoordinator()
+    private let scrollWatcher = ScrollWatcher()
+    private let paginationTracker = PaginationTracker()
+
+    private var cancellableScrollWatcher: ObservationToken?
 
     /// Keep track of the (Autosizing Cell's) Height. This helps us prevent UI flickers, due to sizing recalculations.
     ///
@@ -127,13 +133,14 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
         configureNavigation()
         configureMainView()
         configureTableView()
-        configureSyncingCoordinator()
+        configureScrollWatcher()
+        configurePaginationTracker()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        syncingCoordinator.synchronizeFirstPage()
+        paginationTracker.syncFirstPage()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -205,9 +212,6 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let objectIndex = resultsController.objectIndex(from: indexPath)
-        syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: objectIndex)
-
         // Preserve the Cell Height
         // Why: Because Autosizing Cells, upon reload, will need to be laid yout yet again. This might cause
         // UI glitches / unwanted animations. By preserving it, *then* the estimated will be extremely close to
@@ -216,23 +220,23 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
         estimatedRowHeights[indexPath] = cell.frame.height
     }
 
-    // MARK: SyncingCoordinatorDelegate
+    // MARK: PaginationTrackerDelegate
     //
-    func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)? = nil) {
+    func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: SyncCompletion?) {
         transitionToSyncingState(pageNumber: pageNumber)
-        dataSource.sync(pageNumber: pageNumber, pageSize: pageSize) { [weak self] isCompleted in
+        dataSource.sync(pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
             guard let self = self else {
                 return
             }
 
-            guard isCompleted else {
+            guard result.isSuccess else {
                 DDLogError("⛔️ Error synchronizing models")
                 self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
                 return
             }
 
             self.transitionToResultsUpdatedState()
-            onCompletion?(isCompleted)
+            onCompletion?(result)
         }
     }
 
@@ -241,7 +245,7 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
     @objc private func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.productVariationListPulledToRefresh)
 
-        syncingCoordinator.synchronizeFirstPage {
+        paginationTracker.syncFirstPage {
             sender.endRefreshing()
         }
     }
@@ -291,10 +295,15 @@ private extension PaginatedListSelectorViewController {
         tableView.register(rowType.loadNib(), forCellReuseIdentifier: rowType.reuseIdentifier)
     }
 
-    /// Setup: Sync'ing Coordinator
-    ///
-    func configureSyncingCoordinator() {
-        syncingCoordinator.delegate = self
+    func configureScrollWatcher() {
+        scrollWatcher.startObservingScrollPosition(tableView: tableView)
+    }
+
+    func configurePaginationTracker() {
+        paginationTracker.delegate = self
+        cancellableScrollWatcher = scrollWatcher.trigger.subscribe { [weak self] _ in
+            self?.paginationTracker.ensureNextPageIsSynced()
+        }
     }
 }
 
@@ -394,32 +403,18 @@ private extension PaginatedListSelectorViewController {
 
 // MARK: - Spinner Helpers
 //
-extension PaginatedListSelectorViewController {
+private extension PaginatedListSelectorViewController {
 
     /// Starts the Footer Spinner animation, whenever `mustStartFooterSpinner` returns *true*.
     ///
-    private func ensureFooterSpinnerIsStarted() {
-        guard mustStartFooterSpinner() else {
-            return
-        }
-
+    func ensureFooterSpinnerIsStarted() {
         tableView.tableFooterView = footerSpinnerView
         footerSpinnerView.startAnimating()
     }
 
-    /// Whenever we're sync'ing an Products Page that's beyond what we're currently displaying, this method will return *true*.
-    ///
-    private func mustStartFooterSpinner() -> Bool {
-        guard let highestPageBeingSynced = syncingCoordinator.highestPageBeingSynced else {
-            return false
-        }
-
-        return highestPageBeingSynced * SyncingCoordinator.Defaults.pageSize > resultsController.numberOfObjects
-    }
-
     /// Stops animating the Footer Spinner.
     ///
-    private func ensureFooterSpinnerIsStopped() {
+    func ensureFooterSpinnerIsStopped() {
         footerSpinnerView.stopAnimating()
         tableView.tableFooterView = footerEmptyView
     }

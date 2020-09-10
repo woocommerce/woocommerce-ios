@@ -75,17 +75,17 @@ final class GroupedProductListSelectorDataSource: PaginatedListSelectorDataSourc
         }
     }
 
-    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
+    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Result<Bool, Error>) -> Void)?) {
         let action = ProductAction.retrieveProducts(siteID: siteID,
                                                     productIDs: groupedProductIDs,
                                                     pageNumber: pageNumber,
                                                     pageSize: pageSize) { result in
                                                         switch result {
-                                                        case .success:
-                                                            onCompletion?(true)
+                                                        case .success((_, let hasNextPage)):
+                                                            onCompletion?(.success(hasNextPage))
                                                         case .failure(let error):
                                                             DDLogError("⛔️ Error synchronizing grouped product's linked products: \(error)")
-                                                            onCompletion?(false)
+                                                            onCompletion?(.failure(error))
                                                         }
         }
         ServiceLocator.stores.dispatch(action)

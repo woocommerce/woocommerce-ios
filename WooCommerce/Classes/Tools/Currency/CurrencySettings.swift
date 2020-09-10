@@ -4,14 +4,6 @@ import Yosemite
 /// Site-wide settings for displaying prices/money
 ///
 public class CurrencySettings {
-    /// Shared Instance
-    ///
-    static let shared: CurrencySettings = {
-        let currencySettings = CurrencySettings()
-        currencySettings.configureResultsController()
-        return currencySettings
-    }()
-
 
     // MARK: - Enums
 
@@ -101,15 +93,6 @@ public class CurrencySettings {
     public private(set) var thousandSeparator: String
     public private(set) var decimalSeparator: String
     public private(set) var numberOfDecimals: Int
-
-    /// ResultsController: Whenever settings change, I will change. We both change. The world changes.
-    ///
-    private lazy var resultsController: ResultsController<StorageSiteSetting> = {
-        let storageManager = ServiceLocator.storageManager
-        let descriptor = NSSortDescriptor(keyPath: \StorageSiteSetting.siteID, ascending: false)
-        return ResultsController<StorageSiteSetting>(storageManager: storageManager, sortedBy: [descriptor])
-    }()
-
 
     // MARK: - Initializers & Methods
 
@@ -499,42 +482,6 @@ public class CurrencySettings {
             return "\u{52}"
         case .ZMW:
             return "ZK"
-        }
-    }
-}
-
-
-// MARK: - ResultsController
-//
-extension CurrencySettings {
-
-    /// Refreshes the currency settings for the current default site
-    ///
-    func refresh() {
-        refreshResultsPredicate()
-    }
-
-    /// Setup: ResultsController
-    ///
-    private func configureResultsController() {
-        resultsController.onDidChangeObject = { [weak self] (object, indexPath, type, newIndexPath) in
-            self?.updateCurrencyOptions(with: object)
-        }
-        refreshResultsPredicate()
-    }
-
-    private func refreshResultsPredicate() {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            DDLogError("Error: no siteID found when attempting to refresh CurrencySettings results predicate.")
-            return
-        }
-
-        let sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
-        let settingTypePredicate = NSPredicate(format: "settingGroupKey ==[c] %@", SiteSettingGroup.general.rawValue)
-        resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, settingTypePredicate])
-        try? resultsController.performFetch()
-        resultsController.fetchedObjects.forEach {
-            updateCurrencyOptions(with: $0)
         }
     }
 }

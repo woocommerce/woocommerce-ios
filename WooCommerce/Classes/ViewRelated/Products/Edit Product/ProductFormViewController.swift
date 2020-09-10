@@ -58,7 +58,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     init(viewModel: ViewModel,
          eventLogger: ProductFormEventLoggerProtocol,
          productImageActionHandler: ProductImageActionHandler,
-         currency: String = CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode),
+         currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
          presentationStyle: ProductFormPresentationStyle,
          isEditProductsRelease3Enabled: Bool) {
         self.viewModel = viewModel

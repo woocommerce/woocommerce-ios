@@ -4,7 +4,7 @@ import Yosemite
 final class OrderPaymentDetailsViewModel {
     private let order: Order
     private let refund: Refund?
-    private let currencyFormatter = CurrencyFormatter()
+    private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
     var subtotal: Decimal {
         let subtotal = order.items.reduce(Decimal(0)) { (output, item) in

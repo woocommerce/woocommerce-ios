@@ -268,10 +268,10 @@ public class AuthenticatorAnalyticsTracker {
     
     /// State for the analytics tracker.
     ///
-    private class State {
-        var lastFlow: Flow
-        var lastSource: Source
-        var lastStep: Step
+    public class State {
+        internal(set) public var lastFlow: Flow
+        internal(set) public var lastSource: Source
+        internal(set) public var lastStep: Step
         
         init(lastFlow: Flow = AuthenticatorAnalyticsTracker.defaultFlow, lastSource: Source = AuthenticatorAnalyticsTracker.defaultSource, lastStep: Step = AuthenticatorAnalyticsTracker.defaultStep) {
             self.lastFlow = lastFlow
@@ -286,7 +286,7 @@ public class AuthenticatorAnalyticsTracker {
     
     /// The state of this tracker.
     ///
-    private let state = State()
+    public let state = State()
     
     /// The backing analytics tracking method.  Can be overridden for testing purposes.
     ///
@@ -486,19 +486,19 @@ public class AuthenticatorAnalyticsTracker {
     
     /// Allows the caller to set the flow without tracking.
     ///
-    func set(flow: Flow) {
+    public func set(flow: Flow) {
         state.lastFlow = flow
     }
     
     /// Allows the caller to set the source without tracking.
     ///
-    func set(source: Source) {
+    public func set(source: Source) {
         state.lastSource = source
     }
     
     /// Allows the caller to set the step without tracking.
     ///
-    func set(step: Step) {
+    public func set(step: Step) {
         state.lastStep = step
     }
     

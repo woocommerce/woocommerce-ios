@@ -11,11 +11,10 @@ import XLPagerTabStrip
 
 private typealias SyncReason = OrderListSyncActionUseCase.SyncReason
 
-@available(iOS 13.0, *)
 protocol OrderListViewControllerDelegate: class {
-    /// Called when `OrderListViewController` is about to fetch Orders from the API.
+    /// Called when `OrderListViewController` (or `OrdersViewController`) is about to fetch Orders from the API.
     ///
-    func ordersViewControllerWillSynchronizeOrders(_ viewController: OrderListViewController)
+    func orderListViewControllerWillSynchronizeOrders(_ viewController: UIViewController)
 }
 
 /// OrderListViewController: Displays the list of Orders associated to the active Store / Account.
@@ -312,7 +311,7 @@ extension OrderListViewController {
 extension OrderListViewController {
     @objc func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.ordersListPulledToRefresh)
-        delegate?.ordersViewControllerWillSynchronizeOrders(self)
+        delegate?.orderListViewControllerWillSynchronizeOrders(self)
         syncingCoordinator.resynchronize(reason: SyncReason.pullToRefresh.rawValue) {
             sender.endRefreshing()
         }
@@ -430,7 +429,7 @@ private extension OrderListViewController {
                 return
             }
 
-            self.delegate?.ordersViewControllerWillSynchronizeOrders(self)
+            self.delegate?.orderListViewControllerWillSynchronizeOrders(self)
             self.sync(pageNumber: pageNumber, pageSize: pageSize, reason: reason)
         }
 

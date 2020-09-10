@@ -27,7 +27,7 @@ final class OrderListViewController: UIViewController {
 
     weak var delegate: OrderListViewControllerDelegate?
 
-    private let viewModel: OrdersViewModel
+    private let viewModel: OrderListViewModel
 
     /// Main TableView.
     ///
@@ -97,7 +97,7 @@ final class OrderListViewController: UIViewController {
 
     /// Designated initializer.
     ///
-    init(title: String, viewModel: OrdersViewModel, emptyStateConfig: EmptyStateViewController.Config) {
+    init(title: String, viewModel: OrderListViewModel, emptyStateConfig: EmptyStateViewController.Config) {
         self.viewModel = viewModel
         self.emptyStateConfig = emptyStateConfig
 

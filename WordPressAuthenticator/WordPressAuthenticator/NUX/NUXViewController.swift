@@ -44,6 +44,7 @@ open class NUXViewController: UIViewController, NUXViewControllerBase, UIViewCon
         let primaryTitle = WordPressAuthenticator.shared.displayStrings.continueButtonTitle
         submitButton?.setTitle(primaryTitle, for: .normal)
         submitButton?.setTitle(primaryTitle, for: .highlighted)
+        submitButton?.accessibilityIdentifier = "Continue Button"
     }
     
     open func enableSubmit(animating: Bool) -> Bool {

@@ -28,7 +28,7 @@ final class ProductDetailsViewModel {
     /// The default currency configured on the store
     ///
     var currency: String {
-        return CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode)
+        return ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
     }
 
     /// Nav bar title
@@ -112,7 +112,7 @@ final class ProductDetailsViewModel {
 
     /// Currency Formatter.
     ///
-    private var currencyFormatter = CurrencyFormatter()
+    private var currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
     private let productUIImageLoader = DefaultProductUIImageLoader()
 

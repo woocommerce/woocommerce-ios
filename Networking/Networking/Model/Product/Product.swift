@@ -460,7 +460,12 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
         try container.encode(virtual, forKey: .virtual)
 
         // Product type
-        try container.encode(productTypeKey, forKey: .productTypeKey)
+        switch productType {
+        case .custom:
+            break
+        default:
+            try container.encode(productTypeKey, forKey: .productTypeKey)
+        }
 
         // Categories
         try container.encode(categories, forKey: .categories)

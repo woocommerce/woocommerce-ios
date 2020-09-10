@@ -5,7 +5,7 @@ import Yosemite
 import MessageUI
 
 final class OrderDetailsViewModel {
-    private let currencyFormatter = CurrencyFormatter()
+    private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
     private(set) var order: Order
 

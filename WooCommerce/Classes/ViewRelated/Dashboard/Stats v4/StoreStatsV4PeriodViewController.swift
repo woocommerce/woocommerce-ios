@@ -73,7 +73,7 @@ class StoreStatsV4PeriodViewController: UIViewController {
     private var lastUpdatedDate: Date?
 
     private var currencyCode: String {
-        return CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode)
+        return ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
     }
 
     private var revenueItems: [Double] {
@@ -104,8 +104,8 @@ class StoreStatsV4PeriodViewController: UIViewController {
     // MARK: - Computed Properties
 
     private var currencySymbol: String {
-        let code = CurrencySettings.shared.currencyCode
-        return CurrencySettings.shared.symbol(from: code)
+        let code = ServiceLocator.currencySettings.currencyCode
+        return ServiceLocator.currencySettings.symbol(from: code)
     }
 
     private var summaryDateUpdated: String {
@@ -133,14 +133,14 @@ class StoreStatsV4PeriodViewController: UIViewController {
 
     private var yAxisMinimum: String {
         let min = revenueItems.min() ?? 0
-        return CurrencyFormatter().formatHumanReadableAmount(String(min),
+        return CurrencyFormatter(currencySettings: ServiceLocator.currencySettings).formatHumanReadableAmount(String(min),
                                                              with: currencyCode,
                                                              roundSmallNumbers: false) ?? String()
     }
 
     private var yAxisMaximum: String {
         let max = revenueItems.max() ?? 0
-        return CurrencyFormatter().formatHumanReadableAmount(String(max),
+        return CurrencyFormatter(currencySettings: ServiceLocator.currencySettings).formatHumanReadableAmount(String(max),
                                                              with: currencyCode,
                                                              roundSmallNumbers: false) ?? String()
     }
@@ -448,11 +448,12 @@ private extension StoreStatsV4PeriodViewController {
         }
         var totalOrdersText = Constants.placeholderText
         var totalRevenueText = Constants.placeholderText
-        let currencyCode = CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode)
+        let currencyCode = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
         if selectedIndex < orderStatsIntervals.count {
             let orderStats = orderStatsIntervals[selectedIndex]
             totalOrdersText = Double(orderStats.subtotals.totalOrders).humanReadableString()
-            totalRevenueText = CurrencyFormatter().formatHumanReadableAmount(String("\(orderStats.subtotals.grossRevenue)"), with: currencyCode) ?? String()
+            let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+            totalRevenueText = currencyFormatter.formatHumanReadableAmount(String("\(orderStats.subtotals.grossRevenue)"), with: currencyCode) ?? String()
         }
         ordersData.text = totalOrdersText
         revenueData.text = totalRevenueText
@@ -529,10 +530,11 @@ extension StoreStatsV4PeriodViewController: IAxisValueFormatter {
                 // Do not show the "0" label on the Y axis
                 return ""
             } else {
-                return CurrencyFormatter().formatCurrency(using: value.humanReadableString(),
-                                                          at: CurrencySettings.shared.currencyPosition,
-                                                          with: currencySymbol,
-                                                          isNegative: value.sign == .minus)
+                return CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+                                    .formatCurrency(using: value.humanReadableString(),
+                                    at: ServiceLocator.currencySettings.currencyPosition,
+                                    with: currencySymbol,
+                                    isNegative: value.sign == .minus)
             }
         }
     }
@@ -672,10 +674,11 @@ private extension StoreStatsV4PeriodViewController {
 
         var totalOrdersText = Constants.placeholderText
         var totalRevenueText = Constants.placeholderText
-        let currencyCode = CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode)
+        let currencyCode = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
         if let orderStats = orderStats {
             totalOrdersText = Double(orderStats.totals.totalOrders).humanReadableString()
-            totalRevenueText = CurrencyFormatter().formatHumanReadableAmount(String("\(orderStats.totals.grossRevenue)"), with: currencyCode) ?? String()
+            let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+            totalRevenueText = currencyFormatter.formatHumanReadableAmount(String("\(orderStats.totals.grossRevenue)"), with: currencyCode) ?? String()
         }
         ordersData.text = totalOrdersText
         revenueData.text = totalRevenueText
@@ -724,10 +727,11 @@ private extension StoreStatsV4PeriodViewController {
         var barCount = 0
         var barColors: [UIColor] = []
         var dataEntries: [BarChartDataEntry] = []
-        let currencyCode = CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode)
+        let currencyCode = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
         orderStatsIntervals.forEach { (item) in
             let entry = BarChartDataEntry(x: Double(barCount), y: (item.revenueValue as NSDecimalNumber).doubleValue)
-            let formattedAmount = CurrencyFormatter().formatHumanReadableAmount(String("\(item.revenueValue)"),
+            let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+            let formattedAmount = currencyFormatter.formatHumanReadableAmount(String("\(item.revenueValue)"),
                                                                                 with: currencyCode,
                                                                                 roundSmallNumbers: false) ?? String()
             entry.accessibilityValue = "\(formattedChartMarkerPeriodString(for: item)): \(formattedAmount)"

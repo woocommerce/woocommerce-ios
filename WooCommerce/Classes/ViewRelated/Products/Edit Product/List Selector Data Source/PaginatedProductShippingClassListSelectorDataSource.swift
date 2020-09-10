@@ -42,15 +42,15 @@ struct PaginatedProductShippingClassListSelectorDataSource: PaginatedListSelecto
         cell.accessoryType = isSelected(model: model) ? .checkmark: .none
     }
 
-    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
+    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Result<Bool, Error>) -> Void)?) {
         let action = ProductShippingClassAction
             .synchronizeProductShippingClassModels(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { result in
                 switch result {
                 case .failure(let error):
                     DDLogError("⛔️ Error synchronizing product shipping classes: \(error)")
-                    onCompletion?(false)
-                case .success:
-                    onCompletion?(true)
+                    onCompletion?(.failure(error))
+                case .success(let hasNextPage):
+                    onCompletion?(.success(hasNextPage))
                 }
         }
 

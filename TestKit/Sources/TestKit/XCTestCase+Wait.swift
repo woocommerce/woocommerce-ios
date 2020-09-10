@@ -54,4 +54,43 @@ extension XCTestCase {
             break
         }
     }
+
+    /// Waits until a value is provided by a promise (block) and returns that value.
+    ///
+    /// ## Example Usage
+    ///
+    /// ```
+    /// let value: String = try waitFor { promise in
+    ///     fetchFromAPI { responseString in
+    ///         promise(responseString)
+    ///     }
+    /// }
+    ///
+    /// XCTAssertEquals("expected_value", value)
+    /// ```
+    ///
+    public func waitFor<ValueType>(file: StaticString = #file,
+                                   line: UInt = #line,
+                                   timeout: TimeInterval = 5.0,
+                                   await: @escaping (_ promise: (@escaping (ValueType) -> Void)) throws -> Void) throws -> ValueType {
+        let exp = expectation(description: "Expect promise to be called.")
+
+        var receivedValue: ValueType? = nil
+        let promise: (ValueType) -> Void = { value in
+            receivedValue = value
+            exp.fulfill()
+        }
+
+        try await(promise)
+
+        let result = XCTWaiter.wait(for: [exp], timeout: timeout)
+        switch result {
+        case .timedOut:
+            XCTFail("Timed out waiting for done callback to be called.", file: file, line: line)
+        default:
+            break
+        }
+
+        return receivedValue!
+    }
 }

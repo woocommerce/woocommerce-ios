@@ -90,7 +90,7 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
     private let currencyFormatter: CurrencyFormatter
 
     init(product: ProductFormDataModel & TaxClassRequestable,
-         currencySettings: CurrencySettings = CurrencySettings.shared,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          timezoneForScheduleSaleDates: TimeZone = TimeZone.siteTimezone) {
         self.product = product
         self.timezoneForScheduleSaleDates = timezoneForScheduleSaleDates

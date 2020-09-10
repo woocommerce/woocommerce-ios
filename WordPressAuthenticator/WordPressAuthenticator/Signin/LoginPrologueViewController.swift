@@ -46,6 +46,18 @@ class LoginPrologueViewController: LoginViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        // We've found some instances where the iCloud Keychain login flow was being started
+        // when the device was idle and the app was logged out and in the background.  I couldn't
+        // find precise reproduction steps for this issue but my guess is that some background
+        // operation is triggering a call to this method while the app is in the background.
+        // The proposed solution is based off this StackOverflow reply:
+        //
+        // https://stackoverflow.com/questions/30584356/viewdidappear-is-called-when-app-is-started-due-to-significant-location-change
+        //
+        guard UIApplication.shared.applicationState != .background else {
+            return
+        }
+        
         WordPressAuthenticator.track(.loginPrologueViewed)
         
         showiCloudKeychainLoginFlow()
@@ -133,7 +145,7 @@ class LoginPrologueViewController: LoginViewController {
         let siteAddressTitle = NSLocalizedString("Enter your site address",
                                                  comment: "Button title. Takes the user to the login by site address flow.")
 
-        buttonViewController.setupTopButton(title: loginTitle, isPrimary: true, accessibilityIdentifier: "Prologue Log In Button") { [weak self] in
+        buttonViewController.setupTopButton(title: loginTitle, isPrimary: true, accessibilityIdentifier: "Prologue Continue Button") { [weak self] in
             guard let self = self else {
                 return
             }
@@ -144,7 +156,7 @@ class LoginPrologueViewController: LoginViewController {
         }
 
         if configuration.enableUnifiedSiteAddress {
-            buttonViewController.setupBottomButton(title: siteAddressTitle, isPrimary: false, accessibilityIdentifier: "Self Hosted Login Button") { [weak self] in
+            buttonViewController.setupBottomButton(title: siteAddressTitle, isPrimary: false, accessibilityIdentifier: "Prologue Self Hosted Button") { [weak self] in
                 self?.siteAddressTapped()
             }
         }

@@ -164,6 +164,48 @@ extension OrdersMasterViewController {
         return button
     }
 
+    /// Creates the view controllers to be shown in tabs. This will soon replace
+    /// `makeDeprecatedViewControllers()` when iOS 13 is the minimum version.
+    ///
+    /// This is intentionally currently unused.
+    @available(iOS 13.0, *)
+    func makeViewControllers() -> [UIViewController] {
+        // TODO This is fake. It's probably better to just pass the `slug` to `OrdersViewController`.
+        let processingOrderStatus = OrderStatus(
+            name: OrderStatusEnum.processing.rawValue,
+            siteID: Int64.max,
+            slug: OrderStatusEnum.processing.rawValue,
+            total: 0
+        )
+
+        // We're intentionally not using `processingOrderStatus` as the source of the "Processing"
+        // text in here. We want the string to be translated.
+        let processingOrdersVC = OrderListViewController(
+            title: Localization.processingTitle,
+            viewModel: OrderListViewModel(statusFilter: processingOrderStatus),
+            emptyStateConfig: .simple(
+                message: NSAttributedString(string: Localization.processingEmptyStateMessage),
+                image: .waitingForCustomersImage
+            )
+        )
+        processingOrdersVC.delegate = self
+
+        let allOrdersVC = OrderListViewController(
+            title: Localization.allOrdersTitle,
+            viewModel: OrderListViewModel(statusFilter: nil, includesFutureOrders: false),
+            emptyStateConfig: .withLink(
+                message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
+                image: .emptyOrdersImage,
+                details: Localization.allOrdersEmptyStateDetail,
+                linkTitle: Localization.learnMore,
+                linkURL: WooConstants.URLs.blog.asURL()
+            )
+        )
+        allOrdersVC.delegate = self
+
+        return [processingOrdersVC, allOrdersVC]
+    }
+
     /// These view controllers will soon be deleted when iOS 13 is the minimum.
     func makeDeprecatedViewControllers() -> [UIViewController] {
         // TODO This is fake. It's probably better to just pass the `slug` to `OrdersViewController`.

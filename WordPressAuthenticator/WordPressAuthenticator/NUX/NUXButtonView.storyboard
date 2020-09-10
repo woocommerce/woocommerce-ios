@@ -56,7 +56,7 @@
                                             <action selector="primaryButtonPressed:" destination="aOG-7h-6d9" eventType="touchUpInside" id="W8M-wW-PhN"/>
                                         </connections>
                                     </button>
-                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uAF-kU-f7P" customClass="NUXButton" customModule="WordPressAuthenticator">
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="uAF-kU-f7P" customClass="NUXButton" customModule="WordPressAuthenticator">
                                         <rect key="frame" x="0.0" y="104" width="343" height="44"/>
                                         <accessibility key="accessibilityConfiguration" identifier="continueToSites"/>
                                         <constraints>

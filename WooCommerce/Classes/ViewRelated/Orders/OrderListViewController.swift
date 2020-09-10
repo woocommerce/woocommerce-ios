@@ -461,49 +461,6 @@ private extension OrderListViewController {
     }
 }
 
-
-// MARK: - UITableViewDataSource Conformance
-//
-@available(iOS 13.0, *)
-extension OrderListViewController: UITableViewDataSource {
-
-    func numberOfSections(in tableView: UITableView) -> Int {
-        viewModel.numberOfSections
-    }
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        viewModel.numberOfRows(in: section)
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: OrderTableViewCell.reuseIdentifier, for: indexPath) as? OrderTableViewCell else {
-            fatalError()
-        }
-
-        let detailsViewModel = viewModel.detailsViewModel(at: indexPath)
-        let orderStatus = lookUpOrderStatus(for: detailsViewModel?.order)
-        cell.configureCell(viewModel: detailsViewModel, orderStatus: orderStatus)
-        cell.layoutIfNeeded()
-        return cell
-    }
-
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let reuseIdentifier = TwoColumnSectionHeaderView.reuseIdentifier
-        guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: reuseIdentifier) as? TwoColumnSectionHeaderView else {
-            return nil
-        }
-
-        header.leftText = {
-            let rawAge = viewModel.sectionInfo(at: section).name
-            return Age(rawValue: rawAge)?.description
-        }()
-        header.rightText = nil
-
-        return header
-    }
-}
-
-
 // MARK: - UITableViewDelegate Conformance
 //
 @available(iOS 13.0, *)

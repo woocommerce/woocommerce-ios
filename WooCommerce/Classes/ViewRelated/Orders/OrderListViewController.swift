@@ -196,7 +196,8 @@ private extension OrderListViewController {
     ///
     func configureTableView() {
         tableView.delegate = self
-        tableView.dataSource = self
+        // WIP Replace with DiffableDataSource later
+        // tableView.dataSource = self
 
         view.backgroundColor = .listBackground
         tableView.backgroundColor = .listBackground
@@ -340,11 +341,13 @@ extension OrderListViewController {
     /// Whenever we're sync'ing an Orders Page that's beyond what we're currently displaying, this method will return *true*.
     ///
     private func mustStartFooterSpinner() -> Bool {
-        guard let highestPageBeingSynced = syncingCoordinator.highestPageBeingSynced else {
-            return false
-        }
-
-        return highestPageBeingSynced * SyncingCoordinator.Defaults.pageSize > viewModel.numberOfObjects
+        // WIP Replace with DiffableDataSource later
+        // guard let highestPageBeingSynced = syncingCoordinator.highestPageBeingSynced else {
+        //     return false
+        // }
+        //
+        // return highestPageBeingSynced * SyncingCoordinator.Defaults.pageSize > viewModel.numberOfObjects
+        return false
     }
 
     /// Stops animating the Footer Spinner.
@@ -473,9 +476,12 @@ extension OrderListViewController: UITableViewDelegate {
             return
         }
 
-        guard let orderDetailsViewModel = viewModel.detailsViewModel(at: indexPath) else {
-            return
-        }
+        // WIP Replace with DiffableDataSource implementation later
+        //
+        // guard let orderDetailsViewModel = viewModel.detailsViewModel(at: indexPath) else {
+        //     return
+        // }
+        let orderDetailsViewModel: OrderDetailsViewModel? = nil
 
         guard let orderDetailsVC = OrderDetailsViewController.instantiatedViewControllerFromStoryboard() else {
             assertionFailure("Expected OrderDetailsViewController to be instantiated")
@@ -484,7 +490,10 @@ extension OrderListViewController: UITableViewDelegate {
 
         orderDetailsVC.viewModel = orderDetailsViewModel
 
-        let order = orderDetailsViewModel.order
+        // WIP Remove guard later
+        guard let order = orderDetailsViewModel?.order else {
+            return
+        }
         ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID,
                                                                     "status": order.statusKey])
 
@@ -492,8 +501,9 @@ extension OrderListViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let orderIndex = viewModel.objectIndex(from: indexPath)
-        syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: orderIndex)
+        // WIP Replace with new PaginationTracker logic later
+        // let orderIndex = viewModel.objectIndex(from: indexPath)
+        // syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: orderIndex)
     }
 }
 
@@ -532,14 +542,16 @@ private extension OrderListViewController {
     /// we've got cached results, or not.
     ///
     func transitionToSyncingState() {
-        state = viewModel.isEmpty ? .placeholder : .syncing
+        // WIP Replace with DiffableDataSource logic later
+        // state = viewModel.isEmpty ? .placeholder : .syncing
     }
 
     /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
     /// Transitions to `.results` or `.empty`.
     ///
     func transitionToResultsUpdatedState() {
-        state = viewModel.isEmpty ? .empty : .results
+        // WIP Replace with DiffableDataSource logic later
+        // state = viewModel.isEmpty ? .empty : .results
     }
 }
 

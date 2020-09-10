@@ -207,7 +207,8 @@ private extension AppDelegate {
     /// Sets up Crash Logging
     ///
     func setupCrashLogging() {
-        CrashLogging.start(withDataProvider: WCCrashLoggingDataProvider())
+        let eventLogging = EventLogging(dataSource: WCEventLoggingDataSource(), delegate: WCEventLoggingDelegate())
+        CrashLogging.start(withDataProvider: WCCrashLoggingDataProvider(), eventLogging: eventLogging)
     }
 
     /// Sets up the Zendesk SDK.

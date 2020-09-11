@@ -9,6 +9,13 @@ class LoginPrologueViewController: LoginViewController {
     private var buttonViewController: NUXButtonViewController?
     var showCancel = false
 
+    /// Constraints on the button view container.
+    /// Used to adjust the button width in unified views.
+    @IBOutlet var buttonViewLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet var buttonViewTrailingConstraint: NSLayoutConstraint!
+    var defaultButtonViewMargin: CGFloat = 0
+    
+
     // Called when login button is tapped
     var onLoginButtonTapped: (() -> Void)?
 
@@ -40,6 +47,17 @@ class LoginPrologueViewController: LoginViewController {
             topContainerChildViewController.view.translatesAutoresizingMaskIntoConstraints = false
             topContainerView.pinSubviewToAllEdges(topContainerChildViewController.view)
         }
+        
+        defaultButtonViewMargin = buttonViewLeadingConstraint?.constant ?? 0
+    }
+
+    override func styleBackground() {
+        guard let unifiedBackgroundColor = WordPressAuthenticator.shared.unifiedStyle?.viewControllerBackgroundColor else {
+            super.styleBackground()
+            return
+        }
+        
+        view.backgroundColor = unifiedBackgroundColor
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -86,6 +104,16 @@ class LoginPrologueViewController: LoginViewController {
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return UIDevice.isPad() ? .all : .portrait
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        setButtonViewMargins(forWidth: view.frame.width)
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        setButtonViewMargins(forWidth: size.width)
     }
     
     // MARK: - iCloud Keychain Login
@@ -160,6 +188,8 @@ class LoginPrologueViewController: LoginViewController {
         let siteAddressTitle = NSLocalizedString("Enter your site address",
                                                  comment: "Button title. Takes the user to the login by site address flow.")
 
+        setButtonViewMargins(forWidth: view.frame.width)
+        
         buttonViewController.setupTopButton(title: loginTitle, isPrimary: true, accessibilityIdentifier: "Prologue Continue Button") { [weak self] in
             guard let self = self else {
                 return
@@ -483,6 +513,43 @@ extension LoginPrologueViewController: GoogleAuthenticatorLoginDelegate {
         socialErrorVC.loginFields = loginFields
         socialErrorVC.modalPresentationStyle = .fullScreen
         present(socialErrorNav, animated: true)
+    }
+
+}
+
+// MARK: - Button View Sizing
+
+private extension LoginPrologueViewController {
+
+    /// Resize the button view based on trait collection.
+    /// Used only in unified views.
+    ///
+    func setButtonViewMargins(forWidth viewWidth: CGFloat) {
+        
+        guard configuration.enableUnifiedAuth else {
+            return
+        }
+        
+        guard traitCollection.horizontalSizeClass == .regular &&
+            traitCollection.verticalSizeClass == .regular else {
+                buttonViewLeadingConstraint.constant = defaultButtonViewMargin
+                buttonViewTrailingConstraint.constant = defaultButtonViewMargin
+                return
+        }
+        
+        let marginMultiplier = UIDevice.current.orientation.isLandscape ?
+            ButtonViewMarginMultipliers.ipadLandscape :
+            ButtonViewMarginMultipliers.ipadPortrait
+        
+        let margin = viewWidth * marginMultiplier
+        
+        buttonViewLeadingConstraint.constant = margin
+        buttonViewTrailingConstraint.constant = margin
+    }
+    
+    private enum ButtonViewMarginMultipliers {
+        static let ipadPortrait: CGFloat = 0.1667
+        static let ipadLandscape: CGFloat = 0.25
     }
 
 }

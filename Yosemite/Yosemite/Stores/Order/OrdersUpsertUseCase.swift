@@ -8,13 +8,15 @@ struct OrdersUpsertUseCase {
         self.storage = storage
     }
 
-    func upsert(_ readOnlyOrders: [Networking.Order], insertingSearchResults: Bool = false) {
-        readOnlyOrders.forEach {
-            upsert($0)
+    func upsert(_ readOnlyOrders: [Networking.Order], insertingSearchResults: Bool = false) -> [Storage.Order] {
+        let storageOrders = readOnlyOrders.map { readOnlyOrder in
+            upsert(readOnlyOrder, insertingSearchResults: insertingSearchResults)
         }
+
+        return storageOrders
     }
 
-    private func upsert(_ readOnlyOrder: Networking.Order, insertingSearchResults: Bool = false) {
+    private func upsert(_ readOnlyOrder: Networking.Order, insertingSearchResults: Bool = false) -> Storage.Order {
         let storageOrder = storage.loadOrder(orderID: readOnlyOrder.orderID) ?? storage.insertNewObject(ofType: Storage.Order.self)
         storageOrder.update(with: readOnlyOrder)
 
@@ -25,6 +27,8 @@ struct OrdersUpsertUseCase {
         handleOrderCoupons(readOnlyOrder, storageOrder, storage)
         handleOrderShippingLines(readOnlyOrder, storageOrder, storage)
         handleOrderRefundsCondensed(readOnlyOrder, storageOrder, storage)
+
+        return storageOrder
     }
 
     /// Updates, inserts, or prunes the provided StorageOrder's items using the provided read-only Order's items

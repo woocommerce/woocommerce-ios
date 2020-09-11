@@ -26,6 +26,9 @@ jobs:
       - ios/install-dependencies:
             bundle-install: true
             pod-install: true
+      - run:
+          name: Copy Secrets
+          command: bundle exec fastlane run configure_apply
       - ios/xcodebuild:
           command: build-for-testing
           arguments: -workspace 'WooCommerce.xcworkspace' -scheme 'WooCommerce' -configuration 'Debug' -sdk iphonesimulator -derivedDataPath DerivedData

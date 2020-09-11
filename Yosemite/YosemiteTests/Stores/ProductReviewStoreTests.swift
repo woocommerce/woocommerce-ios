@@ -164,8 +164,8 @@ final class ProductReviewStoreTests: XCTestCase {
     }
 
     /// Verifies that `ProductReviewAction.synchronizeProductReviews` after the first page does not delete stored Product Reviews for the given
-     /// site ID.
-     ///
+    /// site ID.
+    ///
     func test_syncing_product_reviews_after_the_first_page() {
 
         // Given

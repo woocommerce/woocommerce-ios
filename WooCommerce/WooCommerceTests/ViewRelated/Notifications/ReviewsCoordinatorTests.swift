@@ -1,5 +1,5 @@
-import Foundation
 import XCTest
+import TestKit
 
 import Yosemite
 

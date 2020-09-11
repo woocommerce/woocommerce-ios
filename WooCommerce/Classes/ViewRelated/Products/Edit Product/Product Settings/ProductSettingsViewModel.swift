@@ -29,28 +29,35 @@ final class ProductSettingsViewModel {
 
     private let isEditProductsRelease3Enabled: Bool
 
-    init(product: Product, password: String?, isEditProductsRelease3Enabled: Bool) {
+    init(product: Product, password: String?, formType: ProductFormType, isEditProductsRelease3Enabled: Bool) {
         self.product = product
         self.password = password
         self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
         productSettings = ProductSettings(from: product, password: password)
-        sections = Self.configureSections(productSettings, productType: product.productType, isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
 
-        /// If nil, we fetch the password from site post API because it was never fetched
-        if password == nil {
-            retrieveProductPassword(siteID: product.siteID, productID: product.productID) { [weak self] (password, error) in
-                guard let self = self else {
-                    return
+        switch formType {
+        case .add:
+            self.password = ""
+            productSettings.password = ""
+            sections = Self.configureSections(productSettings, productType: product.productType, isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+        case .edit:
+            sections = Self.configureSections(productSettings, productType: product.productType, isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+            /// If nil, we fetch the password from site post API because it was never fetched
+            if password == nil {
+                retrieveProductPassword(siteID: product.siteID, productID: product.productID) { [weak self] (password, error) in
+                    guard let self = self else {
+                        return
+                    }
+                    guard error == nil, let password = password else {
+                        return
+                    }
+                    self.onPasswordRetrieved?(password)
+                    self.password = password
+                    self.productSettings.password = password
+                    self.sections = Self.configureSections(self.productSettings,
+                                                           productType: product.productType,
+                                                           isEditProductsRelease3Enabled: self.isEditProductsRelease3Enabled)
                 }
-                guard error == nil, let password = password else {
-                    return
-                }
-                self.onPasswordRetrieved?(password)
-                self.password = password
-                self.productSettings.password = password
-                self.sections = Self.configureSections(self.productSettings,
-                                                       productType: product.productType,
-                                                       isEditProductsRelease3Enabled: self.isEditProductsRelease3Enabled)
             }
         }
     }

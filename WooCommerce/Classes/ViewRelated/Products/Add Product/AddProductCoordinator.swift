@@ -44,11 +44,12 @@ private extension AddProductCoordinator {
         let product = ProductFactory().createNewProduct(type: productType, siteID: siteID)
         let model = EditableProductModel(product: product)
 
-        let currencyCode = CurrencySettings.shared.currencyCode
-        let currency = CurrencySettings.shared.symbol(from: currencyCode)
+        let currencyCode = ServiceLocator.currencySettings.currencyCode
+        let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)
         let productImageActionHandler = ProductImageActionHandler(siteID: product.siteID,
                                                                   product: model)
         let viewModel = ProductFormViewModel(product: model,
+                                             formType: .add,
                                              productImageActionHandler: productImageActionHandler,
                                              isEditProductsRelease3Enabled: true)
         let viewController = ProductFormViewController(viewModel: viewModel,

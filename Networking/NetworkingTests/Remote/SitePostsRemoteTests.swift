@@ -67,37 +67,43 @@ class SitePostsRemoteTests: XCTestCase {
     /// Verifies that updateSitePost properly parses the `site-post-update` sample response.
     ///
     func testUpdateSitePostProperlyReturnsParsedPost() {
+        // Arrange
         let remote = SitePostsRemote(network: network)
-        let expectation = self.expectation(description: "Wait for site post update")
-
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/posts/\(postID)", filename: "site-post-update")
 
+        // Action
         let newPassword = "new-password"
         let post = Post(siteID: sampleSiteID, password: newPassword)
-        remote.updateSitePost(for: sampleSiteID, postID: postID, post: post) { (sitePost, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(sitePost)
-            XCTAssertEqual(sitePost?.password, newPassword)
-            expectation.fulfill()
+        var result: Result<Post, Error>?
+        waitForExpectation { expectation in
+            remote.updateSitePost(for: sampleSiteID, postID: postID, post: post) { aResult in
+                result = aResult
+                expectation.fulfill()
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Assert
+        XCTAssertEqual(try XCTUnwrap(result?.get().password), newPassword)
     }
 
     /// Verifies that updateSitePost properly relays Networking Layer errors.
     ///
     func testUpdateSitePostProperlyRelaysNetwokingErrors() {
+        // Arrange
         let remote = SitePostsRemote(network: network)
-        let expectation = self.expectation(description: "Wait for site post update result")
 
+        // Action
         let newPassword = "new-password"
         let post = Post(siteID: sampleSiteID, password: newPassword)
-        remote.updateSitePost(for: sampleSiteID, postID: postID, post: post) { (sitePost, error) in
-            XCTAssertNil(sitePost)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        var result: Result<Post, Error>?
+        waitForExpectation { expectation in
+            remote.updateSitePost(for: sampleSiteID, postID: postID, post: post) { aResult in
+                result = aResult
+                expectation.fulfill()
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Assert
+        XCTAssertEqual(result?.isFailure, true)
     }
 }

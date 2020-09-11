@@ -1,5 +1,11 @@
 import Yosemite
 
+/// The type of product form: adding a new one or editing an existing one.
+enum ProductFormType {
+    case add
+    case edit
+}
+
 /// A view model for `ProductFormViewController` to add/edit a generic product model (e.g. `Product` or `ProductVariation`).
 ///
 protocol ProductFormViewModelProtocol {
@@ -7,6 +13,9 @@ protocol ProductFormViewModelProtocol {
 
     /// Emits product on change, except when the product name is the only change (`productName` is emitted for this case).
     var observableProduct: Observable<ProductModel> { get }
+
+    /// The type of form: adding a new product or editing an existing product.
+    var formType: ProductFormType { get }
 
     /// Emits product name on change. If the name is not editable (e.g. when the product model is `ProductVariation`), `nil` is returned.
     var productName: Observable<String>? { get }
@@ -26,10 +35,6 @@ protocol ProductFormViewModelProtocol {
     // Unsaved changes
 
     func hasUnsavedChanges() -> Bool
-
-    func hasProductChanged() -> Bool
-
-    func hasPasswordChanged() -> Bool
 
     // More menu
 

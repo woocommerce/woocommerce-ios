@@ -24,5 +24,5 @@ enum FeatureFlag: Int {
 
     /// Refunds
     ///
-    case refunds
+    case issueRefunds
 }

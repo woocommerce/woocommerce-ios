@@ -1,1 +1,5 @@
-WooCommerce-appen som du känner till och älskar, nu med vänster-/högersvep aktiverat på produktbilder. (Ja, så är det!)
+- Logga in med Apple vid inloggning.
+- Experimentera med nya funktioner i avsnittet Produkter! Gå till Inställningar för att aktivera dem.
+- Redigera produkter enkelt: uppdateringar visas nu i produktinformationen efter att försäljningspriset har justerats.
+- Bättre hantering av dina produkter: få tydliga varningar när minst en variation inte har ett pris.
+- Inga mer krascher! Tryck på push-notiser om produktrecensioner utan problem.

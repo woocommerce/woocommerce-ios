@@ -11,7 +11,7 @@ struct ProductDetailsFactory {
     ///   - onCompletion: called when the view controller is created and ready for display.
     static func productDetails(product: Product,
                                presentationStyle: ProductFormPresentationStyle,
-                               currencySettings: CurrencySettings = CurrencySettings.shared,
+                               currencySettings: CurrencySettings = ServiceLocator.currencySettings,
                                stores: StoresManager = ServiceLocator.stores,
                                onCompletion: @escaping (UIViewController) -> Void) {
         let action = AppSettingsAction.loadProductsFeatureSwitch { isFeatureSwitchOn in
@@ -46,6 +46,7 @@ private extension ProductDetailsFactory {
                                                                   product: productModel)
         if isEditProductsEnabled {
             let viewModel = ProductFormViewModel(product: productModel,
+                                                 formType: .edit,
                                                  productImageActionHandler: productImageActionHandler,
                                                  isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
             vc = ProductFormViewController(viewModel: viewModel,

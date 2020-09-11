@@ -22,6 +22,9 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
     /// Creates actions available on the bottom sheet.
     private(set) var actionsFactory: ProductFormActionsFactoryProtocol
 
+    /// Product variation form only supports editing
+    let formType: ProductFormType = .edit
+
     /// Not applicable to product variation form
     private(set) var password: String? = nil
 
@@ -83,15 +86,6 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
 
     func hasUnsavedChanges() -> Bool {
         return productVariation != originalProductVariation || productImageActionHandler.productImageStatuses.hasPendingUpload
-    }
-
-    func hasProductChanged() -> Bool {
-        return productVariation != originalProductVariation
-    }
-
-    func hasPasswordChanged() -> Bool {
-        // no-op
-        return false
     }
 }
 

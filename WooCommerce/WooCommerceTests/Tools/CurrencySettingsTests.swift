@@ -153,7 +153,8 @@ final class CurrencySettingsTests: XCTestCase {
     /// Test currency symbol lookup returns correctly encoded symbol.
     ///
     func testCurrencySymbol() {
-        let symbol = CurrencySettings.shared.symbol(from: CurrencySettings.CurrencyCode.AED)
+        moneyFormat = CurrencySettings()
+        let symbol = moneyFormat?.symbol(from: CurrencySettings.CurrencyCode.AED)
         XCTAssertEqual("د.إ", symbol)
     }
 }

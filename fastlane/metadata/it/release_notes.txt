@@ -1,1 +1,5 @@
-L'app WooCommerce che conosci e adori, ora con la possibilità di scorrere a destra/sinistra sulle immagini dei prodotti. (Sì, è così!)
+- Accedi con Apple.
+- Prova le nuove funzionalità nella sezione Prodotti. Vai alle Impostazioni per abilitarle.
+- Modifica facilmente i prodotti: ora gli aggiornamenti vengono visualizzati nei dettagli del prodotto dopo aver regolato il prezzo di vendita.
+- Gestisci meglio i prodotti: ricevi avvisi chiari quando almeno una variante è senza prezzo.
+- Niente più arresti. Tocca la notifica push di una recensione sul prodotto, senza problemi.

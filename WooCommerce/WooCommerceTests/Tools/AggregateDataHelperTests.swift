@@ -113,7 +113,7 @@ private extension AggregateDataHelperTests {
     /// Returns the sorted, expected array of refunded products
     ///
     func expectedRefundedProducts() -> [AggregateOrderItem] {
-        let currencyFormatter = CurrencyFormatter()
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         var expectedArray = [AggregateOrderItem]()
         let item0 = AggregateOrderItem(productID: 16,
                                        variationID: 0,

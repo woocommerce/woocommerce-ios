@@ -1,1 +1,5 @@
-O aplicativo WooCommerce que você conhece e adora, agora com a opção de deslizar imagens de produtos para os lados. (É isso aí!)
+- Faça login com a Apple.
+- Experimente as novas funcionalidades na seção Produtos! Acesse Configurações para ativá-las.
+- Edite produtos com facilidade: as atualizações agora são exibidas nos detalhes do produto após ajustar o preço de venda.
+- Gerencie melhor seus produtos: receba avisos claros quando ao menos uma variação não tiver preço.
+- Adeus, falhas! Não há mais problemas ao tocar em uma notificação push de Avaliação do produto.

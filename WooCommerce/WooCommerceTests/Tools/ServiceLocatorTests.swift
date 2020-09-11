@@ -58,6 +58,10 @@ final class ServiceLocatorTests: XCTestCase {
         XCTAssertNotNil(ServiceLocator.shippingSettingsService)
     }
 
+    func testServiceLocatorProvidesCurrencySettings() {
+        XCTAssertNotNil(ServiceLocator.currencySettings)
+    }
+
     func testServiceLocatorProvidesStorageManager() {
         XCTAssertNotNil(ServiceLocator.storageManager)
     }

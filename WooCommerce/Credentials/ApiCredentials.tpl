@@ -45,4 +45,8 @@ struct ApiCredentials {
     /// Zendesk Client ID
     ///
     static let zendeskClientId = "%{zendesk_client_id}"
+
+    /// Encrypted Logging Public Key
+    ///
+    static let loggingEncryptionKey = "%{encrypted_log_key}"
 }

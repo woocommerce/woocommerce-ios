@@ -24,6 +24,9 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         product
     }
 
+    /// The form type could change from .add to .edit after creation.
+    private(set) var formType: ProductFormType
+
     /// Creates actions available on the bottom sheet.
     private(set) var actionsFactory: ProductFormActionsFactoryProtocol
 
@@ -81,8 +84,10 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     private var cancellable: ObservationToken?
 
     init(product: EditableProductModel,
+         formType: ProductFormType,
          productImageActionHandler: ProductImageActionHandler,
          isEditProductsRelease3Enabled: Bool) {
+        self.formType = formType
         self.productImageActionHandler = productImageActionHandler
         self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
         self.originalProduct = product
@@ -104,14 +109,6 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     func hasUnsavedChanges() -> Bool {
         return product != originalProduct || productImageActionHandler.productImageStatuses.hasPendingUpload || password != originalPassword
-    }
-
-    func hasProductChanged() -> Bool {
-        return product != originalProduct
-    }
-
-    func hasPasswordChanged() -> Bool {
-        return password != nil && password != originalPassword
     }
 }
 
@@ -234,19 +231,41 @@ extension ProductFormViewModel {
 //
 extension ProductFormViewModel {
     func updateProductRemotely(onCompletion: @escaping (Result<EditableProductModel, ProductUpdateError>) -> Void) {
-        let updateProductAction = ProductAction.updateProduct(product: product.product) { [weak self] result in
-            switch result {
-            case .failure(let error):
-                ServiceLocator.analytics.track(.productDetailUpdateError, withError: error)
-                onCompletion(.failure(error))
-            case .success(let product):
-                ServiceLocator.analytics.track(.productDetailUpdateSuccess)
-                let model = EditableProductModel(product: product)
-                self?.resetProduct(model)
-                onCompletion(.success(model))
+        let remoteActionUseCase = ProductFormRemoteActionUseCase()
+        switch formType {
+        case .add:
+            remoteActionUseCase.addProduct(product: product, password: password) { [weak self] result in
+                switch result {
+                case .failure(let error):
+                    onCompletion(.failure(error))
+                case .success(let data):
+                    guard let self = self else {
+                        return
+                    }
+                    self.formType = .edit
+                    self.resetProduct(data.product)
+                    self.resetPassword(data.password)
+                    onCompletion(.success(data.product))
+                }
+            }
+        case .edit:
+            remoteActionUseCase.editProduct(product: product,
+                                              originalProduct: originalProduct,
+                                              password: password,
+                                              originalPassword: originalPassword) { [weak self] result in
+                                                guard let self = self else {
+                                                    return
+                                                }
+                                                switch result {
+                                                case .success(let data):
+                                                    self.resetProduct(data.product)
+                                                    self.resetPassword(data.password)
+                                                    onCompletion(.success(data.product))
+                                                case .failure(let error):
+                                                    onCompletion(.failure(error))
+                                                }
             }
         }
-        ServiceLocator.stores.dispatch(updateProductAction)
     }
 }
 

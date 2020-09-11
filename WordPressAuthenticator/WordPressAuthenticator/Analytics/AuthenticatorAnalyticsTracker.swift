@@ -288,6 +288,10 @@ public class AuthenticatorAnalyticsTracker {
     ///
     public let state = State()
     
+    /// The stored state
+    ///
+    private var pushedState = [State]()
+    
     /// The backing analytics tracking method.  Can be overridden for testing purposes.
     ///
     let track: TrackerMethod
@@ -300,6 +304,28 @@ public class AuthenticatorAnalyticsTracker {
     }
     
     // MARK: - State
+    
+    func pushState() {
+        let stateToPush = State(
+            lastFlow: state.lastFlow,
+            lastSource: state.lastSource,
+            lastStep: state.lastStep)
+        
+        pushedState.append(stateToPush)
+    }
+    
+    /// Pops to the previously pushed state.  If there's no previous state, this resets the state to the defaults.
+    ///
+    func popState() {        
+        guard let stateToPop = pushedState.popLast() else {
+            resetState()
+            return
+        }
+        
+        state.lastSource = stateToPop.lastSource
+        state.lastFlow = stateToPop.lastFlow
+        state.lastStep = stateToPop.lastStep
+    }
     
     /// Resets the flow and step to the defaults.  The source is left untouched, and should only be set explicitely.
     ///
@@ -320,6 +346,7 @@ public class AuthenticatorAnalyticsTracker {
         return isInSiteAuthenticationFlowAndCanTrack()
             || isInAppleFlowAndCanTrack()
             || isInGoogleFlowAndCanTrack()
+            || isInMagicLinkFlowAndCanTrack()
             || isInWPComFlowAndCanTrack()
             || isInPrologueFlowAndCanTrack()
             || isInKeychainFlowAndCanTrack()
@@ -346,6 +373,10 @@ public class AuthenticatorAnalyticsTracker {
     
     private func isInGoogleFlowAndCanTrack() -> Bool {
         return configuration.googleEnabled && [Flow.loginWithGoogle, .signupWithGoogle].contains(state.lastFlow)
+    }
+    
+    private func isInMagicLinkFlowAndCanTrack() -> Bool {
+        return configuration.wpComEnabled && state.lastFlow == .loginWithMagicLink
     }
     
     private func isInWPComFlowAndCanTrack() -> Bool {

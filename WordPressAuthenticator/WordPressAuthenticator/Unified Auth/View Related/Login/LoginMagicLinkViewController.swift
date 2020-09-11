@@ -11,7 +11,7 @@ final class LoginMagicLinkViewController: LoginViewController {
     private var rows = [Row]()
     private var errorMessage: String?
     private var shouldChangeVoiceOverFocus: Bool = false
-
+    
     override var sourceTag: WordPressSupportSourceTag {
         get {
             return .loginMagicLink
@@ -41,6 +41,26 @@ final class LoginMagicLinkViewController: LoginViewController {
         localizePrimaryButton()
         registerTableViewCells()
         loadRows()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if isMovingToParent {
+            tracker.pushState()
+            tracker.set(flow: .loginWithMagicLink)
+            tracker.track(step: .start)
+        } else {
+            tracker.set(step: .start)
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(true)
+        
+        if isMovingFromParent || isBeingDismissed || || (navigationController?.isBeingDismissed ?? false) {
+            tracker.popState()
+        }
     }
 
     // MARK: - Overrides

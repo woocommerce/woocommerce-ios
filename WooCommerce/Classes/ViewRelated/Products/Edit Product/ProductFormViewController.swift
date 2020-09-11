@@ -605,7 +605,7 @@ private extension ProductFormViewController {
     func displayError(error: ProductUpdateError?) {
         let title = NSLocalizedString("Cannot update product", comment: "The title of the alert when there is an error updating the product")
 
-        let message = error?.localizedDescription
+        let message = error?.errorDescription
 
         displayErrorAlert(title: title, message: message)
     }

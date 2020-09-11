@@ -26,6 +26,20 @@ struct OrdersUpsertUseCase {
             upsert(readOnlyOrder, insertingSearchResults: insertingSearchResults)
         }
 
+        do {
+            // Obtain permenant IDs because Orders are used as results of `FetchResultSnapshotsProvider`.
+            try storage.obtainPermanentIDs(for: storageOrders)
+        } catch {
+            // We will just ignore errors for now. The refactoring cost of propagating this error
+            // does not seem to be worth it at the moment because this method is usually called
+            // inside a `StorageType.perform()` block. I don't even know where to begin. ¯\_(ツ)_/¯
+            //
+            // In the future, we should probably refactor the way we handle Storage errors so
+            // they are propagated to the user instead of doing fatalError() like in saveIfNeeded.
+            //
+            DDLogError("Failed to obtain permanent IDs for \(Storage.Order.entityName): \(error)")
+        }
+
         return storageOrders
     }
 

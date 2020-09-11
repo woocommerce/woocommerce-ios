@@ -24,14 +24,17 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
 
     func test_it_inserts_orders_with_permanent_ids() throws {
         // Given
-        let order = makeOrder()
+        let orders = [makeOrder(), makeOrder()]
         let useCase = OrdersUpsertUseCase(storage: viewStorage)
 
         // When
-        let storageOrder = try XCTUnwrap(useCase.upsert([order]).first)
+        let storageOrders = useCase.upsert(orders)
 
         // Then
-        XCTAssertFalse(storageOrder.objectID.isTemporaryID)
+        XCTAssertEqual(storageOrders.count, 2)
+        storageOrders.forEach { storageOrder in
+            XCTAssertFalse(storageOrder.objectID.isTemporaryID)
+        }
     }
 }
 

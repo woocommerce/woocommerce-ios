@@ -36,6 +36,8 @@ private extension AddProductCoordinator {
                 self.presentProductForm(productType: selectedProductType)
             }
         }
+        // Until we support adding a variation, adding a variable product is disabled.
+        command.data = [.simple, .grouped, .affiliate]
         let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
         productTypesListPresenter.show(from: navigationController, sourceBarButtonItem: sourceView, arrowDirections: .up)
     }

@@ -36,6 +36,25 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
             XCTAssertFalse(storageOrder.objectID.isTemporaryID)
         }
     }
+
+    func test_it_persists_orders_in_storage() throws {
+        // Given
+        let orders = [
+            makeOrder().copy(orderID: 98, number: "dignissimos"),
+            makeOrder().copy(orderID: 9001, number: "omnis"),
+        ]
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+
+        // When
+        useCase.upsert(orders)
+
+        // Then
+        let persistedOrder98 = try XCTUnwrap(viewStorage.loadOrder(orderID: 98))
+        XCTAssertEqual(persistedOrder98.toReadOnly(), orders.first)
+
+        let persistedOrder9001 = try XCTUnwrap(viewStorage.loadOrder(orderID: 9001))
+        XCTAssertEqual(persistedOrder9001.toReadOnly(), orders.last)
+    }
 }
 
 private extension OrdersUpsertUseCaseTests {

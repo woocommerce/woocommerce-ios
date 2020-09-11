@@ -6,15 +6,15 @@ import WordPressKit
 
 class LoginPrologueViewController: LoginViewController {
 
+    @IBOutlet private weak var topContainerView: UIView!
     private var buttonViewController: NUXButtonViewController?
     var showCancel = false
 
     /// Constraints on the button view container.
     /// Used to adjust the button width in unified views.
-    @IBOutlet var buttonViewLeadingConstraint: NSLayoutConstraint!
-    @IBOutlet var buttonViewTrailingConstraint: NSLayoutConstraint!
-    var defaultButtonViewMargin: CGFloat = 0
-    
+    @IBOutlet private weak var buttonViewLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var buttonViewTrailingConstraint: NSLayoutConstraint!
+    private var defaultButtonViewMargin: CGFloat = 0
 
     // Called when login button is tapped
     var onLoginButtonTapped: (() -> Void)?
@@ -24,8 +24,6 @@ class LoginPrologueViewController: LoginViewController {
 
     @available(iOS 13, *)
     private lazy var storedCredentialsAuthenticator = StoredCredentialsAuthenticator()
-    
-    @IBOutlet private weak var topContainerView: UIView!
     
     /// We can't rely on `isMovingToParent` to know if we need to track the `.prologue` step
     /// because for the root view in an App, it's always `false`.  We're relying this variiable

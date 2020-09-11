@@ -1,7 +1,7 @@
 import UIKit
 import Yosemite
 
-/// Controls navigation for the in-app feedback flow. Meant to be presented modally
+/// Controls navigation for the flow to add a product given a navigation controller.
 ///
 final class AddProductCoordinator: Coordinator {
     var navigationController: UINavigationController
@@ -58,7 +58,7 @@ private extension AddProductCoordinator {
                                                        currency: currency,
                                                        presentationStyle: .navigationStack,
                                                        isEditProductsRelease3Enabled: true)
-        // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
+        // Since the Add Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
         viewController.hidesBottomBarWhenPushed = true
         navigationController.pushViewController(viewController, animated: true)
     }

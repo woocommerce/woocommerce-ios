@@ -21,6 +21,7 @@ final class BottomSheetListSelectorPresenter<Command: BottomSheetListSelectorCom
               sourceBarButtonItem: UIBarButtonItem? = nil,
               arrowDirections: UIPopoverArrowDirection = .any) {
         let bottomSheet = BottomSheetViewController(childViewController: bottomSheetChildViewController)
+        // TODO-2740: support `UIBarButtonItem` anchor on iPad.
         bottomSheet.show(from: presenting, sourceView: sourceView, arrowDirections: arrowDirections)
     }
 }

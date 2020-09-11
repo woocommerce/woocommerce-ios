@@ -69,6 +69,13 @@ class GetStartedViewController: LoginViewController {
     
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
+        if isMovingToParent {
+            tracker.track(step: .start)
+        } else {
+            tracker.set(step: .start)
+        }
+        
         errorMessage = nil
         hiddenPasswordField?.text = nil
         hiddenPasswordField?.isAccessibilityElement = false

@@ -71,12 +71,6 @@ class StoredCredentialsAuthenticator: NSObject {
             return
         }
         
-        // We're silently setting the flow and step because if there's an error we want it to be
-        // recognized as an iCloud Keychain flow error.  At the same time we don't want to start
-        // this flow unless the user has selected a credential.
-        tracker.set(flow: .loginWithiCloudKeychain)
-        tracker.set(step: .start)
-        
         picker.show(in: window) { [weak self] result in
             guard let self = self else {
                 return
@@ -127,8 +121,13 @@ class StoredCredentialsAuthenticator: NSObject {
         switch authError.code {
         case .canceled:
             // The user cancelling the flow is not really an error, so we're not reporting or tracking
-            // this as an error.  We're only tracking this as a regular UI dismissal.
-            tracker.track(click: .dismiss)
+            // this as an error.
+            //
+            // We're not tracking this either, since the Android App doesn't for SmartLock.  The reason is
+            // that it's not trivial to know when the credentials picker UI is shown to the user, so knowing
+            // it's being dismissed is also not trivial.  This was decided during the Unified Login & Signup
+            // project in a conversation between myself (Diego Rey Mendez) and Renan Ferrari.
+            break
         case .failed, .invalidResponse, .notHandled, .unknown:
             tracker.track(failure: authError.localizedDescription)
             DDLogError("ASAuthorizationError: \(authError.localizedDescription)")

@@ -123,6 +123,10 @@ final class ReviewsViewController: UIViewController {
         resetApplicationBadge()
         transitionToResultsUpdatedState()
 
+        if isEmpty {
+            transitionToSyncingState(pageNumber: SyncingCoordinator.Defaults.pageFirstIndex)
+        }
+
         if AppRatingManager.shared.shouldPromptForAppReview(section: Constants.section) {
             displayRatingPrompt()
         }
@@ -290,7 +294,8 @@ private extension ReviewsViewController {
 
         tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
-        transitionToSyncingState()
+
+        transitionToSyncingState(pageNumber: SyncingCoordinator.Defaults.pageFirstIndex)
     }
 }
 
@@ -362,7 +367,8 @@ private extension ReviewsViewController {
     ///
     @objc func defaultSiteWasUpdated() {
         reloadResultsController()
-        syncingCoordinator.resetInternalState()
+        syncingCoordinator.resynchronize()
+        tableView.reloadData()
     }
 
     /// Application became Active Again (while the Notes Tab was onscreen)
@@ -401,8 +407,12 @@ private extension ReviewsViewController {
             break
         case .placeholder:
             displayPlaceholderReviews()
-        case .syncing:
-            ensureFooterSpinnerIsStarted()
+        case .syncing(let pageNumber):
+            if pageNumber == SyncingCoordinator.Defaults.pageFirstIndex {
+                displayPlaceholderReviews()
+            } else {
+                ensureFooterSpinnerIsStarted()
+            }
         }
     }
 
@@ -418,13 +428,14 @@ private extension ReviewsViewController {
             removePlaceholderReviews()
         case .syncing:
             ensureFooterSpinnerIsStopped()
+            removePlaceholderReviews()
         }
     }
 
     /// Should be called before Sync'ing Starts: Transitions to .results / .syncing
     ///
-    func transitionToSyncingState() {
-        state = isEmpty ? .placeholder : .syncing
+    func transitionToSyncingState(pageNumber: Int) {
+        state = isEmpty ? .placeholder : .syncing(pageNumber: pageNumber)
     }
 
     /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
@@ -480,7 +491,7 @@ extension ReviewsViewController: SyncingCoordinatorDelegate {
     /// Synchronizes the Orders for the Default Store (if any).
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)? = nil) {
-        transitionToSyncingState()
+        transitionToSyncingState(pageNumber: pageNumber)
         viewModel.synchronizeReviews(pageNumber: pageNumber, pageSize: pageSize) { [weak self] in
             self?.transitionToResultsUpdatedState()
             onCompletion?(true)
@@ -530,11 +541,11 @@ private extension ReviewsViewController {
         static let markAllAsReadNoticeMaxViews    = 2
     }
 
-    enum State {
+    enum State: Equatable {
         case placeholder
         case emptyUnfiltered
         case results
-        case syncing
+        case syncing(pageNumber: Int)
     }
 
     struct Constants {

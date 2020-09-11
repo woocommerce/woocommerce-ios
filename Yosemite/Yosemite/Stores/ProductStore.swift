@@ -575,18 +575,18 @@ public enum ProductUpdateError: Error, Equatable {
 
     init(error: Error) {
         guard let dotcomError = error as? DotcomError else {
-            self = .unknown(error: .init(error))
+            self = .unknown(error: error.toAnyError)
             return
         }
         switch dotcomError {
         case .unknown(let code, _):
             guard let errorCode = ErrorCode(rawValue: code) else {
-                self = .unknown(error: .init(dotcomError))
+                self = .unknown(error: dotcomError.toAnyError)
                 return
             }
             self = errorCode.error
         default:
-            self = .unknown(error: .init(dotcomError))
+            self = .unknown(error: dotcomError.toAnyError)
         }
     }
 

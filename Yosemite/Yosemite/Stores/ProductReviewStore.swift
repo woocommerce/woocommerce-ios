@@ -81,7 +81,7 @@ private extension ProductReviewStore {
                 return
             }
 
-            if pageNumber == 1 {
+            if pageNumber == Default.firstPageNumber {
                 self?.deleteStoredProductReviews(siteID: siteID)
             }
 

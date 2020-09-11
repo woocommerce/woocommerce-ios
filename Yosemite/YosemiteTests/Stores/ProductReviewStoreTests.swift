@@ -138,12 +138,12 @@ final class ProductReviewStoreTests: XCTestCase {
         // When
         network.simulateResponse(requestUrlSuffix: "products/reviews", filename: "reviews-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductReview.self), 2)
-        
+
         waitForExpectation { exp in
             let action = ProductReviewAction.synchronizeProductReviews(siteID: sampleSiteID,
                                                                        pageNumber: defaultPageNumber,
                                                                        pageSize: defaultPageSize) { error in
-                
+
         // Then
                 XCTAssertNil(error)
 
@@ -185,7 +185,7 @@ final class ProductReviewStoreTests: XCTestCase {
             let action = ProductReviewAction.synchronizeProductReviews(siteID: sampleSiteID,
                                                                        pageNumber: 3,
                                                                        pageSize: defaultPageSize) { error in
-                
+
          // Then
                 XCTAssertNil(error)
 

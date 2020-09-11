@@ -53,7 +53,7 @@ public typealias FetchResultSnapshot = NSDiffableDataSourceSnapshot<String, Fetc
 /// For now, we have to ensure that when inserting `MutableType` in `Storage`, we will have to
 /// obtain permanent IDs by calling `StorageType.obtainPermanentIDs`. This is because
 /// `NSFetchedResultsController` can emit snapshots that contain temporary `ObjectIDs`.
-/// Because of this, these undesriable effects can happen:
+/// Because of this, these undesirable effects can happen:
 ///
 /// 1. The table can display empty cells because even though the snapshot has temporary IDs, those
 ///    temporary IDs were immediately converted to permanent IDs. And hence, `self.object(withID:)`
@@ -62,10 +62,10 @@ public typealias FetchResultSnapshot = NSDiffableDataSourceSnapshot<String, Fetc
 ///    to use `NSManagedObjectContext.object(withID:)` in `self.object(withID:)` so that temporary
 ///    IDs are considered and it will not return `nil`. However, the `FRC` can emit two snapshots
 ///    in sequence in a short period of time. The first snapshot contains the temporary IDs and
-///    the second one contains the permanent IDs. In the eyes of the `UITableViewDiffableDataSource`,
-///    the objects “different” and would animate the same rows in and out. Here is a sample of
+///    the second one contains the permanent IDs. But for `UITableViewDiffableDataSource`,
+///    the objects are “different” and it would animate the same rows in and out. Here is a sample of
 ///    how this undesirable animation looks like https://tinyurl.com/y62lwzg9. There is also
-///    a related discussion abiout this [here](https://git.io/JUW5r).
+///    a related discussion about this [here](https://git.io/JUW5r).
 ///
 @available(iOS 13.0, *)
 public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshotsProviderMutableType> {

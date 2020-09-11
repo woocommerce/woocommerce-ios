@@ -7,7 +7,7 @@ extension UIViewController {
     /// A VC added to an existing navigation controller is dismissed when `isMovingToParent` is `false`.
     /// For any other scenario `isBeingDismissed` will do.
     ///
-    func isBeingDismissedInAnyWay() -> Bool {
-        return isMovingFromParent || isBeingDismissed || (navigationController?.isBeingDismissed ?? false)
+    var isBeingDismissedInAnyWay: Bool {
+        isMovingFromParent || isBeingDismissed || (navigationController?.isBeingDismissed ?? false)
     }
 }

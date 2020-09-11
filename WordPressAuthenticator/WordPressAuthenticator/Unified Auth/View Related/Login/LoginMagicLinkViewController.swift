@@ -21,6 +21,7 @@ final class LoginMagicLinkViewController: LoginViewController {
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
         tracker.track(click: .openEmailClient)
+        tracker.track(step: .emailOpened)
         
         let linkMailPresenter = LinkMailPresenter(emailAddress: loginFields.username)
         let appSelector = AppSelector(sourceView: sender)
@@ -58,7 +59,7 @@ final class LoginMagicLinkViewController: LoginViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
         
-        if isMovingFromParent || isBeingDismissed || || (navigationController?.isBeingDismissed ?? false) {
+        if isBeingDismissedInAnyWay {
             tracker.popState()
         }
     }

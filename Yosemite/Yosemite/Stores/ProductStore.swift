@@ -565,28 +565,32 @@ extension ProductStore {
 ///
 /// - duplicatedSKU: the SKU is used by another Product.
 /// - invalidSKU: the SKU is invalid or duplicated.
+/// - passwordCannotBeUpdated: the password of a product cannot be updated.
+/// - unexpected: an error that is not expected to occur.
 /// - unknown: other error cases.
 ///
-public enum ProductUpdateError: Error {
+public enum ProductUpdateError: Error, Equatable {
     case duplicatedSKU
     case invalidSKU
+    case passwordCannotBeUpdated
     case notFoundInStorage
-    case unknown
+    case unexpected
+    case unknown(error: AnyError)
 
     init(error: Error) {
         guard let dotcomError = error as? DotcomError else {
-            self = .unknown
+            self = .unknown(error: error.toAnyError)
             return
         }
         switch dotcomError {
         case .unknown(let code, _):
             guard let errorCode = ErrorCode(rawValue: code) else {
-                self = .unknown
+                self = .unknown(error: dotcomError.toAnyError)
                 return
             }
             self = errorCode.error
         default:
-            self = .unknown
+            self = .unknown(error: dotcomError.toAnyError)
         }
     }
 

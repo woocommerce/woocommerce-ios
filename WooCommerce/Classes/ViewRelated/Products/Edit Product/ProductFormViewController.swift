@@ -557,48 +557,19 @@ private extension ProductFormViewController {
     }
 
     func dispatchUpdateProductAndPasswordAction() {
-        let group = DispatchGroup()
-
-        // Updated Product
-        if viewModel.hasProductChanged() {
-            group.enter()
-
-            viewModel.updateProductRemotely { [weak self] result in
-                switch result {
-                case .failure(let error):
-                    DDLogError("⛔️ Error updating Product: \(error)")
-                    CrashLogging.logError(error)
-                    // Dismisses the in-progress UI then presents the error alert.
-                    self?.navigationController?.dismiss(animated: true) {
-                        self?.displayError(error: error)
-                    }
-                case .success:
-                    break
+        viewModel.updateProductRemotely { [weak self] result in
+            switch result {
+            case .failure(let error):
+                DDLogError("⛔️ Error updating Product: \(error)")
+                CrashLogging.logError(error)
+                // Dismisses the in-progress UI then presents the error alert.
+                self?.navigationController?.dismiss(animated: true) {
+                    self?.displayError(error: error)
                 }
-                group.leave()
+            case .success:
+                // Dismisses the in-progress UI.
+                self?.navigationController?.dismiss(animated: true, completion: nil)
             }
-        }
-
-
-        // Update product password if available
-        if let password = viewModel.password, viewModel.hasPasswordChanged() {
-            group.enter()
-            let passwordUpdateAction = SitePostAction.updateSitePostPassword(siteID: product.siteID, postID: product.productID,
-                                                                             password: password) { [weak self] result in
-                                                                                switch result {
-                                                                                case .failure(let error):
-                                                                                    DDLogError("⛔️ Error updating product password: \(error)")
-                                                                                case .success(let password):
-                                                                                    self?.viewModel.resetPassword(password)
-                                                                                }
-                                                                                group.leave()
-            }
-            ServiceLocator.stores.dispatch(passwordUpdateAction)
-        }
-
-        group.notify(queue: .main) { [weak self] in
-            // Dismisses the in-progress UI.
-            self?.navigationController?.dismiss(animated: true, completion: nil)
         }
     }
 

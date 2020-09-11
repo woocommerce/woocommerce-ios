@@ -130,20 +130,21 @@ final class ProductReviewStoreTests: XCTestCase {
         // Given
         let reviewID1: Int64 = 1
         let reviewID2: Int64 = 2
-        let productReviews = [self.sampleProductReview(reviewID: reviewID1), self.sampleProductReview(reviewID: reviewID2)]
-        self.store.upsertStoredProductReviews(readOnlyProductReviews: productReviews,
-                                              in: self.viewStorage,
-                                              siteID: self.sampleSiteID)
+        let productReviews = [sampleProductReview(reviewID: reviewID1), sampleProductReview(reviewID: reviewID2)]
+        store.upsertStoredProductReviews(readOnlyProductReviews: productReviews,
+                                              in: viewStorage,
+                                              siteID: sampleSiteID)
 
         // When
         network.simulateResponse(requestUrlSuffix: "products/reviews", filename: "reviews-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductReview.self), 2)
-
-        // Then
+        
         waitForExpectation { exp in
             let action = ProductReviewAction.synchronizeProductReviews(siteID: sampleSiteID,
                                                                        pageNumber: defaultPageNumber,
                                                                        pageSize: defaultPageSize) { error in
+                
+        // Then
                 XCTAssertNil(error)
 
                 // The previously upserted Product Reviews should be deleted.
@@ -171,20 +172,21 @@ final class ProductReviewStoreTests: XCTestCase {
         // Given
         let reviewID1: Int64 = 1
         let reviewID2: Int64 = 2
-        let productReviews = [self.sampleProductReview(reviewID: reviewID1), self.sampleProductReview(reviewID: reviewID2)]
-        self.store.upsertStoredProductReviews(readOnlyProductReviews: productReviews,
-                                              in: self.viewStorage,
-                                              siteID: self.sampleSiteID)
+        let productReviews = [sampleProductReview(reviewID: reviewID1), sampleProductReview(reviewID: reviewID2)]
+        store.upsertStoredProductReviews(readOnlyProductReviews: productReviews,
+                                              in: viewStorage,
+                                              siteID: sampleSiteID)
 
         // When
         network.simulateResponse(requestUrlSuffix: "products/reviews", filename: "reviews-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductReview.self), 2)
 
-        // Then
         waitForExpectation { exp in
             let action = ProductReviewAction.synchronizeProductReviews(siteID: sampleSiteID,
                                                                        pageNumber: 3,
                                                                        pageSize: defaultPageSize) { error in
+                
+         // Then
                 XCTAssertNil(error)
 
                 // The previously upserted Product Reviews should stay in storage.
@@ -208,25 +210,25 @@ final class ProductReviewStoreTests: XCTestCase {
 
     /// Verifies that `ProductReviewAction.synchronizeProductReviews` for the first page does not delete stored Product Reviews if the API call fails.
     ///
-    func test_syncing_product_reviews_on_the_first_page_doest_not_delete_stored_product_reviews_upon_response_error() {
+    func test_syncing_product_reviews_on_the_first_page_does_not_delete_stored_product_reviews_upon_response_error() {
 
         // Given
         let reviewID1: Int64 = 1
         let reviewID2: Int64 = 2
-        let productReviews = [self.sampleProductReview(reviewID: reviewID1), self.sampleProductReview(reviewID: reviewID2)]
-        self.store.upsertStoredProductReviews(readOnlyProductReviews: productReviews,
-                                              in: self.viewStorage,
-                                              siteID: self.sampleSiteID)
+        let productReviews = [sampleProductReview(reviewID: reviewID1), sampleProductReview(reviewID: reviewID2)]
+        store.upsertStoredProductReviews(readOnlyProductReviews: productReviews,
+                                              in: viewStorage,
+                                              siteID: sampleSiteID)
 
         // When
         network.simulateResponse(requestUrlSuffix: "products/reviews", filename: "generic_error")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductReview.self), 2)
 
-        // Then
         waitForExpectation { exp in
             let action = ProductReviewAction.synchronizeProductReviews(siteID: sampleSiteID,
                                                                        pageNumber: defaultPageNumber,
                                                                        pageSize: defaultPageSize) { error in
+        // Then
                 XCTAssertNotNil(error)
 
                 // The previously upserted Product Reviews should stay in storage.
@@ -331,7 +333,7 @@ final class ProductReviewStoreTests: XCTestCase {
 
     /// Verifies that `ProductReviewAction.retrieveProductReview` returns an error whenever there is an error response from the backend.
     ///
-    func test_retrieve_single_product_review_returns_rrror_upon_reponse_error() {
+    func test_retrieve_single_product_review_returns_error_upon_reponse_error() {
         let expectation = self.expectation(description: "Retrieve single product review error response")
 
         network.simulateResponse(requestUrlSuffix: "products/reviews/173", filename: "generic_error")

@@ -421,12 +421,11 @@ private extension GetStartedViewController {
                                             self?.configureViewLoading(false)
 
             }, failure: { [weak self] (error: Error) in
-                // TODO: Tracks.
-                // WordPressAuthenticator.track(.loginMagicLinkFailed)
-                // WordPressAuthenticator.track(.loginFailed, error: error)
                 guard let self = self else {
                     return
                 }
+                
+                self.tracker.track(failure: error.localizedDescription)
 
                 self.displayError(error as NSError, sourceTag: self.sourceTag)
                 self.configureViewLoading(false)
@@ -493,6 +492,8 @@ private extension GetStartedViewController {
     func showSelfHostedWithError(_ error: Error) {
         loginFields.siteAddress = "https://wordpress.com"
         errorToPresent = error
+        
+        tracker.track(failure: error.localizedDescription)
 
         guard let vc = SiteCredentialsViewController.instantiate(from: .siteAddress) else {
             DDLogError("Failed to navigate to SiteCredentialsViewController from GetStartedViewController")

@@ -437,12 +437,11 @@ private extension PasswordViewController {
                                             self?.configureViewLoading(false)
 
             }, failure: { [weak self] (error: Error) in
-                // TODO: Tracks.
-                // WordPressAuthenticator.track(.loginMagicLinkFailed)
-                // WordPressAuthenticator.track(.loginFailed, error: error)
                 guard let self = self else {
                     return
                 }
+                
+                self.tracker.track(failure: error.localizedDescription)
 
                 self.displayError(error as NSError, sourceTag: self.sourceTag)
                 self.configureViewLoading(false)
@@ -452,8 +451,6 @@ private extension PasswordViewController {
     /// When a magic link successfully sends, navigate the user to the next step.
     ///
     func didRequestAuthenticationLink() {
-        // TODO: Tracks.
-        // WordPressAuthenticator.track(.loginMagicLinkRequested)
         WordPressAuthenticator.storeLoginInfoForTokenAuth(loginFields)
 
         guard let vc = LoginMagicLinkViewController.instantiate(from: .unifiedLoginMagicLink) else {

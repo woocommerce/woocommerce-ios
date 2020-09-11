@@ -21,6 +21,7 @@ struct OrdersUpsertUseCase {
     /// - Parameter insertingSearchResults: Indicates if the "Newly Inserted Entities" should be
     ///                                     marked as "Search Results Only".
     ///
+    @discardableResult
     func upsert(_ readOnlyOrders: [Networking.Order], insertingSearchResults: Bool = false) -> [Storage.Order] {
         let storageOrders = readOnlyOrders.map { readOnlyOrder in
             upsert(readOnlyOrder, insertingSearchResults: insertingSearchResults)

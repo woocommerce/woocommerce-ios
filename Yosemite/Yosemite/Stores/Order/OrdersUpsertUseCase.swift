@@ -1,13 +1,26 @@
 import Storage
 import Networking
 
+/// Upserts `Networking.Order` objects into Storage.
+///
+/// This UseCase should always be used when inserting or updating Orders since it encapsulates
+/// some complex business logic when persisting orders.
+///
 struct OrdersUpsertUseCase {
     private let storage: StorageType
 
+    /// Initializes a new UseCase.
+    ///
+    /// - Parameter storage: A derived `StorageType`.
     init(storage: StorageType) {
         self.storage = storage
     }
 
+    /// Updates or inserts the given `Networking.Order` objects.
+    ///
+    /// - Parameter insertingSearchResults: Indicates if the "Newly Inserted Entities" should be
+    ///                                     marked as "Search Results Only".
+    ///
     func upsert(_ readOnlyOrders: [Networking.Order], insertingSearchResults: Bool = false) -> [Storage.Order] {
         let storageOrders = readOnlyOrders.map { readOnlyOrder in
             upsert(readOnlyOrder, insertingSearchResults: insertingSearchResults)

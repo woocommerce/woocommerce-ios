@@ -199,7 +199,7 @@ private extension DefaultProductFormTableViewModel {
 
         if let stockQuantity = product.stockQuantity, product.manageStock {
             inventoryDetails.append(String.localizedStringWithFormat(Constants.stockQuantityFormat, stockQuantity))
-        } else if product.manageStock == false {
+        } else if product.manageStock == false && product.isStockStatusEnabled() {
             let stockStatus = product.stockStatus
             inventoryDetails.append(stockStatus.description)
         }

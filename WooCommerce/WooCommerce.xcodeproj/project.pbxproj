@@ -166,6 +166,7 @@
 		0270F47624D005B00005210A /* ProductFormViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0270F47524D005B00005210A /* ProductFormViewModelProtocol.swift */; };
 		0270F47824D006F60005210A /* ProductFormPresentationStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0270F47724D006F60005210A /* ProductFormPresentationStyle.swift */; };
 		0271139A24DD15D800574A07 /* ProductsTabProductViewModel+VariationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0271139924DD15D800574A07 /* ProductsTabProductViewModel+VariationTests.swift */; };
+		0271E1642509C66200633F7A /* DefaultProductFormTableViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0271E1632509C66200633F7A /* DefaultProductFormTableViewModelTests.swift */; };
 		0272C00322EE9C3200D7CA2C /* AsyncDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0272C00222EE9C3200D7CA2C /* AsyncDictionary.swift */; };
 		0273707E24C0047800167204 /* SequenceHelpersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0273707D24C0047800167204 /* SequenceHelpersTests.swift */; };
 		0273708024C0094500167204 /* ProductListMultiSelectorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0273707F24C0094500167204 /* ProductListMultiSelectorDataSource.swift */; };
@@ -453,6 +454,8 @@
 		57C503DC23E8C70C00EC0790 /* OrdersMasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C503DB23E8C70C00EC0790 /* OrdersMasterViewController.swift */; };
 		57C503DE23E8CE0D00EC0790 /* OrdersMasterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 57C503DD23E8CE0D00EC0790 /* OrdersMasterViewController.xib */; };
 		57C503E023E8D4D600EC0790 /* OrdersMasterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C503DF23E8D4D600EC0790 /* OrdersMasterViewModel.swift */; };
+		57C5FF7A25091A350074EC26 /* OrderListSyncActionUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C5FF7925091A350074EC26 /* OrderListSyncActionUseCase.swift */; };
+		57C5FF7C25091DE50074EC26 /* OrderListSyncActionUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C5FF7B25091DE50074EC26 /* OrderListSyncActionUseCaseTests.swift */; };
 		57C9A8FC24C21BFB001E1C2F /* ReviewsCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C9A8FB24C21BFB001E1C2F /* ReviewsCoordinatorTests.swift */; };
 		57C9A8FE24C23335001E1C2F /* MockNoticePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C9A8FD24C23335001E1C2F /* MockNoticePresenter.swift */; };
 		57CFCD28248845B4003F51EC /* PrimarySectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CFCD27248845B4003F51EC /* PrimarySectionHeaderView.swift */; };
@@ -1113,6 +1116,7 @@
 		0270F47524D005B00005210A /* ProductFormViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormViewModelProtocol.swift; sourceTree = "<group>"; };
 		0270F47724D006F60005210A /* ProductFormPresentationStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormPresentationStyle.swift; sourceTree = "<group>"; };
 		0271139924DD15D800574A07 /* ProductsTabProductViewModel+VariationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductsTabProductViewModel+VariationTests.swift"; sourceTree = "<group>"; };
+		0271E1632509C66200633F7A /* DefaultProductFormTableViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultProductFormTableViewModelTests.swift; sourceTree = "<group>"; };
 		0272C00222EE9C3200D7CA2C /* AsyncDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncDictionary.swift; sourceTree = "<group>"; };
 		0273707D24C0047800167204 /* SequenceHelpersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequenceHelpersTests.swift; sourceTree = "<group>"; };
 		0273707F24C0094500167204 /* ProductListMultiSelectorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListMultiSelectorDataSource.swift; sourceTree = "<group>"; };
@@ -1403,6 +1407,8 @@
 		57C503DB23E8C70C00EC0790 /* OrdersMasterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersMasterViewController.swift; sourceTree = "<group>"; };
 		57C503DD23E8CE0D00EC0790 /* OrdersMasterViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrdersMasterViewController.xib; sourceTree = "<group>"; };
 		57C503DF23E8D4D600EC0790 /* OrdersMasterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersMasterViewModel.swift; sourceTree = "<group>"; };
+		57C5FF7925091A350074EC26 /* OrderListSyncActionUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListSyncActionUseCase.swift; sourceTree = "<group>"; };
+		57C5FF7B25091DE50074EC26 /* OrderListSyncActionUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListSyncActionUseCaseTests.swift; sourceTree = "<group>"; };
 		57C9A8FB24C21BFB001E1C2F /* ReviewsCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsCoordinatorTests.swift; sourceTree = "<group>"; };
 		57C9A8FD24C23335001E1C2F /* MockNoticePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNoticePresenter.swift; sourceTree = "<group>"; };
 		57CFCD27248845B4003F51EC /* PrimarySectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimarySectionHeaderView.swift; sourceTree = "<group>"; };
@@ -1963,6 +1969,7 @@
 				02BC5AA224D27F8800C43326 /* ProductVariationFormViewModel+UpdatesTests.swift */,
 				023EC2E524DAB1270021DA91 /* EditableProductVariationModelTests.swift */,
 				0236BCA325087B660043EB43 /* ProductFormRemoteActionUseCaseTests.swift */,
+				0271E1632509C66200633F7A /* DefaultProductFormTableViewModelTests.swift */,
 			);
 			path = "Edit Product";
 			sourceTree = "<group>";
@@ -3039,6 +3046,7 @@
 				57F2C6C9246DEBB10074063B /* Order Details */,
 				570AAB042472FACB00516C0C /* OrderDetailsDataSourceTests.swift */,
 				57F34AA02423D45A00E38AFB /* OrdersViewModelTests.swift */,
+				57C5FF7B25091DE50074EC26 /* OrderListSyncActionUseCaseTests.swift */,
 			);
 			path = Orders;
 			sourceTree = "<group>";
@@ -3905,6 +3913,7 @@
 				0206483923FA4160008441BB /* OrdersRootViewController.swift */,
 				B509112E2049E27A007D25DC /* OrdersViewController.swift */,
 				576F92212423C3C0003E5FEF /* OrdersViewModel.swift */,
+				57C5FF7925091A350074EC26 /* OrderListSyncActionUseCase.swift */,
 			);
 			path = Orders;
 			sourceTree = "<group>";
@@ -5096,6 +5105,7 @@
 				45CDAFAE2434CFCA00F83C22 /* ProductCatalogVisibilityViewController.swift in Sources */,
 				D85B8333222FABD1002168F3 /* StatusListTableViewCell.swift in Sources */,
 				CE22E3F72170E23C005A6BEF /* PrivacySettingsViewController.swift in Sources */,
+				57C5FF7A25091A350074EC26 /* OrderListSyncActionUseCase.swift in Sources */,
 				B58B4AB32108F01700076FDD /* DefaultNoticePresenter.swift in Sources */,
 				4512055224655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.swift in Sources */,
 				57448D28242E775000A56A74 /* EmptyStateViewController.swift in Sources */,
@@ -5498,6 +5508,7 @@
 				B57C745120F56EE900EEFC87 /* UITableViewCellHelpersTests.swift in Sources */,
 				0225C42824768A4C00C5B4F0 /* FilterProductListViewModelTests.swift in Sources */,
 				D85136C9231E12B600DD0539 /* ReviewViewModelTests.swift in Sources */,
+				57C5FF7C25091DE50074EC26 /* OrderListSyncActionUseCaseTests.swift in Sources */,
 				D83A6A782379097A00419D48 /* MurielColorTests.swift in Sources */,
 				020BE77723B4A9D9007FE54C /* AztecLinkFormatBarCommandTests.swift in Sources */,
 				020BE77323B4A567007FE54C /* AztecInsertMoreFormatBarCommandTests.swift in Sources */,
@@ -5525,6 +5536,7 @@
 				D82DFB4C225F303200EFE2CB /* EmptyListMessageWithActionTests.swift in Sources */,
 				57B374B6245B331100D58BE0 /* EmptyStateViewControllerTests.swift in Sources */,
 				020BE76923B4A268007FE54C /* AztecItalicFormatBarCommandTests.swift in Sources */,
+				0271E1642509C66200633F7A /* DefaultProductFormTableViewModelTests.swift in Sources */,
 				02BAB02924D13AA500F8B06E /* ProductVariationFormActionsFactoryTests.swift in Sources */,
 				B53A569B21123E8E000776C9 /* MockupTableView.swift in Sources */,
 				0259EF79246BF66000B84FDF /* MockProductsAppSettingsStoresManager.swift in Sources */,

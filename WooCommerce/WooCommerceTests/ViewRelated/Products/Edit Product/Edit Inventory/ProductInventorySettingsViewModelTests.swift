@@ -141,7 +141,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         XCTAssertEqual(isSKUValid, false)
         XCTAssertEqual(shouldBringUpKeyboard, true)
         let expectedSections: [Section] = [
-            .init(errorTitle: ProductUpdateError.duplicatedSKU.alertMessage, rows: [.sku]),
+            .init(errorTitle: ProductUpdateError.duplicatedSKU.errorDescription, rows: [.sku]),
             .init(rows: [.manageStock, .stockStatus]),
             .init(rows: [.limitOnePerOrder])
         ]

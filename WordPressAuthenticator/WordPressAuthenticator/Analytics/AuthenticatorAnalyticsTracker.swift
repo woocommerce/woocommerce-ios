@@ -4,6 +4,10 @@ import Foundation
 ///
 public class AuthenticatorAnalyticsTracker {
     
+    private static let defaultSource: Source = .default
+    private static let defaultFlow: Flow = .prologue
+    private static let defaultStep: Step = .prologue
+    
     /// The method used for analytics tracking.  Useful for overriding in automated tests.
     ///
     typealias TrackerMethod = (_ event: AnalyticsEvent) -> ()
@@ -264,12 +268,12 @@ public class AuthenticatorAnalyticsTracker {
     
     /// State for the analytics tracker.
     ///
-    private class State {
-        var lastFlow: Flow
-        var lastSource: Source
-        var lastStep: Step
+    public class State {
+        internal(set) public var lastFlow: Flow
+        internal(set) public var lastSource: Source
+        internal(set) public var lastStep: Step
         
-        init(lastFlow: Flow = .prologue, lastSource: Source = .default, lastStep: Step = .prologue) {
+        init(lastFlow: Flow = AuthenticatorAnalyticsTracker.defaultFlow, lastSource: Source = AuthenticatorAnalyticsTracker.defaultSource, lastStep: Step = AuthenticatorAnalyticsTracker.defaultStep) {
             self.lastFlow = lastFlow
             self.lastSource = lastSource
             self.lastStep = lastStep
@@ -282,7 +286,11 @@ public class AuthenticatorAnalyticsTracker {
     
     /// The state of this tracker.
     ///
-    private let state = State()
+    public let state = State()
+    
+    /// The stored state
+    ///
+    private var pushedState = [State]()
     
     /// The backing analytics tracking method.  Can be overridden for testing purposes.
     ///
@@ -293,6 +301,37 @@ public class AuthenticatorAnalyticsTracker {
     init(configuration: Configuration, track: @escaping TrackerMethod = WPAnalytics.track) {
         self.configuration = configuration
         self.track = track
+    }
+    
+    // MARK: - State
+    
+    func pushState() {
+        let stateToPush = State(
+            lastFlow: state.lastFlow,
+            lastSource: state.lastSource,
+            lastStep: state.lastStep)
+        
+        pushedState.append(stateToPush)
+    }
+    
+    /// Pops to the previously pushed state.  If there's no previous state, this resets the state to the defaults.
+    ///
+    func popState() {        
+        guard let stateToPop = pushedState.popLast() else {
+            resetState()
+            return
+        }
+        
+        state.lastSource = stateToPop.lastSource
+        state.lastFlow = stateToPop.lastFlow
+        state.lastStep = stateToPop.lastStep
+    }
+    
+    /// Resets the flow and step to the defaults.  The source is left untouched, and should only be set explicitely.
+    ///
+    func resetState() {
+        set(flow: Self.defaultFlow)
+        set(step: Self.defaultStep)
     }
     
     // MARK: - Legacy vs Unified tracking
@@ -307,6 +346,7 @@ public class AuthenticatorAnalyticsTracker {
         return isInSiteAuthenticationFlowAndCanTrack()
             || isInAppleFlowAndCanTrack()
             || isInGoogleFlowAndCanTrack()
+            || isInMagicLinkFlowAndCanTrack()
             || isInWPComFlowAndCanTrack()
             || isInPrologueFlowAndCanTrack()
             || isInKeychainFlowAndCanTrack()
@@ -333,6 +373,10 @@ public class AuthenticatorAnalyticsTracker {
     
     private func isInGoogleFlowAndCanTrack() -> Bool {
         return configuration.googleEnabled && [Flow.loginWithGoogle, .signupWithGoogle].contains(state.lastFlow)
+    }
+    
+    private func isInMagicLinkFlowAndCanTrack() -> Bool {
+        return configuration.wpComEnabled && state.lastFlow == .loginWithMagicLink
     }
     
     private func isInWPComFlowAndCanTrack() -> Bool {
@@ -473,19 +517,19 @@ public class AuthenticatorAnalyticsTracker {
     
     /// Allows the caller to set the flow without tracking.
     ///
-    func set(flow: Flow) {
+    public func set(flow: Flow) {
         state.lastFlow = flow
     }
     
     /// Allows the caller to set the source without tracking.
     ///
-    func set(source: Source) {
+    public func set(source: Source) {
         state.lastSource = source
     }
     
     /// Allows the caller to set the step without tracking.
     ///
-    func set(step: Step) {
+    public func set(step: Step) {
         state.lastStep = step
     }
     

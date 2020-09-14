@@ -16,15 +16,12 @@ class LoginPrologueViewController: LoginViewController {
     private let style = WordPressAuthenticator.shared.style
 
     @available(iOS 13, *)
-    private lazy var storedCredentialsAuthenticator = StoredCredentialsAuthenticator()
+    private lazy var storedCredentialsAuthenticator = StoredCredentialsAuthenticator(onCancel: {
+        // Since the authenticator has its own flow
+        self.tracker.resetState()
+    })
     
     @IBOutlet private weak var topContainerView: UIView!
-    
-    /// We can't rely on `isMovingToParent` to know if we need to track the `.prologue` step
-    /// because for the root view in an App, it's always `false`.  We're relying this variiable
-    /// instead, since the `.prologue` step only needs to be tracked once.
-    ///
-    private var prologueFlowTracked = false
 
     // MARK: - Lifecycle Methods
 
@@ -62,15 +59,6 @@ class LoginPrologueViewController: LoginViewController {
         //
         guard UIApplication.shared.applicationState != .background else {
             return
-        }
-        
-        tracker.set(flow: .prologue)
-        
-        if !prologueFlowTracked {
-            tracker.track(step: .prologue)
-            prologueFlowTracked = true
-        } else {
-            tracker.set(step: .prologue)
         }
         
         WordPressAuthenticator.track(.loginPrologueViewed)

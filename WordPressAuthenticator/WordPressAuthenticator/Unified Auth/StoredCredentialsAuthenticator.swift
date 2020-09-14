@@ -34,6 +34,10 @@ class StoredCredentialsAuthenticator: NSObject {
         return facade
     }()
     
+    // MARK: - Cancellation
+    
+    private let onCancel: (() -> Void)?
+    
     // MARK: - UI
     
     private let picker = StoredCredentialsPicker()
@@ -49,6 +53,12 @@ class StoredCredentialsAuthenticator: NSObject {
     
     private var loginFields: LoginFields?
     
+    // MARK: - Initialization
+    
+    init(onCancel: (() -> Void)? = nil) {
+        self.onCancel = onCancel
+    }
+    
     // MARK: - Picker
     
     /// Shows the UI for picking stored credentials for the user to log into their account.
@@ -60,9 +70,6 @@ class StoredCredentialsAuthenticator: NSObject {
             DDLogError("Can't obtain window for navigation controller")
             return
         }
-        
-        tracker.set(flow: .loginWithiCloudKeychain)
-        tracker.track(step: .start)
         
         picker.show(in: window) { [weak self] result in
             guard let self = self else {
@@ -85,6 +92,8 @@ class StoredCredentialsAuthenticator: NSObject {
     ///         - authorization: The authorization by the OS, containing the credentials picked by the user.
     ///
     private func pickerSuccess(_ authorization: ASAuthorization) {
+        tracker.track(step: .start)
+        
         switch authorization.credential {
         case _ as ASAuthorizationAppleIDCredential:
             // No-op for now, but we can decide to implement AppleID login through this authenticator
@@ -112,8 +121,13 @@ class StoredCredentialsAuthenticator: NSObject {
         switch authError.code {
         case .canceled:
             // The user cancelling the flow is not really an error, so we're not reporting or tracking
-            // this as an error.  We're only tracking this as a regular UI dismissal.
-            tracker.track(click: .dismiss)
+            // this as an error.
+            //
+            // We're not tracking this either, since the Android App doesn't for SmartLock.  The reason is
+            // that it's not trivial to know when the credentials picker UI is shown to the user, so knowing
+            // it's being dismissed is also not trivial.  This was decided during the Unified Login & Signup
+            // project in a conversation between myself (Diego Rey Mendez) and Renan Ferrari.
+            break
         case .failed, .invalidResponse, .notHandled, .unknown:
             tracker.track(failure: authError.localizedDescription)
             DDLogError("ASAuthorizationError: \(authError.localizedDescription)")

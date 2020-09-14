@@ -251,7 +251,7 @@ extension AppleAuthenticator: ASAuthorizationControllerDelegate {
         if let authorizationError = error as? ASAuthorizationError,
             authorizationError.code == .canceled {
             
-            // If the user cancelled the dialogue, we should assume he somehow tapped to dismiss.
+            // If the user cancelled the dialogue, we should assume they somehow tapped to dismiss.
             tracker.track(click: .dismiss)
             return
         }

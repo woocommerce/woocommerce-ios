@@ -327,6 +327,48 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         // Then
         assertEmpty(snapshots)
     }
+
+    func test_snapshot_does_not_emit_a_new_snapshot_when_the_updated_objects_do_not_match_the_predicate() throws {
+        // Given
+        let account = insertAccount(displayName: "Z", username: "Zanza")
+        let excludedAccount = insertAccount(displayName: "Y", username: "Yamato")
+
+        try viewStorage.obtainPermanentIDs(for: [account, excludedAccount])
+
+        let derivedStorage = storageManager.newDerivedStorage()
+
+        let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
+            sortDescriptor: .init(keyPath: \StorageAccount.username, ascending: false),
+            predicate: .init(format: "%K = %@", #keyPath(StorageAccount.displayName), "Z")
+        )
+        let provider = FetchResultSnapshotsProvider(storageManager: storageManager, query: query)
+
+        var snapshots = [FetchResultSnapshot]()
+        // Drop the empty snapshot and the first query result snapshot
+        provider.snapshot.dropFirst(2).sink { snapshot in
+            snapshots.append(snapshot)
+        }.store(in: &self.cancellables)
+
+        try provider.start()
+
+        // When
+        // This update should not emit a new snapshot since the updated object is not part
+        // of the query result because of the `query.predicate`.
+        waitForExpectation { exp in
+            derivedStorage.perform {
+                let excludedAccountInDerived = derivedStorage.loadObject(ofType: StorageAccount.self,
+                                                                         with: excludedAccount.objectID)!
+                excludedAccountInDerived.displayName = "edited displayName"
+
+                derivedStorage.saveIfNeeded()
+
+                exp.fulfill()
+            }
+        }
+
+        // Then
+        assertEmpty(snapshots)
+    }
 }
 
 @available(iOS 13.0, *)

@@ -3,6 +3,7 @@ import CoreData
 import Storage
 
 import CocoaLumberjack
+import KeychainAccess
 import WordPressUI
 import WordPressKit
 import WordPressAuthenticator
@@ -37,6 +38,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ///
     private var storePickerCoordinator: StorePickerCoordinator?
 
+    /// Keychain access for SIWA auth token
+    ///
+    private lazy var keychain = Keychain(service: WooConstants.keychainServiceName)
+
+    private var cancellable: ObservationToken?
 
     // MARK: - AppDelegate Methods
 
@@ -60,6 +66,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupWormholy()
         setupKeyboardStateProvider()
         handleLaunchArguments()
+        if #available(iOS 13.0, *) {
+            observeLoggedInStateForAppleIDObservations()
+        }
 
         // Display the Authentication UI
         displayAuthenticatorIfNeeded()
@@ -128,6 +137,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive.
         // If the application was previously in the background, optionally refresh the user interface.
+
+        // This is done here so the check is done on app launch and app switching.
+        if #available(iOS 13, *) {
+            checkAppleIDCredentialState()
+        }
 
         RequirementsChecker.checkMinimumWooVersionForDefaultStore()
     }
@@ -399,5 +413,92 @@ extension AppDelegate {
     func authenticatorWasDismissed() {
         setupPushNotificationsManagerIfPossible()
         RequirementsChecker.checkMinimumWooVersionForDefaultStore()
+    }
+}
+
+// MARK: - Authentication helpers
+//
+private extension AppDelegate {
+    func isLoggedIn() -> Bool {
+        ServiceLocator.stores.isAuthenticated
+    }
+
+    func logout() {
+        ServiceLocator.stores.deauthenticate()
+        displayAuthenticator()
+    }
+}
+
+// MARK: - Apple Account Handling
+//
+@available(iOS 13.0, *)
+private extension AppDelegate {
+    func observeLoggedInStateForAppleIDObservations() {
+        cancellable = ServiceLocator.stores.isLoggedIn.subscribe { [weak self] isLoggedIn in
+            if isLoggedIn {
+                self?.startObservingAppleIDCredentialRevoked()
+            } else {
+                self?.stopObservingAppleIDCredentialRevoked()
+            }
+        }
+    }
+
+    func checkAppleIDCredentialState() {
+        // If not logged in, remove the Apple User ID from the keychain, if it exists.
+        guard isLoggedIn() else {
+            removeAppleIDFromKeychain()
+            return
+        }
+
+        // Get the Apple User ID from the keychain
+        guard let appleUserID = keychain[WooConstants.keychainAppleIDKey] else {
+            DDLogInfo("checkAppleIDCredentialState: No Apple ID found.")
+            return
+        }
+
+        // Get the Apple User ID state. If not authorized, log out the account.
+        WordPressAuthenticator.shared.getAppleIDCredentialState(for: appleUserID) { [weak self] (state, error) in
+            DDLogDebug("checkAppleIDCredentialState: Apple ID state: \(state.rawValue)")
+
+            switch state {
+            case .revoked:
+                DDLogInfo("checkAppleIDCredentialState: Revoked Apple ID. User signed out.")
+                self?.logOutRevokedAppleAccount()
+            default:
+                // An error exists only for the notFound state.
+                // notFound is a valid state when logging in with an Apple account for the first time.
+                if let error = error {
+                    DDLogDebug("checkAppleIDCredentialState: Apple ID state not found: \(error.localizedDescription)")
+                }
+                break
+            }
+        }
+    }
+
+    func startObservingAppleIDCredentialRevoked() {
+        WordPressAuthenticator.shared.startObservingAppleIDCredentialRevoked { [weak self] in
+            guard let self = self else {
+                return
+            }
+            if self.isLoggedIn() {
+                DDLogInfo("Apple credentialRevokedNotification received. User signed out.")
+                self.logOutRevokedAppleAccount()
+            }
+        }
+    }
+
+    func stopObservingAppleIDCredentialRevoked() {
+        WordPressAuthenticator.shared.stopObservingAppleIDCredentialRevoked()
+    }
+
+    func logOutRevokedAppleAccount() {
+        removeAppleIDFromKeychain()
+        DispatchQueue.main.async { [weak self] in
+            self?.logout()
+        }
+    }
+
+    func removeAppleIDFromKeychain() {
+        keychain[WooConstants.keychainAppleIDKey] = nil
     }
 }

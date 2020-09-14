@@ -129,9 +129,15 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     /// The delgate for `fetchedResultsController`.
     private lazy var hiddenFetchedResultsControllerDelegate = HiddenFetchedResultsControllerDelegate(self)
 
+    private var objectsDidChangeObservationToken: Any?
+
     public init(storageManager: StorageManagerType, query: Query) {
         self.storage = storageManager.viewStorage
         self.query = query
+    }
+
+    deinit {
+        stopObservingObjectsDidChangeNotification()
     }
 
     /// Start fetching and emitting snapshots.
@@ -169,6 +175,8 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     }
 }
 
+// MARK: - NSFetchedResultsControllerDelegate
+
 @available(iOS 13.0, *)
 private extension FetchResultSnapshotsProvider {
     /// Part of `FetchResultSnapshotsProvider` which submits new `FetchResultSnapshot` objects to
@@ -192,5 +200,39 @@ private extension FetchResultSnapshotsProvider {
             let snapshot = snapshot as FetchResultSnapshot
             snapshotsProvider?.snapshotSubject.send(snapshot)
         }
+    }
+}
+
+// MARK: - ObjectsDidChange Notification Handling
+
+@available(iOS 13.0, *)
+private extension FetchResultSnapshotsProvider {
+
+    var notificationCenter: NotificationCenter {
+        NotificationCenter.default
+    }
+
+    func startObservingObjectsDidChangeNotifications() {
+        // Remove token in case this method was called already.
+        stopObservingObjectsDidChangeNotification()
+
+        objectsDidChangeObservationToken =
+            notificationCenter.addObserver(forName: .NSManagedObjectContextObjectsDidChange, object: storage, queue: nil) { [weak self] notification in
+                if let self = self {
+                    self.maybeEmitSnapshotFromObjectsDidChangeNotification(notification)
+                }
+        }
+    }
+
+    func stopObservingObjectsDidChangeNotification() {
+        if let token = objectsDidChangeObservationToken {
+            notificationCenter.removeObserver(token)
+
+            objectsDidChangeObservationToken = nil
+        }
+    }
+
+    func maybeEmitSnapshotFromObjectsDidChangeNotification(_ notification: Notification) {
+
     }
 }

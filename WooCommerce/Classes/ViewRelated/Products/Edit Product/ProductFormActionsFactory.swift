@@ -22,6 +22,8 @@ enum ProductFormEditAction {
     case variations
     // Variation only
     case variationName
+    // Downloadable products only
+    case downloads
     case noPriceWarning
     case status
     // Non-core products only (e.g. subscription products, booking products)
@@ -85,6 +87,7 @@ private extension ProductFormActionsFactory {
         let shouldShowShippingSettingsRow = product.isShippingEnabled()
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
         let shouldShowTagsRow = isEditProductsRelease3Enabled
+        let showDownloadableProduct = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease5) && product.isDownloadable()
 
         let actions: [ProductFormEditAction?] = [
             .priceSettings,
@@ -93,6 +96,7 @@ private extension ProductFormActionsFactory {
             .inventorySettings,
             shouldShowCategoriesRow ? .categories: nil,
             shouldShowTagsRow ? .tags: nil,
+            showDownloadableProduct ? .downloads: nil,
             .briefDescription,
             shouldShowProductTypeRow ? .productType : nil
         ]
@@ -201,6 +205,9 @@ private extension ProductFormActionsFactory {
             return product.product.categories.isNotEmpty
         case .tags:
             return product.product.tags.isNotEmpty
+        // Downloadable (only the core product types for downloadable files has been handled. custom product type would be handled later) products only.
+        case .downloads:
+            return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease5) && product.isDownloadable()
         case .briefDescription:
             return product.shortDescription.isNilOrEmpty == false
         // Affiliate products only.

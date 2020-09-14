@@ -55,6 +55,10 @@ protocol ProductFormDataModel {
     var soldIndividually: Bool? { get }
     // Whether stock status is available for the product.
     func isStockStatusEnabled() -> Bool
+
+    // Product downloads
+    func isDownloadable() -> Bool
+    var downloads: [ProductDownload] { get }
 }
 
 // MARK: Helpers that can be derived from `ProductFormDataModel`

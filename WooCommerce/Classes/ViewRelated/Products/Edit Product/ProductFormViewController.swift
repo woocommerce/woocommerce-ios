@@ -271,6 +271,9 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             case .reviews:
                 ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
                 showReviews()
+            case .downloads:
+                ServiceLocator.analytics.track(.productDetailViewDownloadsTapped)
+                showDownloads()
             case .productType(_, let isEditable):
                 guard isEditable else {
                     return
@@ -1091,6 +1094,24 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     func onEditStatusCompletion(isEnabled: Bool) {
         viewModel.updateStatus(isEnabled)
+    }
+}
+
+// MARK: Action - Edit Product Downloads
+//
+private extension ProductFormViewController {
+    func showDownloads() {
+        guard let product = product as? EditableProductModel, product.isDownloadable()  else {
+            return
+        }
+
+        let downloadFileListViewController = ProductDownloadListViewController(product: product.product) { [weak self] (downloads) in
+            self?.onAddEditDownloadsCompletion(downloads: downloads)
+        }
+        show(downloadFileListViewController, sender: self)
+    }
+
+    func onAddEditDownloadsCompletion(downloads: [ProductDownload]) {
     }
 }
 

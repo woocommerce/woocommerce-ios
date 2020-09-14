@@ -155,6 +155,10 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
         true
     }
 
+    var downloads: [ProductDownload] {
+        productVariation.downloads
+    }
+
     // Visibility logic
 
     func allowsMultipleImages() -> Bool {
@@ -167,6 +171,10 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
 
     func isShippingEnabled() -> Bool {
         productVariation.downloadable == false && productVariation.virtual == false
+    }
+
+    func isDownloadable() -> Bool {
+        productVariation.downloadable
     }
 }
 

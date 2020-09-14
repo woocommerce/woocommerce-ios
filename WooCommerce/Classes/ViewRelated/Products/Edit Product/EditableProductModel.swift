@@ -127,6 +127,10 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
         product.soldIndividually
     }
 
+    var downloads: [ProductDownload] {
+        product.downloads
+    }
+
     func isStockStatusEnabled() -> Bool {
         // Only a variable product's stock status is not editable.
         productType != .variable
@@ -144,6 +148,10 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
 
     func isShippingEnabled() -> Bool {
         product.downloadable == false && product.virtual == false
+    }
+
+    func isDownloadable() -> Bool {
+        product.downloadable
     }
 }
 

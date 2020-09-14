@@ -67,6 +67,7 @@ extension ProductFormSection.SettingsRow: ReusableTableRow {
              .sku,
              .groupedProducts,
              .variations,
+             .downloads,
              .status,
              .noPriceWarning:
             return [ImageAndTitleAndTextTableViewCell.self]
@@ -92,6 +93,7 @@ extension ProductFormSection.SettingsRow: ReusableTableRow {
              .sku,
              .groupedProducts,
              .variations,
+             .downloads,
              .status,
              .noPriceWarning:
             return ImageAndTitleAndTextTableViewCell.self

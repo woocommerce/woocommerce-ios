@@ -288,6 +288,45 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         let lastSnapshot = try XCTUnwrap(snapshots.last)
         XCTAssertEqual(lastSnapshot.itemIdentifiers, firstSnapshot.itemIdentifiers)
     }
+
+    func test_snapshot_does_not_emit_a_new_snapshot_when_differently_typed_objects_are_updated_in_derived_storage() throws {
+        // Given
+        let account = insertAccount(displayName: "Z", username: "Zanza")
+        let orderStatus = insertOrderStatus(name: "accusamus")
+
+        try viewStorage.obtainPermanentIDs(for: [account, orderStatus])
+
+        let derivedStorage = storageManager.newDerivedStorage()
+
+        let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
+            sortDescriptor: .init(keyPath: \StorageAccount.username, ascending: false)
+        )
+        let provider = FetchResultSnapshotsProvider(storageManager: storageManager, query: query)
+
+        var snapshots = [FetchResultSnapshot]()
+        // Drop the empty snapshot and the first query result snapshot
+        provider.snapshot.dropFirst(2).sink { snapshot in
+            snapshots.append(snapshot)
+        }.store(in: &self.cancellables)
+
+        try provider.start()
+
+        // When
+        // This update should not emit a new snapshot since the updated object is not a `StorageAccount`.
+        waitForExpectation { exp in
+            derivedStorage.perform {
+                let orderStatusInDerived = derivedStorage.loadObject(ofType: StorageOrderStatus.self, with: orderStatus.objectID)!
+                orderStatusInDerived.name = "edited orderStatus"
+
+                derivedStorage.saveIfNeeded()
+
+                exp.fulfill()
+            }
+        }
+
+        // Then
+        assertEmpty(snapshots)
+    }
 }
 
 @available(iOS 13.0, *)
@@ -298,5 +337,12 @@ private extension FetchResultSnapshotsProviderTests {
         account.displayName = displayName
         account.username = username
         return account
+    }
+
+    func insertOrderStatus(name: String) -> StorageOrderStatus {
+        let orderStatus = viewStorage.insertNewObject(ofType: StorageOrderStatus.self)
+        orderStatus.name = name
+        orderStatus.slug = name
+        return orderStatus
     }
 }

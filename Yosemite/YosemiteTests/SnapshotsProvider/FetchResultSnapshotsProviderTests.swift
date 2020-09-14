@@ -240,7 +240,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         XCTAssertEqual(secondSnapshot.itemIdentifiers(inSection: "W"), [wakaba.objectID])
     }
 
-    func test_snapshot_emits_a_new_snapshot_when_objects_are_updated() throws {
+    func test_snapshot_emits_a_new_snapshot_when_objects_are_updated_in_derived_storage() throws {
         // Given
         let zanza = insertAccount(displayName: "Z", username: "Zanza")
         let zagato = insertAccount(displayName: "Z", username: "Zagato")
@@ -248,9 +248,10 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
 
         try viewStorage.obtainPermanentIDs(for: [zanza, zagato, yamada])
 
+        let derivedStorage = storageManager.newDerivedStorage()
+
         let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
-            sortDescriptor: .init(keyPath: \StorageAccount.username, ascending: false),
-            sectionNameKeyPath: #keyPath(StorageAccount.displayName)
+            sortDescriptor: .init(keyPath: \StorageAccount.username, ascending: false)
         )
         let provider = FetchResultSnapshotsProvider(storageManager: storageManager, query: query)
 
@@ -263,21 +264,29 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
 
         // When
         // This update should emit a new snapshot
-        zanza.username = "Zanza Lockman"
+        waitForExpectation { exp in
+            derivedStorage.perform {
+                let zanzaInDerived = derivedStorage.loadObject(ofType: StorageAccount.self, with: zanza.objectID)!
+                zanzaInDerived.username = "Zanza Lockman"
 
-        viewStorage.saveIfNeeded()
+                derivedStorage.saveIfNeeded()
+
+                exp.fulfill()
+            }
+        }
 
         // Then
-        XCTAssertEqual(snapshots.count, 2)
+        XCTAssertEqual(snapshots.count, 3)
 
         let firstSnapshot = try XCTUnwrap(snapshots.first)
-        XCTAssertEqual(firstSnapshot.sectionIdentifiers, ["Z", "Y"])
         XCTAssertEqual(firstSnapshot.itemIdentifiers, [zanza.objectID, zagato.objectID, yamada.objectID])
 
-        // The second snapshot should be equal to the first since we only received an update.
-        let secondSnapshot = try XCTUnwrap(snapshots.last)
-        XCTAssertEqual(secondSnapshot.sectionIdentifiers, firstSnapshot.sectionIdentifiers)
-        XCTAssertEqual(secondSnapshot.itemIdentifiers, firstSnapshot.itemIdentifiers)
+        // We're going to ignore the second snapshot because that's the snapshot from FRC which
+        // does not _reload_ the updated items.
+
+        // The last snapshot should be equal to the first since we only received an update.
+        let lastSnapshot = try XCTUnwrap(snapshots.last)
+        XCTAssertEqual(lastSnapshot.itemIdentifiers, firstSnapshot.itemIdentifiers)
     }
 }
 

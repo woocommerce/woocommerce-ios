@@ -11,7 +11,7 @@ final class LoginMagicLinkViewController: LoginViewController {
     private var rows = [Row]()
     private var errorMessage: String?
     private var shouldChangeVoiceOverFocus: Bool = false
-
+    
     override var sourceTag: WordPressSupportSourceTag {
         get {
             return .loginMagicLink
@@ -20,8 +20,9 @@ final class LoginMagicLinkViewController: LoginViewController {
 
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
-        // TODO: - Tracks.
-        // WordPressAuthenticator.track(.loginMagicLinkOpenEmailClientViewed)
+        tracker.track(click: .openEmailClient)
+        tracker.track(step: .emailOpened)
+        
         let linkMailPresenter = LinkMailPresenter(emailAddress: loginFields.username)
         let appSelector = AppSelector(sourceView: sender)
         linkMailPresenter.presentEmailClients(on: self, appSelector: appSelector)
@@ -41,6 +42,26 @@ final class LoginMagicLinkViewController: LoginViewController {
         localizePrimaryButton()
         registerTableViewCells()
         loadRows()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if isMovingToParent {
+            tracker.pushState()
+            tracker.set(flow: .loginWithMagicLink)
+            tracker.track(step: .start)
+        } else {
+            tracker.set(step: .start)
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(true)
+        
+        if isBeingDismissedInAnyWay {
+            tracker.popState()
+        }
     }
 
     // MARK: - Overrides

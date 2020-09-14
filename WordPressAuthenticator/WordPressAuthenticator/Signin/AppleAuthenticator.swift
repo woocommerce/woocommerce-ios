@@ -246,10 +246,13 @@ extension AppleAuthenticator: ASAuthorizationControllerDelegate {
     }
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
-
+        
         // Don't show error if user cancelled authentication.
         if let authorizationError = error as? ASAuthorizationError,
-        authorizationError.code == .canceled {
+            authorizationError.code == .canceled {
+            
+            // If the user cancelled the dialogue, we should assume they somehow tapped to dismiss.
+            tracker.track(click: .dismiss)
             return
         }
         

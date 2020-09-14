@@ -26,6 +26,8 @@ class NUXLinkAuthViewController: LoginViewController {
 
         let wpcom = WordPressComCredentials(authToken: token, isJetpackLogin: isJetpackLogin, multifactor: false, siteURL: loginFields.siteAddress)
         let credentials = AuthenticatorCredentials(wpcom: wpcom)
+        
+        tracker.track(step: .success)
         syncWPComAndPresentEpilogue(credentials: credentials)
 
         // Count this as success since we're authed. Even if there is a glitch

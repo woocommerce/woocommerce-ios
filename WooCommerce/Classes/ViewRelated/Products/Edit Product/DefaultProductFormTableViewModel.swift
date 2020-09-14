@@ -530,8 +530,8 @@ private extension DefaultProductFormTableViewModel {
 
         // Downloads
         static let downloadsTitle =
-            NSLocalizedString("File downloads",
-                              comment: "Title of the File Downloads row on Product main screen for a downloadable product")
+            NSLocalizedString("Downloadable files",
+                              comment: "Title of the Downloadable Files row on Product main screen for a downloadable product")
 
         static let emptyDownloads = NSLocalizedString("No files yet",
                                                       comment: "Placeholder for empty product downloads")

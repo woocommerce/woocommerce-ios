@@ -253,7 +253,7 @@ private extension FetchResultSnapshotsProvider {
     /// object.dateCreated = Date()
     ///
     /// // A new snapshot will be emitted here
-    /// derviedStorage.saveIfNeeded()
+    /// derivedStorage.saveIfNeeded()
     /// ```
     ///
     /// This new snapshot will have the same `itemIdentifiers` (`NSManagedObjectID`) as expected.

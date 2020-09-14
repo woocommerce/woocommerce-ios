@@ -1,3 +1,4 @@
+import Combine
 import Yosemite
 import class AutomatticTracks.CrashLogging
 import protocol Storage.StorageManagerType
@@ -49,6 +50,35 @@ final class OrderListViewModel {
     ///
     private var isAppActive: Bool = true
 
+    private lazy var snapshotsProvider: FetchResultSnapshotsProvider<StorageOrder> = {
+        let predicate: NSPredicate = {
+            let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
+            let excludeNonMatchingStatus = statusFilter.map { NSPredicate(format: "statusKey = %@", $0.slug) }
+
+            var predicates = [ excludeSearchCache, excludeNonMatchingStatus ].compactMap { $0 }
+            if !includesFutureOrders, let nextMidnight = Date().nextMidnight() {
+                // Exclude orders on and after midnight of today's date
+                let dateSubPredicate = NSPredicate(format: "dateCreated < %@", nextMidnight as NSDate)
+                predicates.append(dateSubPredicate)
+            }
+
+            return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        }()
+
+        let query = FetchResultSnapshotsProvider<StorageOrder>.Query(
+            sortDescriptor: NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false),
+            predicate: predicate,
+            sectionNameKeyPath: "\(#selector(StorageOrder.normalizedAgeAsString))"
+        )
+
+        return .init(storageManager: self.storageManager, query: query)
+    }()
+
+    /// Emits snapshots of orders that should be displayed in the table view.
+    var snapshot: AnyPublisher<FetchResultSnapshot, Never> {
+        snapshotsProvider.snapshot
+    }
+
     init(storageManager: StorageManagerType = ServiceLocator.storageManager,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          notificationCenter: NotificationCenter = .default,
@@ -71,12 +101,23 @@ final class OrderListViewModel {
     /// And only when the corresponding view was loaded.
     ///
     func activate() {
+        startReceivingSnapshots()
+
         notificationCenter.addObserver(self, selector: #selector(handleAppDeactivation),
                                        name: UIApplication.willResignActiveNotification, object: nil)
         notificationCenter.addObserver(self, selector: #selector(handleAppActivation),
                                        name: UIApplication.didBecomeActiveNotification, object: nil)
 
         observeForegroundRemoteNotifications()
+    }
+
+    /// Starts the snapshotsProvider, logging any errors.
+    private func startReceivingSnapshots() {
+        do {
+            try snapshotsProvider.start()
+        } catch {
+            CrashLogging.logError(error)
+        }
     }
 
     @objc private func handleAppDeactivation() {
@@ -111,6 +152,7 @@ final class OrderListViewModel {
 }
 
 // MARK: - Remote Notifications Observation
+
 @available(iOS 13.0, *)
 private extension OrderListViewModel {
     /// Watch for "new order" Remote Notifications that are received while the app is in the
@@ -130,5 +172,24 @@ private extension OrderListViewModel {
 
     func stopObservingForegroundRemoteNotifications() {
         cancellable?.cancel()
+    }
+}
+
+// MARK: - TableView Support
+
+@available(iOS 13.0, *)
+extension OrderListViewModel {
+    /// Creates an `OrderDetailsViewModel` for the `Order` pointed to by `objectID`.
+    func detailsViewModel(withID objectID: FetchResultSnapshotObjectID) -> OrderDetailsViewModel? {
+        guard let order = snapshotsProvider.object(withID: objectID) else {
+            return nil
+        }
+
+        return OrderDetailsViewModel(order: order)
+    }
+
+    /// Returns the corresponding section title for the given identifier.
+    func sectionTitleFor(sectionIdentifier: String) -> String? {
+        Age(rawValue: sectionIdentifier)?.description
     }
 }

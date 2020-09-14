@@ -137,7 +137,7 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     }
 
     deinit {
-        stopObservingObjectsDidChangeNotification()
+        stopObservingObjectsDidChangeNotifications()
     }
 
     /// Start fetching and emitting snapshots.
@@ -216,7 +216,7 @@ private extension FetchResultSnapshotsProvider {
 
     func startObservingObjectsDidChangeNotifications() {
         // Remove token in case this method was called already.
-        stopObservingObjectsDidChangeNotification()
+        stopObservingObjectsDidChangeNotifications()
 
         objectsDidChangeObservationToken =
             notificationCenter.addObserver(forName: .NSManagedObjectContextObjectsDidChange, object: storage, queue: nil) { [weak self] notification in
@@ -226,7 +226,7 @@ private extension FetchResultSnapshotsProvider {
         }
     }
 
-    func stopObservingObjectsDidChangeNotification() {
+    func stopObservingObjectsDidChangeNotifications() {
         if let token = objectsDidChangeObservationToken {
             notificationCenter.removeObserver(token)
 

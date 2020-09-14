@@ -210,10 +210,15 @@ private extension FetchResultSnapshotsProvider {
 @available(iOS 13.0, *)
 private extension FetchResultSnapshotsProvider {
 
+    /// The NotificationCenter to use for observing notifications.
     var notificationCenter: NotificationCenter {
         NotificationCenter.default
     }
 
+    /// Start observing `NSManagedObjectContextObjectsDidChange` notifications so that snapshots
+    /// for object updates will be emitted.
+    ///
+    /// - SeeAlso: maybeEmitSnapshotFromObjectsDidChangeNotification
     func startObservingObjectsDidChangeNotifications() {
         // Remove token in case this method was called already.
         stopObservingObjectsDidChangeNotifications()
@@ -226,6 +231,9 @@ private extension FetchResultSnapshotsProvider {
         }
     }
 
+    /// Stop observing `NSManagedObjectContextObjectsDidChange` notifications
+    ///
+    /// - SeeAlso: startObservingObjectsDidChangeNotifications
     func stopObservingObjectsDidChangeNotifications() {
         if let token = objectsDidChangeObservationToken {
             notificationCenter.removeObserver(token)
@@ -234,7 +242,85 @@ private extension FetchResultSnapshotsProvider {
         }
     }
 
+    /// Emit a snapshot with _reloaded_ items if the updated objects exist in the current
+    /// snapshot.
+    ///
+    /// Normally, the `NSFetchedResultsController` will emit new snapshots if an item is
+    /// updated:
+    ///
+    /// ```
+    /// let object = derivedStorage.loadObject(...)
+    /// object.dateCreated = Date()
+    ///
+    /// // A new snapshot will be emitted here
+    /// derviedStorage.saveIfNeeded()
+    /// ```
+    ///
+    /// This new snapshot will have the same `itemIdentifiers` (`NSManagedObjectID`) as expected.
+    /// However, this will not cause the `UITableViewDiffableDataSource` to _reload_ the
+    /// appropriate cells. Because the `itemIdentifiers` are the same,
+    /// `UITableViewDiffableDataSource` cannot tell if the underlying data (e.g. `dateCreated`)
+    /// really changed.
+    ///
+    /// This behavior becomes a problem in this scenario:
+    ///
+    /// 1. The user opens the Orders tab. All the listed orders are up to date.
+    /// 2. The user leaves the app.
+    /// 3. An order is changed on the web.
+    /// 4. The user opens the app, causing a synchronization in the background.
+    /// 5. After the sync, the updated order is received. However, `UITableViewDiffableDataSource`
+    ///    did not reload the cell. The user will be viewing stale data.
+    ///
+    /// To circumvent this, we will create a new snapshot and call
+    /// `NSDiffableDataSourceSnapshot.reloadItems` with the appropriate `NSManagedObjectIDs` of
+    /// the updated objects. This will prompt `UITableViewDiffableDataSource` to reload the cells.
+    ///
+    /// This behavior should probably be handled by `NSFetchedResultsController` itself but
+    /// it is not. ¯\_(ツ)_/¯
+    ///
+    /// There is a somewhat similar discussion about this here: https://developer.apple.com/forums/thread/120320.
+    ///
     func maybeEmitSnapshotFromObjectsDidChangeNotification(_ notification: Notification) {
+        let didChangeNotification = ObjectsDidChangeNotification(notification)
 
+        /// Exclude object types that are not represented by `self`.
+        let objectIDsWithMatchingTypes = didChangeNotification.updatedObjects.filter {
+            $0 is MutableType
+        }.map(\.objectID)
+
+        guard !objectIDsWithMatchingTypes.isEmpty else {
+            return
+        }
+
+        let currentSnapshot = snapshotSubject.value
+        let currentObjectIDs = Set<FetchResultSnapshotObjectID>(currentSnapshot.itemIdentifiers)
+
+        // Include only `ObjectIDs` that exist in the `currentSnapshot`.
+        let objectIDsToRefresh = currentObjectIDs.intersection(objectIDsWithMatchingTypes)
+
+        guard !objectIDsToRefresh.isEmpty else {
+            return
+        }
+
+        // Copy the current snapshot and _reload_ the `ObjectIDs` of the updated objects.
+        var newSnapshot = currentSnapshot
+        newSnapshot.reloadItems(Array(objectIDsToRefresh))
+
+        snapshotSubject.send(newSnapshot)
+    }
+}
+
+/// A safer representation of the `Notification` emitted by `NotificationCenter` during
+/// `NSManagedObjectContextObjectsDidChange`.
+private struct ObjectsDidChangeNotification {
+    private let notification: Notification
+
+    init(_ notification: Notification) {
+        assert(notification.name == .NSManagedObjectContextObjectsDidChange)
+        self.notification = notification
+    }
+
+    var updatedObjects: Set<NSManagedObject> {
+        (notification.userInfo?[NSUpdatedObjectsKey] as? Set<NSManagedObject>) ?? Set()
     }
 }

@@ -239,6 +239,46 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         XCTAssertEqual(secondSnapshot.itemIdentifiers(inSection: "X"), [xiong.objectID])
         XCTAssertEqual(secondSnapshot.itemIdentifiers(inSection: "W"), [wakaba.objectID])
     }
+
+    func test_snapshot_emits_a_new_snapshot_when_objects_are_updated() throws {
+        // Given
+        let zanza = insertAccount(displayName: "Z", username: "Zanza")
+        let zagato = insertAccount(displayName: "Z", username: "Zagato")
+        let yamada = insertAccount(displayName: "Y", username: "Yamada")
+
+        try viewStorage.obtainPermanentIDs(for: [zanza, zagato, yamada])
+
+        let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
+            sortDescriptor: .init(keyPath: \StorageAccount.username, ascending: false),
+            sectionNameKeyPath: #keyPath(StorageAccount.displayName)
+        )
+        let provider = FetchResultSnapshotsProvider(storageManager: storageManager, query: query)
+
+        var snapshots = [FetchResultSnapshot]()
+        provider.snapshot.dropFirst().sink { snapshot in
+            snapshots.append(snapshot)
+        }.store(in: &self.cancellables)
+
+        try provider.start()
+
+        // When
+        // This update should emit a new snapshot
+        zanza.username = "Zanza Lockman"
+
+        viewStorage.saveIfNeeded()
+
+        // Then
+        XCTAssertEqual(snapshots.count, 2)
+
+        let firstSnapshot = try XCTUnwrap(snapshots.first)
+        XCTAssertEqual(firstSnapshot.sectionIdentifiers, ["Z", "Y"])
+        XCTAssertEqual(firstSnapshot.itemIdentifiers, [zanza.objectID, zagato.objectID, yamada.objectID])
+
+        // The second snapshot should be equal to the first since we only received an update.
+        let secondSnapshot = try XCTUnwrap(snapshots.last)
+        XCTAssertEqual(secondSnapshot.sectionIdentifiers, firstSnapshot.sectionIdentifiers)
+        XCTAssertEqual(secondSnapshot.itemIdentifiers, firstSnapshot.itemIdentifiers)
+    }
 }
 
 @available(iOS 13.0, *)

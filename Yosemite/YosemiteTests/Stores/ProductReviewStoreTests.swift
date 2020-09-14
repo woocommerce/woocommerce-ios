@@ -144,7 +144,7 @@ final class ProductReviewStoreTests: XCTestCase {
                                                                        pageNumber: defaultPageNumber,
                                                                        pageSize: defaultPageSize) { error in
 
-        // Then
+                // Then
                 XCTAssertNil(error)
 
                 // The previously upserted Product Reviews should be deleted.
@@ -186,7 +186,7 @@ final class ProductReviewStoreTests: XCTestCase {
                                                                        pageNumber: 3,
                                                                        pageSize: defaultPageSize) { error in
 
-         // Then
+                // Then
                 XCTAssertNil(error)
 
                 // The previously upserted Product Reviews should stay in storage.
@@ -228,7 +228,7 @@ final class ProductReviewStoreTests: XCTestCase {
             let action = ProductReviewAction.synchronizeProductReviews(siteID: sampleSiteID,
                                                                        pageNumber: defaultPageNumber,
                                                                        pageSize: defaultPageSize) { error in
-        // Then
+                // Then
                 XCTAssertNotNil(error)
 
                 // The previously upserted Product Reviews should stay in storage.

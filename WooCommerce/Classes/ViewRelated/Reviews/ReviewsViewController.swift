@@ -366,7 +366,6 @@ private extension ReviewsViewController {
     @objc func defaultSiteWasUpdated() {
         reloadResultsController()
         syncingCoordinator.resynchronize()
-        tableView.reloadData()
     }
 
     /// Application became Active Again (while the Notes Tab was onscreen)

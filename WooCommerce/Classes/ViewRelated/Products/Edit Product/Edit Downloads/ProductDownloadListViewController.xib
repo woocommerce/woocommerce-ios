@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProductDownloadListViewController" customModule="WooCommerce" customModuleProvider="target">
+            <connections>
+                <outlet property="addButton" destination="2OD-sY-Udd" id="Lih-gE-Bab"/>
+                <outlet property="addButtonSeparator" destination="McO-GX-MFA" id="kbj-DM-QXI"/>
+                <outlet property="tableView" destination="iS0-0M-H91" id="ora-JP-O8R"/>
+                <outlet property="view" destination="b7U-MR-tb4" id="8EF-cm-Byy"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="b7U-MR-tb4">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="iS0-0M-H91">
+                    <rect key="frame" x="0.0" y="106" width="414" height="756"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                </tableView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="44b-uH-OdI" userLabel="Top Container View">
+                    <rect key="frame" x="0.0" y="44" width="414" height="62"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2OD-sY-Udd">
+                            <rect key="frame" x="16" y="16" width="382" height="30"/>
+                            <state key="normal" title="Button"/>
+                        </button>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="McO-GX-MFA">
+                            <rect key="frame" x="0.0" y="61.5" width="414" height="0.5"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="0.5" id="ATp-rX-l8j"/>
+                            </constraints>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                    <constraints>
+                        <constraint firstItem="2OD-sY-Udd" firstAttribute="centerX" secondItem="44b-uH-OdI" secondAttribute="centerX" id="59r-Qi-aCb"/>
+                        <constraint firstItem="2OD-sY-Udd" firstAttribute="top" secondItem="44b-uH-OdI" secondAttribute="top" constant="16" id="8fS-eL-jne"/>
+                        <constraint firstItem="2OD-sY-Udd" firstAttribute="centerY" secondItem="44b-uH-OdI" secondAttribute="centerY" id="HZ2-02-C8N"/>
+                        <constraint firstAttribute="bottom" secondItem="McO-GX-MFA" secondAttribute="bottom" id="MFE-CG-ISI"/>
+                        <constraint firstItem="2OD-sY-Udd" firstAttribute="leading" secondItem="44b-uH-OdI" secondAttribute="leading" constant="16" id="jOc-8X-MK9"/>
+                        <constraint firstItem="McO-GX-MFA" firstAttribute="leading" secondItem="44b-uH-OdI" secondAttribute="leading" id="qix-1i-6ac"/>
+                        <constraint firstAttribute="trailing" secondItem="McO-GX-MFA" secondAttribute="trailing" id="vyD-I1-Sk2"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="iS0-0M-H91" firstAttribute="bottom" secondItem="dwF-6Q-Kwo" secondAttribute="bottom" id="H0b-Ak-cWG"/>
+                <constraint firstItem="iS0-0M-H91" firstAttribute="top" secondItem="44b-uH-OdI" secondAttribute="bottom" id="O89-mh-1Zc"/>
+                <constraint firstItem="44b-uH-OdI" firstAttribute="trailing" secondItem="dwF-6Q-Kwo" secondAttribute="trailing" id="Z9S-6c-YG7"/>
+                <constraint firstItem="iS0-0M-H91" firstAttribute="leading" secondItem="dwF-6Q-Kwo" secondAttribute="leading" id="cbg-no-4SQ"/>
+                <constraint firstItem="44b-uH-OdI" firstAttribute="leading" secondItem="dwF-6Q-Kwo" secondAttribute="leading" id="dsw-id-h2L"/>
+                <constraint firstItem="dwF-6Q-Kwo" firstAttribute="trailing" secondItem="iS0-0M-H91" secondAttribute="trailing" id="ncI-n8-jAa"/>
+                <constraint firstItem="44b-uH-OdI" firstAttribute="top" secondItem="dwF-6Q-Kwo" secondAttribute="top" id="nj2-Nt-ReO"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="dwF-6Q-Kwo"/>
+            <point key="canvasLocation" x="137.68115942028987" y="128.57142857142856"/>
+        </view>
+    </objects>
+</document>

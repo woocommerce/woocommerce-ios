@@ -294,8 +294,6 @@ private extension ReviewsViewController {
 
         tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
-
-        transitionToSyncingState(pageNumber: SyncingCoordinator.Defaults.pageFirstIndex)
     }
 }
 

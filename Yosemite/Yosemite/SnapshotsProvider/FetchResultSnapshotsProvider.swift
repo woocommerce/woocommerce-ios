@@ -143,6 +143,8 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     /// Start fetching and emitting snapshots.
     public func start() throws {
         try fetchedResultsController.performFetch()
+
+        startObservingObjectsDidChangeNotifications()
     }
 
     /// Retrieve the immutable type pointed to by `objectID`.

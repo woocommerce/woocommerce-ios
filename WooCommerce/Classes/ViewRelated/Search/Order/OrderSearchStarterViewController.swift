@@ -107,7 +107,7 @@ extension OrderSearchStarterViewController: UITableViewDelegate {
             return message
         }()
         let ordersViewController = OrdersViewController(
-            title: cellViewModel.name ?? NSLocalizedString("Orders", comment: "Default title for Orders List shown when tapping on the Search filter."),
+            title: cellViewModel.name ?? Localization.defaultOrderListTitle,
             viewModel: OrdersViewModel(statusFilter: cellViewModel.orderStatus),
             emptyStateConfig: .simple(message: emptyStateMessage, image: .emptySearchResultsImage)
         )
@@ -123,6 +123,14 @@ extension OrderSearchStarterViewController: UITableViewDelegate {
 extension OrderSearchStarterViewController: KeyboardScrollable {
     var scrollable: UIScrollView {
         tableView
+    }
+}
+
+// MARK: - Other Private Helpers
+
+private extension OrderSearchStarterViewController {
+    enum Localization {
+        static let defaultOrderListTitle = NSLocalizedString("Orders", comment: "Default title for Orders List shown when tapping on the Search filter.")
     }
 }
 

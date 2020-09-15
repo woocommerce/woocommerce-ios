@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a ProductDownload entity.
 ///
-public struct ProductDownload: Decodable {
+public class ProductDownload: NSObject, Codable {
     public let downloadID: String
     public let name: String?
     public let fileURL: String?
@@ -20,7 +20,7 @@ public struct ProductDownload: Decodable {
 
     /// Public initializer for ProductDownload
     ///
-    public init(from decoder: Decoder) throws {
+    public required convenience init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let downloadID = try container.decode(String.self, forKey: .downloadID)
@@ -30,6 +30,14 @@ public struct ProductDownload: Decodable {
         self.init(downloadID: downloadID,
                   name: name,
                   fileURL: fileURL)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(downloadID, forKey: .downloadID)
+        try container.encode(name, forKey: .name)
+        try container.encode(fileURL, forKey: .fileURL)
     }
 }
 

@@ -1,4 +1,5 @@
 import UIKit
+import CoreServices
 import Yosemite
 import WordPressUI
 
@@ -8,7 +9,7 @@ final class ProductDownloadListViewController: UIViewController {
     @IBOutlet private weak var addButton: UIButton!
     @IBOutlet private weak var addButtonSeparator: UIView!
 
-    private let viewModel: [ProductDownload]
+    var viewModel = [ProductDownload]()
 
     // Completion callback
     //
@@ -59,32 +60,52 @@ private extension ProductDownloadListViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.removeLastCellSeparator()
+        tableView.dragInteractionEnabled = true
+        tableView.dragDelegate = self
+        tableView.dropDelegate = self
+        tableView.reloadData()
     }
 
     func configureNavigationBar() {
         configureTitle()
-        configureRightButton()
+        configureRightButtons()
     }
 
     func configureTitle() {
-        title = NSLocalizedString("Downloadable Files", comment: "Edit product downloadable files screen - Screen title")
+        title = NSLocalizedString("Downloadable Files",
+                                  comment: "Edit product downloadable files screen - Screen title")
     }
 
-    func configureRightButton() {
-        let applyButtonTitle = NSLocalizedString("Done",
+    func configureRightButtons() {
+        var rightBarButtonItems = [UIBarButtonItem]()
+
+        let moreBarButton: UIBarButtonItem = {
+            let button = UIBarButtonItem(image: .moreImage,
+                                         style: .plain,
+                                         target: self,
+                                         action: #selector(moreButtonTapped))
+            button.accessibilityTraits = .button
+            button.accessibilityLabel = NSLocalizedString("Update products' downloadable files",
+                                                          comment: "The action to update products' downloadable files settings")
+            return button
+        }()
+        rightBarButtonItems.append(moreBarButton)
+
+        let doneButtonTitle = NSLocalizedString("Done",
                                                comment: "Edit product downloadable files screen - button title to add downloadable files selection")
-        let rightBarButton = UIBarButtonItem(title: applyButtonTitle,
+        let doneBarButton = UIBarButtonItem(title: doneButtonTitle,
                                              style: .done,
                                              target: self,
                                              action: #selector(doneButtonTapped))
-        navigationItem.setRightBarButton(rightBarButton, animated: false)
+        rightBarButtonItems.append(doneBarButton)
+
+        navigationItem.rightBarButtonItems = rightBarButtonItems
     }
 }
 
 // MARK: - Navigation actions handling
 //
 extension ProductDownloadListViewController {
-
     override func shouldPopOnBackButton() -> Bool {
         return true
     }
@@ -94,55 +115,21 @@ extension ProductDownloadListViewController {
     }
 
     @objc private func doneButtonTapped() {
-        ServiceLocator.analytics.track(.productDownloadableFileSettingsDoneButtonTapped)
+        ServiceLocator.analytics.track(.productDownloadableFilesDoneButtonTapped)
         onCompletion(viewModel)
     }
 
+    @objc private func moreButtonTapped() {
+        ServiceLocator.analytics.track(.productDownloadableFilesMoreButtonTapped)
+    }
+
     @objc private func addButtonTapped() {
-        ServiceLocator.analytics.track(.productDownloadableFileSettingsAddButtonTapped)
+        ServiceLocator.analytics.track(.productDownloadableFilesAddButtonTapped)
     }
 
     private func presentBackNavigationActionSheet() {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
             self?.navigationController?.popViewController(animated: true)
         })
-    }
-}
-
-// MARK: - UITableViewConformace conformance
-//
-extension ProductDownloadListViewController: UITableViewDataSource, UITableViewDelegate {
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.count
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ImageAndTitleAndTextTableViewCell.reuseIdentifier,
-                                                       for: indexPath) as? ImageAndTitleAndTextTableViewCell else {
-            fatalError()
-        }
-
-        if let fileViewModel = viewModel[safe: indexPath.row] {
-            configureCell(cell: cell, model: fileViewModel)
-        }
-        return cell
-    }
-
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    }
-}
-
-// MARK: - UITableViewCell Setup
-//
-extension ProductDownloadListViewController {
-    func configureCell(cell: ImageAndTitleAndTextTableViewCell, model: ProductDownload) {
-        let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: model.name,
-                                                                    text: model.fileURL,
-                                                                    image: UIImage.menuImage,
-                                                                    imageTintColor: .gray(.shade20),
-                                                                    numberOfLinesForText: 1,
-                                                                    isActionable: true)
-        cell.updateUI(viewModel: viewModel)
     }
 }

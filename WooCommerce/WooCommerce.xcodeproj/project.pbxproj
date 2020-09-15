@@ -515,6 +515,11 @@
 		74F9E9CE214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F9E9CC214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift */; };
 		77E53EB8250E6A4E003D385F /* ProductDownloadListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77E53EB6250E6A4E003D385F /* ProductDownloadListViewController.swift */; };
 		77E53EB9250E6A4E003D385F /* ProductDownloadListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 77E53EB7250E6A4E003D385F /* ProductDownloadListViewController.xib */; };
+		77E53EBD2510089D003D385F /* ProductDownload+Drag&Droppable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77E53EBC2510089D003D385F /* ProductDownload+Drag&Droppable.swift */; };
+		77E53EBF2510C153003D385F /* ProductDownloadListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77E53EBE2510C153003D385F /* ProductDownloadListViewModel.swift */; };
+		77E53EC12510C16A003D385F /* ProductDownloadListViewController+DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77E53EC02510C16A003D385F /* ProductDownloadListViewController+DataSource.swift */; };
+		77E53EC32510C17B003D385F /* ProductDownloadListViewController+Draggable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77E53EC22510C17B003D385F /* ProductDownloadListViewController+Draggable.swift */; };
+		77E53EC52510C193003D385F /* ProductDownloadListViewController+Droppable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77E53EC42510C193003D385F /* ProductDownloadListViewController+Droppable.swift */; };
 		86DBBB0BDEA3488E2BEBB314 /* Pods_WooCommerce.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */; };
 		8CD41D4A21F8A7E300CF3C2B /* RELEASE-NOTES.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8CD41D4921F8A7E300CF3C2B /* RELEASE-NOTES.txt */; };
 		933A27372222354600C2143A /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A27362222354600C2143A /* Logging.swift */; };
@@ -1474,6 +1479,11 @@
 		74F9E9CC214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoPeriodDataTableViewCell.swift; sourceTree = "<group>"; };
 		77E53EB6250E6A4E003D385F /* ProductDownloadListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDownloadListViewController.swift; sourceTree = "<group>"; };
 		77E53EB7250E6A4E003D385F /* ProductDownloadListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductDownloadListViewController.xib; sourceTree = "<group>"; };
+		77E53EBC2510089D003D385F /* ProductDownload+Drag&Droppable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductDownload+Drag&Droppable.swift"; sourceTree = "<group>"; };
+		77E53EBE2510C153003D385F /* ProductDownloadListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDownloadListViewModel.swift; sourceTree = "<group>"; };
+		77E53EC02510C16A003D385F /* ProductDownloadListViewController+DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductDownloadListViewController+DataSource.swift"; sourceTree = "<group>"; };
+		77E53EC22510C17B003D385F /* ProductDownloadListViewController+Draggable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductDownloadListViewController+Draggable.swift"; sourceTree = "<group>"; };
+		77E53EC42510C193003D385F /* ProductDownloadListViewController+Droppable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductDownloadListViewController+Droppable.swift"; sourceTree = "<group>"; };
 		8A659E65308A3D9DD79A95F9 /* Pods-WooCommerceTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.release.xcconfig"; sourceTree = "<group>"; };
 		8CA4F6DD220B257000A47B5D /* WooCommerce.debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = WooCommerce.debug.xcconfig; path = ../config/WooCommerce.debug.xcconfig; sourceTree = "<group>"; };
 		8CA4F6DE220B257000A47B5D /* WooCommerce.release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = WooCommerce.release.xcconfig; path = ../config/WooCommerce.release.xcconfig; sourceTree = "<group>"; };
@@ -3203,10 +3213,23 @@
 		77E53EB5250E6972003D385F /* Edit Downloads */ = {
 			isa = PBXGroup;
 			children = (
-				77E53EB6250E6A4E003D385F /* ProductDownloadListViewController.swift */,
-				77E53EB7250E6A4E003D385F /* ProductDownloadListViewController.xib */,
+				77E53EC62510C3F4003D385F /* Download List */,
 			);
 			path = "Edit Downloads";
+			sourceTree = "<group>";
+		};
+		77E53EC62510C3F4003D385F /* Download List */ = {
+			isa = PBXGroup;
+			children = (
+				77E53EB6250E6A4E003D385F /* ProductDownloadListViewController.swift */,
+				77E53EB7250E6A4E003D385F /* ProductDownloadListViewController.xib */,
+				77E53EBE2510C153003D385F /* ProductDownloadListViewModel.swift */,
+				77E53EBC2510089D003D385F /* ProductDownload+Drag&Droppable.swift */,
+				77E53EC02510C16A003D385F /* ProductDownloadListViewController+DataSource.swift */,
+				77E53EC22510C17B003D385F /* ProductDownloadListViewController+Draggable.swift */,
+				77E53EC42510C193003D385F /* ProductDownloadListViewController+Droppable.swift */,
+			);
+			path = "Download List";
 			sourceTree = "<group>";
 		};
 		88A44ABE866401E6DB03AC60 /* Frameworks */ = {
@@ -5209,6 +5232,7 @@
 				D8CD710F237A49DB007148B9 /* UIColor+SemanticColors.swift in Sources */,
 				0225C42C2477D0D500C5B4F0 /* ProductFormViewModel.swift in Sources */,
 				020F41E523163C0100776C4D /* TopBannerViewModel.swift in Sources */,
+				77E53EBD2510089D003D385F /* ProductDownload+Drag&Droppable.swift in Sources */,
 				B541B2172189EED4008FE7C1 /* NSMutableAttributedString+Helpers.swift in Sources */,
 				B586906621A5F4B1001F1EFC /* UINavigationController+Woo.swift in Sources */,
 				45FBDF3A238D3F8B00127F77 /* ExtendedAddProductImageCollectionViewCell.swift in Sources */,
@@ -5258,6 +5282,7 @@
 				02A275BA23FE50AA005C560F /* ProductUIImageLoader.swift in Sources */,
 				02305353237454C700487A64 /* AztecInsertMoreFormatBarCommand.swift in Sources */,
 				B5D6DC54214802740003E48A /* SyncCoordinator.swift in Sources */,
+				77E53EC12510C16A003D385F /* ProductDownloadListViewController+DataSource.swift in Sources */,
 				B57C5C9421B80E4700FF82B2 /* Data+Woo.swift in Sources */,
 				CE22E3FB21714776005A6BEF /* TopLeftImageTableViewCell.swift in Sources */,
 				B554E17B2152F27200F31188 /* UILabel+Appearance.swift in Sources */,
@@ -5385,6 +5410,7 @@
 				B554E1792152F20000F31188 /* UINavigationBar+Appearance.swift in Sources */,
 				57EBC92024EEE61800C1D45B /* WooAnalyticsEvent.swift in Sources */,
 				B55401692170D5E10067DC90 /* ChartPlaceholderView.swift in Sources */,
+				77E53EC32510C17B003D385F /* ProductDownloadListViewController+Draggable.swift in Sources */,
 				02E4FD7E2306A8180049610C /* StatsTimeRangeBarViewModel.swift in Sources */,
 				021FAFCF23556D2B00B99241 /* UIView+SubviewsAxis.swift in Sources */,
 				026B3C57249A046E00F7823C /* TextFieldTextAlignment.swift in Sources */,
@@ -5413,8 +5439,10 @@
 				D8C2A28F231BD00500F503E9 /* ReviewsViewModel.swift in Sources */,
 				021AEF9E2407F55C00029D28 /* PHAssetImageLoader.swift in Sources */,
 				020BE74D23B1F5EB007FE54C /* TitleAndTextFieldTableViewCell.swift in Sources */,
+				77E53EC52510C193003D385F /* ProductDownloadListViewController+Droppable.swift in Sources */,
 				D81F2D37225F0D160084BF9C /* EmptyListMessageWithActionView.swift in Sources */,
 				575472812452185300A94C3C /* PushNotification.swift in Sources */,
+				77E53EBF2510C153003D385F /* ProductDownloadListViewModel.swift in Sources */,
 				B55BC1F121A878A30011A0C0 /* String+HTML.swift in Sources */,
 				B56C721221B5B44000E5E85B /* PushNotificationsConfiguration.swift in Sources */,
 				26FE09DF24DB871100B9BDF5 /* SurveyViewControllersFactory.swift in Sources */,

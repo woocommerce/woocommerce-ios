@@ -349,8 +349,9 @@ public enum WooAnalyticsStat: String {
 
     // Edit Product Downloadable Files Events
     //
-    case productDownloadableFileSettingsDoneButtonTapped = "product_downloadable_file_settings_done_button_tapped"
-    case productDownloadableFileSettingsAddButtonTapped = "product_downloadable_file_settings_add_button_tapped"
+    case productDownloadableFilesDoneButtonTapped = "product_downloadable_files_done_button_tapped"
+    case productDownloadableFilesAddButtonTapped = "product_downloadable_files_add_button_tapped"
+    case productDownloadableFilesMoreButtonTapped = "product_downloadable_files_More_button_tapped"
 
     // MARK: Product Settings
     //

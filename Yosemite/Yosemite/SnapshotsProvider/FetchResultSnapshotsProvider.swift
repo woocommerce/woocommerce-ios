@@ -106,6 +106,9 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     /// In the future, we can allow this to be mutable if necessary.
     private let query: Query
 
+    /// The NotificationCenter to use for observing notifications.
+    private let notificationCenter: NotificationCenter
+
     /// The publisher that emits snapshots when the fetch results arrive and when the data changes.
     public var snapshot: AnyPublisher<FetchResultSnapshot, Never> {
         snapshotSubject.eraseToAnyPublisher()
@@ -131,9 +134,12 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
 
     private var objectsDidChangeObservationToken: Any?
 
-    public init(storageManager: StorageManagerType, query: Query) {
+    public init(storageManager: StorageManagerType,
+                query: Query,
+                notificationCenter: NotificationCenter = .default) {
         self.storage = storageManager.viewStorage
         self.query = query
+        self.notificationCenter = notificationCenter
     }
 
     deinit {
@@ -209,11 +215,6 @@ private extension FetchResultSnapshotsProvider {
 
 @available(iOS 13.0, *)
 private extension FetchResultSnapshotsProvider {
-
-    /// The NotificationCenter to use for observing notifications.
-    var notificationCenter: NotificationCenter {
-        NotificationCenter.default
-    }
 
     /// Start observing `NSManagedObjectContextObjectsDidChange` notifications so that snapshots
     /// for object updates will be emitted.

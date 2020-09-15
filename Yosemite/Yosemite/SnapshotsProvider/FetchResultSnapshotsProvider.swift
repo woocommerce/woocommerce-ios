@@ -68,7 +68,7 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
         /// those values can be converted to a user-friendly value.
         public let sectionNameKeyPath: String?
 
-        init(sortDescriptor: NSSortDescriptor, predicate: NSPredicate? = nil, sectionNameKeyPath: String? = nil) {
+        public init(sortDescriptor: NSSortDescriptor, predicate: NSPredicate? = nil, sectionNameKeyPath: String? = nil) {
             self.sortDescriptor = sortDescriptor
             self.predicate = predicate
             self.sectionNameKeyPath = sectionNameKeyPath
@@ -138,7 +138,8 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     /// }
     /// ```
     public func object(withID objectID: FetchResultSnapshotObjectID) -> MutableType.ReadOnlyType? {
-        assert(!objectID.isTemporaryID, "Expected objectID \(objectID) to be a permanent NSManagedObjectID.")
+        // WIP This assertion will be restored soon.
+        // assert(!objectID.isTemporaryID, "Expected objectID \(objectID) to be a permanent NSManagedObjectID.")
 
         if let storageOrder = storage.loadObject(ofType: MutableType.self, with: objectID) {
             return storageOrder.toReadOnly()

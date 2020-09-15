@@ -180,6 +180,8 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
         // Disconnect now that we're done with Google.
         GIDSignIn.sharedInstance().disconnect()
 
+        // This stat is part of a funnel that provides critical information.  Please
+        // consult with your lead before removing this event.
         WordPressAuthenticator.track(.signedIn)
 
         var properties = [AnyHashable:Any]()

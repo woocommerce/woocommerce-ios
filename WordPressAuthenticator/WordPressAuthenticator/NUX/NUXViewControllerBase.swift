@@ -326,7 +326,6 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
             fatalError()
         }
 
-        AuthenticatorAnalyticsTracker.shared.track(step: .help)
         WordPressAuthenticator.shared.delegate?.presentSupport(from: navigationController, sourceTag: source)
     }
 }

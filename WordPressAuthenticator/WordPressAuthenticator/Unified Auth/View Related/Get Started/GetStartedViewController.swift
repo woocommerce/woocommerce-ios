@@ -69,6 +69,13 @@ class GetStartedViewController: LoginViewController {
     
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
+        if isMovingToParent {
+            tracker.track(step: .start)
+        } else {
+            tracker.set(step: .start)
+        }
+        
         errorMessage = nil
         hiddenPasswordField?.text = nil
         hiddenPasswordField?.isAccessibilityElement = false
@@ -168,6 +175,7 @@ private extension GetStartedViewController {
     // MARK: - Continue Button Action
     
     @IBAction func handleSubmitButtonTapped(_ sender: UIButton) {
+        tracker.track(click: .submit)
         validateForm()
     }
     
@@ -413,12 +421,11 @@ private extension GetStartedViewController {
                                             self?.configureViewLoading(false)
 
             }, failure: { [weak self] (error: Error) in
-                // TODO: Tracks.
-                // WordPressAuthenticator.track(.loginMagicLinkFailed)
-                // WordPressAuthenticator.track(.loginFailed, error: error)
                 guard let self = self else {
                     return
                 }
+                
+                self.tracker.track(failure: error.localizedDescription)
 
                 self.displayError(error as NSError, sourceTag: self.sourceTag)
                 self.configureViewLoading(false)
@@ -469,6 +476,10 @@ private extension GetStartedViewController {
     /// When password autofill has entered a password on this screen, attempt to login immediately
     ///
     func attemptAutofillLogin() {
+        // Even though there was no explicit submit action by the user, we'll interpret
+        // the credentials selection as such.
+        tracker.track(click: .submit)
+        
         loginFields.password = hiddenPasswordField?.text ?? ""
         loginFields.meta.socialService = nil
         displayError(message: "")
@@ -481,6 +492,8 @@ private extension GetStartedViewController {
     func showSelfHostedWithError(_ error: Error) {
         loginFields.siteAddress = "https://wordpress.com"
         errorToPresent = error
+        
+        tracker.track(failure: error.localizedDescription)
 
         guard let vc = SiteCredentialsViewController.instantiate(from: .siteAddress) else {
             DDLogError("Failed to navigate to SiteCredentialsViewController from GetStartedViewController")
@@ -550,7 +563,20 @@ private extension GetStartedViewController {
         
         let safariViewController = SFSafariViewController(url: url)
         safariViewController.modalPresentationStyle = .pageSheet
+        safariViewController.delegate = self
         self.present(safariViewController, animated: true, completion: nil)
+    }
+}
+
+// MARK: - SFSafariViewControllerDelegate
+
+extension GetStartedViewController: SFSafariViewControllerDelegate {
+    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+        // This will only work when the user taps "Done" in the terms of service screen.
+        // It won't be executed if the user dismisses the terms of service VC by sliding it out of view.
+        // Unfortunately I haven't found a way to track that scenario.
+        //
+        tracker.track(click: .dismiss)
     }
 }
 

@@ -149,8 +149,11 @@ private extension AppleAuthenticator {
     }
     
     func loginSuccessful(with credentials: AuthenticatorCredentials) {
+        // This stat is part of a funnel that provides critical information.  Please
+        // consult with your lead before removing this event.
+        track(.signedIn)
+        
         tracker.track(step: .success) {
-            track(.signedIn)
             track(.loginSocialSuccess)
         }
         
@@ -243,10 +246,13 @@ extension AppleAuthenticator: ASAuthorizationControllerDelegate {
     }
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
-
+        
         // Don't show error if user cancelled authentication.
         if let authorizationError = error as? ASAuthorizationError,
-        authorizationError.code == .canceled {
+            authorizationError.code == .canceled {
+            
+            // If the user cancelled the dialogue, we should assume they somehow tapped to dismiss.
+            tracker.track(click: .dismiss)
             return
         }
         

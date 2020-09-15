@@ -617,6 +617,10 @@ extension GetStartedViewController {
 
 extension GetStartedViewController: UITextFieldDelegate {
 
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        tracker.track(click: .selectEmailField)
+    }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if canSubmit() {
             validateForm()

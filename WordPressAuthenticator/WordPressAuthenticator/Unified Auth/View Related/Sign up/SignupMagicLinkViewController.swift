@@ -21,14 +21,16 @@ final class SignupMagicLinkViewController: LoginViewController {
 
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
-        // TODO: - Tracks.
-        // WordPressAuthenticator.track(.signupMagicLinkOpenEmailClientViewed)
+        tracker.track(click: .openEmailClient)
+        tracker.track(step: .emailOpened)
+        
         let linkMailPresenter = LinkMailPresenter(emailAddress: loginFields.username)
         let appSelector = AppSelector(sourceView: sender)
         linkMailPresenter.presentEmailClients(on: self, appSelector: appSelector)
     }
 
     // MARK: - View lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -44,6 +46,16 @@ final class SignupMagicLinkViewController: LoginViewController {
         localizePrimaryButton()
         registerTableViewCells()
         loadRows()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if isMovingToParent {
+            tracker.track(step: .magicLinkRequested)
+        } else {
+            tracker.set(step: .magicLinkRequested)
+        }
     }
 
     /// Validation check while we are bypassing screens.

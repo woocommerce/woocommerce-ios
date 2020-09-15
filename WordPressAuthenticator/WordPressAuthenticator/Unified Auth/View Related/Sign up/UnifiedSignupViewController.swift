@@ -14,6 +14,7 @@ class UnifiedSignupViewController: LoginViewController {
 
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
+        tracker.track(click: .requestMagicLink)
         requestAuthenticationLink()
     }
 

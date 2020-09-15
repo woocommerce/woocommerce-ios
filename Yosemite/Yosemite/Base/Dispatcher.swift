@@ -47,8 +47,6 @@ public class Dispatcher {
     /// Unregisters the specified Processor from *ALL* of the dispatcher queues.
     ///
     public func unregister(processor: ActionsProcessor) {
-        assertMainThread()
-
         for (identifier, subprocessor) in processors where subprocessor.identifier == processor.identifier {
             processors[identifier] = nil
         }

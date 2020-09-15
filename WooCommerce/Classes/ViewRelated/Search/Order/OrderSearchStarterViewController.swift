@@ -90,29 +90,9 @@ extension OrderSearchStarterViewController: UITableViewDelegate {
 
         analytics.trackSelectionOf(orderStatusSlug: cellViewModel.slug)
 
-        let emptyStateMessage: NSAttributedString = {
-            guard let statusName = cellViewModel.name else {
-                return NSAttributedString(string: NSLocalizedString("We're sorry, we couldn't find any orders.",
-                                                                    comment: "Default message to show if a filtered Orders list is empty."))
-            }
+        let listViewController = makeOrderListViewController(for: cellViewModel)
 
-            let boldStatusName = NSAttributedString(string: statusName,
-                                                    attributes: [.font: EmptyStateViewController.Config.messageFont.bold])
-
-            let format = NSLocalizedString("We're sorry, we couldn't find any “%@” orders",
-                                           comment: "Message shown if a filtered Orders list is empty. The %@ is a placeholder for the order status.")
-            let message = NSMutableAttributedString(string: format)
-            message.replaceFirstOccurrence(of: "%@", with: boldStatusName)
-
-            return message
-        }()
-        let ordersViewController = OrdersViewController(
-            title: cellViewModel.name ?? Localization.defaultOrderListTitle,
-            viewModel: OrdersViewModel(statusFilter: cellViewModel.orderStatus),
-            emptyStateConfig: .simple(message: emptyStateMessage, image: .emptySearchResultsImage)
-        )
-
-        navigationController?.pushViewController(ordersViewController, animated: true)
+        navigationController?.pushViewController(listViewController, animated: true)
 
         tableView.deselectSelectedRowWithAnimation(true)
     }
@@ -129,6 +109,44 @@ extension OrderSearchStarterViewController: KeyboardScrollable {
 // MARK: - Other Private Helpers
 
 private extension OrderSearchStarterViewController {
+
+    /// Make a view controller that shows the orders with the given filter.
+    func makeOrderListViewController(for cellViewModel: OrderSearchStarterViewModel.CellViewModel) -> UIViewController {
+        let emptyStateMessage: NSAttributedString = {
+            guard let statusName = cellViewModel.name else {
+                return NSAttributedString(string: NSLocalizedString("We're sorry, we couldn't find any orders.",
+                                                                    comment: "Default message to show if a filtered Orders list is empty."))
+            }
+
+            let boldStatusName = NSAttributedString(string: statusName,
+                                                    attributes: [.font: EmptyStateViewController.Config.messageFont.bold])
+
+            let format = NSLocalizedString("We're sorry, we couldn't find any “%@” orders",
+                                           comment: "Message shown if a filtered Orders list is empty. The %@ is a placeholder for the order status.")
+            let message = NSMutableAttributedString(string: format)
+            message.replaceFirstOccurrence(of: "%@", with: boldStatusName)
+
+            return message
+        }()
+
+        let title = cellViewModel.name ?? Localization.defaultOrderListTitle
+        let emptyStateConfig = EmptyStateViewController.Config.simple(message: emptyStateMessage, image: .emptySearchResultsImage)
+
+        if #available(iOS 13, *) {
+            return OrderListViewController(
+                title: title,
+                viewModel: .init(statusFilter: cellViewModel.orderStatus),
+                emptyStateConfig: emptyStateConfig
+            )
+        } else {
+            return OrdersViewController(
+                title: title,
+                viewModel: OrdersViewModel(statusFilter: cellViewModel.orderStatus),
+                emptyStateConfig: emptyStateConfig
+            )
+        }
+    }
+
     enum Localization {
         static let defaultOrderListTitle = NSLocalizedString("Orders", comment: "Default title for Orders List shown when tapping on the Search filter.")
     }

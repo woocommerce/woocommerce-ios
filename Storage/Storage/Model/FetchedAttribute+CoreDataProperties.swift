@@ -2,10 +2,10 @@ import Foundation
 import CoreData
 
 
-extension Attribute {
+extension FetchedAttribute {
 
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<Attribute> {
-        return NSFetchRequest<Attribute>(entityName: "Attribute")
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<FetchedAttribute> {
+        return NSFetchRequest<FetchedAttribute>(entityName: "Attribute")
     }
 
     @NSManaged public var id: Int64

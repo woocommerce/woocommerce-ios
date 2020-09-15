@@ -191,7 +191,7 @@ private extension ProductVariationStore {
         // Inserts the attributes from the read-only product variation.
         var storageAttributes = [StorageAttribute]()
         for readOnlyAttribute in readOnlyVariation.attributes {
-            let newStorageAttribute = storage.insertNewObject(ofType: Storage.Attribute.self)
+            let newStorageAttribute = storage.insertNewObject(ofType: Storage.FetchedAttribute.self)
             newStorageAttribute.update(with: readOnlyAttribute)
             storageAttributes.append(newStorageAttribute)
         }

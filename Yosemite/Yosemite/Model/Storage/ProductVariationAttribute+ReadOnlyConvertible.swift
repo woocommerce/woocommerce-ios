@@ -1,11 +1,11 @@
 import Foundation
 import Storage
 
-// Storage.Attribute: ReadOnlyConvertible Conformance.
+// Storage.FetchedAttribute: ReadOnlyConvertible Conformance.
 //
-extension Storage.Attribute: ReadOnlyConvertible {
+extension Storage.FetchedAttribute: ReadOnlyConvertible {
 
-    /// Updates the Storage.Attribute with the a ReadOnly ProductVariationAttribute.
+    /// Updates the Storage.FetchedAttribute with the a ReadOnly ProductVariationAttribute.
     ///
     public func update(with attribute: Yosemite.ProductVariationAttribute) {
         id = attribute.id

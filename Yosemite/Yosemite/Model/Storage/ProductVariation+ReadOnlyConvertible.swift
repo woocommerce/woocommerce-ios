@@ -2,7 +2,7 @@ import Foundation
 import Storage
 
 extension Storage.ProductVariation {
-    var attributesArray: [Attribute] {
+    var attributesArray: [FetchedAttribute] {
         return attributes.toArray()
     }
 }

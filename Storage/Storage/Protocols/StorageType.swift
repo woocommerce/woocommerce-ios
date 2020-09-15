@@ -9,6 +9,10 @@ public protocol StorageType: class {
 
     var parentStorage: StorageType? {get}
 
+    /// Returns an optional custom name of the storage type.
+    ///
+    var name: String? { get }
+
     /// Returns all of the available objects of a given Type, matching the specified Predicate (and sorted with a given collection of
     /// SortDescriptors).
     ///

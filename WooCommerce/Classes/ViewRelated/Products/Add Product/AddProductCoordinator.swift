@@ -46,6 +46,7 @@ private extension AddProductCoordinator {
 
     func presentProductForm(productType: ProductType) {
         guard let product = ProductFactory().createNewProduct(type: productType, siteID: siteID) else {
+            assertionFailure("Unable to create product of type: \(productType)")
             return
         }
         let model = EditableProductModel(product: product)

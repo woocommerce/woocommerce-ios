@@ -13,7 +13,6 @@ struct ProductFactory {
         case .simple, .grouped, .variable, .affiliate:
             return createEmptyProduct(type: type, siteID: siteID)
         default:
-            assertionFailure("Unable to create product of type: \(type)")
             return nil
         }
     }

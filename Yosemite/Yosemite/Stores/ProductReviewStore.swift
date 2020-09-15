@@ -81,6 +81,10 @@ private extension ProductReviewStore {
                 return
             }
 
+            if pageNumber == Default.firstPageNumber {
+                self?.deleteStoredProductReviews(siteID: siteID)
+            }
+
             self?.upsertStoredProductReviewsInBackground(readOnlyProductReviews: productReviews, siteID: siteID) {
                 onCompletion(nil)
             }
@@ -149,6 +153,14 @@ private extension ProductReviewStore {
 // MARK: - Storage: ProductReview
 //
 private extension ProductReviewStore {
+
+    /// Deletes any Storage.ProductReview with the specified `siteID`
+    ///
+    func deleteStoredProductReviews(siteID: Int64) {
+        let storage = storageManager.viewStorage
+        storage.deleteProductReviews(siteID: siteID)
+        storage.saveIfNeeded()
+    }
 
     /// Deletes any Storage.ProductReview with the specified `siteID` and `reviewID`
     ///

@@ -1,8 +1,10 @@
 5.1
 -----
+- [*] bugfix: now reviews are refreshed correctly. If you try to delete or to set as spam a review from the web, the result will match in the product reviews list.
 - [*] If the Products switch is on in Settings > Experimental Features:
   - For a variable product, the stock status is not shown in the product details anymore when stock management is disabled since stock status is controlled at variation level.
- 
+
+
 5.0
 -----
 - [*] Order details > product details: tapping outside of the bottom sheet from "Add more details" menu does not dismiss the whole product details anymore.

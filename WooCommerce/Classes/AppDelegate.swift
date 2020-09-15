@@ -425,7 +425,6 @@ private extension AppDelegate {
 
     func logout() {
         ServiceLocator.stores.deauthenticate()
-        displayAuthenticator()
     }
 }
 

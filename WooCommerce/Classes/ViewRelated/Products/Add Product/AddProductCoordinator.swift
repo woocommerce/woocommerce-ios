@@ -2,6 +2,10 @@ import UIKit
 import Yosemite
 
 /// Controls navigation for the flow to add a product given a navigation controller.
+/// This class is not meant to be retained so that its life cycle is throughout the navigation. Example usage:
+///
+/// let coordinator = AddProductCoordinator(...)
+/// coordinator.start()
 ///
 final class AddProductCoordinator: Coordinator {
     var navigationController: UINavigationController
@@ -31,10 +35,8 @@ private extension AddProductCoordinator {
                                       comment: "Message title of bottom sheet for selecting a product type to create a product")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
         let command = ProductTypeBottomSheetListSelectorCommand(selected: nil) { selectedProductType in
-            self.navigationController.dismiss(animated: true) {
-                // Strong reference to `self` is required since `AddProductCoordinator` is not strongly referenced by any class.
-                self.presentProductForm(productType: selectedProductType)
-            }
+            self.navigationController.dismiss(animated: true)
+            self.presentProductForm(productType: selectedProductType)
         }
         // Until we support adding a variation, adding a variable product is disabled.
         command.data = [.simple, .grouped, .affiliate]
@@ -43,7 +45,9 @@ private extension AddProductCoordinator {
     }
 
     func presentProductForm(productType: ProductType) {
-        let product = ProductFactory().createNewProduct(type: productType, siteID: siteID)
+        guard let product = ProductFactory().createNewProduct(type: productType, siteID: siteID) else {
+            return
+        }
         let model = EditableProductModel(product: product)
 
         let currencyCode = ServiceLocator.currencySettings.currencyCode

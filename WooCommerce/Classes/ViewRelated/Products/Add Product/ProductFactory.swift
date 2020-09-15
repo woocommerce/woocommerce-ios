@@ -8,12 +8,13 @@ struct ProductFactory {
     /// - Parameters:
     ///   - type: The type of the product.
     ///   - siteID: The site ID where the product is added to.
-    func createNewProduct(type: ProductType, siteID: Int64) -> Product {
+    func createNewProduct(type: ProductType, siteID: Int64) -> Product? {
         switch type {
         case .simple, .grouped, .variable, .affiliate:
             return createEmptyProduct(type: type, siteID: siteID)
         default:
-            fatalError("Unable to create product of type: \(type)")
+            assertionFailure("Unable to create product of type: \(type)")
+            return nil
         }
     }
 }

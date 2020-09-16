@@ -209,7 +209,7 @@ private extension DashboardViewController {
             fatalError("Cannot instantiate `SettingsViewController` from Dashboard storyboard")
         }
         ServiceLocator.analytics.track(.settingsTapped)
-        navigationController?.show(settingsViewController, sender: self)
+        show(settingsViewController, sender: self)
     }
 
     func pullToRefresh() {

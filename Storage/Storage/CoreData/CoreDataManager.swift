@@ -63,11 +63,13 @@ public final class CoreDataManager: StorageManagerType {
             var persistentStoreRemovalError: Error?
             do {
                 let fileManager = FileManager.default
-                let storePath = self.storeURL.path
-                let files = try fileManager.contentsOfDirectory(atPath: storePath)
+                let pathToStore = self.storeURL.deletingLastPathComponent().path
+                let files = try fileManager.contentsOfDirectory(atPath: pathToStore)
                 try files.forEach { (file) in
-                    let fullPath = URL(fileURLWithPath: storePath).appendingPathComponent(file).path
-                    try fileManager.removeItem(atPath: fullPath)
+                    if file.hasPrefix(self.storeURL.lastPathComponent) {
+                        let fullPath = URL(fileURLWithPath: pathToStore).appendingPathComponent(file).path
+                        try fileManager.removeItem(atPath: fullPath)
+                    }
                 }
             } catch {
                 persistentStoreRemovalError = error

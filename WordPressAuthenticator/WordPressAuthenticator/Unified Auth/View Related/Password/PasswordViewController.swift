@@ -70,6 +70,14 @@ class PasswordViewController: LoginViewController {
             } else {
                 tracker.set(step: .passwordChallenge)
             }
+        } else {
+            if isMovingToParent {
+                tracker.pushState()
+                tracker.set(flow: .loginWithPassword)
+                tracker.track(step: .start)
+            } else {
+                tracker.set(step: .start)
+            }
         }
         
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
@@ -81,6 +89,10 @@ class PasswordViewController: LoginViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         unregisterForKeyboardEvents()
+        
+        if !trackAsPasswordChallenge {
+            tracker.popState()
+        }
     }
     
     // MARK: - Overrides
@@ -385,7 +397,6 @@ private extension PasswordViewController {
                 return
             }
             
-            self.tracker.set(flow: .loginWithMagicLink)
             self.tracker.track(click: .requestMagicLink)
             self.requestAuthenticationLink()
         }

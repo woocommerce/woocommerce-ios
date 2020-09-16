@@ -435,8 +435,6 @@ private extension GetStartedViewController {
     /// When a magic link successfully sends, navigate the user to the next step.
     ///
     func didRequestAuthenticationLink() {
-        // TODO: Tracks.
-        // WordPressAuthenticator.track(.loginMagicLinkRequested)
         WordPressAuthenticator.storeLoginInfoForTokenAuth(loginFields)
 
         guard let vc = LoginMagicLinkViewController.instantiate(from: .unifiedLoginMagicLink) else {

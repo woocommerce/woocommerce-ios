@@ -33,6 +33,26 @@ class UnifiedSignupViewController: LoginViewController {
         registerTableViewCells()
         loadRows()
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if isMovingToParent {
+            tracker.pushState()
+            tracker.set(flow: .signup)
+            tracker.track(step: .start)
+        } else {
+            tracker.set(step: .start)
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(true)
+        
+        if isBeingDismissedInAnyWay {
+            tracker.popState()
+        }
+    }
 
     // MARK: - Overrides
 

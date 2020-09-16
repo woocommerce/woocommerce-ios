@@ -50,9 +50,9 @@ final class LoginMagicLinkViewController: LoginViewController {
         if isMovingToParent {
             tracker.pushState()
             tracker.set(flow: .loginWithMagicLink)
-            tracker.track(step: .start)
+            tracker.track(step: .magicLinkRequested)
         } else {
-            tracker.set(step: .start)
+            tracker.set(step: .magicLinkRequested)
         }
     }
     

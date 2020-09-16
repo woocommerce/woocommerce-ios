@@ -14,6 +14,11 @@ class PasswordViewController: LoginViewController {
     private var rows = [Row]()
     private var errorMessage: String?
     private var shouldChangeVoiceOverFocus: Bool = false
+    
+    /// Depending on where we're coming from, this screen needs to track a password challenge
+    /// (if logging on with a Social account) or not (if logging in through WP.com).
+    ///
+    var trackAsPasswordChallenge = true
 
     override var loginFields: LoginFields {
         didSet {
@@ -59,10 +64,20 @@ class PasswordViewController: LoginViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if isMovingToParent {
-            tracker.track(step: .passwordChallenge)
+        if trackAsPasswordChallenge {
+            if isMovingToParent {
+                tracker.track(step: .passwordChallenge)
+            } else {
+                tracker.set(step: .passwordChallenge)
+            }
         } else {
-            tracker.set(step: .passwordChallenge)
+            if isMovingToParent {
+                tracker.pushState()
+                tracker.set(flow: .loginWithPassword)
+                tracker.track(step: .start)
+            } else {
+                tracker.set(step: .start)
+            }
         }
         
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
@@ -74,6 +89,10 @@ class PasswordViewController: LoginViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         unregisterForKeyboardEvents()
+        
+        if !trackAsPasswordChallenge {
+            tracker.popState()
+        }
     }
     
     // MARK: - Overrides

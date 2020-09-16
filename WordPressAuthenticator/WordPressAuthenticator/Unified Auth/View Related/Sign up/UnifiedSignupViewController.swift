@@ -238,14 +238,18 @@ extension UnifiedSignupViewController {
 
             }, failure: { [weak self] (error: Error) in
                 DDLogError("Request for signup link email failed.")
-                // TODO: add new Tracks event. Old: .signupMagicLinkFailed
-                self?.displayError(message: ErrorMessage.magicLinkRequestFail.description())
-                self?.configureSubmitButton(animating: false)
+                
+                guard let self = self else {
+                    return
+                }
+                
+                self.tracker.track(failure: error.localizedDescription)
+                self.displayError(message: ErrorMessage.magicLinkRequestFail.description())
+                self.configureSubmitButton(animating: false)
         })
     }
 
     func didRequestSignupLink() {
-        // TODO: add new Tracks event. Old: .signupMagicLinkRequested
         WordPressAuthenticator.storeLoginInfoForTokenAuth(loginFields)
 
         guard let vc = SignupMagicLinkViewController.instantiate(from: .unifiedSignup) else {

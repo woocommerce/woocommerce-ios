@@ -204,6 +204,10 @@ extension ProductVariationFormViewModel {
                                                          allAttributes: allAttributes,
                                                          parentProductSKU: parentProductSKU)
     }
+
+    func updateDownloadables(downloads: [ProductDownload]?, downloadLimit: Int64?, downloadExpiry: Int64?) {
+        // no-op
+    }
 }
 
 // MARK: Remote actions

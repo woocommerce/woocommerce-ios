@@ -6,7 +6,7 @@ import Yosemite
 extension ProductDownloadListViewController: UITableViewDataSource, UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.count
+        return viewModel.count()
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -15,8 +15,8 @@ extension ProductDownloadListViewController: UITableViewDataSource, UITableViewD
             fatalError()
         }
 
-        if let fileViewModel = viewModel[safe: indexPath.row] {
-            configureCell(cell: cell, model: fileViewModel)
+        if let viewModel = viewModel.item(at: indexPath.row) {
+            configureCell(cell: cell, model: viewModel)
         }
         return cell
     }
@@ -29,9 +29,10 @@ extension ProductDownloadListViewController: UITableViewDataSource, UITableViewD
     }
 
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        let place = viewModel[sourceIndexPath.row]
-        viewModel.remove(at: destinationIndexPath.row)
-        viewModel.insert(place, at: destinationIndexPath.row)
+        if let item = viewModel.item(at: sourceIndexPath.row) {
+            viewModel.remove(at: destinationIndexPath.row)
+            viewModel.insert(item, at: destinationIndexPath.row)
+        }
     }
 }
 

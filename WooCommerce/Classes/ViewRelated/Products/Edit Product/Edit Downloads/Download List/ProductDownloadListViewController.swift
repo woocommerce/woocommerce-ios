@@ -9,15 +9,15 @@ final class ProductDownloadListViewController: UIViewController {
     @IBOutlet private weak var addButton: UIButton!
     @IBOutlet private weak var addButtonSeparator: UIView!
 
-    var viewModel = [ProductDownload]()
+    let viewModel: ProductDownloadListViewModelOutput & ProductDownloadListActionHandler
 
     // Completion callback
     //
-    typealias Completion = (_ downloads: [ProductDownload]) -> Void
+    typealias Completion = (_ data: ProductDownloadsEditableData) -> Void
     private let onCompletion: Completion
 
-    init(product: Product, completion: @escaping Completion) {
-        self.viewModel = product.downloads
+    init(product: ProductFormDataModel, completion: @escaping Completion) {
+        viewModel = ProductDownloadListViewModel(product: product)
         onCompletion = completion
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
@@ -107,6 +107,10 @@ private extension ProductDownloadListViewController {
 //
 extension ProductDownloadListViewController {
     override func shouldPopOnBackButton() -> Bool {
+        if viewModel.hasUnsavedChanges() {
+            presentBackNavigationActionSheet()
+            return false
+        }
         return true
     }
 
@@ -116,7 +120,7 @@ extension ProductDownloadListViewController {
 
     @objc private func doneButtonTapped() {
         ServiceLocator.analytics.track(.productDownloadableFilesDoneButtonTapped)
-        onCompletion(viewModel)
+        viewModel.completeUpdating(onCompletion: onCompletion)
     }
 
     @objc private func moreButtonTapped() {

@@ -159,6 +159,14 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
         productVariation.downloads
     }
 
+    var downloadLimit: Int64 {
+        Int64(productVariation.downloadLimit)
+    }
+
+    var downloadExpiry: Int64 {
+        Int64(productVariation.downloadExpiry)
+    }
+
     // Visibility logic
 
     func allowsMultipleImages() -> Bool {

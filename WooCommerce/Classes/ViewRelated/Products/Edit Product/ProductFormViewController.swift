@@ -1105,13 +1105,24 @@ private extension ProductFormViewController {
             return
         }
 
-        let downloadFileListViewController = ProductDownloadListViewController(product: product.product) { [weak self] (downloads) in
-            self?.onAddEditDownloadsCompletion(downloads: downloads)
+        let downloadFileListViewController = ProductDownloadListViewController(product: product) { [weak self] data in
+            self?.onAddEditDownloadsCompletion(data: data)
         }
-        show(downloadFileListViewController, sender: self)
+        navigationController?.pushViewController(downloadFileListViewController, animated: true)
     }
 
-    func onAddEditDownloadsCompletion(downloads: [ProductDownload]) {
+    func onAddEditDownloadsCompletion(data: ProductDownloadsEditableData) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+        let originalData = ProductDownloadsEditableData(productModel: product)
+        let hasChangedData = originalData != data
+        ServiceLocator.analytics.track(.productDownloadableFilesDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
+
+        guard hasChangedData else {
+            return
+        }
+        viewModel.updateDownloadables(downloads: data.downloads, downloadLimit: data.downloadLimit, downloadExpiry: data.downloadExpiry)
     }
 }
 

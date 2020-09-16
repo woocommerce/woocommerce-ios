@@ -84,6 +84,10 @@ protocol ProductFormViewModelProtocol {
 
     func updateStatus(_ isEnabled: Bool)
 
+    func updateDownloadables(downloads: [ProductDownload]?,
+                             downloadLimit: Int64?,
+                             downloadExpiry: Int64?)
+
     // Remote action
 
     func updateProductRemotely(onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void)

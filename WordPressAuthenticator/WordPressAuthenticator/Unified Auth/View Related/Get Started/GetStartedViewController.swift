@@ -387,6 +387,8 @@ private extension GetStartedViewController {
         }
         
         vc.loginFields = loginFields
+        vc.trackAsPasswordChallenge = false
+        
         navigationController?.pushViewController(vc, animated: true)
     }
     

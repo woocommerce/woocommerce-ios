@@ -141,7 +141,7 @@ private extension OrderSearchStarterViewController {
         } else {
             return OrdersViewController(
                 title: title,
-                viewModel: OrdersViewModel(statusFilter: cellViewModel.orderStatus),
+                viewModel: .init(statusFilter: cellViewModel.orderStatus),
                 emptyStateConfig: emptyStateConfig
             )
         }

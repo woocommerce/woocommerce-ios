@@ -2032,7 +2032,7 @@
 		021627232379637E000208D2 /* Edit Product */ = {
 			isa = PBXGroup;
 			children = (
-				77E53EB5250E6972003D385F /* Edit Downloads */,
+				77E53EB5250E6972003D385F /* Downloads */,
 				020886582499E64B001D784E /* Edit External Link */,
 				0212275F244989D20042161F /* BottomSheetListSelector */,
 				020B2F9223BDDBC300BD79AD /* Error Handling */,
@@ -3212,15 +3212,31 @@
 			path = Cells;
 			sourceTree = "<group>";
 		};
-		77E53EB5250E6972003D385F /* Edit Downloads */ = {
+		77658D9C2512140B00314CC5 /* Downloadable FIle */ = {
 			isa = PBXGroup;
 			children = (
-				77E53EC62510C3F4003D385F /* Download List */,
 			);
-			path = "Edit Downloads";
+			path = "Downloadable FIle";
 			sourceTree = "<group>";
 		};
-		77E53EC62510C3F4003D385F /* Download List */ = {
+		77658D9D2512142200314CC5 /* Downloadable FIle Settings */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "Downloadable FIle Settings";
+			sourceTree = "<group>";
+		};
+		77E53EB5250E6972003D385F /* Downloads */ = {
+			isa = PBXGroup;
+			children = (
+				77658D9D2512142200314CC5 /* Downloadable FIle Settings */,
+				77658D9C2512140B00314CC5 /* Downloadable FIle */,
+				77E53EC62510C3F4003D385F /* Downloadable FIle List */,
+			);
+			path = Downloads;
+			sourceTree = "<group>";
+		};
+		77E53EC62510C3F4003D385F /* Downloadable FIle List */ = {
 			isa = PBXGroup;
 			children = (
 				77E53EB6250E6A4E003D385F /* ProductDownloadListViewController.swift */,
@@ -3232,7 +3248,7 @@
 				77E53EC72510FE07003D385F /* ProductDownloadsEditableData.swift */,
 				77DC61962511D5E900F5D23C /* ProductDownloadDnD.swift */,
 			);
-			path = "Download List";
+			path = "Downloadable FIle List";
 			sourceTree = "<group>";
 		};
 		88A44ABE866401E6DB03AC60 /* Frameworks */ = {

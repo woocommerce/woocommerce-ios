@@ -16,7 +16,7 @@ extension ProductDownloadListViewController: UITableViewDataSource, UITableViewD
         }
 
         if let viewModel = viewModel.item(at: indexPath.row) {
-            configureCell(cell: cell, model: viewModel)
+            configureCell(cell: cell, model: viewModel.download)
         }
         return cell
     }

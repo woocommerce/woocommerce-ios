@@ -6,7 +6,7 @@ import Yosemite
 //
 extension ProductDownloadListViewController: UITableViewDropDelegate {
     func tableView(_ tableView: UITableView, canHandle session: UIDropSession) -> Bool {
-        return session.canLoadObjects(ofClass: ProductDownload.self) || session.hasItemsConforming(toTypeIdentifiers: [kUTTypeUTF8PlainText as String])
+        return session.canLoadObjects(ofClass: ProductDownloadDnD.self) || session.hasItemsConforming(toTypeIdentifiers: [kUTTypeUTF8PlainText as String])
     }
 
     func tableView(_ tableView: UITableView,
@@ -34,11 +34,11 @@ extension ProductDownloadListViewController: UITableViewDropDelegate {
 
         for item in coordinator.items {
             guard let sourceIndexPathRow = item.sourceIndexPath?.row else { continue }
-            item.dragItem.itemProvider.loadObject(ofClass: ProductDownload.self) { [weak self] (object, error) in
+            item.dragItem.itemProvider.loadObject(ofClass: ProductDownloadDnD.self) { [weak self] (object, error) in
                 DispatchQueue.main.async {
-                    if let counter = object as? ProductDownload {
+                    if let item = object as? ProductDownloadDnD {
                         self?.viewModel.remove(at: sourceIndexPathRow)
-                        self?.viewModel.insert(counter, at: destinationIndexPath.row)
+                        self?.viewModel.insert(item, at: destinationIndexPath.row)
                         tableView.reloadData()
                     } else {
                         return

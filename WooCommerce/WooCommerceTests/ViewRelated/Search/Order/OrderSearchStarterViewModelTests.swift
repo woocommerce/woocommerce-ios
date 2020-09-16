@@ -31,7 +31,7 @@ final class OrderSearchStarterViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func testItLoadsAllTheOrderStatusForTheGivenSite() {
+    func test_it_loads_all_the_OrderStatus_for_the_given_site() {
         // Given
         let viewModel = OrderSearchStarterViewModel(siteID: siteID, storageManager: storageManager)
 
@@ -52,7 +52,7 @@ final class OrderSearchStarterViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.cellViewModels.contains(where: { $0.slug == unexpectedItem.slug }))
     }
 
-    func testItSortsTheOrderStatusesBySlug() {
+    func test_it_sorts_the_OrderStatuses_by_slug() {
         // Given
         let viewModel = OrderSearchStarterViewModel(siteID: siteID, storageManager: storageManager)
 
@@ -70,7 +70,7 @@ final class OrderSearchStarterViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.cellViewModels.slugs, expectedSlugs)
     }
 
-    func testItReturnsTheNameSlugAndTotalInTheCellViewModel() {
+    func test_it_returns_the_name_slug_and_total_in_the_CellViewModel() {
         // Given
         let viewModel = OrderSearchStarterViewModel(siteID: siteID, storageManager: storageManager)
 
@@ -90,7 +90,7 @@ final class OrderSearchStarterViewModelTests: XCTestCase {
                        NumberFormatter.localizedString(from: NSNumber(value: 18), number: .none))
     }
 
-    func testGivenAnOrderStatusTotalOfMoreThanNinetyNineItUsesNinetyNinePlus() {
+    func test_given_an_OrderStatus_total_of_more_than_ninety_nine_it_uses_ninety_nine_plus() {
         // Given
         let viewModel = OrderSearchStarterViewModel(siteID: siteID, storageManager: storageManager)
 

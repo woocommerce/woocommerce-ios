@@ -13,7 +13,7 @@ import protocol Storage.StorageManagerType
 final class OrderSearchStarterViewModel {
     private let siteID: Int64
     private let storageManager: StorageManagerType
-    /// The locale to use for formattinng the total number.
+    /// The locale to use for formatting the total number.
     private let locale: Locale
 
     /// The `ViewModel` containing only the data used by the displayed cell.
@@ -87,8 +87,7 @@ extension OrderSearchStarterViewModel {
     ///
     func cellViewModel(at indexPath: IndexPath) -> CellViewModel {
         let orderStatus = resultsController.object(at: indexPath)
-
-        let total = NumberFormatter.localizedOrNinetyNinePlus(orderStatus.total)
+        let total = NSNumber(value: orderStatus.total).description(withLocale: locale)
 
         return CellViewModel(name: orderStatus.name,
                              slug: orderStatus.slug,

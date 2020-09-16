@@ -100,7 +100,11 @@ private extension OrderDetailsResultsControllers {
             onReload()
         }
 
-        trackingResultsController.onDidResetContent = {
+        trackingResultsController.onDidResetContent = { [weak self] in
+            guard let self = self else {
+                return
+            }
+            self.refetchAllResultsControllers()
             onReload()
         }
 
@@ -112,7 +116,11 @@ private extension OrderDetailsResultsControllers {
             onReload()
         }
 
-        productResultsController.onDidResetContent = {
+        productResultsController.onDidResetContent = { [weak self] in
+            guard let self = self else {
+                return
+            }
+            self.refetchAllResultsControllers()
             onReload()
         }
 
@@ -124,10 +132,21 @@ private extension OrderDetailsResultsControllers {
             onReload()
         }
 
-        refundResultsController.onDidResetContent = {
+        refundResultsController.onDidResetContent = { [weak self] in
+            guard let self = self else {
+                return
+            }
+            self.refetchAllResultsControllers()
             onReload()
         }
 
         try? refundResultsController.performFetch()
+    }
+
+    func refetchAllResultsControllers() {
+        try? productResultsController.performFetch()
+        try? refundResultsController.performFetch()
+        try? trackingResultsController.performFetch()
+        try? statusResultsController.performFetch()
     }
 }

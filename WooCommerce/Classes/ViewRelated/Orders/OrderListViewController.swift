@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 import Gridicons
 import Yosemite
@@ -10,11 +11,10 @@ import XLPagerTabStrip
 
 private typealias SyncReason = OrderListSyncActionUseCase.SyncReason
 
-@available(iOS 13.0, *)
 protocol OrderListViewControllerDelegate: class {
-    /// Called when `OrderListViewController` is about to fetch Orders from the API.
+    /// Called when `OrderListViewController` (or `OrdersViewController`) is about to fetch Orders from the API.
     ///
-    func ordersViewControllerWillSynchronizeOrders(_ viewController: OrderListViewController)
+    func orderListViewControllerWillSynchronizeOrders(_ viewController: UIViewController)
 }
 
 /// OrderListViewController: Displays the list of Orders associated to the active Store / Account.
@@ -34,6 +34,16 @@ final class OrderListViewController: UIViewController {
     /// Main TableView.
     ///
     private lazy var tableView = UITableView(frame: .zero, style: .grouped)
+
+    /// The data source that is bound to `tableView`.
+    private lazy var dataSource: UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID> = {
+        let dataSource = UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID>(
+            tableView: self.tableView,
+            cellProvider: self.makeCellProvider()
+        )
+        dataSource.defaultRowAnimation = .fade
+        return dataSource
+    }()
 
     /// Ghostable TableView.
     ///
@@ -95,6 +105,8 @@ final class OrderListViewController: UIViewController {
         }
     }
 
+    private var cancellables = Set<AnyCancellable>()
+
     // MARK: - View Lifecycle
 
     /// Designated initializer.
@@ -110,6 +122,12 @@ final class OrderListViewController: UIViewController {
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("Not supported")
+    }
+
+    deinit {
+        cancellables.forEach {
+            $0.cancel()
+        }
     }
 
     override func viewDidLoad() {
@@ -135,7 +153,27 @@ final class OrderListViewController: UIViewController {
 
         // Fix any _incomplete_ animation if the orders were deleted and refetched from
         // a different location (or Orders tab).
+        //
+        // We can remove this once we've replaced XLPagerTabStrip.
         tableView.reloadData()
+    }
+
+    /// Returns a function that creates cells for `dataSource`.
+    private func makeCellProvider() -> UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID>.CellProvider {
+        return { [weak self] tableView, indexPath, objectID in
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: OrderTableViewCell.reuseIdentifier, for: indexPath) as? OrderTableViewCell else {
+                fatalError("Failed to create cell \(OrderTableViewCell.reuseIdentifier)")
+            }
+            guard let self = self else {
+                return cell
+            }
+
+            let detailsViewModel = self.viewModel.detailsViewModel(withID: objectID)
+            let orderStatus = self.lookUpOrderStatus(for: detailsViewModel?.order)
+            cell.configureCell(viewModel: detailsViewModel, orderStatus: orderStatus)
+            cell.layoutIfNeeded()
+            return cell
+        }
     }
 }
 
@@ -160,8 +198,10 @@ private extension OrderListViewController {
 
         viewModel.activate()
 
-        // Reload table because the activate call above executes a performFetch()
-        tableView.reloadData()
+        /// Update the `dataSource` whenever there is a new snapshot.
+        viewModel.snapshot.sink { snapshot in
+            self.dataSource.apply(snapshot)
+        }.store(in: &cancellables)
     }
 
     /// Setup: Order status predicate
@@ -196,8 +236,7 @@ private extension OrderListViewController {
     ///
     func configureTableView() {
         tableView.delegate = self
-        // WIP Replace with DiffableDataSource later
-        // tableView.dataSource = self
+        tableView.dataSource = dataSource
 
         view.backgroundColor = .listBackground
         tableView.backgroundColor = .listBackground
@@ -275,7 +314,7 @@ extension OrderListViewController {
 extension OrderListViewController {
     @objc func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.ordersListPulledToRefresh)
-        delegate?.ordersViewControllerWillSynchronizeOrders(self)
+        delegate?.orderListViewControllerWillSynchronizeOrders(self)
         syncingCoordinator.resynchronize(reason: SyncReason.pullToRefresh.rawValue) {
             sender.endRefreshing()
         }
@@ -341,13 +380,11 @@ extension OrderListViewController {
     /// Whenever we're sync'ing an Orders Page that's beyond what we're currently displaying, this method will return *true*.
     ///
     private func mustStartFooterSpinner() -> Bool {
-        // WIP Replace with DiffableDataSource later
-        // guard let highestPageBeingSynced = syncingCoordinator.highestPageBeingSynced else {
-        //     return false
-        // }
-        //
-        // return highestPageBeingSynced * SyncingCoordinator.Defaults.pageSize > viewModel.numberOfObjects
-        return false
+        guard let highestPageBeingSynced = syncingCoordinator.highestPageBeingSynced else {
+            return false
+        }
+
+        return highestPageBeingSynced * SyncingCoordinator.Defaults.pageSize > dataSource.numberOfItems
     }
 
     /// Stops animating the Footer Spinner.
@@ -383,7 +420,6 @@ private extension OrderListViewController {
         ghostableTableView.isHidden = true
         ghostableTableView.stopGhostAnimation()
         ghostableTableView.removeGhostContent()
-        tableView.reloadData()
     }
 
     /// Displays the Error Notice.
@@ -396,7 +432,7 @@ private extension OrderListViewController {
                 return
             }
 
-            self.delegate?.ordersViewControllerWillSynchronizeOrders(self)
+            self.delegate?.orderListViewControllerWillSynchronizeOrders(self)
             self.sync(pageNumber: pageNumber, pageSize: pageSize, reason: reason)
         }
 
@@ -476,12 +512,10 @@ extension OrderListViewController: UITableViewDelegate {
             return
         }
 
-        // WIP Replace with DiffableDataSource implementation later
-        //
-        // guard let orderDetailsViewModel = viewModel.detailsViewModel(at: indexPath) else {
-        //     return
-        // }
-        let orderDetailsViewModel: OrderDetailsViewModel? = nil
+        guard let objectID = dataSource.itemIdentifier(for: indexPath),
+            let orderDetailsViewModel = viewModel.detailsViewModel(withID: objectID) else {
+                return
+        }
 
         guard let orderDetailsVC = OrderDetailsViewController.instantiatedViewControllerFromStoryboard() else {
             assertionFailure("Expected OrderDetailsViewController to be instantiated")
@@ -490,10 +524,7 @@ extension OrderListViewController: UITableViewDelegate {
 
         orderDetailsVC.viewModel = orderDetailsViewModel
 
-        // WIP Remove guard later
-        guard let order = orderDetailsViewModel?.order else {
-            return
-        }
+        let order = orderDetailsViewModel.order
         ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID,
                                                                     "status": order.statusKey])
 
@@ -501,9 +532,29 @@ extension OrderListViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        // WIP Replace with new PaginationTracker logic later
-        // let orderIndex = viewModel.objectIndex(from: indexPath)
-        // syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: orderIndex)
+        guard let itemIndex = dataSource.indexOfItem(for: indexPath) else {
+            return
+        }
+
+        syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: itemIndex)
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let reuseIdentifier = TwoColumnSectionHeaderView.reuseIdentifier
+        guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: reuseIdentifier) as? TwoColumnSectionHeaderView else {
+            return nil
+        }
+
+        header.leftText = {
+            guard let sectionIdentifier = dataSource.sectionIdentifier(for: section) else {
+                return nil
+            }
+
+            return viewModel.sectionTitleFor(sectionIdentifier: sectionIdentifier)
+        }()
+        header.rightText = nil
+
+        return header
     }
 }
 
@@ -542,16 +593,14 @@ private extension OrderListViewController {
     /// we've got cached results, or not.
     ///
     func transitionToSyncingState() {
-        // WIP Replace with DiffableDataSource logic later
-        // state = viewModel.isEmpty ? .placeholder : .syncing
+        state = dataSource.isEmpty ? .placeholder : .syncing
     }
 
     /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
     /// Transitions to `.results` or `.empty`.
     ///
     func transitionToResultsUpdatedState() {
-        // WIP Replace with DiffableDataSource logic later
-        // state = viewModel.isEmpty ? .empty : .results
+        state = dataSource.isEmpty ? .empty : .results
     }
 }
 

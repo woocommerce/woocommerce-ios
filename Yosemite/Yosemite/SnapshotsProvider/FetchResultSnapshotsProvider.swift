@@ -47,6 +47,26 @@ public typealias FetchResultSnapshot = NSDiffableDataSourceSnapshot<String, Fetc
 ///
 /// That's it! The `UITableView` should be automatically updated whenever the data changes.
 ///
+///
+/// ## Important: Permanent ObjectIDs
+///
+/// For now, we have to ensure that when inserting `MutableType` in `Storage`, we will have to
+/// obtain permanent IDs by calling `StorageType.obtainPermanentIDs`. This is because
+/// `NSFetchedResultsController` can emit snapshots that contain temporary `ObjectIDs`.
+/// Because of this, these undesirable effects can happen:
+///
+/// 1. The table can display empty cells because even though the snapshot has temporary IDs, those
+///    temporary IDs were immediately converted to permanent IDs. And hence, `self.object(withID:)`
+///    will return `nil`.
+/// 2. The table will perform double (funky) animation when showing new records. We have the option
+///    to use `NSManagedObjectContext.object(withID:)` in `self.object(withID:)` so that temporary
+///    IDs are considered and it will not return `nil`. However, the `FRC` can emit two snapshots
+///    in sequence in a short period of time. The first snapshot contains the temporary IDs and
+///    the second one contains the permanent IDs. But for `UITableViewDiffableDataSource`,
+///    the objects are “different” and it would animate the same rows in and out. Here is a sample of
+///    how this undesirable animation looks like https://tinyurl.com/y62lwzg9. There is also
+///    a related discussion about this [here](https://git.io/JUW5r).
+///
 @available(iOS 13.0, *)
 public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshotsProviderMutableType> {
 
@@ -68,7 +88,7 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
         /// those values can be converted to a user-friendly value.
         public let sectionNameKeyPath: String?
 
-        init(sortDescriptor: NSSortDescriptor, predicate: NSPredicate? = nil, sectionNameKeyPath: String? = nil) {
+        public init(sortDescriptor: NSSortDescriptor, predicate: NSPredicate? = nil, sectionNameKeyPath: String? = nil) {
             self.sortDescriptor = sortDescriptor
             self.predicate = predicate
             self.sectionNameKeyPath = sectionNameKeyPath
@@ -85,6 +105,9 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     ///
     /// In the future, we can allow this to be mutable if necessary.
     private let query: Query
+
+    /// The NotificationCenter to use for observing notifications.
+    private let notificationCenter: NotificationCenter
 
     /// The publisher that emits snapshots when the fetch results arrive and when the data changes.
     public var snapshot: AnyPublisher<FetchResultSnapshot, Never> {
@@ -109,14 +132,25 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     /// The delgate for `fetchedResultsController`.
     private lazy var hiddenFetchedResultsControllerDelegate = HiddenFetchedResultsControllerDelegate(self)
 
-    public init(storageManager: StorageManagerType, query: Query) {
+    private var objectsDidChangeObservationToken: Any?
+
+    public init(storageManager: StorageManagerType,
+                query: Query,
+                notificationCenter: NotificationCenter = .default) {
         self.storage = storageManager.viewStorage
         self.query = query
+        self.notificationCenter = notificationCenter
+    }
+
+    deinit {
+        stopObservingObjectsDidChangeNotifications()
     }
 
     /// Start fetching and emitting snapshots.
     public func start() throws {
         try fetchedResultsController.performFetch()
+
+        startObservingObjectsDidChangeNotifications()
     }
 
     /// Retrieve the immutable type pointed to by `objectID`.
@@ -138,7 +172,8 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     /// }
     /// ```
     public func object(withID objectID: FetchResultSnapshotObjectID) -> MutableType.ReadOnlyType? {
-        assert(!objectID.isTemporaryID, "Expected objectID \(objectID) to be a permanent NSManagedObjectID.")
+        // WIP This assertion will be restored soon.
+        // assert(!objectID.isTemporaryID, "Expected objectID \(objectID) to be a permanent NSManagedObjectID.")
 
         if let storageOrder = storage.loadObject(ofType: MutableType.self, with: objectID) {
             return storageOrder.toReadOnly()
@@ -147,6 +182,8 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
         }
     }
 }
+
+// MARK: - NSFetchedResultsControllerDelegate
 
 @available(iOS 13.0, *)
 private extension FetchResultSnapshotsProvider {
@@ -171,5 +208,120 @@ private extension FetchResultSnapshotsProvider {
             let snapshot = snapshot as FetchResultSnapshot
             snapshotsProvider?.snapshotSubject.send(snapshot)
         }
+    }
+}
+
+// MARK: - ObjectsDidChange Notification Handling
+
+@available(iOS 13.0, *)
+private extension FetchResultSnapshotsProvider {
+
+    /// Start observing `NSManagedObjectContextObjectsDidChange` notifications so that snapshots
+    /// for object updates will be emitted.
+    ///
+    /// - SeeAlso: maybeEmitSnapshotFromObjectsDidChangeNotification
+    func startObservingObjectsDidChangeNotifications() {
+        // Remove token in case this method was called already.
+        stopObservingObjectsDidChangeNotifications()
+
+        objectsDidChangeObservationToken =
+            notificationCenter.addObserver(forName: .NSManagedObjectContextObjectsDidChange, object: storage, queue: nil) { [weak self] notification in
+                if let self = self {
+                    self.maybeEmitSnapshotFromObjectsDidChangeNotification(notification)
+                }
+        }
+    }
+
+    /// Stop observing `NSManagedObjectContextObjectsDidChange` notifications
+    ///
+    /// - SeeAlso: startObservingObjectsDidChangeNotifications
+    func stopObservingObjectsDidChangeNotifications() {
+        if let token = objectsDidChangeObservationToken {
+            notificationCenter.removeObserver(token)
+
+            objectsDidChangeObservationToken = nil
+        }
+    }
+
+    /// Emit a snapshot with _reloaded_ items if the updated objects exist in the current
+    /// snapshot.
+    ///
+    /// Normally, the `NSFetchedResultsController` will emit new snapshots if an item is
+    /// updated:
+    ///
+    /// ```
+    /// let object = derivedStorage.loadObject(...)
+    /// object.dateCreated = Date()
+    ///
+    /// // A new snapshot will be emitted here
+    /// derivedStorage.saveIfNeeded()
+    /// ```
+    ///
+    /// This new snapshot will have the same `itemIdentifiers` (`NSManagedObjectID`) as expected.
+    /// However, this will not cause the `UITableViewDiffableDataSource` to _reload_ the
+    /// appropriate cells. Because the `itemIdentifiers` are the same,
+    /// `UITableViewDiffableDataSource` cannot tell if the underlying data (e.g. `dateCreated`)
+    /// really changed.
+    ///
+    /// This behavior becomes a problem in this scenario:
+    ///
+    /// 1. The user opens the Orders tab. All the listed orders are up to date.
+    /// 2. The user leaves the app.
+    /// 3. An order is changed on the web.
+    /// 4. The user opens the app, causing a synchronization in the background.
+    /// 5. After the sync, the updated order is received. However, `UITableViewDiffableDataSource`
+    ///    did not reload the cell. The user will be viewing stale data.
+    ///
+    /// To circumvent this, we will create a new snapshot and call
+    /// `NSDiffableDataSourceSnapshot.reloadItems` with the appropriate `NSManagedObjectIDs` of
+    /// the updated objects. This will prompt `UITableViewDiffableDataSource` to reload the cells.
+    ///
+    /// This behavior should probably be handled by `NSFetchedResultsController` itself but
+    /// it is not. ¯\_(ツ)_/¯
+    ///
+    /// There is a somewhat similar discussion about this here: https://developer.apple.com/forums/thread/120320.
+    ///
+    func maybeEmitSnapshotFromObjectsDidChangeNotification(_ notification: Notification) {
+        let didChangeNotification = ObjectsDidChangeNotification(notification)
+
+        /// Exclude object types that are not represented by `self`.
+        let objectIDsWithMatchingTypes = didChangeNotification.updatedObjects.filter {
+            $0 is MutableType
+        }.map(\.objectID)
+
+        guard !objectIDsWithMatchingTypes.isEmpty else {
+            return
+        }
+
+        let currentSnapshot = snapshotSubject.value
+        let currentObjectIDs = Set<FetchResultSnapshotObjectID>(currentSnapshot.itemIdentifiers)
+
+        // Include only `ObjectIDs` that exist in the `currentSnapshot`.
+        let objectIDsToRefresh = currentObjectIDs.intersection(objectIDsWithMatchingTypes)
+
+        guard !objectIDsToRefresh.isEmpty else {
+            return
+        }
+
+        // Copy the current snapshot and _reload_ the `ObjectIDs` of the updated objects.
+        var newSnapshot = currentSnapshot
+        newSnapshot.reloadItems(Array(objectIDsToRefresh))
+
+        snapshotSubject.send(newSnapshot)
+    }
+}
+
+/// A safer representation of the `Notification` emitted by `NotificationCenter` during
+/// `NSManagedObjectContextObjectsDidChange`.
+private struct ObjectsDidChangeNotification {
+    private let notification: Notification
+
+    init(_ notification: Notification) {
+        assert(notification.name == .NSManagedObjectContextObjectsDidChange)
+        self.notification = notification
+    }
+
+    var updatedObjects: Set<NSManagedObject> {
+        (notification.userInfo?[NSUpdatedObjectsKey] as? Set<NSManagedObject>) ?? Set()
     }
 }

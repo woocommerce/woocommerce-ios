@@ -78,7 +78,7 @@ final class ProductTypeBottomSheetListSelectorCommand: BottomSheetListSelectorCo
 
     private let onSelection: (ProductType) -> Void
 
-    init(selected: ProductType, onSelection: @escaping (ProductType) -> Void) {
+    init(selected: ProductType?, onSelection: @escaping (ProductType) -> Void) {
         self.onSelection = onSelection
 
         /// Remove from `data` the selected product type, so that it is not shown in the list.

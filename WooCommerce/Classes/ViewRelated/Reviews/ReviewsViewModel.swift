@@ -46,6 +46,7 @@ final class ReviewsViewModel {
     func removePlaceholderReviews(tableView: UITableView) {
         tableView.removeGhostContent()
         data.startForwardingEvents(to: tableView)
+        tableView.reloadData()
     }
 
     func configureResultsController(tableView: UITableView) {

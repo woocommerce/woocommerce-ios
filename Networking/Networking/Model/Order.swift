@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents an Order Entity.
 ///
-public struct Order: Decodable {
+public struct Order: Decodable, GeneratedCopiable {
     public let siteID: Int64
     public let orderID: Int64
     public let parentID: Int64

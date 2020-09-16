@@ -6,7 +6,7 @@ import Yosemite
 
 // MARK: - DashboardViewController
 //
-class DashboardViewController: UIViewController {
+final class DashboardViewController: UIViewController {
 
     // MARK: Properties
 
@@ -23,10 +23,14 @@ class DashboardViewController: UIViewController {
 
     // MARK: View Lifecycle
 
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+    init() {
+        super.init(nibName: nil, bundle: nil)
         startListeningToNotifications()
         tabBarItem.image = .statsAltImage
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     override func viewDidLoad() {
@@ -201,8 +205,11 @@ extension DashboardViewController {
 private extension DashboardViewController {
 
     @objc func settingsTapped() {
+        guard let settingsViewController = UIStoryboard.dashboard.instantiateViewController(ofClass: SettingsViewController.self) else {
+            fatalError("Cannot instantiate `SettingsViewController` from Dashboard storyboard")
+        }
         ServiceLocator.analytics.track(.settingsTapped)
-        performSegue(withIdentifier: Segues.settingsSegue, sender: nil)
+        show(settingsViewController, sender: self)
     }
 
     func pullToRefresh() {
@@ -230,14 +237,5 @@ private extension DashboardViewController {
         dashboardUI?.reloadData(completion: { [weak self] in
             self?.configureTitle()
         })
-    }
-}
-
-// MARK: - Constants
-//
-private extension DashboardViewController {
-
-    struct Segues {
-        static let settingsSegue        = "ShowSettingsViewController"
     }
 }

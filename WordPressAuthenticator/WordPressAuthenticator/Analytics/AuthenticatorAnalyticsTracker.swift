@@ -380,7 +380,7 @@ public class AuthenticatorAnalyticsTracker {
     }
     
     private func isInWPComFlowAndCanTrack() -> Bool {
-        return configuration.wpComEnabled && state.lastFlow == .wpCom
+        return configuration.wpComEnabled && [Flow.wpCom, .signup].contains(state.lastFlow)
     }
     
     private func isInPrologueFlowAndCanTrack() -> Bool {

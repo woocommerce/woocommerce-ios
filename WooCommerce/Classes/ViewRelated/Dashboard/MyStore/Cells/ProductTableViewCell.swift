@@ -54,7 +54,7 @@ class ProductTableViewCell: UITableViewCell {
         priceLabel.applyBodyStyle()
         detailLabel.applyFootnoteStyle()
         applyProductImageStyle()
-        contentView.backgroundColor = .listForeground
+        backgroundColor = .listForeground
         bottomBorderView.backgroundColor = .systemColor(.separator)
     }
 

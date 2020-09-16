@@ -377,12 +377,12 @@ private extension SiteAddressViewController {
 
 // MARK: - Instance Methods
 
-extension SiteAddressViewController {
+private extension SiteAddressViewController {
 
     /// Validates what is entered in the various form fields and, if valid,
     /// proceeds with the submit action.
     ///
-    @objc func validateForm() {
+    func validateForm() {
         view.endEditing(true)
         displayError(message: "")
 
@@ -434,9 +434,10 @@ extension SiteAddressViewController {
         })
     }
 
-    @objc func fetchSiteInfo() {
+    func fetchSiteInfo() {
         let baseSiteUrl = WordPressAuthenticator.baseSiteURL(string: loginFields.siteAddress)
         let service = WordPressComBlogService()
+
         let successBlock: (WordPressComSiteInfo) -> Void = { [weak self] siteInfo in
             guard let self = self else {
                 return
@@ -449,6 +450,7 @@ extension SiteAddressViewController {
             }
             self.presentNextControllerIfPossible(siteInfo: siteInfo)
         }
+        
         service.fetchUnauthenticatedSiteInfoForAddress(for: baseSiteUrl, success: successBlock, failure: { [weak self] error in
             self?.configureViewLoading(false)
             guard let self = self else {
@@ -459,6 +461,11 @@ extension SiteAddressViewController {
     }
 
     func presentNextControllerIfPossible(siteInfo: WordPressComSiteInfo?) {
+        guard siteInfo?.isWPCom == false else {
+            showGetStarted()
+            return
+        }
+        
         WordPressAuthenticator.shared.delegate?.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: { (error, isSelfHosted) in
             guard let originalError = error else {
 
@@ -475,7 +482,7 @@ extension SiteAddressViewController {
         })
     }
 
-    @objc func originalErrorOrError(error: NSError) -> NSError {
+    func originalErrorOrError(error: NSError) -> NSError {
         guard let err = error.userInfo[XMLRPCOriginalErrorKey] as? NSError else {
             return error
         }
@@ -485,7 +492,7 @@ extension SiteAddressViewController {
 
     /// Here we will continue with the self-hosted flow.
     ///
-    @objc func showSelfHostedUsernamePassword() {
+    func showSelfHostedUsernamePassword() {
         configureViewLoading(false)
         guard let vc = SiteCredentialsViewController.instantiate(from: .siteAddress) else {
             DDLogError("Failed to navigate from SiteAddressViewController to SiteCredentialsViewController")
@@ -502,7 +509,7 @@ extension SiteAddressViewController {
     /// Break away from the self-hosted flow.
     /// Display a username / password login screen for WP.com sites.
     ///
-    @objc func showWPUsernamePassword() {
+    func showWPUsernamePassword() {
         configureViewLoading(false)
 
         guard let vc = LoginUsernamePasswordViewController.instantiate(from: .login) else {
@@ -517,9 +524,24 @@ extension SiteAddressViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
     
+    /// If the site is WordPressDotCom, redirect to WP login.
+    ///
+    func showGetStarted() {
+        guard let vc = GetStartedViewController.instantiate(from: .getStarted) else {
+            DDLogError("Failed to navigate from SiteAddressViewController to GetStartedViewController")
+            return
+        }
+        
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        vc.errorToPresent = errorToPresent
+
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
     /// Whether the form can be submitted.
     ///
-    @objc func canSubmit() -> Bool {
+    func canSubmit() -> Bool {
         return loginFields.validateSiteForSignin()
     }
 

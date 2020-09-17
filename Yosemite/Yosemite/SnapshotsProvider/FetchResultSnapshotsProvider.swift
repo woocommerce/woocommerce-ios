@@ -191,23 +191,22 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
 @available(iOS 13.0, *)
 private extension FetchResultSnapshotsProvider {
     /// Start `fetchedResultsController` fetching and dispatching of snapshots.
+    func activateFetchedResultsController() throws {
+        try fetchedResultsController.performFetch()
+    }
+
+    /// Returns `true` if the `activateFetchedResultsController()` method was previously called.
+    var fetchedResultsControllerIsActive: Bool {
+        fetchedResultsController.fetchedObjects != nil
+    }
+
+    /// If previously activated, restart `fetchedResultsController` fetching and dispatching of snapshots.
     ///
     /// This needs to be called when:
     ///
     /// 1. This class is started in `start()`.
     /// 2. The `StorageManager` is reset.
     /// 3. When `self.query` changes.
-    func activateFetchedResultsController() throws {
-        try fetchedResultsController.performFetch()
-    }
-
-    /// Returns `true` if the `performFetch()` method was previously called, which activates
-    /// the `fetchedResultsController`.
-    var fetchedResultsControllerIsActive: Bool {
-        fetchedResultsController.fetchedObjects != nil
-    }
-
-    /// If previously activated, restart `fetchedResultsController` fetching and dispatching of snapshots.
     ///
     /// Exceptions are swallowed because:
     ///

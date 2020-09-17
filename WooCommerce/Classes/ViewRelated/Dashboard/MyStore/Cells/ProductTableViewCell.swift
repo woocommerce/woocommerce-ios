@@ -56,6 +56,7 @@ class ProductTableViewCell: UITableViewCell {
         applyProductImageStyle()
         backgroundColor = .listForeground
         bottomBorderView.backgroundColor = .systemColor(.separator)
+        selectionStyle = .default
     }
 
     private func applyProductImageStyle() {

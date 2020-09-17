@@ -144,6 +144,7 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     }
 
     deinit {
+        stopObservingStorageManagerDidResetNotifications()
         stopObservingObjectsDidChangeNotifications()
     }
 

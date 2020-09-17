@@ -66,9 +66,9 @@ class LoginPrologueViewController: LoginViewController {
         tracker.set(flow: .prologue)
         
         if isBeingPresentedInAnyWay {
-            tracker.track(step: .start)
+            tracker.track(step: .prologue)
         } else {
-            tracker.set(step: .start)
+            tracker.set(step: .prologue)
         }
         
         showiCloudKeychainLoginFlow()

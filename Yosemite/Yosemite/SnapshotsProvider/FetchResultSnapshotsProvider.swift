@@ -156,23 +156,6 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
         startObservingObjectsDidChangeNotifications()
     }
 
-    /// Start `fetchedResultsController` fetching and dispatching of snapshots.
-    ///
-    /// This needs to be called when:
-    ///
-    /// 1. This class is started in `start()`.
-    /// 2. The `StorageManager` is reset.
-    /// 3. When `self.query` changes.
-    private func activateFetchedResultsController() throws {
-        try fetchedResultsController.performFetch()
-    }
-
-    /// Returns `true` if the `performFetch()` method was previously called, which activates
-    /// the `fetchedResultsController`.
-    private var fetchedResultsControllerIsActive: Bool {
-        fetchedResultsController.fetchedObjects != nil
-    }
-
     /// Retrieve the immutable type pointed to by `objectID`.
     ///
     /// This is typically used in the `UITableViewDiffableDataSource`'s `CellProvider` in order to
@@ -199,6 +182,49 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
             return storageOrder.toReadOnly()
         } else {
             return nil
+        }
+    }
+}
+
+// MARK: - FetchedResultsController Activation
+
+@available(iOS 13.0, *)
+private extension FetchResultSnapshotsProvider {
+    /// Start `fetchedResultsController` fetching and dispatching of snapshots.
+    ///
+    /// This needs to be called when:
+    ///
+    /// 1. This class is started in `start()`.
+    /// 2. The `StorageManager` is reset.
+    /// 3. When `self.query` changes.
+    func activateFetchedResultsController() throws {
+        try fetchedResultsController.performFetch()
+    }
+
+    /// Returns `true` if the `performFetch()` method was previously called, which activates
+    /// the `fetchedResultsController`.
+    var fetchedResultsControllerIsActive: Bool {
+        fetchedResultsController.fetchedObjects != nil
+    }
+
+    /// If previously activated, restart `fetchedResultsController` fetching and dispatching of snapshots.
+    ///
+    /// Exceptions are swallowed because:
+    ///
+    /// 1. This will be called inside an `NSNotification` handler and there's no ideal way to
+    ///    propagate the exception.
+    /// 2. We assume that the throwing method, `activateFetchedResultsController()`, has already been
+    ///    previously “tested” that it works because it was already called in `start()`.
+    ///
+    func restartFetchedResultsController() {
+        guard fetchedResultsControllerIsActive else {
+            return
+        }
+
+        do {
+            try activateFetchedResultsController()
+        } catch {
+            DDLogError("⛔️ FetchResultSnapshotsProvider: Failed to restart with error \(error)")
         }
     }
 }
@@ -375,28 +401,7 @@ private extension FetchResultSnapshotsProvider {
 
         storageManagerDidResetObservationToken =
             notificationCenter.addObserver(forName: .StorageManagerDidResetStorage, object: nil, queue: nil) { _ in
-                self.restart()
-        }
-    }
-
-    /// If previously started, restart `fetchedResultsController` fetching notifications.
-    ///
-    /// Exceptions are swallowed because:
-    ///
-    /// 1. This will be called inside an `NSNotification` handler and there's no ideal way to
-    ///    propagate the exception.
-    /// 2. We assume that the throwing method, `performFetch()` (`start()`), has already been previously
-    ///    “tested” that it works because it was already called in `start()`.
-    ///
-    func restart() {
-        guard fetchedResultsControllerIsActive else {
-            return
-        }
-
-        do {
-            try activateFetchedResultsController()
-        } catch {
-            DDLogError("⛔️ FetchResultSnapshotsProvider: Failed to restart with error \(error)")
+                self.restartFetchedResultsController()
         }
     }
 

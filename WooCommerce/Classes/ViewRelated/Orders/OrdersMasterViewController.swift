@@ -77,7 +77,11 @@ final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
     /// Return the ViewControllers for "Processing" and "All Orders".
     ///
     override func viewControllers(for pagerTabStripController: PagerTabStripViewController) -> [UIViewController] {
-        makeDeprecatedViewControllers()
+        if #available(iOS 13, *) {
+            return makeViewControllers()
+        } else {
+            return makeDeprecatedViewControllers()
+        }
     }
 
 }

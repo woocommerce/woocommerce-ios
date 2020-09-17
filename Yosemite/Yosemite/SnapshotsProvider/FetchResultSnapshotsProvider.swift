@@ -209,9 +209,8 @@ private extension FetchResultSnapshotsProvider {
     ///
     /// This needs to be called when:
     ///
-    /// 1. This class is started in `start()`.
-    /// 2. The `StorageManager` is reset.
-    /// 3. When `self.query` changes.
+    /// 1. The `StorageManager` is reset.
+    /// 2. When `self.query` changes.
     ///
     /// Exceptions are swallowed because:
     ///

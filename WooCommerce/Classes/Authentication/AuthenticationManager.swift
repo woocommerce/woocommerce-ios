@@ -129,7 +129,7 @@ class AuthenticationManager: Authentication {
 //
 extension AuthenticationManager: WordPressAuthenticatorDelegate {
     func userAuthenticatedWithAppleUserID(_ appleUserID: String) {
-        keychain[WooConstants.keychainAppleIDKey] = appleUserID
+        keychain.wooAppleID = appleUserID
     }
 
     var allowWPComLogin: Bool {

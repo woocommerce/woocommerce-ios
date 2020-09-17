@@ -450,7 +450,7 @@ private extension AppDelegate {
         }
 
         // Get the Apple User ID from the keychain
-        guard let appleUserID = keychain[WooConstants.keychainAppleIDKey] else {
+        guard let appleUserID = keychain.wooAppleID else {
             DDLogInfo("checkAppleIDCredentialState: No Apple ID found.")
             return
         }
@@ -498,6 +498,6 @@ private extension AppDelegate {
     }
 
     func removeAppleIDFromKeychain() {
-        keychain[WooConstants.keychainAppleIDKey] = nil
+        keychain.wooAppleID = nil
     }
 }

@@ -72,10 +72,10 @@ class PasswordViewController: LoginViewController {
             }
         } else {
             if isMovingToParent {
-                tracker.pushState()
-                tracker.set(flow: .loginWithPassword)
+                tracker.push(flow: .loginWithPassword)
                 tracker.track(step: .start)
             } else {
+                tracker.set(flow: .loginWithPassword)
                 tracker.set(step: .start)
             }
         }
@@ -90,8 +90,8 @@ class PasswordViewController: LoginViewController {
         super.viewWillDisappear(animated)
         unregisterForKeyboardEvents()
         
-        if !trackAsPasswordChallenge {
-            tracker.popState()
+        if isBeingDismissedInAnyWay && !trackAsPasswordChallenge {
+            tracker.popFlow()
         }
     }
     

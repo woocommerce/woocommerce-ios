@@ -261,7 +261,7 @@ public class AuthenticatorAnalyticsTracker {
             appleEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedApple,
             googleEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedGoogle,
             iCloudKeychainEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedKeychainLogin,
-            prologueEnabled: false,
+            prologueEnabled: true,
             siteAddressEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress,
             wpComEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedWordPress)
     }
@@ -305,18 +305,21 @@ public class AuthenticatorAnalyticsTracker {
     
     // MARK: - State
     
-    func pushState() {
+    func push(flow: Flow) {
         let stateToPush = State(
             lastFlow: state.lastFlow,
             lastSource: state.lastSource,
             lastStep: state.lastStep)
         
         pushedState.append(stateToPush)
+        
+        state.lastFlow = flow
+        state.lastStep = .start
     }
     
     /// Pops to the previously pushed state.  If there's no previous state, this resets the state to the defaults.
     ///
-    func popState() {        
+    func popFlow() {
         guard let stateToPop = pushedState.popLast() else {
             resetState()
             return

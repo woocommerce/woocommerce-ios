@@ -62,6 +62,14 @@ class LoginPrologueViewController: LoginViewController {
         }
         
         WordPressAuthenticator.track(.loginPrologueViewed)
+
+        if isBeingPresentedInAnyWay {
+            tracker.push(flow: .prologue)
+            tracker.track(step: .start)
+        } else {
+            tracker.set(flow: .prologue)
+            tracker.set(step: .start)
+        }
         
         showiCloudKeychainLoginFlow()
     }
@@ -70,6 +78,10 @@ class LoginPrologueViewController: LoginViewController {
         super.viewWillDisappear(animated)
 
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        
+        if isBeingDismissedInAnyWay {
+            tracker.popFlow()
+        }
     }
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -153,7 +165,6 @@ class LoginPrologueViewController: LoginViewController {
                 return
             }
             
-            self.tracker.set(flow: .wpCom)
             self.tracker.track(click: .continueWithWordPressCom)
             self.continueWithDotCom()
         }

@@ -38,10 +38,10 @@ class UnifiedSignupViewController: LoginViewController {
         super.viewDidAppear(animated)
         
         if isMovingToParent {
-            tracker.pushState()
-            tracker.set(flow: .signup)
+            tracker.push(flow: .signup)
             tracker.track(step: .start)
         } else {
+            tracker.set(flow: .signup)
             tracker.set(step: .start)
         }
     }
@@ -50,7 +50,7 @@ class UnifiedSignupViewController: LoginViewController {
         super.viewWillDisappear(true)
         
         if isBeingDismissedInAnyWay {
-            tracker.popState()
+            tracker.popFlow()
         }
     }
 

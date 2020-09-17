@@ -71,14 +71,24 @@ class GetStartedViewController: LoginViewController {
         super.viewDidAppear(animated)
         
         if isMovingToParent {
+            tracker.push(flow: .wpCom)
             tracker.track(step: .start)
         } else {
+            tracker.set(flow: .wpCom)
             tracker.set(step: .start)
         }
         
         errorMessage = nil
         hiddenPasswordField?.text = nil
         hiddenPasswordField?.isAccessibilityElement = false
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(true)
+        
+        if isBeingDismissedInAnyWay {
+            tracker.popFlow()
+        }
     }
 
     // MARK: - Overrides

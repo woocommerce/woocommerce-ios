@@ -48,10 +48,10 @@ final class LoginMagicLinkViewController: LoginViewController {
         super.viewDidAppear(animated)
         
         if isMovingToParent {
-            tracker.pushState()
-            tracker.set(flow: .loginWithMagicLink)
+            tracker.push(flow: .loginWithMagicLink)
             tracker.track(step: .magicLinkRequested)
         } else {
+            tracker.set(flow: .loginWithMagicLink)
             tracker.set(step: .magicLinkRequested)
         }
     }
@@ -60,7 +60,7 @@ final class LoginMagicLinkViewController: LoginViewController {
         super.viewWillDisappear(true)
         
         if isBeingDismissedInAnyWay {
-            tracker.popState()
+            tracker.popFlow()
         }
     }
 

@@ -150,10 +150,21 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
 
     /// Start fetching and emitting snapshots.
     public func start() throws {
-        try fetchedResultsController.performFetch()
+        try performFetch()
 
         startObservingStorageManagerDidResetNotifications()
         startObservingObjectsDidChangeNotifications()
+    }
+
+    /// Start `fetchedResultsController` fetching and dispatching of snapshots.
+    ///
+    /// This needs to be called when:
+    ///
+    /// 1. This class is started in `start()`.
+    /// 2. The `StorageManager` is reset.
+    /// 3. When `self.query` changes.
+    private func performFetch() throws {
+        try fetchedResultsController.performFetch()
     }
 
     /// Returns `true` if the `start()` method was previously called.
@@ -367,7 +378,7 @@ private extension FetchResultSnapshotsProvider {
         }
     }
 
-    /// If previously started, restart fetching and re-observe notifications.
+    /// If previously started, restart `fetchedResultsController` fetching notifications.
     ///
     /// Exceptions are swallowed because:
     ///
@@ -381,11 +392,8 @@ private extension FetchResultSnapshotsProvider {
             return
         }
 
-        // We only really need to call `performFetch()` to restart everything and fix the crash.
-        // I just think it's a simpler flow to have one single method to “start” and ”restart”
-        // this class.
         do {
-            try self.start()
+            try performFetch()
         } catch {
             DDLogError("⛔️ FetchResultSnapshotsProvider: Failed to restart with error \(error)")
         }

@@ -90,6 +90,28 @@ extension OrderSearchStarterViewController: UITableViewDelegate {
 
         analytics.trackSelectionOf(orderStatusSlug: cellViewModel.slug)
 
+        let listViewController = makeOrderListViewController(for: cellViewModel)
+
+        navigationController?.pushViewController(listViewController, animated: true)
+
+        tableView.deselectSelectedRowWithAnimation(true)
+    }
+}
+
+// MARK: - KeyboardScrollable
+
+extension OrderSearchStarterViewController: KeyboardScrollable {
+    var scrollable: UIScrollView {
+        tableView
+    }
+}
+
+// MARK: - Other Private Helpers
+
+private extension OrderSearchStarterViewController {
+
+    /// Make a view controller that shows the orders with the given filter.
+    func makeOrderListViewController(for cellViewModel: OrderSearchStarterViewModel.CellViewModel) -> UIViewController {
         let emptyStateMessage: NSAttributedString = {
             guard let statusName = cellViewModel.name else {
                 return NSAttributedString(string: NSLocalizedString("We're sorry, we couldn't find any orders.",
@@ -106,23 +128,27 @@ extension OrderSearchStarterViewController: UITableViewDelegate {
 
             return message
         }()
-        let ordersViewController = OrdersViewController(
-            title: cellViewModel.name ?? NSLocalizedString("Orders", comment: "Default title for Orders List shown when tapping on the Search filter."),
-            viewModel: OrdersViewModel(statusFilter: cellViewModel.orderStatus),
-            emptyStateConfig: .simple(message: emptyStateMessage, image: .emptySearchResultsImage)
-        )
 
-        navigationController?.pushViewController(ordersViewController, animated: true)
+        let title = cellViewModel.name ?? Localization.defaultOrderListTitle
+        let emptyStateConfig = EmptyStateViewController.Config.simple(message: emptyStateMessage, image: .emptySearchResultsImage)
 
-        tableView.deselectSelectedRowWithAnimation(true)
+        if #available(iOS 13, *) {
+            return OrderListViewController(
+                title: title,
+                viewModel: .init(statusFilter: cellViewModel.orderStatus),
+                emptyStateConfig: emptyStateConfig
+            )
+        } else {
+            return OrdersViewController(
+                title: title,
+                viewModel: .init(statusFilter: cellViewModel.orderStatus),
+                emptyStateConfig: emptyStateConfig
+            )
+        }
     }
-}
 
-// MARK: - KeyboardScrollable
-
-extension OrderSearchStarterViewController: KeyboardScrollable {
-    var scrollable: UIScrollView {
-        tableView
+    enum Localization {
+        static let defaultOrderListTitle = NSLocalizedString("Orders", comment: "Default title for Orders List shown when tapping on the Search filter.")
     }
 }
 

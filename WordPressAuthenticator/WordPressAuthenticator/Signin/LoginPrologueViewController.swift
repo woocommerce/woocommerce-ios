@@ -63,11 +63,11 @@ class LoginPrologueViewController: LoginViewController {
         
         WordPressAuthenticator.track(.loginPrologueViewed)
 
+        tracker.set(flow: .prologue)
+        
         if isBeingPresentedInAnyWay {
-            tracker.push(flow: .prologue)
             tracker.track(step: .start)
         } else {
-            tracker.set(flow: .prologue)
             tracker.set(step: .start)
         }
         
@@ -78,10 +78,6 @@ class LoginPrologueViewController: LoginViewController {
         super.viewWillDisappear(animated)
 
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
-        
-        if isBeingDismissedInAnyWay {
-            tracker.popFlow()
-        }
     }
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -308,7 +304,6 @@ class LoginPrologueViewController: LoginViewController {
     /// Unified "Enter your site address" prologue button action.
     ///
     private func siteAddressTapped() {
-        tracker.set(flow: .loginWithSiteAddress)
         tracker.track(click: .loginWithSiteAddress)
 
         loginToSelfHostedSite()

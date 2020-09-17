@@ -71,11 +71,11 @@ class PasswordViewController: LoginViewController {
                 tracker.set(step: .passwordChallenge)
             }
         } else {
+            tracker.set(flow: .loginWithPassword)
+            
             if isMovingToParent {
-                tracker.push(flow: .loginWithPassword)
                 tracker.track(step: .start)
             } else {
-                tracker.set(flow: .loginWithPassword)
                 tracker.set(step: .start)
             }
         }
@@ -89,10 +89,6 @@ class PasswordViewController: LoginViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         unregisterForKeyboardEvents()
-        
-        if isBeingDismissedInAnyWay && !trackAsPasswordChallenge {
-            tracker.popFlow()
-        }
     }
     
     // MARK: - Overrides

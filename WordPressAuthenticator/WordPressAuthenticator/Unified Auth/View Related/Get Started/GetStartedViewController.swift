@@ -70,25 +70,17 @@ class GetStartedViewController: LoginViewController {
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        tracker.set(flow: .wpCom)
+        
         if isMovingToParent {
-            tracker.push(flow: .wpCom)
             tracker.track(step: .start)
         } else {
-            tracker.set(flow: .wpCom)
             tracker.set(step: .start)
         }
         
         errorMessage = nil
         hiddenPasswordField?.text = nil
         hiddenPasswordField?.isAccessibilityElement = false
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(true)
-        
-        if isBeingDismissedInAnyWay {
-            tracker.popFlow()
-        }
     }
 
     // MARK: - Overrides
@@ -544,7 +536,6 @@ private extension GetStartedViewController {
     }
     
     @objc func appleTapped() {
-        tracker.set(flow: .loginWithApple)
         tracker.track(click: .loginWithApple)
         
         AppleAuthenticator.sharedInstance.delegate = self
@@ -552,7 +543,6 @@ private extension GetStartedViewController {
     }
     
     @objc func googleTapped() {
-        tracker.set(flow: .loginWithGoogle)
         tracker.track(click: .loginWithGoogle)
         
         guard let toVC = GoogleAuthViewController.instantiate(from: .googleAuth) else {
@@ -606,6 +596,7 @@ extension GetStartedViewController: AppleAuthenticatorDelegate {
     
     func authFailedWithError(message: String) {
         displayErrorAlert(message, sourceTag: .loginApple)
+        tracker.set(flow: .wpCom)
     }
     
 }

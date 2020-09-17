@@ -52,6 +52,8 @@ final class SiteAddressViewController: LoginViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        tracker.set(flow: .loginWithSiteAddress)
+        
         if isMovingToParent {
             tracker.track(step: .start)
         } else {

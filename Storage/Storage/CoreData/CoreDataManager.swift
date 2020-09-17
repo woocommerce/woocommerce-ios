@@ -14,10 +14,6 @@ public final class CoreDataManager: StorageManagerType {
 
     private let modelsInventory: ManagedObjectModelsInventory
 
-    /// Set to a unique value whenever the storage is reset.
-    /// Used to identify a child context so that we do not perform save actions on a child context whose parent has been reset.
-    private var contextName: String?
-
     /// Designated Initializer.
     ///
     /// - Parameter name: Identifier to be used for: [database, data model, container].
@@ -128,7 +124,6 @@ public final class CoreDataManager: StorageManagerType {
     ///
     public func newDerivedStorage() -> StorageType {
         let childManagedObjectContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        childManagedObjectContext.name = contextName
         childManagedObjectContext.parent = persistentContainer.viewContext
         childManagedObjectContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         return childManagedObjectContext
@@ -137,13 +132,7 @@ public final class CoreDataManager: StorageManagerType {
     /// Saves the derived storage. Note: the closure may be called on a different thread
     ///
     public func saveDerivedType(derivedStorage: StorageType, _ closure: @escaping () -> Void) {
-        derivedStorage.perform { [weak self] in
-            guard let self = self else {
-                return
-            }
-            guard derivedStorage.name == self.contextName else {
-                return
-            }
+        derivedStorage.perform {
             derivedStorage.saveIfNeeded()
 
             self.viewStorage.perform {
@@ -159,7 +148,6 @@ public final class CoreDataManager: StorageManagerType {
         let storeCoordinator = persistentContainer.persistentStoreCoordinator
         let storeDescriptor = self.storeDescription
         let viewContext = persistentContainer.viewContext
-        contextName = "\(UUID())"
 
         viewContext.performAndWait {
             do {

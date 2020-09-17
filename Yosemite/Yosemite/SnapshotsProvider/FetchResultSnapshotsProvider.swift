@@ -150,7 +150,7 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
 
     /// Start fetching and emitting snapshots.
     public func start() throws {
-        try performFetch()
+        try activateFetchedResultsController()
 
         startObservingStorageManagerDidResetNotifications()
         startObservingObjectsDidChangeNotifications()
@@ -163,7 +163,7 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     /// 1. This class is started in `start()`.
     /// 2. The `StorageManager` is reset.
     /// 3. When `self.query` changes.
-    private func performFetch() throws {
+    private func activateFetchedResultsController() throws {
         try fetchedResultsController.performFetch()
     }
 
@@ -394,7 +394,7 @@ private extension FetchResultSnapshotsProvider {
         }
 
         do {
-            try performFetch()
+            try activateFetchedResultsController()
         } catch {
             DDLogError("⛔️ FetchResultSnapshotsProvider: Failed to restart with error \(error)")
         }

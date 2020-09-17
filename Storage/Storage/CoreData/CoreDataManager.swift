@@ -16,7 +16,7 @@ public final class CoreDataManager: StorageManagerType {
 
     /// Set to a unique value whenever the storage is reset.
     /// Used to identify a child context so that we do not perform save actions on a child context whose parent has been reset.
-    private var contextName: String?
+    private var contextName: String? = "\(UUID())"
 
     /// Designated Initializer.
     ///

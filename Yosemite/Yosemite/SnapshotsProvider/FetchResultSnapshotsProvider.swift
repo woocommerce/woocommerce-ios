@@ -155,6 +155,11 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
         startObservingObjectsDidChangeNotifications()
     }
 
+    /// Returns `true` if the `start()` method was previously called.
+    private var isStarted: Bool {
+        fetchedResultsController.fetchedObjects != nil
+    }
+
     /// Retrieve the immutable type pointed to by `objectID`.
     ///
     /// This is typically used in the `UITableViewDiffableDataSource`'s `CellProvider` in order to
@@ -333,13 +338,55 @@ private struct ObjectsDidChangeNotification {
 @available(iOS 13.0, *)
 private extension FetchResultSnapshotsProvider {
 
+    /// Observe `StorageManagerDidResetStorage` notifications so that we can restart the
+    /// `fetchedResultsController` fetching.
+    ///
+    /// This routine is to fix a crash when `CoreDataManager.reset()` is called (e.g. during
+    /// user log out). If we don't do this, it looks like the `self.fetchedResultsController`
+    /// would still be pointing to an invalid `NSManagedObjectContext`. If that is not corrected,
+    /// we would get a crash like this when something changes in the database:
+    ///
+    /// ```
+    /// [error] error: Serious application error.  Exception was caught during Core Data change
+    /// processing.  This is usually a bug within an observer of
+    /// NSManagedObjectContextObjectsDidChangeNotification.  Object's persistent store is not
+    /// reachable from this NSManagedObjectContext's coordinator with userInfo (null)
+    /// ```
+    ///
+    /// This crash comes from `NSFetchedResultsController` itself and not from the observation
+    /// in `startObservingObjectsDidChangeNotifications()`.
+    ///
     func startObservingStorageManagerDidResetNotifications() {
         // Remove just in case this method was called already.
         stopObservingStorageManagerDidResetNotifications()
 
         storageManagerDidResetObservationToken =
             notificationCenter.addObserver(forName: .StorageManagerDidResetStorage, object: nil, queue: nil) { _ in
+                self.restart()
+        }
+    }
 
+    /// If previously started, restart fetching and re-observe notifications.
+    ///
+    /// Exceptions are swallowed because:
+    ///
+    /// 1. This will be called inside an `NSNotification` handler and there's no ideal way to
+    ///    propagate the exception.
+    /// 2. We assume that the throwing method, `performFetch()` (`start()`), has already been previously
+    ///    “tested” that it works because it was already called in `start()`.
+    ///
+    func restart() {
+        guard isStarted else {
+            return
+        }
+
+        // We only really need to call `performFetch()` to restart everything and fix the crash.
+        // I just think it's a simpler flow to have one single method to “start” and ”restart”
+        // this class.
+        do {
+            try self.start()
+        } catch {
+            DDLogError("⛔️ FetchResultSnapshotsProvider: Failed to restart with error \(error)")
         }
     }
 

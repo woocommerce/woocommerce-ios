@@ -167,8 +167,9 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
         try fetchedResultsController.performFetch()
     }
 
-    /// Returns `true` if the `start()` method was previously called.
-    private var isStarted: Bool {
+    /// Returns `true` if the `performFetch()` method was previously called, which activates
+    /// the `fetchedResultsController`.
+    private var fetchedResultsControllerIsActive: Bool {
         fetchedResultsController.fetchedObjects != nil
     }
 
@@ -388,7 +389,7 @@ private extension FetchResultSnapshotsProvider {
     ///    “tested” that it works because it was already called in `start()`.
     ///
     func restart() {
-        guard isStarted else {
+        guard fetchedResultsControllerIsActive else {
             return
         }
 

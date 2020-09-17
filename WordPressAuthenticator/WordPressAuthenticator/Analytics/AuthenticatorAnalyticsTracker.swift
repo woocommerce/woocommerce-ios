@@ -261,7 +261,7 @@ public class AuthenticatorAnalyticsTracker {
             appleEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedApple,
             googleEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedGoogle,
             iCloudKeychainEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedKeychainLogin,
-            prologueEnabled: false,
+            prologueEnabled: true,
             siteAddressEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress,
             wpComEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedWordPress)
     }
@@ -288,10 +288,6 @@ public class AuthenticatorAnalyticsTracker {
     ///
     public let state = State()
     
-    /// The stored state
-    ///
-    private var pushedState = [State]()
-    
     /// The backing analytics tracking method.  Can be overridden for testing purposes.
     ///
     let track: TrackerMethod
@@ -301,30 +297,6 @@ public class AuthenticatorAnalyticsTracker {
     init(configuration: Configuration, track: @escaping TrackerMethod = WPAnalytics.track) {
         self.configuration = configuration
         self.track = track
-    }
-    
-    // MARK: - State
-    
-    func pushState() {
-        let stateToPush = State(
-            lastFlow: state.lastFlow,
-            lastSource: state.lastSource,
-            lastStep: state.lastStep)
-        
-        pushedState.append(stateToPush)
-    }
-    
-    /// Pops to the previously pushed state.  If there's no previous state, this resets the state to the defaults.
-    ///
-    func popState() {        
-        guard let stateToPop = pushedState.popLast() else {
-            resetState()
-            return
-        }
-        
-        state.lastSource = stateToPop.lastSource
-        state.lastFlow = stateToPop.lastFlow
-        state.lastStep = stateToPop.lastStep
     }
     
     /// Resets the flow and step to the defaults.  The source is left untouched, and should only be set explicitely.

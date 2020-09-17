@@ -37,20 +37,12 @@ class UnifiedSignupViewController: LoginViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        tracker.set(flow: .signup)
+        
         if isMovingToParent {
-            tracker.pushState()
-            tracker.set(flow: .signup)
             tracker.track(step: .start)
         } else {
             tracker.set(step: .start)
-        }
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(true)
-        
-        if isBeingDismissedInAnyWay {
-            tracker.popState()
         }
     }
 

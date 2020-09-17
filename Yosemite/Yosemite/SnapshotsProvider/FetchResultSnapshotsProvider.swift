@@ -133,6 +133,7 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     private lazy var hiddenFetchedResultsControllerDelegate = HiddenFetchedResultsControllerDelegate(self)
 
     private var objectsDidChangeObservationToken: Any?
+    private var storageManagerDidResetObservationToken: Any?
 
     public init(storageManager: StorageManagerType,
                 query: Query,
@@ -150,6 +151,7 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     public func start() throws {
         try fetchedResultsController.performFetch()
 
+        startObservingStorageManagerDidResetNotifications()
         startObservingObjectsDidChangeNotifications()
     }
 
@@ -323,5 +325,32 @@ private struct ObjectsDidChangeNotification {
 
     var updatedObjects: Set<NSManagedObject> {
         (notification.userInfo?[NSUpdatedObjectsKey] as? Set<NSManagedObject>) ?? Set()
+    }
+}
+
+// MARK: - StorageManager Reset Handling
+
+@available(iOS 13.0, *)
+private extension FetchResultSnapshotsProvider {
+
+    func startObservingStorageManagerDidResetNotifications() {
+        // Remove just in case this method was called already.
+        stopObservingStorageManagerDidResetNotifications()
+
+        storageManagerDidResetObservationToken =
+            notificationCenter.addObserver(forName: .StorageManagerDidResetStorage, object: nil, queue: nil) { _ in
+
+        }
+    }
+
+    /// Stop observing `StorageManagerDidResetStorage` notifications
+    ///
+    /// - SeeAlso: startObservingStorageManagerDidResetNotifications
+    func stopObservingStorageManagerDidResetNotifications() {
+        if let token = storageManagerDidResetObservationToken {
+            notificationCenter.removeObserver(token)
+
+            storageManagerDidResetObservationToken = nil
+        }
     }
 }

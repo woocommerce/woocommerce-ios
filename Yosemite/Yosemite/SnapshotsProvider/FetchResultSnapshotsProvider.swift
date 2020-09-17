@@ -101,6 +101,10 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     /// probably move this to a background `StorageType` since `UITableViewDiffableDataSource`
     /// allows consuming snapshots in the background.
     private let storage: StorageType
+    /// The `StorageManagerType` that `self.storage` belongs to.
+    ///
+    /// This is used for observing notifications.
+    private let storageManager: StorageManagerType
     /// The conditions to use when fetching the results.
     ///
     /// In the future, we can allow this to be mutable if necessary.
@@ -138,6 +142,7 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     public init(storageManager: StorageManagerType,
                 query: Query,
                 notificationCenter: NotificationCenter = .default) {
+        self.storageManager = storageManager
         self.storage = storageManager.viewStorage
         self.query = query
         self.notificationCenter = notificationCenter
@@ -399,7 +404,7 @@ private extension FetchResultSnapshotsProvider {
         stopObservingStorageManagerDidResetNotifications()
 
         storageManagerDidResetObservationToken =
-            notificationCenter.addObserver(forName: .StorageManagerDidResetStorage, object: nil, queue: nil) { _ in
+            notificationCenter.addObserver(forName: .StorageManagerDidResetStorage, object: storageManager, queue: nil) { _ in
                 self.restartFetchedResultsController()
         }
     }

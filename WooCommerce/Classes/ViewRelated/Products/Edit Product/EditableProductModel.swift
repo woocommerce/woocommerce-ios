@@ -131,6 +131,10 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
         product.downloads
     }
 
+    var isDownloadable: Bool {
+        product.downloadable
+    }
+
     var downloadLimit: Int64 {
         Int64(product.downloadLimit)
     }
@@ -156,10 +160,6 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
 
     func isShippingEnabled() -> Bool {
         product.downloadable == false && product.virtual == false
-    }
-
-    func isDownloadable() -> Bool {
-        product.downloadable
     }
 }
 

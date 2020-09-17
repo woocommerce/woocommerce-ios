@@ -4,16 +4,15 @@ import Yosemite
 /// Provides data needed for downloadable files settings.
 ///
 protocol ProductDownloadListViewModelOutput {
-    var downloads: [ProductDownloadDnD] { get }
+    var downloads: [ProductDownloadDragAndDrop] { get }
     var downloadLimit: Int64? { get }
     var downloadExpiry: Int64? { get }
 
         // Convenience Methodes
     @discardableResult
-    func remove(at index: Int) -> ProductDownloadDnD?
-    @discardableResult
-    func item(at index: Int) -> ProductDownloadDnD?
-    func insert(_ newElement: ProductDownloadDnD, at index: Int)
+    func remove(at index: Int) -> ProductDownloadDragAndDrop?
+    func item(at index: Int) -> ProductDownloadDragAndDrop?
+    func insert(_ newElement: ProductDownloadDragAndDrop, at index: Int)
     func count() -> Int
 }
 
@@ -33,10 +32,6 @@ protocol ProductDownloadListActionHandler {
     func hasUnsavedChanges() -> Bool
 }
 
-protocol ProductDownloadListDataSource {
-
-}
-
 /// Error cases that could occur in product downloadable files settings.
 ///
 enum ProductDownloadListError: Error {
@@ -44,57 +39,41 @@ enum ProductDownloadListError: Error {
     case emptyUrl
 }
 
-/// Provides view data for price settings, and handles init/UI/navigation actions needed in product price settings.
+/// Provides view data for downloadable files settings, and handles init/UI/navigation actions needed in product downloadable files settings.
 ///
 final class ProductDownloadListViewModel: ProductDownloadListViewModelOutput {
     private let product: ProductFormDataModel
 
     // Editable data
     //
-    private(set) var downloads = [ProductDownloadDnD]()
+    private(set) var downloads = [ProductDownloadDragAndDrop]()
     private(set) var downloadLimit: Int64?
     private(set) var downloadExpiry: Int64?
 
     init(product: ProductFormDataModel) {
         self.product = product
 
-        downloads = populateDataSource(product.downloads)
+        downloads = product.downloads.map { ProductDownloadDragAndDrop(download: $0) }
         downloadLimit = product.downloadLimit
         downloadExpiry = product.downloadExpiry
     }
 
     // MARK: - ProductDownloadListDataSource Methodes
     //
-    func remove(at index: Int) -> ProductDownloadDnD? {
+    func remove(at index: Int) -> ProductDownloadDragAndDrop? {
         return downloads.remove(at: index)
     }
 
-    func item(at index: Int) -> ProductDownloadDnD? {
+    func item(at index: Int) -> ProductDownloadDragAndDrop? {
         return downloads[index]
     }
 
-    func insert(_ newElement: ProductDownloadDnD, at index: Int) {
+    func insert(_ newElement: ProductDownloadDragAndDrop, at index: Int) {
         downloads.insert(newElement, at: index)
     }
 
     func count() -> Int {
         return downloads.count
-    }
-
-    func allDownloadableFiles(_ downloadableFiles: [ProductDownloadDnD]) -> [ProductDownload] {
-        var downloads = [ProductDownload]()
-        for download in downloadableFiles {
-            downloads.append(download.download)
-        }
-        return downloads
-    }
-
-    func populateDataSource(_ downloads: [ProductDownload]) -> [ProductDownloadDnD] {
-        var datasource = [ProductDownloadDnD]()
-        for download in downloads {
-            datasource.append(ProductDownloadDnD(download: download))
-        }
-        return datasource
     }
 }
 
@@ -110,7 +89,7 @@ extension ProductDownloadListViewModel: ProductDownloadListActionHandler {
 
     // Input field actions
     func handleDownloadsChange(_ downloads: [ProductDownload]) {
-        self.downloads = populateDataSource(downloads)
+        self.downloads = downloads.map { ProductDownloadDragAndDrop(download: $0) }
     }
 
     func handleDownloadLimitChange(_ downloadLimit: Int64?) {
@@ -124,7 +103,7 @@ extension ProductDownloadListViewModel: ProductDownloadListActionHandler {
     // Navigation actions
     func completeUpdating(onCompletion: ProductDownloadListViewController.Completion) {
         //TODO: Perform data validation as necessary
-        let data = ProductDownloadsEditableData(downloads: allDownloadableFiles(downloads),
+        let data = ProductDownloadsEditableData(downloads: downloads.map { $0.download },
                                                 downloadLimit: downloadLimit,
                                                 downloadExpiry: downloadExpiry)
         onCompletion(data)
@@ -137,15 +116,8 @@ extension ProductDownloadListViewModel: ProductDownloadListActionHandler {
             return true
         }
 
-        for index in 0..<downloads.count {
-            let oldDownload = product.downloads[index]
-            let newDownload = downloads[index]
+        //TODO: Check if the data has been changed and return accordingly.
 
-            if oldDownload.name != newDownload.download.name ||
-                oldDownload.fileURL != newDownload.download.fileURL {
-                return true
-            }
-        }
         return false
     }
 }

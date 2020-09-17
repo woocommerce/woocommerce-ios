@@ -87,7 +87,7 @@ private extension ProductFormActionsFactory {
         let shouldShowShippingSettingsRow = product.isShippingEnabled()
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
         let shouldShowTagsRow = isEditProductsRelease3Enabled
-        let showDownloadableProduct = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease5) && product.isDownloadable()
+        let showDownloadableProduct = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease5) && product.isDownloadable
 
         let actions: [ProductFormEditAction?] = [
             .priceSettings,
@@ -205,9 +205,9 @@ private extension ProductFormActionsFactory {
             return product.product.categories.isNotEmpty
         case .tags:
             return product.product.tags.isNotEmpty
-        // Downloadable (only the core product types for downloadable files has been handled. custom product type would be handled later) products only.
+        // Downloadable files. Only core product types for downloadable files are able to handle downloadable files.
         case .downloads:
-            return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease5) && product.isDownloadable()
+            return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease5) && product.isDownloadable
         case .briefDescription:
             return product.shortDescription.isNilOrEmpty == false
         // Affiliate products only.

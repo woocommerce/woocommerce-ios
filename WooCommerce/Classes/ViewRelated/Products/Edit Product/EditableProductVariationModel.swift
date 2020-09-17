@@ -155,16 +155,20 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
         true
     }
 
+    var isDownloadable: Bool {
+        productVariation.downloadable
+    }
+
     var downloads: [ProductDownload] {
         productVariation.downloads
     }
 
     var downloadLimit: Int64 {
-        Int64(productVariation.downloadLimit)
+        productVariation.downloadLimit
     }
 
     var downloadExpiry: Int64 {
-        Int64(productVariation.downloadExpiry)
+        productVariation.downloadExpiry
     }
 
     // Visibility logic
@@ -179,10 +183,6 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
 
     func isShippingEnabled() -> Bool {
         productVariation.downloadable == false && productVariation.virtual == false
-    }
-
-    func isDownloadable() -> Bool {
-        productVariation.downloadable
     }
 }
 

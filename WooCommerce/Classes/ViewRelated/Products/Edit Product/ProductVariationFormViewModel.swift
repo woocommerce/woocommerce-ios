@@ -205,7 +205,7 @@ extension ProductVariationFormViewModel {
                                                          parentProductSKU: parentProductSKU)
     }
 
-    func updateDownloadables(downloads: [ProductDownload]?, downloadLimit: Int64?, downloadExpiry: Int64?) {
+    func updateDownloadableFiles(downloads: [ProductDownload]?, downloadLimit: Int64?, downloadExpiry: Int64?) {
         // no-op
     }
 }

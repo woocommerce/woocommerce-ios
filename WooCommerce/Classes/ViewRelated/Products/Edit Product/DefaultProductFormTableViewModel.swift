@@ -406,11 +406,14 @@ private extension DefaultProductFormTableViewModel {
         let icon = UIImage.cloudImage
         let title = Constants.downloadsTitle
         var details = Constants.emptyDownloads
-        if product.downloads.count == 1 {
+
+        switch product.downloads.count {
+        case 1:
             details = String.localizedStringWithFormat(Constants.singularDownloadsFormat, product.downloads.count)
-        }
-        else if product.downloads.count > 1 {
+        case 2...:
             details = String.localizedStringWithFormat(Constants.pluralDownloadsFormat, product.downloads.count)
+        default:
+            details = ""
         }
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
@@ -528,16 +531,16 @@ private extension DefaultProductFormTableViewModel {
             NSLocalizedString("Variations without price won’t be shown in your store",
                               comment: "Title of the no price warning row on Product Variation main screen when a variation is enabled without a price")
 
-        // Downloads
+        // Downloadable files
         static let downloadsTitle =
             NSLocalizedString("Downloadable files",
-                              comment: "Title of the Downloadable Files row on Product main screen for a downloadable product")
+                              comment: "Title of the Downloadable Files row on Product main screen")
 
         static let emptyDownloads = NSLocalizedString("No files yet",
-                                                      comment: "Placeholder for empty product downloads")
+                                                      comment: "Placeholder for empty Downloadable Files row on Product main screen")
         static let singularDownloadsFormat = NSLocalizedString("%ld file",
-                                                            comment: "Format of the number of product downloads in singular form")
+                                                            comment: "Format of the number of Downloadable Product row in the singular form. It reads, `1 file`")
         static let pluralDownloadsFormat = NSLocalizedString("%ld files",
-                                                           comment: "Format of the number of product downloads in plural form")
+                                                           comment: "Format of the number of Downloadable Product row in the plural form. It reads, `5 files`")
     }
 }

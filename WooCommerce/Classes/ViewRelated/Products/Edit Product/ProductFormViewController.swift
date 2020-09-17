@@ -272,8 +272,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
                 showReviews()
             case .downloads:
-                ServiceLocator.analytics.track(.productDetailViewDownloadsTapped)
-                showDownloads()
+                //TODO: Add analytics
+                showDownloadableFiles()
             case .productType(_, let isEditable):
                 guard isEditable else {
                     return
@@ -902,7 +902,7 @@ private extension ProductFormViewController {
         }
         let originalData = ProductInventoryEditableData(productModel: product)
         let hasChangedData = originalData != data
-        ServiceLocator.analytics.track(.productInventorySettingsDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
+        //TODO: Add analytics
 
         guard hasChangedData else {
             return
@@ -1100,8 +1100,8 @@ private extension ProductFormViewController {
 // MARK: Action - Edit Product Downloads
 //
 private extension ProductFormViewController {
-    func showDownloads() {
-        guard let product = product as? EditableProductModel, product.isDownloadable()  else {
+    func showDownloadableFiles() {
+        guard let product = product as? EditableProductModel, product.isDownloadable  else {
             return
         }
 
@@ -1117,12 +1117,11 @@ private extension ProductFormViewController {
         }
         let originalData = ProductDownloadsEditableData(productModel: product)
         let hasChangedData = originalData != data
-        ServiceLocator.analytics.track(.productDownloadableFilesDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
 
         guard hasChangedData else {
             return
         }
-        viewModel.updateDownloadables(downloads: data.downloads, downloadLimit: data.downloadLimit, downloadExpiry: data.downloadExpiry)
+        viewModel.updateDownloadableFiles(downloads: data.downloads, downloadLimit: data.downloadLimit, downloadExpiry: data.downloadExpiry)
     }
 }
 

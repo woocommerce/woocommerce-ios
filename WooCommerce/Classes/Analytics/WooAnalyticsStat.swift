@@ -273,7 +273,6 @@ public enum WooAnalyticsStat: String {
     case productDetailViewCategoriesTapped = "product_detail_view_categories_tapped"
     case productDetailViewTagsTapped = "product_detail_view_tags_tapped"
     case productDetailViewReviewsTapped = "product_detail_view_product_reviews_tapped"
-    case productDetailViewDownloadsTapped = "product_detail_view_product_downloads_tapped"
     case productDetailViewProductTypeTapped = "product_detail_view_product_type_tapped"
     case productDetailViewGroupedProductsTapped = "product_detail_view_grouped_products_tapped"
     case productDetailViewExternalProductLinkTapped = "product_detail_view_external_product_link_tapped"
@@ -346,12 +345,6 @@ public enum WooAnalyticsStat: String {
     //
     case productDetailViewProductButtonTapped = "product_detail_view_external_tapped"
     case productDetailShareButtonTapped = "product_detail_share_button_tapped"
-
-    // Edit Product Downloadable Files Events
-    //
-    case productDownloadableFilesDoneButtonTapped = "product_downloadable_files_done_button_tapped"
-    case productDownloadableFilesAddButtonTapped = "product_downloadable_files_add_button_tapped"
-    case productDownloadableFilesMoreButtonTapped = "product_downloadable_files_More_button_tapped"
 
     // MARK: Product Settings
     //

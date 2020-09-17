@@ -84,7 +84,7 @@ protocol ProductFormViewModelProtocol {
 
     func updateStatus(_ isEnabled: Bool)
 
-    func updateDownloadables(downloads: [ProductDownload]?,
+    func updateDownloadableFiles(downloads: [ProductDownload]?,
                              downloadLimit: Int64?,
                              downloadExpiry: Int64?)
 

@@ -1,7 +1,5 @@
 import UIKit
-import CoreServices
 import Yosemite
-import WordPressUI
 
 final class ProductDownloadListViewController: UIViewController {
     private let product: ProductFormDataModel
@@ -94,7 +92,7 @@ private extension ProductDownloadListViewController {
         rightBarButtonItems.append(moreBarButton)
 
         let doneButtonTitle = NSLocalizedString("Done",
-                                               comment: "Edit product downloadable files screen - button title to add downloadable files selection")
+                                               comment: "Edit product downloadable files screen - button title to apply changes to downloadable files selection")
         let doneBarButton = UIBarButtonItem(title: doneButtonTitle,
                                              style: .done,
                                              target: self,
@@ -121,16 +119,16 @@ extension ProductDownloadListViewController {
     }
 
     @objc private func doneButtonTapped() {
-        ServiceLocator.analytics.track(.productDownloadableFilesDoneButtonTapped)
+        // TODO: - add analytics
         viewModel.completeUpdating(onCompletion: onCompletion)
     }
 
     @objc private func moreButtonTapped() {
-        ServiceLocator.analytics.track(.productDownloadableFilesMoreButtonTapped)
+        // TODO: - add analytics
     }
 
     @objc private func addButtonTapped() {
-        ServiceLocator.analytics.track(.productDownloadableFilesAddButtonTapped)
+        // TODO: - add analytics
         addEditDownloadableFile(indexPath: IndexPath(row: -1, section: -1))
     }
 
@@ -145,16 +143,7 @@ extension ProductDownloadListViewController {
 //
 extension ProductDownloadListViewController {
     func addEditDownloadableFile(indexPath: IndexPath) {
-        /*
-        let viewController = ProductDownloadFileViewController(product: product, downloadFileIndex: indexPath.row) { [weak self]
-            (fileName, fileURL, fileID, hasUnsavedChanges) in
-            self?.onAddEditDownloadableFileCompletion(fileName: fileName,
-                                                      fileURL: fileURL,
-                                                      fileID: fileID,
-                                                      hasUnsavedChanges: hasUnsavedChanges)
-        }
-        navigationController?.pushViewController(viewController, animated: true)
-        */
+
     }
 
     func onAddEditDownloadableFileCompletion(fileName: String?,
@@ -168,5 +157,50 @@ extension ProductDownloadListViewController {
         guard hasUnsavedChanges else {
             return
         }
+    }
+}
+
+// MARK: - UITableView Datasource and Delegate conformance
+//
+extension ProductDownloadListViewController: UITableViewDataSource, UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return viewModel.count()
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: ImageAndTitleAndTextTableViewCell.reuseIdentifier,
+                                                       for: indexPath) as? ImageAndTitleAndTextTableViewCell else {
+            fatalError()
+        }
+
+        if let viewModel = viewModel.item(at: indexPath.row) {
+            configureCell(cell: cell, model: viewModel.download)
+        }
+        return cell
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        addEditDownloadableFile(indexPath: indexPath)
+    }
+
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        if let item = viewModel.item(at: sourceIndexPath.row) {
+            viewModel.remove(at: destinationIndexPath.row)
+            viewModel.insert(item, at: destinationIndexPath.row)
+        }
+    }
+}
+
+// MARK: - UITableViewCell Setup
+//
+private extension ProductDownloadListViewController {
+    func configureCell(cell: ImageAndTitleAndTextTableViewCell, model: ProductDownload) {
+        let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: model.name,
+                                                                    text: model.fileURL,
+                                                                    image: UIImage.menuImage,
+                                                                    imageTintColor: .gray(.shade20),
+                                                                    numberOfLinesForText: 1)
+        cell.updateUI(viewModel: viewModel)
     }
 }

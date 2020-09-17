@@ -301,12 +301,6 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable {
         try container.encode(stockStatus.rawValue, forKey: .stockStatusKey)
         try container.encode(stockQuantity, forKey: .stockQuantity)
         try container.encode(backordersKey, forKey: .backordersKey)
-
-        // Downloadable Settings.
-        try container.encode(downloadable, forKey: .downloadable)
-        try container.encode(downloads, forKey: .downloads)
-        try container.encode(downloadLimit, forKey: .downloadLimit)
-        try container.encode(downloadExpiry, forKey: .downloadExpiry)
     }
 }
 

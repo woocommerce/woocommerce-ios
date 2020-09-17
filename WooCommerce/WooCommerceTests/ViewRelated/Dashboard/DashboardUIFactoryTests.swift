@@ -61,7 +61,7 @@ final class DashboardUIFactoryTests: XCTestCase {
     }
 
     /// Stats v4 --> v4
-    func testWhenV4IsAvailableWhileStatsV4IsLastShown() {
+    func test_when_V4_is_available_while_stats_V4_is_last_shown() {
         mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v4,
                                                             sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = true
@@ -80,7 +80,7 @@ final class DashboardUIFactoryTests: XCTestCase {
     }
 
     /// Stats v4 --> v3 --> v4
-    func testWhenV4IsUnavailableAndThenAvailableWhileStatsV4IsLastShown() {
+    func test_when_V4_is_unavailable_and_then_available_while_stats_v4_is_last_shown() {
         mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v4,
                                                             sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = false

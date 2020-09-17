@@ -46,7 +46,7 @@ final class StatsVersionCoordinatorTests: XCTestCase {
     }
 
     /// Stats v3 --> v4
-    func testWhenV4IsAvailableWhileStatsV3IsLastShown() {
+    func test_when_V4_is_available_while_stats_V3_is_last_shown() {
         // Given
         mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v3,
                                                             sessionManager: SessionManager.testingInstance)
@@ -63,7 +63,7 @@ final class StatsVersionCoordinatorTests: XCTestCase {
     }
 
     /// Stats v3 --> v3
-    func testWhenV4IsUnavailableWhileStatsV3IsLastShown() {
+    func test_when_V4_is_unavailable_while_stats_V3_is_last_shown() {
         // Given
         mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v3,
                                                             sessionManager: SessionManager.testingInstance)
@@ -81,7 +81,7 @@ final class StatsVersionCoordinatorTests: XCTestCase {
     }
 
     /// Stats v4 --> v3
-    func testWhenV4IsUnavailableWhileStatsV4IsLastShown() {
+    func test_when_V4_is_unavailable_while_stats_V4_is_last_shown() {
         // Given
         mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v4,
                                                             sessionManager: SessionManager.testingInstance)
@@ -98,7 +98,7 @@ final class StatsVersionCoordinatorTests: XCTestCase {
     }
 
     /// V4 --> v4
-    func testWhenV4IsAvailableWhileStatsV4IsLastShown() {
+    func test_when_V4_is_available_while_stats_V4_is_last_shown() {
         // Given
         mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v4,
                                                             sessionManager: SessionManager.testingInstance)

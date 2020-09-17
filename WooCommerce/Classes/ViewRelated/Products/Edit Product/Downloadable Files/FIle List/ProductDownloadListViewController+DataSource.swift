@@ -22,6 +22,7 @@ extension ProductDownloadListViewController: UITableViewDataSource, UITableViewD
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        addEditDownloadableFile(indexPath: indexPath)
     }
 
     func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {

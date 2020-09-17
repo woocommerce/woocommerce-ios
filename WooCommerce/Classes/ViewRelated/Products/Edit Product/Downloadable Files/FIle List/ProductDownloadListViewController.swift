@@ -4,6 +4,7 @@ import Yosemite
 import WordPressUI
 
 final class ProductDownloadListViewController: UIViewController {
+    private let product: ProductFormDataModel
 
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var addButton: UIButton!
@@ -17,6 +18,7 @@ final class ProductDownloadListViewController: UIViewController {
     private let onCompletion: Completion
 
     init(product: ProductFormDataModel, completion: @escaping Completion) {
+        self.product = product
         viewModel = ProductDownloadListViewModel(product: product)
         onCompletion = completion
         super.init(nibName: type(of: self).nibName, bundle: nil)
@@ -129,11 +131,42 @@ extension ProductDownloadListViewController {
 
     @objc private func addButtonTapped() {
         ServiceLocator.analytics.track(.productDownloadableFilesAddButtonTapped)
+        addEditDownloadableFile(indexPath: IndexPath(row: -1, section: -1))
     }
 
     private func presentBackNavigationActionSheet() {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
             self?.navigationController?.popViewController(animated: true)
         })
+    }
+}
+
+// MARK: Action - Add/Edit Product Downloadable File Settings
+//
+extension ProductDownloadListViewController {
+    func addEditDownloadableFile(indexPath: IndexPath) {
+        /*
+        let viewController = ProductDownloadFileViewController(product: product, downloadFileIndex: indexPath.row) { [weak self]
+            (fileName, fileURL, fileID, hasUnsavedChanges) in
+            self?.onAddEditDownloadableFileCompletion(fileName: fileName,
+                                                      fileURL: fileURL,
+                                                      fileID: fileID,
+                                                      hasUnsavedChanges: hasUnsavedChanges)
+        }
+        navigationController?.pushViewController(viewController, animated: true)
+        */
+    }
+
+    func onAddEditDownloadableFileCompletion(fileName: String?,
+                                             fileURL: String?,
+                                             fileID: String?,
+                                             hasUnsavedChanges: Bool) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+
+        guard hasUnsavedChanges else {
+            return
+        }
     }
 }

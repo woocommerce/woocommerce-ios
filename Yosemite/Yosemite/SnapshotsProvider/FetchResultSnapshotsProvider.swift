@@ -136,7 +136,7 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     /// The delgate for `fetchedResultsController`.
     private lazy var hiddenFetchedResultsControllerDelegate = HiddenFetchedResultsControllerDelegate(self)
 
-    private var objectsDidChangeObservationToken: Any?
+    private var objectsDidChangeCancellable: AnyCancellable?
     private var storageManagerDidResetObservationToken: Any?
 
     public init(storageManager: StorageManagerType,
@@ -150,7 +150,7 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
 
     deinit {
         stopObservingStorageManagerDidResetNotifications()
-        stopObservingObjectsDidChangeNotifications()
+        objectsDidChangeCancellable?.cancel()
     }
 
     /// Start fetching and emitting snapshots.
@@ -270,26 +270,14 @@ private extension FetchResultSnapshotsProvider {
     ///
     /// - SeeAlso: maybeEmitSnapshotFromObjectsDidChangeNotification
     func startObservingObjectsDidChangeNotifications() {
-        // Remove token in case this method was called already.
-        stopObservingObjectsDidChangeNotifications()
+        // Cancel in case this method was called already.
+        objectsDidChangeCancellable?.cancel()
 
-        objectsDidChangeObservationToken =
-            notificationCenter.addObserver(forName: .NSManagedObjectContextObjectsDidChange, object: storage, queue: nil) { [weak self] notification in
-                if let self = self {
-                    self.maybeEmitSnapshotFromObjectsDidChangeNotification(notification)
-                }
-        }
-    }
-
-    /// Stop observing `NSManagedObjectContextObjectsDidChange` notifications
-    ///
-    /// - SeeAlso: startObservingObjectsDidChangeNotifications
-    func stopObservingObjectsDidChangeNotifications() {
-        if let token = objectsDidChangeObservationToken {
-            notificationCenter.removeObserver(token)
-
-            objectsDidChangeObservationToken = nil
-        }
+        objectsDidChangeCancellable =
+            notificationCenter.publisher(for: .NSManagedObjectContextObjectsDidChange, object: storage)
+                .sink(receiveValue: { [weak self] notification in
+                    self?.maybeEmitSnapshotFromObjectsDidChangeNotification(notification)
+                })
     }
 
     /// Emit a snapshot with _reloaded_ items if the updated objects exist in the current

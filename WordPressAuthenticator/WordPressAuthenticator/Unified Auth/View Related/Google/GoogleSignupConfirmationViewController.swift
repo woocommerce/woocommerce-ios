@@ -33,6 +33,18 @@ class GoogleSignupConfirmationViewController: LoginViewController {
         loadRows()
         configureForAccessibility()
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        tracker.set(flow: .signupWithGoogle)
+        
+        if isBeingPresentedInAnyWay {
+            tracker.track(step: .start)
+        } else {
+            tracker.set(step: .start)
+        }
+    }
 
     // MARK: - Overrides
 

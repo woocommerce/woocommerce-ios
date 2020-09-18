@@ -194,10 +194,6 @@ public class AuthenticatorAnalyticsTracker {
         ///
         case requestMagicLink = "request_magic_link"
         
-        /// Used on the magic link screen to use password instead of magic link
-        ///
-        case loginWithPassword = "login_with_password"
-        
         /// Click on “Create new site” button after a successful signup
         ///
         case createNewSite = "create_new_site"

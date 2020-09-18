@@ -162,10 +162,7 @@ private extension GoogleAuthenticator {
                 track(.loginSocialButtonClick)
             }
         case .signup:
-            tracker.set(flow: .signupWithGoogle)
-            tracker.track(step: .start) {
-                track(.createAccountInitiated)
-            }
+            track(.createAccountInitiated)
         }
 
         guard let googleInstance = GIDSignIn.sharedInstance() else {
@@ -352,9 +349,6 @@ private extension GoogleAuthenticator {
     func createWordPressComUser(user: GIDGoogleUser, token: String, email: String) {
         SVProgressHUD.show()
         let service = SignupService()
-        
-        tracker.set(flow: .signupWithGoogle)
-        tracker.track(step: .start)
 
         service.createWPComUserWithGoogle(token: token, success: { [weak self] accountCreated, wpcomUsername, wpcomToken in
 

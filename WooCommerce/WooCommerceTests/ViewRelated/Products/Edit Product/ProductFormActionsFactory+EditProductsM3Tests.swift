@@ -105,6 +105,7 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
                                                                        .inventorySettings,
                                                                        .categories,
                                                                        .tags,
+                                                                       .downloads,
                                                                        .briefDescription,
                                                                        .productType]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)

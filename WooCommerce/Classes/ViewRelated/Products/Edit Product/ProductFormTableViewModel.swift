@@ -34,7 +34,7 @@ enum ProductFormSection: Equatable {
         case sku(viewModel: ViewModel)
         case groupedProducts(viewModel: ViewModel)
         case variations(viewModel: ViewModel)
-        case downloads(viewModel: ViewModel)
+        case downloadableFiles(viewModel: ViewModel)
         case noPriceWarning(viewModel: WarningViewModel)
         case status(viewModel: SwitchableViewModel)
 

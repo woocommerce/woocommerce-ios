@@ -127,7 +127,7 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
         product.soldIndividually
     }
 
-    var downloads: [ProductDownload] {
+    var downloadableFiles: [ProductDownload] {
         product.downloads
     }
 

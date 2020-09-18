@@ -226,7 +226,7 @@ extension ProductFormViewModel {
         // no-op: visibility is editable in product settings for `Product`
     }
 
-    func updateDownloadableFiles(downloads: [ProductDownload], downloadLimit: Int64, downloadExpiry: Int64) {
+    func updateDownloadableFiles(downloadableFiles: [ProductDownload], downloadLimit: Int64, downloadExpiry: Int64) {
         // TODO: Update the product info here
     }
 }

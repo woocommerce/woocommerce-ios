@@ -58,7 +58,7 @@ protocol ProductFormDataModel {
 
     // Product downloads
     var isDownloadable: Bool { get }
-    var downloads: [ProductDownload] { get }
+    var downloadableFiles: [ProductDownload] { get }
     var downloadLimit: Int64 { get }
     var downloadExpiry: Int64 { get }
 }

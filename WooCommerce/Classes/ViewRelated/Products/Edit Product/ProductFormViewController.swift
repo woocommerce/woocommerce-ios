@@ -271,7 +271,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             case .reviews:
                 ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
                 showReviews()
-            case .downloads:
+            case .downloadableFiles:
                 //TODO: Add analytics
                 showDownloadableFiles()
             case .productType(_, let isEditable):
@@ -1121,7 +1121,7 @@ private extension ProductFormViewController {
         guard hasChangedData else {
             return
         }
-        viewModel.updateDownloadableFiles(downloads: data.downloads, downloadLimit: data.downloadLimit, downloadExpiry: data.downloadExpiry)
+        viewModel.updateDownloadableFiles(downloadableFiles: data.downloadableFiles, downloadLimit: data.downloadLimit, downloadExpiry: data.downloadExpiry)
     }
 }
 

@@ -90,8 +90,8 @@ private extension DefaultProductFormTableViewModel {
                 return .groupedProducts(viewModel: groupedProductsRow(product: product.product))
             case .variations:
                 return .variations(viewModel: variationsRow(product: product.product))
-            case .downloads:
-                return .downloads(viewModel: downloadsRow(product: product))
+            case .downloadableFiles:
+                return .downloadableFiles(viewModel: downloadsRow(product: product))
             default:
                 assertionFailure("Unexpected action in the settings section: \(action)")
                 return nil
@@ -407,13 +407,13 @@ private extension DefaultProductFormTableViewModel {
         let title = Constants.downloadsTitle
         var details = Constants.emptyDownloads
 
-        switch product.downloads.count {
+        switch product.downloadableFiles.count {
         case 1:
-            details = String.localizedStringWithFormat(Constants.singularDownloadsFormat, product.downloads.count)
+            details = String.localizedStringWithFormat(Constants.singularDownloadsFormat, product.downloadableFiles.count)
         case 2...:
-            details = String.localizedStringWithFormat(Constants.pluralDownloadsFormat, product.downloads.count)
+            details = String.localizedStringWithFormat(Constants.pluralDownloadsFormat, product.downloadableFiles.count)
         default:
-            details = ""
+            details = Constants.emptyDownloads
         }
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,

@@ -23,7 +23,7 @@ enum ProductFormEditAction {
     // Variation only
     case variationName
     // Downloadable products only
-    case downloads
+    case downloadableFiles
     case noPriceWarning
     case status
     // Non-core products only (e.g. subscription products, booking products)
@@ -96,7 +96,7 @@ private extension ProductFormActionsFactory {
             .inventorySettings,
             shouldShowCategoriesRow ? .categories: nil,
             shouldShowTagsRow ? .tags: nil,
-            showDownloadableProduct ? .downloads: nil,
+            showDownloadableProduct ? .downloadableFiles: nil,
             .briefDescription,
             shouldShowProductTypeRow ? .productType : nil
         ]
@@ -206,7 +206,7 @@ private extension ProductFormActionsFactory {
         case .tags:
             return product.product.tags.isNotEmpty
         // Downloadable files. Only core product types for downloadable files are able to handle downloadable files.
-        case .downloads:
+        case .downloadableFiles:
             return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease5) && product.isDownloadable
         case .briefDescription:
             return product.shortDescription.isNilOrEmpty == false

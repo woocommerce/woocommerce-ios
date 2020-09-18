@@ -50,7 +50,7 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
                                                 isEditProductsRelease3Enabled: false)
 
         // Assert
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .downloads]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .downloadableFiles]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editInventorySettings, .editBriefDescription]
@@ -107,7 +107,7 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .reviews, .downloads, .productType]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .reviews, .downloadableFiles, .productType]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editInventorySettings, .editCategories, .editTags, .editBriefDescription]

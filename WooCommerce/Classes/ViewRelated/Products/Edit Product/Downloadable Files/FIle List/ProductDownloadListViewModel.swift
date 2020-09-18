@@ -4,7 +4,7 @@ import Yosemite
 /// Provides data needed for downloadable files settings.
 ///
 protocol ProductDownloadListViewModelOutput {
-    var downloads: [ProductDownloadDragAndDrop] { get }
+    var downloadableFiles: [ProductDownloadDragAndDrop] { get }
     var downloadLimit: Int64 { get }
     var downloadExpiry: Int64 { get }
 
@@ -46,14 +46,14 @@ final class ProductDownloadListViewModel: ProductDownloadListViewModelOutput {
 
     // Editable data
     //
-    private(set) var downloads = [ProductDownloadDragAndDrop]()
+    private(set) var downloadableFiles = [ProductDownloadDragAndDrop]()
     private(set) var downloadLimit: Int64
     private(set) var downloadExpiry: Int64
 
     init(product: ProductFormDataModel) {
         self.product = product
 
-        downloads = product.downloads.map { ProductDownloadDragAndDrop(download: $0) }
+        downloadableFiles = product.downloadableFiles.map { ProductDownloadDragAndDrop(download: $0) }
         downloadLimit = product.downloadLimit
         downloadExpiry = product.downloadExpiry
     }
@@ -61,19 +61,19 @@ final class ProductDownloadListViewModel: ProductDownloadListViewModelOutput {
     // MARK: - ProductDownloadListDataSource Methodes
     //
     func remove(at index: Int) -> ProductDownloadDragAndDrop? {
-        return downloads.remove(at: index)
+        return downloadableFiles.remove(at: index)
     }
 
     func item(at index: Int) -> ProductDownloadDragAndDrop? {
-        return downloads[index]
+        return downloadableFiles[index]
     }
 
     func insert(_ newElement: ProductDownloadDragAndDrop, at index: Int) {
-        downloads.insert(newElement, at: index)
+        downloadableFiles.insert(newElement, at: index)
     }
 
     func count() -> Int {
-        return downloads.count
+        return downloadableFiles.count
     }
 }
 
@@ -89,7 +89,7 @@ extension ProductDownloadListViewModel: ProductDownloadListActionHandler {
 
     // Input field actions
     func handleDownloadsChange(_ downloads: [ProductDownload]) {
-        self.downloads = downloads.map { ProductDownloadDragAndDrop(download: $0) }
+        self.downloadableFiles = downloads.map { ProductDownloadDragAndDrop(download: $0) }
     }
 
     func handleDownloadLimitChange(_ downloadLimit: Int64) {
@@ -103,7 +103,7 @@ extension ProductDownloadListViewModel: ProductDownloadListActionHandler {
     // Navigation actions
     func completeUpdating(onCompletion: ProductDownloadListViewController.Completion) {
         //TODO: Perform data validation as necessary
-        let data = ProductDownloadsEditableData(downloads: downloads.map { $0.download },
+        let data = ProductDownloadsEditableData(downloadableFiles: downloadableFiles.map { $0.download },
                                                 downloadLimit: downloadLimit,
                                                 downloadExpiry: downloadExpiry)
         onCompletion(data)
@@ -111,7 +111,7 @@ extension ProductDownloadListViewModel: ProductDownloadListActionHandler {
 
     func hasUnsavedChanges() -> Bool {
         if downloadLimit != product.downloadLimit ||
-            downloads.count != product.downloads.count ||
+            downloadableFiles.count != product.downloadableFiles.count ||
             downloadExpiry != product.downloadExpiry {
             return true
         }

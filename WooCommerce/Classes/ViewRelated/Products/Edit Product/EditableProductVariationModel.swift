@@ -159,7 +159,7 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
         productVariation.downloadable
     }
 
-    var downloads: [ProductDownload] {
+    var downloadableFiles: [ProductDownload] {
         productVariation.downloads
     }
 

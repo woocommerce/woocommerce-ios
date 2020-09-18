@@ -84,9 +84,9 @@ protocol ProductFormViewModelProtocol {
 
     func updateStatus(_ isEnabled: Bool)
 
-    func updateDownloadableFiles(downloads: [ProductDownload]?,
-                             downloadLimit: Int64?,
-                             downloadExpiry: Int64?)
+    func updateDownloadableFiles(downloads: [ProductDownload],
+                             downloadLimit: Int64,
+                             downloadExpiry: Int64)
 
     // Remote action
 

@@ -5,8 +5,8 @@ import Yosemite
 ///
 protocol ProductDownloadListViewModelOutput {
     var downloads: [ProductDownloadDragAndDrop] { get }
-    var downloadLimit: Int64? { get }
-    var downloadExpiry: Int64? { get }
+    var downloadLimit: Int64 { get }
+    var downloadExpiry: Int64 { get }
 
         // Convenience Methodes
     @discardableResult
@@ -24,8 +24,8 @@ protocol ProductDownloadListActionHandler {
 
     // Input field actions
     func handleDownloadsChange(_ downloads: [ProductDownload])
-    func handleDownloadLimitChange(_ downloadLimit: Int64?)
-    func handleDownloadExpiryChange(_ downloadExpiry: Int64?)
+    func handleDownloadLimitChange(_ downloadLimit: Int64)
+    func handleDownloadExpiryChange(_ downloadExpiry: Int64)
 
     // Navigation actions
     func completeUpdating(onCompletion: ProductDownloadListViewController.Completion)
@@ -47,8 +47,8 @@ final class ProductDownloadListViewModel: ProductDownloadListViewModelOutput {
     // Editable data
     //
     private(set) var downloads = [ProductDownloadDragAndDrop]()
-    private(set) var downloadLimit: Int64?
-    private(set) var downloadExpiry: Int64?
+    private(set) var downloadLimit: Int64
+    private(set) var downloadExpiry: Int64
 
     init(product: ProductFormDataModel) {
         self.product = product
@@ -92,11 +92,11 @@ extension ProductDownloadListViewModel: ProductDownloadListActionHandler {
         self.downloads = downloads.map { ProductDownloadDragAndDrop(download: $0) }
     }
 
-    func handleDownloadLimitChange(_ downloadLimit: Int64?) {
+    func handleDownloadLimitChange(_ downloadLimit: Int64) {
         self.downloadLimit = downloadLimit
     }
 
-    func handleDownloadExpiryChange(_ downloadExpiry: Int64?) {
+    func handleDownloadExpiryChange(_ downloadExpiry: Int64) {
         self.downloadExpiry = downloadExpiry
     }
 

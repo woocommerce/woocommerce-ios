@@ -1,3 +1,4 @@
+import Combine
 import KeychainAccess
 import WordPressAuthenticator
 
@@ -8,14 +9,23 @@ final class AppleIDCredentialChecker {
     /// Keychain access for SIWA auth token
     private lazy var keychain = Keychain(service: WooConstants.keychainServiceName)
 
-    private var cancellable: ObservationToken?
-
     private let authenticator: WordPressAuthenticator
     private let stores: StoresManager
+
+    private var cancellable: ObservationToken?
+    private var cancellables = Set<AnyCancellable>()
 
     init(authenticator: WordPressAuthenticator = WordPressAuthenticator.shared, stores: StoresManager = ServiceLocator.stores) {
         self.authenticator = authenticator
         self.stores = stores
+        observeAppDidBecomeActiveForCheckingAppleIDCredentialState()
+    }
+
+    deinit {
+        cancellable?.cancel()
+        cancellables.forEach {
+            $0.cancel()
+        }
     }
 
     func observeLoggedInStateForAppleIDObservations() {
@@ -26,6 +36,18 @@ final class AppleIDCredentialChecker {
                 self?.stopObservingAppleIDCredentialRevoked()
             }
         }
+    }
+}
+
+@available(iOS 13.0, *)
+private extension AppleIDCredentialChecker {
+    /// Checks Apple ID credential state on app launch and app switching.
+    func observeAppDidBecomeActiveForCheckingAppleIDCredentialState() {
+        NotificationCenter.default
+            .publisher(for: UIApplication.didBecomeActiveNotification)
+            .sink { [weak self] _ in
+                self?.checkAppleIDCredentialState()
+        }.store(in: &cancellables)
     }
 
     func checkAppleIDCredentialState() {

@@ -7,8 +7,8 @@ Voyez les produits qui se vendent le mieux. Consultez vos revenus globaux et aff
 ALERTES DE COMMANDE EN TEMPS RÉEL
 Recevez des notifications sur l’activité de votre boutique, notamment des nouvelles commandes et des avis sur vos produits.
 
-WooCommerce est la plateforme d’eCommerce la plus personnalisable pour développer votre boutique en ligne. Conçu sur WordPress, il contient les meilleurs outils de gestion de contenu au monde. Vente de café en ligne, cours d'espagnol, service d'abonnement à une salle de sport ou e-commerce complexe d'entreprise : visitez WooCommerce.com/start pour lancer une nouvelle boutique et donner vie à votre idée.
+WooCommerce est la plateforme d’eCommerce la plus personnalisable pour développer votre boutique en ligne. Conçu sur WordPress, il contient les meilleurs outils de gestion de contenu au monde.
 
-Prérequis : WooCommerce v3.5+, l'extension de Jetpack.
+Conditions requises : WooCommerce v3.5+, l'extension Jetpack.
 
-Voir l'avis de confidentialité pour les utilisateurs en Californie sur https ://automattic.com/privacy/#california-consumer-privacy-act-ccpa.
+Consultez l’avis de confidentialité pour les utilisateurs californiens à l’adresse https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

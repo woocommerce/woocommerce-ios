@@ -1,5 +1,0 @@
-- Oturum açmak için Apple ile giriş yapın.
-- Ürünler bölümünde yeni özelliklerle denemeler yapın. Bunları etkinleştirmek için Ayarlar'a gidin.
-- Ürünleri kolaylıkla düzenleyin: Güncellemeler artık satış fiyatı ayarlandıktan sonra ürün ayrıntılarında görüntülenir.
-- Ürünlerinizi daha iyi yönetin: En az bir varyasyonun fiyatı olmadığında net uyarılar alın.
-- Çöktü! Hay aksi. Sorun olmayan bir Ürün İncelemesi anlık bildirimine dokunun.

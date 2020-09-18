@@ -5,6 +5,7 @@
   - For a variable product, the stock status is not shown in the product details anymore when stock management is disabled since stock status is controlled at variation level.
 - [*] Sign In With Apple: if the Apple ID has been disconnected from the WordPress app (e.g. in Settings > Apple ID > Password & Security > Apps using Apple ID), the app is logged out on app launch.
 - [internal] The Order List and Orders Search → Filter has a new backend architecture (#2820). This was changed as an experiment to fix #1543. This affects iOS 13.0 users only. No new behaviors have been added. Github project: https://git.io/JUBco. 
+- [*] Orders → Search list will now show the full counts instead of “99+”. #2825
 
 
 5.0

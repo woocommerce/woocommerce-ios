@@ -10,10 +10,11 @@ final class AppleIDCredentialChecker {
 
     private var cancellable: ObservationToken?
 
-    private lazy var authenticator: WordPressAuthenticator = WordPressAuthenticator.shared
+    private let authenticator: WordPressAuthenticator
     private let stores: StoresManager
 
-    init(stores: StoresManager = ServiceLocator.stores) {
+    init(authenticator: WordPressAuthenticator = WordPressAuthenticator.shared, stores: StoresManager = ServiceLocator.stores) {
+        self.authenticator = authenticator
         self.stores = stores
     }
 

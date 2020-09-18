@@ -369,6 +369,48 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         // Then
         assertEmpty(snapshots)
     }
+
+    func test_snapshot_will_still_emit_snapshots_after_the_StorageManager_is_reset() throws {
+        // Given
+        let zanza = insertAccount(displayName: "Z", username: "Zanza")
+        try viewStorage.obtainPermanentIDs(for: [zanza])
+
+        let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
+            sortDescriptor: .init(keyPath: \StorageAccount.username, ascending: false)
+        )
+        let provider = FetchResultSnapshotsProvider(storageManager: storageManager, query: query)
+
+        var snapshots = [FetchResultSnapshot]()
+        provider.snapshot.dropFirst().sink { snapshot in
+            snapshots.append(snapshot)
+        }.store(in: &self.cancellables)
+
+        try provider.start()
+
+        // When
+        // This should emit a snapshot that is just an empty list.
+        storageManager.reset()
+
+        // Inserting new objects would trigger another snapshot
+        let sadako = insertAccount(displayName: "S", username: "Sadako")
+        try viewStorage.obtainPermanentIDs(for: [sadako])
+
+        viewStorage.saveIfNeeded()
+
+        // Then
+        XCTAssertEqual(snapshots.count, 3)
+
+        let firstSnapshot = try XCTUnwrap(snapshots.first)
+        XCTAssertEqual(firstSnapshot.itemIdentifiers, [zanza.objectID])
+
+        // The second snapshot is from the reset().
+        let secondSnapshot = snapshots[1]
+        assertEmpty(secondSnapshot.itemIdentifiers)
+
+        // The third snapshot is from the newly inserted objects after the reset()
+        let thirdSnapshot = snapshots[2]
+        XCTAssertEqual(thirdSnapshot.itemIdentifiers, [sadako.objectID])
+    }
 }
 
 @available(iOS 13.0, *)

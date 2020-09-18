@@ -53,7 +53,7 @@ final class ProductDownloadListViewModel: ProductDownloadListViewModelOutput {
     init(product: ProductFormDataModel) {
         self.product = product
 
-        downloadableFiles = product.downloadableFiles.map { ProductDownloadDragAndDrop(download: $0) }
+        downloadableFiles = product.downloadableFiles.map { ProductDownloadDragAndDrop(downloadableFile: $0) }
         downloadLimit = product.downloadLimit
         downloadExpiry = product.downloadExpiry
     }
@@ -89,7 +89,7 @@ extension ProductDownloadListViewModel: ProductDownloadListActionHandler {
 
     // Input field actions
     func handleDownloadsChange(_ downloads: [ProductDownload]) {
-        self.downloadableFiles = downloads.map { ProductDownloadDragAndDrop(download: $0) }
+        self.downloadableFiles = downloads.map { ProductDownloadDragAndDrop(downloadableFile: $0) }
     }
 
     func handleDownloadLimitChange(_ downloadLimit: Int64) {
@@ -103,7 +103,7 @@ extension ProductDownloadListViewModel: ProductDownloadListActionHandler {
     // Navigation actions
     func completeUpdating(onCompletion: ProductDownloadListViewController.Completion) {
         //TODO: Perform data validation as necessary
-        let data = ProductDownloadsEditableData(downloadableFiles: downloadableFiles.map { $0.download },
+        let data = ProductDownloadsEditableData(downloadableFiles: downloadableFiles.map { $0.downloadableFile },
                                                 downloadLimit: downloadLimit,
                                                 downloadExpiry: downloadExpiry)
         onCompletion(data)

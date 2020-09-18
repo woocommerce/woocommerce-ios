@@ -137,7 +137,7 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     private lazy var hiddenFetchedResultsControllerDelegate = HiddenFetchedResultsControllerDelegate(self)
 
     private var objectsDidChangeCancellable: AnyCancellable?
-    private var storageManagerDidResetObservationToken: Any?
+    private var storageManagerDidResetCancellable: AnyCancellable?
 
     public init(storageManager: StorageManagerType,
                 query: Query,
@@ -149,7 +149,7 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     }
 
     deinit {
-        stopObservingStorageManagerDidResetNotifications()
+        storageManagerDidResetCancellable?.cancel()
         objectsDidChangeCancellable?.cancel()
     }
 
@@ -387,23 +387,13 @@ private extension FetchResultSnapshotsProvider {
     /// in `startObservingObjectsDidChangeNotifications()`.
     ///
     func startObservingStorageManagerDidResetNotifications() {
-        // Remove just in case this method was called already.
-        stopObservingStorageManagerDidResetNotifications()
+        // Cancel just in case this method was called already.
+        storageManagerDidResetCancellable?.cancel()
 
-        storageManagerDidResetObservationToken =
-            notificationCenter.addObserver(forName: .StorageManagerDidResetStorage, object: storageManager, queue: nil) { _ in
-                self.restartFetchedResultsController()
-        }
-    }
-
-    /// Stop observing `StorageManagerDidResetStorage` notifications
-    ///
-    /// - SeeAlso: startObservingStorageManagerDidResetNotifications
-    func stopObservingStorageManagerDidResetNotifications() {
-        if let token = storageManagerDidResetObservationToken {
-            notificationCenter.removeObserver(token)
-
-            storageManagerDidResetObservationToken = nil
+        storageManagerDidResetCancellable =
+            notificationCenter.publisher(for: .StorageManagerDidResetStorage, object: storageManager as AnyObject)
+                .sink { [weak self] _ in
+                    self?.restartFetchedResultsController()
         }
     }
 }

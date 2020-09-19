@@ -360,6 +360,7 @@ private extension ProductStore {
             handleProductImages(readOnlyProduct, storageProduct, storage)
             handleProductCategories(readOnlyProduct, storageProduct, storage)
             handleProductTags(readOnlyProduct, storageProduct, storage)
+            handleProductDownloadableFiles(readOnlyProduct, storageProduct, storage)
         }
     }
 
@@ -511,6 +512,31 @@ private extension ProductStore {
             }
         }
         storageProduct.addToTags(NSOrderedSet(array: storageTags))
+    }
+
+    /// Updates, inserts, or prunes the provided StorageProduct's downloadable files using the provided read-only Product's downloadable files
+    ///
+    func handleProductDownloadableFiles(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
+
+        // Removes all the downloadable files first.
+        storageProduct.downloadableFilesArray.forEach { existingStorageDownloadableFile in
+            storage.deleteObject(existingStorageDownloadableFile)
+            storageProduct.removeFromDownloads(existingStorageDownloadableFile)
+        }
+
+        var storageDownloads = [StorageProductDownload]()
+        for readOnlyDownloadableFile in readOnlyProduct.downloads {
+
+            if let existingStorageDownloadableFile = storage.loadProductDownloadableFile(downloadableFileID: readOnlyDownloadableFile.downloadID) {
+                existingStorageDownloadableFile.update(with: readOnlyDownloadableFile)
+                storageDownloads.append(existingStorageDownloadableFile)
+            } else {
+                let newStorageDownloadableFile = storage.insertNewObject(ofType: Storage.ProductDownload.self)
+                newStorageDownloadableFile.update(with: readOnlyDownloadableFile)
+                storageDownloads.append(newStorageDownloadableFile)
+            }
+        }
+        storageProduct.addToDownloads(NSOrderedSet(array: storageDownloads))
     }
 }
 

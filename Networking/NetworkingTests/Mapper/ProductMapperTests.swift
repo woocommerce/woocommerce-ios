@@ -55,9 +55,10 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertEqual(product.totalSales, 0)
         XCTAssertTrue(product.virtual)
 
-        XCTAssertFalse(product.downloadable)
-        XCTAssertEqual(product.downloadLimit, -1)
-        XCTAssertEqual(product.downloadExpiry, -1)
+        XCTAssertTrue(product.downloadable)
+        XCTAssertEqual(product.downloads.count, 2)
+        XCTAssertEqual(product.downloadLimit, 10)
+        XCTAssertEqual(product.downloadExpiry, 1000)
 
         XCTAssertEqual(product.externalURL, "http://somewhere.com")
         XCTAssertEqual(product.taxStatusKey, "taxable")
@@ -189,6 +190,23 @@ final class ProductMapperTests: XCTestCase {
         XCTAssert(productImage.alt?.isEmpty == true)
     }
 
+    /// Test that product downloadable files are properly mapped.
+    ///
+    func test_that_product_downloadable_files_are_properly_mapped() {
+        let product = mapLoadProductResponse()
+
+        guard let files = product?.downloads else {
+            XCTFail("Failed to parse product category")
+            return
+        }
+        XCTAssertEqual(files.count, 2)
+
+        let productDownloadableFile = files[0]
+        XCTAssertEqual(productDownloadableFile.downloadID, "b6843219-775a-409d-b428-dd2ffe3af2c2")
+        XCTAssertEqual(productDownloadableFile.name, "T-shirt")
+        XCTAssertEqual(productDownloadableFile.fileURL, "https://mywootesting.mystagingwebsite.com/wp-content/uploads/2020/09/рок-метал-24-scaled.jpg")
+    }
+
     /// Test that product attributes are properly mapped
     ///
     func test_that_product_attributes_are_properly_mapped() {
@@ -253,7 +271,7 @@ private extension ProductMapperTests {
     /// Returns the ProductMapper output upon receiving `product`
     ///
     func mapLoadProductResponse() -> Product? {
-        return mapProduct(from: "product")
+        return mapProduct(from: "product-downloadable")
     }
 
     /// Returns the ProductMapper output upon receiving `product-alternative-types`

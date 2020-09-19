@@ -8,6 +8,10 @@ extension Storage.Product {
     var tagsArray: [Storage.ProductTag] {
         return tags?.toArray() ?? []
     }
+    var downloadableFilesArray: [Storage.ProductDownload] {
+        let downloadableFiles: [Storage.ProductDownload]? =  downloads?.toArray()
+        return downloadableFiles ?? []
+    }
 }
 
 // MARK: - Storage.Product: ReadOnlyConvertible
@@ -83,7 +87,7 @@ extension Storage.Product: ReadOnlyConvertible {
     public func toReadOnly() -> Yosemite.Product {
 
         let productCategories = categories?.map { $0.toReadOnly() } ?? [Yosemite.ProductCategory]()
-        let productDownloads = downloads?.map { $0.toReadOnly() } ?? [Yosemite.ProductDownload]()
+        let productDownloads = downloadableFilesArray.map { $0.toReadOnly() }
         let productTags = tagsArray.map { $0.toReadOnly() }
         let productImages = imagesArray.map { $0.toReadOnly() }
         let productAttributes = attributes?.map { $0.toReadOnly() } ?? [Yosemite.ProductAttribute]()
@@ -119,7 +123,7 @@ extension Storage.Product: ReadOnlyConvertible {
                        totalSales: Int(totalSales),
                        virtual: virtual,
                        downloadable: downloadable,
-                       downloads: productDownloads.sorted(),
+                       downloads: productDownloads,
                        downloadLimit: Int(downloadLimit),
                        downloadExpiry: Int(downloadExpiry),
                        buttonText: buttonText,

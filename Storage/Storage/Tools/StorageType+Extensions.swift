@@ -319,6 +319,13 @@ public extension StorageType {
         return firstObject(ofType: ProductTag.self, matching: predicate)
     }
 
+    /// Retrieves the Stored Product Downloadable File.
+    ///
+    func loadProductDownloadableFile(downloadableFileID: String) -> ProductDownload? {
+        let predicate = NSPredicate(format: "downloadID = %@", downloadableFileID)
+        return firstObject(ofType: ProductDownload.self, matching: predicate)
+    }
+
     /// Retrieves all of the stored ProductReviews for the provided siteID. Sorted by dateCreated, descending
     ///
     func loadProductReviews(siteID: Int64) -> [ProductReview]? {

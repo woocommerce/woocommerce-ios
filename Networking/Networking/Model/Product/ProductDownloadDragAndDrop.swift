@@ -82,7 +82,7 @@ extension ProductDownloadDragAndDrop: NSItemProviderReading {
     }
 }
 
-/// Defines all the ProductDownloadDragAndDrop CodingKeys.
+/// Defines all the `ProductDownloadDragAndDrop` CodingKeys.
 ///
 private extension ProductDownloadDragAndDrop {
     enum CodingKeys: String, CodingKey {

@@ -3,6 +3,87 @@
 
 
 
+extension Order {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        orderID: CopiableProp<Int64> = .copy,
+        parentID: CopiableProp<Int64> = .copy,
+        customerID: CopiableProp<Int64> = .copy,
+        number: CopiableProp<String> = .copy,
+        statusKey: CopiableProp<String> = .copy,
+        currency: CopiableProp<String> = .copy,
+        customerNote: NullableCopiableProp<String> = .copy,
+        dateCreated: CopiableProp<Date> = .copy,
+        dateModified: CopiableProp<Date> = .copy,
+        datePaid: NullableCopiableProp<Date> = .copy,
+        discountTotal: CopiableProp<String> = .copy,
+        discountTax: CopiableProp<String> = .copy,
+        shippingTotal: CopiableProp<String> = .copy,
+        shippingTax: CopiableProp<String> = .copy,
+        total: CopiableProp<String> = .copy,
+        totalTax: CopiableProp<String> = .copy,
+        paymentMethodTitle: CopiableProp<String> = .copy,
+        items: CopiableProp<[OrderItem]> = .copy,
+        billingAddress: NullableCopiableProp<Address> = .copy,
+        shippingAddress: NullableCopiableProp<Address> = .copy,
+        shippingLines: CopiableProp<[ShippingLine]> = .copy,
+        coupons: CopiableProp<[OrderCouponLine]> = .copy,
+        refunds: CopiableProp<[OrderRefundCondensed]> = .copy
+    ) -> Order {
+        let siteID = siteID ?? self.siteID
+        let orderID = orderID ?? self.orderID
+        let parentID = parentID ?? self.parentID
+        let customerID = customerID ?? self.customerID
+        let number = number ?? self.number
+        let statusKey = statusKey ?? self.statusKey
+        let currency = currency ?? self.currency
+        let customerNote = customerNote ?? self.customerNote
+        let dateCreated = dateCreated ?? self.dateCreated
+        let dateModified = dateModified ?? self.dateModified
+        let datePaid = datePaid ?? self.datePaid
+        let discountTotal = discountTotal ?? self.discountTotal
+        let discountTax = discountTax ?? self.discountTax
+        let shippingTotal = shippingTotal ?? self.shippingTotal
+        let shippingTax = shippingTax ?? self.shippingTax
+        let total = total ?? self.total
+        let totalTax = totalTax ?? self.totalTax
+        let paymentMethodTitle = paymentMethodTitle ?? self.paymentMethodTitle
+        let items = items ?? self.items
+        let billingAddress = billingAddress ?? self.billingAddress
+        let shippingAddress = shippingAddress ?? self.shippingAddress
+        let shippingLines = shippingLines ?? self.shippingLines
+        let coupons = coupons ?? self.coupons
+        let refunds = refunds ?? self.refunds
+
+        return Order(
+            siteID: siteID,
+            orderID: orderID,
+            parentID: parentID,
+            customerID: customerID,
+            number: number,
+            statusKey: statusKey,
+            currency: currency,
+            customerNote: customerNote,
+            dateCreated: dateCreated,
+            dateModified: dateModified,
+            datePaid: datePaid,
+            discountTotal: discountTotal,
+            discountTax: discountTax,
+            shippingTotal: shippingTotal,
+            shippingTax: shippingTax,
+            total: total,
+            totalTax: totalTax,
+            paymentMethodTitle: paymentMethodTitle,
+            items: items,
+            billingAddress: billingAddress,
+            shippingAddress: shippingAddress,
+            shippingLines: shippingLines,
+            coupons: coupons,
+            refunds: refunds
+        )
+    }
+}
+
 extension Product {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

@@ -34,7 +34,7 @@ final class StatsVersionCoordinator {
                 return
             }
 
-            let lastStatsVersion: StatsVersion = initialStatsVersion ?? StatsVersion.v3
+            let lastStatsVersion: StatsVersion = initialStatsVersion ?? StatsVersion.v4
             self.version = lastStatsVersion
 
             // Execute network request to check if the API supports the V4 stats

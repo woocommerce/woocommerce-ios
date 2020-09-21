@@ -249,7 +249,7 @@ private extension ProductInventorySettingsViewModel {
 
     func createSKUSection() -> Section {
         if let error = error {
-            return Section(errorTitle: error.alertMessage, rows: [.sku])
+            return Section(errorTitle: error.errorDescription, rows: [.sku])
         } else {
             return Section(rows: [.sku])
         }

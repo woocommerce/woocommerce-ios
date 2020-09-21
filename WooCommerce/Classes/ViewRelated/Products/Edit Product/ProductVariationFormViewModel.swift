@@ -87,15 +87,6 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
     func hasUnsavedChanges() -> Bool {
         return productVariation != originalProductVariation || productImageActionHandler.productImageStatuses.hasPendingUpload
     }
-
-    func hasProductChanged() -> Bool {
-        return productVariation != originalProductVariation
-    }
-
-    func hasPasswordChanged() -> Bool {
-        // no-op
-        return false
-    }
 }
 
 // MARK: - More menu

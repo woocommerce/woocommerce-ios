@@ -3,6 +3,8 @@ import UIKit
 import WordPressUI
 import Yosemite
 
+import class AutomatticTracks.CrashLogging
+
 /// The entry UI for adding/editing a Product.
 final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: UIViewController, UITableViewDelegate {
     typealias ProductModel = ViewModel.ProductModel
@@ -555,55 +557,26 @@ private extension ProductFormViewController {
     }
 
     func dispatchUpdateProductAndPasswordAction() {
-        let group = DispatchGroup()
-
-        // Updated Product
-        if viewModel.hasProductChanged() {
-            group.enter()
-
-            viewModel.updateProductRemotely { [weak self] result in
-                switch result {
-                case .failure(let error):
-                    let errorDescription = error.localizedDescription
-                    DDLogError("⛔️ Error updating Product: \(errorDescription)")
-                    // Dismisses the in-progress UI then presents the error alert.
-                    self?.navigationController?.dismiss(animated: true) {
-                        self?.displayError(error: error)
-                    }
-                case .success:
-                    break
+        viewModel.updateProductRemotely { [weak self] result in
+            switch result {
+            case .failure(let error):
+                DDLogError("⛔️ Error updating Product: \(error)")
+                CrashLogging.logError(error)
+                // Dismisses the in-progress UI then presents the error alert.
+                self?.navigationController?.dismiss(animated: true) {
+                    self?.displayError(error: error)
                 }
-                group.leave()
+            case .success:
+                // Dismisses the in-progress UI.
+                self?.navigationController?.dismiss(animated: true, completion: nil)
             }
-        }
-
-
-        // Update product password if available
-        if let password = viewModel.password, viewModel.hasPasswordChanged() {
-            group.enter()
-            let passwordUpdateAction = SitePostAction.updateSitePostPassword(siteID: product.siteID, postID: product.productID,
-                                                                             password: password) { [weak self] result in
-                                                                                switch result {
-                                                                                case .failure(let error):
-                                                                                    DDLogError("⛔️ Error updating product password: \(error)")
-                                                                                case .success(let password):
-                                                                                    self?.viewModel.resetPassword(password)
-                                                                                }
-                                                                                group.leave()
-            }
-            ServiceLocator.stores.dispatch(passwordUpdateAction)
-        }
-
-        group.notify(queue: .main) { [weak self] in
-            // Dismisses the in-progress UI.
-            self?.navigationController?.dismiss(animated: true, completion: nil)
         }
     }
 
     func displayError(error: ProductUpdateError?) {
         let title = NSLocalizedString("Cannot update product", comment: "The title of the alert when there is an error updating the product")
 
-        let message = error?.alertMessage
+        let message = error?.errorDescription
 
         displayErrorAlert(title: title, message: message)
     }

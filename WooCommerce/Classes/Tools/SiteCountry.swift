@@ -25,7 +25,7 @@ final class SiteCountry {
         return countryCode.readableCountry
     }
 
-    init(siteSettings: [SiteSetting] = SelectedSiteSettings.shared.siteSettings) {
+    init(siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings) {
         self.siteSettings = siteSettings
     }
 }

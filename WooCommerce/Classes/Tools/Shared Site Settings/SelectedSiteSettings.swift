@@ -1,16 +1,9 @@
 import Foundation
 import Yosemite
 
-/// Shared Settings for the selected Site
+/// Settings for the selected Site
 ///
 final class SelectedSiteSettings: NSObject {
-    /// Shared Instance
-    ///
-    static let shared: SelectedSiteSettings = {
-        let siteSettings = SelectedSiteSettings()
-        siteSettings.configureResultsController()
-        return siteSettings
-    }()
 
     /// ResultsController: Whenever settings change, I will change. We both change. The world changes.
     ///
@@ -21,6 +14,11 @@ final class SelectedSiteSettings: NSObject {
     }()
 
     public private(set) var siteSettings: [SiteSetting] = []
+
+    override init() {
+        super.init()
+        configureResultsController()
+    }
 }
 
 // MARK: - ResultsController

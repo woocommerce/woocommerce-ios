@@ -41,6 +41,10 @@ final class ServiceLocator {
     ///
     private static var _shippingSettingsService: ShippingSettingsService?
 
+    /// Selected Site Settings
+    ///
+    private static var _selectedSiteSettings: SelectedSiteSettings = SelectedSiteSettings()
+
     /// Currency Settings
     ///
     private static var _currencySettings: CurrencySettings = CurrencySettings()
@@ -108,6 +112,12 @@ final class ServiceLocator {
             return service
         }
         return shippingSettingsService
+    }
+
+    /// Provides the access point to the Site Settings for the current Site.
+    /// - Returns: An instance of SelectedSiteSettings.
+    static var selectedSiteSettings: SelectedSiteSettings {
+        return _selectedSiteSettings
     }
 
     /// Provides the access point to the Currency Settings for the current Site.

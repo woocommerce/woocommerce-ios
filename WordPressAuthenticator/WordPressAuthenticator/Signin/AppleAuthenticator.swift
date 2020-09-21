@@ -250,9 +250,6 @@ extension AppleAuthenticator: ASAuthorizationControllerDelegate {
         // Don't show error if user cancelled authentication.
         if let authorizationError = error as? ASAuthorizationError,
             authorizationError.code == .canceled {
-            
-            // If the user cancelled the dialogue, we should assume they somehow tapped to dismiss.
-            tracker.track(click: .dismiss)
             return
         }
         
@@ -260,7 +257,6 @@ extension AppleAuthenticator: ASAuthorizationControllerDelegate {
         let message = NSLocalizedString("Apple authentication failed.\nPlease make sure you are signed in to iCloud with an Apple ID that uses two-factor authentication.", comment: "Message shown when Apple authentication fails.")
         delegate?.authFailedWithError(message: message)
     }
-
 }
 
 @available(iOS 13.0, *)

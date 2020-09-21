@@ -62,6 +62,14 @@ class LoginPrologueViewController: LoginViewController {
         }
         
         WordPressAuthenticator.track(.loginPrologueViewed)
+
+        tracker.set(flow: .prologue)
+        
+        if isBeingPresentedInAnyWay {
+            tracker.track(step: .prologue)
+        } else {
+            tracker.set(step: .prologue)
+        }
         
         showiCloudKeychainLoginFlow()
     }
@@ -153,7 +161,6 @@ class LoginPrologueViewController: LoginViewController {
                 return
             }
             
-            self.tracker.set(flow: .wpCom)
             self.tracker.track(click: .continueWithWordPressCom)
             self.continueWithDotCom()
         }
@@ -297,7 +304,6 @@ class LoginPrologueViewController: LoginViewController {
     /// Unified "Enter your site address" prologue button action.
     ///
     private func siteAddressTapped() {
-        tracker.set(flow: .loginWithSiteAddress)
         tracker.track(click: .loginWithSiteAddress)
 
         loginToSelfHostedSite()

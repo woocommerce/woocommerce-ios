@@ -37,20 +37,12 @@ class UnifiedSignupViewController: LoginViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        tracker.set(flow: .signup)
+        
         if isMovingToParent {
-            tracker.pushState()
-            tracker.set(flow: .signup)
             tracker.track(step: .start)
         } else {
             tracker.set(step: .start)
-        }
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(true)
-        
-        if isBeingDismissedInAnyWay {
-            tracker.popState()
         }
     }
 
@@ -238,14 +230,18 @@ extension UnifiedSignupViewController {
 
             }, failure: { [weak self] (error: Error) in
                 DDLogError("Request for signup link email failed.")
-                // TODO: add new Tracks event. Old: .signupMagicLinkFailed
-                self?.displayError(message: ErrorMessage.magicLinkRequestFail.description())
-                self?.configureSubmitButton(animating: false)
+                
+                guard let self = self else {
+                    return
+                }
+                
+                self.tracker.track(failure: error.localizedDescription)
+                self.displayError(message: ErrorMessage.magicLinkRequestFail.description())
+                self.configureSubmitButton(animating: false)
         })
     }
 
     func didRequestSignupLink() {
-        // TODO: add new Tracks event. Old: .signupMagicLinkRequested
         WordPressAuthenticator.storeLoginInfoForTokenAuth(loginFields)
 
         guard let vc = SignupMagicLinkViewController.instantiate(from: .unifiedSignup) else {

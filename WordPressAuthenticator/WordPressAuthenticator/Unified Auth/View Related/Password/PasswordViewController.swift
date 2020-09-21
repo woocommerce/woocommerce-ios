@@ -114,14 +114,26 @@ class PasswordViewController: LoginViewController {
 
     override func displayRemoteError(_ error: Error) {
         configureViewLoading(false)
-
-        let errorCode = (error as NSError).code
-        let errorDomain = (error as NSError).domain
-        if errorDomain == WordPressComOAuthClient.WordPressComOAuthErrorDomain, errorCode == WordPressComOAuthError.invalidRequest.rawValue {
-            let message = NSLocalizedString("It seems like you've entered an incorrect password. Want to give it another try?", comment: "An error message shown when a wpcom user provides the wrong password.")
-            displayError(message: message, moveVoiceOverFocus: true)
+        
+        let nsError = error as NSError
+        let errorCode = nsError.code
+        let errorDomain = nsError.domain
+        
+        if errorDomain == WordPressComOAuthClient.WordPressComOAuthErrorDomain,
+            errorCode == WordPressComOAuthError.invalidRequest.rawValue {
+            
+            // The only difference between an incorrect password error and exceeded login limit error
+            // is the actual error string. So check for "password" in the error string, and show the custom
+            // error message. Otherwise, show the actual response error.
+            var displayMessage: String {
+                if nsError.localizedDescription.contains(NSLocalizedString("password", comment: "")) {
+                    return NSLocalizedString("It seems like you've entered an incorrect password. Want to give it another try?", comment: "An error message shown when a wpcom user provides the wrong password.")
+                }
+                return nsError.localizedDescription
+            }
+            displayError(message: displayMessage, moveVoiceOverFocus: true)
         } else {
-            displayError(error as NSError, sourceTag: sourceTag)
+            displayError(nsError, sourceTag: sourceTag)
         }
     }
 

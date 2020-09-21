@@ -644,7 +644,7 @@ extension OrderDetailsDataSource {
                 rows.append(.netAmount)
             }
 
-            if isIssueRefundsEnabled {
+            if isIssueRefundsEnabled && !isRefundedStatus {
                 rows.append(.issueRefundButton)
             }
 

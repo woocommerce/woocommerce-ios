@@ -646,8 +646,13 @@ private extension ProductFormViewController {
     func updateNavigationBar(isUpdateEnabled: Bool) {
         var rightBarButtonItems = [UIBarButtonItem]()
 
-        if isUpdateEnabled {
-            rightBarButtonItems.append(createUpdateBarButtonItem())
+        switch viewModel.formType {
+        case .add:
+            rightBarButtonItems.append(createPublishBarButtonItem())
+        case .edit:
+            if isUpdateEnabled {
+                rightBarButtonItems.append(createUpdateBarButtonItem())
+            }
         }
 
         if viewModel.canEditProductSettings() {
@@ -661,6 +666,11 @@ private extension ProductFormViewController {
         default:
             break
         }
+    }
+
+    func createPublishBarButtonItem() -> UIBarButtonItem {
+        let updateTitle = NSLocalizedString("Publish", comment: "Action for creating a new Product remotely")
+        return UIBarButtonItem(title: updateTitle, style: .done, target: self, action: #selector(updateProduct))
     }
 
     func createUpdateBarButtonItem() -> UIBarButtonItem {

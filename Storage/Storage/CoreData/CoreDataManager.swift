@@ -139,14 +139,22 @@ public final class CoreDataManager: StorageManagerType {
     public func saveDerivedType(derivedStorage: StorageType, _ closure: @escaping () -> Void) {
         derivedStorage.perform { [weak self] in
             guard let self = self else {
+                closure()
                 return
             }
-            guard derivedStorage.name == self.contextName else {
-                return
-            }
-            derivedStorage.saveIfNeeded()
+            let name = derivedStorage.name
 
-            self.viewStorage.perform {
+            self.viewStorage.perform { [weak self] in
+                guard let self = self else {
+                    closure()
+                    return
+                }
+                guard name == self.contextName else {
+                    closure()
+                    return
+                }
+
+                derivedStorage.saveIfNeeded()
                 self.viewStorage.saveIfNeeded()
                 closure()
             }

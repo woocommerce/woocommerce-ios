@@ -79,17 +79,17 @@ private extension ProductDownloadListViewController {
     func configureRightButtons() {
         var rightBarButtonItems = [UIBarButtonItem]()
 
-        let moreBarButton: UIBarButtonItem = {
+        let downloadSettingsBarButton: UIBarButtonItem = {
             let button = UIBarButtonItem(image: .moreImage,
                                          style: .plain,
                                          target: self,
-                                         action: #selector(moreButtonTapped))
+                                         action: #selector(downloadSettingsButtonTapped))
             button.accessibilityTraits = .button
-            button.accessibilityLabel = NSLocalizedString("Update products' downloadable files",
-                                                          comment: "The action to update products' downloadable files settings")
+            button.accessibilityLabel = NSLocalizedString("View downloadable file settings",
+                                                          comment: "The action to update downloadable files settings for a product")
             return button
         }()
-        rightBarButtonItems.append(moreBarButton)
+        rightBarButtonItems.append(downloadSettingsBarButton)
 
         let doneButtonTitle = NSLocalizedString("Done",
                                                 comment: """
@@ -125,7 +125,7 @@ extension ProductDownloadListViewController {
         viewModel.completeUpdating(onCompletion: onCompletion)
     }
 
-    @objc private func moreButtonTapped() {
+    @objc private func downloadSettingsButtonTapped() {
         // TODO: - add analytics
     }
 

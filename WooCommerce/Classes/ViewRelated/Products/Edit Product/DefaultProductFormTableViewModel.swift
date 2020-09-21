@@ -539,9 +539,7 @@ private extension DefaultProductFormTableViewModel {
         static let emptyDownloads = NSLocalizedString("No files yet",
                                                       comment: "Placeholder for empty Downloadable Files row on Product main screen")
         static let singularDownloadsFormat = NSLocalizedString("%ld file",
-                                                               comment: """
-Format of the number of Downloadable Product row in the singular form. It reads, `1 file`
-""")
+                                                               comment: "Format of the number of Downloadable Product row in the singular form. It reads, `1 file`")
         static let pluralDownloadsFormat = NSLocalizedString("%ld files",
                                                            comment: "Format of the number of Downloadable Product row in the plural form. It reads, `5 files`")
     }

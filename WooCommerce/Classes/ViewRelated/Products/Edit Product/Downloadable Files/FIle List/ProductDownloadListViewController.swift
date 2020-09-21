@@ -92,9 +92,7 @@ private extension ProductDownloadListViewController {
         rightBarButtonItems.append(downloadSettingsBarButton)
 
         let doneButtonTitle = NSLocalizedString("Done",
-                                                comment: """
-Edit product downloadable files screen - button title to apply changes to downloadable files selection
-""")
+                                                comment: "Edit product downloadable files screen - button title to apply changes to downloadable files selection")
         let doneBarButton = UIBarButtonItem(title: doneButtonTitle,
                                              style: .done,
                                              target: self,

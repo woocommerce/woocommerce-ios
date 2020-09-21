@@ -70,6 +70,8 @@ class GetStartedViewController: LoginViewController {
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        tracker.set(flow: .wpCom)
+        
         if isMovingToParent {
             tracker.track(step: .start)
         } else {
@@ -387,6 +389,8 @@ private extension GetStartedViewController {
         }
         
         vc.loginFields = loginFields
+        vc.trackAsPasswordChallenge = false
+        
         navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -532,7 +536,6 @@ private extension GetStartedViewController {
     }
     
     @objc func appleTapped() {
-        tracker.set(flow: .loginWithApple)
         tracker.track(click: .loginWithApple)
         
         AppleAuthenticator.sharedInstance.delegate = self
@@ -540,7 +543,6 @@ private extension GetStartedViewController {
     }
     
     @objc func googleTapped() {
-        tracker.set(flow: .loginWithGoogle)
         tracker.track(click: .loginWithGoogle)
         
         guard let toVC = GoogleAuthViewController.instantiate(from: .googleAuth) else {
@@ -594,6 +596,7 @@ extension GetStartedViewController: AppleAuthenticatorDelegate {
     
     func authFailedWithError(message: String) {
         displayErrorAlert(message, sourceTag: .loginApple)
+        tracker.set(flow: .wpCom)
     }
     
 }

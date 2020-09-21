@@ -46,22 +46,18 @@ final class LoginMagicLinkViewController: LoginViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+
+        tracker.set(flow: .loginWithMagicLink)
         
         if isMovingToParent {
-            tracker.pushState()
-            tracker.set(flow: .loginWithMagicLink)
-            tracker.track(step: .start)
+            tracker.track(step: .magicLinkRequested)
         } else {
-            tracker.set(step: .start)
+            tracker.set(step: .magicLinkRequested)
         }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
-        
-        if isBeingDismissedInAnyWay {
-            tracker.popState()
-        }
     }
 
     // MARK: - Overrides

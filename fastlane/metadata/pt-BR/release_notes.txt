@@ -1,5 +1,13 @@
-- Faça login com a Apple.
-- Experimente as novas funcionalidades na seção Produtos! Acesse Configurações para ativá-las.
-- Edite produtos com facilidade: as atualizações agora são exibidas nos detalhes do produto após ajustar o preço de venda.
-- Gerencie melhor seus produtos: receba avisos claros quando ao menos uma variação não tiver preço.
-- Adeus, falhas! Não há mais problemas ao tocar em uma notificação push de Avaliação do produto.
+Fizemos várias melhorias em Detalhes do pedido e Configurações nesta atualização.
+
+Em Detalhes do pedido, agora você pode adicionar um marcador de posição "Visitante" quando o nome do cliente não é fornecido. Na subseção Detalhes do produto, corrigimos a falha que fechava toda a seção ao clicar fora de "Adicione mais detalhes".
+
+Em Configurações, o botão "Solicitação de funcionalidade" foi substituído por "Enviar feedback".
+
+Também fizemos alterações para quando Produtos estiver ativado em Configurações > Funcionalidades experimentais:
+
+1. Você pode fazer algumas edições básicas para produtos não essenciais, como assinaturas, que são introduzidas por plugins externos e não são definidas por padrão nos quatro grupos essenciais do WooCommerce (simples, variável, vinculado e em grupo). Você pode também alterar configurações do produto, imagens, nome, descrição, preço, inventário, tags, categorias e breve descrição.
+2. Agora é possível editar configurações de envio e inventário referentes a variações de produto, incluindo status do estoque.
+3. A linha de avaliações ficará oculta se as avaliações estiverem desativadas.
+4. Você pode abrir a tela de avaliações do produto mesmo que não tenha nenhuma avaliação.
+5. O suporte para VoiceOver em Detalhes do produto agora inclui o cabeçalho de imagens e o nome do produto.

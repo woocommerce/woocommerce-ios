@@ -1,5 +1,14 @@
-- Connectez-vous avec Apple.
-- Testez les nouvelles fonctionnalités dans la section Produits ! Allez dans Réglages pour les activer.
-- Modifiez facilement les produits : les mises à jour s’affichent désormais dans les détails du produit une fois le prix de vente modifié.
-- Gérez mieux vos produits : recevez des avertissements clairs quand au moins une variante n’a pas de prix.
-- Plus d’incident ! Appuyez sur une notification push Avis sur le produit sans problèmes.
+Cette mise à jour nous permet d'annoncer pas mal d'améliorations apportées aux Détails de la commande et aux Paramètres.
+
+Dans Détails de la commande, vous pouvez ajouter un espace réservé « Invité » lorsque le nom d'un client n'est pas spécifié. Dans la sous-section Détails du produit, nous avons résolu le problème technique qui faisait disparaître la section « Ajouter plus de détails » lorsque l'utilisateur cliquait en-dehors de la section.
+
+Dans Paramètres, le bouton « Demande de fonctionnalité » a été remplacé par « Envoyer un commentaire ».
+
+Nous avons également apporté plusieurs modifications lorsque le commutateur Produits est activé dans Paramètres > Fonctionnalités expérimentales :
+
+1. Vous pouvez apporter des modifications de base à des produits essentiels, tels que des abonnements, qui sont introduits par des extensions externes et non définies par défaut dans les quatre groupes fondamentaux de WooCommerce (simple, variable, lié et groupé). Vous pouvez modifier les images, le nom, la description, le prix, l'inventaire, les étiquettes, les catégories, la courte description et les paramètres de produit.
+2. Les paramètres de stock et d'expédition pour les variantes de produits, y compris le statut du stock, peuvent maintenant être modifiés.
+3. La ligne des avis est masquée si les avis sont désactivés.
+4. 
+Vous pouvez ouvrir l'écran d'avis sur le produit, même s'il n'y a aucun avis.
+5. La prise en charge de VoiceOver dans Détails du produit inclut désormais l'en-tête des images et le nom du produit.

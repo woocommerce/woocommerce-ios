@@ -58,6 +58,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
             }
 
             actionsFactory = ProductFormActionsFactory(product: product,
+                                                       formType: formType,
                                                        isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
             productSubject.send(product)
         }
@@ -93,6 +94,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.originalProduct = product
         self.product = product
         self.actionsFactory = ProductFormActionsFactory(product: product,
+                                                        formType: formType,
                                                         isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
         self.isUpdateEnabledSubject = PublishSubject<Bool>()
 

@@ -90,7 +90,7 @@ final class CoreDataIterativeMigrator {
         var debugMessages = [String]()
 
         guard modelsToMigrate.count > 1 else {
-            return (false, [])
+            return (false, ["Skipping migration. Unexpectedly found less than 2 models to perform a migration."])
         }
 
         // Migrate between each model. Count - 2 because of zero-based index and we want

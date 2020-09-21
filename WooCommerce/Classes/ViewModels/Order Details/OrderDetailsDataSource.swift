@@ -11,6 +11,9 @@ final class OrderDetailsDataSource: NSObject {
     /// This is only used to pass as a dependency to `OrderDetailsResultsControllers`.
     private let storageManager: StorageManagerType
 
+    /// Used while the `issueRefunds` feature is under development
+    private let isIssueRefundsEnabled: Bool
+
     private(set) var order: Order
     private let couponLines: [OrderCouponLine]?
 
@@ -141,10 +144,13 @@ final class OrderDetailsDataSource: NSObject {
 
     private let imageService: ImageService = ServiceLocator.imageService
 
-    init(order: Order, storageManager: StorageManagerType = ServiceLocator.storageManager) {
+    init(order: Order,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         isIssueRefundsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.issueRefunds)) {
         self.storageManager = storageManager
         self.order = order
         self.couponLines = order.coupons
+        self.isIssueRefundsEnabled = isIssueRefundsEnabled
 
         super.init()
     }
@@ -638,7 +644,9 @@ extension OrderDetailsDataSource {
                 rows.append(.netAmount)
             }
 
-            rows.append(.issueRefundButton)
+            if isIssueRefundsEnabled {
+                rows.append(.issueRefundButton)
+            }
 
             return Section(title: Title.payment, rows: rows)
         }()

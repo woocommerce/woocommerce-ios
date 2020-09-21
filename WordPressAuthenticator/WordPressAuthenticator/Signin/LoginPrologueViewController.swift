@@ -199,7 +199,7 @@ class LoginPrologueViewController: LoginViewController {
             self.continueWithDotCom()
         }
 
-        if configuration.enableUnifiedSiteAddress {
+        if configuration.enableUnifiedAuth {
             buttonViewController.setupBottomButton(title: siteAddressTitle, isPrimary: false, accessibilityIdentifier: "Prologue Self Hosted Button") { [weak self] in
                 self?.siteAddressTapped()
             }

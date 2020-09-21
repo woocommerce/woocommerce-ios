@@ -246,7 +246,7 @@ import AuthenticationServices
     /// Returns a Site Address view controller: allows the user to log into a WordPress.org website.
     ///
     @objc public class func signinForWPOrg() -> UIViewController? {
-        guard WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress else {
+        guard WordPressAuthenticator.shared.configuration.enableUnifiedAuth else {
             return LoginSiteAddressViewController.instantiate(from: .login)
         }
         

@@ -251,6 +251,8 @@ private extension OrderDetailsDataSource {
             configureSummary(cell: cell)
         case let cell as WooBasicTableViewCell where row == .refundedProducts:
             configureRefundedProducts(cell)
+        case let cell as IssueRefundTableViewCell:
+            configureIssueRefundButton(cell: cell)
         default:
             fatalError("Unidentified customer info row type")
         }
@@ -443,6 +445,13 @@ private extension OrderDetailsDataSource {
         }
     }
 
+    // TODO: Change: actions
+    private func configureIssueRefundButton(cell: IssueRefundTableViewCell) {
+        cell.onIssueRefundTouchUp = {
+            print("Issue refund pressed")
+        }
+    }
+
     private func configureTracking(cell: OrderTrackingTableViewCell, at indexPath: IndexPath) {
         guard let tracking = orderTracking(at: indexPath) else {
             return
@@ -628,6 +637,8 @@ extension OrderDetailsDataSource {
                 rows.append(contentsOf: refunds)
                 rows.append(.netAmount)
             }
+
+            rows.append(.issueRefundButton)
 
             return Section(title: Title.payment, rows: rows)
         }()
@@ -923,6 +934,7 @@ extension OrderDetailsDataSource {
         case fulfillButton
         case details
         case refundedProducts
+        case issueRefundButton
         case customerNote
         case shippingAddress
         case shippingMethod
@@ -952,6 +964,8 @@ extension OrderDetailsDataSource {
                 return WooBasicTableViewCell.reuseIdentifier
             case .refundedProducts:
                 return WooBasicTableViewCell.reuseIdentifier
+            case .issueRefundButton:
+                return IssueRefundTableViewCell.reuseIdentifier
             case .customerNote:
                 return CustomerNoteTableViewCell.reuseIdentifier
             case .shippingAddress:

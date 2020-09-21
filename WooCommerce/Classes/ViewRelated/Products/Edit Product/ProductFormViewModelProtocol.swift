@@ -42,6 +42,8 @@ protocol ProductFormViewModelProtocol {
 
     func canViewProductInStore() -> Bool
 
+    func canShareProduct() -> Bool
+
     // Update actions
 
     func updateName(_ name: String)

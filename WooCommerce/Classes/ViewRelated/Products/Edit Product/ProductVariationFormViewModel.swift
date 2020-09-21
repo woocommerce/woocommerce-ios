@@ -93,12 +93,16 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
 //
 extension ProductVariationFormViewModel {
     func canEditProductSettings() -> Bool {
-        return false
+        false
     }
 
     func canViewProductInStore() -> Bool {
         // no-op
-        return false
+        false
+    }
+
+    func canShareProduct() -> Bool {
+        false
     }
 }
 

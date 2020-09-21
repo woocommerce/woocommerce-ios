@@ -197,9 +197,11 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             }
         }
 
-        actionSheet.addDefaultActionWithTitle(ActionSheetStrings.share) { [weak self] _ in
-            ServiceLocator.analytics.track(.productDetailShareButtonTapped)
-            self?.displayShareProduct()
+        if viewModel.canShareProduct() {
+            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.share) { [weak self] _ in
+                ServiceLocator.analytics.track(.productDetailShareButtonTapped)
+                self?.displayShareProduct()
+            }
         }
 
         actionSheet.addDefaultActionWithTitle(ActionSheetStrings.productSettings) { [weak self] _ in

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-09-02 15:54:47+0000 */
+/* Translation-Revision-Date: 2020-09-16 10:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -7,7 +7,7 @@
 "#%1$@ %2$@ %3$@" = "#%1$@ %2$@ %3$@";
 
 /* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
-"#%@" = "#%@";
+"#%@ %@" = "#%1$@ %2$@";
 
 /* In Order Details, the pattern to show the billed person's full name. For example, “John Doe”. The %1$@ is the first name. The %2$@ is the last name. */
 "%1$@ %2$@" = "%1$@ %2$@";
@@ -148,6 +148,9 @@
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
 "Add a note" = "Ajouter une note";
+
+/* The action to add a product */
+"Add a product" = "Ajouter un produit";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Ajouter une image du produit";
@@ -299,8 +302,7 @@
 /* A descriptive label prefix. Example: 'Backorders: not allowed' */
 "Backorders:" = "Commandes en réapprovisionnement :";
 
-/* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}.
-   VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
+/* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "Nombre de barres %1$i, %2$@, ";
 
 /* Begin fulfill order button title */
@@ -323,6 +325,9 @@
 
 /* Placeholder of the text field for editing the button text for an external/affiliate product */
 "Buy Product" = "Acheter le produit";
+
+/* Legal disclaimer for logging in. The underscores _..._ denote underline. */
+"By continuing, you agree to our _Terms of Service_." = "En continuant, vous acceptez nos _Conditions d'utilisation_.";
 
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "En vous inscrivant, vous acceptez les _Conditions d'Utilisation_.";
@@ -439,7 +444,8 @@
 /* Button title. Tapping begins log in using Google. */
 "Continue with Google" = "Continuer avec Google";
 
-/* Button title. Tapping begins our normal log in process. */
+/* Button title. Takes the user to the login by email flow.
+   Button title. Tapping begins our normal log in process. */
 "Continue with WordPress.com" = "Continuer avec WordPress.com";
 
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
@@ -625,7 +631,8 @@
 /* Email address text field placeholder */
 "Email" = "E-mail";
 
-/* Placeholder for a textfield. The user may enter their email address. */
+/* Accessibility label for the email address text field.
+   Placeholder for a textfield. The user may enter their email address. - Placeholder for the email address textfield. */
 "Email address" = "Adresse de contact";
 
 /* Label for yes/no switch - emailing the note to customer. */
@@ -683,9 +690,15 @@
 /* Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site. */
 "Enter your account information for %@." = "Saisissez vos informations de compte pour %@.";
 
+/* Instruction text on the initial email address entry screen. */
+"Enter your email address to log in or create a WordPress.com account." = "Entrez votre adresse e-mail pour vous connecter ou créez un compte WordPress.com.";
+
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "Saisissez votre mot de passe à la place.";
+
+/* Button title. Takes the user to the login by site address flow. */
+"Enter your site address" = "Saisissez l’adresse de votre site";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -711,9 +724,6 @@
 
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
-
-/* Navigates to the feature request screen */
-"Feature Request" = "Demande de fonctionnalité";
 
 /* Featured Product switch in Product Catalog Visibility */
 "Featured Product" = "Produit mis en avant";
@@ -752,11 +762,14 @@
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "Obtenez des informations sur les performances des produits de votre boutique";
 
+/* View title for initial auth views. */
+"Get Started" = "Commencer";
+
+/* The button title for a secondary call-to-action button. When the user wants to try sending a magic link instead of entering a password. */
+"Get a login link by email" = "Obtenir un lien de connexion par e-mail";
+
 /* Subtitle for Help Center */
 "Get answers to questions you have" = "Obtenez les réponses à vos questions";
-
-/* View title for initial auth views. */
-"Getting Started" = "Commencer";
 
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "Obtention des informations du compte";
@@ -782,6 +795,10 @@
 
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "Groupes de produits";
+
+/* In Order Details, the name of the billed person when there are no name and last name.
+   In Order List, the name of the billed person when there are no name and last name. */
+"Guest" = "Invité";
 
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "COMMENT POUVONS-NOUS VOUS AIDER ?";
@@ -861,6 +878,9 @@
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "If you already have a store, you’ll need to install the free Jetpack plugin and connect it to your WordPress.com account." = "Si vous possédez déjà une boutique, vous devrez installer l’extension Jetpack gratuite et la connecter à votre compte WordPress.com.";
 
+/* Legal disclaimer for signing up. The underscores _..._ denote underline. */
+"If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Si vous continuez avec Apple ou Google sans disposer au préalable d’un compte WordPress.com, vous créez un compte et acceptez nos _Conditions d'utilisation_.";
+
 /* Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
 "In stock" = "En stock";
@@ -903,6 +923,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site that isn't a valid URL. */
 "Invalid URL, please check if you wrote a valid site address." = "URL non valide, veuillez vérifier que l'adresse de site saisie est valide.";
+
+/* Error message generated when announcement service is unable to return a valid endpoint. */
+"Invalid endpoint" = "Point de terminaison non valide";
 
 /* No comment provided by engineer. */
 "Invalid username" = "Identifiant non valide";
@@ -966,6 +989,9 @@
 
 /* Description of the Action sheet option when the user wants to change the Product type to external product */
 "Link a product to an external website" = "Lier un produit à un site Web externe";
+
+/* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
+"List of images of the product" = "Liste des images du produit";
 
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "Chargement de la commande";
@@ -1236,6 +1262,9 @@
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "Informations de suivi facultatives";
 
+/* Divider on initial auth view separating auth options. */
+"Or" = "Ou";
+
 /* Label for button to log in using site address. Underscores _..._ denote underline. */
 "Or log in by _entering your site address_." = "Ou connectez-vous en saisissant l'adresse de votre site.";
 
@@ -1405,9 +1434,6 @@
 /* Title for the first page in the Orders tab. */
 "Processing" = "En cours";
 
-/* Shown while the app waits for the account process to complete. */
-"Processing Account" = "Traitement du compte";
-
 /* Description for Top Performers left column header
    Product section title - Product section title if there is only one product. - Section header title for the product */
 "Product" = "Produit";
@@ -1538,9 +1564,6 @@
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Tarif standard : %@";
 
-/* Banner action button text in my store when stats will be deprecated */
-"Remind me later" = "Me le rappeler ultérieurement";
-
 /* Confirm button on the alert when the user taps to delete a Product image */
 "Remove" = "Supprimer";
 
@@ -1562,7 +1585,7 @@
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Réinitialiser le journal d'activité";
 
-/* The secondary call-to-action button title text, for when the user can't remember their password. */
+/* The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "Réinitialiser votre mot de passe";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
@@ -1672,6 +1695,9 @@
 
 /* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
 "Selected Store" = "Boutique sélectionnée";
+
+/* Presents a survey to gather feedback from the user. */
+"Send Feedback" = "Envoyer la réaction";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
 "Send Link" = "Envoyer le lien";
@@ -2166,6 +2192,9 @@
    Placeholder in the Product Title row on Product form screen. - Product details screen — product title descriptive label */
 "Title" = "Titre";
 
+/* VoiceOver accessibility hint, informing the user about the title of a product in product detail screen. */
+"Title of the product" = "Titre du produit";
+
 /* Action sheet option to sort products by ascending product name */
 "Title: A to Z" = "Titre : A à Z";
 
@@ -2372,9 +2401,6 @@
    Updated on <date> */
 "Updated on %@" = "Mises à jour le %@";
 
-/* Banner title in my store when stats will be deprecated */
-"Upgrade to keep seeing your stats" = "Mettre à niveau pour continuer de voir vos statistiques";
-
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */
 "Username" = "Identifiant";
@@ -2476,7 +2502,7 @@
 "We'll email you a magic link that'll log you in instantly, no password needed. Hunt and peck no more!" = "Nous allons vous envoyer un lien magique qui vous connectera instantanément, sans mot de passe. Fini la frappe au clavier !";
 
 /* Instruction text on the Sign Up screen. */
-"We'll email you a magic link to create your new WordPress.com account." = "Nous allons vous envoyer un e-mail contenant un lien magique pour créer votre nouveau compte WordPress.com.";
+"We'll email you a signup link to create your new WordPress.com account." = "Nous allons vous envoyer un e-mail contenant un lien de connexion pour créer votre nouveau compte WordPress.com.";
 
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales." = "Vous serez informé lorsque vous recevrez une nouvelle commande. En attendant, découvrez comment vous pouvez améliorer les ventes de votre boutique.";
@@ -2500,6 +2526,9 @@
 /* The info of the Work In Progress top banner on the Products tab. */
 "We've added more editing functionalities to products! You can now update images, see previews and share your products." = "Nous avons ajouté d’autres fonctionnalités d’édition aux produits ! Vous pouvez désormais mettre à jour des images, afficher des aperçus et partager vos produits.";
 
+/* Instruction text after a signup Magic Link was requested. */
+"We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Nous vous avons envoyé un lien d’inscription pour créer votre nouveau compte WordPress.com. Consultez vos e-mails sur cet appareil et appuyez sur le lien dans l’e-mail que vous avez reçu de WordPress.com.";
+
 /* Statistical unit - a single week */
 "Week" = "Semaine";
 
@@ -2514,12 +2543,6 @@
 
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "Poids : %1$@%2$@";
-
-/* Instruction text after a signup Magic Link was requested. */
-"We’ve emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Nous vous avons envoyé un lien d’inscription par e-mail pour créer votre nouveau compte WordPress.com. Consultez vos e-mails sur cet appareil et appuyez sur le lien dans l’e-mail que vous avez reçu de WordPress.com.";
-
-/* Banner caption in my store when the stats will be deprecated */
-"We’ve rolled out improvements to our analytics. Upgrade to WooCommerce 4.0 or above or install WooCommerce Admin plugin to keep seeing your stats after September 1, 2020." = "Nous avons apporté des améliorations à nos analyses. Effectuez la mise à niveau vers WooCommerce 4.0 ou version supérieure ou installez l’extension WooCommerce Admin pour continuer de voir vos statistiques après le 1er septembre 2020.";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "Qu’elle est l’adresse de mon site ?";

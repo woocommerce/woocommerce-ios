@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-09-04 08:54:04+0000 */
+/* Translation-Revision-Date: 2020-09-17 08:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -7,7 +7,7 @@
 "#%1$@ %2$@ %3$@" = "#%1$@ %2$@ %3$@";
 
 /* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
-"#%@" = "#%@";
+"#%@ %@" = "#%1$@ %2$@";
 
 /* In Order Details, the pattern to show the billed person's full name. For example, “John Doe”. The %1$@ is the first name. The %2$@ is the last name. */
 "%1$@ %2$@" = "%2$@%1$@";
@@ -148,6 +148,9 @@
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
 "Add a note" = "新增備註";
+
+/* The action to add a product */
+"Add a product" = "新增商品";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "請新增產品圖片";
@@ -299,8 +302,7 @@
 /* A descriptive label prefix. Example: 'Backorders: not allowed' */
 "Backorders:" = "無庫存下單：";
 
-/* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}.
-   VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
+/* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "長條數目 %1$i, %2$@,";
 
 /* Begin fulfill order button title */
@@ -323,6 +325,9 @@
 
 /* Placeholder of the text field for editing the button text for an external/affiliate product */
 "Buy Product" = "購買產品";
+
+/* Legal disclaimer for logging in. The underscores _..._ denote underline. */
+"By continuing, you agree to our _Terms of Service_." = "繼續操作即代表你同意我們的_服務條款_。";
 
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "註冊即代表你同意我們的「服務條款」。";
@@ -439,7 +444,8 @@
 /* Button title. Tapping begins log in using Google. */
 "Continue with Google" = "繼續使用 Google";
 
-/* Button title. Tapping begins our normal log in process. */
+/* Button title. Takes the user to the login by email flow.
+   Button title. Tapping begins our normal log in process. */
 "Continue with WordPress.com" = "繼續使用 WordPress.com";
 
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
@@ -625,7 +631,8 @@
 /* Email address text field placeholder */
 "Email" = "電子郵件";
 
-/* Placeholder for a textfield. The user may enter their email address. */
+/* Accessibility label for the email address text field.
+   Placeholder for a textfield. The user may enter their email address. - Placeholder for the email address textfield. */
 "Email address" = "電子郵件地址";
 
 /* Label for yes/no switch - emailing the note to customer. */
@@ -683,9 +690,15 @@
 /* Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site. */
 "Enter your account information for %@." = "請輸入你的 %@ 帳號資訊。";
 
+/* Instruction text on the initial email address entry screen. */
+"Enter your email address to log in or create a WordPress.com account." = "請輸入你的電子郵件地址以登入或建立 WordPress.com 帳號。";
+
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "請改為輸入你的密碼。";
+
+/* Button title. Takes the user to the login by site address flow. */
+"Enter your site address" = "請輸入你的網站位址";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -711,9 +724,6 @@
 
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
-
-/* Navigates to the feature request screen */
-"Feature Request" = "功能要求";
 
 /* Featured Product switch in Product Catalog Visibility */
 "Featured Product" = "特色商品";
@@ -752,11 +762,14 @@
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "深入瞭解產品在商店上的成效";
 
+/* View title for initial auth views. */
+"Get Started" = "開始使用";
+
+/* The button title for a secondary call-to-action button. When the user wants to try sending a magic link instead of entering a password. */
+"Get a login link by email" = "透過電子郵件取得登入連結";
+
 /* Subtitle for Help Center */
 "Get answers to questions you have" = "取得問題的解答";
-
-/* View title for initial auth views. */
-"Getting Started" = "開始使用";
 
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "取得帳號資訊";
@@ -782,6 +795,10 @@
 
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "已加入群組的產品";
+
+/* In Order Details, the name of the billed person when there are no name and last name.
+   In Order List, the name of the billed person when there are no name and last name. */
+"Guest" = "訪客";
 
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "需要哪方面的協助呢？";
@@ -861,6 +878,9 @@
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "If you already have a store, you’ll need to install the free Jetpack plugin and connect it to your WordPress.com account." = "若你已擁有商店，則需要安裝免費 Jetpack 外掛程式，並連結至你的 WordPress.com 帳號。";
 
+/* Legal disclaimer for signing up. The underscores _..._ denote underline. */
+"If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "如果你繼續使用 Apple 或 Google 操作且尚未擁有 WordPress.com 帳號，即表示你正在建立帳號，並同意我們的_服務條款_。";
+
 /* Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
 "In stock" = "尚有存貨";
@@ -903,6 +923,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site that isn't a valid URL. */
 "Invalid URL, please check if you wrote a valid site address." = "無效的 URL，請檢查你輸入的網站位址是否有效。";
+
+/* Error message generated when announcement service is unable to return a valid endpoint. */
+"Invalid endpoint" = "無效端點";
 
 /* No comment provided by engineer. */
 "Invalid username" = "無效的使用者名稱";
@@ -966,6 +989,9 @@
 
 /* Description of the Action sheet option when the user wants to change the Product type to external product */
 "Link a product to an external website" = "將商品連結至外部網站";
+
+/* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
+"List of images of the product" = "商品圖片清單";
 
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "正在載入訂單";
@@ -1236,6 +1262,9 @@
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "選用追蹤資訊";
 
+/* Divider on initial auth view separating auth options. */
+"Or" = "或者";
+
 /* Label for button to log in using site address. Underscores _..._ denote underline. */
 "Or log in by _entering your site address_." = "或輸入網站位址登入。";
 
@@ -1405,9 +1434,6 @@
 /* Title for the first page in the Orders tab. */
 "Processing" = "處理中";
 
-/* Shown while the app waits for the account process to complete. */
-"Processing Account" = "正在處理帳號";
-
 /* Description for Top Performers left column header
    Product section title - Product section title if there is only one product. - Section header title for the product */
 "Product" = "產品";
@@ -1538,9 +1564,6 @@
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "原價：%@";
 
-/* Banner action button text in my store when stats will be deprecated */
-"Remind me later" = "稍後再提醒我";
-
 /* Confirm button on the alert when the user taps to delete a Product image */
 "Remove" = "移除";
 
@@ -1562,7 +1585,7 @@
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "重設活動記錄";
 
-/* The secondary call-to-action button title text, for when the user can't remember their password. */
+/* The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "重設密碼";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
@@ -1672,6 +1695,9 @@
 
 /* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
 "Selected Store" = "已選取商店";
+
+/* Presents a survey to gather feedback from the user. */
+"Send Feedback" = "傳送回饋意見";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
 "Send Link" = "傳送連結";
@@ -2166,6 +2192,9 @@
    Placeholder in the Product Title row on Product form screen. - Product details screen — product title descriptive label */
 "Title" = "標題";
 
+/* VoiceOver accessibility hint, informing the user about the title of a product in product detail screen. */
+"Title of the product" = "商品標題";
+
 /* Action sheet option to sort products by ascending product name */
 "Title: A to Z" = "標題：A 到 Z";
 
@@ -2372,9 +2401,6 @@
    Updated on <date> */
 "Updated on %@" = "更新日期：%@";
 
-/* Banner title in my store when stats will be deprecated */
-"Upgrade to keep seeing your stats" = "升級以繼續查看統計資料";
-
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */
 "Username" = "使用者名稱";
@@ -2476,7 +2502,7 @@
 "We'll email you a magic link that'll log you in instantly, no password needed. Hunt and peck no more!" = "我們會寄給你一個神奇的連結，讓你馬上就能登入，無須輸入密碼。不用再敲著兩隻手指打字了！";
 
 /* Instruction text on the Sign Up screen. */
-"We'll email you a magic link to create your new WordPress.com account." = "我們會以電子郵件傳送連結給你，使用此連結即可建立新的 WordPress.com 帳號。";
+"We'll email you a signup link to create your new WordPress.com account." = "我們會透過電子郵件傳送註冊連結給你，使用此連結即可建立新的 WordPress.com 帳號。";
 
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales." = "我們會在收到新訂單時通知你。在此期間，請探索如何提高商店銷售量。";
@@ -2500,6 +2526,9 @@
 /* The info of the Work In Progress top banner on the Products tab. */
 "We've added more editing functionalities to products! You can now update images, see previews and share your products." = "我們已新增更多商品編輯功能！ 你現在可以更新圖片、查看預覽畫面並分享你的商品。";
 
+/* Instruction text after a signup Magic Link was requested. */
+"We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "我們已透過電子郵件傳送註冊連結給你，使用此連結即可建立新的 WordPress.com 帳號。 請使用此裝置查看電子郵件，並點選 WordPress.com 所傳送電子郵件中的連結。";
+
 /* Statistical unit - a single week */
 "Week" = "週";
 
@@ -2514,12 +2543,6 @@
 
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "重量：%1$@%2$@";
-
-/* Instruction text after a signup Magic Link was requested. */
-"We’ve emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "我們已透過電子郵件傳送註冊連結給你，使用此連結即可建立新的 WordPress.com 帳號。 請使用此裝置查看電子郵件，並點選 WordPress.com 所傳送電子郵件中的連結。";
-
-/* Banner caption in my store when the stats will be deprecated */
-"We’ve rolled out improvements to our analytics. Upgrade to WooCommerce 4.0 or above or install WooCommerce Admin plugin to keep seeing your stats after September 1, 2020." = "我們已推出分析功能的改善項目。 請升級至 WooCommerce 4.0 以上版本或安裝 WooCommerce Admin 外掛程式，確保你可於 2020 年 9 月 1 日後繼續查看統計資料。";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "我的網站位址是？";

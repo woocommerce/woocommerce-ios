@@ -101,6 +101,10 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     /// probably move this to a background `StorageType` since `UITableViewDiffableDataSource`
     /// allows consuming snapshots in the background.
     private let storage: StorageType
+    /// The `StorageManagerType` that `self.storage` belongs to.
+    ///
+    /// This is used for observing notifications.
+    private let storageManager: StorageManagerType
     /// The conditions to use when fetching the results.
     ///
     /// In the future, we can allow this to be mutable if necessary.
@@ -132,24 +136,28 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     /// The delgate for `fetchedResultsController`.
     private lazy var hiddenFetchedResultsControllerDelegate = HiddenFetchedResultsControllerDelegate(self)
 
-    private var objectsDidChangeObservationToken: Any?
+    private var objectsDidChangeCancellable: AnyCancellable?
+    private var storageManagerDidResetCancellable: AnyCancellable?
 
     public init(storageManager: StorageManagerType,
                 query: Query,
                 notificationCenter: NotificationCenter = .default) {
+        self.storageManager = storageManager
         self.storage = storageManager.viewStorage
         self.query = query
         self.notificationCenter = notificationCenter
     }
 
     deinit {
-        stopObservingObjectsDidChangeNotifications()
+        storageManagerDidResetCancellable?.cancel()
+        objectsDidChangeCancellable?.cancel()
     }
 
     /// Start fetching and emitting snapshots.
     public func start() throws {
-        try fetchedResultsController.performFetch()
+        try activateFetchedResultsController()
 
+        startObservingStorageManagerDidResetNotifications()
         startObservingObjectsDidChangeNotifications()
     }
 
@@ -179,6 +187,47 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
             return storageOrder.toReadOnly()
         } else {
             return nil
+        }
+    }
+}
+
+// MARK: - FetchedResultsController Activation
+
+@available(iOS 13.0, *)
+private extension FetchResultSnapshotsProvider {
+    /// Start `fetchedResultsController` fetching and dispatching of snapshots.
+    func activateFetchedResultsController() throws {
+        try fetchedResultsController.performFetch()
+    }
+
+    /// Returns `true` if the `activateFetchedResultsController()` method was previously called.
+    var fetchedResultsControllerIsActive: Bool {
+        fetchedResultsController.fetchedObjects != nil
+    }
+
+    /// If previously activated, restart `fetchedResultsController` fetching and dispatching of snapshots.
+    ///
+    /// This needs to be called when:
+    ///
+    /// 1. The `StorageManager` is reset.
+    /// 2. When `self.query` changes.
+    ///
+    /// Exceptions are swallowed because:
+    ///
+    /// 1. This will be called inside an `NSNotification` handler and there's no ideal way to
+    ///    propagate the exception.
+    /// 2. We assume that the throwing method, `activateFetchedResultsController()`, has already been
+    ///    previously “tested” that it works because it was already called in `start()`.
+    ///
+    func restartFetchedResultsController() {
+        guard fetchedResultsControllerIsActive else {
+            return
+        }
+
+        do {
+            try activateFetchedResultsController()
+        } catch {
+            DDLogError("⛔️ FetchResultSnapshotsProvider: Failed to restart with error \(error)")
         }
     }
 }
@@ -221,26 +270,14 @@ private extension FetchResultSnapshotsProvider {
     ///
     /// - SeeAlso: maybeEmitSnapshotFromObjectsDidChangeNotification
     func startObservingObjectsDidChangeNotifications() {
-        // Remove token in case this method was called already.
-        stopObservingObjectsDidChangeNotifications()
+        // Cancel in case this method was called already.
+        objectsDidChangeCancellable?.cancel()
 
-        objectsDidChangeObservationToken =
-            notificationCenter.addObserver(forName: .NSManagedObjectContextObjectsDidChange, object: storage, queue: nil) { [weak self] notification in
-                if let self = self {
-                    self.maybeEmitSnapshotFromObjectsDidChangeNotification(notification)
-                }
-        }
-    }
-
-    /// Stop observing `NSManagedObjectContextObjectsDidChange` notifications
-    ///
-    /// - SeeAlso: startObservingObjectsDidChangeNotifications
-    func stopObservingObjectsDidChangeNotifications() {
-        if let token = objectsDidChangeObservationToken {
-            notificationCenter.removeObserver(token)
-
-            objectsDidChangeObservationToken = nil
-        }
+        objectsDidChangeCancellable =
+            notificationCenter.publisher(for: .NSManagedObjectContextObjectsDidChange, object: storage)
+                .sink(receiveValue: { [weak self] notification in
+                    self?.maybeEmitSnapshotFromObjectsDidChangeNotification(notification)
+                })
     }
 
     /// Emit a snapshot with _reloaded_ items if the updated objects exist in the current
@@ -323,5 +360,40 @@ private struct ObjectsDidChangeNotification {
 
     var updatedObjects: Set<NSManagedObject> {
         (notification.userInfo?[NSUpdatedObjectsKey] as? Set<NSManagedObject>) ?? Set()
+    }
+}
+
+// MARK: - StorageManager Reset Handling
+
+@available(iOS 13.0, *)
+private extension FetchResultSnapshotsProvider {
+
+    /// Observe `StorageManagerDidResetStorage` notifications so that we can restart the
+    /// `fetchedResultsController` fetching.
+    ///
+    /// This routine is to fix a crash when `CoreDataManager.reset()` is called (e.g. during
+    /// user log out). If we don't do this, it looks like the `self.fetchedResultsController`
+    /// would still be pointing to an invalid `NSManagedObjectContext`. If that is not corrected,
+    /// we would get a crash like this when something changes in the database:
+    ///
+    /// ```
+    /// [error] error: Serious application error.  Exception was caught during Core Data change
+    /// processing.  This is usually a bug within an observer of
+    /// NSManagedObjectContextObjectsDidChangeNotification.  Object's persistent store is not
+    /// reachable from this NSManagedObjectContext's coordinator with userInfo (null)
+    /// ```
+    ///
+    /// This crash comes from `NSFetchedResultsController` itself and not from the observation
+    /// in `startObservingObjectsDidChangeNotifications()`.
+    ///
+    func startObservingStorageManagerDidResetNotifications() {
+        // Cancel just in case this method was called already.
+        storageManagerDidResetCancellable?.cancel()
+
+        storageManagerDidResetCancellable =
+            notificationCenter.publisher(for: .StorageManagerDidResetStorage, object: storageManager as AnyObject)
+                .sink { [weak self] _ in
+                    self?.restartFetchedResultsController()
+        }
     }
 }

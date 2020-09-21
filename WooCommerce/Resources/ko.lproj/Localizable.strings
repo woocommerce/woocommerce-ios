@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-09-02 08:54:47+0000 */
+/* Translation-Revision-Date: 2020-09-17 08:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -7,7 +7,7 @@
 "#%1$@ %2$@ %3$@" = "#%1$@ %2$@ %3$@";
 
 /* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
-"#%@" = "#%@";
+"#%@ %@" = "%1$@ › %2$@";
 
 /* In Order Details, the pattern to show the billed person's full name. For example, “John Doe”. The %1$@ is the first name. The %2$@ is the last name. */
 "%1$@ %2$@" = "%1$@ %2$@";
@@ -148,6 +148,9 @@
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
 "Add a note" = "메모 추가";
+
+/* The action to add a product */
+"Add a product" = "제품 추가";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "제품 이미지 추가";
@@ -299,8 +302,7 @@
 /* A descriptive label prefix. Example: 'Backorders: not allowed' */
 "Backorders:" = "이월 주문:";
 
-/* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}.
-   VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
+/* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "표시줄 번호 %1$i, %2$@, ";
 
 /* Begin fulfill order button title */
@@ -323,6 +325,9 @@
 
 /* Placeholder of the text field for editing the button text for an external/affiliate product */
 "Buy Product" = "제품 구매";
+
+/* Legal disclaimer for logging in. The underscores _..._ denote underline. */
+"By continuing, you agree to our _Terms of Service_." = "계속하면 _서비스 약관_에 동의하게 됩니다.";
 
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "가입하려면 _서비스 약관_에 동의해야 합니다.";
@@ -439,7 +444,8 @@
 /* Button title. Tapping begins log in using Google. */
 "Continue with Google" = "Google로 계속하기";
 
-/* Button title. Tapping begins our normal log in process. */
+/* Button title. Takes the user to the login by email flow.
+   Button title. Tapping begins our normal log in process. */
 "Continue with WordPress.com" = "워드프레스닷컴으로 계속하기";
 
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
@@ -625,7 +631,8 @@
 /* Email address text field placeholder */
 "Email" = "이메일";
 
-/* Placeholder for a textfield. The user may enter their email address. */
+/* Accessibility label for the email address text field.
+   Placeholder for a textfield. The user may enter their email address. - Placeholder for the email address textfield. */
 "Email address" = "이메일 주소";
 
 /* Label for yes/no switch - emailing the note to customer. */
@@ -683,9 +690,15 @@
 /* Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site. */
 "Enter your account information for %@." = "%@ 계정 정보를 입력하세요.";
 
+/* Instruction text on the initial email address entry screen. */
+"Enter your email address to log in or create a WordPress.com account." = "이메일 주소를 입력하여 로그인하거나 워드프레스닷컴 계정을 만드세요.";
+
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "비밀번호를 입력하세요.";
+
+/* Button title. Takes the user to the login by site address flow. */
+"Enter your site address" = "사이트 주소 입력";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -711,9 +724,6 @@
 
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
-
-/* Navigates to the feature request screen */
-"Feature Request" = "기능 요청";
 
 /* Featured Product switch in Product Catalog Visibility */
 "Featured Product" = "추천 상품";
@@ -752,11 +762,14 @@
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "스토어의 상품 실적에 대한 인사이트 확인";
 
+/* View title for initial auth views. */
+"Get Started" = "시작하기";
+
+/* The button title for a secondary call-to-action button. When the user wants to try sending a magic link instead of entering a password. */
+"Get a login link by email" = "이메일로 로그인 링크 받기";
+
 /* Subtitle for Help Center */
 "Get answers to questions you have" = "궁금한 질문에 대한 답변 보기";
-
-/* View title for initial auth views. */
-"Getting Started" = "시작하기";
 
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "계정 정보 받기";
@@ -782,6 +795,10 @@
 
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "그룹화된 제품";
+
+/* In Order Details, the name of the billed person when there are no name and last name.
+   In Order List, the name of the billed person when there are no name and last name. */
+"Guest" = "비회원";
 
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "어떻게 도와드릴까요?";
@@ -861,6 +878,9 @@
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "If you already have a store, you’ll need to install the free Jetpack plugin and connect it to your WordPress.com account." = "이미 스토어를 가지고 있다면 무료로 이용할 수 있는 젯팩 플러그인을 설치하여 워드프레스닷컴 계정에 연동해야 합니다.";
 
+/* Legal disclaimer for signing up. The underscores _..._ denote underline. */
+"If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "워드프레스닷컴 계정이 없는 경우 Apple 또는 Google을 계속 사용하면 계정이 만들어지고 _서비스 약관_에 동의하는 것으로 간주합니다.";
+
 /* Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
 "In stock" = "재고 있음";
@@ -903,6 +923,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site that isn't a valid URL. */
 "Invalid URL, please check if you wrote a valid site address." = "잘못된 URL입니다. 올바른 사이트 주소를 입력했는지 확인하세요.";
+
+/* Error message generated when announcement service is unable to return a valid endpoint. */
+"Invalid endpoint" = "유효하지 않은 엔드포인트";
 
 /* No comment provided by engineer. */
 "Invalid username" = "유효하지 않은 사용자명";
@@ -966,6 +989,9 @@
 
 /* Description of the Action sheet option when the user wants to change the Product type to external product */
 "Link a product to an external website" = "제품 외부 웹사이트로 연결";
+
+/* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
+"List of images of the product" = "제품 이미지 목록";
 
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "주문 로드 중";
@@ -1236,6 +1262,9 @@
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "선택적 추적 정보";
 
+/* Divider on initial auth view separating auth options. */
+"Or" = "또는";
+
 /* Label for button to log in using site address. Underscores _..._ denote underline. */
 "Or log in by _entering your site address_." = "또는 사이트 주소를 입력하여 로그인하세요.";
 
@@ -1405,9 +1434,6 @@
 /* Title for the first page in the Orders tab. */
 "Processing" = "처리 중";
 
-/* Shown while the app waits for the account process to complete. */
-"Processing Account" = "계정 처리 중";
-
 /* Description for Top Performers left column header
    Product section title - Product section title if there is only one product. - Section header title for the product */
 "Product" = "상품";
@@ -1538,9 +1564,6 @@
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "정상 가격: %@";
 
-/* Banner action button text in my store when stats will be deprecated */
-"Remind me later" = "나중에 다시 알림";
-
 /* Confirm button on the alert when the user taps to delete a Product image */
 "Remove" = "제거";
 
@@ -1562,7 +1585,7 @@
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "활동 로그 재설정";
 
-/* The secondary call-to-action button title text, for when the user can't remember their password. */
+/* The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "비밀번호 재설정하기";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
@@ -1672,6 +1695,9 @@
 
 /* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
 "Selected Store" = "선택한 스토어";
+
+/* Presents a survey to gather feedback from the user. */
+"Send Feedback" = "의견 보내기";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
 "Send Link" = "링크 전송";
@@ -2166,6 +2192,9 @@
    Placeholder in the Product Title row on Product form screen. - Product details screen — product title descriptive label */
 "Title" = "제목";
 
+/* VoiceOver accessibility hint, informing the user about the title of a product in product detail screen. */
+"Title of the product" = "제품 제목";
+
 /* Action sheet option to sort products by ascending product name */
 "Title: A to Z" = "제목: 오름차순";
 
@@ -2372,9 +2401,6 @@
    Updated on <date> */
 "Updated on %@" = "%@에 업데이트";
 
-/* Banner title in my store when stats will be deprecated */
-"Upgrade to keep seeing your stats" = "업그레이드하여 통계 확인 계속하기";
-
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */
 "Username" = "사용자명";
@@ -2476,7 +2502,7 @@
 "We'll email you a magic link that'll log you in instantly, no password needed. Hunt and peck no more!" = "암호 없이 즉시 로그인되는 링크를 이메일로 보내드립니다. 더 이상 암호를 직접 입력할 필요가 없습니다!";
 
 /* Instruction text on the Sign Up screen. */
-"We'll email you a magic link to create your new WordPress.com account." = "새로운 워드프레스닷컴 계정을 만들 수 있는 매직 링크를 이메일로 보내드리겠습니다.";
+"We'll email you a signup link to create your new WordPress.com account." = "새로운 워드프레스닷컴 계정을 만들 수 있는 등록 링크를 이메일로 보내드리겠습니다.";
 
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales." = "새로운 주문을 받으면 알려드리겠습니다. 그동안 매장 판매를 늘리는 방법을 알아보세요.";
@@ -2500,6 +2526,9 @@
 /* The info of the Work In Progress top banner on the Products tab. */
 "We've added more editing functionalities to products! You can now update images, see previews and share your products." = "제품에 더 많은 편집 기능을 추가했습니다! 이제 이미지를 업데이트하고, 미리 보기를 실행하고, 제품을 공유할 수 있습니다.";
 
+/* Instruction text after a signup Magic Link was requested. */
+"We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "새로운 워드프레스닷컴 계정을 만들 수 있는 등록 링크를 이메일로 보내드렸습니다. 이 기기에서 이메일을 확인하고 워드프레스닷컴에서 받은 이메일의 링크를 누르세요.";
+
 /* Statistical unit - a single week */
 "Week" = "주";
 
@@ -2514,12 +2543,6 @@
 
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "무게: %1$@%2$@";
-
-/* Instruction text after a signup Magic Link was requested. */
-"We’ve emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "새로운 워드프레스닷컴 계정을 만들 수 있는 등록 링크를 이메일로 보내드렸습니다. 이 기기에서 이메일을 확인하고 워드프레스닷컴에서 받은 이메일의 링크를 누르세요.";
-
-/* Banner caption in my store when the stats will be deprecated */
-"We’ve rolled out improvements to our analytics. Upgrade to WooCommerce 4.0 or above or install WooCommerce Admin plugin to keep seeing your stats after September 1, 2020." = "분석 개선 사항을 공개했습니다. 2020년 9월 1일 이후 계속해서 통계를 확인하려면 WooCommerce 4.0 이상으로 업그레이드하거나 WooCommerce 관리자 플러그인을 설치하세요.";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "내 사이트 주소는 무엇인가요?";

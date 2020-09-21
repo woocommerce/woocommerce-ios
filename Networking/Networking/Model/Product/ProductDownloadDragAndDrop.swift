@@ -3,10 +3,10 @@ import CoreServices
 
 /// A wrapper around `ProductDownload`, to make it compatible in using as Drag and Drop data source in a table view. Represents a `ProductDownload` entity.
 /// To make a data draggable and droppable, on an Table/Collection view,
-/// the data source object needs to confirm to `NSItemProviderReading`
-/// and `NSItemProviderWriting` protocol and these 2 protocol again confirms to `NSObjectProtocol`
+/// the data source object needs to conform to `NSItemProviderReading`
+/// and `NSItemProviderWriting` protocol and these 2 protocol again conforms to `NSObjectProtocol`
 /// So the top layer object needs to be a subclass of `NSObject`
-/// And since the original `ProductDownload `is a struct, so we need a new class for this purpose.
+/// And since the original `ProductDownload` is a struct, we need a new class for this purpose.
 ///
 public final class ProductDownloadDragAndDrop: NSObject, Codable {
     public let downloadableFile: ProductDownload
@@ -15,9 +15,10 @@ public final class ProductDownloadDragAndDrop: NSObject, Codable {
     ///
     public init(downloadableFile: ProductDownload) {
         self.downloadableFile = downloadableFile
+        super.init()
     }
 
-    /// convenience initializer.
+    /// Convenience initializer.
     ///
     public convenience init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -57,7 +58,7 @@ extension ProductDownloadDragAndDrop: NSItemProviderWriting {
 }
 
 /// `NSItemProviderReading` protocol allows a class to be constructed from a variety of binary representations.
-/// When the dragged data is dropped on some places, the encoded binary data needs to be decodea back again into it's class representation,
+/// When the dragged data is dropped on some places, the encoded binary data needs to be decoded back again into its class representation
 /// so that it can be displayed again.
 /// Required for making a class Droppable
 ///

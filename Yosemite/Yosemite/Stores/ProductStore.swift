@@ -527,14 +527,9 @@ private extension ProductStore {
         var storageDownloads = [StorageProductDownload]()
         for readOnlyDownloadableFile in readOnlyProduct.downloads {
 
-            if let existingStorageDownloadableFile = storage.loadProductDownloadableFile(downloadableFileID: readOnlyDownloadableFile.downloadID) {
-                existingStorageDownloadableFile.update(with: readOnlyDownloadableFile)
-                storageDownloads.append(existingStorageDownloadableFile)
-            } else {
-                let newStorageDownloadableFile = storage.insertNewObject(ofType: Storage.ProductDownload.self)
-                newStorageDownloadableFile.update(with: readOnlyDownloadableFile)
-                storageDownloads.append(newStorageDownloadableFile)
-            }
+            let newStorageDownloadableFile = storage.insertNewObject(ofType: Storage.ProductDownload.self)
+            newStorageDownloadableFile.update(with: readOnlyDownloadableFile)
+            storageDownloads.append(newStorageDownloadableFile)
         }
         storageProduct.addToDownloads(NSOrderedSet(array: storageDownloads))
     }

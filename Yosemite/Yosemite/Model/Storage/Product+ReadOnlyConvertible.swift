@@ -9,8 +9,7 @@ extension Storage.Product {
         return tags?.toArray() ?? []
     }
     var downloadableFilesArray: [Storage.ProductDownload] {
-        let downloadableFiles: [Storage.ProductDownload]? =  downloads?.toArray()
-        return downloadableFiles ?? []
+        return downloads?.toArray() ?? []
     }
 }
 

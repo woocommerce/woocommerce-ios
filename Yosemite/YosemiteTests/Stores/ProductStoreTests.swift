@@ -445,7 +445,7 @@ final class ProductStoreTests: XCTestCase {
 
         let expectation = self.expectation(description: "Retrieve single product")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let remoteProduct = sampleProduct(productShippingClass: expectedShippingClass)
+        let remoteProduct = sampleProduct(productShippingClass: expectedShippingClass, downloadable: true)
 
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product")
         let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleProductID) { (product, error) in
@@ -513,7 +513,7 @@ final class ProductStoreTests: XCTestCase {
         let expectedShippingClass = sampleProductShippingClass(remoteID: 134, siteID: sampleSiteID)
         storageManager.insertSampleProductShippingClass(readOnlyProductShippingClass: expectedShippingClass)
 
-        let remoteProduct = sampleProduct(productShippingClass: expectedShippingClass)
+        let remoteProduct = sampleProduct(productShippingClass: expectedShippingClass, downloadable: true)
 
         network.simulateResponse(requestUrlSuffix: "products/282", filename: "product")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
@@ -973,7 +973,7 @@ final class ProductStoreTests: XCTestCase {
         let expectedDownloadable = false
 
         network.simulateResponse(requestUrlSuffix: "products/\(expectedProductID)", filename: "product-update")
-        let product = sampleProduct(productID: expectedProductID, downloadable: true)
+        let product = sampleProduct(productID: expectedProductID)
 
         // Saves an existing shipping class into storage, so that it can be linked to the updated product.
         // The shipping class ID should match the `shipping_class_id` field in `product.json`.
@@ -1359,8 +1359,8 @@ private extension ProductStoreTests {
                        virtual: true,
                        downloadable: downloadable,
                        downloads: downloadable ? sampleDownloads() : [],
-                       downloadLimit: -1,
-                       downloadExpiry: -1,
+                       downloadLimit: downloadable ? 1 : -1,
+                       downloadExpiry: downloadable ? 1 : -1,
                        buttonText: "",
                        externalURL: "http://somewhere.com",
                        taxStatusKey: "taxable",
@@ -1458,14 +1458,24 @@ private extension ProductStoreTests {
     func sampleDownloads() -> [Networking.ProductDownload] {
         let download1 = ProductDownload(downloadID: "1f9c11f99ceba63d4403c03bd5391b11",
                                         name: "Song #1",
-                                        fileURL: "https://woocommerce.files.wordpress.com/2017/06/woo-single-1.ogg")
+                                        fileURL: "https://example.com/woo-single-1.ogg")
         let download2 = ProductDownload(downloadID: "ec87d8b5-1361-4562-b4b8-18980b5a2cae",
                                         name: "Artwork",
-                                        fileURL: "https://thuy-test.mystagingwebsite.com/wp-content/uploads/2018/01/cd_4_angle.jpg")
+                                        fileURL: "https://example.com/cd_4_angle.jpg")
         let download3 = ProductDownload(downloadID: "240cd543-5457-498e-95e2-6b51fdaf15cc",
                                         name: "Artwork 2",
-                                        fileURL: "https://thuy-test.mystagingwebsite.com/wp-content/uploads/2018/01/cd_4_flat.jpg")
+                                        fileURL: "https://example.com/cd_4_flat.jpg")
         return [download1, download2, download3]
+    }
+
+    func sampleDownloadsMutated() -> [Networking.ProductDownload] {
+        let download1 = ProductDownload(downloadID: "1f9c11f99ceba63d4403c03bd5391b11",
+                                        name: "Song #1",
+                                        fileURL: "https://example.com/woo-single-1.ogg")
+        let download2 = ProductDownload(downloadID: "ec87d8b5-1361-4562-b4b8-18980b5a2cae",
+                                        name: "Artwork",
+                                        fileURL: "https://example.com/cd_4_angle.jpg")
+        return [download1, download2]
     }
 
     func sampleProductMutated(_ siteID: Int64? = nil) -> Networking.Product {
@@ -1590,16 +1600,6 @@ private extension ProductStoreTests {
         let defaultAttribute1 = ProductDefaultAttribute(attributeID: 0, name: "Color", option: "Purple")
 
         return [defaultAttribute1]
-    }
-
-    func sampleDownloadsMutated() -> [Networking.ProductDownload] {
-        let download1 = ProductDownload(downloadID: "1f9c11f99ceba63d4403c03bd5391b11",
-                                        name: "Song #1",
-                                        fileURL: "https://woocommerce.files.wordpress.com/2017/06/woo-single-1.ogg")
-        let download2 = ProductDownload(downloadID: "ec87d8b5-1361-4562-b4b8-18980b5a2cae",
-                                        name: "Artwork",
-                                        fileURL: "https://thuy-test.mystagingwebsite.com/wp-content/uploads/2018/01/cd_4_angle.jpg")
-        return [download1, download2]
     }
 
     func sampleProductShippingClass(remoteID: Int64, siteID: Int64) -> Yosemite.ProductShippingClass {

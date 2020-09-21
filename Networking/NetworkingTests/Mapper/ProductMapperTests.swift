@@ -56,9 +56,9 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertTrue(product.virtual)
 
         XCTAssertTrue(product.downloadable)
-        XCTAssertEqual(product.downloads.count, 2)
-        XCTAssertEqual(product.downloadLimit, 10)
-        XCTAssertEqual(product.downloadExpiry, 1000)
+        XCTAssertEqual(product.downloads.count, 3)
+        XCTAssertEqual(product.downloadLimit, 1)
+        XCTAssertEqual(product.downloadExpiry, 1)
 
         XCTAssertEqual(product.externalURL, "http://somewhere.com")
         XCTAssertEqual(product.taxStatusKey, "taxable")
@@ -193,18 +193,27 @@ final class ProductMapperTests: XCTestCase {
     /// Test that product downloadable files are properly mapped.
     ///
     func test_that_product_downloadable_files_are_properly_mapped() {
+        // Given
         let product = mapLoadProductResponse()
 
+        // When
         guard let files = product?.downloads else {
-            XCTFail("Failed to parse product category")
+            XCTFail("Failed to parse product downloadable files")
             return
         }
-        XCTAssertEqual(files.count, 2)
+        XCTAssertEqual(files.count, 3)
 
-        let productDownloadableFile = files[0]
-        XCTAssertEqual(productDownloadableFile.downloadID, "b6843219-775a-409d-b428-dd2ffe3af2c2")
-        XCTAssertEqual(productDownloadableFile.name, "T-shirt")
-        XCTAssertEqual(productDownloadableFile.fileURL, "https://mywootesting.mystagingwebsite.com/wp-content/uploads/2020/09/рок-метал-24-scaled.jpg")
+        if files.count < 1 {
+            XCTFail("Missing product downloadable file")
+            return
+        }
+        let actualDownloadableFile = files[0]
+        let expectedDownloadableFile = ProductDownload(downloadID: "1f9c11f99ceba63d4403c03bd5391b11",
+                                                       name: "Song #1",
+                                                       fileURL: "https://example.com/woo-single-1.ogg")
+
+        // Then
+        XCTAssertEqual(actualDownloadableFile, expectedDownloadableFile)
     }
 
     /// Test that product attributes are properly mapped
@@ -271,7 +280,7 @@ private extension ProductMapperTests {
     /// Returns the ProductMapper output upon receiving `product`
     ///
     func mapLoadProductResponse() -> Product? {
-        return mapProduct(from: "product-downloadable")
+        return mapProduct(from: "product")
     }
 
     /// Returns the ProductMapper output upon receiving `product-alternative-types`

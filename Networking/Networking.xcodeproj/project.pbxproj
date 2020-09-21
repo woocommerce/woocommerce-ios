@@ -196,7 +196,6 @@
 		74D522B62113607F00042831 /* StatGranularity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D522B52113607F00042831 /* StatGranularity.swift */; };
 		74D5BECE217E0F98007B0348 /* SiteSettingsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D5BECD217E0F98007B0348 /* SiteSettingsRemoteTests.swift */; };
 		74E30951216E8DCE00ABCE4C /* site-visits-alt.json in Resources */ = {isa = PBXBuildFile; fileRef = 74E30950216E8DCE00ABCE4C /* site-visits-alt.json */; };
-		77CE406425161F2B003FF69D /* product-downloadable.json in Resources */ = {isa = PBXBuildFile; fileRef = 77CE406325161F2B003FF69D /* product-downloadable.json */; };
 		933A2732222234F800C2143A /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A2731222234F800C2143A /* Logging.swift */; };
 		9387A6F0226E3F15001B53D7 /* AccountSettingsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9387A6EF226E3F15001B53D7 /* AccountSettingsMapperTests.swift */; };
 		93D8BBFB226BBC5100AD2EB3 /* AccountSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D8BBFA226BBC5100AD2EB3 /* AccountSettings.swift */; };
@@ -559,7 +558,6 @@
 		74D5BECD217E0F98007B0348 /* SiteSettingsRemoteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteSettingsRemoteTests.swift; sourceTree = "<group>"; };
 		74E30950216E8DCE00ABCE4C /* site-visits-alt.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-visits-alt.json"; sourceTree = "<group>"; };
 		753D6504FF01F09F6A33B73E /* Pods-Networking.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.debug.xcconfig"; sourceTree = "<group>"; };
-		77CE406325161F2B003FF69D /* product-downloadable.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-downloadable.json"; sourceTree = "<group>"; };
 		933A2731222234F800C2143A /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		9387A6EF226E3F15001B53D7 /* AccountSettingsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSettingsMapperTests.swift; sourceTree = "<group>"; };
 		93D8BBFA226BBC5100AD2EB3 /* AccountSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSettings.swift; sourceTree = "<group>"; };
@@ -1126,7 +1124,6 @@
 				74749B98224135C4005C4CF2 /* product.json */,
 				02AAD53E250092A300BA1E26 /* product-add.json */,
 				02698CF524C17FC1005337C4 /* product-alternative-types.json */,
-				77CE406325161F2B003FF69D /* product-downloadable.json */,
 				02DD6491248A3EC00082523E /* product-external.json */,
 				4524CD9B242CEFAB00B2F20A /* product-on-sale-with-empty-sale-price.json */,
 				025CA2C7238F4FF400B05C81 /* product-shipping-classes-load-all.json */,
@@ -1484,7 +1481,6 @@
 				74A7B4BE217A841400E85A8B /* broken-settings-general.json in Resources */,
 				026CF624237D839B009563D4 /* product-variations-load-all.json in Resources */,
 				B5A24179217F98F600595DEF /* notifications-load-all.json in Resources */,
-				77CE406425161F2B003FF69D /* product-downloadable.json in Resources */,
 				0282DD91233A120A006A5FDB /* products-search-photo.json in Resources */,
 				743E84FC22174CE100FAC9D7 /* restnoroute_error.json in Resources */,
 				CE20179320E3EFA7005B4C18 /* broken-orders.json in Resources */,

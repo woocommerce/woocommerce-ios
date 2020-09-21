@@ -131,7 +131,7 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
         product.downloads
     }
 
-    var isDownloadable: Bool {
+    var downloadable: Bool {
         product.downloadable
     }
 

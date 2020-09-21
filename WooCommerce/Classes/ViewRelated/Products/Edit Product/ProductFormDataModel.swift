@@ -57,7 +57,7 @@ protocol ProductFormDataModel {
     func isStockStatusEnabled() -> Bool
 
     // Product downloads
-    var isDownloadable: Bool { get }
+    var downloadable: Bool { get }
     var downloadableFiles: [ProductDownload] { get }
     var downloadLimit: Int64 { get }
     var downloadExpiry: Int64 { get }

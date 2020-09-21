@@ -1101,7 +1101,7 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func showDownloadableFiles() {
-        guard let product = product as? EditableProductModel, product.isDownloadable  else {
+        guard let product = product as? EditableProductModel, product.downloadable  else {
             return
         }
 

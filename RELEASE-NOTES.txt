@@ -1,3 +1,6 @@
+5.2
+-----
+ 
 5.1
 -----
 - [*] bugfix: now reviews are refreshed correctly. If you try to delete or to set as spam a review from the web, the result will match in the product reviews list.

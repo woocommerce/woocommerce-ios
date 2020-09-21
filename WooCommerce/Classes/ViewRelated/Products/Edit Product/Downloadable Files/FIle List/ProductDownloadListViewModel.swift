@@ -8,7 +8,7 @@ protocol ProductDownloadListViewModelOutput {
     var downloadLimit: Int64 { get }
     var downloadExpiry: Int64 { get }
 
-        // Convenience Methodes
+    // Convenience Methods
     @discardableResult
     func remove(at index: Int) -> ProductDownloadDragAndDrop?
     func item(at index: Int) -> ProductDownloadDragAndDrop?
@@ -58,14 +58,14 @@ final class ProductDownloadListViewModel: ProductDownloadListViewModelOutput {
         downloadExpiry = product.downloadExpiry
     }
 
-    // MARK: - ProductDownloadListDataSource Methodes
+    // MARK: - ProductDownloadListDataSource Methods
     //
     func remove(at index: Int) -> ProductDownloadDragAndDrop? {
-        return downloadableFiles.remove(at: index)
+        return index < downloadableFiles.count ? downloadableFiles.remove(at: index) : nil
     }
 
     func item(at index: Int) -> ProductDownloadDragAndDrop? {
-        return downloadableFiles[index]
+        return index < downloadableFiles.count ? downloadableFiles[index] : nil
     }
 
     func insert(_ newElement: ProductDownloadDragAndDrop, at index: Int) {
@@ -112,11 +112,20 @@ extension ProductDownloadListViewModel: ProductDownloadListActionHandler {
     func hasUnsavedChanges() -> Bool {
         if downloadLimit != product.downloadLimit ||
             downloadableFiles.count != product.downloadableFiles.count ||
-            downloadExpiry != product.downloadExpiry {
+            downloadExpiry != product.downloadExpiry ||
+            downloadableFiles.count != product.downloadableFiles.count {
             return true
         }
 
-        //TODO: Check if the data has been changed and return accordingly.
+        for index in 0..<downloadableFiles.count {
+            let oldDownload = product.downloadableFiles[index]
+            let newDownload = downloadableFiles[index].downloadableFile
+
+            if oldDownload.name != newDownload.name ||
+                oldDownload.fileURL != newDownload.fileURL {
+                return true
+            }
+        }
 
         return false
     }

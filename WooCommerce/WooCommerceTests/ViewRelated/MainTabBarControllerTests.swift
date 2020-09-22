@@ -76,4 +76,37 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertEqual(viewControllersBeforeSiteChange[WooTab.products.visibleIndex()], viewControllersAfterSiteChange[WooTab.products.visibleIndex()])
         XCTAssertNotEqual(viewControllersBeforeSiteChange[WooTab.reviews.visibleIndex()], viewControllersAfterSiteChange[WooTab.reviews.visibleIndex()])
     }
+
+    func test_tab_view_controllers_stay_the_same_after_updating_to_the_same_site() throws {
+        // Arrange
+        // Trigger `viewDidLoad`
+        XCTAssertNotNil(tabBarController.view)
+
+        // Action
+        let siteID: Int64 = 134
+        stores.updateDefaultStore(storeID: siteID)
+        let viewControllersBeforeSiteChange = try XCTUnwrap(tabBarController.viewControllers)
+        stores.updateDefaultStore(storeID: siteID)
+        let viewControllersAfterSiteChange = try XCTUnwrap(tabBarController.viewControllers)
+
+        // Assert
+        XCTAssertEqual(viewControllersBeforeSiteChange, viewControllersAfterSiteChange)
+    }
+
+    func test_selected_tab_is_dashboard_after_navigating_to_products_tab_then_updating_to_a_different_site() throws {
+        // Arrange
+        // Trigger `viewDidLoad`
+        XCTAssertNotNil(tabBarController.view)
+
+        // Action
+        stores.updateDefaultStore(storeID: 134)
+        tabBarController.navigateTo(.products)
+        let selectedTabIndexBeforeSiteChange = tabBarController.selectedIndex
+        stores.updateDefaultStore(storeID: 630)
+        let selectedTabIndexAfterSiteChange = tabBarController.selectedIndex
+
+        // Assert
+        XCTAssertEqual(selectedTabIndexBeforeSiteChange, WooTab.products.visibleIndex())
+        XCTAssertEqual(selectedTabIndexAfterSiteChange, WooTab.myStore.visibleIndex())
+    }
 }

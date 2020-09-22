@@ -521,7 +521,7 @@ class OrderStoreTests: XCTestCase {
         // Update: Expected Status is actually coming from `order.json` (Status == .processing actually!)
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
 
-        let action = OrderAction.updateOrder(siteID: sampleSiteID, orderID: sampleOrderID, statusKey: OrderStatusEnum.processing.rawValue) { error in
+        let action = OrderAction.updateOrder(siteID: sampleSiteID, orderID: sampleOrderID, statusKey: OrderStatusEnum.processing) { error in
             XCTAssertNil(error)
 
             let storageOrder = self.storageManager.viewStorage.loadOrder(orderID: self.sampleOrderID)
@@ -545,7 +545,7 @@ class OrderStoreTests: XCTestCase {
 
         network.removeAllSimulatedResponses()
 
-        let action = OrderAction.updateOrder(siteID: sampleSiteID, orderID: sampleOrderID, statusKey: OrderStatusEnum.processing.rawValue) { error in
+        let action = OrderAction.updateOrder(siteID: sampleSiteID, orderID: sampleOrderID, statusKey: OrderStatusEnum.processing) { error in
             XCTAssertNotNil(error)
 
             let storageOrder = self.storageManager.viewStorage.loadOrder(orderID: self.sampleOrderID)
@@ -686,7 +686,7 @@ private extension OrderStoreTests {
                      parentID: 0,
                      customerID: 11,
                      number: "963",
-                     statusKey: "processing",
+                     statusKey: .processing,
                      currency: "USD",
                      customerNote: "",
                      dateCreated: date(with: "2018-04-03T23:05:12"),
@@ -713,7 +713,7 @@ private extension OrderStoreTests {
                      parentID: 0,
                      customerID: 11,
                      number: "963",
-                     statusKey: "completed",
+                     statusKey: .completed,
                      currency: "USD",
                      customerNote: "",
                      dateCreated: date(with: "2018-04-03T23:05:12"),
@@ -740,7 +740,7 @@ private extension OrderStoreTests {
                      parentID: 0,
                      customerID: 11,
                      number: "963",
-                     statusKey: "completed",
+                     statusKey: .completed,
                      currency: "USD",
                      customerNote: "",
                      dateCreated: date(with: "2018-04-03T23:05:12"),

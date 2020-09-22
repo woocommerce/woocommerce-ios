@@ -64,7 +64,7 @@ private extension OrdersUpsertUseCaseTests {
               parentID: 0,
               customerID: 0,
               number: "",
-              statusKey: "",
+              statusKey: .custom(""),
               currency: "",
               customerNote: nil,
               dateCreated: Date(),

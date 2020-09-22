@@ -290,7 +290,7 @@ private extension OrdersViewModelTests {
                                   parentID: 0,
                                   customerID: 11,
                                   number: "963",
-                                  statusKey: status.rawValue,
+                                  statusKey: status,
                                   currency: "USD",
                                   customerNote: "",
                                   dateCreated: dateCreated,

@@ -179,7 +179,7 @@ import AuthenticationServices
             trackOpenedLogin()
         }
 
-        guard WordPressAuthenticator.shared.configuration.enableUnifiedWordPress else {
+        guard WordPressAuthenticator.shared.configuration.enableUnifiedAuth else {
             showEmailLogin(from: presenter, xmlrpc: xmlrpc, username: username, connectedEmail: connectedEmail)
             return
         }
@@ -260,7 +260,7 @@ import AuthenticationServices
         loginFields.emailAddress = dotcomEmailAddress ?? String()
         loginFields.username = dotcomUsername ?? String()
 
-        guard WordPressAuthenticator.shared.configuration.enableUnifiedWordPress else {
+        guard WordPressAuthenticator.shared.configuration.enableUnifiedAuth else {
             guard let controller = LoginWPComViewController.instantiate(from: .login) else {
                 DDLogError("WordPressAuthenticator: Failed to instantiate LoginWPComViewController")
                 return UIViewController()

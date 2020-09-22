@@ -259,7 +259,7 @@ public class AuthenticatorAnalyticsTracker {
             iCloudKeychainEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedAuth,
             prologueEnabled: true,
             siteAddressEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedAuth,
-            wpComEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedWordPress)
+            wpComEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedAuth)
     }
     
     /// State for the analytics tracker.

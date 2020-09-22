@@ -212,7 +212,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         let unifiedGoogle = unifiedAuthEnabled && loginFields.meta.socialService == .google
         let unifiedApple = unifiedAuthEnabled && loginFields.meta.socialService == .apple
         let unifiedSiteAddress = unifiedAuthEnabled && !loginFields.siteAddress.isEmpty
-        let unifiedWordPress = WordPressAuthenticator.shared.configuration.enableUnifiedWordPress && loginFields.meta.userIsDotCom
+        let unifiedWordPress = unifiedAuthEnabled && loginFields.meta.userIsDotCom
         
         guard (unifiedGoogle || unifiedApple || unifiedSiteAddress || unifiedWordPress) else {
             presentLogin2FA()

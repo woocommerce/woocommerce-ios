@@ -444,7 +444,7 @@ extension LoginPrologueViewController: AppleAuthenticatorDelegate {
     func showWPComLogin(loginFields: LoginFields) {
         self.loginFields = loginFields
 
-        guard WordPressAuthenticator.shared.configuration.enableUnifiedApple else {
+        guard WordPressAuthenticator.shared.configuration.enableUnifiedAuth else {
             presentWPLogin()
             return
         }

@@ -78,10 +78,6 @@ public struct WordPressAuthenticatorConfiguration {
     ///
     let enableUnifiedAuth: Bool
 
-    /// Flag indicating if the unified Apple flow should display.
-    ///
-    let enableUnifiedApple: Bool
-
     /// Flag indicating if the unified WordPress flow should display.
     ///
     let enableUnifiedWordPress: Bool
@@ -108,7 +104,6 @@ public struct WordPressAuthenticatorConfiguration {
                  enableSignupWithGoogle: Bool = false,
                  enableUnifiedAuth: Bool = false,
                  displayHintButtons: Bool = true,
-                 enableUnifiedApple: Bool = false,
                  enableUnifiedWordPress: Bool = false,
                  enableUnifiedKeychainLogin: Bool = false) {
 
@@ -128,7 +123,6 @@ public struct WordPressAuthenticatorConfiguration {
         self.enableUnifiedAuth = enableUnifiedAuth
         self.displayHintButtons = displayHintButtons
         self.enableSignupWithGoogle = enableSignupWithGoogle
-        self.enableUnifiedApple = enableUnifiedAuth && enableUnifiedApple
         self.enableUnifiedWordPress = enableUnifiedAuth && enableUnifiedWordPress
         self.enableUnifiedKeychainLogin = enableUnifiedAuth && enableUnifiedKeychainLogin
     }

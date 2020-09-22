@@ -379,6 +379,9 @@ private extension MainTabBarController {
             return controllers
         }()
 
+        // Set dashboard to be the default tab.
+        selectedIndex = WooTab.myStore.visibleIndex()
+
         // Startup calls for tab view controllers
         reviewsCoordinator.start()
     }

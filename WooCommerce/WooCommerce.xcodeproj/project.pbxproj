@@ -172,6 +172,8 @@
 		0273707E24C0047800167204 /* SequenceHelpersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0273707D24C0047800167204 /* SequenceHelpersTests.swift */; };
 		0273708024C0094500167204 /* ProductListMultiSelectorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0273707F24C0094500167204 /* ProductListMultiSelectorDataSource.swift */; };
 		02784A03238B8BC800BDD6A8 /* UIView+Border.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02784A02238B8BC800BDD6A8 /* UIView+Border.swift */; };
+		027A2E142513124E00DA6ACB /* Keychain+Entries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027A2E132513124E00DA6ACB /* Keychain+Entries.swift */; };
+		027A2E162513356100DA6ACB /* AppleIDCredentialChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027A2E152513356100DA6ACB /* AppleIDCredentialChecker.swift */; };
 		027B8BB823FE0CB30040944E /* DefaultProductUIImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027B8BB723FE0CB30040944E /* DefaultProductUIImageLoader.swift */; };
 		027B8BBA23FE0D0C0040944E /* ObservationToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027B8BB923FE0D0C0040944E /* ObservationToken.swift */; };
 		027B8BBD23FE0DE10040944E /* ProductImageActionHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027B8BBC23FE0DE10040944E /* ProductImageActionHandlerTests.swift */; };
@@ -1129,6 +1131,8 @@
 		0273707D24C0047800167204 /* SequenceHelpersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequenceHelpersTests.swift; sourceTree = "<group>"; };
 		0273707F24C0094500167204 /* ProductListMultiSelectorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListMultiSelectorDataSource.swift; sourceTree = "<group>"; };
 		02784A02238B8BC800BDD6A8 /* UIView+Border.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Border.swift"; sourceTree = "<group>"; };
+		027A2E132513124E00DA6ACB /* Keychain+Entries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keychain+Entries.swift"; sourceTree = "<group>"; };
+		027A2E152513356100DA6ACB /* AppleIDCredentialChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleIDCredentialChecker.swift; sourceTree = "<group>"; };
 		027B8BB723FE0CB30040944E /* DefaultProductUIImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultProductUIImageLoader.swift; sourceTree = "<group>"; };
 		027B8BB923FE0D0C0040944E /* ObservationToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservationToken.swift; sourceTree = "<group>"; };
 		027B8BBC23FE0DE10040944E /* ProductImageActionHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageActionHandlerTests.swift; sourceTree = "<group>"; };
@@ -3345,6 +3349,8 @@
 				B5D1AFC420BC7B3000DB0E8C /* Epilogue */,
 				B55D4C0520B6027100D7A50F /* AuthenticationManager.swift */,
 				CE16177921B7192A00B82A47 /* AuthenticationConstants.swift */,
+				027A2E132513124E00DA6ACB /* Keychain+Entries.swift */,
+				027A2E152513356100DA6ACB /* AppleIDCredentialChecker.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -5215,6 +5221,7 @@
 				451A04F02386F7B500E368C9 /* ProductImageCollectionViewCell.swift in Sources */,
 				02E8B17E23E2C8D900A43403 /* ProductImageActionHandler.swift in Sources */,
 				02695770237281A9001BA0BF /* AztecTextViewAttachmentHandler.swift in Sources */,
+				027A2E162513356100DA6ACB /* AppleIDCredentialChecker.swift in Sources */,
 				4524CD9E242D01FD00B2F20A /* ProductStatusSettingListSelectorCommand.swift in Sources */,
 				02E8B17723E2C49000A43403 /* InProgressProductImageCollectionViewCell.swift in Sources */,
 				CE5F462C23AACBC4006B1A5C /* RefundDetailsResultController.swift in Sources */,
@@ -5286,6 +5293,7 @@
 				D8C2A291231BD0FD00F503E9 /* DefaultReviewsDataSource.swift in Sources */,
 				CE855366209BA6A700938BDC /* CustomerInfoTableViewCell.swift in Sources */,
 				0286B27B23C7051F003D784B /* ProductImagesCollectionViewController.swift in Sources */,
+				027A2E142513124E00DA6ACB /* Keychain+Entries.swift in Sources */,
 				CE35F11B2343F3B1007B2A6B /* TwoColumnHeadlineFootnoteTableViewCell.swift in Sources */,
 				D8C251DB230D288A00F49782 /* PushNotesManager.swift in Sources */,
 				748D34E12148291E00E21A2F /* TopPerformerDataViewController.swift in Sources */,

@@ -235,7 +235,7 @@ extension GoogleAuthenticator: GIDSignInDelegate {
         loginFields.meta.socialServiceIDToken = token
         loginFields.meta.googleUser = user
 
-        guard authConfig.enableUnifiedGoogle else {
+        guard authConfig.enableUnifiedAuth else {
             // Initiate separate WP login / signup paths.
             switch authType {
             case .login:

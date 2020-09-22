@@ -294,7 +294,7 @@ class LoginPrologueViewController: LoginViewController {
                 return
             }
             
-            guard self.configuration.enableUnifiedGoogle else {
+            guard self.configuration.enableUnifiedAuth else {
                 self.presentGoogleSignupView()
                 return
             }
@@ -315,7 +315,7 @@ class LoginPrologueViewController: LoginViewController {
     }
 
     private func googleTapped() {
-        guard configuration.enableUnifiedGoogle else {
+        guard configuration.enableUnifiedAuth else {
             GoogleAuthenticator.sharedInstance.loginDelegate = self
             GoogleAuthenticator.sharedInstance.showFrom(viewController: self, loginFields: loginFields, for: .login)
             return

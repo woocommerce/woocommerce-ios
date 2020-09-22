@@ -343,7 +343,7 @@
 "Can Not Request Link" = "Can Not Request Link";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
 "Cancel" = "Cancel";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -487,6 +487,12 @@
 
 /* Error message when tag loading failed */
 "Couldn't load tags." = "Couldn't load tags.";
+
+/* The title for a menu that helps debug crashes in production builds */
+"Crash Debug Menu" = "Crash Debug Menu";
+
+/* The title for a button that causes the app to deliberately crash for debugging purposes */
+"Crash Immediately" = "Crash Immediately";
 
 /* The button title text for creating a new account. */
 "Create Account" = "Create Account";
@@ -1671,6 +1677,9 @@
 /* Display label for the product's catalog visibility */
 "Search results only" = "Search results only";
 
+/* Message title of bottom sheet for selecting a product type to create a product */
+"Select a product type" = "Select a product type";
+
 /* Add the shipping carrier. Placeholder of cell presenting carrier name */
 "Select carrier" = "Select carrier";
 
@@ -2346,6 +2355,9 @@
 
 /* Undo Action */
 "Undo" = "Undo";
+
+/* The message of the alert when there is an unexpected error updating the product */
+"Unexpected error" = "Unexpected error";
 
 /* Unknown Application State
    Unknown product name, displayed in a review - Unknown Tag Name */

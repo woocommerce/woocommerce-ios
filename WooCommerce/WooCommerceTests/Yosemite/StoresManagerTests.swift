@@ -6,6 +6,7 @@ import Networking
 /// StoresManager Unit Tests
 ///
 class StoresManagerTests: XCTestCase {
+    private var cancellable: ObservationToken?
 
     // MARK: - Overridden Methods
 
@@ -15,47 +16,85 @@ class StoresManagerTests: XCTestCase {
         session.reset()
     }
 
+    override func tearDown() {
+        cancellable?.cancel()
+        super.tearDown()
+    }
 
     /// Verifies that the Initial State is Deauthenticated, whenever there are no Default Credentials.
     ///
     func testInitialStateIsDeauthenticatedAssumingCredentialsWereMissing() {
+        // Action
         let manager = DefaultStoresManager.testingInstance
+        var isLoggedInValues = [Bool]()
+        cancellable = manager.isLoggedIn.subscribe { isLoggedIn in
+            isLoggedInValues.append(isLoggedIn)
+        }
+
+        // Assert
         XCTAssertFalse(manager.isAuthenticated)
+        XCTAssertEqual(isLoggedInValues, [false])
     }
 
 
     /// Verifies that the Initial State is Authenticated, whenever there are Default Credentials set.
     ///
     func testInitialStateIsAuthenticatedAssumingCredentialsWereNotMissing() {
+        // Arrange
         var session = SessionManager.testingInstance
         session.defaultCredentials = SessionSettings.credentials
 
+        // Action
         let manager = DefaultStoresManager.testingInstance
+        var isLoggedInValues = [Bool]()
+        cancellable = manager.isLoggedIn.subscribe { isLoggedIn in
+            isLoggedInValues.append(isLoggedIn)
+        }
+
+        // Assert
         XCTAssertTrue(manager.isAuthenticated)
+        XCTAssertEqual(isLoggedInValues, [true])
     }
 
 
     /// Verifies that `authenticate(username: authToken:)` effectively switches the Manager to an Authenticated State.
     ///
     func testAuthenticateEffectivelyTogglesStoreManagerToAuthenticatedState() {
+        // Arrange
         let manager = DefaultStoresManager.testingInstance
+        var isLoggedInValues = [Bool]()
+        cancellable = manager.isLoggedIn.subscribe { isLoggedIn in
+            isLoggedInValues.append(isLoggedIn)
+        }
+
+        // Action
         manager.authenticate(credentials: SessionSettings.credentials)
 
         XCTAssertTrue(manager.isAuthenticated)
+        XCTAssertEqual(isLoggedInValues, [false, true])
     }
 
 
     /// Verifies that `deauthenticate` effectively switches the Manager to a Deauthenticated State.
     ///
     func testDeauthenticateEffectivelyTogglesStoreManagerToDeauthenticatedState() {
+        // Arrange
         let mockAuthenticationManager = MockAuthenticationManager()
         ServiceLocator.setAuthenticationManager(mockAuthenticationManager)
         let manager = DefaultStoresManager.testingInstance
+        var isLoggedInValues = [Bool]()
+        cancellable = manager.isLoggedIn.subscribe { isLoggedIn in
+            isLoggedInValues.append(isLoggedIn)
+        }
+
+        // Action
         manager.authenticate(credentials: SessionSettings.credentials)
         manager.deauthenticate()
 
+        // Assert
         XCTAssertFalse(manager.isAuthenticated)
         XCTAssertTrue(mockAuthenticationManager.displayAuthenticationInvoked)
+        XCTAssertEqual(isLoggedInValues, [false, true, false])
     }
 
 
@@ -72,11 +111,20 @@ class StoresManagerTests: XCTestCase {
     /// Verifies the user remains authenticated after site switching
     ///
     func testRemoveDefaultStoreLeavesUserAuthenticated() {
+        // Arrange
         let manager = DefaultStoresManager.testingInstance
+        var isLoggedInValues = [Bool]()
+        cancellable = manager.isLoggedIn.subscribe { isLoggedIn in
+            isLoggedInValues.append(isLoggedIn)
+        }
+
+        // Action
         manager.authenticate(credentials: SessionSettings.credentials)
         manager.removeDefaultStore()
 
+        // Assert
         XCTAssertTrue(manager.isAuthenticated)
+        XCTAssertEqual(isLoggedInValues, [false, true])
     }
 
     /// Verify the session manager resets properties after site switching

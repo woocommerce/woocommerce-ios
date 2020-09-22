@@ -13,6 +13,10 @@ enum WooConstants {
     ///
     static let keychainServiceName = "com.automattic.woocommerce"
 
+    /// Keychain Access's Key for Apple ID
+    ///
+    static let keychainAppleIDKey = "AppleID"
+
     /// Push Notifications ApplicationID
     ///
 #if DEBUG

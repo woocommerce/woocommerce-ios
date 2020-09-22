@@ -671,8 +671,8 @@ private extension ProductFormViewController {
     }
 
     func createPublishBarButtonItem() -> UIBarButtonItem {
-        let updateTitle = NSLocalizedString("Publish", comment: "Action for creating a new Product remotely")
-        return UIBarButtonItem(title: updateTitle, style: .done, target: self, action: #selector(updateProduct))
+        let publishTitle = NSLocalizedString("Publish", comment: "Action for creating a new Product remotely")
+        return UIBarButtonItem(title: publishTitle, style: .done, target: self, action: #selector(updateProduct))
     }
 
     func createUpdateBarButtonItem() -> UIBarButtonItem {

@@ -97,7 +97,6 @@ extension ProductVariationFormViewModel {
     }
 
     func canViewProductInStore() -> Bool {
-        // no-op
         false
     }
 

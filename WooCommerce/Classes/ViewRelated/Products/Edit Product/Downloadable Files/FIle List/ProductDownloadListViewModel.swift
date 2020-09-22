@@ -65,7 +65,7 @@ final class ProductDownloadListViewModel: ProductDownloadListViewModelOutput {
     }
 
     func item(at index: Int) -> ProductDownloadDragAndDrop? {
-        return index < downloadableFiles.count ? downloadableFiles[index] : nil
+        return downloadableFiles[safe: index]
     }
 
     func insert(_ newElement: ProductDownloadDragAndDrop, at index: Int) {

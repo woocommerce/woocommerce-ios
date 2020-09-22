@@ -154,6 +154,16 @@ final class ProductStoreTests: XCTestCase {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // Action
+        productStore.upsertStoredProduct(readOnlyProduct: expectedProduct, in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageProduct.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductImage.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 0)
+
         var result: Result<Yosemite.Product, ProductUpdateError>?
         waitForExpectation { expectation in
             let action = ProductAction.deleteProduct(siteID: sampleSiteID, productID: sampleProductID) { (aResult) in
@@ -167,8 +177,8 @@ final class ProductStoreTests: XCTestCase {
         let deletedProduct = try XCTUnwrap(result?.get())
         XCTAssertEqual(deletedProduct, expectedProduct)
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageProduct.self), 0)
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductTag.self), 0)
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCategory.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductTag.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCategory.self), 1)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductImage.self), 0)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 0)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 0)

@@ -130,6 +130,72 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(result?.isFailure, true)
     }
 
+    // MARK: - ProductAction.deleteProduct
+
+    func test_deleteProduct_deletes_the_stored_product() throws {
+        // Arrange
+        let remote = MockProductsRemote()
+        let mockImage = ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
+        let mockTag = ProductTag(siteID: 123, tagID: 1, name: "", slug: "")
+        let mockDefaultAttribute = ProductDefaultAttribute(attributeID: 0, name: "Color", option: "Purple")
+        let mockAttribute = ProductAttribute(attributeID: 0, name: "Brand", position: 1, visible: true, variation: true, options: ["Unknown", "House"])
+        let mockCategory = ProductCategory(categoryID: 36, siteID: 2, parentID: 1, name: "Events", slug: "events")
+        let expectedProduct = MockProduct().product().copy(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           dimensions: ProductDimensions(length: "12", width: "26", height: "16"),
+                                                           shippingClass: "2-day",
+                                                           shippingClassID: 1,
+                                                           categories: [mockCategory],
+                                                           tags: [mockTag],
+                                                           images: [mockImage],
+                                                           attributes: [mockAttribute],
+                                                           defaultAttributes: [mockDefaultAttribute])
+        remote.whenDeletingProduct(siteID: sampleSiteID, thenReturn: .success(expectedProduct))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // Action
+        var result: Result<Yosemite.Product, ProductUpdateError>?
+        waitForExpectation { expectation in
+            let action = ProductAction.deleteProduct(siteID: sampleSiteID, productID: sampleProductID) { (aResult) in
+                result = aResult
+                expectation.fulfill()
+            }
+            productStore.onAction(action)
+        }
+
+        // Assert
+        let deletedProduct = try XCTUnwrap(result?.get())
+        XCTAssertEqual(deletedProduct, expectedProduct)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageProduct.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductTag.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCategory.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductImage.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 0)
+    }
+
+    func test_deleteProduct_returns_error_upon_network_error() {
+        // Arrange
+        let remote = MockProductsRemote()
+        remote.whenDeletingProduct(siteID: sampleSiteID, thenReturn: .failure(DotcomError.requestFailed))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // Action
+        var result: Result<Yosemite.Product, ProductUpdateError>?
+        waitForExpectation { expectation in
+            let action = ProductAction.deleteProduct(siteID: sampleSiteID, productID: sampleProductID) { (aResult) in
+                result = aResult
+                expectation.fulfill()
+            }
+            productStore.onAction(action)
+        }
+
+        // Assert
+        XCTAssertEqual(result?.isFailure, true)
+    }
+
     // MARK: - ProductAction.synchronizeProducts
 
     /// Verifies that ProductAction.synchronizeProducts effectively persists any retrieved products.

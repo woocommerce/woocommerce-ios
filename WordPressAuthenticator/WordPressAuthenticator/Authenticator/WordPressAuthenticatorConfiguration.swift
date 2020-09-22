@@ -81,10 +81,6 @@ public struct WordPressAuthenticatorConfiguration {
     /// Flag indicating if the unified WordPress flow should display.
     ///
     let enableUnifiedWordPress: Bool
-    
-    /// Flag indicating if keychain login is enabled
-    ///
-    let enableUnifiedKeychainLogin: Bool
 
     /// Designated Initializer
     ///
@@ -104,8 +100,7 @@ public struct WordPressAuthenticatorConfiguration {
                  enableSignupWithGoogle: Bool = false,
                  enableUnifiedAuth: Bool = false,
                  displayHintButtons: Bool = true,
-                 enableUnifiedWordPress: Bool = false,
-                 enableUnifiedKeychainLogin: Bool = false) {
+                 enableUnifiedWordPress: Bool = false) {
 
         self.wpcomClientId = wpcomClientId
         self.wpcomSecret = wpcomSecret
@@ -124,6 +119,5 @@ public struct WordPressAuthenticatorConfiguration {
         self.displayHintButtons = displayHintButtons
         self.enableSignupWithGoogle = enableSignupWithGoogle
         self.enableUnifiedWordPress = enableUnifiedAuth && enableUnifiedWordPress
-        self.enableUnifiedKeychainLogin = enableUnifiedAuth && enableUnifiedKeychainLogin
     }
 }

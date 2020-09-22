@@ -208,9 +208,10 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
             WordPressAuthenticator.track(.twoFactorCodeRequested)
         }
         
-        let unifiedGoogle = WordPressAuthenticator.shared.configuration.enableUnifiedAuth && loginFields.meta.socialService == .google
-        let unifiedApple = WordPressAuthenticator.shared.configuration.enableUnifiedApple && loginFields.meta.socialService == .apple
-        let unifiedSiteAddress = WordPressAuthenticator.shared.configuration.enableUnifiedAuth && !loginFields.siteAddress.isEmpty
+        let unifiedAuthEnabled = WordPressAuthenticator.shared.configuration.enableUnifiedAuth
+        let unifiedGoogle = unifiedAuthEnabled && loginFields.meta.socialService == .google
+        let unifiedApple = unifiedAuthEnabled && loginFields.meta.socialService == .apple
+        let unifiedSiteAddress = unifiedAuthEnabled && !loginFields.siteAddress.isEmpty
         let unifiedWordPress = WordPressAuthenticator.shared.configuration.enableUnifiedWordPress && loginFields.meta.userIsDotCom
         
         guard (unifiedGoogle || unifiedApple || unifiedSiteAddress || unifiedWordPress) else {
@@ -437,7 +438,7 @@ extension LoginViewController {
         loginFields.nonceInfo = nonceInfo
         loginFields.nonceUserID = userID
 
-        guard WordPressAuthenticator.shared.configuration.enableUnifiedApple else {
+        guard WordPressAuthenticator.shared.configuration.enableUnifiedAuth else {
             presentLogin2FA()
             return
         }

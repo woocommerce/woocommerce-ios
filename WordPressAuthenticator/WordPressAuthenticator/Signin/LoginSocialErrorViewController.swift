@@ -19,6 +19,7 @@ class LoginSocialErrorViewController: NUXTableViewController {
     
     private var forUnified: Bool = false
     private var actionButtonTapped: Bool = false
+    private let unifiedAuthEnabled = WordPressAuthenticator.shared.configuration.enableUnifiedAuth
     
     fileprivate enum Sections: Int {
         case titleAndDescription = 0
@@ -61,8 +62,8 @@ class LoginSocialErrorViewController: NUXTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let unifiedGoogle = WordPressAuthenticator.shared.configuration.enableUnifiedAuth && loginFields.meta.socialService == .google
-        let unifiedApple = WordPressAuthenticator.shared.configuration.enableUnifiedApple && loginFields.meta.socialService == .apple
+        let unifiedGoogle = unifiedAuthEnabled && loginFields.meta.socialService == .google
+        let unifiedApple = unifiedAuthEnabled && loginFields.meta.socialService == .apple
         forUnified = unifiedGoogle || unifiedApple
 
         styleNavigationBar(forUnified: forUnified)
@@ -139,8 +140,8 @@ extension LoginSocialErrorViewController {
         
         // Don't show the Signup Retry if showing unified social flows.
         // At this point, we've already tried signup and are past it.
-        let unifiedGoogle = WordPressAuthenticator.shared.configuration.enableUnifiedAuth && loginFields.meta.socialService == .google
-        let unifiedApple = WordPressAuthenticator.shared.configuration.enableUnifiedApple && loginFields.meta.socialService == .apple
+        let unifiedGoogle = unifiedAuthEnabled && loginFields.meta.socialService == .google
+        let unifiedApple = unifiedAuthEnabled && loginFields.meta.socialService == .apple
 
         if unifiedGoogle || unifiedApple {
             buttonCount -= 1

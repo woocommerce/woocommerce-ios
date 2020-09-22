@@ -21,7 +21,7 @@
                         <rect key="frame" x="20" y="19" width="291" height="37"/>
                         <state key="normal" title="Button"/>
                         <connections>
-                            <action selector="issueReffundWasPressed" destination="fuv-Nn-28X" eventType="touchUpInside" id="gJF-ZY-Rl9"/>
+                            <action selector="issueRefundWasPressed" destination="fuv-Nn-28X" eventType="touchUpInside" id="p0d-jQ-7to"/>
                         </connections>
                     </button>
                 </subviews>

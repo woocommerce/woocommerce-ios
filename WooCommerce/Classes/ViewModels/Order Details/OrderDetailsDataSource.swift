@@ -146,7 +146,7 @@ final class OrderDetailsDataSource: NSObject {
 
     init(order: Order,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         isIssueRefundsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.issueRefunds)) {
+         isIssueRefundsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.issueRefunds)) {
         self.storageManager = storageManager
         self.order = order
         self.couponLines = order.coupons

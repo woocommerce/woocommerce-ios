@@ -3,7 +3,7 @@ import UIKit
 /// Displays a  button to issue new refunds.
 ///
 final class IssueRefundTableViewCell: UITableViewCell {
-    @IBOutlet public var issueRefundButton: UIButton!
+    @IBOutlet private var issueRefundButton: UIButton!
 
     var onIssueRefundTouchUp: (() -> Void)?
 
@@ -17,7 +17,7 @@ final class IssueRefundTableViewCell: UITableViewCell {
 
 // MARK: Actions
 extension IssueRefundTableViewCell {
-    @IBAction func issueReffundWasPressed() {
+    @IBAction func issueRefundWasPressed() {
         onIssueRefundTouchUp?()
     }
 }

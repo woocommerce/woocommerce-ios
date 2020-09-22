@@ -176,7 +176,7 @@ extension DefaultStoresManager {
     }
 }
 
-private final class MockAuthenticationManager: AuthenticationManager {
+final class MockAuthenticationManager: AuthenticationManager {
     private(set) var displayAuthenticationInvoked: Bool = false
 
     override func displayAuthentication(from presenter: UIViewController) {

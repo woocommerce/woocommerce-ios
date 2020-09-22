@@ -10,7 +10,7 @@ extension Order {
         parentID: CopiableProp<Int64> = .copy,
         customerID: CopiableProp<Int64> = .copy,
         number: CopiableProp<String> = .copy,
-        statusKey: CopiableProp<String> = .copy,
+        statusKey: CopiableProp<OrderStatusEnum> = .copy,
         currency: CopiableProp<String> = .copy,
         customerNote: NullableCopiableProp<String> = .copy,
         dateCreated: CopiableProp<Date> = .copy,

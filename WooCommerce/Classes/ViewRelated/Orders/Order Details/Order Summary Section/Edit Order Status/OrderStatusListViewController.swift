@@ -179,7 +179,7 @@ private extension OrderStatusListViewController {
     /// Dispatches an Action to update the order status
     ///
     private func updateOrderStatus() {
-        guard let newStatus = selectedStatus?.status.rawValue else {
+        guard let newStatus = selectedStatus?.status else {
             return
         }
 
@@ -192,21 +192,21 @@ private extension OrderStatusListViewController {
         ServiceLocator.stores.dispatch(done)
         ServiceLocator.analytics.track(.orderStatusChange,
                                   withProperties: ["id": orderID,
-                                                   "from": undoStatus,
-                                                   "to": newStatus])
+                                                   "from": undoStatus.rawValue,
+                                                   "to": newStatus.rawValue])
 
         displayOrderUpdatedNotice {
             ServiceLocator.stores.dispatch(undo)
             ServiceLocator.analytics.track(.orderStatusChange,
                                       withProperties: ["id": orderID,
-                                                       "from": newStatus,
-                                                       "to": undoStatus])
+                                                       "from": newStatus.rawValue,
+                                                       "to": undoStatus.rawValue])
         }
     }
 
     /// Returns an Order Update Action that will result in the specified Order Status updated accordingly.
     ///
-    private func updateOrderAction(siteID: Int64, orderID: Int64, statusKey: String) -> Action {
+    private func updateOrderAction(siteID: Int64, orderID: Int64, statusKey: OrderStatusEnum) -> Action {
         return OrderAction.updateOrder(siteID: siteID, orderID: orderID, statusKey: statusKey, onCompletion: { error in
             guard let error = error else {
                 NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)

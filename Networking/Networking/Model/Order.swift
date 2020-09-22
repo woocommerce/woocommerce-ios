@@ -14,7 +14,7 @@ public struct Order: Decodable, GeneratedCopiable {
     ///
     /// Maps to `OrderStatus.slug`.
     ///
-    public let statusKey: String
+    public let statusKey: OrderStatusEnum
     public let currency: String
     public let customerNote: String?
 
@@ -44,7 +44,7 @@ public struct Order: Decodable, GeneratedCopiable {
                 parentID: Int64,
                 customerID: Int64,
                 number: String,
-                statusKey: String,
+                statusKey: OrderStatusEnum,
                 currency: String,
                 customerNote: String?,
                 dateCreated: Date,
@@ -109,7 +109,7 @@ public struct Order: Decodable, GeneratedCopiable {
         let customerID = try container.decode(Int64.self, forKey: .customerID)
 
         let number = try container.decode(String.self, forKey: .number)
-        let statusKey = try container.decode(String.self, forKey: .status)
+        let statusKey = try container.decode(OrderStatusEnum.self, forKey: .status)
 
         let currency = try container.decode(String.self, forKey: .currency)
         let customerNote = try container.decode(String.self, forKey: .customerNote)

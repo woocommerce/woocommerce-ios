@@ -57,9 +57,8 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
             // There are unsupported extensions with even more statuses available.
             // So let's use the order.statusKey to display those as slugs.
             let statusKey = viewModel.order.statusKey
-            let statusEnum = OrderStatusEnum(rawValue: statusKey)
-            paymentStatusLabel.applyStyle(for: statusEnum)
-            paymentStatusLabel.text = statusKey
+            paymentStatusLabel.applyStyle(for: statusKey)
+            paymentStatusLabel.text = statusKey.rawValue
         }
     }
 

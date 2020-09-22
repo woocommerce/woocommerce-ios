@@ -492,7 +492,7 @@ private extension OrderListViewController {
             return nil
         }
 
-        for orderStatus in currentSiteStatuses where orderStatus.slug == order.statusKey {
+        for orderStatus in currentSiteStatuses where orderStatus.status == order.statusKey {
             return orderStatus
         }
 
@@ -526,7 +526,7 @@ extension OrderListViewController: UITableViewDelegate {
 
         let order = orderDetailsViewModel.order
         ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID,
-                                                                    "status": order.statusKey])
+                                                                    "status": order.statusKey.rawValue])
 
         navigationController?.pushViewController(orderDetailsVC, animated: true)
     }

@@ -232,7 +232,7 @@ private extension OrderStore {
 
     /// Updates an Order with the specified Status.
     ///
-    func updateOrder(siteID: Int64, orderID: Int64, statusKey: String, onCompletion: @escaping (Error?) -> Void) {
+    func updateOrder(siteID: Int64, orderID: Int64, statusKey: OrderStatusEnum, onCompletion: @escaping (Error?) -> Void) {
         /// Optimistically update the Status
         let oldStatus = updateOrderStatus(orderID: orderID, statusKey: statusKey)
 
@@ -290,17 +290,17 @@ extension OrderStore {
     /// - Returns: Status, prior to performing the Update OP.
     ///
     @discardableResult
-    func updateOrderStatus(orderID: Int64, statusKey: String) -> String {
+    func updateOrderStatus(orderID: Int64, statusKey: OrderStatusEnum) -> OrderStatusEnum {
         let storage = storageManager.viewStorage
         guard let order = storage.loadOrder(orderID: orderID) else {
             return statusKey
         }
 
         let oldStatus = order.statusKey
-        order.statusKey = statusKey
+        order.statusKey = statusKey.rawValue
         storage.saveIfNeeded()
 
-        return oldStatus
+        return OrderStatusEnum(rawValue: oldStatus)
     }
 }
 

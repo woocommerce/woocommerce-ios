@@ -479,8 +479,8 @@ private extension ManualTrackingViewController {
             .string(from: viewModel.shipmentDate)
 
         ServiceLocator.analytics.track(.orderTrackingAdd, withProperties: ["id": orderID,
-                                                                      "status": statusKey,
-                                                                      "carrier": providerName])
+                                                                           "status": statusKey.rawValue,
+                                                                           "carrier": providerName])
 
         let addTrackingAction = ShipmentAction.addTracking(siteID: siteID,
                                                            orderID: orderID,
@@ -527,8 +527,8 @@ private extension ManualTrackingViewController {
             .string(from: viewModel.shipmentDate)
 
         ServiceLocator.analytics.track(.orderTrackingAdd, withProperties: ["id": orderID,
-                                                                      "status": statusKey,
-                                                                      "carrier": providerName])
+                                                                           "status": statusKey.rawValue,
+                                                                           "carrier": providerName])
 
         let action = ShipmentAction.addCustomTracking(siteID: siteID,
                                                       orderID: orderID,

@@ -348,9 +348,9 @@ extension OrderDetailsViewModel {
         let providerName = tracking.trackingProvider ?? ""
 
         ServiceLocator.analytics.track(.orderTrackingDelete, withProperties: ["id": orderID,
-                                                                         "status": statusKey,
-                                                                         "carrier": providerName,
-                                                                         "source": "order_detail"])
+                                                                              "status": statusKey,
+                                                                              "carrier": providerName,
+                                                                              "source": "order_detail"])
 
         let deleteTrackingAction = ShipmentAction.deleteTracking(siteID: siteID,
                                                                  orderID: orderID,

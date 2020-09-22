@@ -258,7 +258,7 @@ public class AuthenticatorAnalyticsTracker {
             googleEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedGoogle,
             iCloudKeychainEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedKeychainLogin,
             prologueEnabled: true,
-            siteAddressEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress,
+            siteAddressEnabled: true,
             wpComEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedWordPress)
     }
     

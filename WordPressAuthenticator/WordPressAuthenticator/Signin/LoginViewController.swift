@@ -210,7 +210,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         
         let unifiedGoogle = WordPressAuthenticator.shared.configuration.enableUnifiedGoogle && loginFields.meta.socialService == .google
         let unifiedApple = WordPressAuthenticator.shared.configuration.enableUnifiedApple && loginFields.meta.socialService == .apple
-        let unifiedSiteAddress = WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress && !loginFields.siteAddress.isEmpty
+        let unifiedSiteAddress = WordPressAuthenticator.shared.configuration.enableUnifiedAuth && !loginFields.siteAddress.isEmpty
         let unifiedWordPress = WordPressAuthenticator.shared.configuration.enableUnifiedWordPress && loginFields.meta.userIsDotCom
         
         guard (unifiedGoogle || unifiedApple || unifiedSiteAddress || unifiedWordPress) else {
@@ -516,7 +516,7 @@ extension LoginViewController: LoginSocialErrorViewControllerDelegate {
     /// Displays the self-hosted login form.
     ///
     @objc func loginToSelfHostedSite() {
-        guard WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress else {
+        guard WordPressAuthenticator.shared.configuration.enableUnifiedAuth else {
             presentSelfHostedView()
             return
         }

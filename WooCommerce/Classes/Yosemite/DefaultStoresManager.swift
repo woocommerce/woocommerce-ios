@@ -62,7 +62,9 @@ class DefaultStoresManager: StoresManager {
         return sessionManager.defaultStoreID == nil
     }
 
-
+    var siteID: Observable<Int64?> {
+        sessionManager.siteID
+    }
 
     /// Designated Initializer
     ///

@@ -121,7 +121,7 @@ final class ProductVariationFormViewModel_ObservablesTests: XCTestCase {
         viewModel.updateDescription(newDescription)
 
         var updateResult: Result<EditableProductVariationModel, ProductUpdateError>?
-        viewModel.updateProductRemotely { result in
+        viewModel.saveProductRemotely(status: nil) { result in
             updateResult = result
         }
 
@@ -158,7 +158,7 @@ final class ProductVariationFormViewModel_ObservablesTests: XCTestCase {
         viewModel.updateDescription(newDescription)
 
         var updateResult: Result<EditableProductVariationModel, ProductUpdateError>?
-        viewModel.updateProductRemotely { result in
+        viewModel.saveProductRemotely(status: nil) { result in
             updateResult = result
         }
 

@@ -117,6 +117,10 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 // MARK: - More menu
 //
 extension ProductFormViewModel {
+    func canSaveAsDraft() -> Bool {
+        formType == .add
+    }
+
     func canEditProductSettings() -> Bool {
         return true
     }
@@ -236,11 +240,18 @@ extension ProductFormViewModel {
 // MARK: Remote actions
 //
 extension ProductFormViewModel {
-    func updateProductRemotely(onCompletion: @escaping (Result<EditableProductModel, ProductUpdateError>) -> Void) {
+    func saveProductRemotely(status: ProductStatus?, onCompletion: @escaping (Result<EditableProductModel, ProductUpdateError>) -> Void) {
+        let productModelToSave: EditableProductModel
+        if let status = status, status != product.status {
+            let productWithStatusUpdated = product.product.copy(statusKey: status.rawValue)
+            productModelToSave = EditableProductModel(product: productWithStatusUpdated)
+        } else {
+            productModelToSave = product
+        }
         let remoteActionUseCase = ProductFormRemoteActionUseCase()
         switch formType {
         case .add:
-            remoteActionUseCase.addProduct(product: product, password: password) { [weak self] result in
+            remoteActionUseCase.addProduct(product: productModelToSave, password: password) { [weak self] result in
                 switch result {
                 case .failure(let error):
                     onCompletion(.failure(error))
@@ -255,7 +266,7 @@ extension ProductFormViewModel {
                 }
             }
         case .edit:
-            remoteActionUseCase.editProduct(product: product,
+            remoteActionUseCase.editProduct(product: productModelToSave,
                                               originalProduct: originalProduct,
                                               password: password,
                                               originalPassword: originalPassword) { [weak self] result in

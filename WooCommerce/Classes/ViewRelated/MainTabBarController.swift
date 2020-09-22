@@ -103,9 +103,11 @@ final class MainTabBarController: UITabBarController {
         return navController
     }()
 
-    private lazy var reviewsCoordinator: Coordinator = ReviewsCoordinator(willPresentReviewDetailsFromPushNotification: { [weak self] in
-        self?.navigateTo(.reviews)
-    })
+    private var reviewsCoordinator: Coordinator?
+
+    private var cancellableSiteID: ObservationToken?
+
+    private let stores: StoresManager = ServiceLocator.stores
 
     // MARK: - Overridden Methods
 
@@ -113,28 +115,9 @@ final class MainTabBarController: UITabBarController {
         super.viewDidLoad()
         setNeedsStatusBarAppearanceUpdate() // call this to refresh status bar changes happening at runtime
 
-        // Add the Orders, Products and Reviews tab
-        viewControllers = {
-            var controllers = [UIViewController]()
-
-            let dashboardTabIndex = WooTab.myStore.visibleIndex()
-            controllers.insert(dashboardViewController, at: dashboardTabIndex)
-
-            let ordersTabIndex = WooTab.orders.visibleIndex()
-            controllers.insert(ordersTabViewController, at: ordersTabIndex)
-
-            let productsTabIndex = WooTab.products.visibleIndex()
-            controllers.insert(productsTabViewController, at: productsTabIndex)
-
-            let reviewsTabIndex = WooTab.reviews.visibleIndex()
-            controllers.insert(reviewsCoordinator.navigationController, at: reviewsTabIndex)
-
-            return controllers
-        }()
+        observeSiteIDForViewControllers()
 
         loadReviewsTabNotificationCountAndUpdateBadge()
-
-        reviewsCoordinator.start()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -351,6 +334,55 @@ extension MainTabBarController {
     }
 }
 
+// MARK: - Site ID observation for updating tab view controllers
+//
+private extension MainTabBarController {
+    func observeSiteIDForViewControllers() {
+        cancellableSiteID = stores.siteID.subscribe { [weak self] siteID in
+            guard let self = self else {
+                return
+            }
+            self.updateViewControllers(siteID: siteID)
+        }
+    }
+
+    func updateViewControllers(siteID: Int64?) {
+        guard let siteID = siteID else {
+            viewControllers = []
+            reviewsCoordinator = nil
+            return
+        }
+
+        // Initialize tab view controllers
+        let reviewsCoordinator = ReviewsCoordinator(siteID: siteID,
+                                                    willPresentReviewDetailsFromPushNotification: { [weak self] in
+                                                        self?.navigateTo(.reviews)
+        })
+        self.reviewsCoordinator = reviewsCoordinator
+
+        // Add the Dashboard, Orders, Products and Reviews tab
+        viewControllers = {
+            var controllers = [UIViewController]()
+
+            let dashboardTabIndex = WooTab.myStore.visibleIndex()
+            controllers.insert(dashboardViewController, at: dashboardTabIndex)
+
+            let ordersTabIndex = WooTab.orders.visibleIndex()
+            controllers.insert(ordersTabViewController, at: ordersTabIndex)
+
+            let productsTabIndex = WooTab.products.visibleIndex()
+            controllers.insert(productsTabViewController, at: productsTabIndex)
+
+            let reviewsTabIndex = WooTab.reviews.visibleIndex()
+            controllers.insert(reviewsCoordinator.navigationController, at: reviewsTabIndex)
+
+            return controllers
+        }()
+
+        // Startup calls for tab view controllers
+        reviewsCoordinator.start()
+    }
+}
 
 // MARK: - Reviews Tab Badge Updates
 //
@@ -366,14 +398,14 @@ private extension MainTabBarController {
     }
 
     @objc func loadReviewsTabNotificationCountAndUpdateBadge() {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+        guard let siteID = stores.sessionManager.defaultStoreID else {
             return
         }
 
         let action = NotificationCountAction.load(siteID: siteID, type: .kind(.comment)) { [weak self] count in
             self?.updateReviewsTabBadge(count: count)
         }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     /// Displays or Hides the Dot on the Reviews tab, depending on the notification count

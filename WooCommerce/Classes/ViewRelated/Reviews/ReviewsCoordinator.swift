@@ -19,7 +19,8 @@ final class ReviewsCoordinator: Coordinator {
 
     private let willPresentReviewDetailsFromPushNotification: () -> Void
 
-    init(pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
+    init(siteID: Int64,
+         pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          storesManager: StoresManager = ServiceLocator.stores,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
          switchStoreUseCase: SwitchStoreUseCaseProtocol,
@@ -31,12 +32,13 @@ final class ReviewsCoordinator: Coordinator {
         self.switchStoreUseCase = switchStoreUseCase
         self.willPresentReviewDetailsFromPushNotification = willPresentReviewDetailsFromPushNotification
 
-        self.navigationController = WooNavigationController(rootViewController: ReviewsViewController())
+        self.navigationController = WooNavigationController(rootViewController: ReviewsViewController(siteID: siteID))
     }
 
-    convenience init(willPresentReviewDetailsFromPushNotification: @escaping () -> Void) {
+    convenience init(siteID: Int64, willPresentReviewDetailsFromPushNotification: @escaping () -> Void) {
         let storesManager = ServiceLocator.stores
-        self.init(storesManager: storesManager,
+        self.init(siteID: siteID,
+                  storesManager: storesManager,
                   switchStoreUseCase: SwitchStoreUseCase(stores: storesManager),
                   willPresentReviewDetailsFromPushNotification: willPresentReviewDetailsFromPushNotification)
     }
@@ -93,6 +95,7 @@ final class ReviewsCoordinator: Coordinator {
 
     private func pushReviewDetailsViewController(using parcel: ProductReviewFromNoteParcel) {
         let detailsVC = ReviewDetailsViewController(productReview: parcel.review,
+                                                    siteID: parcel.review.siteID,
                                                     product: parcel.product,
                                                     notification: parcel.note)
         navigationController.pushViewController(detailsVC, animated: true)

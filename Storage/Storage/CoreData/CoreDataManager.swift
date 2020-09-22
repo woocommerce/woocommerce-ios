@@ -177,8 +177,11 @@ public final class CoreDataManager: StorageManagerType {
             return debugMessages
         }
 
-        guard let metadata = try? NSPersistentStoreCoordinator.metadataForPersistentStore(ofType: NSSQLiteStoreType, at: storeURL, options: nil) else {
-            debugMessages.append("Cannot get metadata for persistent store at URL \(storeURL)")
+        let metadata: [String: Any]
+        do {
+            metadata = try NSPersistentStoreCoordinator.metadataForPersistentStore(ofType: NSSQLiteStoreType, at: storeURL, options: nil)
+        } catch {
+            debugMessages.append("Cannot get metadata for persistent store at URL \(storeURL): \(error)")
             return debugMessages
         }
 

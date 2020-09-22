@@ -1,5 +1,0 @@
-- Melde dich mit Apple an.
-- Experimentiere mit neuen Funktionen im Abschnitt „Produkte“! Navigiere zu „Einstellungen“, um sie zu aktivieren.
-- Produkte auf einfache Weise bearbeiten: Änderungen werden jetzt nach der Anpassung des Verkaufspreises in den Produktdetails angezeigt.
-- Produkte besser verwalten: Erhalte verständliche Warnmeldungen, wenn mindestens eine Variante keinen Preis aufweist.
-- Keine Abstürze mehr! Tippe auf eine Push-Benachrichtigung zu Produktbewertungen, ohne dass Probleme auftreten.

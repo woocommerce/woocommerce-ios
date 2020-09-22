@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-09-04 08:54:03+0000 */
+/* Translation-Revision-Date: 2020-09-10 11:32:06+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -7,7 +7,7 @@
 "#%1$@ %2$@ %3$@" = "#%1$@ %2$@ %3$@";
 
 /* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
-"#%@" = "#%@";
+"#%@ %@" = "#%@ %@";
 
 /* In Order Details, the pattern to show the billed person's full name. For example, “John Doe”. The %1$@ is the first name. The %2$@ is the last name. */
 "%1$@ %2$@" = "%1$@ %2$@";
@@ -148,6 +148,9 @@
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
 "Add a note" = "添加备注";
+
+/* The action to add a product */
+"Add a product" = "Add a product";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "添加产品图片";
@@ -299,8 +302,7 @@
 /* A descriptive label prefix. Example: 'Backorders: not allowed' */
 "Backorders:" = "预订：";
 
-/* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}.
-   VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
+/* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "%2$@ 栏号 %1$i";
 
 /* Begin fulfill order button title */
@@ -323,6 +325,9 @@
 
 /* Placeholder of the text field for editing the button text for an external/affiliate product */
 "Buy Product" = "购买产品";
+
+/* Legal disclaimer for logging in. The underscores _..._ denote underline. */
+"By continuing, you agree to our _Terms of Service_." = "By continuing, you agree to our _Terms of Service_.";
 
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "注册即表示您同意我们的_服务条款_。";
@@ -439,7 +444,8 @@
 /* Button title. Tapping begins log in using Google. */
 "Continue with Google" = "继续使用 Google";
 
-/* Button title. Tapping begins our normal log in process. */
+/* Button title. Takes the user to the login by email flow.
+   Button title. Tapping begins our normal log in process. */
 "Continue with WordPress.com" = "继续使用 WordPress.com";
 
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
@@ -625,7 +631,8 @@
 /* Email address text field placeholder */
 "Email" = "E-mail";
 
-/* Placeholder for a textfield. The user may enter their email address. */
+/* Accessibility label for the email address text field.
+   Placeholder for a textfield. The user may enter their email address. - Placeholder for the email address textfield. */
 "Email address" = "电子邮件地址";
 
 /* Label for yes/no switch - emailing the note to customer. */
@@ -683,9 +690,15 @@
 /* Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site. */
 "Enter your account information for %@." = "输入您的 %@ 帐户信息。";
 
+/* Instruction text on the initial email address entry screen. */
+"Enter your email address to log in or create a WordPress.com account." = "Enter your email address to log in or create a WordPress.com account.";
+
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "改为输入密码。";
+
+/* Button title. Takes the user to the login by site address flow. */
+"Enter your site address" = "Enter your site address";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -711,9 +724,6 @@
 
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
-
-/* Navigates to the feature request screen */
-"Feature Request" = "功能请求";
 
 /* Featured Product switch in Product Catalog Visibility */
 "Featured Product" = "推荐产品";
@@ -752,11 +762,14 @@
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "深入了解商店中产品的销售情况";
 
+/* View title for initial auth views. */
+"Get Started" = "Get Started";
+
+/* The button title for a secondary call-to-action button. When the user wants to try sending a magic link instead of entering a password. */
+"Get a login link by email" = "Get a login link by email";
+
 /* Subtitle for Help Center */
 "Get answers to questions you have" = "答疑解惑";
-
-/* View title for initial auth views. */
-"Getting Started" = "开始使用";
 
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "获取账户信息";
@@ -782,6 +795,10 @@
 
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "分组产品";
+
+/* In Order Details, the name of the billed person when there are no name and last name.
+   In Order List, the name of the billed person when there are no name and last name. */
+"Guest" = "Guest";
 
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "您希望我们如何为您提供帮助？";
@@ -861,6 +878,9 @@
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "If you already have a store, you’ll need to install the free Jetpack plugin and connect it to your WordPress.com account." = "如果您已有商店，则需要安装免费的 Jetpack 插件并将其连接到您的 WordPress.com 帐户。";
 
+/* Legal disclaimer for signing up. The underscores _..._ denote underline. */
+"If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_.";
+
 /* Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
 "In stock" = "有货";
@@ -903,6 +923,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site that isn't a valid URL. */
 "Invalid URL, please check if you wrote a valid site address." = "URL 无效，请检查您输入的网址是否有效。";
+
+/* Error message generated when announcement service is unable to return a valid endpoint. */
+"Invalid endpoint" = "Invalid endpoint";
 
 /* No comment provided by engineer. */
 "Invalid username" = "无效用户名";
@@ -966,6 +989,9 @@
 
 /* Description of the Action sheet option when the user wants to change the Product type to external product */
 "Link a product to an external website" = "将产品链接到外部网站";
+
+/* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
+"List of images of the product" = "List of images of the product";
 
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "正在加载命令";
@@ -1236,6 +1262,9 @@
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "可选的跟踪信息";
 
+/* Divider on initial auth view separating auth options. */
+"Or" = "Or";
+
 /* Label for button to log in using site address. Underscores _..._ denote underline. */
 "Or log in by _entering your site address_." = "或通过 _输入您的站点地址_ 登录。";
 
@@ -1405,9 +1434,6 @@
 /* Title for the first page in the Orders tab. */
 "Processing" = "正在处理";
 
-/* Shown while the app waits for the account process to complete. */
-"Processing Account" = "正在处理帐户";
-
 /* Description for Top Performers left column header
    Product section title - Product section title if there is only one product. - Section header title for the product */
 "Product" = "产品";
@@ -1538,9 +1564,6 @@
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "正常价格：%@";
 
-/* Banner action button text in my store when stats will be deprecated */
-"Remind me later" = "稍后提醒我";
-
 /* Confirm button on the alert when the user taps to delete a Product image */
 "Remove" = "删除";
 
@@ -1562,7 +1585,7 @@
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "重置活动日志";
 
-/* The secondary call-to-action button title text, for when the user can't remember their password. */
+/* The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "重置密码";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
@@ -1672,6 +1695,9 @@
 
 /* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
 "Selected Store" = "已选商店";
+
+/* Presents a survey to gather feedback from the user. */
+"Send Feedback" = "发送反馈";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
 "Send Link" = "发送链接";
@@ -2166,6 +2192,9 @@
    Placeholder in the Product Title row on Product form screen. - Product details screen — product title descriptive label */
 "Title" = "标题";
 
+/* VoiceOver accessibility hint, informing the user about the title of a product in product detail screen. */
+"Title of the product" = "Title of the product";
+
 /* Action sheet option to sort products by ascending product name */
 "Title: A to Z" = "标题：A 到 Z";
 
@@ -2372,9 +2401,6 @@
    Updated on <date> */
 "Updated on %@" = "更新日期：%@";
 
-/* Banner title in my store when stats will be deprecated */
-"Upgrade to keep seeing your stats" = "升级以继续查看统计信息";
-
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */
 "Username" = "用户名";
@@ -2476,7 +2502,7 @@
 "We'll email you a magic link that'll log you in instantly, no password needed. Hunt and peck no more!" = "我们将通过电子邮件向您发送一个神奇链接，利用它您无需密码即可立即登录。无需再输入密码了！";
 
 /* Instruction text on the Sign Up screen. */
-"We'll email you a magic link to create your new WordPress.com account." = "我们将通过电子邮件向您发送一个免密登录链接，供您创建新的 WordPress.com 帐户。";
+"We'll email you a signup link to create your new WordPress.com account." = "We'll email you a signup link to create your new WordPress.com account.";
 
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales." = "当您收到新订单时，我们会通知您。同时，探索如何提高您的商店销售额。";
@@ -2500,6 +2526,9 @@
 /* The info of the Work In Progress top banner on the Products tab. */
 "We've added more editing functionalities to products! You can now update images, see previews and share your products." = "我们添加了更丰富的产品编辑功能！ 现在，您可以更新图像、查看预览并分享产品。";
 
+/* Instruction text after a signup Magic Link was requested. */
+"We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com.";
+
 /* Statistical unit - a single week */
 "Week" = "周";
 
@@ -2514,12 +2543,6 @@
 
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "重量：%1$@%2$@";
-
-/* Instruction text after a signup Magic Link was requested. */
-"We’ve emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "我们已通过电子邮件向您发送一个注册链接，供您创建新的 WordPress.com 帐户。 请在此设备上查看电子邮件，并轻点您从 WordPress.com 收到的电子邮件中的链接。";
-
-/* Banner caption in my store when the stats will be deprecated */
-"We’ve rolled out improvements to our analytics. Upgrade to WooCommerce 4.0 or above or install WooCommerce Admin plugin to keep seeing your stats after September 1, 2020." = "我们已经对分析功能进行了改进。 升级至 WooCommerce 4.0 或更高版本，或者安装 WooCommerce Admin 插件，方可在 2020 年 9 月 1 日后继续查看统计信息。";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "我的站点地址是什么？";

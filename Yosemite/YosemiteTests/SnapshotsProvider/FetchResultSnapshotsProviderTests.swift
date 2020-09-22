@@ -239,6 +239,178 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         XCTAssertEqual(secondSnapshot.itemIdentifiers(inSection: "X"), [xiong.objectID])
         XCTAssertEqual(secondSnapshot.itemIdentifiers(inSection: "W"), [wakaba.objectID])
     }
+
+    func test_snapshot_emits_a_new_snapshot_when_objects_are_updated_in_derived_storage() throws {
+        // Given
+        let zanza = insertAccount(displayName: "Z", username: "Zanza")
+        let zagato = insertAccount(displayName: "Z", username: "Zagato")
+        let yamada = insertAccount(displayName: "Y", username: "Yamada")
+
+        try viewStorage.obtainPermanentIDs(for: [zanza, zagato, yamada])
+
+        let derivedStorage = storageManager.newDerivedStorage()
+
+        let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
+            sortDescriptor: .init(keyPath: \StorageAccount.username, ascending: false)
+        )
+        let provider = FetchResultSnapshotsProvider(storageManager: storageManager, query: query)
+
+        var snapshots = [FetchResultSnapshot]()
+        provider.snapshot.dropFirst().sink { snapshot in
+            snapshots.append(snapshot)
+        }.store(in: &self.cancellables)
+
+        try provider.start()
+
+        // When
+        // This update should emit a new snapshot
+        waitForExpectation { exp in
+            derivedStorage.perform {
+                let zanzaInDerived = derivedStorage.loadObject(ofType: StorageAccount.self, with: zanza.objectID)!
+                zanzaInDerived.username = "Zanza Lockman"
+
+                derivedStorage.saveIfNeeded()
+
+                exp.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertEqual(snapshots.count, 3)
+
+        let firstSnapshot = try XCTUnwrap(snapshots.first)
+        XCTAssertEqual(firstSnapshot.itemIdentifiers, [zanza.objectID, zagato.objectID, yamada.objectID])
+
+        // We're going to ignore the second snapshot because that's the snapshot from FRC which
+        // does not _reload_ the updated items.
+
+        // The last snapshot should be equal to the first since we only received an update.
+        let lastSnapshot = try XCTUnwrap(snapshots.last)
+        XCTAssertEqual(lastSnapshot.itemIdentifiers, firstSnapshot.itemIdentifiers)
+    }
+
+    func test_snapshot_does_not_emit_a_new_snapshot_when_differently_typed_objects_are_updated_in_derived_storage() throws {
+        // Given
+        let account = insertAccount(displayName: "Z", username: "Zanza")
+        let orderStatus = insertOrderStatus(name: "accusamus")
+
+        try viewStorage.obtainPermanentIDs(for: [account, orderStatus])
+
+        let derivedStorage = storageManager.newDerivedStorage()
+
+        let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
+            sortDescriptor: .init(keyPath: \StorageAccount.username, ascending: false)
+        )
+        let provider = FetchResultSnapshotsProvider(storageManager: storageManager, query: query)
+
+        var snapshots = [FetchResultSnapshot]()
+        // Drop the empty snapshot and the first query result snapshot
+        provider.snapshot.dropFirst(2).sink { snapshot in
+            snapshots.append(snapshot)
+        }.store(in: &self.cancellables)
+
+        try provider.start()
+
+        // When
+        // This update should not emit a new snapshot since the updated object is not a `StorageAccount`.
+        waitForExpectation { exp in
+            derivedStorage.perform {
+                let orderStatusInDerived = derivedStorage.loadObject(ofType: StorageOrderStatus.self, with: orderStatus.objectID)!
+                orderStatusInDerived.name = "edited orderStatus"
+
+                derivedStorage.saveIfNeeded()
+
+                exp.fulfill()
+            }
+        }
+
+        // Then
+        assertEmpty(snapshots)
+    }
+
+    func test_snapshot_does_not_emit_a_new_snapshot_when_the_updated_objects_do_not_match_the_predicate() throws {
+        // Given
+        let account = insertAccount(displayName: "Z", username: "Zanza")
+        let excludedAccount = insertAccount(displayName: "Y", username: "Yamato")
+
+        try viewStorage.obtainPermanentIDs(for: [account, excludedAccount])
+
+        let derivedStorage = storageManager.newDerivedStorage()
+
+        let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
+            sortDescriptor: .init(keyPath: \StorageAccount.username, ascending: false),
+            predicate: .init(format: "%K = %@", #keyPath(StorageAccount.displayName), "Z")
+        )
+        let provider = FetchResultSnapshotsProvider(storageManager: storageManager, query: query)
+
+        var snapshots = [FetchResultSnapshot]()
+        // Drop the empty snapshot and the first query result snapshot
+        provider.snapshot.dropFirst(2).sink { snapshot in
+            snapshots.append(snapshot)
+        }.store(in: &self.cancellables)
+
+        try provider.start()
+
+        // When
+        // This update should not emit a new snapshot since the updated object is not part
+        // of the query result because of the `query.predicate`.
+        waitForExpectation { exp in
+            derivedStorage.perform {
+                let excludedAccountInDerived = derivedStorage.loadObject(ofType: StorageAccount.self,
+                                                                         with: excludedAccount.objectID)!
+                excludedAccountInDerived.displayName = "edited displayName"
+
+                derivedStorage.saveIfNeeded()
+
+                exp.fulfill()
+            }
+        }
+
+        // Then
+        assertEmpty(snapshots)
+    }
+
+    func test_snapshot_will_still_emit_snapshots_after_the_StorageManager_is_reset() throws {
+        // Given
+        let zanza = insertAccount(displayName: "Z", username: "Zanza")
+        try viewStorage.obtainPermanentIDs(for: [zanza])
+
+        let query = FetchResultSnapshotsProvider<StorageAccount>.Query(
+            sortDescriptor: .init(keyPath: \StorageAccount.username, ascending: false)
+        )
+        let provider = FetchResultSnapshotsProvider(storageManager: storageManager, query: query)
+
+        var snapshots = [FetchResultSnapshot]()
+        provider.snapshot.dropFirst().sink { snapshot in
+            snapshots.append(snapshot)
+        }.store(in: &self.cancellables)
+
+        try provider.start()
+
+        // When
+        // This should emit a snapshot that is just an empty list.
+        storageManager.reset()
+
+        // Inserting new objects would trigger another snapshot
+        let sadako = insertAccount(displayName: "S", username: "Sadako")
+        try viewStorage.obtainPermanentIDs(for: [sadako])
+
+        viewStorage.saveIfNeeded()
+
+        // Then
+        XCTAssertEqual(snapshots.count, 3)
+
+        let firstSnapshot = try XCTUnwrap(snapshots.first)
+        XCTAssertEqual(firstSnapshot.itemIdentifiers, [zanza.objectID])
+
+        // The second snapshot is from the reset().
+        let secondSnapshot = snapshots[1]
+        assertEmpty(secondSnapshot.itemIdentifiers)
+
+        // The third snapshot is from the newly inserted objects after the reset()
+        let thirdSnapshot = snapshots[2]
+        XCTAssertEqual(thirdSnapshot.itemIdentifiers, [sadako.objectID])
+    }
 }
 
 @available(iOS 13.0, *)
@@ -249,5 +421,12 @@ private extension FetchResultSnapshotsProviderTests {
         account.displayName = displayName
         account.username = username
         return account
+    }
+
+    func insertOrderStatus(name: String) -> StorageOrderStatus {
+        let orderStatus = viewStorage.insertNewObject(ofType: StorageOrderStatus.self)
+        orderStatus.name = name
+        orderStatus.slug = name
+        return orderStatus
     }
 }

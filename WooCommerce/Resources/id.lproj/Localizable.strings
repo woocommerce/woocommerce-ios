@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-09-04 08:54:04+0000 */
+/* Translation-Revision-Date: 2020-09-18 08:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -7,7 +7,7 @@
 "#%1$@ %2$@ %3$@" = "#%1$@ %2$@ %3$@";
 
 /* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
-"#%@" = "#%@";
+"#%@ %@" = "#%1$@ %2$@";
 
 /* In Order Details, the pattern to show the billed person's full name. For example, “John Doe”. The %1$@ is the first name. The %2$@ is the last name. */
 "%1$@ %2$@" = "%1$@ %2$@";
@@ -148,6 +148,9 @@
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
 "Add a note" = "Tambahkan catatan";
+
+/* The action to add a product */
+"Add a product" = "Tambahkan produk";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Tambahkan gambar produk";
@@ -299,8 +302,7 @@
 /* A descriptive label prefix. Example: 'Backorders: not allowed' */
 "Backorders:" = "Pesanan tunda:";
 
-/* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}.
-   VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
+/* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "Nomor bar %1$i, %2$@, ";
 
 /* Begin fulfill order button title */
@@ -323,6 +325,9 @@
 
 /* Placeholder of the text field for editing the button text for an external/affiliate product */
 "Buy Product" = "Beli produk";
+
+/* Legal disclaimer for logging in. The underscores _..._ denote underline. */
+"By continuing, you agree to our _Terms of Service_." = "Dengan melanjutkan, Anda menyetujui _Ketentuan Layanan_ kami.";
 
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "Dengan mendaftar, berarti Anda menyetujui _Ketentuan Layanan_ kami.";
@@ -439,7 +444,8 @@
 /* Button title. Tapping begins log in using Google. */
 "Continue with Google" = "Lanjutkan dengan Google";
 
-/* Button title. Tapping begins our normal log in process. */
+/* Button title. Takes the user to the login by email flow.
+   Button title. Tapping begins our normal log in process. */
 "Continue with WordPress.com" = "Lanjutkan dengan WordPress.com";
 
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
@@ -625,7 +631,8 @@
 /* Email address text field placeholder */
 "Email" = "Surel";
 
-/* Placeholder for a textfield. The user may enter their email address. */
+/* Accessibility label for the email address text field.
+   Placeholder for a textfield. The user may enter their email address. - Placeholder for the email address textfield. */
 "Email address" = "Alamat email";
 
 /* Label for yes/no switch - emailing the note to customer. */
@@ -683,9 +690,15 @@
 /* Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site. */
 "Enter your account information for %@." = "Masukkan informasi akun Anda untuk %@.";
 
+/* Instruction text on the initial email address entry screen. */
+"Enter your email address to log in or create a WordPress.com account." = "Masukkan alamat email Anda untuk login atau membuat akun WordPress.com.";
+
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "Masukkan kata sandi saja.";
+
+/* Button title. Takes the user to the login by site address flow. */
+"Enter your site address" = "Masukkan alamat situs Anda";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -711,9 +724,6 @@
 
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
-
-/* Navigates to the feature request screen */
-"Feature Request" = "Permintaan Fitur";
 
 /* Featured Product switch in Product Catalog Visibility */
 "Featured Product" = "Produk Unggulan";
@@ -752,11 +762,14 @@
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "Dapatkan informasi mengenai performa produk di toko Anda";
 
+/* View title for initial auth views. */
+"Get Started" = "Memulai";
+
+/* The button title for a secondary call-to-action button. When the user wants to try sending a magic link instead of entering a password. */
+"Get a login link by email" = "Dapatkan tautan login lewat email";
+
 /* Subtitle for Help Center */
 "Get answers to questions you have" = "Dapatkan jawaban atas pertanyaan Anda";
-
-/* View title for initial auth views. */
-"Getting Started" = "Memulai";
 
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "Mencari informasi akun";
@@ -782,6 +795,10 @@
 
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "Produk yang dikelompokkan";
+
+/* In Order Details, the name of the billed person when there are no name and last name.
+   In Order List, the name of the billed person when there are no name and last name. */
+"Guest" = "Tamu";
 
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "APA YANG DAPAT KAMI BANTU?";
@@ -861,6 +878,9 @@
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "If you already have a store, you’ll need to install the free Jetpack plugin and connect it to your WordPress.com account." = "Jika sudah memiliki toko, Anda perlu memasang plugin Jetpack gratis dan menghubungkannya ke WordPress.com Anda.";
 
+/* Legal disclaimer for signing up. The underscores _..._ denote underline. */
+"If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Jika Anda melanjutkan dengan Apple atau Google dan belum memiliki akun WordPress.com, Anda akan membuat akun dan menyetujui _Ketentuan Layanan_ kami.";
+
 /* Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
 "In stock" = "Tersedia";
@@ -903,6 +923,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site that isn't a valid URL. */
 "Invalid URL, please check if you wrote a valid site address." = "URL tidak valid, pastikan Anda menuliskan alamat situs yang valid.";
+
+/* Error message generated when announcement service is unable to return a valid endpoint. */
+"Invalid endpoint" = "Titik akhir tidak valid";
 
 /* No comment provided by engineer. */
 "Invalid username" = "Nama pengguna tidak sah";
@@ -966,6 +989,9 @@
 
 /* Description of the Action sheet option when the user wants to change the Product type to external product */
 "Link a product to an external website" = "Tautkan produk ke situs web eksternal";
+
+/* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
+"List of images of the product" = "Daftar gambar produk";
 
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "Memuat Pesanan";
@@ -1236,6 +1262,9 @@
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "Informasi Pelacakan Opsional";
 
+/* Divider on initial auth view separating auth options. */
+"Or" = "Atau";
+
 /* Label for button to log in using site address. Underscores _..._ denote underline. */
 "Or log in by _entering your site address_." = "Atau login dengan _memasukkan alamat situs Anda_.";
 
@@ -1405,9 +1434,6 @@
 /* Title for the first page in the Orders tab. */
 "Processing" = "Memproses";
 
-/* Shown while the app waits for the account process to complete. */
-"Processing Account" = "Memproses Akun";
-
 /* Description for Top Performers left column header
    Product section title - Product section title if there is only one product. - Section header title for the product */
 "Product" = "Produk";
@@ -1538,9 +1564,6 @@
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Harga normal: %@";
 
-/* Banner action button text in my store when stats will be deprecated */
-"Remind me later" = "Ingatkan saya nanti";
-
 /* Confirm button on the alert when the user taps to delete a Product image */
 "Remove" = "Hapus";
 
@@ -1562,7 +1585,7 @@
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Reset Log Aktivitas";
 
-/* The secondary call-to-action button title text, for when the user can't remember their password. */
+/* The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "Reset kata sandi";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
@@ -1672,6 +1695,9 @@
 
 /* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
 "Selected Store" = "Toko yang Dipilih";
+
+/* Presents a survey to gather feedback from the user. */
+"Send Feedback" = "Kirim Masukan";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
 "Send Link" = "Kirim Tautan";
@@ -2166,6 +2192,9 @@
    Placeholder in the Product Title row on Product form screen. - Product details screen — product title descriptive label */
 "Title" = "Judul";
 
+/* VoiceOver accessibility hint, informing the user about the title of a product in product detail screen. */
+"Title of the product" = "Judul produk";
+
 /* Action sheet option to sort products by ascending product name */
 "Title: A to Z" = "Judul: A ke Z";
 
@@ -2372,9 +2401,6 @@
    Updated on <date> */
 "Updated on %@" = "Diperbarui pada %@";
 
-/* Banner title in my store when stats will be deprecated */
-"Upgrade to keep seeing your stats" = "Upgrade untuk bisa tetap melihat statistik Anda";
-
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */
 "Username" = "Nama pengguna";
@@ -2476,7 +2502,7 @@
 "We'll email you a magic link that'll log you in instantly, no password needed. Hunt and peck no more!" = "Kami akan mengirimkan email berisi link ajaib yang bisa Anda gunakan untuk login dalam sekejap, tanpa kata sandi. Tak perlu lagi repot mengetik!";
 
 /* Instruction text on the Sign Up screen. */
-"We'll email you a magic link to create your new WordPress.com account." = "Kami akan mengirimkan email berisi magic link untuk membuat akun WordPress.com baru Anda.";
+"We'll email you a signup link to create your new WordPress.com account." = "Kami akan mengirimi Anda email berisi tautan pendaftaran untuk membuat akun WordPress.com baru.";
 
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales." = "Kami akan mengabari Anda jika Anda menerima pesanan baru. Selama rentang waktu tersebut, cari tahu bagaimana Anda dapat meningkatkan penjualan toko Anda.";
@@ -2500,6 +2526,9 @@
 /* The info of the Work In Progress top banner on the Products tab. */
 "We've added more editing functionalities to products! You can now update images, see previews and share your products." = "Kami telah menambahkan lebih banyak fungsi penyuntingan ke produk! Sekarang Anda dapat memperbarui gambar, melihat pratinjau, dan berbagi produk Anda.";
 
+/* Instruction text after a signup Magic Link was requested. */
+"We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Kami telah mengirimi Anda email berisi tautan pendaftaran untuk membuat akun WordPress.com baru. Periksa email Anda di perangkat ini, dan ketuk tautan dalam email yang Anda terima dari WordPress.com";
+
 /* Statistical unit - a single week */
 "Week" = "Minggu";
 
@@ -2514,12 +2543,6 @@
 
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "Berat: %1$@%2$@";
-
-/* Instruction text after a signup Magic Link was requested. */
-"We’ve emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Kami telah mengirimi Anda email berisi tautan masuk untuk membuat akun WordPress.com baru. Periksa email Anda di perangkat ini, dan ketuk tautan dalam email yang Anda terima dari WordPress.com";
-
-/* Banner caption in my store when the stats will be deprecated */
-"We’ve rolled out improvements to our analytics. Upgrade to WooCommerce 4.0 or above or install WooCommerce Admin plugin to keep seeing your stats after September 1, 2020." = "Kami telah meluncurkan peningkatan pada analitik kami. Upgrade ke WooCommerce 4.0 atau versi lebih baru atau instal plugin WooCommerce Admin untuk tetap bisa melihat statistik Anda setelah tanggal 1 September 2020.";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "Apa alamat situs saya?";

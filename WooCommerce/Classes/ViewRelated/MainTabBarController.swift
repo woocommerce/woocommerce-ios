@@ -80,6 +80,11 @@ final class MainTabBarController: UITabBarController {
     ///
     private let viewModel = MainTabViewModel()
 
+    private lazy var dashboardViewController: UIViewController = {
+        let dashboardViewController = DashboardViewController()
+        return WooNavigationController(rootViewController: dashboardViewController)
+    }()
+
     private lazy var ordersTabViewController: UIViewController = {
         let rootViewController = OrdersRootViewController()
         return WooNavigationController(rootViewController: rootViewController)
@@ -110,7 +115,10 @@ final class MainTabBarController: UITabBarController {
 
         // Add the Orders, Products and Reviews tab
         viewControllers = {
-            var controllers = viewControllers ?? []
+            var controllers = [UIViewController]()
+
+            let dashboardTabIndex = WooTab.myStore.visibleIndex()
+            controllers.insert(dashboardViewController, at: dashboardTabIndex)
 
             let ordersTabIndex = WooTab.orders.visibleIndex()
             controllers.insert(ordersTabViewController, at: ordersTabIndex)

@@ -1,5 +1,0 @@
-- Meld je aan via Apple bij het inloggen.
-- Experimenteer met nieuwe functies in het gedeelte Producten! Ga naar Instellingen om ze in te schakelen.
-- Bewerk producten heel eenvoudig: updates worden nu weergegeven in de productgegevens nadat de verkoopprijs is aangepast.
-- Beheer je producten op een betere manier: ontvang duidelijke waarschuwingen wanneer minimaal één variatie geen prijs bevat.
-- Ga weg, crash! Je kan nu zonder problemen op de pushmelding van Productbeoordeling tikken.

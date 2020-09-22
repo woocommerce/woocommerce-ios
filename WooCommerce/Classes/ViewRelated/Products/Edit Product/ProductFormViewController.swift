@@ -733,12 +733,19 @@ extension ProductFormViewController: KeyboardScrollable {
 //
 private extension ProductFormViewController {
     func presentBackNavigationActionSheet() {
-        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
-            guard let self = self else {
-                return
-            }
-            self.exitForm()
-        })
+        switch viewModel.formType {
+        case .add:
+            UIAlertController.presentDiscardNewProductActionSheet(viewController: self,
+                                                                  onSaveDraft: { [weak self] in
+                                                                    self?.saveProductAsDraft()
+                }, onDiscard: { [weak self] in
+                    self?.exitForm()
+            })
+        case .edit:
+            UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+                self?.exitForm()
+            })
+        }
     }
 }
 

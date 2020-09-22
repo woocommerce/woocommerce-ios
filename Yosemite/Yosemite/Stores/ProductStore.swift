@@ -513,16 +513,33 @@ private extension ProductStore {
         }
         storageProduct.addToTags(NSOrderedSet(array: storageTags))
     }
+}
+
+// MARK: - Storage: Product Downloadable Files
+//
+private extension ProductStore {
 
     /// Updates, inserts, or prunes the provided StorageProduct's downloadable files using the provided read-only Product's downloadable files
     ///
     func handleProductDownloadableFiles(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
 
-        // Removes all the downloadable files first.
+        removeAllProductDownloadableFiles(storageProduct, storage)
+        insertAllProductDownloadableFiles(readOnlyProduct, storageProduct, storage)
+    }
+
+    /// Removes the provided StorageProduct's all downloadable files from provided storage
+    ///
+    func removeAllProductDownloadableFiles(_ storageProduct: Storage.Product, _ storage: StorageType) {
+
         storageProduct.downloadableFilesArray.forEach { existingStorageDownloadableFile in
             storage.deleteObject(existingStorageDownloadableFile)
             storageProduct.removeFromDownloads(existingStorageDownloadableFile)
         }
+    }
+
+    /// Inserts the read-only Product's all downloadable files into provided StorageProduct's downloadable files using the storage
+    ///
+    func insertAllProductDownloadableFiles(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
 
         var storageDownloads = [StorageProductDownload]()
         for readOnlyDownloadableFile in readOnlyProduct.downloads {
@@ -534,7 +551,6 @@ private extension ProductStore {
         storageProduct.addToDownloads(NSOrderedSet(array: storageDownloads))
     }
 }
-
 
 // MARK: - Storage: Search Results
 //

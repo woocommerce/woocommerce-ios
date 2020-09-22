@@ -202,11 +202,6 @@ final class ProductMapperTests: XCTestCase {
             return
         }
         XCTAssertEqual(files.count, 3)
-
-        if files.count < 1 {
-            XCTFail("Missing product downloadable file")
-            return
-        }
         let actualDownloadableFile = files[0]
         let expectedDownloadableFile = ProductDownload(downloadID: "1f9c11f99ceba63d4403c03bd5391b11",
                                                        name: "Song #1",

@@ -31,3 +31,51 @@ private extension RefundItemTableViewCell {
         print("Item quantity button pressed")
     }
 }
+
+#if canImport(SwiftUI) && DEBUG
+
+// MARK: - Previews
+
+import SwiftUI
+
+private struct RefundItemTableViewCellRepresentable: UIViewRepresentable {
+    func makeUIView(context: Context) -> UIView {
+        let nib = UINib(nibName: "RefundItemTableViewCell", bundle: nil)
+        let views = nib.instantiate(withOwner: self, options: nil)
+        return views.first as! UIView
+    }
+
+    func updateUIView(_ view: UIView, context: Context) {
+        // no op
+    }
+}
+
+@available(iOS 13.0, *)
+struct RefundItemTableViewCell_Previews: PreviewProvider {
+
+    private static func makeStack() -> some View {
+        VStack {
+            RefundItemTableViewCellRepresentable()
+        }
+    }
+
+    static var previews: some View {
+        Group {
+            makeStack()
+                .previewLayout(.fixed(width: 359, height: 76))
+                .previewDisplayName("Light")
+
+            makeStack()
+                .previewLayout(.fixed(width: 359, height: 76))
+                .environment(\.colorScheme, .dark)
+                .previewDisplayName("Dark")
+
+            makeStack()
+                .previewLayout(.fixed(width: 359, height: 100))
+                .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+                .previewDisplayName("Large Font")
+        }
+    }
+}
+
+#endif

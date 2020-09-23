@@ -184,7 +184,7 @@ private extension OrderStatusListViewController {
         }
 
         let orderID = order.orderID
-        let undoStatus = order.statusKey
+        let undoStatus = order.status
 
         let done = updateOrderAction(siteID: order.siteID, orderID: orderID, statusKey: newStatus)
         let undo = updateOrderAction(siteID: order.siteID, orderID: orderID, statusKey: undoStatus)

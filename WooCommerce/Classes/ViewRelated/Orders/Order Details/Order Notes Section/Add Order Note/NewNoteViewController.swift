@@ -53,7 +53,7 @@ class NewNoteViewController: UIViewController {
 
         ServiceLocator.analytics.track(.orderNoteAddButtonTapped)
         ServiceLocator.analytics.track(.orderNoteAdd, withProperties: ["parent_id": viewModel.order.orderID,
-                                                                       "status": viewModel.order.statusKey.rawValue,
+                                                                       "status": viewModel.order.status.rawValue,
                                                                        "type": isCustomerNote ? "customer" : "private"])
 
         let action = OrderNoteAction.addOrderNote(siteID: viewModel.order.siteID,

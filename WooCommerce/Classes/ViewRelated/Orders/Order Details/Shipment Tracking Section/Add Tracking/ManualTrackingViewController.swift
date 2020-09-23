@@ -472,7 +472,7 @@ private extension ManualTrackingViewController {
 
         let siteID = viewModel.order.siteID
         let orderID = viewModel.order.orderID
-        let statusKey = viewModel.order.statusKey
+        let statusKey = viewModel.order.status
         let dateShipped = DateFormatter
             .Defaults
             .yearMonthDayDateFormatter
@@ -519,7 +519,7 @@ private extension ManualTrackingViewController {
 
         let siteID = viewModel.order.siteID
         let orderID = viewModel.order.orderID
-        let statusKey = viewModel.order.statusKey
+        let statusKey = viewModel.order.status
         let trackingLink = viewModel.trackingLink ?? ""
         let dateShipped = DateFormatter
             .Defaults

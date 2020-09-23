@@ -28,13 +28,13 @@ final class OrderDetailsDataSource: NSObject {
     /// Is this order processing?
     ///
     private var isProcessingPayment: Bool {
-        return order.statusKey == OrderStatusEnum.processing
+        return order.status == OrderStatusEnum.processing
     }
 
     /// Is this order fully refunded?
     ///
     private var isRefundedStatus: Bool {
-        return order.statusKey == OrderStatusEnum.refunded
+        return order.status == OrderStatusEnum.refunded
     }
 
     /// Is the shipment tracking plugin available?
@@ -539,7 +539,7 @@ private extension OrderDetailsDataSource {
 // MARK: - Lookup orders and statuses
 extension OrderDetailsDataSource {
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
-        return currentSiteStatuses.filter({$0.status == order.statusKey}).first
+        return currentSiteStatuses.filter({$0.status == order.status}).first
     }
 
     func lookUpProduct(by productID: Int64) -> Product? {

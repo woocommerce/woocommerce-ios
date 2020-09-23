@@ -196,14 +196,14 @@ private extension FulfillViewController {
         // Capture these values for the undo closure
         let orderID = order.orderID
         let doneStatus = OrderStatusEnum.completed
-        let undoStatus = order.statusKey
+        let undoStatus = order.status
 
         let done = updateOrderAction(siteID: order.siteID, orderID: orderID, statusKey: doneStatus)
         let undo = updateOrderAction(siteID: order.siteID, orderID: orderID, statusKey: undoStatus)
 
         ServiceLocator.analytics.track(.orderFulfillmentCompleteButtonTapped)
         ServiceLocator.analytics.track(.orderStatusChange, withProperties: ["id": order.orderID,
-                                                                            "from": order.statusKey.rawValue,
+                                                                            "from": order.status.rawValue,
                                                                             "to": OrderStatusEnum.completed.rawValue])
         ServiceLocator.stores.dispatch(done)
 
@@ -510,7 +510,7 @@ private extension FulfillViewController {
         let orderID = order.orderID
         let trackingID = tracking.trackingID
 
-        let statusKey = order.statusKey
+        let statusKey = order.status
         let providerName = tracking.trackingProvider ?? ""
 
         ServiceLocator.analytics.track(.orderTrackingDelete, withProperties: ["id": orderID,

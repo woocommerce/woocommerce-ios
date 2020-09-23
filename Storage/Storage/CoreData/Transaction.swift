@@ -1,12 +1,8 @@
 import CoreData
 
-final class Transaction: StorageType {
+final class Transaction: TransactionType {
 
     private let context: NSManagedObjectContext
-
-    var parentStorage: StorageType? {
-        context.parent
-    }
 
     init(_ context: NSManagedObjectContext) {
         self.context = context
@@ -51,21 +47,5 @@ final class Transaction: StorageType {
 
     func obtainPermanentIDs(for objects: [NSManagedObject]) throws {
         try context.obtainPermanentIDs(for: objects)
-    }
-
-    func saveIfNeeded() {
-        context.saveIfNeeded()
-    }
-
-    func perform(_ closure: @escaping () -> Void) {
-        context.perform(closure)
-    }
-
-    func createFetchedResultsController<ResultType>(fetchRequest: NSFetchRequest<ResultType>,
-                                                    sectionNameKeyPath: String?,
-                                                    cacheName: String?) -> NSFetchedResultsController<ResultType> {
-        context.createFetchedResultsController(fetchRequest: fetchRequest,
-                                               sectionNameKeyPath: sectionNameKeyPath,
-                                               cacheName: cacheName)
     }
 }

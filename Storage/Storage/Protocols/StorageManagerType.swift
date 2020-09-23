@@ -35,7 +35,8 @@ public protocol StorageManagerType {
     ///
     func saveDerivedType(derivedStorage: StorageType, _ closure: @escaping () -> Void)
 
-    func write(_ closure: @escaping (TransactionType) -> Void)
+    func write(_ closure: @escaping (TransactionType) throws -> Void,
+               completion: ((Result<Void, Error>) -> Void)?)
 
     /// This method is expected to destroy all persisted data. A notification of type `StorageManagerDidResetStorage` should get
     /// posted.

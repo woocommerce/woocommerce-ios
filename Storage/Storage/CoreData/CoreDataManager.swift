@@ -14,6 +14,13 @@ public final class CoreDataManager: StorageManagerType {
 
     private let modelsInventory: ManagedObjectModelsInventory
 
+    private lazy var mutableContext: NSManagedObjectContext = {
+        let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        context.parent = persistentContainer.viewContext
+        context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        return context
+    }()
+
     /// Designated Initializer.
     ///
     /// - Parameter name: Identifier to be used for: [database, data model, container].
@@ -215,8 +222,24 @@ public final class CoreDataManager: StorageManagerType {
         }
     }
 
-    public func write(_ closure: @escaping (TransactionType) -> Void) {
+    public func write(_ closure: @escaping (TransactionType) throws -> Void,
+                      completion: ((Result<Void, Error>) -> Void)?) {
+        mutableContext.perform { [weak self] in
+            guard let self = self else {
+                return
+            }
 
+            let transaction = Transaction(self.mutableContext)
+            do {
+                try closure(transaction)
+                self.saveDerivedType(derivedStorage: self.mutableContext) {
+                    completion?(.success(()))
+                }
+            } catch {
+                self.mutableContext.rollback()
+                completion?(.failure(error))
+            }
+        }
     }
 }
 

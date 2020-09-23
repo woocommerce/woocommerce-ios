@@ -74,13 +74,9 @@ public struct WordPressAuthenticatorConfiguration {
     
     /// Flag for the unified login/signup flows.
     /// If disabled, none of the unified flows will display.
-    /// If enabled, allows selected unified flows to display.
+    /// If enabled, all unified flows will display.
     ///
     let enableUnifiedAuth: Bool
-
-    /// Flag indicating if the unified WordPress flow should display.
-    ///
-    let enableUnifiedWordPress: Bool
 
     /// Designated Initializer
     ///
@@ -99,8 +95,7 @@ public struct WordPressAuthenticatorConfiguration {
                  enableSignInWithApple: Bool = false,
                  enableSignupWithGoogle: Bool = false,
                  enableUnifiedAuth: Bool = false,
-                 displayHintButtons: Bool = true,
-                 enableUnifiedWordPress: Bool = false) {
+                 displayHintButtons: Bool = true) {
 
         self.wpcomClientId = wpcomClientId
         self.wpcomSecret = wpcomSecret
@@ -118,6 +113,5 @@ public struct WordPressAuthenticatorConfiguration {
         self.enableUnifiedAuth = enableUnifiedAuth
         self.displayHintButtons = displayHintButtons
         self.enableSignupWithGoogle = enableSignupWithGoogle
-        self.enableUnifiedWordPress = enableUnifiedAuth && enableUnifiedWordPress
     }
 }

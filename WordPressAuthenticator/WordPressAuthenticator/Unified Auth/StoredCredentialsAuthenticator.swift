@@ -140,7 +140,7 @@ extension StoredCredentialsAuthenticator: LoginFacadeDelegate {
     func displayRemoteError(_ error: Error) {
         tracker.track(failure: error.localizedDescription)
         
-        guard authConfig.enableUnifiedWordPress else {
+        guard authConfig.enableUnifiedAuth else {
             presentLoginEmailView(error: error)
             return
         }

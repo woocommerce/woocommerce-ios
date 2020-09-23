@@ -122,7 +122,7 @@ class LoginPrologueViewController: LoginViewController {
     ///
     private func showiCloudKeychainLoginFlow() {
         guard #available(iOS 13, *),
-            WordPressAuthenticator.shared.configuration.enableUnifiedKeychainLogin,
+            WordPressAuthenticator.shared.configuration.enableUnifiedAuth,
             let navigationController = navigationController else {
                 return
         }

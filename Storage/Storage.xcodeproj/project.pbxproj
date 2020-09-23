@@ -39,7 +39,6 @@
 		574B775024AA897E0042116F /* FileManager+FileManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574B774F24AA897E0042116F /* FileManager+FileManagerProtocol.swift */; };
 		575CD4DC24ABE77800755B2B /* Collection+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575CD4DB24ABE77800755B2B /* Collection+Extensions.swift */; };
 		57898182251BF60C00683977 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57898181251BF60C00683977 /* Transaction.swift */; };
-		57898186251BF9D100683977 /* MutableStorageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57898185251BF9D100683977 /* MutableStorageType.swift */; };
 		57898188251BFB1100683977 /* TransactionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57898187251BFB1100683977 /* TransactionType.swift */; };
 		57A881A024CA396D00AE0943 /* GeneralAppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A8819F24CA396D00AE0943 /* GeneralAppSettings.swift */; };
 		68BC97FB41770051C287D1A8 /* Pods_StorageTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47556EE256120BEE49FF5FD3 /* Pods_StorageTests.framework */; };
@@ -199,7 +198,6 @@
 		574B774F24AA897E0042116F /* FileManager+FileManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+FileManagerProtocol.swift"; sourceTree = "<group>"; };
 		575CD4DB24ABE77800755B2B /* Collection+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Extensions.swift"; sourceTree = "<group>"; };
 		57898181251BF60C00683977 /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
-		57898185251BF9D100683977 /* MutableStorageType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutableStorageType.swift; sourceTree = "<group>"; };
 		57898187251BFB1100683977 /* TransactionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionType.swift; sourceTree = "<group>"; };
 		57A8819F24CA396D00AE0943 /* GeneralAppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralAppSettings.swift; sourceTree = "<group>"; };
 		5D12CAE2D0EA6AB66F162FF9 /* Pods-StorageTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StorageTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-StorageTests/Pods-StorageTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -468,7 +466,6 @@
 				D87F61522265AA230031A13B /* FileStorage.swift */,
 				02EAB6D62480A86D00FD873C /* CrashLogger.swift */,
 				574B774B24AA87FA0042116F /* FileManagerProtocol.swift */,
-				57898185251BF9D100683977 /* MutableStorageType.swift */,
 				57898187251BFB1100683977 /* TransactionType.swift */,
 			);
 			path = Protocols;
@@ -934,7 +931,6 @@
 				74B7D6AE20F90CBB002667AC /* OrderNote+CoreDataProperties.swift in Sources */,
 				025CA2BE238EB86200B05C81 /* ProductShippingClass+CoreDataProperties.swift in Sources */,
 				D87F614E22657C2F0031A13B /* PreselectedProvider.swift in Sources */,
-				57898186251BF9D100683977 /* MutableStorageType.swift in Sources */,
 				450106892399AC7400E24722 /* TaxClass+CoreDataClass.swift in Sources */,
 				CE12FBCF221F0E1A00C59248 /* Order+CoreDataProperties.swift in Sources */,
 				45E1862E2370450C009241F3 /* ShippingLine+CoreDataClass.swift in Sources */,

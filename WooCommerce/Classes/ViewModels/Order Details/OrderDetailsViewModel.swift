@@ -348,7 +348,7 @@ extension OrderDetailsViewModel {
         let providerName = tracking.trackingProvider ?? ""
 
         ServiceLocator.analytics.track(.orderTrackingDelete, withProperties: ["id": orderID,
-                                                                              "status": statusKey,
+                                                                              "status": statusKey.rawValue,
                                                                               "carrier": providerName,
                                                                               "source": "order_detail"])
 

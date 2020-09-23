@@ -72,6 +72,7 @@ final class ProductStoreTests: XCTestCase {
         let mockCategory = ProductCategory(categoryID: 36, siteID: 2, parentID: 1, name: "Events", slug: "events")
         let expectedProduct = MockProduct().product().copy(siteID: sampleSiteID,
                                                            productID: sampleProductID,
+                                                           downloads: sampleDownloads(),
                                                            dimensions: ProductDimensions(length: "12", width: "26", height: "16"),
                                                            shippingClass: "2-day",
                                                            shippingClassID: 1,
@@ -106,6 +107,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 1)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 1)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDownload.self), 3)
     }
 
     func test_addProduct_returns_error_upon_network_error() {
@@ -519,7 +521,7 @@ final class ProductStoreTests: XCTestCase {
 
         let expectation = self.expectation(description: "Retrieve single product")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let remoteProduct = sampleProduct(productShippingClass: expectedShippingClass)
+        let remoteProduct = sampleProduct(productShippingClass: expectedShippingClass, downloadable: true)
 
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product")
         let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleProductID) { (product, error) in
@@ -587,7 +589,7 @@ final class ProductStoreTests: XCTestCase {
         let expectedShippingClass = sampleProductShippingClass(remoteID: 134, siteID: sampleSiteID)
         storageManager.insertSampleProductShippingClass(readOnlyProductShippingClass: expectedShippingClass)
 
-        let remoteProduct = sampleProduct(productShippingClass: expectedShippingClass)
+        let remoteProduct = sampleProduct(productShippingClass: expectedShippingClass, downloadable: true)
 
         network.simulateResponse(requestUrlSuffix: "products/282", filename: "product")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
@@ -710,7 +712,7 @@ final class ProductStoreTests: XCTestCase {
 
         let expectation = self.expectation(description: "Stored Products Reset")
         let action = ProductAction.resetStoredProducts() {
-            productStore.upsertStoredProduct(readOnlyProduct: self.sampleProduct(), in: self.viewStorage)
+            productStore.upsertStoredProduct(readOnlyProduct: self.sampleProduct(downloadable: true), in: self.viewStorage)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 1)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductTag.self), 9)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCategory.self), 1)
@@ -718,6 +720,7 @@ final class ProductStoreTests: XCTestCase {
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 2)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 2)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDownload.self), 3)
 
             expectation.fulfill()
         }
@@ -741,8 +744,9 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 0)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 0)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDownload.self), 0)
 
-        productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(), in: viewStorage)
+        productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(downloadable: true), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self, matching: NSPredicate(format: "siteID == %lld", sampleSiteID)), 9)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 1)
@@ -750,6 +754,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDownload.self), 3)
 
         productStore.upsertStoredProduct(readOnlyProduct: sampleProductMutated(), in: viewStorage)
         let storageProduct1 = viewStorage.loadProduct(siteID: sampleSiteID, productID: sampleProductID)
@@ -761,6 +766,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDownload.self), 2)
     }
 
     /// Verifies that `ProductStore.upsertStoredProduct` updates the correct site's product.
@@ -813,7 +819,7 @@ final class ProductStoreTests: XCTestCase {
     ///
     func testUpdateStoredProductEffectivelyPersistsNewProduct() {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let remoteProduct = sampleProduct()
+        let remoteProduct = sampleProduct(downloadable: true)
 
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 0)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductTag.self), 0)
@@ -822,6 +828,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 0)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 0)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDownload.self), 0)
         productStore.upsertStoredProduct(readOnlyProduct: remoteProduct, in: viewStorage)
 
         let storageProduct = viewStorage.loadProduct(siteID: sampleSiteID, productID: sampleProductID)
@@ -833,6 +840,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDownload.self), 3)
     }
 
     /// Verifies that Innocuous Upsert OP(s) performed in Derived Contexts **DO NOT** trigger Refresh Events in the
@@ -1037,6 +1045,8 @@ final class ProductStoreTests: XCTestCase {
         let expectedProductSaleEnd = date(with: "2019-10-27T21:29:50")
         let expectedProductTaxStatus = "taxable"
         let expectedProductTaxClass = "reduced-rate"
+        let expectedDownloadableFileCount = 0
+        let expectedDownloadable = false
 
         network.simulateResponse(requestUrlSuffix: "products/\(expectedProductID)", filename: "product-update")
         let product = sampleProduct(productID: expectedProductID)
@@ -1077,6 +1087,8 @@ final class ProductStoreTests: XCTestCase {
             XCTAssertEqual(product.dateOnSaleEnd, expectedProductSaleEnd)
             XCTAssertEqual(product.taxStatusKey, expectedProductTaxStatus)
             XCTAssertEqual(product.taxClass, expectedProductTaxClass)
+            XCTAssertEqual(product.downloadable, expectedDownloadable)
+            XCTAssertEqual(product.downloads.count, expectedDownloadableFileCount)
 
             let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: expectedProductID)
             let readOnlyStoredProduct = storedProduct?.toReadOnly()
@@ -1113,7 +1125,7 @@ final class ProductStoreTests: XCTestCase {
         let existingStorageShippingClass = viewStorage.insertNewObject(ofType: StorageProductShippingClass.self)
         existingStorageShippingClass.update(with: existingShippingClass)
 
-        let product = sampleProduct(productID: expectedProductID)
+        let product = sampleProduct(productID: expectedProductID, downloadable: true)
         let action = ProductAction.updateProduct(product: product) { result in
             guard case .success = result else {
                 XCTFail("Unexpected result: \(result)")
@@ -1127,6 +1139,7 @@ final class ProductStoreTests: XCTestCase {
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 5)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 0)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 1)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDownload.self), 0)
 
             let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: expectedProductID)
             let readOnlyStoredProduct = storedProduct?.toReadOnly()
@@ -1388,7 +1401,8 @@ private extension ProductStoreTests {
     func sampleProduct(_ siteID: Int64? = nil,
                        productID: Int64? = nil,
                        productShippingClass: Networking.ProductShippingClass? = nil,
-                       tags: [Networking.ProductTag]? = nil) -> Networking.Product {
+                       tags: [Networking.ProductTag]? = nil,
+                       downloadable: Bool = false) -> Networking.Product {
         let testSiteID = siteID ?? sampleSiteID
         let testProductID = productID ?? sampleProductID
         return Product(siteID: testSiteID,
@@ -1419,10 +1433,10 @@ private extension ProductStoreTests {
                        purchasable: true,
                        totalSales: 0,
                        virtual: true,
-                       downloadable: false,
-                       downloads: [],
-                       downloadLimit: -1,
-                       downloadExpiry: -1,
+                       downloadable: downloadable,
+                       downloads: downloadable ? sampleDownloads() : [],
+                       downloadLimit: downloadable ? 1 : -1,
+                       downloadExpiry: downloadable ? 1 : -1,
                        buttonText: "",
                        externalURL: "http://somewhere.com",
                        taxStatusKey: "taxable",
@@ -1520,14 +1534,24 @@ private extension ProductStoreTests {
     func sampleDownloads() -> [Networking.ProductDownload] {
         let download1 = ProductDownload(downloadID: "1f9c11f99ceba63d4403c03bd5391b11",
                                         name: "Song #1",
-                                        fileURL: "https://woocommerce.files.wordpress.com/2017/06/woo-single-1.ogg")
+                                        fileURL: "https://example.com/woo-single-1.ogg")
         let download2 = ProductDownload(downloadID: "ec87d8b5-1361-4562-b4b8-18980b5a2cae",
                                         name: "Artwork",
-                                        fileURL: "https://thuy-test.mystagingwebsite.com/wp-content/uploads/2018/01/cd_4_angle.jpg")
+                                        fileURL: "https://example.com/cd_4_angle.jpg")
         let download3 = ProductDownload(downloadID: "240cd543-5457-498e-95e2-6b51fdaf15cc",
                                         name: "Artwork 2",
-                                        fileURL: "https://thuy-test.mystagingwebsite.com/wp-content/uploads/2018/01/cd_4_flat.jpg")
+                                        fileURL: "https://example.com/cd_4_flat.jpg")
         return [download1, download2, download3]
+    }
+
+    func sampleDownloadsMutated() -> [Networking.ProductDownload] {
+        let download1 = ProductDownload(downloadID: "1f9c11f99ceba63d4403c03bd5391b11",
+                                        name: "Song #1",
+                                        fileURL: "https://example.com/woo-single-1.ogg")
+        let download2 = ProductDownload(downloadID: "ec87d8b5-1361-4562-b4b8-18980b5a2cae",
+                                        name: "Artwork",
+                                        fileURL: "https://example.com/cd_4_angle.jpg")
+        return [download1, download2]
     }
 
     func sampleProductMutated(_ siteID: Int64? = nil) -> Networking.Product {
@@ -1562,7 +1586,7 @@ private extension ProductStoreTests {
                        totalSales: 66,
                        virtual: false,
                        downloadable: true,
-                       downloads: [],
+                       downloads: sampleDownloadsMutated(),
                        downloadLimit: 1,
                        downloadExpiry: 1,
                        buttonText: "",

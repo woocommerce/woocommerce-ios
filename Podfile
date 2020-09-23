@@ -39,7 +39,8 @@ target 'WooCommerce' do
 
   pod 'WordPressShared', '~> 1.11'
 
-  pod 'WordPressUI', '~> 1.7.1'
+  # pod 'WordPressUI', '~> 1.7.1'
+  pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => 'wcios-2740/bottom-sheet-source-bar-button-item'
 
   aztec
 

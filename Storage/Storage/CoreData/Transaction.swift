@@ -1,10 +1,12 @@
 import CoreData
 
-final class MutableStorage: StorageType {
+final class Transaction: StorageType {
 
     private let context: NSManagedObjectContext
 
-    var parentStorage: StorageType?
+    var parentStorage: StorageType? {
+        context.parent
+    }
 
     init(_ context: NSManagedObjectContext) {
         self.context = context

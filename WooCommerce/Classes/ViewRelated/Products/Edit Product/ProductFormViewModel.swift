@@ -280,6 +280,18 @@ extension ProductFormViewModel {
             }
         }
     }
+
+    func deleteProductRemotely(onCompletion: @escaping (Result<EditableProductModel, ProductUpdateError>) -> Void) {
+        let remoteActionUseCase = ProductFormRemoteActionUseCase()
+        remoteActionUseCase.deleteProduct(product: product) { result in
+            switch result {
+            case .success(let data):
+                onCompletion(.success(data.product))
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
 }
 
 // MARK: Reset actions

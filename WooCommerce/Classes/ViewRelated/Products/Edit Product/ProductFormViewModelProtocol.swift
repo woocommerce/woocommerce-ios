@@ -92,6 +92,8 @@ protocol ProductFormViewModelProtocol {
 
     func updateProductRemotely(onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void)
 
+    func deleteProductRemotely(onCompletion: @escaping (Result<EditableProductModel, ProductUpdateError>) -> Void)
+
     // Reset action
 
     func resetPassword(_ password: String?)

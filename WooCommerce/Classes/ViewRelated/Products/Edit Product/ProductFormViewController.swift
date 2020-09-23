@@ -243,6 +243,31 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         present(alertController, animated: true)
     }
 
+    /// Product Confirmation Delete alert
+    ///
+    func presentProductConfirmationDeleteAlert(completion: @escaping (Bool) -> ()) {
+        let title = NSLocalizedString("Remove product",
+                                      comment: "Title of the alert when a user is moving a product to the trash")
+        let body = NSLocalizedString("Do you want to move this product to the Trash?",
+                                     comment: "Body of the alert when a user is moving a product to the trash")
+        let cancelButton = NSLocalizedString("Cancel", comment: "Cancel button on the alert when the user is cancelling the action on moving a product to the trash")
+        let confirmButton = NSLocalizedString("Move to Trash", comment: "Confirmation button on the alert when the user is moving a product to the trash")
+        let alertController = UIAlertController(title: title,
+                                                message: body,
+                                                preferredStyle: .alert)
+        let cancel = UIAlertAction(title: cancelButton,
+                                   style: .cancel) { (action) in
+                                       completion(false)
+                                   }
+        let confirm = UIAlertAction(title: confirmButton,
+                                    style: .default) { (action) in
+                                        completion(true)
+                                    }
+        alertController.addAction(cancel)
+        alertController.addAction(confirm)
+        present(alertController, animated: true)
+    }
+
     // MARK: - UITableViewDelegate
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -628,11 +653,24 @@ private extension ProductFormViewController {
     }
 
     func displayDeleteProduct() {
-        guard let product = product as? EditableProductModel else {
-            return
+        presentProductConfirmationDeleteAlert { [weak self] (confirm) in
+            guard confirm else {
+                return
+            }
+
+            self?.viewModel.deleteProductRemotely { [weak self] result in
+                switch result {
+                case .failure(let error):
+                    DDLogError("⛔️ Error deleting Product: \(error)")
+                    CrashLogging.logError(error)
+                    // Presents the error alert.
+                    self?.displayError(error: error)
+                case .success:
+                    // Pop to the previous view controller
+                    self?.navigationController?.popViewController(animated: true)
+                }
+            }
         }
-        
-        // TODO: to be implemented
     }
 
     func displayProductSettings() {

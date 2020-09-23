@@ -214,6 +214,10 @@ public final class CoreDataManager: StorageManagerType {
             return debugMessages
         }
     }
+
+    public func write(_ closure: @escaping (TransactionType) -> Void) {
+
+    }
 }
 
 

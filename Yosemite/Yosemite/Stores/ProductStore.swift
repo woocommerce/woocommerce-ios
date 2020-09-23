@@ -541,14 +541,14 @@ private extension ProductStore {
     ///
     func insertAllProductDownloadableFiles(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
 
-        var storageDownloads = [StorageProductDownload]()
+        let storageDownloadsSet = NSMutableOrderedSet()
         for readOnlyDownloadableFile in readOnlyProduct.downloads {
 
             let newStorageDownloadableFile = storage.insertNewObject(ofType: Storage.ProductDownload.self)
             newStorageDownloadableFile.update(with: readOnlyDownloadableFile)
-            storageDownloads.append(newStorageDownloadableFile)
+            storageDownloadsSet.add(newStorageDownloadableFile)
         }
-        storageProduct.addToDownloads(NSOrderedSet(array: storageDownloads))
+        storageProduct.addToDownloads(storageDownloadsSet)
     }
 }
 

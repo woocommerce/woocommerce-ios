@@ -21,6 +21,8 @@ public final class CoreDataManager: StorageManagerType {
         return context
     }()
 
+    private let mutableContextTransactionSemaphore = DispatchSemaphore(value: 1)
+
     /// Designated Initializer.
     ///
     /// - Parameter name: Identifier to be used for: [database, data model, container].
@@ -229,20 +231,25 @@ public final class CoreDataManager: StorageManagerType {
                 return
             }
 
+            self.mutableContextTransactionSemaphore.wait()
+
             let transaction = Transaction(self.mutableContext)
             do {
                 try closure(transaction)
+
                 self.saveDerivedType(derivedStorage: self.mutableContext) {
                     completion?(.success(()))
+                    self.mutableContextTransactionSemaphore.signal()
                 }
             } catch {
                 self.mutableContext.rollback()
+
                 completion?(.failure(error))
+                self.mutableContextTransactionSemaphore.signal()
             }
         }
     }
 }
-
 
 // MARK: - Descriptors
 //

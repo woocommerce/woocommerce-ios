@@ -115,7 +115,7 @@ final class ProductsRemoteTests: XCTestCase {
         let product = sampleProduct()
         var result: Result<Product, Error>?
         waitForExpectation { expectation in
-            remote.updateProduct(product: product) { aResult in
+            remote.addProduct(product: product) { aResult in
                 result = aResult
                 expectation.fulfill()
             }

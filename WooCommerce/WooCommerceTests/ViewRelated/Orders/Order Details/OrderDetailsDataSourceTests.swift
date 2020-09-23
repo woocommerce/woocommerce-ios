@@ -56,6 +56,47 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertEqual(actualTitles, expectedTitles)
     }
 
+    func test_refund_button_is_not_visible_when_feature_is_disabled() throws {
+        // Given
+        let order = makeOrder()
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, isIssueRefundsEnabled: false)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
+        let issueRefundRow = row(row: .issueRefundButton, in: paymentSection)
+        XCTAssertNil(issueRefundRow)
+    }
+
+    func test_refund_button_is_visible_when_feature_is_enabled() throws {
+        // Given
+        let order = makeOrder()
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, isIssueRefundsEnabled: true)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
+        let issueRefundRow = row(row: .issueRefundButton, in: paymentSection)
+        XCTAssertNotNil(issueRefundRow)
+    }
+
+    func test_refund_button_is_not_visible_when_feature_is_enabled_and_order_is_refunded() throws {
+        // Given
+        let order = MockOrders().makeOrder(status: .refunded, items: [makeOrderItem()])
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, isIssueRefundsEnabled: true)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
+        let issueRefundRow = row(row: .issueRefundButton, in: paymentSection)
+        XCTAssertNil(issueRefundRow)
+    }
 }
 
 // MARK: - Test Data
@@ -117,5 +158,18 @@ private extension OrderDetailsDataSourceTests {
         let storageRefund = storage.insertNewObject(ofType: StorageRefund.self)
         storageRefund.update(with: refund)
         storageRefund.addToItems(storageOrderItemRefunds as NSSet)
+    }
+
+    /// Finds first section with a given title from the provided data source.
+    ///
+    private func section(withTitle title: String, from dataSource: OrderDetailsDataSource) throws -> OrderDetailsDataSource.Section {
+        let section = dataSource.sections.first { $0.title == title }
+        return try XCTUnwrap(section)
+    }
+
+    /// Finds the first row that matches the given row from the provided section.
+    ///
+    func row(row: OrderDetailsDataSource.Row, in section: OrderDetailsDataSource.Section) -> OrderDetailsDataSource.Row? {
+        section.rows.first { $0 == row }
     }
 }

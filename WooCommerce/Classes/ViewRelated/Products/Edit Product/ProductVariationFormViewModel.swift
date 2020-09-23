@@ -103,6 +103,10 @@ extension ProductVariationFormViewModel {
     func canShareProduct() -> Bool {
         false
     }
+
+    func canDeleteProduct() -> Bool {
+        false
+    }
 }
 
 // MARK: Action handling

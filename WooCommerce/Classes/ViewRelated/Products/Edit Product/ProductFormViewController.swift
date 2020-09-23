@@ -195,6 +195,13 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             }
         }
 
+        if viewModel.canDeleteProduct() {
+            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.delete) { [weak self] _ in
+                // TODO: Analytics M5
+                self?.displayDeleteProduct()
+            }
+        }
+
         actionSheet.addDefaultActionWithTitle(ActionSheetStrings.productSettings) { [weak self] _ in
             ServiceLocator.analytics.track(.productDetailViewSettingsButtonTapped)
             self?.displayProductSettings()
@@ -618,6 +625,14 @@ private extension ProductFormViewController {
         }
 
         SharingHelper.shareURL(url: url, title: product.name, from: view, in: self)
+    }
+
+    func displayDeleteProduct() {
+        guard let product = product as? EditableProductModel else {
+            return
+        }
+        
+        // TODO: to be implemented
     }
 
     func displayProductSettings() {
@@ -1121,6 +1136,7 @@ private enum ActionSheetStrings {
     static let viewProduct = NSLocalizedString("View Product in Store",
                                                comment: "Button title View product in store in Edit Product More Options Action Sheet")
     static let share = NSLocalizedString("Share", comment: "Button title Share in Edit Product More Options Action Sheet")
+    static let delete = NSLocalizedString("Delete", comment: "Button title Delete in Edit Product More Options Action Sheet")
     static let productSettings = NSLocalizedString("Product Settings", comment: "Button title Product Settings in Edit Product More Options Action Sheet")
     static let cancel = NSLocalizedString("Cancel", comment: "Button title Cancel in Edit Product More Options Action Sheet")
 }

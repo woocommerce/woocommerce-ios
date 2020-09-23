@@ -44,6 +44,8 @@ protocol ProductFormViewModelProtocol {
 
     func canShareProduct() -> Bool
 
+    func canDeleteProduct() -> Bool
+
     // Update actions
 
     func updateName(_ name: String)

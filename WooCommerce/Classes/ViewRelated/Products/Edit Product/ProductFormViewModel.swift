@@ -81,16 +81,19 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private let productImageActionHandler: ProductImageActionHandler
     private let isEditProductsRelease3Enabled: Bool
+    private let isEditProductsRelease5Enabled: Bool
 
     private var cancellable: ObservationToken?
 
     init(product: EditableProductModel,
          formType: ProductFormType,
          productImageActionHandler: ProductImageActionHandler,
-         isEditProductsRelease3Enabled: Bool) {
+         isEditProductsRelease3Enabled: Bool,
+         isEditProductsRelease5Enabled: Bool) {
         self.formType = formType
         self.productImageActionHandler = productImageActionHandler
         self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
+        self.isEditProductsRelease5Enabled = isEditProductsRelease5Enabled
         self.originalProduct = product
         self.product = product
         self.actionsFactory = ProductFormActionsFactory(product: product,
@@ -127,6 +130,10 @@ extension ProductFormViewModel {
 
     func canShareProduct() -> Bool {
         formType == .edit
+    }
+
+    func canDeleteProduct() -> Bool {
+        isEditProductsRelease5Enabled && originalProduct.product.productStatus == .publish && formType == .edit
     }
 }
 

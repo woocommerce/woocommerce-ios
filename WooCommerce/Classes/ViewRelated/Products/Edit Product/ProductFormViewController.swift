@@ -250,8 +250,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                                       comment: "Title of the alert when a user is moving a product to the trash")
         let body = NSLocalizedString("Do you want to move this product to the Trash?",
                                      comment: "Body of the alert when a user is moving a product to the trash")
-        let cancelButton = NSLocalizedString("Cancel", comment: "Cancel button on the alert when the user is cancelling the action on moving a product to the trash")
-        let confirmButton = NSLocalizedString("Move to Trash", comment: "Confirmation button on the alert when the user is moving a product to the trash")
+        let cancelButton = NSLocalizedString("Cancel",
+                                             comment: "Cancel button on the alert when the user is cancelling the action on moving a product to the trash")
+        let confirmButton = NSLocalizedString("Move to Trash",
+                                              comment: "Confirmation button on the alert when the user is moving a product to the trash")
         let alertController = UIAlertController(title: title,
                                                 message: body,
                                                 preferredStyle: .alert)

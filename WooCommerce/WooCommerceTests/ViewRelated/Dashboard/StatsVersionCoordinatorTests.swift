@@ -11,15 +11,15 @@ final class StatsVersionCoordinatorTests: XCTestCase {
         super.tearDown()
     }
 
-    func testWhenV4IsAvailableWhileNoStatsVersionWasShownBefore() {
+    func test_it_returns_v4_version_when_V4_is_available_while_no_stats_version_was_shown_before() {
         // Given
         mockStoresManager = MockupStatsVersionStoresManager(sessionManager: SessionManager.testingInstance)
         mockStoresManager.statsVersionLastShown = nil
         mockStoresManager.isStatsV4Available = true
         ServiceLocator.setStores(mockStoresManager)
 
-        // V3 is returned because it is the default value if `statsVersionLastShown` is `nil`
-        let expectedVersions: [StatsVersion] = [.v3, .v4]
+        // V4 is returned because it is the default value if `statsVersionLastShown` is `nil`
+        let expectedVersions: [StatsVersion] = [.v4]
 
         // When
         let actualVersions = checkStatsVersionAndWait(expectedVersionChangesCount: expectedVersions.count)
@@ -28,15 +28,15 @@ final class StatsVersionCoordinatorTests: XCTestCase {
         XCTAssertEqual(actualVersions, expectedVersions)
     }
 
-    func testWhenV4IsUnavailableWhileNoStatsVersionWasShownBefore() {
+    func test_it_transition_from_v4_to_v3_when_V4_is_unavailable_while_no_stats_version_was_shown_before() {
         // Given
         mockStoresManager = MockupStatsVersionStoresManager(sessionManager: SessionManager.testingInstance)
         mockStoresManager.statsVersionLastShown = nil
         mockStoresManager.isStatsV4Available = false
         ServiceLocator.setStores(mockStoresManager)
 
-        // We will only receive one change because the stats-check should return the same value.
-        let expectedVersions: [StatsVersion] = [.v3]
+        // Initial value is `.v4` when `statsVersionLastShown` is `nil`
+        let expectedVersions: [StatsVersion] = [.v4, .v3]
 
         // When
         let actualVersions = checkStatsVersionAndWait(expectedVersionChangesCount: expectedVersions.count)
@@ -46,7 +46,7 @@ final class StatsVersionCoordinatorTests: XCTestCase {
     }
 
     /// Stats v3 --> v4
-    func testWhenV4IsAvailableWhileStatsV3IsLastShown() {
+    func test_when_V4_is_available_while_stats_V3_is_last_shown() {
         // Given
         mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v3,
                                                             sessionManager: SessionManager.testingInstance)
@@ -63,7 +63,7 @@ final class StatsVersionCoordinatorTests: XCTestCase {
     }
 
     /// Stats v3 --> v3
-    func testWhenV4IsUnavailableWhileStatsV3IsLastShown() {
+    func test_when_V4_is_unavailable_while_stats_V3_is_last_shown() {
         // Given
         mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v3,
                                                             sessionManager: SessionManager.testingInstance)
@@ -81,7 +81,7 @@ final class StatsVersionCoordinatorTests: XCTestCase {
     }
 
     /// Stats v4 --> v3
-    func testWhenV4IsUnavailableWhileStatsV4IsLastShown() {
+    func test_when_V4_is_unavailable_while_stats_V4_is_last_shown() {
         // Given
         mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v4,
                                                             sessionManager: SessionManager.testingInstance)
@@ -98,7 +98,7 @@ final class StatsVersionCoordinatorTests: XCTestCase {
     }
 
     /// V4 --> v4
-    func testWhenV4IsAvailableWhileStatsV4IsLastShown() {
+    func test_when_V4_is_available_while_stats_V4_is_last_shown() {
         // Given
         mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v4,
                                                             sessionManager: SessionManager.testingInstance)

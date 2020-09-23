@@ -4,13 +4,13 @@ final class MockOrders {
     let siteID: Int64 = 1234
     let orderID: Int64 = 5678
 
-    func makeOrder(items: [OrderItem] = []) -> Order {
+    func makeOrder(status: OrderStatusEnum = .processing, items: [OrderItem] = []) -> Order {
         return Order(siteID: siteID,
                      orderID: orderID,
                      parentID: 0,
                      customerID: 11,
                      number: "963",
-                     statusKey: "processing",
+                     status: status,
                      currency: "USD",
                      customerNote: "",
                      dateCreated: date(with: "2018-04-03T23:05:12"),
@@ -41,7 +41,7 @@ final class MockOrders {
                      parentID: 0,
                      customerID: 11,
                      number: "963",
-                     statusKey: "processing",
+                     status: .processing,
                      currency: "USD",
                      customerNote: "",
                      dateCreated: Date(),
@@ -92,7 +92,7 @@ final class MockOrders {
                      parentID: 0,
                      customerID: 0,
                      number: "85",
-                     statusKey: "draft",
+                     status: .custom("draft"),
                      currency: "GBP",
                      customerNote: "",
                      dateCreated: Date(),
@@ -121,7 +121,7 @@ final class MockOrders {
                      parentID: 0,
                      customerID: 0,
                      number: "85",
-                     statusKey: "draft",
+                     status: .custom("draft"),
                      currency: "GBP",
                      customerNote: "",
                      dateCreated: Date(),

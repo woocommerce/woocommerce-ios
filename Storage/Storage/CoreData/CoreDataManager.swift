@@ -58,22 +58,19 @@ public final class CoreDataManager: StorageManagerType {
 
             DDLogError("⛔️ [CoreDataManager] loadPersistentStore failed. Attempting to recover... \(persistentStoreLoadingError)")
 
-            /// Backup the old Store
-            ///
-            var persistentStoreBackupError: Error?
-            do {
-                let sourceURL = self.storeURL
-                let backupURL = sourceURL.appendingPathExtension("~")
-                try FileManager.default.copyItem(at: sourceURL, to: backupURL)
-            } catch {
-                persistentStoreBackupError = error
-            }
-
-            /// Remove the old Store
+            /// Remove the old Store which is either corrupted or has an invalid model we can't migrate from
             ///
             var persistentStoreRemovalError: Error?
             do {
-                try FileManager.default.removeItem(at: self.storeURL)
+                let fileManager = FileManager.default
+                let pathToStore = self.storeURL.deletingLastPathComponent().path
+                let files = try fileManager.contentsOfDirectory(atPath: pathToStore)
+                try files.forEach { (file) in
+                    if file.hasPrefix(self.storeURL.lastPathComponent) {
+                        let fullPath = URL(fileURLWithPath: pathToStore).appendingPathComponent(file).path
+                        try fileManager.removeItem(atPath: fullPath)
+                    }
+                }
             } catch {
                 persistentStoreRemovalError = error
             }
@@ -88,7 +85,6 @@ public final class CoreDataManager: StorageManagerType {
                 let message = "☠️ [CoreDataManager] Recovery Failed!"
 
                 let logProperties: [String: Any?] = ["persistentStoreLoadingError": persistentStoreLoadingError,
-                                                     "persistentStoreBackupError": persistentStoreBackupError,
                                                      "persistentStoreRemovalError": persistentStoreRemovalError,
                                                      "retryError": error,
                                                      "appState": UIApplication.shared.applicationState.rawValue,
@@ -100,7 +96,6 @@ public final class CoreDataManager: StorageManagerType {
             }
 
             let logProperties: [String: Any?] = ["persistentStoreLoadingError": persistentStoreLoadingError,
-                                                 "persistentStoreBackupError": persistentStoreBackupError,
                                                  "persistentStoreRemovalError": persistentStoreRemovalError,
                                                  "appState": UIApplication.shared.applicationState.rawValue,
                                                  "migrationMessages": migrationDebugMessages]
@@ -182,8 +177,11 @@ public final class CoreDataManager: StorageManagerType {
             return debugMessages
         }
 
-        guard let metadata = try? NSPersistentStoreCoordinator.metadataForPersistentStore(ofType: NSSQLiteStoreType, at: storeURL, options: nil) else {
-            debugMessages.append("Cannot get metadata for persistent store at URL \(storeURL)")
+        let metadata: [String: Any]
+        do {
+            metadata = try NSPersistentStoreCoordinator.metadataForPersistentStore(ofType: NSSQLiteStoreType, at: storeURL, options: nil)
+        } catch {
+            debugMessages.append("Cannot get metadata for persistent store at URL \(storeURL): \(error)")
             return debugMessages
         }
 

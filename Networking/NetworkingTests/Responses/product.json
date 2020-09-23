@@ -27,10 +27,26 @@
             "purchasable": true,
             "total_sales": 0,
             "virtual": true,
-            "downloadable": false,
-            "downloads": [],
-            "download_limit": -1,
-            "download_expiry": -1,
+            "downloadable": true,
+            "downloads": [
+              {
+                "id" : "1f9c11f99ceba63d4403c03bd5391b11",
+                "name" : "Song #1",
+                "file" : "https://example.com/woo-single-1.ogg"
+              },
+              {
+                "id" : "ec87d8b5-1361-4562-b4b8-18980b5a2cae",
+                "name" : "Artwork",
+                "file" : "https://example.com/cd_4_angle.jpg"
+              },
+              {
+                "id" : "240cd543-5457-498e-95e2-6b51fdaf15cc",
+                "name" : "Artwork 2",
+                "file" : "https://example.com/cd_4_flat.jpg"
+              }
+            ],
+            "download_limit": 1,
+            "download_expiry": 1,
             "external_url": "http://somewhere.com",
             "button_text": "",
             "tax_status": "taxable",

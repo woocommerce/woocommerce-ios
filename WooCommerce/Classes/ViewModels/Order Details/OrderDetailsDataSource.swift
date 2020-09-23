@@ -11,6 +11,9 @@ final class OrderDetailsDataSource: NSObject {
     /// This is only used to pass as a dependency to `OrderDetailsResultsControllers`.
     private let storageManager: StorageManagerType
 
+    /// Used while the `issueRefunds` feature is under development
+    private let isIssueRefundsEnabled: Bool
+
     private(set) var order: Order
     private let couponLines: [OrderCouponLine]?
 
@@ -25,13 +28,13 @@ final class OrderDetailsDataSource: NSObject {
     /// Is this order processing?
     ///
     private var isProcessingPayment: Bool {
-        return order.statusKey == OrderStatusEnum.processing.rawValue
+        return order.status == OrderStatusEnum.processing
     }
 
     /// Is this order fully refunded?
     ///
     private var isRefundedStatus: Bool {
-        return order.statusKey == OrderStatusEnum.refunded.rawValue
+        return order.status == OrderStatusEnum.refunded
     }
 
     /// Is the shipment tracking plugin available?
@@ -141,10 +144,13 @@ final class OrderDetailsDataSource: NSObject {
 
     private let imageService: ImageService = ServiceLocator.imageService
 
-    init(order: Order, storageManager: StorageManagerType = ServiceLocator.storageManager) {
+    init(order: Order,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         isIssueRefundsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.issueRefunds)) {
         self.storageManager = storageManager
         self.order = order
         self.couponLines = order.coupons
+        self.isIssueRefundsEnabled = isIssueRefundsEnabled
 
         super.init()
     }
@@ -251,6 +257,8 @@ private extension OrderDetailsDataSource {
             configureSummary(cell: cell)
         case let cell as WooBasicTableViewCell where row == .refundedProducts:
             configureRefundedProducts(cell)
+        case let cell as IssueRefundTableViewCell:
+            configureIssueRefundButton(cell: cell)
         default:
             fatalError("Unidentified customer info row type")
         }
@@ -443,6 +451,13 @@ private extension OrderDetailsDataSource {
         }
     }
 
+    // TODO: Change: actions
+    private func configureIssueRefundButton(cell: IssueRefundTableViewCell) {
+        cell.onIssueRefundTouchUp = {
+            print("Issue refund pressed")
+        }
+    }
+
     private func configureTracking(cell: OrderTrackingTableViewCell, at indexPath: IndexPath) {
         guard let tracking = orderTracking(at: indexPath) else {
             return
@@ -524,7 +539,7 @@ private extension OrderDetailsDataSource {
 // MARK: - Lookup orders and statuses
 extension OrderDetailsDataSource {
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
-        return currentSiteStatuses.filter({$0.slug == order.statusKey}).first
+        return currentSiteStatuses.filter({$0.status == order.status}).first
     }
 
     func lookUpProduct(by productID: Int64) -> Product? {
@@ -627,6 +642,10 @@ extension OrderDetailsDataSource {
                 let refunds = Array<Row>(repeating: .refund, count: order.refunds.count)
                 rows.append(contentsOf: refunds)
                 rows.append(.netAmount)
+            }
+
+            if isIssueRefundsEnabled && !isRefundedStatus {
+                rows.append(.issueRefundButton)
             }
 
             return Section(title: Title.payment, rows: rows)
@@ -923,6 +942,7 @@ extension OrderDetailsDataSource {
         case fulfillButton
         case details
         case refundedProducts
+        case issueRefundButton
         case customerNote
         case shippingAddress
         case shippingMethod
@@ -952,6 +972,8 @@ extension OrderDetailsDataSource {
                 return WooBasicTableViewCell.reuseIdentifier
             case .refundedProducts:
                 return WooBasicTableViewCell.reuseIdentifier
+            case .issueRefundButton:
+                return IssueRefundTableViewCell.reuseIdentifier
             case .customerNote:
                 return CustomerNoteTableViewCell.reuseIdentifier
             case .shippingAddress:

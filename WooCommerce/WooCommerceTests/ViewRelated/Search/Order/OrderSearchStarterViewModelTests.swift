@@ -31,7 +31,7 @@ final class OrderSearchStarterViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func testItLoadsAllTheOrderStatusForTheGivenSite() {
+    func test_it_loads_all_the_OrderStatus_for_the_given_site() {
         // Given
         let viewModel = OrderSearchStarterViewModel(siteID: siteID, storageManager: storageManager)
 
@@ -52,7 +52,7 @@ final class OrderSearchStarterViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.cellViewModels.contains(where: { $0.slug == unexpectedItem.slug }))
     }
 
-    func testItSortsTheOrderStatusesBySlug() {
+    func test_it_sorts_the_OrderStatuses_by_slug() {
         // Given
         let viewModel = OrderSearchStarterViewModel(siteID: siteID, storageManager: storageManager)
 
@@ -70,7 +70,7 @@ final class OrderSearchStarterViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.cellViewModels.slugs, expectedSlugs)
     }
 
-    func testItReturnsTheNameSlugAndTotalInTheCellViewModel() {
+    func test_it_returns_the_name_slug_and_total_in_the_CellViewModel() {
         // Given
         let viewModel = OrderSearchStarterViewModel(siteID: siteID, storageManager: storageManager)
 
@@ -90,11 +90,13 @@ final class OrderSearchStarterViewModelTests: XCTestCase {
                        NumberFormatter.localizedString(from: NSNumber(value: 18), number: .none))
     }
 
-    func testGivenAnOrderStatusTotalOfMoreThanNinetyNineItUsesNinetyNinePlus() {
+    func test_total_given_an_OrderStatus_total_of_more_than_ninety_nine_it_uses_the_complete_localized_number() {
         // Given
-        let viewModel = OrderSearchStarterViewModel(siteID: siteID, storageManager: storageManager)
+        let viewModel = OrderSearchStarterViewModel(siteID: siteID,
+                                                    storageManager: storageManager,
+                                                    locale: Locale(identifier: "en_US"))
 
-        insert(OrderStatus(name: "Processing", siteID: siteID, slug: "slug", total: 200))
+        insert(OrderStatus(name: "Processing", siteID: siteID, slug: "slug", total: 2187))
 
         viewModel.activateAndForwardUpdates(to: UITableView())
 
@@ -102,7 +104,24 @@ final class OrderSearchStarterViewModelTests: XCTestCase {
         let cellViewModel = viewModel.cellViewModel(at: IndexPath(row: 0, section: 0))
 
         // Then
-        XCTAssertEqual(cellViewModel.total, NSLocalizedString("99+", comment: ""))
+        XCTAssertEqual(cellViewModel.total, "2,187")
+    }
+
+    func test_total_given_a_zero_OrderStatus_total_it_uses_a_zero_string() {
+        // Given
+        let viewModel = OrderSearchStarterViewModel(siteID: siteID,
+                                                    storageManager: storageManager,
+                                                    locale: Locale(identifier: "en_US"))
+
+        insert(OrderStatus(name: "Processing", siteID: siteID, slug: "slug", total: 0))
+
+        viewModel.activateAndForwardUpdates(to: UITableView())
+
+        // When
+        let cellViewModel = viewModel.cellViewModel(at: IndexPath(row: 0, section: 0))
+
+        // Then
+        XCTAssertEqual(cellViewModel.total, "0")
     }
 }
 

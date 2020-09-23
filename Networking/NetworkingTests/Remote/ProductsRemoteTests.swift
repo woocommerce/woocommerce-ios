@@ -30,7 +30,7 @@ final class ProductsRemoteTests: XCTestCase {
     func test_addProduct_with_success_mock_returns_a_product() {
         // Given
         let remote = ProductsRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "products", filename: "product-add")
+        network.simulateResponse(requestUrlSuffix: "products", filename: "product-add-or-delete")
 
         // When
         let product = sampleProduct()
@@ -107,7 +107,7 @@ final class ProductsRemoteTests: XCTestCase {
         XCTAssertEqual(addedProduct, expectedProduct)
     }
 
-    func test_addProduct_relays_netwoking_error() {
+    func test_addProduct_relays_networking_error() {
         // Given
         let remote = ProductsRemote(network: network)
 
@@ -115,7 +115,107 @@ final class ProductsRemoteTests: XCTestCase {
         let product = sampleProduct()
         var result: Result<Product, Error>?
         waitForExpectation { expectation in
-            remote.updateProduct(product: product) { aResult in
+            remote.addProduct(product: product) { aResult in
+                result = aResult
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertEqual(result?.isFailure, true)
+    }
+
+    // MARK: - Delete Product
+
+    func test_deleteProduct_with_success_mock_returns_a_product() {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        /// When we delete a product, it return the deleted product.
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product-add-or-delete")
+
+        // When
+        var deletedProduct: Product?
+        waitForExpectation { expectation in
+            remote.deleteProduct(for: sampleSiteID, productID: sampleProductID) { (result) in
+                deletedProduct = try? result.get()
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        let expectedProduct = Product(siteID: sampleSiteID,
+                                      productID: 3007,
+                                      name: "Product",
+                                      slug: "product",
+                                      permalink: "https://example.com/product/product/",
+                                      dateCreated: date(with: "2020-09-03T02:52:44"),
+                                      dateModified: date(with: "2020-09-03T02:52:44"),
+                                      dateOnSaleStart: nil,
+                                      dateOnSaleEnd: nil,
+                                      productTypeKey: ProductType.simple.rawValue,
+                                      statusKey: ProductStatus.publish.rawValue,
+                                      featured: false,
+                                      catalogVisibilityKey: ProductCatalogVisibility.visible.rawValue,
+                                      fullDescription: "",
+                                      briefDescription: "",
+                                      sku: "",
+                                      price: "",
+                                      regularPrice: "",
+                                      salePrice: "",
+                                      onSale: false,
+                                      purchasable: false,
+                                      totalSales: 0,
+                                      virtual: false,
+                                      downloadable: false,
+                                      downloads: [],
+                                      downloadLimit: -1,
+                                      downloadExpiry: -1,
+                                      buttonText: "",
+                                      externalURL: "",
+                                      taxStatusKey: ProductTaxStatus.taxable.rawValue,
+                                      taxClass: "",
+                                      manageStock: false,
+                                      stockQuantity: nil,
+                                      stockStatusKey: ProductStockStatus.inStock.rawValue,
+                                      backordersKey: ProductBackordersSetting.notAllowed.rawValue,
+                                      backordersAllowed: false,
+                                      backordered: false,
+                                      soldIndividually: false,
+                                      weight: "",
+                                      dimensions: ProductDimensions(length: "", width: "", height: ""),
+                                      shippingRequired: true,
+                                      shippingTaxable: true,
+                                      shippingClass: "",
+                                      shippingClassID: 0,
+                                      productShippingClass: nil,
+                                      reviewsAllowed: true,
+                                      averageRating: "0",
+                                      ratingCount: 0,
+                                      relatedIDs: [],
+                                      upsellIDs: [],
+                                      crossSellIDs: [],
+                                      parentID: 0,
+                                      purchaseNote: "",
+                                      categories: [],
+                                      tags: [],
+                                      images: [],
+                                      attributes: [],
+                                      defaultAttributes: [],
+                                      variations: [],
+                                      groupedProducts: [],
+                                      menuOrder: 0)
+        XCTAssertEqual(deletedProduct, expectedProduct)
+    }
+
+    func test_deleteProduct_relays_networking_error() {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When
+        var result: Result<Product, Error>?
+        waitForExpectation { expectation in
+            remote.deleteProduct(for: sampleSiteID, productID: sampleProductID) { (aResult) in
                 result = aResult
                 expectation.fulfill()
             }

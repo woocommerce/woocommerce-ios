@@ -14,6 +14,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
+                                                formType: .edit,
                                                 isEditProductsRelease3Enabled: false)
 
         // Assert
@@ -38,6 +39,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
+                                                formType: .edit,
                                                 isEditProductsRelease3Enabled: false)
 
         // Assert
@@ -60,6 +62,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
+                                                formType: .edit,
                                                 isEditProductsRelease3Enabled: false)
 
         // Assert
@@ -83,6 +86,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
+                                                formType: .edit,
                                                 isEditProductsRelease3Enabled: false)
 
         // Assert

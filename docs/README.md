@@ -265,6 +265,8 @@ To generate a `copy()` method for a `class` or `struct`:
 3. Add the generated files to the appropriate project if they're not added yet.
 4. Compile the project.
 
+PS: If you get any error while running `rake generate` it is likely due to a conflict with `SPM` and how it modifies the Xcode project. You can find a [temporary fix here](https://github.com/woocommerce/woocommerce-ios/issues/2864).
+
 ### Modifying The Copiable Code Generation
 
 The [`rake generate`](../Rakefile) command executes the Sourcery configuration files located in the [`CodeGeneration` folder](../CodeGeneration). There are different configuration files for every module:

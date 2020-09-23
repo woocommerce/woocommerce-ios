@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 31 (Release 5.2.0.0)
+- @partho-maple 2020-09-21
+- Update `Product`'s `downloads` relationship to be ordered
+
 ## Model 30 (Release 5.0.0.0)
 - @ecarrion 2020-09-02
 - Delete `OrderStats` entity

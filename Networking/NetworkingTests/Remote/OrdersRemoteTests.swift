@@ -160,7 +160,7 @@ final class OrdersRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)", filename: "order")
 
-        remote.updateOrder(from: sampleSiteID, orderID: sampleOrderID, statusKey: "pending") { (order, error) in
+        remote.updateOrder(from: sampleSiteID, orderID: sampleOrderID, statusKey: .pending) { (order, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(order)
             expectation.fulfill()
@@ -175,7 +175,7 @@ final class OrdersRemoteTests: XCTestCase {
         let remote = OrdersRemote(network: network)
         let expectation = self.expectation(description: "Update Order")
 
-        remote.updateOrder(from: sampleSiteID, orderID: sampleOrderID, statusKey: "pending") { (order, error) in
+        remote.updateOrder(from: sampleSiteID, orderID: sampleOrderID, statusKey: .pending) { (order, error) in
             XCTAssertNil(order)
             XCTAssertNotNil(error)
             expectation.fulfill()

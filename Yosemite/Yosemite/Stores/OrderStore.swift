@@ -49,7 +49,7 @@ public class OrderStore: Store {
                               pageSize: pageSize,
                               onCompletion: onCompletion)
         case .updateOrder(let siteID, let orderID, let statusKey, let onCompletion):
-            updateOrder(siteID: siteID, orderID: orderID, statusKey: statusKey, onCompletion: onCompletion)
+            updateOrder(siteID: siteID, orderID: orderID, status: statusKey, onCompletion: onCompletion)
         case .countProcessingOrders(let siteID, let onCompletion):
             countProcessingOrders(siteID: siteID, onCompletion: onCompletion)
         }
@@ -232,12 +232,12 @@ private extension OrderStore {
 
     /// Updates an Order with the specified Status.
     ///
-    func updateOrder(siteID: Int64, orderID: Int64, statusKey: String, onCompletion: @escaping (Error?) -> Void) {
+    func updateOrder(siteID: Int64, orderID: Int64, status: OrderStatusEnum, onCompletion: @escaping (Error?) -> Void) {
         /// Optimistically update the Status
-        let oldStatus = updateOrderStatus(orderID: orderID, statusKey: statusKey)
+        let oldStatus = updateOrderStatus(orderID: orderID, statusKey: status)
 
         let remote = OrdersRemote(network: network)
-        remote.updateOrder(from: siteID, orderID: orderID, statusKey: statusKey) { [weak self] (_, error) in
+        remote.updateOrder(from: siteID, orderID: orderID, statusKey: status) { [weak self] (_, error) in
             guard let error = error else {
                 // NOTE: We're *not* actually updating the whole entity here. Reason: Prevent UI inconsistencies!!
                 onCompletion(nil)
@@ -290,17 +290,17 @@ extension OrderStore {
     /// - Returns: Status, prior to performing the Update OP.
     ///
     @discardableResult
-    func updateOrderStatus(orderID: Int64, statusKey: String) -> String {
+    func updateOrderStatus(orderID: Int64, statusKey: OrderStatusEnum) -> OrderStatusEnum {
         let storage = storageManager.viewStorage
         guard let order = storage.loadOrder(orderID: orderID) else {
             return statusKey
         }
 
         let oldStatus = order.statusKey
-        order.statusKey = statusKey
+        order.statusKey = statusKey.rawValue
         storage.saveIfNeeded()
 
-        return oldStatus
+        return OrderStatusEnum(rawValue: oldStatus)
     }
 }
 
@@ -386,145 +386,10 @@ private extension OrderStore {
     private func upsertStoredOrders(readOnlyOrders: [Networking.Order],
                                     insertingSearchResults: Bool = false,
                                     in storage: StorageType) {
-
-        for readOnlyOrder in readOnlyOrders {
-            let storageOrder = storage.loadOrder(orderID: readOnlyOrder.orderID) ?? storage.insertNewObject(ofType: Storage.Order.self)
-            storageOrder.update(with: readOnlyOrder)
-
-            // Are we caching Search Results? Did this order exist before?
-            storageOrder.exclusiveForSearch = insertingSearchResults && (storageOrder.isInserted || storageOrder.exclusiveForSearch)
-
-            handleOrderItems(readOnlyOrder, storageOrder, storage)
-            handleOrderCoupons(readOnlyOrder, storageOrder, storage)
-            handleOrderShippingLines(readOnlyOrder, storageOrder, storage)
-            handleOrderRefundsCondensed(readOnlyOrder, storageOrder, storage)
-        }
+        let useCase = OrdersUpsertUseCase(storage: storage)
+        useCase.upsert(readOnlyOrders, insertingSearchResults: insertingSearchResults)
     }
 
-    /// Updates, inserts, or prunes the provided StorageOrder's items using the provided read-only Order's items
-    ///
-    private func handleOrderItems(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
-        var storageItem: Storage.OrderItem
-        let siteID = readOnlyOrder.siteID
-        let orderID = readOnlyOrder.orderID
-
-        // Upsert the items from the read-only order
-        for readOnlyItem in readOnlyOrder.items {
-            if let existingStorageItem = storage.loadOrderItem(siteID: siteID, orderID: orderID, itemID: readOnlyItem.itemID) {
-                existingStorageItem.update(with: readOnlyItem)
-                storageItem = existingStorageItem
-            } else {
-                let newStorageItem = storage.insertNewObject(ofType: Storage.OrderItem.self)
-                newStorageItem.update(with: readOnlyItem)
-                storageOrder.addToItems(newStorageItem)
-                storageItem = newStorageItem
-            }
-
-            handleOrderItemTaxes(readOnlyItem, storageItem, storage)
-        }
-
-        // Now, remove any objects that exist in storageOrder.items but not in readOnlyOrder.items
-        storageOrder.items?.forEach { storageItem in
-            if readOnlyOrder.items.first(where: { $0.itemID == storageItem.itemID } ) == nil {
-                storageOrder.removeFromItems(storageItem)
-                storage.deleteObject(storageItem)
-            }
-        }
-    }
-
-    /// Updates, inserts, or prunes the provided StorageOrderItem's taxes using the provided read-only OrderItem
-    ///
-    private func handleOrderItemTaxes(_ readOnlyItem: Networking.OrderItem, _ storageItem: Storage.OrderItem, _ storage: StorageType) {
-        let itemID = readOnlyItem.itemID
-
-        // Upsert the taxes from the read-only orderItem
-        for readOnlyTax in readOnlyItem.taxes {
-            if let existingStorageTax = storage.loadOrderItemTax(itemID: itemID, taxID: readOnlyTax.taxID) {
-                existingStorageTax.update(with: readOnlyTax)
-            } else {
-                let newStorageTax = storage.insertNewObject(ofType: Storage.OrderItemTax.self)
-                newStorageTax.update(with: readOnlyTax)
-                storageItem.addToTaxes(newStorageTax)
-            }
-        }
-
-        // Now, remove any objects that exist in storageOrderItem.taxes but not in readOnlyOrderItem.taxes
-        storageItem.taxes?.forEach { storageTax in
-            if readOnlyItem.taxes.first(where: { $0.taxID == storageTax.taxID } ) == nil {
-                storageItem.removeFromTaxes(storageTax)
-                storage.deleteObject(storageTax)
-            }
-        }
-    }
-
-    /// Updates, inserts, or prunes the provided StorageOrder's coupons using the provided read-only Order's coupons
-    ///
-    private func handleOrderCoupons(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
-        // Upsert the coupons from the read-only order
-        for readOnlyCoupon in readOnlyOrder.coupons {
-            if let existingStorageCoupon = storage.loadOrderCoupon(couponID: readOnlyCoupon.couponID) {
-                existingStorageCoupon.update(with: readOnlyCoupon)
-            } else {
-                let newStorageCoupon = storage.insertNewObject(ofType: Storage.OrderCoupon.self)
-                newStorageCoupon.update(with: readOnlyCoupon)
-                storageOrder.addToCoupons(newStorageCoupon)
-            }
-        }
-
-        // Now, remove any objects that exist in storageOrder.coupons but not in readOnlyOrder.coupons
-        storageOrder.coupons?.forEach { storageCoupon in
-            if readOnlyOrder.coupons.first(where: { $0.couponID == storageCoupon.couponID } ) == nil {
-                storageOrder.removeFromCoupons(storageCoupon)
-                storage.deleteObject(storageCoupon)
-            }
-        }
-    }
-
-    /// Updates, inserts, or prunes the provided StorageOrder's condensed refunds using the provided read-only Order's OrderRefundCondensed
-    ///
-    private func handleOrderRefundsCondensed(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
-        // Upsert the refunds from the read-only order
-        for readOnlyRefund in readOnlyOrder.refunds {
-            if let existingStorageRefund = storage.loadOrderRefundCondensed(refundID: readOnlyRefund.refundID) {
-                existingStorageRefund.update(with: readOnlyRefund)
-            } else {
-                let newStorageRefund = storage.insertNewObject(ofType: Storage.OrderRefundCondensed.self)
-                newStorageRefund.update(with: readOnlyRefund)
-                storageOrder.addToRefunds(newStorageRefund)
-            }
-        }
-
-        // Now, remove any objects that exist in storageOrder.OrderRefundCondensed but not in readOnlyOrder.OrderRefundCondensed
-        storageOrder.refunds?.forEach { storageRefunds in
-            if readOnlyOrder.refunds.first(where: { $0.refundID == storageRefunds.refundID } ) == nil {
-                storageOrder.removeFromRefunds(storageRefunds)
-                storage.deleteObject(storageRefunds)
-            }
-        }
-    }
-
-    /// Updates, inserts, or prunes the provided StorageOrder's shipping lines using the provided read-only Order's shippingLine
-    ///
-    private func handleOrderShippingLines(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
-        // Upsert the shipping lines from the read-only order
-        for readOnlyShippingLine in readOnlyOrder.shippingLines {
-            if let existingStorageShippingLine = storage.loadShippingLine(shippingID: readOnlyShippingLine.shippingID) {
-                existingStorageShippingLine.update(with: readOnlyShippingLine)
-            } else {
-                let newStorageShippingLine = storage.insertNewObject(ofType: Storage.ShippingLine.self)
-                newStorageShippingLine.update(with: readOnlyShippingLine)
-                storageOrder.addToShippingLines(newStorageShippingLine)
-            }
-        }
-
-        // Now, remove any objects that exist in storageOrder.shippingLines but not in readOnlyOrder.shippingLines
-        storageOrder.shippingLines?.forEach { storageShippingLine in
-            if readOnlyOrder.shippingLines.first(where: { $0.shippingID == storageShippingLine.shippingID } ) == nil {
-                storageOrder.removeFromShippingLines(storageShippingLine)
-                storage.deleteObject(storageShippingLine)
-            }
-        }
-    }
 }
 
 

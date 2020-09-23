@@ -12,6 +12,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
+                                                formType: .edit,
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
@@ -25,6 +26,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
+                                                formType: .edit,
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
@@ -40,6 +42,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
+                                                formType: .edit,
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
@@ -54,6 +57,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
+                                                formType: .edit,
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
@@ -70,6 +74,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
+                                                formType: .edit,
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
@@ -84,6 +89,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
+                                                formType: .edit,
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
@@ -100,6 +106,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
+                                                formType: .edit,
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
@@ -114,6 +121,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
+                                                formType: .edit,
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
@@ -130,6 +138,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
+                                                formType: .edit,
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
@@ -144,6 +153,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
+                                                formType: .edit,
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert

@@ -29,8 +29,8 @@ struct SummaryTableViewCellViewModel {
         orderNumber = order.number
 
         presentation = OrderStatusPresentation(
-            style: status?.status ?? OrderStatusEnum(rawValue: order.statusKey),
-            title: status?.name ?? order.statusKey
+            style: status?.status ?? order.status,
+            title: status?.name ?? order.status.rawValue
         )
 
         self.calendar = calendar

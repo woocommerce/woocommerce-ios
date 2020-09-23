@@ -72,4 +72,17 @@ public extension StorageType {
             deleteObject(tag)
         }
     }
+
+    // MARK: - Product Reviews
+
+    /// Deletes all of the stored Reviews for the provided siteID.
+    ///
+    func deleteProductReviews(siteID: Int64) {
+        guard let productReviews = loadProductReviews(siteID: siteID) else {
+            return
+        }
+        for review in productReviews {
+            deleteObject(review)
+        }
+    }
 }

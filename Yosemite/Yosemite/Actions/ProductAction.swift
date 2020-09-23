@@ -52,6 +52,10 @@ public enum ProductAction: Action {
     ///
     case addProduct(product: Product, onCompletion: (Result<Product, ProductUpdateError>) -> Void)
 
+    /// Delete an existing Product.
+    ///
+    case deleteProduct(siteID: Int64, productID: Int64, onCompletion: (Result<Product, ProductUpdateError>) -> Void)
+
     /// Updates a specified Product.
     ///
     case updateProduct(product: Product, onCompletion: (Result<Product, ProductUpdateError>) -> Void)

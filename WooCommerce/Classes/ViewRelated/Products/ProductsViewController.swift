@@ -228,8 +228,16 @@ private extension ProductsViewController {
         // TODO-2407: scan barcodes for products
     }
 
-    @objc func addProduct() {
-        // TODO-2740: add product flow
+    @objc func addProduct(_ sender: UIBarButtonItem) {
+        guard let navigationController = navigationController else {
+            return
+        }
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            assertionFailure("No site ID for creating a product")
+            return
+        }
+        let coordinatingController = AddProductCoordinator(siteID: siteID, sourceView: sender, sourceNavigationController: navigationController)
+        coordinatingController.start()
     }
 }
 
@@ -267,7 +275,7 @@ private extension ProductsViewController {
                 let button = UIBarButtonItem(image: .plusImage,
                                              style: .plain,
                                              target: self,
-                                             action: #selector(addProduct))
+                                             action: #selector(addProduct(_:)))
                 button.accessibilityTraits = .button
                 button.accessibilityLabel = NSLocalizedString("Add a product", comment: "The action to add a product")
                 return button

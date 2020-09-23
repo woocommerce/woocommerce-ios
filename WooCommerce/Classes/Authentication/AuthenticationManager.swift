@@ -1,4 +1,5 @@
 import Foundation
+import KeychainAccess
 import WordPressAuthenticator
 import Yosemite
 import struct Networking.Settings
@@ -11,6 +12,10 @@ class AuthenticationManager: Authentication {
     /// Store Picker Coordinator
     ///
     private var storePickerCoordinator: StorePickerCoordinator?
+
+    /// Keychain access for SIWA auth token
+    ///
+    private lazy var keychain = Keychain(service: WooConstants.keychainServiceName)
 
     /// Initializes the WordPress Authenticator.
     ///
@@ -124,7 +129,7 @@ class AuthenticationManager: Authentication {
 //
 extension AuthenticationManager: WordPressAuthenticatorDelegate {
     func userAuthenticatedWithAppleUserID(_ appleUserID: String) {
-        // Sign in with Apple is not supported yet.
+        keychain.wooAppleID = appleUserID
     }
 
     var allowWPComLogin: Bool {

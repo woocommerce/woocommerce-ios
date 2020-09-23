@@ -156,21 +156,12 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     @objc func updateProduct() {
         eventLogger.logUpdateButtonTapped()
-        let title = NSLocalizedString("Publishing your product...", comment: "Title of the in-progress UI while updating the Product remotely")
-        let message = NSLocalizedString("Please wait while we publish this product to your store",
-                                        comment: "Message of the in-progress UI while updating the Product remotely")
-        let viewProperties = InProgressViewProperties(title: title, message: message)
-        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
+        saveProduct()
+    }
 
-        // Before iOS 13, a modal with transparent background requires certain
-        // `modalPresentationStyle` to prevent the view from turning dark after being presented.
-        if #available(iOS 13.0, *) {} else {
-            inProgressViewController.modalPresentationStyle = .overCurrentContext
-        }
-
-        navigationController?.present(inProgressViewController, animated: true, completion: nil)
-
-        updateProductRemotely()
+    @objc func publishProduct() {
+        // TODO-2766: M4 analytics
+        saveProduct()
     }
 
     @objc func closeNavigationBarButtonTapped() {
@@ -197,9 +188,11 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             }
         }
 
-        actionSheet.addDefaultActionWithTitle(ActionSheetStrings.share) { [weak self] _ in
-            ServiceLocator.analytics.track(.productDetailShareButtonTapped)
-            self?.displayShareProduct()
+        if viewModel.canShareProduct() {
+            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.share) { [weak self] _ in
+                ServiceLocator.analytics.track(.productDetailShareButtonTapped)
+                self?.displayShareProduct()
+            }
         }
 
         actionSheet.addDefaultActionWithTitle(ActionSheetStrings.productSettings) { [weak self] _ in
@@ -529,9 +522,27 @@ private extension ProductFormViewController {
 // MARK: Navigation actions
 //
 private extension ProductFormViewController {
-    func updateProductRemotely() {
+    func saveProduct() {
+        let title = NSLocalizedString("Publishing your product...", comment: "Title of the in-progress UI while updating the Product remotely")
+        let message = NSLocalizedString("Please wait while we publish this product to your store",
+                                        comment: "Message of the in-progress UI while updating the Product remotely")
+        let viewProperties = InProgressViewProperties(title: title, message: message)
+        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
+
+        // Before iOS 13, a modal with transparent background requires certain
+        // `modalPresentationStyle` to prevent the view from turning dark after being presented.
+        if #available(iOS 13.0, *) {} else {
+            inProgressViewController.modalPresentationStyle = .overCurrentContext
+        }
+
+        navigationController?.present(inProgressViewController, animated: true, completion: nil)
+
+        saveImagesAndProductRemotely()
+    }
+
+    func saveImagesAndProductRemotely() {
         waitUntilAllImagesAreUploaded { [weak self] in
-            self?.dispatchUpdateProductAndPasswordAction()
+            self?.saveProductRemotely()
         }
     }
 
@@ -559,7 +570,7 @@ private extension ProductFormViewController {
         }
     }
 
-    func dispatchUpdateProductAndPasswordAction() {
+    func saveProductRemotely() {
         viewModel.updateProductRemotely { [weak self] result in
             switch result {
             case .failure(let error):
@@ -649,8 +660,13 @@ private extension ProductFormViewController {
     func updateNavigationBar(isUpdateEnabled: Bool) {
         var rightBarButtonItems = [UIBarButtonItem]()
 
-        if isUpdateEnabled {
-            rightBarButtonItems.append(createUpdateBarButtonItem())
+        switch viewModel.formType {
+        case .add:
+            rightBarButtonItems.append(createPublishBarButtonItem())
+        case .edit:
+            if isUpdateEnabled {
+                rightBarButtonItems.append(createUpdateBarButtonItem())
+            }
         }
 
         if viewModel.canEditProductSettings() {
@@ -664,6 +680,11 @@ private extension ProductFormViewController {
         default:
             break
         }
+    }
+
+    func createPublishBarButtonItem() -> UIBarButtonItem {
+        let publishTitle = NSLocalizedString("Publish", comment: "Action for creating a new Product remotely")
+        return UIBarButtonItem(title: publishTitle, style: .done, target: self, action: #selector(publishProduct))
     }
 
     func createUpdateBarButtonItem() -> UIBarButtonItem {

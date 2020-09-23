@@ -275,7 +275,7 @@ private extension OrderNoteStoreTests {
                      parentID: 0,
                      customerID: 11,
                      number: "963",
-                     statusKey: "processing",
+                     status: .processing,
                      currency: "USD",
                      customerNote: "",
                      dateCreated: date(with: "2018-04-03T23:05:12"),

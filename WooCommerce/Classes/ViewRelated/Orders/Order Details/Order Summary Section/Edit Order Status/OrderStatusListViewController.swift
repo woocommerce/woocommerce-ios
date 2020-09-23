@@ -179,35 +179,35 @@ private extension OrderStatusListViewController {
     /// Dispatches an Action to update the order status
     ///
     private func updateOrderStatus() {
-        guard let newStatus = selectedStatus?.status.rawValue else {
+        guard let newStatus = selectedStatus?.status else {
             return
         }
 
         let orderID = order.orderID
-        let undoStatus = order.statusKey
+        let undoStatus = order.status
 
-        let done = updateOrderAction(siteID: order.siteID, orderID: orderID, statusKey: newStatus)
-        let undo = updateOrderAction(siteID: order.siteID, orderID: orderID, statusKey: undoStatus)
+        let done = updateOrderAction(siteID: order.siteID, orderID: orderID, status: newStatus)
+        let undo = updateOrderAction(siteID: order.siteID, orderID: orderID, status: undoStatus)
 
         ServiceLocator.stores.dispatch(done)
         ServiceLocator.analytics.track(.orderStatusChange,
                                   withProperties: ["id": orderID,
-                                                   "from": undoStatus,
-                                                   "to": newStatus])
+                                                   "from": undoStatus.rawValue,
+                                                   "to": newStatus.rawValue])
 
         displayOrderUpdatedNotice {
             ServiceLocator.stores.dispatch(undo)
             ServiceLocator.analytics.track(.orderStatusChange,
                                       withProperties: ["id": orderID,
-                                                       "from": newStatus,
-                                                       "to": undoStatus])
+                                                       "from": newStatus.rawValue,
+                                                       "to": undoStatus.rawValue])
         }
     }
 
     /// Returns an Order Update Action that will result in the specified Order Status updated accordingly.
     ///
-    private func updateOrderAction(siteID: Int64, orderID: Int64, statusKey: String) -> Action {
-        return OrderAction.updateOrder(siteID: siteID, orderID: orderID, statusKey: statusKey, onCompletion: { error in
+    private func updateOrderAction(siteID: Int64, orderID: Int64, status: OrderStatusEnum) -> Action {
+        return OrderAction.updateOrder(siteID: siteID, orderID: orderID, status: status, onCompletion: { error in
             guard let error = error else {
                 NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
                 ServiceLocator.analytics.track(.orderStatusChangeSuccess)
@@ -215,7 +215,7 @@ private extension OrderStatusListViewController {
             }
 
             ServiceLocator.analytics.track(.orderStatusChangeFailed, withError: error)
-            DDLogError("⛔️ Order Update Failure: [\(orderID).status = \(statusKey)]. Error: \(error)")
+            DDLogError("⛔️ Order Update Failure: [\(orderID).status = \(status)]. Error: \(error)")
 
             self.displayErrorNotice(orderID: orderID)
         })

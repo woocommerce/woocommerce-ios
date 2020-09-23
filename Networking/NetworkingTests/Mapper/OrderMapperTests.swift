@@ -28,7 +28,7 @@ class OrderMapperTests: XCTestCase {
         XCTAssertEqual(order.parentID, 0)
         XCTAssertEqual(order.customerID, 11)
         XCTAssertEqual(order.number, "963")
-        XCTAssert(order.statusKey == "processing")
+        XCTAssertEqual(order.status, .processing)
         XCTAssertEqual(order.currency, "USD")
         XCTAssertEqual(order.customerNote, "")
         XCTAssertEqual(order.dateCreated, dateCreated)

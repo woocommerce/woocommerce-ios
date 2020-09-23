@@ -39,6 +39,8 @@ public class ProductStore: Store {
         switch action {
         case .addProduct(let product, let onCompletion):
             addProduct(product: product, onCompletion: onCompletion)
+        case .deleteProduct(let siteID, let productID, let onCompletion):
+            deleteProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .resetStoredProducts(let onCompletion):
             resetStoredProducts(onCompletion: onCompletion)
         case .retrieveProduct(let siteID, let productID, let onCompletion):
@@ -256,6 +258,20 @@ private extension ProductStore {
                     }
                     onCompletion(.success(storageProduct.toReadOnly()))
                 }
+            }
+        }
+    }
+
+    /// Delete an existing product.
+    ///
+    func deleteProduct(siteID: Int64, productID: Int64, onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
+        remote.deleteProduct(for: siteID, productID: productID) { (result) in
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(ProductUpdateError(error: error)))
+            case .success(let product):
+                self.deleteStoredProduct(siteID: siteID, productID: productID)
+                onCompletion(.success(product))
             }
         }
     }

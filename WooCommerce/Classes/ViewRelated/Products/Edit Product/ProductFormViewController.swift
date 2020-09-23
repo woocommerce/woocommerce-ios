@@ -659,15 +659,23 @@ private extension ProductFormViewController {
             }
 
             self?.viewModel.deleteProductRemotely { [weak self] result in
+                guard let self = self else {
+                    return
+                }
                 switch result {
                 case .failure(let error):
                     DDLogError("⛔️ Error deleting Product: \(error)")
                     CrashLogging.logError(error)
                     // Presents the error alert.
-                    self?.displayError(error: error)
+                    self.displayError(error: error)
                 case .success:
                     // Pop to the previous view controller
-                    self?.navigationController?.popViewController(animated: true)
+                    switch self.presentationStyle {
+                    case .navigationStack:
+                        self.navigationController?.popViewController(animated: true)
+                    default:
+                        self.dismiss(animated: true, completion: nil)
+                    }
                 }
             }
         }

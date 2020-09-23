@@ -344,11 +344,11 @@ extension OrderDetailsViewModel {
         let orderID = order.orderID
         let trackingID = tracking.trackingID
 
-        let statusKey = order.status
+        let status = order.status
         let providerName = tracking.trackingProvider ?? ""
 
         ServiceLocator.analytics.track(.orderTrackingDelete, withProperties: ["id": orderID,
-                                                                              "status": statusKey.rawValue,
+                                                                              "status": status.rawValue,
                                                                               "carrier": providerName,
                                                                               "source": "order_detail"])
 

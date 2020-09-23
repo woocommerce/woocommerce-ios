@@ -55,10 +55,10 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
             paymentStatusLabel.text = orderStatus.name
         } else {
             // There are unsupported extensions with even more statuses available.
-            // So let's use the order.statusKey to display those as slugs.
-            let statusKey = viewModel.order.status
-            paymentStatusLabel.applyStyle(for: statusKey)
-            paymentStatusLabel.text = statusKey.rawValue
+            // So let's use the order.status to display those as slugs.
+            let status = viewModel.order.status
+            paymentStatusLabel.applyStyle(for: status)
+            paymentStatusLabel.text = status.rawValue
         }
     }
 

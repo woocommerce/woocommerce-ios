@@ -198,8 +198,8 @@ private extension FulfillViewController {
         let doneStatus = OrderStatusEnum.completed
         let undoStatus = order.status
 
-        let done = updateOrderAction(siteID: order.siteID, orderID: orderID, statusKey: doneStatus)
-        let undo = updateOrderAction(siteID: order.siteID, orderID: orderID, statusKey: undoStatus)
+        let done = updateOrderAction(siteID: order.siteID, orderID: orderID, status: doneStatus)
+        let undo = updateOrderAction(siteID: order.siteID, orderID: orderID, status: undoStatus)
 
         ServiceLocator.analytics.track(.orderFulfillmentCompleteButtonTapped)
         ServiceLocator.analytics.track(.orderStatusChange, withProperties: ["id": order.orderID,
@@ -222,8 +222,8 @@ private extension FulfillViewController {
 
     /// Returns an Order Update Action that will result in the specified Order Status updated accordingly.
     ///
-    func updateOrderAction(siteID: Int64, orderID: Int64, statusKey: OrderStatusEnum) -> Action {
-        return OrderAction.updateOrder(siteID: siteID, orderID: orderID, statusKey: statusKey, onCompletion: { error in
+    func updateOrderAction(siteID: Int64, orderID: Int64, status: OrderStatusEnum) -> Action {
+        return OrderAction.updateOrder(siteID: siteID, orderID: orderID, status: status, onCompletion: { error in
             guard let error = error else {
                 NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
                 ServiceLocator.analytics.track(.orderStatusChangeSuccess)
@@ -231,7 +231,7 @@ private extension FulfillViewController {
             }
 
             ServiceLocator.analytics.track(.orderStatusChangeFailed, withError: error)
-            DDLogError("⛔️ Order Update Failure: [\(orderID).status = \(statusKey)]. Error: \(error)")
+            DDLogError("⛔️ Order Update Failure: [\(orderID).status = \(status)]. Error: \(error)")
 
             self.displayErrorNotice(orderID: orderID)
         })

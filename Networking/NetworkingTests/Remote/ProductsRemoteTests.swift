@@ -30,7 +30,7 @@ final class ProductsRemoteTests: XCTestCase {
     func test_addProduct_with_success_mock_returns_a_product() {
         // Given
         let remote = ProductsRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "products", filename: "product-add")
+        network.simulateResponse(requestUrlSuffix: "products", filename: "product-add-or-delete")
 
         // When
         let product = sampleProduct()
@@ -107,7 +107,7 @@ final class ProductsRemoteTests: XCTestCase {
         XCTAssertEqual(addedProduct, expectedProduct)
     }
 
-    func test_addProduct_relays_netwoking_error() {
+    func test_addProduct_relays_networking_error() {
         // Given
         let remote = ProductsRemote(network: network)
 
@@ -132,7 +132,7 @@ final class ProductsRemoteTests: XCTestCase {
         let remote = ProductsRemote(network: network)
 
         /// When we delete a product, it return the deleted product.
-        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product-add")
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product-add-or-delete")
 
         // When
         var deletedProduct: Product?
@@ -208,7 +208,7 @@ final class ProductsRemoteTests: XCTestCase {
         XCTAssertEqual(deletedProduct, expectedProduct)
     }
 
-    func test_deleteProduct_relays_netwoking_error() {
+    func test_deleteProduct_relays_networking_error() {
         // Given
         let remote = ProductsRemote(network: network)
 

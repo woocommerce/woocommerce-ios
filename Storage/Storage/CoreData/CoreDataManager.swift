@@ -262,18 +262,33 @@ private class TransactionOperation: Operation {
     }
 
     override func main() {
+        guard !isCancelled else {
+            return
+        }
+
         mutableContext.performAndWait {
+            guard !isCancelled else { return }
+
             let transaction = Transaction(self.mutableContext)
+
             do {
                 try self.blockToExecute(transaction)
+
+                guard !isCancelled else { return }
 
                 // TODO can be replaced with a throwing saveIfNeeded version
                 self.mutableContext.saveIfNeeded()
 
+                guard !isCancelled else { return }
+
                 self.viewContext.performAndWait {
+                    guard !isCancelled else { return }
+
                     // TODO can be replaced with a throwing saveIfNeeded version
                     self.viewContext.saveIfNeeded()
                 }
+
+                guard !isCancelled else { return }
 
                 self.result = .success(())
             } catch {

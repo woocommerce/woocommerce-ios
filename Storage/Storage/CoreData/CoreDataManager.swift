@@ -238,8 +238,10 @@ public final class CoreDataManager: StorageManagerType {
                                              viewContext: persistentContainer.viewContext,
                                              blockToExecute: closure)
         operation.completionBlock = {
-            if let result = operation.result {
-                completion?(result)
+            if let result = operation.result, let completion = completion {
+                DispatchQueue.main.async {
+                    completion(result)
+                }
             }
         }
         writingSerialOperationQueue.addOperation(operation)
@@ -262,9 +264,7 @@ private class TransactionOperation: Operation {
     }
 
     override func main() {
-        guard !isCancelled else {
-            return
-        }
+        guard !isCancelled else { return }
 
         mutableContext.performAndWait {
             guard !isCancelled else { return }

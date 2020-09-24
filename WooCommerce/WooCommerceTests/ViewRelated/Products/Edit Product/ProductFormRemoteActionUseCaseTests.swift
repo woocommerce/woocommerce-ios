@@ -272,7 +272,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertEqual(result, .success(ResultData(product: model, password: nil)))
     }
 
-    func test_delete_product_returns_failure_result_with_product_error() {
+    func test_deleting_product_returns_failure_result_with_product_error() {
         // Arrange
         let product = MockProduct().product()
         let model = EditableProductModel(product: product)

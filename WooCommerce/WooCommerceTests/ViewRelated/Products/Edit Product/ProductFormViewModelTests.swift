@@ -139,7 +139,7 @@ final class ProductFormViewModelTests: XCTestCase {
         let canDeleteProduct = viewModel.canDeleteProduct()
 
         // Assert
-        XCTAssertFalse(canDeleteProduct)
+        XCTAssertTrue(canDeleteProduct)
     }
 
     func test_add_product_form_with_non_published_status_cannot_delete_product() {

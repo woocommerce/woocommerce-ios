@@ -133,7 +133,8 @@ extension ProductFormViewModel {
     }
 
     func canDeleteProduct() -> Bool {
-        isEditProductsRelease5Enabled && originalProduct.product.productStatus == .publish && formType == .edit
+        isEditProductsRelease5Enabled &&
+        formType == .edit
     }
 }
 

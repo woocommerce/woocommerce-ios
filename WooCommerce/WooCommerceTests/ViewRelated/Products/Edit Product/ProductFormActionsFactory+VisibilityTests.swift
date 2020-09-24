@@ -160,6 +160,37 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         XCTAssertFalse(factory.settingsSectionActions().contains(.briefDescription))
         XCTAssertTrue(factory.bottomSheetActions().contains(.editBriefDescription))
     }
+
+    // MARK: - Downloadable Files
+    // Don't commit these unless you are done with https://github.com/woocommerce/woocommerce-ios/issues/2759
+
+    func testDownloadableFilesRowIsVisibleForDownloadableProductWithNonEmptyDownloadableFiles() {
+        // Arrange
+        let product = Fixtures.downloadableProduct
+        let model = EditableProductModel(product: product)
+
+        // Action
+        let factory = ProductFormActionsFactory(product: model,
+                                                formType: .edit,
+                                                isEditProductsRelease3Enabled: true)
+
+        // Assert
+        XCTAssertTrue(factory.settingsSectionActions().contains(.downloadableFiles))
+    }
+
+    func testDownloadableFilesRowIsInvisibleForNonDownloadableProductWithoutDownloadableFiles() {
+        // Arrange
+        let product = Fixtures.nonDownloadableProduct
+        let model = EditableProductModel(product: product)
+
+        // Action
+        let factory = ProductFormActionsFactory(product: model,
+                                                formType: .edit,
+                                                isEditProductsRelease3Enabled: true)
+
+        // Assert
+        XCTAssertFalse(factory.settingsSectionActions().contains(.downloadableFiles))
+    }
 }
 
 private extension ProductFormActionsFactory_VisibilityTests {
@@ -184,5 +215,10 @@ private extension ProductFormActionsFactory_VisibilityTests {
         // Brief description
         static let productWithNonEmptyBriefDescription = MockProduct().product(briefDescription: "desc", productType: .simple)
         static let productWithEmptyBriefDescription = MockProduct().product(briefDescription: "", productType: .simple)
+
+        // Downloadable Files
+        static let downloadableProduct = MockProduct().product(downloadable: true)
+        static let nonDownloadableProduct = MockProduct().product(downloadable: false)
+
     }
 }

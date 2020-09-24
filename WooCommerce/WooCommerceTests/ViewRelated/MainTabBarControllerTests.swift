@@ -57,7 +57,6 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertEqual(tabBarController.viewControllers?.count, 0)
     }
 
-    // TODO-1838: update test case after more tabs are torn down upon site ID changes.
     func test_tab_view_controllers_contain_a_different_reviews_tab_after_updating_to_a_different_site() throws {
         // Arrange
         // Trigger `viewDidLoad`
@@ -71,9 +70,9 @@ final class MainTabBarControllerTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(viewControllersBeforeSiteChange.count, viewControllersAfterSiteChange.count)
-        XCTAssertEqual(viewControllersBeforeSiteChange[WooTab.myStore.visibleIndex()], viewControllersAfterSiteChange[WooTab.myStore.visibleIndex()])
-        XCTAssertEqual(viewControllersBeforeSiteChange[WooTab.orders.visibleIndex()], viewControllersAfterSiteChange[WooTab.orders.visibleIndex()])
-        XCTAssertEqual(viewControllersBeforeSiteChange[WooTab.products.visibleIndex()], viewControllersAfterSiteChange[WooTab.products.visibleIndex()])
+        XCTAssertNotEqual(viewControllersBeforeSiteChange[WooTab.myStore.visibleIndex()], viewControllersAfterSiteChange[WooTab.myStore.visibleIndex()])
+        XCTAssertNotEqual(viewControllersBeforeSiteChange[WooTab.orders.visibleIndex()], viewControllersAfterSiteChange[WooTab.orders.visibleIndex()])
+        XCTAssertNotEqual(viewControllersBeforeSiteChange[WooTab.products.visibleIndex()], viewControllersAfterSiteChange[WooTab.products.visibleIndex()])
         XCTAssertNotEqual(viewControllersBeforeSiteChange[WooTab.reviews.visibleIndex()], viewControllersAfterSiteChange[WooTab.reviews.visibleIndex()])
     }
 

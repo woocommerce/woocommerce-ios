@@ -39,6 +39,8 @@ public class ProductStore: Store {
         switch action {
         case .addProduct(let product, let onCompletion):
             addProduct(product: product, onCompletion: onCompletion)
+        case .deleteProduct(let siteID, let productID, let onCompletion):
+            deleteProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .resetStoredProducts(let onCompletion):
             resetStoredProducts(onCompletion: onCompletion)
         case .retrieveProduct(let siteID, let productID, let onCompletion):
@@ -260,6 +262,20 @@ private extension ProductStore {
         }
     }
 
+    /// Delete an existing product.
+    ///
+    func deleteProduct(siteID: Int64, productID: Int64, onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
+        remote.deleteProduct(for: siteID, productID: productID) { (result) in
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(ProductUpdateError(error: error)))
+            case .success(let product):
+                self.deleteStoredProduct(siteID: siteID, productID: productID)
+                onCompletion(.success(product))
+            }
+        }
+    }
+
     /// Updates the product.
     ///
     func updateProduct(product: Product, onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
@@ -360,6 +376,7 @@ private extension ProductStore {
             handleProductImages(readOnlyProduct, storageProduct, storage)
             handleProductCategories(readOnlyProduct, storageProduct, storage)
             handleProductTags(readOnlyProduct, storageProduct, storage)
+            handleProductDownloadableFiles(readOnlyProduct, storageProduct, storage)
         }
     }
 
@@ -514,6 +531,42 @@ private extension ProductStore {
     }
 }
 
+// MARK: - Storage: Product Downloadable Files
+//
+private extension ProductStore {
+
+    /// Updates, inserts, or prunes the provided StorageProduct's downloadable files using the provided read-only Product's downloadable files
+    ///
+    func handleProductDownloadableFiles(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
+
+        removeAllProductDownloadableFiles(storageProduct, storage)
+        insertAllProductDownloadableFiles(readOnlyProduct, storageProduct, storage)
+    }
+
+    /// Removes the provided StorageProduct's all downloadable files from provided storage
+    ///
+    func removeAllProductDownloadableFiles(_ storageProduct: Storage.Product, _ storage: StorageType) {
+
+        storageProduct.downloadableFilesArray.forEach { existingStorageDownloadableFile in
+            storage.deleteObject(existingStorageDownloadableFile)
+            storageProduct.removeFromDownloads(existingStorageDownloadableFile)
+        }
+    }
+
+    /// Inserts the read-only Product's all downloadable files into provided StorageProduct's downloadable files using the storage
+    ///
+    func insertAllProductDownloadableFiles(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
+
+        let storageDownloadsSet = NSMutableOrderedSet()
+        for readOnlyDownloadableFile in readOnlyProduct.downloads {
+
+            let newStorageDownloadableFile = storage.insertNewObject(ofType: Storage.ProductDownload.self)
+            newStorageDownloadableFile.update(with: readOnlyDownloadableFile)
+            storageDownloadsSet.add(newStorageDownloadableFile)
+        }
+        storageProduct.addToDownloads(storageDownloadsSet)
+    }
+}
 
 // MARK: - Storage: Search Results
 //

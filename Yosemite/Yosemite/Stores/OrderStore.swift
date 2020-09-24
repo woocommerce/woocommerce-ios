@@ -49,7 +49,7 @@ public class OrderStore: Store {
                               pageSize: pageSize,
                               onCompletion: onCompletion)
         case .updateOrder(let siteID, let orderID, let statusKey, let onCompletion):
-            updateOrder(siteID: siteID, orderID: orderID, statusKey: statusKey, onCompletion: onCompletion)
+            updateOrder(siteID: siteID, orderID: orderID, status: statusKey, onCompletion: onCompletion)
         case .countProcessingOrders(let siteID, let onCompletion):
             countProcessingOrders(siteID: siteID, onCompletion: onCompletion)
         }
@@ -232,12 +232,12 @@ private extension OrderStore {
 
     /// Updates an Order with the specified Status.
     ///
-    func updateOrder(siteID: Int64, orderID: Int64, statusKey: String, onCompletion: @escaping (Error?) -> Void) {
+    func updateOrder(siteID: Int64, orderID: Int64, status: OrderStatusEnum, onCompletion: @escaping (Error?) -> Void) {
         /// Optimistically update the Status
-        let oldStatus = updateOrderStatus(orderID: orderID, statusKey: statusKey)
+        let oldStatus = updateOrderStatus(orderID: orderID, statusKey: status)
 
         let remote = OrdersRemote(network: network)
-        remote.updateOrder(from: siteID, orderID: orderID, statusKey: statusKey) { [weak self] (_, error) in
+        remote.updateOrder(from: siteID, orderID: orderID, statusKey: status) { [weak self] (_, error) in
             guard let error = error else {
                 // NOTE: We're *not* actually updating the whole entity here. Reason: Prevent UI inconsistencies!!
                 onCompletion(nil)
@@ -290,17 +290,17 @@ extension OrderStore {
     /// - Returns: Status, prior to performing the Update OP.
     ///
     @discardableResult
-    func updateOrderStatus(orderID: Int64, statusKey: String) -> String {
+    func updateOrderStatus(orderID: Int64, statusKey: OrderStatusEnum) -> OrderStatusEnum {
         let storage = storageManager.viewStorage
         guard let order = storage.loadOrder(orderID: orderID) else {
             return statusKey
         }
 
         let oldStatus = order.statusKey
-        order.statusKey = statusKey
+        order.statusKey = statusKey.rawValue
         storage.saveIfNeeded()
 
-        return oldStatus
+        return OrderStatusEnum(rawValue: oldStatus)
     }
 }
 

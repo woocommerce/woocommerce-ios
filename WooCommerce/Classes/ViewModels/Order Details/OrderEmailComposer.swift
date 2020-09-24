@@ -11,8 +11,8 @@ final class OrderEmailComposer: NSObject, MFMailComposeViewControllerDelegate {
 
         displayEmailComposer(for: email, from: from)
         ServiceLocator.analytics.track(.orderContactAction, withProperties: ["id": order.orderID,
-                                                                        "status": order.statusKey,
-                                                                        "type": "email"])
+                                                                             "status": order.status.rawValue,
+                                                                             "type": "email"])
 
         return MFMailComposeViewController.canSendMail()
     }

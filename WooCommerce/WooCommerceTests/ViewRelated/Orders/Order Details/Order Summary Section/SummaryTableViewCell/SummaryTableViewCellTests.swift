@@ -72,7 +72,7 @@ private extension SummaryTableViewCellTests {
                      parentID: 2,
                      customerID: 11,
                      number: "963",
-                     statusKey: "automattic",
+                     status: .custom("automattic"),
                      currency: "USD",
                      customerNote: "",
                      dateCreated: Date(),

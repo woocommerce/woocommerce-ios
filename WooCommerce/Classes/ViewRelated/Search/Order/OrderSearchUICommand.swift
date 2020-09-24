@@ -88,7 +88,7 @@ private extension OrderSearchUICommand {
 
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
         let listAll = statusResultsController.fetchedObjects
-        for orderStatus in listAll where orderStatus.slug == order.statusKey {
+        for orderStatus in listAll where orderStatus.status == order.status {
             return orderStatus
         }
 

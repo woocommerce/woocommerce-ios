@@ -66,7 +66,7 @@ extension Product {
     @NSManaged public var attributes: Set<ProductAttribute>?
     @NSManaged public var categories: Set<ProductCategory>?
     @NSManaged public var defaultAttributes: Set<ProductDefaultAttribute>?
-    @NSManaged public var downloads: Set<ProductDownload>?
+    @NSManaged public var downloads: NSOrderedSet?
     @NSManaged public var images: NSOrderedSet?
     @NSManaged public var tags: NSOrderedSet?
     @NSManaged public var searchResults: Set<ProductSearchResults>?
@@ -129,6 +129,24 @@ extension Product {
 // MARK: Generated accessors for downloads
 extension Product {
 
+    @objc(insertObject:inDownloadsAtIndex:)
+    @NSManaged public func insertIntoDownloads(_ value: ProductDownload, at idx: Int)
+
+    @objc(removeObjectFromDownloadsAtIndex:)
+    @NSManaged public func removeFromDownloads(at idx: Int)
+
+    @objc(insertDownloads:atIndexes:)
+    @NSManaged public func insertIntoDownloads(_ values: [ProductDownload], at indexes: NSIndexSet)
+
+    @objc(removeDownloadsAtIndexes:)
+    @NSManaged public func removeFromDownloads(at indexes: NSIndexSet)
+
+    @objc(replaceObjectInDownloadsAtIndex:withObject:)
+    @NSManaged public func replaceDownloads(at idx: Int, with value: ProductDownload)
+
+    @objc(replaceDownloadsAtIndexes:withDownloads:)
+    @NSManaged public func replaceDownloads(at indexes: NSIndexSet, with values: [ProductDownload])
+
     @objc(addDownloadsObject:)
     @NSManaged public func addToDownloads(_ value: ProductDownload)
 
@@ -136,10 +154,10 @@ extension Product {
     @NSManaged public func removeFromDownloads(_ value: ProductDownload)
 
     @objc(addDownloads:)
-    @NSManaged public func addToDownloads(_ values: NSSet)
+    @NSManaged public func addToDownloads(_ values: NSOrderedSet)
 
     @objc(removeDownloads:)
-    @NSManaged public func removeFromDownloads(_ values: NSSet)
+    @NSManaged public func removeFromDownloads(_ values: NSOrderedSet)
 
 }
 

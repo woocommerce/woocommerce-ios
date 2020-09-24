@@ -93,6 +93,7 @@ class StoredCredentialsAuthenticator: NSObject {
     ///
     private func pickerSuccess(_ authorization: ASAuthorization) {
         tracker.track(step: .start)
+        tracker.set(flow: .loginWithiCloudKeychain)
         
         switch authorization.credential {
         case _ as ASAuthorizationAppleIDCredential:

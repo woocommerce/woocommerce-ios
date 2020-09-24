@@ -41,7 +41,7 @@ class TextLinkButtonTableViewCell: UITableViewCell {
     
     /// Toggle button enabled / disabled
     ///
-    public func toggleButton(_ isEnabled: Bool) {
+    public func enableButton(_ isEnabled: Bool) {
         button.isEnabled = isEnabled
     }
 

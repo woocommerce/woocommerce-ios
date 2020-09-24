@@ -14,6 +14,7 @@ class PasswordViewController: LoginViewController {
     private var rows = [Row]()
     private var errorMessage: String?
     private var shouldChangeVoiceOverFocus: Bool = false
+    private var loginLinkCell: TextLinkButtonTableViewCell?
     
     /// Depending on where we're coming from, this screen needs to track a password challenge
     /// (if logging on with a Social account) or not (if logging in through WP.com).
@@ -59,6 +60,7 @@ class PasswordViewController: LoginViewController {
         
         loginFields.meta.userIsDotCom = true
         configureSubmitButton(animating: false)
+        loginLinkCell?.enableButton(true)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -400,10 +402,16 @@ private extension PasswordViewController {
                              accessibilityTrait: .link,
                              showBorder: true)
         cell.accessibilityIdentifier = "Get Login Link Button"
+        
+        // Save reference to the login link cell so it can be enabled/disabled.
+        loginLinkCell = cell
+        
         cell.actionHandler = { [weak self] in
             guard let self = self else {
                 return
             }
+            
+            cell.enableButton(false)
             
             self.tracker.track(click: .requestMagicLink)
             self.requestAuthenticationLink()

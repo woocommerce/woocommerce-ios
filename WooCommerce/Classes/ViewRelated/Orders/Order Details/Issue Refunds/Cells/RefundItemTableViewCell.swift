@@ -54,7 +54,7 @@ private extension RefundItemTableViewCell {
     }
 
     func applyItemImageStyles() {
-        itemImageView.layer.borderWidth = 0.5
+        itemImageView.layer.borderWidth = Constants.itemImageViewBorderWidth
         itemImageView.layer.borderColor = UIColor.border.cgColor
     }
 
@@ -70,7 +70,7 @@ private extension RefundItemTableViewCell {
     func applyRefundQuantityButtonStyle() {
         itemQuantityButton.applySecondaryButtonStyle()
         itemQuantityButton.titleLabel?.applyBodyStyle()
-        itemQuantityButton.contentEdgeInsets = .init(top: 8, left: 22, bottom: 8, right: 22)
+        itemQuantityButton.contentEdgeInsets = Constants.quantityButtonInsets
     }
 }
 
@@ -90,7 +90,7 @@ private extension RefundItemTableViewCell {
     /// Changes the items image view height acording to the current trait collection
     ///
     func adjustItemImageViewHeight() {
-        itemImageViewHeightConstraint.constant = UIFontMetrics.default.scaledValue(for: 39, compatibleWith: traitCollection)
+        itemImageViewHeightConstraint.constant = UIFontMetrics.default.scaledValue(for: Constants.itemImageViewHeight, compatibleWith: traitCollection)
     }
 }
 
@@ -118,6 +118,15 @@ extension RefundItemTableViewCell {
 private extension RefundItemTableViewCell {
     @IBAction func quantityButtonPressed(_ sender: Any) {
         print("Item quantity button pressed")
+    }
+}
+
+// MARK: Constats
+private extension RefundItemTableViewCell {
+    enum Constants {
+        static let itemImageViewHeight: CGFloat = 39.0
+        static let itemImageViewBorderWidth: CGFloat = 0.5
+        static let quantityButtonInsets = UIEdgeInsets(top: 8, left: 22, bottom: 8, right: 22)
     }
 }
 

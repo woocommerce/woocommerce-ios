@@ -29,13 +29,7 @@ extension ProductDownloadListViewController: UITableViewDropDelegate {
     func tableView(_ tableView: UITableView,
                    dropSessionDidUpdate session: UIDropSession,
                    withDestinationIndexPath destinationIndexPath: IndexPath?) -> UITableViewDropProposal {
-        let operation: UIDropOperation
-        if session.items.count > 1 {
-            operation = .cancel
-        } else {
-            operation = .move
-        }
-        return UITableViewDropProposal(operation: operation, intent: .insertAtDestinationIndexPath)
+        return UITableViewDropProposal(operation: .copy, intent: .insertAtDestinationIndexPath)
     }
 
     func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) {

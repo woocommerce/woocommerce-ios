@@ -80,6 +80,11 @@ struct ManagedObjectModelsInventory {
                                             currentModel: currentModel,
                                             versions: modelVersions)
     }
+
+    func model(for version: ModelVersion) -> NSManagedObjectModel? {
+        let expectedMomURL = packageURL.appendingPathComponent(version.name).appendingPathExtension("mom")
+        return NSManagedObjectModel(contentsOf: expectedMomURL)
+    }
 }
 
 // MARK: - Utils

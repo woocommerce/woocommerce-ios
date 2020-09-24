@@ -241,13 +241,13 @@ extension ProductFormViewModel {
 //
 extension ProductFormViewModel {
     func saveProductRemotely(status: ProductStatus?, onCompletion: @escaping (Result<EditableProductModel, ProductUpdateError>) -> Void) {
-        let productModelToSave: EditableProductModel
-        if let status = status, status != product.status {
+        let productModelToSave: EditableProductModel = {
+            guard let status = status, status != product.status else {
+                return product
+            }
             let productWithStatusUpdated = product.product.copy(statusKey: status.rawValue)
-            productModelToSave = EditableProductModel(product: productWithStatusUpdated)
-        } else {
-            productModelToSave = product
-        }
+            return EditableProductModel(product: productWithStatusUpdated)
+        }()
         let remoteActionUseCase = ProductFormRemoteActionUseCase()
         switch formType {
         case .add:

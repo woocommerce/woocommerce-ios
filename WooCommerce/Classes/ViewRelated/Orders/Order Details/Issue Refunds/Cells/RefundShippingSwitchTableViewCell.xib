@@ -9,14 +9,40 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="53" id="gvX-hN-7pZ" customClass="RefundShippingSwitchTableViewCell" customModule="WooCommerce" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="414" height="53"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="76" id="gvX-hN-7pZ" customClass="RefundShippingSwitchTableViewCell" customModule="WooCommerce" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="76"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="gvX-hN-7pZ" id="SfO-zy-k4B">
-                <rect key="frame" x="0.0" y="0.0" width="414" height="53"/>
+                <rect key="frame" x="0.0" y="0.0" width="414" height="76"/>
                 <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <stackView opaque="NO" contentMode="scaleToFill" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="9ZR-su-ZiV">
+                        <rect key="frame" x="16" y="16" width="382" height="44"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dfv-Cw-W2z">
+                                <rect key="frame" x="0.0" y="12" width="333" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VgQ-WE-baT">
+                                <rect key="frame" x="333" y="6.5" width="51" height="31"/>
+                            </switch>
+                        </subviews>
+                    </stackView>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="9ZR-su-ZiV" secondAttribute="trailing" constant="16" id="9bv-vN-3yL"/>
+                    <constraint firstItem="9ZR-su-ZiV" firstAttribute="leading" secondItem="SfO-zy-k4B" secondAttribute="leading" constant="16" id="Zlg-i4-uzs"/>
+                    <constraint firstItem="9ZR-su-ZiV" firstAttribute="top" secondItem="SfO-zy-k4B" secondAttribute="top" constant="16" id="idd-nF-wJf"/>
+                    <constraint firstAttribute="bottom" secondItem="9ZR-su-ZiV" secondAttribute="bottom" constant="16" id="xbs-BQ-cEC"/>
+                </constraints>
             </tableViewCellContentView>
-            <point key="canvasLocation" x="-191.30434782608697" y="-24.441964285714285"/>
+            <connections>
+                <outlet property="shippingSwitch" destination="VgQ-WE-baT" id="pew-nR-cvL"/>
+                <outlet property="shippingTitle" destination="dfv-Cw-W2z" id="aNx-wk-c1Q"/>
+            </connections>
+            <point key="canvasLocation" x="-191.30434782608697" y="-16.741071428571427"/>
         </tableViewCell>
     </objects>
 </document>

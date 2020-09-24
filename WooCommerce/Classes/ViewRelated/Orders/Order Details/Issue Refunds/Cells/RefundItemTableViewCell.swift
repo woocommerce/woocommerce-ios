@@ -25,6 +25,19 @@ final class RefundItemTableViewCell: UITableViewCell {
     }
 }
 
+// MARK: ViewModel Rendering
+extension RefundItemTableViewCell {
+
+    /// Configure cell with the provided view model
+    ///
+    func configure(with viewModel: RefundItemViewModel) {
+        itemImageView.image = .productPlaceholderImage
+        itemTitle.text = viewModel.productTitle
+        itemCaption.text = viewModel.productQuantityAndPrice
+        itemQuantityButton.setTitle(viewModel.quantityToRefund, for: .normal)
+    }
+}
+
 // MARK: Actions
 private extension RefundItemTableViewCell {
     @IBAction func quantityButtonPressed(_ sender: Any) {
@@ -41,8 +54,16 @@ import SwiftUI
 private struct RefundItemTableViewCellRepresentable: UIViewRepresentable {
     func makeUIView(context: Context) -> UIView {
         let nib = UINib(nibName: "RefundItemTableViewCell", bundle: nil)
-        let views = nib.instantiate(withOwner: self, options: nil)
-        return views.first as! UIView
+        guard let cell = nib.instantiate(withOwner: self, options: nil).first as? RefundItemTableViewCell else {
+            fatalError("Could not create RefundItemTableViewCell")
+        }
+
+        let viewModel = RefundItemViewModel(productImage: nil,
+                                            productTitle: "Hoddie - Big",
+                                            productQuantityAndPrice: "2 x $29.99 each",
+                                            quantityToRefund: "1")
+        cell.configure(with: viewModel)
+        return cell
     }
 
     func updateUIView(_ view: UIView, context: Context) {

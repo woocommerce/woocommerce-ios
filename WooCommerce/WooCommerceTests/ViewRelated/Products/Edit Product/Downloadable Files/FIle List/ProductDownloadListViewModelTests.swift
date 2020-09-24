@@ -1,33 +1,163 @@
-//
-//  ProductDownloadListViewModelTests.swift
-//  WooCommerceTests
-//
-//  Created by Partho Biswas on 9/24/20.
-//  Copyright © 2020 Automattic. All rights reserved.
-//
-
 import XCTest
+@testable import WooCommerce
+@testable import Yosemite
 
-class ProductDownloadListViewModelTests: XCTestCase {
+final class ProductDownloadListViewModelTests: XCTestCase {
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    // MARK: - Initialization
+
+    func testReadonlyValuesAreAsExpectedAfterInitializingAProductWithNonEmptyDownloadableFiles() throws {
+        // Arrange
+        let product = MockProduct().product(downloadable: true)
+        let model = EditableProductModel(product: product)
+
+        // Act
+        let viewModel = ProductDownloadListViewModel(product: model)
+
+        // Assert
+        XCTAssertEqual(viewModel.count(), 3)
+        XCTAssertEqual(viewModel.downloadLimit, 1)
+        XCTAssertEqual(viewModel.downloadExpiry, 1)
+        let file = try XCTUnwrap(viewModel.item(at: 0))
+        XCTAssertEqual(file.downloadableFile.downloadID, "1f9c11f99ceba63d4403c03bd5391b11")
+        XCTAssertEqual(file.downloadableFile.name, "Song #1")
+        XCTAssertEqual(file.downloadableFile.fileURL, "https://example.com/woo-single-1.ogg")
     }
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    func testReadonlyValuesAreAsExpectedAfterInitializingAProductWithEmptyDownloadableFiles() {
+        // Arrange
+        let product = MockProduct().product(downloadable: false)
+        let model = EditableProductModel(product: product)
+
+        // Act
+        let viewModel = ProductDownloadListViewModel(product: model)
+
+        // Assert
+        XCTAssertEqual(viewModel.count(), 0)
+        XCTAssertEqual(viewModel.downloadLimit, -1)
+        XCTAssertEqual(viewModel.downloadExpiry, -1)
     }
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    // MARK: - `handleDownloadableFilesChange`
+
+    func testHandlingADuplicateDownloadableFilesUpdatesWithError() {
+
     }
 
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+    func testHandlingAValidDownloadableFilesUpdatesWithSuccess() {
+
+    }
+
+    func testHandlingTheOriginalDownloadableFilesIsAlwaysValidAndUnique() {
+
+    }
+
+    func testHandlingAValidDownloadableFilesAddsWithSuccess() {
+
+    }
+
+    func testHandlingAValidExistingDownloadableFileRemovesWithSuccess() {
+
+    }
+
+    // MARK: - `handleDownloadLimitChange`
+
+    func testHandlingAValidDownloadLimitUpdatesWithSuccess() {
+        // Arrange
+        let product = MockProduct().product(downloadable: true)
+        let model = EditableProductModel(product: product)
+
+        // Act
+        let viewModel = ProductDownloadListViewModel(product: model)
+        viewModel.handleDownloadLimitChange(5)
+
+        // Assert
+        XCTAssertEqual(viewModel.downloadLimit, 5)
+    }
+
+    // MARK: - `handleDownloadExpiryChange`
+
+    func testHandlingAValidDownloadExpiryUpdatesWithSuccess() {
+        // Arrange
+        let product = MockProduct().product(downloadable: true)
+        let model = EditableProductModel(product: product)
+
+        // Act
+        let viewModel = ProductDownloadListViewModel(product: model)
+        viewModel.handleDownloadExpiryChange(5)
+
+        // Assert
+        XCTAssertEqual(viewModel.downloadExpiry, 5)
+    }
+
+    // MARK: - `hasUnsavedChanges`
+
+    func testViewModelHasUnsavedChangesAfterUpdatingDownloadFileLimit() {
+        // Arrange
+        let product = MockProduct().product(downloadable: true)
+        let model = EditableProductModel(product: product)
+
+        // Act
+        let viewModel = ProductDownloadListViewModel(product: model)
+        viewModel.handleDownloadLimitChange(5)
+
+        // Assert
+        XCTAssertTrue(viewModel.hasUnsavedChanges())
+
+    }
+
+    func testViewModelHasUnsavedChangesAfterUpdatingDownloadFileExpiry() {
+        // Arrange
+        let product = MockProduct().product(downloadable: true)
+        let model = EditableProductModel(product: product)
+
+        // Act
+        let viewModel = ProductDownloadListViewModel(product: model)
+        viewModel.handleDownloadExpiryChange(5)
+
+        // Assert
+        XCTAssertTrue(viewModel.hasUnsavedChanges())
+    }
+
+    func testViewModelHasUnsavedChangesAfterUpdatingDownloadFilesOrder() {
+        // Arrange
+        let product = MockProduct().product(downloadable: true)
+        let model = EditableProductModel(product: product)
+
+        // Act
+        let viewModel = ProductDownloadListViewModel(product: model)
+        guard let firstFile = viewModel.remove(at: 0) else {
+            XCTFail()
+            return
         }
+        viewModel.insert(firstFile, at: 1)
+
+        // Assert
+        XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
 
+    func testViewModelHasUnsavedChangesAfterRemovingDownloadFileIndividually() {
+
+    }
+
+    func testViewModelHasUnsavedChangesAfterAddingDownloadFileIndividually() {
+
+    }
+
+    func testViewModelHasUnsavedChangesAfterUpdatingSingleDownloadFileIndividually() {
+
+    }
+
+    func testViewModelHasNoUnsavedChangesAfterUpdatingWithTheOriginalValues() {
+        // Arrange
+        let product = MockProduct().product(downloadable: true)
+        let model = EditableProductModel(product: product)
+
+        // Act
+        let viewModel = ProductDownloadListViewModel(product: model)
+        viewModel.handleDownloadableFilesChange(MockProduct().sampleDownloads())
+
+        // Assert
+        XCTAssertFalse(viewModel.hasUnsavedChanges())
+    }
 }

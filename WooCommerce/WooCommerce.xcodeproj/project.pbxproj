@@ -525,6 +525,7 @@
 		74F3015A2200EC0800931B9E /* NSDecimalNumberWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F301592200EC0800931B9E /* NSDecimalNumberWooTests.swift */; };
 		74F9E9CD214C036400A3F2D2 /* NoPeriodDataTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 74F9E9CB214C036400A3F2D2 /* NoPeriodDataTableViewCell.xib */; };
 		74F9E9CE214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F9E9CC214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift */; };
+		77423F17251CF77E0016A083 /* ProductDownloadListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77423F16251CF77E0016A083 /* ProductDownloadListViewModelTests.swift */; };
 		77E53EB8250E6A4E003D385F /* ProductDownloadListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77E53EB6250E6A4E003D385F /* ProductDownloadListViewController.swift */; };
 		77E53EB9250E6A4E003D385F /* ProductDownloadListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 77E53EB7250E6A4E003D385F /* ProductDownloadListViewController.xib */; };
 		77E53EBF2510C153003D385F /* ProductDownloadListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77E53EBE2510C153003D385F /* ProductDownloadListViewModel.swift */; };
@@ -1499,6 +1500,7 @@
 		74F301592200EC0800931B9E /* NSDecimalNumberWooTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSDecimalNumberWooTests.swift; sourceTree = "<group>"; };
 		74F9E9CB214C036400A3F2D2 /* NoPeriodDataTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NoPeriodDataTableViewCell.xib; sourceTree = "<group>"; };
 		74F9E9CC214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoPeriodDataTableViewCell.swift; sourceTree = "<group>"; };
+		77423F16251CF77E0016A083 /* ProductDownloadListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDownloadListViewModelTests.swift; sourceTree = "<group>"; };
 		77E53EB6250E6A4E003D385F /* ProductDownloadListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDownloadListViewController.swift; sourceTree = "<group>"; };
 		77E53EB7250E6A4E003D385F /* ProductDownloadListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductDownloadListViewController.xib; sourceTree = "<group>"; };
 		77E53EBE2510C153003D385F /* ProductDownloadListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDownloadListViewModel.swift; sourceTree = "<group>"; };
@@ -1988,6 +1990,7 @@
 		020B2F9723BDF2D000BD79AD /* Edit Product */ = {
 			isa = PBXGroup;
 			children = (
+				77423F14251CF59D0016A083 /* Downloadable Files */,
 				02A275C723FEA102005C560F /* ProductFormActionsFactoryTests.swift */,
 				263EB408242C58EA00F3A15F /* ProductFormActionsFactory+EditProductsM3Tests.swift */,
 				0258B66A2518754C00EB5CF2 /* ProductFormActionsFactory+AddProductTests.swift */,
@@ -3251,6 +3254,22 @@
 				7493BB8D2149852A003071A9 /* TopPerformersHeaderView.xib */,
 			);
 			path = Cells;
+			sourceTree = "<group>";
+		};
+		77423F14251CF59D0016A083 /* Downloadable Files */ = {
+			isa = PBXGroup;
+			children = (
+				77423F15251CF5AE0016A083 /* FIle List */,
+			);
+			path = "Downloadable Files";
+			sourceTree = "<group>";
+		};
+		77423F15251CF5AE0016A083 /* FIle List */ = {
+			isa = PBXGroup;
+			children = (
+				77423F16251CF77E0016A083 /* ProductDownloadListViewModelTests.swift */,
+			);
+			path = "FIle List";
 			sourceTree = "<group>";
 		};
 		77E53EB5250E6972003D385F /* Downloadable Files */ = {
@@ -5757,6 +5776,7 @@
 				D88D5A3B230B5D63007B6E01 /* MockupAnalyticsProvider.swift in Sources */,
 				573A960524F4374B0091F3A5 /* TopBannerViewMirror.swift in Sources */,
 				5778E00A24DB1D8600B65CBF /* BehaviorSubjectTests.swift in Sources */,
+				77423F17251CF77E0016A083 /* ProductDownloadListViewModelTests.swift in Sources */,
 				B53A569721123D3B000776C9 /* ResultsControllerUIKitTests.swift in Sources */,
 				022A45EE237BADA6001417F0 /* Product+ProductFormTests.swift in Sources */,
 				B57C5C9921B80E7100FF82B2 /* DictionaryWooTests.swift in Sources */,

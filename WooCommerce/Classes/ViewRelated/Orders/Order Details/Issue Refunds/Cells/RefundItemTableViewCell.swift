@@ -35,12 +35,12 @@ final class RefundItemTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         applyCellStyles()
+        applyAccessibilityChanges()
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        adjustItemsStackViewAxis()
-        adjustItemImageViewHeight()
+        applyAccessibilityChanges()
     }
 }
 
@@ -50,14 +50,12 @@ private extension RefundItemTableViewCell {
         applyCellBackgroundStyle()
         applyItemImageStyles()
         applyLabelsStyles()
-        //applyRefundQuantityButtonStyle()
-        adjustItemsStackViewAxis()
+        applyRefundQuantityButtonStyle()
     }
 
     func applyItemImageStyles() {
         itemImageView.layer.borderWidth = 0.5
         itemImageView.layer.borderColor = UIColor.border.cgColor
-        adjustItemImageViewHeight()
     }
 
     func applyCellBackgroundStyle() {
@@ -72,6 +70,15 @@ private extension RefundItemTableViewCell {
     func applyRefundQuantityButtonStyle() {
         itemQuantityButton.applySecondaryButtonStyle()
         itemQuantityButton.titleLabel?.applyBodyStyle()
+        itemQuantityButton.contentEdgeInsets = .init(top: 8, left: 22, bottom: 8, right: 22)
+    }
+}
+
+// MARK: Accessibility
+private extension RefundItemTableViewCell {
+    func applyAccessibilityChanges() {
+        adjustItemsStackViewAxis()
+        adjustItemImageViewHeight()
     }
 
     /// Changes the items stack view axis depending on the view `preferredContentSizeCategory`.
@@ -96,7 +103,6 @@ extension RefundItemTableViewCell {
         itemTitle.text = viewModel.productTitle
         itemCaption.text = viewModel.productQuantityAndPrice
         itemQuantityButton.setTitle(viewModel.quantityToRefund, for: .normal)
-        applyRefundQuantityButtonStyle()
 
         if let _ = viewModel.productImage {
             // TODO: fill product image

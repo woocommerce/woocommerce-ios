@@ -330,9 +330,10 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
             if tracker.shouldUseLegacyTracker() {
                 track(.loginSocialErrorUnknownUser)
             }
+        } else {
+            // Don't track unknown user for unified Auth.
+            tracker.track(failure: errorDescription)
         }
-
-        tracker.track(failure: errorDescription)
 
         loginDelegate?.googleLoginFailed(errorTitle: errorTitle, errorDescription: errorDescription, loginFields: loginFields)
         delegate?.googleLoginFailed(errorTitle: errorTitle, errorDescription: errorDescription, loginFields: loginFields, unknownUser: unknownUser)

@@ -424,9 +424,11 @@ private extension CoreDataIterativeMigratorTests {
     }
 
     func managedObjectModel(for modelName: String) throws -> NSManagedObjectModel {
-        try XCTUnwrap(NSManagedObjectModel(contentsOf: urlForModel(name: modelName)))
+        let modelVersion = ManagedObjectModelsInventory.ModelVersion(name: modelName)
+        return try XCTUnwrap(modelsInventory.model(for: modelVersion))
     }
 
+    /// Prefer using `managedObjectModel(for:)` directly. 
     func urlForModel(name: String) -> URL {
 
         let bundle = Bundle(for: CoreDataManager.self)

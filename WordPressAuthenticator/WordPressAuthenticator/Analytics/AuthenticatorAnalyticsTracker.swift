@@ -38,7 +38,7 @@ public class AuthenticatorAnalyticsTracker {
         
         /// Starts when the used adds a site from the site picker
         ///
-        case selfHosted
+        case selfHosted = "self_hosted"
     }
     
     public enum Flow: String {

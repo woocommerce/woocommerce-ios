@@ -152,7 +152,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         return shouldPopOnBackButton()
     }
 
-    // MARK: Navigation actions
+    // MARK: Product save action handling
 
     @objc func updateProduct() {
         eventLogger.logUpdateButtonTapped()
@@ -163,6 +163,12 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         // TODO-2766: M4 analytics
         saveProduct()
     }
+
+    func saveProductAsDraft() {
+        saveProduct(status: .draft)
+    }
+
+    // MARK: Navigation actions
 
     @objc func closeNavigationBarButtonTapped() {
         guard viewModel.hasUnsavedChanges() == false else {
@@ -179,6 +185,13 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     @objc func presentMoreOptionsActionSheet(_ sender: UIBarButtonItem) {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
+
+        if viewModel.canSaveAsDraft() {
+            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.saveProductAsDraft) { [weak self] _ in
+                // TODO-2766: M4 analytics
+                self?.saveProductAsDraft()
+            }
+        }
 
         /// The "View product in store" action will be shown only if the product is published.
         if viewModel.canViewProductInStore() {
@@ -519,7 +532,7 @@ private extension ProductFormViewController {
 // MARK: Navigation actions
 //
 private extension ProductFormViewController {
-    func saveProduct() {
+    func saveProduct(status: ProductStatus? = nil) {
         let title = NSLocalizedString("Publishing your product...", comment: "Title of the in-progress UI while updating the Product remotely")
         let message = NSLocalizedString("Please wait while we publish this product to your store",
                                         comment: "Message of the in-progress UI while updating the Product remotely")
@@ -534,12 +547,12 @@ private extension ProductFormViewController {
 
         navigationController?.present(inProgressViewController, animated: true, completion: nil)
 
-        saveImagesAndProductRemotely()
+        saveImagesAndProductRemotely(status: status)
     }
 
-    func saveImagesAndProductRemotely() {
+    func saveImagesAndProductRemotely(status: ProductStatus?) {
         waitUntilAllImagesAreUploaded { [weak self] in
-            self?.saveProductRemotely()
+            self?.saveProductRemotely(status: status)
         }
     }
 
@@ -567,8 +580,8 @@ private extension ProductFormViewController {
         }
     }
 
-    func saveProductRemotely() {
-        viewModel.updateProductRemotely { [weak self] result in
+    func saveProductRemotely(status: ProductStatus?) {
+        viewModel.saveProductRemotely(status: status) { [weak self] result in
             switch result {
             case .failure(let error):
                 DDLogError("⛔️ Error updating Product: \(error)")
@@ -720,12 +733,19 @@ extension ProductFormViewController: KeyboardScrollable {
 //
 private extension ProductFormViewController {
     func presentBackNavigationActionSheet() {
-        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
-            guard let self = self else {
-                return
-            }
-            self.exitForm()
-        })
+        switch viewModel.formType {
+        case .add:
+            UIAlertController.presentDiscardNewProductActionSheet(viewController: self,
+                                                                  onSaveDraft: { [weak self] in
+                                                                    self?.saveProductAsDraft()
+                }, onDiscard: { [weak self] in
+                    self?.exitForm()
+            })
+        case .edit:
+            UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+                self?.exitForm()
+            })
+        }
     }
 }
 
@@ -1118,6 +1138,8 @@ private extension ProductFormViewController {
 // MARK: Constants
 //
 private enum ActionSheetStrings {
+    static let saveProductAsDraft = NSLocalizedString("Save as draft",
+                                                      comment: "Button title to save a product as draft in Product More Options Action Sheet")
     static let viewProduct = NSLocalizedString("View Product in Store",
                                                comment: "Button title View product in store in Edit Product More Options Action Sheet")
     static let share = NSLocalizedString("Share", comment: "Button title Share in Edit Product More Options Action Sheet")

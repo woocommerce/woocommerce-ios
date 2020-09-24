@@ -151,8 +151,8 @@ private extension BillingInformationViewController {
 
         UIApplication.shared.open(phoneURL, options: [:], completionHandler: nil)
         ServiceLocator.analytics.track(.orderContactAction, withProperties: ["id": order.orderID,
-                                                                        "status": order.statusKey,
-                                                                        "type": "call"])
+                                                                             "status": order.status.rawValue,
+                                                                             "type": "call"])
 
     }
 
@@ -166,7 +166,7 @@ private extension BillingInformationViewController {
         messageComposerPresenter.presentIfPossible(from: from, recipient: phoneNumber)
 
         ServiceLocator.analytics.track(.orderContactAction, withProperties: ["id": order.orderID,
-                                                                             "status": order.statusKey,
+                                                                             "status": order.status.rawValue,
                                                                              "type": "sms"])
     }
 

@@ -33,11 +33,14 @@ enum ProductFormEditAction {
 /// Creates actions for different sections/UI on the product form.
 struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let product: EditableProductModel
+    private let formType: ProductFormType
     private let isEditProductsRelease3Enabled: Bool
 
     init(product: EditableProductModel,
+         formType: ProductFormType,
          isEditProductsRelease3Enabled: Bool) {
         self.product = product
+        self.formType = formType
         self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
     }
 
@@ -81,7 +84,7 @@ private extension ProductFormActionsFactory {
 
     func allSettingsSectionActionsForSimpleProduct() -> [ProductFormEditAction] {
         let shouldShowReviewsRow = isEditProductsRelease3Enabled && product.reviewsAllowed
-        let shouldShowProductTypeRow = isEditProductsRelease3Enabled
+        let shouldShowProductTypeRow = isEditProductsRelease3Enabled && formType == .edit
         let shouldShowShippingSettingsRow = product.isShippingEnabled()
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
         let shouldShowTagsRow = isEditProductsRelease3Enabled
@@ -101,7 +104,7 @@ private extension ProductFormActionsFactory {
 
     func allSettingsSectionActionsForAffiliateProduct() -> [ProductFormEditAction] {
         let shouldShowReviewsRow = isEditProductsRelease3Enabled && product.reviewsAllowed
-        let shouldShowProductTypeRow = isEditProductsRelease3Enabled
+        let shouldShowProductTypeRow = isEditProductsRelease3Enabled && formType == .edit
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
         let shouldShowTagsRow = isEditProductsRelease3Enabled
 
@@ -120,7 +123,7 @@ private extension ProductFormActionsFactory {
 
     func allSettingsSectionActionsForGroupedProduct() -> [ProductFormEditAction] {
         let shouldShowReviewsRow = isEditProductsRelease3Enabled && product.reviewsAllowed
-        let shouldShowProductTypeRow = isEditProductsRelease3Enabled
+        let shouldShowProductTypeRow = isEditProductsRelease3Enabled && formType == .edit
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
         let shouldShowTagsRow = isEditProductsRelease3Enabled
 

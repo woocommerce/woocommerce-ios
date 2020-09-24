@@ -58,6 +58,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
             }
 
             actionsFactory = ProductFormActionsFactory(product: product,
+                                                       formType: formType,
                                                        isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
             productSubject.send(product)
         }
@@ -93,6 +94,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.originalProduct = product
         self.product = product
         self.actionsFactory = ProductFormActionsFactory(product: product,
+                                                        formType: formType,
                                                         isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
         self.isUpdateEnabledSubject = PublishSubject<Bool>()
 
@@ -115,12 +117,20 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 // MARK: - More menu
 //
 extension ProductFormViewModel {
+    func canSaveAsDraft() -> Bool {
+        formType == .add
+    }
+
     func canEditProductSettings() -> Bool {
         return true
     }
 
     func canViewProductInStore() -> Bool {
-        return originalProduct.product.productStatus == .publish
+        originalProduct.product.productStatus == .publish && formType == .edit
+    }
+
+    func canShareProduct() -> Bool {
+        formType == .edit
     }
 }
 
@@ -230,11 +240,18 @@ extension ProductFormViewModel {
 // MARK: Remote actions
 //
 extension ProductFormViewModel {
-    func updateProductRemotely(onCompletion: @escaping (Result<EditableProductModel, ProductUpdateError>) -> Void) {
+    func saveProductRemotely(status: ProductStatus?, onCompletion: @escaping (Result<EditableProductModel, ProductUpdateError>) -> Void) {
+        let productModelToSave: EditableProductModel = {
+            guard let status = status, status != product.status else {
+                return product
+            }
+            let productWithStatusUpdated = product.product.copy(statusKey: status.rawValue)
+            return EditableProductModel(product: productWithStatusUpdated)
+        }()
         let remoteActionUseCase = ProductFormRemoteActionUseCase()
         switch formType {
         case .add:
-            remoteActionUseCase.addProduct(product: product, password: password) { [weak self] result in
+            remoteActionUseCase.addProduct(product: productModelToSave, password: password) { [weak self] result in
                 switch result {
                 case .failure(let error):
                     onCompletion(.failure(error))
@@ -249,7 +266,7 @@ extension ProductFormViewModel {
                 }
             }
         case .edit:
-            remoteActionUseCase.editProduct(product: product,
+            remoteActionUseCase.editProduct(product: productModelToSave,
                                               originalProduct: originalProduct,
                                               password: password,
                                               originalPassword: originalPassword) { [weak self] result in

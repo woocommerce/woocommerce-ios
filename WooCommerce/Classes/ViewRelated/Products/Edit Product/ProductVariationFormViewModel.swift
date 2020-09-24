@@ -92,13 +92,20 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
 // MARK: - More menu
 //
 extension ProductVariationFormViewModel {
+    func canSaveAsDraft() -> Bool {
+        false
+    }
+
     func canEditProductSettings() -> Bool {
-        return false
+        false
     }
 
     func canViewProductInStore() -> Bool {
-        // no-op
-        return false
+        false
+    }
+
+    func canShareProduct() -> Bool {
+        false
     }
 }
 
@@ -209,7 +216,7 @@ extension ProductVariationFormViewModel {
 // MARK: Remote actions
 //
 extension ProductVariationFormViewModel {
-    func updateProductRemotely(onCompletion: @escaping (Result<EditableProductVariationModel, ProductUpdateError>) -> Void) {
+    func saveProductRemotely(status: ProductStatus?, onCompletion: @escaping (Result<EditableProductVariationModel, ProductUpdateError>) -> Void) {
         let updateAction = ProductVariationAction.updateProductVariation(productVariation: productVariation.productVariation) { [weak self] result in
             guard let self = self else {
                 return

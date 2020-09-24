@@ -21,6 +21,9 @@ final class MockProductsRemote {
     /// The results to return based on the given site ID in `addProduct`
     private var addProductResultsBySiteID = [Int64: Result<Product, Error>]()
 
+    /// The results to return based on the given site ID in `deleteProduct`
+    private var deleteProductResultsBySiteID = [Int64: Result<Product, Error>]()
+
     /// The number of times that `loadProduct()` was invoked.
     private(set) var invocationCountOfLoadProduct: Int = 0
 
@@ -28,6 +31,12 @@ final class MockProductsRemote {
     ///
     func whenAddingProduct(siteID: Int64, thenReturn result: Result<Product, Error>) {
         addProductResultsBySiteID[siteID] = result
+    }
+
+    /// Set the value passed to the `completion` block if `deleteProduct()` is called.
+    ///
+    func whenDeletingProduct(siteID: Int64, thenReturn result: Result<Product, Error>) {
+        deleteProductResultsBySiteID[siteID] = result
     }
 
     /// Set the value passed to the `completion` block if `loadProduct()` is called.
@@ -58,6 +67,20 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for site ID \(product.siteID)")
+            }
+        }
+    }
+
+    func deleteProduct(for siteID: Int64, productID: Int64, completion: @escaping (Result<Product, Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            if let result = self.deleteProductResultsBySiteID[siteID] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for site ID \(siteID)")
             }
         }
     }

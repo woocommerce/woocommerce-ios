@@ -1,13 +1,3 @@
-We have lots of improvements in both Order Details and Settings to report in this update. 
-
-In Order Details, you can now add a “Guest” placeholder when a customer name isn’t provided.  In the Product Details sub-section, we have fixed the glitch where clicking outside of “Add more details” dismissed the whole section. 
-
-In Settings, the “Feature Request” button was replaced with “Send Feedback.”
-
-We also made some changes if the Products switch is on in Settings > Experimental Features:
-
-1. You can do some basic editing for non-core products, such as subscriptions,  that are introduced by external plugins and not defined by default into WooCommerce’s four core groups  (simple, variable, linked, and grouped). You can change images, name, description, price, inventory, tags, categories, short description, and product settings. 
-2. Inventory and shipping settings for product variations, including stock status, can now be edited.
-3. The reviews row is hidden if reviews are disabled.
-4. You can open the product’s review screen even if there are no reviews. 
-5. VoiceOver support in Product Details now includes the images header and the product name. 
+- Products: If the Products switch is on in Settings → Experimental Features for a variable product, the stock status is no longer shown in the product details when stock management is disabled (since stock status is controlled at variation level).
+- Orders: The search list will now show the full count instead of “99+”.
+- Reviews: We’ve fixed an issue where reviews were not refreshing correctly. Now, if you delete or mark a review as spam, this change will be reflected in the product reviews list.

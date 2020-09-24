@@ -31,6 +31,7 @@
 		454005AA24AE4D350087FDD1 /* WooCommerceModelV28toV29.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 454005A924AE4D350087FDD1 /* WooCommerceModelV28toV29.xcmappingmodel */; };
 		45E1862E2370450C009241F3 /* ShippingLine+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E1862D2370450C009241F3 /* ShippingLine+CoreDataClass.swift */; };
 		45E1863023704519009241F3 /* ShippingLine+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E1862F23704519009241F3 /* ShippingLine+CoreDataProperties.swift */; };
+		57113A72251CF1C900C1CFE7 /* AttributeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57113A71251CF1C900C1CFE7 /* AttributeTests.swift */; };
 		57150E1324F462DF00E81611 /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 57150E1224F462DF00E81611 /* TestKit */; };
 		5736878E24AAADAE00B528FE /* ManagedObjectModelsInventory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5736878D24AAADAE00B528FE /* ManagedObjectModelsInventory.swift */; };
 		5736879024AABE4D00B528FE /* ManagedObjectModelsInventoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5736878F24AABE4D00B528FE /* ManagedObjectModelsInventoryTests.swift */; };
@@ -189,6 +190,7 @@
 		45E1862D2370450C009241F3 /* ShippingLine+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLine+CoreDataClass.swift"; sourceTree = "<group>"; };
 		45E1862F23704519009241F3 /* ShippingLine+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLine+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		47556EE256120BEE49FF5FD3 /* Pods_StorageTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StorageTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		57113A71251CF1C900C1CFE7 /* AttributeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributeTests.swift; sourceTree = "<group>"; };
 		5736878D24AAADAE00B528FE /* ManagedObjectModelsInventory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedObjectModelsInventory.swift; sourceTree = "<group>"; };
 		5736878F24AABE4D00B528FE /* ManagedObjectModelsInventoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedObjectModelsInventoryTests.swift; sourceTree = "<group>"; };
 		574B774B24AA87FA0042116F /* FileManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerProtocol.swift; sourceTree = "<group>"; };
@@ -363,6 +365,7 @@
 			isa = PBXGroup;
 			children = (
 				26EA01D324EC449C00176A57 /* AppSettings */,
+				57113A71251CF1C900C1CFE7 /* AttributeTests.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -964,6 +967,7 @@
 			files = (
 				9302E3AC220E1CE900DA5018 /* CoreDataIterativeMigratorTests.swift in Sources */,
 				B59E11E020A9F5E6004121A4 /* Constants.swift in Sources */,
+				57113A72251CF1C900C1CFE7 /* AttributeTests.swift in Sources */,
 				B54CA5C320A4BF6900F38CD1 /* NSManagedObjectContextStorageTests.swift in Sources */,
 				02A098272480D160002F8C7A /* MockCrashLogger.swift in Sources */,
 				B54CA5C720A4BFDC00F38CD1 /* DummyStack.swift in Sources */,

@@ -21,6 +21,14 @@ public final class CoreDataManager: StorageManagerType {
         return context
     }()
 
+    private let writingSerialOperationQueue: OperationQueue = {
+        let queue = OperationQueue()
+        queue.name = "serial.queue.for.mutableContext"
+        queue.maxConcurrentOperationCount = 1
+        queue.qualityOfService = .userInitiated
+        return queue
+    }()
+
     private let mutableContextTransactionSemaphore = DispatchSemaphore(value: 1)
 
     /// Designated Initializer.
@@ -226,26 +234,51 @@ public final class CoreDataManager: StorageManagerType {
 
     public func write(_ closure: @escaping (TransactionType) throws -> Void,
                       completion: ((Result<Void, Error>) -> Void)?) {
-        mutableContext.perform { [weak self] in
-            guard let self = self else {
-                return
+        let operation = TransactionOperation(mutableContext,
+                                             viewContext: persistentContainer.viewContext,
+                                             blockToExecute: closure)
+        operation.completionBlock = {
+            if let result = operation.result {
+                completion?(result)
             }
+        }
+        writingSerialOperationQueue.addOperation(operation)
+    }
+}
 
-            self.mutableContextTransactionSemaphore.wait()
+private class TransactionOperation: Operation {
+    private let mutableContext: NSManagedObjectContext
+    private let viewContext: NSManagedObjectContext
+    private let blockToExecute: (TransactionType) throws -> Void
 
+    private(set) var result: Result<Void, Error>?
+
+    init(_ context: NSManagedObjectContext,
+         viewContext: NSManagedObjectContext,
+         blockToExecute: @escaping (TransactionType) throws -> Void) {
+        self.mutableContext = context
+        self.viewContext = viewContext
+        self.blockToExecute = blockToExecute
+    }
+
+    override func main() {
+        mutableContext.performAndWait {
             let transaction = Transaction(self.mutableContext)
             do {
-                try closure(transaction)
+                try self.blockToExecute(transaction)
 
-                self.saveDerivedType(derivedStorage: self.mutableContext) {
-                    completion?(.success(()))
-                    self.mutableContextTransactionSemaphore.signal()
+                // TODO can be replaced with a throwing saveIfNeeded version
+                self.mutableContext.saveIfNeeded()
+
+                self.viewContext.performAndWait {
+                    // TODO can be replaced with a throwing saveIfNeeded version
+                    self.viewContext.saveIfNeeded()
                 }
+
+                self.result = .success(())
             } catch {
                 self.mutableContext.rollback()
-
-                completion?(.failure(error))
-                self.mutableContextTransactionSemaphore.signal()
+                self.result = .failure(error)
             }
         }
     }

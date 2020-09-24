@@ -24,8 +24,52 @@ final class RefundItemTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var itemQuantityButton: UIButton!
 
+    /// Needed to change it's axis with larger accessibility traits
+    ///
+    @IBOutlet private var contentStackView: UIStackView!
+
     override func awakeFromNib() {
         super.awakeFromNib()
+        applyCellStyles()
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        adjustContentStackViewAxis()
+    }
+}
+
+// MARK: View Styles Configuration
+private extension RefundItemTableViewCell {
+    func applyCellStyles() {
+        applyCellBackgroundStyle()
+        applyItemImageStyles()
+        applyLabelsStyles()
+        //applyRefundQuantityButtonStyle()
+        adjustContentStackViewAxis()
+    }
+
+    func applyItemImageStyles() {
+        itemImageView.layer.borderWidth = 0.5
+        itemImageView.layer.borderColor = UIColor.border.cgColor
+    }
+
+    func applyCellBackgroundStyle() {
+        applyDefaultBackgroundStyle()
+    }
+
+    func applyLabelsStyles() {
+        itemTitle.applyBodyStyle()
+        itemCaption.applyFootnoteStyle()
+    }
+
+    func applyRefundQuantityButtonStyle() {
+        itemQuantityButton.applySecondaryButtonStyle()
+        itemQuantityButton.titleLabel?.applyBodyStyle()
+    }
+
+    func adjustContentStackViewAxis() {
+        contentStackView.axis = traitCollection.preferredContentSizeCategory > .extraExtraExtraLarge ? .vertical : .horizontal
     }
 }
 
@@ -105,7 +149,7 @@ struct RefundItemTableViewCell_Previews: PreviewProvider {
                 .previewDisplayName("Dark")
 
             makeStack()
-                .previewLayout(.fixed(width: 359, height: 100))
+                .previewLayout(.fixed(width: 359, height: 300))
                 .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
                 .previewDisplayName("Large Font")
         }

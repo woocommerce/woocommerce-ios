@@ -44,8 +44,8 @@ extension Storage.Product: ReadOnlyConvertible {
         totalSales = Int64(product.totalSales)
         virtual = product.virtual
         downloadable = product.downloadable
-        downloadLimit = Int64(product.downloadLimit)
-        downloadExpiry = Int64(product.downloadExpiry)
+        downloadLimit = product.downloadLimit
+        downloadExpiry = product.downloadExpiry
         buttonText = product.buttonText
         externalURL = product.externalURL
         taxStatusKey = product.taxStatusKey
@@ -123,8 +123,8 @@ extension Storage.Product: ReadOnlyConvertible {
                        virtual: virtual,
                        downloadable: downloadable,
                        downloads: productDownloads,
-                       downloadLimit: Int(downloadLimit),
-                       downloadExpiry: Int(downloadExpiry),
+                       downloadLimit: downloadLimit,
+                       downloadExpiry: downloadExpiry,
                        buttonText: buttonText,
                        externalURL: externalURL,
                        taxStatusKey: taxStatusKey,

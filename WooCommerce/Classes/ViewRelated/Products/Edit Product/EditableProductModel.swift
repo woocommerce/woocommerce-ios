@@ -136,11 +136,11 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
     }
 
     var downloadLimit: Int64 {
-        Int64(product.downloadLimit)
+        product.downloadLimit
     }
 
     var downloadExpiry: Int64 {
-        Int64(product.downloadExpiry)
+        product.downloadExpiry
     }
 
     func isStockStatusEnabled() -> Bool {

@@ -227,12 +227,13 @@ import AuthenticationServices
         presenter.present(navController, animated: true, completion: nil)
     }
 
-    public class func showLoginForSelfHostedSite(_ presenter: UIViewController, source: AuthenticatorAnalyticsTracker.Source) {
+    /// Used to present the new self-hosted login flow from BlogListViewController
+    @objc public class func showLoginForSelfHostedSite(_ presenter: UIViewController) {
         defer {
             trackOpenedLogin()
         }
         
-        AuthenticatorAnalyticsTracker.shared.set(source: source)
+        AuthenticatorAnalyticsTracker.shared.set(source: .selfHosted)
         
         guard let controller = signinForWPOrg() else {
             DDLogError("WordPressAuthenticator: Failed to instantiate Site Address view controller.")

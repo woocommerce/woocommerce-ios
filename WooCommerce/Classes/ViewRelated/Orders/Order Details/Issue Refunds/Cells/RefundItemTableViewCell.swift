@@ -8,6 +8,10 @@ final class RefundItemTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var itemImageView: UIImageView!
 
+    /// Placeholder image view: Needed to show a placeholder that has some insets from the `itemImageView`
+    ///
+    @IBOutlet private var placeholderImageView: UIImageView!
+
     /// Item title: Product name
     ///
     @IBOutlet private var itemTitle: UILabel!
@@ -31,10 +35,19 @@ extension RefundItemTableViewCell {
     /// Configure cell with the provided view model
     ///
     func configure(with viewModel: RefundItemViewModel) {
-        itemImageView.image = .productPlaceholderImage
         itemTitle.text = viewModel.productTitle
         itemCaption.text = viewModel.productQuantityAndPrice
         itemQuantityButton.setTitle(viewModel.quantityToRefund, for: .normal)
+        applyRefundQuantityButtonStyle()
+
+        if let imageURL = viewModel.productImage {
+            // TODO: fill product image
+            print(imageURL)
+            placeholderImageView.image = nil
+        } else {
+            itemImageView.image = nil
+            placeholderImageView.image = .productPlaceholderImage
+        }
     }
 }
 

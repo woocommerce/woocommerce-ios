@@ -1153,9 +1153,6 @@ private extension ProductFormViewController {
     }
 
     func onAddEditDownloadsCompletion(data: ProductDownloadsEditableData) {
-        defer {
-            navigationController?.popViewController(animated: true)
-        }
         let originalData = ProductDownloadsEditableData(productModel: product)
         let hasChangedData = originalData != data
 

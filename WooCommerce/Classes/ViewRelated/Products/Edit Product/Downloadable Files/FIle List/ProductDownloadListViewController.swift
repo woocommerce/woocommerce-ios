@@ -121,15 +121,17 @@ extension ProductDownloadListViewController {
     @objc private func doneButtonTapped() {
         // TODO: - add analytics
         viewModel.completeUpdating(onCompletion: onCompletion)
+        navigationController?.popViewController(animated: true)
     }
 
     @objc private func downloadSettingsButtonTapped() {
         // TODO: - add analytics
+        showDownloadSettings()
     }
 
     @objc private func addButtonTapped() {
         // TODO: - add analytics
-        addEditDownloadableFile(indexPath: IndexPath(row: -1, section: -1))
+        addEditDownloadableFile(indexPath: IndexPath(row: -1, section: -1), formType: .add)
     }
 
     private func presentBackNavigationActionSheet() {
@@ -142,14 +144,28 @@ extension ProductDownloadListViewController {
 // MARK: Action - Add/Edit Product Downloadable File Settings
 //
 extension ProductDownloadListViewController {
-    func addEditDownloadableFile(indexPath: IndexPath) {
+    func addEditDownloadableFile(indexPath: IndexPath, formType: ProductDownloadFileViewController.FormType) {
+        let viewController = ProductDownloadFileViewController(product: product,
+                                                               downloadFileIndex: indexPath.row,
+                                                               formType: formType) { [weak self]
+            (fileName, fileURL, fileID, hasUnsavedChanges) in
+            self?.onAddEditDownloadableFileCompletion(fileName: fileName,
+                                                      fileURL: fileURL,
+                                                      fileID: fileID,
+                                                      hasUnsavedChanges: hasUnsavedChanges,
+                                                      indexPath: indexPath,
+                                                      formType: formType)
+        }
+        navigationController?.pushViewController(viewController, animated: true)
 
     }
 
     func onAddEditDownloadableFileCompletion(fileName: String?,
                                              fileURL: String?,
                                              fileID: String?,
-                                             hasUnsavedChanges: Bool) {
+                                             hasUnsavedChanges: Bool,
+                                             indexPath: IndexPath,
+                                             formType: ProductDownloadFileViewController.FormType) {
         defer {
             navigationController?.popViewController(animated: true)
         }
@@ -157,6 +173,51 @@ extension ProductDownloadListViewController {
         guard hasUnsavedChanges else {
             return
         }
+
+        switch formType {
+        case .add:
+            viewModel.append(ProductDownloadDragAndDrop(downloadableFile: ProductDownload(downloadID: fileID ?? "",
+                                                                                          name: fileName ?? "",
+                                                                                          fileURL: fileURL ?? "")))
+        case .edit:
+            viewModel.update(at: indexPath.row,
+                             element: (ProductDownloadDragAndDrop(downloadableFile: ProductDownload(downloadID: fileID ?? "",
+                                                                                                    name: fileName ?? "",
+                                                                                                    fileURL: fileURL ?? ""))))
+        }
+        viewModel.completeUpdating(onCompletion: onCompletion)
+        tableView.reloadData()
+    }
+}
+
+// MARK: Action - Downloaded Settings
+//
+extension ProductDownloadListViewController {
+    func showDownloadSettings() {
+        let viewController = ProductDownloadSettingsViewController(product: product) { [weak self]
+            (downloadLimit, downloadExpiry, hasUnsavedChanges) in
+            self?.onDownloadSettingsCompletion(downloadLimit: downloadLimit,
+                                               downloadExpiry: downloadExpiry,
+                                               hasUnsavedChanges: hasUnsavedChanges)
+        }
+        navigationController?.pushViewController(viewController, animated: true)
+
+    }
+
+    func onDownloadSettingsCompletion(downloadLimit: Int64,
+                                      downloadExpiry: Int64,
+                                      hasUnsavedChanges: Bool) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+
+        guard hasUnsavedChanges else {
+            return
+        }
+
+        viewModel.handleDownloadLimitChange(downloadLimit)
+        viewModel.handleDownloadExpiryChange(downloadExpiry)
+        viewModel.completeUpdating(onCompletion: onCompletion)
     }
 }
 
@@ -181,7 +242,7 @@ extension ProductDownloadListViewController: UITableViewDataSource, UITableViewD
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        addEditDownloadableFile(indexPath: indexPath)
+        addEditDownloadableFile(indexPath: indexPath, formType: .edit)
     }
 
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {

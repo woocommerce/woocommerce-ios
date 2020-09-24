@@ -120,7 +120,7 @@ extension ProductDownloadSettingsViewModel: ProductDownloadSettingsActionHandler
     }
 }
 
-// MARK: - Convenience Methodes
+// MARK: - Convenience Methods
 //
 private extension ProductDownloadSettingsViewModel {
     func isChangesValid() -> Bool {
@@ -140,9 +140,7 @@ extension ProductDownloadSettingsViewModel {
                                                      comment: "Title of the cell in Product Download Expiration > Download expiration")
         static let downloadExpiryPlaceholder = NSLocalizedString("No expiration",
                                                            comment: "Placeholder of the cell text field in Download expiration")
-        static let downloadExpiryFooter = NSLocalizedString("""
-Enter the number of days before a download limk expires, or leave blank if never it expires
-""",
-                                                      comment: "Footer text for Download Expiration")
+        static let downloadExpiryFooter = NSLocalizedString("Enter the number of days before a download link expires, or leave blank if never it expires",
+                                                            comment: "Footer text for Download Expiration")
     }
 }

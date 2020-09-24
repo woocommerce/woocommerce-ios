@@ -185,46 +185,8 @@ private extension ProductDownloadFileViewController {
                 }
             }
         }
-        //cellViewModel = cellViewModel.stateUpdated(state: error == nil ? .normal : .error)
         cell.configure(viewModel: cellViewModel)
     }
-}
-
-// MARK: - UITableViewDelegate Conformance
-//
-extension ProductDownloadFileViewController: UITableViewDelegate {
-/*
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let section = sections[section]
-        guard let errorTitle = section.errorTitle else {
-            return nil
-        }
-
-        let headerID = ErrorSectionHeaderView.reuseIdentifier
-        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerID) as? ErrorSectionHeaderView else {
-            fatalError()
-        }
-        headerView.configure(title: errorTitle)
-        UIAccessibility.post(notification: .layoutChanged, argument: headerView)
-        return headerView
-    }
-
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        let section = sections[section]
-        guard let errorTitle = section.errorTitle, errorTitle.isEmpty == false else {
-            return 0
-        }
-        return UITableView.automaticDimension
-    }
-
-    func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        let section = sections[section]
-        guard let errorTitle = section.errorTitle, errorTitle.isEmpty == false else {
-            return 0
-        }
-        return Constants.sectionHeight
-    }
-*/
 }
 
 // MARK: - View Configuration
@@ -232,7 +194,7 @@ extension ProductDownloadFileViewController: UITableViewDelegate {
 private extension ProductDownloadFileViewController {
 
     func configureNavigationBar() {
-        title = NSLocalizedString(viewModel.formType == .add ? "New Downloadable File" : viewModel.fileName ?? "",
+        title = NSLocalizedString(viewModel.formType == .add ? "Add Downloadable File" : viewModel.fileName ?? "",
                                   comment: "Individual downloadable file navigation title")
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
@@ -248,7 +210,6 @@ private extension ProductDownloadFileViewController {
 
     func configureTableView() {
         tableView.dataSource = self
-        tableView.delegate = self
 
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
@@ -270,11 +231,6 @@ private extension ProductDownloadFileViewController {
             cell?.textFieldBecomeFirstResponder()
         }
     }
-
-//    func registerTableViewHeaderSections() {
-//        let headerNib = UINib(nibName: TwoColumnSectionHeaderView.reuseIdentifier, bundle: nil)
-//        tableView.register(headerNib, forHeaderFooterViewReuseIdentifier: TwoColumnSectionHeaderView.reuseIdentifier)
-//    }
 
     func registerTableViewCells() {
         for row in Row.allCases {
@@ -371,11 +327,5 @@ extension ProductDownloadFileViewController {
     enum FormType {
         case add
         case edit
-    }
-}
-
-private extension ProductDownloadFileViewController {
-    enum Constants {
-        static let sectionHeight = CGFloat(44)
     }
 }

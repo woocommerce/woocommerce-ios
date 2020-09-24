@@ -178,9 +178,7 @@ extension ProductDownloadFileViewModel {
                                                      comment: "Title of the cell in Product Downloadable File URL > File URL")
         static let urlPlaceholder = NSLocalizedString("File URL",
                                                            comment: "Placeholder of the cell text field in Product Downloadable File URL")
-        static let urlFooter = NSLocalizedString("""
-This is the url of the file which customers will get accessed to. URLs entered should already be encoded.
-""",
+        static let urlFooter = NSLocalizedString("This is the url of the file which customers will get accessed to. URLs entered should already be encoded.",
                                                       comment: "Footer text for Downloadable File URL")
     }
 }

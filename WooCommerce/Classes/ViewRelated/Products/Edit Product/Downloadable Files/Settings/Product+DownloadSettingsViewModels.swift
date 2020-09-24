@@ -1,11 +1,3 @@
-//
-//  Product+DownloadSettingsViewModels.swift
-//  WooCommerce
-//
-//  Created by Partho Biswas on 9/16/20.
-//  Copyright © 2020 Automattic. All rights reserved.
-//
-
 import Yosemite
 
 extension Product {

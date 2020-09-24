@@ -235,6 +235,10 @@ extension ProductFormViewModel {
     func updateStatus(_ isEnabled: Bool) {
         // no-op: visibility is editable in product settings for `Product`
     }
+
+    func updateDownloadableFiles(downloadableFiles: [ProductDownload], downloadLimit: Int64, downloadExpiry: Int64) {
+        // TODO: Update the product info here
+    }
 }
 
 // MARK: Remote actions

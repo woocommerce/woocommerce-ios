@@ -35,8 +35,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
 
     public let downloadable: Bool
     public let downloads: [ProductDownload]
-    public let downloadLimit: Int       // defaults to -1
-    public let downloadExpiry: Int      // defaults to -1
+    public let downloadLimit: Int64       // defaults to -1
+    public let downloadExpiry: Int64      // defaults to -1
 
     public let buttonText: String       // External products only
     public let externalURL: String?     // External products only
@@ -135,8 +135,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
                 virtual: Bool,
                 downloadable: Bool,
                 downloads: [ProductDownload],
-                downloadLimit: Int,
-                downloadExpiry: Int,
+                downloadLimit: Int64,
+                downloadExpiry: Int64,
                 buttonText: String,
                 externalURL: String?,
                 taxStatusKey: String,
@@ -289,8 +289,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
 
         let downloadable = try container.decode(Bool.self, forKey: .downloadable)
         let downloads = try container.decode([ProductDownload].self, forKey: .downloads)
-        let downloadLimit = try container.decode(Int.self, forKey: .downloadLimit)
-        let downloadExpiry = try container.decode(Int.self, forKey: .downloadExpiry)
+        let downloadLimit = try container.decode(Int64.self, forKey: .downloadLimit)
+        let downloadExpiry = try container.decode(Int64.self, forKey: .downloadExpiry)
 
         let buttonText = try container.decode(String.self, forKey: .buttonText)
         let externalURL = try container.decodeIfPresent(String.self, forKey: .externalURL)

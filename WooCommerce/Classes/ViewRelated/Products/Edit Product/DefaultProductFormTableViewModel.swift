@@ -90,6 +90,8 @@ private extension DefaultProductFormTableViewModel {
                 return .groupedProducts(viewModel: groupedProductsRow(product: product.product))
             case .variations:
                 return .variations(viewModel: variationsRow(product: product.product))
+            case .downloadableFiles:
+                return .downloadableFiles(viewModel: downloadsRow(product: product))
             default:
                 assertionFailure("Unexpected action in the settings section: \(action)")
                 return nil
@@ -397,6 +399,27 @@ private extension DefaultProductFormTableViewModel {
         let title = Constants.noPriceWarningTitle
         return ProductFormSection.SettingsRow.WarningViewModel(icon: icon, title: title)
     }
+
+    // MARK: Product downloads only
+
+    func downloadsRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {
+        let icon = UIImage.cloudImage
+        let title = Constants.downloadsTitle
+        var details = Constants.emptyDownloads
+
+        switch product.downloadableFiles.count {
+        case 1:
+            details = String.localizedStringWithFormat(Constants.singularDownloadsFormat, product.downloadableFiles.count)
+        case 2...:
+            details = String.localizedStringWithFormat(Constants.pluralDownloadsFormat, product.downloadableFiles.count)
+        default:
+            details = Constants.emptyDownloads
+        }
+
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon,
+                                                        title: title,
+                                                        details: details)
+    }
 }
 
 private extension DefaultProductFormTableViewModel {
@@ -507,5 +530,17 @@ private extension DefaultProductFormTableViewModel {
         static let noPriceWarningTitle =
             NSLocalizedString("Variations without price won’t be shown in your store",
                               comment: "Title of the no price warning row on Product Variation main screen when a variation is enabled without a price")
+
+        // Downloadable files
+        static let downloadsTitle =
+            NSLocalizedString("Downloadable files",
+                              comment: "Title of the Downloadable Files row on Product main screen")
+
+        static let emptyDownloads = NSLocalizedString("No files yet",
+                                                      comment: "Placeholder for empty Downloadable Files row on Product main screen")
+        static let singularDownloadsFormat = NSLocalizedString("%ld file",
+                                                               comment: "Format of the number of Downloadable Files row in the singular form. Reads, `1 file`")
+        static let pluralDownloadsFormat = NSLocalizedString("%ld files",
+                                                           comment: "Format of the number of Downloadable Files row in the plural form. Reads, `5 files`")
     }
 }

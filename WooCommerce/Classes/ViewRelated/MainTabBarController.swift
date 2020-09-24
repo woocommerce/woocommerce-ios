@@ -80,30 +80,12 @@ final class MainTabBarController: UITabBarController {
     ///
     private let viewModel = MainTabViewModel()
 
-    private lazy var dashboardViewController: UIViewController = {
-        let dashboardViewController = DashboardViewController()
-        return WooNavigationController(rootViewController: dashboardViewController)
-    }()
-
-    private lazy var ordersTabViewController: UIViewController = {
-        let rootViewController = OrdersRootViewController()
-        return WooNavigationController(rootViewController: rootViewController)
-    }()
-
-    private lazy var productsTabViewController: UIViewController = {
-        let productsViewController = ProductsViewController(nibName: nil, bundle: nil)
-        let navController = WooNavigationController(rootViewController: productsViewController)
-        let navigationTitle = NSLocalizedString("Products",
-                                                comment: "Title of the Products tab — plural form of Product")
-        navController.tabBarItem = UITabBarItem(title: navigationTitle,
-                                                image: UIImage.productImage,
-                                                tag: 0)
-        navController.tabBarItem.accessibilityIdentifier = "tab-bar-products-item"
-
-        return navController
-    }()
-
-    private var reviewsCoordinator: Coordinator?
+    /// Tab view controllers
+    ///
+    private var dashboardViewController: UIViewController?
+    private var ordersTabViewController: UIViewController?
+    private var productsTabViewController: UIViewController?
+    private var reviewsTabCoordinator: Coordinator?
 
     private var cancellableSiteID: ObservationToken?
 
@@ -349,16 +331,25 @@ private extension MainTabBarController {
     func updateViewControllers(siteID: Int64?) {
         guard let siteID = siteID else {
             viewControllers = []
-            reviewsCoordinator = nil
+            dashboardViewController = nil
+            ordersTabViewController = nil
+            productsTabViewController = nil
+            reviewsTabCoordinator = nil
             return
         }
 
         // Initialize tab view controllers
-        let reviewsCoordinator = ReviewsCoordinator(siteID: siteID,
-                                                    willPresentReviewDetailsFromPushNotification: { [weak self] in
-                                                        self?.navigateTo(.reviews)
-        })
-        self.reviewsCoordinator = reviewsCoordinator
+        let dashboardViewController = createDashboardTabViewController()
+        self.dashboardViewController = dashboardViewController
+
+        let ordersTabViewController = createOrdersTabViewController()
+        self.ordersTabViewController = ordersTabViewController
+
+        let productsTabViewController = createProductsTabViewController()
+        self.productsTabViewController = productsTabViewController
+
+        let reviewsTabCoordinator = createReviewsTabCoordinator(siteID: siteID)
+        self.reviewsTabCoordinator = reviewsTabCoordinator
 
         // Add the Dashboard, Orders, Products and Reviews tab
         viewControllers = {
@@ -374,7 +365,7 @@ private extension MainTabBarController {
             controllers.insert(productsTabViewController, at: productsTabIndex)
 
             let reviewsTabIndex = WooTab.reviews.visibleIndex()
-            controllers.insert(reviewsCoordinator.navigationController, at: reviewsTabIndex)
+            controllers.insert(reviewsTabCoordinator.navigationController, at: reviewsTabIndex)
 
             return controllers
         }()
@@ -383,7 +374,37 @@ private extension MainTabBarController {
         selectedIndex = WooTab.myStore.visibleIndex()
 
         // Startup calls for tab view controllers
-        reviewsCoordinator.start()
+        reviewsTabCoordinator.start()
+    }
+
+    func createDashboardTabViewController() -> UIViewController {
+        let dashboardViewController = DashboardViewController()
+        return WooNavigationController(rootViewController: dashboardViewController)
+    }
+
+    func createOrdersTabViewController() -> UIViewController {
+        let rootViewController = OrdersRootViewController()
+        return WooNavigationController(rootViewController: rootViewController)
+    }
+
+    func createProductsTabViewController() -> UIViewController {
+        let productsViewController = ProductsViewController(nibName: nil, bundle: nil)
+        let navController = WooNavigationController(rootViewController: productsViewController)
+        let navigationTitle = NSLocalizedString("Products",
+                                                comment: "Title of the Products tab — plural form of Product")
+        navController.tabBarItem = UITabBarItem(title: navigationTitle,
+                                                image: UIImage.productImage,
+                                                tag: 0)
+        navController.tabBarItem.accessibilityIdentifier = "tab-bar-products-item"
+
+        return navController
+    }
+
+    func createReviewsTabCoordinator(siteID: Int64) -> Coordinator {
+        ReviewsCoordinator(siteID: siteID,
+                           willPresentReviewDetailsFromPushNotification: { [weak self] in
+                            self?.navigateTo(.reviews)
+        })
     }
 }
 

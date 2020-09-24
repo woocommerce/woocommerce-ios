@@ -154,6 +154,15 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     // MARK: Navigation actions
 
+    func dismissOrPopViewController() {
+        switch self.presentationStyle {
+        case .navigationStack:
+            self.navigationController?.popViewController(animated: true)
+        default:
+            self.dismiss(animated: true, completion: nil)
+        }
+    }
+
     @objc func updateProduct() {
         eventLogger.logUpdateButtonTapped()
         saveProduct()
@@ -198,7 +207,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         if viewModel.canDeleteProduct() {
             actionSheet.addDefaultActionWithTitle(ActionSheetStrings.delete) { [weak self] _ in
                 // TODO: Analytics M5
-                self?.displayDeleteProduct()
+                self?.displayDeleteProductAlert()
             }
         }
 
@@ -245,7 +254,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     /// Product Confirmation Delete alert
     ///
-    func presentProductConfirmationDeleteAlert(completion: @escaping (Bool) -> ()) {
+    func presentProductConfirmationDeleteAlert(completion: @escaping (_ isConfirmed: Bool) -> ()) {
         let title = NSLocalizedString("Remove product",
                                       comment: "Title of the alert when a user is moving a product to the trash")
         let body = NSLocalizedString("Do you want to move this product to the Trash?",
@@ -654,7 +663,7 @@ private extension ProductFormViewController {
         SharingHelper.shareURL(url: url, title: product.name, from: view, in: self)
     }
 
-    func displayDeleteProduct() {
+    func displayDeleteProductAlert() {
         presentProductConfirmationDeleteAlert { [weak self] (confirm) in
             guard confirm else {
                 return
@@ -671,13 +680,7 @@ private extension ProductFormViewController {
                     // Presents the error alert.
                     self.displayError(error: error)
                 case .success:
-                    // Pop to the previous view controller
-                    switch self.presentationStyle {
-                    case .navigationStack:
-                        self.navigationController?.popViewController(animated: true)
-                    default:
-                        self.dismiss(animated: true, completion: nil)
-                    }
+                    self.dismissOrPopViewController()
                 }
             }
         }

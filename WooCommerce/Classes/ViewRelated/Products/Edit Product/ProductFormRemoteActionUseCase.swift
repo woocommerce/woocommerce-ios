@@ -114,7 +114,6 @@ final class ProductFormRemoteActionUseCase {
                 // TODO: M5 analytics
                 onCompletion(.failure(error))
             case .success(let product):
-                // `self` is retained because the use case is not usually strongly held.
                 // TODO: M5 analytics
                 onCompletion(.success(ResultData(product: product, password: nil)))
             }

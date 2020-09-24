@@ -26,7 +26,11 @@ final class RefundItemTableViewCell: UITableViewCell {
 
     /// Needed to change it's axis with larger accessibility traits
     ///
-    @IBOutlet private var contentStackView: UIStackView!
+    @IBOutlet private var itemsStackView: UIStackView!
+
+    /// Needed to make sure the `itemImageView` grows at the same ratio as the dynamic fonts
+    ///
+    @IBOutlet private var itemImageViewHeightConstraint: NSLayoutConstraint!
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -35,7 +39,8 @@ final class RefundItemTableViewCell: UITableViewCell {
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        adjustContentStackViewAxis()
+        adjustItemsStackViewAxis()
+        adjustItemImageViewHeight()
     }
 }
 
@@ -46,12 +51,13 @@ private extension RefundItemTableViewCell {
         applyItemImageStyles()
         applyLabelsStyles()
         //applyRefundQuantityButtonStyle()
-        adjustContentStackViewAxis()
+        adjustItemsStackViewAxis()
     }
 
     func applyItemImageStyles() {
         itemImageView.layer.borderWidth = 0.5
         itemImageView.layer.borderColor = UIColor.border.cgColor
+        adjustItemImageViewHeight()
     }
 
     func applyCellBackgroundStyle() {
@@ -68,8 +74,16 @@ private extension RefundItemTableViewCell {
         itemQuantityButton.titleLabel?.applyBodyStyle()
     }
 
-    func adjustContentStackViewAxis() {
-        contentStackView.axis = traitCollection.preferredContentSizeCategory > .extraExtraExtraLarge ? .vertical : .horizontal
+    /// Changes the items stack view axis depending on the view `preferredContentSizeCategory`.
+    ///
+    func adjustItemsStackViewAxis() {
+        itemsStackView.axis = traitCollection.preferredContentSizeCategory > .accessibilityMedium ? .vertical : .horizontal
+    }
+
+    /// Changes the items image view height acording to the current trait collection
+    ///
+    func adjustItemImageViewHeight() {
+        itemImageViewHeightConstraint.constant = UIFontMetrics.default.scaledValue(for: 39, compatibleWith: traitCollection)
     }
 }
 
@@ -84,9 +98,8 @@ extension RefundItemTableViewCell {
         itemQuantityButton.setTitle(viewModel.quantityToRefund, for: .normal)
         applyRefundQuantityButtonStyle()
 
-        if let imageURL = viewModel.productImage {
+        if let _ = viewModel.productImage {
             // TODO: fill product image
-            print(imageURL)
             placeholderImageView.image = nil
         } else {
             itemImageView.image = nil
@@ -102,9 +115,8 @@ private extension RefundItemTableViewCell {
     }
 }
 
-#if canImport(SwiftUI) && DEBUG
-
 // MARK: - Previews
+#if canImport(SwiftUI) && DEBUG
 
 import SwiftUI
 
@@ -149,9 +161,14 @@ struct RefundItemTableViewCell_Previews: PreviewProvider {
                 .previewDisplayName("Dark")
 
             makeStack()
-                .previewLayout(.fixed(width: 359, height: 300))
-                .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+                .previewLayout(.fixed(width: 359, height: 96))
+                .environment(\.sizeCategory, .accessibilityMedium)
                 .previewDisplayName("Large Font")
+
+            makeStack()
+                .previewLayout(.fixed(width: 359, height: 420))
+                .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+                .previewDisplayName("Extra Large Font")
         }
     }
 }

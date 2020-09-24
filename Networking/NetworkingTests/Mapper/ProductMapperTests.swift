@@ -55,9 +55,10 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertEqual(product.totalSales, 0)
         XCTAssertTrue(product.virtual)
 
-        XCTAssertFalse(product.downloadable)
-        XCTAssertEqual(product.downloadLimit, -1)
-        XCTAssertEqual(product.downloadExpiry, -1)
+        XCTAssertTrue(product.downloadable)
+        XCTAssertEqual(product.downloads.count, 3)
+        XCTAssertEqual(product.downloadLimit, 1)
+        XCTAssertEqual(product.downloadExpiry, 1)
 
         XCTAssertEqual(product.externalURL, "http://somewhere.com")
         XCTAssertEqual(product.taxStatusKey, "taxable")
@@ -187,6 +188,27 @@ final class ProductMapperTests: XCTestCase {
                        "https://somewebsite.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/01/vneck-tee.jpg.png")
         XCTAssertEqual(productImage.name, "Vneck Tshirt")
         XCTAssert(productImage.alt?.isEmpty == true)
+    }
+
+    /// Test that product downloadable files are properly mapped.
+    ///
+    func test_that_product_downloadable_files_are_properly_mapped() {
+        // Given
+        let product = mapLoadProductResponse()
+
+        // When
+        guard let files = product?.downloads else {
+            XCTFail("Failed to parse product downloadable files")
+            return
+        }
+        XCTAssertEqual(files.count, 3)
+        let actualDownloadableFile = files[0]
+        let expectedDownloadableFile = ProductDownload(downloadID: "1f9c11f99ceba63d4403c03bd5391b11",
+                                                       name: "Song #1",
+                                                       fileURL: "https://example.com/woo-single-1.ogg")
+
+        // Then
+        XCTAssertEqual(actualDownloadableFile, expectedDownloadableFile)
     }
 
     /// Test that product attributes are properly mapped

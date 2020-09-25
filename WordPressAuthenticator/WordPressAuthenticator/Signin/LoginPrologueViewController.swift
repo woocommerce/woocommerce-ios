@@ -7,8 +7,19 @@ import WordPressKit
 class LoginPrologueViewController: LoginViewController {
 
     @IBOutlet private weak var topContainerView: UIView!
+    @IBOutlet private weak var buttonBlurEffectView: UIVisualEffectView!
     private var buttonViewController: NUXButtonViewController?
     var showCancel = false
+
+    /// Blur effect on button container view
+    ///
+    private var blurEffect: UIBlurEffect.Style {
+        if #available(iOS 13.0, *) {
+            return .systemChromeMaterial
+        }
+
+        return .regular
+    }
 
     /// Constraints on the button view container.
     /// Used to adjust the button width in unified views.
@@ -178,6 +189,7 @@ class LoginPrologueViewController: LoginViewController {
         }
 
         buttonViewController.backgroundColor = style.buttonViewBackgroundColor
+        buttonBlurEffectView.isHidden = true
     }
 
     /// Displays the Unified prologue buttons.
@@ -212,7 +224,9 @@ class LoginPrologueViewController: LoginViewController {
             }
         }
 
-        buttonViewController.backgroundColor = style.buttonViewBackgroundColor
+        // Set the button background color to clear so the blur effect blurs the Prologue background color.
+        buttonViewController.backgroundColor = .clear
+        buttonBlurEffectView.effect = UIBlurEffect(style: blurEffect)
     }
 
     // MARK: - Actions

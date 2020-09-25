@@ -6,7 +6,7 @@ final class ProductDownloadListViewModelTests: XCTestCase {
 
     // MARK: - Initialization
 
-    func testReadonlyValuesAreAsExpectedAfterInitializingAProductWithNonEmptyDownloadableFiles() throws {
+    func test_readonly_values_are_as_expected_after_initializing_a_product_with_non_empty_downloadable_files() throws {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
@@ -24,7 +24,7 @@ final class ProductDownloadListViewModelTests: XCTestCase {
         XCTAssertEqual(file.downloadableFile.fileURL, "https://example.com/woo-single-1.ogg")
     }
 
-    func testReadonlyValuesAreAsExpectedAfterInitializingAProductWithEmptyDownloadableFiles() {
+    func test_readonly_values_are_as_expected_after_initializing_a_product_with_empty_downloadable_files() {
         // Arrange
         let product = MockProduct().product(downloadable: false)
         let model = EditableProductModel(product: product)
@@ -38,31 +38,11 @@ final class ProductDownloadListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.downloadExpiry, -1)
     }
 
-    // MARK: - `handleDownloadableFilesChange`
-
-    func testHandlingADuplicateDownloadableFilesUpdatesWithError() {
-
-    }
-
-    func testHandlingAValidDownloadableFilesUpdatesWithSuccess() {
-
-    }
-
-    func testHandlingTheOriginalDownloadableFilesIsAlwaysValidAndUnique() {
-
-    }
-
-    func testHandlingAValidDownloadableFilesAddsWithSuccess() {
-
-    }
-
-    func testHandlingAValidExistingDownloadableFileRemovesWithSuccess() {
-
-    }
+    // TODO: - test cases for `handleDownloadableFilesChange`
 
     // MARK: - `handleDownloadLimitChange`
 
-    func testHandlingAValidDownloadLimitUpdatesWithSuccess() {
+    func test_handling_a_valid_downloadLimit_updates_with_success() {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
@@ -77,7 +57,7 @@ final class ProductDownloadListViewModelTests: XCTestCase {
 
     // MARK: - `handleDownloadExpiryChange`
 
-    func testHandlingAValidDownloadExpiryUpdatesWithSuccess() {
+    func test_handling_a_valid_downloadExpiry_updates_with_success() {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
@@ -92,7 +72,7 @@ final class ProductDownloadListViewModelTests: XCTestCase {
 
     // MARK: - `hasUnsavedChanges`
 
-    func testViewModelHasUnsavedChangesAfterUpdatingDownloadFileLimit() {
+    func test_viewModel_has_unsaved_changes_after_updating_downloadLimit() {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
@@ -106,7 +86,7 @@ final class ProductDownloadListViewModelTests: XCTestCase {
 
     }
 
-    func testViewModelHasUnsavedChangesAfterUpdatingDownloadFileExpiry() {
+    func test_viewModel_has_unsaved_changes_after_updating_downloadExpiry() {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
@@ -119,7 +99,7 @@ final class ProductDownloadListViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
 
-    func testViewModelHasUnsavedChangesAfterUpdatingDownloadFilesOrder() {
+    func test_viewModel_has_unsaved_changes_after_updating_downloadableFiles_order() {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
@@ -127,7 +107,7 @@ final class ProductDownloadListViewModelTests: XCTestCase {
         // Act
         let viewModel = ProductDownloadListViewModel(product: model)
         guard let firstFile = viewModel.remove(at: 0) else {
-            XCTFail()
+            XCTFail("Downloadable file does not exist")
             return
         }
         viewModel.insert(firstFile, at: 1)
@@ -136,19 +116,7 @@ final class ProductDownloadListViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
 
-    func testViewModelHasUnsavedChangesAfterRemovingDownloadFileIndividually() {
-
-    }
-
-    func testViewModelHasUnsavedChangesAfterAddingDownloadFileIndividually() {
-
-    }
-
-    func testViewModelHasUnsavedChangesAfterUpdatingSingleDownloadFileIndividually() {
-
-    }
-
-    func testViewModelHasNoUnsavedChangesAfterUpdatingWithTheOriginalValues() {
+    func test_viewModel_has_unsaved_changes_after_updating_with_the_original_values() {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)

@@ -37,13 +37,16 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let product: EditableProductModel
     private let formType: ProductFormType
     private let isEditProductsRelease3Enabled: Bool
+    private let isEditProductsRelease5Enabled: Bool
 
     init(product: EditableProductModel,
          formType: ProductFormType,
-         isEditProductsRelease3Enabled: Bool) {
+         isEditProductsRelease3Enabled: Bool,
+         isEditProductsRelease5Enabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease5)) {
         self.product = product
         self.formType = formType
         self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
+        self.isEditProductsRelease5Enabled = isEditProductsRelease5Enabled
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
@@ -90,7 +93,7 @@ private extension ProductFormActionsFactory {
         let shouldShowShippingSettingsRow = product.isShippingEnabled()
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
         let shouldShowTagsRow = isEditProductsRelease3Enabled
-        let showDownloadableProduct = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease5) && product.downloadable
+        let showDownloadableProduct = isEditProductsRelease5Enabled && product.downloadable
 
         let actions: [ProductFormEditAction?] = [
             .priceSettings,
@@ -210,7 +213,7 @@ private extension ProductFormActionsFactory {
             return product.product.tags.isNotEmpty
         // Downloadable files. Only core product types for downloadable files are able to handle downloadable files.
         case .downloadableFiles:
-            return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease5) && product.downloadable
+            return isEditProductsRelease5Enabled && product.downloadable
         case .briefDescription:
             return product.shortDescription.isNilOrEmpty == false
         // Affiliate products only.

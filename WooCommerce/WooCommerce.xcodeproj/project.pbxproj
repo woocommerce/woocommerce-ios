@@ -3259,17 +3259,9 @@
 		77423F14251CF59D0016A083 /* Downloadable Files */ = {
 			isa = PBXGroup;
 			children = (
-				77423F15251CF5AE0016A083 /* FIle List */,
-			);
-			path = "Downloadable Files";
-			sourceTree = "<group>";
-		};
-		77423F15251CF5AE0016A083 /* FIle List */ = {
-			isa = PBXGroup;
-			children = (
 				77423F16251CF77E0016A083 /* ProductDownloadListViewModelTests.swift */,
 			);
-			path = "FIle List";
+			path = "Downloadable Files";
 			sourceTree = "<group>";
 		};
 		77E53EB5250E6972003D385F /* Downloadable Files */ = {

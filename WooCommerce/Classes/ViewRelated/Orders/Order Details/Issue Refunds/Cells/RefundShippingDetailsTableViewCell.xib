@@ -133,6 +133,17 @@
                     <constraint firstAttribute="bottom" secondItem="JDF-j9-Gh4" secondAttribute="bottom" id="w6m-RO-5ZW"/>
                 </constraints>
             </tableViewCellContentView>
+            <connections>
+                <outlet property="carrierLabel" destination="YcK-wh-psM" id="hbq-Sb-tAf"/>
+                <outlet property="shippingImageView" destination="chZ-Nd-oWh" id="UI2-cb-BJk"/>
+                <outlet property="shippingPrice" destination="StO-ND-1uB" id="fY1-vi-El1"/>
+                <outlet property="shippingRefundPriceLabel" destination="URn-4h-z0y" id="e41-c5-Iux"/>
+                <outlet property="shippingRefundTitleLabel" destination="E7R-DR-yWr" id="A2w-Uk-6ab"/>
+                <outlet property="subtotalPriceLabel" destination="hhl-06-gXM" id="AzJ-1s-JyY"/>
+                <outlet property="subtotalTitleLabel" destination="t4R-J0-otV" id="VAK-s4-vDa"/>
+                <outlet property="taxPriceLabel" destination="QLc-wt-CbB" id="4Ej-7b-CLV"/>
+                <outlet property="taxTitleLabel" destination="9vh-Ay-6m1" id="HtJ-Eo-5Ug"/>
+            </connections>
             <point key="canvasLocation" x="108.69565217391305" y="80.022321428571431"/>
         </tableViewCell>
     </objects>

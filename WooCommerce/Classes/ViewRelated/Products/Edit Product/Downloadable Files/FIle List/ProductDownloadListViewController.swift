@@ -194,13 +194,6 @@ extension ProductDownloadListViewController {
 //
 extension ProductDownloadListViewController {
     func showDownloadSettings() {
-        let viewController = ProductDownloadSettingsViewController(product: product) { [weak self]
-            (downloadLimit, downloadExpiry, hasUnsavedChanges) in
-            self?.onDownloadSettingsCompletion(downloadLimit: downloadLimit,
-                                               downloadExpiry: downloadExpiry,
-                                               hasUnsavedChanges: hasUnsavedChanges)
-        }
-        navigationController?.pushViewController(viewController, animated: true)
 
     }
 

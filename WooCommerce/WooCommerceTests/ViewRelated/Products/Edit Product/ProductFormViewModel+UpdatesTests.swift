@@ -323,6 +323,30 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         // Assert
         XCTAssertEqual(viewModel.productModel.product.groupedProducts, groupedProductIDs)
     }
+
+    func testUpdatingDownloadableFilesInfo() {
+        // Arrange
+        let product = MockProduct().product(downloadable: true)
+        let model = EditableProductModel(product: product)
+        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
+        let viewModel = ProductFormViewModel(product: model,
+                                             formType: .edit,
+                                             productImageActionHandler: productImageActionHandler,
+                                             isEditProductsRelease3Enabled: false)
+
+        // Action
+        let newDownloadableFiles = MockProduct().sampleDownloadsMutated()
+        let newDownloadLimit: Int64 = 5
+        let newDownloadExpiry: Int64 = 5
+        viewModel.updateDownloadableFiles(downloadableFiles: MockProduct().sampleDownloadsMutated(),
+                                          downloadLimit: newDownloadLimit,
+                                          downloadExpiry: newDownloadExpiry)
+
+        // Assert
+        XCTAssertEqual(viewModel.productModel.downloadableFiles.count, newDownloadableFiles.count)
+        XCTAssertEqual(viewModel.productModel.downloadLimit, newDownloadLimit)
+        XCTAssertEqual(viewModel.productModel.product.downloadExpiry, newDownloadExpiry)
+    }
 }
 
 private extension ProductFormViewModel_UpdatesTests {

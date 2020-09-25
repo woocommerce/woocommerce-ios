@@ -526,14 +526,11 @@
 		74F9E9CD214C036400A3F2D2 /* NoPeriodDataTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 74F9E9CB214C036400A3F2D2 /* NoPeriodDataTableViewCell.xib */; };
 		74F9E9CE214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F9E9CC214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift */; };
 		77423F17251CF77E0016A083 /* ProductDownloadListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77423F16251CF77E0016A083 /* ProductDownloadListViewModelTests.swift */; };
-		77423F34251DAEB40016A083 /* Product+DownloadSettingsViewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77423F2B251DAEB40016A083 /* Product+DownloadSettingsViewModels.swift */; };
-		77423F35251DAEB40016A083 /* ProductDownloadSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77423F2C251DAEB40016A083 /* ProductDownloadSettingsViewController.swift */; };
-		77423F36251DAEB40016A083 /* ProductDownloadSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77423F2D251DAEB40016A083 /* ProductDownloadSettingsViewModel.swift */; };
-		77423F37251DAEB40016A083 /* ProductDownloadSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 77423F2E251DAEB40016A083 /* ProductDownloadSettingsViewController.xib */; };
 		77423F38251DAEB40016A083 /* ProductDownloadFileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77423F30251DAEB40016A083 /* ProductDownloadFileViewModel.swift */; };
 		77423F39251DAEB40016A083 /* Product+DownloadFileViewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77423F31251DAEB40016A083 /* Product+DownloadFileViewModels.swift */; };
 		77423F3A251DAEB40016A083 /* ProductDownloadFileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77423F32251DAEB40016A083 /* ProductDownloadFileViewController.swift */; };
 		77423F3B251DAEB40016A083 /* ProductDownloadFileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 77423F33251DAEB40016A083 /* ProductDownloadFileViewController.xib */; };
+		77423F3F251DB12B0016A083 /* ProductDownloadFileViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77423F3E251DB12B0016A083 /* ProductDownloadFileViewModelTests.swift */; };
 		77E53EB8250E6A4E003D385F /* ProductDownloadListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77E53EB6250E6A4E003D385F /* ProductDownloadListViewController.swift */; };
 		77E53EB9250E6A4E003D385F /* ProductDownloadListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 77E53EB7250E6A4E003D385F /* ProductDownloadListViewController.xib */; };
 		77E53EBF2510C153003D385F /* ProductDownloadListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77E53EBE2510C153003D385F /* ProductDownloadListViewModel.swift */; };
@@ -1509,14 +1506,11 @@
 		74F9E9CB214C036400A3F2D2 /* NoPeriodDataTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NoPeriodDataTableViewCell.xib; sourceTree = "<group>"; };
 		74F9E9CC214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoPeriodDataTableViewCell.swift; sourceTree = "<group>"; };
 		77423F16251CF77E0016A083 /* ProductDownloadListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDownloadListViewModelTests.swift; sourceTree = "<group>"; };
-		77423F2B251DAEB40016A083 /* Product+DownloadSettingsViewModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Product+DownloadSettingsViewModels.swift"; sourceTree = "<group>"; };
-		77423F2C251DAEB40016A083 /* ProductDownloadSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductDownloadSettingsViewController.swift; sourceTree = "<group>"; };
-		77423F2D251DAEB40016A083 /* ProductDownloadSettingsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductDownloadSettingsViewModel.swift; sourceTree = "<group>"; };
-		77423F2E251DAEB40016A083 /* ProductDownloadSettingsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProductDownloadSettingsViewController.xib; sourceTree = "<group>"; };
 		77423F30251DAEB40016A083 /* ProductDownloadFileViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductDownloadFileViewModel.swift; sourceTree = "<group>"; };
 		77423F31251DAEB40016A083 /* Product+DownloadFileViewModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Product+DownloadFileViewModels.swift"; sourceTree = "<group>"; };
 		77423F32251DAEB40016A083 /* ProductDownloadFileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductDownloadFileViewController.swift; sourceTree = "<group>"; };
 		77423F33251DAEB40016A083 /* ProductDownloadFileViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProductDownloadFileViewController.xib; sourceTree = "<group>"; };
+		77423F3E251DB12B0016A083 /* ProductDownloadFileViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDownloadFileViewModelTests.swift; sourceTree = "<group>"; };
 		77E53EB6250E6A4E003D385F /* ProductDownloadListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDownloadListViewController.swift; sourceTree = "<group>"; };
 		77E53EB7250E6A4E003D385F /* ProductDownloadListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductDownloadListViewController.xib; sourceTree = "<group>"; };
 		77E53EBE2510C153003D385F /* ProductDownloadListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDownloadListViewModel.swift; sourceTree = "<group>"; };
@@ -3275,6 +3269,7 @@
 		77423F14251CF59D0016A083 /* Downloadable Files */ = {
 			isa = PBXGroup;
 			children = (
+				77423F3D251DB0900016A083 /* Add or Edit FIle */,
 				77423F15251CF5AE0016A083 /* FIle List */,
 			);
 			path = "Downloadable Files";
@@ -3288,17 +3283,6 @@
 			path = "FIle List";
 			sourceTree = "<group>";
 		};
-		77423F2A251DAEB40016A083 /* Settings */ = {
-			isa = PBXGroup;
-			children = (
-				77423F2B251DAEB40016A083 /* Product+DownloadSettingsViewModels.swift */,
-				77423F2C251DAEB40016A083 /* ProductDownloadSettingsViewController.swift */,
-				77423F2D251DAEB40016A083 /* ProductDownloadSettingsViewModel.swift */,
-				77423F2E251DAEB40016A083 /* ProductDownloadSettingsViewController.xib */,
-			);
-			path = Settings;
-			sourceTree = "<group>";
-		};
 		77423F2F251DAEB40016A083 /* Add or Edit FIle */ = {
 			isa = PBXGroup;
 			children = (
@@ -3310,11 +3294,18 @@
 			path = "Add or Edit FIle";
 			sourceTree = "<group>";
 		};
+		77423F3D251DB0900016A083 /* Add or Edit FIle */ = {
+			isa = PBXGroup;
+			children = (
+				77423F3E251DB12B0016A083 /* ProductDownloadFileViewModelTests.swift */,
+			);
+			path = "Add or Edit FIle";
+			sourceTree = "<group>";
+		};
 		77E53EB5250E6972003D385F /* Downloadable Files */ = {
 			isa = PBXGroup;
 			children = (
 				77423F2F251DAEB40016A083 /* Add or Edit FIle */,
-				77423F2A251DAEB40016A083 /* Settings */,
 				77E53EC62510C3F4003D385F /* FIle List */,
 			);
 			path = "Downloadable Files";
@@ -4889,7 +4880,6 @@
 				020BE74E23B1F5EB007FE54C /* TitleAndTextFieldTableViewCell.xib in Resources */,
 				4580BA7523F192D400B5F764 /* ProductSettingsViewController.xib in Resources */,
 				74A95B5821C403EA00FEE953 /* pure-min.css in Resources */,
-				77423F37251DAEB40016A083 /* ProductDownloadSettingsViewController.xib in Resources */,
 				0262DA5423A238460029AF30 /* UnitInputTableViewCell.xib in Resources */,
 				B5BE75DD213F1D3D00909A14 /* OverlayMessageView.xib in Resources */,
 				57C503DE23E8CE0D00EC0790 /* OrdersMasterViewController.xib in Resources */,
@@ -5349,7 +5339,6 @@
 				02C0CD2A23B5BB1C00F880B1 /* ImageService.swift in Sources */,
 				26ABCE532518EAF300721CB0 /* IssueRefundTableViewCell.swift in Sources */,
 				02482A8B237BE8C7007E73ED /* LinkSettingsViewController.swift in Sources */,
-				77423F36251DAEB40016A083 /* ProductDownloadSettingsViewModel.swift in Sources */,
 				CE227097228F152400C0626C /* WooBasicTableViewCell.swift in Sources */,
 				45B9C64323A91CB6007FC4C5 /* PriceInputFormatter.swift in Sources */,
 				B5FD111621D3F13700560344 /* BordersView.swift in Sources */,
@@ -5375,7 +5364,6 @@
 				D82DFB4A225F22D400EFE2CB /* UISearchBar+Appearance.swift in Sources */,
 				571B850224CF7E3100CF58A7 /* InAppFeedbackCardViewController.swift in Sources */,
 				7441E1D221503F77004E6ECE /* IntrinsicTableView.swift in Sources */,
-				77423F35251DAEB40016A083 /* ProductDownloadSettingsViewController.swift in Sources */,
 				B517EA1D218B41F200730EC4 /* String+Woo.swift in Sources */,
 				02564A8C246CE38E00D6DB2A /* SwappableSubviewContainerView.swift in Sources */,
 				024DF31223742B18006658FE /* AztecItalicFormatBarCommand.swift in Sources */,
@@ -5606,7 +5594,6 @@
 				02E262C9238D0AD300B79588 /* ProductStockStatusListSelectorCommand.swift in Sources */,
 				CE2A9FC823C3D2D4002BEC1C /* RefundedProductsDataSource.swift in Sources */,
 				CECC759523D6057E00486676 /* OrderItem+Woo.swift in Sources */,
-				77423F34251DAEB40016A083 /* Product+DownloadSettingsViewModels.swift in Sources */,
 				0235595924496D70004BE2B8 /* ProductsSortOrderBottomSheetListSelectorCommand.swift in Sources */,
 				CE24BCCF212DE8A6001CD12E /* HeadlineLabelTableViewCell.swift in Sources */,
 				0245465D24EE779D004F531C /* ProductFormEventLogger.swift in Sources */,
@@ -5761,6 +5748,7 @@
 				023EC2E424DA95DB0021DA91 /* ProductInventorySettingsViewModel+VariationTests.swift in Sources */,
 				020BE76B23B4A380007FE54C /* AztecUnderlineFormatBarCommandTests.swift in Sources */,
 				D83F5937225B402E00626E75 /* TitleAndEditableValueTableViewCellTests.swift in Sources */,
+				77423F3F251DB12B0016A083 /* ProductDownloadFileViewModelTests.swift in Sources */,
 				576D9F2924DB81D3007B48F4 /* StoreStatsAndTopPerformersPeriodViewModelTests.swift in Sources */,
 				9379E1A6225537D0006A6BE4 /* TestingAppDelegate.swift in Sources */,
 				453904F323BB88B5007C4956 /* ProductTaxStatusListSelectorCommandTests.swift in Sources */,

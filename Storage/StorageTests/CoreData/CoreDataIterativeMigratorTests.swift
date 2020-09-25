@@ -19,7 +19,23 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_all_model_versions_are_incompatible_with_each_other() throws {
+    /// Tests that given a store with an old version, higher model versions are not compatible with
+    /// it.
+    ///
+    /// This loops through **all NSManagedObjectModels**, performs a migration, and checks for
+    /// compatibility with the higher versions. For example, for "Model 3":
+    ///
+    /// 1. Migrate the store from previous model (Model 2) to Model 3.
+    /// 2. Check that Model 3 is compatible with the _migrated_ store. This verifies the migration.
+    /// 3. Check that Models 4, 5, 6, 7, and so on are **not** compatible with the _migrated_ store.
+    ///
+    /// This test protects us from mistakes like adding a new model version **without** structural
+    /// changes. An example of that is creating a new model but only renaming the entity classes.
+    /// If we forget to change the model's Hash Modifier, then the
+    /// `CoreDataManager.migrateDataModelIfNecessary` will actually **skip** the migration. See
+    /// here for more information: https://tinyurl.com/yxzpwp7t.
+    ///
+    func test_when_migrating_through_all_versions_then_higher_versions_are_not_compatible() throws {
         // Given
         // Use in-memory type or else this would be too slow.
         let storeType = NSInMemoryStoreType
@@ -35,12 +51,14 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
             // Migrate to the currentVersion if this is not the first version in the list.
             if modelsInventory.versions.first != currentVersion {
                 let migrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory)
-                let (isMigrationSuccessful, _) = try migrator.iterativeMigrate(sourceStore: storeURL, storeType: storeType, to: currentModel)
+                let (isMigrationSuccessful, _) =
+                    try migrator.iterativeMigrate(sourceStore: storeURL, storeType: storeType, to: currentModel)
                 XCTAssertTrue(isMigrationSuccessful)
             }
 
             // Load the persistent container
-            let persistentContainer = makePersistentContainer(storeURL: storeURL, storeType: storeType, model: currentModel)
+            let persistentContainer =
+                makePersistentContainer(storeURL: storeURL, storeType: storeType, model: currentModel)
             let loadingError: Error? = try waitFor { promise in
                 persistentContainer.loadPersistentStores { _, error in
                     promise(error)

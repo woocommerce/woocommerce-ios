@@ -115,7 +115,8 @@ extension MockupStorageManager {
     ///
     var storeDescription: NSPersistentStoreDescription {
         let description = NSPersistentStoreDescription()
-        description.type = NSInMemoryStoreType
+        description.type = NSSQLiteStoreType
+        description.url = URL(fileURLWithPath: "/dev/null")
         return description
     }
 }

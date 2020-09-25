@@ -328,6 +328,8 @@
 		2687165A24D350C20042F6AE /* SurveyCoordinatingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2687165924D350C20042F6AE /* SurveyCoordinatingController.swift */; };
 		26ABCE532518EAF300721CB0 /* IssueRefundTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26ABCE522518EAF300721CB0 /* IssueRefundTableViewCell.swift */; };
 		26ABCE552518EB0600721CB0 /* IssueRefundTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26ABCE542518EB0600721CB0 /* IssueRefundTableViewCell.xib */; };
+		26AE31B0251E602D004B1BCE /* RefundShippingDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AE31AF251E602D004B1BCE /* RefundShippingDetailsTableViewCell.swift */; };
+		26AE31B2251E604A004B1BCE /* RefundShippingDetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26AE31B1251E604A004B1BCE /* RefundShippingDetailsTableViewCell.xib */; };
 		26B119B924D0B38F00FED5C7 /* SurveyViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26B119B824D0B38F00FED5C7 /* SurveyViewController.xib */; };
 		26B119BB24D0B62E00FED5C7 /* SurveyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B119BA24D0B62E00FED5C7 /* SurveyViewController.swift */; };
 		26B119C024D0C69500FED5C7 /* SurveyViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B119BF24D0C69500FED5C7 /* SurveyViewControllerTests.swift */; };
@@ -1298,6 +1300,8 @@
 		2687165924D350C20042F6AE /* SurveyCoordinatingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyCoordinatingController.swift; sourceTree = "<group>"; };
 		26ABCE522518EAF300721CB0 /* IssueRefundTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssueRefundTableViewCell.swift; sourceTree = "<group>"; };
 		26ABCE542518EB0600721CB0 /* IssueRefundTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IssueRefundTableViewCell.xib; sourceTree = "<group>"; };
+		26AE31AF251E602D004B1BCE /* RefundShippingDetailsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundShippingDetailsTableViewCell.swift; sourceTree = "<group>"; };
+		26AE31B1251E604A004B1BCE /* RefundShippingDetailsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RefundShippingDetailsTableViewCell.xib; sourceTree = "<group>"; };
 		26B119B824D0B38F00FED5C7 /* SurveyViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SurveyViewController.xib; sourceTree = "<group>"; };
 		26B119BA24D0B62E00FED5C7 /* SurveyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SurveyViewController.swift; sourceTree = "<group>"; };
 		26B119BF24D0C69500FED5C7 /* SurveyViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyViewControllerTests.swift; sourceTree = "<group>"; };
@@ -2759,6 +2763,8 @@
 				26E1BECD251CD9F80096D0A1 /* RefundItemViewModel.swift */,
 				26E1BEC9251BE5390096D0A1 /* RefundItemTableViewCell.swift */,
 				26E1BECB251BE5570096D0A1 /* RefundItemTableViewCell.xib */,
+				26AE31AF251E602D004B1BCE /* RefundShippingDetailsTableViewCell.swift */,
+				26AE31B1251E604A004B1BCE /* RefundShippingDetailsTableViewCell.xib */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -4879,6 +4885,7 @@
 				CE85FD5320F677770080B73E /* Dashboard.storyboard in Resources */,
 				B56DB3CF2049BFAA00D4AA8E /* Main.storyboard in Resources */,
 				02C8876E24501FAC00E4470F /* FilterListViewController.xib in Resources */,
+				26AE31B2251E604A004B1BCE /* RefundShippingDetailsTableViewCell.xib in Resources */,
 				CE21B3D820FE669A00A259D5 /* BasicTableViewCell.xib in Resources */,
 				74334F37214AB130006D6AC5 /* ProductTableViewCell.xib in Resources */,
 				26ABCE552518EB0600721CB0 /* IssueRefundTableViewCell.xib in Resources */,
@@ -5456,6 +5463,7 @@
 				74EC34A8225FE69C004BBC2E /* ProductDetailsViewController.swift in Sources */,
 				26E1BECA251BE5390096D0A1 /* RefundItemTableViewCell.swift in Sources */,
 				B554E1792152F20000F31188 /* UINavigationBar+Appearance.swift in Sources */,
+				26AE31B0251E602D004B1BCE /* RefundShippingDetailsTableViewCell.swift in Sources */,
 				57EBC92024EEE61800C1D45B /* WooAnalyticsEvent.swift in Sources */,
 				B55401692170D5E10067DC90 /* ChartPlaceholderView.swift in Sources */,
 				02E4FD7E2306A8180049610C /* StatsTimeRangeBarViewModel.swift in Sources */,

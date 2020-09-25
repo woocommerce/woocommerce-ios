@@ -42,6 +42,33 @@ final class RefundShippingDetailsTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        applyCellStyles()
+    }
+}
+
+// MARK: View Styles Configuration
+private extension RefundShippingDetailsTableViewCell {
+    func applyCellStyles() {
+        applyDefaultBackgroundStyle()
+        applyLabelsStyles()
+        applyShippingImageViewStyles()
+    }
+
+    func applyLabelsStyles() {
+        carrierLabel.applyBodyStyle()
+        shippingPrice.applyFootnoteStyle()
+        subtotalTitleLabel.applyBodyStyle()
+        subtotalPriceLabel.applyBodyStyle()
+        taxTitleLabel.applyBodyStyle()
+        taxPriceLabel.applyBodyStyle()
+        shippingRefundTitleLabel.applyBodyStyle()
+        shippingRefundTitleLabel.font = .font(forStyle: .body, weight: .bold)
+        shippingRefundPriceLabel.applyBodyStyle()
+        shippingRefundPriceLabel.font = .font(forStyle: .body, weight: .bold)
+    }
+
+    func applyShippingImageViewStyles() {
+
     }
 }
 
@@ -83,6 +110,11 @@ struct RefundShippingDetailsTableViewCell_Previews: PreviewProvider {
                 .previewLayout(.fixed(width: 359, height: 209))
                 .environment(\.colorScheme, .dark)
                 .previewDisplayName("Dark")
+
+            makeStack()
+                .previewLayout(.fixed(width: 359, height: 209))
+                .environment(\.layoutDirection, .rightToLeft)
+                .previewDisplayName("RTL")
 
 //            makeStack()
 //                .previewLayout(.fixed(width: 359, height: 300))

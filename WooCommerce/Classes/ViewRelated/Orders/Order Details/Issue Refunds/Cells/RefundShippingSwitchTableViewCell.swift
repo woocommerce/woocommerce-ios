@@ -22,8 +22,19 @@ final class RefundShippingSwitchTableViewCell: UITableViewCell {
 private extension RefundShippingSwitchTableViewCell {
     func applyCellStyles() {
         applyDefaultBackgroundStyle()
-        shippingTitle.applyBodyStyle()
+        applyTitleStyles()
         shippingSwitch.onTintColor = .primary
+    }
+
+    func applyTitleStyles() {
+        shippingTitle.applyBodyStyle()
+        shippingTitle.text = Localization.shippingTitle
+    }
+}
+
+private extension RefundShippingSwitchTableViewCell {
+    enum Localization {
+        static let shippingTitle = NSLocalizedString("Refund Shipping", comment: "Title of the cell on the refund screen that toggles the shipping refund")
     }
 }
 
@@ -72,7 +83,7 @@ struct RefundShippingSwitchTableViewCell_Previews: PreviewProvider {
                 .previewDisplayName("Large Font")
 
             makeStack()
-                .previewLayout(.fixed(width: 359, height: 100))
+                .previewLayout(.fixed(width: 359, height: 120))
                 .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
                 .previewDisplayName("Extra Large Font")
         }

@@ -362,6 +362,7 @@
 		4524CD9E242D01FD00B2F20A /* ProductStatusSettingListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4524CD9D242D01FD00B2F20A /* ProductStatusSettingListSelectorCommand.swift */; };
 		4524CDA1242D045C00B2F20A /* ProductStatusSettingListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4524CDA0242D045C00B2F20A /* ProductStatusSettingListSelectorCommandTests.swift */; };
 		453227B723C4D6EC00D816B3 /* TimeZone+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453227B623C4D6EC00D816B3 /* TimeZone+Woo.swift */; };
+		4535001E2509455100CDE072 /* SiteCountryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4535001D2509455100CDE072 /* SiteCountryTests.swift */; };
 		453770D12431FF4700AC718D /* ProductSettingsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453770D02431FF4700AC718D /* ProductSettingsViewModelTests.swift */; };
 		453904F323BB88B5007C4956 /* ProductTaxStatusListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453904F223BB88B5007C4956 /* ProductTaxStatusListSelectorCommandTests.swift */; };
 		453904F523BB8BD5007C4956 /* ProductTaxClassListSelectorDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453904F423BB8BD5007C4956 /* ProductTaxClassListSelectorDataSourceTests.swift */; };
@@ -1330,6 +1331,7 @@
 		4524CD9D242D01FD00B2F20A /* ProductStatusSettingListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStatusSettingListSelectorCommand.swift; sourceTree = "<group>"; };
 		4524CDA0242D045C00B2F20A /* ProductStatusSettingListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStatusSettingListSelectorCommandTests.swift; sourceTree = "<group>"; };
 		453227B623C4D6EC00D816B3 /* TimeZone+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeZone+Woo.swift"; sourceTree = "<group>"; };
+		4535001D2509455100CDE072 /* SiteCountryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteCountryTests.swift; sourceTree = "<group>"; };
 		453770D02431FF4700AC718D /* ProductSettingsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSettingsViewModelTests.swift; sourceTree = "<group>"; };
 		453904F223BB88B5007C4956 /* ProductTaxStatusListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTaxStatusListSelectorCommandTests.swift; sourceTree = "<group>"; };
 		453904F423BB8BD5007C4956 /* ProductTaxClassListSelectorDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTaxClassListSelectorDataSourceTests.swift; sourceTree = "<group>"; };
@@ -3301,6 +3303,7 @@
 				D85136DC231E613900DD0539 /* ReviewsViewModelTests.swift */,
 				D88D5A3C230B5E85007B6E01 /* ServiceLocatorTests.swift */,
 				45F5A3C223DF31D2007D40E5 /* ShippingInputFormatterTests.swift */,
+				4535001D2509455100CDE072 /* SiteCountryTests.swift */,
 				B517EA19218B2D2600730EC4 /* StringFormatterTests.swift */,
 				B56BBD15214820A70053A32D /* SyncCoordinatorTests.swift */,
 				D83A6A7923792B2400419D48 /* UIColor+Muriel-Tests.swift */,
@@ -5619,6 +5622,7 @@
 				027B8BBD23FE0DE10040944E /* ProductImageActionHandlerTests.swift in Sources */,
 				B5980A6521AC905C00EBF596 /* UIDeviceWooTests.swift in Sources */,
 				45EF798624509B4C00B22BA2 /* ArrayIndexPathTests.swift in Sources */,
+				4535001E2509455100CDE072 /* SiteCountryTests.swift in Sources */,
 				5798191324526FE8000817F8 /* PublishSubjectTests.swift in Sources */,
 				746791632108D7C0007CF1DC /* WooAnalyticsTests.swift in Sources */,
 				021FAFCD2355621E00B99241 /* UIView+SubviewsAxisTests.swift in Sources */,

@@ -27,7 +27,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
             .appendingPathComponent(UUID().uuidString)?
             .appendingPathExtension("sqlite"))
 
-        try modelsInventory.versions.forEach { currentVersion in
+        for (currentVersionIndex, currentVersion) in modelsInventory.versions.enumerated() {
             // Given
             let currentModel = try XCTUnwrap(modelsInventory.model(for: currentVersion))
 
@@ -56,10 +56,9 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
             XCTAssertTrue(currentModel.isConfiguration(withName: nil, compatibleWithStoreMetadata: persistentStore.metadata),
                           "Current model “\(currentVersion.name)” should be compatible with the persistentStore.")
 
-            // All other models should not be compatible with the current persistentStore
-            try modelsInventory.versions.filter {
-                $0 != currentVersion
-            }.forEach { version in
+            // Higher version models should not be compatible with the current persistentStore
+            let higherVersions = modelsInventory.versions.dropFirst(currentVersionIndex + 1)
+            try higherVersions.forEach { version in
                 let model = try XCTUnwrap(modelsInventory.model(for: version))
                 XCTAssertFalse(model.isConfiguration(withName: nil, compatibleWithStoreMetadata: persistentStore.metadata),
                                "Model “\(version.name)” should not be compatible with the persistentStore whose version is “\(currentVersion.name)”.")

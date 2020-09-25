@@ -32,6 +32,15 @@ private extension RefundShippingSwitchTableViewCell {
     }
 }
 
+// MARK: Actions
+private extension RefundShippingSwitchTableViewCell {
+    @IBAction func shippingSwitchValueChanged(_ sender: UISwitch) {
+        // TODO: Forward action in a future PR
+        print("Refund Shipping: \(sender.isOn)")
+    }
+}
+
+// MARK: Constants
 private extension RefundShippingSwitchTableViewCell {
     enum Localization {
         static let shippingTitle = NSLocalizedString("Refund Shipping", comment: "Title of the cell on the refund screen that toggles the shipping refund")

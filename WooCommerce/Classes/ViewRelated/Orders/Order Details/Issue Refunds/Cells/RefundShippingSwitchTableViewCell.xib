@@ -27,6 +27,9 @@
                             </label>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VgQ-WE-baT">
                                 <rect key="frame" x="333" y="6.5" width="51" height="31"/>
+                                <connections>
+                                    <action selector="shippingSwitchValueChanged:" destination="gvX-hN-7pZ" eventType="valueChanged" id="Z6i-6p-OGD"/>
+                                </connections>
                             </switch>
                         </subviews>
                     </stackView>

@@ -12,8 +12,18 @@ final class RefundShippingSwitchTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var shippingSwitch: UISwitch!
 
-    override class func awakeFromNib() {
+    override func awakeFromNib() {
         super.awakeFromNib()
+        applyCellStyles()
+    }
+}
+
+// MARK: View Configuration
+private extension RefundShippingSwitchTableViewCell {
+    func applyCellStyles() {
+        applyDefaultBackgroundStyle()
+        shippingTitle.applyBodyStyle()
+        shippingSwitch.onTintColor = .primary
     }
 }
 
@@ -57,12 +67,12 @@ struct RefundShippingSwitchTableViewCell_Previews: PreviewProvider {
                 .previewDisplayName("Dark")
 
             makeStack()
-                .previewLayout(.fixed(width: 359, height: 96))
+                .previewLayout(.fixed(width: 359, height: 86))
                 .environment(\.sizeCategory, .accessibilityMedium)
                 .previewDisplayName("Large Font")
 
             makeStack()
-                .previewLayout(.fixed(width: 359, height: 130))
+                .previewLayout(.fixed(width: 359, height: 100))
                 .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
                 .previewDisplayName("Extra Large Font")
         }

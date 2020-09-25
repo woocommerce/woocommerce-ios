@@ -233,6 +233,8 @@ import AuthenticationServices
             trackOpenedLogin()
         }
         
+        AuthenticatorAnalyticsTracker.shared.set(source: .selfHosted)
+        
         guard let controller = signinForWPOrg() else {
             DDLogError("WordPressAuthenticator: Failed to instantiate Site Address view controller.")
             return

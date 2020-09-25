@@ -1,5 +1,6 @@
 import Foundation
 import AuthenticationServices
+import SVProgressHUD
 
 /// The authorization flow handled by this class starts by showing Apple's `ASAuthorizationController`
 /// through our class `StoredCredentialsPicker`.  This controller lets the user pick the credentials they
@@ -94,6 +95,7 @@ class StoredCredentialsAuthenticator: NSObject {
     private func pickerSuccess(_ authorization: ASAuthorization) {
         tracker.track(step: .start)
         tracker.set(flow: .loginWithiCloudKeychain)
+        SVProgressHUD.show()
         
         switch authorization.credential {
         case _ as ASAuthorizationAppleIDCredential:
@@ -140,6 +142,7 @@ class StoredCredentialsAuthenticator: NSObject {
 extension StoredCredentialsAuthenticator: LoginFacadeDelegate {
     func displayRemoteError(_ error: Error) {
         tracker.track(failure: error.localizedDescription)
+        SVProgressHUD.dismiss()
         
         guard authConfig.enableUnifiedAuth else {
             presentLoginEmailView(error: error)
@@ -150,6 +153,7 @@ extension StoredCredentialsAuthenticator: LoginFacadeDelegate {
     }
     
     func needsMultifactorCode() {
+        SVProgressHUD.dismiss()
         presentTwoFactorAuthenticationView()
     }
 
@@ -162,6 +166,7 @@ extension StoredCredentialsAuthenticator: LoginFacadeDelegate {
         let credentials = AuthenticatorCredentials(wpcom: wpcom)
         
         authenticationDelegate.sync(credentials: credentials) { [weak self] in
+            SVProgressHUD.dismiss()
             self?.presentLoginEpilogue(credentials: credentials)
         }
     }

@@ -337,7 +337,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         XCTAssertEqual(viewModel.productModel.product.groupedProducts, groupedProductIDs)
     }
 
-    func testUpdatingDownloadableFilesInfo() {
+    func test_updating_downloadableFiles_info() {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)

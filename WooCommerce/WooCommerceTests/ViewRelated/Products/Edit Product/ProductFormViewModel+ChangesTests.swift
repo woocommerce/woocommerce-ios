@@ -272,7 +272,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
 
-    func testProductHasUnsavedChangesFromEditingDownloadableFiles() {
+    func test_product_has_unsaved_changes_from_editing_downloadableFiles() {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
@@ -290,7 +290,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
 
-    func testProductHasUnsavedChangesFromEditingDownloadLimit() {
+    func test_product_has_unsaved_changes_from_editing_downloadLimit() {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
@@ -308,7 +308,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
 
-    func testProductHasUnsavedChangesFromEditingDownloadExpiry() {
+    func test_product_has_unsaved_changes_from_editing_downloadExpiry() {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)

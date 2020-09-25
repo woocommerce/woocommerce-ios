@@ -42,7 +42,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     init(product: EditableProductModel,
          formType: ProductFormType,
          isEditProductsRelease3Enabled: Bool,
-         isEditProductsRelease5Enabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease5)) {
+         isEditProductsRelease5Enabled: Bool) {
         self.product = product
         self.formType = formType
         self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled

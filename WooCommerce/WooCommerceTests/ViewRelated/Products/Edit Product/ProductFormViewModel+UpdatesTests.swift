@@ -14,7 +14,8 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: false)
+                                             isEditProductsRelease3Enabled: false,
+                                             isEditProductsRelease5Enabled: false)
 
         // Action
         let newName = "<p> cool product </p>"
@@ -32,7 +33,8 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: false)
+                                             isEditProductsRelease3Enabled: false,
+                                             isEditProductsRelease5Enabled: false)
 
         // Action
         let newDescription = "<p> cool product </p>"
@@ -50,7 +52,8 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: false)
+                                             isEditProductsRelease3Enabled: false,
+                                             isEditProductsRelease5Enabled: false)
 
         // Action
         let newWeight = "9999.88"
@@ -84,7 +87,8 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: false)
+                                             isEditProductsRelease3Enabled: false,
+                                             isEditProductsRelease5Enabled: false)
 
         // Action
         let newRegularPrice = "32.45"
@@ -117,7 +121,8 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: false)
+                                             isEditProductsRelease3Enabled: false,
+                                             isEditProductsRelease5Enabled: false)
 
         // Action
         let newSKU = "94115"
@@ -150,7 +155,8 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: false)
+                                             isEditProductsRelease3Enabled: false,
+                                             isEditProductsRelease5Enabled: false)
 
         // Action
         let newImage = ProductImage(imageID: 17,
@@ -174,7 +180,8 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: true)
+                                             isEditProductsRelease3Enabled: true,
+                                             isEditProductsRelease5Enabled: false)
 
         // Action
         let categoryID = Int64(1234)
@@ -196,7 +203,8 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: true)
+                                             isEditProductsRelease3Enabled: true,
+                                             isEditProductsRelease5Enabled: false)
 
         // Action
         let tagID = Int64(1234)
@@ -217,7 +225,8 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: false)
+                                             isEditProductsRelease3Enabled: false,
+                                             isEditProductsRelease5Enabled: false)
 
         // Action
         let newBriefDescription = "<p> deal of the day! </p>"
@@ -235,7 +244,8 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: false)
+                                             isEditProductsRelease3Enabled: false,
+                                             isEditProductsRelease5Enabled: false)
 
         // Action
         let newStatus = "pending"
@@ -276,7 +286,8 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: false)
+                                             isEditProductsRelease3Enabled: false,
+                                             isEditProductsRelease5Enabled: false)
 
         // Action
         let sku = "woooo"
@@ -294,7 +305,8 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: false)
+                                             isEditProductsRelease3Enabled: false,
+                                             isEditProductsRelease5Enabled: false)
 
         // Action
         let externalURL = "woo.com"
@@ -314,7 +326,8 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: false)
+                                             isEditProductsRelease3Enabled: false,
+                                             isEditProductsRelease5Enabled: false)
 
         // Action
         let groupedProductIDs: [Int64] = [630, 22]

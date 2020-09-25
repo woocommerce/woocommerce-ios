@@ -112,6 +112,7 @@ private extension ProductFormViewModelTests {
         return ProductFormViewModel(product: model,
                                     formType: formType,
                                     productImageActionHandler: productImageActionHandler,
-                                    isEditProductsRelease3Enabled: true)
+                                    isEditProductsRelease3Enabled: true,
+                                    isEditProductsRelease5Enabled: false)
     }
 }

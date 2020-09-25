@@ -19,8 +19,13 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         super.tearDown()
     }
 
-    /// Tests that given a store with an old version, higher model versions are not compatible with
-    /// it.
+    /// Tests that model versions are not compatible with each other.
+    ///
+    /// This protects us from mistakes like adding a new model version that has **no structural
+    /// changes** and not setting the Hash Modifier. An example of that is creating a new model
+    /// but only renaming the entity classes. If we forget to change the model's Hash Modifier,
+    /// then the `CoreDataManager.migrateDataModelIfNecessary` will (correctly) **skip** the
+    /// migration. See here for more information: https://tinyurl.com/yxzpwp7t.
     ///
     /// This loops through **all NSManagedObjectModels**, performs a migration, and checks for
     /// compatibility with all the other versions. For example, for "Model 3":
@@ -29,20 +34,16 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
     /// 2. Check that Model 3 is compatible with the _migrated_ store. This verifies the migration.
     /// 3. Check that Models 1, 2, 4, 5, 6, 7, and so on are **not** compatible with the _migrated_ store.
     ///
-    /// This test protects us from mistakes like adding a new model version **without** structural
-    /// changes. An example of that is creating a new model but only renaming the entity classes.
-    /// If we forget to change the model's Hash Modifier, then the
-    /// `CoreDataManager.migrateDataModelIfNecessary` will actually **skip** the migration. See
-    /// here for more information: https://tinyurl.com/yxzpwp7t.
+    /// ## Testing
     ///
     /// You can make this test fail by:
     ///
-    /// 1. Creating a new model for `WooCommerce.xcdatamodeld`, copying the latest version.
+    /// 1. Creating a new model version for `WooCommerce.xcdatamodeld`, copying the latest version.
     /// 2. Running this test.
     ///
     /// And then make this pass again by setting a Hash Modifier value for the new model.
     ///
-    func test_when_migrating_through_all_versions_then_higher_versions_are_not_compatible() throws {
+    func test_all_model_versions_are_not_compatible_with_each_other() throws {
         // Given
         // Use in-memory type or else this would be too slow.
         let storeType = NSInMemoryStoreType

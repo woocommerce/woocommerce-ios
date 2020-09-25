@@ -19,6 +19,54 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         super.tearDown()
     }
 
+    func test_all_model_versions_are_incompatible_with_each_other() throws {
+        // Given
+        // Use in-memory type or else this would be too slow.
+        let storeType = NSInMemoryStoreType
+        let storeURL = try XCTUnwrap(NSURL(fileURLWithPath: NSTemporaryDirectory())
+            .appendingPathComponent(UUID().uuidString)?
+            .appendingPathExtension("sqlite"))
+
+        try modelsInventory.versions.forEach { currentVersion in
+            // Given
+            let currentModel = try XCTUnwrap(modelsInventory.model(for: currentVersion))
+
+            // When
+            // Migrate to the currentVersion if this is not the first version in the list.
+            if modelsInventory.versions.first != currentVersion {
+                let migrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory)
+                let (isMigrationSuccessful, _) = try migrator.iterativeMigrate(sourceStore: storeURL, storeType: storeType, to: currentModel)
+                XCTAssertTrue(isMigrationSuccessful)
+            }
+
+            // Load the persistent container
+            let persistentContainer = makePersistentContainer(storeURL: storeURL, storeType: storeType, model: currentModel)
+            let loadingError: Error? = try waitFor { promise in
+                persistentContainer.loadPersistentStores { _, error in
+                    promise(error)
+                }
+            }
+            XCTAssertNil(loadingError)
+
+            let persistentStoreCoordinator = persistentContainer.persistentStoreCoordinator
+            let persistentStore = try XCTUnwrap(persistentStoreCoordinator.persistentStores.first)
+
+            // Then
+            // The current model should be compatible with the current persistent store
+            XCTAssertTrue(currentModel.isConfiguration(withName: nil, compatibleWithStoreMetadata: persistentStore.metadata),
+                          "Current model “\(currentVersion.name)” should be compatible with the persistentStore.")
+
+            // All other models should not be compatible with the current persistentStore
+            try modelsInventory.versions.filter {
+                $0 != currentVersion
+            }.forEach { version in
+                let model = try XCTUnwrap(modelsInventory.model(for: version))
+                XCTAssertFalse(model.isConfiguration(withName: nil, compatibleWithStoreMetadata: persistentStore.metadata),
+                               "Model “\(version.name)” should not be compatible with the persistentStore whose version is “\(currentVersion.name)”.")
+            }
+        }
+    }
+
     func test_it_will_not_migrate_if_the_database_file_does_not_exist() throws {
         // Given
         let targetModel = try managedObjectModel(for: "Model 28")
@@ -346,53 +394,6 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         XCTAssertEqual(persistedAttribute.options, attributeOptions)
     }
 
-    func test_all_model_versions_are_incompatible_with_each_other() throws {
-        // Given
-        // Use in-memory type or else this would be too slow.
-        let storeType = NSInMemoryStoreType
-        let storeURL = try XCTUnwrap(NSURL(fileURLWithPath: NSTemporaryDirectory())
-                                        .appendingPathComponent(UUID().uuidString)?
-                                        .appendingPathExtension("sqlite"))
-
-        try modelsInventory.versions.forEach { currentVersion in
-            // Given
-            let currentModel = try XCTUnwrap(modelsInventory.model(for: currentVersion))
-
-            // When
-            // Migrate to the currentVersion if this is not the first version in the list.
-            if modelsInventory.versions.first != currentVersion {
-                let migrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory)
-                let (isMigrationSuccessful, _) = try migrator.iterativeMigrate(sourceStore: storeURL, storeType: storeType, to: currentModel)
-                XCTAssertTrue(isMigrationSuccessful)
-            }
-
-            // Load the persistent container
-            let persistentContainer = makePersistentContainer(storeURL: storeURL, storeType: storeType, model: currentModel)
-            let loadingError: Error? = try waitFor { promise in
-                persistentContainer.loadPersistentStores { _, error in
-                    promise(error)
-                }
-            }
-            XCTAssertNil(loadingError)
-
-            let persistentStoreCoordinator = persistentContainer.persistentStoreCoordinator
-            let persistentStore = try XCTUnwrap(persistentStoreCoordinator.persistentStores.first)
-
-            // Then
-            // The current model should be compatible with the current persistent store
-            XCTAssertTrue(currentModel.isConfiguration(withName: nil, compatibleWithStoreMetadata: persistentStore.metadata),
-                          "Current model “\(currentVersion.name)” should be compatible with the persistentStore.")
-
-            // All other models should not be compatible with the current persistentStore
-            try modelsInventory.versions.filter {
-                $0 != currentVersion
-            }.forEach { version in
-                let model = try XCTUnwrap(modelsInventory.model(for: version))
-                XCTAssertFalse(model.isConfiguration(withName: nil, compatibleWithStoreMetadata: persistentStore.metadata),
-                              "Model “\(version.name)” should not be compatible with the persistentStore whose version is “\(currentVersion.name)”.")
-            }
-        }
-    }
 }
 
 /// Helpers for generating data in migration tests

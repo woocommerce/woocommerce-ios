@@ -7,10 +7,10 @@ import CoreData
 final class CoreDataIterativeMigratorTests: XCTestCase {
     private var modelsInventory: ManagedObjectModelsInventory!
 
-    override func setUp() {
-        super.setUp()
+    override func setUpWithError() throws {
+        try super.setUpWithError()
         DDLog.add(DDOSLogger.sharedInstance)
-        modelsInventory = try! .from(packageName: "WooCommerce", bundle: Bundle(for: CoreDataManager.self))
+        modelsInventory = try .from(packageName: "WooCommerce", bundle: Bundle(for: CoreDataManager.self))
     }
 
     override func tearDown() {

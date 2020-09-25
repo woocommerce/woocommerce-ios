@@ -23,7 +23,7 @@ protocol ProductDownloadListActionHandler {
     func didTapDownloadableFileFromRow(_ indexPath: IndexPath)
 
     // Input field actions
-    func handleDownloadsChange(_ downloads: [ProductDownload])
+    func handleDownloadableFilesChange(_ downloads: [ProductDownload])
     func handleDownloadLimitChange(_ downloadLimit: Int64)
     func handleDownloadExpiryChange(_ downloadExpiry: Int64)
 
@@ -88,7 +88,7 @@ extension ProductDownloadListViewModel: ProductDownloadListActionHandler {
     // MARK: - UI changes
 
     // Input field actions
-    func handleDownloadsChange(_ downloads: [ProductDownload]) {
+    func handleDownloadableFilesChange(_ downloads: [ProductDownload]) {
         self.downloadableFiles = downloads.map { ProductDownloadDragAndDrop(downloadableFile: $0) }
     }
 

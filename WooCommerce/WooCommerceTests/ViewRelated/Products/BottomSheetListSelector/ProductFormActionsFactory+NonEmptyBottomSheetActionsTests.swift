@@ -14,7 +14,8 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: false)
+                                                isEditProductsRelease3Enabled: false,
+                                                isEditProductsRelease5Enabled: false)
 
         // Assert
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings]
@@ -32,7 +33,8 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: false)
+                                                isEditProductsRelease3Enabled: false,
+                                                isEditProductsRelease5Enabled: false)
 
         // Assert
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings]
@@ -50,7 +52,8 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: false)
+                                                isEditProductsRelease3Enabled: false,
+                                                isEditProductsRelease5Enabled: true)
 
         // Assert
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .downloadableFiles]
@@ -70,7 +73,8 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: true)
+                                                isEditProductsRelease3Enabled: true,
+                                                isEditProductsRelease5Enabled: false)
 
         // Assert
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .reviews, .productType]
@@ -92,7 +96,8 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: true)
+                                                isEditProductsRelease3Enabled: true,
+                                                isEditProductsRelease5Enabled: false)
 
         // Assert
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .reviews, .productType]
@@ -110,7 +115,8 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: true)
+                                                isEditProductsRelease3Enabled: true,
+                                                isEditProductsRelease5Enabled: true)
 
         // Assert
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .reviews, .downloadableFiles, .productType]

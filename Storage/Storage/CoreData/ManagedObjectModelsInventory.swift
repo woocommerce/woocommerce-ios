@@ -81,6 +81,11 @@ struct ManagedObjectModelsInventory {
                                             versions: modelVersions)
     }
 
+    /// Load the corresponding `NSManagedObjectModel` for the given `version`.
+    ///
+    /// This is intentionally not part of `ModelVersion` itself because this involves a file
+    /// access and we usually would not need all of the `NSManagedObjectModel` instances.
+    ///
     func model(for version: ModelVersion) -> NSManagedObjectModel? {
         let expectedMomURL = packageURL.appendingPathComponent(version.name).appendingPathExtension("mom")
         return NSManagedObjectModel(contentsOf: expectedMomURL)

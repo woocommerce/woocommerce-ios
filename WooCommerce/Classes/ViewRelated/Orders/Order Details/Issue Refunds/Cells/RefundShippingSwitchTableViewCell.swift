@@ -83,7 +83,7 @@ struct RefundShippingSwitchTableViewCell_Previews: PreviewProvider {
                 .previewDisplayName("Large Font")
 
             makeStack()
-                .previewLayout(.fixed(width: 359, height: 120))
+                .previewLayout(.fixed(width: 359, height: 160))
                 .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
                 .previewDisplayName("Extra Large Font")
         }

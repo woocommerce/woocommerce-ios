@@ -13,7 +13,8 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: true)
+                                                isEditProductsRelease3Enabled: true,
+                                                isEditProductsRelease5Enabled: false)
 
         // Assert
         XCTAssertTrue(factory.settingsSectionActions().contains(.priceSettings))
@@ -27,7 +28,8 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: true)
+                                                isEditProductsRelease3Enabled: true,
+                                                isEditProductsRelease5Enabled: false)
 
         // Assert
         XCTAssertTrue(factory.settingsSectionActions().contains(.priceSettings))
@@ -43,7 +45,8 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: true)
+                                                isEditProductsRelease3Enabled: true,
+                                                isEditProductsRelease5Enabled: false)
 
         // Assert
         XCTAssertTrue(factory.settingsSectionActions().contains(.inventorySettings))
@@ -58,7 +61,8 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: true)
+                                                isEditProductsRelease3Enabled: true,
+                                                isEditProductsRelease5Enabled: false)
 
         // Assert
         XCTAssertFalse(factory.settingsSectionActions().contains(.inventorySettings))
@@ -75,7 +79,8 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: true)
+                                                isEditProductsRelease3Enabled: true,
+                                                isEditProductsRelease5Enabled: false)
 
         // Assert
         XCTAssertTrue(factory.settingsSectionActions().contains(.shippingSettings))
@@ -90,7 +95,8 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: true)
+                                                isEditProductsRelease3Enabled: true,
+                                                isEditProductsRelease5Enabled: false)
 
         // Assert
         XCTAssertFalse(factory.settingsSectionActions().contains(.shippingSettings))
@@ -107,7 +113,8 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: true)
+                                                isEditProductsRelease3Enabled: true,
+                                                isEditProductsRelease5Enabled: false)
 
         // Assert
         XCTAssertTrue(factory.settingsSectionActions().contains(.categories))
@@ -122,7 +129,8 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: true)
+                                                isEditProductsRelease3Enabled: true,
+                                                isEditProductsRelease5Enabled: false)
 
         // Assert
         XCTAssertFalse(factory.settingsSectionActions().contains(.categories))
@@ -139,7 +147,8 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: true)
+                                                isEditProductsRelease3Enabled: true,
+                                                isEditProductsRelease5Enabled: false)
 
         // Assert
         XCTAssertTrue(factory.settingsSectionActions().contains(.briefDescription))
@@ -154,7 +163,8 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: true)
+                                                isEditProductsRelease3Enabled: true,
+                                                isEditProductsRelease5Enabled: false)
 
         // Assert
         XCTAssertFalse(factory.settingsSectionActions().contains(.briefDescription))
@@ -163,7 +173,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
 
     // MARK: - Downloadable Files
 
-    func testDownloadableFilesRowIsVisibleForDownloadableProductWithNonEmptyDownloadableFiles() {
+    func test_downloadableFiles_row_is_visible_for_downloadable_product_with_non_empty_downloadableFiles() {
         // Arrange
         let product = Fixtures.downloadableProduct
         let model = EditableProductModel(product: product)
@@ -171,13 +181,14 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: true)
+                                                isEditProductsRelease3Enabled: true,
+                                                isEditProductsRelease5Enabled: true)
 
         // Assert
         XCTAssertTrue(factory.settingsSectionActions().contains(.downloadableFiles))
     }
 
-    func testDownloadableFilesRowIsInvisibleForNonDownloadableProductWithoutDownloadableFiles() {
+    func test_downloadableFiles_row_is_invisible_for_non_downloadable_product_without_downloadableFiles() {
         // Arrange
         let product = Fixtures.nonDownloadableProduct
         let model = EditableProductModel(product: product)
@@ -185,7 +196,8 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: true)
+                                                isEditProductsRelease3Enabled: true,
+                                                isEditProductsRelease5Enabled: true)
 
         // Assert
         XCTAssertFalse(factory.settingsSectionActions().contains(.downloadableFiles))

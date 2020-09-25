@@ -162,7 +162,6 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
     }
 
     // MARK: - Downloadable Files
-    // Don't commit these unless you are done with https://github.com/woocommerce/woocommerce-ios/issues/2759
 
     func testDownloadableFilesRowIsVisibleForDownloadableProductWithNonEmptyDownloadableFiles() {
         // Arrange

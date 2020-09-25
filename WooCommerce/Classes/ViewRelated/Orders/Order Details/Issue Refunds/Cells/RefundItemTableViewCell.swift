@@ -16,7 +16,7 @@ final class RefundItemTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var itemTitle: UILabel!
 
-    /// Item caption: Product quanity and price
+    /// Item caption: Product quantity and price
     ///
     @IBOutlet private var itemCaption: UILabel!
 

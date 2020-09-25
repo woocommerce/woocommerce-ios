@@ -87,6 +87,10 @@ extension ProductDownloadFileViewController {
         })
     }
 
+    @objc private func deleteDownloadableFile() {
+
+    }
+
     private func presentBackNavigationActionSheet() {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
             self?.navigationController?.popViewController(animated: true)
@@ -197,9 +201,30 @@ private extension ProductDownloadFileViewController {
         title = NSLocalizedString(viewModel.formType == .add ? "Add Downloadable File" : viewModel.fileName ?? "",
                                   comment: "Individual downloadable file navigation title")
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
-                                                            target: self,
-                                                            action: #selector(completeUpdating))
+        var rightBarButtonItems = [UIBarButtonItem]()
+
+        let deleteDownloadableFileBarButton: UIBarButtonItem = {
+            let button = UIBarButtonItem(image: .moreImage,
+                                         style: .plain,
+                                         target: self,
+                                         action: #selector(deleteDownloadableFile))
+            button.accessibilityTraits = .button
+            button.accessibilityLabel = NSLocalizedString("Delete downloadable file from list",
+                                                          comment: "The action to delete downloadable file for the list")
+            return button
+        }()
+        rightBarButtonItems.append(deleteDownloadableFileBarButton)
+
+        let updateButtonTitle = NSLocalizedString("Update",
+                                                comment: "Action for updating a Products' downloadable files' info remotely")
+        let UpdateBarButton = UIBarButtonItem(title: updateButtonTitle,
+                                             style: .done,
+                                             target: self,
+                                             action: #selector(completeUpdating))
+        rightBarButtonItems.append(UpdateBarButton)
+
+        navigationItem.rightBarButtonItems = rightBarButtonItems
+
         removeNavigationBackBarButtonText()
         self.enableDoneButton(false)
     }
@@ -247,7 +272,7 @@ private extension ProductDownloadFileViewController {
     }
 
     private func enableDoneButton(_ enabled: Bool) {
-        navigationItem.rightBarButtonItem?.isEnabled = enabled
+        navigationItem.rightBarButtonItems?.last?.isEnabled = enabled
     }
 }
 

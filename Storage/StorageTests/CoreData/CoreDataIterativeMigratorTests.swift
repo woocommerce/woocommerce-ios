@@ -23,17 +23,24 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
     /// it.
     ///
     /// This loops through **all NSManagedObjectModels**, performs a migration, and checks for
-    /// compatibility with the higher versions. For example, for "Model 3":
+    /// compatibility with all the other versions. For example, for "Model 3":
     ///
     /// 1. Migrate the store from previous model (Model 2) to Model 3.
     /// 2. Check that Model 3 is compatible with the _migrated_ store. This verifies the migration.
-    /// 3. Check that Models 4, 5, 6, 7, and so on are **not** compatible with the _migrated_ store.
+    /// 3. Check that Models 1, 2, 4, 5, 6, 7, and so on are **not** compatible with the _migrated_ store.
     ///
     /// This test protects us from mistakes like adding a new model version **without** structural
     /// changes. An example of that is creating a new model but only renaming the entity classes.
     /// If we forget to change the model's Hash Modifier, then the
     /// `CoreDataManager.migrateDataModelIfNecessary` will actually **skip** the migration. See
     /// here for more information: https://tinyurl.com/yxzpwp7t.
+    ///
+    /// You can make this test fail by:
+    ///
+    /// 1. Creating a new model for `WooCommerce.xcdatamodeld`, copying the latest version.
+    /// 2. Running this test.
+    ///
+    /// And then make this pass again by setting a Hash Modifier value for the new model.
     ///
     func test_when_migrating_through_all_versions_then_higher_versions_are_not_compatible() throws {
         // Given
@@ -43,9 +50,14 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
             .appendingPathComponent(UUID().uuidString)?
             .appendingPathExtension("sqlite"))
 
-        for (currentVersionIndex, currentVersion) in modelsInventory.versions.enumerated() {
+        // Cache the models to improve the performance of the loop below.
+        let modelsByVersionName = try modelsInventory.versions.reduce(into: [String: NSManagedObjectModel]()) { result, version in
+            result[version.name] = try XCTUnwrap(modelsInventory.model(for: version))
+        }
+
+        try modelsInventory.versions.forEach { currentVersion in
             // Given
-            let currentModel = try XCTUnwrap(modelsInventory.model(for: currentVersion))
+            let currentModel = try XCTUnwrap(modelsByVersionName[currentVersion.name])
 
             // When
             // Migrate to the currentVersion if this is not the first version in the list.
@@ -74,10 +86,11 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
             XCTAssertTrue(currentModel.isConfiguration(withName: nil, compatibleWithStoreMetadata: persistentStore.metadata),
                           "Current model “\(currentVersion.name)” should be compatible with the persistentStore.")
 
-            // Higher version models should not be compatible with the current persistentStore
-            let higherVersions = modelsInventory.versions.dropFirst(currentVersionIndex + 1)
-            try higherVersions.forEach { version in
-                let model = try XCTUnwrap(modelsInventory.model(for: version))
+            // All other versions should not be compatible with the current persistentStore
+            try modelsInventory.versions.filter {
+                $0 != currentVersion
+            }.forEach { version in
+                let model = try XCTUnwrap(modelsByVersionName[version.name])
                 XCTAssertFalse(model.isConfiguration(withName: nil, compatibleWithStoreMetadata: persistentStore.metadata),
                                "Model “\(version.name)” should not be compatible with the persistentStore whose version is “\(currentVersion.name)”.")
             }

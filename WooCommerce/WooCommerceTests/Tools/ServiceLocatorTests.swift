@@ -48,7 +48,7 @@ final class ServiceLocatorTests: XCTestCase {
         XCTAssertNotNil(ServiceLocator.authenticationManager)
     }
 
-    func test_autenticationManager_defaults_AuthenticationManager() {
+    func test_autenticationManager_defaults_to_AuthenticationManager() {
         let authentication = ServiceLocator.authenticationManager
 
         XCTAssertTrue(authentication is AuthenticationManager)
@@ -70,7 +70,7 @@ final class ServiceLocatorTests: XCTestCase {
         XCTAssertNotNil(ServiceLocator.storageManager)
     }
 
-    func test_ServiceLocator_Provides_fileLogger() {
+    func test_ServiceLocator_provides_fileLogger() {
         XCTAssertNotNil(ServiceLocator.fileLogger)
     }
 

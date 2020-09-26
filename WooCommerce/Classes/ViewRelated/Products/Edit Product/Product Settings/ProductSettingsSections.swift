@@ -25,7 +25,8 @@ enum ProductSettingsSections {
                 rows = [ProductSettingsRows.Status(settings),
                         ProductSettingsRows.Visibility(settings),
                         ProductSettingsRows.CatalogVisibility(settings),
-                        ProductSettingsRows.VirtualProduct(settings)]
+                        ProductSettingsRows.VirtualProduct(settings),
+                        ProductSettingsRows.DownloadableProduct(settings)]
             } else {
                 rows = [ProductSettingsRows.Status(settings),
                         ProductSettingsRows.Visibility(settings),

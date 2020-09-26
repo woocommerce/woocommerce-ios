@@ -125,6 +125,7 @@ extension ProductDownloadListViewController {
 
     @objc private func downloadSettingsButtonTapped() {
         // TODO: - add analytics
+        showDownloadSettings()
     }
 
     @objc private func addButtonTapped() {
@@ -157,6 +158,36 @@ extension ProductDownloadListViewController {
         guard hasUnsavedChanges else {
             return
         }
+    }
+}
+
+// MARK: Action - Downloaded Settings
+//
+extension ProductDownloadListViewController {
+    func showDownloadSettings() {
+        let viewController = ProductDownloadSettingsViewController(product: product) { [weak self]
+            (downloadLimit, downloadExpiry, hasUnsavedChanges) in
+            self?.onDownloadSettingsCompletion(downloadLimit: downloadLimit,
+                                               downloadExpiry: downloadExpiry,
+                                               hasUnsavedChanges: hasUnsavedChanges)
+        }
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+
+    func onDownloadSettingsCompletion(downloadLimit: Int64,
+                                      downloadExpiry: Int64,
+                                      hasUnsavedChanges: Bool) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+
+        guard hasUnsavedChanges else {
+            return
+        }
+
+        viewModel.handleDownloadLimitChange(downloadLimit)
+        viewModel.handleDownloadExpiryChange(downloadExpiry)
+        viewModel.completeUpdating(onCompletion: onCompletion)
     }
 }
 

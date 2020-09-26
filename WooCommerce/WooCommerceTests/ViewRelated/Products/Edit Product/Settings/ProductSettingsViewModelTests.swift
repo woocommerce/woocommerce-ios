@@ -68,6 +68,6 @@ final class ProductSettingsViewModelTests: XCTestCase {
 
 private extension ProductSettingsViewModel {
     convenience init(product: Product, password: String?) {
-        self.init(product: product, password: password, formType: .edit, isEditProductsRelease3Enabled: true)
+        self.init(product: product, password: password, formType: .edit, isEditProductsRelease3Enabled: true, isEditProductsRelease5Enabled: true)
     }
 }

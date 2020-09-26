@@ -21,7 +21,7 @@ final class ProductSettingsSectionsTests: XCTestCase {
         let productType = ProductType.grouped
 
         // When
-        let section = ProductSettingsSections.PublishSettings(settings, productType: productType, isEditProductsRelease3Enabled: true)
+        let section = ProductSettingsSections.PublishSettings(settings, productType: productType, isEditProductsRelease3Enabled: true, isEditProductsRelease5Enabled: false)
 
         // Then
         XCTAssertNil(section.rows.first(where: {
@@ -44,7 +44,7 @@ final class ProductSettingsSectionsTests: XCTestCase {
         let productType = ProductType.simple
 
         // When
-        let section = ProductSettingsSections.PublishSettings(settings, productType: productType, isEditProductsRelease3Enabled: true)
+        let section = ProductSettingsSections.PublishSettings(settings, productType: productType, isEditProductsRelease3Enabled: true, isEditProductsRelease5Enabled: false)
 
         // Then
         XCTAssertNotNil(section.rows.first(where: {
@@ -67,7 +67,7 @@ final class ProductSettingsSectionsTests: XCTestCase {
         let productType = ProductType.grouped
 
         // When
-        let section = ProductSettingsSections.PublishSettings(settings, productType: productType, isEditProductsRelease3Enabled: true)
+        let section = ProductSettingsSections.PublishSettings(settings, productType: productType, isEditProductsRelease3Enabled: true, isEditProductsRelease5Enabled: true)
 
         // Then
         XCTAssertNil(section.rows.first(where: {
@@ -90,7 +90,7 @@ final class ProductSettingsSectionsTests: XCTestCase {
         let productType = ProductType.simple
 
         // When
-        let section = ProductSettingsSections.PublishSettings(settings, productType: productType, isEditProductsRelease3Enabled: true)
+        let section = ProductSettingsSections.PublishSettings(settings, productType: productType, isEditProductsRelease3Enabled: true, isEditProductsRelease5Enabled: true)
 
         // Then
         XCTAssertNotNil(section.rows.first(where: {

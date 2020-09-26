@@ -253,6 +253,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let password = ""
         let catalogVisibility = "search"
         let virtual = true
+        let downloadable = true
         let reviewsAllowed = true
         let slug = "this-is-a-test"
         let purchaseNote = "This is a purchase note"
@@ -265,7 +266,8 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
                                               reviewsAllowed: reviewsAllowed,
                                               slug: slug,
                                               purchaseNote: purchaseNote,
-                                              menuOrder: menuOrder)
+                                              menuOrder: menuOrder,
+                                              downloadable: downloadable)
         viewModel.updateProductSettings(productSettings)
 
         // Assert

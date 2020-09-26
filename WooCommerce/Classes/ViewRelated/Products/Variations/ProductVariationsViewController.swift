@@ -305,7 +305,8 @@ extension ProductVariationsViewController: UITableViewDelegate {
                                                            productImageActionHandler: productImageActionHandler,
                                                            currency: currency,
                                                            presentationStyle: .navigationStack,
-                                                           isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+                                                           isEditProductsRelease3Enabled: isEditProductsRelease3Enabled,
+                                                           isEditProductsRelease5Enabled: false)
             navigationController?.pushViewController(viewController, animated: true)
         }
     }

@@ -11,7 +11,10 @@ final class ProductSettingsViewModel {
 
     var productSettings: ProductSettings {
         didSet {
-            sections = Self.configureSections(productSettings, productType: product.productType, isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+            sections = Self.configureSections(productSettings,
+                                              productType: product.productType,
+                                              isEditProductsRelease3Enabled: isEditProductsRelease3Enabled,
+                                              isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
         }
     }
 
@@ -28,20 +31,28 @@ final class ProductSettingsViewModel {
     var onPasswordRetrieved: ((_ password: String) -> Void)?
 
     private let isEditProductsRelease3Enabled: Bool
+    private let isEditProductsRelease5Enabled: Bool
 
-    init(product: Product, password: String?, formType: ProductFormType, isEditProductsRelease3Enabled: Bool) {
+    init(product: Product, password: String?, formType: ProductFormType, isEditProductsRelease3Enabled: Bool, isEditProductsRelease5Enabled: Bool) {
         self.product = product
         self.password = password
         self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
+        self.isEditProductsRelease5Enabled = isEditProductsRelease5Enabled
         productSettings = ProductSettings(from: product, password: password)
 
         switch formType {
         case .add:
             self.password = ""
             productSettings.password = ""
-            sections = Self.configureSections(productSettings, productType: product.productType, isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+            sections = Self.configureSections(productSettings,
+                                              productType: product.productType,
+                                              isEditProductsRelease3Enabled: isEditProductsRelease3Enabled,
+                                              isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
         case .edit:
-            sections = Self.configureSections(productSettings, productType: product.productType, isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+            sections = Self.configureSections(productSettings,
+                                              productType: product.productType,
+                                              isEditProductsRelease3Enabled: isEditProductsRelease3Enabled,
+                                              isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
             /// If nil, we fetch the password from site post API because it was never fetched
             if password == nil {
                 retrieveProductPassword(siteID: product.siteID, productID: product.productID) { [weak self] (password, error) in
@@ -56,7 +67,8 @@ final class ProductSettingsViewModel {
                     self.productSettings.password = password
                     self.sections = Self.configureSections(self.productSettings,
                                                            productType: product.productType,
-                                                           isEditProductsRelease3Enabled: self.isEditProductsRelease3Enabled)
+                                                           isEditProductsRelease3Enabled: self.isEditProductsRelease3Enabled,
+                                                           isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
                 }
             }
         }
@@ -103,9 +115,16 @@ private extension ProductSettingsViewModel {
 private extension ProductSettingsViewModel {
     static func configureSections(_ settings: ProductSettings,
                                   productType: ProductType,
-                                  isEditProductsRelease3Enabled: Bool) -> [ProductSettingsSectionMediator] {
-        return [ProductSettingsSections.PublishSettings(settings, productType: productType, isEditProductsRelease3Enabled: isEditProductsRelease3Enabled),
-                ProductSettingsSections.MoreOptions(settings, productType: productType, isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+                                  isEditProductsRelease3Enabled: Bool,
+                                  isEditProductsRelease5Enabled: Bool) -> [ProductSettingsSectionMediator] {
+        return [ProductSettingsSections.PublishSettings(settings,
+                                                        productType: productType,
+                                                        isEditProductsRelease3Enabled: isEditProductsRelease3Enabled,
+                                                        isEditProductsRelease5Enabled: isEditProductsRelease5Enabled),
+                ProductSettingsSections.MoreOptions(settings,
+                                                    productType: productType,
+                                                    isEditProductsRelease3Enabled: isEditProductsRelease3Enabled,
+                                                    isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
         ]
     }
 }

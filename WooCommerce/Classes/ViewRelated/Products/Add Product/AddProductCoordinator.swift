@@ -65,7 +65,8 @@ private extension AddProductCoordinator {
                                                        productImageActionHandler: productImageActionHandler,
                                                        currency: currency,
                                                        presentationStyle: .navigationStack,
-                                                       isEditProductsRelease3Enabled: true)
+                                                       isEditProductsRelease3Enabled: true,
+                                                       isEditProductsRelease5Enabled: true)
         // Since the Add Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
         viewController.hidesBottomBarWhenPushed = true
         navigationController.pushViewController(viewController, animated: true)

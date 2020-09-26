@@ -41,6 +41,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     private let currency: String
     private let isEditProductsRelease3Enabled: Bool
+    private let isEditProductsRelease5Enabled: Bool
 
     private lazy var exitForm: () -> Void = {
         presentationStyle.createExitForm(viewController: self)
@@ -60,12 +61,14 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
          productImageActionHandler: ProductImageActionHandler,
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
          presentationStyle: ProductFormPresentationStyle,
-         isEditProductsRelease3Enabled: Bool) {
+         isEditProductsRelease3Enabled: Bool,
+         isEditProductsRelease5Enabled: Bool) {
         self.viewModel = viewModel
         self.eventLogger = eventLogger
         self.currency = currency
         self.presentationStyle = presentationStyle
         self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
+        self.isEditProductsRelease5Enabled = isEditProductsRelease5Enabled
         self.productImageActionHandler = productImageActionHandler
         self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler,
                                                                 phAssetImageLoaderProvider: { PHImageManager.default() })
@@ -645,6 +648,7 @@ private extension ProductFormViewController {
                                                            password: password,
                                                            formType: viewModel.formType,
                                                            isEditProductsRelease3Enabled: isEditProductsRelease3Enabled,
+                                                           isEditProductsRelease5Enabled: isEditProductsRelease5Enabled,
                                                            completion: { [weak self] (productSettings) in
             guard let self = self else {
                 return

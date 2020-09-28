@@ -71,6 +71,7 @@ final class MigrationTests: XCTestCase {
 // MARK: - Persistent Store Setup and Migrations
 
 private extension MigrationTests {
+    /// Create a new Sqlite file and load it. Returns the loaded `NSPersistentContainer`.
     func startPersistentContainer(_ versionName: String) throws -> NSPersistentContainer {
         let storeURL = try XCTUnwrap(NSURL(fileURLWithPath: NSTemporaryDirectory())
             .appendingPathComponent(UUID().uuidString)?
@@ -88,6 +89,16 @@ private extension MigrationTests {
         return container
     }
 
+    /// Migrate the existing `container` to the model with name `versionName`.
+    ///
+    /// This disconnects the given `container` from the `NSPersistentStore` (SQLite) to avoid
+    /// warnings pertaining to having two `NSPersistentContainer` using the same SQLite file.
+    /// The `container.viewContext` and any created `NSManagedObjects` can still be used but
+    /// they will not be attached to the SQLite database so watch out for that. XD
+    ///
+    /// - Returns: A new loaded `NSPersistentContainer` using the new `NSManagedObjectModel`
+    ///            pointed to by `versionName`.
+    ///
     func migrate(_ container: NSPersistentContainer, to versionName: String) throws -> NSPersistentContainer {
         let storeDescription = try XCTUnwrap(container.persistentStoreDescriptions.first)
         let storeURL = try XCTUnwrap(storeDescription.url)

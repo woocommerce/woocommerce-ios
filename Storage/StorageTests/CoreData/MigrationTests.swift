@@ -20,14 +20,32 @@ import CoreData
 final class MigrationTests: XCTestCase {
     private var modelsInventory: ManagedObjectModelsInventory!
 
+    /// URLs of SQLite stores created using `makePersistentStore()`.
+    ///
+    /// These will be deleted during tear down.
+    private var createdStoreURLs = Set<URL>()
+
     override func setUpWithError() throws {
         try super.setUpWithError()
         modelsInventory = try .from(packageName: "WooCommerce", bundle: Bundle(for: CoreDataManager.self))
     }
 
-    override func tearDown() {
+    override func tearDownWithError() throws {
+        let fileManager = FileManager.default
+        let knownExtensions = ["sqlite-shm", "sqlite-wal"]
+        try createdStoreURLs.forEach { url in
+            try fileManager.removeItem(at: url)
+
+            try knownExtensions.forEach { ext in
+                if fileManager.fileExists(atPath: url.appendingPathExtension(ext).path) {
+                    try fileManager.removeItem(at: url.appendingPathExtension(ext))
+                }
+            }
+        }
+
         modelsInventory = nil
-        super.tearDown()
+
+        try super.tearDownWithError()
     }
 
     func test_migrating_from_31_to_32_renames_Attribute_to_GenericAttribute() throws {
@@ -138,6 +156,9 @@ private extension MigrationTests {
 
         let container = NSPersistentContainer(name: "ContainerName", managedObjectModel: model)
         container.persistentStoreDescriptions = [description]
+
+        createdStoreURLs.insert(storeURL)
+
         return container
     }
 }

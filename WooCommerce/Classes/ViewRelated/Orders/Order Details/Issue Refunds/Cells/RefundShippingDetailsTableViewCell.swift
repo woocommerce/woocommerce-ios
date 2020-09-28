@@ -72,7 +72,12 @@ private extension RefundShippingDetailsTableViewCell {
     }
 
     func applyShippingImageViewStyles() {
-
+        shippingImageView.contentMode = .center
+        shippingImageView.image = .shippingImage
+        shippingImageView.tintColor = .systemColor(.systemGray2)
+        shippingImageView.layer.cornerRadius = Constants.iconCornerRadius
+        shippingImageView.layer.borderWidth = Constants.iconBorderWitdh
+        shippingImageView.layer.borderColor = UIColor.border.cgColor
     }
 }
 
@@ -82,6 +87,11 @@ private extension RefundShippingDetailsTableViewCell {
         static let taxTitle = NSLocalizedString("Tax", comment: "Title on the refunds screen that list the shipping tax cost")
         static let subtotalTitle = NSLocalizedString("Subtotal", comment: "Title on the refund screen that list the shipping subtotal cost")
         static let totalTitle = NSLocalizedString("Shipping Refund", comment: "Title on the refund screen that list the shipping total cost")
+    }
+
+    enum Constants {
+        static let iconCornerRadius: CGFloat = 2.0
+        static let iconBorderWitdh: CGFloat = 0.5
     }
 }
 

@@ -65,4 +65,43 @@ class CoreDataManagerTests: XCTestCase {
         XCTAssertNotEqual(derivedContext, viewContext)
         XCTAssertEqual(derivedContext?.parent, viewContext)
     }
+
+    func test_resetting_CoreData_deletes_preexisting_objects() throws {
+        // Arrange
+        let manager = CoreDataManager(name: "WooCommerce", crashLogger: MockCrashLogger())
+        manager.reset()
+        let viewContext = try XCTUnwrap(manager.viewStorage as? NSManagedObjectContext)
+        _ = viewContext.insertNewObject(ofType: ShippingLine.self)
+        viewContext.saveIfNeeded()
+        XCTAssertEqual(viewContext.countObjects(ofType: ShippingLine.self), 1)
+
+        // Action
+        manager.reset()
+
+        // Assert
+        XCTAssertEqual(viewContext.countObjects(ofType: ShippingLine.self), 0)
+    }
+
+    func test_saving_derived_storage_while_resetting_CoreData_still_saves_data() throws {
+        // Arrange
+        let manager = CoreDataManager(name: "WooCommerce", crashLogger: MockCrashLogger())
+        manager.reset()
+        let viewContext = try XCTUnwrap(manager.viewStorage as? NSManagedObjectContext)
+        let derivedContext = try XCTUnwrap(manager.newDerivedStorage() as? NSManagedObjectContext)
+
+        // Action
+        waitForExpectation(count: 2) { expectation in
+            derivedContext.perform {
+                _ = derivedContext.insertNewObject(ofType: ShippingLine.self)
+            }
+            manager.saveDerivedType(derivedStorage: derivedContext, {
+                expectation.fulfill()
+            })
+            manager.reset()
+            expectation.fulfill()
+        }
+
+        // Assert
+        XCTAssertEqual(viewContext.countObjects(ofType: ShippingLine.self), 1)
+    }
 }

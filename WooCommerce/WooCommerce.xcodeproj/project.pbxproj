@@ -151,6 +151,7 @@
 		025A1248247CE793008EA761 /* ProductFormViewModel+ObservablesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025A1247247CE793008EA761 /* ProductFormViewModel+ObservablesTests.swift */; };
 		025B1748237A92D800C780B4 /* ProductFormSection+ReusableTableRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025B1747237A92D800C780B4 /* ProductFormSection+ReusableTableRow.swift */; };
 		025B174A237AA49D00C780B4 /* Product+ProductForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025B1749237AA49D00C780B4 /* Product+ProductForm.swift */; };
+		025E32BC251D8FEF00685C4A /* ProductFormDataModel+ProductsTabProductViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025E32BB251D8FEF00685C4A /* ProductFormDataModel+ProductsTabProductViewModel.swift */; };
 		025FDD3223717D2900824006 /* EditorFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025FDD3123717D2900824006 /* EditorFactory.swift */; };
 		025FDD3423717D4900824006 /* AztecEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025FDD3323717D4900824006 /* AztecEditorViewController.swift */; };
 		0260F40123224E8100EDA10A /* ProductsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0260F40023224E8100EDA10A /* ProductsViewController.swift */; };
@@ -1119,6 +1120,7 @@
 		025A1247247CE793008EA761 /* ProductFormViewModel+ObservablesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormViewModel+ObservablesTests.swift"; sourceTree = "<group>"; };
 		025B1747237A92D800C780B4 /* ProductFormSection+ReusableTableRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormSection+ReusableTableRow.swift"; sourceTree = "<group>"; };
 		025B1749237AA49D00C780B4 /* Product+ProductForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+ProductForm.swift"; sourceTree = "<group>"; };
+		025E32BB251D8FEF00685C4A /* ProductFormDataModel+ProductsTabProductViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormDataModel+ProductsTabProductViewModel.swift"; sourceTree = "<group>"; };
 		025FDD3123717D2900824006 /* EditorFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorFactory.swift; sourceTree = "<group>"; };
 		025FDD3323717D4900824006 /* AztecEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecEditorViewController.swift; sourceTree = "<group>"; };
 		0260F40023224E8100EDA10A /* ProductsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsViewController.swift; sourceTree = "<group>"; };
@@ -2032,6 +2034,7 @@
 			isa = PBXGroup;
 			children = (
 				020DD48C2322A617005822B1 /* ProductsTabProductViewModel.swift */,
+				025E32BB251D8FEF00685C4A /* ProductFormDataModel+ProductsTabProductViewModel.swift */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -5361,6 +5364,7 @@
 				B54FBE552111F70700390F57 /* ResultsController+UIKit.swift in Sources */,
 				CE2409F1215D12D30091F887 /* WooNavigationController.swift in Sources */,
 				029F29FA24D93E9E004751CA /* EditableProductModel.swift in Sources */,
+				025E32BC251D8FEF00685C4A /* ProductFormDataModel+ProductsTabProductViewModel.swift in Sources */,
 				02ECD1E624FFB4E900735BE5 /* ProductFactory.swift in Sources */,
 				74F9E9CE214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift in Sources */,
 				B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */,

@@ -48,20 +48,20 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try container.viewContext.count(entityName: "ProductVariation"), 1)
 
         // When
-        let upgradedContainer = try migrate(container, to: "Model 32")
+        let migratedContainer = try migrate(container, to: "Model 32")
 
         // Then
-        XCTAssertNil(NSEntityDescription.entity(forEntityName: "Attribute", in: upgradedContainer.viewContext))
-        XCTAssertEqual(try upgradedContainer.viewContext.count(entityName: "GenericAttribute"), 1)
-        XCTAssertEqual(try upgradedContainer.viewContext.count(entityName: "ProductVariation"), 1)
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "Attribute", in: migratedContainer.viewContext))
+        XCTAssertEqual(try migratedContainer.viewContext.count(entityName: "GenericAttribute"), 1)
+        XCTAssertEqual(try migratedContainer.viewContext.count(entityName: "ProductVariation"), 1)
 
-        let migratedAttribute = try XCTUnwrap(upgradedContainer.viewContext.allObjects(entityName: "GenericAttribute").first)
+        let migratedAttribute = try XCTUnwrap(migratedContainer.viewContext.allObjects(entityName: "GenericAttribute").first)
         XCTAssertEqual(migratedAttribute.value(forKey: "id") as? Int, 9_753_134)
         XCTAssertEqual(migratedAttribute.value(forKey: "key") as? String, "voluptatem")
         XCTAssertEqual(migratedAttribute.value(forKey: "value") as? String, "veritatis")
 
         // The "attributes" relationship should have been migrated too
-        let migratedVariation = try XCTUnwrap(upgradedContainer.viewContext.allObjects(entityName: "ProductVariation").first)
+        let migratedVariation = try XCTUnwrap(migratedContainer.viewContext.allObjects(entityName: "ProductVariation").first)
         let migratedVariationAttributes = migratedVariation.mutableOrderedSetValue(forKey: "attributes")
         XCTAssertEqual(migratedVariationAttributes.count, 1)
         XCTAssertEqual(migratedVariationAttributes.firstObject as? NSManagedObject, migratedAttribute)
@@ -96,7 +96,7 @@ private extension MigrationTests {
     /// The `container.viewContext` and any created `NSManagedObjects` can still be used but
     /// they will not be attached to the SQLite database so watch out for that. XD
     ///
-    /// - Returns: A new loaded `NSPersistentContainer` using the new `NSManagedObjectModel`
+    /// - Returns: A new `NSPersistentContainer` instance using the new `NSManagedObjectModel`
     ///            pointed to by `versionName`.
     ///
     func migrate(_ container: NSPersistentContainer, to versionName: String) throws -> NSPersistentContainer {
@@ -116,15 +116,15 @@ private extension MigrationTests {
         XCTAssertTrue(isMigrationSuccessful)
 
         // Load a new container
-        let upgradedContainer = makePersistentContainer(storeURL: storeURL, model: targetModel)
+        let migratedContainer = makePersistentContainer(storeURL: storeURL, model: targetModel)
         let loadingError: Error? = try waitFor { promise in
-            upgradedContainer.loadPersistentStores { _, error in
+            migratedContainer.loadPersistentStores { _, error in
                 promise(error)
             }
         }
         XCTAssertNil(loadingError)
 
-        return upgradedContainer
+        return migratedContainer
     }
 
     func makePersistentContainer(storeURL: URL, model: NSManagedObjectModel) -> NSPersistentContainer {

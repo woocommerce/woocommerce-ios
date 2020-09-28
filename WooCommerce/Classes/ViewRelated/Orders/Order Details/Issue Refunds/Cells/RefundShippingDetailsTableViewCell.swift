@@ -81,6 +81,20 @@ private extension RefundShippingDetailsTableViewCell {
     }
 }
 
+// MARK: ViewModel Rendering
+extension RefundShippingDetailsTableViewCell {
+
+    /// Configure cell with the provided view model
+    ///
+    func configure(with viewModel: RefundShippingDetailsViewModel) {
+        carrierLabel.text = viewModel.carrierRate
+        shippingPrice.text = viewModel.carrierCost
+        taxPriceLabel.text = viewModel.shippingTax
+        subtotalPriceLabel.text = viewModel.shippingSubtotal
+        shippingRefundPriceLabel.text = viewModel.shippingTotal
+    }
+}
+
 // MARK: Constants
 private extension RefundShippingDetailsTableViewCell {
     enum Localization {
@@ -106,6 +120,13 @@ private struct RefundShippingDetailsTableViewCellRepresentable: UIViewRepresenta
         guard let cell = nib.instantiate(withOwner: self, options: nil).first as? RefundShippingDetailsTableViewCell else {
             fatalError("Could not create RefundShippingDetailsTableViewCell")
         }
+
+        let viewModel = RefundShippingDetailsViewModel(carrierRate: "USPS Flat Rate Shipping",
+                                                       carrierCost: "$7.50",
+                                                       shippingTax: "$3.00",
+                                                       shippingSubtotal: "$7.50",
+                                                       shippingTotal: "$10.50")
+        cell.configure(with: viewModel)
         return cell
     }
 

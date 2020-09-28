@@ -33,29 +33,42 @@ final class MigrationTests: XCTestCase {
     func test_migrating_from_31_to_32_renames_Attribute_to_GenericAttribute() throws {
         // Given
         let container = try startPersistentContainer("Model 31")
-        container.viewContext.insert(entityName: "Attribute", properties: [
+
+        let attribute = container.viewContext.insert(entityName: "Attribute", properties: [
             "id": 9_753_134,
             "key": "voluptatem",
             "value": "veritatis"
-        ]);
+        ])
+        let variation = insertProductVariation(to: container.viewContext)
+        variation.mutableOrderedSetValue(forKey: "attributes").add(attribute)
+
         try container.viewContext.save()
 
         XCTAssertEqual(try container.viewContext.count(entityName: "Attribute"), 1)
+        XCTAssertEqual(try container.viewContext.count(entityName: "ProductVariation"), 1)
 
         // When
         let upgradedContainer = try migrate(container, to: "Model 32")
 
         // Then
         XCTAssertNil(NSEntityDescription.entity(forEntityName: "Attribute", in: upgradedContainer.viewContext))
-
         XCTAssertEqual(try upgradedContainer.viewContext.count(entityName: "GenericAttribute"), 1)
+        XCTAssertEqual(try upgradedContainer.viewContext.count(entityName: "ProductVariation"), 1)
 
         let migratedAttribute = try XCTUnwrap(upgradedContainer.viewContext.allObjects(entityName: "GenericAttribute").first)
         XCTAssertEqual(migratedAttribute.value(forKey: "id") as? Int, 9_753_134)
         XCTAssertEqual(migratedAttribute.value(forKey: "key") as? String, "voluptatem")
         XCTAssertEqual(migratedAttribute.value(forKey: "value") as? String, "veritatis")
+
+        // The "attributes" relationship should have been migrated too
+        let migratedVariation = try XCTUnwrap(upgradedContainer.viewContext.allObjects(entityName: "ProductVariation").first)
+        let migratedVariationAttributes = migratedVariation.mutableOrderedSetValue(forKey: "attributes")
+        XCTAssertEqual(migratedVariationAttributes.count, 1)
+        XCTAssertEqual(migratedVariationAttributes.firstObject as? NSManagedObject, migratedAttribute)
     }
 }
+
+// MARK: - Persistent Store Setup and Migrations
 
 private extension MigrationTests {
     func startPersistentContainer(_ versionName: String) throws -> NSPersistentContainer {
@@ -115,5 +128,26 @@ private extension MigrationTests {
         let container = NSPersistentContainer(name: "ContainerName", managedObjectModel: model)
         container.persistentStoreDescriptions = [description]
         return container
+    }
+}
+
+// MARK: - Entity Helpers
+//
+
+private extension MigrationTests {
+    /// Inserts a `ProductVariation` entity, providing default values for the required properties.
+    @discardableResult
+    func insertProductVariation(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "ProductVariation", properties: [
+            "dateCreated": Date(),
+            "backordered": false,
+            "backordersAllowed": false,
+            "backordersKey": "",
+            "permalink": "",
+            "price": "",
+            "statusKey": "",
+            "stockStatusKey": "",
+            "taxStatusKey": ""
+        ])
     }
 }

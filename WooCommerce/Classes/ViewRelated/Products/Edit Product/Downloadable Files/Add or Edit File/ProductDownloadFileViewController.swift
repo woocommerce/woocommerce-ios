@@ -8,7 +8,6 @@ final class ProductDownloadFileViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
 
     private let viewModel: ProductDownloadFileViewModelOutput & ProductDownloadFileActionHandler
-    private var sections: [Section] = []
 
     // Completion callback
     //
@@ -39,7 +38,6 @@ final class ProductDownloadFileViewController: UIViewController {
         startListeningToNotifications()
         configureNavigationBar()
         configureMainView()
-        configureSections()
         configureTableView()
         handleSwipeBackGesture()
     }
@@ -47,7 +45,7 @@ final class ProductDownloadFileViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        configureTextFieldAsFirstResponder()
+        configureUrlTextFieldAsFirstResponder()
     }
 }
 
@@ -84,7 +82,7 @@ extension ProductDownloadFileViewController {
     }
 
     @objc private func deleteDownloadableFile() {
-
+        //TODO: - Handle the deletion of file properly
     }
 
     private func presentBackNavigationActionSheet() {
@@ -99,11 +97,11 @@ extension ProductDownloadFileViewController {
 extension ProductDownloadFileViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return sections.count
+        return viewModel.sections.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sections[section].rows.count
+        return viewModel.sections[section].rows.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -115,7 +113,7 @@ extension ProductDownloadFileViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        return sections[section].footer
+        return viewModel.sections[section].footer
     }
 }
 
@@ -124,22 +122,18 @@ extension ProductDownloadFileViewController: UITableViewDataSource {
 private extension ProductDownloadFileViewController {
 
     func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
-        return sections[indexPath.section].rows[indexPath.row]
-    }
-
-    func configureSections() {
-        sections = viewModel.sections
+        return viewModel.sections[indexPath.section].rows[indexPath.row]
     }
 
     func getFileNameCell() -> TitleAndTextFieldTableViewCell? {
-        guard let indexPath = sections.indexPathForRow(.name) else {
+        guard let indexPath = viewModel.sections.indexPathForRow(.name) else {
             return nil
         }
         return tableView.cellForRow(at: indexPath) as? TitleAndTextFieldTableViewCell
     }
 
     func getFileUrlCell() -> TitleAndTextFieldTableViewCell? {
-        guard let indexPath = sections.indexPathForRow(.url) else {
+        guard let indexPath = viewModel.sections.indexPathForRow(.url) else {
             return nil
         }
         return tableView.cellForRow(at: indexPath) as? TitleAndTextFieldTableViewCell
@@ -241,13 +235,13 @@ private extension ProductDownloadFileViewController {
         view.pinSubviewToSafeArea(tableView)
 
         registerTableViewCells()
-        registerTableViewHeaderFooters()
     }
 
-    /// Since there is only a text field in this view for Product SKU form, the text field becomes the first responder immediately when the view did appear
+    /// Since the file url is the mandatory text field in this view for Product Downloadable file form,
+    /// the text field becomes the first responder immediately when the view did appear
     ///
-    func configureTextFieldAsFirstResponder() {
-        if let indexPath = sections.indexPathForRow(.url) {
+    func configureUrlTextFieldAsFirstResponder() {
+        if let indexPath = viewModel.sections.indexPathForRow(.url) {
             let cell = tableView.cellForRow(at: indexPath) as? TitleAndTextFieldTableViewCell
             cell?.textFieldBecomeFirstResponder()
         }
@@ -256,14 +250,6 @@ private extension ProductDownloadFileViewController {
     func registerTableViewCells() {
         for row in Row.allCases {
             tableView.register(row.type.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
-        }
-    }
-
-    func registerTableViewHeaderFooters() {
-        let headersAndFooters = [ ErrorSectionHeaderView.self ]
-
-        for kind in headersAndFooters {
-            tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
         }
     }
 
@@ -318,12 +304,10 @@ private extension ProductDownloadFileViewController {
 extension ProductDownloadFileViewController {
 
     struct Section: RowIterable, Equatable {
-        let errorTitle: String?
         let footer: String?
         let rows: [Row]
 
-        init(errorTitle: String? = nil, footer: String? = nil, rows: [Row]) {
-            self.errorTitle = errorTitle
+        init(footer: String? = nil, rows: [Row]) {
             self.footer = footer
             self.rows = rows
         }

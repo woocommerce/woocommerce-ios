@@ -38,7 +38,7 @@ enum ProductDownloadFileError: Error {
 ///
 final class ProductDownloadFileViewModel: ProductDownloadFileViewModelOutput {
     private let product: ProductFormDataModel
-    private let downloadableFileIndex: Int
+    private let downloadableFileIndex: Int?
 
     // Editable data
     //
@@ -53,14 +53,14 @@ final class ProductDownloadFileViewModel: ProductDownloadFileViewModelOutput {
     private lazy var throttler: Throttler = Throttler(seconds: 0.5)
 
     init(product: ProductFormDataModel,
-         downloadFileIndex: Int = -1,
+         downloadFileIndex: Int?,
          formType: ProductDownloadFileViewController.FormType) {
         self.product = product
         self.downloadableFileIndex = downloadFileIndex
         self.formType = formType
 
-        if downloadFileIndex >= 0 {
-            let file = product.downloadableFiles[downloadFileIndex]
+        if let downloadableFileIndex = downloadableFileIndex, downloadableFileIndex >= 0 {
+            let file = product.downloadableFiles[downloadableFileIndex]
             fileName = file.name
             fileURL = file.fileURL
             fileID = file.downloadID
@@ -91,7 +91,7 @@ extension ProductDownloadFileViewModel: ProductDownloadFileActionHandler {
 
         let newValue = self.fileName
         var oldValue: String?
-        if downloadableFileIndex >= 0 {
+        if let downloadableFileIndex = downloadableFileIndex, downloadableFileIndex >= 0 {
             oldValue = product.downloadableFiles[downloadableFileIndex].name
         }
 
@@ -115,7 +115,7 @@ extension ProductDownloadFileViewModel: ProductDownloadFileActionHandler {
 
         let newValue = self.fileURL
         var oldValue: String?
-        if downloadableFileIndex >= 0 {
+        if let downloadableFileIndex = downloadableFileIndex, downloadableFileIndex >= 0 {
             oldValue = product.downloadableFiles[downloadableFileIndex].fileURL
         }
 
@@ -138,12 +138,12 @@ extension ProductDownloadFileViewModel: ProductDownloadFileActionHandler {
 
     func completeUpdating(onCompletion: ProductDownloadFileViewController.Completion,
                           onError: (ProductDownloadFileError) -> Void) {
-        if isChangesValid() {
+        if let fileURL = fileURL, isChangesValid() {
             onCompletion(fileName, fileURL, fileID, hasUnsavedChanges())
-        } else if !fileUrlIsValid {
-            onError(.invalidFileUrl)
         } else if !fileNameIsValid {
             onError(.emptyFileName)
+        } else {
+            onError(.invalidFileUrl)
         }
         return
     }
@@ -153,7 +153,7 @@ extension ProductDownloadFileViewModel: ProductDownloadFileActionHandler {
     }
 }
 
-// MARK: - Convenience Methodes
+// MARK: - Convenience Methods
 //
 private extension ProductDownloadFileViewModel {
     func isChangesValid() -> Bool {

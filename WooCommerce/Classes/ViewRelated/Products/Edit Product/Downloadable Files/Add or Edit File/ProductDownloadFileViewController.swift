@@ -13,21 +13,18 @@ final class ProductDownloadFileViewController: UIViewController {
     // Completion callback
     //
     typealias Completion = (_ fileName: String?,
-        _ fileURL: String?,
+        _ fileURL: String,
         _ fileID: String?,
         _ hasUnsavedChanges: Bool) -> Void
     private let onCompletion: Completion
 
-    private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
-        let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
-            self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
-        }
-        return keyboardFrameObserver
-    }()
+    private lazy var keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
+        self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
+    }
 
     /// Init
     ///
-    init(product: ProductFormDataModel, downloadFileIndex: Int = -1, formType: FormType, completion: @escaping Completion) {
+    init(product: ProductFormDataModel, downloadFileIndex: Int?, formType: FormType, completion: @escaping Completion) {
         viewModel = ProductDownloadFileViewModel(product: product, downloadFileIndex: downloadFileIndex, formType: formType)
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)

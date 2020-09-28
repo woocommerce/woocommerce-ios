@@ -40,9 +40,23 @@ final class RefundShippingDetailsTableViewCell: UITableViewCell {
     ///
     @IBOutlet weak var shippingRefundPriceLabel: UILabel!
 
+    /// Displays a border around the `shippingImageView`
+    ///
+    @IBOutlet weak var shippingBorderView: UIView!
+
+    /// Needed to make sure the `shippingImageView` grows at the same ratio as the dynamic fonts
+    ///
+    @IBOutlet private var shippingBorderViewHeightConstraint: NSLayoutConstraint!
+
     override func awakeFromNib() {
         super.awakeFromNib()
         applyCellStyles()
+        applyAccessibilityChanges()
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        applyAccessibilityChanges()
     }
 }
 
@@ -72,12 +86,11 @@ private extension RefundShippingDetailsTableViewCell {
     }
 
     func applyShippingImageViewStyles() {
-        shippingImageView.contentMode = .center
         shippingImageView.image = .shippingImage
         shippingImageView.tintColor = .systemColor(.systemGray2)
-        shippingImageView.layer.cornerRadius = Constants.iconCornerRadius
-        shippingImageView.layer.borderWidth = Constants.iconBorderWitdh
-        shippingImageView.layer.borderColor = UIColor.border.cgColor
+        shippingBorderView.layer.cornerRadius = Constants.shippingBorderCornerRadius
+        shippingBorderView.layer.borderWidth = Constants.shippingBorderWitdh
+        shippingBorderView.layer.borderColor = UIColor.border.cgColor
     }
 }
 
@@ -95,6 +108,20 @@ extension RefundShippingDetailsTableViewCell {
     }
 }
 
+// MARK: Accessibility
+private extension RefundShippingDetailsTableViewCell {
+    func applyAccessibilityChanges() {
+        adjustShippingImageViewHeight()
+    }
+
+    /// Changes the shipping image view height acording to the current trait collection
+    ///
+    func adjustShippingImageViewHeight() {
+        shippingBorderViewHeightConstraint.constant = UIFontMetrics.default.scaledValue(for: Constants.shippingBorderViewHeight,
+                                                                                        compatibleWith: traitCollection)
+    }
+}
+
 // MARK: Constants
 private extension RefundShippingDetailsTableViewCell {
     enum Localization {
@@ -104,8 +131,9 @@ private extension RefundShippingDetailsTableViewCell {
     }
 
     enum Constants {
-        static let iconCornerRadius: CGFloat = 2.0
-        static let iconBorderWitdh: CGFloat = 0.5
+        static let shippingBorderCornerRadius: CGFloat = 2.0
+        static let shippingBorderWitdh: CGFloat = 0.5
+        static let shippingBorderViewHeight: CGFloat = 40.0
     }
 }
 
@@ -155,20 +183,15 @@ struct RefundShippingDetailsTableViewCell_Previews: PreviewProvider {
                 .environment(\.colorScheme, .dark)
                 .previewDisplayName("Dark")
 
-//            makeStack()
-//                .previewLayout(.fixed(width: 359, height: 209))
-//                .environment(\.layoutDirection, .rightToLeft)
-//                .previewDisplayName("RTL")
-//
-//            makeStack()
-//                .previewLayout(.fixed(width: 359, height: 300))
-//                .environment(\.sizeCategory, .accessibilityMedium)
-//                .previewDisplayName("Large Font")
-//
-//            makeStack()
-//                .previewLayout(.fixed(width: 359, height: 620))
-//                .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
-//                .previewDisplayName("Extra Large Font")
+            makeStack()
+                .previewLayout(.fixed(width: 359, height: 300))
+                .environment(\.sizeCategory, .accessibilityMedium)
+                .previewDisplayName("Large Font")
+
+            makeStack()
+                .previewLayout(.fixed(width: 359, height: 600))
+                .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+                .previewDisplayName("Extra Large Font")
         }
     }
 }

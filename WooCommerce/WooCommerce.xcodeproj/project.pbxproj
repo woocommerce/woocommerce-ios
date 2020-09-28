@@ -3266,7 +3266,7 @@
 			path = Cells;
 			sourceTree = "<group>";
 		};
-		773077E7251E943600178696 /* Add or Edit FIle */ = {
+		773077E7251E943600178696 /* Add or Edit File */ = {
 			isa = PBXGroup;
 			children = (
 				773077E8251E943600178696 /* ProductDownloadFileViewModel.swift */,
@@ -3274,7 +3274,7 @@
 				773077EA251E943600178696 /* ProductDownloadFileViewController.swift */,
 				773077EB251E943600178696 /* ProductDownloadFileViewController.xib */,
 			);
-			path = "Add or Edit FIle";
+			path = "Add or Edit File";
 			sourceTree = "<group>";
 		};
 		77423F14251CF59D0016A083 /* Downloadable Files */ = {
@@ -3289,7 +3289,7 @@
 		77E53EB5250E6972003D385F /* Downloadable Files */ = {
 			isa = PBXGroup;
 			children = (
-				773077E7251E943600178696 /* Add or Edit FIle */,
+				773077E7251E943600178696 /* Add or Edit File */,
 				77E53EC62510C3F4003D385F /* FIle List */,
 			);
 			path = "Downloadable Files";

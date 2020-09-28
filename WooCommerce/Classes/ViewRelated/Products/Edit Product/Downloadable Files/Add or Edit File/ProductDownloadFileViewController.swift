@@ -1,15 +1,14 @@
 import UIKit
 import Yosemite
 
-// MARK: - ProductDownloadFileViewController
-//
+
+/// Displays the name and url for a downloadable file of a product
 final class ProductDownloadFileViewController: UIViewController {
 
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet private weak var tableView: UITableView!
 
     private let viewModel: ProductDownloadFileViewModelOutput & ProductDownloadFileActionHandler
     private var sections: [Section] = []
-    private var error: String?
 
     // Completion callback
     //

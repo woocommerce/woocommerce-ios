@@ -8,6 +8,15 @@ import CoreData
 /// Ideally, we should have a test for every new model version. There can also be more than
 /// one test between 2 versions if there are many cases being tested.
 ///
+/// ## Notes
+///
+/// In general, we should avoid using the entity classes like `Product` or `Order`. These classes
+/// may **change** in the future. And if they do, the migration tests would have to be changed.
+/// There's a risk that the migration tests would no longer be correct if this happens.
+///
+/// That said, it is understandable that we are sometimes under pressure to finish features that
+/// this may not be economical.
+///
 final class MigrationTests: XCTestCase {
     private var modelsInventory: ManagedObjectModelsInventory!
 
@@ -24,13 +33,11 @@ final class MigrationTests: XCTestCase {
     func test_migrating_from_31_to_32_renames_Attribute_to_GenericAttribute() throws {
         // Given
         let container = try startPersistentContainer("Model 31")
-        let attribute: NSManagedObject = {
-            let object = NSEntityDescription.insertNewObject(forEntityName: "Attribute", into: container.viewContext)
-            object.setValue(9_753_134, forKey: "id")
-            object.setValue("voluptatem", forKey: "key")
-            object.setValue("veritatis", forKey: "value")
-            return object
-        }()
+        container.viewContext.insert(entityName: "Attribute", properties: [
+            "id": 9_753_134,
+            "key": "voluptatem",
+            "value": "veritatis"
+        ]);
         try container.viewContext.save()
 
         XCTAssertEqual(try container.viewContext.count(entityName: "Attribute"), 1)
@@ -42,6 +49,11 @@ final class MigrationTests: XCTestCase {
         XCTAssertNil(NSEntityDescription.entity(forEntityName: "Attribute", in: upgradedContainer.viewContext))
 
         XCTAssertEqual(try upgradedContainer.viewContext.count(entityName: "GenericAttribute"), 1)
+
+        let migratedAttribute = try XCTUnwrap(upgradedContainer.viewContext.allObjects(entityName: "GenericAttribute").first)
+        XCTAssertEqual(migratedAttribute.value(forKey: "id") as? Int, 9_753_134)
+        XCTAssertEqual(migratedAttribute.value(forKey: "key") as? String, "voluptatem")
+        XCTAssertEqual(migratedAttribute.value(forKey: "value") as? String, "veritatis")
     }
 }
 

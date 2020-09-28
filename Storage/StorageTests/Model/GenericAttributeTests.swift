@@ -2,8 +2,8 @@ import XCTest
 
 @testable import Storage
 
-/// Test cases for the `Attribute` NSManagedObject class.
-final class AttributeTests: XCTestCase {
+/// Test cases for the `GenericAttribute` NSManagedObject class.
+final class GenericAttributeTests: XCTestCase {
 
     private var coreDataManager: CoreDataManager!
 

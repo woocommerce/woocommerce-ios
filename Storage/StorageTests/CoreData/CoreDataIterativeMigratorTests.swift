@@ -7,16 +7,95 @@ import CoreData
 final class CoreDataIterativeMigratorTests: XCTestCase {
     private var modelsInventory: ManagedObjectModelsInventory!
 
-    override func setUp() {
-        super.setUp()
+    override func setUpWithError() throws {
+        try super.setUpWithError()
         DDLog.add(DDOSLogger.sharedInstance)
-        modelsInventory = try! .from(packageName: "WooCommerce", bundle: Bundle(for: CoreDataManager.self))
+        modelsInventory = try .from(packageName: "WooCommerce", bundle: Bundle(for: CoreDataManager.self))
     }
 
     override func tearDown() {
         modelsInventory = nil
         DDLog.remove(DDOSLogger.sharedInstance)
         super.tearDown()
+    }
+
+    /// Tests that model versions are not compatible with each other.
+    ///
+    /// This protects us from mistakes like adding a new model version that has **no structural
+    /// changes** and not setting the Hash Modifier. An example of that is creating a new model
+    /// but only renaming the entity classes. If we forget to change the model's Hash Modifier,
+    /// then the `CoreDataManager.migrateDataModelIfNecessary` will (correctly) **skip** the
+    /// migration. See here for more information: https://tinyurl.com/yxzpwp7t.
+    ///
+    /// This loops through **all NSManagedObjectModels**, performs a migration, and checks for
+    /// compatibility with all the other versions. For example, for "Model 3":
+    ///
+    /// 1. Migrate the store from previous model (Model 2) to Model 3.
+    /// 2. Check that Model 3 is compatible with the _migrated_ store. This verifies the migration.
+    /// 3. Check that Models 1, 2, 4, 5, 6, 7, and so on are **not** compatible with the _migrated_ store.
+    ///
+    /// ## Testing
+    ///
+    /// You can make this test fail by:
+    ///
+    /// 1. Creating a new model version for `WooCommerce.xcdatamodeld`, copying the latest version.
+    /// 2. Running this test.
+    ///
+    /// And then make this pass again by setting a Hash Modifier value for the new model.
+    ///
+    func test_all_model_versions_are_not_compatible_with_each_other() throws {
+        // Given
+        // Use in-memory type or else this would be too slow.
+        let storeType = NSInMemoryStoreType
+        let storeURL = try XCTUnwrap(NSURL(fileURLWithPath: NSTemporaryDirectory())
+            .appendingPathComponent(UUID().uuidString)?
+            .appendingPathExtension("sqlite"))
+
+        // Cache the models to improve the performance of the loop below.
+        let modelsByVersionName = try modelsInventory.versions.reduce(into: [String: NSManagedObjectModel]()) { result, version in
+            result[version.name] = try XCTUnwrap(modelsInventory.model(for: version))
+        }
+
+        try modelsInventory.versions.forEach { currentVersion in
+            // Given
+            let currentModel = try XCTUnwrap(modelsByVersionName[currentVersion.name])
+
+            // When
+            // Migrate to the currentVersion if this is not the first version in the list.
+            if modelsInventory.versions.first != currentVersion {
+                let migrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory)
+                let (isMigrationSuccessful, _) =
+                    try migrator.iterativeMigrate(sourceStore: storeURL, storeType: storeType, to: currentModel)
+                XCTAssertTrue(isMigrationSuccessful)
+            }
+
+            // Load the persistent container
+            let persistentContainer =
+                makePersistentContainer(storeURL: storeURL, storeType: storeType, model: currentModel)
+            let loadingError: Error? = try waitFor { promise in
+                persistentContainer.loadPersistentStores { _, error in
+                    promise(error)
+                }
+            }
+            XCTAssertNil(loadingError)
+
+            let persistentStoreCoordinator = persistentContainer.persistentStoreCoordinator
+            let persistentStore = try XCTUnwrap(persistentStoreCoordinator.persistentStores.first)
+
+            // Then
+            // The current model should be compatible with the current persistent store
+            XCTAssertTrue(currentModel.isConfiguration(withName: nil, compatibleWithStoreMetadata: persistentStore.metadata),
+                          "Current model “\(currentVersion.name)” should be compatible with the persistentStore.")
+
+            // All other versions should not be compatible with the current persistentStore
+            try modelsInventory.versions.filter {
+                $0 != currentVersion
+            }.forEach { version in
+                let model = try XCTUnwrap(modelsByVersionName[version.name])
+                XCTAssertFalse(model.isConfiguration(withName: nil, compatibleWithStoreMetadata: persistentStore.metadata),
+                               "Model “\(version.name)” should not be compatible with the persistentStore whose version is “\(currentVersion.name)”.")
+            }
+        }
     }
 
     func test_it_will_not_migrate_if_the_database_file_does_not_exist() throws {
@@ -345,6 +424,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         let persistedAttribute = try XCTUnwrap(destinationModelContainer.viewContext.firstObject(ofType: ProductAttribute.self))
         XCTAssertEqual(persistedAttribute.options, attributeOptions)
     }
+
 }
 
 /// Helpers for generating data in migration tests
@@ -424,9 +504,11 @@ private extension CoreDataIterativeMigratorTests {
     }
 
     func managedObjectModel(for modelName: String) throws -> NSManagedObjectModel {
-        try XCTUnwrap(NSManagedObjectModel(contentsOf: urlForModel(name: modelName)))
+        let modelVersion = ManagedObjectModelsInventory.ModelVersion(name: modelName)
+        return try XCTUnwrap(modelsInventory.model(for: modelVersion))
     }
 
+    /// Prefer using `managedObjectModel(for:)` directly. 
     func urlForModel(name: String) -> URL {
 
         let bundle = Bundle(for: CoreDataManager.self)
@@ -448,5 +530,19 @@ private extension CoreDataIterativeMigratorTests {
         try? FileManager.default.createDirectory(at: documentsDirectory, withIntermediateDirectories: true, attributes: nil)
 
         return storeURL
+    }
+
+    func makePersistentContainer(storeURL: URL, storeType: String, model: NSManagedObjectModel) -> NSPersistentContainer {
+        let description: NSPersistentStoreDescription = {
+            let description = NSPersistentStoreDescription(url: storeURL)
+            description.shouldAddStoreAsynchronously = false
+            description.shouldMigrateStoreAutomatically = false
+            description.type = storeType
+            return description
+        }()
+
+        let container = NSPersistentContainer(name: "ContainerName", managedObjectModel: model)
+        container.persistentStoreDescriptions = [description]
+        return container
     }
 }

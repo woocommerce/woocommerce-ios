@@ -79,7 +79,16 @@ private extension MigrationTests {
             try migrator.iterativeMigrate(sourceStore: storeURL, storeType: storeDescription.type, to: targetModel)
         XCTAssertTrue(isMigrationSuccessful)
 
-        return makePersistentContainer(storeURL: storeURL, model: targetModel)
+        // Load a new container
+        let upgradedContainer = makePersistentContainer(storeURL: storeURL, model: targetModel)
+        let loadingError: Error? = try waitFor { promise in
+            upgradedContainer.loadPersistentStores { _, error in
+                promise(error)
+            }
+        }
+        XCTAssertNil(loadingError)
+
+        return upgradedContainer
     }
 
     func makePersistentContainer(storeURL: URL, model: NSManagedObjectModel) -> NSPersistentContainer {

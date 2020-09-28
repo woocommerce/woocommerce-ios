@@ -142,7 +142,10 @@ private extension OrderStore {
                                  statusKey: statusKey,
                                  before: before,
                                  pageNumber: pageNumber,
-                                 pageSize: pageSize) { result in
+                                 pageSize: pageSize) { [weak self] result in
+                                    guard let self = self else {
+                                        return
+                                    }
                 serialQueue.async { [weak self] in
                     guard let self = self else {
                         completion()

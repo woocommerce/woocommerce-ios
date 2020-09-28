@@ -38,7 +38,9 @@
 		574B774C24AA87FA0042116F /* FileManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574B774B24AA87FA0042116F /* FileManagerProtocol.swift */; };
 		574B774E24AA883D0042116F /* MockFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574B774D24AA883D0042116F /* MockFileManager.swift */; };
 		574B775024AA897E0042116F /* FileManager+FileManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574B774F24AA897E0042116F /* FileManager+FileManagerProtocol.swift */; };
+		57589E90252275CA000F22CE /* NSManagedObjectContext+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57589E8F252275CA000F22CE /* NSManagedObjectContext+TestHelpers.swift */; };
 		575CD4DC24ABE77800755B2B /* Collection+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575CD4DB24ABE77800755B2B /* Collection+Extensions.swift */; };
+		57A29FB825226BDC004DEE01 /* MigrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A29FB725226BDC004DEE01 /* MigrationTests.swift */; };
 		57A881A024CA396D00AE0943 /* GeneralAppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A8819F24CA396D00AE0943 /* GeneralAppSettings.swift */; };
 		68BC97FB41770051C287D1A8 /* Pods_StorageTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47556EE256120BEE49FF5FD3 /* Pods_StorageTests.framework */; };
 		7028A41485A08AC748206184 /* Pods_Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF3D3B298350F68191CD1DAD /* Pods_Storage.framework */; };
@@ -196,7 +198,9 @@
 		574B774B24AA87FA0042116F /* FileManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerProtocol.swift; sourceTree = "<group>"; };
 		574B774D24AA883D0042116F /* MockFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFileManager.swift; sourceTree = "<group>"; };
 		574B774F24AA897E0042116F /* FileManager+FileManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+FileManagerProtocol.swift"; sourceTree = "<group>"; };
+		57589E8F252275CA000F22CE /* NSManagedObjectContext+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+TestHelpers.swift"; sourceTree = "<group>"; };
 		575CD4DB24ABE77800755B2B /* Collection+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Extensions.swift"; sourceTree = "<group>"; };
+		57A29FB725226BDC004DEE01 /* MigrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MigrationTests.swift; sourceTree = "<group>"; };
 		57A8819F24CA396D00AE0943 /* GeneralAppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralAppSettings.swift; sourceTree = "<group>"; };
 		57E144CA2522527C00EEEEE5 /* Model 32.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 32.xcdatamodel"; sourceTree = "<group>"; };
 		5D12CAE2D0EA6AB66F162FF9 /* Pods-StorageTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StorageTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-StorageTests/Pods-StorageTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -554,6 +558,7 @@
 			children = (
 				B59E11DF20A9F5E6004121A4 /* Constants.swift */,
 				B54CA5C620A4BFDC00F38CD1 /* DummyStack.swift */,
+				57589E8F252275CA000F22CE /* NSManagedObjectContext+TestHelpers.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -650,6 +655,7 @@
 				9302E3AB220E1CE900DA5018 /* CoreDataIterativeMigratorTests.swift */,
 				B59E11DD20A9F1FB004121A4 /* CoreDataManagerTests.swift */,
 				5736878F24AABE4D00B528FE /* ManagedObjectModelsInventoryTests.swift */,
+				57A29FB725226BDC004DEE01 /* MigrationTests.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -975,8 +981,10 @@
 				574B774E24AA883D0042116F /* MockFileManager.swift in Sources */,
 				B54CA5C220A4BF6900F38CD1 /* NSManagedObjectStorageTests.swift in Sources */,
 				5736879024AABE4D00B528FE /* ManagedObjectModelsInventoryTests.swift in Sources */,
+				57589E90252275CA000F22CE /* NSManagedObjectContext+TestHelpers.swift in Sources */,
 				D87F61572265AD980031A13B /* FileStorageTests.swift in Sources */,
 				B59E11DE20A9F1FB004121A4 /* CoreDataManagerTests.swift in Sources */,
+				57A29FB825226BDC004DEE01 /* MigrationTests.swift in Sources */,
 				26EA01D524EC44B300176A57 /* GeneralAppSettingsTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

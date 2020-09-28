@@ -4,6 +4,7 @@ import CocoaLumberjack
 import CoreData
 @testable import Storage
 
+/// Test cases for `CoreDataIterativeMigrator`.
 final class CoreDataIterativeMigratorTests: XCTestCase {
     private var modelsInventory: ManagedObjectModelsInventory!
 

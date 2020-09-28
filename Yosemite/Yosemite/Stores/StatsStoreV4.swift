@@ -6,6 +6,19 @@ import Storage
 // MARK: - StatsStoreV4
 //
 public final class StatsStoreV4: Store {
+    private let siteVisitStatsRemote: SiteVisitStatsRemote
+    private let leaderboardsRemote: LeaderboardsRemote
+    private let orderStatsRemote: OrderStatsRemoteV4
+    private let productsRemote: ProductsRemote
+
+    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+        self.siteVisitStatsRemote = SiteVisitStatsRemote(network: network)
+        self.leaderboardsRemote = LeaderboardsRemote(network: network)
+        self.orderStatsRemote = OrderStatsRemoteV4(network: network)
+        self.productsRemote = ProductsRemote(network: network)
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
+
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
@@ -87,9 +100,8 @@ public extension StatsStoreV4 {
         let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
         let earliestDate = dateFormatter.string(from: earliestDateToInclude)
         let latestDate = dateFormatter.string(from: latestDateToInclude)
-        let remote = OrderStatsRemoteV4(network: network)
 
-        remote.loadOrderStats(for: siteID,
+        orderStatsRemote.loadOrderStats(for: siteID,
                               unit: timeRange.intervalGranularity,
                               earliestDateToInclude: earliestDate,
                               latestDateToInclude: latestDate,
@@ -114,8 +126,7 @@ public extension StatsStoreV4 {
 
         let quantity = timeRange.siteVisitStatsQuantity(date: latestDateToInclude, siteTimezone: siteTimezone)
 
-        let remote = SiteVisitStatsRemote(network: network)
-        remote.loadSiteVisitorStats(for: siteID,
+        siteVisitStatsRemote.loadSiteVisitorStats(for: siteID,
                                     siteTimezone: siteTimezone,
                                     unit: timeRange.siteVisitStatsGranularity,
                                     latestDateToInclude: latestDateToInclude,
@@ -140,9 +151,7 @@ public extension StatsStoreV4 {
         let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
         let earliestDate = dateFormatter.string(from: earliestDateToInclude)
         let latestDate = dateFormatter.string(from: latestDateToInclude)
-        let remote = LeaderboardsRemote(network: network)
-
-        remote.loadLeaderboards(for: siteID,
+        leaderboardsRemote.loadLeaderboards(for: siteID,
                                 unit: timeRange.leaderboardsGranularity,
                                 earliestDateToInclude: earliestDate,
                                 latestDateToInclude: latestDate,
@@ -351,7 +360,6 @@ private extension StatsStoreV4 {
         }
 
         // Fetch the products that we have not downloaded and stored yet
-        let productsRemote = ProductsRemote(network: network)
         productsRemote.loadProducts(for: siteID, by: missingProductsIDs) { result in
             switch result {
             case .success(let products):

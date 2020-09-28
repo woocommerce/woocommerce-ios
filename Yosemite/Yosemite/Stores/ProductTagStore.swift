@@ -5,10 +5,16 @@ import Storage
 // MARK: - ProductTagStore
 //
 public final class ProductTagStore: Store {
+    private let remote: ProductTagsRemote
 
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.newDerivedStorage()
     }()
+
+    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+        self.remote = ProductTagsRemote(network: network)
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
 
     /// Registers for supported Actions.
     ///
@@ -70,8 +76,6 @@ private extension ProductTagStore {
     /// Synchronizes product tags associated with a given Site ID.
     ///
     func synchronizeProductTags(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Result<[ProductTag], Error>) -> Void) {
-        let remote = ProductTagsRemote(network: network)
-
         remote.loadAllProductTags(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (result) in
 
             switch result {
@@ -92,8 +96,6 @@ private extension ProductTagStore {
     /// Create new product tags associated with a given Site ID.
     ///
     func addProductTags(siteID: Int64, tags: [String], onCompletion: @escaping (Result<[ProductTag], Error>) -> Void) {
-        let remote = ProductTagsRemote(network: network)
-
         remote.createProductTags(for: siteID, names: tags) { [weak self] (result) in
             switch result {
             case .success(let productTags):
@@ -109,8 +111,6 @@ private extension ProductTagStore {
     /// Delete product tags associated with a given Site ID.
     ///
     func deleteProductTags(siteID: Int64, ids: [Int64], onCompletion: @escaping (Result<[ProductTag], Error>) -> Void) {
-        let remote = ProductTagsRemote(network: network)
-
         remote.deleteProductTags(for: siteID, ids: ids) { [weak self] (result) in
             switch result {
             case .success(let productTags):

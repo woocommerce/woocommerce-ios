@@ -118,4 +118,35 @@ extension MockProductsRemote: ProductsRemoteProtocol {
             }
         }
     }
+
+    func loadAllProducts(for siteID: Int64,
+                         context: String?,
+                         pageNumber: Int,
+                         pageSize: Int,
+                         stockStatus: ProductStockStatus?,
+                         productStatus: ProductStatus?,
+                         productType: ProductType?,
+                         orderBy: ProductsRemote.OrderKey,
+                         order: ProductsRemote.Order,
+                         excludedProductIDs: [Int64],
+                         completion: @escaping (Result<[Product], Error>) -> Void) {
+        // no-op
+    }
+
+    func searchProducts(for siteID: Int64,
+                        keyword: String,
+                        pageNumber: Int,
+                        pageSize: Int,
+                        excludedProductIDs: [Int64],
+                        completion: @escaping ([Product]?, Error?) -> Void) {
+        // no-op
+    }
+
+    func searchSku(for siteID: Int64, sku: String, completion: @escaping (String?, Error?) -> Void) {
+        // no-op
+    }
+
+    func updateProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void) {
+        // no-op
+    }
 }

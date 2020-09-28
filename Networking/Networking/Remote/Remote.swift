@@ -28,7 +28,11 @@ public class Remote {
     ///     - completion: Closure to be executed upon completion. Will receive the JSON Parsed Response (if successful)
     ///
     func enqueue(_ request: URLRequestConvertible, completion: @escaping (Any?, Error?) -> Void) {
-        network.responseData(for: request) { (data, networError) in
+        network.responseData(for: request) { [weak self] (data, networError) in
+            guard let self = self else {
+                return
+            }
+
             guard let data = data else {
                 completion(nil, networError)
                 return
@@ -61,7 +65,11 @@ public class Remote {
     ///     - completion: Closure to be executed upon completion.
     ///
     func enqueue<M: Mapper>(_ request: URLRequestConvertible, mapper: M, completion: @escaping (M.Output?, Error?) -> Void) {
-        network.responseData(for: request) { (data, networkError) in
+        network.responseData(for: request) { [weak self] (data, networkError) in
+            guard let self = self else {
+                return
+            }
+
             guard let data = data else {
                 completion(nil, networkError)
                 return
@@ -95,7 +103,11 @@ public class Remote {
     ///
     func enqueue<M: Mapper>(_ request: URLRequestConvertible, mapper: M,
                             completion: @escaping (Result<M.Output, Error>) -> Void) {
-        network.responseData(for: request) { result in
+        network.responseData(for: request) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+
             switch result {
             case .success(let data):
                 if let dotcomError = DotcomValidator.error(from: data) {
@@ -133,7 +145,11 @@ public class Remote {
                                                    multipartFormData: @escaping (MultipartFormData) -> Void,
                                                    completion: @escaping (M.Output?, Error?) -> Void) {
         network.uploadMultipartFormData(multipartFormData: multipartFormData,
-                                        to: request) { (data, networkError) in
+                                        to: request) { [weak self] (data, networkError) in
+                                            guard let self = self else {
+                                                return
+                                            }
+
                                             guard let data = data else {
                                                 completion(nil, networkError)
                                                 return

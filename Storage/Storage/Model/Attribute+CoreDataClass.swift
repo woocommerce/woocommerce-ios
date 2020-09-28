@@ -12,6 +12,6 @@ import CoreData
 /// doing so because there's an existing unrelated Attribute class in Aztec. ¯\_(ツ)_/¯
 ///
 @objc(GenericAttribute)
-public class Attribute: NSManagedObject {
+public class GenericAttribute: NSManagedObject {
 
 }

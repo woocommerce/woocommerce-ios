@@ -18,13 +18,13 @@ final class AttributeTests: XCTestCase {
     }
 
     func test_entityName_is_Attribute() {
-        let entityName = Attribute.entityName
+        let entityName = GenericAttribute.entityName
 
         XCTAssertEqual(entityName, "GenericAttribute")
     }
 
     func test_entity_name_from_NSManagedObject_instance_is_Attribute() {
-        let attribute = coreDataManager.viewStorage.insertNewObject(ofType: Attribute.self)
+        let attribute = coreDataManager.viewStorage.insertNewObject(ofType: GenericAttribute.self)
 
         let entityName = attribute.entity.name
 

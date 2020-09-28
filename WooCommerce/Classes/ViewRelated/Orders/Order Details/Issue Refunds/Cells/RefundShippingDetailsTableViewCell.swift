@@ -65,10 +65,23 @@ private extension RefundShippingDetailsTableViewCell {
         shippingRefundTitleLabel.font = .font(forStyle: .body, weight: .bold)
         shippingRefundPriceLabel.applyBodyStyle()
         shippingRefundPriceLabel.font = .font(forStyle: .body, weight: .bold)
+
+        taxTitleLabel.text = Localization.taxTitle
+        subtotalTitleLabel.text = Localization.subtotalTitle
+        shippingRefundTitleLabel.text = Localization.totalTitle
     }
 
     func applyShippingImageViewStyles() {
 
+    }
+}
+
+// MARK: Constants
+private extension RefundShippingDetailsTableViewCell {
+    enum Localization {
+        static let taxTitle = NSLocalizedString("Tax", comment: "Title on the refunds screen that list the shipping tax cost")
+        static let subtotalTitle = NSLocalizedString("Subtotal", comment: "Title on the refund screen that list the shipping subtotal cost")
+        static let totalTitle = NSLocalizedString("Shipping Refund", comment: "Title on the refund screen that list the shipping total cost")
     }
 }
 
@@ -111,11 +124,11 @@ struct RefundShippingDetailsTableViewCell_Previews: PreviewProvider {
                 .environment(\.colorScheme, .dark)
                 .previewDisplayName("Dark")
 
-            makeStack()
-                .previewLayout(.fixed(width: 359, height: 209))
-                .environment(\.layoutDirection, .rightToLeft)
-                .previewDisplayName("RTL")
-
+//            makeStack()
+//                .previewLayout(.fixed(width: 359, height: 209))
+//                .environment(\.layoutDirection, .rightToLeft)
+//                .previewDisplayName("RTL")
+//
 //            makeStack()
 //                .previewLayout(.fixed(width: 359, height: 300))
 //                .environment(\.sizeCategory, .accessibilityMedium)

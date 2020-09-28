@@ -49,13 +49,13 @@ open class Store: ActionsProcessor {
     /// Subclasses should override this and register for supported Dispatcher Actions.
     ///
     open func registerSupportedActions(in dispatcher: Dispatcher) {
-        fatalError("Override me!")
+        logErrorAndExit("Override me!")
     }
 
     /// This method is called for every Action. Subclasses should override this and deal with the Actions relevant to them.
     ///
     open func onAction(_ action: Action) {
-        fatalError("Override me!")
+        logErrorAndExit("Override me!")
     }
 }
 

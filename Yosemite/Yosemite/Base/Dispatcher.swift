@@ -38,7 +38,7 @@ public class Dispatcher {
         assertMainThread()
 
         guard processors[actionType.identifier] == nil else {
-            fatalError("An action type can only be handled by a single processor!")
+            logErrorAndExit("An action type can only be handled by a single processor!")
         }
 
         processors[actionType.identifier] = WeakProcessor(processor: processor)

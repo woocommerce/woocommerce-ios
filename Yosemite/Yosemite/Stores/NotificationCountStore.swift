@@ -23,7 +23,7 @@ public final class NotificationCountStore: Store {
     ///
     private lazy var fileURL: URL = {
         guard let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
-            fatalError("Cannot find app document directory URL")
+            logErrorAndExit("Cannot find app document directory URL")
         }
         return documents.appendingPathComponent(Constants.notificationCountFileName)
     }()

@@ -4,7 +4,7 @@ extension OrderStatsV4Interval {
     /// Returns the interval start date by parsing the `dateStart` string.
     public func dateStart(timeZone: TimeZone) -> Date {
         guard let date = createDateFormatter(timeZone: timeZone).date(from: dateStart) else {
-            fatalError("Failed to parse date: \(dateStart)")
+            logErrorAndExit("Failed to parse date: \(dateStart)")
         }
         return date
     }
@@ -12,7 +12,7 @@ extension OrderStatsV4Interval {
     /// Returns the interval end date by parsing the `dateEnd` string.
     public func dateEnd(timeZone: TimeZone) -> Date {
         guard let date = createDateFormatter(timeZone: timeZone).date(from: dateEnd) else {
-            fatalError("Failed to parse date: \(dateEnd)")
+            logErrorAndExit("Failed to parse date: \(dateEnd)")
         }
         return date
     }

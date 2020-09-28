@@ -83,6 +83,12 @@ final class MigrationTests: XCTestCase {
         let migratedVariationAttributes = migratedVariation.mutableOrderedSetValue(forKey: "attributes")
         XCTAssertEqual(migratedVariationAttributes.count, 1)
         XCTAssertEqual(migratedVariationAttributes.firstObject as? NSManagedObject, migratedAttribute)
+
+        // The migrated attribute can be accessed using the newly renamed `GenericAttribute` class.
+        let genericAttribute = try XCTUnwrap(migratedContainer.viewContext.firstObject(ofType: GenericAttribute.self))
+        XCTAssertEqual(genericAttribute.id, 9_753_134)
+        XCTAssertEqual(genericAttribute.key, "voluptatem")
+        XCTAssertEqual(genericAttribute.value, "veritatis")
     }
 }
 

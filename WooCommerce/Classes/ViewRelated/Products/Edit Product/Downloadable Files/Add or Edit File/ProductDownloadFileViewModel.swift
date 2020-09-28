@@ -18,8 +18,8 @@ protocol ProductDownloadFileViewModelOutput {
 ///
 protocol ProductDownloadFileActionHandler {
     // Input field actions
-    func handleFileNameChange(_ fileName: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void)
-    func handleFileUrlChange(_ fileURL: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void)
+    func handleFileNameChange(_ fileName: String?, onValidation: @escaping (_ isValid: Bool) -> Void)
+    func handleFileUrlChange(_ fileURL: String?, onValidation: @escaping (_ isValid: Bool) -> Void)
 
     // Navigation actions
     func completeUpdating(onCompletion: ProductDownloadFileViewController.Completion, onError: (ProductDownloadFileError) -> Void)
@@ -86,7 +86,8 @@ final class ProductDownloadFileViewModel: ProductDownloadFileViewModelOutput {
 // MARK: - UI changes
 //
 extension ProductDownloadFileViewModel: ProductDownloadFileActionHandler {
-    func handleFileNameChange(_ fileName: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void) {
+
+    func handleFileNameChange(_ fileName: String?, onValidation: @escaping (_ isValid: Bool) -> Void) {
         self.fileName = fileName
 
         let newValue = self.fileName
@@ -97,7 +98,7 @@ extension ProductDownloadFileViewModel: ProductDownloadFileActionHandler {
 
         guard newValue != oldValue else {
             fileNameIsValid = false
-            onValidation(fileNameIsValid || fileUrlIsValid, true)
+            onValidation(fileNameIsValid || fileUrlIsValid)
             return
         }
 
@@ -107,10 +108,10 @@ extension ProductDownloadFileViewModel: ProductDownloadFileActionHandler {
             fileNameIsValid = false
         }
 
-        onValidation(isChangesValid(), false)
+        onValidation(isChangesValid())
     }
 
-    func handleFileUrlChange(_ fileURL: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void) {
+    func handleFileUrlChange(_ fileURL: String?, onValidation: @escaping (_ isValid: Bool) -> Void) {
         self.fileURL = fileURL
 
         let newValue = self.fileURL
@@ -121,7 +122,7 @@ extension ProductDownloadFileViewModel: ProductDownloadFileActionHandler {
 
         guard newValue != oldValue else {
             fileUrlIsValid = false
-            onValidation(fileNameIsValid || fileUrlIsValid, true)
+            onValidation(fileNameIsValid || fileUrlIsValid)
             return
         }
 
@@ -131,7 +132,7 @@ extension ProductDownloadFileViewModel: ProductDownloadFileActionHandler {
             fileUrlIsValid = false
         }
 
-        onValidation(isChangesValid(), false)
+        onValidation(isChangesValid())
     }
 
     // MARK: - Navigation actions
@@ -180,5 +181,6 @@ extension ProductDownloadFileViewModel {
                                                            comment: "Placeholder of the cell text field in Product Downloadable File URL")
         static let urlFooter = NSLocalizedString("This is the url of the file which customers will get accessed to. URLs entered should already be encoded.",
                                                       comment: "Footer text for Downloadable File URL")
+        static let updateBarButtonAccessibilityIdentifier = "downloadable-file-update-bar-button-item-accessibility-identifier"
     }
 }

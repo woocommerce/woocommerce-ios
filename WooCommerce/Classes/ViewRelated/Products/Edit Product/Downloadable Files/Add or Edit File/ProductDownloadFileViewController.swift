@@ -105,7 +105,7 @@ extension ProductDownloadFileViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let row = rowAtIndexPath(indexPath)
+        let row = viewModel.sections[indexPath.section].rows[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
         configure(cell, for: row, at: indexPath)
 
@@ -116,30 +116,6 @@ extension ProductDownloadFileViewController: UITableViewDataSource {
         return viewModel.sections[section].footer
     }
 }
-
-// MARK: - Convenience Methods
-//
-private extension ProductDownloadFileViewController {
-
-    func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
-        return viewModel.sections[indexPath.section].rows[indexPath.row]
-    }
-
-    func getFileNameCell() -> TitleAndTextFieldTableViewCell? {
-        guard let indexPath = viewModel.sections.indexPathForRow(.name) else {
-            return nil
-        }
-        return tableView.cellForRow(at: indexPath) as? TitleAndTextFieldTableViewCell
-    }
-
-    func getFileUrlCell() -> TitleAndTextFieldTableViewCell? {
-        guard let indexPath = viewModel.sections.indexPathForRow(.url) else {
-            return nil
-        }
-        return tableView.cellForRow(at: indexPath) as? TitleAndTextFieldTableViewCell
-    }
-}
-
 
 // MARK: - Cell configuration
 //
@@ -160,10 +136,11 @@ private extension ProductDownloadFileViewController {
 
     func configureName(cell: TitleAndTextFieldTableViewCell) {
         let cellViewModel = Product.createDownloadFileNameViewModel(fileName: viewModel.fileName) { [weak self] value in
-            self?.viewModel.handleFileNameChange(value) { [weak self] (isValid, shouldBringUpKeyboard) in
+            self?.viewModel.handleFileNameChange(value) { [weak self] (isValid) in
                 self?.enableDoneButton(isValid)
-                if shouldBringUpKeyboard {
-                    self?.getFileNameCell()?.textFieldBecomeFirstResponder()
+                if let indexPath = self?.viewModel.sections.indexPathForRow(.name),
+                    let cell = self?.tableView.cellForRow(at: indexPath) as? TitleAndTextFieldTableViewCell {
+                    cell.textFieldBecomeFirstResponder()
                 }
             }
         }
@@ -172,10 +149,11 @@ private extension ProductDownloadFileViewController {
 
     func configureURL(cell: TitleAndTextFieldTableViewCell) {
         let cellViewModel = Product.createDownloadFileUrlViewModel(fileUrl: viewModel.fileURL) { [weak self] value in
-            self?.viewModel.handleFileUrlChange(value) { [weak self] (isValid, shouldBringUpKeyboard) in
+            self?.viewModel.handleFileUrlChange(value) { [weak self] (isValid) in
                 self?.enableDoneButton(isValid)
-                if shouldBringUpKeyboard {
-                    self?.getFileUrlCell()?.textFieldBecomeFirstResponder()
+                if let indexPath = self?.viewModel.sections.indexPathForRow(.url),
+                    let cell = self?.tableView.cellForRow(at: indexPath) as? TitleAndTextFieldTableViewCell {
+                    cell.textFieldBecomeFirstResponder()
                 }
             }
         }
@@ -188,35 +166,44 @@ private extension ProductDownloadFileViewController {
 private extension ProductDownloadFileViewController {
 
     func configureNavigationBar() {
-        title = NSLocalizedString(viewModel.formType == .add ? "Add Downloadable File" : viewModel.fileName ?? "",
-                                  comment: "Individual downloadable file navigation title")
+        if let fileName = viewModel.fileName {
+            title = fileName
+        } else {
+            title = NSLocalizedString("Add Downloadable File",
+                                      comment: "Downloadable file screen navigation title")
+        }
 
         var rightBarButtonItems = [UIBarButtonItem]()
 
-        let deleteDownloadableFileBarButton: UIBarButtonItem = {
+        let moreBarButton: UIBarButtonItem = {
             let button = UIBarButtonItem(image: .moreImage,
                                          style: .plain,
                                          target: self,
                                          action: #selector(deleteDownloadableFile))
-            button.accessibilityTraits = .button
-            button.accessibilityLabel = NSLocalizedString("Delete downloadable file from list",
-                                                          comment: "The action to delete downloadable file for the list")
+            button.accessibilityLabel = NSLocalizedString("Show bottom action sheet to delete downloadable file from list",
+                                                          comment: "Accessibility label to show bottom action sheet to delete downloadable file from the list")
             return button
         }()
-        rightBarButtonItems.append(deleteDownloadableFileBarButton)
+        rightBarButtonItems.append(moreBarButton)
 
         let updateButtonTitle = NSLocalizedString("Update",
                                                 comment: "Action for updating a Products' downloadable files' info remotely")
-        let UpdateBarButton = UIBarButtonItem(title: updateButtonTitle,
-                                             style: .done,
-                                             target: self,
-                                             action: #selector(completeUpdating))
-        rightBarButtonItems.append(UpdateBarButton)
+        let updateBarButton: UIBarButtonItem = {
+            let button = UIBarButtonItem(title: updateButtonTitle,
+                                         style: .done,
+                                         target: self,
+                                         action: #selector(completeUpdating))
+            button.accessibilityLabel = NSLocalizedString("Update products' downloadable files' info remotely",
+                                                          comment: "Accessibility label to update products' downloadable files' info remotely")
+            button.accessibilityIdentifier = ProductDownloadFileViewModel.Strings.updateBarButtonAccessibilityIdentifier
+            return button
+        }()
+        rightBarButtonItems.append(updateBarButton)
 
         navigationItem.rightBarButtonItems = rightBarButtonItems
 
         removeNavigationBackBarButtonText()
-        self.enableDoneButton(false)
+        enableDoneButton(false)
     }
 
     func configureMainView() {
@@ -232,7 +219,6 @@ private extension ProductDownloadFileViewController {
 
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToSafeArea(tableView)
 
         registerTableViewCells()
     }
@@ -253,8 +239,12 @@ private extension ProductDownloadFileViewController {
         }
     }
 
-    private func enableDoneButton(_ enabled: Bool) {
-        navigationItem.rightBarButtonItems?.last?.isEnabled = enabled
+    func enableDoneButton(_ enabled: Bool) {
+        navigationItem.rightBarButtonItems?.forEach({ (barButtonItem) in
+            if barButtonItem.accessibilityIdentifier == ProductDownloadFileViewModel.Strings.updateBarButtonAccessibilityIdentifier {
+                barButtonItem.isEnabled = enabled
+            }
+        })
     }
 }
 
@@ -278,18 +268,18 @@ private extension ProductDownloadFileViewController {
 //
 private extension ProductDownloadFileViewController {
 
-    /// Displays a Notice onscreen, indicating that you can't add a sale price without adding before the regular price
+    /// Displays a Notice onscreen, indicating that you can't add a downloadable file without adding a file name
     ///
     func displayEmptyFileNameErrorNotice() {
         UIApplication.shared.keyWindow?.endEditing(true)
-        let message = NSLocalizedString("File name can not be empty",
+        let message = NSLocalizedString("The file name can not be empty",
                                         comment: "Download file error notice message, when file name is not given but done button is tapped")
 
         let notice = Notice(title: message, feedbackType: .error)
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
-    /// Displays a Notice onscreen, indicating that the sale price need to be higher than the regular price
+    /// Displays a Notice onscreen, indicating that you can't add a downloadable file without adding a valid file url
     ///
     func displayInvalidUrlErrorNotice() {
         UIApplication.shared.keyWindow?.endEditing(true)

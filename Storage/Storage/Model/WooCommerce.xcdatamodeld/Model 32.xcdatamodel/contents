@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19G2021" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17192" systemVersion="19G2021" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
@@ -11,7 +11,7 @@
         <attribute name="tracksOptOut" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="userID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
-    <entity name="Attribute" representedClassName="Attribute" syncable="YES">
+    <entity name="GenericAttribute" representedClassName="GenericAttribute" syncable="YES">
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="key" attributeType="String"/>
         <attribute name="value" attributeType="String"/>
@@ -375,7 +375,7 @@
         <attribute name="taxStatusKey" attributeType="String"/>
         <attribute name="virtual" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="weight" optional="YES" attributeType="String"/>
-        <relationship name="attributes" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Attribute" inverseName="productVariation" inverseEntity="Attribute"/>
+        <relationship name="attributes" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="GenericAttribute" inverseName="productVariation" inverseEntity="GenericAttribute"/>
         <relationship name="dimensions" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ProductDimensions" inverseName="productVariation" inverseEntity="ProductDimensions"/>
         <relationship name="downloads" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductDownload" inverseName="productVariation" inverseEntity="ProductDownload"/>
         <relationship name="image" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductImage" inverseName="productVariation" inverseEntity="ProductImage"/>
@@ -474,7 +474,7 @@
     <elements>
         <element name="Account" positionX="-200.9765625" positionY="63.5625" width="128" height="120"/>
         <element name="AccountSettings" positionX="-846" positionY="270" width="128" height="75"/>
-        <element name="Attribute" positionX="-684" positionY="45" width="128" height="103"/>
+        <element name="GenericAttribute" positionX="-684" positionY="45" width="128" height="103"/>
         <element name="Note" positionX="-369.61328125" positionY="-95.85546875" width="128" height="283"/>
         <element name="Order" positionX="-41.5859375" positionY="23.53125" width="128" height="748"/>
         <element name="OrderCount" positionX="-693" positionY="36" width="128" height="75"/>

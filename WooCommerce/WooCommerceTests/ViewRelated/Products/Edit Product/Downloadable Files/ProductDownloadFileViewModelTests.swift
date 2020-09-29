@@ -27,7 +27,7 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Act
-        let viewModel = ProductDownloadFileViewModel(product: model, formType: .add)
+        let viewModel = ProductDownloadFileViewModel(product: model, downloadFileIndex: nil, formType: .add)
 
         // Assert
         XCTAssertNil(viewModel.fileID)
@@ -63,18 +63,15 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
 
         // Act
         var isValidResult: Bool?
-        var shouldBringUpKeyboard: Bool?
         waitForExpectation { exp in
-            viewModel.handleFileNameChange(expectedName) { (isValid, shouldBringUpKeyboardValue) in
+            viewModel.handleFileNameChange(expectedName) { isValid in
                 isValidResult = isValid
-                shouldBringUpKeyboard = shouldBringUpKeyboardValue
                 exp.fulfill()
             }
         }
 
         // Assert
         XCTAssertEqual(isValidResult, false)
-        XCTAssertEqual(shouldBringUpKeyboard, true)
         XCTAssertEqual(viewModel.fileName, expectedName)
     }
 
@@ -88,7 +85,7 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
         // Act
         var isValidResult: Bool?
         waitForExpectation { exp in
-            viewModel.handleFileNameChange(expectedName) { (isValid, _) in
+            viewModel.handleFileNameChange(expectedName) { isValid in
                 isValidResult = isValid
                 exp.fulfill()
             }
@@ -108,18 +105,15 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
 
         // Act
         var isValidResult: Bool?
-        var shouldBringUpKeyboard: Bool?
         waitForExpectation { exp in
-            viewModel.handleFileNameChange(expectedName) { (isValid, shouldBringUpKeyboardValue) in
+            viewModel.handleFileNameChange(expectedName) { isValid in
                 isValidResult = isValid
-                shouldBringUpKeyboard = shouldBringUpKeyboardValue
                 exp.fulfill()
             }
         }
 
         // Assert
         XCTAssertEqual(isValidResult, true)
-        XCTAssertEqual(shouldBringUpKeyboard, false)
         XCTAssertEqual(viewModel.fileName, expectedName)
     }
 
@@ -134,18 +128,15 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
 
         // Act
         var isValidResult: Bool?
-        var shouldBringUpKeyboard: Bool?
         waitForExpectation { exp in
-            viewModel.handleFileUrlChange(expectedUrl) { (isValid, shouldBringUpKeyboardValue) in
+            viewModel.handleFileUrlChange(expectedUrl) { isValid in
                 isValidResult = isValid
-                shouldBringUpKeyboard = shouldBringUpKeyboardValue
                 exp.fulfill()
             }
         }
 
         // Assert
         XCTAssertEqual(isValidResult, false)
-        XCTAssertEqual(shouldBringUpKeyboard, true)
         XCTAssertEqual(viewModel.fileURL, expectedUrl)
     }
 
@@ -158,18 +149,15 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
 
         // Act
         var isValidResult: Bool?
-        var shouldBringUpKeyboard: Bool?
         waitForExpectation { exp in
-            viewModel.handleFileUrlChange(expectedUrl) { (isValid, shouldBringUpKeyboardValue) in
+            viewModel.handleFileUrlChange(expectedUrl) { isValid in
                 isValidResult = isValid
-                shouldBringUpKeyboard = shouldBringUpKeyboardValue
                 exp.fulfill()
             }
         }
 
         // Assert
         XCTAssertEqual(isValidResult, false)
-        XCTAssertEqual(shouldBringUpKeyboard, true)
         XCTAssertEqual(viewModel.fileURL, expectedUrl)
     }
 
@@ -182,18 +170,15 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
 
         // Act
         var isValidResult: Bool?
-        var shouldBringUpKeyboard: Bool?
         waitForExpectation { exp in
-            viewModel.handleFileUrlChange(expectedURL) { (isValid, shouldBringUpKeyboardValue) in
+            viewModel.handleFileUrlChange(expectedURL) { isValid in
                 isValidResult = isValid
-                shouldBringUpKeyboard = shouldBringUpKeyboardValue
                 exp.fulfill()
             }
         }
 
         // Assert
         XCTAssertEqual(isValidResult, false)
-        XCTAssertEqual(shouldBringUpKeyboard, false)
         XCTAssertEqual(viewModel.fileURL, expectedURL)
     }
 
@@ -206,18 +191,15 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
 
         // Act
         var isValidResult: Bool?
-        var shouldBringUpKeyboard: Bool?
         waitForExpectation { exp in
-            viewModel.handleFileUrlChange(expectedUrl) { (isValid, shouldBringUpKeyboardValue) in
+            viewModel.handleFileUrlChange(expectedUrl) { isValid in
                 isValidResult = isValid
-                shouldBringUpKeyboard = shouldBringUpKeyboardValue
                 exp.fulfill()
             }
         }
 
         // Assert
         XCTAssertEqual(isValidResult, true)
-        XCTAssertEqual(shouldBringUpKeyboard, false)
         XCTAssertEqual(viewModel.fileURL, expectedUrl)
     }
 
@@ -231,7 +213,7 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
         // Act
         let viewModel = ProductDownloadFileViewModel(product: model, downloadFileIndex: 0, formType: .edit)
         let expected = "single image"
-        viewModel.handleFileNameChange(expected) { _, _ in }
+        viewModel.handleFileNameChange(expected) { _ in }
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
@@ -246,7 +228,7 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
         // Act
         let viewModel = ProductDownloadFileViewModel(product: model, downloadFileIndex: 0, formType: .edit)
         let expected = ""
-        viewModel.handleFileNameChange(expected) { _, _ in }
+        viewModel.handleFileNameChange(expected) { _ in }
 
         // Assert
         XCTAssertFalse(viewModel.hasUnsavedChanges())
@@ -260,7 +242,7 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
         // Act
         let viewModel = ProductDownloadFileViewModel(product: model, downloadFileIndex: 0, formType: .edit)
         let expected = "https://example.com/single.jpeg"
-        viewModel.handleFileUrlChange(expected) { _, _ in }
+        viewModel.handleFileUrlChange(expected) { _ in }
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
@@ -275,7 +257,7 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
         // Act
         let viewModel = ProductDownloadFileViewModel(product: model, downloadFileIndex: 0, formType: .edit)
         let expected = ""
-        viewModel.handleFileUrlChange(expected) { _, _ in }
+        viewModel.handleFileUrlChange(expected) { _ in }
 
         // Assert
         XCTAssertFalse(viewModel.hasUnsavedChanges())
@@ -288,8 +270,8 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
 
         // Act
         let viewModel = ProductDownloadFileViewModel(product: model, downloadFileIndex: 0, formType: .edit)
-        viewModel.handleFileNameChange("Song #1") { _, _ in }
-        viewModel.handleFileUrlChange("https://example.com/woo-single-1.ogg") { _, _ in }
+        viewModel.handleFileNameChange("Song #1") { _ in }
+        viewModel.handleFileUrlChange("https://example.com/woo-single-1.ogg") { _ in }
 
         // Assert
         XCTAssertFalse(viewModel.hasUnsavedChanges())

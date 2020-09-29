@@ -7,6 +7,7 @@ import Networking
 
 final class OrdersUpsertUseCaseTests: XCTestCase {
 
+    private let defaultSiteID: Int64 = 10
     private var storageManager: StorageManagerType!
     private var viewStorage: StorageType {
         storageManager.viewStorage
@@ -49,17 +50,17 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         useCase.upsert(orders)
 
         // Then
-        let persistedOrder98 = try XCTUnwrap(viewStorage.loadOrder(orderID: 98))
+        let persistedOrder98 = try XCTUnwrap(viewStorage.loadOrder(siteID: defaultSiteID, orderID: 98))
         XCTAssertEqual(persistedOrder98.toReadOnly(), orders.first)
 
-        let persistedOrder9001 = try XCTUnwrap(viewStorage.loadOrder(orderID: 9001))
+        let persistedOrder9001 = try XCTUnwrap(viewStorage.loadOrder(siteID: defaultSiteID, orderID: 9001))
         XCTAssertEqual(persistedOrder9001.toReadOnly(), orders.last)
     }
 }
 
 private extension OrdersUpsertUseCaseTests {
     func makeOrder() -> Networking.Order {
-        Order(siteID: 0,
+        Order(siteID: defaultSiteID,
               orderID: 0,
               parentID: 0,
               customerID: 0,

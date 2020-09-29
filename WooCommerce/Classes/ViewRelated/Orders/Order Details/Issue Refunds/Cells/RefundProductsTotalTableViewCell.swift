@@ -50,6 +50,19 @@ private extension RefundProductsTotalTableViewCell {
         productsRefundTitleLabel.font = .font(forStyle: .body, weight: .bold)
         productsRefundPriceLabel.applyBodyStyle()
         productsRefundPriceLabel.font = .font(forStyle: .body, weight: .bold)
+
+        taxTitleLabel.text = Localization.taxTitle
+        subtotalTitleLabel.text = Localization.subtotalTitle
+        productsRefundPriceLabel.text = Localization.totalTitle
+    }
+}
+
+// MARK: Constants
+private extension RefundProductsTotalTableViewCell {
+    enum Localization {
+        static let taxTitle = NSLocalizedString("Tax", comment: "Title on the refunds screen that lists the shipping tax cost")
+        static let subtotalTitle = NSLocalizedString("Subtotal", comment: "Title on the refund screen that lists the shipping subtotal cost")
+        static let totalTitle = NSLocalizedString("Products Refund", comment: "Title on the refund screen that lists the shipping total cost")
     }
 }
 
@@ -93,7 +106,7 @@ struct RefundProductsTotalTableViewCell_Previews: PreviewProvider {
                 .previewDisplayName("Dark")
 
             makeStack()
-                .previewLayout(.fixed(width: 359, height: 180))
+                .previewLayout(.fixed(width: 359, height: 150))
                 .environment(\.sizeCategory, .accessibilityMedium)
                 .previewDisplayName("Large Font")
         }

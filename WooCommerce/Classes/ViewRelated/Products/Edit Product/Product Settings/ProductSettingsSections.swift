@@ -18,15 +18,18 @@ enum ProductSettingsSections {
     struct PublishSettings: ProductSettingsSectionMediator {
         let title = NSLocalizedString("Publish Settings", comment: "Title of the Publish Settings section on Product Settings screen")
 
-        let rows: [ProductSettingsRowMediator]
+        var rows: [ProductSettingsRowMediator]
 
         init(_ settings: ProductSettings, productType: ProductType, isEditProductsRelease3Enabled: Bool, isEditProductsRelease5Enabled: Bool) {
-            if (isEditProductsRelease3Enabled || isEditProductsRelease5Enabled) && productType == .simple {
+            if isEditProductsRelease3Enabled && productType == .simple {
                 rows = [ProductSettingsRows.Status(settings),
                         ProductSettingsRows.Visibility(settings),
                         ProductSettingsRows.CatalogVisibility(settings),
-                        ProductSettingsRows.VirtualProduct(settings),
-                        ProductSettingsRows.DownloadableProduct(settings)]
+                        ProductSettingsRows.VirtualProduct(settings)]
+
+                if isEditProductsRelease5Enabled {
+                    rows.append(ProductSettingsRows.DownloadableProduct(settings))
+                }
             } else {
                 rows = [ProductSettingsRows.Status(settings),
                         ProductSettingsRows.Visibility(settings),

@@ -156,7 +156,16 @@ import AuthenticationServices
         showLogin(from: presenter, animated: animated)
     }
 
-    public class func showLogin(from presenter: UIViewController, animated: Bool, showCancel: Bool = false, restrictToWPCom: Bool = false, onLoginButtonTapped: (() -> Void)? = nil) {
+    /// Shows login UI from the given presenter view controller.
+    ///
+    /// - Parameters:
+    ///   - presenter: The view controller that presents the login UI.
+    ///   - animated: Whether the login UI is presented with animation.
+    ///   - showCancel: Whether a cancel CTA is shown on the login prologue screen.
+    ///   - restrictToWPCom: Whether only WordPress.com login is enabled.
+    ///   - onLoginButtonTapped: Called when the login button on the prologue screen is tapped.
+    ///   - onCompletion: Called when the login UI presentation completes.
+    public class func showLogin(from presenter: UIViewController, animated: Bool, showCancel: Bool = false, restrictToWPCom: Bool = false, onLoginButtonTapped: (() -> Void)? = nil, onCompletion: (() -> Void)? = nil) {
         defer {
             trackOpenedLogin()
         }
@@ -169,7 +178,7 @@ import AuthenticationServices
                 childController.onLoginButtonTapped = onLoginButtonTapped
             }
             controller.modalPresentationStyle = .fullScreen
-            presenter.present(controller, animated: animated, completion: nil)
+            presenter.present(controller, animated: animated, completion: onCompletion)
         }
     }
 

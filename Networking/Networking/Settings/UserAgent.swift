@@ -1,28 +1,25 @@
-import Foundation
-import UIKit
 import WebKit
-
 
 /// WooCommerce User Agent!
 ///
-class UserAgent {
+public class UserAgent {
 
     /// Private: NO-OP
     ///
     private init() { }
 
 
-    /// Returns the WooCommerce User Agent
+    /// Returns the default WooCommerce iOS User Agent
     ///
-    static var defaultUserAgent: String = {
+    public static var defaultUserAgent: String = {
         return webkitUserAgent + " " + Constants.woocommerceIdentifier + "/" + bundleShortVersion
     }()
 
     /// Returns the WebKit User Agent
     ///
-    static var webkitUserAgent: String {
+    public static var webkitUserAgent: String {
         guard let userAgent = WKWebView().value(forKey: Constants.userAgentKey) as? String,
-            userAgent.isNotEmpty else {
+            !userAgent.isEmpty else {
                 return ""
         }
         return userAgent
@@ -30,7 +27,7 @@ class UserAgent {
 
     /// Returns the Bundle Version ID
     ///
-    static var bundleShortVersion: String {
+    public static var bundleShortVersion: String {
         let version = Bundle.main.object(forInfoDictionaryKey: Constants.shortVersionKey) as? String
         return version ?? String()
     }

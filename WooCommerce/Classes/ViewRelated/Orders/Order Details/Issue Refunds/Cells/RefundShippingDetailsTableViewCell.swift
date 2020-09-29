@@ -6,43 +6,43 @@ final class RefundShippingDetailsTableViewCell: UITableViewCell {
 
     /// Displays a truck image next to the carrier name
     ///
-    @IBOutlet weak var shippingImageView: UIImageView!
+    @IBOutlet private var shippingImageView: UIImageView!
 
     /// Displays the carrier name and shipping rate
     ///
-    @IBOutlet weak var carrierLabel: UILabel!
+    @IBOutlet private var carrierLabel: UILabel!
 
     /// Display the shipping cost
     ///
-    @IBOutlet weak var shippingPrice: UILabel!
+    @IBOutlet private var shippingPrice: UILabel!
 
     /// Displays `Subtotal` title
     ///
-    @IBOutlet weak var subtotalTitleLabel: UILabel!
+    @IBOutlet private var subtotalTitleLabel: UILabel!
 
     /// Displays the subtotal value
     ///
-    @IBOutlet weak var subtotalPriceLabel: UILabel!
+    @IBOutlet private var subtotalPriceLabel: UILabel!
 
     /// Displays `Tax` title
     ///
-    @IBOutlet weak var taxTitleLabel: UILabel!
+    @IBOutlet private var taxTitleLabel: UILabel!
 
     /// Displays the tax value
     ///
-    @IBOutlet weak var taxPriceLabel: UILabel!
+    @IBOutlet private var taxPriceLabel: UILabel!
 
     /// Displays `Shipping Refund` title
     ///
-    @IBOutlet weak var shippingRefundTitleLabel: UILabel!
+    @IBOutlet private var shippingRefundTitleLabel: UILabel!
 
     /// Displays the total shipping cost to refund
     ///
-    @IBOutlet weak var shippingRefundPriceLabel: UILabel!
+    @IBOutlet private var shippingRefundPriceLabel: UILabel!
 
     /// Displays a border around the `shippingImageView`
     ///
-    @IBOutlet weak var shippingBorderView: UIView!
+    @IBOutlet private var shippingBorderView: UIView!
 
     /// Needed to make sure the `shippingImageView` grows at the same ratio as the dynamic fonts
     ///

@@ -20,14 +20,14 @@ struct ProductDetailsFactory {
             case .simple:
                 isEditProductsEnabled = true
             default:
-                isEditProductsEnabled = isFeatureSwitchOn
+                isEditProductsEnabled = true
             }
 
             let vc = productDetails(product: product,
                                     presentationStyle: presentationStyle,
                                     currencySettings: currencySettings,
                                     isEditProductsEnabled: isEditProductsEnabled,
-                                    isEditProductsRelease3Enabled: isFeatureSwitchOn)
+                                    isEditProductsRelease3Enabled: isEditProductsEnabled)
             onCompletion(vc)
         }
         stores.dispatch(action)

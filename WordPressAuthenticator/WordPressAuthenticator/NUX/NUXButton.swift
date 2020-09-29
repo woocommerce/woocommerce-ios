@@ -12,7 +12,7 @@ import WordPressKit
     open override var isEnabled: Bool {
         didSet {
             if #available(iOS 13, *) {
-                activityIndicator.color = isEnabled ? style.primaryTitleColor : style.secondaryTitleColor
+                activityIndicator.color = isEnabled ? style.primaryTitleColor : style.disabledTitleColor
             }
         }
     }

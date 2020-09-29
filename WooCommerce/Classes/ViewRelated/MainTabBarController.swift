@@ -82,14 +82,15 @@ final class MainTabBarController: UITabBarController {
 
     /// Tab view controllers
     ///
-    private var dashboardViewController: UIViewController?
-    private var ordersTabViewController: UIViewController?
-    private var productsTabViewController: UIViewController?
     private var reviewsTabCoordinator: Coordinator?
 
     private var cancellableSiteID: ObservationToken?
 
     private let stores: StoresManager = ServiceLocator.stores
+
+    deinit {
+        cancellableSiteID?.cancel()
+    }
 
     // MARK: - Overridden Methods
 
@@ -340,13 +341,10 @@ private extension MainTabBarController {
 
         // Initialize tab view controllers
         let dashboardViewController = createDashboardTabViewController()
-        self.dashboardViewController = dashboardViewController
 
         let ordersTabViewController = createOrdersTabViewController()
-        self.ordersTabViewController = ordersTabViewController
 
         let productsTabViewController = createProductsTabViewController()
-        self.productsTabViewController = productsTabViewController
 
         let reviewsTabCoordinator = createReviewsTabCoordinator(siteID: siteID)
         self.reviewsTabCoordinator = reviewsTabCoordinator

@@ -57,6 +57,18 @@ private extension RefundProductsTotalTableViewCell {
     }
 }
 
+// MARK: ViewModel Rendering
+extension RefundProductsTotalTableViewCell {
+
+    /// Configure cell with the provided view model
+    ///
+    func configure(with viewModel: RefundProductsTotalViewModel) {
+        taxPriceLabel.text = viewModel.productsTax
+        subtotalPriceLabel.text = viewModel.productsSubtotal
+        productsRefundPriceLabel.text = viewModel.productsTotal
+    }
+}
+
 // MARK: Constants
 private extension RefundProductsTotalTableViewCell {
     enum Localization {
@@ -77,6 +89,9 @@ private struct RefundProductsTotalTableViewCellRepresentable: UIViewRepresentabl
         guard let cell = nib.instantiate(withOwner: self, options: nil).first as? RefundProductsTotalTableViewCell else {
             fatalError("Could not create RefundProductsTotalTableViewCell")
         }
+
+        let viewModel = RefundProductsTotalViewModel(productsTax: "$2.50", productsSubtotal: "$12.30", productsTotal: "$14.80")
+        cell.configure(with: viewModel)
         return cell
     }
 

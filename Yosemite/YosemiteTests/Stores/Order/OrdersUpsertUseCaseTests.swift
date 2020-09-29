@@ -61,7 +61,8 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         // Given
         let coupon = Networking.OrderCouponLine(couponID: 1, code: "", discount: "", discountTax: "")
         let refund = Networking.OrderRefundCondensed(refundID: 122, reason: "", total: "1.6")
-        let order = makeOrder().copy(orderID: 98, number: "dignissimos", coupons: [coupon], refunds: [refund])
+        let shippingLine = Networking.ShippingLine(shippingID: 25, methodTitle: "dodo", methodID: "", total: "2.1", totalTax: "0.8")
+        let order = makeOrder().copy(orderID: 98, number: "dignissimos", shippingLines: [shippingLine], coupons: [coupon], refunds: [refund])
         let useCase = OrdersUpsertUseCase(storage: viewStorage)
 
         // When
@@ -74,6 +75,8 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(persistedCoupon.toReadOnly(), coupon)
         let persistedRefund = try XCTUnwrap(viewStorage.loadOrderRefundCondensed(siteID: defaultSiteID, refundID: refund.refundID))
         XCTAssertEqual(persistedRefund.toReadOnly(), refund)
+        let persistedShippingLine = try XCTUnwrap(viewStorage.loadShippingLine(siteID: defaultSiteID, shippingID: shippingLine.shippingID))
+        XCTAssertEqual(persistedShippingLine.toReadOnly(), shippingLine)
     }
 }
 

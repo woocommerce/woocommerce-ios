@@ -72,8 +72,8 @@ public extension StorageType {
 
     /// Retrieves the Stored Order Shipping Line.
     ///
-    func loadShippingLine(shippingID: Int64) -> ShippingLine? {
-        let predicate = NSPredicate(format: "shippingID = %ld", shippingID)
+    func loadShippingLine(siteID: Int64, shippingID: Int64) -> ShippingLine? {
+        let predicate = NSPredicate(format: "order.siteID = %ld AND shippingID = %ld", siteID, shippingID)
         return firstObject(ofType: ShippingLine.self, matching: predicate)
     }
 

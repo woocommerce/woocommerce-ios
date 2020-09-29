@@ -167,7 +167,7 @@ struct OrdersUpsertUseCase {
     private func handleOrderShippingLines(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
         // Upsert the shipping lines from the read-only order
         for readOnlyShippingLine in readOnlyOrder.shippingLines {
-            if let existingStorageShippingLine = storage.loadShippingLine(shippingID: readOnlyShippingLine.shippingID) {
+            if let existingStorageShippingLine = storage.loadShippingLine(siteID: readOnlyOrder.siteID, shippingID: readOnlyShippingLine.shippingID) {
                 existingStorageShippingLine.update(with: readOnlyShippingLine)
             } else {
                 let newStorageShippingLine = storage.insertNewObject(ofType: Storage.ShippingLine.self)

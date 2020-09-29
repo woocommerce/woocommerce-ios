@@ -28,8 +28,28 @@ final class RefundProductsTotalTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var productsRefundPriceLabel: UILabel!
 
-    override class func awakeFromNib() {
+    override func awakeFromNib() {
         super.awakeFromNib()
+        applyCellStyles()
+    }
+}
+
+// MARK: View Styles Configuration
+private extension RefundProductsTotalTableViewCell {
+    func applyCellStyles() {
+        applyDefaultBackgroundStyle()
+        applyLabelsStyles()
+    }
+
+    func applyLabelsStyles() {
+        subtotalTitleLabel.applyBodyStyle()
+        subtotalPriceLabel.applyBodyStyle()
+        taxTitleLabel.applyBodyStyle()
+        taxPriceLabel.applyBodyStyle()
+        productsRefundTitleLabel.applyBodyStyle()
+        productsRefundTitleLabel.font = .font(forStyle: .body, weight: .bold)
+        productsRefundPriceLabel.applyBodyStyle()
+        productsRefundPriceLabel.font = .font(forStyle: .body, weight: .bold)
     }
 }
 
@@ -73,7 +93,7 @@ struct RefundProductsTotalTableViewCell_Previews: PreviewProvider {
                 .previewDisplayName("Dark")
 
             makeStack()
-                .previewLayout(.fixed(width: 359, height: 200))
+                .previewLayout(.fixed(width: 359, height: 180))
                 .environment(\.sizeCategory, .accessibilityMedium)
                 .previewDisplayName("Large Font")
         }

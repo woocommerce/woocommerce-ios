@@ -1,6 +1,7 @@
 import UIKit
 import CoreData
 import Storage
+import Networking
 
 import CocoaLumberjack
 import KeychainAccess

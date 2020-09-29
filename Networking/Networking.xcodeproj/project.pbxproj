@@ -80,6 +80,8 @@
 		453305ED2459E1AA00264E50 /* site-post.json in Resources */ = {isa = PBXBuildFile; fileRef = 453305EC2459E1AA00264E50 /* site-post.json */; };
 		453305EF2459E46100264E50 /* SitePostsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453305EE2459E46000264E50 /* SitePostsRemoteTests.swift */; };
 		453305F52459ED2700264E50 /* site-post-update.json in Resources */ = {isa = PBXBuildFile; fileRef = 453305F42459ED2700264E50 /* site-post-update.json */; };
+		45551F0A2523DE60007EF104 /* UserAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45551F092523DE60007EF104 /* UserAgent.swift */; };
+		45551F0C2523DF48007EF104 /* UserAgentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45551F0B2523DF48007EF104 /* UserAgentTests.swift */; };
 		4568E2222459ADC60007E478 /* SitePostsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4568E2212459ADC60007E478 /* SitePostsRemote.swift */; };
 		4568E2242459D3230007E478 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4568E2232459D3230007E478 /* Post.swift */; };
 		456F71D424CB1E2400472EC1 /* ProductTagFromBatchCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456F71D324CB1E2400472EC1 /* ProductTagFromBatchCreation.swift */; };
@@ -441,6 +443,8 @@
 		453305EC2459E1AA00264E50 /* site-post.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "site-post.json"; sourceTree = "<group>"; };
 		453305EE2459E46000264E50 /* SitePostsRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePostsRemoteTests.swift; sourceTree = "<group>"; };
 		453305F42459ED2700264E50 /* site-post-update.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "site-post-update.json"; sourceTree = "<group>"; };
+		45551F092523DE60007EF104 /* UserAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAgent.swift; sourceTree = "<group>"; };
+		45551F0B2523DF48007EF104 /* UserAgentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAgentTests.swift; sourceTree = "<group>"; };
 		4568E2212459ADC60007E478 /* SitePostsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePostsRemote.swift; sourceTree = "<group>"; };
 		4568E2232459D3230007E478 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		456F71D324CB1E2400472EC1 /* ProductTagFromBatchCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagFromBatchCreation.swift; sourceTree = "<group>"; };
@@ -893,6 +897,7 @@
 			isa = PBXGroup;
 			children = (
 				B518663320A0A2E800037A38 /* Constants.swift */,
+				45551F0B2523DF48007EF104 /* UserAgentTests.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -1019,6 +1024,7 @@
 			children = (
 				B557DA1720979D51005962F4 /* Credentials.swift */,
 				B557DA1920979D66005962F4 /* Settings.swift */,
+				45551F092523DE60007EF104 /* UserAgent.swift */,
 				B557DA0A20975D7E005962F4 /* WooAPIVersion.swift */,
 				B557DA0C20975DB1005962F4 /* WordPressAPIVersion.swift */,
 			);
@@ -1759,6 +1765,7 @@
 				B572F69A21AC475C003EEFF0 /* DevicesRemote.swift in Sources */,
 				B518662420A099BF00037A38 /* AlamofireNetwork.swift in Sources */,
 				CE430676234BA7920073CBFF /* RefundListMapper.swift in Sources */,
+				45551F0A2523DE60007EF104 /* UserAgent.swift in Sources */,
 				45CDAFAB2434CA9300F83C22 /* ProductCatalogVisibility.swift in Sources */,
 				B557DA1820979D51005962F4 /* Credentials.swift in Sources */,
 				CE583A0E2109154500D73C1C /* OrderNoteMapper.swift in Sources */,
@@ -1869,6 +1876,7 @@
 				4599FC6624A633A10056157A /* ProductTagsRemoteTests.swift in Sources */,
 				B567AF2F20A0FB8F00AB6C62 /* AuthenticatedRequestTests.swift in Sources */,
 				B5C6FCCD20A34B8300A4F8E4 /* OrderListMapperTests.swift in Sources */,
+				45551F0C2523DF48007EF104 /* UserAgentTests.swift in Sources */,
 				B518663520A0A2E800037A38 /* Constants.swift in Sources */,
 				D8FBFF1E22D51F39006E3336 /* OrderStatsMapperV4Tests.swift in Sources */,
 				9387A6F0226E3F15001B53D7 /* AccountSettingsMapperTests.swift in Sources */,

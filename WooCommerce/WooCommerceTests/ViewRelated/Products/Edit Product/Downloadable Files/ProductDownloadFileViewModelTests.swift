@@ -140,7 +140,7 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.fileURL, expectedUrl)
     }
 
-    func test_handling_a_same_downloadable_fileURL_updates_with_error_on_add_mode() {
+    func test_handling_a_valid_downloadable_fileURL_updates_with_success_on_add_mode() {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
@@ -157,7 +157,7 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
         }
 
         // Assert
-        XCTAssertEqual(isValidResult, false)
+        XCTAssertEqual(isValidResult, true)
         XCTAssertEqual(viewModel.fileURL, expectedUrl)
     }
 

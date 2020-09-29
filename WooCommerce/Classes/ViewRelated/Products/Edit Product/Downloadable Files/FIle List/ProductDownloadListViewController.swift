@@ -130,7 +130,7 @@ extension ProductDownloadListViewController {
 
     @objc private func addButtonTapped() {
         // TODO: - add analytics
-        addEditDownloadableFile(indexPath: IndexPath(row: -1, section: -1), formType: .add)
+        addEditDownloadableFile(indexPath: nil, formType: .add)
     }
 
     private func presentBackNavigationActionSheet() {
@@ -143,9 +143,9 @@ extension ProductDownloadListViewController {
 // MARK: Action - Add/Edit Product Downloadable File Settings
 //
 extension ProductDownloadListViewController {
-    func addEditDownloadableFile(indexPath: IndexPath, formType: ProductDownloadFileViewController.FormType) {
+    func addEditDownloadableFile(indexPath: IndexPath?, formType: ProductDownloadFileViewController.FormType) {
         let viewController = ProductDownloadFileViewController(product: product,
-                                                               downloadFileIndex: indexPath.row,
+                                                               downloadFileIndex: indexPath?.row,
                                                                formType: formType) { [weak self]
             (fileName, fileURL, fileID, hasUnsavedChanges) in
             self?.onAddEditDownloadableFileCompletion(fileName: fileName,
@@ -160,10 +160,10 @@ extension ProductDownloadListViewController {
     }
 
     func onAddEditDownloadableFileCompletion(fileName: String?,
-                                             fileURL: String?,
+                                             fileURL: String,
                                              fileID: String?,
                                              hasUnsavedChanges: Bool,
-                                             indexPath: IndexPath,
+                                             indexPath: IndexPath?,
                                              formType: ProductDownloadFileViewController.FormType) {
         guard hasUnsavedChanges else {
             return
@@ -173,12 +173,14 @@ extension ProductDownloadListViewController {
         case .add:
             viewModel.append(ProductDownloadDragAndDrop(downloadableFile: ProductDownload(downloadID: fileID ?? "",
                                                                                           name: fileName ?? "",
-                                                                                          fileURL: fileURL ?? "")))
+                                                                                          fileURL: fileURL)))
         case .edit:
-            viewModel.update(at: indexPath.row,
-                             element: (ProductDownloadDragAndDrop(downloadableFile: ProductDownload(downloadID: fileID ?? "",
-                                                                                                    name: fileName ?? "",
-                                                                                                    fileURL: fileURL ?? ""))))
+            if let indexPath = indexPath {
+                viewModel.update(at: indexPath.row,
+                                 element: (ProductDownloadDragAndDrop(downloadableFile: ProductDownload(downloadID: fileID ?? "",
+                                                                                                        name: fileName ?? "",
+                                                                                                        fileURL: fileURL))))
+            }
         }
         viewModel.completeUpdating(onCompletion: onCompletion)
         tableView.reloadData()

@@ -112,33 +112,60 @@ extension ProductDownloadFileViewModel: ProductDownloadFileActionHandler {
 //
 private extension ProductDownloadFileViewModel {
     func isChangesValid() -> Bool {
-        var fileUrlIsValid = false
-        var fileNameIsValid = false
+        var fileUrlChanged = false
+        var fileNameChanged = false
 
-        let newFileURL = self.fileURL
-        if let downloadableFileIndex = downloadableFileIndex,
-            let oldValue = product.downloadableFiles[safe: downloadableFileIndex]?.fileURL,
-            newFileURL != oldValue,
-            newFileURL?.isEmpty == false,
-            newFileURL?.isValidURL() == true {
+        guard var newFileURL = self.fileURL,
+            newFileURL.isEmpty == false,
+            newFileURL.isValidURL() == true else {
+                return false
+        }
+        newFileURL = newFileURL.addHTTPSSchemeIfNecessary()
 
-            fileUrlIsValid = true
+        switch formType {
+        case .add:
+            fileUrlChanged = true
+            if let newFileName = self.fileName,
+                newFileName.isEmpty == false {
+                fileNameChanged = true
+            }
+        case .edit:
+            if let downloadableFileIndex = downloadableFileIndex,
+                let oldValue = product.downloadableFiles[safe: downloadableFileIndex]?.fileURL,
+                newFileURL != oldValue {
+
+                fileUrlChanged = true
+            }
+
+            if let newFileName = self.fileName,
+                let downloadableFileIndex = downloadableFileIndex,
+                let oldValue = product.downloadableFiles[safe: downloadableFileIndex]?.name,
+                newFileName.isNotEmpty,
+                newFileName != oldValue {
+
+                fileNameChanged = true
+            }
         }
 
-        let newFileName = self.fileName
-        if let downloadableFileIndex = downloadableFileIndex,
-            let oldValue = product.downloadableFiles[safe: downloadableFileIndex]?.name,
-            newFileName != oldValue,
-            newFileName?.isEmpty == false {
-
-            fileNameIsValid = true
+        guard let urlLastPathComponent = URL(string: newFileURL)?.lastPathComponent,
+            urlLastPathComponent.isEmpty == false, urlLastPathComponent.split(separator: ".").count >= 2 else {
+                if self.fileName?.isEmpty == false {
+                    switch formType {
+                    case .add:
+                        return fileNameChanged
+                    case .edit:
+                        return fileUrlChanged || fileNameChanged
+                    }
+                } else {
+                    return false
+                }
         }
 
         switch formType {
         case .add:
-            return fileUrlIsValid
+            return fileUrlChanged
         case .edit:
-            return fileNameIsValid || fileUrlIsValid
+            return fileUrlChanged || fileNameChanged
         }
     }
 }

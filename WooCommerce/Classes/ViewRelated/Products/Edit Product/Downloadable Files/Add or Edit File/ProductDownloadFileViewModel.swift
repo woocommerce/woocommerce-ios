@@ -47,10 +47,6 @@ final class ProductDownloadFileViewModel: ProductDownloadFileViewModelOutput {
     private(set) var fileID: String?
     private(set) var formType: ProductDownloadFileViewController.FormType
 
-    // Validation
-    private var fileNameIsValid: Bool = false
-    private var fileUrlIsValid: Bool = false
-
     init(product: ProductFormDataModel,
          downloadFileIndex: Int?,
          formType: ProductDownloadFileViewController.FormType) {
@@ -89,37 +85,12 @@ extension ProductDownloadFileViewModel: ProductDownloadFileActionHandler {
     func handleFileNameChange(_ fileName: String?, onValidation: @escaping (_ isValid: Bool) -> Void) {
         self.fileName = fileName
 
-        let newValue = self.fileName
-        guard let downloadableFileIndex = downloadableFileIndex,
-            let oldValue = product.downloadableFiles[safe: downloadableFileIndex]?.name,
-            newValue != oldValue,
-            newValue?.isEmpty == false else {
-
-                fileNameIsValid = false
-                onValidation(fileNameIsValid || fileUrlIsValid)
-                return
-        }
-
-        fileNameIsValid = true
         onValidation(isChangesValid())
     }
 
     func handleFileUrlChange(_ fileURL: String?, onValidation: @escaping (_ isValid: Bool) -> Void) {
         self.fileURL = fileURL
 
-        let newValue = self.fileURL
-        guard let downloadableFileIndex = downloadableFileIndex,
-            let oldValue = product.downloadableFiles[safe: downloadableFileIndex]?.fileURL,
-            newValue != oldValue,
-            newValue?.isEmpty == false,
-            newValue?.isValidURL() == true else {
-
-                fileNameIsValid = false
-                onValidation(fileNameIsValid || fileUrlIsValid)
-                return
-        }
-
-        fileUrlIsValid = true
         onValidation(isChangesValid())
     }
 
@@ -141,6 +112,28 @@ extension ProductDownloadFileViewModel: ProductDownloadFileActionHandler {
 //
 private extension ProductDownloadFileViewModel {
     func isChangesValid() -> Bool {
+        var fileUrlIsValid = false
+        var fileNameIsValid = false
+
+        let newFileURL = self.fileURL
+        if let downloadableFileIndex = downloadableFileIndex,
+            let oldValue = product.downloadableFiles[safe: downloadableFileIndex]?.fileURL,
+            newFileURL != oldValue,
+            newFileURL?.isEmpty == false,
+            newFileURL?.isValidURL() == true {
+
+            fileUrlIsValid = true
+        }
+
+        let newFileName = self.fileName
+        if let downloadableFileIndex = downloadableFileIndex,
+            let oldValue = product.downloadableFiles[safe: downloadableFileIndex]?.name,
+            newFileName != oldValue,
+            newFileName?.isEmpty == false {
+
+            fileNameIsValid = true
+        }
+
         switch formType {
         case .add:
             return fileUrlIsValid

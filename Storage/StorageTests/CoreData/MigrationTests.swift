@@ -90,6 +90,29 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(genericAttribute.key, "voluptatem")
         XCTAssertEqual(genericAttribute.value, "veritatis")
     }
+
+    /// Model 32 = the base version
+    /// Model 33 = adds testProperty (added by Mary)
+    /// Model 34 = PRODUCTION version. Based on Model 33 (before testProperty33 was added by John).
+    ///            This is what got deployed to production.
+    /// Model 33 = DEVELOP version. Adds testProperty33 (added by John). This is the second
+    ///            deployment to production.
+    ///
+    func test_production_version_is_not_compatible_with_develop_version() throws {
+        // Given
+        let containerWithBaseVersion = try startPersistentContainer("Model 32")
+
+        // When
+        let containerWithProductionVersion = try migrate(containerWithBaseVersion, to: "Model 34")
+
+        // Then
+        let latestModelInDevelop = try XCTUnwrap(modelsInventory.model(for: .init(name: "Model 33")))
+        let persistentStoreWithProductionVersion =
+            try XCTUnwrap(containerWithProductionVersion.persistentStoreCoordinator.persistentStores.first)
+
+        XCTAssertFalse(latestModelInDevelop.isConfiguration(withName: nil,
+                                                            compatibleWithStoreMetadata: persistentStoreWithProductionVersion.metadata))
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

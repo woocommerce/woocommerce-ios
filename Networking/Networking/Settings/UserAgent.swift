@@ -4,11 +4,6 @@ import WebKit
 ///
 public class UserAgent {
 
-    /// Private: NO-OP
-    ///
-    private init() { }
-
-
     /// Returns the default WooCommerce iOS User Agent
     ///
     public static var defaultUserAgent: String = {

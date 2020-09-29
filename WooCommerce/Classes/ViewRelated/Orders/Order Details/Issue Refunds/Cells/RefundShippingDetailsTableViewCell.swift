@@ -14,7 +14,7 @@ final class RefundShippingDetailsTableViewCell: UITableViewCell {
 
     /// Display the shipping cost
     ///
-    @IBOutlet private var shippingPrice: UILabel!
+    @IBOutlet private var shippingPriceLabel: UILabel!
 
     /// Displays `Subtotal` title
     ///
@@ -70,7 +70,7 @@ private extension RefundShippingDetailsTableViewCell {
 
     func applyLabelsStyles() {
         carrierLabel.applyBodyStyle()
-        shippingPrice.applyFootnoteStyle()
+        shippingPriceLabel.applyFootnoteStyle()
         subtotalTitleLabel.applyBodyStyle()
         subtotalPriceLabel.applyBodyStyle()
         taxTitleLabel.applyBodyStyle()
@@ -101,7 +101,7 @@ extension RefundShippingDetailsTableViewCell {
     ///
     func configure(with viewModel: RefundShippingDetailsViewModel) {
         carrierLabel.text = viewModel.carrierRate
-        shippingPrice.text = viewModel.carrierCost
+        shippingPriceLabel.text = viewModel.carrierCost
         taxPriceLabel.text = viewModel.shippingTax
         subtotalPriceLabel.text = viewModel.shippingSubtotal
         shippingRefundPriceLabel.text = viewModel.shippingTotal

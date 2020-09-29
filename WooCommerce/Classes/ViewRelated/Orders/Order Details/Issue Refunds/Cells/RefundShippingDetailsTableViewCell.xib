@@ -146,7 +146,7 @@
                 <outlet property="shippingBorderView" destination="UIO-C5-NbR" id="N6j-Du-QU6"/>
                 <outlet property="shippingBorderViewHeightConstraint" destination="v2s-3t-84S" id="nku-Qw-WS3"/>
                 <outlet property="shippingImageView" destination="chZ-Nd-oWh" id="UI2-cb-BJk"/>
-                <outlet property="shippingPrice" destination="StO-ND-1uB" id="fY1-vi-El1"/>
+                <outlet property="shippingPriceLabel" destination="StO-ND-1uB" id="aaX-D3-EGa"/>
                 <outlet property="shippingRefundPriceLabel" destination="URn-4h-z0y" id="e41-c5-Iux"/>
                 <outlet property="shippingRefundTitleLabel" destination="E7R-DR-yWr" id="A2w-Uk-6ab"/>
                 <outlet property="subtotalPriceLabel" destination="hhl-06-gXM" id="AzJ-1s-JyY"/>

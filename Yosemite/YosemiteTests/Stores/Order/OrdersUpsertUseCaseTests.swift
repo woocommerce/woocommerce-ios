@@ -56,6 +56,25 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         let persistedOrder9001 = try XCTUnwrap(viewStorage.loadOrder(siteID: defaultSiteID, orderID: 9001))
         XCTAssertEqual(persistedOrder9001.toReadOnly(), orders.last)
     }
+
+    func test_it_persists_order_relationships_in_storage() throws {
+        // Given
+        let coupon = Networking.OrderCouponLine(couponID: 1, code: "", discount: "", discountTax: "")
+        let refund = Networking.OrderRefundCondensed(refundID: 122, reason: "", total: "1.6")
+        let order = makeOrder().copy(orderID: 98, number: "dignissimos", coupons: [coupon], refunds: [refund])
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+
+        // When
+        useCase.upsert([order])
+
+        // Then
+        let persistedOrder = try XCTUnwrap(viewStorage.loadOrder(siteID: defaultSiteID, orderID: 98))
+        XCTAssertEqual(persistedOrder.toReadOnly(), order)
+        let persistedCoupon = try XCTUnwrap(viewStorage.loadOrderCoupon(siteID: defaultSiteID, couponID: coupon.couponID))
+        XCTAssertEqual(persistedCoupon.toReadOnly(), coupon)
+        let persistedRefund = try XCTUnwrap(viewStorage.loadOrderRefundCondensed(siteID: defaultSiteID, refundID: refund.refundID))
+        XCTAssertEqual(persistedRefund.toReadOnly(), refund)
+    }
 }
 
 private extension OrdersUpsertUseCaseTests {

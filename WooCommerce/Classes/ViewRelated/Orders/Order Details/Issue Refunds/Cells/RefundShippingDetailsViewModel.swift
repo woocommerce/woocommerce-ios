@@ -1,6 +1,6 @@
 import Foundation
 
-/// Represents shipping detailsf for an order to be refunded. Meant to be rendered by `RefundShippingDetailsTableViewCell`
+/// Represents shipping details for an order to be refunded. Meant to be rendered by `RefundShippingDetailsTableViewCell`
 ///
 struct RefundShippingDetailsViewModel {
     let carrierRate: String

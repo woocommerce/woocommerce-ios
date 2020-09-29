@@ -89,7 +89,7 @@ private extension RefundShippingDetailsTableViewCell {
         shippingImageView.image = .shippingImage
         shippingImageView.tintColor = .systemColor(.systemGray2)
         shippingBorderView.layer.cornerRadius = Constants.shippingBorderCornerRadius
-        shippingBorderView.layer.borderWidth = Constants.shippingBorderWitdh
+        shippingBorderView.layer.borderWidth = Constants.shippingBorderWidth
         shippingBorderView.layer.borderColor = UIColor.border.cgColor
     }
 }
@@ -125,14 +125,14 @@ private extension RefundShippingDetailsTableViewCell {
 // MARK: Constants
 private extension RefundShippingDetailsTableViewCell {
     enum Localization {
-        static let taxTitle = NSLocalizedString("Tax", comment: "Title on the refunds screen that list the shipping tax cost")
-        static let subtotalTitle = NSLocalizedString("Subtotal", comment: "Title on the refund screen that list the shipping subtotal cost")
-        static let totalTitle = NSLocalizedString("Shipping Refund", comment: "Title on the refund screen that list the shipping total cost")
+        static let taxTitle = NSLocalizedString("Tax", comment: "Title on the refunds screen that lists the shipping tax cost")
+        static let subtotalTitle = NSLocalizedString("Subtotal", comment: "Title on the refund screen that lists the shipping subtotal cost")
+        static let totalTitle = NSLocalizedString("Shipping Refund", comment: "Title on the refund screen that lists the shipping total cost")
     }
 
     enum Constants {
         static let shippingBorderCornerRadius: CGFloat = 2.0
-        static let shippingBorderWitdh: CGFloat = 0.5
+        static let shippingBorderWidth: CGFloat = 0.5
         static let shippingBorderViewHeight: CGFloat = 40.0
     }
 }

@@ -244,7 +244,6 @@ extension DefaultReviewsDataSource: ReviewsInteractionDelegate {
         let note = notification(id: review.reviewID)
 
         let detailsViewController = ReviewDetailsViewController(productReview: review,
-                                                                siteID: siteID,
                                                                 product: reviewedProduct,
                                                                 notification: note)
         viewController.navigationController?.pushViewController(detailsViewController, animated: true)

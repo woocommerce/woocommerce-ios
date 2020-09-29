@@ -95,7 +95,6 @@ final class ReviewsCoordinator: Coordinator {
 
     private func pushReviewDetailsViewController(using parcel: ProductReviewFromNoteParcel) {
         let detailsVC = ReviewDetailsViewController(productReview: parcel.review,
-                                                    siteID: parcel.review.siteID,
                                                     product: parcel.product,
                                                     notification: parcel.note)
         navigationController.pushViewController(detailsVC, animated: true)

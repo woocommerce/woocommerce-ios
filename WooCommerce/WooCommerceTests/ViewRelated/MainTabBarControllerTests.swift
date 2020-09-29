@@ -47,17 +47,18 @@ final class MainTabBarControllerTests: XCTestCase {
         // Arrange
         // Trigger `viewDidLoad`
         XCTAssertNotNil(tabBarController.view)
-
-        // Action
         let siteID: Int64 = 134
         stores.updateDefaultStore(storeID: siteID)
+        XCTAssertEqual(tabBarController.viewControllers?.count, 4)
+
+        // Action
         stores.deauthenticate()
 
         // Assert
         XCTAssertEqual(tabBarController.viewControllers?.count, 0)
     }
 
-    func test_tab_view_controllers_contain_a_different_reviews_tab_after_updating_to_a_different_site() throws {
+    func test_viewControllers_are_replaced_after_updating_to_a_different_site() throws {
         // Arrange
         // Trigger `viewDidLoad`
         XCTAssertNotNil(tabBarController.view)

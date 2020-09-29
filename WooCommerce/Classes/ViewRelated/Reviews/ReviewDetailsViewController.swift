@@ -47,9 +47,9 @@ final class ReviewDetailsViewController: UIViewController {
 
     /// Designated Initializer
     ///
-    init(productReview: ProductReview, siteID: Int64, product: Product?, notification: Note?) {
+    init(productReview: ProductReview, product: Product?, notification: Note?) {
         self.productReview = productReview
-        self.siteID = siteID
+        self.siteID = productReview.siteID
         self.product = product
         self.notification = notification
         super.init(nibName: nil, bundle: nil)

@@ -110,11 +110,10 @@ extension ProductDownloadListViewModel: ProductDownloadListActionHandler {
 
     // Navigation actions
     func completeUpdating(onCompletion: ProductDownloadListViewController.Completion) {
-        //TODO: Perform data validation as necessary
         let data = ProductDownloadsEditableData(downloadableFiles: downloadableFiles.map { $0.downloadableFile },
                                                 downloadLimit: downloadLimit,
                                                 downloadExpiry: downloadExpiry)
-        onCompletion(data)
+        onCompletion(data, hasUnsavedChanges())
     }
 
     func hasUnsavedChanges() -> Bool {

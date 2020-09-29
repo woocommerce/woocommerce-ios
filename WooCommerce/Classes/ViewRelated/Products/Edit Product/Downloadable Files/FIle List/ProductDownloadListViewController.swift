@@ -12,7 +12,7 @@ final class ProductDownloadListViewController: UIViewController {
 
     // Completion callback
     //
-    typealias Completion = (_ data: ProductDownloadsEditableData) -> Void
+    typealias Completion = (_ data: ProductDownloadsEditableData, _ hasUnsavedChanges: Bool) -> Void
     private let onCompletion: Completion
 
     init(product: ProductFormDataModel, completion: @escaping Completion) {
@@ -83,7 +83,7 @@ private extension ProductDownloadListViewController {
             let button = UIBarButtonItem(image: .moreImage,
                                          style: .plain,
                                          target: self,
-                                         action: #selector(downloadSettingsButtonTapped))
+                                         action: #selector(settingsButtonTapped))
             button.accessibilityTraits = .button
             button.accessibilityLabel = NSLocalizedString("View downloadable file settings",
                                                           comment: "The action to update downloadable files settings for a product")
@@ -121,12 +121,11 @@ extension ProductDownloadListViewController {
     @objc private func doneButtonTapped() {
         // TODO: - add analytics
         viewModel.completeUpdating(onCompletion: onCompletion)
-        navigationController?.popViewController(animated: true)
     }
 
-    @objc private func downloadSettingsButtonTapped() {
+    @objc private func settingsButtonTapped() {
         // TODO: - add analytics
-        showDownloadSettings()
+        showDownloadableFilesSettings()
     }
 
     @objc private func addButtonTapped() {
@@ -166,10 +165,6 @@ extension ProductDownloadListViewController {
                                              hasUnsavedChanges: Bool,
                                              indexPath: IndexPath,
                                              formType: ProductDownloadFileViewController.FormType) {
-        defer {
-            navigationController?.popViewController(animated: true)
-        }
-
         guard hasUnsavedChanges else {
             return
         }
@@ -190,20 +185,16 @@ extension ProductDownloadListViewController {
     }
 }
 
-// MARK: Action - Downloaded Settings
+// MARK: Action - Downloadable file settings
 //
 extension ProductDownloadListViewController {
-    func showDownloadSettings() {
+    func showDownloadableFilesSettings() {
 
     }
 
     func onDownloadSettingsCompletion(downloadLimit: Int64,
                                       downloadExpiry: Int64,
                                       hasUnsavedChanges: Bool) {
-        defer {
-            navigationController?.popViewController(animated: true)
-        }
-
         guard hasUnsavedChanges else {
             return
         }

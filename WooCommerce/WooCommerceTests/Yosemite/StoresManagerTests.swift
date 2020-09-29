@@ -179,7 +179,8 @@ extension DefaultStoresManager {
 final class MockAuthenticationManager: AuthenticationManager {
     private(set) var displayAuthenticationInvoked: Bool = false
 
-    override func displayAuthentication(from presenter: UIViewController) {
+    override func displayAuthentication(from presenter: UIViewController, animated: Bool, onCompletion: @escaping () -> Void) {
         displayAuthenticationInvoked = true
+        onCompletion()
     }
 }

@@ -82,6 +82,10 @@ final class MainTabBarController: UITabBarController {
 
     /// Tab view controllers
     ///
+    private let dashboardNavigationController: UINavigationController = WooNavigationController()
+    private let ordersNavigationController: UINavigationController = WooNavigationController()
+    private let productsNavigationController: UINavigationController = WooNavigationController()
+    private let reviewsNavigationController: UINavigationController = WooNavigationController()
     private var reviewsTabCoordinator: Coordinator?
 
     private var cancellableSiteID: ObservationToken?
@@ -98,6 +102,7 @@ final class MainTabBarController: UITabBarController {
         super.viewDidLoad()
         setNeedsStatusBarAppearanceUpdate() // call this to refresh status bar changes happening at runtime
 
+        configureTabViewControllers()
         observeSiteIDForViewControllers()
 
         loadReviewsTabNotificationCountAndUpdateBadge()
@@ -147,6 +152,15 @@ final class MainTabBarController: UITabBarController {
                 completion?()
             }
         }
+    }
+
+    /// Removes the view controllers in each tab's navigation controller, and resets any logged in properties.
+    /// Called after the app is logged out and authentication UI is presented.
+    func removeViewControllers() {
+        viewControllers?.compactMap { $0 as? UINavigationController }.forEach { navigationController in
+            navigationController.viewControllers = []
+        }
+        reviewsTabCoordinator = nil
     }
 }
 
@@ -320,6 +334,26 @@ extension MainTabBarController {
 // MARK: - Site ID observation for updating tab view controllers
 //
 private extension MainTabBarController {
+    func configureTabViewControllers() {
+        viewControllers = {
+            var controllers = [UIViewController]()
+
+            let dashboardTabIndex = WooTab.myStore.visibleIndex()
+            controllers.insert(dashboardNavigationController, at: dashboardTabIndex)
+
+            let ordersTabIndex = WooTab.orders.visibleIndex()
+            controllers.insert(ordersNavigationController, at: ordersTabIndex)
+
+            let productsTabIndex = WooTab.products.visibleIndex()
+            controllers.insert(productsNavigationController, at: productsTabIndex)
+
+            let reviewsTabIndex = WooTab.reviews.visibleIndex()
+            controllers.insert(reviewsNavigationController, at: reviewsTabIndex)
+
+            return controllers
+        }()
+    }
+
     func observeSiteIDForViewControllers() {
         cancellableSiteID = stores.siteID.subscribe { [weak self] siteID in
             guard let self = self else {
@@ -331,72 +365,42 @@ private extension MainTabBarController {
 
     func updateViewControllers(siteID: Int64?) {
         guard let siteID = siteID else {
-            viewControllers = []
-            reviewsTabCoordinator = nil
             return
         }
 
-        // Initialize tab view controllers
-        let dashboardViewController = createDashboardTabViewController()
+        // Initialize each tab's root view controller
+        let dashboardViewController = createDashboardViewController()
+        dashboardNavigationController.viewControllers = [dashboardViewController]
 
-        let ordersTabViewController = createOrdersTabViewController()
+        let ordersViewController = createOrdersViewController()
+        ordersNavigationController.viewControllers = [ordersViewController]
 
-        let productsTabViewController = createProductsTabViewController()
+        let productsViewController = createProductsViewController()
+        productsNavigationController.viewControllers = [productsViewController]
 
         let reviewsTabCoordinator = createReviewsTabCoordinator(siteID: siteID)
         self.reviewsTabCoordinator = reviewsTabCoordinator
-
-        // Add the Dashboard, Orders, Products and Reviews tab
-        viewControllers = {
-            var controllers = [UIViewController]()
-
-            let dashboardTabIndex = WooTab.myStore.visibleIndex()
-            controllers.insert(dashboardViewController, at: dashboardTabIndex)
-
-            let ordersTabIndex = WooTab.orders.visibleIndex()
-            controllers.insert(ordersTabViewController, at: ordersTabIndex)
-
-            let productsTabIndex = WooTab.products.visibleIndex()
-            controllers.insert(productsTabViewController, at: productsTabIndex)
-
-            let reviewsTabIndex = WooTab.reviews.visibleIndex()
-            controllers.insert(reviewsTabCoordinator.navigationController, at: reviewsTabIndex)
-
-            return controllers
-        }()
+        reviewsTabCoordinator.start()
 
         // Set dashboard to be the default tab.
         selectedIndex = WooTab.myStore.visibleIndex()
-
-        // Startup calls for tab view controllers
-        reviewsTabCoordinator.start()
     }
 
-    func createDashboardTabViewController() -> UIViewController {
-        let dashboardViewController = DashboardViewController()
-        return WooNavigationController(rootViewController: dashboardViewController)
+    func createDashboardViewController() -> UIViewController {
+        DashboardViewController()
     }
 
-    func createOrdersTabViewController() -> UIViewController {
-        let rootViewController = OrdersRootViewController()
-        return WooNavigationController(rootViewController: rootViewController)
+    func createOrdersViewController() -> UIViewController {
+        OrdersRootViewController()
     }
 
-    func createProductsTabViewController() -> UIViewController {
-        let productsViewController = ProductsViewController(nibName: nil, bundle: nil)
-        let navController = WooNavigationController(rootViewController: productsViewController)
-        let navigationTitle = NSLocalizedString("Products",
-                                                comment: "Title of the Products tab — plural form of Product")
-        navController.tabBarItem = UITabBarItem(title: navigationTitle,
-                                                image: UIImage.productImage,
-                                                tag: 0)
-        navController.tabBarItem.accessibilityIdentifier = "tab-bar-products-item"
-
-        return navController
+    func createProductsViewController() -> UIViewController {
+        ProductsViewController()
     }
 
     func createReviewsTabCoordinator(siteID: Int64) -> Coordinator {
         ReviewsCoordinator(siteID: siteID,
+                           navigationController: reviewsNavigationController,
                            willPresentReviewDetailsFromPushNotification: { [weak self] in
                             self?.navigateTo(.reviews)
         })

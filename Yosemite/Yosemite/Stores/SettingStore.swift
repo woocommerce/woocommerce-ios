@@ -6,7 +6,7 @@ import Storage
 // MARK: - SettingStore
 //
 public class SettingStore: Store {
-    private let remote: SiteSettingsRemote
+    private let siteSettingsRemote: SiteSettingsRemote
     private let siteAPIRemote: SiteAPIRemote
 
     private lazy var sharedDerivedStorage: StorageType = {
@@ -14,7 +14,7 @@ public class SettingStore: Store {
     }()
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
-        self.remote = SiteSettingsRemote(network: network)
+        self.siteSettingsRemote = SiteSettingsRemote(network: network)
         self.siteAPIRemote = SiteAPIRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -52,7 +52,7 @@ private extension SettingStore {
     /// Synchronizes the general site settings associated with the provided Site ID (if any!).
     ///
     func synchronizeGeneralSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
-        remote.loadGeneralSettings(for: siteID) { [weak self] (settings, error) in
+        siteSettingsRemote.loadGeneralSettings(for: siteID) { [weak self] (settings, error) in
             guard let settings = settings else {
                 onCompletion(error)
                 return
@@ -67,7 +67,7 @@ private extension SettingStore {
     /// Synchronizes the product site settings associated with the provided Site ID (if any!).
     ///
     func synchronizeProductSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
-        remote.loadProductSettings(for: siteID) { [weak self] (settings, error) in
+        siteSettingsRemote.loadProductSettings(for: siteID) { [weak self] (settings, error) in
             guard let settings = settings else {
                 onCompletion(error)
                 return

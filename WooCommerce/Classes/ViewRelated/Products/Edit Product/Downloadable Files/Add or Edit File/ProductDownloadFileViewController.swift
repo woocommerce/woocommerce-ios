@@ -66,19 +66,9 @@ extension ProductDownloadFileViewController {
     }
 
     @objc private func completeUpdating() {
-        viewModel.completeUpdating(
-            onCompletion: { [weak self] (fileName, fileURL, fileID, hasUnsavedChanges) in
-                self?.onCompletion(fileName, fileURL, fileID, hasUnsavedChanges)
-            }, onError: { [weak self] error in
-                switch error {
-                case .emptyFileName:
-                    self?.displayEmptyFileNameErrorNotice()
-                case .emptyFileUrl:
-                    self?.displayInvalidUrlErrorNotice()
-                case .invalidFileUrl:
-                    self?.displayInvalidUrlErrorNotice()
-                }
-        })
+        viewModel.completeUpdating { [weak self] (fileName, fileURL, fileID, hasUnsavedChanges) in
+             self?.onCompletion(fileName, fileURL, fileID, hasUnsavedChanges)
+        }
     }
 
     @objc private func deleteDownloadableFile() {
@@ -264,33 +254,6 @@ private extension ProductDownloadFileViewController {
     }
 }
 
-// MARK: - Error handling
-//
-private extension ProductDownloadFileViewController {
-
-    /// Displays a Notice onscreen, indicating that you can't add a downloadable file without adding a file name
-    ///
-    func displayEmptyFileNameErrorNotice() {
-        UIApplication.shared.keyWindow?.endEditing(true)
-        let message = NSLocalizedString("The file name can not be empty",
-                                        comment: "Download file error notice message, when file name is not given but done button is tapped")
-
-        let notice = Notice(title: message, feedbackType: .error)
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
-    }
-
-    /// Displays a Notice onscreen, indicating that you can't add a downloadable file without adding a valid file url
-    ///
-    func displayInvalidUrlErrorNotice() {
-        UIApplication.shared.keyWindow?.endEditing(true)
-        let message = NSLocalizedString("File url is empty or invalid",
-                                        comment: "Download file url error notice message, when file url is not given/invalid but done button is tapped")
-
-        let notice = Notice(title: message, feedbackType: .error)
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
-    }
-}
-
 extension ProductDownloadFileViewController {
 
     struct Section: RowIterable, Equatable {
@@ -319,6 +282,7 @@ extension ProductDownloadFileViewController {
         }
     }
 
+    /// The type of downloadable file form: adding a new one or editing an existing one.
     enum FormType {
         case add
         case edit

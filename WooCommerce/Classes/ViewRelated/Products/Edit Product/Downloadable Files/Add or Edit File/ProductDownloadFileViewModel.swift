@@ -1,7 +1,7 @@
 import Foundation
 import Yosemite
 
-/// Provides data needed for file settings.
+/// Provides data needed for downloadable file settings.
 ///
 protocol ProductDownloadFileViewModelOutput {
     typealias Section = ProductDownloadFileViewController.Section
@@ -14,7 +14,7 @@ protocol ProductDownloadFileViewModelOutput {
     var fileID: String? { get }
 }
 
-/// Handles actions related to the file settings data.
+/// Handles actions related to downloadable file settings data.
 ///
 protocol ProductDownloadFileActionHandler {
     // Input field actions
@@ -22,11 +22,11 @@ protocol ProductDownloadFileActionHandler {
     func handleFileUrlChange(_ fileURL: String?, onValidation: @escaping (_ isValid: Bool) -> Void)
 
     // Navigation actions
-    func completeUpdating(onCompletion: ProductDownloadFileViewController.Completion, onError: (ProductDownloadFileError) -> Void)
+    func completeUpdating(onCompletion: ProductDownloadFileViewController.Completion)
     func hasUnsavedChanges() -> Bool
 }
 
-/// Error cases that could occur in product download file settings.
+/// Error cases that could occur in product downloadable file settings.
 ///
 enum ProductDownloadFileError: Error {
     case emptyFileName
@@ -50,7 +50,6 @@ final class ProductDownloadFileViewModel: ProductDownloadFileViewModelOutput {
     // Validation
     private var fileNameIsValid: Bool = false
     private var fileUrlIsValid: Bool = false
-    private lazy var throttler: Throttler = Throttler(seconds: 0.5)
 
     init(product: ProductFormDataModel,
          downloadFileIndex: Int?,
@@ -59,8 +58,8 @@ final class ProductDownloadFileViewModel: ProductDownloadFileViewModelOutput {
         self.downloadableFileIndex = downloadFileIndex
         self.formType = formType
 
-        if let downloadableFileIndex = downloadableFileIndex, downloadableFileIndex >= 0 {
-            let file = product.downloadableFiles[downloadableFileIndex]
+        if let downloadableFileIndex = downloadableFileIndex,
+            let file = product.downloadableFiles[safe: downloadableFileIndex] {
             fileName = file.name
             fileURL = file.fileURL
             fileID = file.downloadID
@@ -91,23 +90,17 @@ extension ProductDownloadFileViewModel: ProductDownloadFileActionHandler {
         self.fileName = fileName
 
         let newValue = self.fileName
-        var oldValue: String?
-        if let downloadableFileIndex = downloadableFileIndex, downloadableFileIndex >= 0 {
-            oldValue = product.downloadableFiles[downloadableFileIndex].name
+        guard let downloadableFileIndex = downloadableFileIndex,
+            let oldValue = product.downloadableFiles[safe: downloadableFileIndex]?.name,
+            newValue != oldValue,
+            newValue?.isEmpty == false else {
+
+                fileNameIsValid = false
+                onValidation(fileNameIsValid || fileUrlIsValid)
+                return
         }
 
-        guard newValue != oldValue else {
-            fileNameIsValid = false
-            onValidation(fileNameIsValid || fileUrlIsValid)
-            return
-        }
-
-        if newValue?.isEmpty == false {
-            fileNameIsValid = true
-        } else {
-            fileNameIsValid = false
-        }
-
+        fileNameIsValid = true
         onValidation(isChangesValid())
     }
 
@@ -115,36 +108,26 @@ extension ProductDownloadFileViewModel: ProductDownloadFileActionHandler {
         self.fileURL = fileURL
 
         let newValue = self.fileURL
-        var oldValue: String?
-        if let downloadableFileIndex = downloadableFileIndex, downloadableFileIndex >= 0 {
-            oldValue = product.downloadableFiles[downloadableFileIndex].fileURL
+        guard let downloadableFileIndex = downloadableFileIndex,
+            let oldValue = product.downloadableFiles[safe: downloadableFileIndex]?.fileURL,
+            newValue != oldValue,
+            newValue?.isEmpty == false,
+            newValue?.isValidURL() == true else {
+
+                fileNameIsValid = false
+                onValidation(fileNameIsValid || fileUrlIsValid)
+                return
         }
 
-        guard newValue != oldValue else {
-            fileUrlIsValid = false
-            onValidation(fileNameIsValid || fileUrlIsValid)
-            return
-        }
-
-        if newValue?.isValidURL() == true && newValue?.isEmpty == false {
-            fileUrlIsValid = true
-        } else {
-            fileUrlIsValid = false
-        }
-
+        fileUrlIsValid = true
         onValidation(isChangesValid())
     }
 
     // MARK: - Navigation actions
 
-    func completeUpdating(onCompletion: ProductDownloadFileViewController.Completion,
-                          onError: (ProductDownloadFileError) -> Void) {
+    func completeUpdating(onCompletion: ProductDownloadFileViewController.Completion) {
         if let fileURL = fileURL, isChangesValid() {
             onCompletion(fileName, fileURL, fileID, hasUnsavedChanges())
-        } else if !fileNameIsValid {
-            onError(.emptyFileName)
-        } else {
-            onError(.invalidFileUrl)
         }
         return
     }

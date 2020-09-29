@@ -332,9 +332,6 @@ private extension MainTabBarController {
     func updateViewControllers(siteID: Int64?) {
         guard let siteID = siteID else {
             viewControllers = []
-            dashboardViewController = nil
-            ordersTabViewController = nil
-            productsTabViewController = nil
             reviewsTabCoordinator = nil
             return
         }

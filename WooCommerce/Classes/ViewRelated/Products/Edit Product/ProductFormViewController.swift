@@ -326,7 +326,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                     return
                 }
                 let variationsViewController = ProductVariationsViewController(product: product.product,
-                                                                               isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+                                                                               isEditProductsRelease3Enabled: isEditProductsRelease3Enabled,
+                                                                               isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
                 show(variationsViewController, sender: self)
             case .status, .noPriceWarning:
                 break

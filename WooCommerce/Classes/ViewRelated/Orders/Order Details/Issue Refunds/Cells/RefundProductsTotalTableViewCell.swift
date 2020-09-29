@@ -53,7 +53,7 @@ private extension RefundProductsTotalTableViewCell {
 
         taxTitleLabel.text = Localization.taxTitle
         subtotalTitleLabel.text = Localization.subtotalTitle
-        productsRefundPriceLabel.text = Localization.totalTitle
+        productsRefundTitleLabel.text = Localization.totalTitle
     }
 }
 
@@ -72,9 +72,9 @@ extension RefundProductsTotalTableViewCell {
 // MARK: Constants
 private extension RefundProductsTotalTableViewCell {
     enum Localization {
-        static let taxTitle = NSLocalizedString("Tax", comment: "Title on the refunds screen that lists the shipping tax cost")
-        static let subtotalTitle = NSLocalizedString("Subtotal", comment: "Title on the refund screen that lists the shipping subtotal cost")
-        static let totalTitle = NSLocalizedString("Products Refund", comment: "Title on the refund screen that lists the shipping total cost")
+        static let taxTitle = NSLocalizedString("Tax", comment: "Title on the refunds screen that lists the products refund tax cost")
+        static let subtotalTitle = NSLocalizedString("Subtotal", comment: "Title on the refund screen that lists the products refund subtotal cost")
+        static let totalTitle = NSLocalizedString("Products Refund", comment: "Title on the refund screen that lists the products refudn total cost")
     }
 }
 

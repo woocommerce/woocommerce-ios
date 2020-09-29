@@ -100,18 +100,43 @@ final class MigrationTests: XCTestCase {
     ///
     func test_production_version_is_not_compatible_with_develop_version() throws {
         // Given
+        let baseModel = try XCTUnwrap(modelsInventory.model(for: .init(name: "Model 32")))
         let containerWithBaseVersion = try startPersistentContainer("Model 32")
+        let storeURL = try XCTUnwrap(containerWithBaseVersion.persistentStoreDescriptions.first?.url)
 
         // When
-        let containerWithProductionVersion = try migrate(containerWithBaseVersion, to: "Model 34")
+        let productionModel = try XCTUnwrap(modelsInventory.model(for: .init(name: "Model 34")))
+        let mappingFromBaseToProduction = try NSMappingModel.inferredMappingModel(forSourceModel: baseModel, destinationModel: productionModel)
+
+        // Migrate directly from base version to production version
+        let migrator = NSMigrationManager(sourceModel: baseModel, destinationModel: productionModel)
+        try migrator.migrateStore(from: storeURL,
+                                  sourceType: NSSQLiteStoreType, options: nil,
+                                  with: mappingFromBaseToProduction,
+                                  toDestinationURL: storeURL,
+                                  destinationType: NSSQLiteStoreType,
+                                  destinationOptions: nil)
+
+        let containerWithProductionVersion = makePersistentContainer(storeURL: storeURL, model: productionModel)
+        let loadingError: Error? = try waitFor { promise in
+            containerWithProductionVersion.loadPersistentStores { _, error in
+                promise(error)
+            }
+        }
+        XCTAssertNil(loadingError)
 
         // Then
         let latestModelInDevelop = try XCTUnwrap(modelsInventory.model(for: .init(name: "Model 33")))
         let persistentStoreWithProductionVersion =
             try XCTUnwrap(containerWithProductionVersion.persistentStoreCoordinator.persistentStores.first)
 
+        // The production database is not compatible with the latest in develop
         XCTAssertFalse(latestModelInDevelop.isConfiguration(withName: nil,
                                                             compatibleWithStoreMetadata: persistentStoreWithProductionVersion.metadata))
+
+        // Confidence-check: The production database is only compatible with the last used model
+        XCTAssertTrue(productionModel.isConfiguration(withName: nil,
+                                                      compatibleWithStoreMetadata: persistentStoreWithProductionVersion.metadata))
     }
 }
 

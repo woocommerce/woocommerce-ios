@@ -313,6 +313,7 @@
 		02FE89C9231FB31400E85EF8 /* FeatureFlagService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE89C8231FB31400E85EF8 /* FeatureFlagService.swift */; };
 		02FE89CB231FB36600E85EF8 /* DefaultFeatureFlagService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE89CA231FB36600E85EF8 /* DefaultFeatureFlagService.swift */; };
 		24F98C502502AEE200F49B68 /* EventLogging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F98C4F2502AEE200F49B68 /* EventLogging.swift */; };
+		260C315E2523CC4000157BC2 /* RefundProductsTotalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 260C315D2523CC4000157BC2 /* RefundProductsTotalViewModel.swift */; };
 		2611EE59243A473300A74490 /* ProductCategoryListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2611EE58243A473300A74490 /* ProductCategoryListViewModelTests.swift */; };
 		2614EB1C24EB611200968D4B /* TopBannerViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2614EB1B24EB611200968D4B /* TopBannerViewTests.swift */; };
 		263EB409242C58EA00F3A15F /* ProductFormActionsFactory+EditProductsM3Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263EB408242C58EA00F3A15F /* ProductFormActionsFactory+EditProductsM3Tests.swift */; };
@@ -336,6 +337,8 @@
 		26B119C024D0C69500FED5C7 /* SurveyViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B119BF24D0C69500FED5C7 /* SurveyViewControllerTests.swift */; };
 		26B119C224D1CD3500FED5C7 /* WooConstantsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B119C124D1CD3500FED5C7 /* WooConstantsTests.swift */; };
 		26B3D8A0252235C50054C319 /* RefundShippingDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B3D89F252235C50054C319 /* RefundShippingDetailsViewModel.swift */; };
+		26CCBE0B2523B3650073F94D /* RefundProductsTotalTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CCBE0A2523B3650073F94D /* RefundProductsTotalTableViewCell.swift */; };
+		26CCBE0D2523C2560073F94D /* RefundProductsTotalTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26CCBE0C2523C2560073F94D /* RefundProductsTotalTableViewCell.xib */; };
 		26E1BECA251BE5390096D0A1 /* RefundItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E1BEC9251BE5390096D0A1 /* RefundItemTableViewCell.swift */; };
 		26E1BECC251BE5570096D0A1 /* RefundItemTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26E1BECB251BE5570096D0A1 /* RefundItemTableViewCell.xib */; };
 		26E1BECE251CD9F80096D0A1 /* RefundItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E1BECD251CD9F80096D0A1 /* RefundItemViewModel.swift */; };
@@ -1287,6 +1290,7 @@
 		24C579D124F476300076E1B4 /* Woo-Alpha.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Woo-Alpha.entitlements"; sourceTree = "<group>"; };
 		24F98C4F2502AEE200F49B68 /* EventLogging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventLogging.swift; sourceTree = "<group>"; };
 		25D00C97936D2C6589F8ECE9 /* Pods-WooCommerce.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		260C315D2523CC4000157BC2 /* RefundProductsTotalViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundProductsTotalViewModel.swift; sourceTree = "<group>"; };
 		2611EE58243A473300A74490 /* ProductCategoryListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryListViewModelTests.swift; sourceTree = "<group>"; };
 		2614EB1B24EB611200968D4B /* TopBannerViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBannerViewTests.swift; sourceTree = "<group>"; };
 		263EB408242C58EA00F3A15F /* ProductFormActionsFactory+EditProductsM3Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormActionsFactory+EditProductsM3Tests.swift"; sourceTree = "<group>"; };
@@ -1310,6 +1314,8 @@
 		26B119BF24D0C69500FED5C7 /* SurveyViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyViewControllerTests.swift; sourceTree = "<group>"; };
 		26B119C124D1CD3500FED5C7 /* WooConstantsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooConstantsTests.swift; sourceTree = "<group>"; };
 		26B3D89F252235C50054C319 /* RefundShippingDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundShippingDetailsViewModel.swift; sourceTree = "<group>"; };
+		26CCBE0A2523B3650073F94D /* RefundProductsTotalTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundProductsTotalTableViewCell.swift; sourceTree = "<group>"; };
+		26CCBE0C2523C2560073F94D /* RefundProductsTotalTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RefundProductsTotalTableViewCell.xib; sourceTree = "<group>"; };
 		26E1BEC9251BE5390096D0A1 /* RefundItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundItemTableViewCell.swift; sourceTree = "<group>"; };
 		26E1BECB251BE5570096D0A1 /* RefundItemTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RefundItemTableViewCell.xib; sourceTree = "<group>"; };
 		26E1BECD251CD9F80096D0A1 /* RefundItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundItemViewModel.swift; sourceTree = "<group>"; };
@@ -2771,6 +2777,9 @@
 				26B3D89F252235C50054C319 /* RefundShippingDetailsViewModel.swift */,
 				26AE31AF251E602D004B1BCE /* RefundShippingDetailsTableViewCell.swift */,
 				26AE31B1251E604A004B1BCE /* RefundShippingDetailsTableViewCell.xib */,
+				260C315D2523CC4000157BC2 /* RefundProductsTotalViewModel.swift */,
+				26CCBE0A2523B3650073F94D /* RefundProductsTotalTableViewCell.swift */,
+				26CCBE0C2523C2560073F94D /* RefundProductsTotalTableViewCell.xib */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -4880,6 +4889,7 @@
 				0286B27C23C7051F003D784B /* ProductImagesViewController.xib in Resources */,
 				02F49ADE23BF3A4100FA0BFA /* ErrorSectionHeaderView.xib in Resources */,
 				B554016B2170D6010067DC90 /* ChartPlaceholderView.xib in Resources */,
+				26CCBE0D2523C2560073F94D /* RefundProductsTotalTableViewCell.xib in Resources */,
 				CE32B11620BF8779006FBCF4 /* FulfillButtonTableViewCell.xib in Resources */,
 				45C8B2672316AB460002FA77 /* BillingAddressTableViewCell.xib in Resources */,
 				B557652D20F6827900185843 /* StoreTableViewCell.xib in Resources */,
@@ -5185,6 +5195,7 @@
 				B5AA7B3F20ED81C2004DA14F /* UserDefaults+Woo.swift in Sources */,
 				B58B4AB22108F01700076FDD /* NoticeView.swift in Sources */,
 				74B5713621CD7604008F9B8E /* SharingHelper.swift in Sources */,
+				260C315E2523CC4000157BC2 /* RefundProductsTotalViewModel.swift in Sources */,
 				0286B27D23C7051F003D784B /* ProductImagesViewController.swift in Sources */,
 				D8149F532251CFE60006A245 /* EditableOrderTrackingTableViewCell.swift in Sources */,
 				024DF30B23742297006658FE /* AztecFormatBarCommand.swift in Sources */,
@@ -5540,6 +5551,7 @@
 				CEEC9B5E21E79C330055EEF0 /* BuildConfiguration.swift in Sources */,
 				D843D5D722485B19001BFA55 /* ShippingProvidersViewModel.swift in Sources */,
 				02ADC7CC239762E0008D4BED /* PaginatedListSelectorViewProperties.swift in Sources */,
+				26CCBE0B2523B3650073F94D /* RefundProductsTotalTableViewCell.swift in Sources */,
 				CE1CCB4B20570B1F000EE3AC /* OrderTableViewCell.swift in Sources */,
 				748AD087219F481B00023535 /* UIView+Animation.swift in Sources */,
 				02564A8A246CDF6100D6DB2A /* ProductsTopBannerFactory.swift in Sources */,

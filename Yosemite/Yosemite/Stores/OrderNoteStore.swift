@@ -55,7 +55,7 @@ private extension OrderNoteStore {
                 return
             }
 
-            self?.upsertStoredOrderNotesInBackground(readOnlyOrderNotes: orderNotes, orderID: orderID) {
+            self?.upsertStoredOrderNotesInBackground(readOnlyOrderNotes: orderNotes, orderID: orderID, siteID: siteID) {
                 onCompletion(orderNotes, nil)
             }
         }
@@ -70,7 +70,7 @@ private extension OrderNoteStore {
                 return
             }
 
-            self?.upsertStoredOrderNotesInBackground(readOnlyOrderNotes: [note], orderID: orderID) {
+            self?.upsertStoredOrderNotesInBackground(readOnlyOrderNotes: [note], orderID: orderID, siteID: siteID) {
                 onCompletion(note, nil)
             }
         }
@@ -84,10 +84,10 @@ extension OrderNoteStore {
 
     /// Updates (OR Inserts) the specified ReadOnly OrderNote Entity into the Storage Layer.
     ///
-    func upsertStoredOrderNoteInBackground(readOnlyOrderNote: Networking.OrderNote, orderID: Int64, onCompletion: @escaping () -> Void) {
+    func upsertStoredOrderNoteInBackground(readOnlyOrderNote: Networking.OrderNote, orderID: Int64, siteID: Int64, onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
-            self.saveNote(derivedStorage, readOnlyOrderNote, orderID)
+            self.saveNote(derivedStorage, readOnlyOrderNote, orderID, siteID: siteID)
         }
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
@@ -97,11 +97,11 @@ extension OrderNoteStore {
 
     /// Updates (OR Inserts) the specified ReadOnly OrderNote Entities into the Storage Layer.
     ///
-    func upsertStoredOrderNotesInBackground(readOnlyOrderNotes: [Networking.OrderNote], orderID: Int64, onCompletion: @escaping () -> Void) {
+    func upsertStoredOrderNotesInBackground(readOnlyOrderNotes: [Networking.OrderNote], orderID: Int64, siteID: Int64, onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
             for readOnlyOrderNote in readOnlyOrderNotes {
-                self.saveNote(derivedStorage, readOnlyOrderNote, orderID)
+                self.saveNote(derivedStorage, readOnlyOrderNote, orderID, siteID: siteID)
             }
         }
 
@@ -113,13 +113,13 @@ extension OrderNoteStore {
     /// Using the provided StorageType, update or insert a Storage.OrderNote using the provided ReadOnly
     /// OrderNote. This func does *not* persist any unsaved changes to storage.
     ///
-    private func saveNote(_ storage: StorageType, _ readOnlyOrderNote: OrderNote, _ orderID: Int64) {
+    private func saveNote(_ storage: StorageType, _ readOnlyOrderNote: OrderNote, _ orderID: Int64, siteID: Int64) {
         if let existingStorageNote = storage.loadOrderNote(noteID: readOnlyOrderNote.noteID) {
             existingStorageNote.update(with: readOnlyOrderNote)
             return
         }
 
-        guard let storageOrder = storage.loadOrder(orderID: orderID) else {
+        guard let storageOrder = storage.loadOrder(siteID: siteID, orderID: orderID) else {
             DDLogWarn("⚠️ Could not persist the OrderNote with ID \(readOnlyOrderNote.noteID) — unable to retrieve stored order with ID \(orderID).")
             return
         }

@@ -148,12 +148,12 @@ class OrderNoteStoreTests: XCTestCase {
         let group = DispatchGroup()
 
         group.enter()
-        orderNoteStore.upsertStoredOrderNoteInBackground(readOnlyOrderNote: sampleCustomerNote(), orderID: sampleOrderID) {
+        orderNoteStore.upsertStoredOrderNoteInBackground(readOnlyOrderNote: sampleCustomerNote(), orderID: sampleOrderID, siteID: sampleSiteID) {
             group.leave()
         }
 
         group.enter()
-        orderNoteStore.upsertStoredOrderNoteInBackground(readOnlyOrderNote: sampleCustomerNoteMutated(), orderID: sampleOrderID) {
+        orderNoteStore.upsertStoredOrderNoteInBackground(readOnlyOrderNote: sampleCustomerNoteMutated(), orderID: sampleOrderID, siteID: sampleSiteID) {
             group.leave()
         }
 
@@ -181,7 +181,7 @@ class OrderNoteStoreTests: XCTestCase {
         XCTAssertNil(viewStorage.loadAccount(userID: remoteOrderNote.noteID))
 
         let expectation = self.expectation(description: "Stored Order Note")
-        orderNoteStore.upsertStoredOrderNoteInBackground(readOnlyOrderNote: remoteOrderNote, orderID: sampleOrderID) {
+        orderNoteStore.upsertStoredOrderNoteInBackground(readOnlyOrderNote: remoteOrderNote, orderID: sampleOrderID, siteID: sampleSiteID) {
             let storageOrderNote = self.viewStorage.loadOrderNote(noteID: remoteOrderNote.noteID)
             XCTAssertEqual(storageOrderNote?.toReadOnly(), remoteOrderNote)
             XCTAssertTrue(Thread.isMainThread)

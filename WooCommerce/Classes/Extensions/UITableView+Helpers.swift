@@ -17,3 +17,19 @@ extension UITableView {
         return IndexPath(row: row, section: section)
     }
 }
+
+// MARK: Typesafe dequeue
+extension UITableView {
+
+    /// Dequeue a previously registered cell by it's class `reuseIdentifier` property.
+    /// Failing to dequeue the cell will throw a `fatalError`
+    ///
+    func dequeueReusableCell<T: UITableViewCell>(_ type: T.Type, for indexPath: IndexPath) -> T {
+        guard let cell = dequeueReusableCell(withIdentifier: T.reuseIdentifier, for: indexPath) as? T else {
+            let message = "Could not dequeue cell with identifier \(T.reuseIdentifier) at \(indexPath)"
+            DDLogError(message)
+            fatalError(message)
+        }
+        return cell
+    }
+}

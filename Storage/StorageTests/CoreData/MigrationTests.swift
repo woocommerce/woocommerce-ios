@@ -75,7 +75,7 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try targetContext.count(entityName: "ProductCategory"), 0)
     }
 
-    func test_model_28_to_29_migration_passed() throws {
+    func test_migrating_from_28_to_29_deletes_ProductTag_objects() throws {
         // Arrange
         let sourceContainer = try startPersistentContainer("Model 28")
         let sourceContext = sourceContainer.viewContext

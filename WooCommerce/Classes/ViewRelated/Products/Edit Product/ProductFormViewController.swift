@@ -217,16 +217,16 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             }
         }
 
-        if viewModel.canDeleteProduct() {
-            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.delete) { [weak self] _ in
-                // TODO: Analytics M5
-                self?.displayDeleteProductAlert()
-            }
-        }
-
         actionSheet.addDefaultActionWithTitle(ActionSheetStrings.productSettings) { [weak self] _ in
             ServiceLocator.analytics.track(.productDetailViewSettingsButtonTapped)
             self?.displayProductSettings()
+        }
+
+        if viewModel.canDeleteProduct() {
+            actionSheet.addDestructiveActionWithTitle(ActionSheetStrings.delete) { [weak self] _ in
+                // TODO: Analytics M5
+                self?.displayDeleteProductAlert()
+            }
         }
 
         actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel) { _ in

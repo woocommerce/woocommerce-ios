@@ -20,6 +20,10 @@ final class ProductLoaderViewController: UIViewController {
     ///
     private let siteID: Int64
 
+    /// Force the product detail to be presented in read only mode
+    ///
+    private let forceReadOnly: Bool
+
     /// UI Active State
     ///
     private var state: State = .loading {
@@ -31,9 +35,10 @@ final class ProductLoaderViewController: UIViewController {
 
     // MARK: - Initializers
 
-    init(productID: Int64, siteID: Int64) {
+    init(productID: Int64, siteID: Int64, forceReadOnly: Bool) {
         self.productID = productID
         self.siteID = siteID
+        self.forceReadOnly = forceReadOnly
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -152,7 +157,9 @@ private extension ProductLoaderViewController {
     /// Presents the ProductDetailsViewController or the ProductFormViewController, as a childViewController, for a given Product.
     ///
     func presentProductDetails(for product: Product) {
-        ProductDetailsFactory.productDetails(product: product, presentationStyle: .contained(containerViewController: self)) { [weak self] viewController in
+        ProductDetailsFactory.productDetails(product: product,
+                                             presentationStyle: .contained(containerViewController: self),
+                                             forceReadOnly: forceReadOnly) { [weak self] viewController in
             self?.attachProductDetailsChildViewController(viewController)
         }
     }

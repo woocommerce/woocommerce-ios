@@ -2,6 +2,7 @@
 -----
 - [*] Enhancement: for variable products, the stock status is now shown in its variation list.
 - [*] Sign In With Apple: if the Apple ID has been disconnected from the WordPress app (e.g. in Settings > Apple ID > Password & Security > Apps using Apple ID), the app is logged out on app launch or app switch.
+- [*] Now from an Order Detail it's only possible to open a Product in read-only mode.
 - [internal] #2881 Upgraded WPAuth from 1.24 to 1.26-beta.12. Regressions may happen in login flows.
 - [internal] #2896 Configured the same user agent header for all the network requests made through the app.
 

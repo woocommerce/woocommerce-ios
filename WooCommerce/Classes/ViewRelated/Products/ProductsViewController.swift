@@ -542,7 +542,7 @@ extension ProductsViewController: UITableViewDelegate {
 
 private extension ProductsViewController {
     func didSelectProduct(product: Product) {
-        ProductDetailsFactory.productDetails(product: product, presentationStyle: .navigationStack) { [weak self] viewController in
+        ProductDetailsFactory.productDetails(product: product, presentationStyle: .navigationStack, forceReadOnly: false) { [weak self] viewController in
             self?.navigationController?.pushViewController(viewController, animated: true)
         }
     }

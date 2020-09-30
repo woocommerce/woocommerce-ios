@@ -147,7 +147,8 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         XCTAssertNil(ps)
     }
 
-    func test_model_migration_passed() throws {
+    /// Test the IterativeMigrator can migrate iteratively between model 1 to 10.
+    func test_iterativeMigrate_can_iteratively_migrate_from_model_1_to_model_10() throws {
         let model0URL = urlForModel(name: "Model")
         let model10URL = urlForModel(name: "Model 10")
         let storeURL = urlForStore(withName: "Woo Test 10.sqlite", deleteIfExists: true)

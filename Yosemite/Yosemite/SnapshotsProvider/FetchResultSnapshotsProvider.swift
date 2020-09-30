@@ -216,7 +216,7 @@ private extension FetchResultSnapshotsProvider {
             sectionNameKeyPath: query.sectionNameKeyPath,
             cacheName: nil
         )
-        resultsController.delegate = self.hiddenFetchedResultsControllerDelegate
+        resultsController.delegate = hiddenFetchedResultsControllerDelegate
 
         return resultsController
     }

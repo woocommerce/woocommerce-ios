@@ -276,4 +276,34 @@ private extension MigrationTests {
         ])
     }
 
+    @discardableResult
+    func insertProduct(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "Product", properties: [
+            "price": "",
+            "permalink": "",
+            "productTypeKey": "simple",
+            "purchasable": true,
+            "averageRating": "",
+            "backordered": true,
+            "backordersAllowed": false,
+            "backordersKey": "",
+            "catalogVisibilityKey": "",
+            "dateCreated": Date(),
+            "downloadable": true,
+            "featured": true,
+            "manageStock": true,
+            "name": "product",
+            "onSale": true,
+            "soldIndividually": true,
+            "slug": "",
+            "shippingRequired": false,
+            "shippingTaxable": false,
+            "reviewsAllowed": true,
+            "groupedProducts": [],
+            "virtual": true,
+            "stockStatusKey": "",
+            "statusKey": "",
+            "taxStatusKey": ""
+        ])
+    }
 }

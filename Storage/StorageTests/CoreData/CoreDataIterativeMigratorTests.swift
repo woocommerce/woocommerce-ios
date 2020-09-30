@@ -354,36 +354,6 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
 
 /// Helpers for generating data in migration tests
 private extension CoreDataIterativeMigratorTests {
-    func insertProductWithRequiredProperties(to context: NSManagedObjectContext) -> Product {
-        let product = context.insertNewObject(ofType: Product.self)
-        // Populates the required attributes.
-        product.price = ""
-        product.permalink = ""
-        product.productTypeKey = "simple"
-        product.purchasable = true
-        product.averageRating = ""
-        product.backordered = true
-        product.backordersAllowed = false
-        product.backordersKey = ""
-        product.catalogVisibilityKey = ""
-        product.dateCreated = Date()
-        product.downloadable = true
-        product.featured = true
-        product.manageStock = true
-        product.name = "product"
-        product.onSale = true
-        product.soldIndividually = true
-        product.slug = ""
-        product.shippingRequired = false
-        product.shippingTaxable = false
-        product.reviewsAllowed = true
-        product.groupedProducts = []
-        product.virtual = true
-        product.stockStatusKey = ""
-        product.statusKey = ""
-        product.taxStatusKey = ""
-        return product
-    }
 
     func insertProductCategoryWithRequiredProperties(to context: NSManagedObjectContext) -> ProductCategory {
         let productCategory = context.insertNewObject(ofType: ProductCategory.self)

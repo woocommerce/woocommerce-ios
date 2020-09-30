@@ -5,6 +5,9 @@ import CoreData
 @testable import Storage
 
 /// Test cases for `CoreDataIterativeMigrator`.
+///
+/// Test cases for migrating from a model version to another should be in `MigrationTests`.
+///
 final class CoreDataIterativeMigratorTests: XCTestCase {
     private var modelsInventory: ManagedObjectModelsInventory!
 

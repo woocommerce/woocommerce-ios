@@ -472,15 +472,15 @@ private extension ManualTrackingViewController {
 
         let siteID = viewModel.order.siteID
         let orderID = viewModel.order.orderID
-        let statusKey = viewModel.order.statusKey
+        let statusKey = viewModel.order.status
         let dateShipped = DateFormatter
             .Defaults
             .yearMonthDayDateFormatter
             .string(from: viewModel.shipmentDate)
 
         ServiceLocator.analytics.track(.orderTrackingAdd, withProperties: ["id": orderID,
-                                                                      "status": statusKey,
-                                                                      "carrier": providerName])
+                                                                           "status": statusKey.rawValue,
+                                                                           "carrier": providerName])
 
         let addTrackingAction = ShipmentAction.addTracking(siteID: siteID,
                                                            orderID: orderID,
@@ -519,7 +519,7 @@ private extension ManualTrackingViewController {
 
         let siteID = viewModel.order.siteID
         let orderID = viewModel.order.orderID
-        let statusKey = viewModel.order.statusKey
+        let statusKey = viewModel.order.status
         let trackingLink = viewModel.trackingLink ?? ""
         let dateShipped = DateFormatter
             .Defaults
@@ -527,8 +527,8 @@ private extension ManualTrackingViewController {
             .string(from: viewModel.shipmentDate)
 
         ServiceLocator.analytics.track(.orderTrackingAdd, withProperties: ["id": orderID,
-                                                                      "status": statusKey,
-                                                                      "carrier": providerName])
+                                                                           "status": statusKey.rawValue,
+                                                                           "carrier": providerName])
 
         let action = ShipmentAction.addCustomTracking(siteID: siteID,
                                                       orderID: orderID,

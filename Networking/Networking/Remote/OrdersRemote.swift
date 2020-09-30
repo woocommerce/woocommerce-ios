@@ -116,9 +116,9 @@ public class OrdersRemote: Remote {
     ///     - status: New Status to be set.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func updateOrder(from siteID: Int64, orderID: Int64, statusKey: String, completion: @escaping (Order?, Error?) -> Void) {
+    public func updateOrder(from siteID: Int64, orderID: Int64, statusKey: OrderStatusEnum, completion: @escaping (Order?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/" + String(orderID)
-        let parameters = [ParameterKeys.statusKey: statusKey]
+        let parameters = [ParameterKeys.statusKey: statusKey.rawValue]
         let mapper = OrderMapper(siteID: siteID)
 
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)

@@ -6,7 +6,7 @@ import XCTest
 
 /// OrderStore Unit Tests
 ///
-class OrderStoreTests: XCTestCase {
+final class OrderStoreTests: XCTestCase {
 
     /// Mockup Dispatcher!
     ///
@@ -201,7 +201,8 @@ class OrderStoreTests: XCTestCase {
                                               keyword: defaultSearchKeyword,
                                               pageNumber: defaultPageNumber,
                                               pageSize: defaultPageSize) { error in
-            let readOnlyOrder = self.viewStorage.loadOrder(orderID: expectedOrder.orderID)?.toReadOnly()
+                                                let readOnlyOrder = self.viewStorage.loadOrder(siteID: self.sampleSiteID,
+                                                                                               orderID: expectedOrder.orderID)?.toReadOnly()
             XCTAssertEqual(readOnlyOrder, expectedOrder)
             XCTAssertNil(error)
 
@@ -347,7 +348,7 @@ class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 1)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated(), in: viewStorage)
-        let storageOrder1 = viewStorage.loadOrder(orderID: sampleOrderMutated().orderID)
+        let storageOrder1 = viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderMutated().orderID)
         XCTAssertEqual(storageOrder1?.toReadOnly(), sampleOrderMutated())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 3)
@@ -355,7 +356,7 @@ class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 2)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated2(), in: viewStorage)
-        let storageOrder2 = viewStorage.loadOrder(orderID: sampleOrderMutated2().orderID)
+        let storageOrder2 = viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderMutated2().orderID)
         XCTAssertEqual(storageOrder2?.toReadOnly(), sampleOrderMutated2())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 1)
@@ -369,10 +370,10 @@ class OrderStoreTests: XCTestCase {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteOrder = sampleOrder()
 
-        XCTAssertNil(viewStorage.loadOrder(orderID: remoteOrder.orderID))
+        XCTAssertNil(viewStorage.loadOrder(siteID: sampleSiteID, orderID: remoteOrder.orderID))
         orderStore.upsertStoredOrder(readOnlyOrder: remoteOrder, in: viewStorage)
 
-        let storageOrder = viewStorage.loadOrder(orderID: remoteOrder.orderID)
+        let storageOrder = viewStorage.loadOrder(siteID: sampleSiteID, orderID: remoteOrder.orderID)
         XCTAssertEqual(storageOrder?.toReadOnly(), remoteOrder)
     }
 
@@ -388,7 +389,7 @@ class OrderStoreTests: XCTestCase {
 
         orderStore.upsertStoredOrder(readOnlyOrder: remoteOrder, insertingSearchResults: true, in: viewStorage)
 
-        let storageOrder = viewStorage.loadOrder(orderID: remoteOrder.orderID)
+        let storageOrder = viewStorage.loadOrder(siteID: sampleSiteID, orderID: remoteOrder.orderID)
         XCTAssert(storageOrder?.exclusiveForSearch == false)
     }
 
@@ -404,7 +405,7 @@ class OrderStoreTests: XCTestCase {
         orderStore.upsertStoredOrder(readOnlyOrder: remoteOrder, insertingSearchResults: true, in: viewStorage)
         viewStorage.saveIfNeeded()
 
-        let storageOrder = viewStorage.loadOrder(orderID: remoteOrder.orderID)
+        let storageOrder = viewStorage.loadOrder(siteID: sampleSiteID, orderID: remoteOrder.orderID)
         XCTAssert(storageOrder?.exclusiveForSearch == true)
     }
 
@@ -420,7 +421,7 @@ class OrderStoreTests: XCTestCase {
         orderStore.upsertStoredOrder(readOnlyOrder: remoteOrder, insertingSearchResults: false, in: viewStorage)
         viewStorage.saveIfNeeded()
 
-        let storageOrder = viewStorage.loadOrder(orderID: remoteOrder.orderID)
+        let storageOrder = viewStorage.loadOrder(siteID: sampleSiteID, orderID: remoteOrder.orderID)
         XCTAssert(storageOrder?.exclusiveForSearch == false)
     }
 
@@ -437,7 +438,7 @@ class OrderStoreTests: XCTestCase {
         orderStore.upsertStoredResults(keyword: defaultSearchKeyword, readOnlyOrder: remoteOrder, in: viewStorage)
 
         let storageSearchResults = viewStorage.loadOrderSearchResults(keyword: defaultSearchKeyword)
-        let storageOrder = viewStorage.loadOrder(orderID: remoteOrder.orderID)
+        let storageOrder = viewStorage.loadOrder(siteID: sampleSiteID, orderID: remoteOrder.orderID)
 
         XCTAssertEqual(storageSearchResults?.keyword, defaultSearchKeyword)
         XCTAssertEqual(storageSearchResults?.orders?.count, 1)
@@ -521,10 +522,10 @@ class OrderStoreTests: XCTestCase {
         // Update: Expected Status is actually coming from `order.json` (Status == .processing actually!)
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
 
-        let action = OrderAction.updateOrder(siteID: sampleSiteID, orderID: sampleOrderID, statusKey: OrderStatusEnum.processing.rawValue) { error in
+        let action = OrderAction.updateOrder(siteID: sampleSiteID, orderID: sampleOrderID, status: OrderStatusEnum.processing) { error in
             XCTAssertNil(error)
 
-            let storageOrder = self.storageManager.viewStorage.loadOrder(orderID: self.sampleOrderID)
+            let storageOrder = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)
             XCTAssert(storageOrder?.statusKey == OrderStatusEnum.processing.rawValue)
 
             expectation.fulfill()
@@ -545,10 +546,10 @@ class OrderStoreTests: XCTestCase {
 
         network.removeAllSimulatedResponses()
 
-        let action = OrderAction.updateOrder(siteID: sampleSiteID, orderID: sampleOrderID, statusKey: OrderStatusEnum.processing.rawValue) { error in
+        let action = OrderAction.updateOrder(siteID: sampleSiteID, orderID: sampleOrderID, status: OrderStatusEnum.processing) { error in
             XCTAssertNotNil(error)
 
-            let storageOrder = self.storageManager.viewStorage.loadOrder(orderID: self.sampleOrderID)
+            let storageOrder = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)
             XCTAssert(storageOrder?.statusKey == OrderStatusEnum.completed.rawValue)
 
             expectation.fulfill()
@@ -686,7 +687,7 @@ private extension OrderStoreTests {
                      parentID: 0,
                      customerID: 11,
                      number: "963",
-                     statusKey: "processing",
+                     status: .processing,
                      currency: "USD",
                      customerNote: "",
                      dateCreated: date(with: "2018-04-03T23:05:12"),
@@ -713,7 +714,7 @@ private extension OrderStoreTests {
                      parentID: 0,
                      customerID: 11,
                      number: "963",
-                     statusKey: "completed",
+                     status: .completed,
                      currency: "USD",
                      customerNote: "",
                      dateCreated: date(with: "2018-04-03T23:05:12"),
@@ -740,7 +741,7 @@ private extension OrderStoreTests {
                      parentID: 0,
                      customerID: 11,
                      number: "963",
-                     statusKey: "completed",
+                     status: .completed,
                      currency: "USD",
                      customerNote: "",
                      dateCreated: date(with: "2018-04-03T23:05:12"),

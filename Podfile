@@ -32,14 +32,15 @@ target 'WooCommerce' do
   pod 'Gridicons', '~> 1.0'
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressAuthenticator', '~> 1.24.0'
+  pod 'WordPressAuthenticator', '~> 1.26.0-beta'
   # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => ''
   # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => ''
   # pod 'WordPressAuthenticator', :path => '../WordPressAuthenticator-iOS'
 
   pod 'WordPressShared', '~> 1.11'
 
-  pod 'WordPressUI', '~> 1.7.1'
+  pod 'WordPressUI', '~> 1.7.2-beta'
+  # pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => ''
 
   aztec
 

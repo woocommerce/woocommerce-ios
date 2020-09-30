@@ -195,24 +195,24 @@ private extension FulfillViewController {
     @IBAction func fulfillWasPressed() {
         // Capture these values for the undo closure
         let orderID = order.orderID
-        let doneStatus = OrderStatusEnum.completed.rawValue
-        let undoStatus = order.statusKey
+        let doneStatus = OrderStatusEnum.completed
+        let undoStatus = order.status
 
-        let done = updateOrderAction(siteID: order.siteID, orderID: orderID, statusKey: doneStatus)
-        let undo = updateOrderAction(siteID: order.siteID, orderID: orderID, statusKey: undoStatus)
+        let done = updateOrderAction(siteID: order.siteID, orderID: orderID, status: doneStatus)
+        let undo = updateOrderAction(siteID: order.siteID, orderID: orderID, status: undoStatus)
 
         ServiceLocator.analytics.track(.orderFulfillmentCompleteButtonTapped)
         ServiceLocator.analytics.track(.orderStatusChange, withProperties: ["id": order.orderID,
-                                                                       "from": order.statusKey,
-                                                                       "to": OrderStatusEnum.completed.rawValue])
+                                                                            "from": order.status.rawValue,
+                                                                            "to": OrderStatusEnum.completed.rawValue])
         ServiceLocator.stores.dispatch(done)
 
         displayOrderCompleteNotice {
             ServiceLocator.analytics.track(.orderMarkedCompleteUndoButtonTapped)
             ServiceLocator.analytics.track(.orderStatusChangeUndo, withProperties: ["id": orderID])
             ServiceLocator.analytics.track(.orderStatusChange, withProperties: ["id": orderID,
-                                                                           "from": doneStatus,
-                                                                           "to": undoStatus])
+                                                                                "from": doneStatus.rawValue,
+                                                                                "to": undoStatus.rawValue])
             ServiceLocator.stores.dispatch(undo)
         }
 
@@ -222,8 +222,8 @@ private extension FulfillViewController {
 
     /// Returns an Order Update Action that will result in the specified Order Status updated accordingly.
     ///
-    func updateOrderAction(siteID: Int64, orderID: Int64, statusKey: String) -> Action {
-        return OrderAction.updateOrder(siteID: siteID, orderID: orderID, statusKey: statusKey, onCompletion: { error in
+    func updateOrderAction(siteID: Int64, orderID: Int64, status: OrderStatusEnum) -> Action {
+        return OrderAction.updateOrder(siteID: siteID, orderID: orderID, status: status, onCompletion: { error in
             guard let error = error else {
                 NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
                 ServiceLocator.analytics.track(.orderStatusChangeSuccess)
@@ -231,7 +231,7 @@ private extension FulfillViewController {
             }
 
             ServiceLocator.analytics.track(.orderStatusChangeFailed, withError: error)
-            DDLogError("⛔️ Order Update Failure: [\(orderID).status = \(statusKey)]. Error: \(error)")
+            DDLogError("⛔️ Order Update Failure: [\(orderID).status = \(status)]. Error: \(error)")
 
             self.displayErrorNotice(orderID: orderID)
         })
@@ -510,13 +510,13 @@ private extension FulfillViewController {
         let orderID = order.orderID
         let trackingID = tracking.trackingID
 
-        let statusKey = order.statusKey
+        let statusKey = order.status
         let providerName = tracking.trackingProvider ?? ""
 
         ServiceLocator.analytics.track(.orderTrackingDelete, withProperties: ["id": orderID,
-                                                                         "status": statusKey,
-                                                                         "carrier": providerName,
-                                                                         "source": "order_fulfill"])
+                                                                              "status": statusKey.rawValue,
+                                                                              "carrier": providerName,
+                                                                              "source": "order_fulfill"])
 
         let deleteTrackingAction = ShipmentAction.deleteTracking(siteID: siteID,
                                                                  orderID: orderID,

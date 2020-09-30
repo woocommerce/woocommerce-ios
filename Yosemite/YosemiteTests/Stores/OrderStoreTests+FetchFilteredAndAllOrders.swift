@@ -181,7 +181,7 @@ private enum Fixtures {
         parentID: 0,
         customerID: 11,
         number: "8963",
-        statusKey: "processing",
+        status: .processing,
         currency: "USD",
         customerNote: "",
         dateCreated: Date(),

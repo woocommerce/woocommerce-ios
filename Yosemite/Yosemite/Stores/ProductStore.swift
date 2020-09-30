@@ -376,6 +376,7 @@ private extension ProductStore {
             handleProductImages(readOnlyProduct, storageProduct, storage)
             handleProductCategories(readOnlyProduct, storageProduct, storage)
             handleProductTags(readOnlyProduct, storageProduct, storage)
+            handleProductDownloadableFiles(readOnlyProduct, storageProduct, storage)
         }
     }
 
@@ -530,6 +531,42 @@ private extension ProductStore {
     }
 }
 
+// MARK: - Storage: Product Downloadable Files
+//
+private extension ProductStore {
+
+    /// Updates, inserts, or prunes the provided StorageProduct's downloadable files using the provided read-only Product's downloadable files
+    ///
+    func handleProductDownloadableFiles(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
+
+        removeAllProductDownloadableFiles(storageProduct, storage)
+        insertAllProductDownloadableFiles(readOnlyProduct, storageProduct, storage)
+    }
+
+    /// Removes the provided StorageProduct's all downloadable files from provided storage
+    ///
+    func removeAllProductDownloadableFiles(_ storageProduct: Storage.Product, _ storage: StorageType) {
+
+        storageProduct.downloadableFilesArray.forEach { existingStorageDownloadableFile in
+            storage.deleteObject(existingStorageDownloadableFile)
+            storageProduct.removeFromDownloads(existingStorageDownloadableFile)
+        }
+    }
+
+    /// Inserts the read-only Product's all downloadable files into provided StorageProduct's downloadable files using the storage
+    ///
+    func insertAllProductDownloadableFiles(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
+
+        let storageDownloadsSet = NSMutableOrderedSet()
+        for readOnlyDownloadableFile in readOnlyProduct.downloads {
+
+            let newStorageDownloadableFile = storage.insertNewObject(ofType: Storage.ProductDownload.self)
+            newStorageDownloadableFile.update(with: readOnlyDownloadableFile)
+            storageDownloadsSet.add(newStorageDownloadableFile)
+        }
+        storageProduct.addToDownloads(storageDownloadsSet)
+    }
+}
 
 // MARK: - Storage: Search Results
 //

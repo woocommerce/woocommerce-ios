@@ -354,14 +354,6 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
 
 /// Helpers for generating data in migration tests
 private extension CoreDataIterativeMigratorTests {
-    func insertAccountWithRequiredProperties(to context: NSManagedObjectContext) -> Account {
-        let account = context.insertNewObject(ofType: Account.self)
-        // Populates the required attributes.
-        account.userID = 17
-        account.username = "hi"
-        return account
-    }
-
     func insertProductWithRequiredProperties(to context: NSManagedObjectContext) -> Product {
         let product = context.insertNewObject(ofType: Product.self)
         // Populates the required attributes.

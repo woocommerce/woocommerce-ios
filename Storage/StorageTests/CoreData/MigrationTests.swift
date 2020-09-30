@@ -268,4 +268,12 @@ private extension MigrationTests {
             "taxStatusKey": ""
         ])
     }
+
+    func insertAccount(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "Account", properties: [
+            "userID": 0,
+            "username": ""
+        ])
+    }
+
 }

@@ -75,6 +75,33 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try targetContext.count(entityName: "ProductCategory"), 0)
     }
 
+    func test_model_28_to_29_migration_passed() throws {
+        // Arrange
+        let sourceContainer = try startPersistentContainer("Model 28")
+        let sourceContext = sourceContainer.viewContext
+
+        insertAccount(to: sourceContext)
+        let product = insertProduct(to: sourceContext)
+        let productTag = insertProductTag(to: sourceContext)
+        product.mutableSetValue(forKey: "tags").add(productTag)
+
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "Account"), 1)
+        XCTAssertEqual(try sourceContext.count(entityName: "Product"), 1)
+        XCTAssertEqual(try sourceContext.count(entityName: "ProductTag"), 1)
+
+        // Action
+        let targetContainer = try migrate(sourceContainer, to: "Model 29")
+
+        // Assert
+        let targetContext = targetContainer.viewContext
+        XCTAssertEqual(try targetContext.count(entityName: "Account"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "Product"), 1)
+        // Product tags should be deleted.
+        XCTAssertEqual(try targetContext.count(entityName: "ProductTag"), 0)
+    }
+
     func test_migrating_from_31_to_32_renames_Attribute_to_GenericAttribute() throws {
         // Given
         let container = try startPersistentContainer("Model 31")
@@ -117,34 +144,6 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(genericAttribute.key, "voluptatem")
         XCTAssertEqual(genericAttribute.value, "veritatis")
     }
-
-    func test_model_28_to_29_migration_passed() throws {
-        // Arrange
-        let sourceContainer = try startPersistentContainer("Model 28")
-        let sourceContext = sourceContainer.viewContext
-
-        insertAccount(to: sourceContext)
-        let product = insertProduct(to: sourceContext)
-        let productTag = insertProductTag(to: sourceContext)
-        product.mutableSetValue(forKey: "tags").add(productTag)
-
-        try sourceContext.save()
-
-        XCTAssertEqual(try sourceContext.count(entityName: "Account"), 1)
-        XCTAssertEqual(try sourceContext.count(entityName: "Product"), 1)
-        XCTAssertEqual(try sourceContext.count(entityName: "ProductTag"), 1)
-
-        // Action
-        let targetContainer = try migrate(sourceContainer, to: "Model 29")
-
-        // Assert
-        let targetContext = targetContainer.viewContext
-        XCTAssertEqual(try targetContext.count(entityName: "Account"), 1)
-        XCTAssertEqual(try targetContext.count(entityName: "Product"), 1)
-        // Product tags should be deleted.
-        XCTAssertEqual(try targetContext.count(entityName: "ProductTag"), 0)
-    }
-
 }
 
 // MARK: - Persistent Store Setup and Migrations

@@ -6,6 +6,10 @@ final class IssueRefundViewController: UIViewController {
 
     @IBOutlet private var tableView: UITableView!
 
+    init() {
+        super.init(nibName: nil, bundle: nil)
+    }
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) is not supported")
     }

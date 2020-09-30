@@ -11,6 +11,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="IssueRefundViewController">
             <connections>
                 <outlet property="tableView" destination="Lf6-TH-48I" id="z2d-Ga-udY"/>
+                <outlet property="view" destination="iN0-l3-epB" id="J4r-V6-Ueu"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>

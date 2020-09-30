@@ -1,6 +1,7 @@
 @testable import WordPressAuthenticator
 
-struct WordpressAuthenticatorProvider {
+@objc
+public class WordpressAuthenticatorProvider: NSObject {
     static func wordPressAuthenticatorConfiguration() -> WordPressAuthenticatorConfiguration {
         return WordPressAuthenticatorConfiguration(wpcomClientId: "23456",
                                                    wpcomSecret: "arfv35dj57l3g2323",
@@ -69,6 +70,16 @@ struct WordpressAuthenticatorProvider {
 
     static func getWordpressAuthenticator() -> WordPressAuthenticator {
         return WordPressAuthenticator(
+            configuration:wordPressAuthenticatorConfiguration(),
+            style: wordPressAuthenticatorStyle(.random),
+            unifiedStyle: wordPressAuthenticatorUnifiedStyle(.random),
+            displayImages: WordPressAuthenticatorDisplayImages.defaultImages,
+            displayStrings: WordPressAuthenticatorDisplayStrings.defaultStrings)
+    }
+    
+    @objc
+    static func initializeWordPressAuthenticator() {
+        WordPressAuthenticator.initialize(
             configuration:wordPressAuthenticatorConfiguration(),
             style: wordPressAuthenticatorStyle(.random),
             unifiedStyle: wordPressAuthenticatorUnifiedStyle(.random),

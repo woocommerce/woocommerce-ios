@@ -258,10 +258,16 @@ public class AuthenticatorAnalyticsTracker {
     /// The backing analytics tracking method.  Can be overridden for testing purposes.
     ///
     let track: TrackerMethod
+    
+    /// Whether tracking is enabled or not.  This is just a convenience configuration to enable this tracker to be turned on and off
+    /// using a feature flag.  It should go away once we remove the legacy tracking.
+    ///
+    let enabled: Bool
 
     // MARK: - Initializers
 
-    init(track: @escaping TrackerMethod = WPAnalytics.track) {
+    init(enabled: Bool = WordPressAuthenticator.shared.configuration.enableUnifiedAuth, track: @escaping TrackerMethod = WPAnalytics.track) {
+        self.enabled = enabled
         self.track = track
     }
     
@@ -281,7 +287,7 @@ public class AuthenticatorAnalyticsTracker {
     /// - Returns: `true` if we can track using the state machine.
     ///
     public func canTrack() -> Bool {
-        return WordPressAuthenticator.shared.configuration.enableUnifiedAuth
+        return enabled
     }
     
     /// This is a convenience method, that's useful for cases where we simply want to check if the legacy tracking should be

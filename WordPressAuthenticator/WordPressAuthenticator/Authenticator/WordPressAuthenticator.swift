@@ -90,10 +90,6 @@ import AuthenticationServices
                                   unifiedStyle: WordPressAuthenticatorUnifiedStyle?,
                                   displayImages: WordPressAuthenticatorDisplayImages = .defaultImages,
                                   displayStrings: WordPressAuthenticatorDisplayStrings = .defaultStrings) {
-        guard privateInstance == nil else {
-            fatalError("WordPressAuthenticator is already initialized")
-        }
-
         privateInstance = WordPressAuthenticator(configuration: configuration,
                                                  style: style,
                                                  unifiedStyle: unifiedStyle,

@@ -269,6 +269,7 @@ private extension MigrationTests {
         ])
     }
 
+    @discardableResult
     func insertAccount(to context: NSManagedObjectContext) -> NSManagedObject {
         context.insert(entityName: "Account", properties: [
             "userID": 0,
@@ -308,9 +309,17 @@ private extension MigrationTests {
     }
 
     @discardableResult
-    func insertProductCategory(to context: NSManagedObjectContext) -> ProductCategory {
+    func insertProductCategory(to context: NSManagedObjectContext) -> NSManagedObject {
         context.insert(entityName: "ProductCategory", properties: [
-            "name": "testing",
+            "name": "",
+            "slug": ""
+        ])
+    }
+
+    func insertProductTag(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "ProductTag", properties: [
+            "tagID": 0,
+            "name": "",
             "slug": ""
         ])
     }

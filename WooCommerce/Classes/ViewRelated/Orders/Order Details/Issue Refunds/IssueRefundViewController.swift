@@ -1,6 +1,10 @@
 import UIKit
 
-final class IssueRefundViewControlle: UIViewController {
+/// Screen that allows the user to refund items (products and shipping) of an order
+///
+final class IssueRefundViewController: UIViewController {
+
+    @IBOutlet private var tableView: UITableView!
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) is not supported")

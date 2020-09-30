@@ -125,8 +125,8 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
     /// files using the wrong `NSManagedObjectModel`.
     func test_opening_a_store_with_a_different_model_fails() throws {
         // Given
-        let model1 = try XCTUnwrap(modelsInventory.model(for: .init(name: "Model")))
-        let model10 = try XCTUnwrap(modelsInventory.model(for: .init(name: "Model 10")))
+        let model1 = try managedObjectModel(for: "Model")
+        let model10 = try managedObjectModel(for: "Model 10")
 
         let storeURL = urlForStore(withName: "Woo Test 10.sqlite", deleteIfExists: true)
         let options = [NSInferMappingModelAutomaticallyOption: false, NSMigratePersistentStoresAutomaticallyOption: false]
@@ -149,36 +149,33 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
 
     /// Test the IterativeMigrator can migrate iteratively between model 1 to 10.
     func test_iterativeMigrate_can_iteratively_migrate_from_model_1_to_model_10() throws {
-        let model0URL = urlForModel(name: "Model")
-        let model10URL = urlForModel(name: "Model 10")
+        // Given
+        let model1 = try managedObjectModel(for: "Model")
+        let model10 = try managedObjectModel(for: "Model 10")
+
         let storeURL = urlForStore(withName: "Woo Test 10.sqlite", deleteIfExists: true)
         let options = [NSInferMappingModelAutomaticallyOption: false, NSMigratePersistentStoresAutomaticallyOption: false]
 
-        var model = NSManagedObjectModel(contentsOf: model0URL)
-        XCTAssertNotNil(model)
-        var psc = NSPersistentStoreCoordinator(managedObjectModel: model!)
+        var psc = NSPersistentStoreCoordinator(managedObjectModel: model1)
         var ps = try? psc.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: options)
-
         XCTAssertNotNil(ps)
 
         try psc.remove(ps!)
 
-        model = try XCTUnwrap(NSManagedObjectModel(contentsOf: model10URL))
-
+        // When
         do {
             let iterativeMigrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory)
             let (result, _) = try iterativeMigrator.iterativeMigrate(sourceStore: storeURL,
                                                                      storeType: NSSQLiteStoreType,
-                                                                     to: model!)
+                                                                     to: model10)
             XCTAssertTrue(result)
         } catch {
             XCTFail("Error when attempting to migrate: \(error)")
         }
 
-        psc = NSPersistentStoreCoordinator(managedObjectModel: model!)
-
+        // Then
+        psc = NSPersistentStoreCoordinator(managedObjectModel: model10)
         ps = try psc.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: options)
-
         XCTAssertNotNil(ps)
     }
 

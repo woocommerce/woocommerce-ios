@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Ck1-vY-O11">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17503.1" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Ck1-vY-O11">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17502"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -30,7 +29,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gpM-nW-lFQ">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gpM-nW-lFQ">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <connections>
                                     <action selector="dismissTapped" destination="IwV-3R-6dB" eventType="touchDown" id="E6x-JG-Ve8"/>
@@ -86,6 +85,14 @@
                                     <segue destination="TP5-re-Ncg" kind="embed" id="mLC-uB-YYS"/>
                                 </connections>
                             </containerView>
+                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s7U-M4-ZVd">
+                                <rect key="frame" x="0.0" y="501" width="375" height="166"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="ZDd-Ar-1RT">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="166"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                </view>
+                                <blurEffect style="regular"/>
+                            </visualEffectView>
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="G3G-Ap-6ix">
                                 <rect key="frame" x="0.0" y="501" width="375" height="166"/>
                                 <constraints>
@@ -99,15 +106,20 @@
                         <constraints>
                             <constraint firstItem="6cw-FO-hjb" firstAttribute="leading" secondItem="EnO-7f-1yO" secondAttribute="leading" id="7Z8-mD-FWN"/>
                             <constraint firstAttribute="trailing" secondItem="G3G-Ap-6ix" secondAttribute="trailing" id="96a-eB-JlD"/>
+                            <constraint firstItem="s7U-M4-ZVd" firstAttribute="leading" secondItem="G3G-Ap-6ix" secondAttribute="leading" id="CCE-RK-7oE"/>
                             <constraint firstItem="G3G-Ap-6ix" firstAttribute="top" secondItem="6cw-FO-hjb" secondAttribute="bottom" id="Cuw-sd-C5k"/>
                             <constraint firstAttribute="trailing" secondItem="6cw-FO-hjb" secondAttribute="trailing" id="Hgo-qC-AqF"/>
+                            <constraint firstItem="s7U-M4-ZVd" firstAttribute="top" secondItem="G3G-Ap-6ix" secondAttribute="top" id="ISb-cY-EO1"/>
+                            <constraint firstItem="s7U-M4-ZVd" firstAttribute="trailing" secondItem="G3G-Ap-6ix" secondAttribute="trailing" id="WyG-Lz-bxP"/>
                             <constraint firstItem="6cw-FO-hjb" firstAttribute="top" secondItem="EnO-7f-1yO" secondAttribute="top" id="dXg-NZ-hRY"/>
                             <constraint firstAttribute="bottom" secondItem="G3G-Ap-6ix" secondAttribute="bottom" id="lOP-Up-00c"/>
+                            <constraint firstItem="s7U-M4-ZVd" firstAttribute="bottom" secondItem="G3G-Ap-6ix" secondAttribute="bottom" id="qfx-iK-Dth"/>
                             <constraint firstItem="G3G-Ap-6ix" firstAttribute="leading" secondItem="EnO-7f-1yO" secondAttribute="leading" id="uzT-mw-eJq"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="42E-2e-kOq"/>
                     <connections>
+                        <outlet property="buttonBlurEffectView" destination="s7U-M4-ZVd" id="Td4-9h-aeb"/>
                         <outlet property="buttonViewLeadingConstraint" destination="uzT-mw-eJq" id="ASz-qQ-ii9"/>
                         <outlet property="buttonViewTrailingConstraint" destination="96a-eB-JlD" id="qI1-75-31G"/>
                         <outlet property="topContainerView" destination="6cw-FO-hjb" id="rCh-90-6d1"/>
@@ -472,7 +484,7 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="zbk-h0-lpE">
                                         <rect key="frame" x="20" y="603" width="343" height="44"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gzk-TE-YfP" customClass="SubheadlineButton" customModule="WordPressAuthenticator">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gzk-TE-YfP" customClass="SubheadlineButton" customModule="WordPressAuthenticator">
                                                 <rect key="frame" x="0.0" y="7" width="141" height="30"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                 <state key="normal" title="Lost your password?">
@@ -646,7 +658,7 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="ilv-iW-HgP">
                                         <rect key="frame" x="20" y="603" width="343" height="44"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="250" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0P1-6g-BI3" customClass="SubheadlineButton" customModule="WordPressAuthenticator">
+                                            <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="250" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0P1-6g-BI3" customClass="SubheadlineButton" customModule="WordPressAuthenticator">
                                                 <rect key="frame" x="0.0" y="7" width="141" height="30"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                 <state key="normal" title="Lost your password?">
@@ -806,7 +818,7 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="x1G-Lf-mra">
                                         <rect key="frame" x="20" y="595" width="343" height="44"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="250" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="309-z3-fPx" customClass="SubheadlineButton" customModule="WordPressAuthenticator">
+                                            <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="250" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="309-z3-fPx" customClass="SubheadlineButton" customModule="WordPressAuthenticator">
                                                 <rect key="frame" x="0.0" y="0.0" width="131" height="44"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="44" id="fzI-rH-0f8"/>
@@ -950,7 +962,7 @@
                                     </mask>
                                 </variation>
                             </stackView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="B6x-b7-hU9" customClass="SubheadlineButton" customModule="WordPressAuthenticator">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="B6x-b7-hU9" customClass="SubheadlineButton" customModule="WordPressAuthenticator">
                                 <rect key="frame" x="0.0" y="617" width="375" height="30"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                 <state key="normal" title="Enter your password instead"/>
@@ -1053,7 +1065,7 @@
                                     <stackView contentMode="scaleToFill" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" distribution="equalSpacing" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="mlx-XY-MGX">
                                         <rect key="frame" x="20" y="600" width="351" height="44"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="250" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="roL-ID-k8n" customClass="SubheadlineButton" customModule="WordPressAuthenticator">
+                                            <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="250" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="roL-ID-k8n" customClass="SubheadlineButton" customModule="WordPressAuthenticator">
                                                 <rect key="frame" x="0.0" y="7" width="250" height="30"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="addSelfHostedButton"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
@@ -1155,7 +1167,7 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="hzZ-dr-nAB">
                                         <rect key="frame" x="20" y="603" width="343" height="44"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XI0-rr-yUh" customClass="SubheadlineButton" customModule="WordPressAuthenticator">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XI0-rr-yUh" customClass="SubheadlineButton" customModule="WordPressAuthenticator">
                                                 <rect key="frame" x="0.0" y="7" width="141" height="30"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                 <state key="normal" title="Lost your password?">
@@ -1380,7 +1392,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ueg-Bw-KU6">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ueg-Bw-KU6">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <connections>
                                     <action selector="dismissTapped" destination="hed-vB-osh" eventType="touchDown" id="JQ6-xt-z9a"/>
@@ -1416,6 +1428,11 @@
             <point key="canvasLocation" x="-460" y="1248"/>
         </scene>
     </scenes>
+    <designables>
+        <designable name="usY-bV-fpM">
+            <size key="intrinsicContentSize" width="32" height="34"/>
+        </designable>
+    </designables>
     <inferredMetricsTieBreakers>
         <segue reference="swV-lc-6gI"/>
     </inferredMetricsTieBreakers>

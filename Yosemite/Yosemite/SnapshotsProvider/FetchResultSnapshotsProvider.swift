@@ -71,7 +71,7 @@ public typealias FetchResultSnapshot = NSDiffableDataSourceSnapshot<String, Fetc
 public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshotsProviderMutableType> {
 
     /// Defines the conditions for fetching the results.
-    public struct Query {
+    public struct Query: Equatable {
         /// Defines how to sort the results.
         ///
         /// This is required because `NSFetchedResultsController` requires it.
@@ -108,7 +108,7 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     /// The conditions to use when fetching the results.
     ///
     /// In the future, we can allow this to be mutable if necessary.
-    private let query: Query
+    private var query: Query
 
     /// The NotificationCenter to use for observing notifications.
     private let notificationCenter: NotificationCenter
@@ -119,19 +119,7 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     }
     private let snapshotSubject = CurrentValueSubject<FetchResultSnapshot, Never>(FetchResultSnapshot())
 
-    private lazy var fetchedResultsController: NSFetchedResultsController<MutableType> = {
-        let fetchRequest = NSFetchRequest<MutableType>(entityName: MutableType.entityName)
-        fetchRequest.predicate = query.predicate
-        fetchRequest.sortDescriptors = [query.sortDescriptor]
-
-        let resultsController = storage.createFetchedResultsController(
-            fetchRequest: fetchRequest,
-            sectionNameKeyPath: query.sectionNameKeyPath,
-            cacheName: nil
-        )
-        resultsController.delegate = self.hiddenFetchedResultsControllerDelegate
-        return resultsController
-    }()
+    private lazy var fetchedResultsController: NSFetchedResultsController<MutableType> = createFetchedResultsController(query: query)
 
     /// The delgate for `fetchedResultsController`.
     private lazy var hiddenFetchedResultsControllerDelegate = HiddenFetchedResultsControllerDelegate(self)
@@ -189,6 +177,19 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
             return nil
         }
     }
+
+    public func updateQuery(_ query: Query) {
+        guard query != self.query else {
+            return
+        }
+        self.query = query
+        fetchedResultsController = createFetchedResultsController(query: query)
+        do {
+            try activateFetchedResultsController()
+        } catch {
+            DDLogError("⛔️ FetchResultSnapshotsProvider: Failed to activate after updating query with error \(error)")
+        }
+    }
 }
 
 // MARK: - FetchedResultsController Activation
@@ -203,6 +204,21 @@ private extension FetchResultSnapshotsProvider {
     /// Returns `true` if the `activateFetchedResultsController()` method was previously called.
     var fetchedResultsControllerIsActive: Bool {
         fetchedResultsController.fetchedObjects != nil
+    }
+
+    func createFetchedResultsController(query: Query) -> NSFetchedResultsController<MutableType> {
+        let fetchRequest = NSFetchRequest<MutableType>(entityName: MutableType.entityName)
+        fetchRequest.predicate = query.predicate
+        fetchRequest.sortDescriptors = [query.sortDescriptor]
+
+        let resultsController = storage.createFetchedResultsController(
+            fetchRequest: fetchRequest,
+            sectionNameKeyPath: query.sectionNameKeyPath,
+            cacheName: nil
+        )
+        resultsController.delegate = self.hiddenFetchedResultsControllerDelegate
+
+        return resultsController
     }
 
     /// If previously activated, restart `fetchedResultsController` fetching and dispatching of snapshots.

@@ -354,15 +354,6 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
 
 /// Helpers for generating data in migration tests
 private extension CoreDataIterativeMigratorTests {
-
-    func insertProductCategoryWithRequiredProperties(to context: NSManagedObjectContext) -> ProductCategory {
-        let productCategory = context.insertNewObject(ofType: ProductCategory.self)
-        // Populates the required attributes.
-        productCategory.name = "testing"
-        productCategory.slug = ""
-        return productCategory
-    }
-
     func insertProductTag(to context: NSManagedObjectContext) -> ProductTag {
         let productTag = context.insertNewObject(ofType: ProductTag.self)
         // Populates the required attributes.

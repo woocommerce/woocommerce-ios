@@ -306,4 +306,13 @@ private extension MigrationTests {
             "taxStatusKey": ""
         ])
     }
+
+    @discardableResult
+    func insertProductCategory(to context: NSManagedObjectContext) -> ProductCategory {
+        context.insert(entityName: "ProductCategory", properties: [
+            "name": "testing",
+            "slug": ""
+        ])
+    }
+
 }

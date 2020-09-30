@@ -50,82 +50,29 @@ final class MigrationTests: XCTestCase {
 
     func test_migrating_from_26_to_27_migration_passes() throws {
         // Arrange
-        let model26URL = urlForModel(name: "Model 26")
-        let model26 = NSManagedObjectModel(contentsOf: model26URL)!
-        let model27URL = urlForModel(name: "Model 27")
-        let model27 = NSManagedObjectModel(contentsOf: model27URL)!
-        let name = "WooCommerce"
-        let crashLogger = MockCrashLogger()
-        let coreDataManager = CoreDataManager(name: name, crashLogger: crashLogger)
+        let container26 = try startPersistentContainer("Model 26")
+        let context26 = container26.viewContext
 
-        // Destroys any pre-existing persistence store.
-        let psc = NSPersistentStoreCoordinator(managedObjectModel: modelsInventory.currentModel)
-        try psc.destroyPersistentStore(at: coreDataManager.storeURL, ofType: NSSQLiteStoreType, options: nil)
+        insertAccount(to: container26.viewContext)
+        let product = insertProduct(to: context26)
+        let productCategory = insertProductCategory(to: context26)
+        product.mutableSetValue(forKey: "categories").add(productCategory)
 
-        // Action - step 1: loading persistence store with model 26
-        let model26Container = NSPersistentContainer(name: name, managedObjectModel: model26)
-        model26Container.persistentStoreDescriptions = [coreDataManager.storeDescription]
+        try context26.save()
 
-        var model26LoadingError: Error?
-        waitForExpectation { expectation in
-            model26Container.loadPersistentStores { (storeDescription, error) in
-                model26LoadingError = error
-                expectation.fulfill()
-            }
-        }
+        XCTAssertEqual(try context26.count(entityName: "Account"), 1)
+        XCTAssertEqual(try context26.count(entityName: "Product"), 1)
+        XCTAssertEqual(try context26.count(entityName: "ProductCategory"), 1)
 
-        // Assert - step 1
-        XCTAssertNil(model26LoadingError, "Migration error: \(String(describing: model26LoadingError?.localizedDescription))")
+        // Action
+        let container27 = try migrate(container26, to: "Model 27")
+        let context27 = container27.viewContext
 
-        guard let metadata = try? NSPersistentStoreCoordinator
-            .metadataForPersistentStore(ofType: NSSQLiteStoreType,
-                                        at: coreDataManager.storeURL,
-                                        options: nil) else {
-                                            XCTFail("Cannot get metadata for persistent store at URL \(coreDataManager.storeURL)")
-                                            return
-        }
-
-        // The persistent store should be compatible with model 26 now and incompatible with model 27.
-        XCTAssertTrue(model26.isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata))
-        XCTAssertFalse(model27.isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata))
-
-        // Arrange - step 2: populating data, migrating persistent store from model 26 to 27, then loading with model 27.
-        let context = model26Container.viewContext
-        _ = insertAccountWithRequiredProperties(to: context)
-        let product = insertProductWithRequiredProperties(to: context)
-        let productCategory = insertProductCategoryWithRequiredProperties(to: context)
-        product.addToCategories([productCategory])
-        context.saveIfNeeded()
-
-        XCTAssertEqual(context.countObjects(ofType: Account.self), 1)
-        XCTAssertEqual(context.countObjects(ofType: Product.self), 1)
-        XCTAssertEqual(context.countObjects(ofType: ProductCategory.self), 1)
-
-        let model27Container = NSPersistentContainer(name: name, managedObjectModel: model27)
-        model27Container.persistentStoreDescriptions = [coreDataManager.storeDescription]
-
-        // Action - step 2
-        let iterativeMigrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory)
-        let (migrateResult, migrationDebugMessages) = try iterativeMigrator.iterativeMigrate(sourceStore: coreDataManager.storeURL,
-                                                                                             storeType: NSSQLiteStoreType,
-                                                                                             to: model27)
-        XCTAssertTrue(migrateResult, "Failed to migrate to model version 27: \(migrationDebugMessages)")
-
-        var model27LoadingError: Error?
-        waitForExpectation { expectation in
-            model27Container.loadPersistentStores { (storeDescription, error) in
-                model27LoadingError = error
-                expectation.fulfill()
-            }
-        }
-
-        // Assert - step 2
-        XCTAssertNil(model27LoadingError, "Migration error: \(String(describing: model27LoadingError?.localizedDescription))")
-
-        XCTAssertEqual(model27Container.viewContext.countObjects(ofType: Account.self), 1)
-        XCTAssertEqual(model27Container.viewContext.countObjects(ofType: Product.self), 1)
+        // Assert
+        XCTAssertEqual(try context27.count(entityName: "Account"), 1)
+        XCTAssertEqual(try context27.count(entityName: "Product"), 1)
         // Product categories should be deleted.
-        XCTAssertEqual(model27Container.viewContext.countObjects(ofType: ProductCategory.self), 0)
+        XCTAssertEqual(try context27.count(entityName: "ProductCategory"), 0)
     }
 
     func test_migrating_from_31_to_32_renames_Attribute_to_GenericAttribute() throws {
@@ -316,6 +263,7 @@ private extension MigrationTests {
         ])
     }
 
+    @discardableResult
     func insertProductTag(to context: NSManagedObjectContext) -> NSManagedObject {
         context.insert(entityName: "ProductTag", properties: [
             "tagID": 0,
@@ -323,5 +271,4 @@ private extension MigrationTests {
             "slug": ""
         ])
     }
-
 }

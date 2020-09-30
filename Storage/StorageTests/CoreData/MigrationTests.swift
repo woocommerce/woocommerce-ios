@@ -48,7 +48,7 @@ final class MigrationTests: XCTestCase {
         try super.tearDownWithError()
     }
 
-    func test_migrating_from_26_to_27_migration_passes() throws {
+    func test_migrating_from_26_to_27_deletes_ProductCategory_objects() throws {
         // Arrange
         let container26 = try startPersistentContainer("Model 26")
         let context26 = container26.viewContext

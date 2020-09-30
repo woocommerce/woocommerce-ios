@@ -122,25 +122,26 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
     }
 
     func test_model_0_to_10_migration_fails() throws {
-        let model0URL = urlForModel(name: "Model")
-        let model10URL = urlForModel(name: "Model 10")
+        // Given
+        let model1 = try XCTUnwrap(modelsInventory.model(for: .init(name: "Model")))
+        let model10 = try XCTUnwrap(modelsInventory.model(for: .init(name: "Model 10")))
+
         let storeURL = urlForStore(withName: "Woo Test 10.sqlite", deleteIfExists: true)
         let options = [NSInferMappingModelAutomaticallyOption: false, NSMigratePersistentStoresAutomaticallyOption: false]
 
-        var model = NSManagedObjectModel(contentsOf: model0URL)
-        XCTAssertNotNil(model)
-        var psc = NSPersistentStoreCoordinator(managedObjectModel: model!)
+        // When
+        var psc = NSPersistentStoreCoordinator(managedObjectModel: model1)
         var ps = try? psc.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: options)
 
         XCTAssertNotNil(ps)
 
         try psc.remove(ps!)
 
-        model = try XCTUnwrap(NSManagedObjectModel(contentsOf: model10URL))
-        psc = NSPersistentStoreCoordinator(managedObjectModel: model!)
-
+        // Load using a different model
+        psc = NSPersistentStoreCoordinator(managedObjectModel: model10)
         ps = try? psc.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: options)
 
+        // When
         XCTAssertNil(ps)
     }
 

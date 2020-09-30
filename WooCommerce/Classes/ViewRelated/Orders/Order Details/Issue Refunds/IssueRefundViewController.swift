@@ -18,3 +18,13 @@ final class IssueRefundViewController: UIViewController {
         super.viewDidLoad()
     }
 }
+
+// MARK: View Configuration
+private extension IssueRefundViewController {
+    func registerCells() {
+        tableView.register(RefundItemTableViewCell.loadNib(), forCellReuseIdentifier: RefundItemTableViewCell.reuseIdentifier)
+        tableView.register(RefundProductsTotalTableViewCell.loadNib(), forCellReuseIdentifier: RefundProductsTotalTableViewCell.reuseIdentifier)
+        tableView.register(RefundShippingDetailsTableViewCell.loadNib(), forCellReuseIdentifier: RefundShippingDetailsTableViewCell.reuseIdentifier)
+        tableView.register(SwitchTableViewCell.loadNib(), forCellReuseIdentifier: SwitchTableViewCell.reuseIdentifier)
+    }
+}

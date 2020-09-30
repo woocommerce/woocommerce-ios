@@ -121,7 +121,9 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         XCTAssertEqual(fileManager.allMethodsInvocationCount, 1)
     }
 
-    func test_model_0_to_10_migration_fails() throws {
+    /// This is more like a confidence-check that Core Data does not allow us to open SQLite
+    /// files using the wrong `NSManagedObjectModel`.
+    func test_opening_a_store_with_a_different_model_fails() throws {
         // Given
         let model1 = try XCTUnwrap(modelsInventory.model(for: .init(name: "Model")))
         let model10 = try XCTUnwrap(modelsInventory.model(for: .init(name: "Model 10")))

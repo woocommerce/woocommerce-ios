@@ -50,29 +50,29 @@ final class MigrationTests: XCTestCase {
 
     func test_migrating_from_26_to_27_deletes_ProductCategory_objects() throws {
         // Arrange
-        let container26 = try startPersistentContainer("Model 26")
-        let context26 = container26.viewContext
+        let sourceContainer = try startPersistentContainer("Model 26")
+        let sourceContext = sourceContainer.viewContext
 
-        insertAccount(to: container26.viewContext)
-        let product = insertProduct(to: context26)
-        let productCategory = insertProductCategory(to: context26)
+        insertAccount(to: sourceContext)
+        let product = insertProduct(to: sourceContext)
+        let productCategory = insertProductCategory(to: sourceContext)
         product.mutableSetValue(forKey: "categories").add(productCategory)
 
-        try context26.save()
+        try sourceContext.save()
 
-        XCTAssertEqual(try context26.count(entityName: "Account"), 1)
-        XCTAssertEqual(try context26.count(entityName: "Product"), 1)
-        XCTAssertEqual(try context26.count(entityName: "ProductCategory"), 1)
+        XCTAssertEqual(try sourceContext.count(entityName: "Account"), 1)
+        XCTAssertEqual(try sourceContext.count(entityName: "Product"), 1)
+        XCTAssertEqual(try sourceContext.count(entityName: "ProductCategory"), 1)
 
         // Action
-        let container27 = try migrate(container26, to: "Model 27")
-        let context27 = container27.viewContext
+        let targetContainer = try migrate(sourceContainer, to: "Model 27")
+        let targetContext = targetContainer.viewContext
 
         // Assert
-        XCTAssertEqual(try context27.count(entityName: "Account"), 1)
-        XCTAssertEqual(try context27.count(entityName: "Product"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "Account"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "Product"), 1)
         // Product categories should be deleted.
-        XCTAssertEqual(try context27.count(entityName: "ProductCategory"), 0)
+        XCTAssertEqual(try targetContext.count(entityName: "ProductCategory"), 0)
     }
 
     func test_migrating_from_31_to_32_renames_Attribute_to_GenericAttribute() throws {

@@ -507,10 +507,7 @@ extension ProductsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ProductsTabProductTableViewCell.reuseIdentifier,
-                                                       for: indexPath) as? ProductsTabProductTableViewCell else {
-            fatalError()
-        }
+        let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
 
         let product = resultsController.object(at: indexPath)
         let viewModel = ProductsTabProductViewModel(product: product)

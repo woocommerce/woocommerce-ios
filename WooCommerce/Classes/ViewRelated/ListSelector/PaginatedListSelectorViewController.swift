@@ -175,10 +175,7 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: rowType.reuseIdentifier,
-                                                       for: indexPath) as? Cell else {
-                                                        fatalError()
-        }
+        let cell = tableView.dequeueReusableCell(Cell.self, for: indexPath)
         let model = object(at: indexPath)
         dataSource.configureCell(cell: cell, model: model)
 

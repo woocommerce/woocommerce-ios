@@ -212,11 +212,7 @@ extension TopPerformerDataViewController: UITableViewDataSource {
         guard let statsItem = statsItem(at: indexPath) else {
             return tableView.dequeueReusableCell(withIdentifier: NoPeriodDataTableViewCell.reuseIdentifier, for: indexPath)
         }
-
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ProductTableViewCell.reuseIdentifier,
-                                                       for: indexPath) as? ProductTableViewCell else {
-            fatalError()
-        }
+        let cell = tableView.dequeueReusableCell(ProductTableViewCell.self, for: indexPath)
 
         cell.configure(statsItem, imageService: imageService)
         cell.hidesBottomBorder = tableView.lastIndexPathOfTheLastSection() == indexPath ? true : false

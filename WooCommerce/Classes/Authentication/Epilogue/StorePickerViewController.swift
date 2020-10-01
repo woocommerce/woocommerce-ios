@@ -551,19 +551,14 @@ extension StorePickerViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let site = state.site(at: indexPath) else {
             hideActionButton()
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: EmptyStoresTableViewCell.reuseIdentifier,
-                                                           for: indexPath) as? EmptyStoresTableViewCell else {
-                fatalError()
-            }
+            let cell = tableView.dequeueReusableCell(EmptyStoresTableViewCell.self, for: indexPath)
             cell.onJetpackSetupButtonTapped = { [weak self] in
                 let safariViewController = SFSafariViewController(url: WooConstants.URLs.emptyStoresJetpackSetup.asURL())
                 self?.present(safariViewController, animated: true, completion: nil)
             }
             return cell
         }
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: StoreTableViewCell.reuseIdentifier, for: indexPath) as? StoreTableViewCell else {
-            fatalError()
-        }
+        let cell = tableView.dequeueReusableCell(StoreTableViewCell.self, for: indexPath)
 
         cell.name = site.name
         cell.url = site.url

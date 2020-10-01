@@ -197,10 +197,7 @@ extension ShipmentProvidersViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: WooBasicTableViewCell.reuseIdentifier,
-                                                       for: indexPath) as? WooBasicTableViewCell else {
-                                                        fatalError()
-        }
+        let cell = tableView.dequeueReusableCell(WooBasicTableViewCell.self, for: indexPath)
 
         cell.bodyLabel?.text = viewModel.titleForCellAt(indexPath)
         cell.applyListSelectorStyle()

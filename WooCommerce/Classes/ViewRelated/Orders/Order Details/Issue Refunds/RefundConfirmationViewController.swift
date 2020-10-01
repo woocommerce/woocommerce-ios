@@ -7,7 +7,8 @@ import UIKit
 ///
 final class RefundConfirmationViewController: UIViewController {
 
-    private lazy var tableView = UITableView(frame: .zero, style: .grouped)
+    private lazy var tableView = UITableView(frame: .zero, style: .plain)
+    private let viewModel = RefundConfirmationViewModel()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,8 +23,39 @@ final class RefundConfirmationViewController: UIViewController {
 
 private extension RefundConfirmationViewController {
     func configureTableView() {
+        // Register cells
+        tableView.register(SettingTitleAndValueTableViewCell.loadNib(),
+                           forCellReuseIdentifier: SettingTitleAndValueTableViewCell.reuseIdentifier)
+
+        // Data stuff
+        tableView.dataSource = self
+
+        // Add to view
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.pinSubviewToSafeArea(tableView)
+    }
+}
+
+// MARK: - UITableView Boom
+
+extension RefundConfirmationViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        viewModel.sections.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let row = viewModel.sections[safe: indexPath.section]?.rows[safe: indexPath.row] else {
+            return UITableViewCell()
+        }
+
+        switch row {
+        case let row as RefundConfirmationViewModel.TwoColumnRow:
+            let cell = tableView.dequeueReusableCell(SettingTitleAndValueTableViewCell.self, for: indexPath)
+            cell.updateUI(title: row.title, value: row.value)
+            return cell
+        default:
+            return UITableViewCell()
+        }
     }
 }

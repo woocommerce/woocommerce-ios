@@ -5,6 +5,8 @@ import UIKit
 //
 final class ReviewsViewController: UIViewController {
 
+    private let siteID: Int64
+
     /// Main TableView.
     ///
     @IBOutlet private weak var tableView: UITableView!
@@ -21,7 +23,7 @@ final class ReviewsViewController: UIViewController {
         return item
     }()
 
-    private let viewModel = ReviewsViewModel(data: DefaultReviewsDataSource())
+    private let viewModel: ReviewsViewModel
 
     /// Haptic Feedback!
     ///
@@ -89,7 +91,10 @@ final class ReviewsViewController: UIViewController {
 
     // MARK: - View Lifecycle
 
-    init() {
+    init(siteID: Int64) {
+        self.siteID = siteID
+        self.viewModel = ReviewsViewModel(siteID: siteID, data: DefaultReviewsDataSource(siteID: siteID))
+
         super.init(nibName: nil, bundle: nil)
 
         // This 👇 should be called in init so the tab is correctly localized when the app launches
@@ -282,22 +287,6 @@ private extension ReviewsViewController {
     }
 }
 
-
-// MARK: - ResultsController
-//
-private extension ReviewsViewController {
-
-    /// Refreshes the Results Controller Predicate, and ensures the UI is in Sync.
-    ///
-    func reloadResultsController() {
-        viewModel.refreshResults()
-
-        tableView.setContentOffset(.zero, animated: false)
-        tableView.reloadData()
-    }
-}
-
-
 // MARK: - Placeholders
 //
 private extension ReviewsViewController {
@@ -357,15 +346,7 @@ private extension ReviewsViewController {
     ///
     func startListeningToNotifications() {
         let nc = NotificationCenter.default
-        nc.addObserver(self, selector: #selector(defaultSiteWasUpdated), name: .StoresManagerDidUpdateDefaultSite, object: nil)
         nc.addObserver(self, selector: #selector(applicationDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
-    }
-
-    /// Default Site Updated Handler
-    ///
-    @objc func defaultSiteWasUpdated() {
-        reloadResultsController()
-        syncingCoordinator.resynchronize()
     }
 
     /// Application became Active Again (while the Notes Tab was onscreen)

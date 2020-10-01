@@ -378,7 +378,6 @@ private extension SettingsViewController {
 
     func logOutUser() {
         ServiceLocator.stores.deauthenticate()
-        navigationController?.popToRootViewController(animated: true)
     }
 
     func weAreHiringWasPressed(url: URL) {

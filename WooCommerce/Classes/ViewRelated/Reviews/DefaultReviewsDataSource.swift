@@ -158,12 +158,8 @@ extension DefaultReviewsDataSource: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ProductReviewTableViewCell.reuseIdentifier) as? ProductReviewTableViewCell else {
-            fatalError()
-        }
-
+        let cell = tableView.dequeueReusableCell(ProductReviewTableViewCell.self, for: indexPath)
         configure(cell, at: indexPath)
-
         return cell
     }
 

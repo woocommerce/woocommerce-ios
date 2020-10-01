@@ -82,10 +82,7 @@ extension ProductParentCategoriesViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ProductCategoryTableViewCell.reuseIdentifier,
-                                                       for: indexPath) as? ProductCategoryTableViewCell else {
-            fatalError()
-        }
+        let cell = tableView.dequeueReusableCell(ProductCategoryTableViewCell.self, for: indexPath)
 
         if let categoryViewModel = categoryViewModels[safe: indexPath.row] {
             cell.configure(with: categoryViewModel)

@@ -161,9 +161,7 @@ final class OrderListViewController: UIViewController {
     /// Returns a function that creates cells for `dataSource`.
     private func makeCellProvider() -> UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID>.CellProvider {
         return { [weak self] tableView, indexPath, objectID in
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: OrderTableViewCell.reuseIdentifier, for: indexPath) as? OrderTableViewCell else {
-                fatalError("Failed to create cell \(OrderTableViewCell.reuseIdentifier)")
-            }
+            let cell = tableView.dequeueReusableCell(OrderTableViewCell.self, for: indexPath)
             guard let self = self else {
                 return cell
             }

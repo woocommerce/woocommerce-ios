@@ -235,10 +235,7 @@ extension OrderStatusListViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: StatusListTableViewCell.reuseIdentifier,
-                                                       for: indexPath) as? StatusListTableViewCell else {
-            fatalError()
-        }
+        let cell = tableView.dequeueReusableCell(StatusListTableViewCell.self, for: indexPath)
 
         let status = statusResultsController.object(at: indexPath)
         cell.textLabel?.text = status.name

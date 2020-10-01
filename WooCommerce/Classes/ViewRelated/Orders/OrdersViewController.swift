@@ -459,9 +459,7 @@ extension OrdersViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: OrderTableViewCell.reuseIdentifier, for: indexPath) as? OrderTableViewCell else {
-            fatalError()
-        }
+        let cell = tableView.dequeueReusableCell(OrderTableViewCell.self, for: indexPath)
 
         let detailsViewModel = viewModel.detailsViewModel(at: indexPath)
         let orderStatus = lookUpOrderStatus(for: detailsViewModel?.order)

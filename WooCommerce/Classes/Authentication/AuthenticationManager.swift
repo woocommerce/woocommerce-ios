@@ -2,6 +2,7 @@ import Foundation
 import KeychainAccess
 import WordPressAuthenticator
 import Yosemite
+import class Networking.UserAgent
 import struct Networking.Settings
 
 

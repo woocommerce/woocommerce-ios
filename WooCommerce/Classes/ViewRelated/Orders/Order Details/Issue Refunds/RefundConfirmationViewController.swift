@@ -66,6 +66,7 @@ extension RefundConfirmationViewController: UITableViewDataSource {
             } else {
                 cell.applyDefaultLabelsStyle()
             }
+            cell.selectionStyle = .none
             return cell
         case let row as RefundConfirmationViewModel.TitleAndEditableValueRow:
             let cell = tableView.dequeueReusableCell(TitleAndEditableValueTableViewCell.self, for: indexPath)

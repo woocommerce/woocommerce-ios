@@ -4,10 +4,19 @@ final class RefundConfirmationViewModel {
     private(set) var sections: [Section]
 
     init() {
-        sections = [Section(title: nil, rows: [
-            TwoColumnRow(title: Localization.previouslyRefunded, value: "$0.01"),
-            TwoColumnRow(title: Localization.refundAmount, value: "$1.23")
-        ])]
+        sections = [
+            Section(
+                title: nil,
+                rows: [
+                    TwoColumnRow(title: Localization.previouslyRefunded, value: "$0.01"),
+                    TwoColumnRow(title: Localization.refundAmount, value: "$1.23")
+                ]
+            ),
+            Section(
+                title: Localization.refundVia,
+                rows: []
+            )
+        ]
     }
 }
 
@@ -35,5 +44,6 @@ private extension RefundConfirmationViewModel {
     enum Localization {
         static let previouslyRefunded = NSLocalizedString("Previously Refunded", comment: "")
         static let refundAmount = NSLocalizedString("Refund Amount", comment: "")
+        static let refundVia = NSLocalizedString("Refund Via", comment: "")
     }
 }

@@ -6,6 +6,8 @@ import UIKit
 final class HeadlineLabelTableViewCell: UITableViewCell {
     @IBOutlet private weak var headlineLabel: UILabel?
     @IBOutlet private weak var bodyLabel: UILabel?
+    /// The spacing between the `headlineLabel` and the `bodyLabel`.
+    @IBOutlet private var headlineToBodyConstraint: NSLayoutConstraint!
 
     enum Style {
         /// Bold title with no margin against the body.
@@ -26,6 +28,7 @@ final class HeadlineLabelTableViewCell: UITableViewCell {
     func update(style: Style = .emphasized, headline: String?, body: String?) {
         headlineLabel?.text = headline
         bodyLabel?.text = body
+        apply(style: style)
     }
 }
 
@@ -48,9 +51,21 @@ private extension HeadlineLabelTableViewCell {
         case .emphasized:
             headlineLabel?.applyHeadlineStyle()
             bodyLabel?.applyBodyStyle()
+            headlineToBodyConstraint.constant = 0
         case .regular:
             headlineLabel?.applyBodyStyle()
             bodyLabel?.applyBodyStyle()
+            headlineToBodyConstraint.constant = Dimensions.margin
         }
+
+        setNeedsLayout()
+    }
+}
+
+// MARK: - Constants
+
+private extension HeadlineLabelTableViewCell {
+    enum Dimensions {
+        static let margin: CGFloat = 8.0
     }
 }

@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17503.1" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Ck1-vY-O11">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17502"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -106,12 +107,12 @@
                         <constraints>
                             <constraint firstItem="6cw-FO-hjb" firstAttribute="leading" secondItem="EnO-7f-1yO" secondAttribute="leading" id="7Z8-mD-FWN"/>
                             <constraint firstAttribute="trailing" secondItem="G3G-Ap-6ix" secondAttribute="trailing" id="96a-eB-JlD"/>
-                            <constraint firstItem="s7U-M4-ZVd" firstAttribute="leading" secondItem="G3G-Ap-6ix" secondAttribute="leading" id="CCE-RK-7oE"/>
                             <constraint firstItem="G3G-Ap-6ix" firstAttribute="top" secondItem="6cw-FO-hjb" secondAttribute="bottom" id="Cuw-sd-C5k"/>
                             <constraint firstAttribute="trailing" secondItem="6cw-FO-hjb" secondAttribute="trailing" id="Hgo-qC-AqF"/>
                             <constraint firstItem="s7U-M4-ZVd" firstAttribute="top" secondItem="G3G-Ap-6ix" secondAttribute="top" id="ISb-cY-EO1"/>
-                            <constraint firstItem="s7U-M4-ZVd" firstAttribute="trailing" secondItem="G3G-Ap-6ix" secondAttribute="trailing" id="WyG-Lz-bxP"/>
+                            <constraint firstAttribute="trailing" secondItem="s7U-M4-ZVd" secondAttribute="trailing" id="L02-E4-5Ik"/>
                             <constraint firstItem="6cw-FO-hjb" firstAttribute="top" secondItem="EnO-7f-1yO" secondAttribute="top" id="dXg-NZ-hRY"/>
+                            <constraint firstItem="s7U-M4-ZVd" firstAttribute="leading" secondItem="EnO-7f-1yO" secondAttribute="leading" id="fqH-CW-3Ry"/>
                             <constraint firstAttribute="bottom" secondItem="G3G-Ap-6ix" secondAttribute="bottom" id="lOP-Up-00c"/>
                             <constraint firstItem="s7U-M4-ZVd" firstAttribute="bottom" secondItem="G3G-Ap-6ix" secondAttribute="bottom" id="qfx-iK-Dth"/>
                             <constraint firstItem="G3G-Ap-6ix" firstAttribute="leading" secondItem="EnO-7f-1yO" secondAttribute="leading" id="uzT-mw-eJq"/>
@@ -1429,6 +1430,30 @@
         </scene>
     </scenes>
     <designables>
+        <designable name="A2K-lq-6XM">
+            <size key="intrinsicContentSize" width="111" height="18.5"/>
+        </designable>
+        <designable name="BtS-3D-CIU">
+            <size key="intrinsicContentSize" width="62.5" height="17"/>
+        </designable>
+        <designable name="ESh-DI-dtB">
+            <size key="intrinsicContentSize" width="112.5" height="18.5"/>
+        </designable>
+        <designable name="XXO-aV-keK">
+            <size key="intrinsicContentSize" width="106" height="22"/>
+        </designable>
+        <designable name="ZUH-Y9-OaY">
+            <size key="intrinsicContentSize" width="112.5" height="18.5"/>
+        </designable>
+        <designable name="ZrT-CY-qD7">
+            <size key="intrinsicContentSize" width="155" height="22"/>
+        </designable>
+        <designable name="oi5-Kd-TEW">
+            <size key="intrinsicContentSize" width="62.5" height="17"/>
+        </designable>
+        <designable name="pHh-Ma-Bb7">
+            <size key="intrinsicContentSize" width="62.5" height="17"/>
+        </designable>
         <designable name="usY-bV-fpM">
             <size key="intrinsicContentSize" width="32" height="34"/>
         </designable>

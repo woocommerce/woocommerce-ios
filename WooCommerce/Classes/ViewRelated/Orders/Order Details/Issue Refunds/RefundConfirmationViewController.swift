@@ -24,7 +24,12 @@ final class RefundConfirmationViewController: UIViewController {
 private extension RefundConfirmationViewController {
     func configureTableView() {
         // Register cells
-        [SettingTitleAndValueTableViewCell.self, TitleAndEditableValueTableViewCell.self].forEach {
+        let supportedCellTypes = [
+            SettingTitleAndValueTableViewCell.self,
+            TitleAndEditableValueTableViewCell.self,
+            HeadlineLabelTableViewCell.self
+        ]
+        supportedCellTypes.forEach {
             tableView.register($0.loadNib(), forCellReuseIdentifier: $0.reuseIdentifier)
         }
 
@@ -72,7 +77,13 @@ extension RefundConfirmationViewController: UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(TitleAndEditableValueTableViewCell.self, for: indexPath)
             cell.update(title: row.title, placeholder: row.placeholder)
             return cell
+        case let row as RefundConfirmationViewModel.TitleAndBodyRow:
+            let cell = tableView.dequeueReusableCell(HeadlineLabelTableViewCell.self, for: indexPath)
+            cell.update(headline: row.title, body: row.body)
+            cell.selectionStyle = .none
+            return cell
         default:
+            assertionFailure("Unsupported row.")
             return UITableViewCell()
         }
     }

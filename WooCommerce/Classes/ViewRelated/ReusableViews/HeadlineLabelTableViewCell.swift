@@ -36,6 +36,11 @@ final class HeadlineLabelTableViewCell: UITableViewCell {
         configureHeadline()
         configureBody()
     }
+
+    func update(headline: String?, body: String?) {
+        self.headline = headline
+        self.body = body
+    }
 }
 
 

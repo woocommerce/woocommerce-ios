@@ -16,7 +16,10 @@ final class RefundConfirmationViewModel {
             ),
             Section(
                 title: Localization.refundVia,
-                rows: []
+                rows: [
+                    TitleAndBodyRow(title: Localization.manualRefund(via: "Stripe"),
+                                    body: Localization.refundWillNotBeIssued(paymentMethod: "Stripe"))
+                ]
             )
         ]
     }
@@ -44,6 +47,11 @@ extension RefundConfirmationViewModel {
         let title: String
         let placeholder: String
     }
+
+    struct TitleAndBodyRow: RefundConfirmationViewModelRow {
+        let title: String
+        let body: String?
+    }
 }
 
 // MARK: - Localization
@@ -55,5 +63,24 @@ private extension RefundConfirmationViewModel {
         static let refundVia = NSLocalizedString("Refund Via", comment: "")
         static let reasonForRefund = NSLocalizedString("Reason for Refund (Optional)", comment: "")
         static let reasonForRefundingOrder = NSLocalizedString("Reason for refunding order", comment: "")
+
+        static func manualRefund(via paymentMethod: String) -> String {
+            let format = NSLocalizedString(
+                     "Manual Refund via %1$@",
+                comment: "In Refund Confirmation, The title shown to the user to inform them that"
+                    + " they have to issue the refund manually."
+                    + " The %1$@ is the payment method like “Stripe”.")
+            return String.localizedStringWithFormat(format, paymentMethod)
+        }
+
+        static func refundWillNotBeIssued(paymentMethod: String) -> String {
+            let format = NSLocalizedString(
+                "A refund will not be issued to the customer."
+                    + " You will need to manually issue the refund through %1$@.",
+                comment: "In Refund Confirmation, The message shown to the user to inform them that"
+                    + " they have to issue the refund manually."
+                    + " The %1$@ is the payment method like “Stripe”.")
+            return String.localizedStringWithFormat(format, paymentMethod)
+        }
     }
 }

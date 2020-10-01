@@ -27,8 +27,11 @@ private extension RefundConfirmationViewController {
         tableView.register(SettingTitleAndValueTableViewCell.loadNib(),
                            forCellReuseIdentifier: SettingTitleAndValueTableViewCell.reuseIdentifier)
 
-        // Data stuff
+        // Delegation
         tableView.dataSource = self
+
+        // Style
+        tableView.backgroundColor = .listBackground
 
         // Add to view
         view.addSubview(tableView)

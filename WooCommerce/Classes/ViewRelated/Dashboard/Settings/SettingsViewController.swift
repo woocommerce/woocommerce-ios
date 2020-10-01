@@ -200,8 +200,7 @@ private extension SettingsViewController {
     }
 
     func configureSelectedStore(cell: HeadlineLabelTableViewCell) {
-        cell.headline = siteUrl
-        cell.body = accountName
+        cell.update(headline: siteUrl, body: accountName)
         cell.selectionStyle = .none
     }
 

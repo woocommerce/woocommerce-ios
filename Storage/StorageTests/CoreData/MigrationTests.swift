@@ -102,7 +102,7 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try targetContext.count(entityName: "ProductTag"), 0)
     }
 
-    func test_model_20_to_28_migration_with_transformable_attributes_passed() throws {
+    func test_migrating_from_20_to_28_will_keep_transformable_attributes() throws {
         // Arrange
         let sourceContainer = try startPersistentContainer("Model 20")
         let sourceContext = sourceContainer.viewContext

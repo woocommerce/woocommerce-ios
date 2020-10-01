@@ -43,31 +43,16 @@ final class MainTabBarControllerTests: XCTestCase {
                    isAnInstanceOf: ReviewsViewController.self)
     }
 
-    func test_tab_view_controllers_are_empty_after_deauthentication() {
-        // Arrange
-        // Trigger `viewDidLoad`
-        XCTAssertNotNil(tabBarController.view)
-        let siteID: Int64 = 134
-        stores.updateDefaultStore(storeID: siteID)
-        XCTAssertEqual(tabBarController.viewControllers?.count, 4)
-
-        // Action
-        stores.deauthenticate()
-
-        // Assert
-        XCTAssertEqual(tabBarController.viewControllers?.count, 0)
-    }
-
-    func test_viewControllers_are_replaced_after_updating_to_a_different_site() throws {
+    func test_tab_root_viewControllers_are_replaced_after_updating_to_a_different_site() throws {
         // Arrange
         // Trigger `viewDidLoad`
         XCTAssertNotNil(tabBarController.view)
 
         // Action
         stores.updateDefaultStore(storeID: 134)
-        let viewControllersBeforeSiteChange = try XCTUnwrap(tabBarController.viewControllers)
+        let viewControllersBeforeSiteChange = tabBarController.tabRootViewControllers
         stores.updateDefaultStore(storeID: 630)
-        let viewControllersAfterSiteChange = try XCTUnwrap(tabBarController.viewControllers)
+        let viewControllersAfterSiteChange = tabBarController.tabRootViewControllers
 
         // Assert
         XCTAssertEqual(viewControllersBeforeSiteChange.count, viewControllersAfterSiteChange.count)
@@ -108,5 +93,11 @@ final class MainTabBarControllerTests: XCTestCase {
         // Assert
         XCTAssertEqual(selectedTabIndexBeforeSiteChange, WooTab.products.visibleIndex())
         XCTAssertEqual(selectedTabIndexAfterSiteChange, WooTab.myStore.visibleIndex())
+    }
+}
+
+private extension MainTabBarController {
+    var tabRootViewControllers: [UIViewController] {
+        viewControllers?.compactMap { $0 as? UINavigationController }.compactMap { $0.viewControllers.first } ?? []
     }
 }

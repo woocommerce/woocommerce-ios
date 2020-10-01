@@ -138,6 +138,16 @@ final class ProductsViewController: UIViewController {
 
     // MARK: - View Lifecycle
 
+    init() {
+        super.init(nibName: nil, bundle: nil)
+
+        configureTabBarItem()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -248,7 +258,7 @@ private extension ProductsViewController {
     /// Set the title.
     ///
     func configureNavigationBar() {
-        title = NSLocalizedString(
+        navigationItem.title = NSLocalizedString(
             "Products",
             comment: "Title that appears on top of the Product List screen (plural form of the word Product)."
         )
@@ -308,6 +318,12 @@ private extension ProductsViewController {
     ///
     func configureMainView() {
         view.backgroundColor = .listBackground
+    }
+
+    func configureTabBarItem() {
+        tabBarItem.title = NSLocalizedString("Products", comment: "Title of the Products tab — plural form of Product")
+        tabBarItem.image = .productImage
+        tabBarItem.accessibilityIdentifier = "tab-bar-products-item"
     }
 
     /// Configure common table properties.
@@ -542,7 +558,7 @@ extension ProductsViewController: UITableViewDelegate {
 
 private extension ProductsViewController {
     func didSelectProduct(product: Product) {
-        ProductDetailsFactory.productDetails(product: product, presentationStyle: .navigationStack) { [weak self] viewController in
+        ProductDetailsFactory.productDetails(product: product, presentationStyle: .navigationStack, forceReadOnly: false) { [weak self] viewController in
             self?.navigationController?.pushViewController(viewController, animated: true)
         }
     }

@@ -199,8 +199,8 @@ private extension OrderListViewController {
         viewModel.activate()
 
         /// Update the `dataSource` whenever there is a new snapshot.
-        viewModel.snapshot.sink { snapshot in
-            self.dataSource.apply(snapshot)
+        viewModel.snapshot.sink { [weak self] snapshot in
+            self?.dataSource.apply(snapshot)
         }.store(in: &cancellables)
     }
 

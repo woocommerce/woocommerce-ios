@@ -1,6 +1,7 @@
 import UIKit
 import CoreData
 import Storage
+import class Networking.UserAgent
 
 import CocoaLumberjack
 import KeychainAccess
@@ -354,22 +355,24 @@ extension AppDelegate {
 
     /// Whenever there is no default WordPress.com Account, let's display the Authentication UI.
     ///
-    func displayAuthenticatorIfNeeded() {
+    private func displayAuthenticatorIfNeeded() {
         guard ServiceLocator.stores.isAuthenticated == false else {
             return
         }
 
-        displayAuthenticator()
+        displayAuthenticator(animated: false)
     }
 
     /// Displays the WordPress.com Authentication UI.
     ///
-    func displayAuthenticator() {
+    func displayAuthenticator(animated: Bool) {
         guard let rootViewController = window?.rootViewController else {
             fatalError()
         }
 
-        ServiceLocator.authenticationManager.displayAuthentication(from: rootViewController)
+        ServiceLocator.authenticationManager.displayAuthentication(from: rootViewController, animated: animated) { [weak self] in
+            self?.tabBarController?.removeViewControllers()
+        }
     }
 
     /// Whenever the app is authenticated but there is no Default StoreID: Let's display the Store Picker.
@@ -388,13 +391,13 @@ extension AppDelegate {
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .standard)
         storePickerCoordinator?.start()
         storePickerCoordinator?.onDismiss = { [weak self] in
-            self?.displayAuthenticator()
+            self?.displayAuthenticator(animated: false)
         }
     }
 
     /// Whenever we're in an Authenticated state, let's Sync all of the WC-Y entities.
     ///
-    func synchronizeEntitiesIfPossible() {
+    private func synchronizeEntitiesIfPossible() {
         guard ServiceLocator.stores.isAuthenticated else {
             return
         }

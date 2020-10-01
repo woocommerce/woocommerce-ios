@@ -178,7 +178,9 @@ final class ReviewsCoordinatorTests: XCTestCase {
 
 private extension ReviewsCoordinatorTests {
     func makeReviewsCoordinator(willPresentReviewDetailsFromPushNotification: (@escaping () -> Void) = { }) -> ReviewsCoordinator {
-        return ReviewsCoordinator(pushNotificationsManager: pushNotificationsManager,
+        return ReviewsCoordinator(siteID: 1,
+                                  navigationController: UINavigationController(),
+                                  pushNotificationsManager: pushNotificationsManager,
                                   storesManager: storesManager,
                                   noticePresenter: noticePresenter,
                                   switchStoreUseCase: switchStoreUseCase,

@@ -80,32 +80,21 @@ final class MainTabBarController: UITabBarController {
     ///
     private let viewModel = MainTabViewModel()
 
-    private lazy var dashboardViewController: UIViewController = {
-        let dashboardViewController = DashboardViewController()
-        return WooNavigationController(rootViewController: dashboardViewController)
-    }()
+    /// Tab view controllers
+    ///
+    private let dashboardNavigationController: UINavigationController = WooNavigationController()
+    private let ordersNavigationController: UINavigationController = WooNavigationController()
+    private let productsNavigationController: UINavigationController = WooNavigationController()
+    private let reviewsNavigationController: UINavigationController = WooNavigationController()
+    private var reviewsTabCoordinator: Coordinator?
 
-    private lazy var ordersTabViewController: UIViewController = {
-        let rootViewController = OrdersRootViewController()
-        return WooNavigationController(rootViewController: rootViewController)
-    }()
+    private var cancellableSiteID: ObservationToken?
 
-    private lazy var productsTabViewController: UIViewController = {
-        let productsViewController = ProductsViewController(nibName: nil, bundle: nil)
-        let navController = WooNavigationController(rootViewController: productsViewController)
-        let navigationTitle = NSLocalizedString("Products",
-                                                comment: "Title of the Products tab — plural form of Product")
-        navController.tabBarItem = UITabBarItem(title: navigationTitle,
-                                                image: UIImage.productImage,
-                                                tag: 0)
-        navController.tabBarItem.accessibilityIdentifier = "tab-bar-products-item"
+    private let stores: StoresManager = ServiceLocator.stores
 
-        return navController
-    }()
-
-    private lazy var reviewsCoordinator: Coordinator = ReviewsCoordinator(willPresentReviewDetailsFromPushNotification: { [weak self] in
-        self?.navigateTo(.reviews)
-    })
+    deinit {
+        cancellableSiteID?.cancel()
+    }
 
     // MARK: - Overridden Methods
 
@@ -113,28 +102,10 @@ final class MainTabBarController: UITabBarController {
         super.viewDidLoad()
         setNeedsStatusBarAppearanceUpdate() // call this to refresh status bar changes happening at runtime
 
-        // Add the Orders, Products and Reviews tab
-        viewControllers = {
-            var controllers = [UIViewController]()
-
-            let dashboardTabIndex = WooTab.myStore.visibleIndex()
-            controllers.insert(dashboardViewController, at: dashboardTabIndex)
-
-            let ordersTabIndex = WooTab.orders.visibleIndex()
-            controllers.insert(ordersTabViewController, at: ordersTabIndex)
-
-            let productsTabIndex = WooTab.products.visibleIndex()
-            controllers.insert(productsTabViewController, at: productsTabIndex)
-
-            let reviewsTabIndex = WooTab.reviews.visibleIndex()
-            controllers.insert(reviewsCoordinator.navigationController, at: reviewsTabIndex)
-
-            return controllers
-        }()
+        configureTabViewControllers()
+        observeSiteIDForViewControllers()
 
         loadReviewsTabNotificationCountAndUpdateBadge()
-
-        reviewsCoordinator.start()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -181,6 +152,15 @@ final class MainTabBarController: UITabBarController {
                 completion?()
             }
         }
+    }
+
+    /// Removes the view controllers in each tab's navigation controller, and resets any logged in properties.
+    /// Called after the app is logged out and authentication UI is presented.
+    func removeViewControllers() {
+        viewControllers?.compactMap { $0 as? UINavigationController }.forEach { navigationController in
+            navigationController.viewControllers = []
+        }
+        reviewsTabCoordinator = nil
     }
 }
 
@@ -351,6 +331,81 @@ extension MainTabBarController {
     }
 }
 
+// MARK: - Site ID observation for updating tab view controllers
+//
+private extension MainTabBarController {
+    func configureTabViewControllers() {
+        viewControllers = {
+            var controllers = [UIViewController]()
+
+            let dashboardTabIndex = WooTab.myStore.visibleIndex()
+            controllers.insert(dashboardNavigationController, at: dashboardTabIndex)
+
+            let ordersTabIndex = WooTab.orders.visibleIndex()
+            controllers.insert(ordersNavigationController, at: ordersTabIndex)
+
+            let productsTabIndex = WooTab.products.visibleIndex()
+            controllers.insert(productsNavigationController, at: productsTabIndex)
+
+            let reviewsTabIndex = WooTab.reviews.visibleIndex()
+            controllers.insert(reviewsNavigationController, at: reviewsTabIndex)
+
+            return controllers
+        }()
+    }
+
+    func observeSiteIDForViewControllers() {
+        cancellableSiteID = stores.siteID.subscribe { [weak self] siteID in
+            guard let self = self else {
+                return
+            }
+            self.updateViewControllers(siteID: siteID)
+        }
+    }
+
+    func updateViewControllers(siteID: Int64?) {
+        guard let siteID = siteID else {
+            return
+        }
+
+        // Initialize each tab's root view controller
+        let dashboardViewController = createDashboardViewController()
+        dashboardNavigationController.viewControllers = [dashboardViewController]
+
+        let ordersViewController = createOrdersViewController()
+        ordersNavigationController.viewControllers = [ordersViewController]
+
+        let productsViewController = createProductsViewController()
+        productsNavigationController.viewControllers = [productsViewController]
+
+        let reviewsTabCoordinator = createReviewsTabCoordinator(siteID: siteID)
+        self.reviewsTabCoordinator = reviewsTabCoordinator
+        reviewsTabCoordinator.start()
+
+        // Set dashboard to be the default tab.
+        selectedIndex = WooTab.myStore.visibleIndex()
+    }
+
+    func createDashboardViewController() -> UIViewController {
+        DashboardViewController()
+    }
+
+    func createOrdersViewController() -> UIViewController {
+        OrdersRootViewController()
+    }
+
+    func createProductsViewController() -> UIViewController {
+        ProductsViewController()
+    }
+
+    func createReviewsTabCoordinator(siteID: Int64) -> Coordinator {
+        ReviewsCoordinator(siteID: siteID,
+                           navigationController: reviewsNavigationController,
+                           willPresentReviewDetailsFromPushNotification: { [weak self] in
+                            self?.navigateTo(.reviews)
+        })
+    }
+}
 
 // MARK: - Reviews Tab Badge Updates
 //
@@ -366,14 +421,14 @@ private extension MainTabBarController {
     }
 
     @objc func loadReviewsTabNotificationCountAndUpdateBadge() {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+        guard let siteID = stores.sessionManager.defaultStoreID else {
             return
         }
 
         let action = NotificationCountAction.load(siteID: siteID, type: .kind(.comment)) { [weak self] count in
             self?.updateReviewsTabBadge(count: count)
         }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     /// Displays or Hides the Dot on the Reviews tab, depending on the notification count

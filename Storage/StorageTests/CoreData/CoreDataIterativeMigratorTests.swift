@@ -184,18 +184,6 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
 
 }
 
-/// Helpers for generating data in migration tests
-private extension CoreDataIterativeMigratorTests {
-    func insertProductAttributeWithRequiredProperties(to context: NSManagedObjectContext) -> ProductAttribute {
-        let productAttribute = context.insertNewObject(ofType: ProductAttribute.self)
-        // Populates the required attributes.
-        productAttribute.name = "woodpecker"
-        productAttribute.variation = true
-        productAttribute.visible = true
-        return productAttribute
-    }
-}
-
 /// Helpers for the Core Data migration tests
 private extension CoreDataIterativeMigratorTests {
 

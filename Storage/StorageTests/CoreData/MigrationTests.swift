@@ -388,4 +388,13 @@ private extension MigrationTests {
             "slug": ""
         ])
     }
+
+    @discardableResult
+    func insertProductAttribute(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "ProductAttribute", properties: [
+            "name": "",
+            "variation": false,
+            "visible": false
+        ])
+    }
 }

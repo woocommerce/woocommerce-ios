@@ -1,6 +1,10 @@
 import Foundation
 
 final class RefundConfirmationViewModel {
+
+    // This will be computed later :D
+    let refundAmount = "$87.50"
+
     private(set) var sections: [Section]
 
     init() {
@@ -9,7 +13,7 @@ final class RefundConfirmationViewModel {
                 title: nil,
                 rows: [
                     TwoColumnRow(title: Localization.previouslyRefunded, value: "$0.01", isHeadline: false),
-                    TwoColumnRow(title: Localization.refundAmount, value: "$1.23", isHeadline: true),
+                    TwoColumnRow(title: Localization.refundAmount, value: refundAmount, isHeadline: true),
                     TitleAndEditableValueRow(title: Localization.reasonForRefund,
                                              placeholder: Localization.reasonForRefundingOrder),
                 ]

@@ -13,7 +13,7 @@ final class RefundConfirmationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = "$amount_to_refund"
+        title = viewModel.refundAmount
 
         configureTableView()
     }

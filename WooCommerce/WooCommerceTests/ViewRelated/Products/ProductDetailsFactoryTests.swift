@@ -4,7 +4,7 @@ import XCTest
 final class ProductDetailsFactoryTests: XCTestCase {
     // MARK: Simple product type
 
-    func testFactoryCreatesProductFormForSimpleProductWhenProductsFeatureSwitchIsOn() {
+    func test_factory_creates_product_form_for_simple_product_when_products_release_3_is_on() {
         // Arrange
         let mockStoresManager = MockProductsAppSettingsStoresManager(isProductsFeatureSwitchEnabled: true, sessionManager: SessionManager.testingInstance)
 
@@ -23,7 +23,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
 
-    func testFactoryCreatesProductFormForSimpleProductWhenProductsFeatureSwitchIsOff() {
+    func test_factory_creates_product_form_for_simple_product_when_products_release_3_is_off() {
         // Arrange
         let mockStoresManager = MockProductsAppSettingsStoresManager(isProductsFeatureSwitchEnabled: false, sessionManager: SessionManager.testingInstance)
 
@@ -44,7 +44,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
 
     // MARK: External/affiliate product type
 
-    func testFactoryCreatesProductFormForAffiliateProductWhenProductsRelease3IsOn() {
+    func test_factory_creates_product_form_for_affiliate_product_when_products_release_3_is_on() {
         // Arrange
         let mockStoresManager = MockProductsAppSettingsStoresManager(isProductsFeatureSwitchEnabled: true, sessionManager: SessionManager.testingInstance)
 
@@ -63,7 +63,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
 
-    func testFactoryCreatesReadonlyProductDetailsForAffiliateProductWhenProductsRelease3IsOff() {
+    func test_factory_creates_product_form_for_affiliate_product_when_products_release_3_is_off() {
         // Arrange
         let mockStoresManager = MockProductsAppSettingsStoresManager(isProductsFeatureSwitchEnabled: false, sessionManager: SessionManager.testingInstance)
         let product = MockProduct().product(productType: .affiliate)
@@ -75,7 +75,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
                                              stores: mockStoresManager,
                                              forceReadOnly: false) { viewController in
                                                 // Assert
-                                                XCTAssertTrue(viewController is ProductDetailsViewController)
+                                                XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
                                                 expectation.fulfill()
         }
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
@@ -83,7 +83,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
 
     // MARK: Grouped product type
 
-    func testFactoryCreatesProductFormForGroupedProductWhenProductsRelease3IsOn() {
+    func test_factory_creates_product_form_for_grouped_product_when_products_release_3_is_on() {
         // Arrange
         let mockStoresManager = MockProductsAppSettingsStoresManager(isProductsFeatureSwitchEnabled: true, sessionManager: SessionManager.testingInstance)
         let product = MockProduct().product(productType: .grouped)
@@ -101,7 +101,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
 
-    func testFactoryCreatesReadonlyProductDetailsForGroupedProductWhenProductsRelease3IsOff() {
+    func test_factory_creates_product_form_for_grouped_product_when_products_release_3_is_off() {
         // Arrange
         let mockStoresManager = MockProductsAppSettingsStoresManager(isProductsFeatureSwitchEnabled: false, sessionManager: SessionManager.testingInstance)
         let product = MockProduct().product(productType: .grouped)
@@ -113,7 +113,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
                                              stores: mockStoresManager,
                                              forceReadOnly: false) { viewController in
                                                 // Assert
-                                                XCTAssertTrue(viewController is ProductDetailsViewController)
+                                                XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
                                                 expectation.fulfill()
         }
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
@@ -121,7 +121,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
 
     // MARK: Variable product type
 
-    func testFactoryCreatesProductFormForVariableProductWhenProductsRelease3IsOn() {
+    func test_factory_creates_product_form_for_variable_product_when_products_release_3_is_on() {
         // Arrange
         let mockStoresManager = MockProductsAppSettingsStoresManager(isProductsFeatureSwitchEnabled: true, sessionManager: SessionManager.testingInstance)
         let product = MockProduct().product(productType: .variable)
@@ -139,7 +139,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
 
-    func testFactoryCreatesReadonlyProductDetailsForVariableProductWhenProductsRelease3IsOff() {
+    func test_factory_creates_product_form_for_variable_product_when_products_release_3_is_off() {
         // Arrange
         let mockStoresManager = MockProductsAppSettingsStoresManager(isProductsFeatureSwitchEnabled: false, sessionManager: SessionManager.testingInstance)
         let product = MockProduct().product(productType: .variable)
@@ -151,7 +151,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
                                              stores: mockStoresManager,
                                              forceReadOnly: false) { viewController in
                                                 // Assert
-                                                XCTAssertTrue(viewController is ProductDetailsViewController)
+                                                XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
                                                 expectation.fulfill()
         }
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
@@ -159,7 +159,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
 
     // MARK: Non-core product type
 
-    func test_factory_creates_product_form_for_non_core_product_when_products_release3_is_on() {
+    func test_factory_creates_product_form_for_non_core_product_when_products_release_3_is_on() {
         // Arrange
         let mockStoresManager = MockProductsAppSettingsStoresManager(isProductsFeatureSwitchEnabled: true, sessionManager: SessionManager.testingInstance)
         let product = MockProduct().product(productType: .custom("other"))
@@ -177,7 +177,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
         }
     }
 
-    func test_factory_creates_product_form_for_non_core_product_when_products_release3_is_off() {
+    func test_factory_creates_product_form_for_non_core_product_when_products_release_3_is_off() {
         // Arrange
         let mockStoresManager = MockProductsAppSettingsStoresManager(isProductsFeatureSwitchEnabled: false, sessionManager: SessionManager.testingInstance)
         let product = MockProduct().product(productType: .custom("other"))
@@ -189,7 +189,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
                                                  stores: mockStoresManager,
                                                  forceReadOnly: false) { viewController in
                                                     // Assert
-                                                    XCTAssertTrue(viewController is ProductDetailsViewController)
+                                                    XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
                                                     expectation.fulfill()
             }
         }

@@ -16,10 +16,10 @@ struct ProductsTopBannerFactory {
                           onGiveFeedbackButtonPressed: @escaping () -> Void,
                           onDismissButtonPressed: @escaping () -> Void,
                           onCompletion: @escaping (TopBannerView) -> Void) {
-        let action = AppSettingsAction.loadProductsFeatureSwitch { isEditProductsRelease3Enabled in
+        let action = AppSettingsAction.loadProductsFeatureSwitch { _ in
             let title = Strings.title
             let icon: UIImage = .megaphoneIcon
-            let infoText = isEditProductsRelease3Enabled ? Strings.infoWhenRelease3IsEnabled: Strings.info
+            let infoText = Strings.infoWhenRelease3IsEnabled
             let giveFeedbackAction = TopBannerViewModel.ActionButton(title: Strings.giveFeedback) {
                 analytics.track(event: .featureFeedbackBanner(context: .productsM3, action: .gaveFeedback))
                 onGiveFeedbackButtonPressed()

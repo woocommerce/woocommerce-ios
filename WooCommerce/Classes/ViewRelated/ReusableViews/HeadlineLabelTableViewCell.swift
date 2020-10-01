@@ -7,26 +7,11 @@ final class HeadlineLabelTableViewCell: UITableViewCell {
     @IBOutlet private weak var headlineLabel: UILabel?
     @IBOutlet private weak var bodyLabel: UILabel?
 
-    /// Headline label text
-    ///
-    var headline: String? {
-        get {
-            return headlineLabel?.text
-        }
-        set {
-            headlineLabel?.text = newValue
-        }
-    }
-
-    /// Body label text
-    ///
-    var body: String? {
-        get {
-            return bodyLabel?.text
-        }
-        set {
-            bodyLabel?.text = newValue
-        }
+    enum Style {
+        /// Bold title with no margin against the body.
+        case emphasized
+        /// Normal body title with a margin against the body.
+        case regular
     }
 
     override func awakeFromNib() {
@@ -35,11 +20,12 @@ final class HeadlineLabelTableViewCell: UITableViewCell {
         configureBackground()
         configureHeadline()
         configureBody()
+        apply(style: .emphasized)
     }
 
-    func update(headline: String?, body: String?) {
-        self.headline = headline
-        self.body = body
+    func update(style: Style = .emphasized, headline: String?, body: String?) {
+        headlineLabel?.text = headline
+        bodyLabel?.text = body
     }
 }
 
@@ -50,12 +36,21 @@ private extension HeadlineLabelTableViewCell {
     }
 
     func configureHeadline() {
-        headlineLabel?.applyHeadlineStyle()
         headlineLabel?.accessibilityIdentifier = "headline-label"
     }
 
     func configureBody() {
-        bodyLabel?.applyBodyStyle()
         bodyLabel?.accessibilityIdentifier = "body-label"
+    }
+
+    func apply(style: Style) {
+        switch style {
+        case .emphasized:
+            headlineLabel?.applyHeadlineStyle()
+            bodyLabel?.applyBodyStyle()
+        case .regular:
+            headlineLabel?.applyBodyStyle()
+            bodyLabel?.applyBodyStyle()
+        }
     }
 }

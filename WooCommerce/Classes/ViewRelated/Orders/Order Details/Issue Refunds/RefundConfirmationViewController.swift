@@ -60,6 +60,11 @@ extension RefundConfirmationViewController: UITableViewDataSource {
         case let row as RefundConfirmationViewModel.TwoColumnRow:
             let cell = tableView.dequeueReusableCell(SettingTitleAndValueTableViewCell.self, for: indexPath)
             cell.updateUI(title: row.title, value: row.value)
+            if row.isHeadline {
+                cell.applyHeadlineLabelsStyle()
+            } else {
+                cell.applyDefaultLabelsStyle()
+            }
             return cell
         default:
             return UITableViewCell()

@@ -39,4 +39,9 @@ extension SettingTitleAndValueTableViewCell {
         valueLabel.applyBodyStyle()
         valueLabel.textColor = .textTertiary
     }
+
+    func applyHeadlineLabelsStyle() {
+        titleLabel.applyHeadlineStyle()
+        valueLabel.applyHeadlineStyle()
+    }
 }

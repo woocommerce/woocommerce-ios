@@ -8,8 +8,8 @@ final class RefundConfirmationViewModel {
             Section(
                 title: nil,
                 rows: [
-                    TwoColumnRow(title: Localization.previouslyRefunded, value: "$0.01"),
-                    TwoColumnRow(title: Localization.refundAmount, value: "$1.23")
+                    TwoColumnRow(title: Localization.previouslyRefunded, value: "$0.01", isHeadline: false),
+                    TwoColumnRow(title: Localization.refundAmount, value: "$1.23", isHeadline: true)
                 ]
             ),
             Section(
@@ -35,6 +35,7 @@ extension RefundConfirmationViewModel {
     struct TwoColumnRow: RefundConfirmationViewModelRow {
         let title: String
         let value: String
+        let isHeadline: Bool
     }
 }
 

@@ -10,6 +10,8 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
 
     // MARK: - Private properties
 
+    private let siteID: Int64
+
     /// Product Reviews
     ///
     private lazy var reviewsResultsController: ResultsController<StorageProductReview> = {
@@ -87,7 +89,8 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
     }
 
 
-    override init() {
+    init(siteID: Int64) {
+        self.siteID = siteID
         super.init()
         observeResults()
     }
@@ -120,8 +123,7 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
     /// Predicate to entities that belong to the current store
     ///
     private func sitePredicate() -> NSPredicate {
-        return NSPredicate(format: "siteID == %lld",
-                          ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
+        return NSPredicate(format: "siteID == %lld", siteID)
     }
 
     /// Initializes observers for incoming reviews
@@ -241,7 +243,9 @@ extension DefaultReviewsDataSource: ReviewsInteractionDelegate {
         let reviewedProduct = product(id: review.productID)
         let note = notification(id: review.reviewID)
 
-        let detailsViewController = ReviewDetailsViewController(productReview: review, product: reviewedProduct, notification: note)
+        let detailsViewController = ReviewDetailsViewController(productReview: review,
+                                                                product: reviewedProduct,
+                                                                notification: note)
         viewController.navigationController?.pushViewController(detailsViewController, animated: true)
     }
 }

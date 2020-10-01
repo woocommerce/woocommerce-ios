@@ -281,9 +281,9 @@ private extension SettingsViewController {
         return sections[indexPath.section].rows[indexPath.row]
     }
 
-    /// This is false because there are no ongoing expriments
+    /// This is false because there are no ongoing experiments
     func couldShowBetaFeaturesRow() -> Bool {
-        return true
+        return false
     }
 }
 
@@ -378,7 +378,6 @@ private extension SettingsViewController {
 
     func logOutUser() {
         ServiceLocator.stores.deauthenticate()
-        navigationController?.popToRootViewController(animated: true)
     }
 
     func weAreHiringWasPressed(url: URL) {

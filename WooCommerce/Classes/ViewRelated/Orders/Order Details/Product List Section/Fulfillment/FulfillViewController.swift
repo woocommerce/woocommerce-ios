@@ -266,7 +266,8 @@ private extension FulfillViewController {
     ///
     func productWasPressed(for productID: Int64) {
         let loaderViewController = ProductLoaderViewController(productID: productID,
-                                                               siteID: order.siteID)
+                                                               siteID: order.siteID,
+                                                               forceReadOnly: true)
         let navController = WooNavigationController(rootViewController: loaderViewController)
         present(navController, animated: true, completion: nil)
     }

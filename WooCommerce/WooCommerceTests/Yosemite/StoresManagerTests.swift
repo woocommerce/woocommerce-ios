@@ -12,7 +12,7 @@ class StoresManagerTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        var session = SessionManager.testingInstance
+        let session = SessionManager.testingInstance
         session.reset()
     }
 
@@ -41,7 +41,7 @@ class StoresManagerTests: XCTestCase {
     ///
     func testInitialStateIsAuthenticatedAssumingCredentialsWereNotMissing() {
         // Arrange
-        var session = SessionManager.testingInstance
+        let session = SessionManager.testingInstance
         session.defaultCredentials = SessionSettings.credentials
 
         // Action
@@ -141,6 +141,27 @@ class StoresManagerTests: XCTestCase {
         XCTAssertNil(session.defaultStoreID)
         XCTAssertNil(session.defaultSite)
     }
+
+    // MARK: `siteID` observable
+
+    func test_siteID_observable_emits_initial_and_subsequent_values_after_authenticating_and_deauthenticating() {
+        // Arrange
+        let mockAuthenticationManager = MockAuthenticationManager()
+        ServiceLocator.setAuthenticationManager(mockAuthenticationManager)
+        let manager = DefaultStoresManager.testingInstance
+        var siteIDValues = [Int64?]()
+        cancellable = manager.siteID.subscribe { siteID in
+            siteIDValues.append(siteID)
+        }
+
+        // Action
+        let siteID: Int64 = 134
+        manager.updateDefaultStore(storeID: siteID)
+        manager.deauthenticate()
+
+        // Assert
+        XCTAssertEqual(siteIDValues, [nil, siteID, nil])
+    }
 }
 
 
@@ -155,7 +176,7 @@ extension DefaultStoresManager {
     }
 }
 
-private final class MockAuthenticationManager: AuthenticationManager {
+final class MockAuthenticationManager: AuthenticationManager {
     private(set) var displayAuthenticationInvoked: Bool = false
 
     override func displayAuthentication(from presenter: UIViewController) {

@@ -21,10 +21,15 @@ extension NSNotification.Name {
     public static let applicationTerminating = Foundation.Notification.Name(rawValue: "ApplicationTerminating")
 }
 
+private extension UserDefaults {
+    @objc dynamic var defaultStoreID: Int {
+        integer(forKey: Key.defaultStoreID.rawValue)
+    }
+}
 
 /// SessionManager provides persistent storage for Session-Y Properties.
 ///
-struct SessionManager {
+final class SessionManager {
 
     /// Standard Session Manager
     ///
@@ -105,16 +110,34 @@ struct SessionManager {
     ///
     var defaultSite: Yosemite.Site?
 
+    /// Observable site ID
+    ///
+    var siteID: Observable<Int64?> {
+        storeIDSubject
+    }
+    private let storeIDSubject = BehaviorSubject<Int64?>(nil)
+
+    private var defaultStoreIDObserver: NSKeyValueObservation?
+
     /// Designated Initializer.
     ///
     init(defaults: UserDefaults, keychainServiceName: String) {
         self.defaults = defaults
         self.keychain = Keychain(service: keychainServiceName).accessibility(.afterFirstUnlock)
+
+        defaultStoreIDObserver = defaults.observe(\.defaultStoreID, options: [.initial, .new], changeHandler: { [weak self] _, change in
+            let storeID = change.newValue.flatMap { Int64($0) }
+            self?.storeIDSubject.send(storeID)
+        })
+    }
+
+    deinit {
+        defaultStoreIDObserver?.invalidate()
     }
 
     /// Nukes all of the known Session's properties.
     ///
-    mutating func reset() {
+    func reset() {
         defaultAccount = nil
         defaultCredentials = nil
         defaultStoreID = nil

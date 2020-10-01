@@ -101,7 +101,7 @@ class AuthenticationManager: Authentication {
     /// Displays the Login Flow using the specified UIViewController as presenter.
     ///
     func displayAuthentication(from presenter: UIViewController) {
-        WordPressAuthenticator.showLogin(from: presenter, animated: false, onLoginButtonTapped: {
+        WordPressAuthenticator.showLogin(from: presenter, animated: true, onLoginButtonTapped: {
             ServiceLocator.analytics.track(.loginPrologueContinueTapped)
         })
     }

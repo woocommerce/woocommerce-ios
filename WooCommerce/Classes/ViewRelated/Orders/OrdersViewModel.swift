@@ -103,11 +103,6 @@ final class OrdersViewModel {
         observeForegroundRemoteNotifications()
     }
 
-    func refreshOrdersPredicate() {
-        resultsController.predicate = createResultsControllerPredicate()
-        performFetch()
-    }
-
     /// Execute the `resultsController` query, logging the error if there's any.
     ///
     private func performFetch() {

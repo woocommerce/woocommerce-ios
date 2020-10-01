@@ -89,11 +89,6 @@ final class OrderListViewModel {
         observeForegroundRemoteNotifications()
     }
 
-    func refreshOrdersPredicate() {
-        let query = createQuery()
-        snapshotsProvider.updateQuery(query)
-    }
-
     /// Starts the snapshotsProvider, logging any errors.
     private func startReceivingSnapshots() {
         do {

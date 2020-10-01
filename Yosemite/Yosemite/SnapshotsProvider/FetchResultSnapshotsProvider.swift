@@ -177,19 +177,6 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
             return nil
         }
     }
-
-    public func updateQuery(_ query: Query) {
-        guard query != self.query else {
-            return
-        }
-        self.query = query
-        fetchedResultsController = createFetchedResultsController(query: query)
-        do {
-            try activateFetchedResultsController()
-        } catch {
-            DDLogError("⛔️ FetchResultSnapshotsProvider: Failed to activate after updating query with error \(error)")
-        }
-    }
 }
 
 // MARK: - FetchedResultsController Activation

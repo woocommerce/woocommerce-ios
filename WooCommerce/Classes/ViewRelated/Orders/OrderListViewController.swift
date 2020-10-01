@@ -298,20 +298,12 @@ extension OrderListViewController {
     func startListeningToNotifications() {
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(defaultAccountWasUpdated), name: .defaultAccountWasUpdated, object: nil)
-        nc.addObserver(self, selector: #selector(defaultSiteWasUpdated), name: .StoresManagerDidUpdateDefaultSite, object: nil)
     }
 
     /// Runs whenever the default Account is updated.
     ///
     @objc func defaultAccountWasUpdated() {
         syncingCoordinator.resetInternalState()
-    }
-
-    /// Default Site Updated Handler
-    ///
-    @objc func defaultSiteWasUpdated() {
-        viewModel.refreshOrdersPredicate()
-        refreshStatusPredicate()
     }
 }
 

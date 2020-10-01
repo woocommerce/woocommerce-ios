@@ -681,8 +681,8 @@ private extension ProductFormViewController {
     }
 
     func displayDeleteProductAlert() {
-        presentProductConfirmationDeleteAlert { [weak self] (confirm) in
-            guard confirm else {
+        presentProductConfirmationDeleteAlert { [weak self] (isConfirmed) in
+            guard isConfirmed else {
                 return
             }
 

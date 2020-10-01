@@ -43,8 +43,7 @@ final class OrderSearchStarterViewController: UIViewController, KeyboardFrameAdj
     }
 
     private func configureTableView() {
-        tableView.register(SettingTitleAndValueTableViewCell.loadNib(),
-                           forCellReuseIdentifier: SettingTitleAndValueTableViewCell.reuseIdentifier)
+        tableView.registerNib(for: SettingTitleAndValueTableViewCell.self)
 
         tableView.backgroundColor = .listBackground
         tableView.delegate = self

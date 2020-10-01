@@ -131,8 +131,8 @@ extension RefundDetailsViewModel {
             TopLeftImageTableViewCell.self
         ]
 
-        for cell in cells {
-            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
+        for cellClass in cells {
+            tableView.registerNib(for: cellClass)
         }
     }
 

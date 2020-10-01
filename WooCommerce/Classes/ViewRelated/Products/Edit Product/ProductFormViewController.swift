@@ -387,13 +387,13 @@ private extension ProductFormViewController {
             case .primaryFields(let rows):
                 rows.forEach { row in
                     row.cellTypes.forEach { cellType in
-                        tableView.register(cellType.loadNib(), forCellReuseIdentifier: cellType.reuseIdentifier)
+                        tableView.registerNib(for: cellType)
                     }
                 }
             case .settings(let rows):
                 rows.forEach { row in
                     row.cellTypes.forEach { cellType in
-                        tableView.register(cellType.loadNib(), forCellReuseIdentifier: cellType.reuseIdentifier)
+                        tableView.registerNib(for: cellType)
                     }
                 }
             }

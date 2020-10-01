@@ -225,12 +225,8 @@ private extension OrdersViewController {
     /// Registers all of the available table view cells and headers
     ///
     func registerTableViewHeadersAndCells() {
-        let cells = [ OrderTableViewCell.self ]
-
-        for cell in cells {
-            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
-            ghostableTableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
-        }
+        tableView.registerNib(for: OrderTableViewCell.self)
+        ghostableTableView.registerNib(for: OrderTableViewCell.self)
 
         let headerType = TwoColumnSectionHeaderView.self
         tableView.register(headerType.loadNib(), forHeaderFooterViewReuseIdentifier: headerType.reuseIdentifier)

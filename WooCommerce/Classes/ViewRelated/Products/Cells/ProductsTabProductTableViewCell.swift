@@ -52,7 +52,7 @@ extension ProductsTabProductTableViewCell: SearchResultCell {
     }
 
     static func register(for tableView: UITableView) {
-        tableView.register(self, forCellReuseIdentifier: reuseIdentifier)
+        tableView.register(self)
     }
 }
 

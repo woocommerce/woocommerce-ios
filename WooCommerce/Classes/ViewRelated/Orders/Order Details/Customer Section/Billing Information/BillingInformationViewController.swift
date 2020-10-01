@@ -76,14 +76,8 @@ private extension BillingInformationViewController {
     /// Registers all of the available TableViewCells
     ///
     func registerTableViewCells() {
-        let cells = [
-            BillingAddressTableViewCell.self,
-            WooBasicTableViewCell.self
-        ]
-
-        for cell in cells {
-            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
-        }
+        tableView.registerNib(for: BillingAddressTableViewCell.self)
+        tableView.registerNib(for: WooBasicTableViewCell.self)
     }
 
     /// Registers all of the available TableViewHeaderFooters

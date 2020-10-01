@@ -96,14 +96,8 @@ private extension NewNoteViewController {
     /// Registers all of the available TableViewCells
     ///
     private func registerTableViewCells() {
-        let cells = [
-            TextViewTableViewCell.self,
-            SwitchTableViewCell.self
-        ]
-
-        for cell in cells {
-            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
-        }
+        tableView.registerNib(for: TextViewTableViewCell.self)
+        tableView.registerNib(for: SwitchTableViewCell.self)
     }
 
     /// Setup: Sections

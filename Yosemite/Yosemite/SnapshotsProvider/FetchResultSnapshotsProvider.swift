@@ -71,7 +71,7 @@ public typealias FetchResultSnapshot = NSDiffableDataSourceSnapshot<String, Fetc
 public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshotsProviderMutableType> {
 
     /// Defines the conditions for fetching the results.
-    public struct Query: Equatable {
+    public struct Query {
         /// Defines how to sort the results.
         ///
         /// This is required because `NSFetchedResultsController` requires it.
@@ -108,7 +108,7 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     /// The conditions to use when fetching the results.
     ///
     /// In the future, we can allow this to be mutable if necessary.
-    private var query: Query
+    private let query: Query
 
     /// The NotificationCenter to use for observing notifications.
     private let notificationCenter: NotificationCenter

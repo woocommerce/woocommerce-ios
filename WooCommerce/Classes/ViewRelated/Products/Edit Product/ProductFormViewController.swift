@@ -686,7 +686,7 @@ private extension ProductFormViewController {
                 return
             }
 
-            let title = NSLocalizedString("Trashing your product...", comment: "Title of the in-progress UI while deleting the Product remotely")
+            let title = NSLocalizedString("Placing your product in the trash...", comment: "Title of the in-progress UI while deleting the Product remotely")
             let message = NSLocalizedString("Please wait while we update your store details",
                                             comment: "Message of the in-progress UI while deleting the Product remotely")
             self?.displayInProgressView(title: title, message: message)

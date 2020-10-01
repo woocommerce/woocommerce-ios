@@ -288,9 +288,8 @@ private extension CoreDataIterativeMigrator {
 
     func models(for modelVersions: [ManagedObjectModelsInventory.ModelVersion]) throws -> [NSManagedObjectModel] {
         let models = try modelVersions.map { version -> NSManagedObjectModel in
-            guard let url = urlForModel(name: version.name, in: nil),
-                let model = NSManagedObjectModel(contentsOf: url) else {
-                    let description = "No model found for \(version.name)"
+            guard let model = self.modelsInventory.model(for: version) else {
+                let description = "No model found for \(version.name)"
                 throw NSError(domain: "IterativeMigrator", code: 110, userInfo: [NSLocalizedDescriptionKey: description])
             }
 
@@ -298,24 +297,5 @@ private extension CoreDataIterativeMigrator {
         }
 
         return models
-    }
-
-    func urlForModel(name: String, in directory: String?) -> URL? {
-        let bundle = Bundle(for: CoreDataManager.self)
-        var url = bundle.url(forResource: name, withExtension: "mom", subdirectory: directory)
-
-        if url != nil {
-            return url
-        }
-
-        let momdPaths = bundle.paths(forResourcesOfType: "momd", inDirectory: directory)
-        momdPaths.forEach { (path) in
-            if url != nil {
-                return
-            }
-            url = bundle.url(forResource: name, withExtension: "mom", subdirectory: URL(fileURLWithPath: path).lastPathComponent)
-        }
-
-        return url
     }
 }

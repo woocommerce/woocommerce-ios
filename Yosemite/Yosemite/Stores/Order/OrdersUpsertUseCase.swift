@@ -45,7 +45,8 @@ struct OrdersUpsertUseCase {
     }
 
     private func upsert(_ readOnlyOrder: Networking.Order, insertingSearchResults: Bool = false) -> Storage.Order {
-        let storageOrder = storage.loadOrder(orderID: readOnlyOrder.orderID) ?? storage.insertNewObject(ofType: Storage.Order.self)
+        let storageOrder = storage.loadOrder(siteID: readOnlyOrder.siteID, orderID: readOnlyOrder.orderID)
+            ?? storage.insertNewObject(ofType: Storage.Order.self)
         storageOrder.update(with: readOnlyOrder)
 
         // Are we caching Search Results? Did this order exist before?
@@ -120,7 +121,7 @@ struct OrdersUpsertUseCase {
     private func handleOrderCoupons(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
         // Upsert the coupons from the read-only order
         for readOnlyCoupon in readOnlyOrder.coupons {
-            if let existingStorageCoupon = storage.loadOrderCoupon(couponID: readOnlyCoupon.couponID) {
+            if let existingStorageCoupon = storage.loadOrderCoupon(siteID: readOnlyOrder.siteID, couponID: readOnlyCoupon.couponID) {
                 existingStorageCoupon.update(with: readOnlyCoupon)
             } else {
                 let newStorageCoupon = storage.insertNewObject(ofType: Storage.OrderCoupon.self)
@@ -143,7 +144,7 @@ struct OrdersUpsertUseCase {
     private func handleOrderRefundsCondensed(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
         // Upsert the refunds from the read-only order
         for readOnlyRefund in readOnlyOrder.refunds {
-            if let existingStorageRefund = storage.loadOrderRefundCondensed(refundID: readOnlyRefund.refundID) {
+            if let existingStorageRefund = storage.loadOrderRefundCondensed(siteID: readOnlyOrder.siteID, refundID: readOnlyRefund.refundID) {
                 existingStorageRefund.update(with: readOnlyRefund)
             } else {
                 let newStorageRefund = storage.insertNewObject(ofType: Storage.OrderRefundCondensed.self)
@@ -166,7 +167,7 @@ struct OrdersUpsertUseCase {
     private func handleOrderShippingLines(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
         // Upsert the shipping lines from the read-only order
         for readOnlyShippingLine in readOnlyOrder.shippingLines {
-            if let existingStorageShippingLine = storage.loadShippingLine(shippingID: readOnlyShippingLine.shippingID) {
+            if let existingStorageShippingLine = storage.loadShippingLine(siteID: readOnlyOrder.siteID, shippingID: readOnlyShippingLine.shippingID) {
                 existingStorageShippingLine.update(with: readOnlyShippingLine)
             } else {
                 let newStorageShippingLine = storage.insertNewObject(ofType: Storage.ShippingLine.self)

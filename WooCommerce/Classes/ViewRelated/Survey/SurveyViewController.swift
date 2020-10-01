@@ -1,5 +1,6 @@
 import UIKit
 import WebKit
+import class Networking.UserAgent
 
 /// Outputs of the the SurveyViewController
 ///
@@ -51,6 +52,7 @@ final class SurveyViewController: UIViewController, SurveyViewControllerOutputs 
         title = survey.title
 
         let request = URLRequest(url: survey.url)
+        webView.customUserAgent = UserAgent.defaultUserAgent
         webView.load(request)
         webView.navigationDelegate = self
     }

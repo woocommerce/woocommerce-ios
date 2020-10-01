@@ -1,6 +1,7 @@
 import UIKit
 import CoreData
 import Storage
+import class Networking.UserAgent
 
 import CocoaLumberjack
 import KeychainAccess

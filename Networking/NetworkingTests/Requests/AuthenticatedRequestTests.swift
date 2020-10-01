@@ -36,6 +36,6 @@ class AuthenticatedRequestTests: XCTestCase {
         let output = try! authenticated.asURLRequest()
 
         let generated = output.allHTTPHeaderFields?["User-Agent"]
-        XCTAssertEqual(generated, Settings.userAgent)
+        XCTAssertEqual(generated, UserAgent.defaultUserAgent)
     }
 }

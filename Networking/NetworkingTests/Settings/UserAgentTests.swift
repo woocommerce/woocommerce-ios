@@ -1,5 +1,5 @@
 import XCTest
-@testable import WooCommerce
+@testable import Networking
 
 /// UserAgent Unit Tests
 ///

@@ -254,7 +254,8 @@ private extension TopPerformerDataViewController {
     ///
     func presentProductDetails(for productID: Int64, siteID: Int64) {
         let loaderViewController = ProductLoaderViewController(productID: productID,
-                                                               siteID: siteID)
+                                                               siteID: siteID,
+                                                               forceReadOnly: false)
         let navController = WooNavigationController(rootViewController: loaderViewController)
         present(navController, animated: true, completion: nil)
     }

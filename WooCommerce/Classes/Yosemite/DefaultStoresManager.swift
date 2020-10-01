@@ -335,7 +335,7 @@ private extension DefaultStoresManager {
 
         restoreSessionSite(with: siteID)
         synchronizeSettings(with: siteID) {
-            SelectedSiteSettings.shared.refresh()
+            ServiceLocator.selectedSiteSettings.refresh()
             ServiceLocator.shippingSettingsService.update(siteID: siteID)
         }
         retrieveOrderStatus(with: siteID)

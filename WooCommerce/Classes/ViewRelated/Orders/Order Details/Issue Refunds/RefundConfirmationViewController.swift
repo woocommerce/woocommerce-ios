@@ -24,8 +24,9 @@ final class RefundConfirmationViewController: UIViewController {
 private extension RefundConfirmationViewController {
     func configureTableView() {
         // Register cells
-        tableView.register(SettingTitleAndValueTableViewCell.loadNib(),
-                           forCellReuseIdentifier: SettingTitleAndValueTableViewCell.reuseIdentifier)
+        [SettingTitleAndValueTableViewCell.self, TitleAndEditableValueTableViewCell.self].forEach {
+            tableView.register($0.loadNib(), forCellReuseIdentifier: $0.reuseIdentifier)
+        }
 
         // Delegation
         tableView.dataSource = self
@@ -65,6 +66,10 @@ extension RefundConfirmationViewController: UITableViewDataSource {
             } else {
                 cell.applyDefaultLabelsStyle()
             }
+            return cell
+        case let row as RefundConfirmationViewModel.TitleAndEditableValueRow:
+            let cell = tableView.dequeueReusableCell(TitleAndEditableValueTableViewCell.self, for: indexPath)
+            cell.update(title: row.title, placeholder: row.placeholder)
             return cell
         default:
             return UITableViewCell()

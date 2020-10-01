@@ -13,6 +13,11 @@ final class TitleAndEditableValueTableViewCell: UITableViewCell {
         styleValue()
         configureStackView()
     }
+
+    func update(title: String?, placeholder: String?) {
+        self.title.text = title
+        self.value.placeholder = placeholder
+    }
 }
 
 

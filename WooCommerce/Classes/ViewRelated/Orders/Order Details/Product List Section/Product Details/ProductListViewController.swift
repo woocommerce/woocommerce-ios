@@ -73,10 +73,7 @@ extension ProductListViewController: UITableViewDataSource {
         let itemViewModel = ProductDetailsCellViewModel(item: item,
                                                         currency: viewModel.order.currency,
                                                         product: product)
-        let cellID = PickListTableViewCell.reuseIdentifier
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as? PickListTableViewCell else {
-            fatalError()
-        }
+        let cell = tableView.dequeueReusableCell(PickListTableViewCell.self, for: indexPath)
         cell.selectionStyle = .default
         cell.configure(item: itemViewModel, imageService: imageService)
 

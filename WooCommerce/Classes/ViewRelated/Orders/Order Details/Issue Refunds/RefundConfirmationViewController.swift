@@ -7,7 +7,7 @@ import UIKit
 ///
 final class RefundConfirmationViewController: UIViewController {
 
-    private lazy var tableView = UITableView(frame: .zero, style: .plain)
+    private lazy var tableView = UITableView(frame: .zero, style: .grouped)
     private let viewModel = RefundConfirmationViewModel()
 
     override func viewDidLoad() {
@@ -40,8 +40,12 @@ private extension RefundConfirmationViewController {
 // MARK: - UITableView Boom
 
 extension RefundConfirmationViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         viewModel.sections.count
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        viewModel.sections[safe: section]?.rows.count ?? 0
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -57,5 +61,9 @@ extension RefundConfirmationViewController: UITableViewDataSource {
         default:
             return UITableViewCell()
         }
+    }
+
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        viewModel.sections[safe: section]?.title
     }
 }

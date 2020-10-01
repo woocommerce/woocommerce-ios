@@ -6,6 +6,7 @@
 #import "WordPressComOAuthClientFacade.h"
 #import "WordPressXMLRPCAPIFacade.h"
 #import "WPAuthenticator-Swift.h"
+#import "WordPressAuthenticatorTests-Swift.h"
 
 
 SpecBegin(LoginFacade)
@@ -16,6 +17,10 @@ __block id mockXMLRPCAPIFacade;
 __block id mockLoginFacade;
 __block id mockLoginFacadeDelegate;
 __block LoginFields *loginFields;
+
+beforeAll(^{
+    [WordpressAuthenticatorProvider initializeWordPressAuthenticator];
+});
 
 beforeEach(^{
     mockOAuthFacade = [OCMockObject niceMockForProtocol:@protocol(WordPressComOAuthClientFacade)];

@@ -234,33 +234,8 @@ public class AuthenticatorAnalyticsTracker {
     /// Shared Instance.
     ///
     public static var shared: AuthenticatorAnalyticsTracker = {
-        return AuthenticatorAnalyticsTracker(configuration: defaultConfiguration())
+        return AuthenticatorAnalyticsTracker()
     }()
-    
-    struct Configuration {
-        let appleEnabled: Bool
-        let googleEnabled: Bool
-        let iCloudKeychainEnabled: Bool
-        let prologueEnabled: Bool
-        let siteAddressEnabled: Bool
-        let wpComEnabled: Bool
-    }
-    
-    private class func defaultConfiguration() -> Configuration{
-        // When unit testing, WordPressAuthenticator is not always initialized.
-        // The following code ensures we have configuration defaults even if that's the case.
-        guard WordPressAuthenticator.isInitialized() else {
-            return Configuration(appleEnabled: false, googleEnabled: false, iCloudKeychainEnabled: false, prologueEnabled: false, siteAddressEnabled: false, wpComEnabled: false)
-        }
-        
-        return Configuration(
-            appleEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedAuth,
-            googleEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedAuth,
-            iCloudKeychainEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedAuth,
-            prologueEnabled: true,
-            siteAddressEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedAuth,
-            wpComEnabled: WordPressAuthenticator.shared.configuration.enableUnifiedAuth)
-    }
     
     /// State for the analytics tracker.
     ///
@@ -276,10 +251,6 @@ public class AuthenticatorAnalyticsTracker {
         }
     }
     
-    /// The tracking configuration.
-    ///
-    private let configuration: Configuration
-    
     /// The state of this tracker.
     ///
     public let state = State()
@@ -287,11 +258,16 @@ public class AuthenticatorAnalyticsTracker {
     /// The backing analytics tracking method.  Can be overridden for testing purposes.
     ///
     let track: TrackerMethod
+    
+    /// Whether tracking is enabled or not.  This is just a convenience configuration to enable this tracker to be turned on and off
+    /// using a feature flag.  It should go away once we remove the legacy tracking.
+    ///
+    let enabled: Bool
 
     // MARK: - Initializers
 
-    init(configuration: Configuration, track: @escaping TrackerMethod = WPAnalytics.track) {
-        self.configuration = configuration
+    init(enabled: Bool = WordPressAuthenticator.shared.configuration.enableUnifiedAuth, track: @escaping TrackerMethod = WPAnalytics.track) {
+        self.enabled = enabled
         self.track = track
     }
     
@@ -310,14 +286,8 @@ public class AuthenticatorAnalyticsTracker {
     ///
     /// - Returns: `true` if we can track using the state machine.
     ///
-    public func canTrackInCurrentFlow() -> Bool {
-        return isInSiteAuthenticationFlowAndCanTrack()
-            || isInAppleFlowAndCanTrack()
-            || isInGoogleFlowAndCanTrack()
-            || isInMagicLinkFlowAndCanTrack()
-            || isInWPComFlowAndCanTrack()
-            || isInPrologueFlowAndCanTrack()
-            || isInKeychainFlowAndCanTrack()
+    public func canTrack() -> Bool {
+        return enabled
     }
     
     /// This is a convenience method, that's useful for cases where we simply want to check if the legacy tracking should be
@@ -326,37 +296,7 @@ public class AuthenticatorAnalyticsTracker {
     ///  - Returns: `true` if we must use legacy tracking, `false` otherwise.
     ///
     public func shouldUseLegacyTracker() -> Bool {
-        return !canTrackInCurrentFlow()
-    }
-
-    // MARK: - Legacy vs Unified tracking: Support Methods
-    
-    private func isInSiteAuthenticationFlowAndCanTrack() -> Bool {
-        return configuration.siteAddressEnabled && state.lastFlow == .loginWithSiteAddress
-    }
-    
-    private func isInAppleFlowAndCanTrack() -> Bool {
-        return configuration.appleEnabled && [Flow.loginWithApple, .signupWithApple].contains(state.lastFlow)
-    }
-    
-    private func isInGoogleFlowAndCanTrack() -> Bool {
-        return configuration.googleEnabled && [Flow.loginWithGoogle, .signupWithGoogle].contains(state.lastFlow)
-    }
-    
-    private func isInMagicLinkFlowAndCanTrack() -> Bool {
-        return configuration.wpComEnabled && state.lastFlow == .loginWithMagicLink
-    }
-    
-    private func isInWPComFlowAndCanTrack() -> Bool {
-        return configuration.wpComEnabled && [Flow.wpCom, .signup, .loginWithPassword].contains(state.lastFlow)
-    }
-    
-    private func isInPrologueFlowAndCanTrack() -> Bool {
-        return configuration.prologueEnabled && state.lastFlow == .prologue
-    }
-    
-    private func isInKeychainFlowAndCanTrack() -> Bool {
-        return configuration.iCloudKeychainEnabled && state.lastFlow == .loginWithiCloudKeychain
+        return !canTrack()
     }
     
     // MARK: - Tracking
@@ -364,7 +304,7 @@ public class AuthenticatorAnalyticsTracker {
     /// Track a step within a flow.
     ///
     public func track(step: Step) {
-        guard canTrackInCurrentFlow() else {
+        guard canTrack() else {
             return
         }
         
@@ -374,7 +314,7 @@ public class AuthenticatorAnalyticsTracker {
     /// Track a click interaction.
     ///
     public func track(click: ClickTarget) {
-        guard canTrackInCurrentFlow() else {
+        guard canTrack() else {
             return
         }
         
@@ -384,7 +324,7 @@ public class AuthenticatorAnalyticsTracker {
     /// Track a failure.
     ///
     public func track(failure: String) {
-        guard canTrackInCurrentFlow() else {
+        guard canTrack() else {
             return
         }
         
@@ -397,7 +337,7 @@ public class AuthenticatorAnalyticsTracker {
     /// for the flow.
     ///
     public func track(step: Step, ifTrackingNotEnabled legacyTracking: () -> ()) {
-        guard canTrackInCurrentFlow() else {
+        guard canTrack() else {
             legacyTracking()
             return
         }
@@ -409,7 +349,7 @@ public class AuthenticatorAnalyticsTracker {
     /// for the flow.
     ///
     public func track(click: ClickTarget, ifTrackingNotEnabled legacyTracking: () -> ()) {
-        guard canTrackInCurrentFlow() else {
+        guard canTrack() else {
             legacyTracking()
             return
         }
@@ -421,7 +361,7 @@ public class AuthenticatorAnalyticsTracker {
     /// for the flow.
     ///
     public func track(failure: String, ifTrackingNotEnabled legacyTracking: () -> ()) {
-        guard canTrackInCurrentFlow() else {
+        guard canTrack() else {
             legacyTracking()
             return
         }

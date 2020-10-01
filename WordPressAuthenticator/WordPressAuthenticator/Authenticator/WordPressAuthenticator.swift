@@ -90,10 +90,6 @@ import AuthenticationServices
                                   unifiedStyle: WordPressAuthenticatorUnifiedStyle?,
                                   displayImages: WordPressAuthenticatorDisplayImages = .defaultImages,
                                   displayStrings: WordPressAuthenticatorDisplayStrings = .defaultStrings) {
-        guard privateInstance == nil else {
-            fatalError("WordPressAuthenticator is already initialized")
-        }
-
         privateInstance = WordPressAuthenticator(configuration: configuration,
                                                  style: style,
                                                  unifiedStyle: unifiedStyle,
@@ -283,6 +279,9 @@ import AuthenticationServices
             return NUXNavigationController(rootViewController: controller)
         }
         
+        AuthenticatorAnalyticsTracker.shared.set(source: .reauthentication)
+        AuthenticatorAnalyticsTracker.shared.set(flow: .loginWithPassword)
+        
         guard let controller = PasswordViewController.instantiate(from: .password) else {
             DDLogError("WordPressAuthenticator: Failed to instantiate PasswordViewController")
             return UIViewController()
@@ -290,6 +289,7 @@ import AuthenticationServices
         
         controller.loginFields = loginFields
         controller.dismissBlock = onDismissed
+        controller.trackAsPasswordChallenge = false
         
         return NUXNavigationController(rootViewController: controller)
     }

@@ -79,7 +79,7 @@ extension RefundConfirmationViewController: UITableViewDataSource {
             return cell
         case let row as RefundConfirmationViewModel.TitleAndBodyRow:
             let cell = tableView.dequeueReusableCell(HeadlineLabelTableViewCell.self, for: indexPath)
-            cell.update(headline: row.title, body: row.body)
+            cell.update(style: .regular, headline: row.title, body: row.body)
             cell.selectionStyle = .none
             return cell
         default:

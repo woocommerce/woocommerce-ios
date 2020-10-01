@@ -189,7 +189,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
                                                  stores: mockStoresManager,
                                                  forceReadOnly: false) { viewController in
                                                     // Assert
-                                                    XCTAssertTrue(viewController is ProductDetailsViewController)
+                                                    XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
                                                     expectation.fulfill()
             }
         }
@@ -207,7 +207,7 @@ final class ProductDetailsFactoryTests: XCTestCase {
                                                  stores: mockStoresManager,
                                                  forceReadOnly: true) { viewController in
                                                     // Assert
-                                                    XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
+                                                    XCTAssertTrue(viewController is ProductDetailsViewController)
                                                     expectation.fulfill()
             }
         }

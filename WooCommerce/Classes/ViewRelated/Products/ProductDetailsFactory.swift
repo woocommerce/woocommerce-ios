@@ -8,11 +8,13 @@ struct ProductDetailsFactory {
     ///   - presentationStyle: how the product details are presented.
     ///   - currencySettings: site currency settings.
     ///   - stores: where the Products feature switch value can be read.
+    ///   - forceReadOnly: force the product detail to be presented in read only mode
     ///   - onCompletion: called when the view controller is created and ready for display.
     static func productDetails(product: Product,
                                presentationStyle: ProductFormPresentationStyle,
                                currencySettings: CurrencySettings = ServiceLocator.currencySettings,
                                stores: StoresManager = ServiceLocator.stores,
+                               forceReadOnly: Bool,
                                onCompletion: @escaping (UIViewController) -> Void) {
         let action = AppSettingsAction.loadProductsFeatureSwitch { isFeatureSwitchOn in
             let isEditProductsEnabled: Bool
@@ -26,8 +28,8 @@ struct ProductDetailsFactory {
             let vc = productDetails(product: product,
                                     presentationStyle: presentationStyle,
                                     currencySettings: currencySettings,
-                                    isEditProductsEnabled: isEditProductsEnabled,
-                                    isEditProductsRelease3Enabled: isEditProductsEnabled)
+                                    isEditProductsEnabled: forceReadOnly ? false : isEditProductsEnabled,
+                                    isEditProductsRelease3Enabled: isFeatureSwitchOn)
             onCompletion(vc)
         }
         stores.dispatch(action)

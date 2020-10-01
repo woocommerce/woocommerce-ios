@@ -14,7 +14,8 @@ final class ProductDetailsFactoryTests: XCTestCase {
         // Action
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .navigationStack,
-                                             stores: mockStoresManager) { viewController in
+                                             stores: mockStoresManager,
+                                             forceReadOnly: false) { viewController in
                                                 // Assert
                                                 XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
                                                 expectation.fulfill()
@@ -32,7 +33,8 @@ final class ProductDetailsFactoryTests: XCTestCase {
         // Action
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .navigationStack,
-                                             stores: mockStoresManager) { viewController in
+                                             stores: mockStoresManager,
+                                             forceReadOnly: false) { viewController in
                                                 // Assert
                                                 XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
                                                 expectation.fulfill()
@@ -52,7 +54,8 @@ final class ProductDetailsFactoryTests: XCTestCase {
         // Action
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .navigationStack,
-                                             stores: mockStoresManager) { viewController in
+                                             stores: mockStoresManager,
+                                             forceReadOnly: false) { viewController in
                                                 // Assert
                                                 XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
                                                 expectation.fulfill()
@@ -69,7 +72,8 @@ final class ProductDetailsFactoryTests: XCTestCase {
         // Action
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .navigationStack,
-                                             stores: mockStoresManager) { viewController in
+                                             stores: mockStoresManager,
+                                             forceReadOnly: false) { viewController in
                                                 // Assert
                                                 XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
                                                 expectation.fulfill()
@@ -88,7 +92,8 @@ final class ProductDetailsFactoryTests: XCTestCase {
         // Action
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .navigationStack,
-                                             stores: mockStoresManager) { viewController in
+                                             stores: mockStoresManager,
+                                             forceReadOnly: false) { viewController in
                                                 // Assert
                                                 XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
                                                 expectation.fulfill()
@@ -105,7 +110,8 @@ final class ProductDetailsFactoryTests: XCTestCase {
         // Action
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .navigationStack,
-                                             stores: mockStoresManager) { viewController in
+                                             stores: mockStoresManager,
+                                             forceReadOnly: false) { viewController in
                                                 // Assert
                                                 XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
                                                 expectation.fulfill()
@@ -124,7 +130,8 @@ final class ProductDetailsFactoryTests: XCTestCase {
         // Action
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .navigationStack,
-                                             stores: mockStoresManager) { viewController in
+                                             stores: mockStoresManager,
+                                             forceReadOnly: false) { viewController in
                                                 // Assert
                                                 XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
                                                 expectation.fulfill()
@@ -141,7 +148,8 @@ final class ProductDetailsFactoryTests: XCTestCase {
         // Action
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .navigationStack,
-                                             stores: mockStoresManager) { viewController in
+                                             stores: mockStoresManager,
+                                             forceReadOnly: false) { viewController in
                                                 // Assert
                                                 XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
                                                 expectation.fulfill()
@@ -160,7 +168,8 @@ final class ProductDetailsFactoryTests: XCTestCase {
         waitForExpectation { expectation in
             ProductDetailsFactory.productDetails(product: product,
                                                  presentationStyle: .navigationStack,
-                                                 stores: mockStoresManager) { viewController in
+                                                 stores: mockStoresManager,
+                                                 forceReadOnly: false) { viewController in
                                                     // Assert
                                                     XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
                                                     expectation.fulfill()
@@ -177,7 +186,26 @@ final class ProductDetailsFactoryTests: XCTestCase {
         waitForExpectation { expectation in
             ProductDetailsFactory.productDetails(product: product,
                                                  presentationStyle: .navigationStack,
-                                                 stores: mockStoresManager) { viewController in
+                                                 stores: mockStoresManager,
+                                                 forceReadOnly: false) { viewController in
+                                                    // Assert
+                                                    XCTAssertTrue(viewController is ProductDetailsViewController)
+                                                    expectation.fulfill()
+            }
+        }
+    }
+
+    func test_factory_creates_readonly_product_details_for_product_when_forceReadOnly_is_on() {
+        // Arrange
+        let mockStoresManager = MockProductsAppSettingsStoresManager(isProductsFeatureSwitchEnabled: false, sessionManager: SessionManager.testingInstance)
+        let product = MockProduct().product(productType: .simple)
+
+        // Action
+        waitForExpectation { expectation in
+            ProductDetailsFactory.productDetails(product: product,
+                                                 presentationStyle: .navigationStack,
+                                                 stores: mockStoresManager,
+                                                 forceReadOnly: true) { viewController in
                                                     // Assert
                                                     XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
                                                     expectation.fulfill()

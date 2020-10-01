@@ -26,7 +26,7 @@ final class DashboardViewController: UIViewController {
     init() {
         super.init(nibName: nil, bundle: nil)
         startListeningToNotifications()
-        tabBarItem.image = .statsAltImage
+        configureTabBarItem()
     }
 
     required init?(coder: NSCoder) {
@@ -67,23 +67,18 @@ private extension DashboardViewController {
         configureNavigationItem()
     }
 
-    private func configureTitle() {
-        let myStore = NSLocalizedString(
-            "My store",
-            comment: "Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard"
-        )
-        title = ServiceLocator.stores.sessionManager.defaultSite?.name ?? myStore
-        tabBarItem.title = myStore
+    func configureTabBarItem() {
+        tabBarItem.image = .statsAltImage
+        tabBarItem.title = Localization.title
         tabBarItem.accessibilityIdentifier = "tab-bar-my-store-item"
     }
 
-    private func resetTitle() {
-        let myStore = NSLocalizedString(
-            "My store",
-            comment: "Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard"
-        )
-        title = myStore
-        tabBarItem.title = myStore
+    func configureTitle() {
+        navigationItem.title = ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.title
+    }
+
+    func resetTitle() {
+        navigationItem.title = Localization.title
     }
 
     private func configureNavigationItem() {
@@ -237,5 +232,14 @@ private extension DashboardViewController {
         dashboardUI?.reloadData(completion: { [weak self] in
             self?.configureTitle()
         })
+    }
+}
+
+private extension DashboardViewController {
+    enum Localization {
+        static let title = NSLocalizedString(
+            "My store",
+            comment: "Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard"
+        )
     }
 }

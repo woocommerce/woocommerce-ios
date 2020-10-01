@@ -40,6 +40,7 @@ extension SettingTitleAndValueTableViewCell {
         valueLabel.textColor = .textTertiary
     }
 
+    /// Sets the labels to headline (bold) style.
     func applyHeadlineLabelsStyle() {
         titleLabel.applyHeadlineStyle()
         valueLabel.applyHeadlineStyle()

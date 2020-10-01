@@ -25,6 +25,7 @@ final class HeadlineLabelTableViewCell: UITableViewCell {
         apply(style: .emphasized)
     }
 
+    /// Update the UI style and label values.
     func update(style: Style = .emphasized, headline: String?, body: String?) {
         headlineLabel?.text = headline
         bodyLabel?.text = body

@@ -72,8 +72,9 @@ private extension RefundConfirmationViewModel {
     enum Localization {
         static let previouslyRefunded = NSLocalizedString("Previously Refunded",
                                                           comment: "A label representing the amount that was previously refunded for the order.")
-        static let refundAmount = NSLocalizedString("Refund Amount",
-                                                    comment: "A label representing the amount that will be refunded if the user confirms to proceed with the refund.")
+        static let refundAmount =
+            NSLocalizedString("Refund Amount",
+                              comment: "A label representing the amount that will be refunded if the user confirms to proceed with the refund.")
         static let refundVia = NSLocalizedString("Refund Via",
                                                  comment: "The title of the section containing information about how the refund will be processed.")
         static let reasonForRefund =

@@ -2,7 +2,9 @@ import UIKit
 
 final class TitleAndEditableValueTableViewCell: UITableViewCell {
     @IBOutlet private weak var stackView: UIStackView!
+    // TODO Make this private and use `update()` instead.
     @IBOutlet weak var title: UILabel!
+    // TODO Make this private and use `update()` instead.
     @IBOutlet weak var value: UITextField!
 
     override func awakeFromNib() {
@@ -14,6 +16,7 @@ final class TitleAndEditableValueTableViewCell: UITableViewCell {
         configureStackView()
     }
 
+    /// Updates the values for the labels.
     func update(title: String?, placeholder: String?) {
         self.title.text = title
         self.value.placeholder = placeholder

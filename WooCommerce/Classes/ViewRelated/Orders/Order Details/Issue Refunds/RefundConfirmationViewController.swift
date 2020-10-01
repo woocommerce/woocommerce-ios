@@ -8,6 +8,7 @@ import UIKit
 final class RefundConfirmationViewController: UIViewController {
 
     private lazy var tableView = UITableView(frame: .zero, style: .grouped)
+
     private let viewModel = RefundConfirmationViewModel()
 
     override func viewDidLoad() {

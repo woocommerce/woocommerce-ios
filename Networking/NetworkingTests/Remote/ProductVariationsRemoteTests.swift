@@ -124,7 +124,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
     func test_load_single_ProductVariation_properly_returns_parsed_ProductVariation() throws {
         // Given
         let remote = ProductVariationsRemote(network: network)
-        let sampleProductVariationID: Int64 = 2783
+        let sampleProductVariationID: Int64 = 1275
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations/\(sampleProductVariationID)", filename: "product-variation")
 
         // When

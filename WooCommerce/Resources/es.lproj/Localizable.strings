@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-09-17 09:54:09+0000 */
+/* Translation-Revision-Date: 2020-09-30 11:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -342,7 +342,7 @@
 "Can Not Request Link" = "No se puede solicitar el enlace";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
 "Cancel" = "Cancelar";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -486,6 +486,12 @@
 
 /* Error message when tag loading failed */
 "Couldn't load tags." = "No se han podido cargar las etiquetas.";
+
+/* The title for a menu that helps debug crashes in production builds */
+"Crash Debug Menu" = "Menú de depuración de fallos";
+
+/* The title for a button that causes the app to deliberately crash for debugging purposes */
+"Crash Immediately" = "Fallo inmediato";
 
 /* The button title text for creating a new account. */
 "Create Account" = "Crear una cuenta";
@@ -1173,7 +1179,7 @@
 "No products yet" = "Aún no hay ningún producto";
 
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier' */
-"No results found for (term)\nAdd a custom carrier" = "No results found for (term)\nAdd a custom carrier";
+"No results found for (term)\nAdd a custom carrier" = "No se han encontrado resultados para (term)\nAñadir una empresa de transporte personalizada";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "Sin ingresos durante este periodo";
@@ -1680,6 +1686,9 @@
 
 /* Page title for the select a different store screen */
 "Select Store" = "Elegir tienda";
+
+/* Message title of bottom sheet for selecting a product type to create a product */
+"Select a product type" = "Elige un tipo de producto";
 
 /* Add the shipping carrier. Placeholder of cell presenting carrier name */
 "Select carrier" = "Elige una empresa de transporte";
@@ -2333,6 +2342,9 @@
 
 /* Undo Action */
 "Undo" = "Deshacer";
+
+/* The message of the alert when there is an unexpected error updating the product */
+"Unexpected error" = "Error inesperado";
 
 /* Unknown Application State
    Unknown product name, displayed in a review - Unknown Tag Name */

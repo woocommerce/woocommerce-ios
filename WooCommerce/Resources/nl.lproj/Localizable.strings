@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-09-10 11:32:06+0000 */
+/* Translation-Revision-Date: 2020-09-24 14:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -7,7 +7,7 @@
 "#%1$@ %2$@ %3$@" = "#%1$@ %2$@ %3$@";
 
 /* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
-"#%@ %@" = "#%@ %@";
+"#%@ %@" = "#%1$@ %2$@";
 
 /* In Order Details, the pattern to show the billed person's full name. For example, “John Doe”. The %1$@ is the first name. The %2$@ is the last name. */
 "%1$@ %2$@" = "%1$@ %2$@";
@@ -150,7 +150,7 @@
 "Add a note" = "Een opmerking toevoegen";
 
 /* The action to add a product */
-"Add a product" = "Add a product";
+"Add a product" = "Een product toevoegen";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Voeg een productafbeelding toe";
@@ -327,7 +327,7 @@
 "Buy Product" = "Product kopen";
 
 /* Legal disclaimer for logging in. The underscores _..._ denote underline. */
-"By continuing, you agree to our _Terms of Service_." = "By continuing, you agree to our _Terms of Service_.";
+"By continuing, you agree to our _Terms of Service_." = "Door verder te gaan, ga je akkoord met onze _Servicevoorwaarden_.";
 
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "Door aan te melden, ga je akkoord met onze _algemene voorwaarden_.";
@@ -342,7 +342,7 @@
 "Can Not Request Link" = "Kan link niet aanvragen";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
 "Cancel" = "Annuleren";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -486,6 +486,12 @@
 
 /* Error message when tag loading failed */
 "Couldn't load tags." = "Kon tags niet laden.";
+
+/* The title for a menu that helps debug crashes in production builds */
+"Crash Debug Menu" = "Crash Debug Menu";
+
+/* The title for a button that causes the app to deliberately crash for debugging purposes */
+"Crash Immediately" = "Crash Immediately";
 
 /* The button title text for creating a new account. */
 "Create Account" = "Account aanmaken";
@@ -691,14 +697,14 @@
 "Enter your account information for %@." = "Voer je accountgegevens in voor %@.";
 
 /* Instruction text on the initial email address entry screen. */
-"Enter your email address to log in or create a WordPress.com account." = "Enter your email address to log in or create a WordPress.com account.";
+"Enter your email address to log in or create a WordPress.com account." = "Voer je e-mailadres in om in te loggen of maak een WordPress.com-account aan.";
 
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "Voer je wachtwoord in.";
 
 /* Button title. Takes the user to the login by site address flow. */
-"Enter your site address" = "Enter your site address";
+"Enter your site address" = "Voer het adres van je site in";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -763,10 +769,10 @@
 "Gain insights into how products are performing on your store" = "Krijg inzicht in hoe goed producten op je site presteren";
 
 /* View title for initial auth views. */
-"Get Started" = "Get Started";
+"Get Started" = "Aan de slag";
 
 /* The button title for a secondary call-to-action button. When the user wants to try sending a magic link instead of entering a password. */
-"Get a login link by email" = "Get a login link by email";
+"Get a login link by email" = "Ontvang een inloglink via e-mail";
 
 /* Subtitle for Help Center */
 "Get answers to questions you have" = "Krijg antwoord op de vragen die je hebt";
@@ -798,7 +804,7 @@
 
 /* In Order Details, the name of the billed person when there are no name and last name.
    In Order List, the name of the billed person when there are no name and last name. */
-"Guest" = "Guest";
+"Guest" = "Gast";
 
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "HOE KUNNEN WE HELPEN?";
@@ -879,7 +885,7 @@
 "If you already have a store, you’ll need to install the free Jetpack plugin and connect it to your WordPress.com account." = "Als je al een winkel hebt, moet je de gratis Jetpack-plugin installeren en deze koppelen aan je WordPress.com-account.";
 
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
-"If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_.";
+"If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Als je doorgaat met Google of Apple en nog geen WordPress.com-account hebt, maak je een account aan en ga je akkoord met onze _Servicevoorwaarden_.";
 
 /* Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
@@ -925,7 +931,7 @@
 "Invalid URL, please check if you wrote a valid site address." = "Ongeldige URL. Controleer of je een geldig site-adres hebt ingevoerd.";
 
 /* Error message generated when announcement service is unable to return a valid endpoint. */
-"Invalid endpoint" = "Invalid endpoint";
+"Invalid endpoint" = "Ongeldig eindpunt";
 
 /* No comment provided by engineer. */
 "Invalid username" = "Verkeerde gebruikersnaam";
@@ -991,7 +997,7 @@
 "Link a product to an external website" = "Koppel een product aan een externe website";
 
 /* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
-"List of images of the product" = "List of images of the product";
+"List of images of the product" = "Lijst met afbeeldingen van het product";
 
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "Bestelling wordt geladen";
@@ -1173,7 +1179,7 @@
 "No products yet" = "Nog geen producten";
 
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier' */
-"No results found for (term)\nAdd a custom carrier" = "No results found for (term)\nAdd a custom carrier";
+"No results found for (term)\nAdd a custom carrier" = "Geen resultaat gevonden voor (trefwoord)\nVoeg een aangepaste bezorgservice toe";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "Geen omzet deze periode";
@@ -1263,7 +1269,7 @@
 "Optional Tracking Information" = "Optionele tracking-informatie";
 
 /* Divider on initial auth view separating auth options. */
-"Or" = "Or";
+"Or" = "Of";
 
 /* Label for button to log in using site address. Underscores _..._ denote underline. */
 "Or log in by _entering your site address_." = "Je kunt ook inloggen door _je site-adres in te voeren_.";
@@ -1680,6 +1686,9 @@
 
 /* Page title for the select a different store screen */
 "Select Store" = "Winkel selecteren";
+
+/* Message title of bottom sheet for selecting a product type to create a product */
+"Select a product type" = "Select a product type";
 
 /* Add the shipping carrier. Placeholder of cell presenting carrier name */
 "Select carrier" = "Bezorgservice selecteren";
@@ -2193,7 +2202,7 @@
 "Title" = "Titel";
 
 /* VoiceOver accessibility hint, informing the user about the title of a product in product detail screen. */
-"Title of the product" = "Title of the product";
+"Title of the product" = "Titel van het product";
 
 /* Action sheet option to sort products by ascending product name */
 "Title: A to Z" = "Titel: Van A naar Z";
@@ -2333,6 +2342,9 @@
 
 /* Undo Action */
 "Undo" = "Ongedaan maken";
+
+/* The message of the alert when there is an unexpected error updating the product */
+"Unexpected error" = "Unexpected error";
 
 /* Unknown Application State
    Unknown product name, displayed in a review - Unknown Tag Name */
@@ -2502,7 +2514,7 @@
 "We'll email you a magic link that'll log you in instantly, no password needed. Hunt and peck no more!" = "We sturen je een e-mail met een magische link waarmee je onmiddellijk kunt inloggen, zonder wachtwoord. Nooit meer moeite doen!";
 
 /* Instruction text on the Sign Up screen. */
-"We'll email you a signup link to create your new WordPress.com account." = "We'll email you a signup link to create your new WordPress.com account.";
+"We'll email you a signup link to create your new WordPress.com account." = "We sturen je een aanmeldlink toe om je nieuwe WordPress.com-account aan te maken.";
 
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales." = "We laten het je weten als je een nieuwe bestelling krijgt. Bekijk ondertussen hoe je de verkoop van je winkel kunt verhogen.";
@@ -2527,7 +2539,7 @@
 "We've added more editing functionalities to products! You can now update images, see previews and share your products." = "We hebben meer bewerkingsfuncties aan producten toegevoegd! Je kan nu afbeeldingen bijwerken, voorbeeldweergaven bekijken en je producten delen!";
 
 /* Instruction text after a signup Magic Link was requested. */
-"We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com.";
+"We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "We hebben je een aanmeldlink toegestuurd om je nieuwe WordPress.com-account aan te maken. Controleer je e-mail op dit apparaat en tik op de link in de e-mail die je van WordPress.com ontvangt.";
 
 /* Statistical unit - a single week */
 "Week" = "Week";

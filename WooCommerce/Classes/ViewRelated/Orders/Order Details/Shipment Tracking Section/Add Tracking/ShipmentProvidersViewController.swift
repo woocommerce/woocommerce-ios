@@ -141,11 +141,7 @@ private extension ShipmentProvidersViewController {
     /// Registers all of the available TableViewCells
     ///
     func registerTableViewCells() {
-        let cells = [WooBasicTableViewCell.self]
-
-        for cell in cells {
-            table.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
-        }
+        table.registerNib(for: WooBasicTableViewCell.self)
     }
 
     func styleTableView() {

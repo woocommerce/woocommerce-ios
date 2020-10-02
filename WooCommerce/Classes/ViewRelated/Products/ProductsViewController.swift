@@ -393,7 +393,7 @@ private extension ProductsViewController {
     /// Register table cells.
     ///
     func registerTableViewCells() {
-        tableView.register(ProductsTabProductTableViewCell.self, forCellReuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier)
+        tableView.register(ProductsTabProductTableViewCell.self)
     }
 }
 

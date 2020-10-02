@@ -48,8 +48,8 @@ final class ProductCategoryListViewController: UIViewController {
 //
 private extension ProductCategoryListViewController {
     func registerTableViewCells() {
-        tableView.register(ProductCategoryTableViewCell.loadNib(), forCellReuseIdentifier: ProductCategoryTableViewCell.reuseIdentifier)
-        ghostTableView.register(ProductCategoryTableViewCell.loadNib(), forCellReuseIdentifier: ProductCategoryTableViewCell.reuseIdentifier)
+        tableView.registerNib(for: ProductCategoryTableViewCell.self)
+        ghostTableView.registerNib(for: ProductCategoryTableViewCell.self)
     }
 
     func configureAddButton() {

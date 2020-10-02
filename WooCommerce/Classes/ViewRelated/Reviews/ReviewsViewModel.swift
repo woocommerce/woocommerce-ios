@@ -72,11 +72,7 @@ final class ReviewsViewModel {
     /// Setup: TableViewCells
     ///
     func configureTableViewCells(tableView: UITableView) {
-        let cells = [ProductReviewTableViewCell.self]
-
-        for cell in cells {
-            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
-        }
+        tableView.registerNib(for: ProductReviewTableViewCell.self)
     }
 
     func markAllAsRead(onCompletion: @escaping (Error?) -> Void) {

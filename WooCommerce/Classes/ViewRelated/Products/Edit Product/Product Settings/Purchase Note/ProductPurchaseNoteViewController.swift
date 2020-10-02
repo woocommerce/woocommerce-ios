@@ -72,7 +72,7 @@ private extension ProductPurchaseNoteViewController {
     }
 
     func configureTableView() {
-        tableView.register(TextViewTableViewCell.loadNib(), forCellReuseIdentifier: TextViewTableViewCell.reuseIdentifier)
+        tableView.registerNib(for: TextViewTableViewCell.self)
 
         tableView.dataSource = self
         tableView.delegate = self

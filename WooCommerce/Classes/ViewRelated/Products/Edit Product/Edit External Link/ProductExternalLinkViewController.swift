@@ -229,7 +229,7 @@ private extension ProductExternalLinkViewController {
     }
 
     func registerTableViewCells() {
-        tableView.register(TitleAndTextFieldTableViewCell.loadNib(), forCellReuseIdentifier: TitleAndTextFieldTableViewCell.reuseIdentifier)
+        tableView.registerNib(for: TitleAndTextFieldTableViewCell.self)
     }
 
     func registerTableViewHeaderFooters() {

@@ -130,14 +130,8 @@ private extension ReviewDetailsViewController {
     /// Registers all of the available TableViewCells.
     ///
     func registerTableViewCells() {
-        let cells = [
-            NoteDetailsHeaderPlainTableViewCell.self,
-            NoteDetailsCommentTableViewCell.self
-        ]
-
-        for cell in cells {
-            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
-        }
+        tableView.registerNib(for: NoteDetailsHeaderPlainTableViewCell.self)
+        tableView.registerNib(for: NoteDetailsCommentTableViewCell.self)
     }
 
     func reloadRows() {

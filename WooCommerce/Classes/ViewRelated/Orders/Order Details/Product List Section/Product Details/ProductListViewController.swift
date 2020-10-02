@@ -45,9 +45,7 @@ private extension ProductListViewController {
         tableView.sectionHeaderHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
-
-        let nib = PickListTableViewCell.loadNib()
-        tableView.register(nib, forCellReuseIdentifier: PickListTableViewCell.reuseIdentifier)
+        tableView.registerNib(for: PickListTableViewCell.self)
 
         let headerNib = UINib(nibName: TwoColumnSectionHeaderView.reuseIdentifier, bundle: nil)
         tableView.register(headerNib, forHeaderFooterViewReuseIdentifier: TwoColumnSectionHeaderView.reuseIdentifier)

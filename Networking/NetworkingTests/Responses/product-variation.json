@@ -1,0 +1,89 @@
+{
+    "data": {
+        "id": 2783,
+        "date_created": "2020-06-12T22:36:02",
+        "date_created_gmt": "2020-06-12T14:36:02",
+        "date_modified": "2020-07-21T16:35:47",
+        "date_modified_gmt": "2020-07-21T08:35:47",
+        "description": "<p>Nutty chocolate marble, 99% and organic.</p>\n",
+        "permalink": "https://chocolate.com/marble",
+        "sku": "87%-strawberry-marble",
+        "price": "14.99",
+        "regular_price": "14.99",
+        "sale_price": "",
+        "date_on_sale_from": null,
+        "date_on_sale_from_gmt": null,
+        "date_on_sale_to": null,
+        "date_on_sale_to_gmt": null,
+        "on_sale": false,
+        "status": "publish",
+        "purchasable": true,
+        "virtual": false,
+        "downloadable": true,
+        "downloads": [],
+        "download_limit": -1,
+        "download_expiry": 0,
+        "tax_status": "taxable",
+        "tax_class": "",
+        "manage_stock": "parent",
+        "stock_quantity": 16,
+        "stock_status": "instock",
+        "backorders": "notify",
+        "backorders_allowed": true,
+        "backordered": false,
+        "weight": "2.5",
+        "dimensions": {
+            "length": "10",
+            "width": "2.5",
+            "height": ""
+        },
+        "shipping_class": "",
+        "shipping_class_id": 0,
+        "image": {
+            "id": 2432,
+            "date_created": "2020-03-13T19:13:57",
+            "date_created_gmt": "2020-03-13T03:13:57",
+            "date_modified": "2020-07-22T00:29:16",
+            "date_modified_gmt": "2020-07-21T08:29:16",
+            "src": "https://i0.wp.com/funtestingusa.wpcomstaging.com/wp-content/uploads/2019/11/img_0002-1.jpeg?fit=4288%2C2848&ssl=1",
+            "name": "DSC_0010",
+            "alt": ""
+        },
+        "attributes": [
+            {
+                "id": 0,
+                "name": "Darkness",
+                "option": "87%"
+            },
+            {
+                "id": 0,
+                "name": "Flavor",
+                "option": "strawberry"
+            },
+            {
+                "id": 0,
+                "name": "Shape",
+                "option": "marble"
+            }
+        ],
+        "menu_order": 1,
+        "meta_data": [],
+        "_links": {
+            "self": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products/846/variations/2783"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products/846/variations"
+                }
+            ],
+            "up": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/products/846"
+                }
+            ]
+        }
+    }
+}

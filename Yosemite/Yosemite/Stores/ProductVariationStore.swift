@@ -38,6 +38,8 @@ public final class ProductVariationStore: Store {
         switch action {
         case .synchronizeProductVariations(let siteID, let productID, let pageNumber, let pageSize, let onCompletion):
             synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .retrieveProductVariation(let siteID, let productID, let variationID, let onCompletion):
+            retrieveProductVariation(siteID: siteID, productID: productID, variationID: variationID, onCompletion: onCompletion)
         case .updateProductVariation(let productVariation, let onCompletion):
             updateProductVariation(productVariation: productVariation, onCompletion: onCompletion)
         }
@@ -72,6 +74,37 @@ private extension ProductVariationStore {
                                                             siteID: siteID,
                                                             productID: productID) {
                 onCompletion(nil)
+            }
+        }
+    }
+
+    /// Retrieves the product variation associated with a given siteID + productID + variationID.
+    ///
+    func retrieveProductVariation(siteID: Int64, productID: Int64, variationID: Int64,
+                                  onCompletion: @escaping (Result<ProductVariation, ProductUpdateError>) -> Void) {
+        let remote = ProductVariationsRemote(network: network)
+
+        remote.loadProductVariation(for: siteID, productID: productID, variationID: variationID) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+            switch result {
+            case .failure(let error):
+                if case NetworkError.notFound = error {
+                    self.deleteStoredProductVariation(siteID: siteID, variationID: variationID)
+                }
+                onCompletion(.failure(ProductUpdateError(error: error)))
+            case .success(let productVariation):
+                self.upsertStoredProductVariationsInBackground(readOnlyProductVariations: [productVariation],
+                                                               siteID: siteID, productID: productID) { [weak self] in
+                   guard let storageProductVariation = self?.storageManager.viewStorage
+                        .loadProductVariation(siteID: productVariation.siteID,
+                                              productVariationID: productVariation.productVariationID) else {
+                                                onCompletion(.failure(.notFoundInStorage))
+                                                return
+                    }
+                    onCompletion(.success(storageProductVariation.toReadOnly()))
+                }
             }
         }
     }
@@ -123,6 +156,14 @@ private extension ProductVariationStore {
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
             DispatchQueue.main.async(execute: onCompletion)
         }
+    }
+
+    /// Delete a specific Storage.ProductVariation with the specified `siteID` and `variationID`
+    ///
+    func deleteStoredProductVariation(siteID: Int64, variationID: Int64) {
+        let storage = storageManager.viewStorage
+        storage.deleteProductVariation(siteID: siteID, variationID: variationID)
+        storage.saveIfNeeded()
     }
 
     /// Deletes any Storage.ProductVariation with the specified `siteID` and `productID`

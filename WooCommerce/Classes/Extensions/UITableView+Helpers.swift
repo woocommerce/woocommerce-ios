@@ -27,7 +27,7 @@ extension UITableView {
         register(type, forCellReuseIdentifier: type.reuseIdentifier)
     }
 
-    /// Registers a `UITableViewCell`nib  using its `reuseIdentifier` property as the reuse identifier.
+    /// Registers a `UITableViewCell` nib  using its `reuseIdentifier` property as the reuse identifier.
     ///
     func registerNib(for type: UITableViewCell.Type) {
         register(type.loadNib(), forCellReuseIdentifier: type.reuseIdentifier)

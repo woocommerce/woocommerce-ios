@@ -58,7 +58,8 @@ private extension AddProductCoordinator {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .add,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: true)
+                                             isEditProductsRelease3Enabled: true,
+                                             isEditProductsRelease5Enabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease5))
         let viewController = ProductFormViewController(viewModel: viewModel,
                                                        eventLogger: ProductFormEventLogger(),
                                                        productImageActionHandler: productImageActionHandler,

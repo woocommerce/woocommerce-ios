@@ -250,6 +250,46 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertNotNil(storesManager.receivedActions[1] as? SitePostAction)
         XCTAssertEqual(result, .failure(.invalidSKU))
     }
+
+    // MARK: - Delete a product (`deleteProduct`)
+
+    func test_deleting_product_successfully_returns_success_result() {
+        // Arrange
+        let product = MockProduct().product()
+        let model = EditableProductModel(product: product)
+        let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
+        mockDeleteProduct(result: .success(product))
+
+        // Action
+        var result: Result<ResultData, ProductUpdateError>?
+        useCase.deleteProduct(product: model) { aResult in
+            result = aResult
+        }
+
+        // Assert
+        XCTAssertEqual(storesManager.receivedActions.count, 1)
+        XCTAssertNotNil(storesManager.receivedActions[0] as? ProductAction)
+        XCTAssertEqual(result, .success(ResultData(product: model, password: nil)))
+    }
+
+    func test_deleting_product_returns_failure_result_with_product_error() {
+        // Arrange
+        let product = MockProduct().product()
+        let model = EditableProductModel(product: product)
+        mockDeleteProduct(result: .failure(.unexpected))
+        let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
+
+        // Action
+        var result: Result<ResultData, ProductUpdateError>?
+        useCase.deleteProduct(product: model) { aResult in
+            result = aResult
+        }
+
+        // Assert
+        XCTAssertEqual(storesManager.receivedActions.count, 1)
+        XCTAssertNotNil(storesManager.receivedActions.first as? ProductAction)
+        XCTAssertEqual(result, .failure(.unexpected))
+    }
 }
 
 private extension ProductFormRemoteActionUseCaseTests {
@@ -264,6 +304,14 @@ private extension ProductFormRemoteActionUseCaseTests {
     func mockUpdateProduct(result: Result<Product, ProductUpdateError>) {
         storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
             if case let ProductAction.updateProduct(_, onCompletion) = action {
+                onCompletion(result)
+            }
+        }
+    }
+
+    func mockDeleteProduct(result: Result<Product, ProductUpdateError>) {
+        storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
+            if case let ProductAction.deleteProduct(_, _, onCompletion) = action {
                 onCompletion(result)
             }
         }

@@ -102,6 +102,23 @@ final class ProductFormRemoteActionUseCase {
             }
         }
     }
+
+    /// Delete a product remotely.
+    /// - Parameters:
+    ///   - product: The product to be deleted remotely.
+    ///   - onCompletion: Called when the remote process finishes.
+    func deleteProduct(product: EditableProductModel, onCompletion: @escaping EditProductCompletion) {
+        deleteProductRemotely(product: product) { productResult in
+            switch productResult {
+            case .failure(let error):
+                // TODO: M5 analytics
+                onCompletion(.failure(error))
+            case .success(let product):
+                // TODO: M5 analytics
+                onCompletion(.success(ResultData(product: product, password: nil)))
+            }
+        }
+    }
 }
 
 private extension ProductFormRemoteActionUseCase {
@@ -139,6 +156,20 @@ private extension ProductFormRemoteActionUseCase {
             }
         }
         stores.dispatch(updateProductAction)
+    }
+
+    func deleteProductRemotely(product: EditableProductModel,
+                               onCompletion: @escaping (Result<EditableProductModel, ProductUpdateError>) -> Void) {
+        let deleteProductAction = ProductAction.deleteProduct(siteID: product.siteID, productID: product.productID) { result in
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            case .success(let product):
+                let model = EditableProductModel(product: product)
+                onCompletion(.success(model))
+            }
+        }
+        stores.dispatch(deleteProductAction)
     }
 
     func updatePasswordRemotely(product: EditableProductModel,

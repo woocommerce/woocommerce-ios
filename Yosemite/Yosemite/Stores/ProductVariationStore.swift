@@ -90,9 +90,6 @@ private extension ProductVariationStore {
             }
             switch result {
             case .failure(let error):
-                if case NetworkError.notFound = error {
-                    self.deleteStoredProductVariation(siteID: siteID, variationID: variationID)
-                }
                 onCompletion(.failure(ProductUpdateError(error: error)))
             case .success(let productVariation):
                 self.upsertStoredProductVariationsInBackground(readOnlyProductVariations: [productVariation],

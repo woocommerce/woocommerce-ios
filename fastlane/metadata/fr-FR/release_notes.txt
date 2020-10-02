@@ -1,14 +1,3 @@
-Cette mise à jour nous permet d'annoncer pas mal d'améliorations apportées aux Détails de la commande et aux Paramètres.
-
-Dans Détails de la commande, vous pouvez ajouter un espace réservé « Invité » lorsque le nom d'un client n'est pas spécifié. Dans la sous-section Détails du produit, nous avons résolu le problème technique qui faisait disparaître la section « Ajouter plus de détails » lorsque l'utilisateur cliquait en-dehors de la section.
-
-Dans Paramètres, le bouton « Demande de fonctionnalité » a été remplacé par « Envoyer un commentaire ».
-
-Nous avons également apporté plusieurs modifications lorsque le commutateur Produits est activé dans Paramètres > Fonctionnalités expérimentales :
-
-1. Vous pouvez apporter des modifications de base à des produits essentiels, tels que des abonnements, qui sont introduits par des extensions externes et non définies par défaut dans les quatre groupes fondamentaux de WooCommerce (simple, variable, lié et groupé). Vous pouvez modifier les images, le nom, la description, le prix, l'inventaire, les étiquettes, les catégories, la courte description et les paramètres de produit.
-2. Les paramètres de stock et d'expédition pour les variantes de produits, y compris le statut du stock, peuvent maintenant être modifiés.
-3. La ligne des avis est masquée si les avis sont désactivés.
-4. 
-Vous pouvez ouvrir l'écran d'avis sur le produit, même s'il n'y a aucun avis.
-5. La prise en charge de VoiceOver dans Détails du produit inclut désormais l'en-tête des images et le nom du produit.
+- Produits : si le commutateur Produits est activé dans Paramètres → Fonctionnalités expérimentales pour un produit variable, l’état du stock n’apparaît plus dans les détails du produit lorsque la gestion du stock est désactivée (car l’état du stock est contrôlé au niveau des variations).
+- Commandes : la liste de recherche affiche désormais le nombre complet plutôt que « Plus de 99 ».
+- Avis : nous avons résolu un problème d’actualisation incorrecte des avis. Désormais, si vous supprimez un avis ou si vous le marquez comme indésirable, cette modification se reflète dans la liste des avis de produit.

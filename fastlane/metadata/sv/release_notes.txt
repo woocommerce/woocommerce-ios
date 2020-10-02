@@ -1,13 +1,3 @@
-Vi har massor av förbättringar i både Orderdetaljer och Inställningar att rapportera i den här uppdateringen.
-
-I Orderdetaljer kan du nu lägga till en "Gäst"-platshållare när inget kundnamn har angivits. I underavsnittet Produktdetaljer har vi åtgärdat felet som gjorde att hela avsnittet kasserades om man klickade utanför "Lägg till mer information".
-
-I Inställningar har knappen "Funktionsbegäran" ersatts med "Skicka feedback".
-
-Vi har också gjort några ändringar om reglaget Produkter är på i Inställningar > Experimentella funktioner:
-
-1. Du kan göra viss grundläggande redigering för icke-kärnprodukter, t.ex. prenumerationer, som introduceras av externa tillägg och som inte som standard definieras in i någon av de fyra WooCommerce-kärngrupperna (enkla, variabla, länkade och grupperade). Du kan ändra bilder, namn, beskrivning, pris, lager, etiketter, kategorier, kort beskrivning och produktinställningar.
-2. Lager- och leveransinställningar för produktvariationer, inklusive lagerstatus, kan nu redigeras.
-3. Recensionsraden är dold om recensioner är inaktiverade.
-4. Du kan öppna produktens recensionsskärm även om det inte finns några recensioner.
-5. VoiceOver-stödet i produktdetaljerna inkluderar nu bildrubriken och produktnamnet.
+- Produkter: Om reglaget Produkter är aktiverat i Inställningar → Experimentella funktioner för en variabel produkt, lagerstatus visas inte längre i produktdetaljer när lagerhantering är inaktiverad (eftersom lagerstatus styrs på variantnivå).
+- Ordrar: Söklistan visar nu det fullständiga antalet istället för "99+".
+- Recensioner: Vi har åtgärdat ett fel som gjorde att recensioner inte uppdaterades korrekt. Om man tar bort eller markerar en recension som skräppost nu kommer denna ändring att återspeglas i listan med produktrecensioner.

@@ -993,6 +993,8 @@
 				D88D5A44230BC6F9007B6E01 /* ProductReviewsRemote.swift */,
 				4599FC5D24A62AA70056157A /* ProductTagsRemote.swift */,
 				CE0A0F1A223989670075ED8D /* ProductsRemote.swift */,
+				026CF61F237D69D6009563D4 /* ProductVariationsRemote.swift */,
+				025CA2C3238EBC4300B05C81 /* ProductShippingClassRemote.swift */,
 				CE43066F234B99F50073CBFF /* RefundsRemote.swift */,
 				7412A8E921B6E192005D182A /* ReportRemote.swift */,
 				743E84E922171C5800FAC9D7 /* ShipmentsRemote.swift */,
@@ -1002,8 +1004,6 @@
 				4568E2212459ADC60007E478 /* SitePostsRemote.swift */,
 				4501068E2399B19500E24722 /* TaxClassRemote.swift */,
 				74ABA1D0213F22CA00FFAD30 /* TopEarnersStatsRemote.swift */,
-				026CF61F237D69D6009563D4 /* ProductVariationsRemote.swift */,
-				025CA2C3238EBC4300B05C81 /* ProductShippingClassRemote.swift */,
 				020D07BB23D856BF00FD9580 /* MediaRemote.swift */,
 			);
 			path = Remote;

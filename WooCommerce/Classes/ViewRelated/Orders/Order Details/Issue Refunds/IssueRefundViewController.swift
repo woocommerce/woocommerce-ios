@@ -5,6 +5,8 @@ import UIKit
 final class IssueRefundViewController: UIViewController {
 
     @IBOutlet private var tableView: UITableView!
+    @IBOutlet private var tableFooterView: UIView!
+    @IBOutlet private var nextButton: UIButton!
 
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -16,7 +18,20 @@ final class IssueRefundViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureNextButton()
         configureTableView()
+    }
+
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        tableView.updateFooterHeight()
+    }
+}
+
+// MARK: Actions
+private extension IssueRefundViewController {
+    @IBAction func nextButtonWasPressed(_ sender: Any) {
+        print("Next button pressed")
     }
 }
 
@@ -26,6 +41,7 @@ private extension IssueRefundViewController {
         registerCells()
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.tableFooterView = tableFooterView
     }
 
     func registerCells() {
@@ -33,6 +49,11 @@ private extension IssueRefundViewController {
         tableView.registerNib(for: RefundProductsTotalTableViewCell.self)
         tableView.registerNib(for: RefundShippingDetailsTableViewCell.self)
         tableView.registerNib(for: SwitchTableViewCell.self)
+    }
+
+    func configureNextButton() {
+        nextButton.applyPrimaryButtonStyle()
+        nextButton.setTitle(Localization.nextTitle, for: .normal)
     }
 }
 
@@ -76,5 +97,12 @@ extension IssueRefundViewController: UITableViewDelegate, UITableViewDataSource 
             fatalError("Cell creation error")
         }
         return cell!
+    }
+}
+
+// MARK: Constants
+private extension IssueRefundViewController {
+    enum Localization {
+        static let nextTitle = NSLocalizedString("Next", comment: "Title of the next button in the issue refund screen")
     }
 }

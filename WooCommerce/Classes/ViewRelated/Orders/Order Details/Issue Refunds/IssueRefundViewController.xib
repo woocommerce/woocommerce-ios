@@ -10,6 +10,8 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="IssueRefundViewController">
             <connections>
+                <outlet property="nextButton" destination="omw-71-nel" id="Sgb-5r-DTF"/>
+                <outlet property="tableFooterView" destination="dRH-Gh-qht" id="xP8-Ad-2WG"/>
                 <outlet property="tableView" destination="Lf6-TH-48I" id="z2d-Ga-udY"/>
                 <outlet property="view" destination="iN0-l3-epB" id="J4r-V6-Ueu"/>
             </connections>
@@ -19,7 +21,7 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Lf6-TH-48I">
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="Lf6-TH-48I">
                     <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                 </tableView>
@@ -33,6 +35,31 @@
             </constraints>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <point key="canvasLocation" x="102.89855072463769" y="29.464285714285712"/>
+        </view>
+        <view contentMode="scaleToFill" id="dRH-Gh-qht">
+            <rect key="frame" x="0.0" y="0.0" width="417" height="67"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="omw-71-nel">
+                    <rect key="frame" x="16" y="16" width="385" height="35"/>
+                    <state key="normal" title="Button"/>
+                    <connections>
+                        <action selector="nextButtonWasPressed:" destination="-1" eventType="touchUpInside" id="Apt-3K-Oby"/>
+                    </connections>
+                </button>
+            </subviews>
+            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="omw-71-nel" secondAttribute="trailing" constant="16" id="Iuh-aM-xBR"/>
+                <constraint firstItem="omw-71-nel" firstAttribute="top" secondItem="dRH-Gh-qht" secondAttribute="top" constant="16" id="OpE-fY-xG4"/>
+                <constraint firstItem="omw-71-nel" firstAttribute="leading" secondItem="dRH-Gh-qht" secondAttribute="leading" constant="16" id="TXj-Nj-G5h"/>
+                <constraint firstAttribute="bottom" secondItem="omw-71-nel" secondAttribute="bottom" constant="16" id="mR7-xj-5tk"/>
+            </constraints>
+            <nil key="simulatedTopBarMetrics"/>
+            <nil key="simulatedBottomBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="aKJ-SC-KN2"/>
+            <point key="canvasLocation" x="-699.27536231884062" y="77.34375"/>
         </view>
     </objects>
 </document>

@@ -15,10 +15,6 @@ final class ProductVariationsRemoteTests: XCTestCase {
     /// Dummy Product ID
     ///
     let sampleProductID: Int64 = 173
-    
-    /// Dummy Variation ID
-    ///
-    let sampleVariationID: Int64 = 2783
 
     /// Repeat always!
     ///
@@ -120,7 +116,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
-    
+
     // MARK: - Load single product variation tests
 
     /// Verifies that loadProductVariation properly parses the `product-variation` sample response.
@@ -128,13 +124,13 @@ final class ProductVariationsRemoteTests: XCTestCase {
     func test_load_single_ProductVariation_properly_returns_parsed_ProductVariation() throws {
         // Given
         let remote = ProductVariationsRemote(network: network)
-
-        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/varitions/\(sampleVariationID)", filename: "product-variation")
+        let sampleProductVariationID: Int64 = 2783
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations/\(sampleProductVariationID)", filename: "product-variation")
 
         // When
         var resultMaybe: Result<ProductVariation, Error>?
         waitForExpectation { exp in
-            remote.loadProductVariation(for: sampleSiteID, productID: sampleProductID, variationID: sampleVariationID) { aResult in
+            remote.loadProductVariation(for: sampleSiteID, productID: sampleProductID, variationID: sampleProductVariationID) { aResult in
                 resultMaybe = aResult
                 exp.fulfill()
             }
@@ -146,7 +142,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
 
         let productVariation = try result.get()
         XCTAssertEqual(productVariation.productID, sampleProductID)
-        XCTAssertEqual(productVariation.productVariationID, sampleVariationID)
+        XCTAssertEqual(productVariation.productVariationID, sampleProductVariationID)
     }
 
     /// Verifies that loadProductVariation properly relays any Networking Layer errors.
@@ -154,11 +150,12 @@ final class ProductVariationsRemoteTests: XCTestCase {
     func test_load_single_ProductVariation_properly_relays_netwoking_errors() throws {
         // Given
         let remote = ProductVariationsRemote(network: network)
+        let sampleProductVariationID: Int64 = 2783
 
         // When
         var resultMaybe: Result<ProductVariation, Error>?
         waitForExpectation { exp in
-            remote.loadProductVariation(for: sampleSiteID, productID: sampleProductID, variationID: sampleVariationID) { aResult in
+            remote.loadProductVariation(for: sampleSiteID, productID: sampleProductID, variationID: sampleProductVariationID) { aResult in
                 resultMaybe = aResult
                 exp.fulfill()
             }

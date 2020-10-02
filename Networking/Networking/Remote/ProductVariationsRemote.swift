@@ -40,7 +40,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
         let mapper = ProductVariationListMapper(siteID: siteID, productID: productID)
         enqueue(request, mapper: mapper, completion: completion)
     }
-    
+
     /// Retrieves a specific `ProductVariation`.
     ///
     /// - Parameters:

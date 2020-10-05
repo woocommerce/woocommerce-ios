@@ -14,7 +14,7 @@ A Jetpack-powered companion app for WooCommerce.
 
 2. Install Ruby. We recommend using [rbenv](https://github.com/rbenv/rbenv) to install it. Please refer to the [`.ruby-version` file](.ruby-version) for the required Ruby version.
 
-    We use Ruby to manage the third party dependencies and other tools and automation. 
+    We use Ruby to manage the third party dependencies and other tools and automation.
 
 2. Clone project in the folder of your preference
 
@@ -22,21 +22,21 @@ A Jetpack-powered companion app for WooCommerce.
     git clone https://github.com/woocommerce/woocommerce-ios.git
     ````
 
-3. Enter the project directory 
+3. Enter the project directory
 
     ```bash
     cd woocommerce-ios
     ```
-    
+
 4. Install the third party dependencies and tools required to run the project.
-    
-    
+
+
     ```bash
     bundle exec rake dependencies
     ```
-    
-    This command installs the required tools like [CocoaPods](https://cocoapods.org/). And then it installs the iOS project dependencies using CocoaPods. 
-    
+
+    This command installs the required tools like [CocoaPods](https://cocoapods.org/). And then it installs the iOS project dependencies using CocoaPods.
+
 5. Open the project by double clicking on `WooCommerce.xcworkspace` file, or launching Xcode and choose File > Open and browse to `WooCommerce.xcworkspace`
 
 ### Credentials for External Contributors
@@ -46,15 +46,18 @@ In order to login to WordPress.com using the app:
 1. Create a [WordPress.com account](https://wordpress.com/start/user) (if you don't already have one).
 2. Create a new developer application [here](https://developer.wordpress.com/apps/).
 3. Set **"Redirect URLs"** = `https://localhost` and **"Type"** = `Native` and click **Create**. On the next page, click **Update**.
-4. Copy the *Client ID* and *Client Secret* from the OAuth Information. 
+4. Copy the *Client ID* and *Client Secret* from the OAuth Information.
 5. Build the app. Expect the build to fail. But it should generate a file named `ApiCredentials.swift`.
 6. Navigate to the generated `WooCommerce/DerivedSources/ApiCredentials.swift` file.
+
+    <img src="docs/images/apicredentials-location.png" width="240">
+
 7. Fill in the `dotcomAppId` with the Client ID.
 8. Fill in the `dotcomSecret` with the Client Secret.
 9. Recompile and run the app on a device or inside simulator.
 
 Please, remember to not add this information on your commits and PRs.
-  
+
 ### Coding Style
 
 We use [SwiftLint](https://github.com/realm/SwiftLint) to enforce a common style for Swift code. The app should build and work without it, but if you plan to write code, you are encouraged to run it locally by `bundle exec rake lint` (first run will install SwiftLint if you don't have it). No pull requests should have lint warnings or errors before merging, and we also have `Hound` (mentioned below) to help us in pull requests on GitHub.

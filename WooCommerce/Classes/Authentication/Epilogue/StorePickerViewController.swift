@@ -333,6 +333,10 @@ private extension StorePickerViewController {
             })
         }
 
+        dismiss()
+    }
+
+    func dismiss() {
         switch configuration {
         case .switchingStores:
             dismiss(animated: true)
@@ -517,7 +521,7 @@ extension StorePickerViewController {
             }
 
             delegate.didSelectStore(with: site.siteID) { [weak self] in
-                self?.cleanupAndDismiss()
+                self?.dismiss()
             }
         }
     }

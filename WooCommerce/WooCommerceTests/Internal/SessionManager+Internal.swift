@@ -23,7 +23,7 @@ extension SessionManager {
         return manager
     }
 
-    func setStoreId(_ id: Int?) {
+    func setStoreId(_ id: Int64?) {
         UserDefaults(suiteName: "storesManagerTests")!.set(id, forKey: .defaultStoreID)
     }
 }

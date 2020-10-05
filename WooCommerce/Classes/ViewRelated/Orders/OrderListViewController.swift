@@ -297,7 +297,6 @@ extension OrderListViewController {
     /// Runs whenever the default Account is updated.
     ///
     @objc func defaultAccountWasUpdated() {
-        refreshStatusPredicate()
         syncingCoordinator.resetInternalState()
     }
 }

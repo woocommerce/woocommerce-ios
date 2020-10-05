@@ -20,6 +20,7 @@ final class OrdersViewModelTests: XCTestCase {
     }
 
     private var storageManager: StorageManagerType!
+    private var stores: StoresManager!
 
     private var storage: StorageType {
         storageManager.viewStorage
@@ -28,9 +29,14 @@ final class OrdersViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         storageManager = MockupStorageManager()
+        stores = MockupStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.sessionManager.setStoreId(siteID)
     }
 
     override func tearDown() {
+        // If not resetting store ID back to `nil`, it could cause other test failures since `setStoreId` changes UserDefaults.
+        stores.sessionManager.setStoreId(nil)
+        stores = nil
         storageManager = nil
         super.tearDown()
     }
@@ -40,7 +46,8 @@ final class OrdersViewModelTests: XCTestCase {
     func test_given_a_filter_it_loads_the_orders_matching_that_filter_from_the_DB() {
         // Arrange
         let viewModel = OrdersViewModel(storageManager: storageManager,
-                                        statusFilter: orderStatus(with: .processing))
+                                        statusFilter: orderStatus(with: .processing),
+                                        stores: stores)
 
         let processingOrders = (0..<10).map { insertOrder(id: $0, status: .processing) }
         let completedOrders = (100..<105).map { insertOrder(id: $0, status: .completed) }
@@ -59,7 +66,7 @@ final class OrdersViewModelTests: XCTestCase {
 
     func test_given_no_filter_it_loads_all_the_today_and_past_orders_from_the_DB() {
         // Arrange
-        let viewModel = OrdersViewModel(storageManager: storageManager, statusFilter: nil)
+        let viewModel = OrdersViewModel(storageManager: storageManager, statusFilter: nil, stores: stores)
 
         let allInsertedOrders = [
             (0..<10).map { insertOrder(id: $0, status: .processing) },
@@ -85,7 +92,8 @@ final class OrdersViewModelTests: XCTestCase {
         // Arrange
         let viewModel = OrdersViewModel(storageManager: storageManager,
                                         statusFilter: orderStatus(with: .pending),
-                                        includesFutureOrders: true)
+                                        includesFutureOrders: true,
+                                        stores: stores)
 
         let expectedOrders = [
             // Future orders
@@ -114,7 +122,7 @@ final class OrdersViewModelTests: XCTestCase {
     /// midnight are included.
     func test_given_excluding_future_orders_it_only_loads_orders_up_to_midnight_from_the_DB() {
         // Arrange
-        let viewModel = OrdersViewModel(storageManager: storageManager, statusFilter: nil, includesFutureOrders: false)
+        let viewModel = OrdersViewModel(storageManager: storageManager, statusFilter: nil, includesFutureOrders: false, stores: stores)
 
         let ignoredOrders = [
             // Orders in the future
@@ -145,7 +153,7 @@ final class OrdersViewModelTests: XCTestCase {
     /// Orders with dateCreated in the future should be grouped in an "Upcoming" section.
     func test_it_groups_future_orders_in_upcoming_section() {
         // Arrange
-        let viewModel = OrdersViewModel(storageManager: storageManager, statusFilter: orderStatus(with: .failed))
+        let viewModel = OrdersViewModel(storageManager: storageManager, statusFilter: orderStatus(with: .failed), stores: stores)
 
         let expectedOrders = (
             future: [
@@ -174,7 +182,7 @@ final class OrdersViewModelTests: XCTestCase {
     func test_it_requests_a_resynchronization_when_the_app_is_activated() {
         // Arrange
         let notificationCenter = NotificationCenter()
-        let viewModel = OrdersViewModel(notificationCenter: notificationCenter, statusFilter: nil)
+        let viewModel = OrdersViewModel(notificationCenter: notificationCenter, statusFilter: nil, stores: stores)
 
         var resynchronizeRequested = false
         viewModel.onShouldResynchronizeIfViewIsVisible = {
@@ -194,7 +202,7 @@ final class OrdersViewModelTests: XCTestCase {
     func test_given_no_previous_deactivation_it_does_not_request_a_resynchronization_when_the_app_is_activated() {
         // Arrange
         let notificationCenter = NotificationCenter()
-        let viewModel = OrdersViewModel(notificationCenter: notificationCenter, statusFilter: nil)
+        let viewModel = OrdersViewModel(notificationCenter: notificationCenter, statusFilter: nil, stores: stores)
 
         var resynchronizeRequested = false
         viewModel.onShouldResynchronizeIfViewIsVisible = {
@@ -215,7 +223,7 @@ final class OrdersViewModelTests: XCTestCase {
     func test_given_a_new_order_notification_it_requests_a_resynchronization() {
         // Arrange
         let pushNotificationsManager = MockPushNotificationsManager()
-        let viewModel = OrdersViewModel(pushNotificationsManager: pushNotificationsManager, statusFilter: nil)
+        let viewModel = OrdersViewModel(pushNotificationsManager: pushNotificationsManager, statusFilter: nil, stores: stores)
 
         var resynchronizeRequested = false
         viewModel.onShouldResynchronizeIfViewIsVisible = {
@@ -235,7 +243,7 @@ final class OrdersViewModelTests: XCTestCase {
     func test_given_a_non_order_notification_it_does_not_request_a_resynchronization() {
         // Arrange
         let pushNotificationsManager = MockPushNotificationsManager()
-        let viewModel = OrdersViewModel(pushNotificationsManager: pushNotificationsManager, statusFilter: nil)
+        let viewModel = OrdersViewModel(pushNotificationsManager: pushNotificationsManager, statusFilter: nil, stores: stores)
 
         var resynchronizeRequested = false
         viewModel.onShouldResynchronizeIfViewIsVisible = {

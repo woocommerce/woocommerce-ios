@@ -369,7 +369,7 @@ private extension MainTabBarController {
         }
 
         // Initialize each tab's root view controller
-        let dashboardViewController = createDashboardViewController()
+        let dashboardViewController = createDashboardViewController(siteID: siteID)
         dashboardNavigationController.viewControllers = [dashboardViewController]
 
         let ordersViewController = createOrdersViewController()
@@ -386,8 +386,8 @@ private extension MainTabBarController {
         selectedIndex = WooTab.myStore.visibleIndex()
     }
 
-    func createDashboardViewController() -> UIViewController {
-        DashboardViewController()
+    func createDashboardViewController(siteID: Int64) -> UIViewController {
+        DashboardViewController(siteID: siteID)
     }
 
     func createOrdersViewController() -> UIViewController {

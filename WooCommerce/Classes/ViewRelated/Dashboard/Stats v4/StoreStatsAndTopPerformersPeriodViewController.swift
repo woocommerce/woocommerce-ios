@@ -72,7 +72,7 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     private lazy var inAppFeedbackCardViewsForStackView: [UIView] = createInAppFeedbackCardViewsForStackView()
 
     private lazy var topPerformersPeriodViewController: TopPerformerDataViewController = {
-        return TopPerformerDataViewController(granularity: timeRange.topEarnerStatsGranularity)
+        return TopPerformerDataViewController(siteID: siteID, granularity: timeRange.topEarnerStatsGranularity)
     }()
 
     // MARK: Internal Properties
@@ -83,6 +83,8 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
     private let viewModel: StoreStatsAndTopPerformersPeriodViewModel
 
+    private let siteID: Int64
+
     /// Subscriptions that should be cancelled on `deinit`.
     private var cancellables = [ObservationToken]()
 
@@ -92,9 +94,11 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     ///     The in-app feedback card may still not be presented depending on the constraints. But
     ///     setting this to `false`, will ensure that it will never be presented.
     ///
-    init(timeRange: StatsTimeRangeV4,
+    init(siteID: Int64,
+         timeRange: StatsTimeRangeV4,
          currentDate: Date,
          canDisplayInAppFeedbackCard: Bool) {
+        self.siteID = siteID
         self.timeRange = timeRange
         self.granularity = timeRange.intervalGranularity
         self.currentDate = currentDate

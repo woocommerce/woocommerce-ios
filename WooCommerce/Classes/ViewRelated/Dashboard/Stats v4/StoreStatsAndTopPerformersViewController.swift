@@ -28,8 +28,18 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
     // MARK: - Private Properties
 
     private var periodVCs = [StoreStatsAndTopPerformersPeriodViewController]()
+    private let siteID: Int64
 
     // MARK: - View Lifecycle
+
+    init(siteID: Int64) {
+        self.siteID = siteID
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         configurePeriodViewControllers()
@@ -77,10 +87,6 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
 }
 
 extension StoreStatsAndTopPerformersViewController: DashboardUI {
-    func defaultAccountDidUpdate() {
-        clearAllFields()
-    }
-
     func reloadData(completion: @escaping () -> Void) {
         syncAllStats { _ in
             completion()
@@ -101,10 +107,6 @@ private extension StoreStatsAndTopPerformersViewController {
         var syncError: Error? = nil
 
         ensureGhostContentIsDisplayed()
-
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            return
-        }
 
         showSpinner(shouldShowSpinner: true)
 
@@ -128,7 +130,11 @@ private extension StoreStatsAndTopPerformersViewController {
         let timezoneForStatsDates = TimeZone.siteTimezone
         let timezoneForSync = TimeZone.current
 
-        periodVCs.forEach { (vc) in
+        periodVCs.forEach { [weak self] (vc) in
+            guard let self = self else {
+                return
+            }
+
             vc.siteTimezone = timezoneForStatsDates
 
             let currentDate = Date()
@@ -256,10 +262,22 @@ private extension StoreStatsAndTopPerformersViewController {
 
     func configurePeriodViewControllers() {
         let currentDate = Date()
-        let dayVC = StoreStatsAndTopPerformersPeriodViewController(timeRange: .today, currentDate: currentDate, canDisplayInAppFeedbackCard: true)
-        let weekVC = StoreStatsAndTopPerformersPeriodViewController(timeRange: .thisWeek, currentDate: currentDate, canDisplayInAppFeedbackCard: false)
-        let monthVC = StoreStatsAndTopPerformersPeriodViewController(timeRange: .thisMonth, currentDate: currentDate, canDisplayInAppFeedbackCard: false)
-        let yearVC = StoreStatsAndTopPerformersPeriodViewController(timeRange: .thisYear, currentDate: currentDate, canDisplayInAppFeedbackCard: false)
+        let dayVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
+                                                                   timeRange: .today,
+                                                                   currentDate: currentDate,
+                                                                   canDisplayInAppFeedbackCard: true)
+        let weekVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
+                                                                    timeRange: .thisWeek,
+                                                                    currentDate: currentDate,
+                                                                    canDisplayInAppFeedbackCard: false)
+        let monthVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
+                                                                     timeRange: .thisMonth,
+                                                                     currentDate: currentDate,
+                                                                     canDisplayInAppFeedbackCard: false)
+        let yearVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
+                                                                    timeRange: .thisYear,
+                                                                    currentDate: currentDate,
+                                                                    canDisplayInAppFeedbackCard: false)
 
         periodVCs.append(dayVC)
         periodVCs.append(weekVC)
@@ -365,12 +383,6 @@ private extension StoreStatsAndTopPerformersViewController {
 }
 
 private extension StoreStatsAndTopPerformersViewController {
-    func clearAllFields() {
-        periodVCs.forEach { (vc) in
-            vc.clearAllFields()
-        }
-    }
-
     func showSiteVisitors(_ shouldShowSiteVisitors: Bool) {
         periodVCs.forEach { vc in
             vc.shouldShowSiteVisitStats = shouldShowSiteVisitors

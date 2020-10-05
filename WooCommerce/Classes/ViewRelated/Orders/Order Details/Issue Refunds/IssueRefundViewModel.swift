@@ -9,6 +9,11 @@ final class IssueRefundViewModel {
     ///
     let title: String = "$35.45"
 
+    /// String indicating how many items the user has selected to refund
+    /// This is temporary data, will be removed after implementing https://github.com/woocommerce/woocommerce-ios/issues/2842
+    ///
+    let selectedItemsTitle: String = "3 items selected"
+
     /// The sections and rows to display in the `UITableView`.
     /// This is temporary data, will be removed after implementing https://github.com/woocommerce/woocommerce-ios/issues/2842
     ///

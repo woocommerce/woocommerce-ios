@@ -6,7 +6,11 @@ final class IssueRefundViewController: UIViewController {
 
     @IBOutlet private var tableView: UITableView!
     @IBOutlet private var tableFooterView: UIView!
+    @IBOutlet private var tableHeaderView: UIView!
+
+    @IBOutlet private var itemsSelectedLabel: UILabel!
     @IBOutlet private var nextButton: UIButton!
+    @IBOutlet private var selectAllButton: UIButton!
 
     private let viewModel = IssueRefundViewModel()
 
@@ -21,12 +25,12 @@ final class IssueRefundViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigationBar()
-        configureNextButton()
         configureTableView()
     }
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
+        tableView.updateHeaderHeight()
         tableView.updateFooterHeight()
     }
 }
@@ -35,6 +39,10 @@ final class IssueRefundViewController: UIViewController {
 private extension IssueRefundViewController {
     @IBAction func nextButtonWasPressed(_ sender: Any) {
         print("Next button pressed")
+    }
+
+    @IBAction func selectAllButtonWasPressed(_ sender: Any) {
+        print("Select All button pressed")
     }
 }
 
@@ -51,7 +59,10 @@ private extension IssueRefundViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = .listBackground
+        tableView.tableHeaderView = tableHeaderView
         tableView.tableFooterView = tableFooterView
+        configureFooterView()
+        configureHeaderView()
     }
 
     func registerCells() {
@@ -61,7 +72,16 @@ private extension IssueRefundViewController {
         tableView.registerNib(for: SwitchTableViewCell.self)
     }
 
-    func configureNextButton() {
+    func configureHeaderView() {
+        selectAllButton.applyLinkButtonStyle()
+        selectAllButton.contentEdgeInsets = .zero
+        selectAllButton.setTitle(Localization.selectAllTitle, for: .normal)
+
+        itemsSelectedLabel.applySecondaryBodyStyle()
+        itemsSelectedLabel.text = viewModel.selectedItemsTitle
+    }
+
+    func configureFooterView() {
         nextButton.applyPrimaryButtonStyle()
         nextButton.setTitle(Localization.nextTitle, for: .normal)
     }
@@ -116,5 +136,6 @@ private extension IssueRefundViewController {
     enum Localization {
         static let nextTitle = NSLocalizedString("Next", comment: "Title of the next button in the issue refund screen")
         static let cancelTitle = NSLocalizedString("Cancel", comment: "Cancel button title in the issue refund screen")
+        static let selectAllTitle = NSLocalizedString("Select All", comment: "Select all button title in the issue refund screen")
     }
 }

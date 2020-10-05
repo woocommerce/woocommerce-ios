@@ -203,7 +203,12 @@ private extension StorePickerViewController {
         accountHeaderView.fullname = defaultAccount.displayName
         accountHeaderView.downloadGravatar(with: defaultAccount.email)
         accountHeaderView.isHelpButtonEnabled = configuration == .login || configuration == .standard
-        accountHeaderView.onHelpRequested = { ServiceLocator.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin) }
+        accountHeaderView.onHelpRequested = { [weak self] in
+            guard let self = self else {
+                return
+            }
+            ServiceLocator.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin)
+        }
     }
 
     func setupNavigation() {

@@ -8,6 +8,8 @@ final class IssueRefundViewController: UIViewController {
     @IBOutlet private var tableFooterView: UIView!
     @IBOutlet private var nextButton: UIButton!
 
+    private let viewModel = IssueRefundViewModel()
+
     init() {
         super.init(nibName: nil, bundle: nil)
     }
@@ -18,6 +20,7 @@ final class IssueRefundViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureTitle()
         configureNextButton()
         configureTableView()
     }
@@ -37,6 +40,11 @@ private extension IssueRefundViewController {
 
 // MARK: View Configuration
 private extension IssueRefundViewController {
+
+    func configureTitle() {
+        title = viewModel.title
+    }
+
     func configureTableView() {
         registerCells()
         tableView.delegate = self
@@ -61,43 +69,44 @@ private extension IssueRefundViewController {
 // MARK: TableView Delegate & DataSource
 extension IssueRefundViewController: UITableViewDelegate, UITableViewDataSource {
 
+    func numberOfSections(in tableView: UITableView) -> Int {
+        viewModel.sections.count
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 6
+        viewModel.sections[safe: section]?.rows.count ?? 0
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return .leastNormalMagnitude
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: UITableViewCell?
-        switch indexPath.row {
-        case 0...2:
-            let  itemCell = tableView.dequeueReusableCell(RefundItemTableViewCell.self, for: indexPath)
-            let viewModel = RefundItemViewModel(productImage: nil,
-                                                productTitle: "Sample Product",
-                                                productQuantityAndPrice: "2 x $10.00 each",
-                                                quantityToRefund: "1")
-            itemCell.configure(with: viewModel)
-            cell = itemCell
-        case 3:
-            let totalCell = tableView.dequeueReusableCell(RefundProductsTotalTableViewCell.self, for: indexPath)
-            let viewModel = RefundProductsTotalViewModel(productsTax: "$3.40", productsSubtotal: "$10.00", productsTotal: "$13.40")
-            totalCell.configure(with: viewModel)
-            cell = totalCell
-        case 4:
-            let switchCell = tableView.dequeueReusableCell(SwitchTableViewCell.self, for: indexPath)
-            switchCell.title = "Refund Shipping"
-            cell = switchCell
-        case 5:
-            let shippingCell = tableView.dequeueReusableCell(RefundShippingDetailsTableViewCell.self, for: indexPath)
-            let viewModel = RefundShippingDetailsViewModel(carrierRate: "USPS Flat Rate",
-                                                           carrierCost: "$7.40",
-                                                           shippingTax: "$2.0",
-                                                           shippingSubtotal: "$7.40",
-                                                           shippingTotal: "$9.40")
-            shippingCell.configure(with: viewModel)
-            cell = shippingCell
-        default:
-            fatalError("Cell creation error")
+        guard let rowViewModel = viewModel.sections[safe: indexPath.section]?.rows[safe: indexPath.row] else {
+            return UITableViewCell()
         }
-        return cell!
+
+        switch rowViewModel {
+        case let viewModel as RefundItemViewModel:
+            let cell = tableView.dequeueReusableCell(RefundItemTableViewCell.self, for: indexPath)
+            cell.configure(with: viewModel)
+            return cell
+        case let viewModel as RefundProductsTotalViewModel:
+            let cell = tableView.dequeueReusableCell(RefundProductsTotalTableViewCell.self, for: indexPath)
+            cell.configure(with: viewModel)
+            return cell
+        case let viewModel as IssueRefundViewModel.ShippingSwitchViewModel:
+            let cell = tableView.dequeueReusableCell(SwitchTableViewCell.self, for: indexPath)
+            cell.title = viewModel.title
+            cell.isOn = viewModel.isOn
+            return cell
+        case let viewModel as RefundShippingDetailsViewModel:
+            let cell = tableView.dequeueReusableCell(RefundShippingDetailsTableViewCell.self, for: indexPath)
+            cell.configure(with: viewModel)
+            return cell
+        default:
+            return UITableViewCell()
+        }
     }
 }
 

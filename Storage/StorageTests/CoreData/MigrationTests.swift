@@ -48,48 +48,153 @@ final class MigrationTests: XCTestCase {
         try super.tearDownWithError()
     }
 
+    func test_migrating_from_26_to_27_deletes_ProductCategory_objects() throws {
+        // Arrange
+        let sourceContainer = try startPersistentContainer("Model 26")
+        let sourceContext = sourceContainer.viewContext
+
+        insertAccount(to: sourceContext)
+        let product = insertProduct(to: sourceContext)
+        let productCategory = insertProductCategory(to: sourceContext)
+        product.mutableSetValue(forKey: "categories").add(productCategory)
+
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "Account"), 1)
+        XCTAssertEqual(try sourceContext.count(entityName: "Product"), 1)
+        XCTAssertEqual(try sourceContext.count(entityName: "ProductCategory"), 1)
+
+        // Action
+        let targetContainer = try migrate(sourceContainer, to: "Model 27")
+        let targetContext = targetContainer.viewContext
+
+        // Assert
+        XCTAssertEqual(try targetContext.count(entityName: "Account"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "Product"), 1)
+        // Product categories should be deleted.
+        XCTAssertEqual(try targetContext.count(entityName: "ProductCategory"), 0)
+    }
+
+    func test_migrating_from_28_to_29_deletes_ProductTag_objects() throws {
+        // Arrange
+        let sourceContainer = try startPersistentContainer("Model 28")
+        let sourceContext = sourceContainer.viewContext
+
+        insertAccount(to: sourceContext)
+        let product = insertProduct(to: sourceContext)
+        let productTag = insertProductTag(to: sourceContext)
+        product.mutableSetValue(forKey: "tags").add(productTag)
+
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "Account"), 1)
+        XCTAssertEqual(try sourceContext.count(entityName: "Product"), 1)
+        XCTAssertEqual(try sourceContext.count(entityName: "ProductTag"), 1)
+
+        // Action
+        let targetContainer = try migrate(sourceContainer, to: "Model 29")
+
+        // Assert
+        let targetContext = targetContainer.viewContext
+        XCTAssertEqual(try targetContext.count(entityName: "Account"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "Product"), 1)
+        // Product tags should be deleted.
+        XCTAssertEqual(try targetContext.count(entityName: "ProductTag"), 0)
+    }
+
+    func test_migrating_from_20_to_28_will_keep_transformable_attributes() throws {
+        // Arrange
+        let sourceContainer = try startPersistentContainer("Model 20")
+        let sourceContext = sourceContainer.viewContext
+
+        let product = insertProduct(to: sourceContext)
+        // Populates transformable attributes.
+        let productCrossSellIDs: [Int64] = [630, 688]
+        let groupedProductIDs: [Int64] = [94, 134]
+        let productRelatedIDs: [Int64] = [270, 37]
+        let productUpsellIDs: [Int64] = [1126, 1216]
+        let productVariationIDs: [Int64] = [927, 1110]
+        product.setValue(productCrossSellIDs, forKey: "crossSellIDs")
+        product.setValue(groupedProductIDs, forKey: "groupedProducts")
+        product.setValue(productRelatedIDs, forKey: "relatedIDs")
+        product.setValue(productUpsellIDs, forKey: "upsellIDs")
+        product.setValue(productVariationIDs, forKey: "variations")
+
+        let productAttribute = insertProductAttribute(to: sourceContext)
+        // Populates transformable attributes.
+        let attributeOptions = ["Woody", "Andy Panda"]
+        productAttribute.setValue(attributeOptions, forKey: "options")
+
+        product.mutableSetValue(forKey: "attributes").add(productAttribute)
+
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "Product"), 1)
+        XCTAssertEqual(try sourceContext.count(entityName: "ProductAttribute"), 1)
+
+        // Action
+        let targetContainer = try migrate(sourceContainer, to: "Model 28")
+
+        // Assert
+        let targetContext = targetContainer.viewContext
+
+        let persistedProduct = try XCTUnwrap(targetContext.first(entityName: "Product"))
+        XCTAssertEqual(persistedProduct.value(forKey: "crossSellIDs") as? [Int64], productCrossSellIDs)
+        XCTAssertEqual(persistedProduct.value(forKey: "groupedProducts") as? [Int64], groupedProductIDs)
+        XCTAssertEqual(persistedProduct.value(forKey: "relatedIDs") as? [Int64], productRelatedIDs)
+        XCTAssertEqual(persistedProduct.value(forKey: "upsellIDs") as? [Int64], productUpsellIDs)
+        XCTAssertEqual(persistedProduct.value(forKey: "variations") as? [Int64], productVariationIDs)
+
+        let persistedAttribute = try XCTUnwrap(targetContext.first(entityName: "ProductAttribute"))
+        XCTAssertEqual(persistedAttribute.value(forKey: "options") as? [String], attributeOptions)
+    }
+
     func test_migrating_from_31_to_32_renames_Attribute_to_GenericAttribute() throws {
         // Given
-        let container = try startPersistentContainer("Model 31")
+        let sourceContainer = try startPersistentContainer("Model 31")
+        let sourceContext = sourceContainer.viewContext
 
-        let attribute = container.viewContext.insert(entityName: "Attribute", properties: [
+        let attribute = sourceContext.insert(entityName: "Attribute", properties: [
             "id": 9_753_134,
             "key": "voluptatem",
             "value": "veritatis"
         ])
-        let variation = insertProductVariation(to: container.viewContext)
+        let variation = insertProductVariation(to: sourceContainer.viewContext)
         variation.mutableOrderedSetValue(forKey: "attributes").add(attribute)
 
-        try container.viewContext.save()
+        try sourceContext.save()
 
-        XCTAssertEqual(try container.viewContext.count(entityName: "Attribute"), 1)
-        XCTAssertEqual(try container.viewContext.count(entityName: "ProductVariation"), 1)
+        XCTAssertEqual(try sourceContext.count(entityName: "Attribute"), 1)
+        XCTAssertEqual(try sourceContext.count(entityName: "ProductVariation"), 1)
 
         // When
-        let migratedContainer = try migrate(container, to: "Model 32")
+        let targetContainer = try migrate(sourceContainer, to: "Model 32")
 
         // Then
-        XCTAssertNil(NSEntityDescription.entity(forEntityName: "Attribute", in: migratedContainer.viewContext))
-        XCTAssertEqual(try migratedContainer.viewContext.count(entityName: "GenericAttribute"), 1)
-        XCTAssertEqual(try migratedContainer.viewContext.count(entityName: "ProductVariation"), 1)
+        let targetContext = targetContainer.viewContext
 
-        let migratedAttribute = try XCTUnwrap(migratedContainer.viewContext.allObjects(entityName: "GenericAttribute").first)
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "Attribute", in: targetContext))
+        XCTAssertEqual(try targetContext.count(entityName: "GenericAttribute"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "ProductVariation"), 1)
+
+        let migratedAttribute = try XCTUnwrap(targetContext.allObjects(entityName: "GenericAttribute").first)
         XCTAssertEqual(migratedAttribute.value(forKey: "id") as? Int, 9_753_134)
         XCTAssertEqual(migratedAttribute.value(forKey: "key") as? String, "voluptatem")
         XCTAssertEqual(migratedAttribute.value(forKey: "value") as? String, "veritatis")
 
         // The "attributes" relationship should have been migrated too
-        let migratedVariation = try XCTUnwrap(migratedContainer.viewContext.allObjects(entityName: "ProductVariation").first)
+        let migratedVariation = try XCTUnwrap(targetContext.allObjects(entityName: "ProductVariation").first)
         let migratedVariationAttributes = migratedVariation.mutableOrderedSetValue(forKey: "attributes")
         XCTAssertEqual(migratedVariationAttributes.count, 1)
         XCTAssertEqual(migratedVariationAttributes.firstObject as? NSManagedObject, migratedAttribute)
 
         // The migrated attribute can be accessed using the newly renamed `GenericAttribute` class.
-        let genericAttribute = try XCTUnwrap(migratedContainer.viewContext.firstObject(ofType: GenericAttribute.self))
+        let genericAttribute = try XCTUnwrap(targetContext.firstObject(ofType: GenericAttribute.self))
         XCTAssertEqual(genericAttribute.id, 9_753_134)
         XCTAssertEqual(genericAttribute.key, "voluptatem")
         XCTAssertEqual(genericAttribute.value, "veritatis")
     }
+
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -186,6 +291,71 @@ private extension MigrationTests {
             "statusKey": "",
             "stockStatusKey": "",
             "taxStatusKey": ""
+        ])
+    }
+
+    @discardableResult
+    func insertAccount(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "Account", properties: [
+            "userID": 0,
+            "username": ""
+        ])
+    }
+
+    @discardableResult
+    func insertProduct(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "Product", properties: [
+            "price": "",
+            "permalink": "",
+            "productTypeKey": "simple",
+            "purchasable": true,
+            "averageRating": "",
+            "backordered": true,
+            "backordersAllowed": false,
+            "backordersKey": "",
+            "catalogVisibilityKey": "",
+            "dateCreated": Date(),
+            "downloadable": true,
+            "featured": true,
+            "manageStock": true,
+            "name": "product",
+            "onSale": true,
+            "soldIndividually": true,
+            "slug": "",
+            "shippingRequired": false,
+            "shippingTaxable": false,
+            "reviewsAllowed": true,
+            "groupedProducts": [],
+            "virtual": true,
+            "stockStatusKey": "",
+            "statusKey": "",
+            "taxStatusKey": ""
+        ])
+    }
+
+    @discardableResult
+    func insertProductCategory(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "ProductCategory", properties: [
+            "name": "",
+            "slug": ""
+        ])
+    }
+
+    @discardableResult
+    func insertProductTag(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "ProductTag", properties: [
+            "tagID": 0,
+            "name": "",
+            "slug": ""
+        ])
+    }
+
+    @discardableResult
+    func insertProductAttribute(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "ProductAttribute", properties: [
+            "name": "",
+            "variation": false,
+            "visible": false
         ])
     }
 }

@@ -31,13 +31,15 @@ A Jetpack-powered companion app for WooCommerce.
     
     
     ```bash
-    rake dependencies
+    bundle exec rake dependencies
     ```
     
 5. Open the project by double clicking on `WooCommerce.xcworkspace` file, or launching Xcode and choose File > Open and browse to `WooCommerce.xcworkspace`
 
 #### Credentials for external contributors
+
 In order to login to WordPress.com using the app:
+
 1. Create a [WordPress.com account](https://wordpress.com/start/user) (if you don't already have one).
 2. Create a new developer application [here](https://developer.wordpress.com/apps/).
 3. Set **"Redirect URLs"** = `https://localhost` and **"Type"** = `Native` and click **Create** then **Update**.

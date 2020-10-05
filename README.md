@@ -51,7 +51,7 @@ In order to login to WordPress.com using the app:
 
 Please, remember to not add this information on your commits and PRs.
   
-### SwiftLint
+### Coding Style
 
 We use [SwiftLint](https://github.com/realm/SwiftLint) to enforce a common style for Swift code. The app should build and work without it, but if you plan to write code, you are encouraged to run it locally by `bundle exec rake lint` (first run will install SwiftLint if you don't have it). No pull requests should have lint warnings or errors before merging, and we also have `Hound` (mentioned below) to help us in pull requests on GitHub.
 
@@ -62,6 +62,8 @@ bundle exec rake lint:autocorrect
 ```
 
 Otherwise, you can also fix them manually.
+
+Read more about styling in the [Coding Style Guide](docs/coding-style-guide.md).
 
 #### CocoaPods
 

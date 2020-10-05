@@ -1,13 +1,3 @@
-Abbiamo molti miglioramenti in Dettagli dell'ordine e in Impostazioni da segnalare in questo aggiornamento.
-
-In Dettagli dell'ordine, puoi ora aggiungere un segnaposto "Ospite" quando non viene fornito un nome del cliente. Nella sottosezione Dettagli del prodotto, abbiamo corretto l'errore tecnico per il quale, facendo clic al di fuori di "Aggiungi altri dettagli", si chiudeva l'intera sezione.
-
-In Impostazioni, il pulsante "Richiesta di funzionalità" è stato sostituito da "Invia feedback".
-
-Abbiamo anche apportato alcune modifiche nel caso in cui l'opzione Prodotti sia attiva in Impostazioni > Funzionalità sperimentali:
-
-1. Puoi apportare alcune modifiche di base per prodotti non principali, come gli abbonamenti, che sono introdotti tramite plugin esterni e non definiti per impostazione predefinita nei quattro gruppi principali di WooCommerce (semplice, variabile, collegato e raggruppato). Puoi modificare immagini, nome, descrizione, prezzo, inventario, tag, categorie, breve descrizione e impostazioni del prodotto.
-2. Le impostazioni dell'inventario e di spedizione per le varianti del prodotto, incluso lo stato del magazzino, possono essere ora modificate.
-3. La riga delle recensioni è nascosta se le recensioni sono disabilitate.
-4. Puoi aprire la schermata delle recensioni del prodotto anche se non sono presenti recensioni.
-5. Il supporto di VoiceOver in Dettagli del prodotto include ora l'intestazione delle immagini e il nome del prodotto.
+- Prodotti: se l'opzione Prodotti è attiva in Impostazioni → Funzionalità in fase sperimentale per un prodotto variabile, lo stato del magazzino non viene più mostrato nei dettagli del prodotto se la gestione del magazzino è disattivata (poiché lo stato del magazzino è controllato a livello delle varianti).
+- Ordini: nell'elenco della ricerca verrà ora mostrato con il conteggio totale invece di "99+".
+- Recensioni: abbiamo risolto un problema a causa del quale le recensioni non venivano aggiornate correttamente. Ora, se elimini o contrassegni una recensione come spam, questa modifica si rifletterà nell'elenco delle recensioni del prodotto.

@@ -20,7 +20,7 @@ final class IssueRefundViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureTitle()
+        configureNavigationBar()
         configureNextButton()
         configureTableView()
     }
@@ -41,8 +41,9 @@ private extension IssueRefundViewController {
 // MARK: View Configuration
 private extension IssueRefundViewController {
 
-    func configureTitle() {
+    func configureNavigationBar() {
         title = viewModel.title
+        addCloseNavigationBarButton(title: Localization.cancelTitle)
     }
 
     func configureTableView() {
@@ -114,5 +115,6 @@ extension IssueRefundViewController: UITableViewDelegate, UITableViewDataSource 
 private extension IssueRefundViewController {
     enum Localization {
         static let nextTitle = NSLocalizedString("Next", comment: "Title of the next button in the issue refund screen")
+        static let cancelTitle = NSLocalizedString("Cancel", comment: "Cancel button title in the issue refund screen")
     }
 }

@@ -55,6 +55,11 @@ public struct WordPressAuthenticatorConfiguration {
     ///
     let enableSignUp: Bool
 
+    /// Hint buttons help users complete a step in the unified auth flow. Enabled by default.
+    /// If enabled, "Find your site address", "Reset your password", and others will be displayed.
+    /// If disabled, none of the hint buttons will appear on the unified auth flows.
+    let displayHintButtons: Bool
+    
     /// Flag indicating if the Sign In With Apple option should be displayed.
     ///
     let enableSignInWithApple: Bool
@@ -69,34 +74,9 @@ public struct WordPressAuthenticatorConfiguration {
     
     /// Flag for the unified login/signup flows.
     /// If disabled, none of the unified flows will display.
-    /// If enabled, allows selected unified flows to display.
+    /// If enabled, all unified flows will display.
     ///
     let enableUnifiedAuth: Bool
-
-    /// Hint buttons help users complete a step in the unified auth flow. Enabled by default.
-    /// If enabled, "Find your site address", "Reset your password", and others will be displayed.
-    /// If disabled, none of the hint buttons will appear on the unified auth flows.
-    let displayHintButtons: Bool
-
-    /// Flag indicating if the unified login by Site Address flow should display.
-    ///
-    let enableUnifiedSiteAddress: Bool
-
-    /// Flag indicating if the unified Google flow should display.
-    ///
-    let enableUnifiedGoogle: Bool
-
-    /// Flag indicating if the unified Apple flow should display.
-    ///
-    let enableUnifiedApple: Bool
-
-    /// Flag indicating if the unified WordPress flow should display.
-    ///
-    let enableUnifiedWordPress: Bool
-    
-    /// Flag indicating if keychain login is enabled
-    ///
-    let enableUnifiedKeychainLogin: Bool
 
     /// Designated Initializer
     ///
@@ -115,12 +95,7 @@ public struct WordPressAuthenticatorConfiguration {
                  enableSignInWithApple: Bool = false,
                  enableSignupWithGoogle: Bool = false,
                  enableUnifiedAuth: Bool = false,
-                 displayHintButtons: Bool = true,
-                 enableUnifiedSiteAddress: Bool = false,
-                 enableUnifiedGoogle: Bool = false,
-                 enableUnifiedApple: Bool = false,
-                 enableUnifiedWordPress: Bool = false,
-                 enableUnifiedKeychainLogin: Bool = false) {
+                 displayHintButtons: Bool = true) {
 
         self.wpcomClientId = wpcomClientId
         self.wpcomSecret = wpcomSecret
@@ -137,11 +112,6 @@ public struct WordPressAuthenticatorConfiguration {
         self.enableSignInWithApple = enableSignInWithApple
         self.enableUnifiedAuth = enableUnifiedAuth
         self.displayHintButtons = displayHintButtons
-        self.enableUnifiedSiteAddress = enableUnifiedAuth && enableUnifiedSiteAddress
-        self.enableUnifiedGoogle = enableUnifiedAuth && enableUnifiedGoogle
         self.enableSignupWithGoogle = enableSignupWithGoogle
-        self.enableUnifiedApple = enableUnifiedAuth && enableUnifiedApple
-        self.enableUnifiedWordPress = enableUnifiedAuth && enableUnifiedWordPress
-        self.enableUnifiedKeychainLogin = enableUnifiedAuth && enableUnifiedKeychainLogin
     }
 }

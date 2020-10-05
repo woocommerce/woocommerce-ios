@@ -235,7 +235,7 @@ extension GoogleAuthenticator: GIDSignInDelegate {
         loginFields.meta.socialServiceIDToken = token
         loginFields.meta.googleUser = user
 
-        guard authConfig.enableUnifiedGoogle else {
+        guard authConfig.enableUnifiedAuth else {
             // Initiate separate WP login / signup paths.
             switch authType {
             case .login:
@@ -330,9 +330,10 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
             if tracker.shouldUseLegacyTracker() {
                 track(.loginSocialErrorUnknownUser)
             }
+        } else {
+            // Don't track unknown user for unified Auth.
+            tracker.track(failure: errorDescription)
         }
-
-        tracker.track(failure: errorDescription)
 
         loginDelegate?.googleLoginFailed(errorTitle: errorTitle, errorDescription: errorDescription, loginFields: loginFields)
         delegate?.googleLoginFailed(errorTitle: errorTitle, errorDescription: errorDescription, loginFields: loginFields, unknownUser: unknownUser)

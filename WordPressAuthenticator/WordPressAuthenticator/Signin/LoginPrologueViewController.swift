@@ -7,8 +7,19 @@ import WordPressKit
 class LoginPrologueViewController: LoginViewController {
 
     @IBOutlet private weak var topContainerView: UIView!
+    @IBOutlet private weak var buttonBlurEffectView: UIVisualEffectView!
     private var buttonViewController: NUXButtonViewController?
     var showCancel = false
+
+    /// Blur effect on button container view
+    ///
+    private var blurEffect: UIBlurEffect.Style {
+        if #available(iOS 13.0, *) {
+            return .systemChromeMaterial
+        }
+
+        return .regular
+    }
 
     /// Constraints on the button view container.
     /// Used to adjust the button width in unified views.
@@ -122,7 +133,7 @@ class LoginPrologueViewController: LoginViewController {
     ///
     private func showiCloudKeychainLoginFlow() {
         guard #available(iOS 13, *),
-            WordPressAuthenticator.shared.configuration.enableUnifiedKeychainLogin,
+            WordPressAuthenticator.shared.configuration.enableUnifiedAuth,
             let navigationController = navigationController else {
                 return
         }
@@ -145,7 +156,7 @@ class LoginPrologueViewController: LoginViewController {
             return
         }
 
-        guard configuration.enableUnifiedWordPress else {
+        guard configuration.enableUnifiedAuth else {
             buildPrologueButtons(buttonViewController)
             return
         }
@@ -178,6 +189,7 @@ class LoginPrologueViewController: LoginViewController {
         }
 
         buttonViewController.backgroundColor = style.buttonViewBackgroundColor
+        buttonBlurEffectView.isHidden = true
     }
 
     /// Displays the Unified prologue buttons.
@@ -199,7 +211,7 @@ class LoginPrologueViewController: LoginViewController {
             self.continueWithDotCom()
         }
 
-        if configuration.enableUnifiedSiteAddress {
+        if configuration.enableUnifiedAuth {
             buttonViewController.setupBottomButton(title: siteAddressTitle, isPrimary: false, accessibilityIdentifier: "Prologue Self Hosted Button") { [weak self] in
                 self?.siteAddressTapped()
             }
@@ -212,7 +224,9 @@ class LoginPrologueViewController: LoginViewController {
             }
         }
 
-        buttonViewController.backgroundColor = style.buttonViewBackgroundColor
+        // Set the button background color to clear so the blur effect blurs the Prologue background color.
+        buttonViewController.backgroundColor = .clear
+        buttonBlurEffectView.effect = UIBlurEffect(style: blurEffect)
     }
 
     // MARK: - Actions
@@ -281,7 +295,7 @@ class LoginPrologueViewController: LoginViewController {
                 return
             }
 
-            guard self.configuration.enableUnifiedWordPress else {
+            guard self.configuration.enableUnifiedAuth else {
                 self.presentSignUpEmailView()
                 return
             }
@@ -294,7 +308,7 @@ class LoginPrologueViewController: LoginViewController {
                 return
             }
             
-            guard self.configuration.enableUnifiedGoogle else {
+            guard self.configuration.enableUnifiedAuth else {
                 self.presentGoogleSignupView()
                 return
             }
@@ -315,7 +329,7 @@ class LoginPrologueViewController: LoginViewController {
     }
 
     private func googleTapped() {
-        guard configuration.enableUnifiedGoogle else {
+        guard configuration.enableUnifiedAuth else {
             GoogleAuthenticator.sharedInstance.loginDelegate = self
             GoogleAuthenticator.sharedInstance.showFrom(viewController: self, loginFields: loginFields, for: .login)
             return
@@ -444,7 +458,7 @@ extension LoginPrologueViewController: AppleAuthenticatorDelegate {
     func showWPComLogin(loginFields: LoginFields) {
         self.loginFields = loginFields
 
-        guard WordPressAuthenticator.shared.configuration.enableUnifiedApple else {
+        guard WordPressAuthenticator.shared.configuration.enableUnifiedAuth else {
             presentWPLogin()
             return
         }

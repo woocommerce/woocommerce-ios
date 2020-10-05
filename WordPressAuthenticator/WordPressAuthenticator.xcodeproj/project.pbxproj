@@ -158,6 +158,7 @@
 		F12F9FB424D8A68E00771BCE /* AuthenticatorAnalyticsTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12F9FB324D8A68E00771BCE /* AuthenticatorAnalyticsTracker.swift */; };
 		F12F9FB824D8A7FC00771BCE /* AnalyticsTrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12F9FB724D8A7FC00771BCE /* AnalyticsTrackerTests.swift */; };
 		F180B82424F59263000A01F5 /* StoredCredentialsPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = F180B82324F59263000A01F5 /* StoredCredentialsPicker.swift */; };
+		F18DF0E5252500A600D83AFE /* WordPressAuthenticatorTests-Bridging-Header.h in Sources */ = {isa = PBXBuildFile; fileRef = F18DF0E4252500A600D83AFE /* WordPressAuthenticatorTests-Bridging-Header.h */; };
 		F1AF1BEF24E4A80F00BA453E /* LoginFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1AF1BEE24E4A80F00BA453E /* LoginFacade.swift */; };
 		F1C96669250BF53400EB529D /* UIViewController+Dismissal.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1C96668250BF53400EB529D /* UIViewController+Dismissal.swift */; };
 		F1DE08CC24F4266A007AE6B3 /* StoredCredentialsAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1DE08CB24F4266A007AE6B3 /* StoredCredentialsAuthenticator.swift */; };
@@ -356,6 +357,7 @@
 		F12F9FB324D8A68E00771BCE /* AuthenticatorAnalyticsTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticatorAnalyticsTracker.swift; sourceTree = "<group>"; };
 		F12F9FB724D8A7FC00771BCE /* AnalyticsTrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsTrackerTests.swift; sourceTree = "<group>"; };
 		F180B82324F59263000A01F5 /* StoredCredentialsPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredCredentialsPicker.swift; sourceTree = "<group>"; };
+		F18DF0E4252500A600D83AFE /* WordPressAuthenticatorTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WordPressAuthenticatorTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		F1AF1BEE24E4A80F00BA453E /* LoginFacade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginFacade.swift; sourceTree = "<group>"; };
 		F1C96668250BF53400EB529D /* UIViewController+Dismissal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Dismissal.swift"; sourceTree = "<group>"; };
 		F1DE08CB24F4266A007AE6B3 /* StoredCredentialsAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredCredentialsAuthenticator.swift; sourceTree = "<group>"; };
@@ -729,6 +731,7 @@
 		B5ED7901207E976500A8FD8C /* WordPressAuthenticatorTests */ = {
 			isa = PBXGroup;
 			children = (
+				F18DF0E32525009200D83AFE /* SupportingFiles */,
 				BA53D64924DFE06C001F1ABF /* Mocks */,
 				BA53D64424DFDE0B001F1ABF /* Credentials */,
 				F12F9FB524D8A7DB00771BCE /* Analytics */,
@@ -869,6 +872,14 @@
 				F12F9FB324D8A68E00771BCE /* AuthenticatorAnalyticsTracker.swift */,
 			);
 			path = Analytics;
+			sourceTree = "<group>";
+		};
+		F18DF0E32525009200D83AFE /* SupportingFiles */ = {
+			isa = PBXGroup;
+			children = (
+				F18DF0E4252500A600D83AFE /* WordPressAuthenticatorTests-Bridging-Header.h */,
+			);
+			path = SupportingFiles;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1265,6 +1276,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F18DF0E5252500A600D83AFE /* WordPressAuthenticatorTests-Bridging-Header.h in Sources */,
 				B501C045208FC68700D1E58F /* LoginFieldsValidationTests.swift in Sources */,
 				BA53D64824DFDF97001F1ABF /* WordPressSourceTagTests.swift in Sources */,
 				BA53D64D24DFE4E6001F1ABF /* ModalViewControllerPresentingSpy.swift in Sources */,
@@ -1464,11 +1476,14 @@
 			baseConfigurationReference = B0D7D40BC1DE2D367761AD86 /* Pods-WordPressAuthenticatorTests.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = WordPressAuthenticatorTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.WordPressAuthenticatorTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "WordPressAuthenticatorTests/SupportingFiles/WordPressAuthenticatorTests-Bridging-Header.h";
+				SWIFT_PRECOMPILE_BRIDGING_HEADER = NO;
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1479,11 +1494,14 @@
 			baseConfigurationReference = FF475C5056EB60A277696BA9 /* Pods-WordPressAuthenticatorTests.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = WordPressAuthenticatorTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.WordPressAuthenticatorTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "WordPressAuthenticatorTests/SupportingFiles/WordPressAuthenticatorTests-Bridging-Header.h";
+				SWIFT_PRECOMPILE_BRIDGING_HEADER = NO;
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1575,11 +1593,14 @@
 			baseConfigurationReference = AE612958059F9E80B54138B3 /* Pods-WordPressAuthenticatorTests.release-internal.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = WordPressAuthenticatorTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.WordPressAuthenticatorTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "WordPressAuthenticatorTests/SupportingFiles/WordPressAuthenticatorTests-Bridging-Header.h";
+				SWIFT_PRECOMPILE_BRIDGING_HEADER = NO;
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1671,11 +1692,14 @@
 			baseConfigurationReference = 37AFD4EF492B00CA7AEC11A3 /* Pods-WordPressAuthenticatorTests.release-alpha.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				INFOPLIST_FILE = WordPressAuthenticatorTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.WordPressAuthenticatorTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "WordPressAuthenticatorTests/SupportingFiles/WordPressAuthenticatorTests-Bridging-Header.h";
+				SWIFT_PRECOMPILE_BRIDGING_HEADER = NO;
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

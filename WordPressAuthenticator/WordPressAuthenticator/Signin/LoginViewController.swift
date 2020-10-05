@@ -208,10 +208,11 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
             WordPressAuthenticator.track(.twoFactorCodeRequested)
         }
         
-        let unifiedGoogle = WordPressAuthenticator.shared.configuration.enableUnifiedGoogle && loginFields.meta.socialService == .google
-        let unifiedApple = WordPressAuthenticator.shared.configuration.enableUnifiedApple && loginFields.meta.socialService == .apple
-        let unifiedSiteAddress = WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress && !loginFields.siteAddress.isEmpty
-        let unifiedWordPress = WordPressAuthenticator.shared.configuration.enableUnifiedWordPress && loginFields.meta.userIsDotCom
+        let unifiedAuthEnabled = WordPressAuthenticator.shared.configuration.enableUnifiedAuth
+        let unifiedGoogle = unifiedAuthEnabled && loginFields.meta.socialService == .google
+        let unifiedApple = unifiedAuthEnabled && loginFields.meta.socialService == .apple
+        let unifiedSiteAddress = unifiedAuthEnabled && !loginFields.siteAddress.isEmpty
+        let unifiedWordPress = unifiedAuthEnabled && loginFields.meta.userIsDotCom
         
         guard (unifiedGoogle || unifiedApple || unifiedSiteAddress || unifiedWordPress) else {
             presentLogin2FA()
@@ -437,7 +438,7 @@ extension LoginViewController {
         loginFields.nonceInfo = nonceInfo
         loginFields.nonceUserID = userID
 
-        guard WordPressAuthenticator.shared.configuration.enableUnifiedApple else {
+        guard WordPressAuthenticator.shared.configuration.enableUnifiedAuth else {
             presentLogin2FA()
             return
         }
@@ -516,7 +517,7 @@ extension LoginViewController: LoginSocialErrorViewControllerDelegate {
     /// Displays the self-hosted login form.
     ///
     @objc func loginToSelfHostedSite() {
-        guard WordPressAuthenticator.shared.configuration.enableUnifiedSiteAddress else {
+        guard WordPressAuthenticator.shared.configuration.enableUnifiedAuth else {
             presentSelfHostedView()
             return
         }

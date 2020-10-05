@@ -36,7 +36,7 @@ A Jetpack-powered companion app for WooCommerce.
     
 5. Open the project by double clicking on `WooCommerce.xcworkspace` file, or launching Xcode and choose File > Open and browse to `WooCommerce.xcworkspace`
 
-#### Credentials for external contributors
+### Credentials for External Contributors
 
 In order to login to WordPress.com using the app:
 
@@ -53,7 +53,7 @@ Please, remember to not add this information on your commits and PRs.
   
 #### SwiftLint
 
-We use [SwiftLint](https://github.com/realm/SwiftLint) to enforce a common style for Swift code. The app should build and work without it, but if you plan to write code, you are encouraged to run it locally by `rake lint` (first run will install SwiftLint if you don't have it). No pull requests should have lint warnings or errors before merging, and we also have `Hound` (mentioned below) to help us in pull requests on GitHub.
+We use [SwiftLint](https://github.com/realm/SwiftLint) to enforce a common style for Swift code. The app should build and work without it, but if you plan to write code, you are encouraged to run it locally by `bundle exec rake lint` (first run will install SwiftLint if you don't have it). No pull requests should have lint warnings or errors before merging, and we also have `Hound` (mentioned below) to help us in pull requests on GitHub.
 
 If your code has any style violations, you can try to automatically correct them by running:
 

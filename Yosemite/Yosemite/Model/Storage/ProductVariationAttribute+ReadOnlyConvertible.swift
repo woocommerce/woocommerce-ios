@@ -3,7 +3,7 @@ import Storage
 
 // Storage.Attribute: ReadOnlyConvertible Conformance.
 //
-extension Storage.Attribute: ReadOnlyConvertible {
+extension Storage.GenericAttribute: ReadOnlyConvertible {
 
     /// Updates the Storage.Attribute with the a ReadOnly ProductVariationAttribute.
     ///

@@ -79,7 +79,7 @@ public typealias WooAPIVersion = Networking.WooAPIVersion
 // MARK: - Exported Storage Symbols
 
 public typealias StorageAccount = Storage.Account
-public typealias StorageAttribute = Storage.Attribute
+public typealias StorageAttribute = Storage.GenericAttribute
 public typealias StorageNote = Storage.Note
 public typealias StorageOrder = Storage.Order
 public typealias StorageOrderItemRefund = Storage.OrderItemRefund

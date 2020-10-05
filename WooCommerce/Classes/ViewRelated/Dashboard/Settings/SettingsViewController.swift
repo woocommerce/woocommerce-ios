@@ -365,12 +365,8 @@ private extension SettingsViewController {
     }
 
     func betaFeaturesWasPressed() {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            assertionFailure("Cannot find store ID")
-            return
-        }
         ServiceLocator.analytics.track(.settingsBetaFeaturesButtonTapped)
-        let betaFeaturesViewController = BetaFeaturesViewController(siteID: siteID)
+        let betaFeaturesViewController = BetaFeaturesViewController()
         navigationController?.pushViewController(betaFeaturesViewController, animated: true)
     }
 

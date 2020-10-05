@@ -47,9 +47,9 @@ private extension RefundProductsTotalTableViewCell {
         taxTitleLabel.applyBodyStyle()
         taxPriceLabel.applyBodyStyle()
         productsRefundTitleLabel.applyBodyStyle()
-        productsRefundTitleLabel.font = .font(forStyle: .body, weight: .bold)
+        productsRefundTitleLabel.font = .font(forStyle: .body, weight: .semibold)
         productsRefundPriceLabel.applyBodyStyle()
-        productsRefundPriceLabel.font = .font(forStyle: .body, weight: .bold)
+        productsRefundPriceLabel.font = .font(forStyle: .body, weight: .semibold)
 
         taxTitleLabel.text = Localization.taxTitle
         subtotalTitleLabel.text = Localization.subtotalTitle

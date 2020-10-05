@@ -34,6 +34,8 @@ A Jetpack-powered companion app for WooCommerce.
     bundle exec rake dependencies
     ```
     
+    This command installs the required tools like [CocoaPods](https://cocoapods.org/). And then it installs the iOS project dependencies using CocoaPods. 
+    
 5. Open the project by double clicking on `WooCommerce.xcworkspace` file, or launching Xcode and choose File > Open and browse to `WooCommerce.xcworkspace`
 
 ### Credentials for External Contributors
@@ -65,20 +67,15 @@ Otherwise, you can also fix them manually.
 
 Read more about styling in the [Coding Style Guide](docs/coding-style-guide.md).
 
-#### CocoaPods
-
-The woocommerce-ios project uses [CocoaPods](http://cocoapods.org/) to manage third party libraries.  
-Third party libraries and resources managed by CocoaPods will be installed by the `bundle exec pod install` command above.
-
-#### Peril
+## Peril
 
 The woocommerce-ios project uses [Peril](https://danger.systems/js/guides/peril.html) to enforce Pull Request guidelines.
 
-#### Circle CI
+## Circle CI
 
 The woocommerce-ios project uses [Circle CI](https://circleci.com/gh/woocommerce/woocommerce-ios) for continuous integration.
 
-#### Hound
+## Hound
 The woocommerce-ios project uses [Hound](https://houndci.com) to enforce basic Swift styles. (Not all Woo styles are defined in Hound.)
 
 ## Security

@@ -52,10 +52,9 @@ private extension ProductVariationStore {
     /// Synchronizes the product reviews associated with a given Site ID (if any!).
     ///
     func synchronizeProductVariations(siteID: Int64, productID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
-        let remote = ProductVariationsRemote(network: network)
-
         remote.loadAllProductVariations(for: siteID,
                                         productID: productID,
+                                        context: nil,
                                         pageNumber: pageNumber,
                                         pageSize: pageSize) { [weak self] (productVariations, error) in
             guard let productVariations = productVariations else {

@@ -103,7 +103,6 @@ private extension ProductStore {
     /// Searches all of the products that contain a given Keyword.
     ///
     func searchProducts(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, excludedProductIDs: [Int64], onCompletion: @escaping (Error?) -> Void) {
-        let remote = ProductsRemote(network: network)
         remote.searchProducts(for: siteID,
                               keyword: keyword,
                               pageNumber: pageNumber,
@@ -134,9 +133,8 @@ private extension ProductStore {
                              excludedProductIDs: [Int64],
                              shouldDeleteStoredProductsOnFirstPage: Bool,
                              onCompletion: @escaping (Result<Bool, Error>) -> Void) {
-        let remote = ProductsRemote(network: network)
-
         remote.loadAllProducts(for: siteID,
+                               context: nil,
                                pageNumber: pageNumber,
                                pageSize: pageSize,
                                stockStatus: stockStatus,
@@ -180,7 +178,6 @@ private extension ProductStore {
             }
         }
 
-        let remote = ProductsRemote(network: network)
         remote.loadProducts(for: order.siteID, by: missingIDs) { [weak self] result in
             switch result {
             case .success(let products):
@@ -279,8 +276,6 @@ private extension ProductStore {
     /// Updates the product.
     ///
     func updateProduct(product: Product, onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
-        let remote = ProductsRemote(network: network)
-
         remote.updateProduct(product: product) { [weak self] result in
             switch result {
             case .failure(let error):
@@ -306,7 +301,6 @@ private extension ProductStore {
             return
         }
 
-        let remote = ProductsRemote(network: network)
         remote.searchSku(for: siteID, sku: sku) { (result, error) in
             guard error == nil else {
                 onCompletion(true)

@@ -5,12 +5,18 @@ import Storage
 // MARK: - OrderNoteStore
 //
 public class OrderNoteStore: Store {
+    private let remote: OrdersRemote
 
     /// Shared private StorageType for use during then entire OrderNotes sync process
     ///
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.newDerivedStorage()
     }()
+
+    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+        self.remote = OrdersRemote(network: network)
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
 
     /// Registers for supported Actions.
     ///
@@ -43,7 +49,6 @@ private extension OrderNoteStore {
     /// Retrieves the order notes associated with the provided Site ID & Order ID (if any!).
     ///
     func retrieveOrderNotes(siteID: Int64, orderID: Int64, onCompletion: @escaping ([OrderNote]?, Error?) -> Void) {
-        let remote = OrdersRemote(network: network)
         remote.loadOrderNotes(for: siteID, orderID: orderID) { [weak self] (orderNotes, error) in
             guard let orderNotes = orderNotes else {
                 onCompletion(nil, error)
@@ -59,7 +64,6 @@ private extension OrderNoteStore {
     /// Adds a single order note and associates it with the provided siteID and orderID.
     ///
     func addOrderNote(siteID: Int64, orderID: Int64, isCustomerNote: Bool, note: String, onCompletion: @escaping (OrderNote?, Error?) -> Void) {
-        let remote = OrdersRemote(network: network)
         remote.addOrderNote(for: siteID, orderID: orderID, isCustomerNote: isCustomerNote, with: note) { [weak self] (orderNote, error) in
             guard let note = orderNote else {
                 onCompletion(nil, error)

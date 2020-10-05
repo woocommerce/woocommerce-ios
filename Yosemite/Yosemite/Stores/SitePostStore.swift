@@ -1,8 +1,16 @@
 import Networking
+import Storage
 
 /// MARK: SitePostStore
 ///
 final public class SitePostStore: Store {
+    private let remote: SitePostsRemote
+
+    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+        self.remote = SitePostsRemote(network: network)
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
+
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
@@ -33,7 +41,6 @@ private extension SitePostStore {
     /// Retrieve the password for a specific site post from WP.com
     ///
     func retrieveSitePostPassword(siteID: Int64, postID: Int64, onCompletion: @escaping (_ password: String?, _ error: Error?) -> Void) {
-        let remote = SitePostsRemote(network: network)
         remote.loadSitePost(for: siteID, postID: postID) { (sitePost, error) in
             guard error == nil else {
                 onCompletion(nil, error)
@@ -46,7 +53,6 @@ private extension SitePostStore {
     /// Update the password for a specific site post from WP.com
     ///
     func updateSitePostPassword(siteID: Int64, postID: Int64, password: String, onCompletion: @escaping (Result<String?, Error>) -> Void) {
-        let remote = SitePostsRemote(network: network)
         let newSitePost = Post(siteID: siteID, password: password)
         remote.updateSitePost(for: siteID, postID: postID, post: newSitePost) { result in
             switch result {

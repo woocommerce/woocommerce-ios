@@ -6,12 +6,18 @@ import Storage
 // MARK: - OrderStatusStore
 //
 public class OrderStatusStore: Store {
+    private let remote: ReportRemote
 
     /// Shared private StorageType for use during then entire Orders sync process
     ///
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.newDerivedStorage()
     }()
+
+    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+        self.remote = ReportRemote(network: network)
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
 
     /// Registers for supported Actions.
     ///
@@ -44,7 +50,6 @@ private extension OrderStatusStore {
     /// Retrieves the order statuses associated with the provided Site ID (if any!).
     ///
     func retrieveOrderStatuses(siteID: Int64, onCompletion: @escaping ([OrderStatus]?, Error?) -> Void) {
-        let remote = ReportRemote(network: network)
         remote.loadOrderStatuses(for: siteID) { [weak self] (orderStatuses, error) in
             guard let orderStatuses = orderStatuses else {
                 onCompletion(nil, error)

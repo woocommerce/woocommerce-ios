@@ -43,4 +43,13 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
             }
         }
     }
+
+    func loadAllProductVariations(for siteID: Int64,
+                                  productID: Int64,
+                                  context: String?,
+                                  pageNumber: Int,
+                                  pageSize: Int,
+                                  completion: @escaping ([ProductVariation]?, Error?) -> Void) {
+        // no-op
+    }
 }

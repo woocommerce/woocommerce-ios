@@ -200,9 +200,7 @@ extension DashboardViewController {
 private extension DashboardViewController {
 
     @objc func settingsTapped() {
-        guard let settingsViewController = UIStoryboard.dashboard.instantiateViewController(ofClass: SettingsViewController.self) else {
-            fatalError("Cannot instantiate `SettingsViewController` from Dashboard storyboard")
-        }
+        let settingsViewController = SettingsViewController(nibName: nil, bundle: nil)
         ServiceLocator.analytics.track(.settingsTapped)
         show(settingsViewController, sender: self)
     }

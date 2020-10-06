@@ -10,7 +10,7 @@ final class TitleAndEditableValueTableViewCell: UITableViewCell {
     enum Style {
         /// Small title. This is the default.
         case condensed
-        /// Normal-sized title.
+        /// Normal-sized title with subtle color.
         case relaxed
 
         static let `default` = Self.condensed
@@ -53,6 +53,7 @@ private extension TitleAndEditableValueTableViewCell {
             title.applyFootnoteStyle()
         case .relaxed:
             title.applyBodyStyle()
+            title.textColor = .textSubtle
         }
 
         value.applyBodyStyle()

@@ -1,13 +1,3 @@
-Fizemos várias melhorias em Detalhes do pedido e Configurações nesta atualização.
-
-Em Detalhes do pedido, agora você pode adicionar um marcador de posição "Visitante" quando o nome do cliente não é fornecido. Na subseção Detalhes do produto, corrigimos a falha que fechava toda a seção ao clicar fora de "Adicione mais detalhes".
-
-Em Configurações, o botão "Solicitação de funcionalidade" foi substituído por "Enviar feedback".
-
-Também fizemos alterações para quando Produtos estiver ativado em Configurações > Funcionalidades experimentais:
-
-1. Você pode fazer algumas edições básicas para produtos não essenciais, como assinaturas, que são introduzidas por plugins externos e não são definidas por padrão nos quatro grupos essenciais do WooCommerce (simples, variável, vinculado e em grupo). Você pode também alterar configurações do produto, imagens, nome, descrição, preço, inventário, tags, categorias e breve descrição.
-2. Agora é possível editar configurações de envio e inventário referentes a variações de produto, incluindo status do estoque.
-3. A linha de avaliações ficará oculta se as avaliações estiverem desativadas.
-4. Você pode abrir a tela de avaliações do produto mesmo que não tenha nenhuma avaliação.
-5. O suporte para VoiceOver em Detalhes do produto agora inclui o cabeçalho de imagens e o nome do produto.
+- Produtos: se Produtos estiver ativado em Configurações → Recursos experimentais para um produto variável, o status do estoque não será mais exibido nos detalhes se o gerenciamento de estoque estiver desativado, já que o status é controlado no nível da variação.
+- Pedidos: a lista de pesquisa exibirá a contagem total em vez de "Mais de 99".
+- Avaliações: corrigimos uma falha de atualização das avaliações. Excluir ou marcar uma avaliação como spam será refletido na lista de avaliações do produto.

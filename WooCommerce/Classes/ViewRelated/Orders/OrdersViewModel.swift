@@ -53,25 +53,9 @@ final class OrdersViewModel {
     ///
     private lazy var resultsController: ResultsController<StorageOrder> = {
         let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
-
         let sectionNameKeyPath = #selector(StorageOrder.normalizedAgeAsString)
-        let predicate: NSPredicate = {
-            let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
-            let excludeNonMatchingStatus = statusFilter.map { NSPredicate(format: "statusKey = %@", $0.slug) }
-
-            var predicates = [ excludeSearchCache, excludeNonMatchingStatus ].compactMap { $0 }
-            if !includesFutureOrders, let nextMidnight = Date().nextMidnight() {
-                // Exclude orders on and after midnight of today's date
-                let dateSubPredicate = NSPredicate(format: "dateCreated < %@", nextMidnight as NSDate)
-                predicates.append(dateSubPredicate)
-            }
-
-            return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
-        }()
-
         return ResultsController<StorageOrder>(storageManager: storageManager,
                                                sectionNameKeyPath: "\(sectionNameKeyPath)",
-                                               matching: predicate,
                                                sortedBy: [descriptor])
     }()
 
@@ -81,16 +65,20 @@ final class OrdersViewModel {
         resultsController.isEmpty
     }
 
+    private let stores: StoresManager
+
     init(storageManager: StorageManagerType = ServiceLocator.storageManager,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          notificationCenter: NotificationCenter = .default,
          statusFilter: OrderStatus?,
-         includesFutureOrders: Bool = true) {
+         includesFutureOrders: Bool = true,
+         stores: StoresManager = ServiceLocator.stores) {
         self.storageManager = storageManager
         self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
         self.statusFilter = statusFilter
         self.includesFutureOrders = includesFutureOrders
+        self.stores = stores
     }
 
     deinit {
@@ -103,6 +91,7 @@ final class OrdersViewModel {
     /// And only when the corresponding view was loaded.
     ///
     func activateAndForwardUpdates(to tableView: UITableView) {
+        resultsController.predicate = createResultsControllerPredicate()
         resultsController.startForwardingEvents(to: tableView)
         performFetch()
 
@@ -122,6 +111,30 @@ final class OrdersViewModel {
         } catch {
             CrashLogging.logError(error)
         }
+    }
+
+    private func createResultsControllerPredicate() -> NSPredicate {
+        let predicate: NSPredicate = {
+            let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
+            let excludeNonMatchingStatus = statusFilter.map { NSPredicate(format: "statusKey = %@", $0.slug) }
+
+            var predicates = [ excludeSearchCache, excludeNonMatchingStatus ].compactMap { $0 }
+            if !includesFutureOrders, let nextMidnight = Date().nextMidnight() {
+                // Exclude orders on and after midnight of today's date
+                let dateSubPredicate = NSPredicate(format: "dateCreated < %@", nextMidnight as NSDate)
+                predicates.append(dateSubPredicate)
+            }
+
+            return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        }()
+
+        guard let siteID = stores.sessionManager.defaultStoreID else {
+            assertionFailure("Trying to create results controller without a site ID")
+            return predicate
+        }
+
+        let siteIDPredicate = NSPredicate(format: "siteID = %lld", siteID)
+        return NSCompoundPredicate(andPredicateWithSubpredicates: [siteIDPredicate, predicate])
     }
 
     @objc private func handleAppDeactivation() {

@@ -6,6 +6,12 @@ import Foundation
 ///
 public protocol ProductVariationsRemoteProtocol {
     func updateProductVariation(productVariation: ProductVariation, completion: @escaping (Result<ProductVariation, Error>) -> Void)
+    func loadAllProductVariations(for siteID: Int64,
+                                  productID: Int64,
+                                  context: String?,
+                                  pageNumber: Int,
+                                  pageSize: Int,
+                                  completion: @escaping ([ProductVariation]?, Error?) -> Void)
 }
 
 /// ProductVariation: Remote Endpoints

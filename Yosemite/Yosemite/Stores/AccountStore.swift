@@ -6,12 +6,18 @@ import Storage
 // MARK: - AccountStore
 //
 public class AccountStore: Store {
+    private let remote: AccountRemote
 
     /// Shared private StorageType for use during synchronizeSites and synchronizeSitePlan processes
     ///
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.newDerivedStorage()
     }()
+
+    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+        self.remote = AccountRemote(network: network)
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
 
     /// Registers for supported Actions.
     ///
@@ -54,8 +60,6 @@ private extension AccountStore {
     /// Synchronizes the WordPress.com account associated with the Network's Auth Token.
     ///
     func synchronizeAccount(onCompletion: @escaping (Account?, Error?) -> Void) {
-        let remote = AccountRemote(network: network)
-
         remote.loadAccount { [weak self] (account, error) in
             guard let account = account else {
                 onCompletion(nil, error)
@@ -72,8 +76,6 @@ private extension AccountStore {
     /// User ID is passed along because the API doesn't include it in the response.
     ///
     func synchronizeAccountSettings(userID: Int64, onCompletion: @escaping (AccountSettings?, Error?) -> Void) {
-        let remote = AccountRemote(network: network)
-
         remote.loadAccountSettings(for: userID) { [weak self] (accountSettings, error) in
             guard let accountSettings = accountSettings else {
                 onCompletion(nil, error)
@@ -88,8 +90,6 @@ private extension AccountStore {
     /// Synchronizes the WordPress.com sites associated with the Network's Auth Token.
     ///
     func synchronizeSites(onCompletion: @escaping (Error?) -> Void) {
-        let remote = AccountRemote(network: network)
-
         remote.loadSites { [weak self]  (sites, error) in
             guard let sites = sites else {
                 onCompletion(error)
@@ -105,7 +105,6 @@ private extension AccountStore {
     /// Loads the site plan for the default site.
     ///
     func synchronizeSitePlan(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
-        let remote = AccountRemote(network: network)
         remote.loadSitePlan(for: siteID) { [weak self]  (siteplan, error) in
             guard let siteplan = siteplan else {
                 onCompletion(error)
@@ -135,7 +134,6 @@ private extension AccountStore {
     /// Submits the tracks opt-in / opt-out setting to be synced globally. 
     ///
     func updateAccountSettings(userID: Int64, tracksOptOut: Bool, onCompletion: @escaping (Error?) -> Void) {
-        let remote = AccountRemote(network: network)
         remote.updateAccountSettings(for: userID, tracksOptOut: tracksOptOut) { accountSettings, error in
             guard let _ = accountSettings else {
                 onCompletion(error)

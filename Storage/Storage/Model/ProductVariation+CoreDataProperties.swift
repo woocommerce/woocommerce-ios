@@ -69,28 +69,28 @@ extension ProductVariation {
 extension ProductVariation {
 
     @objc(insertObject:inAttributesAtIndex:)
-    @NSManaged public func insertIntoAttributes(_ value: Attribute, at idx: Int)
+    @NSManaged public func insertIntoAttributes(_ value: GenericAttribute, at idx: Int)
 
     @objc(removeObjectFromAttributesAtIndex:)
     @NSManaged public func removeFromAttributes(at idx: Int)
 
     @objc(insertAttributes:atIndexes:)
-    @NSManaged public func insertIntoAttributes(_ values: [Attribute], at indexes: NSIndexSet)
+    @NSManaged public func insertIntoAttributes(_ values: [GenericAttribute], at indexes: NSIndexSet)
 
     @objc(removeAttributesAtIndexes:)
     @NSManaged public func removeFromAttributes(at indexes: NSIndexSet)
 
     @objc(replaceObjectInAttributesAtIndex:withObject:)
-    @NSManaged public func replaceAttributes(at idx: Int, with value: Attribute)
+    @NSManaged public func replaceAttributes(at idx: Int, with value: GenericAttribute)
 
     @objc(replaceAttributesAtIndexes:withAttributes:)
-    @NSManaged public func replaceAttributes(at indexes: NSIndexSet, with values: [Attribute])
+    @NSManaged public func replaceAttributes(at indexes: NSIndexSet, with values: [GenericAttribute])
 
     @objc(addAttributesObject:)
-    @NSManaged public func addToAttributes(_ value: Attribute)
+    @NSManaged public func addToAttributes(_ value: GenericAttribute)
 
     @objc(removeAttributesObject:)
-    @NSManaged public func removeFromAttributes(_ value: Attribute)
+    @NSManaged public func removeFromAttributes(_ value: GenericAttribute)
 
     @objc(addAttributes:)
     @NSManaged public func addToAttributes(_ values: NSOrderedSet)

@@ -6,10 +6,16 @@ import Storage
 // MARK: - ProductReviewStore
 //
 public final class ProductReviewStore: Store {
+    private let remote: ProductReviewsRemote
 
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.newDerivedStorage()
     }()
+
+    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+        self.remote = ProductReviewsRemote(network: network)
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
 
     /// Registers for supported Actions.
     ///
@@ -69,8 +75,6 @@ private extension ProductReviewStore {
     ///
     func synchronizeProductReviews(siteID: Int64, pageNumber: Int, pageSize: Int, products: [Int64]? = nil, status: ProductReviewStatus? = nil,
                                    onCompletion: @escaping (Error?) -> Void) {
-        let remote = ProductReviewsRemote(network: network)
-
         remote.loadAllProductReviews(for: siteID,
                                      pageNumber: pageNumber,
                                      pageSize: pageSize,
@@ -94,8 +98,6 @@ private extension ProductReviewStore {
     /// Retrieves the product review associated with a given siteID + reviewID (if any!).
     ///
     func retrieveProductReview(siteID: Int64, reviewID: Int64, onCompletion: @escaping (Networking.ProductReview?, Error?) -> Void) {
-        let remote = ProductReviewsRemote(network: network)
-
         remote.loadProductReview(for: siteID, reviewID: reviewID) { [weak self] result in
             guard let self = self else {
                 return
@@ -189,7 +191,6 @@ private extension ProductReviewStore {
     }
 
     func moderateReview(siteID: Int64, reviewID: Int64, status: ProductReviewStatus, onCompletion: @escaping (ProductReviewStatus?, Error?) -> Void) {
-        let remote = ProductReviewsRemote(network: network)
         let storage = storageManager.viewStorage
         remote.updateProductReviewStatus(for: siteID, reviewID: reviewID, statusKey: status.rawValue) { (productReview, error) in
             guard let productReview = productReview else {

@@ -342,7 +342,7 @@
 "Can Not Request Link" = "링크를 요청할 수 없음";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
 "Cancel" = "취소";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -486,6 +486,12 @@
 
 /* Error message when tag loading failed */
 "Couldn't load tags." = "태그를 로드할 수 없었습니다.";
+
+/* The title for a menu that helps debug crashes in production builds */
+"Crash Debug Menu" = "Crash Debug Menu";
+
+/* The title for a button that causes the app to deliberately crash for debugging purposes */
+"Crash Immediately" = "Crash Immediately";
 
 /* The button title text for creating a new account. */
 "Create Account" = "계정 생성";
@@ -1681,6 +1687,9 @@
 /* Page title for the select a different store screen */
 "Select Store" = "스토어 선택";
 
+/* Message title of bottom sheet for selecting a product type to create a product */
+"Select a product type" = "Select a product type";
+
 /* Add the shipping carrier. Placeholder of cell presenting carrier name */
 "Select carrier" = "운송업체 선택";
 
@@ -2333,6 +2342,9 @@
 
 /* Undo Action */
 "Undo" = "실행 취소";
+
+/* The message of the alert when there is an unexpected error updating the product */
+"Unexpected error" = "Unexpected error";
 
 /* Unknown Application State
    Unknown product name, displayed in a review - Unknown Tag Name */

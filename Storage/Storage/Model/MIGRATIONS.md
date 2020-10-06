@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 32 (Release 5.2.0.0)
+- @shiki 2020-09-28
+- Rename `Attribute` to `GenericAttribute`. All existing data are kept.
+
 ## Model 31 (Release 5.2.0.0)
 - @partho-maple 2020-09-21
 - Update `Product`'s `downloads` relationship to be ordered

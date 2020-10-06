@@ -1,3 +1,7 @@
+5.3
+-----
+- [internal] #2883 Renamed a product database table (Attribute) to GenericAttribute. This adds a new database migration. 
+
 5.2
 -----
 - [**] Products: now you can editing basic fields for non-core products (whose product type is not simple/external/variable/grouped) - images, name, description, readonly price, readonly inventory, tags, categories, short description, and product settings.
@@ -6,7 +10,7 @@
 - [*] Now from an Order Detail it's only possible to open a Product in read-only mode.
 - [internal] #2881 Upgraded WPAuth from 1.24 to 1.26-beta.12. Regressions may happen in login flows.
 - [internal] #2896 Configured the same user agent header for all the network requests made through the app.
-
+- [internal] #2879 After logging out, the persistent store is not reset anymore to fix a crash in SIWA revoked token scenario after app launch (issue #2830). No user-facing changes are intended, the data should be associated with a site after logging out and in like before.
 
 5.1
 -----

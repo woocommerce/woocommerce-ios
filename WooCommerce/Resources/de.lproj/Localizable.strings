@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-09-10 11:32:06+0000 */
+/* Translation-Revision-Date: 2020-09-18 11:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -7,7 +7,7 @@
 "#%1$@ %2$@ %3$@" = "#%1$@ %2$@ %3$@";
 
 /* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
-"#%@ %@" = "#%@ %@";
+"#%@ %@" = "#%1$@ %2$@";
 
 /* In Order Details, the pattern to show the billed person's full name. For example, “John Doe”. The %1$@ is the first name. The %2$@ is the last name. */
 "%1$@ %2$@" = "%1$@ %2$@";
@@ -150,7 +150,7 @@
 "Add a note" = "Hinweis hinzufügen";
 
 /* The action to add a product */
-"Add a product" = "Add a product";
+"Add a product" = "Produkt hinzufügen";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Produktbild hinzufügen";
@@ -327,7 +327,7 @@
 "Buy Product" = "Produkt kaufen";
 
 /* Legal disclaimer for logging in. The underscores _..._ denote underline. */
-"By continuing, you agree to our _Terms of Service_." = "By continuing, you agree to our _Terms of Service_.";
+"By continuing, you agree to our _Terms of Service_." = "Wenn du fortfährst, stimmst du unseren _Geschäftsbedingungen_ zu.";
 
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "Durch die Registrierung stimmst du unseren Geschäftsbedingungen zu.";
@@ -342,7 +342,7 @@
 "Can Not Request Link" = "Kann den Link nicht anfordern.";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
 "Cancel" = "Abbrechen";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -486,6 +486,12 @@
 
 /* Error message when tag loading failed */
 "Couldn't load tags." = "Schlagwörter konnten nicht geladen werden.";
+
+/* The title for a menu that helps debug crashes in production builds */
+"Crash Debug Menu" = "Crash Debug Menu";
+
+/* The title for a button that causes the app to deliberately crash for debugging purposes */
+"Crash Immediately" = "Crash Immediately";
 
 /* The button title text for creating a new account. */
 "Create Account" = "Konto erstellen";
@@ -691,14 +697,14 @@
 "Enter your account information for %@." = "Gib deine Kontodetails für %@ ein.";
 
 /* Instruction text on the initial email address entry screen. */
-"Enter your email address to log in or create a WordPress.com account." = "Enter your email address to log in or create a WordPress.com account.";
+"Enter your email address to log in or create a WordPress.com account." = "Gib deine E-Mail-Adresse ein, um dich anzumelden, oder erstelle ein WordPress.com-Konto.";
 
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "Gib stattdessen dein Passwort ein.";
 
 /* Button title. Takes the user to the login by site address flow. */
-"Enter your site address" = "Enter your site address";
+"Enter your site address" = "Gib deine Website-Adresse ein";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -763,10 +769,10 @@
 "Gain insights into how products are performing on your store" = "Erfahre, wie erfolgreich Produkte in deinem Shop sind";
 
 /* View title for initial auth views. */
-"Get Started" = "Get Started";
+"Get Started" = "Los geht's";
 
 /* The button title for a secondary call-to-action button. When the user wants to try sending a magic link instead of entering a password. */
-"Get a login link by email" = "Get a login link by email";
+"Get a login link by email" = "Anmeldelink per E-Mail erhalten";
 
 /* Subtitle for Help Center */
 "Get answers to questions you have" = "Erhalte Antworten auf deine Fragen";
@@ -798,7 +804,7 @@
 
 /* In Order Details, the name of the billed person when there are no name and last name.
    In Order List, the name of the billed person when there are no name and last name. */
-"Guest" = "Guest";
+"Guest" = "Gast";
 
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "WIE KÖNNEN WIR HELFEN?";
@@ -879,7 +885,7 @@
 "If you already have a store, you’ll need to install the free Jetpack plugin and connect it to your WordPress.com account." = "Wenn du bereits einen Store hast, musst du das kostenlose Jetpack-Plugin installieren und deinen Store mit deinem WordPress.com-Konto verbinden.";
 
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
-"If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_.";
+"If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Wenn du mit Apple oder Google fortfährst und noch kein WordPress.com-Konto hast, erstellst du damit ein Konto und stimmst unseren _Geschäftsbedingungen_ zu.";
 
 /* Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
@@ -925,7 +931,7 @@
 "Invalid URL, please check if you wrote a valid site address." = "Ungültige URL. Bitte prüfe, ob du eine gültige Website-Adresse geschrieben hast.";
 
 /* Error message generated when announcement service is unable to return a valid endpoint. */
-"Invalid endpoint" = "Invalid endpoint";
+"Invalid endpoint" = "Ungültiger Endpunkt";
 
 /* No comment provided by engineer. */
 "Invalid username" = "Ungültiger Benutzername";
@@ -991,7 +997,7 @@
 "Link a product to an external website" = "Ein Produkt mit einer externen Website verknüpfen";
 
 /* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
-"List of images of the product" = "List of images of the product";
+"List of images of the product" = "Liste der Bilder des Produkts";
 
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "Bestellung wird geladen";
@@ -1263,7 +1269,7 @@
 "Optional Tracking Information" = "Optionale Verfolgungsinformationen";
 
 /* Divider on initial auth view separating auth options. */
-"Or" = "Or";
+"Or" = "Oder";
 
 /* Label for button to log in using site address. Underscores _..._ denote underline. */
 "Or log in by _entering your site address_." = "Oder melde dich an, indem du _deine Website-Adresse eingibst_.";
@@ -1680,6 +1686,9 @@
 
 /* Page title for the select a different store screen */
 "Select Store" = "Shop auswählen";
+
+/* Message title of bottom sheet for selecting a product type to create a product */
+"Select a product type" = "Select a product type";
 
 /* Add the shipping carrier. Placeholder of cell presenting carrier name */
 "Select carrier" = "Versanddienstleister auswählen";
@@ -2193,7 +2202,7 @@
 "Title" = "Titel";
 
 /* VoiceOver accessibility hint, informing the user about the title of a product in product detail screen. */
-"Title of the product" = "Title of the product";
+"Title of the product" = "Titel des Produkts";
 
 /* Action sheet option to sort products by ascending product name */
 "Title: A to Z" = "Titel: A bis Z";
@@ -2333,6 +2342,9 @@
 
 /* Undo Action */
 "Undo" = "Rückgängig";
+
+/* The message of the alert when there is an unexpected error updating the product */
+"Unexpected error" = "Unexpected error";
 
 /* Unknown Application State
    Unknown product name, displayed in a review - Unknown Tag Name */
@@ -2502,7 +2514,7 @@
 "We'll email you a magic link that'll log you in instantly, no password needed. Hunt and peck no more!" = "Wir senden dir per E-Mail einen magischen Link, mit dem du sofort angemeldet wirst, ohne dass du ein Passwort eingeben musst.";
 
 /* Instruction text on the Sign Up screen. */
-"We'll email you a signup link to create your new WordPress.com account." = "We'll email you a signup link to create your new WordPress.com account.";
+"We'll email you a signup link to create your new WordPress.com account." = "Wir haben dir einen Anmeldelink per E-Mail gesendet, um dein neues WordPress.com-Konto zu erstellen.";
 
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales." = "Wir benachrichtigen dich, wenn du eine neue Bestellung erhältst. Erkundige dich in der Zwischenzeit, wie du deine Shop-Verkäufe steigern kannst.";
@@ -2527,7 +2539,7 @@
 "We've added more editing functionalities to products! You can now update images, see previews and share your products." = "Wir haben Produkten mehr Bearbeitungsfunktionen hinzugefügt! Du kannst jetzt Bilder aktualisieren, Vorschauen anzeigen und deine Produkte teilen.";
 
 /* Instruction text after a signup Magic Link was requested. */
-"We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com.";
+"We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Wir haben dir einen Anmeldelink per E-Mail gesendet, um dein neues WordPress.com-Konto zu erstellen. Überprüfe deine E-Mails auf diesem Gerät und tippe auf den Link in der E-Mail, die du von WordPress.com erhalten hast.";
 
 /* Statistical unit - a single week */
 "Week" = "Woche";

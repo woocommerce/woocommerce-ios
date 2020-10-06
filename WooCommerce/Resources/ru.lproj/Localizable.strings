@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-09-17 11:54:04+0000 */
+/* Translation-Revision-Date: 2020-10-01 10:54:48+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -342,7 +342,7 @@
 "Can Not Request Link" = "Не удаётся запросить ссылку.";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
 "Cancel" = "Отмена";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -486,6 +486,12 @@
 
 /* Error message when tag loading failed */
 "Couldn't load tags." = "Ошибка загрузки меток.";
+
+/* The title for a menu that helps debug crashes in production builds */
+"Crash Debug Menu" = "Меню исправления ошибок";
+
+/* The title for a button that causes the app to deliberately crash for debugging purposes */
+"Crash Immediately" = "Немедленное закрытие";
 
 /* The button title text for creating a new account. */
 "Create Account" = "Создать учетную запись";
@@ -1173,7 +1179,7 @@
 "No products yet" = "В этом списке пока нет товаров";
 
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier' */
-"No results found for (term)\nAdd a custom carrier" = "No results found for (term)\nAdd a custom carrier";
+"No results found for (term)\nAdd a custom carrier" = "Нет результатов по запросу (запрос). \nДобавьте другого оператора.";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "Нет доходов за указанный период";
@@ -1680,6 +1686,9 @@
 
 /* Page title for the select a different store screen */
 "Select Store" = "Выбрать магазин";
+
+/* Message title of bottom sheet for selecting a product type to create a product */
+"Select a product type" = "Выбрать тип товара";
 
 /* Add the shipping carrier. Placeholder of cell presenting carrier name */
 "Select carrier" = "Выберите перевозчика";
@@ -2333,6 +2342,9 @@
 
 /* Undo Action */
 "Undo" = "Назад";
+
+/* The message of the alert when there is an unexpected error updating the product */
+"Unexpected error" = "Неожиданная ошибка";
 
 /* Unknown Application State
    Unknown product name, displayed in a review - Unknown Tag Name */

@@ -56,7 +56,7 @@ private extension HeadlineLabelTableViewCell {
             bodyLabel?.applyBodyStyle()
             headlineToBodyConstraint.constant = 0
         case .regular:
-            headlineLabel?.applyBodyStyle()
+            headlineLabel?.applyHeadlineStyle()
             bodyLabel?.applyBodyStyle()
             headlineToBodyConstraint.constant = Dimensions.margin
         }

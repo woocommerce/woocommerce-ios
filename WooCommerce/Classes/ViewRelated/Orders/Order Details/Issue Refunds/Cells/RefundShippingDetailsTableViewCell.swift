@@ -75,10 +75,8 @@ private extension RefundShippingDetailsTableViewCell {
         subtotalPriceLabel.applyBodyStyle()
         taxTitleLabel.applyBodyStyle()
         taxPriceLabel.applyBodyStyle()
-        shippingRefundTitleLabel.applyBodyStyle()
-        shippingRefundTitleLabel.font = .font(forStyle: .body, weight: .semibold)
-        shippingRefundPriceLabel.applyBodyStyle()
-        shippingRefundPriceLabel.font = .font(forStyle: .body, weight: .semibold)
+        shippingRefundTitleLabel.applyHeadlineStyle()
+        shippingRefundPriceLabel.applyHeadlineStyle()
 
         taxTitleLabel.text = Localization.taxTitle
         subtotalTitleLabel.text = Localization.subtotalTitle

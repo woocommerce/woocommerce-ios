@@ -2,6 +2,7 @@
 -----
 - [internal] #2883 Renamed a product database table (Attribute) to GenericAttribute. This adds a new database migration. 
 
+ 
 5.2
 -----
 - [**] Products: now you can editing basic fields for non-core products (whose product type is not simple/external/variable/grouped) - images, name, description, readonly price, readonly inventory, tags, categories, short description, and product settings.

@@ -65,9 +65,9 @@ extension RefundConfirmationViewController: UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(SettingTitleAndValueTableViewCell.self, for: indexPath)
             cell.updateUI(title: row.title, value: row.value)
             if row.isHeadline {
-                cell.applyHeadlineLabelsStyle()
+                cell.apply(style: .headline)
             } else {
-                cell.applyDefaultLabelsStyle()
+                cell.apply(style: .bodyConsistent)
             }
             cell.selectionStyle = .none
             return cell

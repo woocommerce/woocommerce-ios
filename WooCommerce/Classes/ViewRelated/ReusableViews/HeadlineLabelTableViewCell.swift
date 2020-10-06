@@ -14,6 +14,8 @@ final class HeadlineLabelTableViewCell: UITableViewCell {
         case emphasized
         /// Normal body title with a margin against the body.
         case regular
+
+        static let `default` = Self.emphasized
     }
 
     override func awakeFromNib() {
@@ -22,11 +24,11 @@ final class HeadlineLabelTableViewCell: UITableViewCell {
         configureBackground()
         configureHeadline()
         configureBody()
-        apply(style: .emphasized)
+        apply(style: .default)
     }
 
     /// Update the UI style and label values.
-    func update(style: Style = .emphasized, headline: String?, body: String?) {
+    func update(style: Style = .default, headline: String?, body: String?) {
         headlineLabel?.text = headline
         bodyLabel?.text = body
         apply(style: style)

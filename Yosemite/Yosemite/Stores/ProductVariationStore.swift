@@ -154,14 +154,6 @@ private extension ProductVariationStore {
         }
     }
 
-    /// Delete a specific Storage.ProductVariation with the specified `siteID` and `variationID`
-    ///
-    func deleteStoredProductVariation(siteID: Int64, variationID: Int64) {
-        let storage = storageManager.viewStorage
-        storage.deleteProductVariation(siteID: siteID, variationID: variationID)
-        storage.saveIfNeeded()
-    }
-
     /// Deletes any Storage.ProductVariation with the specified `siteID` and `productID`
     ///
     func deleteStoredProductVariations(siteID: Int64, productID: Int64) {

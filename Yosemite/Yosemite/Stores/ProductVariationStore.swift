@@ -81,8 +81,6 @@ private extension ProductVariationStore {
     ///
     func retrieveProductVariation(siteID: Int64, productID: Int64, variationID: Int64,
                                   onCompletion: @escaping (Result<ProductVariation, ProductUpdateError>) -> Void) {
-        let remote = ProductVariationsRemote(network: network)
-
         remote.loadProductVariation(for: siteID, productID: productID, variationID: variationID) { [weak self] result in
             guard let self = self else {
                 return

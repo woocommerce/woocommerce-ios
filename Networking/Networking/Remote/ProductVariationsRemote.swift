@@ -12,6 +12,7 @@ public protocol ProductVariationsRemoteProtocol {
                                   pageNumber: Int,
                                   pageSize: Int,
                                   completion: @escaping ([ProductVariation]?, Error?) -> Void)
+    func loadProductVariation(for siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void)
 }
 
 /// ProductVariation: Remote Endpoints

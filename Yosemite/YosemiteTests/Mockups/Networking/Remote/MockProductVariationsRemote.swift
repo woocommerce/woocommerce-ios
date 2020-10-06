@@ -52,4 +52,8 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
                                   completion: @escaping ([ProductVariation]?, Error?) -> Void) {
         // no-op
     }
+
+    func loadProductVariation(for siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void) {
+        // no-op
+    }
 }

@@ -1,5 +1,5 @@
-SİPARİŞLERİ GÖRÜNTÜLE VE YÖNET
-Belirli siparişleri gözden geçirin, filtreleyin veya arayın Ürünler, değer, müşteri verileri, gönderim ayrıntıları ve notlar da dahil olmak üzere sipariş bilgilerini görüntülemek için dokunun.
+SİPARİŞLERİ GÖRÜNTÜLEYİN VE YÖNETİN
+Belirli siparişlerde gezinin, filtreleyin veya arayın.  Ürünler, değer, müşteri verileri, gönderim ayrıntıları ve notlar da dahil olmak üzere sipariş bilgilerini görüntülemek için dokunun.
 
 MAĞAZANIZI TAKİP EDİN
 Hangi ürünlerin en iyi performansı gösterdiğine bakın. Genel kazancınızı kontrol edin, sipariş ve ziyaretçi verilerini haftalık, aylık ve yıllık olarak görüntüleyin.
@@ -7,7 +7,7 @@ Hangi ürünlerin en iyi performansı gösterdiğine bakın. Genel kazancınız�
 GERÇEK ZAMANLI SİPARİŞ UYARILARI
 Yeni siparişler ve ürün yorumları dahil olmak üzere mağaza etkinlikleriyle ilgili bildirim alın.
 
-WooCommerce, internette işinizi kurmaya yönelik en üst düzeyde özelleştirilebilir e-ticaret platformudur. WordPress temelinde oluşturulan bu platform, dünyanın en iyi içerik yönetimi araçlarıyla donatılmıştır. Kahve aboneliklerinden İspanyolca kursuna, spor salonu üyeliklerinden karmaşık, kurumsal düzey e-ticarete kadar her türlü fikrinizi sergileyip yeni bir mağaza açmak için WooCommerce.com/start adresini ziyaret edin.
+WooCommerce, internette işinizi kurmaya yönelik en üst düzeyde özelleştirilebilir e-ticaret platformudur. WordPress temelinde oluşturulan bu platform, dünyanın en iyi içerik yönetimi araçlarıyla donatılmıştır.
 
 Gereksinimler: Jetpack eklentisi WooCommerce v3.5 +.
 

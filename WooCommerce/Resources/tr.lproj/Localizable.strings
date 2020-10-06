@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-09-10 11:32:06+0000 */
+/* Translation-Revision-Date: 2020-09-18 14:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -7,7 +7,7 @@
 "#%1$@ %2$@ %3$@" = "#%1$@ %2$@ %3$@";
 
 /* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
-"#%@ %@" = "#%@ %@";
+"#%@ %@" = "#%1$@ %2$@";
 
 /* In Order Details, the pattern to show the billed person's full name. For example, “John Doe”. The %1$@ is the first name. The %2$@ is the last name. */
 "%1$@ %2$@" = "%1$@ %2$@";
@@ -150,7 +150,7 @@
 "Add a note" = "Not ekleyin";
 
 /* The action to add a product */
-"Add a product" = "Add a product";
+"Add a product" = "Ürün ekleyin";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Bir ürün görseli ekle";
@@ -327,7 +327,7 @@
 "Buy Product" = "Ürün satın al";
 
 /* Legal disclaimer for logging in. The underscores _..._ denote underline. */
-"By continuing, you agree to our _Terms of Service_." = "By continuing, you agree to our _Terms of Service_.";
+"By continuing, you agree to our _Terms of Service_." = "Devam ederek Hizmet Şartlarımızı kabul etmiş olursunuz.";
 
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "Kaydolarak_Hizmet Koşullarını_ kabul etmiş olursunuz.";
@@ -342,7 +342,7 @@
 "Can Not Request Link" = "Bağlantı istenemiyor";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
 "Cancel" = "İptal";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -486,6 +486,12 @@
 
 /* Error message when tag loading failed */
 "Couldn't load tags." = "Etiketler yüklenemedi.";
+
+/* The title for a menu that helps debug crashes in production builds */
+"Crash Debug Menu" = "Crash Debug Menu";
+
+/* The title for a button that causes the app to deliberately crash for debugging purposes */
+"Crash Immediately" = "Crash Immediately";
 
 /* The button title text for creating a new account. */
 "Create Account" = "Hesap Oluştur";
@@ -691,14 +697,14 @@
 "Enter your account information for %@." = "%@ ile igili hesap bilgilerinizi girin.";
 
 /* Instruction text on the initial email address entry screen. */
-"Enter your email address to log in or create a WordPress.com account." = "Enter your email address to log in or create a WordPress.com account.";
+"Enter your email address to log in or create a WordPress.com account." = "Oturum açmak veya bir WordPress.com hesabı oluşturmak için e-posta adresinizi girin.";
 
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "Bunun yerine parolanızı girin.";
 
 /* Button title. Takes the user to the login by site address flow. */
-"Enter your site address" = "Enter your site address";
+"Enter your site address" = "Site adresinizi girin";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -763,10 +769,10 @@
 "Gain insights into how products are performing on your store" = "Ürünlerin mağazanızdaki performansına dair içgörüler edinin";
 
 /* View title for initial auth views. */
-"Get Started" = "Get Started";
+"Get Started" = "Başlangıç";
 
 /* The button title for a secondary call-to-action button. When the user wants to try sending a magic link instead of entering a password. */
-"Get a login link by email" = "Get a login link by email";
+"Get a login link by email" = "E-posta ile bir giriş bağlantısı alın";
 
 /* Subtitle for Help Center */
 "Get answers to questions you have" = "Sorularınıza yanıt alın";
@@ -798,7 +804,7 @@
 
 /* In Order Details, the name of the billed person when there are no name and last name.
    In Order List, the name of the billed person when there are no name and last name. */
-"Guest" = "Guest";
+"Guest" = "Misafir";
 
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "NASIL YARDIMCI OLABİLİRİZ?";
@@ -879,7 +885,7 @@
 "If you already have a store, you’ll need to install the free Jetpack plugin and connect it to your WordPress.com account." = "Zaten bir mağazanız varsa ücretsiz Jetpack eklentisini yüklemeniz ve WordPress.com hesabınıza bağlamanız gerekir.";
 
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
-"If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_.";
+"If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Apple veya Google ile devam ederseniz ve bir WordPress.com hesabınız yoksa, bir hesap oluşturur ve _Hizmet Şartlarımızı kabul edersiniz.";
 
 /* Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
@@ -925,7 +931,7 @@
 "Invalid URL, please check if you wrote a valid site address." = "Geçersiz adres, lütfen geçerli bir site adresi girip girmediğinizi kontrol edin.";
 
 /* Error message generated when announcement service is unable to return a valid endpoint. */
-"Invalid endpoint" = "Invalid endpoint";
+"Invalid endpoint" = "Geçersiz uç nokta";
 
 /* No comment provided by engineer. */
 "Invalid username" = "Geçersiz kullanıcı adı";
@@ -991,7 +997,7 @@
 "Link a product to an external website" = "Bir ürünü harici bir web sitesine bağlayın";
 
 /* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
-"List of images of the product" = "List of images of the product";
+"List of images of the product" = "Ürüne ait görsellerin listesi";
 
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "Sipariş Yükleniyor";
@@ -1263,7 +1269,7 @@
 "Optional Tracking Information" = "İsteğe Bağlı Takip Bilgileri";
 
 /* Divider on initial auth view separating auth options. */
-"Or" = "Or";
+"Or" = "Veya";
 
 /* Label for button to log in using site address. Underscores _..._ denote underline. */
 "Or log in by _entering your site address_." = "Veya _site adresinizi girerek_ oturum açın.";
@@ -1680,6 +1686,9 @@
 
 /* Page title for the select a different store screen */
 "Select Store" = "Mağaza Seç";
+
+/* Message title of bottom sheet for selecting a product type to create a product */
+"Select a product type" = "Select a product type";
 
 /* Add the shipping carrier. Placeholder of cell presenting carrier name */
 "Select carrier" = "Kargo şirketi seçin";
@@ -2193,7 +2202,7 @@
 "Title" = "Başlık";
 
 /* VoiceOver accessibility hint, informing the user about the title of a product in product detail screen. */
-"Title of the product" = "Title of the product";
+"Title of the product" = "Ürünün başlığı";
 
 /* Action sheet option to sort products by ascending product name */
 "Title: A to Z" = "Başlık: A’dan Z’ye";
@@ -2333,6 +2342,9 @@
 
 /* Undo Action */
 "Undo" = "Geri al";
+
+/* The message of the alert when there is an unexpected error updating the product */
+"Unexpected error" = "Unexpected error";
 
 /* Unknown Application State
    Unknown product name, displayed in a review - Unknown Tag Name */
@@ -2502,7 +2514,7 @@
 "We'll email you a magic link that'll log you in instantly, no password needed. Hunt and peck no more!" = "E-posta ile size, anında oturum açmanızı sağlayacak ve parola gerektirmeyen sihirli bir bağlantı göndereceğiz. Artık tek tek yazmanız gerekmiyor!";
 
 /* Instruction text on the Sign Up screen. */
-"We'll email you a signup link to create your new WordPress.com account." = "We'll email you a signup link to create your new WordPress.com account.";
+"We'll email you a signup link to create your new WordPress.com account." = "Yeni WordPress.com hesabınızı oluşturmak için size e-postayla bir kayıt bağlantısı göndereceğiz.";
 
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales." = "Yeni bir sipariş aldığınızda sizi bilgilendireceğiz. Bu sırada siz de mağaza satışlarınızı nasıl artırabileceğiniz keşfedebilirsiniz.";
@@ -2527,7 +2539,7 @@
 "We've added more editing functionalities to products! You can now update images, see previews and share your products." = "Ürünler için daha fazla düzenleme işlevi ekledik. Artık görselleri güncelleyebilir, önizlemeleri görebilir ve ürünlerinizi paylaşabilirsiniz.";
 
 /* Instruction text after a signup Magic Link was requested. */
-"We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com.";
+"We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Yeni WordPress.com hesabınızı oluşturmanız için size e-postayla bir kayıt bağlantısı gönderdik. Bu cihazda e-postanızı kontrol edin ve WordPress.com'dan aldığınız e-postadaki bağlantıya dokunun.";
 
 /* Statistical unit - a single week */
 "Week" = "Hafta";

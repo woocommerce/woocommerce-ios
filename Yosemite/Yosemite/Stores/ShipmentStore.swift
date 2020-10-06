@@ -6,6 +6,7 @@ import Storage
 // MARK: - ShipmentStore
 //
 public class ShipmentStore: Store {
+    private let remote: ShipmentsRemote
 
     /// Name of the group of tracking providers created manually by users
     ///
@@ -16,6 +17,11 @@ public class ShipmentStore: Store {
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.newDerivedStorage()
     }()
+
+    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+        self.remote = ShipmentsRemote(network: network)
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
 
     /// Registers for supported Actions.
     ///
@@ -76,7 +82,6 @@ public class ShipmentStore: Store {
 private extension ShipmentStore {
 
     func synchronizeShipmentTrackingData(siteID: Int64, orderID: Int64, onCompletion: @escaping (Error?) -> Void) {
-        let remote = ShipmentsRemote(network: network)
         remote.loadShipmentTrackings(for: siteID, orderID: orderID) { [weak self] (shipmentTrackingData, error) in
             guard let readOnlyShipmentTrackingData = shipmentTrackingData else {
                 onCompletion(error)
@@ -90,7 +95,6 @@ private extension ShipmentStore {
     }
 
     func syncronizeShipmentTrackingProviderGroupsData(siteID: Int64, orderID: Int64, onCompletion: @escaping (Error?) -> Void) {
-        let remote = ShipmentsRemote(network: network)
         remote.loadShipmentTrackingProviderGroups(for: siteID, orderID: orderID) { [weak self] (groups, error) in
             guard let readOnlyShipmentTrackingProviderGroups = groups else {
                 onCompletion(error)
@@ -193,7 +197,6 @@ extension ShipmentStore {
                      trackingNumber: String,
                      dateShipped: String,
                      onCompletion: @escaping (Error?) -> Void) {
-        let remote = ShipmentsRemote(network: network)
         remote.createShipmentTracking(for: siteID,
                                       orderID: orderID,
                                       trackingProvider: providerName,
@@ -218,7 +221,6 @@ extension ShipmentStore {
                            trackingURL: String,
                            dateShipped: String,
                            onCompletion: @escaping (Error?) -> Void) {
-        let remote = ShipmentsRemote(network: network)
         remote.createShipmentTrackingWithCustomProvider(for: siteID,
                                                         orderID: orderID,
                                                         trackingProvider: trackingProvider,
@@ -244,7 +246,6 @@ extension ShipmentStore {
                         orderID: Int64,
                         trackingID: String,
                         onCompletion: @escaping (Error?) -> Void) {
-        let remote = ShipmentsRemote(network: network)
         remote.deleteShipmentTracking(for: siteID, orderID: orderID, trackingID: trackingID) { [weak self] (tracking, error) in
             guard let _ = tracking else {
                 onCompletion(error)

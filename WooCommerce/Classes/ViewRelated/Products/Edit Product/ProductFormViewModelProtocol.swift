@@ -46,6 +46,8 @@ protocol ProductFormViewModelProtocol {
 
     func canShareProduct() -> Bool
 
+    func canDeleteProduct() -> Bool
+
     // Update actions
 
     func updateName(_ name: String)
@@ -95,6 +97,8 @@ protocol ProductFormViewModelProtocol {
     ///   - status: If non-nil, the given status overrides the latest product's status to be saved remotely.
     ///   - onCompletion: Called when the product is saved remotely.
     func saveProductRemotely(status: ProductStatus?, onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void)
+
+    func deleteProductRemotely(onCompletion: @escaping (Result<EditableProductModel, ProductUpdateError>) -> Void)
 
     // Reset action
 

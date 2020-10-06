@@ -1,10 +1,16 @@
 import Foundation
 import Networking
-
+import Storage
 
 // MARK: - CommentStore
 //
 public class CommentStore: Store {
+    private let remote: CommentRemote
+
+    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+        self.remote = CommentRemote(network: network)
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
 
     /// Registers for supported Actions.
     ///
@@ -58,8 +64,6 @@ private extension CommentStore {
     }
 
     func moderateComment(siteID: Int64, commentID: Int64, status: CommentStatus, onCompletion: @escaping (CommentStatus?, Error?) -> Void) {
-        let remote = CommentRemote(network: network)
-
         remote.moderateComment(siteID: siteID, commentID: commentID, status: status) { (updatedStatus, error) in
             onCompletion(updatedStatus, error)
         }

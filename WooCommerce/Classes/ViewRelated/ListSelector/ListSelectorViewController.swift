@@ -138,6 +138,6 @@ private extension ListSelectorViewController {
     }
 
     func registerTableViewCells() {
-        tableView.register(rowType.loadNib(), forCellReuseIdentifier: rowType.reuseIdentifier)
+        tableView.registerNib(for: rowType)
     }
 }

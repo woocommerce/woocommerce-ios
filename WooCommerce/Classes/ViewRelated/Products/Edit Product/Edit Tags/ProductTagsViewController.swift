@@ -153,7 +153,7 @@ private extension ProductTagsViewController {
     /// Registers all of the available TableViewCells
     ///
     func registerTableViewCells() {
-        tableView.register(BasicTableViewCell.loadNib(), forCellReuseIdentifier: BasicTableViewCell.reuseIdentifier)
+        tableView.registerNib(for: BasicTableViewCell.self)
     }
 }
 

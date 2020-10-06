@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-09-17 08:54:03+0000 */
+/* Translation-Revision-Date: 2020-10-01 08:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -342,7 +342,7 @@
 "Can Not Request Link" = "無法要求連結";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
 "Cancel" = "取消";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -486,6 +486,12 @@
 
 /* Error message when tag loading failed */
 "Couldn't load tags." = "無法載入標籤。";
+
+/* The title for a menu that helps debug crashes in production builds */
+"Crash Debug Menu" = "當機偵錯選單";
+
+/* The title for a button that causes the app to deliberately crash for debugging purposes */
+"Crash Immediately" = "立即當機";
 
 /* The button title text for creating a new account. */
 "Create Account" = "建立帳號";
@@ -1681,6 +1687,9 @@
 /* Page title for the select a different store screen */
 "Select Store" = "選取商店";
 
+/* Message title of bottom sheet for selecting a product type to create a product */
+"Select a product type" = "請選取商品類型";
+
 /* Add the shipping carrier. Placeholder of cell presenting carrier name */
 "Select carrier" = "選擇貨運業者";
 
@@ -2333,6 +2342,9 @@
 
 /* Undo Action */
 "Undo" = "復原";
+
+/* The message of the alert when there is an unexpected error updating the product */
+"Unexpected error" = "未預期的錯誤";
 
 /* Unknown Application State
    Unknown product name, displayed in a review - Unknown Tag Name */

@@ -189,15 +189,8 @@ private extension StorePickerViewController {
     }
 
     func setupTableView() {
-        let cells = [
-            EmptyStoresTableViewCell.reuseIdentifier: EmptyStoresTableViewCell.loadNib(),
-            StoreTableViewCell.reuseIdentifier: StoreTableViewCell.loadNib()
-        ]
-
-        for (reuseIdentifier, nib) in cells {
-            tableView.register(nib, forCellReuseIdentifier: reuseIdentifier)
-        }
-
+        tableView.registerNib(for: EmptyStoresTableViewCell.self)
+        tableView.registerNib(for: StoreTableViewCell.self)
         tableView.backgroundColor = .listBackground
     }
 

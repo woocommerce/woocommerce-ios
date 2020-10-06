@@ -85,11 +85,7 @@ final class OrderStatusListViewController: UIViewController {
     /// Registers all of the available TableViewCells
     ///
     private func registerTableViewCells() {
-        let cells = [StatusListTableViewCell.self]
-
-        for cell in cells {
-            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
-        }
+        tableView.registerNib(for: StatusListTableViewCell.self)
     }
 
     /// Setup: TableView

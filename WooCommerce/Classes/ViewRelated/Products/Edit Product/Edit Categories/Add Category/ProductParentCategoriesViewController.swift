@@ -60,7 +60,7 @@ private extension ProductParentCategoriesViewController {
     }
 
     func registerTableViewCells() {
-        tableView.register(ProductCategoryTableViewCell.loadNib(), forCellReuseIdentifier: ProductCategoryTableViewCell.reuseIdentifier)
+        tableView.registerNib(for: ProductCategoryTableViewCell.self)
     }
 
     func configureTableView() {

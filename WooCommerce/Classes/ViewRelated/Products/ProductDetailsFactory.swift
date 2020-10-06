@@ -29,7 +29,8 @@ struct ProductDetailsFactory {
                                     presentationStyle: presentationStyle,
                                     currencySettings: currencySettings,
                                     isEditProductsEnabled: forceReadOnly ? false : isEditProductsEnabled,
-                                    isEditProductsRelease3Enabled: isFeatureSwitchOn)
+                                    isEditProductsRelease3Enabled: isFeatureSwitchOn,
+                                    isEditProductsRelease5Enabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease5))
             onCompletion(vc)
         }
         stores.dispatch(action)
@@ -41,7 +42,8 @@ private extension ProductDetailsFactory {
                                presentationStyle: ProductFormPresentationStyle,
                                currencySettings: CurrencySettings,
                                isEditProductsEnabled: Bool,
-                               isEditProductsRelease3Enabled: Bool) -> UIViewController {
+                               isEditProductsRelease3Enabled: Bool,
+                               isEditProductsRelease5Enabled: Bool) -> UIViewController {
         let vc: UIViewController
         let productModel = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: product.siteID,
@@ -50,7 +52,8 @@ private extension ProductDetailsFactory {
             let viewModel = ProductFormViewModel(product: productModel,
                                                  formType: .edit,
                                                  productImageActionHandler: productImageActionHandler,
-                                                 isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+                                                 isEditProductsRelease3Enabled: isEditProductsRelease3Enabled,
+                                                 isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
             vc = ProductFormViewController(viewModel: viewModel,
                                            eventLogger: ProductFormEventLogger(),
                                            productImageActionHandler: productImageActionHandler,

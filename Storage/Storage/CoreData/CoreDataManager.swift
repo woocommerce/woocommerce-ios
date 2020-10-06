@@ -140,28 +140,35 @@ public final class CoreDataManager: StorageManagerType {
     /// This method effectively destroys all of the stored data, and generates a blank Persistent Store from scratch.
     ///
     public func reset() {
-        let storeCoordinator = persistentContainer.persistentStoreCoordinator
-        let storeDescriptor = self.storeDescription
         let viewContext = persistentContainer.viewContext
 
         viewContext.performAndWait {
-            do {
-                viewContext.reset()
-                try storeCoordinator.destroyPersistentStore(at: self.storeURL, ofType: storeDescriptor.type, options: storeDescriptor.options)
-            } catch {
-                fatalError("☠️ [CoreDataManager] Cannot Destroy persistentStore! \(error)")
-            }
-
-            storeCoordinator.addPersistentStore(with: storeDescriptor) { (_, error) in
-                guard let error = error else {
-                    return
-                }
-
-                fatalError("☠️ [CoreDataManager] Unable to regenerate Persistent Store! \(error)")
-            }
+            viewContext.reset()
+            self.deleteAllStoredObjects()
 
             DDLogVerbose("💣 [CoreDataManager] Stack Destroyed!")
             NotificationCenter.default.post(name: .StorageManagerDidResetStorage, object: self)
+        }
+    }
+
+    private func deleteAllStoredObjects() {
+        let storeCoordinator = persistentContainer.persistentStoreCoordinator
+        let viewContext = persistentContainer.viewContext
+        do {
+            let entities = storeCoordinator.managedObjectModel.entities
+            for entity in entities {
+                guard let entityName = entity.name else {
+                    continue
+                }
+                let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
+                let objects = try viewContext.fetch(fetchRequest) as? [NSManagedObject]
+                objects?.forEach { object in
+                    viewContext.delete(object)
+                }
+                viewContext.saveIfNeeded()
+            }
+        } catch {
+            fatalError("☠️ [CoreDataManager] Cannot delete stored objects! \(error)")
         }
     }
 

@@ -159,11 +159,8 @@ private extension TopPerformerDataViewController {
     }
 
     func registerTableViewCells() {
-        let cells = [ProductTableViewCell.self, NoPeriodDataTableViewCell.self]
-
-        for cell in cells {
-            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
-        }
+        tableView.registerNib(for: ProductTableViewCell.self)
+        tableView.registerNib(for: NoPeriodDataTableViewCell.self)
     }
 
     func registerTableViewHeaderFooters() {
@@ -313,9 +310,7 @@ private extension TopPerformerDataViewController {
             tableView.separatorStyle = .none
             tableView.estimatedRowHeight = Constants.estimatedRowHeight
             tableView.applyFooterViewForHidingExtraRowPlaceholders()
-
-            tableView.register(ProductTableViewCell.loadNib(),
-                               forCellReuseIdentifier: ProductTableViewCell.reuseIdentifier)
+            tableView.registerNib(for: ProductTableViewCell.self)
         }
 
         /// Activate the ghost if this view is added to the parent.

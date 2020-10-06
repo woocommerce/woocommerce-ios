@@ -103,6 +103,56 @@ final class ProductFormViewModelTests: XCTestCase {
         // Assert
         XCTAssertFalse(canShareProduct)
     }
+
+    // MARK: `canDeleteProduct`
+
+    func test_edit_product_form_with_published_status_can_delete_product() {
+        // Arrange
+        let product = MockProduct().product(name: "Test", status: .publish)
+        let viewModel = createViewModel(product: product, formType: .edit)
+
+        // Action
+        let canDeleteProduct = viewModel.canDeleteProduct()
+
+        // Assert
+        XCTAssertTrue(canDeleteProduct)
+    }
+
+    func test_add_product_form_with_published_status_cannot_delete_product() {
+        // Arrange
+        let product = MockProduct().product(name: "Test", status: .publish)
+        let viewModel = createViewModel(product: product, formType: .add)
+
+        // Action
+        let canDeleteProduct = viewModel.canDeleteProduct()
+
+        // Assert
+        XCTAssertFalse(canDeleteProduct)
+    }
+
+    func test_edit_product_form_with_non_published_status_can_delete_product() {
+        // Arrange
+        let product = MockProduct().product(name: "Test", status: .pending)
+        let viewModel = createViewModel(product: product, formType: .edit)
+
+        // Action
+        let canDeleteProduct = viewModel.canDeleteProduct()
+
+        // Assert
+        XCTAssertTrue(canDeleteProduct)
+    }
+
+    func test_add_product_form_with_non_published_status_cannot_delete_product() {
+        // Arrange
+        let product = MockProduct().product(name: "Test", status: .pending)
+        let viewModel = createViewModel(product: product, formType: .add)
+
+        // Action
+        let canDeleteProduct = viewModel.canDeleteProduct()
+
+        // Assert
+        XCTAssertFalse(canDeleteProduct)
+    }
 }
 
 private extension ProductFormViewModelTests {
@@ -112,6 +162,7 @@ private extension ProductFormViewModelTests {
         return ProductFormViewModel(product: model,
                                     formType: formType,
                                     productImageActionHandler: productImageActionHandler,
-                                    isEditProductsRelease3Enabled: true)
+                                    isEditProductsRelease3Enabled: true,
+                                    isEditProductsRelease5Enabled: true)
     }
 }

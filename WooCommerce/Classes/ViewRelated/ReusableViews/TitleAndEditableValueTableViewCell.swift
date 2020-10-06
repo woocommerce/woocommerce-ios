@@ -13,7 +13,7 @@ final class TitleAndEditableValueTableViewCell: UITableViewCell {
         /// Normal-sized title with subtle color.
         case relaxed
 
-        static let `default` = Self.condensed
+        fileprivate static let `default` = Self.condensed
     }
 
     override func awakeFromNib() {

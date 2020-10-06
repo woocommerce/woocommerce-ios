@@ -16,7 +16,7 @@ final class HeadlineLabelTableViewCell: UITableViewCell {
         /// the body uses secondary style.
         case regular
 
-        static let `default` = Self.compact
+        fileprivate static let `default` = Self.compact
     }
 
     override func awakeFromNib() {

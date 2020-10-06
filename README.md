@@ -47,7 +47,7 @@ In order to login to WordPress.com using the app:
 2. Create a new developer application [here](https://developer.wordpress.com/apps/).
 3. Set **"Redirect URLs"** = `https://localhost` and **"Type"** = `Native` and click **Create**. On the next page, click **Update**.
 4. Copy the *Client ID* and *Client Secret* from the OAuth Information.
-5. Build the app. Expect the build to fail. But it should generate a file named `ApiCredentials.swift`.
+5. Build the app. A file named `ApiCredentials.swift` should be generated. 
 6. Navigate to the generated `WooCommerce/DerivedSources/ApiCredentials.swift` file.
 
     <img src="docs/images/apicredentials-location.png" width="240">

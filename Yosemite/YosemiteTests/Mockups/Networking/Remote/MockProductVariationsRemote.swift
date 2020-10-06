@@ -16,11 +16,21 @@ final class MockProductVariationsRemote {
     /// The results to return based on the given arguments in `updateProductVariation`
     private var productVariationUpdateResults = [ResultKey: Result<ProductVariation, Error>]()
 
+    /// The results to return based on the given arguments in `loadProductVariation`
+    private var productVariationLoadResults = [ResultKey: Result<ProductVariation, Error>]()
+
     /// Set the value passed to the `completion` block if `updateProductVariation()` is called.
     ///
     func whenUpdatingProductVariation(siteID: Int64, productID: Int64, productVariationID: Int64, thenReturn result: Result<ProductVariation, Error>) {
         let key = ResultKey(siteID: siteID, productID: productID, productVariationIDs: [productVariationID])
         productVariationUpdateResults[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `loadProductVariation()` is called.
+    ///
+    func whenLoadingProductVariation(siteID: Int64, productID: Int64, productVariationID: Int64, thenReturn result: Result<ProductVariation, Error>) {
+        let key = ResultKey(siteID: siteID, productID: productID, productVariationIDs: [productVariationID])
+        productVariationLoadResults[key] = result
     }
 }
 
@@ -54,6 +64,19 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
     }
 
     func loadProductVariation(for siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void) {
-        // no-op
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            let key = ResultKey(siteID: siteID,
+                                productID: productID,
+                                productVariationIDs: [variationID])
+            if let result = self.productVariationLoadResults[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
     }
 }

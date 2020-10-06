@@ -12,7 +12,7 @@ public enum ProductVariationAction: Action {
 
     /// Retrieves the specified ProductVariation.
     ///
-    case retrieveProductVariation(siteID: Int64, productID: Int64, variationID: Int64, onCompletion: (Result<ProductVariation, ProductUpdateError>) -> Void)
+    case retrieveProductVariation(siteID: Int64, productID: Int64, variationID: Int64, onCompletion: (Result<ProductVariation, Error>) -> Void)
 
     /// Updates a specified ProductVariation.
     ///

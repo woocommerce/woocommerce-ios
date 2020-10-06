@@ -73,7 +73,7 @@ extension RefundConfirmationViewController: UITableViewDataSource {
             return cell
         case let row as RefundConfirmationViewModel.TitleAndEditableValueRow:
             let cell = tableView.dequeueReusableCell(TitleAndEditableValueTableViewCell.self, for: indexPath)
-            cell.update(title: row.title, placeholder: row.placeholder)
+            cell.update(style: .relaxed, title: row.title, placeholder: row.placeholder)
             return cell
         case let row as RefundConfirmationViewModel.TitleAndBodyRow:
             let cell = tableView.dequeueReusableCell(HeadlineLabelTableViewCell.self, for: indexPath)

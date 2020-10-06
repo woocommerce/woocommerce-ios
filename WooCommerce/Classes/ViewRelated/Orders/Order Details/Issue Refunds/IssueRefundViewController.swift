@@ -1,4 +1,5 @@
 import UIKit
+import Yosemite
 
 /// Screen that allows the user to refund items (products and shipping) of an order
 ///
@@ -12,9 +13,10 @@ final class IssueRefundViewController: UIViewController {
     @IBOutlet private var nextButton: UIButton!
     @IBOutlet private var selectAllButton: UIButton!
 
-    private let viewModel = IssueRefundViewModel()
+    private let viewModel: IssueRefundViewModel
 
-    init() {
+    init(order: Order) {
+        self.viewModel = IssueRefundViewModel(order: order)
         super.init(nibName: nil, bundle: nil)
     }
 

@@ -10,12 +10,13 @@ final class HeadlineLabelTableViewCell: UITableViewCell {
     @IBOutlet private var headlineToBodyConstraint: NSLayoutConstraint!
 
     enum Style {
-        /// Bold title with no margin against the body.
-        case emphasized
-        /// Normal body title with a margin against the body.
+        /// Bold title with no margin against the body. Hard colors. This is the default.
+        case compact
+        /// Normal body title with a margin against the body. The title uses body style while
+        /// the body uses secondary style.
         case regular
 
-        static let `default` = Self.emphasized
+        static let `default` = Self.compact
     }
 
     override func awakeFromNib() {
@@ -51,13 +52,13 @@ private extension HeadlineLabelTableViewCell {
 
     func apply(style: Style) {
         switch style {
-        case .emphasized:
+        case .compact:
             headlineLabel?.applyHeadlineStyle()
             bodyLabel?.applyBodyStyle()
             headlineToBodyConstraint.constant = 0
         case .regular:
-            headlineLabel?.applyHeadlineStyle()
-            bodyLabel?.applyBodyStyle()
+            headlineLabel?.applyBodyStyle()
+            bodyLabel?.applySecondaryBodyStyle()
             headlineToBodyConstraint.constant = Dimensions.margin
         }
 

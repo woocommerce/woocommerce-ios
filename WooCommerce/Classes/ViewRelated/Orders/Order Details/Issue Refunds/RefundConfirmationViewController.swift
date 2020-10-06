@@ -25,14 +25,11 @@ final class RefundConfirmationViewController: UIViewController {
 private extension RefundConfirmationViewController {
     func configureTableView() {
         // Register cells
-        let supportedCellTypes = [
+        [
             SettingTitleAndValueTableViewCell.self,
             TitleAndEditableValueTableViewCell.self,
             HeadlineLabelTableViewCell.self
-        ]
-        supportedCellTypes.forEach {
-            tableView.register($0.loadNib(), forCellReuseIdentifier: $0.reuseIdentifier)
-        }
+        ].forEach(tableView.registerNib)
 
         // Delegation
         tableView.dataSource = self

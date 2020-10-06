@@ -65,6 +65,6 @@ private extension TitleAndEditableValueTableViewCell {
 private extension TitleAndEditableValueTableViewCell {
 
     enum Constants {
-        static let stackViewSpacing: CGFloat = 7
+        static let stackViewSpacing: CGFloat = 8
     }
 }

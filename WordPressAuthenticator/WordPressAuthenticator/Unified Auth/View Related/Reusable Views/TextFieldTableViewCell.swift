@@ -236,7 +236,6 @@ extension TextFieldTableViewCell {
                                                    comment: "Accessibility label of the site address field shown when adding a self-hosted site.")
         static let username = NSLocalizedString("Username",
                                                 comment: "Accessibility label for the username text field in the self-hosted login page.")
-
         static let password = NSLocalizedString("Password",
                                                 comment: "Accessibility label for the password text field in the self-hosted login page.")
         static let otp = NSLocalizedString("Authentication code",

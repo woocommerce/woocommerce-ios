@@ -15,7 +15,7 @@ final class ButtonTableViewCell: UITableViewCell {
         fileprivate static let `default` = Self.primary
     }
 
-    var onButtonTouchUp: (() -> Void)?
+    private var onButtonTouchUp: (() -> Void)?
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -26,9 +26,10 @@ final class ButtonTableViewCell: UITableViewCell {
 
     /// Define this cell's UI attributes.
     ///
-    func configure(style: Style = .default, title: String?) {
+    func configure(style: Style = .default, title: String?, onButtonTouchUp: (() -> Void)? = nil) {
         apply(style: style)
         button.setTitle(title, for: .normal)
+        self.onButtonTouchUp = onButtonTouchUp
     }
 }
 

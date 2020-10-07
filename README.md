@@ -2,18 +2,19 @@
 [![CircleCI](https://circleci.com/gh/woocommerce/woocommerce-ios.svg?style=svg)](https://circleci.com/gh/woocommerce/woocommerce-ios)
 [![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com)
 
-# woocommerce-ios
+# WooCommerce for iOS
+
 A Jetpack-powered companion app for WooCommerce.
 
 ## Build Instructions
 
 1. Download Xcode
 
-    At the moment *WooCommerce for iOS* uses Swift 5 and requires Xcode 11.5 or newer. Previous versions of Xcode can be [downloaded from Apple](https://developer.apple.com/downloads/index.action).
+    At the moment *WooCommerce for iOS* uses Swift 5 and requires Xcode 11.7 or newer. Previous versions of Xcode can be [downloaded from Apple](https://developer.apple.com/downloads/index.action).
 
 2. Install Ruby. We recommend using [rbenv](https://github.com/rbenv/rbenv) to install it. Please refer to the [`.ruby-version` file](.ruby-version) for the required Ruby version.
 
-    We use Ruby to manage the third party dependencies and other tools and automation. 
+    We use Ruby to manage the third party dependencies and other tools and automation.
 
 2. Clone project in the folder of your preference
 
@@ -21,60 +22,65 @@ A Jetpack-powered companion app for WooCommerce.
     git clone https://github.com/woocommerce/woocommerce-ios.git
     ````
 
-3. Enter the project directory 
+3. Enter the project directory
 
     ```bash
     cd woocommerce-ios
     ```
-    
+
 4. Install the third party dependencies and tools required to run the project.
-    
-    
+
+
     ```bash
-    rake dependencies
+    bundle exec rake dependencies
     ```
-    
+
+    This command installs the required tools like [CocoaPods](https://cocoapods.org/). And then it installs the iOS project dependencies using CocoaPods.
+
 5. Open the project by double clicking on `WooCommerce.xcworkspace` file, or launching Xcode and choose File > Open and browse to `WooCommerce.xcworkspace`
 
-#### Credentials for external contributors
+### Credentials for External Contributors
+
 In order to login to WordPress.com using the app:
+
 1. Create a [WordPress.com account](https://wordpress.com/start/user) (if you don't already have one).
 2. Create a new developer application [here](https://developer.wordpress.com/apps/).
-3. Set **"Redirect URLs"** = `https://localhost` and **"Type"** = `Native` and click **Create** then **Update**.
-4. Copy the *Client ID* and *Client Secret* from the OAuth Information. Build the app.
-5. Navigate to *WooCommerce/DerivedSources/ApiCredentials.swift*
-6. Fill in the dotcomAppId with the Client ID
-7. Fill in the dotcomSecret with the Client Secret
-8. Recompile and run the app on a device or inside simulator.
+3. Set **"Redirect URLs"** = `https://localhost` and **"Type"** = `Native` and click **Create**. On the next page, click **Update**.
+4. Copy the *Client ID* and *Client Secret* from the OAuth Information.
+5. Build the app. A file named `ApiCredentials.swift` should be generated. 
+6. Navigate to the generated `WooCommerce/DerivedSources/ApiCredentials.swift` file.
+
+    <img src="docs/images/apicredentials-location.png" width="240">
+
+7. Fill in the `dotcomAppId` with the Client ID.
+8. Fill in the `dotcomSecret` with the Client Secret.
+9. Recompile and run the app on a device or inside simulator.
 
 Please, remember to not add this information on your commits and PRs.
-  
-#### SwiftLint
 
-We use [SwiftLint](https://github.com/realm/SwiftLint) to enforce a common style for Swift code. The app should build and work without it, but if you plan to write code, you are encouraged to run it locally by `rake lint` (first run will install SwiftLint if you don't have it). No pull requests should have lint warnings or errors before merging, and we also have `Hound` (mentioned below) to help us in pull requests on GitHub.
+## Coding Style
+
+We use [SwiftLint](https://github.com/realm/SwiftLint) to enforce a common style for Swift code. The app should build and work without it, but if you plan to write code, you are encouraged to run it locally by `bundle exec rake lint` (first run will install SwiftLint if you don't have it). No pull requests should have lint warnings or errors before merging, and we also have `Hound` (mentioned below) to help us in pull requests on GitHub.
 
 If your code has any style violations, you can try to automatically correct them by running:
 
 ```
-rake lint:autocorrect
+bundle exec rake lint:autocorrect
 ```
 
 Otherwise, you can also fix them manually.
 
-#### CocoaPods
+Read more about styling in the [Coding Style Guide](docs/coding-style-guide.md).
 
-The woocommerce-ios project uses [CocoaPods](http://cocoapods.org/) to manage third party libraries.  
-Third party libraries and resources managed by CocoaPods will be installed by the `bundle exec pod install` command above.
-
-#### Peril
+## Peril
 
 The woocommerce-ios project uses [Peril](https://danger.systems/js/guides/peril.html) to enforce Pull Request guidelines.
 
-#### Circle CI
+## Circle CI
 
 The woocommerce-ios project uses [Circle CI](https://circleci.com/gh/woocommerce/woocommerce-ios) for continuous integration.
 
-#### Hound
+## Hound
 The woocommerce-ios project uses [Hound](https://houndci.com) to enforce basic Swift styles. (Not all Woo styles are defined in Hound.)
 
 ## Security

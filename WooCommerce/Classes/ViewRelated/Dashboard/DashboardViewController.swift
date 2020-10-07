@@ -10,9 +10,9 @@ final class DashboardViewController: UIViewController {
 
     // MARK: Properties
 
-    private var siteID: Int64?
+    private let siteID: Int64
 
-    private var dashboardUIFactory: DashboardUIFactory?
+    private let dashboardUIFactory: DashboardUIFactory
     private var dashboardUI: DashboardUI?
 
     // MARK: Subviews
@@ -23,9 +23,10 @@ final class DashboardViewController: UIViewController {
 
     // MARK: View Lifecycle
 
-    init() {
+    init(siteID: Int64) {
+        self.siteID = siteID
+        dashboardUIFactory = DashboardUIFactory(siteID: siteID)
         super.init(nibName: nil, bundle: nil)
-        startListeningToNotifications()
         configureTabBarItem()
     }
 
@@ -77,10 +78,6 @@ private extension DashboardViewController {
         navigationItem.title = ServiceLocator.stores.sessionManager.defaultSite?.name ?? Localization.title
     }
 
-    func resetTitle() {
-        navigationItem.title = Localization.title
-    }
-
     private func configureNavigationItem() {
         let rightBarButton = UIBarButtonItem(image: .cogImage,
                                              style: .plain,
@@ -114,15 +111,7 @@ private extension DashboardViewController {
     }
 
     func reloadDashboardUIStatsVersion() {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            return
-        }
-        if siteID != self.siteID {
-            dashboardUIFactory = DashboardUIFactory(siteID: siteID)
-            self.siteID = siteID
-        }
-
-        dashboardUIFactory?.reloadDashboardUI(onUIUpdate: { [weak self] dashboardUI in
+        dashboardUIFactory.reloadDashboardUI(onUIUpdate: { [weak self] dashboardUI in
             self?.onDashboardUIUpdate(updatedDashboardUI: dashboardUI)
         })
     }
@@ -163,29 +152,6 @@ private extension DashboardViewController {
     }
 }
 
-// MARK: - Notifications
-//
-extension DashboardViewController {
-
-    /// Wires all of the Notification Hooks
-    ///
-    func startListeningToNotifications() {
-        let nc = NotificationCenter.default
-        nc.addObserver(self, selector: #selector(defaultAccountWasUpdated), name: .defaultAccountWasUpdated, object: nil)
-    }
-
-    /// Runs whenever the default Account is updated.
-    ///
-    @objc func defaultAccountWasUpdated() {
-        guard isViewLoaded, ServiceLocator.stores.isAuthenticated == false else {
-            return
-        }
-
-        resetTitle()
-        dashboardUI?.defaultAccountDidUpdate()
-    }
-}
-
 // MARK: - Public API
 //
 extension DashboardViewController {
@@ -200,9 +166,7 @@ extension DashboardViewController {
 private extension DashboardViewController {
 
     @objc func settingsTapped() {
-        guard let settingsViewController = UIStoryboard.dashboard.instantiateViewController(ofClass: SettingsViewController.self) else {
-            fatalError("Cannot instantiate `SettingsViewController` from Dashboard storyboard")
-        }
+        let settingsViewController = SettingsViewController(nibName: nil, bundle: nil)
         ServiceLocator.analytics.track(.settingsTapped)
         show(settingsViewController, sender: self)
     }

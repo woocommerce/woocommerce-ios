@@ -11,9 +11,6 @@ protocol DashboardUI: UIViewController {
     /// Called when the user pulls to refresh
     var onPullToRefresh: () -> Void { get set }
 
-    /// Called when the default account was updated
-    func defaultAccountDidUpdate()
-
     /// Reloads data in Dashboard
     ///
     /// - Parameter completion: called when Dashboard data reload finishes
@@ -45,7 +42,7 @@ final class DashboardUIFactory {
         if let lastStatsV4DashboardUI = lastStatsV4DashboardUI {
             return lastStatsV4DashboardUI
         }
-        let dashboardUI = StoreStatsAndTopPerformersViewController(nibName: nil, bundle: nil)
+        let dashboardUI = StoreStatsAndTopPerformersViewController(siteID: siteID)
         lastStatsV4DashboardUI = dashboardUI
         return dashboardUI
     }

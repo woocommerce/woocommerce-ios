@@ -1,4 +1,5 @@
 /// WooCommerce API Credentials
+///
 struct ApiCredentials {
 
     /// WordPress.com AppID
@@ -44,4 +45,8 @@ struct ApiCredentials {
     /// Zendesk Client ID
     ///
     static let zendeskClientId: String = "<#Zendesk Client ID#>"
+
+    /// Encrypted Logging Public Key
+    ///
+    static let loggingEncryptionKey = "<#Encrypted Log Key#>"
 }

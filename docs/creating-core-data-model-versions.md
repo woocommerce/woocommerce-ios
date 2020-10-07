@@ -8,7 +8,7 @@ The Core Data model versions are located at [Storage/Storage/Model/WooCommerce.x
 
 When creating a new version (`xcdatamodel`), name it as `Model N+1` where `N` is the last model version number. For example, if the last model version is `Model 32`, then the new version should be named `Model 33`. The correct name is usually suggested by Xcode.
 
-The sequential version numbers is important because that sequence is used by the automatic [iterative migrator](../Storage/Storage/CoreData/CoreDataIterativeMigrator.swift) to determine how to upgrade the users' existing database. You can find more information about how the model versions sequence is determined in [`ManagedObjectModelsInventory`](../Storage/Storage/CoreData/ManagedObjectModelsInventory.swift).
+The sequential version numbers are important because that sequence is used by the automatic [iterative migrator](../Storage/Storage/CoreData/CoreDataIterativeMigrator.swift) to determine how to upgrade the users' existing database. You can find more information about how the model versions sequence is determined in [`ManagedObjectModelsInventory`](../Storage/Storage/CoreData/ManagedObjectModelsInventory.swift).
 
 ## Avoid Modifying Existing Model Versions
 
@@ -19,11 +19,11 @@ Once a model version is merged in `develop`, consider creating a new model versi
 
 These scenarios can lead to users' databases to be incompatible with the current model and they would be unable to load their data. The app would end up recreating the database. It's an unlikely scenario.
 
-Also avoid modifying model versions in release branches. If possible, model version changes should be done and merged swiftly in `develop`.
+Also, avoid modifying model versions in release branches. If possible, model version changes should be done and merged swiftly in `develop`.
 
 ## Always Add Unit Tests
 
-Always create a unit test between the current the model version and the new version in [`MigrationTests`](../Storage/StorageTests/CoreData/MigrationTests.swift). This helps us ensure that the migrations will always work for users who have not upgraded. Consider the unit test as a **concrete documentation** for what the new model version changed.
+Always create a unit test between the current model version and the new version in [`MigrationTests`](../Storage/StorageTests/CoreData/MigrationTests.swift). This helps us ensure that the migrations will always work for users who have not upgraded. Consider the unit test as **concrete documentation** for what the new model version changed.
 
 Avoid using the [`NSManagedObject` subclasses](../Storage/Storage/Model) in the unit tests. Prefer to use pure `NSManagedObject` instances.
 

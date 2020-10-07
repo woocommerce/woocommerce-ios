@@ -121,23 +121,20 @@ final class ProductVariationsRemoteTests: XCTestCase {
 
     /// Verifies that loadProductVariation properly parses the `product-variation` sample response.
     ///
-    func test_load_single_ProductVariation_properly_returns_parsed_ProductVariation() throws {
+    func test_load_single_ProductVariation_returns_parsed_ProductVariation() throws {
         // Given
         let remote = ProductVariationsRemote(network: network)
         let sampleProductVariationID: Int64 = 1275
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations/\(sampleProductVariationID)", filename: "product-variation")
 
         // When
-        var resultMaybe: Result<ProductVariation, Error>?
-        waitForExpectation { exp in
-            remote.loadProductVariation(for: sampleSiteID, productID: sampleProductID, variationID: sampleProductVariationID) { aResult in
-                resultMaybe = aResult
-                exp.fulfill()
+        let result = try waitFor { promise in
+            remote.loadProductVariation(for: self.sampleSiteID, productID: self.sampleProductID, variationID: sampleProductVariationID) { result in
+                promise(result)
             }
         }
 
         // Then
-        let result = try XCTUnwrap(resultMaybe)
         XCTAssertTrue(result.isSuccess)
 
         let productVariation = try result.get()
@@ -153,17 +150,15 @@ final class ProductVariationsRemoteTests: XCTestCase {
         let sampleProductVariationID: Int64 = 2783
 
         // When
-        var resultMaybe: Result<ProductVariation, Error>?
-        waitForExpectation { exp in
-            remote.loadProductVariation(for: sampleSiteID, productID: sampleProductID, variationID: sampleProductVariationID) { aResult in
-                resultMaybe = aResult
-                exp.fulfill()
+        let result = try waitFor { promise in
+            remote.loadProductVariation(for: self.sampleSiteID, productID: self.sampleProductID, variationID: sampleProductVariationID) { result in
+                promise(result)
             }
         }
 
         // Then
-        let result = try XCTUnwrap(resultMaybe)
         XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .notFound)
     }
 
     // MARK: - Update ProductVariation

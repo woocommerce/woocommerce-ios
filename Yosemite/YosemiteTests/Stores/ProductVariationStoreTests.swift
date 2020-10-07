@@ -294,7 +294,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
     /// Verifies that `ProductVariationAction.retrieveProductVariation` effectively persists the retrieved product variation.
     ///
-    func test_retrieveProductVariation_effectively_persisted() throws {
+    func test_retrieveProductVariation_persists_the_ProductVariation() throws {
         // Given
         let remote = MockProductVariationsRemote()
         let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
@@ -307,13 +307,11 @@ final class ProductVariationStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
 
         // When
-        var resultMaybe: Result<Yosemite.ProductVariation, Error>?
-        waitForExpectation { exp in
-            let action = ProductVariationAction.retrieveProductVariation(siteID: sampleSiteID,
-                                                                         productID: sampleProductID,
-                                                                         variationID: sampleProductVariationID) { aResult in
-                resultMaybe = aResult
-                exp.fulfill()
+        let result: Result<Yosemite.ProductVariation, Error> = try waitFor { promise in
+            let action = ProductVariationAction.retrieveProductVariation(siteID: self.sampleSiteID,
+                                                                         productID: self.sampleProductID,
+                                                                         variationID: sampleProductVariationID) { result in
+                                                                            promise(result)
             }
             store.onAction(action)
         }
@@ -321,7 +319,6 @@ final class ProductVariationStoreTests: XCTestCase {
         // Then
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
 
-        let result = try XCTUnwrap(resultMaybe)
         XCTAssertTrue(result.isSuccess)
         XCTAssertNotNil(try result.get())
 
@@ -348,24 +345,20 @@ final class ProductVariationStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
 
         // When
-        var resultMaybe1: Result<Yosemite.ProductVariation, Error>?
-        waitForExpectation { exp in
-            let action = ProductVariationAction.retrieveProductVariation(siteID: sampleSiteID,
-                                                                         productID: sampleProductID,
-                                                                         variationID: sampleProductVariationID) { aResult in
-                resultMaybe1 = aResult
-                exp.fulfill()
+        let result1: Result<Yosemite.ProductVariation, Error> = try waitFor { promise in
+            let action = ProductVariationAction.retrieveProductVariation(siteID: self.sampleSiteID,
+                                                                         productID: self.sampleProductID,
+                                                                         variationID: sampleProductVariationID) { result in
+                                                                            promise(result)
             }
             store.onAction(action)
         }
 
-        var resultMaybe2: Result<Yosemite.ProductVariation, Error>?
-        waitForExpectation { exp in
-            let action = ProductVariationAction.retrieveProductVariation(siteID: sampleSiteID,
-                                                                         productID: sampleProductID,
-                                                                         variationID: sampleProductVariationID) { aResult in
-                resultMaybe2 = aResult
-                exp.fulfill()
+        let result2: Result<Yosemite.ProductVariation, Error> = try waitFor { promise in
+            let action = ProductVariationAction.retrieveProductVariation(siteID: self.sampleSiteID,
+                                                                         productID: self.sampleProductID,
+                                                                         variationID: sampleProductVariationID) { result in
+                                                                            promise(result)
             }
             store.onAction(action)
         }
@@ -373,11 +366,9 @@ final class ProductVariationStoreTests: XCTestCase {
         // Then
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
 
-        let result1 = try XCTUnwrap(resultMaybe1)
         XCTAssertTrue(result1.isSuccess)
         XCTAssertNotNil(try result1.get())
 
-        let result2 = try XCTUnwrap(resultMaybe2)
         XCTAssertTrue(result2.isSuccess)
         XCTAssertNotNil(try result2.get())
 
@@ -403,13 +394,11 @@ final class ProductVariationStoreTests: XCTestCase {
                                            thenReturn: .failure(expectedError))
 
         // When
-        var resultMaybe: Result<Yosemite.ProductVariation, Error>?
-        waitForExpectation { exp in
-            let action = ProductVariationAction.retrieveProductVariation(siteID: sampleSiteID,
-                                                                         productID: sampleProductID,
-                                                                         variationID: sampleProductVariationID) { aResult in
-                resultMaybe = aResult
-                exp.fulfill()
+        let result: Result<Yosemite.ProductVariation, Error> = try waitFor { promise in
+            let action = ProductVariationAction.retrieveProductVariation(siteID: self.sampleSiteID,
+                                                                         productID: self.sampleProductID,
+                                                                         variationID: sampleProductVariationID) { result in
+                                                                            promise(result)
             }
             store.onAction(action)
         }
@@ -417,7 +406,6 @@ final class ProductVariationStoreTests: XCTestCase {
         // Then
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
 
-        let result = try XCTUnwrap(resultMaybe)
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as? ProductVariationLoadError, expectedError)
     }

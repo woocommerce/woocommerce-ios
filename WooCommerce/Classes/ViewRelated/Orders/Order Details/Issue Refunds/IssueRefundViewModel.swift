@@ -12,12 +12,12 @@ final class IssueRefundViewModel {
     /// Title for the navigation bar
     /// This is temporary data, will be removed after implementing https://github.com/woocommerce/woocommerce-ios/issues/2842
     ///
-    let title: String = "$35.45"
+    let title: String = "$0.00"
 
     /// String indicating how many items the user has selected to refund
     /// This is temporary data, will be removed after implementing https://github.com/woocommerce/woocommerce-ios/issues/2842
     ///
-    let selectedItemsTitle: String = "3 items selected"
+    let selectedItemsTitle: String = "0 items selected"
 
     /// The sections and rows to display in the `UITableView`.
     ///
@@ -89,7 +89,7 @@ extension IssueRefundViewModel {
         }
 
         // This is temporary data, will be removed after implementing https://github.com/woocommerce/woocommerce-ios/issues/2842
-        let sumaryRow = RefundProductsTotalViewModel(productsTax: "$13.45", productsSubtotal: "$66.26", productsTotal: "$79.71")
+        let sumaryRow = RefundProductsTotalViewModel(productsTax: "$0.00", productsSubtotal: "$0.00", productsTotal: "$0.00")
 
         return Section(rows: itemsRows + [sumaryRow])
     }

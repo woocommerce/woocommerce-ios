@@ -56,7 +56,6 @@ extension DeprecatedDashboardStatsViewController: DashboardUI {
         set {}
     }
 
-    func defaultAccountDidUpdate() {}
     func remindStatsUpgradeLater() {}
     func reloadData(completion: @escaping () -> Void) {}
 }

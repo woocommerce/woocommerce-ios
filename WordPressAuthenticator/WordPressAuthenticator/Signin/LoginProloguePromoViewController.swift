@@ -63,7 +63,7 @@ class LoginProloguePromoViewController: UIViewController {
         }
 
         var headlineColor: UIColor {
-            if WordPressAuthenticator.shared.configuration.enablePrologueCarousel {
+            if WordPressAuthenticator.shared.configuration.enableUnifiedCarousel {
                 return WordPressAuthenticator.shared.unifiedStyle?.textColor ?? WordPressAuthenticator.shared.style.secondaryTitleColor
             }
 
@@ -93,7 +93,7 @@ class LoginProloguePromoViewController: UIViewController {
         super.viewDidLoad()
         setupBackground()
 
-        if WordPressAuthenticator.shared.configuration.enablePrologueCarousel {
+        if WordPressAuthenticator.shared.configuration.enableUnifiedCarousel {
             styleHeadingLabel()
         } else {
             setupHeadingLabel()

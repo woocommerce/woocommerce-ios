@@ -16,7 +16,7 @@ class LoginProloguePageViewController: UIPageViewController {
         dataSource = self
         delegate = self
 
-        if WordPressAuthenticator.shared.configuration.enablePrologueCarousel {
+        if WordPressAuthenticator.shared.configuration.enableUnifiedCarousel {
             pages.append(LoginProloguePromoViewController(as: .intro))
             pages.append(LoginProloguePromoViewController(as: .editor))
             pages.append(LoginProloguePromoViewController(as: .comments))

@@ -25,7 +25,7 @@ final class ButtonTableViewCell: UITableViewCell {
     }
 }
 
-extension ButtonTableViewCell {
+private extension ButtonTableViewCell {
     @IBAction func sendButtonTouchUpEvent() {
         onFullfillTouchUp?()
     }

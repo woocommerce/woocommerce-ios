@@ -16,7 +16,7 @@ final class ButtonTableViewCell: UITableViewCell {
 }
 
 extension ButtonTableViewCell {
-    @IBAction func fulfillWasPressed() {
+    @IBAction func sendButtonTouchUpEvent() {
         onFullfillTouchUp?()
     }
 }

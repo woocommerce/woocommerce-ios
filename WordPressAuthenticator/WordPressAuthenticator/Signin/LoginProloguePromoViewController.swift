@@ -25,6 +25,12 @@ class LoginProloguePromoViewController: UIViewController {
         case reader
         case notifications
         case jetpack
+        // new prologue carousel
+        case intro
+        case editor
+        case comments
+        case analytics
+        case discover
 
         var animationKey: String {
             return rawValue
@@ -42,6 +48,17 @@ class LoginProloguePromoViewController: UIViewController {
                 return NSLocalizedString("Your notifications travel with you — see comments and likes as they happen.", comment: "shown in promotional screens during first launch")
             case .jetpack:
                 return NSLocalizedString("Manage your Jetpack-powered site on the go — you've got WordPress in your pocket.", comment: "shown in promotional screens during first launch")
+            // new prologue carousel
+            case .intro:
+                return NSLocalizedString("Welcome to the world’s most popular website builder.", comment: "Shown in the prologue carousel (promotional screens) during first launch.")
+            case .editor:
+                return NSLocalizedString("With this powerful editor you can post on the go.", comment: "Shown in the prologue carousel (promotional screens) during first launch.")
+            case .comments:
+                return NSLocalizedString("See comments and notifications in real time.", comment: "Shown in the prologue carousel (promotional screens) during first launch.")
+            case .analytics:
+                return NSLocalizedString("Watch your audience grow with in-depth analytics.", comment: "Shown in the prologue carousel (promotional screens) during first launch.")
+            case .discover:
+                return NSLocalizedString("Follow your favourite sites and discover new reads.", comment: "Shown in the prologue carousel (promotional screens) during first launch.")
             }
         }
 

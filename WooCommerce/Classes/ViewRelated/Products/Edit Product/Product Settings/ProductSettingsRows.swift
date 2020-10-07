@@ -43,12 +43,12 @@ enum ProductSettingsRows {
             if isStatusPrivate() {
                 cell.accessoryType = .none
                 cell.selectionStyle = .none
-                cell.applyNonSelectableLabelsStyle()
+                cell.apply(style: .nonSelectable)
             }
             else {
                 cell.accessoryType = .disclosureIndicator
                 cell.selectionStyle = .default
-                cell.applyDefaultLabelsStyle()
+                cell.apply(style: .regular)
             }
 
             cell.updateUI(title: NSLocalizedString("Status", comment: "Status label in Product Settings"), value: settings.status.description)

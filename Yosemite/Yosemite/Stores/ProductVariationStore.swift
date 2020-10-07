@@ -38,6 +38,8 @@ public final class ProductVariationStore: Store {
         switch action {
         case .synchronizeProductVariations(let siteID, let productID, let pageNumber, let pageSize, let onCompletion):
             synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .retrieveProductVariation(let siteID, let productID, let variationID, let onCompletion):
+            retrieveProductVariation(siteID: siteID, productID: productID, variationID: variationID, onCompletion: onCompletion)
         case .updateProductVariation(let productVariation, let onCompletion):
             updateProductVariation(productVariation: productVariation, onCompletion: onCompletion)
         }
@@ -71,6 +73,32 @@ private extension ProductVariationStore {
                                                             siteID: siteID,
                                                             productID: productID) {
                 onCompletion(nil)
+            }
+        }
+    }
+
+    /// Retrieves the product variation associated with a given siteID + productID + variationID.
+    ///
+    func retrieveProductVariation(siteID: Int64, productID: Int64, variationID: Int64,
+                                  onCompletion: @escaping (Result<ProductVariation, Error>) -> Void) {
+        remote.loadProductVariation(for: siteID, productID: productID, variationID: variationID) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            case .success(let productVariation):
+                self.upsertStoredProductVariationsInBackground(readOnlyProductVariations: [productVariation],
+                                                               siteID: siteID, productID: productID) { [weak self] in
+                   guard let storageProductVariation = self?.storageManager.viewStorage
+                        .loadProductVariation(siteID: productVariation.siteID,
+                                              productVariationID: productVariation.productVariationID) else {
+                                                onCompletion(.failure(ProductVariationLoadError.notFoundInStorage))
+                                                return
+                    }
+                    onCompletion(.success(storageProductVariation.toReadOnly()))
+                }
             }
         }
     }
@@ -215,4 +243,8 @@ private extension ProductVariationStore {
             storageVariation.image = newStorageImage
         }
     }
+}
+
+public enum ProductVariationLoadError: Error, Equatable {
+    case notFoundInStorage
 }

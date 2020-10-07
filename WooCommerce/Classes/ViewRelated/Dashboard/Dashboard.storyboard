@@ -8,53 +8,16 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Settings View Controller-->
-        <scene sceneID="s9m-Yn-qYL">
-            <objects>
-                <viewController storyboardIdentifier="SettingsViewController" id="5Fc-gh-JKM" customClass="SettingsViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="EsH-cO-BoJ">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="wI4-XX-k2z">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
-                                <connections>
-                                    <outlet property="dataSource" destination="5Fc-gh-JKM" id="qWb-BY-q6l"/>
-                                    <outlet property="delegate" destination="5Fc-gh-JKM" id="7Dv-VF-WM7"/>
-                                </connections>
-                            </tableView>
-                        </subviews>
-                        <constraints>
-                            <constraint firstItem="wI4-XX-k2z" firstAttribute="top" secondItem="pVG-uH-VOs" secondAttribute="top" id="BPH-Mb-QEh"/>
-                            <constraint firstItem="wI4-XX-k2z" firstAttribute="bottom" secondItem="pVG-uH-VOs" secondAttribute="bottom" id="QMr-P8-3K9"/>
-                            <constraint firstItem="wI4-XX-k2z" firstAttribute="trailing" secondItem="pVG-uH-VOs" secondAttribute="trailing" id="npm-yA-ZZZ"/>
-                            <constraint firstItem="wI4-XX-k2z" firstAttribute="leading" secondItem="pVG-uH-VOs" secondAttribute="leading" id="vdH-Cm-MxV"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="pVG-uH-VOs"/>
-                    </view>
-                    <connections>
-                        <outlet property="tableView" destination="wI4-XX-k2z" id="6bZ-RB-KF9"/>
-                        <segue destination="tLZ-3e-cJY" kind="show" identifier="ShowPrivacySettingsViewController" id="26d-pC-r7k"/>
-                        <segue destination="iSl-b1-8Q7" kind="show" identifier="ShowHelpAndSupportViewController" id="6A7-eX-DcD"/>
-                        <segue destination="0FF-UX-4XZ" kind="show" identifier="ShowAboutViewController" id="5nL-8n-wgD"/>
-                        <segue destination="2kR-vO-lWS" kind="show" identifier="ShowLicensesViewController" id="dPp-oU-Gdl"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="FEk-Qx-6OE" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="492" y="1978.56071964018"/>
-        </scene>
         <!--Privacy Settings View Controller-->
         <scene sceneID="g1b-rK-cDR">
             <objects>
                 <viewController storyboardIdentifier="PrivacySettingsViewController" id="tLZ-3e-cJY" customClass="PrivacySettingsViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="eDL-oC-fDz">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" layoutMarginsFollowReadableWidth="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="hwi-He-cKY">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <connections>
                                     <outlet property="dataSource" destination="tLZ-3e-cJY" id="uum-dx-Yau"/>
@@ -152,11 +115,11 @@
             <objects>
                 <viewController storyboardIdentifier="HelpAndSupportViewController" id="iSl-b1-8Q7" customClass="HelpAndSupportViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="wie-fQ-LP9">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="egg-mo-Y4S">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <connections>
                                     <outlet property="dataSource" destination="iSl-b1-8Q7" id="D4h-Iu-gaD"/>
@@ -187,11 +150,11 @@
             <objects>
                 <viewController storyboardIdentifier="AboutViewController" id="0FF-UX-4XZ" customClass="AboutViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ivz-5E-TEz">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" layoutMarginsFollowReadableWidth="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="ibP-Y7-8cn">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <connections>
                                     <outlet property="dataSource" destination="0FF-UX-4XZ" id="6jO-4P-3zY"/>
@@ -220,11 +183,11 @@
             <objects>
                 <viewController storyboardIdentifier="LicensesViewController" id="2kR-vO-lWS" customClass="LicensesViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="pIy-Ye-9vd">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3Ux-jX-kZE">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <wkWebViewConfiguration key="configuration">
                                     <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>

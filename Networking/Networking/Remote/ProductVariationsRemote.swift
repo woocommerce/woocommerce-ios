@@ -12,6 +12,7 @@ public protocol ProductVariationsRemoteProtocol {
                                   pageNumber: Int,
                                   pageSize: Int,
                                   completion: @escaping ([ProductVariation]?, Error?) -> Void)
+    func loadProductVariation(for siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void)
 }
 
 /// ProductVariation: Remote Endpoints
@@ -44,6 +45,22 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
         let path = "\(Path.products)/\(productID)/variations"
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
         let mapper = ProductVariationListMapper(siteID: siteID, productID: productID)
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Retrieves a specific `ProductVariation`.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site which hosts the ProductVariation.
+    ///     - productID: Identifier of the Product.
+    ///     - variationID: Identifier of the Variation.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func loadProductVariation(for siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void) {
+        let path = "\(Path.products)/\(productID)/variations/\(variationID)"
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
+        let mapper = ProductVariationMapper(siteID: siteID, productID: productID)
+
         enqueue(request, mapper: mapper, completion: completion)
     }
 

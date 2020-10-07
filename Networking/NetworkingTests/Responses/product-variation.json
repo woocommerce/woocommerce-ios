@@ -1,0 +1,95 @@
+{
+    "data": {
+        "id": 1275,
+        "date_created": "2019-11-14T15:10:55",
+        "date_created_gmt": "2019-11-14T12:40:55",
+        "date_modified": "2019-11-14T15:36:42",
+        "date_modified_gmt": "2019-11-14T13:06:42",
+        "description": "<p>Nutty chocolate marble, 99% and organic.</p>\n",
+        "permalink": "https://chocolate.com/marble",
+        "sku": "99%-nuts-marble",
+        "price": "12",
+        "regular_price": "12",
+        "sale_price": "8",
+        "date_on_sale_from": "2019-10-16T00:00:00",
+        "date_on_sale_from_gmt": "2019-10-15T21:30:00",
+        "date_on_sale_to": "2019-10-27T23:59:59",
+        "date_on_sale_to_gmt": "2019-10-27T21:29:59",
+        "on_sale": false,
+        "status": "publish",
+        "purchasable": true,
+        "virtual": false,
+        "downloadable": true,
+        "downloads": [],
+        "download_limit": -1,
+        "download_expiry": 0,
+        "tax_status": "taxable",
+        "tax_class": "",
+        "manage_stock": true,
+        "stock_quantity": 16,
+        "stock_status": "instock",
+        "backorders": "notify",
+        "backorders_allowed": true,
+        "backordered": false,
+        "weight": "2.5",
+        "dimensions": {
+            "length": "10",
+            "width": "2.5",
+            "height": ""
+        },
+        "shipping_class": "",
+        "shipping_class_id": 0,
+        "image": {
+            "id": 1063,
+            "date_created": "2019-11-01T08:42:05",
+            "date_created_gmt": "2019-11-01T04:12:05",
+            "date_modified": "2019-11-01T08:42:05",
+            "date_modified_gmt": "2019-11-01T04:12:05",
+            "src": "https://i0.wp.com/funtestingusa.wpcomstaging.com/wp-content/uploads/2019/11/img_0002-1.jpeg?fit=4288%2C2848&ssl=1",
+            "name": "DSC_0010",
+            "alt": ""
+        },
+        "attributes": [
+            {
+                "id": 0,
+                "name": "Darkness",
+                "option": "99%"
+            },
+            {
+                "id": 0,
+                "name": "Flavor",
+                "option": "nuts"
+            },
+            {
+                "id": 0,
+                "name": "Shape",
+                "option": "marble"
+            }
+        ],
+        "menu_order": 8,
+        "meta_data": [
+            {
+                "id": 6767,
+                "key": "_created_via",
+                "value": "ajax-unknown"
+            }
+        ],
+        "_links": {
+            "self": [
+                {
+                    "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/846/variations/1275"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/846/variations"
+                }
+            ],
+            "up": [
+                {
+                    "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/846"
+                }
+            ]
+        }
+    }
+}

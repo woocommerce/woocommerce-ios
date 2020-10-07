@@ -451,10 +451,9 @@ private extension OrderDetailsDataSource {
         }
     }
 
-    // TODO: Change: actions
     private func configureIssueRefundButton(cell: IssueRefundTableViewCell) {
-        cell.onIssueRefundTouchUp = {
-            print("Issue refund pressed")
+        cell.onIssueRefundTouchUp = { [weak self] in
+            self?.onCellAction?(.issueRefund, nil)
         }
     }
 
@@ -1010,6 +1009,7 @@ extension OrderDetailsDataSource {
         case fulfill
         case tracking
         case summary
+        case issueRefund
     }
 
     struct Constants {

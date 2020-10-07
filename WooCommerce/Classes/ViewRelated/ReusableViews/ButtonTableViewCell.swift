@@ -1,9 +1,8 @@
 import UIKit
 
-
-/// Displays the list of Products associated to an Order.
+/// Displays a button inside a `UITableViewCell`.
 ///
-final class FulfillButtonTableViewCell: UITableViewCell {
+final class ButtonTableViewCell: UITableViewCell {
     @IBOutlet public var fulfillButton: UIButton!
 
     var onFullfillTouchUp: (() -> Void)?
@@ -16,14 +15,14 @@ final class FulfillButtonTableViewCell: UITableViewCell {
     }
 }
 
-extension FulfillButtonTableViewCell {
+extension ButtonTableViewCell {
     @IBAction func fulfillWasPressed() {
         onFullfillTouchUp?()
     }
 }
 
 
-private extension FulfillButtonTableViewCell {
+private extension ButtonTableViewCell {
     func configureBackground() {
         applyDefaultBackgroundStyle()
     }

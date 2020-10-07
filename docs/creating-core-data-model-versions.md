@@ -8,16 +8,16 @@ The Core Data model versions are located at [`Storage/Storage/Model/WooCommerce.
 
 When creating a new version (`xcdatamodel`), name it as `Model N+1` where `N` is the last model version number. For example, if the last model version is `Model 32`, then the new version should be named `Model 33`. The correct name is usually suggested by Xcode.
 
-The sequential version numbers are important because that sequence is used by the automatic [iterative migrator](../Storage/Storage/CoreData/CoreDataIterativeMigrator.swift) to determine how to upgrade the users' existing database. You can find more information about how the model versions sequence is determined in [`ManagedObjectModelsInventory`](../Storage/Storage/CoreData/ManagedObjectModelsInventory.swift).
+The sequential version numbers are important because that sequence is used by the automatic [iterative migrator](../Storage/Storage/CoreData/CoreDataIterativeMigrator.swift) to determine how to upgrade the user's existing database. You can find more information about how the model versions sequence is determined in [`ManagedObjectModelsInventory`](../Storage/Storage/CoreData/ManagedObjectModelsInventory.swift).
 
 ## Avoid Modifying Existing Model Versions
 
 Once a model version is merged in `develop`, consider creating a new model version instead. This helps us avoid issues like:
 
-- Inconsistent model version sequences in production and in `develop`.
+- Different model version sequences between production and `develop`.
 - Inconsistent model version references if multiple model versions, created by different developers, refer to the same model version.
 
-These scenarios can lead to users' databases to be incompatible with the current model and they would be unable to load their data. The app would end up recreating the database. It's an unlikely scenario.
+These scenarios can lead to users' databases to be incompatible with the current model and they would be **unable to load** their data. The app would end up recreating the database. It's not an ideal scenario.
 
 Also, avoid modifying model versions in release branches. If possible, model version changes should be done and merged swiftly in `develop`.
 

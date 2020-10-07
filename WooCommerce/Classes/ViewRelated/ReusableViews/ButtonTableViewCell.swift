@@ -3,7 +3,7 @@ import UIKit
 /// Displays a button inside a `UITableViewCell`.
 ///
 final class ButtonTableViewCell: UITableViewCell {
-    @IBOutlet public var button: UIButton!
+    @IBOutlet private var button: UIButton!
 
     /// The style of this view, particularly the button.
     enum Style {
@@ -22,6 +22,13 @@ final class ButtonTableViewCell: UITableViewCell {
 
         configureBackground()
         apply(style: .default)
+    }
+
+    /// Define this cell's UI attributes.
+    ///
+    func configure(style: Style = .default, title: String?) {
+        apply(style: style)
+        button.setTitle(title, for: .normal)
     }
 }
 

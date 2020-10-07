@@ -445,7 +445,7 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureFulfillmentButton(cell: ButtonTableViewCell) {
-        cell.button.setTitle(Titles.fulfillTitle, for: .normal)
+        cell.configure(title: Titles.fulfillTitle)
         cell.onFullfillTouchUp = { [weak self] in
             self?.onCellAction?(.fulfill, nil)
         }

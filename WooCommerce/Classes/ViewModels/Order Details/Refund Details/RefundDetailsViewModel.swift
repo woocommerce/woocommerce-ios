@@ -134,8 +134,7 @@ extension RefundDetailsViewModel {
 
         case .orderItem:
             let item = refund.items[indexPath.row]
-            let productID = item.variationID == 0 ? item.productID : item.variationID
-            let loaderViewController = ProductLoaderViewController(productID: productID,
+            let loaderViewController = ProductLoaderViewController(model: .init(orderItemRefund: item),
                                                                    siteID: refund.siteID,
                                                                    forceReadOnly: true)
             let navController = WooNavigationController(rootViewController: loaderViewController)

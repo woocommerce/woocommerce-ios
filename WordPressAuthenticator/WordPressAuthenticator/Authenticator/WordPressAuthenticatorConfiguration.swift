@@ -80,7 +80,7 @@ public struct WordPressAuthenticatorConfiguration {
 
     /// Flag for the new prologue carousel.
     /// If disabled, displays the old carousel.
-    /// If enabled, displayst he new carousel.
+    /// If enabled, displays the new carousel.
     let enablePrologueCarousel: Bool
 
     /// Designated Initializer

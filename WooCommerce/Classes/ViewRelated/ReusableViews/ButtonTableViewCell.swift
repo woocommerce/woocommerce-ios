@@ -3,7 +3,7 @@ import UIKit
 /// Displays a button inside a `UITableViewCell`.
 ///
 final class ButtonTableViewCell: UITableViewCell {
-    @IBOutlet public var fulfillButton: UIButton!
+    @IBOutlet public var button: UIButton!
 
     var onFullfillTouchUp: (() -> Void)?
 
@@ -28,6 +28,6 @@ private extension ButtonTableViewCell {
     }
 
     func configureFulfillButton() {
-        fulfillButton.applyPrimaryButtonStyle()
+        button.applyPrimaryButtonStyle()
     }
 }

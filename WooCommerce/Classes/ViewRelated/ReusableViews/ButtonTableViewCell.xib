@@ -34,7 +34,7 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
-                <outlet property="fulfillButton" destination="Rng-8C-l5l" id="GrA-wO-Ocb"/>
+                <outlet property="button" destination="Rng-8C-l5l" id="GrA-wO-Ocb"/>
             </connections>
             <point key="canvasLocation" x="39.200000000000003" y="75.112443778110944"/>
         </tableViewCell>

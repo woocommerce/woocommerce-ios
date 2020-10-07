@@ -30,6 +30,11 @@ guard condition else { return }
 if condition { } else { }
 ```
 
+**As an exception to this rule,** guarding for a safe `self` is allowed to be expressed in one line.
+```swift
+guard let self = self else { return }
+```
+
 ## Parentheses
 
 Parentheses around conditionals are not required and should be omitted.

@@ -13,10 +13,15 @@ final class IssueRefundViewController: UIViewController {
     @IBOutlet private var nextButton: UIButton!
     @IBOutlet private var selectAllButton: UIButton!
 
+    private let imageService: ImageService
+
     private let viewModel: IssueRefundViewModel
 
-    init(order: Order) {
-        self.viewModel = IssueRefundViewModel(order: order)
+    init(order: Order,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         imageService: ImageService = ServiceLocator.imageService) {
+        self.imageService = imageService
+        self.viewModel = IssueRefundViewModel(order: order, currencySettings: currencySettings)
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -112,7 +117,7 @@ extension IssueRefundViewController: UITableViewDelegate, UITableViewDataSource 
         switch rowViewModel {
         case let viewModel as RefundItemViewModel:
             let cell = tableView.dequeueReusableCell(RefundItemTableViewCell.self, for: indexPath)
-            cell.configure(with: viewModel)
+            cell.configure(with: viewModel, imageService: imageService)
             return cell
         case let viewModel as RefundProductsTotalViewModel:
             let cell = tableView.dequeueReusableCell(RefundProductsTotalTableViewCell.self, for: indexPath)

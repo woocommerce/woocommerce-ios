@@ -247,7 +247,7 @@ private extension OrderDetailsDataSource {
             configureOrderItem(cell: cell, at: indexPath)
         case let cell as ProductDetailsTableViewCell where row == .aggregateOrderItem:
             configureAggregateOrderItem(cell: cell, at: indexPath)
-        case let cell as FulfillButtonTableViewCell:
+        case let cell as ButtonTableViewCell:
             configureFulfillmentButton(cell: cell)
         case let cell as OrderTrackingTableViewCell:
             configureTracking(cell: cell, at: indexPath)
@@ -444,7 +444,7 @@ private extension OrderDetailsDataSource {
         )
     }
 
-    private func configureFulfillmentButton(cell: FulfillButtonTableViewCell) {
+    private func configureFulfillmentButton(cell: ButtonTableViewCell) {
         cell.fulfillButton.setTitle(Titles.fulfillTitle, for: .normal)
         cell.onFullfillTouchUp = { [weak self] in
             self?.onCellAction?(.fulfill, nil)
@@ -966,7 +966,7 @@ extension OrderDetailsDataSource {
             case .aggregateOrderItem:
                 return ProductDetailsTableViewCell.reuseIdentifier
             case .fulfillButton:
-                return FulfillButtonTableViewCell.reuseIdentifier
+                return ButtonTableViewCell.reuseIdentifier
             case .details:
                 return WooBasicTableViewCell.reuseIdentifier
             case .refundedProducts:

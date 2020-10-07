@@ -5,13 +5,23 @@ import UIKit
 final class ButtonTableViewCell: UITableViewCell {
     @IBOutlet public var button: UIButton!
 
+    /// The style of this view, particularly the button.
+    enum Style {
+        /// Uses the primary button style. This is the default.
+        case primary
+        /// Uses the secondary button style.
+        case secondary
+
+        fileprivate static let `default` = Self.primary
+    }
+
     var onFullfillTouchUp: (() -> Void)?
 
     override func awakeFromNib() {
         super.awakeFromNib()
 
         configureBackground()
-        configureFulfillButton()
+        apply(style: .default)
     }
 }
 
@@ -21,13 +31,17 @@ extension ButtonTableViewCell {
     }
 }
 
-
 private extension ButtonTableViewCell {
     func configureBackground() {
         applyDefaultBackgroundStyle()
     }
 
-    func configureFulfillButton() {
-        button.applyPrimaryButtonStyle()
+    func apply(style: Style) {
+        switch style {
+        case .primary:
+            button.applyPrimaryButtonStyle()
+        case .secondary:
+            button.applySecondaryButtonStyle()
+        }
     }
 }

@@ -63,6 +63,10 @@ class LoginProloguePromoViewController: UIViewController {
         }
 
         var headlineColor: UIColor {
+            if WordPressAuthenticator.shared.configuration.enablePrologueCarousel {
+                return WordPressAuthenticator.shared.unifiedStyle?.textColor ?? WordPressAuthenticator.shared.style.secondaryTitleColor
+            }
+
             return WordPressAuthenticator.shared.style.prologueTitleColor
         }
     }
@@ -88,12 +92,28 @@ class LoginProloguePromoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupBackground()
-        setupHeadingLabel()
+
+        if WordPressAuthenticator.shared.configuration.enablePrologueCarousel {
+            styleHeadingLabel()
+        } else {
+            setupHeadingLabel()
+        }
+
         setupLayout()
     }
 
     private func setupBackground() {
         view.backgroundColor = UIColor.clear
+    }
+
+    private func styleHeadingLabel() {
+        headingLabel.font = WPStyleGuide.serifFontForTextStyle(.title1)
+        headingLabel.textColor = type.headlineColor
+        headingLabel.text = type.headlineText
+        headingLabel.textAlignment = .center
+        headingLabel.numberOfLines = 0
+        headingLabel.adjustsFontSizeToFitWidth = true
+        headingLabel.sizeToFit()
     }
 
     private func setupHeadingLabel() {

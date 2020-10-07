@@ -15,7 +15,7 @@ final class ButtonTableViewCell: UITableViewCell {
         fileprivate static let `default` = Self.primary
     }
 
-    var onFullfillTouchUp: (() -> Void)?
+    var onButtonTouchUp: (() -> Void)?
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -34,7 +34,7 @@ final class ButtonTableViewCell: UITableViewCell {
 
 private extension ButtonTableViewCell {
     @IBAction func sendButtonTouchUpEvent() {
-        onFullfillTouchUp?()
+        onButtonTouchUp?()
     }
 }
 

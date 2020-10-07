@@ -81,7 +81,7 @@ public struct WordPressAuthenticatorConfiguration {
     /// Flag for the new prologue carousel.
     /// If disabled, displays the old carousel.
     /// If enabled, displays the new carousel.
-    let enablePrologueCarousel: Bool
+    let enableUnifiedCarousel: Bool
 
     /// Designated Initializer
     ///
@@ -100,7 +100,7 @@ public struct WordPressAuthenticatorConfiguration {
                  enableSignInWithApple: Bool = false,
                  enableSignupWithGoogle: Bool = false,
                  enableUnifiedAuth: Bool = false,
-                 enablePrologueCarousel: Bool = false,
+                 enableUnifiedCarousel: Bool = false,
                  displayHintButtons: Bool = true) {
 
         self.wpcomClientId = wpcomClientId
@@ -117,7 +117,7 @@ public struct WordPressAuthenticatorConfiguration {
         self.enableSignUp = enableSignUp
         self.enableSignInWithApple = enableSignInWithApple
         self.enableUnifiedAuth = enableUnifiedAuth
-        self.enablePrologueCarousel = enablePrologueCarousel
+        self.enableUnifiedCarousel = enableUnifiedCarousel
         self.displayHintButtons = displayHintButtons
         self.enableSignupWithGoogle = enableSignupWithGoogle
     }

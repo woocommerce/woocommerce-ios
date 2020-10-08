@@ -4384,6 +4384,7 @@
 				CE21B3D520FE669A00A259D5 /* BasicTableViewCell.swift */,
 				CE21B3D620FE669A00A259D5 /* BasicTableViewCell.xib */,
 				B5FD111521D3F13700560344 /* BordersView.swift */,
+				57CDABB8252E9BEB00BED88C /* ButtonTableFooterView.swift */,
 				CE32B11320BF8779006FBCF4 /* ButtonTableViewCell.swift */,
 				CE32B11420BF8779006FBCF4 /* ButtonTableViewCell.xib */,
 				02E8B17923E2C4BD00A43403 /* CircleSpinnerView.swift */,
@@ -4445,7 +4446,6 @@
 				B5A56BEF219F2CE90065A902 /* VerticalButton.swift */,
 				CE227096228F152400C0626C /* WooBasicTableViewCell.swift */,
 				CE227098228F180B00C0626C /* WooBasicTableViewCell.xib */,
-				57CDABB8252E9BEB00BED88C /* ButtonTableFooterView.swift */,
 			);
 			path = ReusableViews;
 			sourceTree = "<group>";

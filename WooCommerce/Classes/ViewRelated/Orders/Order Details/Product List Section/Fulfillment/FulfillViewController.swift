@@ -262,7 +262,7 @@ private extension FulfillViewController {
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
-    /// Displays the product detail screen for the provided ProductID
+    /// Displays the product detail screen for the provided OrderItem
     ///
     func productWasPressed(item: OrderItem) {
         let loaderViewController = ProductLoaderViewController(model: .init(orderItem: item),

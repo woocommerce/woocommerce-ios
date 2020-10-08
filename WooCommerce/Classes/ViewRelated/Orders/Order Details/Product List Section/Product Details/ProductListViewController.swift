@@ -116,7 +116,7 @@ private extension ProductListViewController {
         return products?.filter({ $0.productID == productID }).first
     }
 
-    /// Displays the product detail screen for the provided ProductID
+    /// Displays the product details screen for the provided OrderItem
     ///
     func productWasPressed(orderItem: OrderItem) {
         let loaderViewController = ProductLoaderViewController(model: .init(orderItem: orderItem),

@@ -7,7 +7,7 @@ final class ProductVariationLoadUseCase {
         let variation: ProductVariation
         let parentProduct: Product
     }
-    typealias Completion = (Result<ResultData, Error>) -> Void
+    typealias Completion = (Result<ResultData, AnyError>) -> Void
 
     private let siteID: Int64
     private let stores: StoresManager
@@ -48,7 +48,7 @@ final class ProductVariationLoadUseCase {
         group.notify(queue: .main) {
             guard let parentProductResult = parentProductResult, let productVariationResult = productVariationResult else {
                 assertionFailure("Unexpected nil result after updating product and password remotely")
-                onCompletion(.failure(ProductVariationLoadError.unexpected))
+                onCompletion(.failure(.init(ProductVariationLoadError.unexpected)))
                 return
             }
 
@@ -62,10 +62,10 @@ final class ProductVariationLoadUseCase {
                     assertionFailure("""
                         Unexpected error with variation result: \(productVariationResult)\nparent product result: \(parentProductResult)
                         """)
-                    onCompletion(.failure(ProductVariationLoadError.unexpected))
+                    onCompletion(.failure(.init(ProductVariationLoadError.unexpected)))
                     return
                 }
-                onCompletion(.failure(error))
+                onCompletion(.failure(.init(error)))
             }
         }
     }

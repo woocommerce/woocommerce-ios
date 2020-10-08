@@ -38,7 +38,7 @@ final class IssueRefundViewController: UIViewController {
 // MARK: Actions
 private extension IssueRefundViewController {
     @IBAction func nextButtonWasPressed(_ sender: Any) {
-        print("Next button pressed")
+        navigationController?.pushViewController(RefundConfirmationViewController(), animated: true)
     }
 
     @IBAction func selectAllButtonWasPressed(_ sender: Any) {

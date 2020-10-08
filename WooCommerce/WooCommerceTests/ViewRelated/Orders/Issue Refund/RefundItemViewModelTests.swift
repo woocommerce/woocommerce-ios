@@ -12,7 +12,7 @@ final class RefundItemViewModelTests: XCTestCase {
         let product = sampleProduct()
         let currencySettings = CurrencySettings()
 
-        // Wgeb
+        // When
         let viewModel = RefundItemViewModel(item: item, product: product, currency: "usd", currencySettings: currencySettings)
 
         // Then
@@ -20,9 +20,8 @@ final class RefundItemViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productTitle, item.name)
         XCTAssertEqual(viewModel.quantityToRefund, "0")
 
-        let localizedFormat = NSLocalizedString("%@ x $%@ each", comment: "")
-        XCTAssertEqual(viewModel.productQuantityAndPrice, String(format: localizedFormat, "\(item.quantity)", item.price))
-
+        let localizedFormat = NSLocalizedString("%@ x %@ each", comment: "")
+        XCTAssertEqual(viewModel.productQuantityAndPrice, String(format: localizedFormat, "\(item.quantity)", "$\(item.price)"))
     }
 }
 

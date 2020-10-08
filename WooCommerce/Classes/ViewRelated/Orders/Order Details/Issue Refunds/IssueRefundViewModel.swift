@@ -25,7 +25,7 @@ final class IssueRefundViewModel {
 
     /// Products related to this order. Needed to build `RefundItemViewModel` rows
     ///
-    lazy var products: [Product] = {
+    private lazy var products: [Product] = {
         let resultsController = createProductsResultsController()
         try? resultsController.performFetch()
         return resultsController.fetchedObjects
@@ -89,9 +89,9 @@ extension IssueRefundViewModel {
         }
 
         // This is temporary data, will be removed after implementing https://github.com/woocommerce/woocommerce-ios/issues/2842
-        let sumaryRow = RefundProductsTotalViewModel(productsTax: "$0.00", productsSubtotal: "$0.00", productsTotal: "$0.00")
+        let summaryRow = RefundProductsTotalViewModel(productsTax: "$0.00", productsSubtotal: "$0.00", productsTotal: "$0.00")
 
-        return Section(rows: itemsRows + [sumaryRow])
+        return Section(rows: itemsRows + [summaryRow])
     }
 }
 

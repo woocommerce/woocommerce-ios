@@ -55,9 +55,8 @@ private extension IssueRefundViewModel {
     /// Results controller that fetches the products related to this order
     ///
     func createProductsResultsController() -> ResultsController<StorageProduct> {
-        let siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
         let itemsIDs = order.items.map { $0.productID }
-        let predicate = NSPredicate(format: "siteID == %lld AND productID IN %@", siteID, itemsIDs)
+        let predicate = NSPredicate(format: "siteID == %lld AND productID IN %@", order.siteID, itemsIDs)
         return ResultsController<StorageProduct>(storageManager: ServiceLocator.storageManager, matching: predicate, sortedBy: [])
     }
 }

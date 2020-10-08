@@ -51,4 +51,23 @@ final class IssueRefundViewModelTests: XCTestCase {
         let shippingDetailsRow = try XCTUnwrap(viewModel.sections[safe: 1]?.rows[safe: 1])
         XCTAssertTrue(shippingDetailsRow is RefundShippingDetailsViewModel)
     }
+
+    func test_viewModel_returns_correct_quantity_available_for_refund() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let items = [
+            MockOrderItem.sampleItem(quantity: 3),
+            MockOrderItem.sampleItem(quantity: 2),
+            MockOrderItem.sampleItem(quantity: 1),
+        ]
+        let order = MockOrders().makeOrder(items: items)
+
+        // When
+        let viewModel = IssueRefundViewModel(order: order, currencySettings: currencySettings)
+
+        // Then
+        XCTAssertEqual(viewModel.quantityAvailableForRefundForItemAtIndex(0), 3)
+        XCTAssertEqual(viewModel.quantityAvailableForRefundForItemAtIndex(1), 2)
+        XCTAssertEqual(viewModel.quantityAvailableForRefundForItemAtIndex(2), 1)
+    }
 }

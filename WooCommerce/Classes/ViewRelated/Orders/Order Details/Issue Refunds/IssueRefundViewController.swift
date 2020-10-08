@@ -72,6 +72,18 @@ private extension IssueRefundViewController {
     func shippingSwitchChanged() {
         viewModel.toggleRefundShipping()
     }
+
+    func quantityButtonPressed(sender: UITableViewCell) {
+        guard let indexPath = tableView.indexPath(for: sender) else {
+            return
+        }
+
+        let refundQuantity = viewModel.quantityAvailableForRefundForItemAtIndex(indexPath.row)
+        let currentCuantity = viewModel.currentQuantityForItemAtIndex(indexPath.row)
+        let command = ItemListSelectorCommand(maxRefundQuantity: refundQuantity, currentQuantity: currentCuantity)
+        let selectorViewController = ListSelectorViewController(command: command, tableViewStyle: .plain, onDismiss: { _ in })
+        show(selectorViewController, sender: nil)
+    }
 }
 
 // MARK: View Configuration
@@ -137,6 +149,9 @@ extension IssueRefundViewController: UITableViewDelegate, UITableViewDataSource 
         case let viewModel as RefundItemViewModel:
             let cell = tableView.dequeueReusableCell(RefundItemTableViewCell.self, for: indexPath)
             cell.configure(with: viewModel, imageService: imageService)
+            cell.onQuantityTapped = { [weak self] in
+                self?.quantityButtonPressed(sender: cell)
+            }
             return cell
         case let viewModel as RefundProductsTotalViewModel:
             let cell = tableView.dequeueReusableCell(RefundProductsTotalTableViewCell.self, for: indexPath)

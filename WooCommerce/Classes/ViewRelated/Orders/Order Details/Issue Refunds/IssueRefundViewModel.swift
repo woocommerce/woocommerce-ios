@@ -67,6 +67,15 @@ extension IssueRefundViewModel {
     func toggleRefundShipping() {
         state.shouldRefundShipping.toggle()
     }
+
+    func quantityAvailableForRefundForItemAtIndex(_ itemIndex: Int) -> Int {
+        let item = state.order.items[itemIndex]
+        return Int(truncating: item.quantity as NSDecimalNumber)
+    }
+
+    func currentQuantityForItemAtIndex(_ itemIndex: Int) -> Int {
+        return 0
+    }
 }
 
 // MARK: Results Controller

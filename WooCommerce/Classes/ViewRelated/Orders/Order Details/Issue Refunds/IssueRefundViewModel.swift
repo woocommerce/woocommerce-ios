@@ -22,9 +22,12 @@ final class IssueRefundViewModel {
     }
 
     /// Current ViewModel state
-    /// TODO: Var or let?
     ///
-    private var state: State
+    private var state: State {
+        didSet {
+            sections = createSections()
+        }
+    }
 
     /// Title for the navigation bar
     /// This is temporary data, will be removed after implementing https://github.com/woocommerce/woocommerce-ios/issues/2842
@@ -122,8 +125,12 @@ extension IssueRefundViewModel {
             return nil
         }
 
-        // `true` is hardcoded, will be dynamic after implementing https://github.com/woocommerce/woocommerce-ios/issues/2842
-        let switchRow = ShippingSwitchViewModel(title: Localization.refundShippingTitle, isOn: true)
+        // If `shouldRefundShipping` is disabled, return only the `switchRow`
+        let switchRow = ShippingSwitchViewModel(title: Localization.refundShippingTitle, isOn: state.shouldRefundShipping)
+        guard state.shouldRefundShipping else {
+            return Section(rows: [switchRow])
+        }
+
         let detailsRow = RefundShippingDetailsViewModel(shippingLine: shippingLine, currency: state.order.currency, currencySettings: state.currencySettings)
         return Section(rows: [switchRow, detailsRow])
     }

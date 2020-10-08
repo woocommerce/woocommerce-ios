@@ -26,6 +26,7 @@ final class IssueRefundViewModel {
     private var state: State {
         didSet {
             sections = createSections()
+            onChange?()
         }
     }
 
@@ -38,6 +39,10 @@ final class IssueRefundViewModel {
     /// This is temporary data, will be removed after implementing https://github.com/woocommerce/woocommerce-ios/issues/2842
     ///
     let selectedItemsTitle: String = "0 items selected"
+
+    /// Closured to notify the `ViewController` when the view model properties change
+    ///
+    var onChange: (() -> (Void))?
 
     /// The sections and rows to display in the `UITableView`.
     ///

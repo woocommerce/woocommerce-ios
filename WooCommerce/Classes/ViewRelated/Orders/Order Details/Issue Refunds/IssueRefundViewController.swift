@@ -33,12 +33,29 @@ final class IssueRefundViewController: UIViewController {
         super.viewDidLoad()
         configureNavigationBar()
         configureTableView()
+        observeViewModel()
+        updateVithViewModelContent()
     }
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         tableView.updateHeaderHeight()
         tableView.updateFooterHeight()
+    }
+}
+
+// MARK: ViewModel observation
+private extension IssueRefundViewController {
+    func observeViewModel() {
+        viewModel.onChange = { [weak self] in
+            self?.updateVithViewModelContent()
+        }
+    }
+
+    func updateVithViewModelContent() {
+        title = viewModel.title
+        itemsSelectedLabel.text = viewModel.selectedItemsTitle
+        tableView.reloadData()
     }
 }
 
@@ -61,7 +78,6 @@ private extension IssueRefundViewController {
 private extension IssueRefundViewController {
 
     func configureNavigationBar() {
-        title = viewModel.title
         addCloseNavigationBarButton(title: Localization.cancelTitle)
     }
 
@@ -89,7 +105,6 @@ private extension IssueRefundViewController {
         selectAllButton.setTitle(Localization.selectAllTitle, for: .normal)
 
         itemsSelectedLabel.applySecondaryBodyStyle()
-        itemsSelectedLabel.text = viewModel.selectedItemsTitle
     }
 
     func configureFooterView() {

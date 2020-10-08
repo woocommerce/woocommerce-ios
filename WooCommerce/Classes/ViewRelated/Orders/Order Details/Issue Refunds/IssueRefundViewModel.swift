@@ -96,6 +96,15 @@ extension IssueRefundViewModel {
         }
         return state.refundQuantityStore[item.itemID] ?? 0
     }
+
+    /// Updates the quantity to be refunded for an item on the provided index.
+    ///
+    func updateRefundQuantity(quantity: Int, forItemAtIndex itemIndex: Int) {
+        guard let item = state.order.items[safe: itemIndex] else {
+            return
+        }
+        state.refundQuantityStore[item.itemID] = quantity
+    }
 }
 
 // MARK: Results Controller

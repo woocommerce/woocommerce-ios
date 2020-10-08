@@ -92,4 +92,24 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.currentQuantityForItemAtIndex(3), nil)
     }
 
+    func test_viewModel_returns_correct_current_refund_quantity_after_updating_an_item() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let items = [
+            MockOrderItem.sampleItem(itemID: 1, quantity: 3),
+            MockOrderItem.sampleItem(itemID: 2, quantity: 2),
+            MockOrderItem.sampleItem(itemID: 3, quantity: 1),
+        ]
+        let order = MockOrders().makeOrder(items: items)
+
+        // When
+        let viewModel = IssueRefundViewModel(order: order, currencySettings: currencySettings)
+        viewModel.updateRefundQuantity(quantity: 2, forItemAtIndex: 1)
+
+        // Then
+        XCTAssertEqual(viewModel.currentQuantityForItemAtIndex(0), 0)
+        XCTAssertEqual(viewModel.currentQuantityForItemAtIndex(1), 2)
+        XCTAssertEqual(viewModel.currentQuantityForItemAtIndex(2), 0)
+        XCTAssertEqual(viewModel.currentQuantityForItemAtIndex(3), nil)
+    }
 }

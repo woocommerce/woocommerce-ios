@@ -81,7 +81,12 @@ private extension IssueRefundViewController {
         }
 
         let command = ItemListSelectorCommand(maxRefundQuantity: refundQuantity, currentQuantity: currentCuantity)
-        let selectorViewController = ListSelectorViewController(command: command, tableViewStyle: .plain, onDismiss: { _ in })
+        let selectorViewController = ListSelectorViewController(command: command, tableViewStyle: .plain) { [weak self] selectedQuantity in
+            guard let selectedQuantity = selectedQuantity else {
+                return
+            }
+            self?.viewModel.updateRefundQuantity(quantity: selectedQuantity, forItemAtIndex: indexPath.row)
+        }
         show(selectorViewController, sender: nil)
     }
 }

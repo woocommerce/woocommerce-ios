@@ -10,6 +10,7 @@
         - [String Constants in Nested Enums](#string-constants-in-nested-enums)
         - [Test Methods](#test-methods)
     - [Choosing Between Structures and Classes](#choosing-between-structures-and-classes)
+    - [Creating Core Data Model Versions](creating-core-data-model-versions.md)
 - [Design Patterns](#design-patterns)
     - [Copiable](#copiable)
         - [Generating Copiable Methods](#generating-copiable-methods)

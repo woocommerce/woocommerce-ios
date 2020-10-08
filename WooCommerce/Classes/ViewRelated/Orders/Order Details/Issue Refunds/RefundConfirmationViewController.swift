@@ -16,6 +16,7 @@ final class RefundConfirmationViewController: UIViewController {
 
         title = viewModel.refundAmount
 
+        configureMainView()
         configureTableView()
         configureButtonTableFooterView()
     }
@@ -24,6 +25,11 @@ final class RefundConfirmationViewController: UIViewController {
 // MARK: - Provisioning
 
 private extension RefundConfirmationViewController {
+
+    func configureMainView() {
+        view.backgroundColor = .listBackground
+    }
+
     func configureTableView() {
         // Register cells
         [

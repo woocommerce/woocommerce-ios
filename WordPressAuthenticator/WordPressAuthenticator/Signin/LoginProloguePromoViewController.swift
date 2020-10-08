@@ -96,8 +96,23 @@ class LoginProloguePromoViewController: UIViewController {
         setupLayout()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        animationView.currentProgress = 0.0
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        animationView.play()
+    }
+
     private func setupBackground() {
         view.backgroundColor = UIColor.clear
+    }
+
+    private func didChangePreferredContentSize() {
+        styleHeadingLabel()
     }
 
     private func styleHeadingLabel() {
@@ -118,21 +133,6 @@ class LoginProloguePromoViewController: UIViewController {
             headingLabel.adjustsFontSizeToFitWidth = true
             headingLabel.sizeToFit()
         }
-    }
-
-    private func didChangePreferredContentSize() {
-        styleHeadingLabel()
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        animationView.currentProgress = 0.0
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        animationView.play()
     }
 
 

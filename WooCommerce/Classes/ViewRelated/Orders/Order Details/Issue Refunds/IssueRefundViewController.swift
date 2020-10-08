@@ -45,7 +45,7 @@ final class IssueRefundViewController: UIViewController {
 // MARK: Actions
 private extension IssueRefundViewController {
     @IBAction func nextButtonWasPressed(_ sender: Any) {
-        print("Next button pressed")
+        show(RefundConfirmationViewController(), sender: self)
     }
 
     @IBAction func selectAllButtonWasPressed(_ sender: Any) {

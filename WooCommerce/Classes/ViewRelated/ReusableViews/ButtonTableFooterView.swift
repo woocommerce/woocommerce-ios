@@ -9,6 +9,14 @@ final class ButtonTableFooterView: UIView {
 
     private let onButtonPress: (() -> Void)?
 
+    /// Initialize self.
+    ///
+    /// - Parameters:
+    ///     - frame: The frame of self. You probably just want this to be `.zero` if since
+    ///              `UITableView` would usually change this.
+    ///     - title: The title of the button.
+    ///     - onButtonPress: The callback to call if the button is pressed.
+    ///
     init(frame: CGRect, title: String, onButtonPress: (() -> Void)?) {
         self.onButtonPress = onButtonPress
         super.init(frame: frame)
@@ -27,6 +35,7 @@ final class ButtonTableFooterView: UIView {
 }
 
 private extension ButtonTableFooterView {
+
     func setupButton(title: String) {
         button.applyPrimaryButtonStyle()
         button.setTitle(title, for: .normal)

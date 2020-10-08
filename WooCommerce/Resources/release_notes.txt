@@ -1,3 +1,9 @@
-- Products: If the Products switch is on in Settings → Experimental Features for a variable product, the stock status is no longer shown in the product details when stock management is disabled (since stock status is controlled at variation level).
-- Orders: The search list will now show the full count instead of “99+”.
-- Reviews: We’ve fixed an issue where reviews were not refreshing correctly. Now, if you delete or mark a review as spam, this change will be reflected in the product reviews list.
+In this update, we have a lot of new possibilities for editing your products to report. 
+
+For non-core products — which are the products that WooCommerce does not group under simple, external, variable, or groups — there are a plethora of new editing options! You can now change the image, name, description, read-only price, read-only inventory, tags, short description, and product settings. 
+
+You can also now edit variable products, and stock status is included in the variation list. 
+
+Our core products also have additional fields that can be edited — tags, categories, product type, enable/ disable reviews, and visibility. 
+
+We also have an update for Apple Sign In — if you disconnect Apple ID from the WordPress app (Settings > Apple ID > Password & Security > Apps using Apple ID) the app will log out when you launch, or if you switch between apps. So you won’t stay logged in if you don’t want to!

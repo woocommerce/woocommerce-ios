@@ -16,24 +16,13 @@ struct ProductDetailsFactory {
                                stores: StoresManager = ServiceLocator.stores,
                                forceReadOnly: Bool,
                                onCompletion: @escaping (UIViewController) -> Void) {
-        let action = AppSettingsAction.loadProductsFeatureSwitch { isFeatureSwitchOn in
-            let isEditProductsEnabled: Bool
-            switch product.productType {
-            case .simple:
-                isEditProductsEnabled = true
-            default:
-                isEditProductsEnabled = true
-            }
-
-            let vc = productDetails(product: product,
-                                    presentationStyle: presentationStyle,
-                                    currencySettings: currencySettings,
-                                    isEditProductsEnabled: forceReadOnly ? false : isEditProductsEnabled,
-                                    isEditProductsRelease3Enabled: isFeatureSwitchOn,
-                                    isEditProductsRelease5Enabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease5))
-            onCompletion(vc)
-        }
-        stores.dispatch(action)
+        let vc = productDetails(product: product,
+                                presentationStyle: presentationStyle,
+                                currencySettings: currencySettings,
+                                isEditProductsEnabled: forceReadOnly ? false: true,
+                                isEditProductsRelease3Enabled: true,
+                                isEditProductsRelease5Enabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease5))
+        onCompletion(vc)
     }
 }
 

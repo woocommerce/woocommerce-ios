@@ -19,6 +19,13 @@ final class IssueRefundViewModel {
         /// Bool indicating if shipping will be refunded
         ///
         var shouldRefundShipping: Bool = false
+
+        /// Dictionary that holds the quantity of items to refund
+        /// Key: item ID
+        /// Value: quantity to refund
+        ///
+        typealias ItemID = Int64
+        var refundQuantityStore: [ItemID: Int] = [:]
     }
 
     /// Current ViewModel state
@@ -64,17 +71,30 @@ final class IssueRefundViewModel {
 
 // MARK: User Actions
 extension IssueRefundViewModel {
+    /// Toggles the refund shipping state
+    ///
     func toggleRefundShipping() {
         state.shouldRefundShipping.toggle()
     }
 
-    func quantityAvailableForRefundForItemAtIndex(_ itemIndex: Int) -> Int {
-        let item = state.order.items[itemIndex]
+    /// Returns the number of items available for refund for the provided item index.
+    /// Returns `nil` if the index is out of bounds
+    ///
+    func quantityAvailableForRefundForItemAtIndex(_ itemIndex: Int) -> Int? {
+        guard let item = state.order.items[safe: itemIndex] else {
+            return nil
+        }
         return Int(truncating: item.quantity as NSDecimalNumber)
     }
 
-    func currentQuantityForItemAtIndex(_ itemIndex: Int) -> Int {
-        return 0
+    /// Returns the current quantlty set for refund for the provided item index.
+    /// Returns `nil` if the index is out of bounds.
+    ///
+    func currentQuantityForItemAtIndex(_ itemIndex: Int) -> Int? {
+        guard let item = state.order.items[safe: itemIndex] else {
+            return nil
+        }
+        return state.refundQuantityStore[item.itemID] ?? 0
     }
 }
 

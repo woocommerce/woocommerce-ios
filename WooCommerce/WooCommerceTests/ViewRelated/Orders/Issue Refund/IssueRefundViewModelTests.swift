@@ -69,5 +69,6 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.quantityAvailableForRefundForItemAtIndex(0), 3)
         XCTAssertEqual(viewModel.quantityAvailableForRefundForItemAtIndex(1), 2)
         XCTAssertEqual(viewModel.quantityAvailableForRefundForItemAtIndex(2), 1)
+        XCTAssertEqual(viewModel.quantityAvailableForRefundForItemAtIndex(3), nil)
     }
 }

@@ -108,18 +108,18 @@ private extension ProductLoaderViewController {
     /// Loads (and displays) the specified Product.
     ///
     func loadProduct(productID: Int64) {
-        let action = ProductAction.retrieveProduct(siteID: siteID, productID: productID) { [weak self] (product, error) in
+        let action = ProductAction.retrieveProduct(siteID: siteID, productID: productID) { [weak self] result in
             guard let self = self else {
                 return
             }
 
-            guard let product = product else {
-                DDLogError("⛔️ Error loading Product for siteID: \(self.siteID) productID:\(productID) error:\(error.debugDescription)")
+            switch result {
+            case .success(let product):
+                self.state = .productLoaded(product: product)
+            case .failure(let error):
+                DDLogError("⛔️ Error loading Product for siteID: \(self.siteID) productID:\(self.productID) error:\(error)")
                 self.state = .failure
-                return
             }
-
-            self.state = .productLoaded(product: product)
         }
 
         state = .loading

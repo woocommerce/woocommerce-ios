@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -24,18 +24,18 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WB0-Kt-3cX">
-                        <rect key="frame" x="268" y="12" width="42" height="20"/>
+                        <rect key="frame" x="262" y="12" width="42" height="20"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="YOo-DM-znK" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="7n5-mU-bCv"/>
+                    <constraint firstItem="YOo-DM-znK" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="7n5-mU-bCv"/>
                     <constraint firstItem="WB0-Kt-3cX" firstAttribute="centerY" secondItem="YOo-DM-znK" secondAttribute="centerY" id="BME-8V-75T"/>
                     <constraint firstItem="WB0-Kt-3cX" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="YOo-DM-znK" secondAttribute="trailing" constant="12" id="cdY-OS-mc6"/>
                     <constraint firstItem="YOo-DM-znK" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="iEa-eB-jcn"/>
-                    <constraint firstAttribute="trailing" secondItem="WB0-Kt-3cX" secondAttribute="trailing" constant="10" id="iog-Eb-Rgh"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="WB0-Kt-3cX" secondAttribute="trailing" id="iog-Eb-Rgh"/>
                     <constraint firstItem="YOo-DM-znK" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="12" id="zze-Ng-IaH"/>
                 </constraints>
             </tableViewCellContentView>

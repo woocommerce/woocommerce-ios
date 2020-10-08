@@ -2,7 +2,7 @@ import UIKit
 import Yosemite
 
 struct ProductVariationDetailsFactory {
-    /// Creates a view controller asynchronously that shows product variation details based on featuree flags.
+    /// Creates a view controller asynchronously that shows product variation details based on feature flags.
     /// - Parameters:
     ///   - productVariation: product variation model.
     ///   - parentProduct: the parent product of the product variation.
@@ -35,6 +35,7 @@ private extension ProductVariationDetailsFactory {
                                         isEditProductsEnabled: Bool,
                                         isEditProductsRelease3Enabled: Bool,
                                         isEditProductsRelease5Enabled: Bool) -> UIViewController {
+        // TODO-2931: add support for readonly mode based on `isEditProductsEnabled`.
         let vc: UIViewController
         let productVariationModel = EditableProductVariationModel(productVariation: productVariation,
                                                                   allAttributes: parentProduct.attributes,

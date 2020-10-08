@@ -1,5 +1,6 @@
 5.3
 -----
+- [*] In product and variation list, the stock quantity is not shown anymore when stock management is disabled.
 - [internal] #2883 Renamed a product database table (Attribute) to GenericAttribute. This adds a new database migration. 
 
  

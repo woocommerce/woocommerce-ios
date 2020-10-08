@@ -39,11 +39,7 @@ final class IssueRefundViewModel {
             createItemsToRefundSection(currencySettings: currencySettings),
             Section(rows: [
                 ShippingSwitchViewModel(title: "Refund Shipping", isOn: true),
-                RefundShippingDetailsViewModel(carrierRate: "USPS Flat Rate",
-                                               carrierCost: "$10.0",
-                                               shippingTax: "$2.99",
-                                               shippingSubtotal: "$10.0",
-                                               shippingTotal: "$12.99")
+                RefundShippingDetailsViewModel(shippingLine: order.shippingLines[0], currency: order.currency, currencySettings: currencySettings)
             ])
         ]
     }

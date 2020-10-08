@@ -3,10 +3,10 @@ import UIKit
 import Yosemite
 
 
-/// ProductLoaderViewController: Loads asynchronously a Product (given it's ProductID + SiteID).
-/// On Success the ProductDetailsViewController will be rendered "in place".
+/// ProductLoaderViewController: Loads product and/or product variation async and render its details.
 ///
 final class ProductLoaderViewController: UIViewController {
+    /// Indicates the type of data model with the associated information to load data remotely.
     enum Model: Equatable {
         case product(productID: Int64)
         case productVariation(productID: Int64, variationID: Int64)
@@ -195,7 +195,7 @@ private extension ProductLoaderViewController {
         }
     }
 
-    /// Presents the ProductDetailsViewController or the ProductFormViewController, as a childViewController, for a given Product.
+    /// Presents the product variation details for a given ProductVariation and its parent Product.
     ///
     func presentProductVariationDetails(for productVariation: ProductVariation, parentProduct: Product) {
         ProductVariationDetailsFactory.productVariationDetails(productVariation: productVariation,

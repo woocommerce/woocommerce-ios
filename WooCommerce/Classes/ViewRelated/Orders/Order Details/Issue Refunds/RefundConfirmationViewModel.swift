@@ -1,4 +1,5 @@
 import Foundation
+import Yosemite
 
 /// ViewModel for presenting refund confirmation to the user.
 ///
@@ -10,7 +11,11 @@ final class RefundConfirmationViewModel {
     /// The sections and rows to display in the `UITableView`.
     let sections: [Section]
 
-    init() {
+    private let order: Order
+
+    init(order: Order) {
+        self.order = order
+
         sections = [
             Section(
                 title: nil,

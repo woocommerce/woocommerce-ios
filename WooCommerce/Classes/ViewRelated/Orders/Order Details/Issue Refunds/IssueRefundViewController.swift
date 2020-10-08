@@ -51,6 +51,10 @@ private extension IssueRefundViewController {
     @IBAction func selectAllButtonWasPressed(_ sender: Any) {
         print("Select All button pressed")
     }
+
+    func shippingSwitchChanged() {
+        viewModel.toggleRefundShipping()
+    }
 }
 
 // MARK: View Configuration
@@ -127,6 +131,9 @@ extension IssueRefundViewController: UITableViewDelegate, UITableViewDataSource 
             let cell = tableView.dequeueReusableCell(SwitchTableViewCell.self, for: indexPath)
             cell.title = viewModel.title
             cell.isOn = viewModel.isOn
+            cell.onChange = { [weak self] _ in
+                self?.shippingSwitchChanged()
+            }
             return cell
         case let viewModel as RefundShippingDetailsViewModel:
             let cell = tableView.dequeueReusableCell(RefundShippingDetailsTableViewCell.self, for: indexPath)

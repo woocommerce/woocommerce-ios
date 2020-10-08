@@ -57,6 +57,13 @@ final class IssueRefundViewModel {
     }
 }
 
+// MARK: User Actions
+extension IssueRefundViewModel {
+    func toggleRefundShipping() {
+        state.shouldRefundShipping.toggle()
+    }
+}
+
 // MARK: Results Controller
 private extension IssueRefundViewModel {
 

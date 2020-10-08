@@ -20,13 +20,13 @@ final class ButtonTableFooterView: UIView {
     init(frame: CGRect, title: String, onButtonPress: (() -> Void)?) {
         self.onButtonPress = onButtonPress
         super.init(frame: frame)
-        setupButton(title: title)
+        configureButton(title: title)
     }
 
     override init(frame: CGRect) {
         self.onButtonPress = nil
         super.init(frame: frame)
-        setupButton(title: "")
+        configureButton(title: "")
     }
 
     required init?(coder: NSCoder) {
@@ -36,7 +36,7 @@ final class ButtonTableFooterView: UIView {
 
 private extension ButtonTableFooterView {
 
-    func setupButton(title: String) {
+    func configureButton(title: String) {
         button.applyPrimaryButtonStyle()
         button.setTitle(title, for: .normal)
         button.addTarget(self, action: #selector(sendButtonPressedEvent), for: .touchUpInside)

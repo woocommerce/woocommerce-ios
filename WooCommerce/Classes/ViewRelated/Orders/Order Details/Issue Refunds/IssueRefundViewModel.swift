@@ -33,15 +33,7 @@ final class IssueRefundViewModel {
 
     init(order: Order, currencySettings: CurrencySettings) {
         self.order = order
-
-        // This is temporary data, will be removed after implementing https://github.com/woocommerce/woocommerce-ios/issues/2842
-        sections = [
-            createItemsToRefundSection(currencySettings: currencySettings),
-            Section(rows: [
-                ShippingSwitchViewModel(title: "Refund Shipping", isOn: true),
-                RefundShippingDetailsViewModel(shippingLine: order.shippingLines[0], currency: order.currency, currencySettings: currencySettings)
-            ])
-        ]
+        sections = createSections(currencySettings: currencySettings)
     }
 }
 
@@ -54,6 +46,13 @@ private extension IssueRefundViewModel {
         let itemsIDs = order.items.map { $0.productID }
         let predicate = NSPredicate(format: "siteID == %lld AND productID IN %@", order.siteID, itemsIDs)
         return ResultsController<StorageProduct>(storageManager: ServiceLocator.storageManager, matching: predicate, sortedBy: [])
+    }
+}
+
+// MARK: Constants
+private extension IssueRefundViewModel {
+    enum Localization {
+        static let refundShippingTitle = NSLocalizedString("Refund Shipping", comment: "Title of the switch in the IssueRefund screen to refund shipping")
     }
 }
 
@@ -75,6 +74,15 @@ extension IssueRefundViewModel {
         let isOn: Bool
     }
 
+    /// Creates sections for the table view to display
+    ///
+    private func createSections(currencySettings: CurrencySettings) -> [Section] {
+        [
+            createItemsToRefundSection(currencySettings: currencySettings),
+            createShippingSection(currencySettings: currencySettings)
+        ].compactMap { $0 }
+    }
+
     /// Returns a section with the order items that can be refunded
     ///
     private func createItemsToRefundSection(currencySettings: CurrencySettings) -> Section {
@@ -87,6 +95,20 @@ extension IssueRefundViewModel {
         let summaryRow = RefundProductsTotalViewModel(productsTax: "$0.00", productsSubtotal: "$0.00", productsTotal: "$0.00")
 
         return Section(rows: itemsRows + [summaryRow])
+    }
+
+    /// Returns a `Section` with the shipping switch row and the shipping details row.
+    /// Returns `nil` if there isn't any shipping line available
+    ///
+    private func createShippingSection(currencySettings: CurrencySettings) -> Section? {
+        guard let shippingLine = order.shippingLines.first else {
+            return nil
+        }
+
+        // `True` is hardcoded, will be dynamic after implementing https://github.com/woocommerce/woocommerce-ios/issues/2842
+        let switchRow = ShippingSwitchViewModel(title: Localization.refundShippingTitle, isOn: true)
+        let detailsRow = RefundShippingDetailsViewModel(shippingLine: shippingLine, currency: order.currency, currencySettings: currencySettings)
+        return Section(rows: [switchRow, detailsRow])
     }
 }
 

@@ -25,6 +25,12 @@ class LoginProloguePromoViewController: UIViewController {
         case reader
         case notifications
         case jetpack
+        // new prologue carousel
+        case intro
+        case editor
+        case comments
+        case analytics
+        case discover
 
         var animationKey: String {
             return rawValue
@@ -42,10 +48,25 @@ class LoginProloguePromoViewController: UIViewController {
                 return NSLocalizedString("Your notifications travel with you — see comments and likes as they happen.", comment: "shown in promotional screens during first launch")
             case .jetpack:
                 return NSLocalizedString("Manage your Jetpack-powered site on the go — you've got WordPress in your pocket.", comment: "shown in promotional screens during first launch")
+            // new prologue carousel
+            case .intro:
+                return NSLocalizedString("Welcome to the world’s most popular website builder.", comment: "Shown in the prologue carousel (promotional screens) during first launch.")
+            case .editor:
+                return NSLocalizedString("With this powerful editor you can post on the go.", comment: "Shown in the prologue carousel (promotional screens) during first launch.")
+            case .comments:
+                return NSLocalizedString("See comments and notifications in real time.", comment: "Shown in the prologue carousel (promotional screens) during first launch.")
+            case .analytics:
+                return NSLocalizedString("Watch your audience grow with in-depth analytics.", comment: "Shown in the prologue carousel (promotional screens) during first launch.")
+            case .discover:
+                return NSLocalizedString("Follow your favorite sites and discover new reads.", comment: "Shown in the prologue carousel (promotional screens) during first launch.")
             }
         }
 
         var headlineColor: UIColor {
+            if WordPressAuthenticator.shared.configuration.enableUnifiedCarousel {
+                return WordPressAuthenticator.shared.unifiedStyle?.textColor ?? WordPressAuthenticator.shared.style.secondaryTitleColor
+            }
+
             return WordPressAuthenticator.shared.style.prologueTitleColor
         }
     }
@@ -71,26 +92,8 @@ class LoginProloguePromoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupBackground()
-        setupHeadingLabel()
+        styleHeadingLabel()
         setupLayout()
-    }
-
-    private func setupBackground() {
-        view.backgroundColor = UIColor.clear
-    }
-
-    private func setupHeadingLabel() {
-        headingLabel.font = WPStyleGuide.mediumWeightFont(forStyle: .title3)
-        headingLabel.textColor = type.headlineColor
-        headingLabel.text = type.headlineText
-        headingLabel.textAlignment = .center
-        headingLabel.numberOfLines = 0
-        headingLabel.adjustsFontSizeToFitWidth = true
-        headingLabel.sizeToFit()
-    }
-
-    private func didChangePreferredContentSize() {
-        setupHeadingLabel()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -102,6 +105,34 @@ class LoginProloguePromoViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         animationView.play()
+    }
+
+    private func setupBackground() {
+        view.backgroundColor = UIColor.clear
+    }
+
+    private func didChangePreferredContentSize() {
+        styleHeadingLabel()
+    }
+
+    private func styleHeadingLabel() {
+        if WordPressAuthenticator.shared.configuration.enableUnifiedCarousel {
+            headingLabel.font = WPStyleGuide.serifFontForTextStyle(.title1)
+            headingLabel.textColor = type.headlineColor
+            headingLabel.text = type.headlineText
+            headingLabel.textAlignment = .center
+            headingLabel.numberOfLines = 0
+            headingLabel.adjustsFontSizeToFitWidth = true
+            headingLabel.sizeToFit()
+        } else {
+            headingLabel.font = WPStyleGuide.mediumWeightFont(forStyle: .title3)
+            headingLabel.textColor = type.headlineColor
+            headingLabel.text = type.headlineText
+            headingLabel.textAlignment = .center
+            headingLabel.numberOfLines = 0
+            headingLabel.adjustsFontSizeToFitWidth = true
+            headingLabel.sizeToFit()
+        }
     }
 
 

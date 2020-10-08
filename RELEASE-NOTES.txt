@@ -1,5 +1,6 @@
 5.3
 -----
+- [*] Opening a product variation from outside of the Products tab (e.g. order details, top performers) now shows editable product variation details and this product variation does not appear in the Products tab anymore.
 - [internal] #2883 Renamed a product database table (Attribute) to GenericAttribute. This adds a new database migration. 
 
  

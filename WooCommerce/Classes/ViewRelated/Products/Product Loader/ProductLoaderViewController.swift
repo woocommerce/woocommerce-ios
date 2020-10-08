@@ -117,7 +117,7 @@ private extension ProductLoaderViewController {
             case .success(let product):
                 self.state = .productLoaded(product: product)
             case .failure(let error):
-                DDLogError("⛔️ Error loading Product for siteID: \(self.siteID) productID:\(self.productID) error:\(error)")
+                DDLogError("⛔️ Error loading Product for siteID: \(self.siteID) productID:\(productID) error:\(error)")
                 self.state = .failure
             }
         }
@@ -131,45 +131,17 @@ private extension ProductLoaderViewController {
     func loadProductVariation(productID: Int64, variationID: Int64) {
         state = .loading
 
-        let group = DispatchGroup()
-
-        var parentProduct: Product?
-        var productVariation: ProductVariation?
-
-        group.enter()
-        let productVariationAction = ProductVariationAction.retrieveProductVariation(siteID: siteID,
-                                                                     productID: productID,
-                                                                     variationID: variationID) { result in
-                                                                        switch result {
-                                                                        case .success(let productVariationResult):
-                                                                            productVariation = productVariationResult
-                                                                        case .failure:
-                                                                            break
-                                                                        }
-                                                                        group.leave()
-
-        }
-        ServiceLocator.stores.dispatch(productVariationAction)
-
-        group.enter()
-        let productAction = ProductAction.retrieveProduct(siteID: siteID, productID: productID) { (product, error) in
-            parentProduct = product
-            group.leave()
-        }
-        ServiceLocator.stores.dispatch(productAction)
-
-        group.notify(queue: .main) { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            guard let parentProduct = parentProduct, let productVariation = productVariation else {
-                DDLogError("⛔️ Error loading ProductVariation & Product for siteID: \(self.siteID) productID:\(productID) variationID:\(variationID)")
+        let useCase = ProductVariationLoadUseCase(siteID: siteID)
+        useCase.loadProductVariation(productID: productID, variationID: variationID) { result in
+            switch result {
+            case .failure(let error):
+                DDLogError(
+                    "⛔️ Error loading ProductVariation & Product for siteID: \(self.siteID) productID:\(productID) variationID:\(variationID) error:\(error)"
+                )
                 self.state = .failure
-                return
+            case .success(let data):
+                self.state = .productVariationLoaded(productVariation: data.variation, parentProduct: data.parentProduct)
             }
-
-            self.state = .productVariationLoaded(productVariation: productVariation, parentProduct: parentProduct)
         }
     }
 }

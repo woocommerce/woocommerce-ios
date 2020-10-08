@@ -180,6 +180,7 @@
 		0279F0DC252DBF1F0098D7DE /* ProductVariationDetailsFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0279F0DB252DBF1F0098D7DE /* ProductVariationDetailsFactoryTests.swift */; };
 		0279F0DF252DC12D0098D7DE /* ProductLoaderViewControllerModel+Init.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0279F0DE252DC12D0098D7DE /* ProductLoaderViewControllerModel+Init.swift */; };
 		0279F0E2252DC4BF0098D7DE /* ProductLoaderViewControllerModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0279F0E1252DC4BF0098D7DE /* ProductLoaderViewControllerModelTests.swift */; };
+		0279F0E4252DC9670098D7DE /* ProductVariationLoadUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0279F0E3252DC9670098D7DE /* ProductVariationLoadUseCase.swift */; };
 		027A2E142513124E00DA6ACB /* Keychain+Entries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027A2E132513124E00DA6ACB /* Keychain+Entries.swift */; };
 		027A2E162513356100DA6ACB /* AppleIDCredentialChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027A2E152513356100DA6ACB /* AppleIDCredentialChecker.swift */; };
 		027B8BB823FE0CB30040944E /* DefaultProductUIImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027B8BB723FE0CB30040944E /* DefaultProductUIImageLoader.swift */; };
@@ -1164,6 +1165,7 @@
 		0279F0DB252DBF1F0098D7DE /* ProductVariationDetailsFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationDetailsFactoryTests.swift; sourceTree = "<group>"; };
 		0279F0DE252DC12D0098D7DE /* ProductLoaderViewControllerModel+Init.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductLoaderViewControllerModel+Init.swift"; sourceTree = "<group>"; };
 		0279F0E1252DC4BF0098D7DE /* ProductLoaderViewControllerModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductLoaderViewControllerModelTests.swift; sourceTree = "<group>"; };
+		0279F0E3252DC9670098D7DE /* ProductVariationLoadUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationLoadUseCase.swift; sourceTree = "<group>"; };
 		027A2E132513124E00DA6ACB /* Keychain+Entries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keychain+Entries.swift"; sourceTree = "<group>"; };
 		027A2E152513356100DA6ACB /* AppleIDCredentialChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleIDCredentialChecker.swift; sourceTree = "<group>"; };
 		027B8BB723FE0CB30040944E /* DefaultProductUIImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultProductUIImageLoader.swift; sourceTree = "<group>"; };
@@ -2399,6 +2401,7 @@
 			children = (
 				74EC34A4225FE21F004BBC2E /* ProductLoaderViewController.swift */,
 				0279F0DE252DC12D0098D7DE /* ProductLoaderViewControllerModel+Init.swift */,
+				0279F0E3252DC9670098D7DE /* ProductVariationLoadUseCase.swift */,
 			);
 			path = "Product Loader";
 			sourceTree = "<group>";
@@ -5458,6 +5461,7 @@
 				CEE006082077D14C0079161F /* OrderDetailsViewController.swift in Sources */,
 				B58B4AB62108F11C00076FDD /* Notice.swift in Sources */,
 				CE4296B920A5E9E400B2AFBD /* CNContact+Helpers.swift in Sources */,
+				0279F0E4252DC9670098D7DE /* ProductVariationLoadUseCase.swift in Sources */,
 				02CA63DC23D1ADD100BBF148 /* DeviceMediaLibraryPicker.swift in Sources */,
 				02404EDA2314C36300FF1170 /* StatsVersionCoordinator.swift in Sources */,
 				CEE006052077D1280079161F /* SummaryTableViewCell.swift in Sources */,

@@ -123,15 +123,13 @@ private extension ProductLoaderViewControllerModelTests {
     }
 
     func makeAggregateOrderItem(productID: Int64, variationID: Int64) -> AggregateOrderItem {
-        AggregateOrderItem(
-            productID: productID,
-            variationID: variationID,
-            name: "order",
-            price: 1.2,
-            quantity: 3,
-            sku: nil,
-            total: 3.6
-        )
+        AggregateOrderItem(productID: productID,
+                           variationID: variationID,
+                           name: "order",
+                           price: 1.2,
+                           quantity: 3,
+                           sku: nil,
+                           total: 3.6)
     }
 
     func makeTopEarnerStatsItem(productID: Int64) -> TopEarnerStatsItem {

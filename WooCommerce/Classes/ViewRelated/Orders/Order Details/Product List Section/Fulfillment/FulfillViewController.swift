@@ -12,13 +12,12 @@ final class FulfillViewController: UIViewController {
     ///
     @IBOutlet private var tableView: UITableView!
 
-    /// Action Container View: Renders the Action Button.
+    /// The primary action button shown at the bottom of the table.
     ///
-    @IBOutlet private var actionView: UIView!
-
-    /// Action Button (Fulfill!)
-    ///
-    @IBOutlet private var actionButton: UIButton!
+    private lazy var buttonTableFooterView =
+        ButtonTableFooterView(frame: .zero, title: Localization.markOrderComplete) { [weak self] in
+            self?.fulfillWasPressed()
+        }
 
     /// Sections to be Rendered
     ///
@@ -91,7 +90,6 @@ final class FulfillViewController: UIViewController {
         setupNavigationItem()
         setupMainView()
         setupTableView()
-        setupActionButton()
         registerTableViewCells()
         registerTableViewHeaderFooters()
         configureTrackingResultsController()
@@ -141,20 +139,7 @@ private extension FulfillViewController {
     /// Setup: TableView
     ///
     func setupTableView() {
-        let container = UIView(frame: CGRect(origin: .zero, size: CGSize(width: tableView.frame.width, height: 0)))
-        container.addSubview(actionView)
-        actionView.translatesAutoresizingMaskIntoConstraints = false
-        container.pinSubviewToAllEdges(actionView)
-        tableView.tableFooterView = container
-    }
-
-    ///Setup: Action Button!
-    ///
-    func setupActionButton() {
-        let title = NSLocalizedString("Mark Order Complete", comment: "Fulfill Order Action Button")
-        actionButton.setTitle(title, for: .normal)
-        actionButton.applyPrimaryButtonStyle()
-        actionButton.addTarget(self, action: #selector(fulfillWasPressed), for: .touchUpInside)
+        tableView.tableFooterView = buttonTableFooterView
     }
 
     /// Registers all of the available TableViewCells
@@ -192,7 +177,7 @@ private extension FulfillViewController {
 
     /// Whenever the Fulfillment Action is pressed, we'll mark the order as Completed, and pull back to the previous screen.
     ///
-    @IBAction func fulfillWasPressed() {
+    func fulfillWasPressed() {
         // Capture these values for the undo closure
         let orderID = order.orderID
         let doneStatus = OrderStatusEnum.completed
@@ -760,4 +745,12 @@ private enum DeleteAction {
                                           comment: "Cancel the action sheet")
     static let delete = NSLocalizedString("Delete Tracking",
                                           comment: "Delete a Shipment Tracking")
+}
+
+// MARK: - Localization
+
+private extension FulfillViewController {
+    enum Localization {
+        static let markOrderComplete = NSLocalizedString("Mark Order Complete", comment: "Fulfill Order Action Button")
+    }
 }

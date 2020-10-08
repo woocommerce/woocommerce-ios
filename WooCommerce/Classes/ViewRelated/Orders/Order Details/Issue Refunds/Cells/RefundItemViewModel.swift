@@ -16,10 +16,10 @@ extension RefundItemViewModel {
     /// Creates a `RefundItemViewModel` based on an `OrderItem`, it's related product and it's currency..
     /// `QuantityToRefund` is set to 0.
     ///
-    init(item: OrderItem, product: Product?, currency: String, currencySettings: CurrencySettings) {
+    init(item: OrderItem, product: Product?, refundQuantity: Int, currency: String, currencySettings: CurrencySettings) {
         productImage = product?.images.first?.src
         productTitle = item.name
-        quantityToRefund = String(UInt.min)
+        quantityToRefund = String(refundQuantity)
         productQuantityAndPrice = {
             let quantity = NumberFormatter.localizedString(from: item.quantity as NSDecimalNumber, number: .decimal)
             let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)

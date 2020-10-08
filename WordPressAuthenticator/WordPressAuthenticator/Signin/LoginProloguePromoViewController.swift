@@ -92,13 +92,7 @@ class LoginProloguePromoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupBackground()
-
-        if WordPressAuthenticator.shared.configuration.enableUnifiedCarousel {
-            styleHeadingLabel()
-        } else {
-            setupHeadingLabel()
-        }
-
+        styleHeadingLabel()
         setupLayout()
     }
 
@@ -107,27 +101,27 @@ class LoginProloguePromoViewController: UIViewController {
     }
 
     private func styleHeadingLabel() {
-        headingLabel.font = WPStyleGuide.serifFontForTextStyle(.title1)
-        headingLabel.textColor = type.headlineColor
-        headingLabel.text = type.headlineText
-        headingLabel.textAlignment = .center
-        headingLabel.numberOfLines = 0
-        headingLabel.adjustsFontSizeToFitWidth = true
-        headingLabel.sizeToFit()
-    }
-
-    private func setupHeadingLabel() {
-        headingLabel.font = WPStyleGuide.mediumWeightFont(forStyle: .title3)
-        headingLabel.textColor = type.headlineColor
-        headingLabel.text = type.headlineText
-        headingLabel.textAlignment = .center
-        headingLabel.numberOfLines = 0
-        headingLabel.adjustsFontSizeToFitWidth = true
-        headingLabel.sizeToFit()
+        if WordPressAuthenticator.shared.configuration.enableUnifiedCarousel {
+            headingLabel.font = WPStyleGuide.serifFontForTextStyle(.title1)
+            headingLabel.textColor = type.headlineColor
+            headingLabel.text = type.headlineText
+            headingLabel.textAlignment = .center
+            headingLabel.numberOfLines = 0
+            headingLabel.adjustsFontSizeToFitWidth = true
+            headingLabel.sizeToFit()
+        } else {
+            headingLabel.font = WPStyleGuide.mediumWeightFont(forStyle: .title3)
+            headingLabel.textColor = type.headlineColor
+            headingLabel.text = type.headlineText
+            headingLabel.textAlignment = .center
+            headingLabel.numberOfLines = 0
+            headingLabel.adjustsFontSizeToFitWidth = true
+            headingLabel.sizeToFit()
+        }
     }
 
     private func didChangePreferredContentSize() {
-        setupHeadingLabel()
+        styleHeadingLabel()
     }
 
     override func viewWillAppear(_ animated: Bool) {

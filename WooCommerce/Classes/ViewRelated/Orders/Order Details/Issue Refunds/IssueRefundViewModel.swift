@@ -7,7 +7,7 @@ final class IssueRefundViewModel {
 
     /// Order to be refunded
     ///
-    private let order: Order
+    let order: Order
 
     /// Title for the navigation bar
     /// This is temporary data, will be removed after implementing https://github.com/woocommerce/woocommerce-ios/issues/2842

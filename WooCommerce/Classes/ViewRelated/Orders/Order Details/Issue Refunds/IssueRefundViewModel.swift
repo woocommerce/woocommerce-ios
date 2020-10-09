@@ -19,6 +19,10 @@ final class IssueRefundViewModel {
         /// Bool indicating if shipping will be refunded
         ///
         var shouldRefundShipping: Bool = false
+
+        ///  Holds the quantity of items to refund
+        ///
+        var refundQuantityStore = RefundQuantityStore()
     }
 
     /// Current ViewModel state
@@ -64,8 +68,39 @@ final class IssueRefundViewModel {
 
 // MARK: User Actions
 extension IssueRefundViewModel {
+    /// Toggles the refund shipping state
+    ///
     func toggleRefundShipping() {
         state.shouldRefundShipping.toggle()
+    }
+
+    /// Returns the number of items available for refund for the provided item index.
+    /// Returns `nil` if the index is out of bounds
+    ///
+    func quantityAvailableForRefundForItemAtIndex(_ itemIndex: Int) -> Int? {
+        guard let item = state.order.items[safe: itemIndex] else {
+            return nil
+        }
+        return Int(truncating: item.quantity as NSDecimalNumber)
+    }
+
+    /// Returns the current quantlty set for refund for the provided item index.
+    /// Returns `nil` if the index is out of bounds.
+    ///
+    func currentQuantityForItemAtIndex(_ itemIndex: Int) -> Int? {
+        guard let item = state.order.items[safe: itemIndex] else {
+            return nil
+        }
+        return state.refundQuantityStore.refundQuantity(for: item.itemID)
+    }
+
+    /// Updates the quantity to be refunded for an item on the provided index.
+    ///
+    func updateRefundQuantity(quantity: Int, forItemAtIndex itemIndex: Int) {
+        guard let item = state.order.items[safe: itemIndex] else {
+            return
+        }
+        state.refundQuantityStore.updateQuantity(quantity: quantity, forItemID: item.itemID)
     }
 }
 
@@ -120,7 +155,11 @@ extension IssueRefundViewModel {
     private func createItemsToRefundSection() -> Section {
         let itemsRows = state.order.items.map { item -> RefundItemViewModel in
             let product = products.filter { $0.productID == item.productID }.first
-            return RefundItemViewModel(item: item, product: product, currency: state.order.currency, currencySettings: state.currencySettings)
+            return RefundItemViewModel(item: item,
+                                       product: product,
+                                       refundQuantity: state.refundQuantityStore.refundQuantity(for: item.itemID),
+                                       currency: state.order.currency,
+                                       currencySettings: state.currencySettings)
         }
 
         // This is temporary data, will be removed after implementing https://github.com/woocommerce/woocommerce-ios/issues/2842
@@ -153,3 +192,29 @@ extension RefundItemViewModel: IssueRefundRow {}
 extension RefundProductsTotalViewModel: IssueRefundRow {}
 
 extension RefundShippingDetailsViewModel: IssueRefundRow {}
+
+// MARK: Refund Quantity Store
+private extension IssueRefundViewModel {
+    /// Structure that holds and provides the quantity of items to refund
+    ///
+    struct RefundQuantityStore {
+        typealias ItemID = Int64
+
+        /// Key: item ID
+        /// Value: quantity to refund
+        ///
+        private var store: [ItemID: Int] = [:]
+
+        /// Returns the quantity set to be refunded for an itemID
+        ///
+        func refundQuantity(for itemID: ItemID) -> Int {
+            store[itemID] ?? 0
+        }
+
+        /// Updates the quantity to be refunded for an itemID
+        ///
+        mutating func updateQuantity(quantity: Int, forItemID itemID: ItemID) {
+            store[itemID] = quantity
+        }
+    }
+}

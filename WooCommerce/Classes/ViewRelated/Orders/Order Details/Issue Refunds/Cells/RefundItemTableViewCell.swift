@@ -32,6 +32,10 @@ final class RefundItemTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var itemImageViewHeightConstraint: NSLayoutConstraint!
 
+    /// Closure invoked when the user taps the quantity button
+    ///
+    var onQuantityTapped: (() -> ())?
+
     override func awakeFromNib() {
         super.awakeFromNib()
         applyCellStyles()
@@ -122,7 +126,7 @@ extension RefundItemTableViewCell {
 // MARK: Actions
 private extension RefundItemTableViewCell {
     @IBAction func quantityButtonPressed(_ sender: Any) {
-        print("Item quantity button pressed")
+        onQuantityTapped?()
     }
 }
 

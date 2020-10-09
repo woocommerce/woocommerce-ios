@@ -1,6 +1,6 @@
 5.3
 -----
-- [*] Enhancement: when saving a product as draft, the in-progress modal now shows title and message like "saving your product" instead of "publishing your product".
+- [*] Enhancement: when not saving a product as "published", the in-progress modal now shows title and message like "saving your product" instead of "publishing your product".
 - [internal] #2883 Renamed a product database table (Attribute) to GenericAttribute. This adds a new database migration. 
 
  

@@ -1,4 +1,5 @@
 import UIKit
+import Yosemite
 
 /// Screen that allows the user to refund items (products and shipping) of an order
 ///
@@ -12,9 +13,15 @@ final class IssueRefundViewController: UIViewController {
     @IBOutlet private var nextButton: UIButton!
     @IBOutlet private var selectAllButton: UIButton!
 
-    private let viewModel = IssueRefundViewModel()
+    private let imageService: ImageService
 
-    init() {
+    private let viewModel: IssueRefundViewModel
+
+    init(order: Order,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         imageService: ImageService = ServiceLocator.imageService) {
+        self.imageService = imageService
+        self.viewModel = IssueRefundViewModel(order: order, currencySettings: currencySettings)
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -38,7 +45,7 @@ final class IssueRefundViewController: UIViewController {
 // MARK: Actions
 private extension IssueRefundViewController {
     @IBAction func nextButtonWasPressed(_ sender: Any) {
-        print("Next button pressed")
+        show(RefundConfirmationViewController(), sender: self)
     }
 
     @IBAction func selectAllButtonWasPressed(_ sender: Any) {
@@ -110,7 +117,7 @@ extension IssueRefundViewController: UITableViewDelegate, UITableViewDataSource 
         switch rowViewModel {
         case let viewModel as RefundItemViewModel:
             let cell = tableView.dequeueReusableCell(RefundItemTableViewCell.self, for: indexPath)
-            cell.configure(with: viewModel)
+            cell.configure(with: viewModel, imageService: imageService)
             return cell
         case let viewModel as RefundProductsTotalViewModel:
             let cell = tableView.dequeueReusableCell(RefundProductsTotalTableViewCell.self, for: indexPath)

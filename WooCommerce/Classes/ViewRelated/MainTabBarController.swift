@@ -372,7 +372,7 @@ private extension MainTabBarController {
         let dashboardViewController = createDashboardViewController(siteID: siteID)
         dashboardNavigationController.viewControllers = [dashboardViewController]
 
-        let ordersViewController = createOrdersViewController()
+        let ordersViewController = createOrdersViewController(siteID: siteID)
         ordersNavigationController.viewControllers = [ordersViewController]
 
         let productsViewController = createProductsViewController()
@@ -390,8 +390,8 @@ private extension MainTabBarController {
         DashboardViewController(siteID: siteID)
     }
 
-    func createOrdersViewController() -> UIViewController {
-        OrdersRootViewController()
+    func createOrdersViewController(siteID: Int64) -> UIViewController {
+        OrdersRootViewController(siteID: siteID)
     }
 
     func createProductsViewController() -> UIViewController {

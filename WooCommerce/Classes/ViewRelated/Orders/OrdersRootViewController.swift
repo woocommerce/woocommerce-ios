@@ -17,7 +17,7 @@ final class OrdersRootViewController: UIViewController {
 
     // MARK: Child view controller
 
-    private lazy var ordersViewController = OrdersMasterViewController()
+    private lazy var ordersViewController = OrdersMasterViewController(siteID: siteID)
 
     // MARK: Subviews
 
@@ -25,18 +25,20 @@ final class OrdersRootViewController: UIViewController {
         return UIView(frame: .zero)
     }()
 
+    private let siteID: Int64
+
     // MARK: View Lifecycle
 
-    init() {
+    init(siteID: Int64) {
+        self.siteID = siteID
         super.init(nibName: nil, bundle: nil)
 
         configureTitle()
         configureTabBarItem()
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        tabBarItem.image = .statsAltImage
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     override func viewDidLoad() {

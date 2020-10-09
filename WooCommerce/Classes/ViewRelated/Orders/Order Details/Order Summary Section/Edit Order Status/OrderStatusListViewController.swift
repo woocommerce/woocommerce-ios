@@ -13,7 +13,7 @@ final class OrderStatusListViewController: UIViewController {
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld && slug != %@",
-                                    ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min,
+                                    siteID,
                                     OrderStatusEnum.refunded.rawValue)
         let descriptor = NSSortDescriptor(key: "slug", ascending: true)
 
@@ -39,9 +39,11 @@ final class OrderStatusListViewController: UIViewController {
     /// Order to be provided with a new status
     ///
     private let order: Order
+    private let siteID: Int64
 
     init(order: Order, currentStatus: OrderStatus?) {
         self.order = order
+        self.siteID = order.siteID
         self.selectedStatus = currentStatus
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }

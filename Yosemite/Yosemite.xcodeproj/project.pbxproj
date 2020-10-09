@@ -120,6 +120,8 @@
 		578D4246252FE2C200FF8B10 /* CurrencyFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578D4244252FE2C200FF8B10 /* CurrencyFormatter.swift */; };
 		578D424B252FE32800FF8B10 /* NSDecimalNumber+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578D424A252FE32800FF8B10 /* NSDecimalNumber+Helpers.swift */; };
 		578D4255252FE35900FF8B10 /* Double+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578D4254252FE35900FF8B10 /* Double+Woo.swift */; };
+		578D4284252FE8D700FF8B10 /* CurrencyFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578D4283252FE8D700FF8B10 /* CurrencyFormatterTests.swift */; };
+		578D428E252FE8F700FF8B10 /* CurrencySettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578D428D252FE8F700FF8B10 /* CurrencySettingsTests.swift */; };
 		57DFCC7925003C4000251E0C /* FetchResultSnapshotsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DFCC7825003C4000251E0C /* FetchResultSnapshotsProvider.swift */; };
 		741F34802195EA62005F5BD9 /* CommentAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741F347F2195EA62005F5BD9 /* CommentAction.swift */; };
 		741F34822195EA71005F5BD9 /* CommentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741F34812195EA71005F5BD9 /* CommentStore.swift */; };
@@ -365,6 +367,8 @@
 		578D4244252FE2C200FF8B10 /* CurrencyFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CurrencyFormatter.swift; path = ../../../WooCommerce/Classes/Tools/Currency/CurrencyFormatter.swift; sourceTree = "<group>"; };
 		578D424A252FE32800FF8B10 /* NSDecimalNumber+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSDecimalNumber+Helpers.swift"; sourceTree = "<group>"; };
 		578D4254252FE35900FF8B10 /* Double+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Woo.swift"; sourceTree = "<group>"; };
+		578D4283252FE8D700FF8B10 /* CurrencyFormatterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrencyFormatterTests.swift; sourceTree = "<group>"; };
+		578D428D252FE8F700FF8B10 /* CurrencySettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencySettingsTests.swift; sourceTree = "<group>"; };
 		57DFCC7825003C4000251E0C /* FetchResultSnapshotsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchResultSnapshotsProvider.swift; sourceTree = "<group>"; };
 		585B973F61632665297738A3 /* Pods-Yosemite.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yosemite.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-Yosemite/Pods-Yosemite.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		741F347F2195EA62005F5BD9 /* CommentAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentAction.swift; sourceTree = "<group>"; };
@@ -809,6 +813,15 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		578D4282252FE8CB00FF8B10 /* Currency */ = {
+			isa = PBXGroup;
+			children = (
+				578D428D252FE8F700FF8B10 /* CurrencySettingsTests.swift */,
+				578D4283252FE8D700FF8B10 /* CurrencyFormatterTests.swift */,
+			);
+			path = Currency;
+			sourceTree = "<group>";
+		};
 		57DFCC7725003B3300251E0C /* SnapshotsProvider */ = {
 			isa = PBXGroup;
 			children = (
@@ -1060,6 +1073,7 @@
 		B5C9DE022087FEC0006B910A /* YosemiteTests */ = {
 			isa = PBXGroup;
 			children = (
+				578D4282252FE8CB00FF8B10 /* Currency */,
 				5779A0CB2500429700E35AF2 /* SnapshotsProvider */,
 				572F2B8B247312D3005A5F74 /* Storage */,
 				022F00C324728AFB008CD97F /* PListStorage */,
@@ -1536,6 +1550,7 @@
 				022F00C72472963E008CD97F /* NotificationCountStoreTests.swift in Sources */,
 				578CE7882475D70F00492EBF /* RetrieveProductReviewFromNoteUseCaseTests.swift in Sources */,
 				02FF056723DEB2180058E6E7 /* MediaStoreTests.swift in Sources */,
+				578D4284252FE8D700FF8B10 /* CurrencyFormatterTests.swift in Sources */,
 				B5C9DE272087FF20006B910A /* MockupAcount.swift in Sources */,
 				2614E12D24C745B2007CEE60 /* LeaderboardStatsConverterTests.swift in Sources */,
 				02DA641B2313D6D200284168 /* AppSettingsStoreTests+StatsVersion.swift in Sources */,
@@ -1559,6 +1574,7 @@
 				B5A01CA120D19C4700E3207E /* MockupStorage.swift in Sources */,
 				578CE7922475EC9200492EBF /* MockProductsRemote.swift in Sources */,
 				7455263022305F88003F8932 /* OrderStatusStoreTests.swift in Sources */,
+				578D428E252FE8F700FF8B10 /* CurrencySettingsTests.swift in Sources */,
 				B5C9DE242087FF20006B910A /* StoreTests.swift in Sources */,
 				02FF055C23D9846A0058E6E7 /* MediaFileManagerTests.swift in Sources */,
 				0248B36B2459127200A271A4 /* MockupNetwork+Path.swift in Sources */,

@@ -1,6 +1,6 @@
 import XCTest
-@testable import WooCommerce
-import Yosemite
+
+@testable import Yosemite
 
 /// CurrencySettings Tests
 ///

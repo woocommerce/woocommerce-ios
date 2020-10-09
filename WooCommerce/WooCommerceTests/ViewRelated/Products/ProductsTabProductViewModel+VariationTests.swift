@@ -1,6 +1,7 @@
 import XCTest
 @testable import WooCommerce
-@testable import Yosemite
+
+import Yosemite
 
 final class ProductsTabProductViewModel_VariationTests: XCTestCase {
     // MARK: Status / price details

@@ -1,6 +1,8 @@
 import XCTest
+
 @testable import WooCommerce
-@testable import Yosemite
+
+import Yosemite
 
 final class ProductPriceSettingsViewModelTests: XCTestCase {
     private let numberOfSecondsPerDay: TimeInterval = 86400

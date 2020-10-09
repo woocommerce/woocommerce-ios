@@ -1,7 +1,7 @@
 import XCTest
-@testable import WooCommerce
-@testable import Networking
 
+@testable import Yosemite
+@testable import Networking
 
 /// Currency Formatter Tests - Decimals
 ///
@@ -14,7 +14,7 @@ class CurrencyFormatterTests: XCTestCase {
     ///
     private func setUpSampleSiteSettings() -> [SiteSetting] {
         let settings = mapLoadGeneralSiteSettingsResponse()
-        var siteSettings = [SiteSetting]()
+        var siteSettings = [Networking.SiteSetting]()
 
         siteSettings.append(settings[14])
         siteSettings.append(settings[15])

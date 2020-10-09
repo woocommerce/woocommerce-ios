@@ -6,7 +6,7 @@ import Yosemite
 /// Test cases for `ItemListSelectorCommand`
 ///
 final class ItemListSelectorCommandTests: XCTestCase {
-    func test_commanmd_produces_correct_data_when_max_quantity_is_0() {
+    func test_command_produces_correct_data_when_max_quantity_is_0() {
         // When
         let command = ItemListSelectorCommand(maxRefundQuantity: 0, currentQuantity: 0)
 

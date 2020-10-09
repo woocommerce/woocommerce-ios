@@ -76,11 +76,11 @@ private extension IssueRefundViewController {
     func quantityButtonPressed(sender: UITableViewCell) {
         guard let indexPath = tableView.indexPath(for: sender),
             let refundQuantity = viewModel.quantityAvailableForRefundForItemAtIndex(indexPath.row),
-            let currentCuantity = viewModel.currentQuantityForItemAtIndex(indexPath.row) else {
+            let currentQuantity = viewModel.currentQuantityForItemAtIndex(indexPath.row) else {
                 return
         }
 
-        let command = ItemListSelectorCommand(maxRefundQuantity: refundQuantity, currentQuantity: currentCuantity)
+        let command = ItemListSelectorCommand(maxRefundQuantity: refundQuantity, currentQuantity: currentQuantity)
         let selectorViewController = ListSelectorViewController(command: command, tableViewStyle: .plain) { [weak self] selectedQuantity in
             guard let selectedQuantity = selectedQuantity else {
                 return

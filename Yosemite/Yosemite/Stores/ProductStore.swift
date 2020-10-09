@@ -218,7 +218,7 @@ private extension ProductStore {
 
     /// Retrieves the product associated with a given siteID + productID (if any!).
     ///
-    func retrieveProduct(siteID: Int64, productID: Int64, onCompletion: @escaping (Networking.Product?, Error?) -> Void) {
+    func retrieveProduct(siteID: Int64, productID: Int64, onCompletion: @escaping (Result<Product, Error>) -> Void) {
         remote.loadProduct(for: siteID, productID: productID) { [weak self] result in
             guard let self = self else {
                 return
@@ -229,11 +229,13 @@ private extension ProductStore {
                 if case NetworkError.notFound = error {
                     self.deleteStoredProduct(siteID: siteID, productID: productID)
                 }
-                onCompletion(nil, error)
+                onCompletion(.failure(error))
             case .success(let product):
                 self.upsertStoredProductsInBackground(readOnlyProducts: [product]) { [weak self] in
-                    let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: siteID, productID: productID)
-                    onCompletion(storageProduct?.toReadOnly(), nil)
+                    guard let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: siteID, productID: productID) else {
+                        return onCompletion(.failure(ProductLoadError.notFoundInStorage))
+                    }
+                    onCompletion(.success(storageProduct.toReadOnly()))
                 }
             }
 
@@ -651,4 +653,8 @@ public enum ProductUpdateError: Error, Equatable {
             }
         }
     }
+}
+
+public enum ProductLoadError: Error, Equatable {
+    case notFoundInStorage
 }

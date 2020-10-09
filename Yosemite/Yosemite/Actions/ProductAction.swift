@@ -27,7 +27,7 @@ public enum ProductAction: Action {
 
     /// Retrieves the specified Product.
     ///
-    case retrieveProduct(siteID: Int64, productID: Int64, onCompletion: (Product?, Error?) -> Void)
+    case retrieveProduct(siteID: Int64, productID: Int64, onCompletion: (Result<Product, Error>) -> Void)
 
     /// Retrieves a specified list of Products.
     ///

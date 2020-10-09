@@ -1,6 +1,6 @@
 import Foundation
 
-extension NSDecimalNumber {
+public extension NSDecimalNumber {
 
     /// Returns true if the receiver is equal to zero, false otherwise.
     ///

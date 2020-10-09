@@ -116,6 +116,10 @@
 		578CE7942475F52F00492EBF /* MockNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578CE7932475F52F00492EBF /* MockNote.swift */; };
 		578CE7972475FD8200492EBF /* MockProductReview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578CE7962475FD8200492EBF /* MockProductReview.swift */; };
 		578D423F252FDDF900FF8B10 /* Order+Refunds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578D423E252FDDF900FF8B10 /* Order+Refunds.swift */; };
+		578D4245252FE2C200FF8B10 /* CurrencySettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578D4243252FE2C200FF8B10 /* CurrencySettings.swift */; };
+		578D4246252FE2C200FF8B10 /* CurrencyFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578D4244252FE2C200FF8B10 /* CurrencyFormatter.swift */; };
+		578D424B252FE32800FF8B10 /* NSDecimalNumber+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578D424A252FE32800FF8B10 /* NSDecimalNumber+Helpers.swift */; };
+		578D4255252FE35900FF8B10 /* Double+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578D4254252FE35900FF8B10 /* Double+Woo.swift */; };
 		57DFCC7925003C4000251E0C /* FetchResultSnapshotsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DFCC7825003C4000251E0C /* FetchResultSnapshotsProvider.swift */; };
 		741F34802195EA62005F5BD9 /* CommentAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741F347F2195EA62005F5BD9 /* CommentAction.swift */; };
 		741F34822195EA71005F5BD9 /* CommentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741F34812195EA71005F5BD9 /* CommentStore.swift */; };
@@ -357,6 +361,10 @@
 		578CE7932475F52F00492EBF /* MockNote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNote.swift; sourceTree = "<group>"; };
 		578CE7962475FD8200492EBF /* MockProductReview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductReview.swift; sourceTree = "<group>"; };
 		578D423E252FDDF900FF8B10 /* Order+Refunds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+Refunds.swift"; sourceTree = "<group>"; };
+		578D4243252FE2C200FF8B10 /* CurrencySettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CurrencySettings.swift; path = ../../../WooCommerce/Classes/Tools/Currency/CurrencySettings.swift; sourceTree = "<group>"; };
+		578D4244252FE2C200FF8B10 /* CurrencyFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CurrencyFormatter.swift; path = ../../../WooCommerce/Classes/Tools/Currency/CurrencyFormatter.swift; sourceTree = "<group>"; };
+		578D424A252FE32800FF8B10 /* NSDecimalNumber+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSDecimalNumber+Helpers.swift"; sourceTree = "<group>"; };
+		578D4254252FE35900FF8B10 /* Double+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Woo.swift"; sourceTree = "<group>"; };
 		57DFCC7825003C4000251E0C /* FetchResultSnapshotsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchResultSnapshotsProvider.swift; sourceTree = "<group>"; };
 		585B973F61632665297738A3 /* Pods-Yosemite.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yosemite.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-Yosemite/Pods-Yosemite.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		741F347F2195EA62005F5BD9 /* CommentAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentAction.swift; sourceTree = "<group>"; };
@@ -783,6 +791,24 @@
 			path = Orders;
 			sourceTree = "<group>";
 		};
+		578D4242252FE29D00FF8B10 /* Currency */ = {
+			isa = PBXGroup;
+			children = (
+				578D4243252FE2C200FF8B10 /* CurrencySettings.swift */,
+				578D4244252FE2C200FF8B10 /* CurrencyFormatter.swift */,
+			);
+			path = Currency;
+			sourceTree = "<group>";
+		};
+		578D4249252FE2F600FF8B10 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				578D4254252FE35900FF8B10 /* Double+Woo.swift */,
+				578D424A252FE32800FF8B10 /* NSDecimalNumber+Helpers.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		57DFCC7725003B3300251E0C /* SnapshotsProvider */ = {
 			isa = PBXGroup;
 			children = (
@@ -1015,6 +1041,8 @@
 		B5C9DDF72087FEC0006B910A /* Yosemite */ = {
 			isa = PBXGroup;
 			children = (
+				578D4242252FE29D00FF8B10 /* Currency */,
+				578D4249252FE2F600FF8B10 /* Extensions */,
 				57DFCC7725003B3300251E0C /* SnapshotsProvider */,
 				0202B68E238790B900F3EBE0 /* PListStorage */,
 				B5C9DE132087FF0E006B910A /* Internal */,
@@ -1338,9 +1366,11 @@
 				7492FADD217FAF5C00ED2C69 /* SettingStore.swift in Sources */,
 				02FF054F23D983F30058E6E7 /* FileManager+URL.swift in Sources */,
 				B52E0032211A440D00700FDE /* Order+ReadOnlyType.swift in Sources */,
+				578D4245252FE2C200FF8B10 /* CurrencySettings.swift in Sources */,
 				261F94E4242EFA6D00762B58 /* ProductCategoryAction.swift in Sources */,
 				45AB8B1524AA4A1E00B5B36E /* ProductTagAction.swift in Sources */,
 				02E262BD238CE46A00B79588 /* ShippingSettingsService.swift in Sources */,
+				578D424B252FE32800FF8B10 /* NSDecimalNumber+Helpers.swift in Sources */,
 				B5C9DE152087FF0E006B910A /* Dispatcher.swift in Sources */,
 				B52E0030211A439E00700FDE /* Account+ReadOnlyType.swift in Sources */,
 				744A3218216D55F80051439B /* SiteVisitStats+ReadOnlyConvertible.swift in Sources */,
@@ -1430,6 +1460,7 @@
 				CE43A90222A072D800A4FF29 /* ProductDownload+ReadOnlyConvertible.swift in Sources */,
 				B5C9DE182087FF0E006B910A /* Assert.swift in Sources */,
 				571D7E3F251BB9FA00606E96 /* LogErrorAndExit.swift in Sources */,
+				578D4255252FE35900FF8B10 /* Double+Woo.swift in Sources */,
 				CE0DB6C0233EB3F300A27E7A /* OrderRefundCondensed+ReadOnlyConvertible.swift in Sources */,
 				0225512122FC2F3000D98613 /* OrderStatsV4Interval+Date.swift in Sources */,
 				2614E12A24C7451D007CEE60 /* LeaderboardStatsConverter.swift in Sources */,
@@ -1458,6 +1489,7 @@
 				B5F2AE9720EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift in Sources */,
 				7492FADF217FB11D00ED2C69 /* SettingAction.swift in Sources */,
 				450106872399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift in Sources */,
+				578D4246252FE2C200FF8B10 /* CurrencyFormatter.swift in Sources */,
 				022F00C224726090008CD97F /* SiteNotificationCountFileContents.swift in Sources */,
 				D87F614C22657B150031A13B /* AppSettingsStore.swift in Sources */,
 				D8C11A5422DFAE9500D4A88D /* OrderStatsV4+ReadOnlyConvertible.swift in Sources */,

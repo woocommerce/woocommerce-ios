@@ -1,5 +1,5 @@
 import Foundation
-import Yosemite
+import Networking
 
 /// Site-wide settings for displaying prices/money
 ///

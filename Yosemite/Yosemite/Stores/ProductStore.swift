@@ -233,8 +233,7 @@ private extension ProductStore {
             case .success(let product):
                 self.upsertStoredProductsInBackground(readOnlyProducts: [product]) { [weak self] in
                     guard let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: siteID, productID: productID) else {
-                        onCompletion(.failure(ProductLoadError.notFoundInStorage))
-                        return
+                        return onCompletion(.failure(ProductLoadError.notFoundInStorage))
                     }
                     onCompletion(.success(storageProduct.toReadOnly()))
                 }

@@ -162,7 +162,7 @@ extension IssueRefundViewModel {
                                        currencySettings: state.currencySettings)
         }
 
-        let refundItems = state.refundQuantityStore.map { RefundProductsTotalViewModel.RefundItem(item: $0, quantity: $1) }
+        let refundItems = state.refundQuantityStore.map { RefundItemsValuesCalculationUseCase.RefundItem(item: $0, quantity: $1) }
         let summaryRow = RefundProductsTotalViewModel(refundItems: refundItems, currency: state.order.currency, currencySettings: state.currencySettings)
 
         return Section(rows: itemsRows + [summaryRow])

@@ -335,6 +335,7 @@
 		2667BFDF252F762E008099D4 /* IssueRefundViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFDE252F762E008099D4 /* IssueRefundViewModelTests.swift */; };
 		2667BFE1252FA117008099D4 /* RefundItemQuantityListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFE0252FA117008099D4 /* RefundItemQuantityListSelectorCommand.swift */; };
 		2667BFE3252FA695008099D4 /* RefundItemQuantityListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFE2252FA695008099D4 /* RefundItemQuantityListSelectorCommandTests.swift */; };
+		2667BFE52530DCF4008099D4 /* RefundItemsValuesCalculationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFE42530DCF4008099D4 /* RefundItemsValuesCalculationUseCase.swift */; };
 		267CFE1C2443A54200AF3A13 /* ProductCategoryCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267CFE1A2443740900AF3A13 /* ProductCategoryCellViewModel.swift */; };
 		2687165524D21BC80042F6AE /* SurveySubmittedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2687165324D21BC80042F6AE /* SurveySubmittedViewController.swift */; };
 		2687165624D21BC80042F6AE /* SurveySubmittedViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2687165424D21BC80042F6AE /* SurveySubmittedViewController.xib */; };
@@ -1323,6 +1324,7 @@
 		2667BFDE252F762E008099D4 /* IssueRefundViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssueRefundViewModelTests.swift; sourceTree = "<group>"; };
 		2667BFE0252FA117008099D4 /* RefundItemQuantityListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundItemQuantityListSelectorCommand.swift; sourceTree = "<group>"; };
 		2667BFE2252FA695008099D4 /* RefundItemQuantityListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundItemQuantityListSelectorCommandTests.swift; sourceTree = "<group>"; };
+		2667BFE42530DCF4008099D4 /* RefundItemsValuesCalculationUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundItemsValuesCalculationUseCase.swift; sourceTree = "<group>"; };
 		267CFE1824435A5500AF3A13 /* ProductCategoryViewModelBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryViewModelBuilderTests.swift; sourceTree = "<group>"; };
 		267CFE1A2443740900AF3A13 /* ProductCategoryCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryCellViewModel.swift; sourceTree = "<group>"; };
 		2687165324D21BC80042F6AE /* SurveySubmittedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveySubmittedViewController.swift; sourceTree = "<group>"; };
@@ -2806,6 +2808,7 @@
 				260C315F2524ECA900157BC2 /* IssueRefundViewController.swift */,
 				2667BFE0252FA117008099D4 /* RefundItemQuantityListSelectorCommand.swift */,
 				260C31612524EEB200157BC2 /* IssueRefundViewController.xib */,
+				2667BFE42530DCF4008099D4 /* RefundItemsValuesCalculationUseCase.swift */,
 			);
 			path = "Issue Refunds";
 			sourceTree = "<group>";
@@ -5566,6 +5569,7 @@
 				020BE74D23B1F5EB007FE54C /* TitleAndTextFieldTableViewCell.swift in Sources */,
 				D81F2D37225F0D160084BF9C /* EmptyListMessageWithActionView.swift in Sources */,
 				575472812452185300A94C3C /* PushNotification.swift in Sources */,
+				2667BFE52530DCF4008099D4 /* RefundItemsValuesCalculationUseCase.swift in Sources */,
 				B55BC1F121A878A30011A0C0 /* String+HTML.swift in Sources */,
 				B56C721221B5B44000E5E85B /* PushNotificationsConfiguration.swift in Sources */,
 				26FE09DF24DB871100B9BDF5 /* SurveyViewControllersFactory.swift in Sources */,

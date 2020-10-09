@@ -12,9 +12,11 @@ final class RefundConfirmationViewModel {
     let sections: [Section]
 
     private let order: Order
+    private let currencyFormatter: CurrencyFormatter
 
-    init(order: Order) {
+    init(order: Order, currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.order = order
+        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
 
         sections = [
             Section(

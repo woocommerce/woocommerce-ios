@@ -169,11 +169,16 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     }
 
     @objc func publishProduct() {
-        // TODO-2766: M4 analytics
+        if viewModel.formType == .add {
+            ServiceLocator.analytics.track(.addProductPublishTapped, withProperties: ["product_type": product.productType.rawValue])
+        }
         saveProduct()
     }
 
     func saveProductAsDraft() {
+        if viewModel.formType == .add {
+            ServiceLocator.analytics.track(.addProductSaveAsDraftTapped, withProperties: ["product_type": product.productType.rawValue])
+        }
         saveProduct(status: .draft)
     }
 
@@ -197,7 +202,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
         if viewModel.canSaveAsDraft() {
             actionSheet.addDefaultActionWithTitle(ActionSheetStrings.saveProductAsDraft) { [weak self] _ in
-                // TODO-2766: M4 analytics
                 self?.saveProductAsDraft()
             }
         }

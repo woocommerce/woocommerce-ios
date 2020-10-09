@@ -99,7 +99,7 @@ public class CurrencySettings {
     /// Designated Initializer:
     /// Used primarily for testing and by the convenience initializers.
     ///
-    init(currencyCode: CurrencyCode, currencyPosition: CurrencyPosition, thousandSeparator: String, decimalSeparator: String, numberOfDecimals: Int) {
+    public init(currencyCode: CurrencyCode, currencyPosition: CurrencyPosition, thousandSeparator: String, decimalSeparator: String, numberOfDecimals: Int) {
         self.currencyCode = currencyCode
         self.currencyPosition = currencyPosition
         self.thousandSeparator = thousandSeparator
@@ -111,7 +111,7 @@ public class CurrencySettings {
     /// Convenience Initializer:
     /// Provides some defaults for when site settings aren't available
     ///
-    convenience init() {
+    public convenience init() {
         self.init(currencyCode: CurrencySettings.Default.code,
                   currencyPosition: CurrencySettings.Default.position,
                   thousandSeparator: CurrencySettings.Default.thousandSeparator,
@@ -128,7 +128,7 @@ public class CurrencySettings {
         siteSettings.forEach { updateCurrencyOptions(with: $0) }
     }
 
-    func updateCurrencyOptions(with siteSetting: SiteSetting) {
+    public func updateCurrencyOptions(with siteSetting: SiteSetting) {
         let value = siteSetting.value
 
         switch siteSetting.settingID {
@@ -152,7 +152,7 @@ public class CurrencySettings {
 
     /// Returns the currency symbol associated with the specified country code.
     ///
-    func symbol(from code: CurrencyCode) -> String {
+    public func symbol(from code: CurrencyCode) -> String {
         // Currency codes pulled from WC:
         // https://docs.woocommerce.com/wc-apidocs/source-function-get_woocommerce_currency.html#473
         switch code {

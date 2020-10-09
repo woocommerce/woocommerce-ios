@@ -2,6 +2,8 @@ import XCTest
 
 @testable import WooCommerce
 
+import Yosemite
+
 final class PriceInputFormatterTests: XCTestCase {
     private let formatter = PriceInputFormatter()
 

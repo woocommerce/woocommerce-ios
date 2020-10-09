@@ -2,7 +2,7 @@ import XCTest
 import Foundation
 @testable import WooCommerce
 @testable import Networking
-
+import Yosemite
 
 /// AggregateOrderItem Tests
 ///

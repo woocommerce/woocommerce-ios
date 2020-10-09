@@ -1,6 +1,7 @@
 import XCTest
 @testable import WooCommerce
 @testable import Networking
+import Yosemite
 
 final class OrderPaymentDetailsViewModelTests: XCTestCase {
     private var order: Order!

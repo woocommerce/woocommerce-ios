@@ -1,4 +1,5 @@
 import Foundation
+import Yosemite
 
 /// `UnitInputFormatter` implementation for decimal price input.
 ///

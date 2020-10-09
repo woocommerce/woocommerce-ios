@@ -33,12 +33,29 @@ final class IssueRefundViewController: UIViewController {
         super.viewDidLoad()
         configureNavigationBar()
         configureTableView()
+        observeViewModel()
+        updateWithViewModelContent()
     }
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         tableView.updateHeaderHeight()
         tableView.updateFooterHeight()
+    }
+}
+
+// MARK: ViewModel observation
+private extension IssueRefundViewController {
+    func observeViewModel() {
+        viewModel.onChange = { [weak self] in
+            self?.updateWithViewModelContent()
+        }
+    }
+
+    func updateWithViewModelContent() {
+        title = viewModel.title
+        itemsSelectedLabel.text = viewModel.selectedItemsTitle
+        tableView.reloadData()
     }
 }
 
@@ -51,13 +68,16 @@ private extension IssueRefundViewController {
     @IBAction func selectAllButtonWasPressed(_ sender: Any) {
         print("Select All button pressed")
     }
+
+    func shippingSwitchChanged() {
+        viewModel.toggleRefundShipping()
+    }
 }
 
 // MARK: View Configuration
 private extension IssueRefundViewController {
 
     func configureNavigationBar() {
-        title = viewModel.title
         addCloseNavigationBarButton(title: Localization.cancelTitle)
     }
 
@@ -85,7 +105,6 @@ private extension IssueRefundViewController {
         selectAllButton.setTitle(Localization.selectAllTitle, for: .normal)
 
         itemsSelectedLabel.applySecondaryBodyStyle()
-        itemsSelectedLabel.text = viewModel.selectedItemsTitle
     }
 
     func configureFooterView() {
@@ -127,6 +146,9 @@ extension IssueRefundViewController: UITableViewDelegate, UITableViewDataSource 
             let cell = tableView.dequeueReusableCell(SwitchTableViewCell.self, for: indexPath)
             cell.title = viewModel.title
             cell.isOn = viewModel.isOn
+            cell.onChange = { [weak self] _ in
+                self?.shippingSwitchChanged()
+            }
             return cell
         case let viewModel as RefundShippingDetailsViewModel:
             let cell = tableView.dequeueReusableCell(RefundShippingDetailsTableViewCell.self, for: indexPath)

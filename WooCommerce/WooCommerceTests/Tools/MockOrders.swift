@@ -4,7 +4,7 @@ final class MockOrders {
     let siteID: Int64 = 1234
     let orderID: Int64 = 5678
 
-    func makeOrder(status: OrderStatusEnum = .processing, items: [OrderItem] = []) -> Order {
+    func makeOrder(status: OrderStatusEnum = .processing, items: [OrderItem] = [], shippingLines: [ShippingLine] = sampleShippingLines()) -> Order {
         return Order(siteID: siteID,
                      orderID: orderID,
                      parentID: 0,
@@ -26,7 +26,7 @@ final class MockOrders {
                      items: items,
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),
-                     shippingLines: sampleShippingLines(),
+                     shippingLines: shippingLines,
                      coupons: [],
                      refunds: [])
     }
@@ -57,12 +57,12 @@ final class MockOrders {
                      items: [],
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),
-                     shippingLines: sampleShippingLines(),
+                     shippingLines: Self.sampleShippingLines(),
                      coupons: [],
                      refunds: [])
     }
 
-    func sampleShippingLines() -> [ShippingLine] {
+    static func sampleShippingLines() -> [ShippingLine] {
         return [ShippingLine(shippingID: 123,
         methodTitle: "International Priority Mail Express Flat Rate",
         methodID: "usps",

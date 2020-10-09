@@ -80,7 +80,7 @@ private extension IssueRefundViewController {
                 return
         }
 
-        let command = ItemListSelectorCommand(maxRefundQuantity: refundQuantity, currentQuantity: currentQuantity)
+        let command = RefundItemQuantityListSelectorCommand(maxRefundQuantity: refundQuantity, currentQuantity: currentQuantity)
         let selectorViewController = ListSelectorViewController(command: command, tableViewStyle: .plain) { [weak self] selectedQuantity in
             guard let selectedQuantity = selectedQuantity else {
                 return

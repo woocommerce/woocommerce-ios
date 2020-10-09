@@ -3,7 +3,7 @@ import UIKit
 
 /// Command to populate the IssueRefund item quantity list selector
 ///
-final class ItemListSelectorCommand: ListSelectorCommand {
+final class RefundItemQuantityListSelectorCommand: ListSelectorCommand {
     typealias Model = Int
     typealias Cell = BasicTableViewCell
 
@@ -38,7 +38,7 @@ final class ItemListSelectorCommand: ListSelectorCommand {
 }
 
 // MARK: Constants
-private extension ItemListSelectorCommand {
+private extension RefundItemQuantityListSelectorCommand {
     enum Localization {
         static let selectQuantityTitle = NSLocalizedString("Quantity to refund", comment: "Navigation title on the quantity item selector screen")
     }

@@ -7,7 +7,7 @@ import Yosemite
 ///
 final class IssueRefundViewModelTests: XCTestCase {
 
-    func test_viewModel_does_not_have_shippping_section_on_order_without_shipping() {
+    func test_viewModel_does_not_have_shipping_section_on_order_without_shipping() {
         // Given
         let currencySettings = CurrencySettings()
         let order = MockOrders().makeOrder(shippingLines: [])

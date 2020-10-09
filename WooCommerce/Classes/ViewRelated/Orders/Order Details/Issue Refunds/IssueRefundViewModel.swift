@@ -5,7 +5,7 @@ import Yosemite
 ///
 final class IssueRefundViewModel {
 
-    /// Struct to hold the necesary state to perform the refund and update the view model
+    /// Struct to hold the necessary state to perform the refund and update the view model
     ///
     private struct State {
         /// Order to be refunded

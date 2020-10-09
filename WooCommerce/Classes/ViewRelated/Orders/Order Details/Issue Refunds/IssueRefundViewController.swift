@@ -34,7 +34,7 @@ final class IssueRefundViewController: UIViewController {
         configureNavigationBar()
         configureTableView()
         observeViewModel()
-        updateVithViewModelContent()
+        updateWithViewModelContent()
     }
 
     override func viewWillLayoutSubviews() {
@@ -48,11 +48,11 @@ final class IssueRefundViewController: UIViewController {
 private extension IssueRefundViewController {
     func observeViewModel() {
         viewModel.onChange = { [weak self] in
-            self?.updateVithViewModelContent()
+            self?.updateWithViewModelContent()
         }
     }
 
-    func updateVithViewModelContent() {
+    func updateWithViewModelContent() {
         title = viewModel.title
         itemsSelectedLabel.text = viewModel.selectedItemsTitle
         tableView.reloadData()

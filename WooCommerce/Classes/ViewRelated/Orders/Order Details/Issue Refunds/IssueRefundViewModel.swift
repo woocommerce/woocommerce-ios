@@ -91,7 +91,7 @@ extension IssueRefundViewModel {
         guard let item = state.order.items[safe: itemIndex] else {
             return nil
         }
-        return state.refundQuantityStore.refundQuantity(for: item.itemID)
+        return state.refundQuantityStore.refundQuantity(for: item)
     }
 
     /// Updates the quantity to be refunded for an item on the provided index.
@@ -100,7 +100,7 @@ extension IssueRefundViewModel {
         guard let item = state.order.items[safe: itemIndex] else {
             return
         }
-        state.refundQuantityStore.updateQuantity(quantity: quantity, forItemID: item.itemID)
+        state.refundQuantityStore.update(quantity: quantity, for: item)
     }
 }
 
@@ -157,13 +157,13 @@ extension IssueRefundViewModel {
             let product = products.filter { $0.productID == item.productID }.first
             return RefundItemViewModel(item: item,
                                        product: product,
-                                       refundQuantity: state.refundQuantityStore.refundQuantity(for: item.itemID),
+                                       refundQuantity: state.refundQuantityStore.refundQuantity(for: item),
                                        currency: state.order.currency,
                                        currencySettings: state.currencySettings)
         }
 
-        // This is temporary data, will be removed after implementing https://github.com/woocommerce/woocommerce-ios/issues/2842
-        let summaryRow = RefundProductsTotalViewModel(productsTax: "$0.00", productsSubtotal: "$0.00", productsTotal: "$0.00")
+        let refundItems = state.refundQuantityStore.map { RefundProductsTotalViewModel.RefundItem(item: $0, quantity: $1) }
+        let summaryRow = RefundProductsTotalViewModel(refundItems: refundItems, currency: state.order.currency, currencySettings: state.currencySettings)
 
         return Section(rows: itemsRows + [summaryRow])
     }
@@ -198,23 +198,29 @@ private extension IssueRefundViewModel {
     /// Structure that holds and provides the quantity of items to refund
     ///
     struct RefundQuantityStore {
-        typealias ItemID = Int64
+        typealias Quantity = Int
 
-        /// Key: item ID
+        /// Key: order item
         /// Value: quantity to refund
         ///
-        private var store: [ItemID: Int] = [:]
+        private var store: [OrderItem: Quantity] = [:]
 
         /// Returns the quantity set to be refunded for an itemID
         ///
-        func refundQuantity(for itemID: ItemID) -> Int {
-            store[itemID] ?? 0
+        func refundQuantity(for item: OrderItem) -> Quantity {
+            store[item] ?? 0
         }
 
         /// Updates the quantity to be refunded for an itemID
         ///
-        mutating func updateQuantity(quantity: Int, forItemID itemID: ItemID) {
-            store[itemID] = quantity
+        mutating func update(quantity: Quantity, for item: OrderItem) {
+            store[item] = quantity
+        }
+
+        /// Returns an array containing the results of mapping the given closure over the sequence's elements.
+        ///
+        func map<T>(transform: (_ item: OrderItem, _ quantity: Quantity) -> (T)) -> [T] {
+            store.map(transform)
         }
     }
 }

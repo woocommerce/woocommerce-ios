@@ -29,11 +29,11 @@ extension RefundShippingDetailsViewModel {
 
     /// Calculates the shipping total by adding the shipping cost + the shipping tax
     ///
-    private static func calculateShippingTotal(of shippingLine: ShippingLine, using currencyFormatter: CurrencyFormatter) -> String {
+    private static func calculateShippingTotal(of shippingLine: ShippingLine, using currencyFormatter: CurrencyFormatter) -> NSDecimalNumber {
         guard let cost = currencyFormatter.convertToDecimal(from: shippingLine.total),
             let tax = currencyFormatter.convertToDecimal(from: shippingLine.totalTax) else {
-                return ""
+                return .zero
         }
-        return cost.adding(tax).stringValue
+        return cost.adding(tax)
     }
 }

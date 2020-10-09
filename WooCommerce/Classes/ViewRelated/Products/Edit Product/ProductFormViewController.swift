@@ -523,9 +523,19 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func saveProduct(status: ProductStatus? = nil) {
-        let title = NSLocalizedString("Publishing your product...", comment: "Title of the in-progress UI while updating the Product remotely")
-        let message = NSLocalizedString("Please wait while we publish this product to your store",
+        let productStatus = status ?? product.status
+        let title: String
+        let message: String
+        switch productStatus {
+        case .draft:
+            title = NSLocalizedString("Saving your product...", comment: "Title of the in-progress UI while saving a Product as draft remotely")
+            message = NSLocalizedString("Please wait while we save this product to your store",
+                                        comment: "Message of the in-progress UI while saving a Product as draft remotely")
+        default:
+            title = NSLocalizedString("Publishing your product...", comment: "Title of the in-progress UI while updating the Product remotely")
+            message = NSLocalizedString("Please wait while we publish this product to your store",
                                         comment: "Message of the in-progress UI while updating the Product remotely")
+        }
         displayInProgressView(title: title, message: message)
 
         saveImagesAndProductRemotely(status: status)

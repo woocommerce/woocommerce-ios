@@ -115,6 +115,7 @@
 		578CE7922475EC9200492EBF /* MockProductsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578CE7912475EC9200492EBF /* MockProductsRemote.swift */; };
 		578CE7942475F52F00492EBF /* MockNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578CE7932475F52F00492EBF /* MockNote.swift */; };
 		578CE7972475FD8200492EBF /* MockProductReview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578CE7962475FD8200492EBF /* MockProductReview.swift */; };
+		578D423F252FDDF900FF8B10 /* Order+Refunds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578D423E252FDDF900FF8B10 /* Order+Refunds.swift */; };
 		57DFCC7925003C4000251E0C /* FetchResultSnapshotsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DFCC7825003C4000251E0C /* FetchResultSnapshotsProvider.swift */; };
 		741F34802195EA62005F5BD9 /* CommentAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741F347F2195EA62005F5BD9 /* CommentAction.swift */; };
 		741F34822195EA71005F5BD9 /* CommentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741F34812195EA71005F5BD9 /* CommentStore.swift */; };
@@ -355,6 +356,7 @@
 		578CE7912475EC9200492EBF /* MockProductsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductsRemote.swift; sourceTree = "<group>"; };
 		578CE7932475F52F00492EBF /* MockNote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNote.swift; sourceTree = "<group>"; };
 		578CE7962475FD8200492EBF /* MockProductReview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductReview.swift; sourceTree = "<group>"; };
+		578D423E252FDDF900FF8B10 /* Order+Refunds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+Refunds.swift"; sourceTree = "<group>"; };
 		57DFCC7825003C4000251E0C /* FetchResultSnapshotsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchResultSnapshotsProvider.swift; sourceTree = "<group>"; };
 		585B973F61632665297738A3 /* Pods-Yosemite.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yosemite.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-Yosemite/Pods-Yosemite.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		741F347F2195EA62005F5BD9 /* CommentAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentAction.swift; sourceTree = "<group>"; };
@@ -555,12 +557,12 @@
 			path = Updaters;
 			sourceTree = "<group>";
 		};
-		0225511F22FC2ED000D98613 /* Extensions */ = {
+		0225511F22FC2ED000D98613 /* Stats */ = {
 			isa = PBXGroup;
 			children = (
 				0225512022FC2F3000D98613 /* OrderStatsV4Interval+Date.swift */,
 			);
-			path = Extensions;
+			path = Stats;
 			sourceTree = "<group>";
 		};
 		0225512222FC310200D98613 /* Model */ = {
@@ -773,6 +775,14 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		578D423B252FDDC000FF8B10 /* Orders */ = {
+			isa = PBXGroup;
+			children = (
+				578D423E252FDDF900FF8B10 /* Order+Refunds.swift */,
+			);
+			path = Orders;
+			sourceTree = "<group>";
+		};
 		57DFCC7725003B3300251E0C /* SnapshotsProvider */ = {
 			isa = PBXGroup;
 			children = (
@@ -862,9 +872,10 @@
 		B53D89E720E6C7DC00F90866 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				578D423B252FDDC000FF8B10 /* Orders */,
 				45739F35243767FE00480C95 /* Products */,
 				021C7BF0238632F900A3BCBD /* Updaters */,
-				0225511F22FC2ED000D98613 /* Extensions */,
+				0225511F22FC2ED000D98613 /* Stats */,
 				0232372722F7DA5500715FAB /* Enums */,
 				B52E0036211A44FE00700FDE /* ReadOnly */,
 				B52E0035211A44F800700FDE /* Storage */,
@@ -1387,6 +1398,7 @@
 				741F34822195EA71005F5BD9 /* CommentStore.swift in Sources */,
 				74B260212188B5F30041793A /* Note+ReadOnlyType.swift in Sources */,
 				B505254C20EE6491008090F5 /* Site+ReadOnlyConvertible.swift in Sources */,
+				578D423F252FDDF900FF8B10 /* Order+Refunds.swift in Sources */,
 				B52E002B2119E64800700FDE /* ManagedObjectsDidChangeNotification.swift in Sources */,
 				93E7507A226E2D6C00BAF88A /* AccountSettings+ReadOnlyConvertible.swift in Sources */,
 				749374FE2249601F007D85D1 /* ProductStore.swift in Sources */,

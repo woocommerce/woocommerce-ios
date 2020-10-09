@@ -175,17 +175,7 @@ final class OrderPaymentDetailsViewModel {
             return .zero
         }
 
-        let refunds = order.refunds.map {
-            currencyFormatter.convertToDecimal(from: $0.total)
-        }
-
-        // Can't use .reduce(0,+) here because we're working with NSDecimalNumber.
-        var refundTotal: NSDecimalNumber = .zero
-        for r in refunds {
-            if let refund = r {
-                refundTotal = refundTotal.adding(refund)
-            }
-        }
+        let refundTotal = order.totalRefunded(using: currencyFormatter)
 
         return orderTotal.adding(refundTotal)
     }

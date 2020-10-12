@@ -5,11 +5,11 @@
 - [Architecture](#architecture)
 - [Coding Guidelines](#coding-guidelines)
     - [Coding Style](#coding-style)
-    - [Naming Conventions](#naming-conventions)
-        - [Protocols](#protocols)
-        - [String Constants in Nested Enums](#string-constants-in-nested-enums)
-        - [Test Methods](#test-methods)
-    - [Choosing Between Structures and Classes](#choosing-between-structures-and-classes)
+    - [Naming Conventions](naming-convetions.md)
+        - [Protocols](naming-conventions.md#protocols)
+        - [String Constants in Nested Enums](naming-conventions.md#string-constants-in-nested-enums)
+        - [Test Methods](naming-conventions.md#test-methods)
+    - [Choosing Between Structures and Classes](choosing-between-structs-and-classes.md)
     - [Creating Core Data Model Versions](creating-core-data-model-versions.md)
 - [Design Patterns](#design-patterns)
     - [Copiable](#copiable)
@@ -34,18 +34,6 @@
 ## Coding Guidelines
 
 
-
-### Choosing Between Structures and Classes
-
-In addition to the [Apple guidelines](https://developer.apple.com/documentation/swift/choosing_between_structures_and_classes), we generally prefer to use `struct` for:
-
-- Value types like the [Networking Models](../Networking/Networking/Model)
-- Stateless helpers
-
-But consider using `class` instead if:
-
-- You need to manage mutable states. Especially if there are more than a few `mutating` functions, the `struct` becomes harder to reason about.
-- You have to set a `struct` property declaration as `var` because it has a `mutating` function. In this case, a constant (`let`) `class` property may be easier to reason about.
 
 
 

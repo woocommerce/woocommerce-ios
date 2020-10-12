@@ -58,11 +58,13 @@ In order to login to WordPress.com using the app:
 
 Please, remember to not add this information on your commits and PRs.
 
-## Peril
+## Automation
+
+### Peril
 
 The woocommerce-ios project uses [Peril](https://danger.systems/js/guides/peril.html) to enforce Pull Request guidelines.
 
-## Circle CI
+### Circle CI
 
 The woocommerce-ios project uses [Circle CI](https://circleci.com/gh/woocommerce/woocommerce-ios) for continuous integration.
 

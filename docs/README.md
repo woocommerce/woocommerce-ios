@@ -3,7 +3,7 @@
 **Table of Contents**
 
 - Architecture
-    - [Overview](ARCHITECTURE.md)
+    - [Overview](architecture-overview.md)
     - [Networking](NETWORKING.md)
     - [Storage](STORAGE.md)
     - [Yosemite](YOSEMITE.md)

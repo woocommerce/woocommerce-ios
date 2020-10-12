@@ -259,6 +259,15 @@ public enum WooAnalyticsStat: String {
     case productListPulledToRefresh             = "product_list_pulled_to_refresh"
     case productListSearched                    = "product_list_searched"
     case productListMenuSearchTapped            = "product_list_menu_search_tapped"
+    case productListAddProductTapped            = "product_list_add_product_button_tapped"
+
+    // MARK: Add Product Events
+    //
+    case addProductTypeSelected                 = "add_product_product_type_selected"
+    case addProductPublishTapped                = "add_product_publish_tapped"
+    case addProductSaveAsDraftTapped            = "add_product_save_as_draft_tapped"
+    case addProductSuccess                      = "add_product_success"
+    case addProductFailed                       = "add_product_failed"
 
     // MARK: Edit Product Events
     //

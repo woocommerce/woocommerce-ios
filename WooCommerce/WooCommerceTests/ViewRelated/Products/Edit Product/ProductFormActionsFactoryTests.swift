@@ -271,7 +271,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
     }
 }
 
-private extension ProductFormActionsFactory_EditProductsM3Tests {
+private extension ProductFormActionsFactoryTests {
     enum Fixtures {
         static let category = ProductCategory(categoryID: 1, siteID: 2, parentID: 6, name: "", slug: "")
         static let image = ProductImage(imageID: 19,

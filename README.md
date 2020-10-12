@@ -1,10 +1,17 @@
 
-[![CircleCI](https://circleci.com/gh/woocommerce/woocommerce-ios.svg?style=svg)](https://circleci.com/gh/woocommerce/woocommerce-ios)
-[![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com)
 
 <h1 align="center"><img src="https://woocommerce.com/wp-content/themes/woo/images/logo-woocommerce.svg" width="300"><br>for iOS</h1>
 
-A Jetpack-powered companion app for WooCommerce.
+<p align="center">A Jetpack-powered companion app for WooCommerce.</p>
+
+<p align="center">
+    <a href="https://circleci.com/gh/woocommerce/woocommerce-ios">
+        <img src="https://circleci.com/gh/woocommerce/woocommerce-ios.svg?style=svg" alt="CircleCI">
+    </a>
+    <a href="https://houndci.com">
+        <img src="https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg" alt="Reviewed by Hound">
+    </a>
+</p>
 
 ## Build Instructions
 

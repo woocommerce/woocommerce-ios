@@ -1,4 +1,4 @@
-### Copiable
+# Copiable
 
 In the WooCommerce module, we generally work with [immutable objects](../Yosemite/Yosemite/Model/Model.swift). Mutation only happens within Yosemite and Storage. This is an intentional design and promotes clarity of [where and when those objects will be updated](https://git.io/JvALp).
 
@@ -107,7 +107,7 @@ let lukeWithNoAddress = luke.copy(address: .some(nil))
 
 
 
-### Generating Copiable Methods
+## Generating Copiable Methods
 
 The `copy()` methods are generated using [Sourcery](https://github.com/krzysztofzablocki/Sourcery). For now, only the classes or structs in the WooCommerce, Yosemite, and Networking modules are supported.
 
@@ -142,7 +142,7 @@ To generate a `copy()` method for a `class` or `struct`:
 
 PS: If you get any error while running `rake generate` it is likely due to a conflict with `SPM` and how it modifies the Xcode project. You can find a [temporary fix here](https://github.com/woocommerce/woocommerce-ios/issues/2864).
 
-### Modifying The Copiable Code Generation
+## Modifying The Copiable Code Generation
 
 The [`rake generate`](../Rakefile) command executes the Sourcery configuration files located in the [`CodeGeneration` folder](../CodeGeneration). There are different configuration files for every module:
 

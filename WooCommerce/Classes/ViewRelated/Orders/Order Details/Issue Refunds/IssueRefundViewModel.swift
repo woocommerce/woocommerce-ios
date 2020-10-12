@@ -64,6 +64,12 @@ final class IssueRefundViewModel {
         state = State(order: order, currencySettings: currencySettings)
         sections = createSections()
     }
+
+    /// Creates the `ViewModel` to be used when navigating to the page where the user can
+    /// confirm and submit the refund.
+    func createRefundConfirmationViewModel() -> RefundConfirmationViewModel {
+        RefundConfirmationViewModel(order: state.order, currencySettings: state.currencySettings)
+    }
 }
 
 // MARK: User Actions

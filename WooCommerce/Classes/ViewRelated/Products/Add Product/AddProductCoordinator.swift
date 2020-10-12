@@ -35,6 +35,7 @@ private extension AddProductCoordinator {
                                       comment: "Message title of bottom sheet for selecting a product type to create a product")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
         let command = ProductTypeBottomSheetListSelectorCommand(selected: nil) { selectedProductType in
+            ServiceLocator.analytics.track(.addProductTypeSelected, withProperties: ["product_type": selectedProductType.rawValue])
             self.navigationController.dismiss(animated: true)
             self.presentProductForm(productType: selectedProductType)
         }

@@ -242,6 +242,9 @@ private extension ProductsViewController {
         guard let navigationController = navigationController else {
             return
         }
+
+        ServiceLocator.analytics.track(.productListAddProductTapped)
+
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             assertionFailure("No site ID for creating a product")
             return

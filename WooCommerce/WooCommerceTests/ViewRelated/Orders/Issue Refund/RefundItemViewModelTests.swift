@@ -13,12 +13,12 @@ final class RefundItemViewModelTests: XCTestCase {
         let currencySettings = CurrencySettings()
 
         // When
-        let viewModel = RefundItemViewModel(item: item, product: product, currency: "usd", currencySettings: currencySettings)
+        let viewModel = RefundItemViewModel(item: item, product: product, refundQuantity: 3, currency: "usd", currencySettings: currencySettings)
 
         // Then
         XCTAssertEqual(viewModel.productImage, product.images.first?.src)
         XCTAssertEqual(viewModel.productTitle, item.name)
-        XCTAssertEqual(viewModel.quantityToRefund, "0")
+        XCTAssertEqual(viewModel.quantityToRefund, "3")
 
         let localizedFormat = NSLocalizedString("%@ x %@ each", comment: "")
         XCTAssertEqual(viewModel.productQuantityAndPrice, String(format: localizedFormat, "\(item.quantity)", "$\(item.price)"))

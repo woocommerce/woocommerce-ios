@@ -65,14 +65,17 @@ final class OrdersViewModel {
         resultsController.isEmpty
     }
 
+    private let siteID: Int64
     private let stores: StoresManager
 
-    init(storageManager: StorageManagerType = ServiceLocator.storageManager,
+    init(siteID: Int64,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          notificationCenter: NotificationCenter = .default,
          statusFilter: OrderStatus?,
          includesFutureOrders: Bool = true,
          stores: StoresManager = ServiceLocator.stores) {
+        self.siteID = siteID
         self.storageManager = storageManager
         self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
@@ -127,11 +130,6 @@ final class OrdersViewModel {
 
             return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         }()
-
-        guard let siteID = stores.sessionManager.defaultStoreID else {
-            assertionFailure("Trying to create results controller without a site ID")
-            return predicate
-        }
 
         let siteIDPredicate = NSPredicate(format: "siteID = %lld", siteID)
         return NSCompoundPredicate(andPredicateWithSubpredicates: [siteIDPredicate, predicate])

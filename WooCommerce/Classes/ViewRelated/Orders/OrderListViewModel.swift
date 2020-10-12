@@ -46,6 +46,8 @@ final class OrderListViewModel {
     ///
     private let includesFutureOrders: Bool
 
+    private let siteID: Int64
+
     /// Used for tracking whether the app was _previously_ in the background.
     ///
     private var isAppActive: Bool = true
@@ -57,11 +59,13 @@ final class OrderListViewModel {
         snapshotsProvider.snapshot
     }
 
-    init(storageManager: StorageManagerType = ServiceLocator.storageManager,
+    init(siteID: Int64,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          notificationCenter: NotificationCenter = .default,
          statusFilter: OrderStatus?,
          includesFutureOrders: Bool = true) {
+        self.siteID = siteID
         self.storageManager = storageManager
         self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
@@ -142,15 +146,6 @@ final class OrderListViewModel {
 
             return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         }()
-
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            assertionFailure("Trying to create a query for Order list without a site ID")
-            return FetchResultSnapshotsProvider<StorageOrder>.Query(
-                sortDescriptor: NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false),
-                predicate: predicate,
-                sectionNameKeyPath: "\(#selector(StorageOrder.normalizedAgeAsString))"
-            )
-        }
 
         let siteIDPredicate = NSPredicate(format: "siteID = %lld", siteID)
         let queryPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [siteIDPredicate, predicate])

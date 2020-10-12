@@ -28,17 +28,17 @@ final class ProductFormRemoteActionUseCase {
         addProductRemotely(product: product) { productResult in
             switch productResult {
             case .failure(let error):
-                // TODO-2766: M4 analytics
+                ServiceLocator.analytics.track(.addProductFailed, withError: error)
                 onCompletion(.failure(error))
             case .success(let product):
                 // `self` is retained because the use case is not usually strongly held.
                 self.updatePasswordRemotely(product: product, password: password) { passwordResult in
                     switch passwordResult {
-                    case .failure:
-                        // TODO-2766: M4 analytics
+                    case .failure(let error):
+                        ServiceLocator.analytics.track(.addProductFailed, withError: error)
                         onCompletion(.failure(.passwordCannotBeUpdated))
                     case .success(let password):
-                        // TODO-2766: M4 analytics
+                        ServiceLocator.analytics.track(.addProductSuccess)
                         onCompletion(.success(ResultData(product: product, password: password)))
                     }
                 }

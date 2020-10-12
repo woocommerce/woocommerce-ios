@@ -9,7 +9,7 @@
     - [Yosemite](YOSEMITE.md)
 - Coding Guidelines
     - [Coding Style](#coding-style)
-    - [Naming Conventions](naming-convetions.md)
+    - [Naming Conventions](naming-conventions.md)
         - [Protocols](naming-conventions.md#protocols)
         - [String Constants in Nested Enums](naming-conventions.md#string-constants-in-nested-enums)
         - [Test Methods](naming-conventions.md#test-methods)

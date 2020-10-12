@@ -35,15 +35,6 @@
 
 
 
-### Coding Style
-
-The guidelines for how Swift should be written and formatted can be found in the [Coding Style Guide](coding-style-guide.md).
-
-
-
-
-
-
 ### Choosing Between Structures and Classes
 
 In addition to the [Apple guidelines](https://developer.apple.com/documentation/swift/choosing_between_structures_and_classes), we generally prefer to use `struct` for:

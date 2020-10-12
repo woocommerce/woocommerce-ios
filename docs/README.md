@@ -6,7 +6,7 @@
     - [Storage](STORAGE.md)
     - [Yosemite](YOSEMITE.md)
 - Coding Guidelines
-    - [Coding Style](#coding-style)
+    - [Coding Style](coding-style-guide.md)
     - [Naming Conventions](naming-conventions.md)
         - [Protocols](naming-conventions.md#protocols)
         - [String Constants in Nested Enums](naming-conventions.md#string-constants-in-nested-enums)

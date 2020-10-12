@@ -1,7 +1,5 @@
 # WooCommerce for iOS
 
-**Table of Contents**
-
 - Architecture
     - [Overview](architecture-overview.md)
     - [Networking](NETWORKING.md)

@@ -23,7 +23,6 @@ private extension ProductFormSection.SettingsRow.WarningViewModel {
 ///
 final class ProductFormTableViewDataSource: NSObject {
     private let viewModel: ProductFormTableViewModel
-    private let canEditImages: Bool
     private var onNameChange: ((_ name: String?) -> Void)?
     private var onStatusChange: ((_ isEnabled: Bool) -> Void)?
     private var onAddImage: (() -> Void)?
@@ -33,10 +32,8 @@ final class ProductFormTableViewDataSource: NSObject {
 
     init(viewModel: ProductFormTableViewModel,
          productImageStatuses: [ProductImageStatus],
-         productUIImageLoader: ProductUIImageLoader,
-         canEditImages: Bool) {
+         productUIImageLoader: ProductUIImageLoader) {
         self.viewModel = viewModel
-        self.canEditImages = canEditImages
         self.productImageStatuses = productImageStatuses
         self.productUIImageLoader = productUIImageLoader
         super.init()
@@ -89,23 +86,30 @@ private extension ProductFormTableViewDataSource {
 private extension ProductFormTableViewDataSource {
     func configureCellInPrimaryFieldsSection(_ cell: UITableViewCell, row: ProductFormSection.PrimaryFieldRow) {
         switch row {
-        case .images:
-            configureImages(cell: cell)
-        case .name(let name):
-            configureName(cell: cell, name: name)
+        case .images(let editable):
+            configureImages(cell: cell, isEditable: editable)
+        case .name(let name, let editable):
+            configureName(cell: cell, name: name, isEditable: editable)
         case .variationName(let name):
-            configureVariationName(cell: cell, name: name)
-        case .description(let description):
-            configureDescription(cell: cell, description: description)
+            configureReadonlyName(cell: cell, name: name)
+        case .description(let description, let editable):
+            configureDescription(cell: cell, description: description, isEditable: editable)
         }
     }
 
-    func configureImages(cell: UITableViewCell) {
+    func configureImages(cell: UITableViewCell, isEditable: Bool) {
         guard let cell = cell as? ProductImagesHeaderTableViewCell else {
             fatalError()
         }
 
-        guard canEditImages else {
+        defer {
+            cell.accessibilityLabel = NSLocalizedString(
+                "List of images of the product",
+                comment: "VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen."
+            )
+        }
+
+        guard isEditable else {
             cell.configure(with: productImageStatuses,
                            config: .images,
                            productUIImageLoader: productUIImageLoader)
@@ -125,13 +129,17 @@ private extension ProductFormTableViewDataSource {
         cell.onAddImage = { [weak self] in
             self?.onAddImage?()
         }
-        cell.accessibilityLabel = NSLocalizedString(
-            "List of images of the product",
-            comment: "VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen."
-        )
     }
 
-    func configureName(cell: UITableViewCell, name: String?) {
+    func configureName(cell: UITableViewCell, name: String?, isEditable: Bool) {
+        if isEditable {
+            configureEditableName(cell: cell, name: name)
+        } else {
+            configureReadonlyName(cell: cell, name: name ?? "")
+        }
+    }
+
+    func configureEditableName(cell: UITableViewCell, name: String?) {
         guard let cell = cell as? TextViewTableViewCell else {
             fatalError()
         }
@@ -157,7 +165,7 @@ private extension ProductFormTableViewDataSource {
         )
     }
 
-    func configureVariationName(cell: UITableViewCell, name: String) {
+    func configureReadonlyName(cell: UITableViewCell, name: String) {
         guard let cell = cell as? BasicTableViewCell else {
             fatalError()
         }
@@ -169,14 +177,14 @@ private extension ProductFormTableViewDataSource {
         cell.textLabel?.numberOfLines = 0
     }
 
-    func configureDescription(cell: UITableViewCell, description: String?) {
+    func configureDescription(cell: UITableViewCell, description: String?, isEditable: Bool) {
         if let description = description, description.isEmpty == false {
             guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {
                 fatalError()
             }
             let title = NSLocalizedString("Description",
                                           comment: "Title in the Product description row on Product form screen when the description is non-empty.")
-            let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: title, text: description)
+            let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: title, text: description, isActionable: isEditable)
             cell.updateUI(viewModel: viewModel)
         } else {
             guard let cell = cell as? BasicTableViewCell else {
@@ -187,7 +195,9 @@ private extension ProductFormTableViewDataSource {
             cell.textLabel?.applyBodyStyle()
             cell.textLabel?.textColor = .textSubtle
         }
-        cell.accessoryType = .disclosureIndicator
+        if isEditable {
+            cell.accessoryType = .disclosureIndicator
+        }
     }
 }
 

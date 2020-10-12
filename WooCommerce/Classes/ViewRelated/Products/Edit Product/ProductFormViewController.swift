@@ -74,8 +74,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                                                                currency: currency)
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
-                                                                  productUIImageLoader: productUIImageLoader,
-                                                                  canEditImages: true)
+                                                                  productUIImageLoader: productUIImageLoader)
         super.init(nibName: "ProductFormViewController", bundle: nil)
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
             self?.onEditProductNameCompletion(newName: name ?? "")
@@ -451,8 +450,7 @@ private extension ProductFormViewController {
                                                           currency: currency)
         tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                              productImageStatuses: productImageActionHandler.productImageStatuses,
-                                                             productUIImageLoader: productUIImageLoader,
-                                                             canEditImages: true)
+                                                             productUIImageLoader: productUIImageLoader)
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
             self?.onEditProductNameCompletion(newName: name ?? "")
         }, onStatusChange: { [weak self] isEnabled in
@@ -468,8 +466,7 @@ private extension ProductFormViewController {
     func onImageStatusesUpdated(statuses: [ProductImageStatus]) {
         tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                              productImageStatuses: statuses,
-                                                             productUIImageLoader: productUIImageLoader,
-                                                             canEditImages: true)
+                                                             productUIImageLoader: productUIImageLoader)
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
             self?.onEditProductNameCompletion(newName: name ?? "")
         }, onStatusChange: { [weak self] isEnabled in

@@ -32,14 +32,14 @@ private extension DefaultProductFormTableViewModel {
     func primaryFieldRows(product: ProductFormDataModel, actions: [ProductFormEditAction]) -> [ProductFormSection.PrimaryFieldRow] {
         return actions.map { action in
             switch action {
-            case .images:
-                return .images
-            case .name:
-                return .name(name: product.name)
+            case .images(let editable):
+                return .images(isEditable: editable)
+            case .name(let editable):
+                return .name(name: product.name, isEditable: editable)
             case .variationName:
                 return .variationName(name: product.name)
-            case .description:
-                return .description(description: product.trimmedFullDescription)
+            case .description(let editable):
+                return .description(description: product.trimmedFullDescription, isEditable: editable)
             default:
                 fatalError("Unexpected action in the primary section: \(action)")
             }

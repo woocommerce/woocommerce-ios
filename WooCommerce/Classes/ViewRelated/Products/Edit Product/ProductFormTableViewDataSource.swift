@@ -199,18 +199,18 @@ private extension ProductFormTableViewDataSource {
         case .price(let viewModel, _),
              .inventory(let viewModel, _),
              .productType(let viewModel, _),
-             .shipping(let viewModel),
-             .categories(let viewModel),
-             .tags(let viewModel),
-             .briefDescription(let viewModel),
-             .externalURL(let viewModel),
-             .sku(let viewModel),
-             .groupedProducts(let viewModel),
+             .shipping(let viewModel, _),
+             .categories(let viewModel, _),
+             .tags(let viewModel, _),
+             .briefDescription(let viewModel, _),
+             .externalURL(let viewModel, _),
+             .sku(let viewModel, _),
+             .groupedProducts(let viewModel, _),
              .variations(let viewModel):
             configureSettings(cell: cell, viewModel: viewModel)
         case .reviews(let viewModel, let ratingCount, let averageRating):
             configureReviews(cell: cell, viewModel: viewModel, ratingCount: ratingCount, averageRating: averageRating)
-        case .status(let viewModel):
+        case .status(let viewModel, _):
             configureSettingsRowWithASwitch(cell: cell, viewModel: viewModel)
         case .noPriceWarning(let viewModel):
             configureWarningRow(cell: cell, viewModel: viewModel)

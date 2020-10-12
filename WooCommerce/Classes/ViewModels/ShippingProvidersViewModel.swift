@@ -8,6 +8,7 @@ import Yosemite
 /// - The providers corresponding to the store country should be shown first
 final class ShippingProvidersViewModel {
     let order: Order
+    private let predicateForAllProviders: NSPredicate
 
     /// Title of view displaying all available Shipment Tracking Providers
     let title = NSLocalizedString("Shipping Carriers",
@@ -61,7 +62,7 @@ final class ShippingProvidersViewModel {
         let storageManager = ServiceLocator.storageManager
         let groupNameKeyPath = ResultsControllerConstants.groupNameKeyPath
         let providerNameKeyPath = ResultsControllerConstants.providerNameKeyPath
-        let excludingStoreCountry = predicateExcludingStoreCountry(predicate: ResultsControllerConstants.predicateForAllProviders)
+        let excludingStoreCountry = predicateExcludingStoreCountry(predicate: predicateForAllProviders)
 
         let providerGroupDescriptor = NSSortDescriptor(key: groupNameKeyPath,
                                                       ascending: true)
@@ -81,7 +82,7 @@ final class ShippingProvidersViewModel {
         let groupNameKeyPath = ResultsControllerConstants.groupNameKeyPath
         let providerNameKeyPath = ResultsControllerConstants.providerNameKeyPath
 
-        let matchingStoreCountry = predicateMatchingStoreCountry(predicate: ResultsControllerConstants.predicateForAllProviders)
+        let matchingStoreCountry = predicateMatchingStoreCountry(predicate: predicateForAllProviders)
 
         let providerGroupDescriptor = NSSortDescriptor(key: groupNameKeyPath,
                                                        ascending: true)
@@ -112,6 +113,7 @@ final class ShippingProvidersViewModel {
     ///
     init(order: Order, selectedProvider: ShipmentTrackingProvider?, selectedProviderGroupName: String?) {
         self.order = order
+        self.predicateForAllProviders = NSPredicate(format: "siteID == %lld", order.siteID)
         self.selectedProvider = selectedProvider
         self.selectedProviderGroupName = selectedProviderGroupName
     }
@@ -152,9 +154,9 @@ final class ShippingProvidersViewModel {
     ///
     func clearFilters() {
         providersExcludingStoreCountry.predicate =
-            predicateExcludingStoreCountry(predicate: ResultsControllerConstants.predicateForAllProviders)
+            predicateExcludingStoreCountry(predicate: predicateForAllProviders)
         providersForStoreCountry.predicate =
-            predicateMatchingStoreCountry(predicate: ResultsControllerConstants.predicateForAllProviders)
+            predicateMatchingStoreCountry(predicate: predicateForAllProviders)
     }
 
     private func dataWasUpdated() {
@@ -330,9 +332,6 @@ extension ShippingProvidersViewModel {
 // MARK: - Constants
 //
 private enum ResultsControllerConstants {
-    static let predicateForAllProviders =
-        NSPredicate(format: "siteID == %lld",
-                    ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
     static let groupNameKeyPath =
         #keyPath(StorageShipmentTrackingProvider.group.name)
     static let providerNameKeyPath = #keyPath(StorageShipmentTrackingProvider.name)

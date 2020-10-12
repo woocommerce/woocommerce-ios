@@ -12,7 +12,7 @@ final class OrderSearchStarterViewController: UIViewController, KeyboardFrameAdj
 
     @IBOutlet private var tableView: UITableView!
 
-    private lazy var viewModel = OrderSearchStarterViewModel()
+    private lazy var viewModel = OrderSearchStarterViewModel(siteID: siteID)
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
         KeyboardFrameObserver { [weak self] keyboardFrame in
@@ -23,7 +23,10 @@ final class OrderSearchStarterViewController: UIViewController, KeyboardFrameAdj
     /// Required implementation for `KeyboardFrameAdjustmentProvider`.
     var additionalKeyboardFrameHeight: CGFloat = 0
 
-    init() {
+    private let siteID: Int64
+
+    init(siteID: Int64) {
+        self.siteID = siteID
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -129,14 +132,16 @@ private extension OrderSearchStarterViewController {
 
         if #available(iOS 13, *) {
             return OrderListViewController(
+                siteID: siteID,
                 title: title,
-                viewModel: .init(statusFilter: cellViewModel.orderStatus),
+                viewModel: .init(siteID: siteID, statusFilter: cellViewModel.orderStatus),
                 emptyStateConfig: emptyStateConfig
             )
         } else {
             return OrdersViewController(
+                siteID: siteID,
                 title: title,
-                viewModel: .init(statusFilter: cellViewModel.orderStatus),
+                viewModel: .init(siteID: siteID, statusFilter: cellViewModel.orderStatus),
                 emptyStateConfig: emptyStateConfig
             )
         }

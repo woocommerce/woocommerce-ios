@@ -16,7 +16,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
-        XCTAssertTrue(factory.settingsSectionActions().contains(.priceSettings))
+        XCTAssertTrue(factory.settingsSectionActions().contains(.priceSettings(editable: true)))
     }
 
     func testPriceRowIsVisibleForProductWithoutPriceData() {
@@ -30,7 +30,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
-        XCTAssertTrue(factory.settingsSectionActions().contains(.priceSettings))
+        XCTAssertTrue(factory.settingsSectionActions().contains(.priceSettings(editable: true)))
     }
 
     // MARK: - Inventory
@@ -46,7 +46,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
-        XCTAssertTrue(factory.settingsSectionActions().contains(.inventorySettings))
+        XCTAssertTrue(factory.settingsSectionActions().contains(.inventorySettings(editable: true)))
         XCTAssertFalse(factory.bottomSheetActions().contains(.editInventorySettings))
     }
 
@@ -61,7 +61,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
-        XCTAssertFalse(factory.settingsSectionActions().contains(.inventorySettings))
+        XCTAssertFalse(factory.settingsSectionActions().contains(.inventorySettings(editable: true)))
         XCTAssertTrue(factory.bottomSheetActions().contains(.editInventorySettings))
     }
 
@@ -78,7 +78,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
-        XCTAssertTrue(factory.settingsSectionActions().contains(.shippingSettings))
+        XCTAssertTrue(factory.settingsSectionActions().contains(.shippingSettings(editable: true)))
         XCTAssertFalse(factory.bottomSheetActions().contains(.editShippingSettings))
     }
 
@@ -93,7 +93,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
-        XCTAssertFalse(factory.settingsSectionActions().contains(.shippingSettings))
+        XCTAssertFalse(factory.settingsSectionActions().contains(.shippingSettings(editable: true)))
         XCTAssertTrue(factory.bottomSheetActions().contains(.editShippingSettings))
     }
 
@@ -110,7 +110,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
-        XCTAssertTrue(factory.settingsSectionActions().contains(.categories))
+        XCTAssertTrue(factory.settingsSectionActions().contains(.categories(editable: true)))
         XCTAssertFalse(factory.bottomSheetActions().contains(.editCategories))
     }
 
@@ -125,7 +125,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
-        XCTAssertFalse(factory.settingsSectionActions().contains(.categories))
+        XCTAssertFalse(factory.settingsSectionActions().contains(.categories(editable: true)))
         XCTAssertTrue(factory.bottomSheetActions().contains(.editCategories))
     }
 
@@ -142,7 +142,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
-        XCTAssertTrue(factory.settingsSectionActions().contains(.briefDescription))
+        XCTAssertTrue(factory.settingsSectionActions().contains(.briefDescription(editable: true)))
         XCTAssertFalse(factory.bottomSheetActions().contains(.editBriefDescription))
     }
 
@@ -157,7 +157,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
-        XCTAssertFalse(factory.settingsSectionActions().contains(.briefDescription))
+        XCTAssertFalse(factory.settingsSectionActions().contains(.briefDescription(editable: true)))
         XCTAssertTrue(factory.bottomSheetActions().contains(.editBriefDescription))
     }
 }

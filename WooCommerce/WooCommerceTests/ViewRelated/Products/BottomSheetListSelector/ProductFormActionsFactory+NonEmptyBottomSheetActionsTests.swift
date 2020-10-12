@@ -14,7 +14,7 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .reviews, .productType]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true), .reviews, .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editShippingSettings,
@@ -36,7 +36,7 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .reviews, .productType]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true), .reviews, .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editInventorySettings, .editCategories, .editTags, .editBriefDescription]
@@ -54,7 +54,7 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
                                                 isEditProductsRelease3Enabled: true)
 
         // Assert
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .reviews, .productType]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true), .reviews, .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editInventorySettings, .editCategories, .editTags, .editBriefDescription]

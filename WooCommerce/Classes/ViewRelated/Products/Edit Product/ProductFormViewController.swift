@@ -314,6 +314,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                     return
                 }
                 let variationsViewController = ProductVariationsViewController(product: product.product,
+                                                                               formType: viewModel.formType,
                                                                                isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
                 show(variationsViewController, sender: self)
             case .status, .noPriceWarning:
@@ -709,6 +710,8 @@ private extension ProductFormViewController {
             if isUpdateEnabled {
                 rightBarButtonItems.append(createUpdateBarButtonItem())
             }
+        case .readonly:
+            break
         }
 
         if viewModel.canEditProductSettings() {
@@ -777,6 +780,8 @@ private extension ProductFormViewController {
             UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
                 self?.exitForm()
             })
+        case .readonly:
+            break
         }
     }
 }

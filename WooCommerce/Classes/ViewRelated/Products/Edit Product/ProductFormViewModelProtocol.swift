@@ -4,6 +4,7 @@ import Yosemite
 enum ProductFormType {
     case add
     case edit
+    case readonly
 }
 
 /// A view model for `ProductFormViewController` to add/edit a generic product model (e.g. `Product` or `ProductVariation`).

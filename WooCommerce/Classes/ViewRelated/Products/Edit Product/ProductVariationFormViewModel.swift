@@ -23,7 +23,9 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
     private(set) var actionsFactory: ProductFormActionsFactoryProtocol
 
     /// Product variation form only supports editing
-    let formType: ProductFormType = .edit
+    let formType: ProductFormType
+
+    private let editable: Bool
 
     /// Not applicable to product variation form
     private(set) var password: String? = nil
@@ -48,7 +50,7 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
                 return
             }
 
-            actionsFactory = ProductVariationFormActionsFactory(productVariation: productVariation)
+            actionsFactory = ProductVariationFormActionsFactory(productVariation: productVariation, editable: editable)
             productVariationSubject.send(productVariation)
             isUpdateEnabledSubject.send(hasUnsavedChanges())
         }
@@ -63,6 +65,7 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
     init(productVariation: EditableProductVariationModel,
          allAttributes: [ProductAttribute],
          parentProductSKU: String?,
+         formType: ProductFormType,
          productImageActionHandler: ProductImageActionHandler,
          storesManager: StoresManager = ServiceLocator.stores) {
         self.allAttributes = allAttributes
@@ -71,7 +74,9 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
         self.storesManager = storesManager
         self.originalProductVariation = productVariation
         self.productVariation = productVariation
-        self.actionsFactory = ProductVariationFormActionsFactory(productVariation: productVariation)
+        self.formType = formType
+        self.editable = formType != .readonly
+        self.actionsFactory = ProductVariationFormActionsFactory(productVariation: productVariation, editable: editable)
         self.isUpdateEnabledSubject = PublishSubject<Bool>()
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
             if allStatuses.productImageStatuses.hasPendingUpload {

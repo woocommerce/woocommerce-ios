@@ -13,6 +13,16 @@
     </a>
 </p>
 
+<p align="center">
+    <a href="#-build-instructions">Build Instructions</a> • 
+    <a href="#-documentation">Documentation</a> • 
+    <a href="#-automation">Automation</a> • 
+    <a href="#-security">Security</a> •
+    <a href="#-need-help">Need Help?</a> • 
+    <a href="#-resources">Resources</a> • 
+    <a href="#-license">License</a>
+</p>
+
 ## 🎉 Build Instructions
 
 1. Download Xcode
@@ -106,7 +116,7 @@ The woocommerce-ios project uses [Circle CI](https://circleci.com/gh/woocommerce
 
 If you happen to find a security vulnerability, we would appreciate you letting us know at https://hackerone.com/automattic and allowing us to respond before disclosing the issue publicly.
 
-## ℹ️ Need Help?
+## 💁‍♀️ Need Help?
 
 You can find the WooCommerce usage docs here: [docs.woocommerce.com](https://docs.woocommerce.com/)
 

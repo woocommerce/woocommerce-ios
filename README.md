@@ -99,7 +99,7 @@ The woocommerce-ios project uses [Circle CI](https://circleci.com/gh/woocommerce
 
 If you happen to find a security vulnerability, we would appreciate you letting us know at https://hackerone.com/automattic and allowing us to respond before disclosing the issue publicly.
 
-## Need help? ##
+## Need Help?
 
 You can find the WooCommerce usage docs here: [docs.woocommerce.com](https://docs.woocommerce.com/)
 

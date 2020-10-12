@@ -24,12 +24,5 @@
 - Testing
     - [UI Tests](UI-TESTS.md)
     - [Beta Testing](https://woocommercehalo.wordpress.com/setup/join-ios-beta/)
-- [Features](#features)
-
-
-
-## Features
-
-The following are some information about specific features of the app.
-
-- [In-app Feedback](in-app-feedback.md)
+- Features
+    - [In-app Feedback](in-app-feedback.md)

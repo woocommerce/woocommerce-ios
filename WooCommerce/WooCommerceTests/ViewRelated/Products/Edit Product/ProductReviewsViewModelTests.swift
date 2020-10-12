@@ -11,7 +11,7 @@ final class ProductReviewsViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         mockDataSource = MockProductReviewsDataSource()
-        viewModel = ProductReviewsViewModel(data: mockDataSource)
+        viewModel = ProductReviewsViewModel(siteID: 2, data: mockDataSource)
     }
 
     override func tearDown() {

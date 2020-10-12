@@ -13,7 +13,7 @@
     </a>
 </p>
 
-## Build Instructions
+## 🎉 Build Instructions
 
 1. Download Xcode
 
@@ -65,7 +65,7 @@ In order to login to WordPress.com using the app:
 
 Please, remember to not add this information on your commits and PRs.
 
-## Documentation
+## 📚 Documentation
 
 - Architecture
     - [Overview](docs/architecture-overview.md)
@@ -92,7 +92,7 @@ Please, remember to not add this information on your commits and PRs.
 - Features
     - [In-app Feedback](docs/in-app-feedback.md)
 
-## Automation
+## 🤖 Automation
 
 ### Peril
 
@@ -102,11 +102,11 @@ The woocommerce-ios project uses [Peril](https://danger.systems/js/guides/peril.
 
 The woocommerce-ios project uses [Circle CI](https://circleci.com/gh/woocommerce/woocommerce-ios) for continuous integration.
 
-## Security
+## 🔐 Security
 
 If you happen to find a security vulnerability, we would appreciate you letting us know at https://hackerone.com/automattic and allowing us to respond before disclosing the issue publicly.
 
-## Need Help?
+## ℹ️ Need Help?
 
 You can find the WooCommerce usage docs here: [docs.woocommerce.com](https://docs.woocommerce.com/)
 
@@ -116,12 +116,11 @@ General usage and development questions:
 * [WordPress.org Forums](https://wordpress.org/support/plugin/woocommerce)
 * The WooCommerce Help and Share Facebook group
 
-## Resources
+## 🔗 Resources
 
-- [Documentation on our architecture and frameworks](https://github.com/woocommerce/woocommerce-ios/tree/develop/docs)
 - [Mobile blog](https://mobile.blog)
 - [WooCommerce API Documentation (currently v3)](https://woocommerce.github.io/woocommerce-rest-api-docs/#introduction)
 
-## License
+## 📜 License
 
 WooCommerce for iOS is an Open Source project covered by the [GNU General Public License version 2](LICENSE).

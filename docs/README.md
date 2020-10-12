@@ -1,4 +1,4 @@
-# WooCommerce for iOS
+# WooCommerce for iOS Documentation
 
 - Architecture
     - [Overview](architecture-overview.md)

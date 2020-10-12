@@ -1,4 +1,4 @@
-### Tracking Events
+# Tracking Events
 
 To add a new event, the event name has to be added as a `case` in the [`WooAnalyticsStat` enum](../WooCommerce/Classes/Analytics/WooAnalyticsStat.swift). Tracking the event looks like this:
 
@@ -18,7 +18,7 @@ final class ViewController {
 
 Having the `String` values in the `WooAnalyticsStat` enum helps us with comparing the events being tracked in WooCommerce Android.
 
-#### Custom Properties
+## Custom Properties
 
 If the event has custom properties, add a corresponding `static func` [`WooAnalyticsEvent`](../WooCommerce/Classes/Analytics/WooAnalyticsEvent.swift) constructor of the event. Add the custom properties as parameters of the function. For example:
 

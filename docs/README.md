@@ -2,8 +2,12 @@
 
 **Table of Contents**
 
-- [Architecture](#architecture)
-- [Coding Guidelines](#coding-guidelines)
+- Architecture
+    - [Overview](ARCHITECTURE.md)
+    - [Networking](NETWORKING.md)
+    - [Storage](STORAGE.md)
+    - [Yosemite](YOSEMITE.md)
+- Coding Guidelines
     - [Coding Style](#coding-style)
     - [Naming Conventions](naming-convetions.md)
         - [Protocols](naming-conventions.md#protocols)
@@ -20,18 +24,6 @@
 - [Testing](#testing)
 - [Features](#features)
 
-
-
-## Architecture
-
-- [Architecture](ARCHITECTURE.md)
-- [Networking](NETWORKING.md)
-- [Storage](STORAGE.md)
-- [Yosemite](YOSEMITE.md)
-
-
-
-## Coding Guidelines
 
 
 

@@ -58,6 +58,33 @@ In order to login to WordPress.com using the app:
 
 Please, remember to not add this information on your commits and PRs.
 
+## Documentation
+
+- Architecture
+    - [Overview](docs/architecture-overview.md)
+    - [Networking](docs/NETWORKING.md)
+    - [Storage](docs/STORAGE.md)
+    - [Yosemite](docs/YOSEMITE.md)
+- Coding Guidelines
+    - [Coding Style](docs/coding-style-guide.md)
+    - [Naming Conventions](docs/naming-conventions.md)
+        - [Protocols](docs/naming-conventions.md#protocols)
+        - [String Constants in Nested Enums](docs/naming-conventions.md#string-constants-in-nested-enums)
+        - [Test Methods](docs/naming-conventions.md#test-methods)
+    - [Choosing Between Structures and Classes](docs/choosing-between-structs-and-classes.md)
+    - [Creating Core Data Model Versions](docs/creating-core-data-model-versions.md)
+- Design Patterns
+    - [Copiable](docs/copiable.md)
+        - [Generating Copiable Methods](docs/copiable.md#generating-copiable-methods)
+        - [Modifying The Copiable Code Generation](docs/copiable.md#modifying-the-copiable-code-generation)
+    - [Tracking Events](docs/tracking-events.md)
+        - [Custom Properties](docs/tracking-events.md#custom-properties)
+- Testing
+    - [UI Tests](docs/UI-TESTS.md)
+    - [Beta Testing](https://woocommercehalo.wordpress.com/setup/join-ios-beta/)
+- Features
+    - [In-app Feedback](docs/in-app-feedback.md)
+
 ## Automation
 
 ### Peril

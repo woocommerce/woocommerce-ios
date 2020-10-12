@@ -13,14 +13,14 @@ protocol ProductDownloadListViewModelOutput {
     func remove(at index: Int) -> ProductDownloadDragAndDrop?
     func item(at index: Int) -> ProductDownloadDragAndDrop?
     func insert(_ newElement: ProductDownloadDragAndDrop, at index: Int)
+    func append(_ newElement: ProductDownloadDragAndDrop)
+    func update(at index: Int, element: ProductDownloadDragAndDrop)
     func count() -> Int
 }
 
 /// Handles actions related to the downloadable files settings data.
 ///
 protocol ProductDownloadListActionHandler {
-    // Tap actions
-    func didTapDownloadableFileFromRow(_ indexPath: IndexPath)
 
     // Input field actions
     func handleDownloadableFilesChange(_ downloads: [ProductDownload])
@@ -72,6 +72,14 @@ final class ProductDownloadListViewModel: ProductDownloadListViewModelOutput {
         downloadableFiles.insert(newElement, at: index)
     }
 
+    func append(_ newElement: ProductDownloadDragAndDrop) {
+        downloadableFiles.append(newElement)
+    }
+
+    func update(at index: Int, element: ProductDownloadDragAndDrop) {
+        downloadableFiles[index] = element
+    }
+
     func count() -> Int {
         return downloadableFiles.count
     }
@@ -102,11 +110,10 @@ extension ProductDownloadListViewModel: ProductDownloadListActionHandler {
 
     // Navigation actions
     func completeUpdating(onCompletion: ProductDownloadListViewController.Completion) {
-        //TODO: Perform data validation as necessary
         let data = ProductDownloadsEditableData(downloadableFiles: downloadableFiles.map { $0.downloadableFile },
                                                 downloadLimit: downloadLimit,
                                                 downloadExpiry: downloadExpiry)
-        onCompletion(data)
+        onCompletion(data, hasUnsavedChanges())
     }
 
     func hasUnsavedChanges() -> Bool {

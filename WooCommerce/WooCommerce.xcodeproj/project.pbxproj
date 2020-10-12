@@ -525,6 +525,11 @@
 		74F3015A2200EC0800931B9E /* NSDecimalNumberWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F301592200EC0800931B9E /* NSDecimalNumberWooTests.swift */; };
 		74F9E9CD214C036400A3F2D2 /* NoPeriodDataTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 74F9E9CB214C036400A3F2D2 /* NoPeriodDataTableViewCell.xib */; };
 		74F9E9CE214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F9E9CC214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift */; };
+		773077EC251E943700178696 /* ProductDownloadFileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 773077E8251E943600178696 /* ProductDownloadFileViewModel.swift */; };
+		773077ED251E943700178696 /* Product+DownloadFileViewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 773077E9251E943600178696 /* Product+DownloadFileViewModels.swift */; };
+		773077EE251E943700178696 /* ProductDownloadFileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 773077EA251E943600178696 /* ProductDownloadFileViewController.swift */; };
+		773077EF251E943700178696 /* ProductDownloadFileViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 773077EB251E943600178696 /* ProductDownloadFileViewController.xib */; };
+		773077F3251E954300178696 /* ProductDownloadFileViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 773077F2251E954300178696 /* ProductDownloadFileViewModelTests.swift */; };
 		77423F17251CF77E0016A083 /* ProductDownloadListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77423F16251CF77E0016A083 /* ProductDownloadListViewModelTests.swift */; };
 		77E53EB8250E6A4E003D385F /* ProductDownloadListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77E53EB6250E6A4E003D385F /* ProductDownloadListViewController.swift */; };
 		77E53EB9250E6A4E003D385F /* ProductDownloadListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 77E53EB7250E6A4E003D385F /* ProductDownloadListViewController.xib */; };
@@ -1500,6 +1505,11 @@
 		74F301592200EC0800931B9E /* NSDecimalNumberWooTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSDecimalNumberWooTests.swift; sourceTree = "<group>"; };
 		74F9E9CB214C036400A3F2D2 /* NoPeriodDataTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NoPeriodDataTableViewCell.xib; sourceTree = "<group>"; };
 		74F9E9CC214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoPeriodDataTableViewCell.swift; sourceTree = "<group>"; };
+		773077E8251E943600178696 /* ProductDownloadFileViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductDownloadFileViewModel.swift; sourceTree = "<group>"; };
+		773077E9251E943600178696 /* Product+DownloadFileViewModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Product+DownloadFileViewModels.swift"; sourceTree = "<group>"; };
+		773077EA251E943600178696 /* ProductDownloadFileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductDownloadFileViewController.swift; sourceTree = "<group>"; };
+		773077EB251E943600178696 /* ProductDownloadFileViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProductDownloadFileViewController.xib; sourceTree = "<group>"; };
+		773077F2251E954300178696 /* ProductDownloadFileViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductDownloadFileViewModelTests.swift; sourceTree = "<group>"; };
 		77423F16251CF77E0016A083 /* ProductDownloadListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDownloadListViewModelTests.swift; sourceTree = "<group>"; };
 		77E53EB6250E6A4E003D385F /* ProductDownloadListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDownloadListViewController.swift; sourceTree = "<group>"; };
 		77E53EB7250E6A4E003D385F /* ProductDownloadListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductDownloadListViewController.xib; sourceTree = "<group>"; };
@@ -3256,9 +3266,21 @@
 			path = Cells;
 			sourceTree = "<group>";
 		};
+		773077E7251E943600178696 /* Add or Edit File */ = {
+			isa = PBXGroup;
+			children = (
+				773077E8251E943600178696 /* ProductDownloadFileViewModel.swift */,
+				773077E9251E943600178696 /* Product+DownloadFileViewModels.swift */,
+				773077EA251E943600178696 /* ProductDownloadFileViewController.swift */,
+				773077EB251E943600178696 /* ProductDownloadFileViewController.xib */,
+			);
+			path = "Add or Edit File";
+			sourceTree = "<group>";
+		};
 		77423F14251CF59D0016A083 /* Downloadable Files */ = {
 			isa = PBXGroup;
 			children = (
+				773077F2251E954300178696 /* ProductDownloadFileViewModelTests.swift */,
 				77423F16251CF77E0016A083 /* ProductDownloadListViewModelTests.swift */,
 			);
 			path = "Downloadable Files";
@@ -3267,6 +3289,7 @@
 		77E53EB5250E6972003D385F /* Downloadable Files */ = {
 			isa = PBXGroup;
 			children = (
+				773077E7251E943600178696 /* Add or Edit File */,
 				77E53EC62510C3F4003D385F /* FIle List */,
 			);
 			path = "Downloadable Files";
@@ -4819,6 +4842,7 @@
 				B5D1AFB420BC445A00DB0E8C /* Images.xcassets in Resources */,
 				CEE005F62076C4040079161F /* Orders.storyboard in Resources */,
 				CE85FD5C20F7A7740080B73E /* TableFooterView.xib in Resources */,
+				773077EF251E943700178696 /* ProductDownloadFileViewController.xib in Resources */,
 				B57C744C20F564B400EEFC87 /* EmptyStoresTableViewCell.xib in Resources */,
 				028296ED237D28B600E84012 /* TextViewViewController.xib in Resources */,
 				451A04F52386F7C900E368C9 /* AddProductImageCollectionViewCell.xib in Resources */,
@@ -5194,6 +5218,7 @@
 				740987B321B87760000E4C80 /* FancyAnimatedButton+Woo.swift in Sources */,
 				B511ED27218A660E005787DC /* StringDescriptor.swift in Sources */,
 				B5F355EF21CD500200A7077A /* SearchViewController.swift in Sources */,
+				773077EC251E943700178696 /* ProductDownloadFileViewModel.swift in Sources */,
 				B55D4C2720B717C000D7A50F /* UserAgent.swift in Sources */,
 				0273708024C0094500167204 /* ProductListMultiSelectorDataSource.swift in Sources */,
 				02B1AFEC24BC5AE5005DB1E3 /* GroupedProductListSelectorDataSource.swift in Sources */,
@@ -5454,6 +5479,7 @@
 				453DBF8E2387F34A006762A5 /* UICollectionViewCell+Helpers.swift in Sources */,
 				45B9C63E23A8E50D007FC4C5 /* ProductPriceSettingsViewController.swift in Sources */,
 				45B9C64123A9139A007FC4C5 /* Product+PriceSettingsViewModels.swift in Sources */,
+				773077ED251E943700178696 /* Product+DownloadFileViewModels.swift in Sources */,
 				743EDD9F214B05350039071B /* TopEarnerStatsItem+Woo.swift in Sources */,
 				B5BBD6DE21B1703700E3207E /* PushNotificationsManager.swift in Sources */,
 				CE1EC8EC20B8A3FF009762BF /* LeftImageTableViewCell.swift in Sources */,
@@ -5576,6 +5602,7 @@
 				02A65301246AA63600755A01 /* ProductDetailsFactory.swift in Sources */,
 				02C8876D24501FAC00E4470F /* FilterListViewController.swift in Sources */,
 				021FB44C24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift in Sources */,
+				773077EE251E943700178696 /* ProductDownloadFileViewController.swift in Sources */,
 				45D1CF4523BAC2A500945A36 /* ProductTaxClassListSelectorDataSource.swift in Sources */,
 				6856D31F941A33BAE66F394D /* KeyboardFrameAdjustmentProvider.swift in Sources */,
 				6856DB2E741639716E149967 /* KeyboardStateProvider.swift in Sources */,
@@ -5705,6 +5732,7 @@
 				023EC2E424DA95DB0021DA91 /* ProductInventorySettingsViewModel+VariationTests.swift in Sources */,
 				020BE76B23B4A380007FE54C /* AztecUnderlineFormatBarCommandTests.swift in Sources */,
 				D83F5937225B402E00626E75 /* TitleAndEditableValueTableViewCellTests.swift in Sources */,
+				773077F3251E954300178696 /* ProductDownloadFileViewModelTests.swift in Sources */,
 				576D9F2924DB81D3007B48F4 /* StoreStatsAndTopPerformersPeriodViewModelTests.swift in Sources */,
 				9379E1A6225537D0006A6BE4 /* TestingAppDelegate.swift in Sources */,
 				453904F323BB88B5007C4956 /* ProductTaxStatusListSelectorCommandTests.swift in Sources */,

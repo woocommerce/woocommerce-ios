@@ -12,7 +12,7 @@ final class ProductDownloadListViewController: UIViewController {
 
     // Completion callback
     //
-    typealias Completion = (_ data: ProductDownloadsEditableData) -> Void
+    typealias Completion = (_ data: ProductDownloadsEditableData, _ hasUnsavedChanges: Bool) -> Void
     private let onCompletion: Completion
 
     init(product: ProductFormDataModel, completion: @escaping Completion) {
@@ -83,7 +83,7 @@ private extension ProductDownloadListViewController {
             let button = UIBarButtonItem(image: .moreImage,
                                          style: .plain,
                                          target: self,
-                                         action: #selector(downloadSettingsButtonTapped))
+                                         action: #selector(settingsButtonTapped))
             button.accessibilityTraits = .button
             button.accessibilityLabel = NSLocalizedString("View downloadable file settings",
                                                           comment: "The action to update downloadable files settings for a product")
@@ -123,13 +123,14 @@ extension ProductDownloadListViewController {
         viewModel.completeUpdating(onCompletion: onCompletion)
     }
 
-    @objc private func downloadSettingsButtonTapped() {
+    @objc private func settingsButtonTapped() {
         // TODO: - add analytics
+        showDownloadableFilesSettings()
     }
 
     @objc private func addButtonTapped() {
         // TODO: - add analytics
-        addEditDownloadableFile(indexPath: IndexPath(row: -1, section: -1))
+        addEditDownloadableFile(indexPath: nil, formType: .add)
     }
 
     private func presentBackNavigationActionSheet() {
@@ -142,21 +143,67 @@ extension ProductDownloadListViewController {
 // MARK: Action - Add/Edit Product Downloadable File Settings
 //
 extension ProductDownloadListViewController {
-    func addEditDownloadableFile(indexPath: IndexPath) {
+    func addEditDownloadableFile(indexPath: IndexPath?, formType: ProductDownloadFileViewController.FormType) {
+        let viewController = ProductDownloadFileViewController(product: product,
+                                                               downloadFileIndex: indexPath?.row,
+                                                               formType: formType) { [weak self]
+            (fileName, fileURL, fileID, hasUnsavedChanges) in
+            self?.onAddEditDownloadableFileCompletion(fileName: fileName,
+                                                      fileURL: fileURL,
+                                                      fileID: fileID,
+                                                      hasUnsavedChanges: hasUnsavedChanges,
+                                                      indexPath: indexPath,
+                                                      formType: formType)
+        }
+        navigationController?.pushViewController(viewController, animated: true)
 
     }
 
     func onAddEditDownloadableFileCompletion(fileName: String?,
-                                             fileURL: String?,
+                                             fileURL: String,
                                              fileID: String?,
-                                             hasUnsavedChanges: Bool) {
-        defer {
-            navigationController?.popViewController(animated: true)
-        }
-
+                                             hasUnsavedChanges: Bool,
+                                             indexPath: IndexPath?,
+                                             formType: ProductDownloadFileViewController.FormType) {
         guard hasUnsavedChanges else {
             return
         }
+
+        switch formType {
+        case .add:
+            viewModel.append(ProductDownloadDragAndDrop(downloadableFile: ProductDownload(downloadID: fileID ?? "",
+                                                                                          name: fileName ?? "",
+                                                                                          fileURL: fileURL)))
+        case .edit:
+            if let indexPath = indexPath {
+                viewModel.update(at: indexPath.row,
+                                 element: (ProductDownloadDragAndDrop(downloadableFile: ProductDownload(downloadID: fileID ?? "",
+                                                                                                        name: fileName ?? "",
+                                                                                                        fileURL: fileURL))))
+            }
+        }
+        viewModel.completeUpdating(onCompletion: onCompletion)
+        tableView.reloadData()
+    }
+}
+
+// MARK: Action - Downloadable file settings
+//
+extension ProductDownloadListViewController {
+    func showDownloadableFilesSettings() {
+
+    }
+
+    func onDownloadSettingsCompletion(downloadLimit: Int64,
+                                      downloadExpiry: Int64,
+                                      hasUnsavedChanges: Bool) {
+        guard hasUnsavedChanges else {
+            return
+        }
+
+        viewModel.handleDownloadLimitChange(downloadLimit)
+        viewModel.handleDownloadExpiryChange(downloadExpiry)
+        viewModel.completeUpdating(onCompletion: onCompletion)
     }
 }
 
@@ -181,7 +228,8 @@ extension ProductDownloadListViewController: UITableViewDataSource, UITableViewD
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        addEditDownloadableFile(indexPath: indexPath)
+        addEditDownloadableFile(indexPath: indexPath, formType: .edit)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {

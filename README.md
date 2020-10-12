@@ -47,7 +47,7 @@ In order to login to WordPress.com using the app:
 2. Create a new developer application [here](https://developer.wordpress.com/apps/).
 3. Set **"Redirect URLs"** = `https://localhost` and **"Type"** = `Native` and click **Create**. On the next page, click **Update**.
 4. Copy the *Client ID* and *Client Secret* from the OAuth Information.
-5. Build the app. A file named `ApiCredentials.swift` should be generated. 
+5. Build the app. A file named `ApiCredentials.swift` should be generated.
 6. Navigate to the generated `WooCommerce/DerivedSources/ApiCredentials.swift` file.
 
     <img src="docs/images/apicredentials-location.png" width="240">
@@ -58,20 +58,6 @@ In order to login to WordPress.com using the app:
 
 Please, remember to not add this information on your commits and PRs.
 
-## Coding Style
-
-We use [SwiftLint](https://github.com/realm/SwiftLint) to enforce a common style for Swift code. The app should build and work without it, but if you plan to write code, you are encouraged to run it locally by `bundle exec rake lint` (first run will install SwiftLint if you don't have it). No pull requests should have lint warnings or errors before merging, and we also have `Hound` (mentioned below) to help us in pull requests on GitHub.
-
-If your code has any style violations, you can try to automatically correct them by running:
-
-```
-bundle exec rake lint:autocorrect
-```
-
-Otherwise, you can also fix them manually.
-
-Read more about styling in the [Coding Style Guide](docs/coding-style-guide.md).
-
 ## Peril
 
 The woocommerce-ios project uses [Peril](https://danger.systems/js/guides/peril.html) to enforce Pull Request guidelines.
@@ -79,9 +65,6 @@ The woocommerce-ios project uses [Peril](https://danger.systems/js/guides/peril.
 ## Circle CI
 
 The woocommerce-ios project uses [Circle CI](https://circleci.com/gh/woocommerce/woocommerce-ios) for continuous integration.
-
-## Hound
-The woocommerce-ios project uses [Hound](https://houndci.com) to enforce basic Swift styles. (Not all Woo styles are defined in Hound.)
 
 ## Security
 

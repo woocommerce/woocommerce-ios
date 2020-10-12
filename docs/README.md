@@ -21,15 +21,10 @@
         - [Modifying The Copiable Code Generation](copiable.md#modifying-the-copiable-code-generation)
     - [Tracking Events](tracking-events.md)
         - [Custom Properties](tracking-events.md#custom-properties)
-- [Testing](#testing)
+- Testing
+    - [UI Tests](UI-TESTS.md)
+    - [Beta Testing](https://woocommercehalo.wordpress.com/setup/join-ios-beta/)
 - [Features](#features)
-
-
-
-## Testing
-
-- [UI Tests](UI-TESTS.md)
-- [Beta Testing](https://woocommercehalo.wordpress.com/setup/join-ios-beta/)
 
 
 

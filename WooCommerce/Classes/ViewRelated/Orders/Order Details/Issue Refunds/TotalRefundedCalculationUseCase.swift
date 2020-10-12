@@ -5,15 +5,16 @@ import Yosemite
 ///
 struct TotalRefundedCalculationUseCase {
 
-    private let currencyFormatter: CurrencyFormatter
     private let order: Order
+    private let currencyFormatter: CurrencyFormatter
 
-    init(order: Order, currencySettings: CurrencySettings) {
+    init(order: Order, currencyFormatter: CurrencyFormatter) {
         self.order = order
-        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.currencyFormatter = currencyFormatter
     }
 
-    /// Returns the total refunded of `self.order`.
+    /// Sums up the `OrderRefundCondensed.total` inside `self.order`. This is returned as a
+    /// **negative** number because that's how the API returns them as.
     func totalRefunded() -> NSDecimalNumber {
         order.refunds.reduce(NSDecimalNumber(decimal: .zero)) { result, refundCondensed -> NSDecimalNumber in
             let totalAsDecimal = currencyFormatter.convertToDecimal(from: refundCondensed.total) ?? .zero

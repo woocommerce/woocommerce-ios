@@ -2,7 +2,7 @@
 [![CircleCI](https://circleci.com/gh/woocommerce/woocommerce-ios.svg?style=svg)](https://circleci.com/gh/woocommerce/woocommerce-ios)
 [![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com)
 
-# WooCommerce for iOS
+<h1 style="text-align:center"><img src="https://woocommerce.com/wp-content/themes/woo/images/logo-woocommerce.svg" width="300"><br>for iOS</h1>
 
 A Jetpack-powered companion app for WooCommerce.
 

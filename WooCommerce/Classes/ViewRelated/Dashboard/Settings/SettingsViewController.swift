@@ -12,7 +12,7 @@ final class SettingsViewController: UIViewController {
 
     /// Main TableView
     ///
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet private weak var tableView: UITableView!
 
     /// Table Sections to be rendered
     ///
@@ -93,6 +93,9 @@ private extension SettingsViewController {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
+
+        tableView.dataSource = self
+        tableView.delegate = self
     }
 
     func refreshResultsController() {
@@ -164,7 +167,7 @@ private extension SettingsViewController {
 
     func registerTableViewCells() {
         for row in Row.allCases {
-            tableView.register(row.type.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
+            tableView.registerNib(for: row.type)
         }
     }
 
@@ -200,8 +203,7 @@ private extension SettingsViewController {
     }
 
     func configureSelectedStore(cell: HeadlineLabelTableViewCell) {
-        cell.headline = siteUrl
-        cell.body = accountName
+        cell.update(headline: siteUrl, body: accountName)
         cell.selectionStyle = .none
     }
 
@@ -281,9 +283,9 @@ private extension SettingsViewController {
         return sections[indexPath.section].rows[indexPath.row]
     }
 
-    /// This is false because there are no ongoing expriments
+    /// This is false because there are no ongoing experiments
     func couldShowBetaFeaturesRow() -> Bool {
-        return true
+        return false
     }
 }
 
@@ -331,31 +333,39 @@ private extension SettingsViewController {
 
     func supportWasPressed() {
         ServiceLocator.analytics.track(.settingsContactSupportTapped)
-        performSegue(withIdentifier: Segues.helpSupportSegue, sender: nil)
+        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: HelpAndSupportViewController.self) else {
+            fatalError("Cannot instantiate `HelpAndSupportViewController` from Dashboard storyboard")
+        }
+        show(viewController, sender: self)
     }
 
     func privacyWasPressed() {
         ServiceLocator.analytics.track(.settingsPrivacySettingsTapped)
-        performSegue(withIdentifier: Segues.privacySegue, sender: nil)
+        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: PrivacySettingsViewController.self) else {
+            fatalError("Cannot instantiate `PrivacySettingsViewController` from Dashboard storyboard")
+        }
+        show(viewController, sender: self)
     }
 
     func aboutWasPressed() {
         ServiceLocator.analytics.track(.settingsAboutLinkTapped)
-        performSegue(withIdentifier: Segues.aboutSegue, sender: nil)
+        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: AboutViewController.self) else {
+            fatalError("Cannot instantiate `AboutViewController` from Dashboard storyboard")
+        }
+        show(viewController, sender: self)
     }
 
     func licensesWasPressed() {
         ServiceLocator.analytics.track(.settingsLicensesLinkTapped)
-        performSegue(withIdentifier: Segues.licensesSegue, sender: nil)
+        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: LicensesViewController.self) else {
+            fatalError("Cannot instantiate `LicensesViewController` from Dashboard storyboard")
+        }
+        show(viewController, sender: self)
     }
 
     func betaFeaturesWasPressed() {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            assertionFailure("Cannot find store ID")
-            return
-        }
         ServiceLocator.analytics.track(.settingsBetaFeaturesButtonTapped)
-        let betaFeaturesViewController = BetaFeaturesViewController(siteID: siteID)
+        let betaFeaturesViewController = BetaFeaturesViewController()
         navigationController?.pushViewController(betaFeaturesViewController, animated: true)
     }
 
@@ -541,14 +551,6 @@ private enum Row: CaseIterable {
         return type.reuseIdentifier
     }
 }
-
-private struct Segues {
-    static let privacySegue     = "ShowPrivacySettingsViewController"
-    static let helpSupportSegue = "ShowHelpAndSupportViewController"
-    static let aboutSegue       = "ShowAboutViewController"
-    static let licensesSegue    = "ShowLicensesViewController"
-}
-
 
 // MARK: - Footer
 //

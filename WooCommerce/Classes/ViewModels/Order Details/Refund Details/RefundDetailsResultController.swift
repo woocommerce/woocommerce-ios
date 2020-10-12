@@ -9,7 +9,7 @@ final class RefundDetailsResultController {
     ///
     private lazy var productResultsController: ResultsController<StorageProduct> = {
         let storageManager = ServiceLocator.storageManager
-        let predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(key: "name", ascending: true)
 
         return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
@@ -19,6 +19,12 @@ final class RefundDetailsResultController {
     ///
     var products: [Product] {
         return productResultsController.fetchedObjects
+    }
+
+    private let siteID: Int64
+
+    init(siteID: Int64) {
+        self.siteID = siteID
     }
 
     /// Configure the result controller(s)

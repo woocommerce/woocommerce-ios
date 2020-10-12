@@ -15,10 +15,16 @@ extension ProductVariation: TaxClassRequestable {}
 // MARK: - TaxClassStore
 //
 public class TaxClassStore: Store {
+    private let remote: TaxClassRemote
 
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.newDerivedStorage()
     }()
+
+    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+        self.remote = TaxClassRemote(network: network)
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
 
     /// Registers for supported Actions.
     ///
@@ -52,8 +58,6 @@ private extension TaxClassStore {
     /// Retrieve and synchronizes the Tax Classes associated with a given Site ID (if any!).
     ///
     func retrieveTaxClasses(siteID: Int64, onCompletion: @escaping ([TaxClass]?, Error?) -> Void) {
-        let remote = TaxClassRemote(network: network)
-
         remote.loadAllTaxClasses(for: siteID) { [weak self] (taxClasses, error) in
             guard let taxClasses = taxClasses else {
                 onCompletion(nil, error)
@@ -81,7 +85,6 @@ private extension TaxClassStore {
             return
         }
         else {
-            let remote = TaxClassRemote(network: network)
             remote.loadAllTaxClasses(for: taxClassRequestable.siteID) { [weak self] (taxClasses, error) in
                 guard let taxClasses = taxClasses else {
                     onCompletion(nil, error)

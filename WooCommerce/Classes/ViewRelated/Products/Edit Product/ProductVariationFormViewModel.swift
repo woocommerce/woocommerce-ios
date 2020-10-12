@@ -107,6 +107,10 @@ extension ProductVariationFormViewModel {
     func canShareProduct() -> Bool {
         false
     }
+
+    func canDeleteProduct() -> Bool {
+        false
+    }
 }
 
 // MARK: Action handling
@@ -241,6 +245,9 @@ extension ProductVariationFormViewModel {
         storesManager.dispatch(updateAction)
     }
 
+    func deleteProductRemotely(onCompletion: @escaping (Result<EditableProductModel, ProductUpdateError>) -> Void) {
+        // no-op
+    }
     private func resetProductVariation(_ productVariation: EditableProductVariationModel) {
         originalProductVariation = productVariation
         isUpdateEnabledSubject.send(hasUnsavedChanges())

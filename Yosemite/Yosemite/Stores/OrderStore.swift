@@ -6,12 +6,18 @@ import Storage
 // MARK: - OrderStore
 //
 public class OrderStore: Store {
+    private let remote: OrdersRemote
 
     /// Shared private StorageType for use during the entire Orders sync process
     ///
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.newDerivedStorage()
     }()
+
+    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+        self.remote = OrdersRemote(network: network)
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
 
     /// Registers for supported Actions.
     ///
@@ -75,8 +81,6 @@ private extension OrderStore {
     /// Searches all of the orders that contain a given Keyword.
     ///
     func searchOrders(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
-        let remote = OrdersRemote(network: network)
-
         remote.searchOrders(for: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (orders, error) in
             guard let orders = orders else {
                 onCompletion(error)
@@ -108,7 +112,6 @@ private extension OrderStore {
                                    pageSize: Int,
                                    onCompletion: @escaping (Error?) -> Void) {
 
-        let remote = OrdersRemote(network: network)
         let pageNumber = OrdersRemote.Defaults.pageNumber
 
         // Synchronous variables.
@@ -123,7 +126,7 @@ private extension OrderStore {
 
         // Delete all the orders if we haven't yet.
         // This should only be called inside the `serialQueue` block.
-        let deleteAllOrdersOnce = {
+        let deleteAllOrdersOnce = { [weak self] in
             guard hasDeletedAllOrders == false else {
                 return
             }
@@ -137,12 +140,18 @@ private extension OrderStore {
         }
 
         // The handler for both dual fetch requests.
-        let loadAllOrders: (String?, @escaping (() -> Void)) -> Void = { statusKey, completion in
-            remote.loadAllOrders(for: siteID,
+        let loadAllOrders: (String?, @escaping (() -> Void)) -> Void = { [weak self] statusKey, completion in
+            guard let self = self else {
+                return
+            }
+            self.remote.loadAllOrders(for: siteID,
                                  statusKey: statusKey,
                                  before: before,
                                  pageNumber: pageNumber,
-                                 pageSize: pageSize) { result in
+                                 pageSize: pageSize) { [weak self] result in
+                                    guard let self = self else {
+                                        return
+                                    }
                 serialQueue.async { [weak self] in
                     guard let self = self else {
                         completion()
@@ -192,8 +201,6 @@ private extension OrderStore {
                            pageNumber: Int,
                            pageSize: Int,
                            onCompletion: @escaping (Error?) -> Void) {
-        let remote = OrdersRemote(network: network)
-
         remote.loadAllOrders(for: siteID,
                              statusKey: statusKey,
                              before: before,
@@ -213,12 +220,10 @@ private extension OrderStore {
     /// Retrieves a specific order associated with a given Site ID (if any!).
     ///
     func retrieveOrder(siteID: Int64, orderID: Int64, onCompletion: @escaping (Order?, Error?) -> Void) {
-        let remote = OrdersRemote(network: network)
-
         remote.loadOrder(for: siteID, orderID: orderID) { [weak self] (order, error) in
             guard let order = order else {
                 if case NetworkError.notFound? = error {
-                    self?.deleteStoredOrder(orderID: orderID)
+                    self?.deleteStoredOrder(siteID: siteID, orderID: orderID)
                 }
                 onCompletion(nil, error)
                 return
@@ -234,9 +239,8 @@ private extension OrderStore {
     ///
     func updateOrder(siteID: Int64, orderID: Int64, status: OrderStatusEnum, onCompletion: @escaping (Error?) -> Void) {
         /// Optimistically update the Status
-        let oldStatus = updateOrderStatus(orderID: orderID, statusKey: status)
+        let oldStatus = updateOrderStatus(siteID: siteID, orderID: orderID, statusKey: status)
 
-        let remote = OrdersRemote(network: network)
         remote.updateOrder(from: siteID, orderID: orderID, statusKey: status) { [weak self] (_, error) in
             guard let error = error else {
                 // NOTE: We're *not* actually updating the whole entity here. Reason: Prevent UI inconsistencies!!
@@ -245,14 +249,12 @@ private extension OrderStore {
             }
 
             /// Revert Optimistic Update
-            self?.updateOrderStatus(orderID: orderID, statusKey: oldStatus)
+            self?.updateOrderStatus(siteID: siteID, orderID: orderID, statusKey: oldStatus)
             onCompletion(error)
         }
     }
 
     func countProcessingOrders(siteID: Int64, onCompletion: @escaping (OrderCount?, Error?) -> Void) {
-        let remote = OrdersRemote(network: network)
-
         let status = OrderStatusEnum.processing.rawValue
 
         remote.countOrders(for: siteID, statusKey: status) { [weak self] (orderCount, error) in
@@ -275,9 +277,9 @@ extension OrderStore {
 
     /// Deletes any Storage.Order with the specified OrderID
     ///
-    func deleteStoredOrder(orderID: Int64) {
+    func deleteStoredOrder(siteID: Int64, orderID: Int64) {
         let storage = storageManager.viewStorage
-        guard let order = storage.loadOrder(orderID: orderID) else {
+        guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
             return
         }
 
@@ -290,9 +292,9 @@ extension OrderStore {
     /// - Returns: Status, prior to performing the Update OP.
     ///
     @discardableResult
-    func updateOrderStatus(orderID: Int64, statusKey: OrderStatusEnum) -> OrderStatusEnum {
+    func updateOrderStatus(siteID: Int64, orderID: Int64, statusKey: OrderStatusEnum) -> OrderStatusEnum {
         let storage = storageManager.viewStorage
-        guard let order = storage.loadOrder(orderID: orderID) else {
+        guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
             return statusKey
         }
 
@@ -331,7 +333,10 @@ private extension OrderStore {
     ///
     private func upsertSearchResultsInBackground(keyword: String, readOnlyOrders: [Networking.Order], onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
+        derivedStorage.perform { [weak self] in
+            guard let self = self else {
+                return
+            }
             self.upsertStoredOrders(readOnlyOrders: readOnlyOrders, insertingSearchResults: true, in: derivedStorage)
             self.upsertStoredResults(keyword: keyword, readOnlyOrders: readOnlyOrders, in: derivedStorage)
         }
@@ -348,7 +353,7 @@ private extension OrderStore {
         searchResults.keyword = keyword
 
         for readOnlyOrder in readOnlyOrders {
-            guard let storedOrder = storage.loadOrder(orderID: readOnlyOrder.orderID) else {
+            guard let storedOrder = storage.loadOrder(siteID: readOnlyOrder.siteID, orderID: readOnlyOrder.orderID) else {
                 continue
             }
 
@@ -367,7 +372,10 @@ private extension OrderStore {
     ///
     private func upsertStoredOrdersInBackground(readOnlyOrders: [Networking.Order], onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
+        derivedStorage.perform { [weak self] in
+            guard let self = self else {
+                return
+            }
             self.upsertStoredOrders(readOnlyOrders: readOnlyOrders, in: derivedStorage)
         }
 
@@ -401,7 +409,10 @@ private extension OrderStore {
     ///
     private func upsertOrderCountInBackground(siteID: Int64, readOnlyOrderCount: Networking.OrderCount, onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
+        derivedStorage.perform { [weak self] in
+            guard let self = self else {
+                return
+            }
             self.updateOrderCountResults(siteID: siteID, readOnlyOrderCount: readOnlyOrderCount, in: derivedStorage)
         }
 

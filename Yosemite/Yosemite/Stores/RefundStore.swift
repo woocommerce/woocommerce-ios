@@ -6,10 +6,16 @@ import Storage
 // MARK: - RefundStore
 //
 public class RefundStore: Store {
+    private let remote: RefundsRemote
 
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.newDerivedStorage()
     }()
+
+    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+        self.remote = RefundsRemote(network: network)
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
 
     /// Registers for supported Actions.
     ///
@@ -48,8 +54,6 @@ private extension RefundStore {
     /// Creates a new Refund.
     ///
     func createRefund(siteID: Int64, orderID: Int64, refund: Refund, onCompletion: @escaping (Refund?, Error?) -> Void) {
-        let remote = RefundsRemote(network: network)
-
         remote.createRefund(for: siteID, by: orderID, refund: refund) { [weak self] (refund, error) in
             guard let refund = refund else {
                 onCompletion(nil, error)
@@ -65,8 +69,6 @@ private extension RefundStore {
     /// Retrieves a single Refund by ID.
     ///
     func retrieveRefund(siteID: Int64, orderID: Int64, refundID: Int64, onCompletion: @escaping (Networking.Refund?, Error?) -> Void) {
-        let remote = RefundsRemote(network: network)
-
         remote.loadRefund(siteID: siteID, orderID: orderID, refundID: refundID) { [weak self] (refund, error) in
             guard let refund = refund else {
                 if case NetworkError.notFound? = error {
@@ -85,8 +87,6 @@ private extension RefundStore {
     /// Retrieves all Refunds by an orderID.
     ///
     func retrieveRefunds(siteID: Int64, orderID: Int64, refundIDs: [Int64], onCompletion: @escaping (Error?) -> Void) {
-        let remote = RefundsRemote(network: network)
-
         remote.loadRefunds(for: siteID, by: orderID, with: refundIDs) { [weak self] (refunds, error) in
             guard let refunds = refunds else {
                 onCompletion(error)
@@ -102,8 +102,6 @@ private extension RefundStore {
     /// Synchronizes the refunds associated with a given orderID
     ///
     func synchronizeRefunds(siteID: Int64, orderID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
-        let remote = RefundsRemote(network: network)
-
         remote.loadAllRefunds(for: siteID, by: orderID) { [weak self] (refunds, error) in
             guard let refunds = refunds else {
                 onCompletion(error)

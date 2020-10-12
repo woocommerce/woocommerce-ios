@@ -13,7 +13,7 @@ final class OrderStatusListViewController: UIViewController {
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld && slug != %@",
-                                    ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min,
+                                    siteID,
                                     OrderStatusEnum.refunded.rawValue)
         let descriptor = NSSortDescriptor(key: "slug", ascending: true)
 
@@ -39,9 +39,11 @@ final class OrderStatusListViewController: UIViewController {
     /// Order to be provided with a new status
     ///
     private let order: Order
+    private let siteID: Int64
 
     init(order: Order, currentStatus: OrderStatus?) {
         self.order = order
+        self.siteID = order.siteID
         self.selectedStatus = currentStatus
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
@@ -85,11 +87,7 @@ final class OrderStatusListViewController: UIViewController {
     /// Registers all of the available TableViewCells
     ///
     private func registerTableViewCells() {
-        let cells = [StatusListTableViewCell.self]
-
-        for cell in cells {
-            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
-        }
+        tableView.registerNib(for: StatusListTableViewCell.self)
     }
 
     /// Setup: TableView
@@ -235,10 +233,7 @@ extension OrderStatusListViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: StatusListTableViewCell.reuseIdentifier,
-                                                       for: indexPath) as? StatusListTableViewCell else {
-            fatalError()
-        }
+        let cell = tableView.dequeueReusableCell(StatusListTableViewCell.self, for: indexPath)
 
         let status = statusResultsController.object(at: indexPath)
         cell.textLabel?.text = status.name

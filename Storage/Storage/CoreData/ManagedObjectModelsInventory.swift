@@ -26,7 +26,7 @@ struct ManagedObjectModelsInventory {
     /// This is intentionally a `struct` with a single property instead of a `String` because I
     /// foresee that this will be used to contain the `NSManagedObjectModel` in the near future.
     ///
-    struct ModelVersion {
+    struct ModelVersion: Equatable {
         /// The name excluding the extension.
         ///
         /// For example, if the model file name is "Model 10.mom", then this would be "Model 10".
@@ -79,6 +79,16 @@ struct ManagedObjectModelsInventory {
         return ManagedObjectModelsInventory(packageURL: packageURL,
                                             currentModel: currentModel,
                                             versions: modelVersions)
+    }
+
+    /// Load the corresponding `NSManagedObjectModel` for the given `version`.
+    ///
+    /// This is intentionally not part of `ModelVersion` itself because this involves a file
+    /// access and we usually would not need all of the `NSManagedObjectModel` instances.
+    ///
+    func model(for version: ModelVersion) -> NSManagedObjectModel? {
+        let expectedMomURL = packageURL.appendingPathComponent(version.name).appendingPathExtension("mom")
+        return NSManagedObjectModel(contentsOf: expectedMomURL)
     }
 }
 

@@ -125,6 +125,6 @@ private extension ProductFormViewModel_SaveTests {
                                     formType: formType,
                                     productImageActionHandler: productImageActionHandler,
                                     isEditProductsRelease3Enabled: true,
-                                    isEditProductsRelease5Enabled: false)
+                                    isEditProductsRelease5Enabled: true)
     }
 }

@@ -12,7 +12,7 @@ final class OrderSearchStarterViewController: UIViewController, KeyboardFrameAdj
 
     @IBOutlet private var tableView: UITableView!
 
-    private lazy var viewModel = OrderSearchStarterViewModel()
+    private lazy var viewModel = OrderSearchStarterViewModel(siteID: siteID)
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
         KeyboardFrameObserver { [weak self] keyboardFrame in
@@ -23,7 +23,10 @@ final class OrderSearchStarterViewController: UIViewController, KeyboardFrameAdj
     /// Required implementation for `KeyboardFrameAdjustmentProvider`.
     var additionalKeyboardFrameHeight: CGFloat = 0
 
-    init() {
+    private let siteID: Int64
+
+    init(siteID: Int64) {
+        self.siteID = siteID
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -43,8 +46,7 @@ final class OrderSearchStarterViewController: UIViewController, KeyboardFrameAdj
     }
 
     private func configureTableView() {
-        tableView.register(SettingTitleAndValueTableViewCell.loadNib(),
-                           forCellReuseIdentifier: SettingTitleAndValueTableViewCell.reuseIdentifier)
+        tableView.registerNib(for: SettingTitleAndValueTableViewCell.self)
 
         tableView.backgroundColor = .listBackground
         tableView.delegate = self
@@ -62,11 +64,7 @@ extension OrderSearchStarterViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell =
-            tableView.dequeueReusableCell(withIdentifier: SettingTitleAndValueTableViewCell.reuseIdentifier,
-                                          for: indexPath) as? SettingTitleAndValueTableViewCell else {
-                                            fatalError("Unexpected or missing cell")
-        }
+        let cell = tableView.dequeueReusableCell(SettingTitleAndValueTableViewCell.self, for: indexPath)
 
         let cellViewModel = viewModel.cellViewModel(at: indexPath)
 
@@ -134,14 +132,16 @@ private extension OrderSearchStarterViewController {
 
         if #available(iOS 13, *) {
             return OrderListViewController(
+                siteID: siteID,
                 title: title,
-                viewModel: .init(statusFilter: cellViewModel.orderStatus),
+                viewModel: .init(siteID: siteID, statusFilter: cellViewModel.orderStatus),
                 emptyStateConfig: emptyStateConfig
             )
         } else {
             return OrdersViewController(
+                siteID: siteID,
                 title: title,
-                viewModel: .init(statusFilter: cellViewModel.orderStatus),
+                viewModel: .init(siteID: siteID, statusFilter: cellViewModel.orderStatus),
                 emptyStateConfig: emptyStateConfig
             )
         }

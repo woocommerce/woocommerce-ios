@@ -28,7 +28,7 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
     @IBOutlet weak var contentStackView: UIStackView!
 
     static func register(for tableView: UITableView) {
-        tableView.register(loadNib(), forCellReuseIdentifier: reuseIdentifier)
+        tableView.registerNib(for: self)
     }
 
     func configureCell(searchModel: OrderSearchCellViewModel) {

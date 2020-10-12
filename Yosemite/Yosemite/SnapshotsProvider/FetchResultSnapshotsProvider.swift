@@ -119,19 +119,7 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     }
     private let snapshotSubject = CurrentValueSubject<FetchResultSnapshot, Never>(FetchResultSnapshot())
 
-    private lazy var fetchedResultsController: NSFetchedResultsController<MutableType> = {
-        let fetchRequest = NSFetchRequest<MutableType>(entityName: MutableType.entityName)
-        fetchRequest.predicate = query.predicate
-        fetchRequest.sortDescriptors = [query.sortDescriptor]
-
-        let resultsController = storage.createFetchedResultsController(
-            fetchRequest: fetchRequest,
-            sectionNameKeyPath: query.sectionNameKeyPath,
-            cacheName: nil
-        )
-        resultsController.delegate = self.hiddenFetchedResultsControllerDelegate
-        return resultsController
-    }()
+    private lazy var fetchedResultsController: NSFetchedResultsController<MutableType> = createFetchedResultsController(query: query)
 
     /// The delgate for `fetchedResultsController`.
     private lazy var hiddenFetchedResultsControllerDelegate = HiddenFetchedResultsControllerDelegate(self)
@@ -203,6 +191,21 @@ private extension FetchResultSnapshotsProvider {
     /// Returns `true` if the `activateFetchedResultsController()` method was previously called.
     var fetchedResultsControllerIsActive: Bool {
         fetchedResultsController.fetchedObjects != nil
+    }
+
+    func createFetchedResultsController(query: Query) -> NSFetchedResultsController<MutableType> {
+        let fetchRequest = NSFetchRequest<MutableType>(entityName: MutableType.entityName)
+        fetchRequest.predicate = query.predicate
+        fetchRequest.sortDescriptors = [query.sortDescriptor]
+
+        let resultsController = storage.createFetchedResultsController(
+            fetchRequest: fetchRequest,
+            sectionNameKeyPath: query.sectionNameKeyPath,
+            cacheName: nil
+        )
+        resultsController.delegate = hiddenFetchedResultsControllerDelegate
+
+        return resultsController
     }
 
     /// If previously activated, restart `fetchedResultsController` fetching and dispatching of snapshots.

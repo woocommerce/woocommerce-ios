@@ -1,13 +1,3 @@
-En esta actualización, tenemos muchas mejoras para Información del pedido y Ajustes.
-
-En Información del pedido, ahora puedes añadir el marcador de posición "Invitado" cuando no se indica el nombre del cliente. En la subsección Detalles del producto, hemos corregido un fallo que hacía que se cerrara toda la sección al hacer clic fuera de "Añadir más detalles".
-
-En Ajustes, hemos reemplazado el botón "Solicitud de función" por "Enviar comentarios".
-
-También hemos hecho cambios en Ajustes > Funciones experimentales, si está activado Productos:
-
-1. Puedes hacer ediciones básicas para productos no principales, como suscripciones, que se introducen mediante plugins externos y que no están definidos por defecto en los cuatro grupos centrales de WooCommerce (simple, variable, enlazado y agrupado). Puedes cambiar las imágenes, el nombre, la descripción, el precio, el inventario, las etiquetas, las categorías, la descripción corta y los ajustes del producto.
-2. Ahora se pueden editar los ajustes de inventario y envío para las variaciones de productos, incluyendo el estado de las existencias.
-3. La fila de valoraciones está oculta si las valoraciones están desactivadas.
-4. Puedes abrir la pantalla de valoraciones del producto aunque no haya valoraciones.
-5. El soporte de VoiceOver en Detalles del producto ahora incluye el encabezado de imágenes y el nombre del producto.
+- Productos: Si el interruptor Productos está activado en “Ajustes” → “Funciones experimentales” para un producto variable, el estado de las existencias ya no se muestra en los detalles del producto cuando la gestión de las existencias está desactivada (ya que el estado de las existencias se controla en la variación).
+- Pedidos: Ahora, la lista de búsqueda mostrará el recuento total en lugar de “+99”.
+- Reseñas: Hemos corregido un error que impedía que las reseñas se actualizaran correctamente. Ahora, si eliminas o marcas una reseña como spam, ese cambio se reflejará en la lista de reseñas del producto.

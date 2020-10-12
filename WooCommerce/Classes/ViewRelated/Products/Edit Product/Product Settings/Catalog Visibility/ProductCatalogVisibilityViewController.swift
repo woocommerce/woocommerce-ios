@@ -60,8 +60,8 @@ private extension ProductCatalogVisibilityViewController {
     }
 
     func configureTableView() {
-        tableView.register(SwitchTableViewCell.loadNib(), forCellReuseIdentifier: SwitchTableViewCell.reuseIdentifier)
-        tableView.register(BasicTableViewCell.loadNib(), forCellReuseIdentifier: BasicTableViewCell.reuseIdentifier)
+        tableView.registerNib(for: SwitchTableViewCell.self)
+        tableView.registerNib(for: BasicTableViewCell.self)
 
         tableView.dataSource = self
         tableView.delegate = self

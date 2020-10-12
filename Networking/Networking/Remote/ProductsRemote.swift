@@ -9,6 +9,37 @@ public protocol ProductsRemoteProtocol {
     func deleteProduct(for siteID: Int64, productID: Int64, completion: @escaping (Result<Product, Error>) -> Void)
     func loadProduct(for siteID: Int64, productID: Int64, completion: @escaping (Result<Product, Error>) -> Void)
     func loadProducts(for siteID: Int64, by productIDs: [Int64], pageNumber: Int, pageSize: Int, completion: @escaping (Result<[Product], Error>) -> Void)
+    func loadAllProducts(for siteID: Int64,
+                         context: String?,
+                         pageNumber: Int,
+                         pageSize: Int,
+                         stockStatus: ProductStockStatus?,
+                         productStatus: ProductStatus?,
+                         productType: ProductType?,
+                         orderBy: ProductsRemote.OrderKey,
+                         order: ProductsRemote.Order,
+                         excludedProductIDs: [Int64],
+                         completion: @escaping (Result<[Product], Error>) -> Void)
+    func searchProducts(for siteID: Int64,
+                        keyword: String,
+                        pageNumber: Int,
+                        pageSize: Int,
+                        excludedProductIDs: [Int64],
+                        completion: @escaping ([Product]?, Error?) -> Void)
+    func searchSku(for siteID: Int64,
+                   sku: String,
+                   completion: @escaping (String?, Error?) -> Void)
+    func updateProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void)
+}
+
+extension ProductsRemoteProtocol {
+    public func loadProducts(for siteID: Int64, by productIDs: [Int64], completion: @escaping (Result<[Product], Error>) -> Void) {
+        loadProducts(for: siteID,
+                     by: productIDs,
+                     pageNumber: ProductsRemote.Default.pageNumber,
+                     pageSize: ProductsRemote.Default.pageSize,
+                     completion: completion)
+    }
 }
 
 /// Product: Remote Endpoints

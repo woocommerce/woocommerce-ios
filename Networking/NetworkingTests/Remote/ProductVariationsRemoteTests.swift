@@ -117,6 +117,50 @@ final class ProductVariationsRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    // MARK: - Load single product variation tests
+
+    /// Verifies that loadProductVariation properly parses the `product-variation` sample response.
+    ///
+    func test_load_single_ProductVariation_returns_parsed_ProductVariation() throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        let sampleProductVariationID: Int64 = 1275
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations/\(sampleProductVariationID)", filename: "product-variation")
+
+        // When
+        let result = try waitFor { promise in
+            remote.loadProductVariation(for: self.sampleSiteID, productID: self.sampleProductID, variationID: sampleProductVariationID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+
+        let productVariation = try result.get()
+        XCTAssertEqual(productVariation.productID, sampleProductID)
+        XCTAssertEqual(productVariation.productVariationID, sampleProductVariationID)
+    }
+
+    /// Verifies that loadProductVariation properly relays any Networking Layer errors.
+    ///
+    func test_load_single_ProductVariation_properly_relays_netwoking_errors() throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        let sampleProductVariationID: Int64 = 2783
+
+        // When
+        let result = try waitFor { promise in
+            remote.loadProductVariation(for: self.sampleSiteID, productID: self.sampleProductID, variationID: sampleProductVariationID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .notFound)
+    }
+
     // MARK: - Update ProductVariation
 
     /// Verifies that updateProductVariation properly parses the `product-variation-update` sample response.

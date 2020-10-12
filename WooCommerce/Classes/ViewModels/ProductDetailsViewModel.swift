@@ -724,15 +724,17 @@ extension ProductDetailsViewModel {
 
     func syncProduct(onCompletion: ((Error?) -> ())? = nil) {
         let action = ProductAction.retrieveProduct(siteID: product.siteID,
-                                                   productID: product.productID) { [weak self] (product, error) in
-            guard let self = self, let product = product else {
-                DDLogError("⛔️ Error synchronizing Product: \(error.debugDescription)")
-                onCompletion?(error)
-                return
-            }
+                                                   productID: product.productID) { [weak self] result in
+                                                    guard let self = self else { return }
 
-            self.product = product
-            onCompletion?(nil)
+                                                    switch result {
+                                                    case .failure(let error):
+                                                        DDLogError("⛔️ Error synchronizing Product: \(error)")
+                                                        onCompletion?(error)
+                                                    case .success(let product):
+                                                        self.product = product
+                                                        onCompletion?(nil)
+                                                    }
         }
 
         ServiceLocator.stores.dispatch(action)

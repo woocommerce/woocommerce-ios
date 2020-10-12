@@ -107,11 +107,14 @@ final class OrderListViewController: UIViewController {
 
     private var cancellables = Set<AnyCancellable>()
 
+    private let siteID: Int64
+
     // MARK: - View Lifecycle
 
     /// Designated initializer.
     ///
-    init(title: String, viewModel: OrderListViewModel, emptyStateConfig: EmptyStateViewController.Config) {
+    init(siteID: Int64, title: String, viewModel: OrderListViewModel, emptyStateConfig: EmptyStateViewController.Config) {
+        self.siteID = siteID
         self.viewModel = viewModel
         self.emptyStateConfig = emptyStateConfig
 
@@ -137,13 +140,10 @@ final class OrderListViewController: UIViewController {
         configureTableView()
         configureGhostableTableView()
 
-        refreshStatusPredicate()
         configureStatusResultsController()
 
         configureViewModel()
         configureSyncingCoordinator()
-
-        startListeningToNotifications()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -161,9 +161,7 @@ final class OrderListViewController: UIViewController {
     /// Returns a function that creates cells for `dataSource`.
     private func makeCellProvider() -> UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID>.CellProvider {
         return { [weak self] tableView, indexPath, objectID in
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: OrderTableViewCell.reuseIdentifier, for: indexPath) as? OrderTableViewCell else {
-                fatalError("Failed to create cell \(OrderTableViewCell.reuseIdentifier)")
-            }
+            let cell = tableView.dequeueReusableCell(OrderTableViewCell.self, for: indexPath)
             guard let self = self else {
                 return cell
             }
@@ -199,30 +197,15 @@ private extension OrderListViewController {
         viewModel.activate()
 
         /// Update the `dataSource` whenever there is a new snapshot.
-        viewModel.snapshot.sink { snapshot in
-            self.dataSource.apply(snapshot)
+        viewModel.snapshot.sink { [weak self] snapshot in
+            self?.dataSource.apply(snapshot)
         }.store(in: &cancellables)
-    }
-
-    /// Setup: Order status predicate
-    ///
-    func refreshStatusPredicate() {
-        // Bugfix for https://github.com/woocommerce/woocommerce-ios/issues/751.
-        // Because we are listening for default account changes,
-        // this will also fire upon logging out, when the account
-        // is set to nil. So let's protect against multi-threaded
-        // access attempts if the account is indeed nil.
-        guard ServiceLocator.stores.isAuthenticated,
-            ServiceLocator.stores.needsDefaultStore == false else {
-                return
-        }
-
-        statusResultsController.predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
     }
 
     /// Setup: Status Results Controller
     ///
     func configureStatusResultsController() {
+        statusResultsController.predicate = NSPredicate(format: "siteID == %lld", siteID)
         try? statusResultsController.performFetch()
     }
 
@@ -275,36 +258,11 @@ private extension OrderListViewController {
     /// Registers all of the available table view cells and headers
     ///
     func registerTableViewHeadersAndCells() {
-        let cells = [ OrderTableViewCell.self ]
-
-        for cell in cells {
-            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
-            ghostableTableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
-        }
+        tableView.registerNib(for: OrderTableViewCell.self)
+        ghostableTableView.registerNib(for: OrderTableViewCell.self)
 
         let headerType = TwoColumnSectionHeaderView.self
         tableView.register(headerType.loadNib(), forHeaderFooterViewReuseIdentifier: headerType.reuseIdentifier)
-    }
-}
-
-
-// MARK: - Notifications
-//
-@available(iOS 13.0, *)
-extension OrderListViewController {
-
-    /// Wires all of the Notification Hooks
-    ///
-    func startListeningToNotifications() {
-        let nc = NotificationCenter.default
-        nc.addObserver(self, selector: #selector(defaultAccountWasUpdated), name: .defaultAccountWasUpdated, object: nil)
-    }
-
-    /// Runs whenever the default Account is updated.
-    ///
-    @objc func defaultAccountWasUpdated() {
-        refreshStatusPredicate()
-        syncingCoordinator.resetInternalState()
     }
 }
 
@@ -329,11 +287,6 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
     /// Synchronizes the Orders for the Default Store (if any).
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)? = nil) {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            onCompletion?(false)
-            return
-        }
-
         transitionToSyncingState()
 
         let action = viewModel.synchronizationAction(

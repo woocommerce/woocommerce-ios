@@ -5,10 +5,16 @@ import Storage
 // MARK: - ProductCategoryStore
 //
 public final class ProductCategoryStore: Store {
+    private let remote: ProductCategoriesRemote
 
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.newDerivedStorage()
     }()
+
+    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+        self.remote = ProductCategoriesRemote(network: network)
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
 
     /// Registers for supported Actions.
     ///
@@ -73,8 +79,6 @@ private extension ProductCategoryStore {
     /// Synchronizes product categories associated with a given Site ID.
     ///
     func synchronizeProductCategories(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping ([ProductCategory]?, Error?) -> Void) {
-        let remote = ProductCategoriesRemote(network: network)
-
         remote.loadAllProductCategories(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (productCategories, error) in
             guard let productCategories = productCategories else {
                 onCompletion(nil, error)
@@ -94,8 +98,6 @@ private extension ProductCategoryStore {
     /// Create a new product category associated with a given Site ID.
     ///
     func addProductCategory(siteID: Int64, name: String, parentID: Int64?, onCompletion: @escaping (Result<ProductCategory, Error>) -> Void) {
-        let remote = ProductCategoriesRemote(network: network)
-
         remote.createProductCategory(for: siteID, name: name, parentID: parentID) { [weak self] result in
             switch result {
             case .success(let productCategory):

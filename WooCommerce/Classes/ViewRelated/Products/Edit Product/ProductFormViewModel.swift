@@ -137,6 +137,11 @@ extension ProductFormViewModel {
     func canShareProduct() -> Bool {
         formType == .edit
     }
+
+    func canDeleteProduct() -> Bool {
+        isEditProductsRelease5Enabled &&
+        formType == .edit
+    }
 }
 
 // MARK: Action handling
@@ -292,6 +297,18 @@ extension ProductFormViewModel {
                                                 case .failure(let error):
                                                     onCompletion(.failure(error))
                                                 }
+            }
+        }
+    }
+
+    func deleteProductRemotely(onCompletion: @escaping (Result<EditableProductModel, ProductUpdateError>) -> Void) {
+        let remoteActionUseCase = ProductFormRemoteActionUseCase()
+        remoteActionUseCase.deleteProduct(product: product) { result in
+            switch result {
+            case .success(let data):
+                onCompletion(.success(data.product))
+            case .failure(let error):
+                onCompletion(.failure(error))
             }
         }
     }

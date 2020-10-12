@@ -290,6 +290,126 @@ final class ProductVariationStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    // MARK: - ProductVariationAction.retrieveProductVariation
+
+    /// Verifies that `ProductVariationAction.retrieveProductVariation` effectively persists the retrieved product variation.
+    ///
+    func test_retrieveProductVariation_persists_the_ProductVariation() throws {
+        // Given
+        let remote = MockProductVariationsRemote()
+        let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        let sampleProductVariationID: Int64 = 1275
+        let expectedProductVariation = sampleProductVariation(id: sampleProductVariationID)
+        remote.whenLoadingProductVariation(siteID: sampleSiteID,
+                                           productID: sampleProductID,
+                                           productVariationID: sampleProductVariationID,
+                                           thenReturn: .success(expectedProductVariation))
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
+
+        // When
+        let result: Result<Yosemite.ProductVariation, Error> = try waitFor { promise in
+            let action = ProductVariationAction.retrieveProductVariation(siteID: self.sampleSiteID,
+                                                                         productID: self.sampleProductID,
+                                                                         variationID: sampleProductVariationID) { result in
+                                                                            promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
+
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertNotNil(try result.get())
+
+        let storedProductVariation = viewStorage.loadProductVariation(siteID: sampleSiteID, productVariationID: sampleProductVariationID)
+        XCTAssertNotNil(storedProductVariation)
+
+        let readOnlyStoredProductVariation = storedProductVariation?.toReadOnly()
+        XCTAssertEqual(readOnlyStoredProductVariation, expectedProductVariation)
+    }
+
+    /// Verifies that `ProductVariationAction.retrieveProductVariation` called multiple times does not create duplicated objects.
+    ///
+    func test_retrieveProductVariation_create_no_duplicates() throws {
+
+        // Given
+        let remote = MockProductVariationsRemote()
+        let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        let sampleProductVariationID: Int64 = 1275
+        let expectedProductVariation = sampleProductVariation(id: sampleProductVariationID)
+        remote.whenLoadingProductVariation(siteID: sampleSiteID,
+                                           productID: sampleProductID,
+                                           productVariationID: sampleProductVariationID,
+                                           thenReturn: .success(expectedProductVariation))
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
+
+        // When
+        let result1: Result<Yosemite.ProductVariation, Error> = try waitFor { promise in
+            let action = ProductVariationAction.retrieveProductVariation(siteID: self.sampleSiteID,
+                                                                         productID: self.sampleProductID,
+                                                                         variationID: sampleProductVariationID) { result in
+                                                                            promise(result)
+            }
+            store.onAction(action)
+        }
+
+        let result2: Result<Yosemite.ProductVariation, Error> = try waitFor { promise in
+            let action = ProductVariationAction.retrieveProductVariation(siteID: self.sampleSiteID,
+                                                                         productID: self.sampleProductID,
+                                                                         variationID: sampleProductVariationID) { result in
+                                                                            promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
+
+        XCTAssertTrue(result1.isSuccess)
+        XCTAssertNotNil(try result1.get())
+
+        XCTAssertTrue(result2.isSuccess)
+        XCTAssertNotNil(try result2.get())
+
+        let storedProductVariation = viewStorage.loadProductVariation(siteID: sampleSiteID, productVariationID: sampleProductVariationID)
+        XCTAssertNotNil(storedProductVariation)
+
+        let readOnlyStoredProductVariation = storedProductVariation?.toReadOnly()
+        XCTAssertEqual(readOnlyStoredProductVariation, expectedProductVariation)
+    }
+
+    /// Verifies that `ProductVariationAction.retrieveProductVariation` returns an error whenever there is an error response from the backend.
+    ///
+    func test_retrieveProductVariation_returns_expected_error() throws {
+
+        // Given
+        let remote = MockProductVariationsRemote()
+        let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        let sampleProductVariationID: Int64 = 1275
+        let expectedError = ProductVariationLoadError.notFoundInStorage
+        remote.whenLoadingProductVariation(siteID: sampleSiteID,
+                                           productID: sampleProductID,
+                                           productVariationID: sampleProductVariationID,
+                                           thenReturn: .failure(expectedError))
+
+        // When
+        let result: Result<Yosemite.ProductVariation, Error> = try waitFor { promise in
+            let action = ProductVariationAction.retrieveProductVariation(siteID: self.sampleSiteID,
+                                                                         productID: self.sampleProductID,
+                                                                         variationID: sampleProductVariationID) { result in
+                                                                            promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
+
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? ProductVariationLoadError, expectedError)
+    }
+
     // MARK: - ProductVariationAction.updateProductVariation
 
     /// Verifies that `ProductVariationAction.updateProductVariation` returns the expected `ProductVariation`.

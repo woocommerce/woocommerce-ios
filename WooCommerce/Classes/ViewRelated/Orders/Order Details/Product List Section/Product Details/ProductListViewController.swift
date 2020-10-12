@@ -45,9 +45,7 @@ private extension ProductListViewController {
         tableView.sectionHeaderHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
-
-        let nib = PickListTableViewCell.loadNib()
-        tableView.register(nib, forCellReuseIdentifier: PickListTableViewCell.reuseIdentifier)
+        tableView.registerNib(for: PickListTableViewCell.self)
 
         let headerNib = UINib(nibName: TwoColumnSectionHeaderView.reuseIdentifier, bundle: nil)
         tableView.register(headerNib, forHeaderFooterViewReuseIdentifier: TwoColumnSectionHeaderView.reuseIdentifier)
@@ -73,10 +71,7 @@ extension ProductListViewController: UITableViewDataSource {
         let itemViewModel = ProductDetailsCellViewModel(item: item,
                                                         currency: viewModel.order.currency,
                                                         product: product)
-        let cellID = PickListTableViewCell.reuseIdentifier
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as? PickListTableViewCell else {
-            fatalError()
-        }
+        let cell = tableView.dequeueReusableCell(PickListTableViewCell.self, for: indexPath)
         cell.selectionStyle = .default
         cell.configure(item: itemViewModel, imageService: imageService)
 
@@ -126,7 +121,8 @@ private extension ProductListViewController {
     ///
     func productWasPressed(for productID: Int64) {
         let loaderViewController = ProductLoaderViewController(productID: productID,
-                                                               siteID: viewModel.order.siteID)
+                                                               siteID: viewModel.order.siteID,
+                                                               forceReadOnly: false)
         let navController = WooNavigationController(rootViewController: loaderViewController)
         present(navController, animated: true, completion: nil)
     }

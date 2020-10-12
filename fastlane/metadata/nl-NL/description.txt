@@ -7,7 +7,7 @@ Bekijk welke producten het beste presteren. Controleer je totale inkomsten en be
 REALTIME BESTELLINGSMELDINGEN
 Ontvang meldingen over de winkelactiviteit, waaronder nieuwe bestellingen en productbeoordelingen.
 
-WooCommerce is het meest personaliseerbare eCommerce-platform voor het oprichten van je online bedrijf. Doordat het gebaseerd is op WordPress, is het geïntegreerd in de beste contentmanagementhulpmiddelen ter wereld. Van koffieabonnementen tot taallessen Spaans tot sportschoolabonnementen tot complexe eCommerce op ondernemersniveau; ga naar WooCommerce.com/start om een nieuwe winkel te openen en je idee vast te leggen.
+WooCommerce is het meest personaliseerbare eCommerce-platform voor het oprichten van je online bedrijf. Doordat het gebaseerd is op WordPress, is het geïntegreerd in de beste contentmanagementhulpmiddelen ter wereld.
 
 Vereisten: WooCommerce v3.5+, de Jetpack-plugin.
 

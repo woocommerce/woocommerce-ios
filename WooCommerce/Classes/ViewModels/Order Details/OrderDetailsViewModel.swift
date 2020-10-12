@@ -158,12 +158,12 @@ extension OrderDetailsViewModel {
             ProductDetailsTableViewCell.self,
             OrderTrackingTableViewCell.self,
             SummaryTableViewCell.self,
-            FulfillButtonTableViewCell.self,
+            ButtonTableViewCell.self,
             IssueRefundTableViewCell.self
         ]
 
-        for cell in cells {
-            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
+        for cellClass in cells {
+            tableView.registerNib(for: cellClass)
         }
     }
 
@@ -213,14 +213,16 @@ extension OrderDetailsViewModel {
         case .orderItem:
             let item = items[indexPath.row]
             let loaderViewController = ProductLoaderViewController(productID: item.productOrVariationID,
-                                                                   siteID: order.siteID)
+                                                                   siteID: order.siteID,
+                                                                   forceReadOnly: true)
             let navController = WooNavigationController(rootViewController: loaderViewController)
             viewController.present(navController, animated: true, completion: nil)
         case .aggregateOrderItem:
             let item = dataSource.aggregateOrderItems[indexPath.row]
             let productID = item.variationID == 0 ? item.productID : item.variationID
             let loaderViewController = ProductLoaderViewController(productID: productID,
-                                                                   siteID: order.siteID)
+                                                                   siteID: order.siteID,
+                                                                   forceReadOnly: true)
             let navController = WooNavigationController(rootViewController: loaderViewController)
             viewController.present(navController, animated: true, completion: nil)
         case .billingDetail:

@@ -19,7 +19,9 @@ final class ReviewsCoordinator: Coordinator {
 
     private let willPresentReviewDetailsFromPushNotification: () -> Void
 
-    init(pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
+    init(siteID: Int64,
+         navigationController: UINavigationController,
+         pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          storesManager: StoresManager = ServiceLocator.stores,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
          switchStoreUseCase: SwitchStoreUseCaseProtocol,
@@ -31,12 +33,15 @@ final class ReviewsCoordinator: Coordinator {
         self.switchStoreUseCase = switchStoreUseCase
         self.willPresentReviewDetailsFromPushNotification = willPresentReviewDetailsFromPushNotification
 
-        self.navigationController = WooNavigationController(rootViewController: ReviewsViewController())
+        self.navigationController = navigationController
+        navigationController.viewControllers = [ReviewsViewController(siteID: siteID)]
     }
 
-    convenience init(willPresentReviewDetailsFromPushNotification: @escaping () -> Void) {
+    convenience init(siteID: Int64, navigationController: UINavigationController, willPresentReviewDetailsFromPushNotification: @escaping () -> Void) {
         let storesManager = ServiceLocator.stores
-        self.init(storesManager: storesManager,
+        self.init(siteID: siteID,
+                  navigationController: navigationController,
+                  storesManager: storesManager,
                   switchStoreUseCase: SwitchStoreUseCase(stores: storesManager),
                   willPresentReviewDetailsFromPushNotification: willPresentReviewDetailsFromPushNotification)
     }

@@ -6,6 +6,8 @@ import Storage
 // MARK: - OrderStore
 //
 public class NotificationStore: Store {
+    private let remote: NotificationsRemote
+    private let devicesRemote: DevicesRemote
 
     /// Thread Safety
     ///
@@ -14,6 +16,12 @@ public class NotificationStore: Store {
     /// Shared private StorageType for use during then entire notification sync process
     ///
     private static var privateStorage: StorageType!
+
+    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+        self.remote = NotificationsRemote(network: network)
+        self.devicesRemote = DevicesRemote(network: network)
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
 
     /// Registers for supported Actions.
     ///
@@ -66,8 +74,7 @@ private extension NotificationStore {
                         applicationVersion: String,
                         defaultStoreID: Int64,
                         onCompletion: @escaping (DotcomDevice?, Error?) -> Void) {
-        let remote = DevicesRemote(network: network)
-        remote.registerDevice(device: device,
+        devicesRemote.registerDevice(device: device,
                               applicationId: applicationId,
                               applicationVersion: applicationVersion,
                               defaultStoreID: defaultStoreID,
@@ -77,16 +84,13 @@ private extension NotificationStore {
     /// Unregisters a Dotcom Device from the Push Notifications Delivery Subsystem.
     ///
     func unregisterDevice(deviceId: String, onCompletion: @escaping (Error?) -> Void) {
-        let remote = DevicesRemote(network: network)
-        remote.unregisterDevice(deviceId: deviceId, completion: onCompletion)
+        devicesRemote.unregisterDevice(deviceId: deviceId, completion: onCompletion)
     }
 
 
     /// Retrieves the latest notifications (if any!).
     ///
     func synchronizeNotifications(onCompletion: @escaping (Error?) -> Void) {
-        let remote = NotificationsRemote(network: network)
-
         remote.loadHashes(pageSize: Constants.maximumPageSize) { [weak self] (hashes, error) in
             guard let hashes = hashes else {
                 onCompletion(error)
@@ -95,14 +99,17 @@ private extension NotificationStore {
 
             self?.deleteLocalMissingNotes(from: hashes) { [weak self] in
 
-                self?.determineUpdatedNotes(using: hashes) { outdatedIDs in
+                self?.determineUpdatedNotes(using: hashes) { [weak self] outdatedIDs in
+                    guard let self = self else {
+                        return
+                    }
 
                     guard outdatedIDs.isEmpty == false else {
                         onCompletion(nil)
                         return
                     }
 
-                    remote.loadNotes(noteIDs: outdatedIDs, pageSize: Constants.maximumPageSize) { [weak self] result in
+                    self.remote.loadNotes(noteIDs: outdatedIDs, pageSize: Constants.maximumPageSize) { [weak self] result in
                         guard let self = self else {
                             return
                         }
@@ -129,9 +136,10 @@ private extension NotificationStore {
     ///     - onCompletion: Closure to be executed on completion.
     ///
     func synchronizeNotification(with noteID: Int64, onCompletion: @escaping (Note?, Error?) -> Void) {
-        let remote = NotificationsRemote(network: network)
-
-        remote.loadNotes(noteIDs: [noteID]) { result in
+        remote.loadNotes(noteIDs: [noteID]) { [weak self] result in
+            guard let self = self else {
+                return
+            }
             switch result {
             case .failure(let error):
                 onCompletion(nil, error)
@@ -147,7 +155,6 @@ private extension NotificationStore {
     /// Updates the last seen notification
     ///
     func updateLastSeen(timestamp: String, onCompletion: @escaping (Error?) -> Void) {
-        let remote = NotificationsRemote(network: network)
         remote.updateLastSeen(timestamp) { (error) in
             onCompletion(error)
         }
@@ -163,8 +170,11 @@ private extension NotificationStore {
 
         /// On error we'll just mark the Note for Refresh
         ///
-        let remote = NotificationsRemote(network: network)
-        remote.updateReadStatus(noteIDs: noteIDs, read: read) { error in
+        remote.updateReadStatus(noteIDs: noteIDs, read: read) { [weak self] error in
+            guard let self = self else {
+                return
+            }
+
             guard let error = error else {
 
                 /// What is this about:

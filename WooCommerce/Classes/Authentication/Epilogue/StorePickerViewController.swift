@@ -189,15 +189,8 @@ private extension StorePickerViewController {
     }
 
     func setupTableView() {
-        let cells = [
-            EmptyStoresTableViewCell.reuseIdentifier: EmptyStoresTableViewCell.loadNib(),
-            StoreTableViewCell.reuseIdentifier: StoreTableViewCell.loadNib()
-        ]
-
-        for (reuseIdentifier, nib) in cells {
-            tableView.register(nib, forCellReuseIdentifier: reuseIdentifier)
-        }
-
+        tableView.registerNib(for: EmptyStoresTableViewCell.self)
+        tableView.registerNib(for: StoreTableViewCell.self)
         tableView.backgroundColor = .listBackground
     }
 
@@ -210,7 +203,12 @@ private extension StorePickerViewController {
         accountHeaderView.fullname = defaultAccount.displayName
         accountHeaderView.downloadGravatar(with: defaultAccount.email)
         accountHeaderView.isHelpButtonEnabled = configuration == .login || configuration == .standard
-        accountHeaderView.onHelpRequested = { ServiceLocator.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin) }
+        accountHeaderView.onHelpRequested = { [weak self] in
+            guard let self = self else {
+                return
+            }
+            ServiceLocator.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin)
+        }
     }
 
     func setupNavigation() {
@@ -335,6 +333,10 @@ private extension StorePickerViewController {
             })
         }
 
+        dismiss()
+    }
+
+    func dismiss() {
         switch configuration {
         case .switchingStores:
             dismiss(animated: true)
@@ -519,7 +521,7 @@ extension StorePickerViewController {
             }
 
             delegate.didSelectStore(with: site.siteID) { [weak self] in
-                self?.cleanupAndDismiss()
+                self?.dismiss()
             }
         }
     }
@@ -551,19 +553,14 @@ extension StorePickerViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let site = state.site(at: indexPath) else {
             hideActionButton()
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: EmptyStoresTableViewCell.reuseIdentifier,
-                                                           for: indexPath) as? EmptyStoresTableViewCell else {
-                fatalError()
-            }
+            let cell = tableView.dequeueReusableCell(EmptyStoresTableViewCell.self, for: indexPath)
             cell.onJetpackSetupButtonTapped = { [weak self] in
                 let safariViewController = SFSafariViewController(url: WooConstants.URLs.emptyStoresJetpackSetup.asURL())
                 self?.present(safariViewController, animated: true, completion: nil)
             }
             return cell
         }
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: StoreTableViewCell.reuseIdentifier, for: indexPath) as? StoreTableViewCell else {
-            fatalError()
-        }
+        let cell = tableView.dequeueReusableCell(StoreTableViewCell.self, for: indexPath)
 
         cell.name = site.name
         cell.url = site.url

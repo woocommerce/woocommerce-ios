@@ -40,7 +40,7 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
     }
 
     func testSubtotalValueMatchesExpectation() {
-        let expectedValue = CurrencyFormatter(currencySettings: CurrencySettings()).formatAmount(0, with: order.currency) ?? String()
+        let expectedValue = CurrencyFormatter(currencySettings: CurrencySettings()).formatAmount(.zero, with: order.currency) ?? String()
         XCTAssertEqual(viewModel.subtotalValue, expectedValue)
     }
 

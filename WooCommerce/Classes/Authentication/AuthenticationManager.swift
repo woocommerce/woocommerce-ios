@@ -109,7 +109,7 @@ class AuthenticationManager: Authentication {
             guard let self = self else { return }
             // Resets Apple ID at the beginning of the authentication.
             self.appleUserID = nil
-            
+
             ServiceLocator.analytics.track(.loginPrologueContinueTapped)
         }, onCompletion: onCompletion)
     }

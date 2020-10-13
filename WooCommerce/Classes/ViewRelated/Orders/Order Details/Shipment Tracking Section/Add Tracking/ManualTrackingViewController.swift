@@ -247,8 +247,11 @@ extension ManualTrackingViewController: UITableViewDataSource {
             initialValue: viewModel.providerName
         )
         cell.update(viewModel: cellViewModel)
-        cell.value.addTarget(self, action: #selector(didChangeProviderName), for: .editingChanged)
         cell.accessoryType = .none
+
+        _ = cellViewModel.value.subscribe { [weak self] in
+            self?.didChangeProviderName(value: $0)
+        }
     }
 
     private func configureTrackingNumber(cell: TitleAndEditableValueTableViewCell) {
@@ -258,8 +261,11 @@ extension ManualTrackingViewController: UITableViewDataSource {
             initialValue: viewModel.trackingNumber
         )
         cell.update(viewModel: cellViewModel)
-        cell.value.addTarget(self, action: #selector(didChangeTrackingNumber), for: .editingChanged)
         cell.accessoryType = .none
+
+        _ = cellViewModel.value.subscribe { [weak self] in
+            self?.didChangeTrackingNumber(value: $0)
+        }
     }
 
     private func configureTrackingLink(cell: TitleAndEditableValueTableViewCell) {
@@ -269,8 +275,11 @@ extension ManualTrackingViewController: UITableViewDataSource {
             initialValue: viewModel.trackingLink
         )
         cell.update(viewModel: cellViewModel)
-        cell.value.addTarget(self, action: #selector(didChangeTrackingLink), for: .editingChanged)
         cell.accessoryType = .none
+
+        _ = cellViewModel.value.subscribe { [weak self] in
+            self?.didChangeTrackingLink(value: $0)
+        }
     }
 
     private func configureDateShipped(cell: TitleAndEditableValueTableViewCell) {
@@ -418,8 +427,8 @@ extension ManualTrackingViewController: ShipmentProviderListDelegate {
 // MARK: - Tracking number textfield
 //
 private extension ManualTrackingViewController {
-    @objc func didChangeProviderName(sender: UITextField) {
-        guard let newProviderName = sender.text else {
+    func didChangeProviderName(value: String?) {
+        guard let newProviderName = value else {
             return
         }
 
@@ -427,8 +436,8 @@ private extension ManualTrackingViewController {
         activateActionButtonIfNecessary()
     }
 
-    @objc func didChangeTrackingNumber(sender: UITextField) {
-        guard let newTrackingNumber = sender.text else {
+    func didChangeTrackingNumber(value: String?) {
+        guard let newTrackingNumber = value else {
             return
         }
 
@@ -436,8 +445,8 @@ private extension ManualTrackingViewController {
         activateActionButtonIfNecessary()
     }
 
-    @objc func didChangeTrackingLink(sender: UITextField) {
-        guard let newTrackingLink = sender.text else {
+    func didChangeTrackingLink(value: String?) {
+        guard let newTrackingLink = value else {
             return
         }
 

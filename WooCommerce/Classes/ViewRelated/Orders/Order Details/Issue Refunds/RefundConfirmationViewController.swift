@@ -16,13 +16,20 @@ final class RefundConfirmationViewController: UIViewController {
 
         title = viewModel.refundAmount
 
+        configureMainView()
         configureTableView()
+        configureButtonTableFooterView()
     }
 }
 
 // MARK: - Provisioning
 
 private extension RefundConfirmationViewController {
+
+    func configureMainView() {
+        view.backgroundColor = .listBackground
+    }
+
     func configureTableView() {
         // Register cells
         [
@@ -37,10 +44,21 @@ private extension RefundConfirmationViewController {
         // Style
         tableView.backgroundColor = .listBackground
 
+        // Dimensions
+        tableView.sectionFooterHeight = .leastNonzeroMagnitude
+
         // Add to view
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.pinSubviewToSafeArea(tableView)
+    }
+
+    func configureButtonTableFooterView() {
+        tableView.tableFooterView = ButtonTableFooterView(frame: .zero, title: Localization.refund) {
+            // TODO API calls and magic
+            print("button pressed")
+        }
+        tableView.updateFooterHeight()
     }
 }
 
@@ -88,5 +106,13 @@ extension RefundConfirmationViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         viewModel.sections[safe: section]?.title
+    }
+}
+
+// MARK: - Localization
+
+private extension RefundConfirmationViewController {
+    enum Localization {
+        static let refund = NSLocalizedString("Refund", comment: "The title of the button to confirm the refund.")
     }
 }

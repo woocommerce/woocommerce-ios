@@ -158,7 +158,7 @@ extension OrderDetailsViewModel {
             ProductDetailsTableViewCell.self,
             OrderTrackingTableViewCell.self,
             SummaryTableViewCell.self,
-            FulfillButtonTableViewCell.self,
+            ButtonTableViewCell.self,
             IssueRefundTableViewCell.self
         ]
 

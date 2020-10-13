@@ -32,6 +32,10 @@ final class RefundItemTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var itemImageViewHeightConstraint: NSLayoutConstraint!
 
+    /// Closure invoked when the user taps the quantity button
+    ///
+    var onQuantityTapped: (() -> ())?
+
     override func awakeFromNib() {
         super.awakeFromNib()
         applyCellStyles()
@@ -99,25 +103,30 @@ extension RefundItemTableViewCell {
 
     /// Configure cell with the provided view model
     ///
-    func configure(with viewModel: RefundItemViewModel) {
+    func configure(with viewModel: RefundItemViewModel, imageService: ImageService) {
         itemTitle.text = viewModel.productTitle
         itemCaption.text = viewModel.productQuantityAndPrice
         itemQuantityButton.setTitle(viewModel.quantityToRefund, for: .normal)
 
-        if let _ = viewModel.productImage {
-            // TODO: fill product image
-            placeholderImageView.image = nil
-        } else {
+        guard let productImage = viewModel.productImage else {
             itemImageView.image = nil
             placeholderImageView.image = .productPlaceholderImage
+            return
         }
+
+        placeholderImageView.image = nil
+        imageService.downloadAndCacheImageForImageView(itemImageView,
+                                                       with: productImage,
+                                                       placeholder: nil,
+                                                       progressBlock: nil,
+                                                       completion: nil)
     }
 }
 
 // MARK: Actions
 private extension RefundItemTableViewCell {
     @IBAction func quantityButtonPressed(_ sender: Any) {
-        print("Item quantity button pressed")
+        onQuantityTapped?()
     }
 }
 
@@ -146,7 +155,7 @@ private struct RefundItemTableViewCellRepresentable: UIViewRepresentable {
                                             productTitle: "Hoddie - Big",
                                             productQuantityAndPrice: "2 x $29.99 each",
                                             quantityToRefund: "1")
-        cell.configure(with: viewModel)
+        cell.configure(with: viewModel, imageService: ServiceLocator.imageService)
         return cell
     }
 

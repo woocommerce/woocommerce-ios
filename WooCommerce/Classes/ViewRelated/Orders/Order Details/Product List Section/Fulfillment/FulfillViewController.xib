@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="FulfillViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
-                <outlet property="actionButton" destination="aEY-5S-3tb" id="jN0-Vy-v1p"/>
-                <outlet property="actionView" destination="fYS-hl-gPh" id="YLi-Zi-zDm"/>
                 <outlet property="tableView" destination="TsO-Qh-HeU" id="EMI-D1-cDd"/>
                 <outlet property="view" destination="xri-bp-stu" id="u0X-Sf-Zvz"/>
             </connections>
@@ -23,13 +21,14 @@
             <subviews>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="44" sectionFooterHeight="1" translatesAutoresizingMaskIntoConstraints="NO" id="TsO-Qh-HeU">
                     <rect key="frame" x="0.0" y="44" width="375" height="623"/>
-                    <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                    <color key="backgroundColor" systemColor="groupTableViewBackgroundColor"/>
                     <connections>
                         <outlet property="dataSource" destination="-1" id="Yv6-Rf-W4s"/>
                         <outlet property="delegate" destination="-1" id="gVR-hB-vcQ"/>
                     </connections>
                 </tableView>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="NOa-Wc-6dg"/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
                 <constraint firstItem="TsO-Qh-HeU" firstAttribute="top" secondItem="NOa-Wc-6dg" secondAttribute="top" id="FWT-AI-lfG"/>
@@ -38,31 +37,12 @@
                 <constraint firstItem="NOa-Wc-6dg" firstAttribute="bottom" secondItem="TsO-Qh-HeU" secondAttribute="bottom" id="qSJ-tY-aue"/>
             </constraints>
             <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
-            <viewLayoutGuide key="safeArea" id="NOa-Wc-6dg"/>
             <point key="canvasLocation" x="-87" y="-102"/>
         </view>
-        <view contentMode="scaleToFill" id="fYS-hl-gPh">
-            <rect key="frame" x="0.0" y="0.0" width="390" height="133"/>
-            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-            <subviews>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aEY-5S-3tb">
-                    <rect key="frame" x="16" y="16" width="358" height="53"/>
-                    <color key="backgroundColor" red="0.58823529409999997" green="0.34509803919999998" blue="0.54117647059999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    <state key="normal" title="Button"/>
-                </button>
-            </subviews>
-            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-            <constraints>
-                <constraint firstItem="GUF-ov-tQt" firstAttribute="bottom" secondItem="aEY-5S-3tb" secondAttribute="bottom" constant="64" id="6Em-Cd-fOs"/>
-                <constraint firstItem="aEY-5S-3tb" firstAttribute="leading" secondItem="GUF-ov-tQt" secondAttribute="leading" constant="16" id="8XT-SW-X1E"/>
-                <constraint firstItem="GUF-ov-tQt" firstAttribute="trailing" secondItem="aEY-5S-3tb" secondAttribute="trailing" constant="16" id="Kvy-GF-VRq"/>
-                <constraint firstItem="aEY-5S-3tb" firstAttribute="top" secondItem="GUF-ov-tQt" secondAttribute="top" constant="16" id="Oxx-2i-9cY"/>
-            </constraints>
-            <nil key="simulatedTopBarMetrics"/>
-            <nil key="simulatedBottomBarMetrics"/>
-            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="GUF-ov-tQt"/>
-            <point key="canvasLocation" x="-517" y="-448"/>
-        </view>
     </objects>
+    <resources>
+        <systemColor name="groupTableViewBackgroundColor">
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
 </document>

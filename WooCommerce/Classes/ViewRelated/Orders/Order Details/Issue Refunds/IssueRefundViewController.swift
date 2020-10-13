@@ -1,4 +1,5 @@
 import UIKit
+import Yosemite
 
 /// Screen that allows the user to refund items (products and shipping) of an order
 ///
@@ -12,9 +13,15 @@ final class IssueRefundViewController: UIViewController {
     @IBOutlet private var nextButton: UIButton!
     @IBOutlet private var selectAllButton: UIButton!
 
-    private let viewModel = IssueRefundViewModel()
+    private let imageService: ImageService
 
-    init() {
+    private let viewModel: IssueRefundViewModel
+
+    init(order: Order,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         imageService: ImageService = ServiceLocator.imageService) {
+        self.imageService = imageService
+        self.viewModel = IssueRefundViewModel(order: order, currencySettings: currencySettings)
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -26,6 +33,8 @@ final class IssueRefundViewController: UIViewController {
         super.viewDidLoad()
         configureNavigationBar()
         configureTableView()
+        observeViewModel()
+        updateWithViewModelContent()
     }
 
     override func viewWillLayoutSubviews() {
@@ -35,14 +44,50 @@ final class IssueRefundViewController: UIViewController {
     }
 }
 
+// MARK: ViewModel observation
+private extension IssueRefundViewController {
+    func observeViewModel() {
+        viewModel.onChange = { [weak self] in
+            self?.updateWithViewModelContent()
+        }
+    }
+
+    func updateWithViewModelContent() {
+        title = viewModel.title
+        itemsSelectedLabel.text = viewModel.selectedItemsTitle
+        tableView.reloadData()
+    }
+}
+
 // MARK: Actions
 private extension IssueRefundViewController {
     @IBAction func nextButtonWasPressed(_ sender: Any) {
-        print("Next button pressed")
+        show(RefundConfirmationViewController(), sender: self)
     }
 
     @IBAction func selectAllButtonWasPressed(_ sender: Any) {
         print("Select All button pressed")
+    }
+
+    func shippingSwitchChanged() {
+        viewModel.toggleRefundShipping()
+    }
+
+    func quantityButtonPressed(sender: UITableViewCell) {
+        guard let indexPath = tableView.indexPath(for: sender),
+            let refundQuantity = viewModel.quantityAvailableForRefundForItemAtIndex(indexPath.row),
+            let currentQuantity = viewModel.currentQuantityForItemAtIndex(indexPath.row) else {
+                return
+        }
+
+        let command = RefundItemQuantityListSelectorCommand(maxRefundQuantity: refundQuantity, currentQuantity: currentQuantity)
+        let selectorViewController = ListSelectorViewController(command: command, tableViewStyle: .plain) { [weak self] selectedQuantity in
+            guard let selectedQuantity = selectedQuantity else {
+                return
+            }
+            self?.viewModel.updateRefundQuantity(quantity: selectedQuantity, forItemAtIndex: indexPath.row)
+        }
+        show(selectorViewController, sender: nil)
     }
 }
 
@@ -50,7 +95,6 @@ private extension IssueRefundViewController {
 private extension IssueRefundViewController {
 
     func configureNavigationBar() {
-        title = viewModel.title
         addCloseNavigationBarButton(title: Localization.cancelTitle)
     }
 
@@ -78,7 +122,6 @@ private extension IssueRefundViewController {
         selectAllButton.setTitle(Localization.selectAllTitle, for: .normal)
 
         itemsSelectedLabel.applySecondaryBodyStyle()
-        itemsSelectedLabel.text = viewModel.selectedItemsTitle
     }
 
     func configureFooterView() {
@@ -110,7 +153,10 @@ extension IssueRefundViewController: UITableViewDelegate, UITableViewDataSource 
         switch rowViewModel {
         case let viewModel as RefundItemViewModel:
             let cell = tableView.dequeueReusableCell(RefundItemTableViewCell.self, for: indexPath)
-            cell.configure(with: viewModel)
+            cell.configure(with: viewModel, imageService: imageService)
+            cell.onQuantityTapped = { [weak self] in
+                self?.quantityButtonPressed(sender: cell)
+            }
             return cell
         case let viewModel as RefundProductsTotalViewModel:
             let cell = tableView.dequeueReusableCell(RefundProductsTotalTableViewCell.self, for: indexPath)
@@ -120,6 +166,9 @@ extension IssueRefundViewController: UITableViewDelegate, UITableViewDataSource 
             let cell = tableView.dequeueReusableCell(SwitchTableViewCell.self, for: indexPath)
             cell.title = viewModel.title
             cell.isOn = viewModel.isOn
+            cell.onChange = { [weak self] _ in
+                self?.shippingSwitchChanged()
+            }
             return cell
         case let viewModel as RefundShippingDetailsViewModel:
             let cell = tableView.dequeueReusableCell(RefundShippingDetailsTableViewCell.self, for: indexPath)

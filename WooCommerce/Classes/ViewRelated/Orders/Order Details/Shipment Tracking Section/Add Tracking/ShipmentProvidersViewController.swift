@@ -82,10 +82,7 @@ private extension ShipmentProvidersViewController {
     ///
     func fetchGroups() {
         footerSpinnerView.startAnimating()
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            return
-        }
-
+        let siteID = viewModel.order.siteID
         let orderID = viewModel.order.orderID
 
         let loadGroupsAction = ShipmentAction.synchronizeShipmentTrackingProviders(siteID: siteID,

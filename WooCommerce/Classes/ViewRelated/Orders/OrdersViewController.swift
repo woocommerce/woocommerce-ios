@@ -86,11 +86,14 @@ final class OrdersViewController: UIViewController {
         }
     }
 
+    private let siteID: Int64
+
     // MARK: - View Lifecycle
 
     /// Designated initializer.
     ///
-    init(title: String, viewModel: OrdersViewModel, emptyStateConfig: EmptyStateViewController.Config) {
+    init(siteID: Int64, title: String, viewModel: OrdersViewModel, emptyStateConfig: EmptyStateViewController.Config) {
+        self.siteID = siteID
         self.viewModel = viewModel
         self.emptyStateConfig = emptyStateConfig
 
@@ -110,13 +113,10 @@ final class OrdersViewController: UIViewController {
         configureTableView()
         configureGhostableTableView()
 
-        refreshStatusPredicate()
         configureStatusResultsController()
 
         configureViewModel()
         configureSyncingCoordinator()
-
-        startListeningToNotifications()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -154,25 +154,10 @@ private extension OrdersViewController {
         tableView.reloadData()
     }
 
-    /// Setup: Order status predicate
-    ///
-    func refreshStatusPredicate() {
-        // Bugfix for https://github.com/woocommerce/woocommerce-ios/issues/751.
-        // Because we are listening for default account changes,
-        // this will also fire upon logging out, when the account
-        // is set to nil. So let's protect against multi-threaded
-        // access attempts if the account is indeed nil.
-        guard ServiceLocator.stores.isAuthenticated,
-            ServiceLocator.stores.needsDefaultStore == false else {
-                return
-        }
-
-        statusResultsController.predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
-    }
-
     /// Setup: Status Results Controller
     ///
     func configureStatusResultsController() {
+        statusResultsController.predicate = NSPredicate(format: "siteID == %lld", siteID)
         try? statusResultsController.performFetch()
     }
 
@@ -233,25 +218,6 @@ private extension OrdersViewController {
     }
 }
 
-
-// MARK: - Notifications
-//
-extension OrdersViewController {
-
-    /// Wires all of the Notification Hooks
-    ///
-    func startListeningToNotifications() {
-        let nc = NotificationCenter.default
-        nc.addObserver(self, selector: #selector(defaultAccountWasUpdated), name: .defaultAccountWasUpdated, object: nil)
-    }
-
-    /// Runs whenever the default Account is updated.
-    ///
-    @objc func defaultAccountWasUpdated() {
-        syncingCoordinator.resetInternalState()
-    }
-}
-
 // MARK: - Actions
 //
 extension OrdersViewController {
@@ -271,11 +237,6 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
     /// Synchronizes the Orders for the Default Store (if any).
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)? = nil) {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            onCompletion?(false)
-            return
-        }
-
         transitionToSyncingState()
 
         let action = viewModel.synchronizationAction(

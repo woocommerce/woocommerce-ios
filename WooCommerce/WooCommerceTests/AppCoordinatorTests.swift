@@ -67,18 +67,12 @@ final class AppCoordinatorTests: XCTestCase {
         stores.authenticate(credentials: SessionSettings.credentials)
         stores.sessionManager.setStoreId(134)
         let appCoordinator = AppCoordinator(tabBarController: tabBarController, stores: stores, authenticationManager: authenticationManager)
-        // Makes sure `MainTabBarController.viewDidLoad` is triggered so that each tab is set up.
-        XCTAssertNotNil(tabBarController.view)
 
         // When
         appCoordinator.start()
 
         // Then
         XCTAssertNil(tabBarController.presentedViewController)
-        let tabRootNavigationControllers = try XCTUnwrap(tabBarController.viewControllers as? [UINavigationController])
-        tabRootNavigationControllers.forEach { tabNavigationController in
-            XCTAssertGreaterThan(tabNavigationController.viewControllers.count, 0)
-        }
     }
 
     func test_starting_app_logged_in_then_logging_out_presents_authentication() throws {

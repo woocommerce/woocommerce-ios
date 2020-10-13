@@ -11,6 +11,10 @@ final class RefundConfirmationViewModel {
     private let order: Order
     private let currencyFormatter: CurrencyFormatter
 
+    private let reasonForRefundCellViewModel =
+        TitleAndEditableValueTableViewCellViewModel(title: Localization.reasonForRefund,
+                                                    placeholder: Localization.reasonForRefundingOrder)
+
     /// The sections and rows to display in the `UITableView`.
     lazy private(set) var sections: [Section] = [
         Section(
@@ -18,8 +22,7 @@ final class RefundConfirmationViewModel {
             rows: [
                 makePreviouslyRefundedRow(),
                 TwoColumnRow(title: Localization.refundAmount, value: refundAmount, isHeadline: true),
-                TitleAndEditableValueRow(title: Localization.reasonForRefund,
-                                         placeholder: Localization.reasonForRefundingOrder),
+                TitleAndEditableValueRow(cellViewModel: reasonForRefundCellViewModel),
             ]
         ),
         Section(
@@ -71,8 +74,7 @@ extension RefundConfirmationViewModel {
 
     /// A row that shows a title and a text field below it.
     struct TitleAndEditableValueRow: RefundConfirmationViewModelRow {
-        let title: String
-        let placeholder: String
+        let cellViewModel: TitleAndEditableValueTableViewCellViewModel
     }
 
     /// A row that shows a title and a paragraph (label) below it.

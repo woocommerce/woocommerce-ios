@@ -7,6 +7,8 @@ final class TitleAndEditableValueTableViewCell: UITableViewCell {
     // TODO Make this private and use `update()` instead.
     @IBOutlet weak var value: UITextField!
 
+    private var viewModel: TitleAndEditableValueTableViewCellViewModel?
+
     enum Style {
         /// Small title. This is the default.
         case condensed
@@ -25,9 +27,12 @@ final class TitleAndEditableValueTableViewCell: UITableViewCell {
     }
 
     /// Updates the values for the labels.
-    func update(style: Style = .condensed, title: String?, placeholder: String?) {
-        self.title.text = title
-        self.value.placeholder = placeholder
+    func update(style: Style = .condensed, viewModel: TitleAndEditableValueTableViewCellViewModel?) {
+        self.title.text = viewModel?.title
+        self.value.placeholder = viewModel?.placeholder
+        self.value.text = viewModel?.currentValue
+
+        self.viewModel = viewModel
 
         applyStyle(style)
     }

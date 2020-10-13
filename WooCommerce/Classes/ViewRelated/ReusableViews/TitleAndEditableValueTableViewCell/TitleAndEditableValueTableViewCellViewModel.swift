@@ -6,6 +6,7 @@ final class TitleAndEditableValueTableViewCellViewModel {
 
     let title: String?
     let placeholder: String?
+    let allowsEditing: Bool
 
     private let valueSubject: BehaviorSubject<String?>
 
@@ -17,9 +18,10 @@ final class TitleAndEditableValueTableViewCellViewModel {
         valueSubject.value
     }
 
-    init(title: String?, placeholder: String?, initialValue: String? = nil) {
+    init(title: String?, placeholder: String?, initialValue: String? = nil, allowsEditing: Bool = true) {
         self.title = title
         self.placeholder = placeholder
+        self.allowsEditing = allowsEditing
 
         valueSubject = BehaviorSubject(initialValue)
     }

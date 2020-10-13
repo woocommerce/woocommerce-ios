@@ -22,9 +22,7 @@ final class AppCoordinator {
 
     func start() {
         cancellable = stores.isLoggedIn.subscribe { [weak self] isLoggedIn in
-            guard let self = self else {
-                return
-            }
+            guard let self = self else { return }
 
             if isLoggedIn == false {
                 let animated = self.isLoggedIn == true
@@ -43,9 +41,7 @@ private extension AppCoordinator {
     ///
     func displayAuthenticator(animated: Bool) {
         authenticationManager.displayAuthentication(from: tabBarController, animated: animated) { [weak self] in
-            guard let self = self else {
-                return
-            }
+            guard let self = self else { return }
             self.tabBarController.removeViewControllers()
         }
     }

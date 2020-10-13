@@ -16,7 +16,7 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         order = MockOrders().sampleOrder()
-        viewModel = OrderPaymentDetailsViewModel(order: order!)
+        viewModel = OrderPaymentDetailsViewModel(order: order!, currencySettings: CurrencySettings())
 
         brokenOrder = MockOrders().brokenOrder()
         brokenOrderViewModel = OrderPaymentDetailsViewModel(order: brokenOrder)

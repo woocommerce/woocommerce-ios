@@ -21,7 +21,7 @@ struct ProductVariationDetailsFactory {
                                          presentationStyle: presentationStyle,
                                          currencySettings: currencySettings,
                                          isEditProductsEnabled: forceReadOnly ? false: true,
-                                         isEditProductsRelease3Enabled: true,
+                                         isEditProductsRelease3Enabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease3),
                                          isEditProductsRelease5Enabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease5))
         onCompletion(vc)
     }

@@ -153,6 +153,7 @@
 		025B1748237A92D800C780B4 /* ProductFormSection+ReusableTableRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025B1747237A92D800C780B4 /* ProductFormSection+ReusableTableRow.swift */; };
 		025B174A237AA49D00C780B4 /* Product+ProductForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025B1749237AA49D00C780B4 /* Product+ProductForm.swift */; };
 		025E32BC251D8FEF00685C4A /* ProductFormDataModel+ProductsTabProductViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025E32BB251D8FEF00685C4A /* ProductFormDataModel+ProductsTabProductViewModel.swift */; };
+		025FA38B2522CB4D0054CA57 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025FA38A2522CB4D0054CA57 /* AppCoordinator.swift */; };
 		025FDD3223717D2900824006 /* EditorFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025FDD3123717D2900824006 /* EditorFactory.swift */; };
 		025FDD3423717D4900824006 /* AztecEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025FDD3323717D4900824006 /* AztecEditorViewController.swift */; };
 		0260F40123224E8100EDA10A /* ProductsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0260F40023224E8100EDA10A /* ProductsViewController.swift */; };
@@ -1146,6 +1147,7 @@
 		025B1747237A92D800C780B4 /* ProductFormSection+ReusableTableRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormSection+ReusableTableRow.swift"; sourceTree = "<group>"; };
 		025B1749237AA49D00C780B4 /* Product+ProductForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+ProductForm.swift"; sourceTree = "<group>"; };
 		025E32BB251D8FEF00685C4A /* ProductFormDataModel+ProductsTabProductViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormDataModel+ProductsTabProductViewModel.swift"; sourceTree = "<group>"; };
+		025FA38A2522CB4D0054CA57 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
 		025FDD3123717D2900824006 /* EditorFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorFactory.swift; sourceTree = "<group>"; };
 		025FDD3323717D4900824006 /* AztecEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecEditorViewController.swift; sourceTree = "<group>"; };
 		0260F40023224E8100EDA10A /* ProductsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsViewController.swift; sourceTree = "<group>"; };
@@ -3606,6 +3608,7 @@
 				B56DB3CD2049BFAA00D4AA8E /* Main.storyboard */,
 				CE263DE7206ACE3E0015A693 /* MainTabBarController.swift */,
 				D8736B5222EF4F5900A14A29 /* NotificationsBadgeController.swift */,
+				025FA38A2522CB4D0054CA57 /* AppCoordinator.swift */,
 			);
 			path = ViewRelated;
 			sourceTree = "<group>";
@@ -5189,6 +5192,7 @@
 				024DF3092372CA00006658FE /* EditorViewProperties.swift in Sources */,
 				267CFE1C2443A54200AF3A13 /* ProductCategoryCellViewModel.swift in Sources */,
 				CE85535D209B5BB700938BDC /* OrderDetailsViewModel.swift in Sources */,
+				025FA38B2522CB4D0054CA57 /* AppCoordinator.swift in Sources */,
 				02CEBB8024C9869E002EDF35 /* ProductFormActionsFactoryProtocol.swift in Sources */,
 				CE21B3E020FFC59700A259D5 /* ProductDetailsTableViewCell.swift in Sources */,
 				B509FED121C041DF000076A9 /* Locale+Woo.swift in Sources */,

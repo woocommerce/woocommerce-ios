@@ -62,12 +62,12 @@ final class MockOrders {
                      refunds: [])
     }
 
-    static func sampleShippingLines() -> [ShippingLine] {
+    static func sampleShippingLines(cost: String = "133.00", tax: String = "0.00") -> [ShippingLine] {
         return [ShippingLine(shippingID: 123,
         methodTitle: "International Priority Mail Express Flat Rate",
         methodID: "usps",
-        total: "133.00",
-        totalTax: "0.00")]
+        total: cost,
+        totalTax: tax)]
     }
 
     func sampleAddress() -> Address {

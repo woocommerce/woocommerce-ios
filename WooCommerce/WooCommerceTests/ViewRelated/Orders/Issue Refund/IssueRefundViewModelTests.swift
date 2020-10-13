@@ -112,4 +112,50 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.currentQuantityForItemAtIndex(2), 0)
         XCTAssertEqual(viewModel.currentQuantityForItemAtIndex(3), nil)
     }
+
+    func test_viewModel_correctly_adds_item_selections_to_title() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let items = [
+            MockOrderItem.sampleItem(itemID: 1, quantity: 3, price: 11.50),
+            MockOrderItem.sampleItem(itemID: 2, quantity: 2, price: 12.50),
+            MockOrderItem.sampleItem(itemID: 3, quantity: 1, price: 13.50),
+        ]
+        let order = MockOrders().makeOrder(items: items)
+        let viewModel = IssueRefundViewModel(order: order, currencySettings: currencySettings)
+
+        // When
+        viewModel.updateRefundQuantity(quantity: 2, forItemAtIndex: 0)
+        viewModel.updateRefundQuantity(quantity: 1, forItemAtIndex: 1)
+
+        // Then
+        // 11.50(item 1) x 2 (quantity) = 23.00
+        // 12.50(item 2) x 1 (quantity = 12.50
+        // Total = 35.50
+        XCTAssertEqual(viewModel.title, "$35.50")
+    }
+
+    func test_viewModel_correctly_adds_shipping_selection_to_title() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let items = [
+            MockOrderItem.sampleItem(itemID: 1, quantity: 3, price: 11.50),
+            MockOrderItem.sampleItem(itemID: 2, quantity: 2, price: 12.50),
+            MockOrderItem.sampleItem(itemID: 3, quantity: 1, price: 13.50),
+        ]
+        let shippingLines = MockOrders.sampleShippingLines(cost: "7.00", tax: "0.62")
+        let order = MockOrders().makeOrder(items: items, shippingLines: shippingLines)
+        let viewModel = IssueRefundViewModel(order: order, currencySettings: currencySettings)
+
+        // 11.50 (item 1) x 2 (quantity) = 23.0
+        viewModel.updateRefundQuantity(quantity: 2, forItemAtIndex: 0)
+        XCTAssertEqual(viewModel.title, "$23.00")
+
+        // When
+        viewModel.toggleRefundShipping()
+
+        // Then
+        // 23.00(current products) + 7.52 (shipping) = 30.62
+        XCTAssertEqual(viewModel.title, "$30.62")
+    }
 }

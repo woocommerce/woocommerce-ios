@@ -1,4 +1,5 @@
 import Foundation
+import Yosemite
 
 /// ViewModel for presenting refund confirmation to the user.
 ///
@@ -7,32 +8,47 @@ final class RefundConfirmationViewModel {
     /// This will be computed later :D
     let refundAmount = "$87.50"
 
-    /// The sections and rows to display in the `UITableView`.
-    let sections: [Section]
+    private let order: Order
+    private let currencyFormatter: CurrencyFormatter
 
-    init() {
-        sections = [
-            Section(
-                title: nil,
-                rows: [
-                    TwoColumnRow(title: Localization.previouslyRefunded, value: "$0.01", isHeadline: false),
-                    TwoColumnRow(title: Localization.refundAmount, value: refundAmount, isHeadline: true),
-                    TitleAndEditableValueRow(title: Localization.reasonForRefund,
-                                             placeholder: Localization.reasonForRefundingOrder),
-                ]
-            ),
-            Section(
-                title: Localization.refundVia,
-                rows: [
-                    TitleAndBodyRow(title: Localization.manualRefund(via: "Stripe"),
-                                    body: Localization.refundWillNotBeIssued(paymentMethod: "Stripe"))
-                ]
-            )
-        ]
+    /// The sections and rows to display in the `UITableView`.
+    lazy private(set) var sections: [Section] = [
+        Section(
+            title: nil,
+            rows: [
+                makePreviouslyRefundedRow(),
+                TwoColumnRow(title: Localization.refundAmount, value: refundAmount, isHeadline: true),
+                TitleAndEditableValueRow(title: Localization.reasonForRefund,
+                                         placeholder: Localization.reasonForRefundingOrder),
+            ]
+        ),
+        Section(
+            title: Localization.refundVia,
+            rows: [
+                TitleAndBodyRow(title: Localization.manualRefund(via: "Stripe"),
+                                body: Localization.refundWillNotBeIssued(paymentMethod: "Stripe"))
+            ]
+        )
+    ]
+
+    init(order: Order, currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+        self.order = order
+        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
     }
 }
 
-// MARK: - Sections and Rows
+// MARK: - Builders
+
+private extension RefundConfirmationViewModel {
+    func makePreviouslyRefundedRow() -> TwoColumnRow {
+        let useCase = TotalRefundedCalculationUseCase(order: order, currencyFormatter: currencyFormatter)
+        let totalRefunded = useCase.totalRefunded().abs()
+        let totalRefundedFormatted = currencyFormatter.formatAmount(totalRefunded) ?? ""
+        return TwoColumnRow(title: Localization.previouslyRefunded, value: totalRefundedFormatted, isHeadline: false)
+    }
+}
+
+// MARK: - Section and Row Types
 
 /// A base protocol for the row types used by `RefundConfirmationViewModel`.
 protocol RefundConfirmationViewModelRow {

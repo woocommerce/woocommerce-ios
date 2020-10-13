@@ -62,7 +62,8 @@ private extension IssueRefundViewController {
 // MARK: Actions
 private extension IssueRefundViewController {
     @IBAction func nextButtonWasPressed(_ sender: Any) {
-        show(RefundConfirmationViewController(), sender: self)
+        let confirmationViewModel = viewModel.createRefundConfirmationViewModel()
+        show(RefundConfirmationViewController(viewModel: confirmationViewModel), sender: self)
     }
 
     @IBAction func selectAllButtonWasPressed(_ sender: Any) {

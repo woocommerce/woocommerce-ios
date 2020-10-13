@@ -3161,6 +3161,15 @@
 			path = "Stats V4";
 			sourceTree = "<group>";
 		};
+		57896D6425362AC2000E8C4D /* TitleAndEditableValueTableViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				D843D5C922437E59001BFA55 /* TitleAndEditableValueTableViewCell.swift */,
+				D843D5CA22437E59001BFA55 /* TitleAndEditableValueTableViewCell.xib */,
+			);
+			path = TitleAndEditableValueTableViewCell;
+			sourceTree = "<group>";
+		};
 		5791FB4024EC833200117FD6 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
@@ -4509,6 +4518,7 @@
 			children = (
 				57CFCD26248844A0003F51EC /* Section Headers */,
 				57448D26242E772300A56A74 /* EmptyStateViewController */,
+				57896D6425362AC2000E8C4D /* TitleAndEditableValueTableViewCell */,
 				D8736B7422F1FE1600A14A29 /* BadgeLabel.swift */,
 				CE21B3D520FE669A00A259D5 /* BasicTableViewCell.swift */,
 				CE21B3D620FE669A00A259D5 /* BasicTableViewCell.xib */,
@@ -4554,8 +4564,6 @@
 				026B3C56249A046E00F7823C /* TextFieldTextAlignment.swift */,
 				CE583A092107937F00D73C1C /* TextViewTableViewCell.swift */,
 				CE583A0A2107937F00D73C1C /* TextViewTableViewCell.xib */,
-				D843D5C922437E59001BFA55 /* TitleAndEditableValueTableViewCell.swift */,
-				D843D5CA22437E59001BFA55 /* TitleAndEditableValueTableViewCell.xib */,
 				020BE74B23B1F5EA007FE54C /* TitleAndTextFieldTableViewCell.swift */,
 				020BE74C23B1F5EA007FE54C /* TitleAndTextFieldTableViewCell.xib */,
 				4512055024655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.swift */,
@@ -5372,7 +5380,6 @@
 				B511ED27218A660E005787DC /* StringDescriptor.swift in Sources */,
 				B5F355EF21CD500200A7077A /* SearchViewController.swift in Sources */,
 				773077EC251E943700178696 /* ProductDownloadFileViewModel.swift in Sources */,
-				B55D4C2720B717C000D7A50F /* UserAgent.swift in Sources */,
 				0273708024C0094500167204 /* ProductListMultiSelectorDataSource.swift in Sources */,
 				02B1AFEC24BC5AE5005DB1E3 /* GroupedProductListSelectorDataSource.swift in Sources */,
 				451A04EC2386D2B300E368C9 /* ProductImagesCollectionViewDataSource.swift in Sources */,

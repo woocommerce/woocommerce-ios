@@ -3,18 +3,22 @@ import UIKit
 import Yosemite
 
 
-/// ProductLoaderViewController: Loads asynchronously a Product (given it's ProductID + SiteID).
-/// On Success the ProductDetailsViewController will be rendered "in place".
+/// ProductLoaderViewController: Loads product and/or product variation async and render its details.
 ///
 final class ProductLoaderViewController: UIViewController {
+    /// Indicates the type of data model with the associated information to load data remotely.
+    enum Model: Equatable {
+        case product(productID: Int64)
+        case productVariation(productID: Int64, variationID: Int64)
+    }
 
     /// UI Spinner
     ///
     private let activityIndicator = UIActivityIndicatorView(style: .gray)
 
-    /// Target ProductID
+    /// Target model (Product/ProductVariation ID)
     ///
-    private let productID: Int64
+    private let model: Model
 
     /// Target Product's SiteID
     ///
@@ -35,8 +39,8 @@ final class ProductLoaderViewController: UIViewController {
 
     // MARK: - Initializers
 
-    init(productID: Int64, siteID: Int64, forceReadOnly: Bool) {
-        self.productID = productID
+    init(model: Model, siteID: Int64, forceReadOnly: Bool) {
+        self.model = model
         self.siteID = siteID
         self.forceReadOnly = forceReadOnly
 
@@ -57,7 +61,7 @@ final class ProductLoaderViewController: UIViewController {
         configureSpinner()
         configureMainView()
         addCloseNavigationBarButton()
-        loadProduct()
+        loadModel()
     }
 }
 
@@ -92,10 +96,18 @@ private extension ProductLoaderViewController {
 // MARK: - Actions
 //
 private extension ProductLoaderViewController {
+    func loadModel() {
+        switch model {
+        case .product(let productID):
+            loadProduct(productID: productID)
+        case .productVariation(let productID, let variationID):
+            loadProductVariation(productID: productID, variationID: variationID)
+        }
+    }
 
     /// Loads (and displays) the specified Product.
     ///
-    func loadProduct() {
+    func loadProduct(productID: Int64) {
         let action = ProductAction.retrieveProduct(siteID: siteID, productID: productID) { [weak self] result in
             guard let self = self else {
                 return
@@ -103,15 +115,34 @@ private extension ProductLoaderViewController {
 
             switch result {
             case .success(let product):
-                self.state = .success(product: product)
+                self.state = .productLoaded(product: product)
             case .failure(let error):
-                DDLogError("⛔️ Error loading Product for siteID: \(self.siteID) productID:\(self.productID) error:\(error)")
+                DDLogError("⛔️ Error loading Product for siteID: \(self.siteID) productID:\(productID) error:\(error)")
                 self.state = .failure
             }
         }
 
         state = .loading
         ServiceLocator.stores.dispatch(action)
+    }
+
+    /// Loads (and displays) the specified ProductVariation.
+    ///
+    func loadProductVariation(productID: Int64, variationID: Int64) {
+        state = .loading
+
+        let useCase = ProductVariationLoadUseCase(siteID: siteID)
+        useCase.loadProductVariation(productID: productID, variationID: variationID) { result in
+            switch result {
+            case .failure(let error):
+                DDLogError(
+                    "⛔️ Error loading ProductVariation & Product for siteID: \(self.siteID) productID:\(productID) variationID:\(variationID) error:\(error)"
+                )
+                self.state = .failure
+            case .success(let data):
+                self.state = .productVariationLoaded(productVariation: data.variation, parentProduct: data.parentProduct)
+            }
+        }
     }
 }
 
@@ -140,7 +171,7 @@ private extension ProductLoaderViewController {
         overlayView.messageText = NSLocalizedString("This product couldn't be loaded", comment: "Message displayed when loading a specific product fails")
         overlayView.actionText = NSLocalizedString("Retry", comment: "Retry the last action")
         overlayView.onAction = { [weak self] in
-            self?.loadProduct()
+            self?.loadModel()
         }
 
         overlayView.attach(to: view)
@@ -160,6 +191,17 @@ private extension ProductLoaderViewController {
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .contained(containerViewController: self),
                                              forceReadOnly: forceReadOnly) { [weak self] viewController in
+            self?.attachProductDetailsChildViewController(viewController)
+        }
+    }
+
+    /// Presents the product variation details for a given ProductVariation and its parent Product.
+    ///
+    func presentProductVariationDetails(for productVariation: ProductVariation, parentProduct: Product) {
+        ProductVariationDetailsFactory.productVariationDetails(productVariation: productVariation,
+                                                               parentProduct: parentProduct,
+                                                               presentationStyle: .contained(containerViewController: self),
+                                                               forceReadOnly: forceReadOnly) { [weak self] viewController in
             self?.attachProductDetailsChildViewController(viewController)
         }
     }
@@ -211,8 +253,10 @@ private extension ProductLoaderViewController {
         switch state {
         case .loading:
             startSpinner()
-        case .success(let product):
+        case .productLoaded(let product):
             presentProductDetails(for: product)
+        case .productVariationLoaded(let productVariation, let parentProduct):
+            presentProductVariationDetails(for: productVariation, parentProduct: parentProduct)
         case .failure:
             displayFailureOverlay()
         }
@@ -224,7 +268,7 @@ private extension ProductLoaderViewController {
         switch state {
         case .loading:
             stopSpinner()
-        case .success:
+        case .productLoaded, .productVariationLoaded:
             detachChildrenViewControllers()
         case .failure:
             removeAllOverlays()
@@ -237,6 +281,7 @@ private extension ProductLoaderViewController {
 //
 private enum State {
     case loading
-    case success(product: Product)
+    case productLoaded(product: Product)
+    case productVariationLoaded(productVariation: ProductVariation, parentProduct: Product)
     case failure
 }

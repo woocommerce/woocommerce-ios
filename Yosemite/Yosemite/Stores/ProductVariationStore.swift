@@ -247,4 +247,5 @@ private extension ProductVariationStore {
 
 public enum ProductVariationLoadError: Error, Equatable {
     case notFoundInStorage
+    case unexpected
 }

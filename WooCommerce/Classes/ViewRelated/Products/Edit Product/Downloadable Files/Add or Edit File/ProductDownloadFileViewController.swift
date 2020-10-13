@@ -23,8 +23,8 @@ final class ProductDownloadFileViewController: UIViewController {
 
     /// Init
     ///
-    init(product: ProductFormDataModel, downloadFileIndex: Int?, formType: FormType, completion: @escaping Completion) {
-        viewModel = ProductDownloadFileViewModel(product: product, downloadFileIndex: downloadFileIndex, formType: formType)
+    init(productDownload: ProductDownload?, downloadFileIndex: Int?, formType: FormType, completion: @escaping Completion) {
+        viewModel = ProductDownloadFileViewModel(productDownload: productDownload, downloadFileIndex: downloadFileIndex, formType: formType)
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }

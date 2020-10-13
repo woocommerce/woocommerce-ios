@@ -10,9 +10,10 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
+        let productDownload = model.downloadableFiles.first
 
         // Act
-        let viewModel = ProductDownloadFileViewModel(product: model, downloadFileIndex: 0, formType: .edit)
+        let viewModel = ProductDownloadFileViewModel(productDownload: productDownload, downloadFileIndex: 0, formType: .edit)
 
         // Assert
         XCTAssertEqual(viewModel.fileID, "1f9c11f99ceba63d4403c03bd5391b11")
@@ -22,12 +23,9 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
     }
 
     func test_readonly_values_are_as_expected_after_initializing_a_downloadableFile_in_add_mode() {
-        // Arrange
-        let product = MockProduct().product(downloadable: true)
-        let model = EditableProductModel(product: product)
 
         // Act
-        let viewModel = ProductDownloadFileViewModel(product: model, downloadFileIndex: nil, formType: .add)
+        let viewModel = ProductDownloadFileViewModel(productDownload: nil, downloadFileIndex: nil, formType: .add)
 
         // Assert
         XCTAssertNil(viewModel.fileID)
@@ -40,7 +38,9 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
-        let viewModel = ProductDownloadFileViewModel(product: model, downloadFileIndex: 0, formType: .edit)
+        let productDownload = model.downloadableFiles.first
+        let viewModel = ProductDownloadFileViewModel(productDownload: productDownload, downloadFileIndex: 0, formType: .edit)
+
 
         // Act
         let expectedSections: [ProductDownloadFileViewController.Section] = [
@@ -58,7 +58,8 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
-        let viewModel = ProductDownloadFileViewModel(product: model, downloadFileIndex: 0, formType: .edit)
+        let productDownload = model.downloadableFiles.first
+        let viewModel = ProductDownloadFileViewModel(productDownload: productDownload, downloadFileIndex: 0, formType: .edit)
         let expectedName = "Song #1"
 
         // Act
@@ -79,7 +80,8 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
-        let viewModel = ProductDownloadFileViewModel(product: model, downloadFileIndex: 0, formType: .edit)
+        let productDownload = model.downloadableFiles.first
+        let viewModel = ProductDownloadFileViewModel(productDownload: productDownload, downloadFileIndex: 0, formType: .edit)
         let expectedName = ""
 
         // Act
@@ -100,7 +102,8 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
-        let viewModel = ProductDownloadFileViewModel(product: model, downloadFileIndex: 0, formType: .edit)
+        let productDownload = model.downloadableFiles.first
+        let viewModel = ProductDownloadFileViewModel(productDownload: productDownload, downloadFileIndex: 0, formType: .edit)
         let expectedName = "Song #10"
 
         // Act
@@ -123,7 +126,8 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
-        let viewModel = ProductDownloadFileViewModel(product: model, downloadFileIndex: 0, formType: .edit)
+        let productDownload = model.downloadableFiles.first
+        let viewModel = ProductDownloadFileViewModel(productDownload: productDownload, downloadFileIndex: 0, formType: .edit)
         let expectedUrl = "https://example.com/woo-single-1.ogg"
 
         // Act
@@ -144,7 +148,8 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
-        let viewModel = ProductDownloadFileViewModel(product: model, downloadFileIndex: 0, formType: .add)
+        let productDownload = model.downloadableFiles.first
+        let viewModel = ProductDownloadFileViewModel(productDownload: productDownload, downloadFileIndex: 0, formType: .add)
         let expectedUrl = "https://example.com/woo-single-1.ogg"
 
         // Act
@@ -165,7 +170,8 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
-        let viewModel = ProductDownloadFileViewModel(product: model, downloadFileIndex: 0, formType: .edit)
+        let productDownload = model.downloadableFiles.first
+        let viewModel = ProductDownloadFileViewModel(productDownload: productDownload, downloadFileIndex: 0, formType: .edit)
         let expectedURL = ""
 
         // Act
@@ -186,7 +192,8 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
-        let viewModel = ProductDownloadFileViewModel(product: model, downloadFileIndex: 0, formType: .edit)
+        let productDownload = model.downloadableFiles.first
+        let viewModel = ProductDownloadFileViewModel(productDownload: productDownload, downloadFileIndex: 0, formType: .edit)
         let expectedUrl = "https://example.com/single.jpeg"
 
         // Act
@@ -209,9 +216,10 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
+        let productDownload = model.downloadableFiles.first
 
         // Act
-        let viewModel = ProductDownloadFileViewModel(product: model, downloadFileIndex: 0, formType: .edit)
+        let viewModel = ProductDownloadFileViewModel(productDownload: productDownload, downloadFileIndex: 0, formType: .edit)
         let expected = "single image"
         viewModel.handleFileNameChange(expected) { _ in }
 
@@ -224,9 +232,10 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
+        let productDownload = model.downloadableFiles.first
 
         // Act
-        let viewModel = ProductDownloadFileViewModel(product: model, downloadFileIndex: 0, formType: .edit)
+        let viewModel = ProductDownloadFileViewModel(productDownload: productDownload, downloadFileIndex: 0, formType: .edit)
         let expected = ""
         viewModel.handleFileNameChange(expected) { _ in }
 
@@ -238,9 +247,10 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
+        let productDownload = model.downloadableFiles.first
 
         // Act
-        let viewModel = ProductDownloadFileViewModel(product: model, downloadFileIndex: 0, formType: .edit)
+        let viewModel = ProductDownloadFileViewModel(productDownload: productDownload, downloadFileIndex: 0, formType: .edit)
         let expected = "https://example.com/single.jpeg"
         viewModel.handleFileUrlChange(expected) { _ in }
 
@@ -253,9 +263,10 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
+        let productDownload = model.downloadableFiles.first
 
         // Act
-        let viewModel = ProductDownloadFileViewModel(product: model, downloadFileIndex: 0, formType: .edit)
+        let viewModel = ProductDownloadFileViewModel(productDownload: productDownload, downloadFileIndex: 0, formType: .edit)
         let expected = ""
         viewModel.handleFileUrlChange(expected) { _ in }
 
@@ -267,9 +278,10 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
+        let productDownload = model.downloadableFiles.first
 
         // Act
-        let viewModel = ProductDownloadFileViewModel(product: model, downloadFileIndex: 0, formType: .edit)
+        let viewModel = ProductDownloadFileViewModel(productDownload: productDownload, downloadFileIndex: 0, formType: .edit)
         viewModel.handleFileNameChange("Song #1") { _ in }
         viewModel.handleFileUrlChange("https://example.com/woo-single-1.ogg") { _ in }
 

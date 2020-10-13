@@ -144,7 +144,8 @@ extension ProductDownloadListViewController {
 //
 extension ProductDownloadListViewController {
     func addEditDownloadableFile(indexPath: IndexPath?, formType: ProductDownloadFileViewController.FormType) {
-        let viewController = ProductDownloadFileViewController(product: product,
+        let downloadableFile = viewModel.item(at: indexPath?.row ?? -1)?.downloadableFile
+        let viewController = ProductDownloadFileViewController(productDownload: downloadableFile,
                                                                downloadFileIndex: indexPath?.row,
                                                                formType: formType) { [weak self]
             (fileName, fileURL, fileID, hasUnsavedChanges) in

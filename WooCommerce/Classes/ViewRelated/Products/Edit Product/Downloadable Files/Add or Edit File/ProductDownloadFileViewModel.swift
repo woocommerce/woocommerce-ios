@@ -37,7 +37,7 @@ enum ProductDownloadFileError: Error {
 /// Provides view data for downloadable file, and handles init/UI/navigation actions needed in product downloadable file settings.
 ///
 final class ProductDownloadFileViewModel: ProductDownloadFileViewModelOutput {
-    private let product: ProductFormDataModel
+    private let productDownload: ProductDownload?
     private let downloadableFileIndex: Int?
 
     // Editable data
@@ -47,34 +47,26 @@ final class ProductDownloadFileViewModel: ProductDownloadFileViewModelOutput {
     private(set) var fileID: String?
     private(set) var formType: ProductDownloadFileViewController.FormType
 
-    init(product: ProductFormDataModel,
+    init(productDownload: ProductDownload?,
          downloadFileIndex: Int?,
          formType: ProductDownloadFileViewController.FormType) {
-        self.product = product
+        self.productDownload = productDownload
         self.downloadableFileIndex = downloadFileIndex
         self.formType = formType
 
-        if let downloadableFileIndex = downloadableFileIndex,
-            let file = product.downloadableFiles[safe: downloadableFileIndex] {
-            fileName = file.name
-            fileURL = file.fileURL
-            fileID = file.downloadID
-        }
+        fileName = productDownload?.name
+        fileURL = productDownload?.fileURL
+        fileID = productDownload?.downloadID
     }
 
     var sections: [Section] {
         let nameSection = Section(footer: Strings.fileNameFooter, rows: [.name])
         let urlSection = Section(footer: Strings.urlFooter, rows: [.url])
 
-        switch product {
-        case is EditableProductModel:
-            return [
-                urlSection,
-                nameSection
-            ]
-        default:
-            fatalError("Unsupported product type: \(product)")
-        }
+        return [
+            urlSection,
+            nameSection
+        ]
     }
 }
 
@@ -130,19 +122,13 @@ private extension ProductDownloadFileViewModel {
                 fileNameChanged = true
             }
         case .edit:
-            if let downloadableFileIndex = downloadableFileIndex,
-                let oldValue = product.downloadableFiles[safe: downloadableFileIndex]?.fileURL,
-                newFileURL != oldValue {
-
+            if let oldValue = productDownload?.fileURL, newFileURL != oldValue {
                 fileUrlChanged = true
             }
 
-            if let newFileName = self.fileName,
-                let downloadableFileIndex = downloadableFileIndex,
-                let oldValue = product.downloadableFiles[safe: downloadableFileIndex]?.name,
+            if let newFileName = self.fileName, let oldValue = productDownload?.name,
                 newFileName.isNotEmpty,
                 newFileName != oldValue {
-
                 fileNameChanged = true
             }
         }

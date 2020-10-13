@@ -344,6 +344,8 @@
 		2667BFE52530DCF4008099D4 /* RefundItemsValuesCalculationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFE42530DCF4008099D4 /* RefundItemsValuesCalculationUseCase.swift */; };
 		2667BFE72530E78F008099D4 /* RefundItemsValuesCalculationUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFE62530E78F008099D4 /* RefundItemsValuesCalculationUseCaseTests.swift */; };
 		2667BFE92530ECE4008099D4 /* RefundProductsTotalViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFE82530ECE4008099D4 /* RefundProductsTotalViewModelTests.swift */; };
+		2667BFEB2535FF09008099D4 /* RefundShippingCalculationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFEA2535FF09008099D4 /* RefundShippingCalculationUseCase.swift */; };
+		2667BFED25360681008099D4 /* RefundShippingCalculationUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFEC25360681008099D4 /* RefundShippingCalculationUseCaseTests.swift */; };
 		267CFE1C2443A54200AF3A13 /* ProductCategoryCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267CFE1A2443740900AF3A13 /* ProductCategoryCellViewModel.swift */; };
 		2687165524D21BC80042F6AE /* SurveySubmittedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2687165324D21BC80042F6AE /* SurveySubmittedViewController.swift */; };
 		2687165624D21BC80042F6AE /* SurveySubmittedViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2687165424D21BC80042F6AE /* SurveySubmittedViewController.xib */; };
@@ -1341,6 +1343,8 @@
 		2667BFE42530DCF4008099D4 /* RefundItemsValuesCalculationUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundItemsValuesCalculationUseCase.swift; sourceTree = "<group>"; };
 		2667BFE62530E78F008099D4 /* RefundItemsValuesCalculationUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundItemsValuesCalculationUseCaseTests.swift; sourceTree = "<group>"; };
 		2667BFE82530ECE4008099D4 /* RefundProductsTotalViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundProductsTotalViewModelTests.swift; sourceTree = "<group>"; };
+		2667BFEA2535FF09008099D4 /* RefundShippingCalculationUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundShippingCalculationUseCase.swift; sourceTree = "<group>"; };
+		2667BFEC25360681008099D4 /* RefundShippingCalculationUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundShippingCalculationUseCaseTests.swift; sourceTree = "<group>"; };
 		267CFE1824435A5500AF3A13 /* ProductCategoryViewModelBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryViewModelBuilderTests.swift; sourceTree = "<group>"; };
 		267CFE1A2443740900AF3A13 /* ProductCategoryCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryCellViewModel.swift; sourceTree = "<group>"; };
 		2687165324D21BC80042F6AE /* SurveySubmittedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveySubmittedViewController.swift; sourceTree = "<group>"; };
@@ -2810,6 +2814,7 @@
 				2667BFE2252FA695008099D4 /* RefundItemQuantityListSelectorCommandTests.swift */,
 				2667BFDC252F61C5008099D4 /* RefundShippingDetailsViewModelTests.swift */,
 				2667BFE62530E78F008099D4 /* RefundItemsValuesCalculationUseCaseTests.swift */,
+				2667BFEC25360681008099D4 /* RefundShippingCalculationUseCaseTests.swift */,
 			);
 			path = "Issue Refund";
 			sourceTree = "<group>";
@@ -2848,6 +2853,7 @@
 				2667BFE0252FA117008099D4 /* RefundItemQuantityListSelectorCommand.swift */,
 				260C31612524EEB200157BC2 /* IssueRefundViewController.xib */,
 				2667BFE42530DCF4008099D4 /* RefundItemsValuesCalculationUseCase.swift */,
+				2667BFEA2535FF09008099D4 /* RefundShippingCalculationUseCase.swift */,
 			);
 			path = "Issue Refunds";
 			sourceTree = "<group>";
@@ -5594,6 +5600,7 @@
 				0295355B245ADF8100BDC42B /* FilterType+Products.swift in Sources */,
 				02CA63DA23D1ADD100BBF148 /* CameraCaptureCoordinator.swift in Sources */,
 				260C31602524ECA900157BC2 /* IssueRefundViewController.swift in Sources */,
+				2667BFEB2535FF09008099D4 /* RefundShippingCalculationUseCase.swift in Sources */,
 				CEEC9B5C21E79B3E0055EEF0 /* FeatureFlag.swift in Sources */,
 				26FE09DD24D9F3F600B9BDF5 /* SurveyLoadingView.swift in Sources */,
 				457151AB243B6E8000EB2DFA /* ProductSlugViewController.swift in Sources */,
@@ -5820,6 +5827,7 @@
 				02404EE2231501E000FF1170 /* StatsVersionCoordinatorTests.swift in Sources */,
 				02B1AFEE24BC5BA9005DB1E3 /* GroupedProductListSelectorDataSourceTests.swift in Sources */,
 				02CEBB8424C99A10002EDF35 /* Product+ShippingTests.swift in Sources */,
+				2667BFED25360681008099D4 /* RefundShippingCalculationUseCaseTests.swift in Sources */,
 				D83F5939225B424B00626E75 /* AddManualTrackingViewModelTests.swift in Sources */,
 				0257285C230ACC7E00A288C4 /* StoreStatsV4ChartAxisHelperTests.swift in Sources */,
 				023EC2E424DA95DB0021DA91 /* ProductInventorySettingsViewModel+VariationTests.swift in Sources */,

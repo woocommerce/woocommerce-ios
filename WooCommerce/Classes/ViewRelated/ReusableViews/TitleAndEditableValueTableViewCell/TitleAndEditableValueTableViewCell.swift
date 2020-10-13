@@ -2,8 +2,7 @@ import UIKit
 
 final class TitleAndEditableValueTableViewCell: UITableViewCell {
     @IBOutlet private weak var stackView: UIStackView!
-    // TODO Make this private and use `update()` instead.
-    @IBOutlet weak var title: UILabel!
+    @IBOutlet private weak var title: UILabel!
     // TODO Make this private and use `update()` instead.
     @IBOutlet weak var value: UITextField!
 

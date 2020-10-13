@@ -109,6 +109,15 @@ extension IssueRefundViewModel {
         }
         state.refundQuantityStore.update(quantity: quantity, for: item)
     }
+
+    /// Marks all items as to be refunded
+    ///
+    func selectAllOrderItems() {
+        state.order.items.forEach { item in
+            let quantity = Int(truncating: item.quantity as NSDecimalNumber)
+            state.refundQuantityStore.update(quantity: quantity, for: item)
+        }
+    }
 }
 
 // MARK: Results Controller

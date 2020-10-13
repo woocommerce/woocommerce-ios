@@ -67,6 +67,8 @@ final class AppCoordinatorTests: XCTestCase {
         stores.authenticate(credentials: SessionSettings.credentials)
         stores.sessionManager.setStoreId(134)
         let appCoordinator = AppCoordinator(tabBarController: tabBarController, stores: stores, authenticationManager: authenticationManager)
+        // Makes sure `MainTabBarController.viewDidLoad` is triggered so that each tab is set up.
+        XCTAssertNotNil(tabBarController.view)
 
         // When
         appCoordinator.start()

@@ -33,6 +33,7 @@ final class AppleIDCredentialChecker {
             if isLoggedIn {
                 self?.startObservingAppleIDCredentialRevoked()
             } else {
+                self?.removeAppleIDFromKeychain()
                 self?.stopObservingAppleIDCredentialRevoked()
             }
         }

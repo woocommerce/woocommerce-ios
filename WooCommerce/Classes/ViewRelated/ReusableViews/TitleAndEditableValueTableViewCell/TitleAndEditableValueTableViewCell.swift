@@ -23,6 +23,7 @@ final class TitleAndEditableValueTableViewCell: UITableViewCell {
         configureAsNonSelectable()
         applyStyle(Style.default)
         configureStackView()
+        observeValueTextFieldChanges()
     }
 
     /// Updates the values for the labels.
@@ -62,6 +63,14 @@ private extension TitleAndEditableValueTableViewCell {
         }
 
         value.applyBodyStyle()
+    }
+
+    func observeValueTextFieldChanges() {
+        value.addTarget(self, action: #selector(updateViewModelValue), for: .editingChanged)
+    }
+
+    @objc func updateViewModelValue(sender textField: UITextField) {
+        viewModel?.update(value: textField.text)
     }
 }
 

@@ -8,11 +8,12 @@ final class AppCoordinatorTests: XCTestCase {
     private var stores: StoresManager!
     private var authenticationManager: AuthenticationManager!
 
+    private let window = UIWindow(frame: UIScreen.main.bounds)
+
     override func setUp() {
         super.setUp()
 
         tabBarController = MainTabBarController()
-        let window = UIWindow(frame: UIScreen.main.bounds)
         window.rootViewController = tabBarController
         window.makeKeyAndVisible()
 
@@ -25,6 +26,11 @@ final class AppCoordinatorTests: XCTestCase {
         authenticationManager = nil
         stores.sessionManager.setStoreId(nil)
         stores = nil
+
+        // If not resetting the window, `AsyncDictionaryTests.testAsyncUpdatesWhereTheFirstOperationFinishesLast` fails.
+        window.resignKey()
+        window.rootViewController = nil
+
         tabBarController = nil
 
         super.tearDown()

@@ -38,6 +38,15 @@ final class RefundConfirmationViewModel {
         self.order = order
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
     }
+
+    /// Submit the refund.
+    ///
+    /// This does not do anything at the moment. XD
+    ///
+    func submit() {
+        print("Submitting refund with reason “\(reasonForRefundCellViewModel.currentValue ?? "")”")
+        print("JUST KIDDING! ʕ•ᴥ•ʔ")
+    }
 }
 
 // MARK: - Builders

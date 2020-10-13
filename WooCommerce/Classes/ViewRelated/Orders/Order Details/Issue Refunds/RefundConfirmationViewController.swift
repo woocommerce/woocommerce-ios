@@ -63,9 +63,8 @@ private extension RefundConfirmationViewController {
     }
 
     func configureButtonTableFooterView() {
-        tableView.tableFooterView = ButtonTableFooterView(frame: .zero, title: Localization.refund) {
-            // TODO API calls and magic
-            print("button pressed")
+        tableView.tableFooterView = ButtonTableFooterView(frame: .zero, title: Localization.refund) { [weak self] in
+            self?.viewModel.submit()
         }
         tableView.updateFooterHeight()
     }

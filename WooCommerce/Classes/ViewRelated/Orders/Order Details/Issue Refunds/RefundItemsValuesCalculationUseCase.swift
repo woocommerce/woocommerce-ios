@@ -5,7 +5,7 @@ import Yosemite
 ///
 struct RefundItemsValuesCalculationUseCase {
 
-    /// Items and their cuantities to be refunded
+    /// Items and their quantities to be refunded
     ///
     let refundItems: [RefundItem]
 
@@ -28,7 +28,7 @@ struct RefundItemsValuesCalculationUseCase {
                 return (totalTax as Decimal) / refundItem.item.quantity
             }()
 
-            // Acumulate the evaluated item values
+            // Accumulate the evaluated item values
             let subtotal = previousValues.subtotal + (itemPrice * quantityToRefund)
             let tax = previousValues.tax + (itemTax * quantityToRefund)
 

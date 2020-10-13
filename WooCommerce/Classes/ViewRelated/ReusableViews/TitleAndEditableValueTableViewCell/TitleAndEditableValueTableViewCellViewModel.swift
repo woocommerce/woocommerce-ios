@@ -18,7 +18,7 @@ final class TitleAndEditableValueTableViewCellViewModel {
         valueSubject.value
     }
 
-    init(title: String?, placeholder: String?, initialValue: String? = nil, allowsEditing: Bool = true) {
+    init(title: String?, placeholder: String? = nil, initialValue: String? = nil, allowsEditing: Bool = true) {
         self.title = title
         self.placeholder = placeholder
         self.allowsEditing = allowsEditing

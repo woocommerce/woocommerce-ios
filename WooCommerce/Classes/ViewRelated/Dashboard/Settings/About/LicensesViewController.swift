@@ -1,7 +1,7 @@
 import UIKit
 import WebKit
 import SafariServices
-
+import class Networking.UserAgent
 
 class LicensesViewController: UIViewController {
 
@@ -56,6 +56,7 @@ private extension LicensesViewController {
         webView.navigationDelegate = self
         webView.backgroundColor = .clear
         webView.isOpaque = false
+        webView.customUserAgent = UserAgent.defaultUserAgent
         webView.loadFileURL(licenseURL, allowingReadAccessTo: licenseURL)
     }
 }

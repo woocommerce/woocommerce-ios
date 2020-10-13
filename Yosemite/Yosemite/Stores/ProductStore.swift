@@ -103,7 +103,6 @@ private extension ProductStore {
     /// Searches all of the products that contain a given Keyword.
     ///
     func searchProducts(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, excludedProductIDs: [Int64], onCompletion: @escaping (Error?) -> Void) {
-        let remote = ProductsRemote(network: network)
         remote.searchProducts(for: siteID,
                               keyword: keyword,
                               pageNumber: pageNumber,
@@ -134,9 +133,8 @@ private extension ProductStore {
                              excludedProductIDs: [Int64],
                              shouldDeleteStoredProductsOnFirstPage: Bool,
                              onCompletion: @escaping (Result<Bool, Error>) -> Void) {
-        let remote = ProductsRemote(network: network)
-
         remote.loadAllProducts(for: siteID,
+                               context: nil,
                                pageNumber: pageNumber,
                                pageSize: pageSize,
                                stockStatus: stockStatus,
@@ -180,7 +178,6 @@ private extension ProductStore {
             }
         }
 
-        let remote = ProductsRemote(network: network)
         remote.loadProducts(for: order.siteID, by: missingIDs) { [weak self] result in
             switch result {
             case .success(let products):
@@ -221,7 +218,7 @@ private extension ProductStore {
 
     /// Retrieves the product associated with a given siteID + productID (if any!).
     ///
-    func retrieveProduct(siteID: Int64, productID: Int64, onCompletion: @escaping (Networking.Product?, Error?) -> Void) {
+    func retrieveProduct(siteID: Int64, productID: Int64, onCompletion: @escaping (Result<Product, Error>) -> Void) {
         remote.loadProduct(for: siteID, productID: productID) { [weak self] result in
             guard let self = self else {
                 return
@@ -232,11 +229,13 @@ private extension ProductStore {
                 if case NetworkError.notFound = error {
                     self.deleteStoredProduct(siteID: siteID, productID: productID)
                 }
-                onCompletion(nil, error)
+                onCompletion(.failure(error))
             case .success(let product):
                 self.upsertStoredProductsInBackground(readOnlyProducts: [product]) { [weak self] in
-                    let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: siteID, productID: productID)
-                    onCompletion(storageProduct?.toReadOnly(), nil)
+                    guard let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: siteID, productID: productID) else {
+                        return onCompletion(.failure(ProductLoadError.notFoundInStorage))
+                    }
+                    onCompletion(.success(storageProduct.toReadOnly()))
                 }
             }
 
@@ -279,8 +278,6 @@ private extension ProductStore {
     /// Updates the product.
     ///
     func updateProduct(product: Product, onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
-        let remote = ProductsRemote(network: network)
-
         remote.updateProduct(product: product) { [weak self] result in
             switch result {
             case .failure(let error):
@@ -306,7 +303,6 @@ private extension ProductStore {
             return
         }
 
-        let remote = ProductsRemote(network: network)
         remote.searchSku(for: siteID, sku: sku) { (result, error) in
             guard error == nil else {
                 onCompletion(true)
@@ -657,4 +653,8 @@ public enum ProductUpdateError: Error, Equatable {
             }
         }
     }
+}
+
+public enum ProductLoadError: Error, Equatable {
+    case notFoundInStorage
 }

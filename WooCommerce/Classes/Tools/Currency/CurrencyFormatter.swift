@@ -244,4 +244,14 @@ public class CurrencyFormatter {
 
         return formattedAmount
     }
+
+    /// Applies currency option settings to the amount for the given currency.
+    /// - Parameters:
+    ///     - amount: a Decimal representation of the amount, from the API, with no formatting applied. e.g. "19.87"
+    ///     - currency: a 3-letter country code for currencies that are supported in the API. e.g. "USD"
+    ///     - locale: the locale that is used to format the currency amount string.
+    ///
+    func formatAmount(_ amount: Decimal, with currency: String? = nil, locale: Locale = .current) -> String? {
+        formatAmount(amount as NSDecimalNumber, with: currency, locale: locale)
+    }
 }

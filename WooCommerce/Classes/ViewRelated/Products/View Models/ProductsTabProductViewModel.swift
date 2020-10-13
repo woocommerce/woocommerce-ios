@@ -29,13 +29,13 @@ struct ProductsTabProductViewModel {
         imageUrl = product.images.first?.src
         name = product.name
         self.isSelected = isSelected
-        detailsAttributedString = product.createDetailsAttributedString()
+        detailsAttributedString = EditableProductModel(product: product).createDetailsAttributedString()
 
         self.imageService = imageService
     }
 }
 
-private extension Product {
+private extension EditableProductModel {
     func createDetailsAttributedString() -> NSAttributedString {
         let statusText = createStatusText()
         let stockText = createStockText()
@@ -51,40 +51,26 @@ private extension Product {
                                                             .font: StyleManager.footerLabelFont
             ])
         if let statusText = statusText {
-            attributedString.addAttributes([.foregroundColor: productStatus.descriptionColor],
+            attributedString.addAttributes([.foregroundColor: status.descriptionColor],
                                            range: NSRange(location: 0, length: statusText.count))
         }
         return attributedString
     }
 
     func createStatusText() -> String? {
-        switch productStatus {
+        switch status {
         case .pending, .draft:
-            return productStatus.description
+            return status.description
         default:
             return nil
-        }
-    }
-
-    func createStockText() -> String? {
-        switch productStockStatus {
-        case .inStock:
-            if let stockQuantity = stockQuantity {
-                let format = NSLocalizedString("%ld in stock", comment: "Label about product's inventory stock status shown on Products tab")
-                return String.localizedStringWithFormat(format, stockQuantity)
-            } else {
-                return NSLocalizedString("In stock", comment: "Label about product's inventory stock status shown on Products tab")
-            }
-        default:
-            return productStockStatus.description
         }
     }
 
     func createVariationsText() -> String? {
-        guard !variations.isEmpty else {
+        guard !product.variations.isEmpty else {
             return nil
         }
-        let numberOfVariations = variations.count
+        let numberOfVariations = product.variations.count
         let singularFormat = NSLocalizedString("%ld variant", comment: "Label about one product variation shown on Products tab")
         let pluralFormat = NSLocalizedString("%ld variants", comment: "Label about number of variations shown on Products tab")
         let format = String.pluralize(numberOfVariations, singular: singularFormat, plural: pluralFormat)

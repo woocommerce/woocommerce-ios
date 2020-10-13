@@ -62,7 +62,9 @@ class DefaultStoresManager: StoresManager {
         return sessionManager.defaultStoreID == nil
     }
 
-
+    var siteID: Observable<Int64?> {
+        sessionManager.siteID
+    }
 
     /// Designated Initializer
     ///
@@ -333,7 +335,7 @@ private extension DefaultStoresManager {
 
         restoreSessionSite(with: siteID)
         synchronizeSettings(with: siteID) {
-            SelectedSiteSettings.shared.refresh()
+            ServiceLocator.selectedSiteSettings.refresh()
             ServiceLocator.shippingSettingsService.update(siteID: siteID)
         }
         retrieveOrderStatus(with: siteID)

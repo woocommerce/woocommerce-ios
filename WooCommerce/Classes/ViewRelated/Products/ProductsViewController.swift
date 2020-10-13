@@ -138,6 +138,16 @@ final class ProductsViewController: UIViewController {
 
     // MARK: - View Lifecycle
 
+    init() {
+        super.init(nibName: nil, bundle: nil)
+
+        configureTabBarItem()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -232,6 +242,9 @@ private extension ProductsViewController {
         guard let navigationController = navigationController else {
             return
         }
+
+        ServiceLocator.analytics.track(.productListAddProductTapped)
+
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             assertionFailure("No site ID for creating a product")
             return
@@ -248,7 +261,7 @@ private extension ProductsViewController {
     /// Set the title.
     ///
     func configureNavigationBar() {
-        title = NSLocalizedString(
+        navigationItem.title = NSLocalizedString(
             "Products",
             comment: "Title that appears on top of the Product List screen (plural form of the word Product)."
         )
@@ -308,6 +321,12 @@ private extension ProductsViewController {
     ///
     func configureMainView() {
         view.backgroundColor = .listBackground
+    }
+
+    func configureTabBarItem() {
+        tabBarItem.title = NSLocalizedString("Products", comment: "Title of the Products tab — plural form of Product")
+        tabBarItem.image = .productImage
+        tabBarItem.accessibilityIdentifier = "tab-bar-products-item"
     }
 
     /// Configure common table properties.
@@ -377,7 +396,7 @@ private extension ProductsViewController {
     /// Register table cells.
     ///
     func registerTableViewCells() {
-        tableView.register(ProductsTabProductTableViewCell.self, forCellReuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier)
+        tableView.register(ProductsTabProductTableViewCell.self)
     }
 }
 
@@ -491,10 +510,7 @@ extension ProductsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ProductsTabProductTableViewCell.reuseIdentifier,
-                                                       for: indexPath) as? ProductsTabProductTableViewCell else {
-            fatalError()
-        }
+        let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
 
         let product = resultsController.object(at: indexPath)
         let viewModel = ProductsTabProductViewModel(product: product)
@@ -542,7 +558,7 @@ extension ProductsViewController: UITableViewDelegate {
 
 private extension ProductsViewController {
     func didSelectProduct(product: Product) {
-        ProductDetailsFactory.productDetails(product: product, presentationStyle: .navigationStack) { [weak self] viewController in
+        ProductDetailsFactory.productDetails(product: product, presentationStyle: .navigationStack, forceReadOnly: false) { [weak self] viewController in
             self?.navigationController?.pushViewController(viewController, animated: true)
         }
     }

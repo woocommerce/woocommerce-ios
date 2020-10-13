@@ -514,31 +514,32 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductAction.retrieveProduct` returns the expected `Product`.
     ///
-    func testRetrieveSingleProductReturnsExpectedFields() {
+    func testRetrieveSingleProductReturnsExpectedFields() throws {
+        // Arrange
         // The shipping class ID should match the `shipping_class_id` field in `product.json`.
         let expectedShippingClass = sampleProductShippingClass(remoteID: 134, siteID: sampleSiteID)
         storageManager.insertSampleProductShippingClass(readOnlyProductShippingClass: expectedShippingClass)
 
-        let expectation = self.expectation(description: "Retrieve single product")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteProduct = sampleProduct(productShippingClass: expectedShippingClass, downloadable: true)
 
+        // Action
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product")
-        let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleProductID) { (product, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(product)
-            XCTAssertEqual(product, remoteProduct)
-
-            expectation.fulfill()
+        let result: Result<Yosemite.Product, Error> = try waitFor { promise in
+            let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleProductID) { result in
+                promise(result)
+            }
+            productStore.onAction(action)
         }
 
-        productStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Assert
+        let product = try XCTUnwrap(result.get())
+        XCTAssertEqual(product, remoteProduct)
     }
 
     /// Verifies that `ProductAction.retrieveProduct` returns the expected `Product` of external product type.
     ///
-    func testRetrieveSingleExternalProductReturnsExpectedFields() {
+    func testRetrieveSingleExternalProductReturnsExpectedFields() throws {
         // Arrange
         let remote = MockProductsRemote()
         let expectedProduct = MockProduct().product(siteID: sampleSiteID, productID: sampleProductID, buttonText: "Deal", externalURL: "https://example.com")
@@ -546,43 +547,44 @@ final class ProductStoreTests: XCTestCase {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // Action
-        waitForExpectation { expectation in
-            let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleProductID) { (product, error) in
-                // Assert
-                XCTAssertNil(error)
-                XCTAssertEqual(product, expectedProduct)
-
-                expectation.fulfill()
+        let result: Result<Yosemite.Product, Error> = try waitFor { promise in
+            let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleProductID) { result in
+                promise(result)
             }
             productStore.onAction(action)
         }
+
+        // Assert
+        let product = try XCTUnwrap(result.get())
+        XCTAssertEqual(product, expectedProduct)
     }
 
     /// Verifies that `ProductAction.retrieveProduct` returns the expected `Product` for `variation` product types.
     ///
-    func testRetrieveSingleVariationTypeProductReturnsExpectedFields() {
-        let expectation = self.expectation(description: "Retrieve single variation type product")
+    func testRetrieveSingleVariationTypeProductReturnsExpectedFields() throws {
+        // Arrange
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteProduct = sampleVariationTypeProduct()
 
+        // Action
         network.simulateResponse(requestUrlSuffix: "products/295", filename: "variation-as-product")
-        let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleVariationTypeProductID) { (product, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(product)
-            XCTAssertEqual(product, remoteProduct)
-
-            expectation.fulfill()
+        let result: Result<Yosemite.Product, Error> = try waitFor { promise in
+            let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleVariationTypeProductID) { result in
+                promise(result)
+            }
+            productStore.onAction(action)
         }
 
-        productStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Assert
+        let product = try XCTUnwrap(result.get())
+        XCTAssertEqual(product, remoteProduct)
     }
 
     /// Verifies that `ProductAction.retrieveProduct` effectively persists all of the remote product fields
     /// correctly across all of the related `Product` entities (tags, categories, attributes, etc).
     ///
-    func testRetrieveSingleProductEffectivelyPersistsProductFieldsAndRelatedObjects() {
-        let expectation = self.expectation(description: "Persist single product")
+    func testRetrieveSingleProductEffectivelyPersistsProductFieldsAndRelatedObjects() throws {
+        // Arrange
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // The shipping class ID should match the `shipping_class_id` field in `product.json`.
@@ -591,115 +593,123 @@ final class ProductStoreTests: XCTestCase {
 
         let remoteProduct = sampleProduct(productShippingClass: expectedShippingClass, downloadable: true)
 
+        // Action
         network.simulateResponse(requestUrlSuffix: "products/282", filename: "product")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
 
-        let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleProductID) { (product, error) in
-            XCTAssertNotNil(product)
-            XCTAssertNil(error)
-
-            let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: self.sampleProductID)
-            let readOnlyStoredProduct = storedProduct?.toReadOnly()
-            XCTAssertNotNil(storedProduct)
-            XCTAssertNotNil(readOnlyStoredProduct)
-            XCTAssertEqual(readOnlyStoredProduct, remoteProduct)
-
-            expectation.fulfill()
+        let result: Result<Yosemite.Product, Error> = try waitFor { promise in
+            let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleProductID) { result in
+                promise(result)
+            }
+            productStore.onAction(action)
         }
 
-        productStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Assert
+        XCTAssertTrue(result.isSuccess)
+
+        let storedProduct = viewStorage.loadProduct(siteID: sampleSiteID, productID: sampleProductID)
+        let readOnlyStoredProduct = storedProduct?.toReadOnly()
+        XCTAssertNotNil(storedProduct)
+        XCTAssertNotNil(readOnlyStoredProduct)
+        XCTAssertEqual(readOnlyStoredProduct, remoteProduct)
     }
 
     /// Verifies that `ProductAction.retrieveProduct` effectively persists all of the remote product fields
     /// correctly across all of the related `Product` entities (tags, categories, attributes, etc) for `variation` product types.
     ///
-    func testRetrieveSingleVariationTypeProductEffectivelyPersistsProductFieldsAndRelatedObjects() {
-        let expectation = self.expectation(description: "Persist single variation type product")
+    func testRetrieveSingleVariationTypeProductEffectivelyPersistsProductFieldsAndRelatedObjects() throws {
+        // Arrange
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteProduct = sampleVariationTypeProduct()
 
+        // Action
         network.simulateResponse(requestUrlSuffix: "products/295", filename: "variation-as-product")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
 
-        let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleVariationTypeProductID) { (product, error) in
-            XCTAssertNotNil(product)
-            XCTAssertNil(error)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 1)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductTag.self), 0)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCategory.self), 0)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductImage.self), 1)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 2)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 0)
-
-            let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: self.sampleVariationTypeProductID)
-            let readOnlyStoredProduct = storedProduct?.toReadOnly()
-            XCTAssertNotNil(storedProduct)
-            XCTAssertNotNil(readOnlyStoredProduct)
-            XCTAssertEqual(readOnlyStoredProduct, remoteProduct)
-
-            expectation.fulfill()
+        let result: Result<Yosemite.Product, Error> = try waitFor { promise in
+            let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleVariationTypeProductID) { result in
+                promise(result)
+            }
+            productStore.onAction(action)
         }
 
-        productStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Assert
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductImage.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 0)
+
+        let storedProduct = viewStorage.loadProduct(siteID: sampleSiteID, productID: sampleVariationTypeProductID)
+        let readOnlyStoredProduct = storedProduct?.toReadOnly()
+        XCTAssertNotNil(storedProduct)
+        XCTAssertNotNil(readOnlyStoredProduct)
+        XCTAssertEqual(readOnlyStoredProduct, remoteProduct)
     }
 
     /// Verifies that `ProductAction.retrieveProduct` returns an error whenever there is an error response from the backend.
     ///
-    func testRetrieveSingleProductReturnsErrorUponReponseError() {
-        let expectation = self.expectation(description: "Retrieve single product error response")
+    func testRetrieveSingleProductReturnsErrorUponReponseError() throws {
+        // Arrange
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
+        // Action
         network.simulateResponse(requestUrlSuffix: "products/282", filename: "generic_error")
-        let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleProductID) { (product, error) in
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        let result: Result<Yosemite.Product, Error> = try waitFor { promise in
+            let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleProductID) { result in
+                promise(result)
+            }
+            productStore.onAction(action)
         }
 
-        productStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Assert
+        XCTAssertNotNil(result.failure)
     }
 
     /// Verifies that `ProductAction.retrieveProduct` returns an error whenever there is no backend response.
     ///
-    func testRetrieveSingleProductReturnsErrorUponEmptyResponse() {
-        let expectation = self.expectation(description: "Retrieve single product empty response")
+    func testRetrieveSingleProductReturnsErrorUponEmptyResponse() throws {
+        // Arrange
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleProductID) { (product, error) in
-            XCTAssertNotNil(error)
-            XCTAssertNil(product)
-            expectation.fulfill()
+        // Action
+        let result: Result<Yosemite.Product, Error> = try waitFor { promise in
+            let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleProductID) { result in
+                promise(result)
+            }
+            productStore.onAction(action)
         }
 
-        productStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Assert
+        XCTAssertNotNil(result.failure)
     }
 
     /// Verifies that whenever a `ProductAction.retrieveProduct` action results in a response with statusCode = 404, the local entity
     /// is obliterated from existence.
     ///
-    func testRetrieveSingleProductResultingInStatusCode404CausesTheStoredProductToGetDeleted() {
-        let expectation = self.expectation(description: "Retrieve single product empty response")
+    func testRetrieveSingleProductResultingInStatusCode404CausesTheStoredProductToGetDeleted() throws {
+        // Arrange
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
         productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
 
+        // Action
         network.simulateError(requestUrlSuffix: "products/282", error: NetworkError.notFound)
-        let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleProductID) { (product, error) in
-            XCTAssertNotNil(error)
-            XCTAssertNil(product)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 0)
-
-            expectation.fulfill()
+        let result: Result<Yosemite.Product, Error> = try waitFor { promise in
+            let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleProductID) { result in
+                promise(result)
+            }
+            productStore.onAction(action)
         }
 
-        productStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Assert
+        XCTAssertNotNil(result.failure)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
     }
 
 

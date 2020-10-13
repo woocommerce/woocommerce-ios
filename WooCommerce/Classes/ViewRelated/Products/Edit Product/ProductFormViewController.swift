@@ -154,17 +154,31 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     // MARK: Product save action handling
 
+    func dismissOrPopViewController() {
+        switch self.presentationStyle {
+        case .navigationStack:
+            self.navigationController?.popViewController(animated: true)
+        default:
+            self.dismiss(animated: true, completion: nil)
+        }
+    }
+
     @objc func updateProduct() {
         eventLogger.logUpdateButtonTapped()
         saveProduct()
     }
 
     @objc func publishProduct() {
-        // TODO-2766: M4 analytics
+        if viewModel.formType == .add {
+            ServiceLocator.analytics.track(.addProductPublishTapped, withProperties: ["product_type": product.productType.rawValue])
+        }
         saveProduct()
     }
 
     func saveProductAsDraft() {
+        if viewModel.formType == .add {
+            ServiceLocator.analytics.track(.addProductSaveAsDraftTapped, withProperties: ["product_type": product.productType.rawValue])
+        }
         saveProduct(status: .draft)
     }
 
@@ -188,7 +202,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
         if viewModel.canSaveAsDraft() {
             actionSheet.addDefaultActionWithTitle(ActionSheetStrings.saveProductAsDraft) { [weak self] _ in
-                // TODO-2766: M4 analytics
                 self?.saveProductAsDraft()
             }
         }
@@ -213,6 +226,13 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             self?.displayProductSettings()
         }
 
+        if viewModel.canDeleteProduct() {
+            actionSheet.addDestructiveActionWithTitle(ActionSheetStrings.delete) { [weak self] _ in
+                // TODO: Analytics M5
+                self?.displayDeleteProductAlert()
+            }
+        }
+
         actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel) { _ in
         }
 
@@ -222,32 +242,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         present(actionSheet, animated: true)
     }
 
-    // MARK: - Alert
-
-    /// Product Type Change alert
-    ///
-    func presentProductTypeChangeAlert(completion: @escaping (Bool) -> ()) {
-        let title = NSLocalizedString("Are you sure you want to change the product type?",
-                                      comment: "Title of the alert when a user is changing the product type")
-        let body = NSLocalizedString("Changing the product type will modify some of the product data",
-                                     comment: "Body of the alert when a user is changing the product type")
-        let cancelButton = NSLocalizedString("Cancel", comment: "Cancel button on the alert when the user is cancelling the action on changing product type")
-        let confirmButton = NSLocalizedString("Yes, change", comment: "Confirmation button on the alert when the user is changing product type")
-        let alertController = UIAlertController(title: title,
-                                                message: body,
-                                                preferredStyle: .alert)
-        let cancel = UIAlertAction(title: cancelButton,
-                                   style: .cancel) { (action) in
-                                       completion(false)
-                                   }
-        let confirm = UIAlertAction(title: confirmButton,
-                                    style: .default) { (action) in
-                                        completion(true)
-                                    }
-        alertController.addAction(cancel)
-        alertController.addAction(confirm)
-        present(alertController, animated: true)
-    }
 
     // MARK: - UITableViewDelegate
 
@@ -390,13 +384,13 @@ private extension ProductFormViewController {
             case .primaryFields(let rows):
                 rows.forEach { row in
                     row.cellTypes.forEach { cellType in
-                        tableView.register(cellType.loadNib(), forCellReuseIdentifier: cellType.reuseIdentifier)
+                        tableView.registerNib(for: cellType)
                     }
                 }
             case .settings(let rows):
                 rows.forEach { row in
                     row.cellTypes.forEach { cellType in
-                        tableView.register(cellType.loadNib(), forCellReuseIdentifier: cellType.reuseIdentifier)
+                        tableView.registerNib(for: cellType)
                     }
                 }
             }
@@ -536,19 +530,20 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func saveProduct(status: ProductStatus? = nil) {
-        let title = NSLocalizedString("Publishing your product...", comment: "Title of the in-progress UI while updating the Product remotely")
-        let message = NSLocalizedString("Please wait while we publish this product to your store",
+        let productStatus = status ?? product.status
+        let title: String
+        let message: String
+        switch productStatus {
+        case .publish:
+            title = NSLocalizedString("Publishing your product...", comment: "Title of the in-progress UI while updating the Product remotely")
+            message = NSLocalizedString("Please wait while we publish this product to your store",
                                         comment: "Message of the in-progress UI while updating the Product remotely")
-        let viewProperties = InProgressViewProperties(title: title, message: message)
-        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
-
-        // Before iOS 13, a modal with transparent background requires certain
-        // `modalPresentationStyle` to prevent the view from turning dark after being presented.
-        if #available(iOS 13.0, *) {} else {
-            inProgressViewController.modalPresentationStyle = .overCurrentContext
+        default:
+            title = NSLocalizedString("Saving your product...", comment: "Title of the in-progress UI while saving a Product as draft remotely")
+            message = NSLocalizedString("Please wait while we save this product to your store",
+                                        comment: "Message of the in-progress UI while saving a Product as draft remotely")
         }
-
-        navigationController?.present(inProgressViewController, animated: true, completion: nil)
+        displayInProgressView(title: title, message: message)
 
         saveImagesAndProductRemotely(status: status)
     }
@@ -600,6 +595,19 @@ private extension ProductFormViewController {
         }
     }
 
+    func displayInProgressView(title: String, message: String) {
+        let viewProperties = InProgressViewProperties(title: title, message: message)
+        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
+
+        // Before iOS 13, a modal with transparent background requires certain
+        // `modalPresentationStyle` to prevent the view from turning dark after being presented.
+        if #available(iOS 13.0, *) {} else {
+            inProgressViewController.modalPresentationStyle = .overCurrentContext
+        }
+
+        navigationController?.present(inProgressViewController, animated: true, completion: nil)
+    }
+
     func displayError(error: ProductUpdateError?) {
         let title = NSLocalizedString("Cannot update product", comment: "The title of the alert when there is an error updating the product")
 
@@ -634,6 +642,40 @@ private extension ProductFormViewController {
         }
 
         SharingHelper.shareURL(url: url, title: product.name, from: view, in: self)
+    }
+
+    func displayDeleteProductAlert() {
+        presentProductConfirmationDeleteAlert { [weak self] (isConfirmed) in
+            guard isConfirmed else {
+                return
+            }
+
+            let title = NSLocalizedString("Placing your product in the trash...", comment: "Title of the in-progress UI while deleting the Product remotely")
+            let message = NSLocalizedString("Please wait while we update your store details",
+                                            comment: "Message of the in-progress UI while deleting the Product remotely")
+            self?.displayInProgressView(title: title, message: message)
+
+            self?.viewModel.deleteProductRemotely { [weak self] result in
+                guard let self = self else {
+                    return
+                }
+                switch result {
+                case .failure(let error):
+                    DDLogError("⛔️ Error deleting Product: \(error)")
+                    CrashLogging.logError(error)
+
+                    // Dismisses the in-progress UI then presents the error alert.
+                    self.navigationController?.dismiss(animated: true) { [weak self] in
+                        self?.displayError(error: error)
+                    }
+                case .success:
+                    // Dismisses the in-progress UI.
+                    self.navigationController?.dismiss(animated: true, completion: nil)
+                    // Dismiss or Pop the Product Form
+                    self.dismissOrPopViewController()
+                }
+            }
+        }
     }
 
     func displayProductSettings() {
@@ -1146,20 +1188,19 @@ private extension ProductFormViewController {
             return
         }
 
-        let downloadFileListViewController = ProductDownloadListViewController(product: product) { [weak self] data in
-            self?.onAddEditDownloadsCompletion(data: data)
+        let downloadFileListViewController = ProductDownloadListViewController(product: product) { [weak self] (data, hasUnsavedChanges) in
+            self?.onAddEditDownloadsCompletion(data: data, hasUnsavedChanges: hasUnsavedChanges)
         }
         navigationController?.pushViewController(downloadFileListViewController, animated: true)
     }
 
-    func onAddEditDownloadsCompletion(data: ProductDownloadsEditableData) {
+    func onAddEditDownloadsCompletion(data: ProductDownloadsEditableData,
+                                      hasUnsavedChanges: Bool) {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        let originalData = ProductDownloadsEditableData(productModel: product)
-        let hasChangedData = originalData != data
 
-        guard hasChangedData else {
+        guard hasUnsavedChanges else {
             return
         }
         viewModel.updateDownloadableFiles(downloadableFiles: data.downloadableFiles, downloadLimit: data.downloadLimit, downloadExpiry: data.downloadExpiry)
@@ -1174,6 +1215,7 @@ private enum ActionSheetStrings {
     static let viewProduct = NSLocalizedString("View Product in Store",
                                                comment: "Button title View product in store in Edit Product More Options Action Sheet")
     static let share = NSLocalizedString("Share", comment: "Button title Share in Edit Product More Options Action Sheet")
+    static let delete = NSLocalizedString("Delete", comment: "Button title Delete in Edit Product More Options Action Sheet")
     static let productSettings = NSLocalizedString("Product Settings", comment: "Button title Product Settings in Edit Product More Options Action Sheet")
     static let cancel = NSLocalizedString("Cancel", comment: "Button title Cancel in Edit Product More Options Action Sheet")
 }

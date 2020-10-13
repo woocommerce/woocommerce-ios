@@ -271,4 +271,58 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
+
+    func test_product_has_unsaved_changes_from_editing_downloadableFiles() {
+        // Arrange
+        let product = MockProduct().product(downloadable: true)
+        let model = EditableProductModel(product: product)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
+        let viewModel = ProductFormViewModel(product: model,
+                                             formType: .edit,
+                                             productImageActionHandler: productImageActionHandler,
+                                             isEditProductsRelease3Enabled: false,
+                                             isEditProductsRelease5Enabled: false)
+
+        // Action
+        viewModel.updateDownloadableFiles(downloadableFiles: MockProduct().sampleDownloadsMutated(), downloadLimit: 1, downloadExpiry: 1)
+
+        // Assert
+        XCTAssertTrue(viewModel.hasUnsavedChanges())
+    }
+
+    func test_product_has_unsaved_changes_from_editing_downloadLimit() {
+        // Arrange
+        let product = MockProduct().product(downloadable: true)
+        let model = EditableProductModel(product: product)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
+        let viewModel = ProductFormViewModel(product: model,
+                                             formType: .edit,
+                                             productImageActionHandler: productImageActionHandler,
+                                             isEditProductsRelease3Enabled: false,
+                                             isEditProductsRelease5Enabled: false)
+
+        // Action
+        viewModel.updateDownloadableFiles(downloadableFiles: MockProduct().sampleDownloads(), downloadLimit: 5, downloadExpiry: 1)
+
+        // Assert
+        XCTAssertTrue(viewModel.hasUnsavedChanges())
+    }
+
+    func test_product_has_unsaved_changes_from_editing_downloadExpiry() {
+        // Arrange
+        let product = MockProduct().product(downloadable: true)
+        let model = EditableProductModel(product: product)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
+        let viewModel = ProductFormViewModel(product: model,
+                                             formType: .edit,
+                                             productImageActionHandler: productImageActionHandler,
+                                             isEditProductsRelease3Enabled: false,
+                                             isEditProductsRelease5Enabled: false)
+
+        // Action
+        viewModel.updateDownloadableFiles(downloadableFiles: MockProduct().sampleDownloads(), downloadLimit: 1, downloadExpiry: 5)
+
+        // Assert
+        XCTAssertTrue(viewModel.hasUnsavedChanges())
+    }
 }

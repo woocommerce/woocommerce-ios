@@ -64,7 +64,7 @@ private extension ProductMenuOrderViewController {
     }
 
     func configureTableView() {
-        tableView.register(TextFieldTableViewCell.loadNib(), forCellReuseIdentifier: TextFieldTableViewCell.reuseIdentifier)
+        tableView.registerNib(for: TextFieldTableViewCell.self)
 
         tableView.dataSource = self
         tableView.delegate = self

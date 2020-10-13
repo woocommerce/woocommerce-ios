@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents an Order's Item Entity.
 ///
-public struct OrderItem: Decodable {
+public struct OrderItem: Decodable, Hashable {
     public let itemID: Int64
     public let name: String
     public let productID: Int64

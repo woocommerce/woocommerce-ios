@@ -96,8 +96,8 @@ private extension ProductVisibilityViewController {
     }
 
     func configureTableView() {
-        tableView.register(BasicTableViewCell.loadNib(), forCellReuseIdentifier: BasicTableViewCell.reuseIdentifier)
-        tableView.register(TitleAndTextFieldWithImageTableViewCell.loadNib(), forCellReuseIdentifier: TitleAndTextFieldWithImageTableViewCell.reuseIdentifier)
+        tableView.registerNib(for: BasicTableViewCell.self)
+        tableView.registerNib(for: TitleAndTextFieldWithImageTableViewCell.self)
 
         tableView.dataSource = self
         tableView.delegate = self

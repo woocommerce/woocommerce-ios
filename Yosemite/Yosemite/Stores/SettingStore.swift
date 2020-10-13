@@ -6,10 +6,18 @@ import Storage
 // MARK: - SettingStore
 //
 public class SettingStore: Store {
+    private let siteSettingsRemote: SiteSettingsRemote
+    private let siteAPIRemote: SiteAPIRemote
 
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.newDerivedStorage()
     }()
+
+    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+        self.siteSettingsRemote = SiteSettingsRemote(network: network)
+        self.siteAPIRemote = SiteAPIRemote(network: network)
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
 
     /// Registers for supported Actions.
     ///
@@ -44,8 +52,7 @@ private extension SettingStore {
     /// Synchronizes the general site settings associated with the provided Site ID (if any!).
     ///
     func synchronizeGeneralSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
-        let remote = SiteSettingsRemote(network: network)
-        remote.loadGeneralSettings(for: siteID) { [weak self] (settings, error) in
+        siteSettingsRemote.loadGeneralSettings(for: siteID) { [weak self] (settings, error) in
             guard let settings = settings else {
                 onCompletion(error)
                 return
@@ -60,8 +67,7 @@ private extension SettingStore {
     /// Synchronizes the product site settings associated with the provided Site ID (if any!).
     ///
     func synchronizeProductSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
-        let remote = SiteSettingsRemote(network: network)
-        remote.loadProductSettings(for: siteID) { [weak self] (settings, error) in
+        siteSettingsRemote.loadProductSettings(for: siteID) { [weak self] (settings, error) in
             guard let settings = settings else {
                 onCompletion(error)
                 return
@@ -77,8 +83,7 @@ private extension SettingStore {
     /// This call does NOT persist returned data into the Storage layer.
     ///
     func retrieveSiteAPI(siteID: Int64, onCompletion: @escaping (SiteAPI?, Error?) -> Void) {
-        let remote = SiteAPIRemote(network: network)
-        remote.loadAPIInformation(for: siteID) { (siteAPI, error) in
+        siteAPIRemote.loadAPIInformation(for: siteID) { (siteAPI, error) in
             onCompletion(siteAPI, error)
         }
     }

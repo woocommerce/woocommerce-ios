@@ -11,9 +11,12 @@ final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
 
     private lazy var analytics = ServiceLocator.analytics
 
-    private lazy var viewModel = OrdersMasterViewModel()
+    private lazy var viewModel = OrdersMasterViewModel(siteID: siteID)
 
-    init() {
+    private let siteID: Int64
+
+    init(siteID: Int64) {
+        self.siteID = siteID
         super.init(nibName: Self.nibName, bundle: nil)
     }
 
@@ -58,14 +61,10 @@ final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
     /// Shows `SearchViewController`.
     ///
     @objc private func displaySearchOrders() {
-        guard let storeID = viewModel.siteID else {
-            return
-        }
-
         analytics.track(.ordersListSearchTapped)
 
-        let searchViewController = SearchViewController<OrderTableViewCell, OrderSearchUICommand>(storeID: storeID,
-                                                                                                  command: OrderSearchUICommand(),
+        let searchViewController = SearchViewController<OrderTableViewCell, OrderSearchUICommand>(storeID: siteID,
+                                                                                                  command: OrderSearchUICommand(siteID: siteID),
                                                                                                   cellType: OrderTableViewCell.self)
         let navigationController = WooNavigationController(rootViewController: searchViewController)
 
@@ -177,7 +176,7 @@ extension OrdersMasterViewController {
         // TODO This is fake. It's probably better to just pass the `slug` to `OrdersViewController`.
         let processingOrderStatus = OrderStatus(
             name: OrderStatusEnum.processing.rawValue,
-            siteID: Int64.max,
+            siteID: siteID,
             slug: OrderStatusEnum.processing.rawValue,
             total: 0
         )
@@ -185,8 +184,9 @@ extension OrdersMasterViewController {
         // We're intentionally not using `processingOrderStatus` as the source of the "Processing"
         // text in here. We want the string to be translated.
         let processingOrdersVC = OrderListViewController(
+            siteID: siteID,
             title: Localization.processingTitle,
-            viewModel: OrderListViewModel(statusFilter: processingOrderStatus),
+            viewModel: OrderListViewModel(siteID: siteID, statusFilter: processingOrderStatus),
             emptyStateConfig: .simple(
                 message: NSAttributedString(string: Localization.processingEmptyStateMessage),
                 image: .waitingForCustomersImage
@@ -195,8 +195,9 @@ extension OrdersMasterViewController {
         processingOrdersVC.delegate = self
 
         let allOrdersVC = OrderListViewController(
+            siteID: siteID,
             title: Localization.allOrdersTitle,
-            viewModel: OrderListViewModel(statusFilter: nil, includesFutureOrders: false),
+            viewModel: OrderListViewModel(siteID: siteID, statusFilter: nil, includesFutureOrders: false),
             emptyStateConfig: .withLink(
                 message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
                 image: .emptyOrdersImage,
@@ -215,15 +216,16 @@ extension OrdersMasterViewController {
         // TODO This is fake. It's probably better to just pass the `slug` to `OrdersViewController`.
         let processingOrderStatus = OrderStatus(
             name: OrderStatusEnum.processing.rawValue,
-            siteID: Int64.max,
+            siteID: siteID,
             slug: OrderStatusEnum.processing.rawValue,
             total: 0
         )
         // We're intentionally not using `processingOrderStatus` as the source of the "Processing"
         // text in here. We want the string to be translated.
         let processingOrdersVC = OrdersViewController(
+            siteID: siteID,
             title: Localization.processingTitle,
-            viewModel: OrdersViewModel(statusFilter: processingOrderStatus),
+            viewModel: OrdersViewModel(siteID: siteID, statusFilter: processingOrderStatus),
             emptyStateConfig: .simple(
                 message: NSAttributedString(string: Localization.processingEmptyStateMessage),
                 image: .waitingForCustomersImage
@@ -232,8 +234,9 @@ extension OrdersMasterViewController {
         processingOrdersVC.delegate = self
 
         let allOrdersVC = OrdersViewController(
+            siteID: siteID,
             title: Localization.allOrdersTitle,
-            viewModel: OrdersViewModel(statusFilter: nil, includesFutureOrders: false),
+            viewModel: OrdersViewModel(siteID: siteID, statusFilter: nil, includesFutureOrders: false),
             emptyStateConfig: .withLink(
                 message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
                 image: .emptyOrdersImage,

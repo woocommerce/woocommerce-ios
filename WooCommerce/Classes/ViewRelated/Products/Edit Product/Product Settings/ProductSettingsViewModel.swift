@@ -120,7 +120,7 @@ extension ProductSettingsViewModel {
         sections.flatMap {
             $0.rows.flatMap { $0.cellTypes }
         }.forEach {
-            tableView.register($0.loadNib(), forCellReuseIdentifier: $0.reuseIdentifier)
+            tableView.registerNib(for: $0)
         }
     }
 

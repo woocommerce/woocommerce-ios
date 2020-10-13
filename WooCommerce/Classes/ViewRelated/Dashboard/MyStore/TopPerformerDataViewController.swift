@@ -11,6 +11,7 @@ final class TopPerformerDataViewController: UIViewController {
     // MARK: - Properties
 
     private let granularity: StatGranularity
+    private let siteID: Int64
 
     var hasTopEarnerStatsItems: Bool {
         return (topEarnerStats?.items?.count ?? 0) > 0
@@ -60,7 +61,8 @@ final class TopPerformerDataViewController: UIViewController {
 
     /// Designated Initializer
     ///
-    init(granularity: StatGranularity) {
+    init(siteID: Int64, granularity: StatGranularity) {
+        self.siteID = siteID
         self.granularity = granularity
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
@@ -159,11 +161,8 @@ private extension TopPerformerDataViewController {
     }
 
     func registerTableViewCells() {
-        let cells = [ProductTableViewCell.self, NoPeriodDataTableViewCell.self]
-
-        for cell in cells {
-            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
-        }
+        tableView.registerNib(for: ProductTableViewCell.self)
+        tableView.registerNib(for: NoPeriodDataTableViewCell.self)
     }
 
     func registerTableViewHeaderFooters() {
@@ -212,11 +211,7 @@ extension TopPerformerDataViewController: UITableViewDataSource {
         guard let statsItem = statsItem(at: indexPath) else {
             return tableView.dequeueReusableCell(withIdentifier: NoPeriodDataTableViewCell.reuseIdentifier, for: indexPath)
         }
-
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ProductTableViewCell.reuseIdentifier,
-                                                       for: indexPath) as? ProductTableViewCell else {
-            fatalError()
-        }
+        let cell = tableView.dequeueReusableCell(ProductTableViewCell.self, for: indexPath)
 
         cell.configure(statsItem, imageService: imageService)
         cell.hidesBottomBorder = tableView.lastIndexPathOfTheLastSection() == indexPath ? true : false
@@ -230,10 +225,10 @@ extension TopPerformerDataViewController: UITableViewDataSource {
 extension TopPerformerDataViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        guard let statsItem = statsItem(at: indexPath), let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+        guard let statsItem = statsItem(at: indexPath) else {
             return
         }
-        presentProductDetails(for: statsItem.productID, siteID: siteID)
+        presentProductDetails(statsItem: statsItem)
     }
 
     func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
@@ -250,11 +245,12 @@ extension TopPerformerDataViewController: UITableViewDelegate {
 
 private extension TopPerformerDataViewController {
 
-    /// Presents the ProductDetailsViewController or the ProductFormViewController, as a childViewController, for a given Product.
+    /// Presents the product details for a given TopEarnerStatsItem.
     ///
-    func presentProductDetails(for productID: Int64, siteID: Int64) {
-        let loaderViewController = ProductLoaderViewController(productID: productID,
-                                                               siteID: siteID)
+    func presentProductDetails(statsItem: TopEarnerStatsItem) {
+        let loaderViewController = ProductLoaderViewController(model: .init(topEarnerStatsItem: statsItem),
+                                                               siteID: siteID,
+                                                               forceReadOnly: false)
         let navController = WooNavigationController(rootViewController: loaderViewController)
         present(navController, animated: true, completion: nil)
     }
@@ -316,9 +312,7 @@ private extension TopPerformerDataViewController {
             tableView.separatorStyle = .none
             tableView.estimatedRowHeight = Constants.estimatedRowHeight
             tableView.applyFooterViewForHidingExtraRowPlaceholders()
-
-            tableView.register(ProductTableViewCell.loadNib(),
-                               forCellReuseIdentifier: ProductTableViewCell.reuseIdentifier)
+            tableView.registerNib(for: ProductTableViewCell.self)
         }
 
         /// Activate the ghost if this view is added to the parent.

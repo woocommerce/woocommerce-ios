@@ -46,44 +46,26 @@ final class OrderListViewModel {
     ///
     private let includesFutureOrders: Bool
 
+    private let siteID: Int64
+
     /// Used for tracking whether the app was _previously_ in the background.
     ///
     private var isAppActive: Bool = true
 
-    private lazy var snapshotsProvider: FetchResultSnapshotsProvider<StorageOrder> = {
-        let predicate: NSPredicate = {
-            let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
-            let excludeNonMatchingStatus = statusFilter.map { NSPredicate(format: "statusKey = %@", $0.slug) }
-
-            var predicates = [ excludeSearchCache, excludeNonMatchingStatus ].compactMap { $0 }
-            if !includesFutureOrders, let nextMidnight = Date().nextMidnight() {
-                // Exclude orders on and after midnight of today's date
-                let dateSubPredicate = NSPredicate(format: "dateCreated < %@", nextMidnight as NSDate)
-                predicates.append(dateSubPredicate)
-            }
-
-            return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
-        }()
-
-        let query = FetchResultSnapshotsProvider<StorageOrder>.Query(
-            sortDescriptor: NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false),
-            predicate: predicate,
-            sectionNameKeyPath: "\(#selector(StorageOrder.normalizedAgeAsString))"
-        )
-
-        return .init(storageManager: self.storageManager, query: query)
-    }()
+    private lazy var snapshotsProvider: FetchResultSnapshotsProvider<StorageOrder> = .init(storageManager: self.storageManager, query: createQuery())
 
     /// Emits snapshots of orders that should be displayed in the table view.
     var snapshot: AnyPublisher<FetchResultSnapshot, Never> {
         snapshotsProvider.snapshot
     }
 
-    init(storageManager: StorageManagerType = ServiceLocator.storageManager,
+    init(siteID: Int64,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          notificationCenter: NotificationCenter = .default,
          statusFilter: OrderStatus?,
          includesFutureOrders: Bool = true) {
+        self.siteID = siteID
         self.storageManager = storageManager
         self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
@@ -148,6 +130,31 @@ final class OrderListViewModel {
                                  pageSize: pageSize,
                                  reason: reason,
                                  completionHandler: completionHandler)
+    }
+
+    private func createQuery() -> FetchResultSnapshotsProvider<StorageOrder>.Query {
+        let predicate: NSPredicate = {
+            let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
+            let excludeNonMatchingStatus = statusFilter.map { NSPredicate(format: "statusKey = %@", $0.slug) }
+
+            var predicates = [ excludeSearchCache, excludeNonMatchingStatus ].compactMap { $0 }
+            if !includesFutureOrders, let nextMidnight = Date().nextMidnight() {
+                // Exclude orders on and after midnight of today's date
+                let dateSubPredicate = NSPredicate(format: "dateCreated < %@", nextMidnight as NSDate)
+                predicates.append(dateSubPredicate)
+            }
+
+            return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        }()
+
+        let siteIDPredicate = NSPredicate(format: "siteID = %lld", siteID)
+        let queryPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [siteIDPredicate, predicate])
+
+        return FetchResultSnapshotsProvider<StorageOrder>.Query(
+            sortDescriptor: NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false),
+            predicate: queryPredicate,
+            sectionNameKeyPath: "\(#selector(StorageOrder.normalizedAgeAsString))"
+        )
     }
 }
 

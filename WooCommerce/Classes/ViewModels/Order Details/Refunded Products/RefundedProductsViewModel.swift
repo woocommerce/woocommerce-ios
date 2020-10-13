@@ -54,13 +54,7 @@ extension RefundedProductsViewModel {
     /// Registers all of the available TableViewCells
     ///
     func registerTableViewCells(_ tableView: UITableView) {
-        let cells = [
-            ProductDetailsTableViewCell.self
-        ]
-
-        for cell in cells {
-            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
-        }
+        tableView.registerNib(for: ProductDetailsTableViewCell.self)
     }
 
     /// Registers all of the available TableViewHeaderFooters

@@ -42,7 +42,7 @@ final class OrderSearchStarterViewModel {
                                                      sortedBy: [descriptor])
     }()
 
-    init(siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min,
+    init(siteID: Int64,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          locale: Locale = .current) {
         self.siteID = siteID

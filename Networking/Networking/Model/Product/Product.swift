@@ -491,6 +491,12 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
         // External link for external/affiliate products.
         try container.encode(externalURL, forKey: .externalURL)
         try container.encode(buttonText, forKey: .buttonText)
+
+        // Downloadable files settings for a downloadable products.
+        try container.encode(downloadable, forKey: .downloadable)
+        try container.encode(downloads, forKey: .downloads)
+        try container.encode(downloadLimit, forKey: .downloadLimit)
+        try container.encode(downloadExpiry, forKey: .downloadExpiry)
     }
 }
 

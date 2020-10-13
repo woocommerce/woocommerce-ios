@@ -35,6 +35,8 @@ final class ReviewDetailsViewController: UIViewController {
         }
     }
 
+    private let siteID: Int64
+
     private let product: Product?
 
     private let notification: Note?
@@ -47,20 +49,15 @@ final class ReviewDetailsViewController: UIViewController {
     ///
     init(productReview: ProductReview, product: Product?, notification: Note?) {
         self.productReview = productReview
+        self.siteID = productReview.siteID
         self.product = product
         self.notification = notification
         super.init(nibName: nil, bundle: nil)
     }
 
-    /// Required!
-    ///
-    required init?(coder aDecoder: NSCoder) {
-        self.product = nil
-        self.notification = nil
-        super.init(coder: aDecoder)
-        assert(productReview != nil, "Please use the designated initializer!")
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
-
 
     // MARK: - View Lifecycle
 
@@ -133,14 +130,8 @@ private extension ReviewDetailsViewController {
     /// Registers all of the available TableViewCells.
     ///
     func registerTableViewCells() {
-        let cells = [
-            NoteDetailsHeaderPlainTableViewCell.self,
-            NoteDetailsCommentTableViewCell.self
-        ]
-
-        for cell in cells {
-            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
-        }
+        tableView.registerNib(for: NoteDetailsHeaderPlainTableViewCell.self)
+        tableView.registerNib(for: NoteDetailsCommentTableViewCell.self)
     }
 
     func reloadRows() {
@@ -164,10 +155,6 @@ private extension ReviewDetailsViewController {
     /// Synchronizes the Notifications associated to the active WordPress.com account.
     ///
     func synchronizeReview(reviewID: Int64, onCompletion: @escaping () -> Void) {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            return
-        }
-
         let action = ProductReviewAction.retrieveProductReview(siteID: siteID, reviewID: reviewID) { (productReview, error) in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing product review [\(reviewID)]: \(error)")

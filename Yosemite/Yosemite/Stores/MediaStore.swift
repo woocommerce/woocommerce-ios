@@ -5,9 +5,11 @@ import Storage
 // MARK: - MediaStore
 //
 public final class MediaStore: Store {
+    private let remote: MediaRemote
     private lazy var mediaExportService: MediaExportService = DefaultMediaExportService()
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+        self.remote = MediaRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -15,6 +17,7 @@ public final class MediaStore: Store {
          dispatcher: Dispatcher,
          storageManager: StorageManagerType,
          network: Network) {
+        self.remote = MediaRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
         self.mediaExportService = mediaExportService
     }
@@ -47,7 +50,6 @@ private extension MediaStore {
                               pageNumber: Int,
                               pageSize: Int,
                               onCompletion: @escaping (_ mediaItems: [Media], _ error: Error?) -> Void) {
-        let remote = MediaRemote(network: network)
         remote.loadMediaLibrary(for: siteID,
                                 pageNumber: pageNumber,
                                 pageSize: pageSize) { (mediaItems, error) in
@@ -80,7 +82,6 @@ private extension MediaStore {
                      productID: Int64,
                      uploadableMedia media: UploadableMedia,
                      onCompletion: @escaping (_ uploadedMedia: Media?, _ error: Error?) -> Void) {
-        let remote = MediaRemote(network: network)
         remote.uploadMedia(for: siteID,
                            productID: productID,
                            mediaItems: [media]) { (uploadedMediaItems, error) in

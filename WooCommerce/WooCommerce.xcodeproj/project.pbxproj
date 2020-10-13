@@ -341,6 +341,9 @@
 		2667BFDF252F762E008099D4 /* IssueRefundViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFDE252F762E008099D4 /* IssueRefundViewModelTests.swift */; };
 		2667BFE1252FA117008099D4 /* RefundItemQuantityListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFE0252FA117008099D4 /* RefundItemQuantityListSelectorCommand.swift */; };
 		2667BFE3252FA695008099D4 /* RefundItemQuantityListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFE2252FA695008099D4 /* RefundItemQuantityListSelectorCommandTests.swift */; };
+		2667BFE52530DCF4008099D4 /* RefundItemsValuesCalculationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFE42530DCF4008099D4 /* RefundItemsValuesCalculationUseCase.swift */; };
+		2667BFE72530E78F008099D4 /* RefundItemsValuesCalculationUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFE62530E78F008099D4 /* RefundItemsValuesCalculationUseCaseTests.swift */; };
+		2667BFE92530ECE4008099D4 /* RefundProductsTotalViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFE82530ECE4008099D4 /* RefundProductsTotalViewModelTests.swift */; };
 		267CFE1C2443A54200AF3A13 /* ProductCategoryCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267CFE1A2443740900AF3A13 /* ProductCategoryCellViewModel.swift */; };
 		2687165524D21BC80042F6AE /* SurveySubmittedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2687165324D21BC80042F6AE /* SurveySubmittedViewController.swift */; };
 		2687165624D21BC80042F6AE /* SurveySubmittedViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2687165424D21BC80042F6AE /* SurveySubmittedViewController.xib */; };
@@ -1335,6 +1338,9 @@
 		2667BFDE252F762E008099D4 /* IssueRefundViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssueRefundViewModelTests.swift; sourceTree = "<group>"; };
 		2667BFE0252FA117008099D4 /* RefundItemQuantityListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundItemQuantityListSelectorCommand.swift; sourceTree = "<group>"; };
 		2667BFE2252FA695008099D4 /* RefundItemQuantityListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundItemQuantityListSelectorCommandTests.swift; sourceTree = "<group>"; };
+		2667BFE42530DCF4008099D4 /* RefundItemsValuesCalculationUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundItemsValuesCalculationUseCase.swift; sourceTree = "<group>"; };
+		2667BFE62530E78F008099D4 /* RefundItemsValuesCalculationUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundItemsValuesCalculationUseCaseTests.swift; sourceTree = "<group>"; };
+		2667BFE82530ECE4008099D4 /* RefundProductsTotalViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundProductsTotalViewModelTests.swift; sourceTree = "<group>"; };
 		267CFE1824435A5500AF3A13 /* ProductCategoryViewModelBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryViewModelBuilderTests.swift; sourceTree = "<group>"; };
 		267CFE1A2443740900AF3A13 /* ProductCategoryCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryCellViewModel.swift; sourceTree = "<group>"; };
 		2687165324D21BC80042F6AE /* SurveySubmittedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveySubmittedViewController.swift; sourceTree = "<group>"; };
@@ -2800,8 +2806,10 @@
 			children = (
 				2667BFDE252F762E008099D4 /* IssueRefundViewModelTests.swift */,
 				2667BFD6252E5DBF008099D4 /* RefundItemViewModelTests.swift */,
+				2667BFE82530ECE4008099D4 /* RefundProductsTotalViewModelTests.swift */,
 				2667BFE2252FA695008099D4 /* RefundItemQuantityListSelectorCommandTests.swift */,
 				2667BFDC252F61C5008099D4 /* RefundShippingDetailsViewModelTests.swift */,
+				2667BFE62530E78F008099D4 /* RefundItemsValuesCalculationUseCaseTests.swift */,
 			);
 			path = "Issue Refund";
 			sourceTree = "<group>";
@@ -2839,6 +2847,7 @@
 				260C315F2524ECA900157BC2 /* IssueRefundViewController.swift */,
 				2667BFE0252FA117008099D4 /* RefundItemQuantityListSelectorCommand.swift */,
 				260C31612524EEB200157BC2 /* IssueRefundViewController.xib */,
+				2667BFE42530DCF4008099D4 /* RefundItemsValuesCalculationUseCase.swift */,
 			);
 			path = "Issue Refunds";
 			sourceTree = "<group>";
@@ -5602,6 +5611,7 @@
 				020BE74D23B1F5EB007FE54C /* TitleAndTextFieldTableViewCell.swift in Sources */,
 				D81F2D37225F0D160084BF9C /* EmptyListMessageWithActionView.swift in Sources */,
 				575472812452185300A94C3C /* PushNotification.swift in Sources */,
+				2667BFE52530DCF4008099D4 /* RefundItemsValuesCalculationUseCase.swift in Sources */,
 				B55BC1F121A878A30011A0C0 /* String+HTML.swift in Sources */,
 				B56C721221B5B44000E5E85B /* PushNotificationsConfiguration.swift in Sources */,
 				26FE09DF24DB871100B9BDF5 /* SurveyViewControllersFactory.swift in Sources */,
@@ -5786,6 +5796,7 @@
 				02404EE02314FE5900FF1170 /* DashboardUIFactoryTests.swift in Sources */,
 				D8F82AC522AF903700B67E4B /* IconsTests.swift in Sources */,
 				57F34AA12423D45A00E38AFB /* OrdersViewModelTests.swift in Sources */,
+				2667BFE92530ECE4008099D4 /* RefundProductsTotalViewModelTests.swift in Sources */,
 				02A275C623FE9EFC005C560F /* MockFeatureFlagService.swift in Sources */,
 				570AAB052472FACB00516C0C /* OrderDetailsDataSourceTests.swift in Sources */,
 				B517EA1A218B2D2600730EC4 /* StringFormatterTests.swift in Sources */,
@@ -5801,6 +5812,7 @@
 				B541B2132189E7FD008FE7C1 /* ScannerWooTests.swift in Sources */,
 				B57C5C9A21B80E7100FF82B2 /* DataWooTests.swift in Sources */,
 				B53A56A42112483E000776C9 /* Constants.swift in Sources */,
+				2667BFE72530E78F008099D4 /* RefundItemsValuesCalculationUseCaseTests.swift in Sources */,
 				D89E0C31226EFB0900DF9DE6 /* EditableOrderTrackingTableViewCellTests.swift in Sources */,
 				02B296A922FA6E0000FD7A4C /* DateStartAndEndTests.swift in Sources */,
 				02B653AC2429F7BF00A9C839 /* MockTaxClassStoresManager.swift in Sources */,

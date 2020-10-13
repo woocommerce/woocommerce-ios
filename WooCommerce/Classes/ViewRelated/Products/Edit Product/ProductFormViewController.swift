@@ -271,6 +271,9 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             case .reviews:
                 ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
                 showReviews()
+            case .downloadableFiles:
+                //TODO: Add analytics
+                showDownloadableFiles()
             case .productType(_, let isEditable):
                 guard isEditable else {
                     return
@@ -982,7 +985,7 @@ private extension ProductFormViewController {
         }
         let originalData = ProductInventoryEditableData(productModel: product)
         let hasChangedData = originalData != data
-        ServiceLocator.analytics.track(.productInventorySettingsDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
+        //TODO: Add analytics
 
         guard hasChangedData else {
             return
@@ -1174,6 +1177,33 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     func onEditStatusCompletion(isEnabled: Bool) {
         viewModel.updateStatus(isEnabled)
+    }
+}
+
+// MARK: Action - Edit Product Downloads
+//
+private extension ProductFormViewController {
+    func showDownloadableFiles() {
+        guard let product = product as? EditableProductModel, product.downloadable  else {
+            return
+        }
+
+        let downloadFileListViewController = ProductDownloadListViewController(product: product) { [weak self] (data, hasUnsavedChanges) in
+            self?.onAddEditDownloadsCompletion(data: data, hasUnsavedChanges: hasUnsavedChanges)
+        }
+        navigationController?.pushViewController(downloadFileListViewController, animated: true)
+    }
+
+    func onAddEditDownloadsCompletion(data: ProductDownloadsEditableData,
+                                      hasUnsavedChanges: Bool) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+
+        guard hasUnsavedChanges else {
+            return
+        }
+        viewModel.updateDownloadableFiles(downloadableFiles: data.downloadableFiles, downloadLimit: data.downloadLimit, downloadExpiry: data.downloadExpiry)
     }
 }
 

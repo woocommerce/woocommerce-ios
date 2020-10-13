@@ -15,7 +15,8 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: true)
+                                                isEditProductsRelease3Enabled: true,
+                                                isEditProductsRelease5Enabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
@@ -43,7 +44,8 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: true)
+                                                isEditProductsRelease3Enabled: true,
+                                                isEditProductsRelease5Enabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
@@ -71,7 +73,8 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: true)
+                                                isEditProductsRelease3Enabled: true,
+                                                isEditProductsRelease5Enabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
@@ -98,7 +101,8 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: true)
+                                                isEditProductsRelease3Enabled: true,
+                                                isEditProductsRelease5Enabled: true)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
@@ -109,6 +113,7 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
                                                                        .inventorySettings,
                                                                        .categories,
                                                                        .tags,
+                                                                       .downloadableFiles,
                                                                        .briefDescription,
                                                                        .productType]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
@@ -125,7 +130,8 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: true)
+                                                isEditProductsRelease3Enabled: true,
+                                                isEditProductsRelease5Enabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
@@ -152,7 +158,8 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: true)
+                                                isEditProductsRelease3Enabled: true,
+                                                isEditProductsRelease5Enabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
@@ -176,7 +183,8 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: true)
+                                                isEditProductsRelease3Enabled: true,
+                                                isEditProductsRelease5Enabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
@@ -197,7 +205,8 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: true)
+                                                isEditProductsRelease3Enabled: true,
+                                                isEditProductsRelease5Enabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
@@ -218,7 +227,8 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: true)
+                                                isEditProductsRelease3Enabled: true,
+                                                isEditProductsRelease5Enabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
@@ -239,7 +249,8 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: true)
+                                                isEditProductsRelease3Enabled: true,
+                                                isEditProductsRelease5Enabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
@@ -260,7 +271,8 @@ final class ProductFormActionsFactory_EditProductsM3Tests: XCTestCase {
         // Action
         let factory = ProductFormActionsFactory(product: model,
                                                 formType: .edit,
-                                                isEditProductsRelease3Enabled: true)
+                                                isEditProductsRelease3Enabled: true,
+                                                isEditProductsRelease5Enabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]

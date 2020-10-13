@@ -28,9 +28,10 @@ final class TitleAndEditableValueTableViewCell: UITableViewCell {
 
     /// Updates the values for the labels.
     func update(style: Style = .condensed, viewModel: TitleAndEditableValueTableViewCellViewModel?) {
-        self.title.text = viewModel?.title
-        self.value.placeholder = viewModel?.placeholder
-        self.value.text = viewModel?.currentValue
+        title.text = viewModel?.title
+        value.placeholder = viewModel?.placeholder
+        value.text = viewModel?.currentValue
+        value.isEnabled = viewModel?.allowsEditing ?? false
 
         self.viewModel = viewModel
 

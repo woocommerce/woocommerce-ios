@@ -6,14 +6,18 @@ import UIKit
 final class AppCoordinator {
     private let tabBarController: MainTabBarController
     private let stores: StoresManager
+    private let authenticationManager: Authentication
 
     private var storePickerCoordinator: StorePickerCoordinator?
     private var cancellable: ObservationToken?
     private var isLoggedIn: Bool = false
 
-    init(tabBarController: MainTabBarController, stores: StoresManager = ServiceLocator.stores) {
+    init(tabBarController: MainTabBarController,
+         stores: StoresManager = ServiceLocator.stores,
+         authenticationManager: Authentication = ServiceLocator.authenticationManager) {
         self.tabBarController = tabBarController
         self.stores = stores
+        self.authenticationManager = authenticationManager
     }
 
     func start() {
@@ -32,11 +36,13 @@ final class AppCoordinator {
             self.isLoggedIn = isLoggedIn
         }
     }
+}
 
+private extension AppCoordinator {
     /// Displays the WordPress.com Authentication UI.
     ///
     func displayAuthenticator(animated: Bool) {
-        ServiceLocator.authenticationManager.displayAuthentication(from: tabBarController, animated: animated) { [weak self] in
+        authenticationManager.displayAuthentication(from: tabBarController, animated: animated) { [weak self] in
             guard let self = self else {
                 return
             }

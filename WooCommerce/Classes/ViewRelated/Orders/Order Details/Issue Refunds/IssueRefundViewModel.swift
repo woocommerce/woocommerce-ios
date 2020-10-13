@@ -36,7 +36,7 @@ final class IssueRefundViewModel {
         }
     }
 
-    /// Closured to notify the `ViewController` when the view model properties change
+    /// Closure to notify the `ViewController` when the view model properties change
     ///
     var onChange: (() -> (Void))?
 
@@ -229,7 +229,7 @@ extension IssueRefundViewModel {
         return productsTotalUseCase.calculateRefundValues().total + shippingTotalUseCase.calculateRefundValue()
     }
 
-    /// Returns the a string with the count of many items are selected for refund.
+    /// Returns a string with the count ofhow many items are selected for refund.
     ///
     private func createSelectedItemsCount() -> String {
         let count = state.refundQuantityStore.count()

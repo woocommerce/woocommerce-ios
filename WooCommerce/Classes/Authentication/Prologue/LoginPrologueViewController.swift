@@ -177,13 +177,3 @@ private extension LoginPrologueViewController {
         return disclaimerAttrText
     }
 }
-
-
-// MARK: - (Private) Constants!
-//
-private enum Settings {
-
-    /// Login Button's Corner Radius
-    ///
-    static let buttonCornerRadius = CGFloat(8.0)
-}

@@ -249,6 +249,18 @@ extension UIImage {
         return UIImage.gridicon(.infoOutline)
     }
 
+    /// Files Download Icon
+    ///
+    static var cloudImage: UIImage {
+        return UIImage.gridicon(.cloud)
+    }
+
+    /// Menu Icon
+    ///
+    static var menuImage: UIImage {
+        return UIImage.gridicon(.menu)
+    }
+
     /// Invisible Image
     ///
     static var invisibleImage: UIImage {

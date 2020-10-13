@@ -212,15 +212,14 @@ extension OrderDetailsViewModel {
             viewController.present(navController, animated: true, completion: nil)
         case .orderItem:
             let item = items[indexPath.row]
-            let loaderViewController = ProductLoaderViewController(productID: item.productOrVariationID,
+            let loaderViewController = ProductLoaderViewController(model: .init(orderItem: item),
                                                                    siteID: order.siteID,
                                                                    forceReadOnly: true)
             let navController = WooNavigationController(rootViewController: loaderViewController)
             viewController.present(navController, animated: true, completion: nil)
         case .aggregateOrderItem:
             let item = dataSource.aggregateOrderItems[indexPath.row]
-            let productID = item.variationID == 0 ? item.productID : item.variationID
-            let loaderViewController = ProductLoaderViewController(productID: productID,
+            let loaderViewController = ProductLoaderViewController(model: .init(aggregateOrderItem: item),
                                                                    siteID: order.siteID,
                                                                    forceReadOnly: true)
             let navController = WooNavigationController(rootViewController: loaderViewController)

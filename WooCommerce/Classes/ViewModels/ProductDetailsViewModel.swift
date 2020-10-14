@@ -494,7 +494,7 @@ extension ProductDetailsViewModel {
                                               comment: "'Limit: 1 download', for example.")
         let limitPlural = NSLocalizedString("Limit: %ld downloads",
                                             comment: "'Limit: 2 downloads', for example.")
-        let limitText = String.pluralize(product.downloadLimit,
+        let limitText = String.pluralize(Int(product.downloadLimit),
                                          singular: limitSingular,
                                          plural: limitPlural)
 
@@ -502,7 +502,7 @@ extension ProductDetailsViewModel {
         let expirationSingular = NSLocalizedString("Expiry: %ld day", comment: "Expiry: 1 day")
         let expirationPlural = NSLocalizedString("Expiry: %ld days",
                                                  comment: "For example: 'Expiry: 30 days'")
-        let expirationText = String.pluralize(product.downloadExpiry,
+        let expirationText = String.pluralize(Int(product.downloadExpiry),
                                               singular: expirationSingular,
                                               plural: expirationPlural)
 

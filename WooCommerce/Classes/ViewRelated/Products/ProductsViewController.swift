@@ -64,7 +64,6 @@ final class ProductsViewController: UIViewController {
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Products in sync.
     ///
     private lazy var resultsController: ResultsController<StorageProduct> = {
-        let siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
         let resultsController = createResultsController(siteID: siteID)
         configureResultsController(resultsController) { [weak self] in
             self?.tableView.reloadData()
@@ -115,10 +114,6 @@ final class ProductsViewController: UIViewController {
             if filters != oldValue {
                 updateFilterButtonTitle(filters: filters)
 
-                guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-                    assertionFailure("No valid site ID for Products tab")
-                    return
-                }
                 resultsController.updatePredicate(siteID: siteID,
                                                   stockStatus: filters.stockStatus,
                                                   productStatus: filters.productStatus,
@@ -132,13 +127,16 @@ final class ProductsViewController: UIViewController {
         }
     }
 
+    private let siteID: Int64
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
 
     // MARK: - View Lifecycle
 
-    init() {
+    init(siteID: Int64) {
+        self.siteID = siteID
         super.init(nibName: nil, bundle: nil)
 
         configureTabBarItem()
@@ -160,18 +158,11 @@ final class ProductsViewController: UIViewController {
         updateTopBannerView()
         observeProductsFeatureSwitchChange()
 
-        startListeningToNotifications()
         syncingCoordinator.resynchronize()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            assertionFailure("No valid site ID for Products tab")
-            return
-        }
-        updateResultsController(siteID: siteID)
 
         if AppRatingManager.shared.shouldPromptForAppReview() {
             displayRatingPrompt()
@@ -185,49 +176,14 @@ final class ProductsViewController: UIViewController {
     }
 }
 
-// MARK: - Notifications
-//
-private extension ProductsViewController {
-
-    /// Wires all of the Notification Hooks
-    ///
-    func startListeningToNotifications() {
-        let nc = NotificationCenter.default
-        nc.addObserver(self, selector: #selector(defaultAccountWasUpdated), name: .defaultAccountWasUpdated, object: nil)
-        nc.addObserver(self, selector: #selector(defaultSiteWasUpdated), name: .StoresManagerDidUpdateDefaultSite, object: nil)
-    }
-
-    /// Runs whenever the default Account is updated.
-    ///
-    @objc func defaultAccountWasUpdated() {
-        syncingCoordinator.resetInternalState()
-    }
-
-    /// Default Site Updated Handler
-    ///
-    @objc func defaultSiteWasUpdated() {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            return
-        }
-        navigationController?.popToRootViewController(animated: false)
-        updateResultsController(siteID: siteID)
-        tableView.reloadData()
-        syncingCoordinator.resynchronize()
-    }
-}
-
 // MARK: - Navigation Bar Actions
 //
 private extension ProductsViewController {
     @IBAction func displaySearchProducts() {
-        guard let storeID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            return
-        }
-
         ServiceLocator.analytics.track(.productListMenuSearchTapped)
 
-        let searchViewController = SearchViewController(storeID: storeID,
-                                                        command: ProductSearchUICommand(siteID: storeID),
+        let searchViewController = SearchViewController(storeID: siteID,
+                                                        command: ProductSearchUICommand(siteID: siteID),
                                                         cellType: ProductsTabProductTableViewCell.self)
         let navigationController = WooNavigationController(rootViewController: searchViewController)
 
@@ -245,10 +201,6 @@ private extension ProductsViewController {
 
         ServiceLocator.analytics.track(.productListAddProductTapped)
 
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            assertionFailure("No site ID for creating a product")
-            return
-        }
         let coordinatingController = AddProductCoordinator(siteID: siteID, sourceView: sender, sourceNavigationController: navigationController)
         coordinatingController.start()
     }
@@ -457,13 +409,6 @@ private extension ProductsViewController {
     func updateTableHeaderViewHeight() {
         topStackView.spacing = topBannerContainerView.subviews.isNotEmpty ? Constants.headerViewSpacing : 0
         tableView.updateHeaderHeight()
-    }
-
-    func updateResultsController(siteID: Int64) {
-        resultsController = createResultsController(siteID: siteID)
-        configureResultsController(resultsController) { [weak self] in
-            self?.tableView.reloadData()
-        }
     }
 
     func createResultsController(siteID: Int64) -> ResultsController<StorageProduct> {
@@ -711,11 +656,6 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
     /// Synchronizes the Products for the Default Store (if any).
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)? = nil) {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            onCompletion?(false)
-            return
-        }
-
         transitionToSyncingState(pageNumber: pageNumber)
 
         let action = ProductAction

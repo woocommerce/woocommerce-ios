@@ -99,8 +99,7 @@ extension ProductListViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         let orderItem = itemAtIndexPath(indexPath)
-        let productIDToLoad = orderItem.variationID == 0 ? orderItem.productID : orderItem.variationID
-        productWasPressed(for: productIDToLoad)
+        productWasPressed(orderItem: orderItem)
     }
 }
 
@@ -117,10 +116,10 @@ private extension ProductListViewController {
         return products?.filter({ $0.productID == productID }).first
     }
 
-    /// Displays the product detail screen for the provided ProductID
+    /// Displays the product details screen for the provided OrderItem
     ///
-    func productWasPressed(for productID: Int64) {
-        let loaderViewController = ProductLoaderViewController(productID: productID,
+    func productWasPressed(orderItem: OrderItem) {
+        let loaderViewController = ProductLoaderViewController(model: .init(orderItem: orderItem),
                                                                siteID: viewModel.order.siteID,
                                                                forceReadOnly: false)
         let navController = WooNavigationController(rootViewController: loaderViewController)

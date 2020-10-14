@@ -31,6 +31,7 @@ final class ProductReviewsDataSource: NSObject, ReviewsDataSource {
     /// Product for which we show the reviews.
     ///
     private let product: Product
+    private let siteID: Int64
 
     /// Boolean indicating if there are reviews
     ///
@@ -58,8 +59,8 @@ final class ProductReviewsDataSource: NSObject, ReviewsDataSource {
         return reviewsResultsController.numberOfObjects
     }
 
-
     init(product: Product) {
+        self.siteID = product.siteID
         self.product = product
         super.init()
     }
@@ -77,8 +78,7 @@ final class ProductReviewsDataSource: NSObject, ReviewsDataSource {
     /// Predicate to entities that belong to the current store
     ///
     private func sitePredicate() -> NSPredicate {
-        return NSPredicate(format: "siteID == %lld",
-                          ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
+        NSPredicate(format: "siteID == %lld", siteID)
     }
 
     /// Initializes observers for incoming reviews

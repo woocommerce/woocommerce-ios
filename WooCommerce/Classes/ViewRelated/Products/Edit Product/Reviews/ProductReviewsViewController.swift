@@ -53,7 +53,7 @@ final class ProductReviewsViewController: UIViewController {
     // MARK: - View Lifecycle
     init(product: Product) {
         self.product = product
-        viewModel = ProductReviewsViewModel(data: ProductReviewsDataSource(product: product))
+        viewModel = ProductReviewsViewModel(siteID: product.siteID, data: ProductReviewsDataSource(product: product))
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 

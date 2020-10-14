@@ -123,11 +123,11 @@ extension AddProductCategoryViewController {
         titleCategoryTextFieldResignFirstResponder()
         configureRightButtonItemAsSpinner()
 
-        guard let categoryName = newCategoryTitle, let defaultStoreID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+        guard let categoryName = newCategoryTitle else {
             return
         }
 
-        let action = ProductCategoryAction.addProductCategory(siteID: defaultStoreID,
+        let action = ProductCategoryAction.addProductCategory(siteID: siteID,
                                                               name: categoryName,
                                                               parentID: selectedParentCategory?.categoryID) { [weak self] (result) in
             self?.configureRightBarButtomitemAsSave()

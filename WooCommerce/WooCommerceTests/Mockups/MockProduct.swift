@@ -68,9 +68,9 @@ final class MockProduct {
                    totalSales: 0,
                    virtual: virtual,
                    downloadable: downloadable,
-                   downloads: [],
-                   downloadLimit: -1,
-                   downloadExpiry: -1,
+                   downloads: downloadable ? sampleDownloads() : [],
+                   downloadLimit: downloadable ? 1 : -1,
+                   downloadExpiry: downloadable ? 1 : -1,
                    buttonText: "",
                    externalURL: externalURL,
                    taxStatusKey: taxStatus.rawValue,
@@ -106,6 +106,29 @@ final class MockProduct {
                    groupedProducts: [],
                    menuOrder: menuOrder)
 
+    }
+
+    func sampleDownloads() -> [Networking.ProductDownload] {
+         let download1 = ProductDownload(downloadID: "1f9c11f99ceba63d4403c03bd5391b11",
+                                         name: "Song #1",
+                                         fileURL: "https://example.com/woo-single-1.ogg")
+         let download2 = ProductDownload(downloadID: "ec87d8b5-1361-4562-b4b8-18980b5a2cae",
+                                         name: "Artwork",
+                                         fileURL: "https://example.com/cd_4_angle.jpg")
+         let download3 = ProductDownload(downloadID: "240cd543-5457-498e-95e2-6b51fdaf15cc",
+                                         name: "Artwork 2",
+                                         fileURL: "https://example.com/cd_4_flat.jpg")
+         return [download1, download2, download3]
+    }
+
+    func sampleDownloadsMutated() -> [Networking.ProductDownload] {
+        let download1 = ProductDownload(downloadID: "1f9c11f99ceba63d4403c03bd5391b11",
+                                        name: "Song #1",
+                                        fileURL: "https://example.com/woo-single-1.ogg")
+        let download2 = ProductDownload(downloadID: "ec87d8b5-1361-4562-b4b8-18980b5a2cae",
+                                        name: "Artwork",
+                                        fileURL: "https://example.com/cd_4_angle.jpg")
+        return [download1, download2]
     }
 
     private func date(with dateString: String) -> Date {

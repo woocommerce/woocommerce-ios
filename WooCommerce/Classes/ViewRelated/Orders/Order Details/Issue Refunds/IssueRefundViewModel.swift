@@ -14,7 +14,7 @@ final class IssueRefundViewModel {
 
         /// Items to refund. Order Items - Refunded items
         ///
-        let itemsToRefund: [AggregateOrderItem]
+        let itemsToRefund: [OrderItem]
 
         /// Current currency settings
         ///
@@ -65,8 +65,8 @@ final class IssueRefundViewModel {
     }()
 
     init(order: Order, refunds: [Refund], currencySettings: CurrencySettings) {
-        let itemsToRefund = AggregateDataHelper.combineOrderItems(order.items, with: refunds)
-        state = State(order: order, itemsToRefund: itemsToRefund, currencySettings: currencySettings)
+        let items = Self.filterItems(from: order, with: refunds)
+        state = State(order: order, itemsToRefund: items, currencySettings: currencySettings)
         sections = createSections()
         title = calculateTitle()
         selectedItemsTitle = createSelectedItemsCount()
@@ -91,7 +91,7 @@ extension IssueRefundViewModel {
     /// Returns `nil` if the index is out of bounds
     ///
     func quantityAvailableForRefundForItemAtIndex(_ itemIndex: Int) -> Int? {
-        guard let item = state.order.items[safe: itemIndex] else {
+        guard let item = state.itemsToRefund[safe: itemIndex] else {
             return nil
         }
         return Int(truncating: item.quantity as NSDecimalNumber)
@@ -101,7 +101,7 @@ extension IssueRefundViewModel {
     /// Returns `nil` if the index is out of bounds.
     ///
     func currentQuantityForItemAtIndex(_ itemIndex: Int) -> Int? {
-        guard let item = state.order.items[safe: itemIndex] else {
+        guard let item = state.itemsToRefund[safe: itemIndex] else {
             return nil
         }
         return state.refundQuantityStore.refundQuantity(for: item)
@@ -110,7 +110,7 @@ extension IssueRefundViewModel {
     /// Updates the quantity to be refunded for an item on the provided index.
     ///
     func updateRefundQuantity(quantity: Int, forItemAtIndex itemIndex: Int) {
-        guard let item = state.order.items[safe: itemIndex] else {
+        guard let item = state.itemsToRefund[safe: itemIndex] else {
             return
         }
         state.refundQuantityStore.update(quantity: quantity, for: item)
@@ -132,7 +132,7 @@ private extension IssueRefundViewModel {
     /// Results controller that fetches the products related to this order
     ///
     func createProductsResultsController() -> ResultsController<StorageProduct> {
-        let itemsIDs = state.order.items.map { $0.productID }
+        let itemsIDs = state.itemsToRefund.map { $0.productID }
         let predicate = NSPredicate(format: "siteID == %lld AND productID IN %@", state.order.siteID, itemsIDs)
         return ResultsController<StorageProduct>(storageManager: ServiceLocator.storageManager, matching: predicate, sortedBy: [])
     }
@@ -177,7 +177,7 @@ extension IssueRefundViewModel {
     /// Returns a section with the order items that can be refunded
     ///
     private func createItemsToRefundSection() -> Section {
-        let itemsRows = state.order.items.map { item -> RefundItemViewModel in
+        let itemsRows = state.itemsToRefund.map { item -> RefundItemViewModel in
             let product = products.filter { $0.productID == item.productID }.first
             return RefundItemViewModel(item: item,
                                        product: product,
@@ -239,6 +239,36 @@ extension IssueRefundViewModel {
     private func createSelectedItemsCount() -> String {
         let count = state.refundQuantityStore.count()
         return String.pluralize(count, singular: Localization.itemSingular, plural: Localization.itemsPlural)
+    }
+
+    /// Return an array of `orderItems` by taking out all previously refunded items
+    ///
+    private static func filterItems(from order: Order, with refunds: [Refund]) -> [OrderItem] {
+        // Flattened array with all items refunded
+        let allRefundedItems = refunds.flatMap { $0.items }
+
+        // Transform `order.items` by substracting the quantity left to refund and evicting those who were fully refunded.
+        return order.items.compactMap { item -> OrderItem? in
+
+            // Calculate how many times an item has been refunded. This number is negative.
+            let timesRefunded = allRefundedItems.reduce(0) { timesRefunded, refundedItem -> Decimal in
+
+                // Only keep accumulating if the refunded item product and the original item product match
+                guard refundedItem.productOrVariationID == item.productOrVariationID else {
+                    return timesRefunded
+                }
+                return timesRefunded + refundedItem.quantity
+            }
+
+            // If there is no more items to refund, evict it from the resulting array
+            let quantityLeftToRefund = item.quantity + timesRefunded
+            guard quantityLeftToRefund > 0 else {
+                return nil
+            }
+
+            // Return the item with the updated quantity to refund
+            return item.copy(quantity: quantityLeftToRefund)
+        }
     }
 }
 

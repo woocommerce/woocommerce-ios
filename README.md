@@ -1,12 +1,29 @@
 
-[![CircleCI](https://circleci.com/gh/woocommerce/woocommerce-ios.svg?style=svg)](https://circleci.com/gh/woocommerce/woocommerce-ios)
-[![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com)
 
-# WooCommerce for iOS
+<h1 align="center"><img src="docs/images/logo-woocommerce.svg" width="300"><br>for iOS</h1>
 
-A Jetpack-powered companion app for WooCommerce.
+<p align="center">A Jetpack-powered companion app for WooCommerce.</p>
 
-## Build Instructions
+<p align="center">
+    <a href="https://circleci.com/gh/woocommerce/woocommerce-ios">
+        <img src="https://circleci.com/gh/woocommerce/woocommerce-ios.svg?style=svg" alt="CircleCI">
+    </a>
+    <a href="https://houndci.com">
+        <img src="https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg" alt="Reviewed by Hound">
+    </a>
+</p>
+
+<p align="center">
+    <a href="#-build-instructions">Build Instructions</a> • 
+    <a href="#-documentation">Documentation</a> • 
+    <a href="#-automation">Automation</a> • 
+    <a href="#-security">Security</a> •
+    <a href="#-need-help">Need Help?</a> • 
+    <a href="#-resources">Resources</a> • 
+    <a href="#-license">License</a>
+</p>
+
+## 🎉 Build Instructions
 
 1. Download Xcode
 
@@ -47,7 +64,7 @@ In order to login to WordPress.com using the app:
 2. Create a new developer application [here](https://developer.wordpress.com/apps/).
 3. Set **"Redirect URLs"** = `https://localhost` and **"Type"** = `Native` and click **Create**. On the next page, click **Update**.
 4. Copy the *Client ID* and *Client Secret* from the OAuth Information.
-5. Build the app. A file named `ApiCredentials.swift` should be generated. 
+5. Build the app. A file named `ApiCredentials.swift` should be generated.
 6. Navigate to the generated `WooCommerce/DerivedSources/ApiCredentials.swift` file.
 
     <img src="docs/images/apicredentials-location.png" width="240">
@@ -58,36 +75,48 @@ In order to login to WordPress.com using the app:
 
 Please, remember to not add this information on your commits and PRs.
 
-## Coding Style
+## 📚 Documentation
 
-We use [SwiftLint](https://github.com/realm/SwiftLint) to enforce a common style for Swift code. The app should build and work without it, but if you plan to write code, you are encouraged to run it locally by `bundle exec rake lint` (first run will install SwiftLint if you don't have it). No pull requests should have lint warnings or errors before merging, and we also have `Hound` (mentioned below) to help us in pull requests on GitHub.
+- Architecture
+    - [Overview](docs/architecture-overview.md)
+    - [Networking](docs/NETWORKING.md)
+    - [Storage](docs/STORAGE.md)
+    - [Yosemite](docs/YOSEMITE.md)
+- Coding Guidelines
+    - [Coding Style](docs/coding-style-guide.md)
+    - [Naming Conventions](docs/naming-conventions.md)
+        - [Protocols](docs/naming-conventions.md#protocols)
+        - [String Constants in Nested Enums](docs/naming-conventions.md#string-constants-in-nested-enums)
+        - [Test Methods](docs/naming-conventions.md#test-methods)
+    - [Choosing Between Structures and Classes](docs/choosing-between-structs-and-classes.md)
+    - [Creating Core Data Model Versions](docs/creating-core-data-model-versions.md)
+- Design Patterns
+    - [Copiable](docs/copiable.md)
+        - [Generating Copiable Methods](docs/copiable.md#generating-copiable-methods)
+        - [Modifying The Copiable Code Generation](docs/copiable.md#modifying-the-copiable-code-generation)
+    - [Tracking Events](docs/tracking-events.md)
+        - [Custom Properties](docs/tracking-events.md#custom-properties)
+- Testing
+    - [UI Tests](docs/UI-TESTS.md)
+    - [Beta Testing](https://woocommercehalo.wordpress.com/setup/join-ios-beta/)
+- Features
+    - [In-app Feedback](docs/in-app-feedback.md)
 
-If your code has any style violations, you can try to automatically correct them by running:
+## 🤖 Automation
 
-```
-bundle exec rake lint:autocorrect
-```
-
-Otherwise, you can also fix them manually.
-
-Read more about styling in the [Coding Style Guide](docs/coding-style-guide.md).
-
-## Peril
+### Peril
 
 The woocommerce-ios project uses [Peril](https://danger.systems/js/guides/peril.html) to enforce Pull Request guidelines.
 
-## Circle CI
+### Circle CI
 
 The woocommerce-ios project uses [Circle CI](https://circleci.com/gh/woocommerce/woocommerce-ios) for continuous integration.
 
-## Hound
-The woocommerce-ios project uses [Hound](https://houndci.com) to enforce basic Swift styles. (Not all Woo styles are defined in Hound.)
-
-## Security
+## 🔐 Security
 
 If you happen to find a security vulnerability, we would appreciate you letting us know at https://hackerone.com/automattic and allowing us to respond before disclosing the issue publicly.
 
-## Need help? ##
+## 🦮 Need Help?
 
 You can find the WooCommerce usage docs here: [docs.woocommerce.com](https://docs.woocommerce.com/)
 
@@ -97,12 +126,11 @@ General usage and development questions:
 * [WordPress.org Forums](https://wordpress.org/support/plugin/woocommerce)
 * The WooCommerce Help and Share Facebook group
 
-## Resources
+## 🔗 Resources
 
-- [Documentation on our architecture and frameworks](https://github.com/woocommerce/woocommerce-ios/tree/develop/docs)
 - [Mobile blog](https://mobile.blog)
 - [WooCommerce API Documentation (currently v3)](https://woocommerce.github.io/woocommerce-rest-api-docs/#introduction)
 
-## License
+## 📜 License
 
 WooCommerce for iOS is an Open Source project covered by the [GNU General Public License version 2](LICENSE).

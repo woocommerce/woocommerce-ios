@@ -76,8 +76,7 @@ private extension ProductListSelectorViewController {
             searchViewController.isModalInPresentation = true
         }
         let navigationController = WooNavigationController(rootViewController: searchViewController)
-        navigationController.presentationController?.delegate = searchProductsCommand
-        searchProductsCommand.presentingViewController = navigationController
+        searchProductsCommand.configurePresentingViewControllerForDiscardChangesAlert(presentingViewController: navigationController)
         present(navigationController, animated: true, completion: nil)
     }
 

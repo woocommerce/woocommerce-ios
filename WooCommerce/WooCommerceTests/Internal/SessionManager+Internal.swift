@@ -10,7 +10,9 @@ extension SessionManager {
     /// Returns a SessionManager instance with testing Keychain/UserDefaults
     ///
     static var testingInstance: SessionManager {
-        return SessionManager(defaults: SessionSettings.defaults, keychainServiceName: SessionSettings.keychainServiceName)
+        let sessionManager = SessionManager(defaults: SessionSettings.defaults, keychainServiceName: SessionSettings.keychainServiceName)
+        sessionManager.setStoreId(nil)
+        return sessionManager
     }
 
     /// Create an instance of unit testing.
@@ -20,6 +22,7 @@ extension SessionManager {
         // Force setting to `nil` if `authenticated` is `false` so that any auto-loaded credentials
         // will be removed.
         manager.defaultCredentials = authenticated ? SessionSettings.credentials : nil
+        manager.setStoreId(nil)
         return manager
     }
 

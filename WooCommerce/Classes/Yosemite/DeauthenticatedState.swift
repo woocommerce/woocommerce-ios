@@ -7,11 +7,9 @@ import Yosemite
 //
 class DeauthenticatedState: StoresManagerState {
 
-    /// This method should run only when the app got deauthenticated.
+    /// NO-OP: Executed when current state is activated.
     ///
-    func didEnter() {
-        AppDelegate.shared.displayAuthenticator(animated: true)
-    }
+    func didEnter() { }
 
     /// NO-OP: Executed before the current state is deactivated.
     ///

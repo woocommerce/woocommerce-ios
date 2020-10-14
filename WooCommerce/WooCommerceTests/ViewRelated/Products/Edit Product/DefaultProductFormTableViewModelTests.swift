@@ -13,7 +13,6 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         let model = EditableProductModel(product: product)
         let actionsFactory = ProductFormActionsFactory(product: model,
                                                        formType: .edit,
-                                                       isEditProductsRelease3Enabled: true,
                                                        isEditProductsRelease5Enabled: false)
 
         // Action
@@ -43,7 +42,6 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         let model = EditableProductModel(product: product)
         let actionsFactory = ProductFormActionsFactory(product: model,
                                                        formType: .edit,
-                                                       isEditProductsRelease3Enabled: true,
                                                        isEditProductsRelease5Enabled: false)
 
         // Action

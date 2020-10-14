@@ -5,8 +5,6 @@ struct DefaultFeatureFlagService: FeatureFlagService {
         switch featureFlag {
         case .barcodeScanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .editProductsRelease3:
-            return true
         case .editProductsRelease4:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .editProductsRelease5:

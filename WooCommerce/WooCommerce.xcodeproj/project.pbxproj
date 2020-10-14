@@ -3093,9 +3093,9 @@
 		45F627B12536037400894B86 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				45F627B2253603AE00894B86 /* Product+DownloadSettingsViewModels.swift */,
 				45F627B4253603AE00894B86 /* ProductDownloadSettingsViewController.swift */,
 				45F627B3253603AE00894B86 /* ProductDownloadSettingsViewController.xib */,
+				45F627B2253603AE00894B86 /* Product+DownloadSettingsViewModels.swift */,
 				45F627B5253603AE00894B86 /* ProductDownloadSettingsViewModel.swift */,
 			);
 			path = Settings;

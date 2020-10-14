@@ -37,7 +37,6 @@ final class ProductDownloadSettingsViewModel: ProductDownloadSettingsViewModelOu
     // Validation
     private var downloadLimitIsValid: Bool = false
     private var downloadExpiryIsValid: Bool = false
-    private lazy var throttler: Throttler = Throttler(seconds: 0.5)
 
     init(product: ProductFormDataModel) {
         self.product = product

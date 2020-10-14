@@ -1,7 +1,7 @@
 import Yosemite
 
 /// Implementation of `SearchUICommand` for selecting linked products to a grouped product from search UI.
-final class ProductListMultiSelectorSearchUICommand: SearchUICommand {
+final class ProductListMultiSelectorSearchUICommand: NSObject, SearchUICommand {
     typealias Model = Product
     typealias CellViewModel = ProductsTabProductViewModel
     typealias ResultsControllerModel = StorageProduct
@@ -16,6 +16,9 @@ final class ProductListMultiSelectorSearchUICommand: SearchUICommand {
 
     private let excludedProductIDs: [Int64]
     private var selectedProductIDs: [Int64] = []
+
+    /// Used for presenting discard changes action sheet.
+    weak var presentingViewController: UIViewController?
 
     typealias Completion = (_ selectedProductIDs: [Int64]) -> Void
     private let onCompletion: Completion
@@ -48,7 +51,7 @@ final class ProductListMultiSelectorSearchUICommand: SearchUICommand {
     }
 
     func configureActionButton(_ button: UIButton, onDismiss: @escaping () -> Void) {
-        let hasUnsavedChanges = selectedProductIDs.isNotEmpty
+        let hasUnsavedChanges = self.hasUnsavedChanges()
         let title = hasUnsavedChanges ? Strings.done: Strings.cancel
 
         // The button title has to be updated without animation so that the title is not truncated when its width changes.
@@ -92,13 +95,34 @@ final class ProductListMultiSelectorSearchUICommand: SearchUICommand {
     }
 }
 
+extension ProductListMultiSelectorSearchUICommand: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
+        guard let presentingViewController = presentingViewController else {
+            return
+        }
+        guard hasUnsavedChanges() else {
+            presentingViewController.dismiss(animated: true)
+            return
+        }
+        UIAlertController.presentDiscardChangesActionSheet(viewController: presentingViewController,
+                                                           onDiscard: { [weak self] in
+                                                            self?.presentingViewController?.dismiss(animated: true)
+        })
+    }
+}
+
 private extension ProductListMultiSelectorSearchUICommand {
     @objc func completeSelectingProducts() {
         onCompletion(selectedProductIDs)
     }
 }
 
+// MARK: Private Helpers
 private extension ProductListMultiSelectorSearchUICommand {
+    func hasUnsavedChanges() -> Bool {
+        selectedProductIDs.isNotEmpty
+    }
+
     func isProductSelected(_ product: Product) -> Bool {
         return selectedProductIDs.contains(product.productID)
     }

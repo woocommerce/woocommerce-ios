@@ -42,6 +42,23 @@ final class TitleAndEditableValueTableViewCellTests: XCTestCase {
         XCTAssertEqual(value.font, UIFont.body)
         XCTAssertEqual(value.textColor, .text)
     }
+
+    func test_viewModel_is_updated_when_text_field_is_changed() throws {
+        // Given
+        let mirror = try self.mirror(of: cell)
+        let viewModel = TitleAndEditableValueTableViewCellViewModel(title: "Test")
+
+        cell.update(viewModel: viewModel)
+
+        XCTAssertNil(viewModel.currentValue)
+
+        // When
+        mirror.value.text = "Ut ullam itaque"
+        mirror.value.sendActions(for: .editingChanged)
+
+        // Then
+        XCTAssertEqual(viewModel.currentValue, "Ut ullam itaque")
+    }
 }
 
 private extension TitleAndEditableValueTableViewCellTests {

@@ -204,9 +204,6 @@ extension ProductDownloadListViewController {
     func onDownloadSettingsCompletion(downloadLimit: Int64,
                                       downloadExpiry: Int64,
                                       hasUnsavedChanges: Bool) {
-        defer {
-            navigationController?.popViewController(animated: true)
-        }
 
         guard hasUnsavedChanges else {
             return

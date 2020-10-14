@@ -1923,7 +1923,7 @@
 		D83F592F225B269C00626E75 /* DatePickerTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DatePickerTableViewCell.xib; sourceTree = "<group>"; };
 		D83F5932225B2EB800626E75 /* ManualTrackingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManualTrackingViewController.swift; sourceTree = "<group>"; };
 		D83F5934225B3CDD00626E75 /* DatePickerTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DatePickerTableViewCellTests.swift; path = WooCommerceTests/ViewRelated/DatePickerTableViewCellTests.swift; sourceTree = SOURCE_ROOT; };
-		D83F5936225B402E00626E75 /* TitleAndEditableValueTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TitleAndEditableValueTableViewCellTests.swift; path = WooCommerceTests/ViewRelated/TitleAndEditableValueTableViewCellTests.swift; sourceTree = SOURCE_ROOT; };
+		D83F5936225B402E00626E75 /* TitleAndEditableValueTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TitleAndEditableValueTableViewCellTests.swift; path = WooCommerceTests/ViewRelated/ReusableViews/TitleAndEditableValueTableViewCell/TitleAndEditableValueTableViewCellTests.swift; sourceTree = SOURCE_ROOT; };
 		D83F5938225B424B00626E75 /* AddManualTrackingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AddManualTrackingViewModelTests.swift; path = WooCommerceTests/Model/AddManualTrackingViewModelTests.swift; sourceTree = SOURCE_ROOT; };
 		D83F593C225B4B5000626E75 /* ManualTrackingViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ManualTrackingViewControllerTests.swift; path = WooCommerceTests/ViewRelated/ManualTrackingViewControllerTests.swift; sourceTree = SOURCE_ROOT; };
 		D843D5C622434A08001BFA55 /* ManualTrackingViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ManualTrackingViewController.xib; sourceTree = "<group>"; };
@@ -3193,6 +3193,7 @@
 		57B374B3245B32EE00D58BE0 /* ReusableViews */ = {
 			isa = PBXGroup;
 			children = (
+				57F42E3E2537689400EA87F7 /* TitleAndEditableValueTableViewCell */,
 				57B374B4245B32FE00D58BE0 /* EmptyStateViewController */,
 				02B2C830249C4C8D0040C83C /* TextFieldTextAlignmentTests.swift */,
 			);
@@ -3276,6 +3277,14 @@
 				57C5FF7B25091DE50074EC26 /* OrderListSyncActionUseCaseTests.swift */,
 			);
 			path = Orders;
+			sourceTree = "<group>";
+		};
+		57F42E3E2537689400EA87F7 /* TitleAndEditableValueTableViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				D83F5936225B402E00626E75 /* TitleAndEditableValueTableViewCellTests.swift */,
+			);
+			path = TitleAndEditableValueTableViewCell;
 			sourceTree = "<group>";
 		};
 		6856D6E9B1C3C89938DCAD5C /* Testing */ = {
@@ -3503,7 +3512,6 @@
 				02C0CD2D23B5E3AE00F880B1 /* DefaultImageServiceTests.swift */,
 				024A543522BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift */,
 				D89E0C30226EFB0900DF9DE6 /* EditableOrderTrackingTableViewCellTests.swift */,
-				D83F5936225B402E00626E75 /* TitleAndEditableValueTableViewCellTests.swift */,
 				D82DFB4B225F303200EFE2CB /* EmptyListMessageWithActionTests.swift */,
 				D8F82AC422AF903700B67E4B /* IconsTests.swift */,
 				020B2F9023BDD71500BD79AD /* IntegerInputFormatterTests.swift */,

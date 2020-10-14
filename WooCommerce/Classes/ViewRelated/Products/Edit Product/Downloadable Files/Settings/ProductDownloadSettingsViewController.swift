@@ -205,11 +205,11 @@ private extension ProductDownloadSettingsViewController {
 
     func registerTableViewCells() {
         for row in Row.allCases {
-            tableView.register(row.type.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
+            tableView.register(row.type)
         }
     }
 
-    private func enableDoneButton(_ enabled: Bool) {
+    func enableDoneButton(_ enabled: Bool) {
         navigationItem.rightBarButtonItem?.isEnabled = enabled
     }
 }
@@ -233,12 +233,10 @@ private extension ProductDownloadSettingsViewController {
 extension ProductDownloadSettingsViewController {
 
     struct Section: RowIterable, Equatable {
-        let errorTitle: String?
         let footer: String?
         let rows: [Row]
 
-        init(errorTitle: String? = nil, footer: String? = nil, rows: [Row]) {
-            self.errorTitle = errorTitle
+        init(footer: String? = nil, rows: [Row]) {
             self.footer = footer
             self.rows = rows
         }

@@ -25,7 +25,7 @@ final class TitleAndEditableValueTableViewCell: UITableViewCell {
         observeValueTextFieldChanges()
     }
 
-    /// Updates the values for the labels.
+    /// Change the style add the `viewModel` represented by this view.
     func update(style: Style = .condensed, viewModel: TitleAndEditableValueTableViewCellViewModel?) {
         title.text = viewModel?.title
         value.placeholder = viewModel?.placeholder

@@ -11,6 +11,7 @@ final class RefundConfirmationViewModel {
     private let order: Order
     private let currencyFormatter: CurrencyFormatter
 
+    /// Contains the current value of the Reason for Refund text field.
     private let reasonForRefundCellViewModel =
         TitleAndEditableValueTableViewCellViewModel(title: Localization.reasonForRefund,
                                                     placeholder: Localization.reasonForRefundingOrder)

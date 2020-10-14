@@ -56,6 +56,12 @@ final class OrderDetailsViewModel {
         return dataSource.items
     }
 
+    /// Refunds from an order
+    ///
+    var refunds: [Refund] {
+        return dataSource.refunds
+    }
+
     /// Refunded products from an Order
     ///
     var refundedItems: [OrderItemRefund] {

@@ -12,6 +12,10 @@ final class IssueRefundViewModel {
         ///
         let order: Order
 
+        /// Items to refund. Order Items - Refunded items
+        ///
+        let itemsToRefund: [AggregateOrderItem]
+
         /// Current currency settings
         ///
         let currencySettings: CurrencySettings
@@ -60,8 +64,9 @@ final class IssueRefundViewModel {
         return resultsController.fetchedObjects
     }()
 
-    init(order: Order, currencySettings: CurrencySettings) {
-        state = State(order: order, currencySettings: currencySettings)
+    init(order: Order, refunds: [Refund], currencySettings: CurrencySettings) {
+        let itemsToRefund = AggregateDataHelper.combineOrderItems(order.items, with: refunds)
+        state = State(order: order, itemsToRefund: itemsToRefund, currencySettings: currencySettings)
         sections = createSections()
         title = calculateTitle()
         selectedItemsTitle = createSelectedItemsCount()

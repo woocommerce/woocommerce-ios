@@ -23,7 +23,7 @@
     <a href="#-license">License</a>
 </p>
 
-## 🎉 Build Instructions
+## 🔨 Build Instructions
 
 1. Download Xcode
 

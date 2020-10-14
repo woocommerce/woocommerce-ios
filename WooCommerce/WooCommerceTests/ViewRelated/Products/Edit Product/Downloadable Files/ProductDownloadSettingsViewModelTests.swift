@@ -90,7 +90,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
         let viewModel = ProductDownloadSettingsViewModel(product: model)
-        let defaultLimit: Int64 = -1
+        let defaultLimit: Int64 = -2
 
         // Act
         var isValidResult: Bool?
@@ -104,7 +104,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
         }
 
         // Assert
-        XCTAssertEqual(isValidResult, true)
+        XCTAssertEqual(isValidResult, false)
         XCTAssertEqual(shouldBringUpKeyboard, true)
         XCTAssertEqual(viewModel.downloadLimit, defaultLimit)
     }
@@ -164,7 +164,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
         let viewModel = ProductDownloadSettingsViewModel(product: model)
-        let defaultExpiry: Int64 = -1
+        let defaultExpiry: Int64 = -2
 
         // Act
         var isValidResult: Bool?
@@ -178,7 +178,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
         }
 
         // Assert
-        XCTAssertEqual(isValidResult, true)
+        XCTAssertEqual(isValidResult, false)
         XCTAssertEqual(shouldBringUpKeyboard, true)
         XCTAssertEqual(viewModel.downloadExpiry, defaultExpiry)
     }

@@ -34,16 +34,10 @@ final class ProductDownloadSettingsViewModel: ProductDownloadSettingsViewModelOu
     private(set) var downloadLimit: Int64
     private(set) var downloadExpiry: Int64
 
-    // Validation
-    private var downloadLimitIsValid: Bool = false
-    private var downloadExpiryIsValid: Bool = false
-
     init(product: ProductFormDataModel) {
         self.product = product
-        self.downloadLimit = product.downloadLimit
-        self.downloadExpiry = product.downloadExpiry
-        downloadLimitIsValid = self.downloadLimit >= 0 ? true : false
-        downloadExpiryIsValid = self.downloadExpiry >= 0 ? true : false
+        downloadLimit = product.downloadLimit
+        downloadExpiry = product.downloadExpiry
     }
 
     var sections: [Section] {
@@ -66,42 +60,36 @@ final class ProductDownloadSettingsViewModel: ProductDownloadSettingsViewModelOu
 //
 extension ProductDownloadSettingsViewModel: ProductDownloadSettingsActionHandler {
     func handleDownloadLimitChange(_ downloadLimit: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void) {
-        guard let downloadLimit = downloadLimit, let downloadLimit_unwrapped = Int64(downloadLimit), downloadLimit_unwrapped >= 0 else {
-            downloadLimitIsValid = true
+
+        if downloadLimit?.isEmpty == true {
             self.downloadLimit = -1
             onValidation(isChangesValid(), true)
             return
         }
-        self.downloadLimit = downloadLimit_unwrapped
-        let newValue = self.downloadLimit
-        let oldValue = product.downloadLimit
 
-        guard newValue != oldValue else {
-            downloadLimitIsValid = false
+        guard let downloadLimit = downloadLimit, let downloadLimit_unwrapped = Int64(downloadLimit), downloadLimit_unwrapped >= 0 else {
+            self.downloadLimit = -2
             onValidation(isChangesValid(), true)
             return
         }
-        downloadLimitIsValid = true
+        self.downloadLimit = downloadLimit_unwrapped
         onValidation(isChangesValid(), false)
     }
 
     func handleDownloadExpiryChange(_ downloadExpiry: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void) {
-        guard let downloadExpiry = downloadExpiry, let downloadExpiry_unwrapped = Int64(downloadExpiry), downloadExpiry_unwrapped >= 0 else {
-            downloadExpiryIsValid = true
+        if downloadExpiry?.isEmpty == true {
             self.downloadExpiry = -1
             onValidation(isChangesValid(), true)
             return
         }
-        self.downloadExpiry = downloadExpiry_unwrapped
-        let newValue = self.downloadExpiry
-        let oldValue = product.downloadExpiry
 
-        guard newValue != oldValue else {
-            downloadExpiryIsValid = false
+        guard let downloadExpiry = downloadExpiry, let downloadExpiry_unwrapped = Int64(downloadExpiry), downloadExpiry_unwrapped >= 0 else {
+            self.downloadExpiry = -2
             onValidation(isChangesValid(), true)
             return
         }
-        downloadExpiryIsValid = true
+
+        self.downloadExpiry = downloadExpiry_unwrapped
         onValidation(isChangesValid(), false)
     }
 
@@ -115,7 +103,7 @@ extension ProductDownloadSettingsViewModel: ProductDownloadSettingsActionHandler
     }
 
     func hasUnsavedChanges() -> Bool {
-        return isChangesValid()
+        return downloadLimit != product.downloadLimit || downloadExpiry != product.downloadExpiry
     }
 }
 
@@ -123,7 +111,11 @@ extension ProductDownloadSettingsViewModel: ProductDownloadSettingsActionHandler
 //
 private extension ProductDownloadSettingsViewModel {
     func isChangesValid() -> Bool {
-        return downloadLimitIsValid || downloadExpiryIsValid
+        // We consider valid values: -1, positive numbers and if at least one new value is different from the previous one
+        let downloadLimitIsValid = downloadLimit == -1 || downloadLimit >= 0
+        let downloadExpiryIsValid = downloadExpiry == -1 || downloadExpiry >= 0
+        let isDownloadLimitOrDownloadExpiryChanged = downloadLimit != product.downloadLimit || downloadExpiry != product.downloadExpiry
+        return downloadLimitIsValid && downloadExpiryIsValid && isDownloadLimitOrDownloadExpiryChanged
     }
 }
 

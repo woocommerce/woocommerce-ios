@@ -258,9 +258,3 @@ extension ProductDownloadSettingsViewController {
         }
     }
 }
-
-private extension ProductDownloadSettingsViewController {
-    enum Constants {
-        static let sectionHeight = CGFloat(44)
-    }
-}

@@ -5,7 +5,7 @@ import Yosemite
 //
 final class ProductDownloadSettingsViewController: UIViewController {
 
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet private weak var tableView: UITableView!
 
     private let viewModel: ProductDownloadSettingsViewModelOutput & ProductDownloadSettingsActionHandler
     private var sections: [Section] = []
@@ -16,12 +16,9 @@ final class ProductDownloadSettingsViewController: UIViewController {
     typealias Completion = (_ downloadLimit: Int64, _ downloadExpiry: Int64, _ hasUnsavedChanges: Bool) -> Void
     private let onCompletion: Completion
 
-    private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
-        let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
-            self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
-        }
-        return keyboardFrameObserver
-    }()
+    private lazy var keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
+        self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
+    }
 
     /// Init
     ///
@@ -201,10 +198,6 @@ private extension ProductDownloadSettingsViewController {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
         tableView.removeLastCellSeparator()
-
-        view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToSafeArea(tableView)
 
         registerTableViewCells()
         registerTableViewHeaderFooters()

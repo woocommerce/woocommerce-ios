@@ -15,7 +15,7 @@ protocol ProductDownloadSettingsViewModelOutput {
 /// Handles actions related to the download settings data.
 ///
 protocol ProductDownloadSettingsActionHandler {
-    // Input field actions
+    // Input fields actions
     func handleDownloadLimitChange(_ downloadLimit: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void)
     func handleDownloadExpiryChange(_ downloadExpiry: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void)
 
@@ -24,7 +24,7 @@ protocol ProductDownloadSettingsActionHandler {
     func hasUnsavedChanges() -> Bool
 }
 
-/// Provides view data for downloadable file download, and handles init/UI/navigation actions needed in product download settings.
+/// Provides view data for downloadable file settings, and handles init/UI/navigation actions needed in product download settings screen.
 ///
 final class ProductDownloadSettingsViewModel: ProductDownloadSettingsViewModelOutput {
     private let product: ProductFormDataModel

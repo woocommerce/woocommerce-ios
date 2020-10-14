@@ -84,6 +84,54 @@ extension Order {
     }
 }
 
+extension OrderItem {
+    public func copy(
+        itemID: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        productID: CopiableProp<Int64> = .copy,
+        variationID: CopiableProp<Int64> = .copy,
+        quantity: CopiableProp<Decimal> = .copy,
+        price: CopiableProp<NSDecimalNumber> = .copy,
+        sku: NullableCopiableProp<String> = .copy,
+        subtotal: CopiableProp<String> = .copy,
+        subtotalTax: CopiableProp<String> = .copy,
+        taxClass: CopiableProp<String> = .copy,
+        taxes: CopiableProp<[OrderItemTax]> = .copy,
+        total: CopiableProp<String> = .copy,
+        totalTax: CopiableProp<String> = .copy
+    ) -> OrderItem {
+        let itemID = itemID ?? self.itemID
+        let name = name ?? self.name
+        let productID = productID ?? self.productID
+        let variationID = variationID ?? self.variationID
+        let quantity = quantity ?? self.quantity
+        let price = price ?? self.price
+        let sku = sku ?? self.sku
+        let subtotal = subtotal ?? self.subtotal
+        let subtotalTax = subtotalTax ?? self.subtotalTax
+        let taxClass = taxClass ?? self.taxClass
+        let taxes = taxes ?? self.taxes
+        let total = total ?? self.total
+        let totalTax = totalTax ?? self.totalTax
+
+        return OrderItem(
+            itemID: itemID,
+            name: name,
+            productID: productID,
+            variationID: variationID,
+            quantity: quantity,
+            price: price,
+            sku: sku,
+            subtotal: subtotal,
+            subtotalTax: subtotalTax,
+            taxClass: taxClass,
+            taxes: taxes,
+            total: total,
+            totalTax: totalTax
+        )
+    }
+}
+
 extension Product {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

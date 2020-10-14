@@ -15,11 +15,11 @@ final class TitleAndEditableValueTableViewCellTests: XCTestCase {
         super.tearDown()
     }
 
-    func testCellIsNonSelectable() {
+    func test_cell_is_non_selectable() {
         XCTAssertEqual(cell.selectionStyle, UITableViewCell.SelectionStyle.none)
     }
 
-    func testTitleHasFootNoteStyleApplied() throws {
+    func test_title_has_footnote_style_applied() throws {
         // Given
         let mirror = try self.mirror(of: cell)
 
@@ -31,7 +31,7 @@ final class TitleAndEditableValueTableViewCellTests: XCTestCase {
         XCTAssertEqual(title.textColor, .systemColor(.secondaryLabel))
     }
 
-    func testValueHasBodyStyleApplied() throws {
+    func test_value_has_body_style_applied() throws {
         // Given
         let mirror = try self.mirror(of: cell)
 
